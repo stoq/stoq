@@ -1,0 +1,256 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="InstallmentConfirmation">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkVBox" id="vbox1">
+                <property name="border_width">6</property>
+                <property name="spacing">11</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkHBox" id="hbox1">
+                        <property name="spacing">11</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkTable" id="table1">
+                                <property name="column_spacing">6</property>
+                                <property name="n_columns">2</property>
+                                <property name="n_rows">5</property>
+                                <property name="row_spacing">6</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="GtkLabel" id="label5">
+                                        <property name="label" context="yes" translatable="yes">Order number:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="label4">
+                                        <property name="label" context="yes" translatable="yes">Installment value:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="top_attach">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="label3">
+                                        <property name="label" context="yes" translatable="yes">Penalty:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">3</property>
+                                        <property name="top_attach">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="label2">
+                                        <property name="label" context="yes" translatable="yes">Interest:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">4</property>
+                                        <property name="top_attach">3</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="label1">
+                                        <property name="label" context="yes" translatable="yes">Total value:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">5</property>
+                                        <property name="top_attach">4</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="ProxyLabel" id="order_number">
+                                        <property name="data_type">int</property>
+                                        <property name="model_attribute">order_number</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="ProxyEntry" id="installment_value">
+                                        <property name="data_type">currency</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="model_attribute">installment_value</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">1</property>
+                                        <property name="x_options"></property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="ProxyEntry" id="penalty">
+                                        <property name="data_type">currency</property>
+                                        <property name="model_attribute">penalty</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">3</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">2</property>
+                                        <property name="x_options"></property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="ProxyEntry" id="interest">
+                                        <property name="data_type">currency</property>
+                                        <property name="model_attribute">interest</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">4</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">3</property>
+                                        <property name="x_options"></property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="ProxyLabel" id="total_value">
+                                        <property name="data_type">currency</property>
+                                        <property name="model_attribute">total_value</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">5</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">4</property>
+                                        <property name="x_padding">2</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                        </child>
+                        <child>
+                            <widget class="GtkVBox" id="vbox2">
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="GtkTable" id="table2">
+                                        <property name="column_spacing">6</property>
+                                        <property name="n_columns">2</property>
+                                        <property name="n_rows">2</property>
+                                        <property name="row_spacing">6</property>
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <widget class="GtkLabel" id="label7">
+                                                <property name="label" context="yes" translatable="yes">Client:</property>
+                                                <property name="visible">True</property>
+                                                <property name="xalign">1.0</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="y_options"></property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <widget class="ProxyLabel" id="client_name">
+                                                <property name="data_type">unicode</property>
+                                                <property name="model_attribute">client_name</property>
+                                                <property name="visible">True</property>
+                                                <property name="width_chars">24</property>
+                                                <property name="xalign">0.0</property>
+                                                <property name="ypad">2</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="left_attach">1</property>
+                                                <property name="right_attach">2</property>
+                                            </packing>
+                                        </child>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkExpander" id="expander1">
+                                        <property name="is_focus">True</property>
+                                        <property name="label" context="yes" translatable="yes"></property>
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <widget class="GtkVBox" id="vbox3">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                    <widget class="ProxyCheckButton" id="pay_penalty">
+                                                        <property name="active">True</property>
+                                                        <property name="data_type">bool</property>
+                                                        <property name="label" context="yes" translatable="yes">Pay penalty</property>
+                                                        <property name="model_attribute">pay_penalty</property>
+                                                        <property name="visible">True</property>
+                                                    </widget>
+                                                </child>
+                                                <child>
+                                                    <widget class="ProxyCheckButton" id="pay_interest">
+                                                        <property name="active">True</property>
+                                                        <property name="data_type">bool</property>
+                                                        <property name="label" context="yes" translatable="yes">Pay interest</property>
+                                                        <property name="model_attribute">pay_interest</property>
+                                                        <property name="visible">True</property>
+                                                    </widget>
+                                                    <packing>
+                                                        <property name="position">1</property>
+                                                    </packing>
+                                                </child>
+                                            </widget>
+                                        </child>
+                                    </widget>
+                                    <packing>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ObjectList" id="installments">
+                        <property name="selection_mode">multiple</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">2</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

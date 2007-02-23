@@ -24,7 +24,7 @@
 ##
 """ Payment management implementations."""
 
-from datetime import datetime, date
+from datetime import datetime
 from decimal import Decimal
 
 from kiwi.argcheck import argcheck
@@ -202,27 +202,42 @@ class Payment(Domain):
         self.status = self.STATUS_CANCELLED
         self.cancel_date = datetime.now()
 
-    @argcheck(date)
-    def get_payable_value(self, paid_date=None):
+    def get_payable_value(self):
         """ Returns the calculated payment value with the daily penalty.
             Note that the payment group daily_penalty must be
             between 0 and 100.
         """
-        from stoqlib.domain.payment.methods import CheckPM, BillPM
         if self.status in [self.STATUS_PREVIEW, self.STATUS_CANCELLED]:
             return self.value
         if self.status in [self.STATUS_PAID, self.STATUS_REVIEWING,
                            self.STATUS_CONFIRMED]:
             return self.paid_value
-        if isinstance(self.method, (CheckPM, BillPM)):
-            paid_date = paid_date or datetime.now()
-            days = (paid_date - self.due_date).days
-            if days <= 0:
-                return self.value
-            daily_penalty = self.method.daily_penalty / 100
-            return self.value + days * (daily_penalty * self.value)
-        else:
-            return self.value
+
+        return self.value + self.get_penalty()
+
+    def get_penalty(self):
+        """
+        Calculate the penalty in an absolute value
+        @returns: penalty
+        @rtype: currency
+        """
+        if not self.method.daily_penalty:
+            return currency(0)
+
+        days = (datetime.now() - self.due_date).days
+        if days <= 0:
+            return currency(0)
+        return currency(days * self.method.daily_penalty / 100 * self.value)
+
+    def get_interest(self):
+        """
+        Calculate the interest in an absolute value
+        @returns: interest
+        @rtype: currency
+        """
+        if not self.method.interest:
+            return currency(0)
+        return currency(self.method.interest / 100 * self.value)
 
     def get_thirdparty(self):
         if self.method_details:
@@ -443,19 +458,17 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         self.status = AbstractPaymentGroup.STATUS_CLOSED
         return True
 
-    def clear_preview_payments(self, ignore_method_iface=None):
+    def clear_preview_payments(self, ignore_method=None):
         """Delete payments of preview status associated to the current
         payment_group. It can happen if user open and cancel this wizard.
-        Notes:
-            ignore_method_iface = a payment method interface which is
-                                  ignored in the search for payments
+        @param ignore_method: a payment method which will be ignored
+                              in the search for payments
         """
-        query = dict(status=Payment.STATUS_PREVIEW,
-                     group=self)
+        query = dict(status=Payment.STATUS_PREVIEW, group=self)
 
         conn = self.get_connection()
-        if ignore_method_iface:
-            query['method'] = ignore_method_iface.selectOne(connection=conn)
+        if ignore_method:
+            query['method'] = ignore_method.selectOne(connection=conn)
 
         for payment in Payment.selectBy(connection=conn, **query):
             inpayment = IInPayment(payment, None)
