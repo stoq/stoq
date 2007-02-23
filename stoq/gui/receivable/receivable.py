@@ -166,21 +166,34 @@ class ReceivableApp(SearchableAppWindow):
         else:
             return True
 
+    def _same_sale(self, receivable_views):
+        """
+        Determines if a list of receivable_views are in the same sale
+        To do so they must meet the following conditions:
+          - Be in the same sale
+        """
+
+        if not receivable_views:
+            return False
+
+        sale = receivable_views[0].sale
+        for receivable_view in receivable_views[1:]:
+            if receivable_view.sale != sale:
+                return False
+        else:
+            return True
+
     #
     # Kiwi callbacks
     #
 
     def on_details_button__clicked(self, button):
-        if len(self.receivables):
-            selected = self.receivables.get_selected()
-            if not selected:
-                selected = self.receivables[0]
-                self.receivables.select(selected)
-            self._show_details(selected)
-
+        selected = self.receivables.get_selected_rows()[0]
+        self._show_details(selected)
 
     def on_receive_button__clicked(self, button):
         self._receive(self.receivables.get_selected_rows())
 
     def on_receivables__selection_changed(self, receivables, selected):
         self.receive_button.set_sensitive(self._can_receive(selected))
+        self.details_button.set_sensitive(self._same_sale(selected))
