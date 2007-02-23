@@ -26,7 +26,7 @@
 import gettext
 
 from stoqlib.database.runtime import get_current_user
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
