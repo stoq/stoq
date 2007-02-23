@@ -23,10 +23,14 @@
 ##
 
 import gettext
+import operator
 
 from kiwi.log import Logger
 from stoqlib.exceptions import LoginError
+from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.message import error, info
+
+from kiwi.component import get_utility
 
 from stoq.gui.login import LoginHelper
 
@@ -85,6 +89,27 @@ class ApplicationRunner(object):
 
         return app
 
+
+    def _get_available_applications(self):
+        from stoq.lib.applist import Application
+
+        permissions = {}
+        for settings in self._user.profile.profile_settings:
+            permissions[settings.app_dir_name] = settings.has_permission
+
+        descriptions = get_utility(IApplicationDescriptions).get_descriptions()
+
+        available_applications = []
+
+        # sorting by app_full_name
+        for name, full, icon, descr in sorted(descriptions,
+                                              key=operator.itemgetter(1)):
+            if permissions[name]:
+                available_applications.append(
+                    Application(name, full, icon, descr))
+
+        return available_applications
+
     # Public API
 
     def choose(self):
@@ -92,9 +117,17 @@ class ApplicationRunner(object):
         Displays a list of applications
         @param: selected application or None if nothing was selected
         """
+
+        available_applications = self._get_available_applications()
+        if len(available_applications) == 1:
+            return available_applications[0].name
+
         from stoqlib.gui.base.dialogs import run_dialog
         from stoq.gui.login import SelectApplicationsDialog
-        return run_dialog(SelectApplicationsDialog(self._appname))
+
+        return run_dialog(SelectApplicationsDialog(self._appname,
+                                                   available_applications))
+
 
     def run(self, appname):
         """

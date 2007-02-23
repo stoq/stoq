@@ -71,3 +71,20 @@ class ApplicationDescriptions:
             app_desc.append((name,
                              module.application, icon, description))
         return app_desc
+
+
+class Application(object):
+    """
+    Describes an application
+
+    @ivar name: short name of application
+    @ivar fullname: complete name of application
+    @ivar icon: application icon
+    @ivar description: long description of application
+    """
+
+    def __init__ (self, name, fullname, icon, description):
+        self.name = name
+        self.fullname = fullname
+        self.icon = icon
+        self.description = description
