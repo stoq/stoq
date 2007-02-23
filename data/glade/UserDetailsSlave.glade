@@ -143,36 +143,6 @@
                         <property name="y_options"></property>
                     </packing>
                 </child>
-                <child>
-                    <widget class="GtkHButtonBox" id="hbuttonbox1">
-                        <property name="layout_style">end</property>
-                        <property name="visible">True</property>
-                        <child>
-                            <widget class="GtkButton" id="profile_button">
-                                <property name="is_focus">True</property>
-                                <property name="label" context="yes" translatable="yes">A_dd/Edit Profile...</property>
-                                <property name="use_underline">True</property>
-                                <property name="visible">True</property>
-                            </widget>
-                        </child>
-                    </widget>
-                    <packing>
-                        <property name="bottom_attach">3</property>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="top_attach">2</property>
-                        <property name="y_options">fill</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="top_attach">3</property>
-                        <property name="bottom_attach">4</property>
-                    </packing>
-                </child>
             </widget>
         </child>
     </widget>

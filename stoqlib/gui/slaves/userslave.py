@@ -35,7 +35,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_password
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.profileeditor import UserProfileEditor
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.person import EmployeeRole, Person
 from stoqlib.domain.interfaces import IEmployee, ISalesPerson, IUser
@@ -247,12 +246,6 @@ class UserDetailsSlave(BaseEditorSlave):
         user = Person.iselectOne(IUser, query, connection=self.conn)
         if user and self.model.username != value:
             return ValidationError('Username already exist')
-
-    def on_profile_button__clicked(self, button):
-        user_profile = self.model.profile
-        if run_dialog(UserProfileEditor, self, self.conn, user_profile):
-            self._setup_entry_completion()
-            self.proxy.update('profile')
 
     def on_change_password_button__clicked(self, button):
         run_dialog(PasswordEditor, self, self.conn, self.model)
