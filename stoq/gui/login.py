@@ -25,13 +25,11 @@
 """ Login dialog for user authentication"""
 
 import gettext
-import operator
 
 import gtk
 from kiwi.component import get_utility, provide_utility
 from kiwi.environ import environ
 from kiwi.log import Logger
-from kiwi.python import Settable
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.list import Column
 from stoqlib.database.interfaces import ICurrentUser
@@ -41,8 +39,7 @@ from stoqlib.domain.interfaces import IUser
 from stoqlib.domain.person import Person
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
 from stoqlib.gui.login import LoginDialog
-from stoqlib.lib.interfaces import (IApplicationDescriptions,
-                                    CookieError, ICookieFile)
+from stoqlib.lib.interfaces import (CookieError, ICookieFile)
 from stoqlib.lib.message import warning
 
 
@@ -55,9 +52,11 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
     title = _('Choose application')
     size = (520, 340)
 
-    def __init__(self, appname=None):
+    def __init__(self, appname=None, applications=None):
         """
         @param appname: application name to select
+        @param applications: applications to show
+        @type applications: list of Application
         """
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
 
@@ -67,6 +66,7 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
         self.main_dialog = BasicWrappingDialog(self, self.title,
                                                size=self.size)
 
+        self.applications = applications
         self._setup_applist()
 
         # O(n), but not so important, we have few apps.
@@ -82,14 +82,8 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
         self.klist.get_treeview().set_headers_visible(False)
         self.klist.set_columns(self._get_columns())
 
-        descriptions = get_utility(IApplicationDescriptions).get_descriptions()
-        # sorting by app_full_name
-        for name, full, icon, descr in sorted(descriptions,
-                                              key=operator.itemgetter(1)):
-            self.klist.append(Settable(name=name,
-                                       fullname=full,
-                                       icon=icon,
-                                       description=descr))
+        self.klist.extend(self.applications)
+
         if not len(self.klist):
             raise ValueError('Application list should have items at '
                              'this point')
