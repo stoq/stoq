@@ -22,6 +22,7 @@
                                     <widget class="ProxyLabel" id="kiwilabel1">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Number of installments:</property>
+                                        <property name="model_attribute"></property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -33,6 +34,7 @@
                                     <widget class="ProxyLabel" id="kiwilabel4">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">First installment due:</property>
+                                        <property name="model_attribute"></property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -45,6 +47,7 @@
                                     <widget class="ProxyLabel" id="kiwilabel5">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Based on intervals of:</property>
+                                        <property name="model_attribute"></property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -152,6 +155,7 @@
                                 <child>
                                     <widget class="ProxyComboEntry" id="bank_combo">
                                         <property name="data_type">str</property>
+                                        <property name="model_attribute"></property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
@@ -162,13 +166,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="ProxyLabel" id="kiwilabel2">
-                                        <property name="data_type">unicode</property>
-                                        <property name="label" context="yes" translatable="yes">Interest:</property>
-                                        <property name="visible">True</property>
-                                        <property name="width_request">90</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
+                                    <placeholder/>
                                     <packing>
                                         <property name="left_attach">2</property>
                                         <property name="right_attach">3</property>
@@ -207,16 +205,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="ProxySpinButton" id="interest">
-                                        <property name="adjustment">0 0 100 1 10 0</property>
-                                        <property name="data_type">Decimal</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="model_attribute">interest</property>
-                                        <property name="text" context="yes" translatable="yes">0</property>
-                                        <property name="visible">True</property>
-                                        <property name="width_chars">6</property>
-                                        <property name="width_request">90</property>
-                                    </widget>
+                                    <placeholder/>
                                     <packing>
                                         <property name="left_attach">3</property>
                                         <property name="right_attach">4</property>
@@ -247,12 +236,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="ProxyLabel" id="kiwilabel3">
-                                        <property name="data_type">unicode</property>
-                                        <property name="label" context="yes" translatable="yes">%</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">0.0</property>
-                                    </widget>
+                                    <placeholder/>
                                     <packing>
                                         <property name="left_attach">4</property>
                                         <property name="right_attach">5</property>

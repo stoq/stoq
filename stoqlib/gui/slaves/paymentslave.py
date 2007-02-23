@@ -36,7 +36,6 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.defaults import interval_types, INTERVALTYPE_MONTH, \
      DECIMAL_PRECISION
 from stoqlib.lib.drivers import get_current_cheque_printer_settings
-from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.interfaces import IInPayment
 from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
@@ -301,8 +300,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     gladefile = 'BillCheckMethodSlave'
     model_type = BillCheckGroupData
     slave_holder = 'bill_check_data_list'
-    proxy_widgets = ('interest',
-                     'interval_type_combo',
+    proxy_widgets = ('interval_type_combo',
                      'intervals',
                      'first_duedate',
                      'installments_number')
@@ -343,19 +341,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                         self.reset_btn_validation_ok)
         self._refresh_next()
 
-    def _setup_interest(self):
-        # XXX Humm... if the interest charge is mandatory we can not allow
-        # users go to the last step if the total value of installments
-        # doesn't match with subtotal + interest_total
-        interest = self.method.interest
-        if interest:
-            self.interest.set_range(1, interest)
-            self.model.interest = interest
-        param = sysparam(self.conn).MANDATORY_INTEREST_CHARGE
-        self.interest.set_sensitive(not param)
-
     def _setup_widgets(self):
-        self._setup_interest()
         max = self.method.get_max_installments_number()
         self.installments_number.set_range(1, max)
         items = [(label, constant) for constant, label
@@ -397,7 +383,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         due_date = self.model.first_duedate
         interval_type = self.model.interval_type
         intervals = self.model.intervals
-        interest = self.model.interest
+        interest = Decimal(0)
         self.payment_list.clear_list()
         method = self.method
         total = self.total_value
@@ -533,10 +519,6 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self._refresh_next(False)
 
     def on_intervals__value_changed(self, *args):
-        self.update_view()
-        self._refresh_next(False)
-
-    def on_interest__value_changed(self, *args):
         self.update_view()
         self._refresh_next(False)
 
