@@ -32,7 +32,7 @@ from kiwi.ui.widgets.list import Column
 from kiwi.utils import gsignal
 
 from stoqlib.gui.base.lists import SimpleListDialog
-from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.slaves.productslave import TributarySituationSlave
 from stoqlib.domain.person import Person

@@ -24,7 +24,7 @@
 """ Slaves for purchase management """
 
 
-from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.defaults import interval_types
 from stoqlib.domain.interfaces import IPaymentGroup
 

@@ -30,7 +30,7 @@ from kiwi.datatypes import currency
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import ISellable, IStorable
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning
 

@@ -33,7 +33,7 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.interfaces import IIndividual, ICompany
 from stoqlib.domain.person import Person
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.editors import BaseEditorSlave, BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.base.slaves import NoteSlave
 from stoqlib.gui.editors.addresseditor import AddressAdditionDialog
 from stoqlib.gui.slaves.liaisonslave import LiaisonListDialog

@@ -31,7 +31,7 @@ from kiwi.python import Settable
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.domain.sellable import (SellableCategory, ASellable,
                                      SellableUnit)

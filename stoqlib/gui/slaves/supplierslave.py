@@ -26,7 +26,7 @@
 """ Supplier editor slaves implementation"""
 
 
-from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.domain.interfaces import ISupplier
 
 

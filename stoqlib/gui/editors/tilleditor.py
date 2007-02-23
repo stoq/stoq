@@ -34,7 +34,7 @@ from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.interfaces import IEmployee
 from stoqlib.domain.person import Person
 from stoqlib.domain.till import Till, TillEntry
-from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.lib.drivers import till_add_cash, till_remove_cash
 from stoqlib.lib.translation import stoqlib_gettext
 

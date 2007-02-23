@@ -30,7 +30,7 @@ from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.person import (PersonAdaptToSupplier,
                                    PersonAdaptToTransporter)
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave

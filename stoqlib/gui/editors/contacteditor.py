@@ -27,7 +27,7 @@
 
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.person import Liaison
 
 _ = stoqlib_gettext

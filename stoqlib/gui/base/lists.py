@@ -32,7 +32,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import yesno
 from stoqlib.gui.base.dialogs import (run_dialog, BasicPluggableDialog,
                                       BasicDialog)
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.wizards import BaseWizard
 from stoqlib.exceptions import SelectionError, StoqlibError
 

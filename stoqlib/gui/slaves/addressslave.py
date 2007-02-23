@@ -28,7 +28,7 @@
 
 from kiwi.argcheck import argcheck
 
-from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.defaults import get_country_states
 from stoqlib.lib.countries import get_countries
 from stoqlib.domain.address import Address, CityLocation

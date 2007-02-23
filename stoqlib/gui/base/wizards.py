@@ -26,7 +26,7 @@
 from kiwi.ui.wizard import PluggableWizard, WizardStep
 from kiwi.ui.delegates import GladeSlaveDelegate
 
-from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.base.dialogs import RunnableView
 
 

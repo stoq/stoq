@@ -30,7 +30,7 @@ from kiwi.ui.dialogs import save
 from kiwi.python import Settable
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.reporting.base.utils import print_preview, build_report
 
 _ = stoqlib_gettext

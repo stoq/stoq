@@ -28,7 +28,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.person import Person
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 
 _ = stoqlib_gettext
 

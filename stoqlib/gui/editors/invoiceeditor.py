@@ -29,7 +29,7 @@ from datetime import datetime
 
 from kiwi.python import Settable
 
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 class InvoiceDetailsEditor(BaseEditor):

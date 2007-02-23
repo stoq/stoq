@@ -32,7 +32,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.delegates import GladeSlaveDelegate
 
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter

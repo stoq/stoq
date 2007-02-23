@@ -30,7 +30,7 @@ from kiwi.ui.dialogs import open
 from kiwi.datatypes import converter
 from kiwi.environ import environ
 
-from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
