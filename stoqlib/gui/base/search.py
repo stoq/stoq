@@ -190,6 +190,7 @@ class SearchDialog(BasicDialog):
         self.klist.connect('selection-changed', self._on_selection_changed)
 
     def _setup_details_slave(self):
+        # FIXME: Gross hack
         has_details_btn = hasattr(self, 'on_details_button_clicked')
         has_print_btn = hasattr(self, 'on_print_button_clicked')
         if not (has_details_btn or has_print_btn):
