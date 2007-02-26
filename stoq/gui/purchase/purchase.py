@@ -200,6 +200,9 @@ class PurchaseApp(SearchableAppWindow):
     # Hooks
     #
 
+    def on_orders__row_activated(self, klist, purchase_order_view):
+        self._run_details_dialog()
+
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
         if status != ALL_ITEMS_INDEX:

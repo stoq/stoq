@@ -186,6 +186,9 @@ class ReceivableApp(SearchableAppWindow):
     # Kiwi callbacks
     #
 
+    def on_receivables__row_activated(self, klist, receivable_view):
+        self._show_details(receivable_view)
+
     def on_details_button__clicked(self, button):
         selected = self.receivables.get_selected_rows()[0]
         self._show_details(selected)

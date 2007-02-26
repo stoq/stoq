@@ -125,6 +125,9 @@ class PayableApp(SearchableAppWindow):
     # Kiwi callbacks
     #
 
+    def on_payables__row_activated(self, klist, payable_view):
+        self._show_details(payable_view)
+
     def on_details_button__clicked(self, button):
         if len(self.payables):
             if not self.payables.get_selected_rows():
