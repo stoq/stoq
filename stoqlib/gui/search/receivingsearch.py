@@ -73,10 +73,10 @@ class PurchaseReceivingSearch(SearchDialog):
     # Callbacks
     #
 
-    def on_print_button_clicked(self, *args):
+    def on_print_button_clicked(self, button):
         self.search_bar.print_report(PurchaseReceivalReport, list(self.klist))
 
-    def on_details_button_clicked(self, *args):
+    def on_details_button_clicked(self, button):
         items = self.klist.get_selected_rows()
         if  not len(items) == 1:
             raise ValueError("You should have only one item selected at "
