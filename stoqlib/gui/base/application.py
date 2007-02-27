@@ -40,6 +40,11 @@ from stoqlib.gui.base.dialogs import (get_dialog, run_dialog,
 class BaseApp:
     """ Base class for application control. """
     def __init__(self, main_window_class):
+        """
+        @param main_window_class: A BaseAppWindow subclass
+        """
+        if not issubclass(main_window_class, BaseAppWindow):
+            raise TypeError
         # The self should be passed to main_window to let it access
         # shutdown and do_sync methods.
         self.main_window = main_window_class(self)
