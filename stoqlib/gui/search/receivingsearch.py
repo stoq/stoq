@@ -49,13 +49,17 @@ class PurchaseReceivingSearch(SearchDialog):
     searchbar_labels = _('Receiving Orders Matching:'), None
     searchbar_result_strings = _('receiving order'), _('receiving orders')
 
+    def _show_receiving_order(self, receiving_order):
+        run_dialog(ReceivingOrderDetailsDialog, self, self.conn,
+                   receiving_order)
+
     #
     # SearchDialog Hooks
     #
 
     def setup_slaves(self):
         SearchDialog.setup_slaves(self)
-        self.klist.connect('row_activated', self.on_details_button_clicked)
+        self.klist.connect('row_activated', self.on_row_activated)
 
     def get_columns(self):
         return [Column('receiving_number_str', _('#'), data_type=unicode,
@@ -77,6 +81,9 @@ class PurchaseReceivingSearch(SearchDialog):
     # Callbacks
     #
 
+    def on_row_activated(self, klist, receiving_order):
+        self._show_receiving_order(receiving_order)
+
     def on_print_button_clicked(self, button):
         self.search_bar.print_report(PurchaseReceivalReport, list(self.klist))
 
@@ -87,7 +94,7 @@ class PurchaseReceivingSearch(SearchDialog):
                              "this point ")
         selected = items[0]
         order = ReceivingOrder.get(selected.id, connection=self.conn)
-        run_dialog(ReceivingOrderDetailsDialog, self, self.conn, order)
+        self._show_receiving_order(order)
 
     def update_widgets(self, *args):
         items = self.klist.get_selected_rows()
