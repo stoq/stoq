@@ -167,6 +167,10 @@ class PurchaseSelectionStep(WizardEditorStep):
     # Kiwi callbacks
     #
 
+    def on_orders__row_activated(self, klist, purchase_order_view):
+        run_dialog(PurchaseDetailsDialog, self, self.conn,
+                   model=purchase_order_view.purchase)
+
     def on_orders__selection_changed(self, *args):
         self.force_validation()
         self._update_view()

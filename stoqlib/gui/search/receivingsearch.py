@@ -53,6 +53,10 @@ class PurchaseReceivingSearch(SearchDialog):
     # SearchDialog Hooks
     #
 
+    def setup_slaves(self):
+        SearchDialog.setup_slaves(self)
+        self.klist.connect('row_activated', self.on_details_button_clicked)
+
     def get_columns(self):
         return [Column('receiving_number_str', _('#'), data_type=unicode,
                        width=80,),
