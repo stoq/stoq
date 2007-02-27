@@ -26,6 +26,7 @@
 """ Editors implementation for open/close operation on till operation"""
 
 from datetime import datetime
+from decimal import Decimal
 
 from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
@@ -77,6 +78,7 @@ class _BaseCashModel(object):
 
     def _get_value(self):
         return self.entry.value
+
     def _set_value(self, value):
         self.entry.value = value
     value = property(_get_value, _set_value)
@@ -208,29 +210,28 @@ class BaseCashSlave(BaseEditorSlave):
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, BaseCashSlave.proxy_widgets)
         self.date.set_text(str(datetime.today().date()))
-
-    def validate_confirm(self):
-        zero = currency(0)
-        if self.model.get_balance() < zero:
-            self.value.set_invalid(_("You can not specify an amount "
-                                     "removed greater than the "
-                                     "till balance."))
-            return False
-
-        return True
+        self.proxy.update('value', Decimal('0.01'))
 
     #
     # Kiwi handlers
     #
 
-    def after_value__validate(self, widget, value):
+    def on_value__validate(self, widget, value):
         zero = currency(0)
-        if value < zero:
-            self.proxy.update('balance', zero)
-            return ValidationError(_("Value cannot be less than zero"))
+        if value <= zero:
+            return ValidationError(_("Value cannot be zero or less than zero"))
 
-    def after_value__content_changed(self, entry):
+    def on_value__content_changed(self, entry):
         self.proxy.update('balance')
+
+class RemoveCashSlave(BaseCashSlave):
+
+    def on_value__validate(self, widget, value):
+        retval = BaseCashSlave.on_value__validate(self, widget, value)
+        if retval:
+            return retval
+        if value > self.model.get_balance():
+            return ValidationError(_("Value cannot be more than the total Till balance"))
 
 class CashAdvanceEditor(BaseEditor):
     """
@@ -267,7 +268,8 @@ class CashAdvanceEditor(BaseEditor):
         return CashAdvanceInfo(payment=self.payment)
 
     def setup_slaves(self):
-        self.cash_slave = BaseCashSlave(self.conn, _BaseCashModel(self.payment))
+        self.cash_slave = RemoveCashSlave(self.conn, _BaseCashModel(self.payment))
+        self.cash_slave.value.connect('content-changed', self._on_cash_slave__value_changed)
         self.attach_slave("base_cash_holder", self.cash_slave)
         self._setup_widgets()
 
@@ -281,12 +283,20 @@ class CashAdvanceEditor(BaseEditor):
                                      % self._get_employee_name())
             self.payment.description = self.model.description
             self.model.employee = self._get_employee()
-            self.payment.value = -self.payment.value
+            self.payment.value = self.payment.value
             self.model.value = abs(self.payment.value)
 
+            till_remove_cash(self.conn, self.model.value)
             return self.model
 
         return valid
+
+    #
+    # Callbacks
+    #
+
+    def _on_cash_slave__value_changed(self, entry):
+        self.cash_slave.model.value = -abs(self.cash_slave.model.value)
 
 
 class CashOutEditor(BaseEditor):
@@ -320,7 +330,7 @@ class CashOutEditor(BaseEditor):
         return till.create_debit(currency(0), description)
 
     def setup_slaves(self):
-        self.cash_slave = BaseCashSlave(
+        self.cash_slave = RemoveCashSlave(
             self.conn, _BaseCashModel(self.model))
         self.cash_slave.value.connect('content-changed', self._on_cash_slave__value_changed)
         self.attach_slave("base_cash_holder", self.cash_slave)
@@ -343,7 +353,7 @@ class CashOutEditor(BaseEditor):
         return valid
 
     #
-    # BaseCashSlave
+    # Callbacks
     #
 
     def _on_cash_slave__value_changed(self, entry):
