@@ -754,3 +754,7 @@ class SaleView(SQLObject, BaseSQLView):
 
     def get_status_name(self):
         return Sale.get_status_name(self.status)
+
+    @property
+    def sale(self):
+        return Sale.get(self.id)
