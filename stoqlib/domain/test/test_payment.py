@@ -22,7 +22,8 @@
 ## Author(s):     Henrique Romano <henrique@async.com.br>
 ##
 
-from datetime import datetime
+import datetime
+from decimal import Decimal
 
 from kiwi.datatypes import currency
 
@@ -37,7 +38,8 @@ from stoqlib.domain.till import Till
 from stoqlib.domain.payment.methods import (PaymentMethodDetails,
                                             CreditProviderGroupData,
                                             FinanceDetails,
-                                            FinancePM)
+                                            FinancePM,
+                                            CheckPM)
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.lib.parameters import sysparam
 from stoqlib.database.runtime import get_current_station
@@ -45,11 +47,66 @@ from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.test.domaintest import DomainTest
 
 class TestPayment(DomainTest):
-    def test_status(self):
-        payment = Payment(value=currency(10), due_date=datetime.now(),
+    def test_new(self):
+        payment = Payment(value=currency(10), due_date=datetime.datetime.now(),
                           method=None, group=None, till=None,
                           destination=None, connection=self.trans)
         self.failUnless(payment.status == Payment.STATUS_PREVIEW)
+
+    def _get_relative_day(self, days):
+        return datetime.datetime.today() + datetime.timedelta(days)
+
+    def testGetPenalty(self):
+        method = CheckPM.selectOne(connection=self.trans)
+        payment = Payment(value=currency(100),
+                          due_date=datetime.datetime.now(),
+                          method=method,
+                          group=None,
+                          till=None,
+                          destination=None,
+                          connection=self.trans)
+
+        for day, expected_value in [(0, 0),
+                                    (-1, 0),
+                                    (-30, 0),
+                                    (30, 0)]:
+            payment.due_date = self._get_relative_day(day)
+            self.assertEqual(payment.get_penalty(), currency(expected_value))
+
+        method.daily_penalty = Decimal(1)
+
+        for day, expected_value in [(0, 0),
+                                    (-1, 1),
+                                    (-30, 30),
+                                    (30, 0)]:
+            payment.due_date = self._get_relative_day(day)
+            self.assertEqual(payment.get_penalty(), currency(expected_value))
+
+    def testGetInterest(self):
+        method = CheckPM.selectOne(connection=self.trans)
+        payment = Payment(value=currency(100),
+                          due_date=datetime.datetime.now(),
+                          method=method,
+                          group=None,
+                          till=None,
+                          destination=None,
+                          connection=self.trans)
+
+        for day, expected_value in [(0, 0),
+                                    (-1, 0),
+                                    (-30, 0),
+                                    (30, 0)]:
+            payment.due_date = self._get_relative_day(day)
+            self.assertEqual(payment.get_interest(), currency(expected_value))
+
+        method.interest = Decimal(20)
+
+        for day, expected_value in [(0, 0),
+                                    (-1, 20),
+                                    (-30, 20),
+                                    (30, 0)]:
+            payment.due_date = self._get_relative_day(day)
+            self.assertEqual(payment.get_interest(), currency(expected_value))
 
 class TestPaymentMethodDetails(DomainTest):
     _table = PaymentMethodDetails
@@ -85,7 +142,7 @@ class TestPaymentMethodDetails(DomainTest):
             till = Till(connection=self.trans,
                         station=get_current_station(self.trans))
         # Sale
-        sale = Sale(till=till, open_date=datetime.now(), coupon_id=5,
+        sale = Sale(till=till, open_date=datetime.datetime.now(), coupon_id=5,
                     salesperson=None,
                     cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,
                     connection=self.trans)
@@ -103,7 +160,7 @@ class TestPaymentMethodDetails(DomainTest):
         max_installments_number = payment_type.get_max_installments_number()
         self.failUnlessRaises(ValueError,  payment_type.setup_inpayments,
                               group, max_installments_number + 1,
-                              datetime.now(), currency(150))
+                              datetime.datetime.now(), currency(150))
         installments_number = payment_type.get_max_installments_number()
         payment_type.setup_inpayments(group, max_installments_number,
-                                      datetime.now(), currency(150))
+                                      datetime.datetime.now(), currency(150))
