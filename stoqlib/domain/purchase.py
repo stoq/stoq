@@ -451,3 +451,7 @@ class PurchaseOrderView(SQLObject, BaseSQLView):
 
     def get_status_str(self):
         return PurchaseOrder.translate_status(self.status)
+
+    @property
+    def purchase(self):
+        return PurchaseOrder.get(self.id)
