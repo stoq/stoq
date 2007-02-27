@@ -79,8 +79,8 @@ class Viewable(object):
                 else:
                     raise AssertionError(table.sqlmeta.table + '.' + name)
 
-                # Let's modify origName so it can be used in introspection, but first
-                # make a copy of the column.
+                # Let's modify origName so it can be used in introspection,
+                # but first make a copy of the column.
                 col = copy.copy(col)
                 col.origName = name
 
