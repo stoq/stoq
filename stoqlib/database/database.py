@@ -47,9 +47,11 @@ def clean_database(dbname):
     """
     settings = get_utility(IDatabaseSettings)
     conn = settings.get_default_connection()
-    conn.dropDatabase(dbname, ifExists=True)
-    conn.createDatabase(dbname)
-    conn.close()
+    try:
+        conn.dropDatabase(dbname, ifExists=True)
+        conn.createDatabase(dbname)
+    finally:
+        conn.close()
 
 #
 # General routines
