@@ -33,6 +33,7 @@ import gettext
 
 import gtk
 from kiwi.datatypes import currency
+from kiwi.python import all
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction
@@ -157,13 +158,9 @@ class ReceivableApp(SearchableAppWindow):
             return False
 
         sale = receivable_views[0].sale
-        for receivable_view in receivable_views:
-            if receivable_view.sale != sale:
-                return False
-            if receivable_view.status != Payment.STATUS_PENDING:
-                return False
-        else:
-            return True
+        return all(view.sale == sale and
+                   view.status == Payment.STATUS_PENDING
+                   for view in receivable_views)
 
     def _same_sale(self, receivable_views):
         """
@@ -176,11 +173,7 @@ class ReceivableApp(SearchableAppWindow):
             return False
 
         sale = receivable_views[0].sale
-        for receivable_view in receivable_views[1:]:
-            if receivable_view.sale != sale:
-                return False
-        else:
-            return True
+        return all(view.sale == sale for view in receivable_views[1:])
 
     #
     # Kiwi callbacks
