@@ -419,8 +419,7 @@ class ASellable(InheritableModelAdapter):
         default a delivery sellable can not be added manually by users
         since a separated dialog is responsible for that.
         """
-        query = cls.q.status == cls.STATUS_SOLD
-        return cls.select(query, connection=conn)
+        return cls.selectBy(status=cls.STATUS_SOLD, connection=conn)
 
     # FIXME: replace notify_callback with an exception BarcodeDoesNotExists
     #        or something similar
