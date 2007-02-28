@@ -421,24 +421,16 @@ class ASellable(InheritableModelAdapter):
         """
         return cls.selectBy(status=cls.STATUS_SOLD, connection=conn)
 
-    # FIXME: replace notify_callback with an exception BarcodeDoesNotExists
-    #        or something similar
-
     @classmethod
     def _get_sellables_by_barcode(cls, conn, barcode, extra_query):
-        q1 = ASellable.q.barcode == barcode
-        query = AND(q1, extra_query)
-        sellables = cls.select(query, connection=conn)
-        qty = sellables.count()
-        if not qty:
+        sellable = cls.selectOne(
+            AND(ASellable.q.barcode == barcode,
+                extra_query), connection=conn)
+        if sellable is None:
             raise BarcodeDoesNotExists(
                 _("The sellable with barcode '%s' doesn't exists or is "
                   "not available to be sold" % barcode))
-        if qty != 1:
-            raise DatabaseInconsistency('You should have only one '
-                                        'sellable with barcode %s'
-                                        % barcode)
-        return sellables[0]
+        return sellable
 
     @classmethod
     def get_availables_by_barcode(cls, conn, barcode):
@@ -463,8 +455,8 @@ class ASellable(InheritableModelAdapter):
         @param barcode: a string representing a sellable barcode
         """
         statuses = [cls.STATUS_AVAILABLE, cls.STATUS_SOLD]
-        extra_query = IN(cls.q.status, statuses)
-        return cls._get_sellables_by_barcode(conn, barcode, extra_query)
+        return cls._get_sellables_by_barcode(conn, barcode,
+                                             IN(cls.q.status, statuses))
 
 #
 # Views
