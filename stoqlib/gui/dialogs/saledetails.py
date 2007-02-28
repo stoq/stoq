@@ -63,17 +63,23 @@ class SaleDetailsDialog(BaseEditor):
                      'surcharge_lbl',
                      'discount_lbl')
 
+    def __init__(self, conn, model=None, visual_mode=False):
+        """
+        @param conn: a database connection
+        @param model: a L{stoqlib.domain.sale.Sale} object
+        """
+        BaseEditor.__init__(self, conn, model,
+                            visual_mode=visual_mode)
+
     def _setup_columns(self):
         self.items_list.set_columns(self._get_items_columns())
         self.payments_list.set_columns(self._get_payments_columns())
 
     def _setup_summary_labels(self):
-        value_format = '<b>%s</b>'
-        total_text = '<b>%s</b>' % _(u"Total:")
         summary_label = SummaryLabel(klist=self.payments_list,
                                      column='base_value',
-                                     label=total_text,
-                                     value_format=value_format)
+                                     label='<b>%s</b>' % _(u"Total:"),
+                                     value_format='<b>%s</b>')
         summary_label.show()
         self.payments_vbox.pack_start(summary_label, False)
 
