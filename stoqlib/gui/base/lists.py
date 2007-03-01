@@ -114,23 +114,18 @@ class AdditionListSlave(GladeSlaveDelegate):
         else:
             clone = None
 
-        if self._editor_class is None:
-            raise TypeError(
-                "%s cannot create or edit items without the editor_class "
-                "argument set" % (self.__class__.__name__))
-
         result = self.run_editor(clone)
 
-        if not result and not edit_mode:
-            return
-        elif not result and edit_mode:
-            clone.__class__.delete(clone.id, connection=self.conn)
-            return
-        elif result and edit_mode:
-            # XXX self.klist.replace()?
-            item_idx = self.klist.index(model)
-            self.klist[item_idx] = clone
-            model.__class__.delete(model.id, connection=self.conn)
+        if result:
+            if edit_mode:
+                # XXX self.klist.replace()?
+                item_idx = self.klist.index(model)
+                self.klist[item_idx] = clone
+                self.delete_model(model)
+                return
+        else:
+            if edit_mode:
+                self.delete_model(clone)
             return
 
         if edit_mode and model in self.klist:
@@ -197,8 +192,21 @@ class AdditionListSlave(GladeSlaveDelegate):
         This can be overriden to provide a custom run_dialog line,
         or a conversion function for the model
         """
+        if self._editor_class is None:
+            raise TypeError(
+                "%s cannot create or edit items without the editor_class "
+                "argument set" % (self.__class__.__name__))
+
         return run_dialog(self._editor_class, None, conn=self.conn,
                           model=model, **self._editor_kwargs)
+
+    def delete_model(self, model):
+        """
+        Deletes a model, can be overridden in subclass
+        @param model: model to delete
+        """
+        model.__class__.delete(model.id, connection=self.conn)
+
     #
     # Public API
     #
