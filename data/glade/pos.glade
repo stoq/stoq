@@ -231,7 +231,7 @@
                 <child>
                     <widget class="GtkAction" id="TillMenu">
                         <property name="name">TillMenu</property>
-                        <property name="label" translatable="yes">Till</property>
+                        <property name="label" translatable="yes">_Till</property>
                     </widget>
                 </child>
                 <child>
@@ -243,7 +243,7 @@
                 <child>
                     <widget class="GtkAction" id="help_menu">
                         <property name="name">help_menu</property>
-                        <property name="label" translatable="yes">Help</property>
+                        <property name="label" translatable="yes">_Help</property>
                         <property name="short_label" translatable="yes">_Help</property>
                     </widget>
                 </child>
