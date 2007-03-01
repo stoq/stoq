@@ -32,7 +32,7 @@ from decimal import Decimal
 
 from zope.interface import implements
 
-from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
+from stoqdrivers.constants import (TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
                                    TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
                                    UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
                                    UNIT_EMPTY, UNIT_CUSTOM)
@@ -125,7 +125,6 @@ def ifset(value, bit, false='', true=''):
 class FS345Constants(BaseDriverConstants):
     # TODO Fixup these values
     _constants = {
-        TAX_IOF:          'Nb',
         TAX_ICMS:         'Nb',
         TAX_SUBSTITUTION: 'Tb',
         TAX_EXEMPTION:    'Fb',
@@ -390,11 +389,8 @@ class FS345(SerialBase):
             value = surcharge
             if taxcode == TAX_ICMS:
                 mode = 2
-            elif taxcode == TAX_IOF:
-                mode = 4
             else:
-                raise ValueError("Invalid tax code specified. Allowed "
-                                 "constants are: TAX_ICMS and TAX_IOF")
+                raise ValueError("tax_code must be TAX_ICMS")
         elif discount:
             value = discount
             mode = 0

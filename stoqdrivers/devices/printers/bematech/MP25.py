@@ -39,7 +39,7 @@ from stoqdrivers.exceptions import (DriverError, OutofPaperError, PrinterError,
                                     PrinterOfflineError, PaymentAdditionError,
                                     ItemAdditionError, CancelItemError,
                                     CouponTotalizeError, CouponNotOpenError)
-from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
+from stoqdrivers.constants import (TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
                                    TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
                                    UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
                                    UNIT_EMPTY, UNIT_CUSTOM)
@@ -75,7 +75,6 @@ STX = 2
 class MP25Constants(BaseDriverConstants):
     _constants = {
         # XXX Fixup these values
-        TAX_IOF:          'II',
         TAX_ICMS:         'II',
         TAX_SUBSTITUTION: 'II',
         TAX_EXEMPTION:    'II',

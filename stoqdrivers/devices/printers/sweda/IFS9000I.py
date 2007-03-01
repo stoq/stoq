@@ -34,7 +34,7 @@ from decimal import Decimal
 from kiwi.log import Logger
 from zope.interface import implements
 
-from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
+from stoqdrivers.constants import (TAX_ICMS, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, TAX_NONE,  UNIT_WEIGHT,
                                    UNIT_METERS, UNIT_LITERS, UNIT_EMPTY,
                                    UNIT_CUSTOM)
@@ -60,7 +60,6 @@ log = Logger('stoqdrivers.sweda')
 class IFS9000IConstants(BaseDriverConstants):
     # TODO Fixup these values
     _constants = {
-        TAX_IOF:          'I',
         TAX_ICMS:         'I',
         TAX_SUBSTITUTION: 'F',
         TAX_EXEMPTION:    'I',
@@ -517,7 +516,6 @@ class IFS9000I(SerialBase):
         """
         Valid surcharge types are::
           "51": "surcharge"
-          "52": "surcharge IOF"
         The arguments item_id and descriptions only exit for API
         compatibility
         """

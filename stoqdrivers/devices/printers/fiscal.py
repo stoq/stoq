@@ -31,7 +31,7 @@ from kiwi.argcheck import number, percent
 
 from stoqdrivers.exceptions import (CloseCouponError, PaymentAdditionError,
                                     AlreadyTotalized, InvalidValue)
-from stoqdrivers.constants import (TAX_NONE,TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
+from stoqdrivers.constants import (TAX_NONE, TAX_ICMS, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, UNIT_EMPTY, UNIT_LITERS,
                                    UNIT_WEIGHT, UNIT_METERS, MONEY_PM, CHEQUE_PM,
                                    UNIT_CUSTOM, CUSTOM_PM)
@@ -49,7 +49,7 @@ _ = lambda msg: stoqdrivers_gettext(msg)
 class taxcode(number):
     @classmethod
     def value_check(cls, name, value):
-        if value not in (TAX_NONE, TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
+        if value not in (TAX_NONE, TAX_ICMS, TAX_SUBSTITUTION,
                          TAX_EXEMPTION):
             raise ValueError("%s must be one of TAX_* constants" % name)
 

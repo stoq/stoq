@@ -46,7 +46,6 @@ _ = lambda msg: stoqdrivers_gettext(msg)
     UNIT_EMPTY,
     UNIT_CUSTOM,
     # Constants for product tax
-    TAX_IOF,
     TAX_ICMS,
     TAX_SUBSTITUTION,
     TAX_EXEMPTION,
@@ -60,7 +59,7 @@ _ = lambda msg: stoqdrivers_gettext(msg)
     # Custom payment method
     CUSTOM_PM,
     BARCODE_READER_DEVICE,
-) = range(16)
+) = range(15)
 
 # TODO: Improve these descriptions
 _constant_descriptions = {
@@ -68,7 +67,6 @@ _constant_descriptions = {
     UNIT_METERS: _(u"Meters unit"),
     UNIT_LITERS: _(u"Liters unit"),
     UNIT_EMPTY: _(u"Empty unit"),
-    TAX_IOF: _(u"IOF tax"),
     TAX_ICMS: _(u"ICMS tax"),
     TAX_SUBSTITUTION: _(u"Substitution tax"),
     TAX_EXEMPTION: _(u"Exemption tax"),

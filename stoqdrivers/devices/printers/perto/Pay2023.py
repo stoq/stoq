@@ -39,7 +39,7 @@ from stoqdrivers.devices.interfaces import (ICouponPrinter,
 from stoqdrivers.devices.printers.cheque import (BaseChequePrinter,
                                                  BankConfiguration)
 from stoqdrivers.devices.printers.base import BaseDriverConstants
-from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
+from stoqdrivers.constants import (TAX_ICMS, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, TAX_NONE)
 from stoqdrivers.constants import (UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
                                    UNIT_EMPTY, UNIT_CUSTOM)
@@ -57,7 +57,6 @@ _ = lambda msg: stoqdrivers_gettext(msg)
 class Pay2023Constants(BaseDriverConstants):
     _constants = {
         # TODO Fixup these values
-        TAX_IOF:          '0',
         TAX_ICMS:         '0',
         TAX_SUBSTITUTION: '0',
         TAX_EXEMPTION:    '0',

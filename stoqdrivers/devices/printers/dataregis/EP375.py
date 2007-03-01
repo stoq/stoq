@@ -43,7 +43,7 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ, PendingReadX,
                                     CouponNotOpenError, CancelItemError,
                                     CouponOpenError)
 from stoqdrivers.constants import (MONEY_PM, CHEQUE_PM, TAX_ICMS, TAX_NONE,
-                                   TAX_IOF, TAX_SUBSTITUTION, TAX_EXEMPTION,
+                                   TAX_SUBSTITUTION, TAX_EXEMPTION,
                                    UNIT_LITERS, UNIT_METERS, UNIT_WEIGHT,
                                    UNIT_EMPTY, UNIT_CUSTOM)
 from stoqdrivers.devices.printers.cheque import (BaseChequePrinter,
@@ -72,7 +72,6 @@ def format_value(value, max_len):
 
 class EP375Constants(BaseDriverConstants):
     _constants = {
-        TAX_IOF:          '00',
         TAX_ICMS:         '01',
         TAX_SUBSTITUTION: '02',
         TAX_EXEMPTION:    '03',
