@@ -35,6 +35,7 @@ from stoqlib.database.interfaces import ICurrentUser
 from stoqlib.database.runtime import (get_connection, new_transaction,
                                       get_current_branch, get_current_station)
 from stoqlib.database.tables import get_table_types
+from stoqlib.lib.drivers import get_fiscal_printer_settings_by_station
 from stoqlib.lib.parameters import sysparam
 
 from stoq.lib.configparser import StoqConfig
@@ -78,9 +79,10 @@ def main(args):
     ns['trans'] = trans = new_transaction()
     ns['sysparam'] = sysparam
     ns['branch'] = get_current_branch(conn)
-    ns['station'] = get_current_station(conn)
+    ns['station'] = station = get_current_station(conn)
     ns['now'] = datetime.datetime.now
     ns['today'] = datetime.date.today
+    ns['settings'] = get_fiscal_printer_settings_by_station(conn, station)
 
     for name in ('sqlobject', 'sqlobject.sqlbuilder',
                  'stoqlib.database.runtime',
