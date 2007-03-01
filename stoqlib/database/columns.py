@@ -44,27 +44,11 @@ registerConverter(currency, _CurrencyConverter)
 
 # Decimal
 
-class _DecimalValidator(Validator):
-
-    def to_python(self, value, state):
-        # Do not allow empty strings or None Values
-        value = value or 0
-        if not isinstance(value, Decimal):
-            value = Decimal(str(value))
-        return value
-
-    def from_python(self, value, state):
-        return value
-
 class AbstractDecimalCol(SODecimalCol):
     def __init__(self, **kw):
         kw['size'] = DECIMAL_SIZE
         kw['precision'] = DECIMAL_PRECISION
         SODecimalCol.__init__(self, **kw)
-
-    def createValidators(self):
-        return ([_DecimalValidator()] +
-                super(AbstractDecimalCol, self).createValidators())
 
 class DecimalCol(Col):
     baseClass = AbstractDecimalCol

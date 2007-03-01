@@ -26,7 +26,7 @@ BaseSellableInfo
 Commission is initially set to 0:
 
     >>> info.get_commission()
-    Decimal("0")
+    Decimal("0.00")
 
     >>> info.get_description()
     u'Sellable'
@@ -86,7 +86,7 @@ But the cost will stay the same:
 The default commission is 0
 
     >>> sellable.commission
-    Decimal("0")
+    Decimal("0.00")
 
 It can be modified:
 
