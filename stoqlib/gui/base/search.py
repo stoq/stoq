@@ -570,13 +570,16 @@ class SearchEditor(SearchDialog):
     #
 
     def get_searchlist_model(self, model):
-        kwargs = dict([(self.model_list_lookup_attr, model.id),
-                       ('connection', self.conn)])
-        item = self.search_table.selectOneBy(**kwargs)
-        if item is None:
-            raise DatabaseInconsistency(
-                "There should be at least one item for %r " % model)
-        return item
+        # Ideally we want to use selectOneBy here, but it is not
+        # yet implemented on viewable.
+        items = self.search_table.select(
+            getattr(self.search_table.q,
+                    self.model_list_lookup_attr) == model.id,
+            connection=self.conn)
+        if items.count() != 1:
+             raise DatabaseInconsistency(
+                 "There should be exactly one item for %r " % model)
+        return items[0]
 
     def get_editor_model(self, model):
         """This hook must be redefined on child when changing the type of
