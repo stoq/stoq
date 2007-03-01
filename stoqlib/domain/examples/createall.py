@@ -23,7 +23,7 @@
 
 from kiwi.environ import environ
 from stoqlib.domain.examples import log
-from stoqlib.domain.examples.person import create_people, set_person_utilities
+from stoqlib.domain.examples.person import create_people, create_main_branch
 from stoqlib.importers.employeeimporter import EmployeeImporter
 from stoqlib.importers.productimporter import ProductImporter
 from stoqlib.importers.serviceimporter import ServiceImporter
@@ -39,14 +39,13 @@ def _import_one(klass, filename):
 
 def create(utilities=False):
     log.info('Creating example database')
+    create_main_branch(utilities)
+    create_device_settings()
     create_people()
     _import_one(EmployeeImporter, 'employees.csv')
-    if utilities:
-        set_person_utilities()
     _import_one(ProductImporter, 'products.csv')
     _import_one(ServiceImporter, 'services.csv')
     create_payments()
     create_sales()
     create_purchases()
     create_giftcertificates()
-    create_device_settings()

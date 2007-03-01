@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 ##
 ##  Author(s):  Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Create person objects for an example database"""
 
@@ -35,7 +36,8 @@ from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.examples import log
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import (ICompany, ISupplier,
+from stoqlib.domain.interfaces import (IBranch,
+                                       ICompany, ISupplier,
                                        IClient, IIndividual,
                                        ICreditProvider,
                                        ITransporter)
@@ -148,42 +150,44 @@ def create_people():
         person_obj.addFacet(ITransporter, connection=trans,
                             **transporter_args)
 
-    # Setting up the current branch
-    branch = sysparam(trans).MAIN_COMPANY
     # Set the manager to the last created person
+    branch = sysparam(trans).MAIN_COMPANY
     branch.manager = person_obj
-    #provide_utility(ICurrentBranch, branch)
-
-    person = branch.person
-    person.name = u"Async Open Source"
-    person.phone_number = u"33760125"
-    person.fax_number = u"35015394"
-
-    address = person.get_main_address()
-    city_loc = address.city_location
-    city_loc.city = u"Sao Carlos"
-    city_loc.state = u"SP"
-    city_loc.country = u"Brazil"
-
-    address.street = u"Orlando Damiano"
-    address.number = 2212
-    address.district = u"Jd Macarengo"
-    address.postal_code = u"13560-450"
-
-    company = ICompany(person)
-    company.cnpj = '03.852.995/0001-07'
-    company.fancy_name = u"Async Open Source"
 
     trans.commit()
 
-def set_person_utilities():
+def create_main_branch(utilities=False):
     trans = new_transaction()
-    branch = sysparam(trans).MAIN_COMPANY
-    provide_utility(ICurrentBranch, branch)
+    person = Person(name=u"Async Open Source",
+                    phone_number = u"33760125",
+                    fax_number = u"35015394",
+                    connection=trans)
 
-    station = BranchStation(name=u"Stoqlib station", branch=branch,
-                            connection=trans, is_active=True)
-    provide_utility(ICurrentBranchStation, station)
+    address = person.get_main_address()
+    city = CityLocation(connection=trans,
+                         city=u"Sao Carlos",
+                         state=u"SP",
+                         country=u"Brazil")
+    address = Address(connection=trans,
+                      is_main_address=True,
+                      person=person,
+                      city_location=city,
+                      street=u"Orlando Damiano",
+                      number=2212,
+                      district=u"Jd Macarengo",
+                      postal_code=u"13560-450")
+
+    person.addFacet(ICompany, connection=trans,
+                    cnpj='03.852.995/0001-07',
+                    fancy_name=u"Async Open Source")
+    branch = person.addFacet(IBranch, connection=trans)
+
+    if utilities:
+        provide_utility(ICurrentBranch, branch)
+        station = BranchStation(name=u"Stoqlib station",
+                                branch=branch,
+                                connection=trans, is_active=True)
+        provide_utility(ICurrentBranchStation, station)
     trans.commit()
 
 if __name__ == "__main__":
