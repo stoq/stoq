@@ -3,7 +3,7 @@
 
 ##
 ## Stoqdrivers
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -39,7 +39,7 @@ from stoqdrivers.devices.interfaces import (ICouponPrinter,
 from stoqdrivers.devices.printers.cheque import (BaseChequePrinter,
                                                  BankConfiguration)
 from stoqdrivers.devices.printers.base import BaseDriverConstants
-from stoqdrivers.constants import (TAX_ICMS, TAX_SUBSTITUTION,
+from stoqdrivers.constants import (TAX_CUSTOM, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, TAX_NONE)
 from stoqdrivers.constants import (UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
                                    UNIT_EMPTY, UNIT_CUSTOM)
@@ -56,11 +56,6 @@ _ = lambda msg: stoqdrivers_gettext(msg)
 
 class Pay2023Constants(BaseDriverConstants):
     _constants = {
-        # TODO Fixup these values
-        TAX_ICMS:         '0',
-        TAX_SUBSTITUTION: '0',
-        TAX_EXEMPTION:    '0',
-        TAX_NONE:         '0',
         UNIT_WEIGHT:      'km',
         UNIT_LITERS:      'lt',
         UNIT_METERS:      'm ',
@@ -68,6 +63,20 @@ class Pay2023Constants(BaseDriverConstants):
         MONEY_PM:         '1',
         CHEQUE_PM:        '2',
         }
+
+    _tax_constants = [
+        # These are signed integers, we're storing them
+        # as strings and then subtract by 127
+        (TAX_SUBSTITUTION, '\x7e', None),
+        (TAX_EXEMPTION,    '\x7d', None),
+        (TAX_NONE,         '\x7c', None),
+        (TAX_CUSTOM,       '\x80', Decimal(17)),
+        (TAX_CUSTOM,       '\x81', Decimal(12)),
+        (TAX_CUSTOM,       '\x82', Decimal(25)),
+        (TAX_CUSTOM,       '\x83', Decimal(8)),
+        (TAX_CUSTOM,       '\x84', Decimal(5)),
+        ]
+
 
 class Pay2023(SerialBase, BaseChequePrinter):
     implements(IChequePrinter, ICouponPrinter)
@@ -85,6 +94,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
     CMD_READ_X = 'EmiteLeituraX'
     CMD_CANCEL_COUPON = 'CancelaCupom'
     CMD_CLOSE_TILL = 'EmiteReducaoZ'
+    # Page 87
     CMD_ADD_ITEM = 'VendeItem'
     CMD_COUPON_OPEN = 'AbreCupomFiscal'
     CMD_CANCEL_ITEM = 'CancelaItemFiscal'
@@ -262,8 +272,12 @@ class Pay2023(SerialBase, BaseChequePrinter):
             unit = unit_desc
         else:
             unit = self._consts.get_value(unit)
-        taxcode = self._consts.get_value(taxcode)
-        self.send_command(Pay2023.CMD_ADD_ITEM, CodAliquota=taxcode,
+
+        if len(taxcode) != 1:
+            raise ValueError
+        taxcode = ord(taxcode) - 128
+        self.send_command(Pay2023.CMD_ADD_ITEM,
+                          CodAliquota=taxcode,
                           CodProduto="\"%s\"" % code[:48],
                           NomeProduto="\"%s\"" % description[:200],
                           Unidade="\"%02s\"" % unit,

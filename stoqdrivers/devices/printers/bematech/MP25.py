@@ -74,11 +74,6 @@ STX = 2
 
 class MP25Constants(BaseDriverConstants):
     _constants = {
-        # XXX Fixup these values
-        TAX_ICMS:         'II',
-        TAX_SUBSTITUTION: 'II',
-        TAX_EXEMPTION:    'II',
-        TAX_NONE:         'II',
         UNIT_WEIGHT:      'Kg',
         UNIT_METERS:      'm ',
         UNIT_LITERS:      'Lt',
@@ -86,6 +81,15 @@ class MP25Constants(BaseDriverConstants):
         MONEY_PM:         '01',
         CHEQUE_PM:        '01'
         }
+
+    _tax_constants = [
+        # XXX Fixup these values
+        (TAX_ICMS,         'II', None),
+        (TAX_SUBSTITUTION, 'II', None),
+        (TAX_EXEMPTION,    'II', None),
+        (TAX_NONE,         'II', None),
+        ]
+
 
 #
 # Helper functions
@@ -392,7 +396,7 @@ class MP25(SerialBase):
                 "%2s"      # unit
                 "%-48s\0"  # code
                 "%-200s\0" # description
-                % (CMD_ADD_ITEM, self._consts.get_value(taxcode),
+                % (CMD_ADD_ITEM, taxcode,
                    price * Decimal("1e3"), quantity * Decimal("1e3"),
                    (discount and (discount * Decimal("1e2")) or 0),
                    (markup and (markup * Decimal("1e2")) or 0), 0,

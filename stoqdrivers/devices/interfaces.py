@@ -140,8 +140,7 @@ class ICouponPrinter(IDevice):
         @type  price:     Decimal
 
         @param taxcode:   constant to descrive the tax
-        @type  taxcode:   integer constant one of: TAX_NONE, TAX_SUBSTITUTION,
-                          TAX_EXEMPTION
+        @type  taxcode:   str
 
         @param quantity:  quantity
         @type  quantity:  Decimal

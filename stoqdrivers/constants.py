@@ -3,7 +3,7 @@
 
 ##
 ## Stoqdrivers
-## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """
 StoqDrivers constants
@@ -50,6 +51,8 @@ _ = lambda msg: stoqdrivers_gettext(msg)
     TAX_SUBSTITUTION,
     TAX_EXEMPTION,
     TAX_NONE,
+    TAX_CUSTOM,
+    TAX_CUSTOM_SERVICE,
     # Constants for Payment Method
     MONEY_PM,
     CHEQUE_PM,
@@ -59,7 +62,7 @@ _ = lambda msg: stoqdrivers_gettext(msg)
     # Custom payment method
     CUSTOM_PM,
     BARCODE_READER_DEVICE,
-) = range(15)
+) = range(17)
 
 # TODO: Improve these descriptions
 _constant_descriptions = {
@@ -67,9 +70,9 @@ _constant_descriptions = {
     UNIT_METERS: _(u"Meters unit"),
     UNIT_LITERS: _(u"Liters unit"),
     UNIT_EMPTY: _(u"Empty unit"),
-    TAX_ICMS: _(u"ICMS tax"),
-    TAX_SUBSTITUTION: _(u"Substitution tax"),
-    TAX_EXEMPTION: _(u"Exemption tax"),
+    TAX_ICMS: _(u"ICMS"),
+    TAX_SUBSTITUTION: _(u"Substitution"),
+    TAX_EXEMPTION: _(u"Exemption"),
     TAX_NONE: _(u"No tax"),
     MONEY_PM: _(u"Money Payment Method"),
     CHEQUE_PM: _(u"Cheque Payment Method"),
@@ -82,4 +85,14 @@ def describe_constant(constant_id):
         raise ValueError("The constant by id %r doesn't exists or there "
                          "is no description for it." % constant_id)
     return _constant_descriptions[constant_id]
+
+def is_unit_constant(constant):
+    return constant in [UNIT_WEIGHT,
+                        UNIT_METERS,
+                        UNIT_LITERS,
+                        UNIT_EMPTY,
+                        UNIT_CUSTOM]
+
+def is_payment_constant(constant):
+    return constant in [CHEQUE_PM, MONEY_PM, CUSTOM_PM]
 

@@ -58,12 +58,7 @@ _ = lambda msg: stoqdrivers_gettext(msg)
 log = Logger('stoqdrivers.sweda')
 
 class IFS9000IConstants(BaseDriverConstants):
-    # TODO Fixup these values
     _constants = {
-        TAX_ICMS:         'I',
-        TAX_SUBSTITUTION: 'F',
-        TAX_EXEMPTION:    'I',
-        TAX_NONE:         'I',
         UNIT_WEIGHT:      '!',
         UNIT_METERS:      '@',
         UNIT_LITERS:      ')',
@@ -71,6 +66,15 @@ class IFS9000IConstants(BaseDriverConstants):
         MONEY_PM:         '01',
         CHEQUE_PM:        '01'
         }
+
+    _tax_constants = [
+        # TODO Fixup these values
+        (TAX_ICMS,         'I', None),
+        (TAX_SUBSTITUTION, 'F', None),
+        (TAX_EXEMPTION,    'I', None),
+        (TAX_NONE,         'I', None),
+        ]
+
 
 class IFS9000I(SerialBase):
 
@@ -483,7 +487,7 @@ class IFS9000I(SerialBase):
         total = orig_qty * orig_price
         total = self._format_total(total, 'total')
 
-        taxcode = self._format_string(self._consts.get_value(taxcode),
+        taxcode = self._format_string(taxcode,
                                       3, "taxcode", left_justify=True)
         description = str(description)
         if len(description) > self.DESCRIPTION_CHAR_LEN:

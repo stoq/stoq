@@ -37,7 +37,11 @@ from stoqdrivers.exceptions import (CouponTotalizeError, PaymentAdditionError,
                                     CancelItemError, ItemAdditionError)
 from stoqdrivers.devices.interfaces import (ICouponPrinter,
                                             IChequePrinter)
-from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE
+from stoqdrivers.devices.printers.base import BaseDriverConstants
+from stoqdrivers.constants import (TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
+                                   TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
+                                   UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
+                                   UNIT_EMPTY, TAX_CUSTOM)
 from stoqdrivers.translation import stoqdrivers_gettext
 
 _ = lambda msg: stoqdrivers_gettext(msg)
@@ -49,6 +53,27 @@ class CouponItem:
     def get_total_value(self):
         return self.quantity * self.value
 
+class FakeConstants(BaseDriverConstants):
+    _constants = {
+        UNIT_WEIGHT:      'F',
+        UNIT_METERS:      'G ',
+        UNIT_LITERS:      'H',
+        UNIT_EMPTY:       'I',
+        MONEY_PM:         'J',
+        CHEQUE_PM:        'K'
+        }
+
+    _tax_constants = [
+        (TAX_ICMS,         'TC', None),
+        (TAX_SUBSTITUTION, 'TS', None),
+        (TAX_EXEMPTION,    'TE', None),
+        (TAX_NONE,         'TN', None),
+        (TAX_CUSTOM,       'T1', Decimal(18)),
+        (TAX_CUSTOM,       'T2', Decimal(12)),
+        (TAX_CUSTOM,       'T3', Decimal(5)),
+        ]
+
+
 class Simple:
     implements(IChequePrinter, ICouponPrinter)
 
@@ -57,7 +82,7 @@ class Simple:
     coupon_printer_charset = "latin-1"
 
     def __init__(self, port, consts):
-        self._consts = consts
+        self._consts = consts or FakeConstants()
         self._reset_flags()
 
     #

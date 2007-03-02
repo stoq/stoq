@@ -99,7 +99,7 @@ class FiscalPrinter(BasePrinter):
         self.info('coupon_open')
         return self._driver.coupon_open()
 
-    @capcheck(basestring, basestring, Decimal, taxcode, Decimal, unit,
+    @capcheck(basestring, basestring, Decimal, str, Decimal, unit,
               Decimal, Decimal, basestring)
     def add_item(self, item_code, item_description, item_price, taxcode,
                  items_quantity=Decimal("1.0"), unit=UNIT_EMPTY,

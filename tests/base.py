@@ -35,6 +35,7 @@ from zope.interface import implements
 
 import stoqdrivers
 from stoqdrivers.devices.interfaces import ISerialPort
+from stoqdrivers.constants import TAX_NONE
 
 # The directory where tests data will be stored
 RECORDER_DATA_DIR = "data"
@@ -138,6 +139,8 @@ class BaseTest(unittest.TestCase):
         self._device = self.device_class(brand=self.brand,
                                          model=self.model,
                                          port=self._port)
+        constant = self._device.get_constants()
+        self._taxnone = constant.get_tax_constant(TAX_NONE)
 
     def _get_recorder_filename(self):
         testdir = os.path.join(os.path.dirname(stoqdrivers.__file__),

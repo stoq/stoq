@@ -72,10 +72,6 @@ def format_value(value, max_len):
 
 class EP375Constants(BaseDriverConstants):
     _constants = {
-        TAX_ICMS:         '01',
-        TAX_SUBSTITUTION: '02',
-        TAX_EXEMPTION:    '03',
-        TAX_NONE:         '04',
         UNIT_WEIGHT:      0,
         UNIT_METERS:      4,
         UNIT_LITERS:      3,
@@ -83,6 +79,14 @@ class EP375Constants(BaseDriverConstants):
         MONEY_PM:         '00',
         CHEQUE_PM:        '01'
         }
+
+    _tax_constants = [
+        (TAX_ICMS,         '01', None),
+        (TAX_SUBSTITUTION, '02', None),
+        (TAX_EXEMPTION,    '03', None),
+        (TAX_NONE,         '04', None),
+        ]
+
 
 #
 # Class implementation to printer status management
@@ -511,7 +515,6 @@ class EP375(SerialBase, BaseChequePrinter):
             code_num = int(code[:7])
         except ValueError:
             code = "%06d%s" % (code_num, code[7:])
-        taxcode = self._consts.get_value(taxcode)
         unit = self._consts.get_value(unit)
         item = CouponItem(code, description, taxcode, quantity, price,
                           discount, surcharge, unit)

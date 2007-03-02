@@ -3,7 +3,7 @@
 
 ##
 ## Stoqdrivers
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -33,7 +33,8 @@ from decimal import Decimal
 from zope.interface import implements
 
 from stoqdrivers.constants import (TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
-                                   TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
+                                   TAX_SUBSTITUTION, TAX_CUSTOM,
+                                   MONEY_PM, CHEQUE_PM,
                                    UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
                                    UNIT_EMPTY, UNIT_CUSTOM)
 from stoqdrivers.devices.serialbase import SerialBase
@@ -136,6 +137,18 @@ class FS345Constants(BaseDriverConstants):
         MONEY_PM:         'A',
         CHEQUE_PM:        'B'
         }
+
+    _tax_constants = [
+        # These definitions can be found on Page 60
+        (TAX_SUBSTITUTION,   'Fb', None),
+        (TAX_EXEMPTION,      'Ib', None),
+        (TAX_NONE,           'Nb', None),
+
+        # Reducao Z output
+        (TAX_CUSTOM,         'Ta', Decimal(18)),
+        (TAX_CUSTOM,         'Tb', Decimal(12)),
+        (TAX_CUSTOM,         'Tc', Decimal(5)),
+        ]
 
 class FS345(SerialBase):
     log_domain = 'fs345'
@@ -343,7 +356,6 @@ class FS345(SerialBase):
                         quantity=Decimal("1.0"), unit=UNIT_EMPTY,
                         discount=Decimal("0.0"),
                         surcharge=Decimal("0.0"), unit_desc=""):
-        taxcode = self._consts.get_value(taxcode)
         if surcharge:
             d = 1
             E = surcharge
