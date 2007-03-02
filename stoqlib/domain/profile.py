@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -18,6 +18,9 @@
 ## You should have received a copy of the GNU Lesser General Public License
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+##
+##  Author(s):  Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ User profile management for applications"""
 
