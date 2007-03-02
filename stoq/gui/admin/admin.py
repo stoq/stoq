@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Bruno Rafael Garcia         <brg@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Main gui definition for admin application.  """
 
@@ -29,22 +30,23 @@ import gettext
 from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND
 
-from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.database.database import finish_transaction
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.person import Person, PersonAdaptToUser
 from stoqlib.domain.profile import UserProfile
-from stoqlib.gui.editors.personeditor import UserEditor
+from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
-from stoqlib.gui.parameters import ParametersListingDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
-from stoqlib.gui.search.profilesearch import UserProfileSearch
-from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.gui.editors.personeditor import UserEditor
+from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
+from stoqlib.gui.parameters import ParametersListingDialog
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
 from stoqlib.gui.search.personsearch import (EmployeeRoleSearch,
                                              EmployeeSearch,
                                              BranchSearch)
+from stoqlib.gui.search.profilesearch import UserProfileSearch
 from stoqlib.gui.search.stationsearch import StationSearch
+from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -167,3 +169,9 @@ class AdminApp(SearchableAppWindow):
 
     def on_payment_methods_activate(self, button):
         self.run_dialog(PaymentMethodsDialog, self.conn)
+
+    def on_devices_setup_activate(self, button):
+        self.run_dialog(DeviceSettingsDialog, self.conn)
+
+    def on_tax_constants__activate(self, action):
+        self.run_dialog(SellableTaxConstantsDialog, self.conn)
