@@ -39,7 +39,7 @@ from stoqlib.lib.defaults import DECIMAL_PRECISION, DECIMAL_SIZE
 # Currency
 
 def _CurrencyConverter(value, db):
-    return repr(float(value))
+    return str(Decimal(value))
 registerConverter(currency, _CurrencyConverter)
 
 # Decimal
