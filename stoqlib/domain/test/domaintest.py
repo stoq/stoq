@@ -173,6 +173,14 @@ class DomainTest(unittest.TestCase):
         ex = ExampleCreator(self.trans)
         return ex.create_by_type('UserProfile')
 
+    def create_device_settings(self):
+        ex = ExampleCreator(self.trans)
+        return ex.create_by_type('DeviceSettings')
+
+    def create_device_constant(self):
+        ex = ExampleCreator(self.trans)
+        return ex.create_by_type('DeviceConstant')
+
     def get_station(self):
         ex = ExampleCreator(self.trans)
         return ex.create_by_type('BranchStation')

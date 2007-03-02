@@ -127,3 +127,6 @@ class InvalidStatus(Exception):
 
 class BarcodeDoesNotExists(Exception):
     """There are no products with the specified barcode"""
+
+class DeviceError(Exception):
+    """A problem with a Device such as a fiscal printer"""

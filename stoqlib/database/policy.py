@@ -55,6 +55,7 @@ class Shop(SynchronizationPolicy):
         ('BaseSellableInfo', SyncPolicy.FROM_SOURCE),
         ('OnSaleInfo', SyncPolicy.FROM_SOURCE),
         ('SellableUnit', SyncPolicy.FROM_SOURCE),
+        ('SellableTaxConstant', SyncPolicy.FROM_SOURCE),
         ('BaseSellableCategory', SyncPolicy.FROM_SOURCE),
         ('SellableCategory', SyncPolicy.FROM_SOURCE),
 

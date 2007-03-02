@@ -33,7 +33,7 @@ from stoqlib.domain.devices import DeviceSettings
 _ = stoqlib_gettext
 
 class DeviceSettingsDialog(AdditionListDialog):
-    size = (600, 500)
+    size = (500, 300)
     def __init__(self, conn, station=None):
         self._station = station
         AdditionListDialog.__init__(self, conn, title=_("Devices"))

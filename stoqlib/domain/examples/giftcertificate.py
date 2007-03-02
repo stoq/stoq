@@ -54,6 +54,7 @@ def create_giftcertificates():
 
         status = statuses[index]
         certificate.addFacet(ISellable, connection=trans,
+                             tax_constant=None,
                              base_sellable_info=sellable_info,
                              status=status)
     trans.commit()

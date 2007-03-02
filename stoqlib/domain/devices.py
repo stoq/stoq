@@ -26,55 +26,108 @@
 Domain classes related to stoqdrivers package.
 """
 
-from sqlobject import UnicodeCol, IntCol, PickleCol, ForeignKey, BoolCol
+from sqlobject.col import (UnicodeCol, IntCol, ForeignKey, BoolCol, BLOBCol)
+from sqlobject.joins import MultipleJoin
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
-from stoqdrivers.devices.interfaces import IDriverConstants
+from stoqdrivers.constants import (is_unit_constant, is_payment_constant,
+                                   describe_constant,
+                                   TAX_CUSTOM)
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.devices.printers.cheque import ChequePrinter
 from stoqdrivers.devices.scales.scales import Scale
 from stoqdrivers.devices.serialbase import VirtualPort, SerialPort
 
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import (get_all_methods_dict, METHOD_MONEY,
-                                  METHOD_CHECK)
+from stoqlib.database.columns import DecimalCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive
-from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.exceptions import DatabaseInconsistency, DeviceError
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-class DeviceConstants(Domain):
-    """ This class stores information about custom device constants.
-    There is only an dictionary attribute, where keys and its values
-    are in the following form::
-
-        {
-         CONSTANT_ID: value,
-        }
+class DeviceConstant(Domain):
     """
-    implements(IDriverConstants)
+    Describes a device constant
 
-    constants = PickleCol()
+    The constant_value field is only used by custom tax codes,
+    eg when constant_type is TYPE_TAX and constant_enum is TAX_CUSTOM
 
-    def _check_identifier(self, identifier):
-        if not identifier in self.constants:
-            raise ValueError("The constant with ID %d "
-                             "doesn't exists" % identifier)
+    @cvar constant_type: the type of constant
+    @cvar constant_name: name of the constant
+    @cvar constant_enum: enum value of the constant
+    @cvar constant_value: value of the constant, only for TAX constants for
+      which it represents the tax percentage
+    @cvar device_value: the device value
+    @cvar device_settings: settings
+    """
 
-    def set_constants(self, constants):
-        self.constants = constants
+    constant_type = IntCol()
+    constant_name = UnicodeCol()
+    constant_value = DecimalCol(default=None)
+    constant_enum = IntCol(default=None)
+    device_value = BLOBCol()
+    device_settings = ForeignKey("DeviceSettings")
 
-    #
-    # IDriverConstants implementation
-    #
+    (TYPE_UNIT,
+     TYPE_TAX,
+     TYPE_PAYMENT) = range(3)
 
-    def get_items(self):
-        return self.constants.keys()
+    constant_types = {TYPE_UNIT: _(u'Unit'),
+                      TYPE_TAX: _(u'Tax'),
+                      TYPE_PAYMENT: _(u'Payment')}
 
-    def get_value(self, identifier):
-        self._check_identifier(identifier)
-        return self.constants[identifier]
+    def get_constant_type_description(self):
+        """
+        Describe the type in a human readable form
+        @returns: description of the constant type
+        @rtype: str
+        """
+        return DeviceConstant.constant_types[self.constant_type]
+
+    @classmethod
+    def get_custom_tax_constant(cls, device_settings, constant_value, conn):
+        """
+        Fetches a custom tax constant.
+
+        @param device_settings: settings to fetch constants from
+        @type device_settings: L{DeviceSettings}
+        @param constant_enum: tax enum code
+        @type constant_enum: int
+        @param conn: a database connection
+        @returns: the constant
+        @rtype: L{DeviceConstant}
+        """
+        return DeviceConstant.selectOneBy(
+            device_settings=device_settings,
+            constant_type=DeviceConstant.TYPE_TAX,
+            constant_enum=TAX_CUSTOM,
+            constant_value=constant_value,
+            connection=conn)
+
+    @classmethod
+    def get_tax_constant(cls, device_settings, constant_enum, conn):
+        """
+        Fetches a tax constant.
+        Note that you need to use L{Device_settings.get_custom_tax_constant}
+        for custom tax constants.
+
+        @param device_settings: settings to fetch constants from
+        @type device_settings: L{DeviceSettings}
+        @param constant_enum: tax enum code
+        @type constant_enum: int
+        @param conn: a database connection
+        @returns: the constant
+        @rtype: L{DeviceConstant}
+        """
+        if constant_enum == TAX_CUSTOM:
+            raise ValueError("Use get_custom_tax_constant for custom "
+                             "tax codes")
+        return DeviceConstant.selectOneBy(
+            device_settings=device_settings,
+            constant_type=DeviceConstant.TYPE_TAX,
+            constant_enum=constant_enum,
+            connection=conn)
 
 class DeviceSettings(Domain):
     implements(IActive)
@@ -84,12 +137,8 @@ class DeviceSettings(Domain):
     model = UnicodeCol()
     device = IntCol()
     station = ForeignKey("BranchStation")
-    constants = ForeignKey("DeviceConstants", default=None)
-    # Here we are going to store Stoq specific constants for payment
-    # methods. It's interesting to have a unique field for that and
-    # and avoid value conflicts.
-    pm_constants = ForeignKey("DeviceConstants", default=None)
     is_active = BoolCol(default=True)
+    constants = MultipleJoin('DeviceConstant')
 
     (DEVICE_SERIAL1,
      DEVICE_SERIAL2,
@@ -111,39 +160,129 @@ class DeviceSettings(Domain):
                     FISCAL_PRINTER_DEVICE: _('Fiscal Printer'),
                     CHEQUE_PRINTER_DEVICE: _('Cheque Printer')}
 
-    def _create(self, id, **kw):
-        # XXX: Bug #2630 will be responsible for this part.
-#         if 'pm_constants' in kw:
-#             raise DatabaseInconsistency("You should not specify a value "
-#                                         "for pm_constants, since it will "
-#                                         "be created internally")
-        data = {}
-        for payment_method in get_all_methods_dict():
-            # We don't store these constants to reach compatibility with
-            # stoqdrivers.
-            if payment_method not in (METHOD_MONEY, METHOD_CHECK):
-                data[payment_method] = None
-        kw['pm_constants'] = DeviceConstants(constants=data,
-                                             connection=self.get_connection())
-        Domain._create(self, id, **kw)
+    #
+    # Domain
+    #
 
-    def _is_a_virtual_printer(self):
-        return (self.is_a_printer() and self.brand == "virtual" and
-                self.model == "Simple")
+    def clone(self):
+        clone = super(DeviceSettings, self).clone()
+        for constant in self.constants:
+            constant.clone().device_settings = clone
 
-    def is_custom_pm_configured(self):
+        return clone
+
+    @classmethod
+    def delete(cls, id, connection):
+        obj = DeviceSettings.get(id, connection=connection)
+        for constant in obj.constants:
+            DeviceConstant.delete(constant.id, connection=connection)
+        super(DeviceSettings, cls).delete(id, connection)
+
+
+    #
+    # Public API
+    #
+
+    def create_fiscal_printer_constants(self):
         """
-        @returns: True if all the custom payment methods is properly configured,
-        False otherwise.
+        Creates constants for a fiscal printer
+        This can be called multiple times
         """
-        if not self.pm_constants:
-            return False
-        for method in get_all_methods_dict():
-            if method in (METHOD_MONEY, METHOD_CHECK):
+        if self.type != DeviceSettings.FISCAL_PRINTER_DEVICE:
+            raise DeviceError("Device %r is not a fiscal printer" % self)
+
+        # We only want to populate 'empty' objects.
+        if self.constants:
+            return
+
+        conn = self.get_connection()
+        driver = self.get_interface()
+        constants = driver.get_constants()
+        for constant in constants.get_items():
+            constant_value = None
+            if is_unit_constant(constant):
+                constant_type = DeviceConstant.TYPE_UNIT
+            elif is_payment_constant(constant):
+                constant_type = DeviceConstant.TYPE_PAYMENT
+            else:
                 continue
-            if self.pm_constants.get_value(method) is None:
-                return False
-        return True
+
+            DeviceConstant(constant_type=constant_type,
+                           constant_name=describe_constant(constant),
+                           constant_value=constant_value,
+                           constant_enum=constant,
+                           device_value=constants.get_value(constant, None),
+                           device_settings=self,
+                           connection=conn)
+
+        for constant, device_value, value in constants.get_tax_constants():
+            if constant == TAX_CUSTOM:
+                constant_name = _('%d %%') % value
+            else:
+                constant_name = describe_constant(constant)
+            DeviceConstant(constant_type=DeviceConstant.TYPE_TAX,
+                           constant_name=constant_name,
+                           constant_value=value,
+                           constant_enum=constant,
+                           device_value=device_value,
+                           device_settings=self,
+                           connection=conn)
+
+    def get_constants_by_type(self, constant_type):
+        """
+        Fetchs a list of constants for the current DeviceSettings object.
+        @param constant_type: type of constant
+        @type constant: See L(DeviceConstants}
+        @returns: list of constants
+        """
+        return DeviceConstant.selectBy(device_settings=self,
+                                       constant_type=constant_type,
+                                       connection=self.get_connection())
+
+    def get_payment_constant(self, constant_enum):
+        """
+        @param constant_enum:
+        @returns: the payment constant
+        @rtype: L{DeviceConstant}
+        """
+        return DeviceConstant.selectOneBy(
+            device_settings=self,
+            constant_type=DeviceConstant.TYPE_PAYMENT,
+            constant_enum=constant_enum,
+            connection=self.get_connection())
+
+    def get_tax_constant_for_device(self, sellable):
+        """
+        Returns a tax_constant for a device
+        Raises DeviceError if a constant is not found
+
+        @param sellable: sellable which has the tax codes
+        @type sellable: L{stoqlib.domain.sellable.Sellable}}
+        @returns: the tax constant
+        @rtype: L{DeviceConstant}
+        """
+
+        sellable_constant = sellable.tax_constant
+        if sellable_constant is None:
+            raise DeviceError("No tax constant set for sellable %r" % sellable)
+
+        conn = self.get_connection()
+        if sellable_constant.tax_type == TAX_CUSTOM:
+            constant = DeviceConstant.get_custom_tax_constant(
+                self, sellable_constant.tax_value, conn)
+            if constant is None:
+                raise DeviceError(
+                    "%r is missing a constant for the custom "
+                    "tax %s" %  (self, sellable_constant.tax_value,))
+        else:
+            constant = DeviceConstant.get_tax_constant(
+                self, sellable_constant.tax_type, conn)
+            if constant is None:
+                raise DeviceError(
+                    "%r is missing a constant for the enum "
+                    "value %d" %  (self, sellable_constant.tax_type,))
+
+        return constant
 
     def get_printer_description(self):
         return "%s %s" % (self.brand.capitalize(), self.model)
@@ -234,4 +373,12 @@ class DeviceSettings(Domain):
         if self.is_active:
             return _(u'Active')
         return _(u'Inactive')
+
+    #
+    # Private
+    #
+
+    def _is_a_virtual_printer(self):
+        return (self.is_a_printer() and self.brand == "virtual" and
+                self.model == "Simple")
 

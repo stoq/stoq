@@ -33,7 +33,9 @@ from kiwi.datatypes import currency
 from kiwi.environ import environ
 from kiwi.log import Logger
 
-from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
+from stoqdrivers.constants import (UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS,
+                                   TAX_SUBSTITUTION, TAX_EXEMPTION,
+                                   TAX_NONE)
 
 from stoqlib.database.database import execute_sql, clean_database
 from stoqlib.database.interfaces import ICurrentUser, IDatabaseSettings
@@ -43,7 +45,7 @@ from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
 from stoqlib.domain.person import EmployeeRole, Person
 from stoqlib.domain.person import EmployeeRoleHistory
 from stoqlib.domain.profile import UserProfile
-from stoqlib.domain.sellable import SellableUnit
+from stoqlib.domain.sellable import SellableTaxConstant, SellableUnit
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
@@ -126,8 +128,8 @@ def get_admin_user(conn):
         raise AssertionError
     return user
 
-def ensure_sellable_units():
-    """ Create native sellable units. """
+def ensure_sellable_constants():
+    """ Create native sellable constants. """
     log.info("Creating sellable units")
     trans = new_transaction()
     unit_list = [("Kg", UNIT_WEIGHT),
@@ -135,6 +137,20 @@ def ensure_sellable_units():
                  ("m ", UNIT_METERS)]
     for desc, index in unit_list:
         SellableUnit(description=desc, unit_index=index, connection=trans)
+
+    log.info("Creating sellable tax constantes")
+    unit_list = [(_(u"Substitution"), TAX_SUBSTITUTION),
+                 (_(u"Exemption"), TAX_EXEMPTION),
+                 (_(u"No tax"), TAX_NONE)]
+    for desc, enum in unit_list:
+        constant = SellableTaxConstant(description=desc,
+                                       tax_type=enum,
+                                       tax_value=None,
+                                       connection=trans)
+
+    sysparam(trans).update_parameter('DEFAULT_PRODUCT_TAX_CONSTANT',
+                                     constant.id)
+
     trans.commit(close=True)
 
 def user_has_usesuper(trans):
@@ -207,7 +223,7 @@ def initialize_system(delete_only=False, verbose=False):
     create_base_schema()
     ensure_payment_methods()
     ensure_system_parameters()
-    ensure_sellable_units()
+    ensure_sellable_constants()
     create_default_profiles()
 
     trans = new_transaction()

@@ -42,4 +42,5 @@ class ServiceImporter(CSVImporter):
                                          price=data.price)
         service.addFacet(ISellable, connection=trans,
                          base_sellable_info=sellable_info,
+                         tax_constant=None,
                          cost=data.cost, barcode=data.barcode)

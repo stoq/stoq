@@ -266,6 +266,13 @@ _parameter_info = dict(
     _(u'Default area code'),
     _(u'This is the default area code which will be used when '
       'registering new clients, users and more to the system')),
+
+    DEFAULT_PRODUCT_TAX_CONSTANT=ParameterDetails(
+    _(u'Sales'),
+    _(u'Default tax constant for products'),
+    _(u'This is the default tax constant which will be used '
+      'when adding new products to the system')),
+
     )
 
 class ParameterAttr:
@@ -336,6 +343,8 @@ class ParameterAccess(ClassInittableObject):
                       u'service.ServiceAdaptToSellable'),
         ParameterAttr('DEFAULT_GIFT_CERTIFICATE_TYPE',
                       u'giftcertificate.GiftCertificateType'),
+        ParameterAttr('DEFAULT_PRODUCT_TAX_CONSTANT',
+                      u'sellable.SellableTaxConstant'),
         ]
 
     _cache = {}
@@ -368,7 +377,7 @@ class ParameterAccess(ClassInittableObject):
     # Public API
     #
 
-    @argcheck(str, unicode)
+    @argcheck(str, object)
     def update_parameter(self, parameter_name, value):
         param = get_parameter_by_field(parameter_name, self.conn)
         param.field_value = unicode(value)
@@ -455,6 +464,7 @@ class ParameterAccess(ClassInittableObject):
         self.ensure_payment_destination()
         self.ensure_delivery_service()
         self.ensure_default_gift_certificate_type()
+        self.ensure_product_tax_constant()
 
     #
     # Methods for system objects creation
@@ -535,6 +545,7 @@ class ParameterAccess(ClassInittableObject):
         sellable_info = BaseSellableInfo(connection=self.conn,
                                          description=_(u'Delivery'))
         sellable = service.addFacet(ISellable,
+                                    tax_constant=None,
                                     base_sellable_info=sellable_info,
                                     connection=self.conn)
         self._set_schema(key, sellable.id)
@@ -578,6 +589,13 @@ class ParameterAccess(ClassInittableObject):
         self._ensure_cfop("DEFAULT_RECEIVING_CFOP",
                           u"Compra para Comercializacao",
                           u"1.102")
+
+    def ensure_product_tax_constant(self):
+        from stoqlib.domain.sellable import SellableTaxConstant
+        key = "DEFAULT_PRODUCT_TAX_CONSTANT"
+        if self.get_parameter_by_field(key, SellableTaxConstant):
+            return
+        self._set_schema(key, None)
 
 
 #

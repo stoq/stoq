@@ -115,6 +115,7 @@ _tables = [
                         "RenegotiationAdaptToExchange",
                         "RenegotiationAdaptToChangeInstallments"]),
      ('sellable', ["SellableUnit",
+                   "SellableTaxConstant",
                    "ASellableCategory",
                    "BaseSellableCategory",
                    "SellableCategory",
@@ -139,7 +140,7 @@ _tables = [
                    "PurchaseItem"]),
      ('receiving', ["ReceivingOrder", "ReceivingOrderItem",
                     "ReceivingOrderAdaptToPaymentGroup"]),
-     ('devices', ["DeviceConstants",
+     ('devices', ["DeviceConstant",
                   "DeviceSettings"]),
 ]
 

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Sale object and related objects implementation """
 
@@ -29,7 +30,7 @@ from datetime import datetime
 
 from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol, SQLObject
 from sqlobject.sqlbuilder import AND
-from stoqdrivers.constants import TAX_ICMS, TAX_NONE, TAX_SUBSTITUTION
+from stoqdrivers.constants import TAX_ICMS
 from zope.interface import implements
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
@@ -530,18 +531,14 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         """
         icms_total = Decimal(0)
         conn = self.get_connection()
-        icms_tax = sysparam(conn).ICMS_TAX / Decimal(100)
         for item in self.sale.get_products():
             price = item.price + av_difference
             sellable = item.sellable
-            if (sellable.tax_type == TAX_SUBSTITUTION or
-                sellable.tax_type == TAX_NONE):
+            if sellable.tax_constant.tax_type != TAX_ICMS:
                 continue
-            elif sellable.tax_type == TAX_ICMS:
-                icms_total += icms_tax * (price * item.quantity)
-            else:
-                raise ValueError("Invalid tax type for product %s. "
-                                 "Got %d" % (sellable, sellable.tax_type))
+            icms_tax = sysparam(conn).ICMS_TAX / Decimal(100)
+            icms_total += icms_tax * (price * item.quantity)
+
         return icms_total
 
     @argcheck(Decimal)
