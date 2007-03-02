@@ -78,8 +78,7 @@ class DeviceSettingsDialogSlave(AdditionListSlave):
     #
 
     def _before_delete_items(self, list_slave, items):
-        table = DeviceSettings
         for item in items:
-            table.delete(item.id, connection=self.conn)
+            DeviceSettings.delete(item.id, connection=self.conn)
         self.conn.commit()
 

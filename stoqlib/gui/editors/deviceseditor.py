@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006, 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -29,128 +29,209 @@ import re
 import string
 
 import gtk
-from kiwi.ui.objectlist import Column
-from kiwi.python import Settable
 from kiwi.decorators import signal_block
+from kiwi.python import Settable
+from kiwi.ui.objectlist import Column, ObjectList
+
+from stoqdrivers.devices.interfaces import (ICouponPrinter,
+                                            IChequePrinter)
 from stoqdrivers.devices.printers.base import (get_supported_printers,
                                                get_supported_printers_by_iface)
 from stoqdrivers.devices.scales.base import get_supported_scales
-from stoqdrivers.devices.interfaces import (ICouponPrinter,
-                                            IChequePrinter)
-from stoqdrivers.constants import describe_constant
 
 from stoqlib.database.runtime import get_connection, get_current_station
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.message import warning, yesno
-from stoqlib.lib.defaults import (get_method_names, METHOD_MONEY, METHOD_CHECK,
-                                  UNKNOWN_CHARACTER)
-from stoqlib.domain.devices import DeviceSettings, DeviceConstants
+from stoqlib.domain.devices import DeviceSettings, DeviceConstant
 from stoqlib.domain.person import BranchStation
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
+from stoqlib.gui.base.lists import AdditionListSlave
+from stoqlib.lib.defaults import UNKNOWN_CHARACTER
+from stoqlib.lib.message import warning
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-class DeviceConstantsEditor(BaseEditor):
-    gladefile = "DeviceConstantsEditor"
-    # I'm requesting DeviceSettings as model here because I want to be able
-    # to set the editor's title without *hacks*. No processing is done with
-    # this object apart the one in get_title method.
-    model_type = DeviceSettings
-    size = (500, 400)
-    proxy_widgets = ("ascii_value",
-                     "description")
+_HEX_REGEXP = re.compile("[0-9a-fA-F]{1,2}")
 
-    def __init__(self, conn, model):
+def dec2hex(dec):
+    return "".join([data.encode("hex") for data in dec])
+
+def hex2dec(hex):
+    dec = ""
+    for data in _HEX_REGEXP.findall(hex):
+        data = data.zfill(2).decode("hex")
+        if not data in string.printable:
+            data = UNKNOWN_CHARACTER
+        dec += data
+    return dec
+
+class DeviceConstantEditor(BaseEditor):
+    gladefile = 'DeviceConstantEditor'
+    model_type = DeviceConstant
+    model_name = _('Device constant')
+    proxy_widgets = ('constant_name',
+                     'constant_value',
+                     'constant_type_description',
+                     'device_value',
+                     'device_value_hex',
+                     )
+
+    def __init__(self, conn, model=None, settings=None, constant_type=None):
+        if not isinstance(settings, DeviceSettings):
+            raise TypeError("settings should be a DeviceSettings, not %s" % settings)
+        self.settings = settings
+        self.constant_type = constant_type
+
         BaseEditor.__init__(self, conn, model)
 
-    def _format_value(self, value):
-        return value is not None and value or _("Not Defined")
+        # Hide value label/entry for non tax types
+        if constant_type != DeviceConstant.TYPE_TAX:
+            self.label_value.hide()
+            self.constant_value.hide()
 
-    def _get_columns(self):
-        return [Column("description", title=_(u"Description"),
-                       data_type=unicode, expand=True),
-                Column("value", title=_(u"Value"), data_type=str, width=100,
-                       format_func=self._format_value)]
+    @signal_block('device_value.content_changed')
+    def _update_dec(self, value):
+        self.device_value.set_text(value)
 
-    def _setup_widgets(self):
-        self.klist.set_columns(self._get_columns())
-        data = [Settable(identifier=item, stoq_specific=False,
-                         description=describe_constant(item),
-                         value=self._constants.get_value(item))
-                        for item in self._constants.get_items()]
-        for ident, name in get_method_names().items():
-            if ident in (METHOD_MONEY, METHOD_CHECK):
-                continue
-            data.append(Settable(identifier=ident, stoq_specific=True,
-                                 description=_(u"%s Payment Method") % name,
-                                 value=self._pm_constants.get_value(ident)))
-        self.klist.add_list(data)
+    @signal_block('device_value_hex.content_changed')
+    def _update_hex(self, value):
+        self.device_value_hex.set_text(value)
 
-    def _update_hex_value(self):
-        self.hex_value.set_text(
-            "".join([data.encode("hex")
-                         for data in self.ascii_value.get_text()]))
-
-    @signal_block('ascii_value.changed')
-    def _update_ascii_value(self):
-        text = ""
-        hex_text = self.hex_value.get_text()
-        for data in re.compile("[0-9a-fA-F]{1,2}").findall(hex_text):
-            data = data.zfill(2).decode("hex")
-            if not data in string.printable:
-                text += UNKNOWN_CHARACTER
-            else:
-                text += data
-        self.ascii_value.set_text(text)
 
     #
-    # BaseEditor hooks
+    # BaseEditor
     #
 
-    def get_title(self, model):
-        return _(u"Editing constants for %s") % model.get_printer_description()
-
-    def setup_proxies(self):
-        if (self.model is None or self.model.constants is None
-            or self.model.pm_constants is None):
-            raise ValueError("A valid model is required by this editor (%r)"
-                             % self)
-        self._pm_constants = self.model.pm_constants
-        self._constants = self.model.constants
-        self._setup_widgets()
-        self._proxy = self.add_proxy(None, DeviceConstantsEditor.proxy_widgets)
+    def create_model(self, conn):
+        return DeviceConstant(device_settings=self.settings,
+                              connection=conn,
+                              constant_type=self.constant_type,
+                              constant_value=None,
+                              constant_name="Unnamed")
 
     def on_confirm(self):
-        # I just can't modify a dictionary's item value, because in this way
-        # the change will not be persisted -- so I need to create a new dict
-        # and associate this to the PickleCol directly.
-        data = {}
-        stoq_data = {}
-        for item in self.klist:
-            if item.stoq_specific:
-                stoq_data[item.identifier] = item.value
-            else:
-                data[item.identifier] = item.value
-        self.model.constants.set_constants(data)
-        self.model.pm_constants.set_constants(stoq_data)
         return self.model
 
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model,
+                                    DeviceConstantEditor.proxy_widgets)
+        self.proxy.update('device_value')
+
     #
-    # Kiwi callbacks
+    # Callbacks
     #
 
-    def on_klist__selection_changed(self, widget, item):
-        self._proxy.set_model(item)
-        self._update_hex_value()
+    def on_device_value_hex__content_changed(self, entry):
+        self._update_dec(hex2dec(entry.get_text()))
 
-    def on_ascii_value__changed(self, *args):
-        self._update_hex_value()
-        self.klist.update(self._proxy.model)
+    def on_device_value__content_changed(self, entry):
+        self._update_hex(dec2hex(entry.get_text()))
 
-    def on_hex_value__changed(self, *args):
-        self._update_ascii_value()
-        self.klist.update(self._proxy.model)
+class DeviceConstantsList(AdditionListSlave):
+    def __init__(self, conn, settings):
+        self._settings = settings
+        self._constant_type = None
+        AdditionListSlave.__init__(self, conn,
+                                   self._get_columns())
+        self.connect('on-add-item', self._on_list_slave__add_item)
+        self.connect('before-delete-items',
+                     self._on_list_slave__before_delete_items)
+
+    def _get_columns(self):
+        return [Column('constant_name', _('Name'), expand=True),
+                Column('device_value', _('Value'), data_type=str,
+                       width=120, format_func=lambda x: repr(x)[1:-1])]
+
+    def _before_delete_items(self, list_slave, items):
+        for item in items:
+            DeviceSettings.delete(item.id, connection=self.conn)
+        self.conn.commit()
+        self._refresh()
+
+    def _refresh(self):
+        self.klist.clear()
+        self.klist.extend(self._settings.get_constants_by_type(
+            self._constant_type))
+
+    #
+    # AdditionListSlave
+    #
+
+    def run_editor(self, model):
+        return run_dialog(DeviceConstantEditor, conn=self.conn,
+                          model=model,
+                          settings=self._settings,
+                          constant_type=self._constant_type)
+
+    #
+    # Public API
+    #
+
+    def switch(self, constant_type):
+        self._constant_type = constant_type
+        self._refresh()
+
+    #
+    # Callbacks
+    #
+
+    def _on_list_slave__add_item(self, slave, item):
+        self._refresh()
+
+    def _on_list_slave__before_delete_items(self, slave, items):
+        for item in items:
+            DeviceConstant.delete(item.id, connection=self.conn)
+
+
+class DeviceConstantsDialog(BasicDialog):
+    size = (500, 300)
+    def __init__(self, conn, settings):
+        self._constant_slave = None
+        self.conn = conn
+        self.settings = settings
+
+        BasicDialog.__init__(self)
+        BasicDialog._initialize(self, hide_footer=False, title='edit',
+                                size=self.size)
+        self.main.set_border_width(6)
+
+        self._create_ui()
+
+    def _create_ui(self):
+        hbox = gtk.HBox()
+        self.klist = ObjectList([Column('name')])
+        self.klist.set_policy(gtk.POLICY_NEVER, gtk.POLICY_NEVER)
+        self.klist.set_size_request(150, -1)
+        self.klist.get_treeview().set_headers_visible(False)
+        self.klist.connect('selection-changed',
+                           self._on_klist__selection_changed)
+        hbox.pack_start(self.klist)
+        hbox.show()
+
+        for name, ctype in [(_('Units'), DeviceConstant.TYPE_UNIT),
+                            (_('Tax'), DeviceConstant.TYPE_TAX),
+                            (_('Payments'), DeviceConstant.TYPE_PAYMENT)]:
+            self.klist.append(Settable(name=name, type=ctype))
+        self.klist.show()
+
+        self._constant_slave = DeviceConstantsList(self.conn, self.settings)
+        self._constant_slave.switch(DeviceConstant.TYPE_UNIT)
+
+        hbox.pack_start(self._constant_slave.get_toplevel())
+
+        # FIXME: redesign BasicDialog
+        self.main.remove(self.main_label)
+        self.main.add(hbox)
+
+        hbox.show_all()
+
+
+    #
+    # Callbacks
+    #
+
+    def _on_klist__selection_changed(self, klist, selected):
+        self._constant_slave.switch(selected.type)
 
 class DeviceSettingsEditor(BaseEditor):
     gladefile = 'DeviceSettingsEditor'
@@ -264,20 +345,10 @@ class DeviceSettingsEditor(BaseEditor):
         self.constants_button.set_sensitive(
             self._check_device_needs_configuration())
 
-    def _edit_driver_constants(self, *args):
-        if ((self._original_brand != self.model.brand
-             or self._original_model != self.model.model)
-            or self.model.constants is None):
-            driver = self.model.get_interface()
-            constants = driver.get_constants()
-            new_consts = dict([(item, constants.get_value(item))
-                                   for item in constants.get_items()])
-            if not self.model.constants:
-                self.model.constants = DeviceConstants(constants=new_consts,
-                                                       connection=self.conn)
-            else:
-                self.model.constants.set_constants(new_consts)
-        run_dialog(DeviceConstantsEditor, self, self.conn, self.model)
+    def _edit_driver_constants(self):
+        if self.model.type == DeviceSettings.FISCAL_PRINTER_DEVICE:
+            self.model.create_fiscal_printer_constants()
+        run_dialog(DeviceConstantsDialog, self, self.conn, self.model)
 
     #
     # BaseEditor hooks
@@ -304,14 +375,6 @@ class DeviceSettingsEditor(BaseEditor):
             return _("Add Device")
 
     def validate_confirm(self):
-        if (self.model.is_a_fiscal_printer() and
-            not self.model.is_custom_pm_configured()):
-            if yesno(_(u"Some payment methods are not configured. It "
-                       "will not be possible to emit a coupon for "
-                       "sales with these payment methods, are you "
-                       "sure you want to continue?"), gtk.RESPONSE_NO,
-                     _(u"Configure _Methods"), _(u"_Continue")):
-                return False
         if not self.edit_mode:
             settings = DeviceSettings.get_by_station_and_type(
                 conn=get_connection(),
@@ -329,8 +392,7 @@ class DeviceSettingsEditor(BaseEditor):
     def on_confirm(self):
         if not self.model.is_a_printer():
             return self.model
-        is_enabled = self.edit_mode or (self.model.constants
-                                        or self.model.pm_constants)
+        is_enabled = self.edit_mode or self.model.constants
         # FIXME: this part will be improved when bug #2641 is fixed
         is_enabled = is_enabled or (self.model.brand != "bematech"
                                     and self.model.model != "DP20C")
@@ -340,13 +402,14 @@ class DeviceSettingsEditor(BaseEditor):
                         "because there are no constants defined yet."))
             self.model.inactivate()
 
+        # Ensure that the fiscal constants are created, even if the
+        # user did not click on the edit constants button
+        self.model.create_fiscal_printer_constants()
+
         # Check if we have a virtual printer, if so we must remove it
         settings = DeviceSettings.get_virtual_printer_settings(
             self.conn, self.model.station)
         if settings:
-            if settings.constants:
-                DeviceConstants.delete(settings.constants.id,
-                                       connection=self.conn)
             DeviceSettings.delete(settings.id, connection=self.conn)
         return self.model
 

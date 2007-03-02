@@ -32,6 +32,7 @@ from stoqlib.domain.sellable import (BaseSellableCategory,
                                      SellableUnit,
                                      BaseSellableInfo)
 from stoqlib.importers.csvimporter import CSVImporter
+from stoqlib.lib.parameters import sysparam
 
 class ProductImporter(CSVImporter):
     fields = ['base_category',
@@ -61,6 +62,8 @@ class ProductImporter(CSVImporter):
         self.units = {}
         for unit in SellableUnit.select(connection=conn):
             self.units[unit.description] = unit
+
+        self.tax_constant = sysparam(conn).DEFAULT_PRODUCT_TAX_CONSTANT
 
     def process_one(self, data, fields, trans):
         product = Product(connection=trans)
@@ -100,5 +103,7 @@ class ProductImporter(CSVImporter):
             barcode=data.barcode,
             category=category,
             base_sellable_info=sellable_info,
-            unit=unit)
+            unit=unit,
+            tax_constant=self.tax_constant,
+            )
         product.addFacet(IStorable, connection=trans)

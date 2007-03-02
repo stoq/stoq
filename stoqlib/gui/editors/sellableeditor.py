@@ -25,21 +25,26 @@
 ##
 """ Editors definitions for sellable"""
 
-from sqlobject.sqlbuilder import LIKE, func
-from stoqdrivers.constants import UNIT_CUSTOM, UNIT_WEIGHT
+import gtk
+
 from kiwi.python import Settable
+from kiwi.ui.objectlist import Column
+from sqlobject.sqlbuilder import LIKE, func
+from stoqdrivers.constants import UNIT_CUSTOM, UNIT_WEIGHT, TAX_CUSTOM
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.domain.sellable import (SellableCategory, ASellable,
-                                     SellableUnit)
+from stoqlib.domain.giftcertificate import GiftCertificateItem
 from stoqlib.domain.interfaces import ISellable, IStorable
 from stoqlib.domain.product import ProductSellableItem
-from stoqlib.domain.giftcertificate import GiftCertificateItem
 from stoqlib.domain.purchase import PurchaseItem
 from stoqlib.domain.service import DeliveryItem
+from stoqlib.domain.sellable import (SellableCategory, ASellable,
+                                     SellableUnit,
+                                     SellableTaxConstant)
+from stoqlib.gui.base.lists import AdditionListDialog
 from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
 from stoqlib.gui.slaves.imageslaveslave import ImageSlave
 from stoqlib.lib.validators import get_price_format_str
@@ -48,8 +53,74 @@ _ = stoqlib_gettext
 
 
 #
-# Slaves
+# Editors
 #
+class SellableTaxConstantEditor(BaseEditor):
+    gladefile = 'SellableTaxConstantEditor'
+    model_type = SellableTaxConstant
+    model_name = _('SellableTax constant')
+    proxy_widgets = ('description',
+                     'tax_value')
+
+    def __init__(self, conn, model=None):
+        BaseEditor.__init__(self, conn, model)
+
+
+
+    #
+    # BaseEditor
+    #
+
+    def create_model(self, conn):
+        return SellableTaxConstant(tax_type=TAX_CUSTOM,
+                                   tax_value=None,
+                                   description=u'',
+                                   connection=conn)
+
+    def on_confirm(self):
+        return self.model
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model,
+                                    SellableTaxConstantEditor.proxy_widgets)
+
+class SellableTaxConstantsDialog(AdditionListDialog):
+    size = (500, 300)
+    editor_class = SellableTaxConstantEditor
+
+    def __init__(self, conn):
+        self.conn = conn
+        AdditionListDialog.__init__(self, conn,
+                                    columns=self._get_columns(),
+                                    klist_objects=self._get_query(),
+                                    editor_class=self.editor_class,
+                                    title=_("Tax codes"))
+        self.addition_list.klist.connect_after(
+            'selection-changed', self._after_klist__selection_changed)
+        self.addition_list.klist.set_selection_mode(gtk.SELECTION_BROWSE)
+
+    def _get_columns(self):
+        return [Column('description', _('Description'), data_type=str,
+                       width=200),
+                Column('value', _('Value'), data_type=str)]
+
+    def _get_query(self):
+        return SellableTaxConstant.select(connection=self.conn)
+
+    #
+    # Callbacks
+    #
+
+    def _after_klist__selection_changed(self, klist, unused):
+        constant = klist.get_selected()
+        if constant is not None:
+            is_custom = constant.tax_type == TAX_CUSTOM
+            self.addition_list.delete_button.set_sensitive(is_custom)
+            self.addition_list.edit_button.set_sensitive(is_custom)
+
+    def on_confirm(self):
+        self.conn.commit()
+        return AdditionListDialog.on_confirm(self)
 
 class SellablePriceEditor(BaseEditor):
     model_name = 'Product Price'

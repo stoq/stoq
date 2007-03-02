@@ -43,10 +43,10 @@ def create(utilities=False):
     _import_one(EmployeeImporter, 'employees.csv')
     if utilities:
         set_person_utilities()
+    create_device_settings()
     _import_one(ProductImporter, 'products.csv')
     _import_one(ServiceImporter, 'services.csv')
     create_payments()
     create_sales()
     create_purchases()
     create_giftcertificates()
-    create_device_settings()

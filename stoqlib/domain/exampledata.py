@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,8 @@
 ##
 
 import datetime
+
+from stoqdrivers.constants import TAX_CUSTOM
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
@@ -79,6 +81,9 @@ def create_service_sellable_item(trans):
 def create_device_settings(trans):
     return ExampleCreator.create(trans, 'DeviceSettings')
 
+def create_device_constant(trans):
+    return ExampleCreator.create(trans, 'DeviceConstant')
+
 def create_company(trans):
     return ExampleCreator.create(trans, 'ICompany')
 
@@ -109,6 +114,8 @@ class ExampleCreator(object):
             'ASellable': self._create_sellable,
             'BranchStation': self.get_station,
             'CityLocation': self.get_location,
+            'DeviceConstant': self._create_device_constant,
+            'DeviceSettings': self._create_device_settings,
             'IClient': self._create_client,
             'IBranch': self._create_branch,
             'IEmployee': self._create_employee,
@@ -209,7 +216,9 @@ class ExampleCreator(object):
         sellable_info = BaseSellableInfo(connection=self.trans,
                                          description="Description",
                                          price=10)
+        tax_constant = sysparam(self.trans).DEFAULT_PRODUCT_TAX_CONSTANT
         return product.addFacet(ISellable,
+                                tax_constant=tax_constant,
                                 base_sellable_info=sellable_info,
                                 connection=self.trans)
     def _create_sale(self):
@@ -243,6 +252,17 @@ class ExampleCreator(object):
             sellable=sellable,
             quantity=1, price=10,
             sale=sale, connection=self.trans)
+
+    def _create_device_constant(self):
+        from stoqlib.domain.devices import DeviceConstant
+        settings = self._create_device_settings()
+        return DeviceConstant(constant_name="Fake Tax Constant",
+                              constant_type=DeviceConstant.TYPE_TAX,
+                              constant_enum=TAX_CUSTOM,
+                              constant_value=99,
+                              device_value="XX",
+                              device_settings=settings,
+                              connection=self.trans)
 
     def _create_device_settings(self):
         from stoqlib.lib.drivers import get_fiscal_printer_settings_by_station

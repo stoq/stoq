@@ -274,8 +274,6 @@ CREATE TABLE product (
 
 CREATE TABLE product_adapt_to_sellable (
     id serial NOT NULL PRIMARY KEY,
-    tax_type integer,
-    tax_value numeric(10,2),
     original_id bigint UNIQUE REFERENCES product(id)
 );
 
@@ -365,6 +363,16 @@ CREATE TABLE sellable_unit (
     unit_index integer
 );
 
+CREATE TABLE sellable_tax_constant (
+    id serial NOT NULL PRIMARY KEY,
+    is_valid_model boolean,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    description text,
+    tax_type integer,
+    tax_value numeric(10,2)
+);
+
 CREATE TABLE asellable (
     -- Subclasses:
     --    product_adapt_to_sellable
@@ -380,6 +388,7 @@ CREATE TABLE asellable (
     base_sellable_info_id bigint REFERENCES base_sellable_info(id),
     on_sale_info_id bigint REFERENCES on_sale_info(id),
     category_id bigint REFERENCES sellable_category(id),
+    tax_constant_id bigint REFERENCES sellable_tax_constant(id),
     child_name character varying(255)
 );
 
@@ -702,14 +711,6 @@ CREATE TABLE debit_card_details (
     receive_days integer
 );
 
-CREATE TABLE device_constants (
-    id serial NOT NULL PRIMARY KEY,
-    is_valid_model boolean,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    constants bytea
-);
-
 CREATE TABLE device_settings (
     id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
@@ -719,10 +720,21 @@ CREATE TABLE device_settings (
     brand text,
     model text,
     device integer,
-    station_id bigint REFERENCES branch_station(id),
-    constants_id bigint REFERENCES device_constants(id),
-    pm_constants_id bigint REFERENCES device_constants(id),
-    is_active boolean
+    is_active boolean,
+    station_id bigint REFERENCES branch_station(id)
+);
+
+CREATE TABLE device_constant (
+    id serial NOT NULL PRIMARY KEY,
+    is_valid_model boolean,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    constant_type integer,
+    constant_name text,
+    constant_value numeric(10,2),
+    constant_enum integer,
+    device_value bytea,
+    device_settings_id bigint REFERENCES device_settings(id)
 );
 
 CREATE TABLE employee_role_history (

@@ -21,6 +21,7 @@
 ##
 ## Author(s):   Henrique Romano         <henrique@async.com.br>
 ##              Evandro Vale Miquelito  <evandro@async.com.br>
+##              Johan Dahlin            <jdahlin@async.com.br>
 ##
 """ Useful functions for StoqDrivers interaction """
 
@@ -164,12 +165,7 @@ def create_virtual_printer_for_current_station():
                               model='Simple',
                               type=DeviceSettings.FISCAL_PRINTER_DEVICE,
                               connection=trans)
-    # Setting default values for payment method constants, to avoid
-    # problems when emitting a coupon with the virtual printer.
-    new_constants = {}
-    for method in settings.pm_constants.get_items():
-        new_constants[method] = '00'
-    settings.pm_constants.set_constants(new_constants)
+    settings.create_fiscal_printer_constants()
     trans.commit(close=True)
 
 def check_virtual_printer_for_current_station(conn):
@@ -358,6 +354,9 @@ class FiscalCoupon:
                              "since there is no fiscal printer "
                              "configured for this station")
         self._item_ids = {}
+        station = get_current_station(self.conn)
+        self._settings = get_fiscal_printer_settings_by_station(conn,
+                                                                station)
 
     #
     # IContainer implementation
@@ -387,10 +386,10 @@ class FiscalCoupon:
             unit = sellable.unit.unit_index or UNIT_EMPTY
         max_len = get_capability(self.printer, "item_code")
         code = sellable.get_code_str()[:max_len]
-
-        # FIXME: TAX_NONE is a HACK, waiting for bug #2269
+        constant = self._settings.get_tax_constant_for_device(sellable)
         item_id = self.printer.add_item(code, description, item.price,
-                                        TAX_NONE, item.quantity, unit,
+                                        constant.device_value,
+                                        item.quantity, unit,
                                         unit_desc=unit_desc)
         ids = self._item_ids.setdefault(item, [])
         ids.append(item_id)
@@ -507,15 +506,6 @@ class FiscalCoupon:
             self.printer.add_payment(MONEY_PM, sale.get_total_sale_amount())
             return True
 
-        station = get_current_station(self.conn)
-        settings = get_fiscal_printer_settings_by_station(self.conn, station)
-        pm_constants = settings.pm_constants
-        if not pm_constants:
-            raise ValueError(
-                "It is not possible to setup the payments for sale "
-                "%r, since there is no payment methods defined for "
-                "the current printer being used (%r)"
-                % (sale, self.printer))
         all_methods = get_all_methods_dict().items()
         method_id = None
         for payment in group.get_items():
@@ -543,19 +533,21 @@ class FiscalCoupon:
                     "method type: %s. It is not possible add "
                     "the payment on the coupon" %
                     method_type.__name__)
-            custom_pm = pm_constants.get_value(method_id)
-            if not custom_pm:
+
+            constant = self._settings.get_payment_constant(method_id)
+            if constant:
+                self.printer.add_payment(CUSTOM_PM, payment.base_value,
+                                         custom_pm=constant.device_value)
+            else:
                 method_name = get_method_names()[method_id]
-                if yesno(_(u"The payment method used in this sale (%s) is not "
-                           "configured in the fiscal printer." % method_name),
-                         gtk.RESPONSE_YES, _(u"Use Money as payment method"),
-                         _(u"Cancel the checkout")):
-                    self.printer.add_payment(MONEY_PM, payment.base_value)
-                    continue
-                else:
+                if not yesno(
+                    _(u"The payment method used in this sale (%s) is not "
+                      "configured in the fiscal printer." % method_name),
+                    gtk.RESPONSE_YES, _(u"Use Money as payment method"),
+                    _(u"Cancel the checkout")):
                     return False
-            self.printer.add_payment(CUSTOM_PM, payment.base_value,
-                                     custom_pm=custom_pm)
+
+                self.printer.add_payment(MONEY_PM, payment.base_value)
 
         for entry in group.get_till_entries():
             self.printer.add_payment(MONEY_PM, entry.value)

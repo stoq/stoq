@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 ## Author(s):   Henrique Romano             <henrique@async.com.br>
 ##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Bruno Rafael Garcia         <brg@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Editors definitions for products"""
 
@@ -31,15 +32,15 @@ from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import Column
 from kiwi.utils import gsignal
 
+from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
+from stoqlib.domain.sellable import BaseSellableInfo
+from stoqlib.domain.person import Person
+from stoqlib.domain.product import ProductSupplierInfo, Product
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.slaves.productslave import TributarySituationSlave
-from stoqlib.domain.person import Person
-from stoqlib.domain.sellable import BaseSellableInfo
-from stoqlib.domain.product import ProductSupplierInfo, Product
-from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
 from stoqlib.gui.editors.sellableeditor import SellableEditor
+from stoqlib.gui.slaves.productslave import TributarySituationSlave
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -228,8 +229,9 @@ class ProductEditor(SellableEditor):
     def create_model(self, conn):
         model = Product(connection=conn)
         sellable_info = BaseSellableInfo(connection=conn)
-
+        tax_constant = sysparam(conn).DEFAULT_PRODUCT_TAX_CONSTANT
         model.addFacet(ISellable, base_sellable_info=sellable_info,
+                       tax_constant=tax_constant,
                        connection=conn)
         model.addFacet(IStorable, connection=conn)
         supplier = sysparam(conn).SUGGESTED_SUPPLIER

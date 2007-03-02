@@ -28,10 +28,12 @@ or a service, implemented in your own modules.
 import datetime
 from decimal import Decimal
 
+from kiwi.datatypes import currency
 from sqlobject import DateTimeCol, UnicodeCol, IntCol, ForeignKey, SQLObject
 from sqlobject.sqlbuilder import AND, IN, OR
+from stoqdrivers.constants import (TAX_NONE, TAX_EXEMPTION,
+                                   TAX_SUBSTITUTION)
 from zope.interface import implements
-from kiwi.datatypes import currency
 
 from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.database.runtime import get_connection
@@ -65,6 +67,32 @@ class SellableUnit(Domain):
     _inheritable = False
     description = UnicodeCol()
     unit_index = IntCol()
+
+class SellableTaxConstant(Domain):
+    """
+    A tax constant tied to a sellable
+    """
+    implements(IDescribable)
+
+    description = UnicodeCol()
+    tax_type = IntCol()
+    tax_value = DecimalCol(default=None)
+
+    _mapping = {
+        TAX_NONE: 'TAX_NONE',
+        TAX_EXEMPTION: 'TAX_EXEMPTION',
+        TAX_SUBSTITUTION: 'TAX_SUBSTITUTION',
+        }
+
+    def get_value(self):
+        return SellableTaxConstant._mapping.get(self.tax_type,
+                                                self.tax_value)
+
+
+    # IDescribable
+
+    def get_description(self):
+        return self.description
 
 class ASellableCategory(InheritableModel):
     """ Abstract class for sellable's category. This class can represents a
@@ -171,6 +199,7 @@ class BaseSellableInfo(Domain):
         return self.description
 
 
+
 class ASellable(InheritableModelAdapter):
     """A sellable (a product or a service, for instance)."""
 
@@ -199,6 +228,7 @@ class ASellable(InheritableModelAdapter):
     base_sellable_info = ForeignKey('BaseSellableInfo')
     on_sale_info = ForeignKey('OnSaleInfo')
     category = ForeignKey('SellableCategory', default=None)
+    tax_constant = ForeignKey('SellableTaxConstant', default=None)
 
     def _create(self, id, **kw):
         markup = None

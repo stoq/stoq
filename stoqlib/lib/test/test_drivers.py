@@ -35,7 +35,3 @@ class TestDrivers(DomainTest):
                                                           station)
         self.failUnless(settings is not None, ("You should have a valid "
                                                "printer at this point."))
-        self.failUnless(settings.pm_constants is not None,
-                        "You should have the pm_constants defined.")
-        self.failUnless(settings.is_custom_pm_configured(),
-                        "The pm_constants should be configured.")
