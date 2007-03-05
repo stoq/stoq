@@ -482,7 +482,7 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     log.info("%s: Opening" % dialog_name)
     toplevel.run()
 
-    retval = dialog.retval
+    retval = getattr(dialog, 'retval', None)
     dialog.destroy()
 
     _pop_current_toplevel()
