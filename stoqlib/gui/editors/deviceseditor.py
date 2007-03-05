@@ -254,14 +254,6 @@ class DeviceSettingsEditor(BaseEditor):
         self._original_brand = self.model.brand
         self._original_model = self.model.model
 
-    def _check_device_needs_configuration(self):
-        """ Returns True if the selected device needs specifical configuration
-        through the DeviceConstantsEditor, False otherwise. """
-        if not self.model.is_valid() or not self.model.is_a_printer():
-            return False
-        # Bematech DP20C doesn't need special configuration
-        return self.model.brand != "bematech" and self.model.model != "DP20C"
-
     def refresh_ok(self, *args):
         if self._is_initialized:
             BaseEditor.refresh_ok(self, self.model.is_valid())
@@ -341,10 +333,6 @@ class DeviceSettingsEditor(BaseEditor):
                           for obj in supported_models])
         self.model_combo.prefill(items)
 
-    def _update_constants_button(self, *args):
-        self.constants_button.set_sensitive(
-            self._check_device_needs_configuration())
-
     def _edit_driver_constants(self):
         if self.model.type == DeviceSettings.FISCAL_PRINTER_DEVICE:
             self.model.create_fiscal_printer_constants()
@@ -419,25 +407,20 @@ class DeviceSettingsEditor(BaseEditor):
 
     def on_brand_combo__changed(self, *args):
         self.update_model_combo()
-        self._update_constants_button()
         self.refresh_ok()
 
     def on_type_combo__changed(self, *args):
         self.update_brand_combo()
-        self._update_constants_button()
         self.refresh_ok()
 
     def on_brand_combo__state_changed(self, *args):
         self.update_model_combo()
-        self._update_constants_button()
         self.refresh_ok()
 
     def on_model_combo__changed(self, *args):
-        self._update_constants_button()
         self.refresh_ok()
 
     def on_device_combo__changed(self, *args):
-        self._update_constants_button()
         self.refresh_ok()
 
     def on_constants_button__clicked(self, button):
