@@ -28,10 +28,12 @@ from kiwi.argcheck import argcheck
 from sqlobject.sqlbuilder import AND, func
 from sqlobject import (UnicodeCol, IntCol,
                        ForeignKey, BoolCol)
+from zope.interface import implements
 
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.base import Domain
 from stoqlib.lib.parameters import sysparam
+from stoqlib.domain.interfaces import IDescribable
 
 class CityLocation(Domain):
     """Base class to store the locations. Used to store a person's address
@@ -81,6 +83,8 @@ class Address(Domain):
                              for the main address
     """
 
+    implements(IDescribable)
+
     street = UnicodeCol(default='')
     number = IntCol(default=None)
     district = UnicodeCol(default='')
@@ -118,6 +122,12 @@ class Address(Domain):
         if self.street and self.number and self.district:
             return u'%s %s, %s' % (self.street, self.number,
                                    self.district)
+        elif self.street and self.number:
+            return u'%s %s' % (self.street, self.number)
+        elif self.street:
+            return self.street
 
-        # TODO: Try to return a better string if all fields aren't set
         return u''
+
+    def get_description(self):
+        return self.get_address_string()
