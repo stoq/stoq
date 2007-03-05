@@ -24,6 +24,7 @@
 ##
 """ Purchase receiving slaves implementation"""
 
+from kiwi.datatypes import ValidationError
 
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.receiving import ReceivingOrder
@@ -145,3 +146,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
                    title=_('Additional Information'))
 
+    def on_invoice_number__validate(self, widget, value):
+        if value < 1 or value > 999999:
+            return ValidationError(_("Receving order number must be "
+                                     "between 1 and 999999"))
