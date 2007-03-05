@@ -116,14 +116,9 @@ class _PersonEditorTemplate(BaseEditorSlave):
                     "adding additional addresses")
             warning(msg)
             return
-        addresses = self.model.addresses
-
-        if addresses and main_address:
-            addresses.remove(main_address)
 
         result = run_dialog(AddressAdditionDialog, self, self.conn,
-                            addresses, person=self.model,
-                            visual_mode=self.visual_mode)
+                            person=self.model)
         if not result:
             return
 

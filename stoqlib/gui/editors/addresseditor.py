@@ -22,47 +22,21 @@
 ## Author(s):   Daniel Saran R. da Cunha    <daniel@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
 ##              Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Person address editor implementation"""
 
 from kiwi.ui.widgets.list import Column
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.lists import AdditionListDialog
-from stoqlib.gui.editors.baseeditor import BaseEditor
 
-from stoqlib.gui.slaves.addressslave import AddressSlave
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.person import Person
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.lists import ModelListDialog
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.slaves.addressslave import AddressSlave
 
 _ = stoqlib_gettext
-
-class AddressAdditionDialog(AdditionListDialog):
-    title = _('Additional Addresses')
-
-    def __init__(self, conn, klist_objects, visual_mode=False, **editor_kwargs):
-        cols = self.get_columns()
-        AdditionListDialog.__init__(self, conn, AddressEditor,
-                                    cols, klist_objects, self.title,
-                                    visual_mode=visual_mode)
-        self.register_editor_kwargs(**editor_kwargs)
-        self.set_before_delete_items(self.before_delete_items)
-
-    def get_columns(self):
-        return [Column('address_string', title=_('Address'),
-                       data_type=str, width=250, expand=True),
-                Column('city', title=_('City'), width=100,
-                       data_type=str),
-                Column('state', title=_('State'), data_type=str)]
-
-    #
-    # Callbacks
-    #
-
-    def before_delete_items(self, slave, items):
-        assert len(items) >= 1
-        for item in items:
-            Address.delete(item.id, connection=self.conn)
-
 
 class AddressEditor(BaseEditor):
     model_name = _('Address')
@@ -71,14 +45,14 @@ class AddressEditor(BaseEditor):
 
     proxy_widgets = ('is_main_address_checkbutton', )
 
-    def __init__(self, conn, person, model=None, visual_mode=False):
+    def __init__(self, conn, person, address=None):
+        self.person = person
         if not isinstance(person, Person):
             raise TypeError("Invalid type for person argument. It should "
                             "be of type Person, got %s instead"
                             % type(person))
-        self.person = person
         self.current_main_address = self.person.get_main_address()
-        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
+        BaseEditor.__init__(self, conn, address)
         self.set_description(self.model_name)
 
     #
@@ -105,3 +79,29 @@ class AddressEditor(BaseEditor):
             and self.model is not self.current_main_address):
             self.current_main_address.is_main_address = False
         return self.address_slave.on_confirm()
+
+class AddressAdditionDialog(ModelListDialog):
+    title = _('Additional Addresses')
+    size = (600, 250)
+
+    columns =  [
+        Column('address_string', title=_('Address'),
+               data_type=str, width=250, expand=True),
+        Column('city', title=_('City'), width=100,
+               data_type=str),
+        Column('state', title=_('State'), data_type=str),
+        ]
+
+    model_type = Address
+
+    def __init__(self, conn, person):
+        self.person = person
+        ModelListDialog.__init__(self, conn)
+
+    def populate(self):
+        return self.person.addresses
+
+    def run_editor(self, trans, model):
+        return run_dialog(
+            AddressEditor, parent=self,
+            conn=trans, person=trans.get(self.person), address=model)
