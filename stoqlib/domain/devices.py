@@ -40,7 +40,7 @@ from stoqdrivers.devices.serialbase import VirtualPort, SerialPort
 
 from stoqlib.database.columns import DecimalCol
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IActive
+from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.exceptions import DatabaseInconsistency, DeviceError
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -61,6 +61,7 @@ class DeviceConstant(Domain):
     @cvar device_value: the device value
     @cvar device_settings: settings
     """
+    implements(IDescribable)
 
     constant_type = IntCol()
     constant_name = UnicodeCol()
@@ -128,6 +129,13 @@ class DeviceConstant(Domain):
             constant_type=DeviceConstant.TYPE_TAX,
             constant_enum=constant_enum,
             connection=conn)
+
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return self.constant_name
 
 class DeviceSettings(Domain):
     implements(IActive)
