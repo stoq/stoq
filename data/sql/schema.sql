@@ -969,7 +969,8 @@ CREATE TABLE receiving_order (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    receiving_number integer NOT NULL UNIQUE,
+    receiving_number integer NOT NULL CONSTRAINT positive_receiving_number
+                     CHECK (receiving_number >= 1 and receiving_number <= 999999),
     status integer,
     receival_date timestamp ,
     confirm_date timestamp ,

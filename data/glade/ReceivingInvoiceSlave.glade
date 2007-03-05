@@ -258,6 +258,7 @@
                                         <property name="data_type">int</property>
                                         <property name="is_focus">True</property>
                                         <property name="mandatory">True</property>
+                                        <property name="max_length">6</property>
                                         <property name="model_attribute">invoice_number</property>
                                         <property name="visible">True</property>
                                         <property name="width_chars">12</property>
