@@ -25,8 +25,6 @@
 ##
 """ Editors definitions for sellable"""
 
-import gtk
-
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
 from sqlobject.sqlbuilder import LIKE, func
@@ -44,7 +42,7 @@ from stoqlib.domain.service import DeliveryItem
 from stoqlib.domain.sellable import (SellableCategory, ASellable,
                                      SellableUnit,
                                      SellableTaxConstant)
-from stoqlib.gui.base.lists import AdditionListDialog
+from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
 from stoqlib.gui.slaves.imageslaveslave import ImageSlave
 from stoqlib.lib.validators import get_price_format_str
@@ -84,43 +82,26 @@ class SellableTaxConstantEditor(BaseEditor):
         self.proxy = self.add_proxy(self.model,
                                     SellableTaxConstantEditor.proxy_widgets)
 
-class SellableTaxConstantsDialog(AdditionListDialog):
-    size = (500, 300)
+class SellableTaxConstantsDialog(ModelListDialog):
+
+    # ModelListDialog
+    model_type = SellableTaxConstant
     editor_class = SellableTaxConstantEditor
+    size = (500, 300)
 
-    def __init__(self, conn):
-        self.conn = conn
-        AdditionListDialog.__init__(self, conn,
-                                    columns=self._get_columns(),
-                                    klist_objects=self._get_query(),
-                                    editor_class=self.editor_class,
-                                    title=_("Tax codes"))
-        self.addition_list.klist.connect_after(
-            'selection-changed', self._after_klist__selection_changed)
-        self.addition_list.klist.set_selection_mode(gtk.SELECTION_BROWSE)
+    # ListDialog
+    columns = [
+        Column('description', _('Description'), data_type=str,
+               width=200),
+        Column('value', _('Value'), data_type=str),
+    ]
 
-    def _get_columns(self):
-        return [Column('description', _('Description'), data_type=str,
-                       width=200),
-                Column('value', _('Value'), data_type=str)]
-
-    def _get_query(self):
-        return SellableTaxConstant.select(connection=self.conn)
-
-    #
-    # Callbacks
-    #
-
-    def _after_klist__selection_changed(self, klist, unused):
-        constant = klist.get_selected()
-        if constant is not None:
-            is_custom = constant.tax_type == TAX_CUSTOM
-            self.addition_list.delete_button.set_sensitive(is_custom)
-            self.addition_list.edit_button.set_sensitive(is_custom)
-
-    def on_confirm(self):
-        self.conn.commit()
-        return AdditionListDialog.on_confirm(self)
+    def selection_changed(self, constant):
+        if constant is None:
+            return
+        is_custom = constant.tax_type == TAX_CUSTOM
+        self.listcontainer.remove_button.set_sensitive(is_custom)
+        self.listcontainer.edit_button.set_sensitive(is_custom)
 
 class SellablePriceEditor(BaseEditor):
     model_name = 'Product Price'

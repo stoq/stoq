@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source
+## Copyright (C) 2005-2007 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -20,24 +20,108 @@
 ##
 ##
 ##  Author(s): Evandro Vale Miquelito   <evandro@async.com.br>
+##             Johan Dahlin             <jdahlin@async.com.br>
 ##
 """ List management for common dialogs.  """
 
 import gtk
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.objectlist import ObjectList
+from kiwi.ui.listdialog import ListDialog
 from kiwi.utils import gsignal
 
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.message import yesno
+from stoqlib.database.database import finish_transaction
+from stoqlib.database.runtime import new_transaction
+from stoqlib.domain.interfaces import IDescribable
+from stoqlib.exceptions import SelectionError, StoqlibError
 from stoqlib.gui.base.dialogs import (run_dialog, BasicPluggableDialog,
                                       BasicDialog)
-from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.wizards import BaseWizard
-from stoqlib.exceptions import SelectionError, StoqlibError
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.message import yesno
 
 _ = stoqlib_gettext
 
+class ModelListDialog(ListDialog):
+    """
+    A dialog which displays all items in a table and allows you to
+    add and remove items from it
+
+    @cvar model_type: an SQLObject for the table we want to modify, must
+      implement the IDescribable interface.
+    @cvar columns: a list of L{kiwi.ui.objectlist.Columns}
+    @cvar editor_class: class used to edit the model, must take the
+      constructor arguments (conn, model)
+    @cvar size: a two sized tuple;  (width, height) or None
+    """
+    model_type = None
+    columns = None
+    editor_class = None
+    size = None
+
+    def __init__(self, conn):
+        """
+        @param conn: A database connection
+        """
+        self.conn = conn
+        if self.model_type is None:
+            raise TypeError("%s must define a model_type class attribute" %
+                            type(self).__name__)
+        if not IDescribable.implementedBy(self.model_type):
+            raise TypeError("%s must provide the IDescribable interface" %
+                            self.model_type.__name__)
+
+        ListDialog.__init__(self)
+        if self.size:
+            self.set_size_request(*self.size)
+
+    def _delete_model(self, model):
+        trans = new_transaction()
+        self.model_type.delete(model.id, connection=trans)
+        trans.commit(close=True)
+
+    def _run_editor(self, item):
+        # 1) Create a new transaction
+        # 2) Fetch the model from that transactions POW
+        # 3) Sent it to the editor and run the editor
+        # 4) If the return value is not None fetch it in the
+        #    original connection (eg, self.conn)
+        # 5) Return the value, so it can be populated by the list
+        trans = new_transaction()
+        if item is not None:
+            model = trans.get(item)
+        else:
+            model = None
+        retval = run_dialog(self.editor_class, parent=self, conn=trans,
+                            model=model)
+        finish_transaction(trans, retval)
+        if retval:
+            retval = self.model_type.get(retval.id, connection=self.conn)
+        trans.close()
+        return retval
+
+    #
+    # ListDialog
+    #
+
+    def populate(self):
+        return self.model_type.select(connection=self.conn)
+
+    def add_item(self):
+        return self._run_editor(None)
+
+    def remove_item(self, constant):
+        retval = self.default_remove(IDescribable(constant).description)
+        if retval:
+            # Remove the list before deleting it because it'll be late
+            # afterwards, the object is invalid and SQLObject will complain
+            self.remove_list_item(constant)
+            self._delete_model(constant)
+        return False
+
+    def edit_item(self, item):
+        return bool(self._run_editor(item))
 
 class AdditionListSlave(GladeSlaveDelegate):
     """
