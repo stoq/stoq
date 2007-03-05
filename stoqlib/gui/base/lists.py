@@ -54,11 +54,13 @@ class ModelListDialog(ListDialog):
     @cvar editor_class: class used to edit the model, must take the
       constructor arguments (conn, model)
     @cvar size: a two sized tuple;  (width, height) or None
+    @cvar title: window title
     """
     model_type = None
     columns = None
     editor_class = None
     size = None
+    title = None
 
     def __init__(self, conn):
         """
@@ -75,13 +77,15 @@ class ModelListDialog(ListDialog):
         ListDialog.__init__(self)
         if self.size:
             self.set_size_request(*self.size)
+        if self.title:
+            self.set_title(self.title)
 
     def _delete_model(self, model):
         trans = new_transaction()
         self.model_type.delete(model.id, connection=trans)
         trans.commit(close=True)
 
-    def _run_editor(self, item):
+    def _prepare_run_editor(self, item):
         # 1) Create a new transaction
         # 2) Fetch the model from that transactions POW
         # 3) Sent it to the editor and run the editor
@@ -93,8 +97,7 @@ class ModelListDialog(ListDialog):
             model = trans.get(item)
         else:
             model = None
-        retval = run_dialog(self.editor_class, parent=self, conn=trans,
-                            model=model)
+        retval = self.run_editor(trans, model)
         finish_transaction(trans, retval)
         if retval:
             retval = self.model_type.get(retval.id, connection=self.conn)
@@ -109,10 +112,10 @@ class ModelListDialog(ListDialog):
         return self.model_type.select(connection=self.conn)
 
     def add_item(self):
-        return self._run_editor(None)
+        return self._prepare_run_editor(None)
 
     def remove_item(self, constant):
-        retval = self.default_remove(IDescribable(constant).description)
+        retval = self.default_remove(IDescribable(constant).get_description())
         if retval:
             # Remove the list before deleting it because it'll be late
             # afterwards, the object is invalid and SQLObject will complain
@@ -121,7 +124,24 @@ class ModelListDialog(ListDialog):
         return False
 
     def edit_item(self, item):
-        return bool(self._run_editor(item))
+        return bool(self._prepare_run_editor(item))
+
+    #
+    # Hooks
+    #
+
+    def run_editor(self, trans, model):
+        """
+        This can be override by a subclass who wants to send in
+        custom arguments to the editor.
+        """
+        if self.editor_class is None:
+            raise ValueError("editor_class cannot be None in %s" % (
+                type(self).__name__))
+
+        return run_dialog(
+            self.editor_class, parent=self,
+            conn=trans, model=model)
 
 class AdditionListSlave(GladeSlaveDelegate):
     """
