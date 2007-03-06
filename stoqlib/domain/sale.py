@@ -30,7 +30,7 @@ from datetime import datetime
 
 from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol, SQLObject
 from sqlobject.sqlbuilder import AND
-from stoqdrivers.constants import TAX_ICMS
+from stoqdrivers.constants import TAX_CUSTOM
 from zope.interface import implements
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
@@ -534,9 +534,9 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         for item in self.sale.get_products():
             price = item.price + av_difference
             sellable = item.sellable
-            if sellable.tax_constant.tax_type != TAX_ICMS:
+            if sellable.tax_constant.tax_type != TAX_CUSTOM:
                 continue
-            icms_tax = sysparam(conn).ICMS_TAX / Decimal(100)
+            icms_tax = sellable.tax_constant.tax_value / Decimal(100)
             icms_total += icms_tax * (price * item.quantity)
 
         return icms_total
