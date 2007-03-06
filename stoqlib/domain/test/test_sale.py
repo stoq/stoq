@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,15 +20,18 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):     Lincoln Molica <lincoln@async.com.br>
+##                Johan Dahlin <jdahlin@async.com.br>
 ##
 
 from decimal import Decimal
 import datetime
 
 from kiwi.datatypes import currency
+from stoqdrivers.constants import TAX_CUSTOM
 
 from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station)
+from stoqlib.domain.fiscal import IcmsIpiBookEntry
 from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
 from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IClient, IEmployee, ISalesPerson,
@@ -36,12 +39,13 @@ from stoqlib.domain.interfaces import (IClient, IEmployee, ISalesPerson,
                                        ISellable, IPaymentGroup,
                                        IStorable)
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
-from stoqlib.domain.payment.methods import CheckPM
+from stoqlib.domain.payment.methods import CheckPM, MoneyPM
 from stoqlib.domain.person import Person, EmployeeRole
 from stoqlib.domain.product import Product
 from stoqlib.domain.renegotiation import RenegotiationAdaptToReturnSale
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.sellable import BaseSellableInfo, ASellable, OnSaleInfo
+from stoqlib.domain.sellable import (BaseSellableInfo, ASellable, OnSaleInfo,
+                                     SellableTaxConstant)
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
@@ -218,10 +222,8 @@ class TestSale(DomainTest):
         sale = get_sale(self.trans)[0]
 
         sale_total = sale.get_sale_subtotal()
-
-        pg_facet = IPaymentGroup(sale)
         check_method = CheckPM.selectOne(connection=self.trans)
-        check_method.setup_inpayments(pg_facet, 4,
+        check_method.setup_inpayments(IPaymentGroup(sale), 4,
                                       datetime.datetime.today(),
                                       INTERVALTYPE_MONTH, 1,
                                       sale_total,
@@ -250,3 +252,24 @@ class TestSale(DomainTest):
         self.assertEqual(sale.status, Sale.STATUS_CANCELLED)
         sale.status = Sale.STATUS_ORDER
         self.failUnlessRaises(StoqlibError, sale.cancel, reneg_adapter)
+
+    def test_confirm_icms(self):
+        sale = get_sale(self.trans)[0]
+        sellable = sale.get_items()[0].sellable
+        product = sellable.get_adapted()
+        constant = SellableTaxConstant(description="18",
+                                       tax_type=TAX_CUSTOM,
+                                       tax_value=18,
+                                       connection=self.trans)
+        sellable.tax_constant = constant
+
+        method = MoneyPM.selectOne(connection=self.trans)
+        method.setup_inpayments(sale.get_sale_subtotal(),
+                                IPaymentGroup(sale))
+
+        self.assertEqual(IcmsIpiBookEntry.select(connection=self.trans).count(), 1)
+        sale.confirm_sale()
+        result = IcmsIpiBookEntry.select(connection=self.trans)
+        self.assertEqual(result.count(), 2)
+        book_entry = result.orderBy('id')[-1]
+        self.assertEqual(book_entry.icms_value, Decimal("9"))
