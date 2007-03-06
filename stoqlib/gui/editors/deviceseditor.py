@@ -32,9 +32,8 @@ import gtk
 from kiwi.decorators import signal_block
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ObjectList
-
-from stoqdrivers.devices.interfaces import (ICouponPrinter,
-                                            IChequePrinter)
+from stoqdrivers.constants import TAX_CUSTOM
+from stoqdrivers.devices.interfaces import ICouponPrinter, IChequePrinter
 from stoqdrivers.devices.printers.base import (get_supported_printers,
                                                get_supported_printers_by_iface)
 from stoqdrivers.devices.scales.base import get_supported_scales
@@ -103,11 +102,13 @@ class DeviceConstantEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        return DeviceConstant(device_settings=self.settings,
-                              connection=conn,
+        return DeviceConstant(connection=conn,
+                              device_settings=self.settings,
                               constant_type=self.constant_type,
                               constant_value=None,
-                              constant_name="Unnamed")
+                              constant_name="Unnamed",
+                              constant_enum=TAX_CUSTOM,
+                              device_value=None)
 
     def on_confirm(self):
         return self.model
