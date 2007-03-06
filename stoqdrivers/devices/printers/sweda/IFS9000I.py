@@ -59,6 +59,7 @@ log = Logger('stoqdrivers.sweda')
 
 class IFS9000IConstants(BaseDriverConstants):
     _constants = {
+        # Page 4-12, two decimals
         UNIT_WEIGHT:      '!',
         UNIT_METERS:      '@',
         UNIT_LITERS:      ')',
