@@ -34,7 +34,7 @@ from decimal import Decimal
 from kiwi.log import Logger
 from zope.interface import implements
 
-from stoqdrivers.constants import (TAX_ICMS, TAX_SUBSTITUTION,
+from stoqdrivers.constants import (TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, TAX_NONE,  UNIT_WEIGHT,
                                    UNIT_METERS, UNIT_LITERS, UNIT_EMPTY,
                                    UNIT_CUSTOM)
@@ -68,11 +68,10 @@ class IFS9000IConstants(BaseDriverConstants):
         }
 
     _tax_constants = [
-        # TODO Fixup these values
-        (TAX_ICMS,         'I', None),
+        # Page 4-8
         (TAX_SUBSTITUTION, 'F', None),
         (TAX_EXEMPTION,    'I', None),
-        (TAX_NONE,         'I', None),
+        (TAX_NONE,         'N', None),
         ]
 
 
