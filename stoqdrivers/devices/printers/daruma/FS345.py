@@ -124,12 +124,7 @@ def ifset(value, bit, false='', true=''):
         return true
 
 class FS345Constants(BaseDriverConstants):
-    # TODO Fixup these values
     _constants = {
-        TAX_ICMS:         'Nb',
-        TAX_SUBSTITUTION: 'Tb',
-        TAX_EXEMPTION:    'Fb',
-        TAX_NONE:         'Nb',
         UNIT_WEIGHT:      'Kg',
         UNIT_METERS:      'm ',
         UNIT_LITERS:      'Lt',
