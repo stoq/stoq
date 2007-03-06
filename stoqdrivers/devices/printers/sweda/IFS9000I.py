@@ -73,6 +73,7 @@ class IFS9000IConstants(BaseDriverConstants):
         (TAX_SUBSTITUTION, 'F', None),
         (TAX_EXEMPTION,    'I', None),
         (TAX_NONE,         'N', None),
+        # Custom, see Page 4-78
         ]
 
 
