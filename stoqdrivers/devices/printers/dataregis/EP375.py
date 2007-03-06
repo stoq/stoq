@@ -42,7 +42,7 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ, PendingReadX,
                                     HardwareFailure, OutofPaperError,
                                     CouponNotOpenError, CancelItemError,
                                     CouponOpenError)
-from stoqdrivers.constants import (MONEY_PM, CHEQUE_PM, TAX_ICMS, TAX_NONE,
+from stoqdrivers.constants import (MONEY_PM, CHEQUE_PM, TAX_NONE,
                                    TAX_SUBSTITUTION, TAX_EXEMPTION,
                                    UNIT_LITERS, UNIT_METERS, UNIT_WEIGHT,
                                    UNIT_EMPTY, UNIT_CUSTOM)
@@ -72,16 +72,15 @@ def format_value(value, max_len):
 
 class EP375Constants(BaseDriverConstants):
     _constants = {
-        UNIT_WEIGHT:      0,
-        UNIT_METERS:      4,
-        UNIT_LITERS:      3,
-        UNIT_EMPTY:       2,
+        UNIT_WEIGHT:      '00',
+        UNIT_METERS:      '04',
+        UNIT_LITERS:      '03',
+        UNIT_EMPTY:       '02',
         MONEY_PM:         '00',
-        CHEQUE_PM:        '01'
+        CHEQUE_PM:        '01',
         }
 
     _tax_constants = [
-        (TAX_ICMS,         '01', None),
         (TAX_SUBSTITUTION, '02', None),
         (TAX_EXEMPTION,    '03', None),
         (TAX_NONE,         '04', None),
@@ -251,7 +250,7 @@ class CouponItem:
                 "%06d" # quantity
                 "%09d" # price
                 "%04d" # discount/surcharge
-                "%02d" # unit
+                "%02s" # unit
                 % (self.code[:16], desc_size, self.description[:desc_size],
                    taxcode, quantity, price, D, self.unit))
 
