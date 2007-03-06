@@ -83,10 +83,10 @@ class MP25Constants(BaseDriverConstants):
         }
 
     _tax_constants = [
-        # Page 32
-        (TAX_SUBSTITUTION, 'FF', None),
+        # FIXME: when we have the printer working, use FF & NN
+        (TAX_SUBSTITUTION, 'II', None),
         (TAX_EXEMPTION,    'II', None),
-        (TAX_NONE,         'NN', None),
+        (TAX_NONE,         'II', None),
         ]
 
 
