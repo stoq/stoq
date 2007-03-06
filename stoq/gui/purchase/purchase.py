@@ -174,10 +174,10 @@ class PurchaseApp(SearchableAppWindow):
             return warning(_("There are no orders with status "
                              "pending in the selection"))
         elif valid_orders_len > 1:
-            msg = (_("The %d selected orders will be market as sent.")
+            msg = (_("The %d selected orders will be marked as sent.")
                    % valid_orders_len)
         else:
-            msg = _('The selected order will be market as sent.')
+            msg = _('The selected order will be marked as sent.')
         invalid_qty = len(orders) - valid_orders_len
         if valid_orders_len != len(orders):
             msg += "\n"
