@@ -81,6 +81,7 @@ class PurchaseApp(SearchableAppWindow):
         self.summary_total.show()
         self.summary_hbox.pack_start(self.summary_total, False)
         self.send_to_supplier_button.set_sensitive(False)
+        self.send_to_supplier_action.set_sensitive(False)
 
     def _update_totals(self):
         self.summary_total.update_total()
@@ -88,8 +89,7 @@ class PurchaseApp(SearchableAppWindow):
 
     def _update_list_aware_widgets(self, has_items):
         for widget in (self.edit_button, self.details_button,
-                       self.print_button,
-                       self.send_to_supplier_action):
+                       self.print_button):
             widget.set_sensitive(has_items)
 
     def _update_view(self):
@@ -107,6 +107,7 @@ class PurchaseApp(SearchableAppWindow):
             can_edit = selection[0].status == PurchaseOrder.ORDER_PENDING
         self.edit_button.set_sensitive(can_edit)
         self.send_to_supplier_button.set_sensitive(can_send_supplier)
+        self.send_to_supplier_action.set_sensitive(can_send_supplier)
         self.details_button.set_sensitive(one_selected)
 
     def _open_order(self, order=None, edit_mode=False):
