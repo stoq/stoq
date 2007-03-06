@@ -38,7 +38,7 @@ from stoqdrivers.exceptions import (CouponTotalizeError, PaymentAdditionError,
 from stoqdrivers.devices.interfaces import (ICouponPrinter,
                                             IChequePrinter)
 from stoqdrivers.devices.printers.base import BaseDriverConstants
-from stoqdrivers.constants import (TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
+from stoqdrivers.constants import (TAX_NONE, TAX_EXEMPTION,
                                    TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
                                    UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
                                    UNIT_EMPTY, TAX_CUSTOM)
@@ -64,7 +64,6 @@ class FakeConstants(BaseDriverConstants):
         }
 
     _tax_constants = [
-        (TAX_ICMS,         'TC', None),
         (TAX_SUBSTITUTION, 'TS', None),
         (TAX_EXEMPTION,    'TE', None),
         (TAX_NONE,         'TN', None),

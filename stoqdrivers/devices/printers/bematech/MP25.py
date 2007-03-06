@@ -39,7 +39,7 @@ from stoqdrivers.exceptions import (DriverError, OutofPaperError, PrinterError,
                                     PrinterOfflineError, PaymentAdditionError,
                                     ItemAdditionError, CancelItemError,
                                     CouponTotalizeError, CouponNotOpenError)
-from stoqdrivers.constants import (TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
+from stoqdrivers.constants import (TAX_NONE, TAX_EXEMPTION,
                                    TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
                                    UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
                                    UNIT_EMPTY, UNIT_CUSTOM)
@@ -83,11 +83,10 @@ class MP25Constants(BaseDriverConstants):
         }
 
     _tax_constants = [
-        # XXX Fixup these values
-        (TAX_ICMS,         'II', None),
-        (TAX_SUBSTITUTION, 'II', None),
+        # Page 32
+        (TAX_SUBSTITUTION, 'FF', None),
         (TAX_EXEMPTION,    'II', None),
-        (TAX_NONE,         'II', None),
+        (TAX_NONE,         'NN', None),
         ]
 
 
