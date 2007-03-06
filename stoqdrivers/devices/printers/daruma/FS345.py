@@ -404,7 +404,8 @@ class FS345(SerialBase):
         else:
             mode = 0
             value = Decimal("0")
-        data = '%d%012d' % (mode, int(value * Decimal("1e2")))
+        # Page 33
+        data = '%d%04d00000000' % (mode, int(value * Decimal("1e2")))
         rv = self.send_command(CMD_TOTALIZE_COUPON, data)
         coupon_subtotal = Decimal(rv) / Decimal("1e2")
         return (coupon_subtotal + (coupon_subtotal * surcharge / Decimal("1e2"))
