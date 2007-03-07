@@ -869,7 +869,7 @@ CREATE TABLE payment_operation (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    operation_date timestamp 
+    operation_date timestamp
 );
 
 CREATE TABLE bill_p_m (
@@ -969,8 +969,7 @@ CREATE TABLE receiving_order (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    receiving_number integer NOT NULL CONSTRAINT positive_receiving_number
-                     CHECK (receiving_number >= 1 and receiving_number <= 999999),
+    receiving_number integer NOT NULL UNIQUE,
     status integer,
     receival_date timestamp ,
     confirm_date timestamp ,
@@ -980,7 +979,7 @@ CREATE TABLE receiving_order (
     discount_value numeric(10,2),
     icms_total numeric(10,2),
     ipi_total numeric(10,2),
-    invoice_number integer,
+    invoice_number integer CONSTRAINT valid_invoice_number CHECK (invoice_number >= 1 and invoice_number <= 999999),
     invoice_total numeric(10,2),
     cfop_id bigint REFERENCES cfop_data(id),
     responsible_id bigint REFERENCES person_adapt_to_user(id),
