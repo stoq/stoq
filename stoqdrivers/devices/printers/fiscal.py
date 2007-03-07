@@ -92,7 +92,7 @@ class FiscalPrinter(BasePrinter):
 
     @capcheck(basestring, basestring, basestring)
     def identify_customer(self, customer_name, customer_address, customer_id):
-        log.debug('identify_customer(customer_name=%r, '
+        log.info('identify_customer(customer_name=%r, '
                   'customer_address=%r, customer_id=%r)' % (
             customer_name, customer_address, customer_id))
 
@@ -102,7 +102,7 @@ class FiscalPrinter(BasePrinter):
             self._format_text(customer_id))
 
     def open(self):
-        log.debug('coupon_open()')
+        log.info('coupon_open()')
 
         return self._driver.coupon_open()
 
@@ -112,9 +112,9 @@ class FiscalPrinter(BasePrinter):
                  items_quantity=Decimal("1.0"), unit=UNIT_EMPTY,
                  discount=Decimal("0.0"), surcharge=Decimal("0.0"),
                  unit_desc=""):
-        log.debug("add_item(code=%r, description=%r, price=%r, "
-                  "taxcode=%r, quantity=%r, unit=%r, discount=%r, "
-                  "surcharge=%r, unit_desc=%r)" % (
+        log.info("add_item(code=%r, description=%r, price=%r, "
+                 "taxcode=%r, quantity=%r, unit=%r, discount=%r, "
+                 "surcharge=%r, unit_desc=%r)" % (
             item_code, item_description, item_price, taxcode,
             items_quantity, unit, discount, surcharge, unit_desc))
 
@@ -142,7 +142,7 @@ class FiscalPrinter(BasePrinter):
     @capcheck(percent, percent, taxcode)
     def totalize(self, discount=Decimal("0.0"), surcharge=Decimal("0.0"),
                  taxcode=TAX_NONE):
-        log.debug('totalize(discount=%r, surcharge=%r, taxcode=%r)' % (
+        log.info('totalize(discount=%r, surcharge=%r, taxcode=%r)' % (
             discount, surcharge, taxcode))
 
         if discount and surcharge:
@@ -158,9 +158,9 @@ class FiscalPrinter(BasePrinter):
     @capcheck(payment_method, Decimal, basestring, basestring)
     def add_payment(self, payment_method, payment_value,
                     payment_description='', custom_pm=''):
-        log.debug("add_payment(method=%r, value=%r, description=%r, "
-                  "custom_pm=%r)" % (payment_method, payment_value,
-                                     payment_description, custom_pm))
+        log.info("add_payment(method=%r, value=%r, description=%r, "
+                 "custom_pm=%r)" % (payment_method, payment_value,
+                                    payment_description, custom_pm))
 
         if not self._has_been_totalized:
             raise PaymentAdditionError(_("You must totalize the coupon "
@@ -180,19 +180,19 @@ class FiscalPrinter(BasePrinter):
         return result
 
     def cancel(self):
-        log.debug('coupon_cancel()')
+        log.info('coupon_cancel()')
 
         return self._driver.coupon_cancel()
 
     @capcheck(int)
     def cancel_item(self, item_id):
-        log.debug('coupon_cancel_item(item_id=%r)' % (item_id,))
+        log.info('coupon_cancel_item(item_id=%r)' % (item_id,))
 
         return self._driver.coupon_cancel_item(item_id)
 
     @capcheck(basestring)
     def close(self, promotional_message=''):
-        log.debug('coupon_close(promotional_message=%r)' % (
+        log.info('coupon_close(promotional_message=%r)' % (
             promotional_message))
 
         if not self._has_been_totalized:
@@ -213,24 +213,24 @@ class FiscalPrinter(BasePrinter):
         return res
 
     def summarize(self):
-        log.debug('summarize()')
+        log.info('summarize()')
 
         return self._driver.summarize()
 
     def close_till(self):
-        log.debug('close_till')
+        log.info('close_till')
 
         return self._driver.close_till()
 
     @capcheck(Decimal)
     def till_add_cash(self, add_cash_value):
-        log.debug('till_add_cash(add_cash_value=%r)' % (add_cash_value,))
+        log.info('till_add_cash(add_cash_value=%r)' % (add_cash_value,))
 
         return self._driver.till_add_cash(add_cash_value)
 
     @capcheck(Decimal)
     def till_remove_cash(self, remove_cash_value):
-        log.debug('till_remove_cash(remove_cash_value=%r)' % (
+        log.info('till_remove_cash(remove_cash_value=%r)' % (
             remove_cash_value,))
 
         return self._driver.till_remove_cash(remove_cash_value)
