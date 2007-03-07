@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -24,6 +24,8 @@
 ##              Johan Dahlin            <jdahlin@async.com.br>
 ##
 """ Useful functions for StoqDrivers interaction """
+
+from decimal import Decimal
 
 import gtk
 from kiwi.argcheck import argcheck
@@ -463,8 +465,7 @@ class FiscalCoupon:
         # XXX: Remove this when bug #2827 is fixed.
         if not self._item_ids:
             return True
-        discount = self.sale.discount_percentage
-        surcharge = 0
+        surcharge = Decimal('0')
 
         # Surcharge is currently disabled, see #2811
         #if discount > surcharge:
@@ -477,6 +478,10 @@ class FiscalCoupon:
         #    # If these values are greater than zero we will get problems in
         #    # stoqdrivers
         #    surcharge = discount = 0
+
+        # Only send in two decimals.
+        # Is this the right place to do this?
+        discount = self.sale.discount_percentage.quantize(Decimal('10e-2'))
 
         try:
             self.printer.totalize(discount, surcharge, TAX_NONE)
