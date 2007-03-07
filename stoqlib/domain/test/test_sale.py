@@ -98,6 +98,7 @@ def get_sale(conn, specific=None, employee_role=None):
         stock_item.quantity = 100
         stock_item.stock_cost = Decimal(10)
         stock_item.logic_quantity = stock_item.quantity
+    storable.increase_stock(100, branch)
 
     if specific == 'np':
         return sale
@@ -267,7 +268,8 @@ class TestSale(DomainTest):
         method.setup_inpayments(sale.get_sale_subtotal(),
                                 IPaymentGroup(sale))
 
-        self.assertEqual(IcmsIpiBookEntry.select(connection=self.trans).count(), 1)
+        self.assertEqual(
+            IcmsIpiBookEntry.select(connection=self.trans).count(), 1)
         sale.confirm_sale()
         result = IcmsIpiBookEntry.select(connection=self.trans)
         self.assertEqual(result.count(), 2)
