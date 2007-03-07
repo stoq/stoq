@@ -173,11 +173,11 @@ class TillApp(SearchableAppWindow):
         """
         Opens the till
         """
+        log.info("Opening till")
         parent = self.get_toplevel()
         if not check_emit_read_X(self.conn, parent):
             return
 
-        log.info("Opening till")
         rollback_and_begin(self.conn)
         if verify_and_open_till(self, self.conn):
             self._update_widgets()
@@ -189,12 +189,12 @@ class TillApp(SearchableAppWindow):
         Closes the till
         @returns: True if the till was closed, otherwise False
         """
-        parent = self.get_toplevel()
-        if not check_emit_reduce_Z(self.conn, parent):
-            return False
-
         log.info("Closing till")
         if verify_and_close_till(self, self.conn):
+            return False
+
+        parent = self.get_toplevel()
+        if not check_emit_reduce_Z(self.conn, parent):
             return False
 
         self._update_widgets()
