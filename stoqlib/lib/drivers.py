@@ -465,7 +465,6 @@ class FiscalCoupon:
         # XXX: Remove this when bug #2827 is fixed.
         if not self._item_ids:
             return True
-        surcharge = Decimal('0')
 
         # Surcharge is currently disabled, see #2811
         #if discount > surcharge:
@@ -478,10 +477,9 @@ class FiscalCoupon:
         #    # If these values are greater than zero we will get problems in
         #    # stoqdrivers
         #    surcharge = discount = 0
+        surcharge = Decimal('0')
 
-        # Only send in two decimals.
-        # Is this the right place to do this?
-        discount = self.sale.discount_percentage.quantize(Decimal('10e-2'))
+        discount = self.sale.discount_percentage
 
         try:
             self.printer.totalize(discount, surcharge, TAX_NONE)
