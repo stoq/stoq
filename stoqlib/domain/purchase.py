@@ -234,7 +234,7 @@ class PurchaseOrder(Domain):
         if not percentage:
             return currency(0)
         subtotal = self.get_purchase_subtotal()
-        percentage = Decimal(str(percentage))
+        percentage = Decimal(percentage)
         return subtotal * (percentage / 100)
 
     def _set_discount_by_percentage(self, value):
@@ -253,7 +253,7 @@ class PurchaseOrder(Domain):
                               'at this point')
         total = subtotal - discount_value
         percentage = (1 - total / subtotal) * 100
-        return percentage
+        return percentage.quantize(Decimal('10e-2'))
 
     discount_percentage = property(_get_discount_by_percentage,
                                    _set_discount_by_percentage)
@@ -274,7 +274,7 @@ class PurchaseOrder(Domain):
                               'at this point')
         total = subtotal + surcharge_value
         percentage = ((total / subtotal) - 1) * 100
-        return percentage
+        return percentage.quantize(Decimal('10e-2'))
 
     surcharge_percentage = property(_get_surcharge_by_percentage,
                                  _set_surcharge_by_percentage)
