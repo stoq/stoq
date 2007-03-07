@@ -273,8 +273,6 @@ class Pay2023(SerialBase, BaseChequePrinter):
         else:
             unit = self._consts.get_value(unit)
 
-        if len(taxcode) != 1:
-            raise ValueError
         taxcode = ord(taxcode) - 128
         self.send_command(Pay2023.CMD_ADD_ITEM,
                           CodAliquota=taxcode,
