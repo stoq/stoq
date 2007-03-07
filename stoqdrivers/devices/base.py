@@ -29,7 +29,8 @@ Generic base class implementation for all devices.
 
 import gobject
 
-from stoqdrivers.log import Logger
+from kiwi.log import Logger
+
 from stoqdrivers.configparser import StoqdriversConfig
 from stoqdrivers.exceptions import CriticalError, ConfigError
 from stoqdrivers.constants import (PRINTER_DEVICE, SCALE_DEVICE,
@@ -39,12 +40,13 @@ from stoqdrivers.devices.serialbase import SerialPort
 
 _ = lambda msg: stoqdrivers_gettext(msg)
 
-class BaseDevice(Logger):
+log = Logger('stoqdrivers.basedevice')
+
+class BaseDevice:
     """ Base class for all device interfaces, responsible for instantiate
     the device driver itself based on the brand and model specified or in
     the configuration file.
     """
-    log_domain = "stoqdrivers"
     typename_translate_dict = {
         PRINTER_DEVICE: "Printer",
         SCALE_DEVICE: "Scale",
@@ -57,7 +59,6 @@ class BaseDevice(Logger):
 
     def __init__(self, brand=None, model=None, device=None, config_file=None,
                  port=None, consts=None):
-        Logger.__init__(self)
         if not self.device_dirname:
             raise ValueError("Subclasses must define the "
                              "`device_dirname' attribute")
@@ -97,8 +98,8 @@ class BaseDevice(Logger):
         if not self._port:
             self._port = SerialPort(self.device)
         self._driver = driver_class(self._port, consts=self._driver_constants)
-        self.debug(("Config data: brand=%s,device=%s,model=%s\n"
-                    % (self.brand, self.device, self.model)))
+        log.info(("Config data: brand=%s,device=%s,model=%s\n"
+                  % (self.brand, self.device, self.model)))
         self.check_interfaces()
 
     def get_model_name(self):

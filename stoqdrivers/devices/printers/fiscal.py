@@ -92,8 +92,8 @@ class FiscalPrinter(BasePrinter):
 
     @capcheck(basestring, basestring, basestring)
     def identify_customer(self, customer_name, customer_address, customer_id):
-        self.debug('identify_customer(customer_name=%r, '
-                   'customer_address=%r, customer_id=%r)' % (
+        log.debug('identify_customer(customer_name=%r, '
+                  'customer_address=%r, customer_id=%r)' % (
             customer_name, customer_address, customer_id))
 
         self._driver.coupon_identify_customer(
@@ -133,7 +133,7 @@ class FiscalPrinter(BasePrinter):
             raise ValueError("unit description must be 2-byte sized string")
         if not item_price:
             raise InvalidValue("The item value must be greater than zero")
-        self.info('coupon_add_item')
+
         return self._driver.coupon_add_item(
             self._format_text(item_code), self._format_text(item_description),
             item_price, taxcode, items_quantity, unit, discount, surcharge,
@@ -162,7 +162,6 @@ class FiscalPrinter(BasePrinter):
                   "custom_pm=%r)" % (payment_method, payment_value,
                                      payment_description, custom_pm))
 
-        self.info('coupon_add_payment')
         if not self._has_been_totalized:
             raise PaymentAdditionError(_("You must totalize the coupon "
                                          "before add payments."))

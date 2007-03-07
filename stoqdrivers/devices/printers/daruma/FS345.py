@@ -30,6 +30,7 @@ Daruma FS345 driver
 import time
 from decimal import Decimal
 
+from kiwi.log import Logger
 from zope.interface import implements
 
 from stoqdrivers.constants import (TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
@@ -50,6 +51,8 @@ from stoqdrivers.devices.printers.base import BaseDriverConstants
 from stoqdrivers.translation import stoqdrivers_gettext
 
 _ = lambda msg: stoqdrivers_gettext(msg)
+
+log = Logger('stoqdrivers.daruma')
 
 CMD_STATUS = '\x1d\xff'
 
@@ -200,7 +203,7 @@ class FS345(SerialBase):
         if not self.status_check(status, 2, 2):
              raise CommError(_("Peripheral is not connected to AUX"))
         if self.status_check(status, 2, 0):
-            self.warning('Almost out of paper')
+            log.info('Almost out of paper')
 
         if verbose:
             S3 = status[3]

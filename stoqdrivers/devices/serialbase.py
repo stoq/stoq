@@ -25,11 +25,13 @@
 ##              Henrique Romano  <henrique@async.com.br>
 ##
 
+from kiwi.log import Logger
 from serial import Serial, EIGHTBITS, PARITY_NONE, STOPBITS_ONE
 from zope.interface import implements
 
-from stoqdrivers.log import Logger
 from stoqdrivers.devices.interfaces import ISerialPort
+
+log = Logger('stoqdrivers.serial')
 
 class VirtualPort:
     implements(ISerialPort)
@@ -73,8 +75,7 @@ class SerialPort(Serial):
         self.setTimeout(read_timeout)
         self.setWriteTimeout(write_timeout)
 
-class SerialBase(Logger):
-    log_domain = 'serial'
+class SerialBase:
 
     # All commands will have this prefixed
     CMD_PREFIX = '\x1b'
@@ -84,7 +85,6 @@ class SerialBase(Logger):
     EOL_DELIMIT = '\r'
 
     def __init__(self, port):
-        Logger.__init__(self)
         self._port = port
 
     def set_port(self, port):
@@ -98,7 +98,7 @@ class SerialBase(Logger):
         return self.readline()
 
     def write(self, data):
-        self.debug(">>> %r (%d bytes)" % (data, len(data)))
+        log.debug(">>> %r (%d bytes)" % (data, len(data)))
         self._port.write(data)
 
     def read(self, n_bytes):
@@ -109,6 +109,6 @@ class SerialBase(Logger):
         while True:
             c = self._port.read(1)
             if c == self.EOL_DELIMIT:
-                self.debug('<<< %r' % out)
+                log.debug('<<< %r' % out)
                 return out
             out += c

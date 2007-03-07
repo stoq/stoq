@@ -30,6 +30,7 @@ Bematech MP25 driver
 
 from decimal import Decimal
 
+from kiwi.log import Logger
 from zope.interface import implements
 
 from stoqdrivers.devices.serialbase import SerialBase
@@ -49,6 +50,8 @@ from stoqdrivers.devices.printers.base import BaseDriverConstants
 from stoqdrivers.translation import stoqdrivers_gettext
 
 _ = lambda msg: stoqdrivers_gettext(msg)
+
+log = Logger('stoqdrivers.bematech')
 
 CASH_IN_TYPE = "SU"
 CASH_OUT_TYPE = "SA"
@@ -265,7 +268,7 @@ class MP25(SerialBase):
             data = self.read_insist(5 + extrabytes_num)
         else:
             raise TypeError("Invalid protocol used, got %r" % MP25.CMD_PROTO)
-        self.debug("<<< %r (%dbytes)" % (data, len(data or '')))
+        log.debug("<<< %r (%dbytes)" % (data, len(data or '')))
         return data
 
     def _send_command(self, command):
