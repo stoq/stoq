@@ -39,7 +39,7 @@ from stoqlib.database.runtime import new_transaction, get_current_branch
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.lib.drivers import emit_coupon, CouponPrinter
+from stoqlib.lib.drivers import CouponPrinter
 from stoqlib.lib.message import yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
@@ -199,7 +199,7 @@ class TillApp(SearchableAppWindow):
         model = self.run_dialog(ConfirmSaleWizard, self.conn, sale)
         if not finish_transaction(self.conn, model):
             return
-        if not emit_coupon(sale, self.conn):
+        if not self._printer.emit_coupon(sale):
             return
         self.conn.commit()
         self.searchbar.search_items()
