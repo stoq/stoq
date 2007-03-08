@@ -40,6 +40,7 @@ from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.database.database import rollback_and_begin, finish_transaction
 from stoqlib.database.runtime import new_transaction, get_current_user
 from stoqlib.domain.interfaces import IDelivery, IStorable, ISalesPerson
+from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.sellable import ASellable
@@ -48,9 +49,7 @@ from stoqlib.domain.till import Till
 from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.drivers import (CouponPrinter, read_scale_info,
-                                 get_current_scale_settings)
-from stoqlib.reporting.sale import SaleOrderReport
+from stoqlib.lib.drivers import CouponPrinter, read_scale_info
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
@@ -63,6 +62,7 @@ from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard, PreOrderWizard
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.reporting.sale import SaleOrderReport
 
 from stoq.gui.application import AppWindow
 from stoq.gui.pos.neworder import NewOrderEditor
@@ -89,6 +89,7 @@ class POSApp(AppWindow):
         self._product_table = ProductAdaptToSellable
         self._coupon = None
         self._printer = CouponPrinter(self.conn)
+        self._scale_settings = DeviceSettings.get_scale_settings(self.conn)
         self._check_till()
         self._setup_widgets()
         self._setup_proxies()
@@ -101,7 +102,7 @@ class POSApp(AppWindow):
         # configured for this station, go and check out what the printer says.
         if (sellable and sellable.unit and
             sellable.unit.unit_index == UNIT_WEIGHT and
-            get_current_scale_settings(self.conn)):
+            self._scale_settings):
             self._read_scale()
 
     def _setup_proxies(self):
@@ -303,7 +304,7 @@ class POSApp(AppWindow):
             # configured for this station, go and check what the scale says.
             if (sellable and sellable.unit and
                 sellable.unit.unit_index == UNIT_WEIGHT and
-                get_current_scale_settings(self.conn)):
+                self._scale_settings):
                 self._read_scale(sellable)
 
         self._update_list(sellable, notify_on_entry=True)
