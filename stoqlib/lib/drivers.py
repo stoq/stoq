@@ -345,6 +345,10 @@ class CouponPrinter(object):
                 sale.till = new_till
 
         if model.value > 0:
+            # If we forgot to close the till and want to do a remove cash
+            # we must emit a Read X before removing cash
+            if till.needs_closing():
+                self._emit_reading('summarize')
             self.remove_cash(model.value)
 
         retval = True
