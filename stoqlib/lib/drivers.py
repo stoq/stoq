@@ -378,9 +378,6 @@ class CouponPrinter(object):
         """
         return _FiscalCoupon(self._printer, self._settings, sale)
 
-    def get_capability(self, name):
-        return self._printer.get_capabilities()[name]
-
 
 
 #
@@ -402,6 +399,9 @@ class _FiscalCoupon(object):
         self._sale = sale
         self._item_ids = {}
 
+    def _get_capability(self, name):
+        return self._printer.get_capabilities()[name]
+
     #
     # IContainer implementation
     #
@@ -419,7 +419,7 @@ class _FiscalCoupon(object):
             return
 
         sellable = item.sellable
-        max_len = self._printer.get_capability("item_description").max_len
+        max_len = self._get_capability("item_description").max_len
         description = sellable.base_sellable_info.description[:max_len]
         unit_desc = ''
         if not sellable.unit:
@@ -428,7 +428,7 @@ class _FiscalCoupon(object):
             if sellable.unit.unit_index == UNIT_CUSTOM:
                 unit_desc = sellable.unit.description
             unit = sellable.unit.unit_index or UNIT_EMPTY
-        max_len = self._printer.get_capability("item_code").max_len
+        max_len = self._get_capability("item_code").max_len
         code = sellable.get_code_str()[:max_len]
         constant = self._settings.get_tax_constant_for_device(sellable)
         item_id = self._printer.add_item(code, description, item.price,
@@ -458,7 +458,7 @@ class _FiscalCoupon(object):
     #
 
     def identify_customer(self, person):
-        max_len = self._printer.get_capability("customer_id").max_len
+        max_len = self._get_capability("customer_id").max_len
         if IIndividual(person):
             individual = IIndividual(person)
             document = individual.cpf[:max_len]
@@ -469,9 +469,9 @@ class _FiscalCoupon(object):
             raise TypeError(
                 "identify_customer needs an object implementing "
                 "IIndividual or ICompany")
-        max_len = self._printer.get_capability("customer_name").max_len
+        max_len = self._get_capability("customer_name").max_len
         name = person.name[:max_len]
-        max_len = self._printer.get_capability("customer_address").max_len
+        max_len = self._get_capability("customer_address").max_len
         address = person.get_address_string()[:max_len]
         self._printer.identify_customer(name, address, document)
 
