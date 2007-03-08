@@ -79,7 +79,7 @@ CMD_REDUCE_Z = 208
 CMD_ADD_ITEM_1L13D = 214
 CMD_ADD_ITEM_2L13D = 215
 CMD_ADD_ITEM_3L13D = 216
-# [ESC] 217 Emissão de Comprovante Não Fiscal Não Vinculado
+CMD_OPEN_VOUCHER = 217
 CMD_DESCRIBE_MESSAGES = 218
 # [ESC] 219 Abertura de Comprovante Não Fiscal Vinculado
 # [ESC] 220 Carga de alíquota de imposto
@@ -104,14 +104,13 @@ CMD_TOTALIZE_COUPON = 241
 CMD_DESCRIBE_PAYMENT_FORM = 242
 CMD_CLOSE_COUPON = 243
 CMD_GET_REGISTRIES = 244
+CMD_GET_TOTALIZERS = 244
 # [ESC] 246 Leitura Horária
 # [ESC] 247 Descrição Estendida
 # [ESC] 248 Estorno de forma de pagamento
 # [ESC] 250 Leitura de datas de Controle Fiscal
 # [ESC] 251 Leitura das informações cadastrais do usuário
 # [ESC] V   Controle de horário de verão
-CMD_GET_TOTALIZERS = 244
-CMD_OPEN_VOUCHER = 217
 
 CASH_IN_TYPE = 'B'
 CASH_OUT_TYPE = 'A'
@@ -246,6 +245,8 @@ class FS345(SerialBase):
                                     "the coupon"))
         elif error == 16:
             raise DriverError("Bad discount/markup parameter")
+        elif error == 21:
+            raise OutofPaperError(_('No paper'))
         elif error == 22:
             raise DriverError("Reduce Z was already sent today, try again tomorrow")
         elif error == 23:
@@ -253,7 +254,7 @@ class FS345(SerialBase):
         elif error == 24:
             raise DriverError("Bad unit specified: %r" % raw)
         elif error == 42:
-            raise DriverError("Bad OKI command")
+            raise DriverError("Read X has not been sent yet")
         elif error == 45:
             raise DriverError("Bad numeric string")
         else:
