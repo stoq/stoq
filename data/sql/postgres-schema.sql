@@ -24,25 +24,6 @@
 -- Sequences
 --
 
-CREATE SEQUENCE stoqlib_abstract_bookentry_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-CREATE SEQUENCE stoqlib_branch_identifier_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-CREATE SEQUENCE stoqlib_payment_identifier_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
 CREATE SEQUENCE stoqlib_purchase_ordernumber_seq
     INCREMENT BY 1
     NO MAXVALUE
