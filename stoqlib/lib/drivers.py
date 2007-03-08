@@ -71,20 +71,6 @@ def _get_fiscalprinter(conn):
     """ Returns a FiscalPrinter instance pre-configured to the current
     workstation.
     """
-    global _printer
-    if _printer:
-        return _printer
-    station = get_current_station(conn)
-    setting = get_fiscal_printer_settings_by_station(conn, station)
-    if setting and setting.is_active:
-        _printer = setting.get_interface()
-    else:
-        warning(_(u"There is no fiscal printer"),
-               _(u"There is no fiscal printer configured for this "
-                "station (\"%s\") or the printer is not enabled "
-                "currently." % station.name))
-
-    return _printer
 
 def _get_scale(conn):
     """ Returns a Scale instance pre-configured for the current
@@ -161,16 +147,6 @@ def create_virtual_printer_for_current_station():
     settings.create_fiscal_printer_constants()
     trans.commit(close=True)
 
-def check_virtual_printer_for_current_station(conn):
-    """Returns True if the fiscal printer for the current station is
-    a virtual one.
-    """
-    printer = _get_fiscalprinter(conn)
-    if not printer:
-        raise ValueError("There should be a fiscal printer defined "
-                         "at this point")
-    return printer.brand == 'virtual'
-
 #
 # Coupon & Cheque
 #
@@ -233,7 +209,9 @@ class CouponPrinter(object):
     """
     def __init__(self, conn):
         self.conn = conn
-        self._printer = _get_fiscalprinter(conn)
+        station = get_current_station(conn)
+        self._settings = get_fiscal_printer_settings_by_station(conn, station)
+        self._printer = self._settings.get_interface()
 
     def _emit_reading(self, cmd):
         try:
@@ -400,10 +378,7 @@ class CouponPrinter(object):
         if not products:
             return True
 
-        settings = get_fiscal_printer_settings_by_station(
-            self.conn, get_current_station(self.conn))
-
-        coupon = _FiscalCoupon(self._printer, sale, settings)
+        coupon = self.create_coupon(sale)
         if sale.client:
             coupon.identify_customer(sale.client.person)
         if not coupon.open():
@@ -416,13 +391,20 @@ class CouponPrinter(object):
             return False
         return coupon.close()
 
+    def create_coupon(self, sale):
+        """
+        @param sale: a L{stoqlib.domain.sale.Sale}
+        @returns: a new coupon
+        """
+        return _FiscalCoupon(self._printer, self._settings, sale)
+
 
 #
 # Class definitions
 #
 
 
-class _FiscalCoupon:
+class _FiscalCoupon(object):
     """ This class is used just to allow us cancel an item with base in a
     ASellable object. Currently, services can't be added, and they
     are just ignored -- be aware, if a coupon with only services is
@@ -430,10 +412,10 @@ class _FiscalCoupon:
     """
     implements(IContainer)
 
-    def __init__(self, printer, sale, settings):
+    def __init__(self, printer, settings, sale):
         self.printer = printer
-        self.sale = sale
         self.settings = settings
+        self.sale = sale
         self._item_ids = {}
 
     #
