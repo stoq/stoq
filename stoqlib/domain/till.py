@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -29,6 +29,7 @@ import datetime
 
 from sqlobject import (IntCol, DateTimeCol, ForeignKey, BoolCol, UnicodeCol,
                        SQLObject)
+
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 from kiwi.datatypes import currency
@@ -39,10 +40,11 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.exceptions import TillError, DatabaseInconsistency
 from stoqlib.domain.base import Domain, BaseSQLView
-from stoqlib.domain.sale import Sale
-from stoqlib.domain.payment.payment import AbstractPaymentGroup, Payment
 from stoqlib.domain.interfaces import (IPaymentGroup, ITillOperation,
                                        IOutPayment, IInPayment)
+from stoqlib.domain.payment.payment import AbstractPaymentGroup, Payment
+from stoqlib.domain.person import PersonAdaptToBranch
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
 
 _ = stoqlib_gettext
@@ -251,14 +253,6 @@ class Till(Domain):
 
         return False
 
-    #
-    # Operations on TillEntryAndPaymentView
-    #
-    # TODO: Should they be moved to the view itself or should the view
-    #       only be treated as an implementation details?
-    #       or just add a layer of extra indirection?
-    #
-
     def get_balance(self):
         """ Return the total of all "extra" payments (like cash
         advance, till complement, ...) associated to this till
@@ -266,13 +260,13 @@ class Till(Domain):
         money, of all the sales associated with this operation
         *plus* the initial cash amount.
         """
-        results = TillEntryAndPaymentView.selectBy(
-            till_id=self.id, connection=self.get_connection())
+        results = TillEntry.selectBy(
+            till=self, connection=self.get_connection())
         return currency(self.initial_cash_amount + (results.sum('value') or 0))
 
     def get_entries(self):
-        return TillEntryAndPaymentView.selectBy(
-            till_id=self.id, connection=self.get_connection())
+        return TillEntry.selectBy(
+            till=self, connection=self.get_connection())
 
     def get_initial_cash_amount(self):
         """
@@ -280,8 +274,8 @@ class Till(Domain):
         This value is useful when providing change during sales.
         @returns: the initial amount
         """
-        entry = TillEntryAndPaymentView.selectOneBy(
-            till_id=self.id,
+        entry = TillEntry.selectOneBy(
+            till=self,
             is_initial_cash_amount=True,
             connection=self.get_connection())
         if not entry:
@@ -290,17 +284,15 @@ class Till(Domain):
         return entry.value
 
     def get_credits_total(self):
-        view = TillEntryAndPaymentView
-        results = view.select(AND(view.q.value > 0,
-                                  view.q.till_id == self.id),
-                              connection=self.get_connection())
+        results = TillEntry.select(AND(TillEntry.q.value > 0,
+                                       TillEntry.q.tillID == self.id),
+                                   connection=self.get_connection())
         return currency(results.sum('value') or 0)
 
     def get_debits_total(self):
-        view = TillEntryAndPaymentView
-        results = view.select(AND(view.q.value < 0,
-                                  view.q.till_id == self.id),
-                              connection=self.get_connection())
+        results = TillEntry.select(AND(TillEntry.q.value < 0,
+                                       TillEntry.q.tillID == self.id),
+                                   connection=self.get_connection())
         return currency(results.sum('value') or 0)
 
     #
@@ -404,22 +396,6 @@ class TillFiscalOperationsView(SQLObject, BaseSQLView):
     branch_id = IntCol()
     status = IntCol()
 
-class TillEntryAndPaymentView(SQLObject, BaseSQLView):
-    """Stores informations about till fiscal operations, which is a union
-    between till_entry and payment tables
-    """
-
-    identifier = IntCol()
-    date = DateTimeCol()
-    closing_date = DateTimeCol()
-    description = UnicodeCol()
-    value = PriceCol()
-    is_initial_cash_amount = IntCol()
-    till_id = IntCol()
-    station_name = UnicodeCol()
-    branch_id = IntCol()
-    status = IntCol()
-
 #
 # Functions
 #
@@ -431,12 +407,14 @@ def get_last_till_operation_for_current_branch(conn):
     on the final_cash_amount attribute of the last till operation
     """
 
-    branch = get_current_branch(conn)
-    result = TillEntryAndPaymentView.selectBy(
-        status=Till.STATUS_CLOSED,
-        branch_id=branch.id,
+    result = TillEntry.select(
+        AND(Till.q.id == TillEntry.q.tillID,
+            Till.q.status == Till.STATUS_CLOSED,
+            Till.q.stationID == BranchStation.q.id,
+            BranchStation.q.branchID == PersonAdaptToBranch.q.id,
+            PersonAdaptToBranch.q.id == get_current_branch(conn).id),
+
         connection=conn).orderBy('date')
 
     if result:
-        till_entry = result[-1]
-        return Till.get(till_entry.till_id, connection=conn)
+        return result[-1]

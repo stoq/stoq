@@ -153,11 +153,13 @@ class Payment(Domain):
     def pay(self, paid_date=None, paid_value=None):
         """Pay the current payment set its status as STATUS_PAID"""
         self._check_status(self.STATUS_PENDING, 'pay')
+
         paid_value = paid_value or (self.value - self.discount +
                                     self.interest)
         self.paid_value = paid_value
         self.paid_date = paid_date or datetime.datetime.now()
         self.status = self.STATUS_PAID
+
 
     def submit(self, submit_date=None):
         """The first stage of payment acquittance is submiting and mark a
@@ -440,6 +442,9 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         # FIXME: Check if all the payments are in STATUS_PREVIEW state?
         for payment in self.get_items():
             payment.set_pending()
+            self.create_credit(payment.value,
+                               payment.description,
+                               payment.till)
 
     def confirm_money_payments(self):
         from stoqlib.domain.payment.methods import MoneyPM
@@ -523,7 +528,6 @@ class PaymentAdaptToInPayment(ModelAdapter):
             raise ValueError("This payment is already received.")
         payment.pay()
         payment.group.update_thirdparty_status()
-        # TODO we must also add new till entries here
 
 Payment.registerFacet(PaymentAdaptToInPayment, IInPayment)
 
@@ -537,7 +541,6 @@ class PaymentAdaptToOutPayment(ModelAdapter):
         if not payment.status == Payment.STATUS_PENDING:
             raise ValueError("This payment is already paid.")
         payment.pay()
-        # TODO we must also add new till entries here
 
 Payment.registerFacet(PaymentAdaptToOutPayment, IOutPayment)
 
