@@ -82,17 +82,17 @@ class TestParameter(DomainTest):
 
     # System instances based on stoq.lib.parameters
 
-    def test_MainCompany(self):
+    def testMainCompany(self):
         company = self.sparam.MAIN_COMPANY
         branchTable = Person.getAdapterClass(IBranch)
         assert isinstance(company, branchTable)
         assert isinstance(company.person, Person)
 
-    def test_DefaultEmployeeRole(self):
+    def testDefaultEmployeeRole(self):
         employee_role = self.sparam.DEFAULT_SALESPERSON_ROLE
         assert isinstance(employee_role, EmployeeRole)
 
-    def test_SuggestedSupplier(self):
+    def testSuggestedSupplier(self):
         supplier = self.sparam.SUGGESTED_SUPPLIER
         supplierTable = Person.getAdapterClass(ISupplier)
         assert isinstance(supplier, supplierTable)
@@ -101,11 +101,11 @@ class TestParameter(DomainTest):
         supplier = ISupplier(person)
         assert isinstance(supplier, supplierTable)
 
-    def test_DefaultBaseCategory(self):
+    def testDefaultBaseCategory(self):
         base_category = self.sparam.DEFAULT_BASE_CATEGORY
         assert isinstance(base_category, BaseSellableCategory)
 
-    def test_PaymentDestination(self):
+    def testPaymentDestination(self):
         self._create_examples()
         param = self.sparam.DEFAULT_PAYMENT_DESTINATION
         method = MoneyPM.selectOne(connection=self.trans)
@@ -113,11 +113,11 @@ class TestParameter(DomainTest):
                                              method=method)
         self.failUnless(new_payment.destination is param)
 
-    def test_DeliveryService(self):
+    def testDeliveryService(self):
         service = self.sparam.DELIVERY_SERVICE
         assert isinstance(service, ServiceAdaptToSellable)
 
-    def test_DefaultGiftCertificateType(self):
+    def testDefaultGiftCertificateType(self):
         self._create_examples()
         param = self.sparam.DEFAULT_GIFT_CERTIFICATE_TYPE
         sellable_cert = self.sale.add_custom_gift_certificate(
@@ -129,7 +129,7 @@ class TestParameter(DomainTest):
 
     # System constants based on stoq.lib.parameters
 
-    def test_UseLogicQuantity(self):
+    def testUseLogicQuantity(self):
         storable = self.create_storable()
         param = self.sparam.USE_LOGIC_QUANTITY
         self.assertEqual(storable._check_logic_quantity(), None)
@@ -138,41 +138,41 @@ class TestParameter(DomainTest):
         self.failUnlessRaises(StockError,
                               storable._check_logic_quantity)
 
-    def test_MaxLateDays(self):
+    def testMaxLateDays(self):
         param = self.sparam.MAX_LATE_DAYS
         assert isinstance(param, int)
 
-    def test_POSFullScreen(self):
+    def testPOSFullScreen(self):
         param = self.sparam.POS_FULL_SCREEN
         assert isinstance(param, bool)
 
-    def test_POSSeparateCashier(self):
+    def testPOSSeparateCashier(self):
         param = self.sparam.POS_SEPARATE_CASHIER
         assert isinstance(param, bool)
 
-    def test_AcceptOrderProducts(self):
+    def testAcceptOrderProducts(self):
         param = self.sparam.ACCEPT_ORDER_PRODUCTS
         assert isinstance(param, int)
 
-    def test_LocationSuggested(self):
+    def testLocationSuggested(self):
         location = CityLocation.get_default(self.trans)
         self.assertEqual(location.city, self.sparam.CITY_SUGGESTED)
         self.assertEqual(location.state, self.sparam.STATE_SUGGESTED)
         self.assertEqual(location.country, self.sparam.COUNTRY_SUGGESTED)
 
-    def test_HasDeliveryMode(self):
+    def testHasDeliveryMode(self):
         param = self.sparam.HAS_DELIVERY_MODE
         assert isinstance(param, int)
 
-    def test_HasStockMode(self):
+    def testHasStockMode(self):
         param = self.sparam.HAS_STOCK_MODE
         assert isinstance(param, int)
 
-    def test_MaxSearchResults(self):
+    def testMaxSearchResults(self):
         param = self.sparam.MAX_SEARCH_RESULTS
         assert isinstance(param, int)
 
-    def test_MandatoryInterestCharge(self):
+    def testMandatoryInterestCharge(self):
         return True
         self.sparam.update_parameter(
             parameter_name='MANDATORY_INTEREST_CHARGE',
@@ -185,16 +185,16 @@ class TestParameter(DomainTest):
                               interest=Decimal(30),
                               installments_number=1)
 
-    def test_ConfirmSalesOnTill(self):
+    def testConfirmSalesOnTill(self):
         param = self.sparam.CONFIRM_SALES_ON_TILL
         assert isinstance(param, int)
 
-    def test_AcceptChangeSalesperson(self):
+    def testAcceptChangeSalesperson(self):
         param = self.sparam.ACCEPT_CHANGE_SALESPERSON
         assert isinstance(param, bool)
 
       # Cannot perform this test, see bug 2655 to further details.
-#     def test_PurchasePreviewPayment(self):
+#     def testPurchasePreviewPayment(self):
 #         supplier = Person.getAdapterClass(ISupplier).select(
 #                        connection=self.trans)[0]
 #         branch = Person.getAdapterClass(IBranch).select(
@@ -208,27 +208,27 @@ class TestParameter(DomainTest):
 #         assert isinstance (param, int)
 
     # Some enhancement is necessary here, this test needs to be improved
-    def test_ReturnMoneyOnSales(self):
+    def testReturnMoneyOnSales(self):
         param = self.sparam.RETURN_MONEY_ON_SALES
         assert isinstance(param, bool)
 
-    def test_ReceiveProductsWithoutOrder(self):
+    def testReceiveProductsWithoutOrder(self):
         param = self.sparam.RECEIVE_PRODUCTS_WITHOUT_ORDER
         assert isinstance(param, bool)
 
-    def test_MaxSaleOrderValidity(self):
+    def testMaxSaleOrderValidity(self):
         param = self.sparam.MAX_SALE_ORDER_VALIDITY
         assert isinstance(param, int)
 
-    def test_UseScalePrice(self):
+    def testUseScalePrice(self):
         param = self.sparam.USE_SCALE_PRICE
         assert isinstance(param, int)
 
-    def test_AskSaleCFOP(self):
+    def testAskSaleCFOP(self):
         param = self.sparam.ASK_SALES_CFOP
         assert isinstance(param, bool)
 
-    def test_DefaultSalesCFOP(self):
+    def testDefaultSalesCFOP(self):
         self._create_examples()
         param = self.sparam.DEFAULT_SALES_CFOP
         till = Till(connection=self.trans,
@@ -241,7 +241,7 @@ class TestParameter(DomainTest):
                     till=till, connection=self.trans, cfop=param)
         self.failIfEqual(sale.cfop, self.sparam.DEFAULT_SALES_CFOP)
 
-    def test_DefaultReturnSalesCFOP(self):
+    def testDefaultReturnSalesCFOP(self):
         self._create_examples()
         wrong_param = self.sparam.DEFAULT_SALES_CFOP
         drawee = Person(name='Antonione', connection=self.trans)
@@ -256,7 +256,7 @@ class TestParameter(DomainTest):
         self.assertEqual(self.sparam.DEFAULT_RETURN_SALES_CFOP,
                          reversal.cfop)
 
-    def test_DefaultReceivingCFOP(self):
+    def testDefaultReceivingCFOP(self):
         branch = self.create_branch()
         param = self.sparam.DEFAULT_RECEIVING_CFOP
         person = Person(name='Craudinho', connection=self.trans)
@@ -279,18 +279,18 @@ class TestParameter(DomainTest):
         self.assertEqual(param, receiving_order.cfop)
         self.failIfEqual(param, receiving_order2.cfop)
 
-    def test_ICMSTax(self):
+    def testICMSTax(self):
         param = self.sparam.ICMS_TAX
         assert isinstance(param, int)
 
-    def test_ISSTax(self):
+    def testISSTax(self):
         param = self.sparam.ISS_TAX
         assert isinstance(param, int)
 
-    def test_SubstitutionTax(self):
+    def testSubstitutionTax(self):
         param = self.sparam.SUBSTITUTION_TAX
         assert isinstance(param, int)
 
-    def test_DefaultAreaCode(self):
+    def testDefaultAreaCode(self):
         param = self.sparam.DEFAULT_AREA_CODE
         self.failUnless(isinstance(param, int), type(param))
