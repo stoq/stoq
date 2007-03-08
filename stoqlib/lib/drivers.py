@@ -247,14 +247,6 @@ def print_cheques_for_payment_group(conn, group):
         printer.print_cheque(bank, payment.value, thirdparty, city)
 
 
-def till_add_cash(conn, value):
-    printer = _get_fiscalprinter(conn)
-    printer.till_add_cash(value)
-
-def till_remove_cash(conn, value):
-    printer = _get_fiscalprinter(conn)
-    printer.till_remove_cash(value)
-
 class CouponPrinter(object):
     """
     CouponPrinter is a wrapper around the FiscalPrinter class inside
@@ -309,8 +301,9 @@ class CouponPrinter(object):
                 retval = False
                 break
 
-        if retval and model.value > 0:
-            self._printer.till_add_cash(model.value)
+        if retval:
+            if model and model.value > 0:
+                self.add_cash(model.value)
 
             if not finish_transaction(trans, model):
                 retval = False
@@ -334,23 +327,25 @@ class CouponPrinter(object):
         trans = new_transaction()
         model = run_dialog(TillClosingEditor, parent, trans)
 
+        if not model:
+            finish_transaction(trans, model)
+            return
+
         opened_sales = Sale.selectBy(status=Sale.STATUS_OPENED,
                                      connection=trans)
-        if not opened_sales:
-            return False
-
-        # A new till object to "store" the sales that weren't
-        # confirmed. Note that this new till operation isn't
-        # opened yet, but it will be considered when opening a
-        # new operation
-        branch_station = opened_sales[0].till.station
-        new_till = Till(connection=trans,
-                        station=branch_station)
-        for sale in opened_sales:
-            sale.till = new_till
+        if opened_sales:
+            # A new till object to "store" the sales that weren't
+            # confirmed. Note that this new till operation isn't
+            # opened yet, but it will be considered when opening a
+            # new operation
+            branch_station = opened_sales[0].till.station
+            new_till = Till(connection=trans,
+                            station=branch_station)
+            for sale in opened_sales:
+                sale.till = new_till
 
         if model.value > 0:
-            self._printer.till_remove_cash(model.value)
+            self.remove_cash(model.value)
 
         retval = True
         while not self._emit_reading('close_till'):
@@ -401,6 +396,12 @@ class CouponPrinter(object):
         trans.commit(close=True)
 
         return True
+
+    def add_cash(self, value):
+        self._printer.till_add_cash(value)
+
+    def remove_cash(self, value):
+        self._printer.till_remove_cash(value)
 
 #
 # Class definitions
