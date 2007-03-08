@@ -445,12 +445,6 @@ class FS345(SerialBase):
         self.send_command(CMD_GET_X)
 
     def close_till(self):
-        status = self._get_status()
-        if self._is_open(status):
-            raise CouponOpenError(_("There is a coupon opened"))
-        elif self.needs_read_x(status):
-            raise PendingReadX(_("Pending read X"))
-
         date = time.strftime('%d%m%y%H%M%S', time.localtime())
         self.send_command(CMD_REDUCE_Z, date)
 
