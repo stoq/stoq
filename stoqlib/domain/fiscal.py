@@ -20,8 +20,8 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##
-##      Author(s):  Evandro Vale Miquelito
-##
+##  Author(s): Evandro Vale Miquelito   <evandro@async.com.br>
+##             Johan Dahlin             <jdahlin@async.com.br>
 ##
 """ Domain classes to manage fiscal informations.
 
@@ -35,7 +35,7 @@ from sqlobject import (UnicodeCol, DateTimeCol, ForeignKey, IntCol,
                        SQLObject, BoolCol)
 from zope.interface import implements
 
-from stoqlib.database.columns import PriceCol, AutoIncCol
+from stoqlib.database.columns import PriceCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.base import Domain, BaseSQLView, InheritableModel
@@ -58,7 +58,6 @@ class CfopData(Domain):
 class AbstractFiscalBookEntry(InheritableModel):
     implements(IReversal)
 
-    identifier = AutoIncCol("stoqlib_abstract_bookentry_seq")
     date = DateTimeCol(default=datetime.now)
     is_reversal = BoolCol(default=False)
     invoice_number = IntCol()
@@ -66,6 +65,10 @@ class AbstractFiscalBookEntry(InheritableModel):
     branch = ForeignKey("PersonAdaptToBranch")
     drawee = ForeignKey("Person")
     payment_group = ForeignKey("AbstractPaymentGroup")
+
+    @property
+    def identifier(self):
+        return self.id
 
     def reverse_entry(self, invoice_number):
         raise NotImplementedError("This method must be overwrited on child")
@@ -140,7 +143,6 @@ class IssBookEntry(AbstractFiscalBookEntry):
 class AbstractFiscalView(SQLObject, BaseSQLView):
     """Stores general informations about fiscal entries"""
 
-    identifier = IntCol()
     date = DateTimeCol()
     invoice_number = IntCol()
     cfop_code = UnicodeCol()
@@ -149,6 +151,10 @@ class AbstractFiscalView(SQLObject, BaseSQLView):
     drawee_id = IntCol()
     branch_id = IntCol()
     payment_group_id = IntCol()
+
+    @property
+    def identifier(self):
+        return self.id
 
 
 class IcmsIpiView(AbstractFiscalView):

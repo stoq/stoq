@@ -451,7 +451,6 @@ CREATE VIEW purchase_order_view AS
 -- Stores information about clients.
 -- Available fields are:
 --    id                  - the id of the icms_ipi_book_entry table
---    identifier          - the identifier of icms_ipi_book_entry table
 --    icms_value          - the total value of icms
 --    ipi_value           - the total value of ipi
 --    date                - the date when the entry was created
@@ -473,7 +472,6 @@ CREATE VIEW icms_ipi_view AS
     icms_ipi_book_entry.id AS id,
     icms_ipi_book_entry.icms_value AS icms_value,
     icms_ipi_book_entry.ipi_value AS ipi_value,
-    abstract_fiscal_book_entry.identifier AS identifier,
     abstract_fiscal_book_entry.date AS date,
     abstract_fiscal_book_entry.invoice_number AS invoice_number,
     abstract_fiscal_book_entry.cfop_id AS cfop_data_id,
@@ -496,7 +494,6 @@ CREATE VIEW icms_ipi_view AS
 -- Stores information about clients.
 -- Available fields are:
 --    id                  - the id of the iss_book_entry table
---    identifier          - the identifier of iss_book_entry table
 --    iss_value           - the total value of iss
 --    date                - the date when the entry was created
 --    invoice_number      - the invoice number
@@ -515,7 +512,6 @@ CREATE VIEW iss_view AS
   SELECT DISTINCT
     iss_book_entry.id AS id,
     iss_book_entry.iss_value AS iss_value,
-    abstract_fiscal_book_entry.identifier AS identifier,
     abstract_fiscal_book_entry.date AS date,
     abstract_fiscal_book_entry.invoice_number AS invoice_number,
     abstract_fiscal_book_entry.cfop_id AS cfop_data_id,
