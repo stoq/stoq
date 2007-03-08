@@ -72,6 +72,7 @@ CREATE TABLE person_adapt_to_branch (
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+
     manager_id bigint REFERENCES person(id),
     is_active boolean,
     original_id bigint UNIQUE REFERENCES person(id)

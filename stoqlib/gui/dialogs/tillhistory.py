@@ -41,7 +41,7 @@ from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.till import TillEntryAndPaymentView, Till
+from stoqlib.domain.till import TillEntry, Till
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.searchbar import SearchBar
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
@@ -93,7 +93,7 @@ class TillHistoryDialog(GladeSlaveDelegate):
         rollback_and_begin(self.conn)
 
     def _setup_slaves(self):
-        self.search_bar = SearchBar(self.conn, TillEntryAndPaymentView,
+        self.search_bar = SearchBar(self.conn, TillEntry,
                                     self._get_columns(),
                                     searching_by_date=True)
         self.search_bar.register_extra_query_callback(self.get_extra_query)
