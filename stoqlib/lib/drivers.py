@@ -397,9 +397,9 @@ class _FiscalCoupon(object):
     implements(IContainer)
 
     def __init__(self, printer, settings, sale):
-        self.printer = printer
-        self.settings = settings
-        self.sale = sale
+        self._printer = printer
+        self._settings = settings
+        self._sale = sale
         self._item_ids = {}
 
     #
@@ -419,7 +419,7 @@ class _FiscalCoupon(object):
             return
 
         sellable = item.sellable
-        max_len = self.printer.get_capability("item_description").max_len
+        max_len = self._printer.get_capability("item_description").max_len
         description = sellable.base_sellable_info.description[:max_len]
         unit_desc = ''
         if not sellable.unit:
@@ -428,13 +428,13 @@ class _FiscalCoupon(object):
             if sellable.unit.unit_index == UNIT_CUSTOM:
                 unit_desc = sellable.unit.description
             unit = sellable.unit.unit_index or UNIT_EMPTY
-        max_len = self.printer.get_capability("item_code").max_len
+        max_len = self._printer.get_capability("item_code").max_len
         code = sellable.get_code_str()[:max_len]
         constant = self._settings.get_tax_constant_for_device(sellable)
-        item_id = self.printer.add_item(code, description, item.price,
-                                        constant.device_value,
-                                        item.quantity, unit,
-                                        unit_desc=unit_desc)
+        item_id = self._printer.add_item(code, description, item.price,
+                                         constant.device_value,
+                                         item.quantity, unit,
+                                         unit_desc=unit_desc)
         ids = self._item_ids.setdefault(item, [])
         ids.append(item_id)
 
@@ -448,7 +448,7 @@ class _FiscalCoupon(object):
             return
         for item_id in self._item_ids.pop(item):
             try:
-                self.printer.cancel_item(item_id)
+                self._printer.cancel_item(item_id)
             except DriverError:
                 return False
         return True
@@ -458,7 +458,7 @@ class _FiscalCoupon(object):
     #
 
     def identify_customer(self, person):
-        max_len = self.printer.get_capability("customer_id").max_len
+        max_len = self._printer.get_capability("customer_id").max_len
         if IIndividual(person):
             individual = IIndividual(person)
             document = individual.cpf[:max_len]
@@ -469,16 +469,16 @@ class _FiscalCoupon(object):
             raise TypeError(
                 "identify_customer needs an object implementing "
                 "IIndividual or ICompany")
-        max_len = self.printer.get_capability("customer_name").max_len
+        max_len = self._printer.get_capability("customer_name").max_len
         name = person.name[:max_len]
-        max_len = self.printer.get_capability("customer_address").max_len
+        max_len = self._printer.get_capability("customer_address").max_len
         address = person.get_address_string()[:max_len]
-        self.printer.identify_customer(name, address, document)
+        self._printer.identify_customer(name, address, document)
 
     def open(self):
         while True:
             try:
-                self.printer.open()
+                self._printer.open()
                 break
             except CouponOpenError:
                 if not self.cancel():
@@ -486,14 +486,14 @@ class _FiscalCoupon(object):
             except OutofPaperError:
                 if not yesno(
                     _(u"The printer %s has run out of paper.\nAdd more paper "
-                      "before continuing.") % self.printer.get_printer_name(),
+                      "before continuing.") % self._printer.get_printer_name(),
                     gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
                     return False
                 return self.open()
             except PrinterOfflineError:
                 if not yesno(
                     (_(u"The printer %s is offline, turn it on and try"
-                       "again") % self.printer.get_model_name()),
+                       "again") % self._printer.get_model_name()),
                     gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
                     return False
                 return self.open()
@@ -521,10 +521,10 @@ class _FiscalCoupon(object):
         #    surcharge = discount = 0
         surcharge = Decimal('0')
 
-        discount = self.sale.discount_percentage
+        discount = self._sale.discount_percentage
 
         try:
-            self.printer.totalize(discount, surcharge, TAX_NONE)
+            self._printer.totalize(discount, surcharge, TAX_NONE)
         except DriverError, details:
             warning(_(u"It is not possible to totalize the coupon"),
                     str(details))
@@ -533,7 +533,7 @@ class _FiscalCoupon(object):
 
     def cancel(self):
         try:
-            self.printer.cancel()
+            self._printer.cancel()
         except DriverError:
             return False
         return True
@@ -545,10 +545,10 @@ class _FiscalCoupon(object):
         # XXX: Remove this when bug #2827 is fixed.
         if not self._item_ids:
             return True
-        sale = self.sale
+        sale = self._sale
         group = IPaymentGroup(sale)
         if group.default_method == METHOD_GIFT_CERTIFICATE:
-            self.printer.add_payment(MONEY_PM, sale.get_total_sale_amount())
+            self._printer.add_payment(MONEY_PM, sale.get_total_sale_amount())
             return True
 
         all_methods = get_all_methods_dict().items()
@@ -560,7 +560,7 @@ class _FiscalCoupon(object):
                     method_id = CHEQUE_PM
                 else:
                     method_id = MONEY_PM
-                self.printer.add_payment(method_id, payment.base_value)
+                self._printer.add_payment(method_id, payment.base_value)
                 continue
             method_type = type(method)
             method_id = None
@@ -581,8 +581,8 @@ class _FiscalCoupon(object):
 
             constant = self._settings.get_payment_constant(method_id)
             if constant:
-                self.printer.add_payment(CUSTOM_PM, payment.base_value,
-                                         custom_pm=constant.device_value)
+                self._printer.add_payment(CUSTOM_PM, payment.base_value,
+                                          custom_pm=constant.device_value)
             else:
                 method_name = get_method_names()[method_id]
                 if not yesno(
@@ -592,10 +592,10 @@ class _FiscalCoupon(object):
                     _(u"Cancel the checkout")):
                     return False
 
-                self.printer.add_payment(MONEY_PM, payment.base_value)
+                self._printer.add_payment(MONEY_PM, payment.base_value)
 
         for entry in group.get_till_entries():
-            self.printer.add_payment(MONEY_PM, entry.value)
+            self._printer.add_payment(MONEY_PM, entry.value)
 
         return True
 
@@ -604,10 +604,10 @@ class _FiscalCoupon(object):
         if not self._item_ids:
             return True
         try:
-            coupon_id = self.printer.close()
+            coupon_id = self._printer.close()
         except DriverError, details:
             warning(_("It's not possible to close the coupon"), str(details))
             return False
-        self.sale.coupon_id = coupon_id
+        self._sale.coupon_id = coupon_id
         return True
 
