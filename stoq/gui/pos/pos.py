@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -39,31 +39,30 @@ from stoqdrivers.constants import UNIT_WEIGHT
 from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.database.database import rollback_and_begin, finish_transaction
 from stoqlib.database.runtime import new_transaction, get_current_user
+from stoqlib.domain.interfaces import IDelivery, IStorable, ISalesPerson
+from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable
+from stoqlib.domain.person import PersonAdaptToClient
+from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.service import ServiceSellableItem, Service
+from stoqlib.domain.till import Till
 from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.drivers import (CouponPrinter,
-                                 FiscalCoupon, read_scale_info,
+from stoqlib.lib.drivers import (CouponPrinter, read_scale_info,
                                  get_current_scale_settings)
 from stoqlib.reporting.sale import SaleOrderReport
+from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
+from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
+from stoqlib.gui.search.personsearch import ClientSearch
+from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.salesearch import SaleSearch
+from stoqlib.gui.search.sellablesearch import SellableSearch
+from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard, PreOrderWizard
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.gui.search.sellablesearch import SellableSearch
-from stoqlib.gui.search.personsearch import ClientSearch
-from stoqlib.gui.search.salesearch import SaleSearch
-from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
-from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.domain.service import ServiceSellableItem, Service
-from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable
-from stoqlib.domain.person import PersonAdaptToClient
-from stoqlib.domain.till import Till
-from stoqlib.domain.sellable import ASellable
-from stoqlib.domain.interfaces import IDelivery, IStorable, ISalesPerson
 
 from stoq.gui.application import AppWindow
 from stoq.gui.pos.neworder import NewOrderEditor
@@ -510,7 +509,7 @@ class POSApp(AppWindow):
         return totalize and has_payments and close
 
     def _open_coupon(self):
-        self._coupon = FiscalCoupon(self.conn, self.sale)
+        self._coupon = self._printer.create_coupon(self.sale)
         if self.sale.client:
             self._coupon.identify_customer(self.sale.client.person)
         while not self._coupon.open():
