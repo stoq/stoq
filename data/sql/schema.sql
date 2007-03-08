@@ -1093,7 +1093,6 @@ CREATE TABLE abstract_fiscal_book_entry (
     --    icms_ipi_book_entry
     --    iss_book_entry
     id serial NOT NULL PRIMARY KEY,
-    identifier integer NOT NULL UNIQUE,
     date timestamp ,
     is_reversal boolean,
     invoice_number integer,

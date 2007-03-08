@@ -112,10 +112,13 @@ class ExampleCreator(object):
     def create_by_type(self, model_type):
         known_types = {
             'ASellable': self._create_sellable,
+            'AbstractFiscalBookEntry' : self._create_abstract_fiscal_book_entry,
             'BranchStation': self.get_station,
             'CityLocation': self.get_location,
             'DeviceConstant': self._create_device_constant,
             'DeviceSettings': self._create_device_settings,
+            'IcmsIpiBookEntry': self._create_icms_ipi_book_entry,
+            'IssBookEntry': self._create_iss_book_entry,
             'IClient': self._create_client,
             'IBranch': self._create_branch,
             'IEmployee': self._create_employee,
@@ -284,6 +287,46 @@ class ExampleCreator(object):
     def _create_user_profile(self):
         from stoqlib.domain.profile import UserProfile
         return UserProfile(connection=self.trans, name='assistant')
+
+    def _create_icms_ipi_book_entry(self):
+        from stoqlib.domain.fiscal import CfopData, IcmsIpiBookEntry
+        from stoqlib.domain.payment.payment import AbstractPaymentGroup
+        cfop = CfopData(code=u"2365", description=u"blabla",
+                        connection=self.trans)
+        branch = self._create_branch()
+        drawee = self._create_person()
+        payment_group = AbstractPaymentGroup(connection=self.trans)
+        return IcmsIpiBookEntry(connection=self.trans, cfop=cfop,
+                                branch=branch, drawee=drawee,
+                                payment_group=payment_group,
+                                icms_value=10, ipi_value=10,
+                                invoice_number=200)
+
+    def _create_iss_book_entry(self):
+        from stoqlib.domain.payment.payment import AbstractPaymentGroup
+        from stoqlib.domain.fiscal import CfopData, IssBookEntry
+        cfop = CfopData(code=u"2365", description=u"blabla",
+                        connection=self.trans)
+        branch = self._create_branch()
+        drawee = self._create_person()
+        payment_group = AbstractPaymentGroup(connection=self.trans)
+        return IssBookEntry(connection=self.trans, cfop=cfop,
+                            branch=branch,drawee=drawee,
+                            payment_group=payment_group,
+                            iss_value=10, invoice_number=201)
+
+    def _create_abstract_fiscal_book_entry(self):
+        from stoqlib.domain.payment.payment import AbstractPaymentGroup
+        from stoqlib.domain.fiscal import CfopData, AbstractFiscalBookEntry
+        cfop = CfopData(code=u"2365", description=u"blabla",
+                        connection=self.trans)
+        branch = self._create_branch()
+        drawee = self._create_person()
+        payment_group = AbstractPaymentGroup(connection=self.trans)
+        return AbstractFiscalBookEntry(invoice_number=2, cfop=cfop,
+                                       branch=branch, drawee=drawee,
+                                       payment_group=payment_group,
+                                       connection=self.trans)
 
     def get_station(self):
         return get_current_station(self.trans)
