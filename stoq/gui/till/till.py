@@ -267,11 +267,10 @@ class TillApp(SearchableAppWindow):
                        "\n\nClose the till?"),
                      gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
             if not self._close_till():
-                self._close_till(self.get_toplevel())
                 return False
 
     def _on_open_till_action__clicked(self, button):
-        self._open_till(self.get_toplevel())
+        self._open_till()
 
     def _on_client_search_action__clicked(self, button):
         self._run_search_dialog(ClientSearch, hide_footer=True)
