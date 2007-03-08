@@ -39,6 +39,7 @@ from stoqdrivers.devices.scales.scales import Scale
 from stoqdrivers.devices.serialbase import VirtualPort, SerialPort
 
 from stoqlib.database.columns import DecimalCol
+from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.exceptions import DatabaseInconsistency, DeviceError
@@ -366,6 +367,19 @@ class DeviceSettings(Domain):
             type=DeviceSettings.FISCAL_PRINTER_DEVICE,
             connection=conn)
 
+
+    @classmethod
+    def get_scale_settings(cls, conn):
+        """
+        Get the scale device settings for the current station
+        @param conn: a database connection
+        @returns: a L{DeviceSettings} object or None if there is none
+        """
+        station = get_current_station(conn)
+        return cls.selectOneBy(
+            connection=conn,
+            station=station,
+            type=cls.SCALE_DEVICE)
 
     #
     # IActive implementation

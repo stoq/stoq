@@ -59,18 +59,13 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
 
 _ = stoqlib_gettext
-_printer = None
+
 _scale = None
 log = Logger("stoqlib.drivers")
 
 #
 # Private
 #
-
-def _get_fiscalprinter(conn):
-    """ Returns a FiscalPrinter instance pre-configured to the current
-    workstation.
-    """
 
 def _get_scale(conn):
     """ Returns a Scale instance pre-configured for the current
@@ -79,17 +74,16 @@ def _get_scale(conn):
     global _scale
     if _scale:
         return _scale
-    station = get_current_station(conn)
-    setting = get_scale_settings_by_station(conn, station)
-    if setting and setting.is_active:
-        _scale = Scale(brand=setting.brand,
-                       model=setting.model,
-                       device=setting.get_port_name())
+    settings =  DeviceSettings.get_scale_settings(conn)
+    if settings and settings.is_active:
+        _scale = Scale(brand=settings.brand,
+                       model=settings.model,
+                       device=settings.get_port_name())
     else:
         warning(_(u"There is no scale configured"),
                _(u"There is no scale configured for this station "
                 "(\"%s\") or the scale is not enabled currently"
-                 % station.name))
+                 % get_current_station(conn).name))
     return _scale
 
 #
@@ -97,21 +91,21 @@ def _get_scale(conn):
 #
 
 
-def get_device_settings_by_station(conn, station, device_type):
-    return DeviceSettings.selectOneBy(station=station, type=device_type,
-                                      connection=conn)
-
 def get_fiscal_printer_settings_by_station(conn, station):
     """ Returns the DeviceSettings object representing the printer currently
     associated with the given station or None if there is not settings for
     it.
     """
-    return get_device_settings_by_station(conn, station,
-                                          DeviceSettings.FISCAL_PRINTER_DEVICE)
+    return DeviceSettings.selectOneBy(
+        connection=conn,
+        station=station,
+        type=DeviceSettings.FISCAL_PRINTER_DEVICE)
 
 def get_current_cheque_printer_settings(conn):
-    res = get_device_settings_by_station(conn, get_current_station(conn),
-                                         DeviceSettings.CHEQUE_PRINTER_DEVICE)
+    res = DeviceSettings.selectOneBy(
+        connection=conn,
+        station=get_current_station(conn),
+        type=DeviceSettings.CHEQUE_PRINTER_DEVICE)
     if not res:
         return None
     elif not isinstance(res, DeviceSettings):
@@ -126,11 +120,10 @@ def get_scale_settings_by_station(conn, station):
     associated with the given station or None if there is no settings for
     it.
     """
-    return get_device_settings_by_station(conn, station,
-                                          DeviceSettings.SCALE_DEVICE)
-
-def get_current_scale_settings(conn):
-    return get_scale_settings_by_station(conn, get_current_station(conn))
+    return DeviceSettings.selectOneBy(
+        connection=conn,
+        station=station,
+        type=DeviceSettings.SCALE_DEVICE)
 
 def create_virtual_printer_for_current_station():
     trans = new_transaction()
