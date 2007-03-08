@@ -230,10 +230,7 @@ class TillApp(SearchableAppWindow):
         return Sale.STATUS_CONFIRMED
 
     def get_title(self):
-        self.branch = get_current_branch(self.conn)
-        # XXX The current approch to get the current branch is going to
-        # be improved after bug 2621
-        return _('Stoq - Till for Branch %03d') % self.branch.identifier
+        return _('Stoq - Till for Branch %03d') % get_current_branch(self.conn).id
 
     def get_columns(self):
         return [Column('order_number', title=_('Number'), width=80,
