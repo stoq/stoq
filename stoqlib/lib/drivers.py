@@ -293,11 +293,7 @@ class CouponPrinter(object):
             warning(e)
             model = None
 
-        if not finish_transaction(trans, model):
-            return False
-
-        trans.close()
-
+        retval = True
         while not self._emit_reading('summarize'):
             response = warning(
                 _(u"It's not possible to emit a read X for the "
@@ -307,10 +303,21 @@ class CouponPrinter(object):
                          (_(u"Ignore"), gtk.RESPONSE_YES),
                          (_(u"Try Again"), gtk.RESPONSE_NONE)))
             if response == gtk.RESPONSE_YES:
-                return True
+                retval = True
+                break
             elif response == gtk.RESPONSE_CANCEL:
-                return False
-        return True
+                retval = False
+                break
+
+        if retval and model.value > 0:
+            self._printer.till_add_cash(model.value)
+
+            if not finish_transaction(trans, model):
+                retval = False
+
+        trans.close()
+
+        return retval
 
     def close_till(self, parent=None):
         """
@@ -342,12 +349,10 @@ class CouponPrinter(object):
         for sale in opened_sales:
             sale.till = new_till
 
-        # TillClosingEditor closes the till
-        if not finish_transaction(trans, model):
-            return False
+        if model.value > 0:
+            self._printer.till_remove_cash(model.value)
 
-        trans.close()
-
+        retval = True
         while not self._emit_reading('close_till'):
             response = warning(
                 short=_(u"It's not possible to emit a reduce Z for the "
@@ -357,11 +362,19 @@ class CouponPrinter(object):
                          (_(u"Ignore"), gtk.RESPONSE_YES),
                          (_(u"Try Again"), gtk.RESPONSE_NONE)))
             if response  == gtk.RESPONSE_YES:
-                return True
+                retval = True
+                break
             elif response == gtk.RESPONSE_CANCEL:
-                return False
+                retval = False
 
-        return True
+        if retval:
+            # TillClosingEditor closes the till
+            if not finish_transaction(trans, model):
+                retval = False
+
+        trans.close()
+
+        return retval
 
     def cancel(self):
         """
@@ -385,7 +398,7 @@ class CouponPrinter(object):
             return False
         sale.cancel(sale.create_sale_return_adapter())
 
-        trans.commit()
+        trans.commit(close=True)
 
         return True
 

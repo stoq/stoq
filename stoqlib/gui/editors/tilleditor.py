@@ -123,8 +123,9 @@ class TillOpeningEditor(BaseEditor):
             till.create_credit(value,
                                (_(u'Initial Cash amount of %s')
                                 % till.opening_date.strftime('%x')))
-
-        return till
+            # The callsite is responsible for interacting with
+            # the fiscal printer
+        return self.model
 
     #
     # Kiwi callbacks
@@ -164,7 +165,10 @@ class TillClosingEditor(BaseEditor):
 
     def on_confirm(self):
         self.till.close_till(self.model.value)
-        return True
+
+        # The callsite is responsible for interacting with
+        # the fiscal printer
+        return self.model
 
     def setup_proxies(self):
         if not self.till.get_balance():
