@@ -175,27 +175,6 @@ def check_virtual_printer_for_current_station(conn):
 # Coupon & Cheque
 #
 
-def emit_coupon(sale, conn):
-    """ Emit a coupon for a Sale instance.
-
-    @returns: True if the coupon has been emitted, False otherwise.
-    """
-    products = sale.get_products()
-    if not products:
-        return True
-    coupon = FiscalCoupon(conn, sale)
-    if sale.client:
-        coupon.identify_customer(sale.client.person)
-    if not coupon.open():
-        return False
-    for product in products:
-        coupon.add_item(product)
-    if not coupon.totalize():
-        return False
-    if not coupon.setup_payments():
-        return False
-    return coupon.close()
-
 def read_scale_info(conn):
     """ Read informations from the scale configured for this station.
     """
@@ -407,12 +386,43 @@ class CouponPrinter(object):
     def remove_cash(self, value):
         self._printer.till_remove_cash(value)
 
+    def emit_coupon(self, sale):
+        """ Emit a coupon for a Sale instance.
+
+        @returns: True if the coupon has been emitted, False otherwise.
+        """
+        if not self._printer:
+            raise ValueError("It is not possible to emit coupon "
+                             "since there is no fiscal printer "
+                             "configured for this station")
+
+        products = sale.get_products()
+        if not products:
+            return True
+
+        settings = get_fiscal_printer_settings_by_station(
+            self.conn, get_current_station(self.conn))
+
+        coupon = _FiscalCoupon(self._printer, sale, settings)
+        if sale.client:
+            coupon.identify_customer(sale.client.person)
+        if not coupon.open():
+            return False
+        for product in products:
+            coupon.add_item(product)
+        if not coupon.totalize():
+            return False
+        if not coupon.setup_payments():
+            return False
+        return coupon.close()
+
+
 #
 # Class definitions
 #
 
 
-class FiscalCoupon:
+class _FiscalCoupon:
     """ This class is used just to allow us cancel an item with base in a
     ASellable object. Currently, services can't be added, and they
     are just ignored -- be aware, if a coupon with only services is
@@ -420,18 +430,11 @@ class FiscalCoupon:
     """
     implements(IContainer)
 
-    def __init__(self, conn, sale):
+    def __init__(self, printer, sale, settings):
+        self.printer = printer
         self.sale = sale
-        self.conn = conn
-        self.printer = _get_fiscalprinter(conn)
-        if not self.printer:
-            raise ValueError("It is not possible to emit coupon "
-                             "since there is no fiscal printer "
-                             "configured for this station")
+        self.settings = settings
         self._item_ids = {}
-        station = get_current_station(self.conn)
-        self._settings = get_fiscal_printer_settings_by_station(conn,
-                                                                station)
 
     #
     # IContainer implementation
