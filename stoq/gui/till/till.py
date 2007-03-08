@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 ##
 ## Author(s):       Henrique Romano             <henrique@async.com.br>
 ##                  Evandro Vale Miquelito      <evandro@async.com.br>
+##                  Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Implementation of till application.  """
 
@@ -38,14 +39,11 @@ from stoqlib.database.runtime import new_transaction, get_current_branch
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.lib.drivers import (emit_coupon, check_emit_reduce_Z,
-                                 check_emit_read_X)
+from stoqlib.lib.drivers import emit_coupon, CouponPrinter
 from stoqlib.lib.message import yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.tillhistory import (TillHistoryDialog,
-                                             verify_and_open_till,
-                                             verify_and_close_till)
+from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -74,6 +72,7 @@ class TillApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
+        self._printer = CouponPrinter(self.conn)
         self._check_till()
         self._setup_widgets()
         self.searchbar.search_items()
@@ -168,39 +167,17 @@ class TillApp(SearchableAppWindow):
     # Till methods
     #
 
-    # FIXME: Move
     def _open_till(self):
-        """
-        Opens the till
-        """
-        log.info("Opening till")
         parent = self.get_toplevel()
-        if not check_emit_read_X(self.conn, parent):
-            return
-
-        rollback_and_begin(self.conn)
-        if verify_and_open_till(self, self.conn):
+        if self._printer.open_till(parent):
             self._update_widgets()
-            return
-        rollback_and_begin(self.conn)
 
     def _close_till(self):
-        """
-        Closes the till
-        @returns: True if the till was closed, otherwise False
-        """
-        log.info("Closing till")
-        if verify_and_close_till(self, self.conn):
-            return False
-
         parent = self.get_toplevel()
-        if not check_emit_reduce_Z(self.conn, parent):
-            return False
-
-        self._update_widgets()
-
-        self.conn.commit()
-        return True
+        retval = self._printer.close_till(parent)
+        if retval:
+            self._update_widgets()
+        return retval
 
     def _check_till(self):
         till = Till.get_last_opened(self.conn)
@@ -290,15 +267,11 @@ class TillApp(SearchableAppWindow):
                        "\n\nClose the till?"),
                      gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
             if not self._close_till():
-                parent = self.get_toplevel()
-                if check_emit_reduce_Z(self.conn, parent):
-                    self._close_till()
+                self._close_till(self.get_toplevel())
                 return False
 
     def _on_open_till_action__clicked(self, button):
-        parent = self.get_toplevel()
-        if check_emit_read_X(self.conn, parent):
-            self._open_till()
+        self._open_till(self.get_toplevel())
 
     def _on_client_search_action__clicked(self, button):
         self._run_search_dialog(ClientSearch, hide_footer=True)

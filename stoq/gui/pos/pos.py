@@ -44,9 +44,7 @@ from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import (CouponPrinter,
                                  FiscalCoupon, read_scale_info,
-                                 get_current_scale_settings,
-                                 check_emit_reduce_Z,
-                                 check_emit_read_X)
+                                 get_current_scale_settings)
 from stoqlib.reporting.sale import SaleOrderReport
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
@@ -60,8 +58,6 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.gui.dialogs.tillhistory import (verify_and_open_till,
-                                             verify_and_close_till)
 from stoqlib.domain.service import ServiceSellableItem, Service
 from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable
 from stoqlib.domain.person import PersonAdaptToClient
@@ -460,33 +456,17 @@ class POSApp(AppWindow):
     # Till methods
     #
 
-    # FIXME: Move
     def _open_till(self):
-        log.info("Opening till")
         parent = self.get_toplevel()
-        if not check_emit_read_X(self.conn, parent):
-            return
-
-        rollback_and_begin(self.conn)
-        if verify_and_open_till(self, self.conn):
+        if self._printer.open_till(parent):
             self._update_widgets()
-            return
-        rollback_and_begin(self.conn)
 
     def _close_till(self):
-        log.info("Closing till")
-        if verify_and_close_till(self, self.conn):
-            return False
-
         parent = self.get_toplevel()
-        if not check_emit_reduce_Z(self.conn, parent):
-            return False
-
-        self._update_widgets()
-
-        self.conn.commit()
-
-        return True
+        retval = self._printer.close_till(parent)
+        if retval:
+            self._update_widgets()
+        return retval
 
     def _check_till(self):
         """
