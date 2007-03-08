@@ -77,7 +77,7 @@ from sqlobject import (DateTimeCol, UnicodeCol, IntCol,
 from sqlobject.sqlbuilder import func, AND
 from zope.interface import implements
 
-from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
+from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import raw_phone_number
 from stoqlib.exceptions import DatabaseInconsistency
@@ -613,7 +613,6 @@ class PersonAdaptToBranch(_PersonAdapter):
     statuses = {STATUS_ACTIVE:      _(u'Active'),
                 STATUS_INACTIVE:    _(u'Inactive')}
 
-    identifier = AutoIncCol('stoqlib_branch_identifier_seq')
     manager = ForeignKey('Person', default=None)
     is_active = BoolCol(default=True)
 
