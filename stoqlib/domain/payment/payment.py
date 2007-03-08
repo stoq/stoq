@@ -33,7 +33,7 @@ from sqlobject import IntCol, DateTimeCol, UnicodeCol, ForeignKey
 from zope.interface import implements
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.database.columns import PriceCol, AutoIncCol
+from stoqlib.database.columns import PriceCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
@@ -90,7 +90,6 @@ class Payment(Domain):
                 STATUS_CONFIRMED: _(u'Confirmed'),
                 STATUS_CANCELLED: _(u'Cancelled')}
 
-    identifier = AutoIncCol('stoqlib_payment_identifier_seq')
     status = IntCol(default=STATUS_PREVIEW)
     open_date = DateTimeCol(default=datetime.datetime.now)
     due_date = DateTimeCol()
@@ -258,6 +257,10 @@ class Payment(Domain):
             return thirdparty.name
         return _(u'Anonymous')
 
+    # FIXME: Remove
+    @property
+    def identifier(self):
+        return self.id
 
 class AbstractPaymentGroup(InheritableModelAdapter):
     """A base class for payment group adapters. """

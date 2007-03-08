@@ -533,7 +533,6 @@ CREATE VIEW iss_view AS
 --
 -- Stores information about payments
 -- Available fields are:
---    identifier              - the identifier of till entries and payments
 --    date                    - the date when the entry was created
 --    description             - the entry description
 --    value                   - the entry value
@@ -543,7 +542,7 @@ CREATE VIEW till_fiscal_operations_view AS
 
   SELECT DISTINCT
     payment.id AS id,
-    payment.identifier AS identifier,
+    payment.id AS identifier,
     payment.open_date AS date,
     payment.description AS description,
     payment.value AS value,

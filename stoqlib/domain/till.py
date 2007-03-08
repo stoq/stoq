@@ -35,7 +35,7 @@ from zope.interface import implements
 from kiwi.datatypes import currency
 from kiwi.log import Logger
 
-from stoqlib.database.columns import PriceCol, AutoIncCol
+from stoqlib.database.columns import PriceCol
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.exceptions import TillError, DatabaseInconsistency
@@ -318,7 +318,7 @@ class TillEntry(Domain):
     # TODO: Document that a positive "value" attribute represents something
     #       completely different from a negative value.
     #
-    identifier = AutoIncCol("stoqlib_payment_identifier_seq")
+
     date = DateTimeCol(default=datetime.datetime.now)
     description = UnicodeCol()
     value = PriceCol()
@@ -326,6 +326,10 @@ class TillEntry(Domain):
     till = ForeignKey("Till")
     payment_group = ForeignKey("AbstractPaymentGroup", default=None)
 
+    # FIXME: Remove
+    @property
+    def identifier(self):
+        return self.id
 
 
 #
