@@ -39,12 +39,9 @@ from stoqdrivers.exceptions import (CouponOpenError, DriverError,
                                     OutofPaperError, PrinterOfflineError,
                                     CouponNotOpenError)
 
+from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       get_current_station)
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.message import warning, info, yesno
-from stoqlib.lib.defaults import (METHOD_GIFT_CERTIFICATE, get_all_methods_dict,
-                                  get_method_names)
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.giftcertificate import GiftCertificateItem
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
@@ -53,6 +50,13 @@ from stoqlib.domain.payment.methods import CheckPM, MoneyPM
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.service import ServiceSellableItem
 from stoqlib.domain.sellable import ASellableItem
+from stoqlib.domain.till import Till
+from stoqlib.exceptions import TillError
+from stoqlib.lib.defaults import (METHOD_GIFT_CERTIFICATE, get_all_methods_dict,
+                                  get_method_names)
+from stoqlib.lib.message import warning, info, yesno
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.base.dialogs import run_dialog
 
 _ = stoqlib_gettext
 _printer = None
@@ -101,19 +105,6 @@ def _get_scale(conn):
                 "(\"%s\") or the scale is not enabled currently"
                  % station.name))
     return _scale
-
-def _emit_reading(conn, cmd):
-    printer = _get_fiscalprinter(conn)
-    if not printer:
-        return False
-    try:
-        getattr(printer, cmd)()
-    except CouponOpenError:
-        return printer.cancel()
-    except DriverError:
-        return False
-    return True
-
 
 #
 # Public API
@@ -183,42 +174,6 @@ def check_virtual_printer_for_current_station(conn):
 #
 # Coupon & Cheque
 #
-
-def emit_read_X(conn):
-    return _emit_reading(conn, 'summarize')
-
-def check_emit_read_X(conn, parent=None):
-    while not emit_read_X(conn):
-        text = _(u"It's not possible to emit a read X for the "
-                  "configured printer.\nWould you like to ignore "
-                  "this error and continue?")
-        buttons = ((_(u"Cancel"), gtk.RESPONSE_CANCEL),
-                   (_(u"Ignore"), gtk.RESPONSE_YES),
-                   (_(u"Try Again"), gtk.RESPONSE_NONE))
-        response = warning(text, buttons=buttons)
-        if response == gtk.RESPONSE_YES:
-            return True
-        elif response == gtk.RESPONSE_CANCEL:
-            return False
-    return True
-
-def emit_reduce_Z(conn):
-    return _emit_reading(conn, 'close_till')
-
-def check_emit_reduce_Z(conn, parent=None):
-    while not emit_reduce_Z(conn):
-        text = _(u"It's not possible to emit a reduce Z for the "
-                  "configured printer.\nWould you like to ignore "
-                  "this error and continue?")
-        buttons = ((_(u"Cancel"), gtk.RESPONSE_CANCEL),
-                   (_(u"Ignore"), gtk.RESPONSE_YES),
-                   (_(u"Try Again"), gtk.RESPONSE_NONE))
-        response = warning(short=text, buttons=buttons)
-        if response  == gtk.RESPONSE_YES:
-            return True
-        elif response == gtk.RESPONSE_CANCEL:
-            return False
-    return True
 
 def emit_coupon(sale, conn):
     """ Emit a coupon for a Sale instance.
@@ -306,7 +261,107 @@ class CouponPrinter(object):
     stoqdrivers, refer to it for documentation
     """
     def __init__(self, conn):
+        self.conn = conn
         self._printer = _get_fiscalprinter(conn)
+
+    def _emit_reading(self, cmd):
+        try:
+            getattr(self._printer, cmd)()
+        except CouponOpenError:
+            return self._printer.cancel()
+        except DriverError:
+            return False
+        return True
+
+    def open_till(self, parent=None):
+        """
+        Opens the till
+        @param parent: a gtk.Window subclass or None
+        """
+        log.info("Opening till")
+
+        if Till.get_current(self.conn) is not None:
+            warning("You already have a till operation opened. "
+                    "Close the current Till and open another one.")
+            return False
+
+        from stoqlib.gui.editors.tilleditor import TillOpeningEditor
+        trans = new_transaction()
+        try:
+            model = run_dialog(TillOpeningEditor, parent, trans)
+        except TillError, e:
+            warning(e)
+            model = None
+
+        if not finish_transaction(trans, model):
+            return False
+
+        trans.close()
+
+        while not self._emit_reading('summarize'):
+            response = warning(
+                _(u"It's not possible to emit a read X for the "
+                      "configured printer.\nWould you like to ignore "
+                      "this error and continue?"),
+                buttons=((_(u"Cancel"), gtk.RESPONSE_CANCEL),
+                         (_(u"Ignore"), gtk.RESPONSE_YES),
+                         (_(u"Try Again"), gtk.RESPONSE_NONE)))
+            if response == gtk.RESPONSE_YES:
+                return True
+            elif response == gtk.RESPONSE_CANCEL:
+                return False
+        return True
+
+    def close_till(self, parent=None):
+        """
+        Closes the till
+        @param parent: a gtk.Window subclass or None
+        @returns: True if the till was closed, otherwise False
+        """
+        log.info("Closing till")
+
+        till = Till.get_last_opened(self.conn)
+        assert till
+
+        from stoqlib.gui.editors.tilleditor import TillClosingEditor
+        trans = new_transaction()
+        model = run_dialog(TillClosingEditor, parent, trans)
+
+        opened_sales = Sale.selectBy(status=Sale.STATUS_OPENED,
+                                     connection=trans)
+        if not opened_sales:
+            return False
+
+        # A new till object to "store" the sales that weren't
+        # confirmed. Note that this new till operation isn't
+        # opened yet, but it will be considered when opening a
+        # new operation
+        branch_station = opened_sales[0].till.station
+        new_till = Till(connection=trans,
+                        station=branch_station)
+        for sale in opened_sales:
+            sale.till = new_till
+
+        # TillClosingEditor closes the till
+        if not finish_transaction(trans, model):
+            return False
+
+        trans.close()
+
+        while not self._emit_reading('close_till'):
+            response = warning(
+                short=_(u"It's not possible to emit a reduce Z for the "
+                        "configured printer.\nWould you like to ignore "
+                        "this error and continue?"),
+                buttons=((_(u"Cancel"), gtk.RESPONSE_CANCEL),
+                         (_(u"Ignore"), gtk.RESPONSE_YES),
+                         (_(u"Try Again"), gtk.RESPONSE_NONE)))
+            if response  == gtk.RESPONSE_YES:
+                return True
+            elif response == gtk.RESPONSE_CANCEL:
+                return False
+
+        return True
 
     def cancel(self):
         """
