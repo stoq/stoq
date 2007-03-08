@@ -36,10 +36,8 @@ from kiwi.ui.widgets.list import Column, ColoredColumn
 from sqlobject.sqlbuilder import IN
 
 from stoqlib.database.database import finish_transaction, rollback_and_begin
-from stoqlib.exceptions import TillError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
-from stoqlib.lib.message import warning
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import Sale
@@ -49,51 +47,9 @@ from stoqlib.gui.base.searchbar import SearchBar
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
 from stoqlib.gui.editors.tilleditor import (CashAdvanceEditor, CashInEditor,
                                             CashOutEditor)
-from stoqlib.gui.editors.tilleditor import TillOpeningEditor, TillClosingEditor
 
 _ = stoqlib_gettext
 
-
-def verify_and_open_till(app, conn):
-    if Till.get_current(conn) is not None:
-        raise TillError("You already have a till operation opened. "
-                        "Close the current Till and open another one.")
-
-    try:
-        model = app.run_dialog(TillOpeningEditor, conn)
-    except TillError, e:
-        warning(e)
-        model = None
-
-    if finish_transaction(conn, model):
-        return True
-
-    return False
-
-def verify_and_close_till(app, conn, *args):
-    till = Till.get_last_opened(conn)
-    assert till
-
-    model = app.run_dialog(TillClosingEditor, conn)
-
-    # TillClosingEditor closes the till
-    if not finish_transaction(conn, model):
-        return False
-
-    opened_sales = Sale.select(Sale.q.status == Sale.STATUS_OPENED,
-                               connection=conn)
-    if not opened_sales:
-        return False
-
-    # A new till object to "store" the sales that weren't
-    # confirmed. Note that this new till operation isn't
-    # opened yet, but it will be considered when opening a
-    # new operation
-    branch_station = opened_sales[0].till.station
-    new_till = Till(connection=conn,
-                    station=branch_station)
-    for sale in opened_sales:
-        sale.till = new_till
 
 class TillHistoryDialog(GladeSlaveDelegate):
     app_name = _('Till History')
