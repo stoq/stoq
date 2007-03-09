@@ -22,6 +22,7 @@
 ## USA.
 ##
 ## Author(s):   Henrique Romano <henrique@async.com.br>
+##              Johan Dahlin <henrique@async.com.br>
 ##
 """
 PertoPay 2023 driver implementation.
@@ -48,11 +49,47 @@ from stoqdrivers.exceptions import (
     DriverError, PendingReduceZ, CommandParametersError, CommandError,
     ReadXError, OutofPaperError, CouponTotalizeError, PaymentAdditionError,
     CancelItemError, CouponOpenError, InvalidState, PendingReadX,
-    CloseCouponError)
+    CloseCouponError, CouponNotOpenError)
 from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.translation import stoqdrivers_gettext
 
 _ = lambda msg: stoqdrivers_gettext(msg)
+
+# Page 92
+[FLAG_INTERVENCAO_TECNICA,
+ FLAG_SEM_MFD,
+ FLAG_RAM_NOK,
+ FLAG_RELOGIO_NOK,
+ FLAG_SEM_MF,
+ FLAG_DIA_FECHADO,
+ FLAG_DIA_ABERTO,
+ FLAG_Z_PENDENTE,
+ FLAG_SEM_PAPEL,
+ FLAG_MECANISM_NOK,
+ FLAG_DOCUMENTO_ABERTO,
+ FLAG_INSCRICOES_OK,
+ FLAG_CLICHE_OK,
+ FLAG_EM_LINHA,
+ FLAG_MFD_ESGOTADA] = _status_flags = [2**n for n in range(15)]
+
+_flagnames = {
+    FLAG_INTERVENCAO_TECNICA: 'FLAG_INTERVENCAO_TECNICA',
+    FLAG_SEM_MFD: 'FLAG_SEM_MFD',
+    FLAG_RAM_NOK: 'FLAG_RAM_NOK',
+    FLAG_RELOGIO_NOK: 'FLAG_RELOGIO_NOK',
+    FLAG_SEM_MF: 'FLAG_SEM_MF',
+    FLAG_DIA_FECHADO: 'FLAG_DIA_FECHADO',
+    FLAG_DIA_ABERTO: 'FLAG_DIA_ABERTO',
+    FLAG_Z_PENDENTE: 'FLAG_Z_PENDENTE',
+    FLAG_SEM_PAPEL: 'FLAG_SEM_PAPEL',
+    FLAG_MECANISM_NOK: 'FLAG_MECANISM_NOK',
+    FLAG_DOCUMENTO_ABERTO: 'FLAG_DOCUMENTO_ABERTO',
+    FLAG_INSCRICOES_OK: 'FLAG_INSCRICOES_OK',
+    FLAG_CLICHE_OK: 'FLAG_CLICHE_OK',
+    FLAG_EM_LINHA: 'FLAG_EM_LINHA',
+    FLAG_MFD_ESGOTADA: 'FLAG_MFD_ESGOTADA',
+    }
+
 
 class Pay2023Constants(BaseDriverConstants):
     _constants = {
@@ -109,6 +146,10 @@ class Pay2023(SerialBase, BaseChequePrinter):
     CMD_GET_COUPON_TOTAL_PAID_VALUE = 'TotalDocValorPago'
     CMD_PRINT_CHEQUE = 'ImprimeCheque'
     CMD_GET_COO = "COO"
+    CMD_READ_REGISTER_INT = 'LeInteiro'
+
+    # Page 53
+    REGISTER_INDICATORS = "Indicadores"
 
     errors_dict = {
         7003: OutofPaperError,
@@ -139,6 +180,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
         self._customer_name = ''
         self._customer_document = ''
         self._customer_address = ''
+        self._command_id = 0
 
     #
     # Helper methods
@@ -146,7 +188,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
 
     def _send_command(self, command, **params):
         params = ["%s=%s" % (param, value) for param, value in params.items()]
-        data = "%d;%s;%s;" % (self.get_next_command_id(), command,
+        data = "%d;%s;%s;" % (self._command_id, command,
                               " ".join(params))
         result = self.writeline("%s" % data)
         return result
@@ -154,6 +196,13 @@ class Pay2023(SerialBase, BaseChequePrinter):
     def send_command(self, command, **params):
         result = self._send_command(command, **params)
         self.handle_error(command, result)
+
+    def _parse_error(self, cmd, reply):
+        # removing REPLY_PREFIX and REPLY_SUFFIX
+        reply = reply[1:-1]
+
+        cmd_id, code, desc = reply.split(';')
+        return int(code)
 
     def handle_error(self, cmd, reply):
         """
@@ -186,11 +235,11 @@ class Pay2023(SerialBase, BaseChequePrinter):
             raise DriverError("%d: %s" % (code, desc))
         raise exception(desc)
 
-    def get_next_command_id(self):
-        # I don't want to work with (and manage!) many commands at the same
-        # time, so returning always 0 I can avoid this (all the same ids,
-        # all the fuck*** time)
-        return 0
+    def _get_last_item_id(self):
+        return self._get_integer_register_data(Pay2023.CMD_GET_LAST_ITEM_ID)
+
+    def _get_coupon_number(self):
+        return self._get_integer_register_data(Pay2023.CMD_GET_COO)
 
     def _get_integer_register_data(self, data_name):
         result = self._send_command(Pay2023.CMD_GET_INTEGER_REGISTER_DATA,
@@ -199,12 +248,6 @@ class Pay2023(SerialBase, BaseChequePrinter):
         substr = "ValorInteiro"
         index = result.index(substr) + len(substr) + 1
         return int(result[index:])
-
-    def _get_last_item_id(self):
-        return self._get_integer_register_data(Pay2023.CMD_GET_LAST_ITEM_ID)
-
-    def _get_coupon_number(self):
-        return self._get_integer_register_data(Pay2023.CMD_GET_COO)
 
     def get_money_register_data(self, data_name):
         result = self._send_command(Pay2023.CMD_GET_MONEY_REGISTER_DATA,
@@ -243,6 +286,21 @@ class Pay2023(SerialBase, BaseChequePrinter):
             value = value.replace(',', '.')
         return Decimal(value)
 
+    def _get_status(self):
+        status = self._send_command(
+            Pay2023.CMD_READ_REGISTER_INT,
+            NomeInteiro="\"%s\"" % Pay2023.REGISTER_INDICATORS)
+
+        status = int(status[1:-1].split(';')[2].split('=', 1)[1])
+        return status
+
+    def print_status(self):
+        status = self._get_status()
+        print 'Flags'
+        for flag in reversed(_status_flags):
+            if status & flag:
+                print flag, _flagnames[flag]
+
     #
     # ICouponPrinter implementation
     #
@@ -268,6 +326,10 @@ class Pay2023(SerialBase, BaseChequePrinter):
                         quantity=Decimal("1.0"), unit=UNIT_EMPTY,
                         discount=Decimal("0.0"), surcharge=Decimal("0.0"),
                         unit_desc=""):
+        status = self._get_status()
+        if not status & FLAG_DOCUMENTO_ABERTO:
+            raise CouponNotOpenError
+
         if unit == UNIT_CUSTOM:
             unit = unit_desc
         else:
@@ -320,6 +382,10 @@ class Pay2023(SerialBase, BaseChequePrinter):
         self.send_command(Pay2023.CMD_READ_X)
 
     def close_till(self):
+        status = self._get_status()
+        if status & FLAG_DOCUMENTO_ABERTO:
+            self.send_command(Pay2023.CMD_COUPON_CANCEL)
+
         self.send_command(Pay2023.CMD_CLOSE_TILL)
 
     #
