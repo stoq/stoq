@@ -36,14 +36,13 @@ from kiwi.datatypes import currency
 from kiwi.log import Logger
 
 from stoqlib.database.columns import PriceCol
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.database.runtime import get_current_branch
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import TillError, DatabaseInconsistency
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.interfaces import (IPaymentGroup, ITillOperation,
                                        IOutPayment, IInPayment)
 from stoqlib.domain.payment.payment import AbstractPaymentGroup, Payment
-from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
 
@@ -148,7 +147,7 @@ class Till(Domain):
         if Till.select(Till.q.opening_date >= today, connection=conn):
             raise TillError(_("A till has already been opened today"))
 
-        last_till = get_last_till_operation_for_current_branch(conn)
+        last_till = self._get_last_closed_till()
         if last_till:
             if not last_till.closing_date:
                 raise TillError(_("Previous till was not closed"))
@@ -299,6 +298,16 @@ class Till(Domain):
     # Private
     #
 
+
+    def _get_last_closed_till(self):
+        results = Till.selectBy(
+            status=Till.STATUS_CLOSED,
+            station=self.station,
+            connection=self.get_connection()).orderBy('opening_date')
+
+        if results:
+            return results[-1]
+
     def _get_payment_group(self):
         group = IPaymentGroup(self, None)
 
@@ -399,26 +408,3 @@ class TillFiscalOperationsView(SQLObject, BaseSQLView):
     value = PriceCol()
     branch_id = IntCol()
     status = IntCol()
-
-#
-# Functions
-#
-
-
-def get_last_till_operation_for_current_branch(conn):
-    """  The last till operation is used to get a initial cash amount
-    to a new till operation that will be created, this value is based
-    on the final_cash_amount attribute of the last till operation
-    """
-
-    result = TillEntry.select(
-        AND(Till.q.id == TillEntry.q.tillID,
-            Till.q.status == Till.STATUS_CLOSED,
-            Till.q.stationID == BranchStation.q.id,
-            BranchStation.q.branchID == PersonAdaptToBranch.q.id,
-            PersonAdaptToBranch.q.id == get_current_branch(conn).id),
-
-        connection=conn).orderBy('date')
-
-    if result:
-        return result[-1]
