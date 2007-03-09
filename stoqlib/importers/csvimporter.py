@@ -25,6 +25,8 @@
 
 import csv
 
+from kiwi.python import namedAny
+
 from stoqlib.database.runtime import new_transaction
 
 class CSVDataLine:
@@ -37,6 +39,17 @@ class CSVImporter(object):
     """
     fields = []
     optional_fields = []
+
+    # Available importers, the value is relative to stoqlib.importers
+    _available_importers = {
+        'product': 'productimporter.ProductImporter',
+        'service': 'serviceimporter.ServiceImporter',
+        'employee': 'employeeimporter.EmployeeImporter'
+        }
+
+    #
+    # Public API
+    #
 
     def feed_file(self, filename):
         """
@@ -81,6 +94,30 @@ class CSVImporter(object):
             lineno += 1
         trans.commit()
 
+    #
+    # Classmethods
+    #
+
+    @classmethod
+    def get_by_type(cls, importer_type):
+        """
+        Gets an importers class, instantiates it returns it
+        @param importer_type: an importer
+        @type importer_type: string
+        @returns: an importer instance
+        @type: L{CSVImporter} subclass
+        """
+        if not importer_type in cls._available_importers:
+            raise ValueError("Invalid importer %s, must be one of %s" % (
+                importer_type, ', '.join(sorted(cls._available_importers))))
+        name = cls._available_importers[importer_type]
+        importer_cls = namedAny('stoqlib.importers.%s' % (name,))
+        return importer_cls()
+
+    #
+    # Override this in a subclass
+    #
+
     def process_one(self, data, fields, trans):
         """
         Processes one line in a csv file, you can access the columns
@@ -89,3 +126,4 @@ class CSVImporter(object):
         @param fields: a list of fields set in data
         @param trans: a database transaction
         """
+        raise NotImplementedError
