@@ -97,7 +97,7 @@ class Pay2023Constants(BaseDriverConstants):
         UNIT_LITERS:      'lt',
         UNIT_METERS:      'm ',
         UNIT_EMPTY:       '  ',
-        MONEY_PM:         '1',
+        MONEY_PM:         '-2',
         CHEQUE_PM:        '2',
         }
 
@@ -270,11 +270,12 @@ class Pay2023(SerialBase, BaseChequePrinter):
             result = 0.0
         return result
 
-    def format_value(self, value):
+    def format_value(self, value, digits=4):
         """ This method receives a float value and format it to the string
         format accepted by the FISCnet protocol.
         """
-        return ("%.04f" % value).replace('.', ',')
+        format = '%%.0%df' % digits
+        return (format % value).replace('.', ',')
 
     def parse_value(self, value):
         """ This method receives a string value (representing the float
@@ -357,7 +358,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
                           NomeProduto="\"%s\"" % description[:200],
                           Unidade="\"%02s\"" % unit,
                           PrecoUnitario=self.format_value(price),
-                          Quantidade="%.03f" % quantity)
+                          Quantidade=self.format_value(quantity, digits=3))
         return self._get_last_item_id()
 
     def coupon_cancel_item(self, item_id):
