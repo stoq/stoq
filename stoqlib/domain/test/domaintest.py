@@ -181,6 +181,10 @@ class DomainTest(unittest.TestCase):
         ex = ExampleCreator(self.trans)
         return ex.create_by_type('DeviceConstant')
 
+    def create_receiving_order(self):
+        ex = ExampleCreator(self.trans)
+        return ex.create_by_type('ReceivingOrder')
+
     def create_icms_ipi_book_entry(self):
         ex = ExampleCreator(self.trans)
         return ex.create_by_type('IcmsIpiBookEntry')
