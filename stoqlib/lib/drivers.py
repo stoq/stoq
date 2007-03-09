@@ -542,6 +542,8 @@ class _FiscalCoupon(object):
         """ Add the payments defined in the sale to the coupon. Note that this
         function must be called after all the payments has been created.
         """
+        log.info("setting up payments")
+
         # XXX: Remove this when bug #2827 is fixed.
         if not self._item_ids:
             return True
@@ -551,6 +553,7 @@ class _FiscalCoupon(object):
             self._printer.add_payment(MONEY_PM, sale.get_total_sale_amount())
             return True
 
+        log.info("we have %d payments" % (group.get_items().count()),)
         all_methods = get_all_methods_dict().items()
         method_id = None
         for payment in group.get_items():
@@ -593,9 +596,6 @@ class _FiscalCoupon(object):
                     return False
 
                 self._printer.add_payment(MONEY_PM, payment.base_value)
-
-        for entry in group.get_till_entries():
-            self._printer.add_payment(MONEY_PM, entry.value)
 
         return True
 
