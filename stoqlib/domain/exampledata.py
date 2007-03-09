@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Johan Dahlin  <jdahlin@async.com.br>
+##              Fabio Morbec  <fabio@async.com.br>
 ##
 
 import datetime
@@ -27,6 +28,7 @@ import datetime
 from stoqdrivers.constants import TAX_CUSTOM
 
 from stoqlib.database.runtime import get_current_station
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
                                        IIndividual, ISupplier,
                                        ISellable, IStorable, ISalesPerson,
@@ -134,6 +136,7 @@ class ExampleCreator(object):
             'Product': self._create_product,
             'ProductAdaptToSellable' : self._create_sellable,
             'ProductAdaptToStorable' : self._create_storable,
+            'ReceivingOrder' : self._create_receiving_order,
             'Sale': self._create_sale,
             'ServiceSellableItem': self._create_service_sellable_item,
             'Till': self._create_till,
@@ -287,6 +290,21 @@ class ExampleCreator(object):
     def _create_user_profile(self):
         from stoqlib.domain.profile import UserProfile
         return UserProfile(connection=self.trans, name='assistant')
+
+    def _create_receiving_order(self):
+        from stoqlib.domain.receiving import ReceivingOrder
+        from stoqlib.domain.fiscal import CfopData
+        user = self._create_user()
+        supplier = self._create_supplier()
+        branch = self._create_branch()
+        cfop = CfopData(connection=self.trans, code=u'123',
+                        description=u'test')
+        purchase = PurchaseOrder(supplier=supplier, branch=branch,
+                                 connection=self.trans)
+        return ReceivingOrder(connection=self.trans, invoice_number=222,
+                              supplier=supplier, responsible=user,
+                              purchase=purchase,
+                              branch=branch, cfop=cfop)
 
     def _create_icms_ipi_book_entry(self):
         from stoqlib.domain.fiscal import CfopData, IcmsIpiBookEntry
