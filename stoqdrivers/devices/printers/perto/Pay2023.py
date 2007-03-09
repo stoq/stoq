@@ -97,8 +97,8 @@ class Pay2023Constants(BaseDriverConstants):
         UNIT_LITERS:      'lt',
         UNIT_METERS:      'm ',
         UNIT_EMPTY:       '  ',
-        MONEY_PM:         '-2',
-        CHEQUE_PM:        '2',
+        MONEY_PM:         -2,
+        CHEQUE_PM:        2,
         }
 
     _tax_constants = [
@@ -188,9 +188,17 @@ class Pay2023(SerialBase, BaseChequePrinter):
     #
 
     def _send_command(self, command, **params):
-        params = ["%s=%s" % (param, value) for param, value in params.items()]
+        args = []
+        for param, value in params.items():
+            if isinstance(value, Decimal):
+                value = ('%.03f' % value).replace('.', ',')
+            elif isinstance(value, basestring):
+                value = '"%s"' % value
+
+            args.append('%s=%s' % (param, value))
+
         data = "%d;%s;%s;" % (self._command_id, command,
-                              " ".join(params))
+                              ' '.join(args))
         result = self.writeline("%s" % data)
         return result
 
@@ -244,7 +252,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
 
     def _get_integer_register_data(self, data_name):
         result = self._send_command(Pay2023.CMD_GET_INTEGER_REGISTER_DATA,
-                                    NomeInteiro="\"%s\"" % data_name)
+                                    NomeInteiro=data_name)
         result = result[:-1]
         substr = "ValorInteiro"
         index = result.index(substr) + len(substr) + 1
@@ -252,7 +260,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
 
     def get_money_register_data(self, data_name):
         result = self._send_command(Pay2023.CMD_GET_MONEY_REGISTER_DATA,
-                                    NomeDadoMonetario="\"%s\"" % data_name)
+                                    NomeDadoMonetario=data_name)
         result = result[:-1]
         substr = "ValorMoeda"
         index = result.index(substr) + len(substr) + 1
@@ -270,13 +278,6 @@ class Pay2023(SerialBase, BaseChequePrinter):
             result = 0.0
         return result
 
-    def format_value(self, value, digits=4):
-        """ This method receives a float value and format it to the string
-        format accepted by the FISCnet protocol.
-        """
-        format = '%%.0%df' % digits
-        return (format % value).replace('.', ',')
-
     def parse_value(self, value):
         """ This method receives a string value (representing the float
         format used in the FISCnet protocol) and convert it to the
@@ -291,7 +292,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
     def _get_status(self):
         status = self._send_command(
             Pay2023.CMD_READ_REGISTER_INT,
-            NomeInteiro="\"%s\"" % Pay2023.REGISTER_INDICATORS)
+            NomeInteiro=Pay2023.REGISTER_INDICATORS)
 
         status = int(status[1:-1].split(';')[2].split('=', 1)[1])
         return status
@@ -299,11 +300,11 @@ class Pay2023(SerialBase, BaseChequePrinter):
     # This how the printer needs to be configured.
     def setup(self):
         self._send_command(
-            'DefineNaoFiscal', CodNaoFiscal=1, DescricaoNaoFiscal="\"Sangria\"",
-            NomeNaoFiscal="\"Sangria\"", TipoNaoFiscal="false")
+            'DefineNaoFiscal', CodNaoFiscal=1, DescricaoNaoFiscal="Sangria",
+            NomeNaoFiscal="Sangria", TipoNaoFiscal=False)
         self._send_command(
-            'DefineNaoFiscal', CodNaoFiscal=0, DescricaoNaoFiscal="\"Suprimento\"",
-            NomeNaoFiscal="\"Suprimento\"", TipoNaoFiscal="false")
+            'DefineNaoFiscal', CodNaoFiscal=0, DescricaoNaoFiscal="Suprimento",
+            NomeNaoFiscal="Suprimento", TipoNaoFiscal=False)
 
     def print_status(self):
         status = self._get_status()
@@ -332,9 +333,9 @@ class Pay2023(SerialBase, BaseChequePrinter):
             document = self._customer_document
             address = self._customer_address
             self.send_command(Pay2023.CMD_COUPON_OPEN,
-                              EnderecoConsumidor="\"%s\"" % address[:80],
-                              IdConsumidor="\"%s\"" % document[:29],
-                              NomeConsumidor="\"%s\"" % customer[:30])
+                              EnderecoConsumidor=address[:80],
+                              IdConsumidor=document[:29],
+                              NomeConsumidor=customer[:30])
         except InvalidState:
             raise CouponOpenError(_("Coupon already opened."))
 
@@ -354,11 +355,11 @@ class Pay2023(SerialBase, BaseChequePrinter):
         taxcode = ord(taxcode) - 128
         self.send_command(Pay2023.CMD_ADD_ITEM,
                           CodAliquota=taxcode,
-                          CodProduto="\"%s\"" % code[:48],
-                          NomeProduto="\"%s\"" % description[:200],
-                          Unidade="\"%02s\"" % unit,
-                          PrecoUnitario=self.format_value(price),
-                          Quantidade=self.format_value(quantity, digits=3))
+                          CodProduto=code[:48],
+                          NomeProduto=description[:200],
+                          Unidade=unit,
+                          PrecoUnitario=price,
+                          Quantidade=quantity)
         return self._get_last_item_id()
 
     def coupon_cancel_item(self, item_id):
@@ -374,8 +375,8 @@ class Pay2023(SerialBase, BaseChequePrinter):
         # the discount/surcharge values and applied to the coupon.
         value = discount and (discount * -1) or surcharge
         if value:
-            self.send_command(Pay2023.CMD_ADD_COUPON_DIFFERENCE, Cancelar='f',
-                              ValorPercentual="%.02f" % value)
+            self.send_command(Pay2023.CMD_ADD_COUPON_DIFFERENCE, Cancelar=False,
+                              ValorPercentual=value)
         return self.get_coupon_total_value()
 
     def coupon_add_payment(self, payment_method, value, description=u"",
@@ -385,13 +386,13 @@ class Pay2023(SerialBase, BaseChequePrinter):
         else:
             pm = custom_pm
         self.send_command(Pay2023.CMD_ADD_PAYMENT,
-                          CodMeioPagamento=pm, Valor=self.format_value(value),
-                          TextoAdicional="\"%s\"" % description[:80])
+                          CodMeioPagamento=pm, Valor=value,
+                          TextoAdicional=description[:80])
         return self.get_coupon_remainder_value()
 
     def coupon_close(self, message=''):
         self.send_command(Pay2023.CMD_COUPON_CLOSE,
-                          TextoPromocional="\"%s\"" % message[:492])
+                          TextoPromocional=message[:492])
         return self._get_coupon_number()
 
     def summarize(self):
@@ -410,8 +411,8 @@ class Pay2023(SerialBase, BaseChequePrinter):
             self.send_command(Pay2023.CMD_COUPON_CANCEL)
         self.send_command(Pay2023.CMD_COUPON_OPEN_NOT_FISCAL)
         self.send_command('EmiteItemNaoFiscal',
-                          NomeNaoFiscal="\"Suprimento\"",
-                          Valor=self.format_value(value))
+                          NomeNaoFiscal="Suprimento",
+                          Valor=value)
         self.send_command(Pay2023.CMD_COUPON_CLOSE)
 
     def till_remove_cash(self, value):
@@ -420,8 +421,8 @@ class Pay2023(SerialBase, BaseChequePrinter):
             self.send_command(Pay2023.CMD_COUPON_CANCEL)
         self.send_command(Pay2023.CMD_COUPON_OPEN_NOT_FISCAL)
         self.send_command('EmiteItemNaoFiscal',
-                          NomeNaoFiscal="\"Sangria\"",
-                          Valor=self.format_value(value))
+                          NomeNaoFiscal="Sangria",
+                          Valor=value)
         self.send_command(Pay2023.CMD_COUPON_CLOSE)
 
     #
@@ -446,10 +447,10 @@ class Pay2023(SerialBase, BaseChequePrinter):
                     VPosFavorecido=bank.get_y_coordinate("thirdparty"),
                     VPosValor=bank.get_y_coordinate("value"))
 
-        self.send_command(Pay2023.CMD_PRINT_CHEQUE, Cidade="\"%s\"" % city[:27],
+        self.send_command(Pay2023.CMD_PRINT_CHEQUE, Cidade=city[:27],
                           Data=date.strftime("#%d/%m/%Y#"),
-                          Favorecido="\"%s\"" % thirdparty[:45],
-                          Valor=self.format_value(value), **data)
+                          Favorecido=thirdparty[:45],
+                          Valor=value, **data)
 
     def get_capabilities(self):
         return dict(item_code=Capability(max_len=48),
