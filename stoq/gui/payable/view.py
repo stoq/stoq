@@ -33,7 +33,7 @@ from sqlobject.viewable import Viewable
 class PayableView(Viewable):
     columns = dict(
         id=Payment.q.id,
-        identifier=Payment.q.identifier,
+        identifier=Payment.q.id,
         description=Payment.q.description,
         supplier_name=Person.q.name,
         due_date=Payment.q.due_date,
