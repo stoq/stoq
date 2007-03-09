@@ -250,8 +250,7 @@ class SwedaIFS9000I(TestCoupon, BaseTest):
     brand = "sweda"
     model = "IFS9000I"
 
-# XXX: Perto Pay2023 test waiting for bug #2421
-# class PertoPay2023(TestCoupon, BaseTest):
-#     brand = "perto"
-#     model = "Pay2023"
+class PertoPay2023(TestCoupon, BaseTest):
+    brand = "perto"
+    model = "Pay2023"
 

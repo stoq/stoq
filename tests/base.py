@@ -134,11 +134,11 @@ class BaseTest(unittest.TestCase):
             # Decorate the port used by device
             self._port = LogSerialPort(self._device.get_port())
             self._device.set_port(self._port)
-            return
-        self._port = PlaybackPort(filename)
-        self._device = self.device_class(brand=self.brand,
-                                         model=self.model,
-                                         port=self._port)
+        else:
+            self._port = PlaybackPort(filename)
+            self._device = self.device_class(brand=self.brand,
+                                             model=self.model,
+                                             port=self._port)
         constant = self._device.get_constants()
         self._taxnone = constant.get_tax_constant(TAX_NONE)
 

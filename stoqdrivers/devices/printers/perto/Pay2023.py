@@ -134,6 +134,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
     # Page 87
     CMD_ADD_ITEM = 'VendeItem'
     CMD_COUPON_OPEN = 'AbreCupomFiscal'
+    CMD_COUPON_OPEN_NOT_FISCAL = 'AbreCupomNaoFiscal'
     CMD_CANCEL_ITEM = 'CancelaItemFiscal'
     CMD_ADD_PAYMENT = 'PagaCupom'
     CMD_ADD_COUPON_DIFFERENCE = 'AcresceSubtotal'
@@ -294,12 +295,26 @@ class Pay2023(SerialBase, BaseChequePrinter):
         status = int(status[1:-1].split(';')[2].split('=', 1)[1])
         return status
 
+    # This how the printer needs to be configured.
+    def setup(self):
+        self._send_command(
+            'DefineNaoFiscal', CodNaoFiscal=1, DescricaoNaoFiscal="\"Sangria\"",
+            NomeNaoFiscal="\"Sangria\"", TipoNaoFiscal="false")
+        self._send_command(
+            'DefineNaoFiscal', CodNaoFiscal=0, DescricaoNaoFiscal="\"Suprimento\"",
+            NomeNaoFiscal="\"Suprimento\"", TipoNaoFiscal="false")
+
     def print_status(self):
         status = self._get_status()
         print 'Flags'
         for flag in reversed(_status_flags):
             if status & flag:
                 print flag, _flagnames[flag]
+
+        print 'non-fiscal registers'
+        for i in range(15):
+            print self._send_command(
+                'LeNaoFiscal', CodNaoFiscal=i)
 
     #
     # ICouponPrinter implementation
@@ -388,15 +403,25 @@ class Pay2023(SerialBase, BaseChequePrinter):
 
         self.send_command(Pay2023.CMD_CLOSE_TILL)
 
-    #
-    # FIXME: These two methods will be implemented on bug #2421
-    #
-
     def till_add_cash(self, value):
-        raise NotImplementedError("not implemented yet")
+        status = self._get_status()
+        if status & FLAG_DOCUMENTO_ABERTO:
+            self.send_command(Pay2023.CMD_COUPON_CANCEL)
+        self.send_command(Pay2023.CMD_COUPON_OPEN_NOT_FISCAL)
+        self.send_command('EmiteItemNaoFiscal',
+                          NomeNaoFiscal="\"Suprimento\"",
+                          Valor=self.format_value(value))
+        self.send_command(Pay2023.CMD_COUPON_CLOSE)
 
     def till_remove_cash(self, value):
-        raise NotImplementedError("not implemented yet")
+        status = self._get_status()
+        if status & FLAG_DOCUMENTO_ABERTO:
+            self.send_command(Pay2023.CMD_COUPON_CANCEL)
+        self.send_command(Pay2023.CMD_COUPON_OPEN_NOT_FISCAL)
+        self.send_command('EmiteItemNaoFiscal',
+                          NomeNaoFiscal="\"Sangria\"",
+                          Valor=self.format_value(value))
+        self.send_command(Pay2023.CMD_COUPON_CLOSE)
 
     #
     # IChequePrinter implementation
