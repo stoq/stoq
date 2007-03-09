@@ -194,6 +194,11 @@ class Pay2023(SerialBase, BaseChequePrinter):
                 value = ('%.03f' % value).replace('.', ',')
             elif isinstance(value, basestring):
                 value = '"%s"' % value
+            elif isinstance(value, bool):
+                if value is False:
+                    value = 'f'
+                elif value is True:
+                    value = 't'
 
             args.append('%s=%s' % (param, value))
 
