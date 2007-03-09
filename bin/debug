@@ -52,6 +52,9 @@ def _interactive(ns):
 
 def main(args):
     parser = get_option_parser()
+    parser.add_option('-b', '--bare',
+                      action="store_true",
+                      dest="bare")
     parser.add_option('-c', '--commit',
                       action="store_true",
                       dest="commit")
@@ -64,7 +67,7 @@ def main(args):
 
     config = StoqConfig()
     config.load()
-    setup(config, options)
+    setup(config, options, register_station=False, check_schema=False)
 
     # Namespace
     ns = locals().copy()
@@ -73,23 +76,25 @@ def main(args):
 
     conn = get_connection()
 
-    provide_utility(ICurrentUser, get_admin_user(conn))
-
     ns['conn'] = conn
     ns['trans'] = trans = new_transaction()
     ns['sysparam'] = sysparam
-    ns['branch'] = get_current_branch(conn)
-    ns['station'] = station = get_current_station(conn)
-    ns['now'] = datetime.datetime.now
-    ns['today'] = datetime.date.today
-    ns['settings'] = get_fiscal_printer_settings_by_station(conn, station)
 
-    for name in ('sqlobject', 'sqlobject.sqlbuilder',
-                 'stoqlib.database.runtime',
-                 'stoqlib.lib.interfaces',
-                 'stoqlib.domain.interfaces'):
-        mod = __import__(name, {}, {}, ' ')
-        ns.update(mod.__dict__)
+    if not options.bare:
+        provide_utility(ICurrentUser, get_admin_user(conn))
+
+        ns['branch'] = get_current_branch(conn)
+        ns['station'] = station = get_current_station(conn)
+        ns['now'] = datetime.datetime.now
+        ns['today'] = datetime.date.today
+        ns['settings'] = get_fiscal_printer_settings_by_station(conn, station)
+
+        for name in ('sqlobject', 'sqlobject.sqlbuilder',
+                     'stoqlib.database.runtime',
+                     'stoqlib.lib.interfaces',
+                     'stoqlib.domain.interfaces'):
+            mod = __import__(name, {}, {}, ' ')
+            ns.update(mod.__dict__)
 
     if options.debug:
         conn.debug = True
