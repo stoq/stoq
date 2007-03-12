@@ -97,8 +97,8 @@ class Pay2023Constants(BaseDriverConstants):
         UNIT_LITERS:      'lt',
         UNIT_METERS:      'm ',
         UNIT_EMPTY:       '  ',
-        MONEY_PM:         -2,
-        CHEQUE_PM:        2,
+        MONEY_PM:         '-2',
+        CHEQUE_PM:        '2',
         }
 
     _tax_constants = [
@@ -387,7 +387,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
     def coupon_add_payment(self, payment_method, value, description=u"",
                            custom_pm=''):
         if not custom_pm:
-            pm = self._consts.get_value(payment_method)
+            pm = int(self._consts.get_value(payment_method))
         else:
             pm = custom_pm
         self.send_command(Pay2023.CMD_ADD_PAYMENT,
