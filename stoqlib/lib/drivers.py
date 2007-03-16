@@ -39,7 +39,6 @@ from stoqdrivers.exceptions import (CouponOpenError, DriverError,
                                     OutofPaperError, PrinterOfflineError,
                                     CouponNotOpenError)
 
-from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       get_current_station)
 from stoqlib.domain.devices import DeviceSettings
@@ -50,13 +49,10 @@ from stoqlib.domain.payment.methods import CheckPM, MoneyPM
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.service import ServiceSellableItem
 from stoqlib.domain.sellable import ASellableItem
-from stoqlib.domain.till import Till
-from stoqlib.exceptions import TillError
 from stoqlib.lib.defaults import (METHOD_GIFT_CERTIFICATE, get_all_methods_dict,
                                   get_method_names)
 from stoqlib.lib.message import warning, info, yesno
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.dialogs import run_dialog
 
 _ = stoqlib_gettext
 
@@ -182,135 +178,40 @@ def print_cheques_for_payment_group(conn, group):
         printer.print_cheque(bank, payment.value, thirdparty, city)
 
 
+
+
 class CouponPrinter(object):
     """
     CouponPrinter is a wrapper around the FiscalPrinter class inside
     stoqdrivers, refer to it for documentation
     """
-    def __init__(self, conn):
-        self.conn = conn
-        station = get_current_station(conn)
-        self._settings = get_fiscal_printer_settings_by_station(conn, station)
-        self._printer = self._settings.get_interface()
+    def __init__(self, driver, settings):
+        self._driver = driver
+        self._settings = settings
 
-    def _emit_reading(self, cmd):
-        try:
-            getattr(self._printer, cmd)()
-        except CouponOpenError:
-            return self._printer.cancel()
-        except DriverError:
-            return False
-        return True
-
-    def open_till(self, parent=None):
+    def open_till(self, value):
         """
         Opens the till
-        @param parent: a gtk.Window subclass or None
+        @param value:
         """
         log.info("Opening till")
 
-        if Till.get_current(self.conn) is not None:
-            warning("You already have a till operation opened. "
-                    "Close the current Till and open another one.")
-            return False
+        self._driver.summarize()
 
-        from stoqlib.gui.editors.tilleditor import TillOpeningEditor
-        trans = new_transaction()
-        try:
-            model = run_dialog(TillOpeningEditor, parent, trans)
-        except TillError, e:
-            warning(e)
-            model = None
+        if value > 0:
+            self.add_cash(value)
 
-        retval = True
-        while not self._emit_reading('summarize'):
-            response = warning(
-                _(u"It's not possible to emit a read X for the "
-                      "configured printer.\nWould you like to ignore "
-                      "this error and continue?"),
-                buttons=((_(u"Cancel"), gtk.RESPONSE_CANCEL),
-                         (_(u"Ignore"), gtk.RESPONSE_YES),
-                         (_(u"Try Again"), gtk.RESPONSE_NONE)))
-            if response == gtk.RESPONSE_YES:
-                retval = True
-                break
-            elif response == gtk.RESPONSE_CANCEL:
-                retval = False
-                break
-
-        if retval:
-            if model and model.value > 0:
-                self.add_cash(model.value)
-
-            if not finish_transaction(trans, model):
-                retval = False
-
-        trans.close()
-
-        return retval
-
-    def close_till(self, parent=None):
+    def close_till(self, value):
         """
         Closes the till
-        @param parent: a gtk.Window subclass or None
-        @returns: True if the till was closed, otherwise False
+        @param value:
         """
         log.info("Closing till")
 
-        till = Till.get_last_opened(self.conn)
-        assert till
+        self._driver.close_till()
 
-        from stoqlib.gui.editors.tilleditor import TillClosingEditor
-        trans = new_transaction()
-        model = run_dialog(TillClosingEditor, parent, trans)
-
-        if not model:
-            finish_transaction(trans, model)
-            return
-
-        opened_sales = Sale.selectBy(status=Sale.STATUS_OPENED,
-                                     connection=trans)
-        if opened_sales:
-            # A new till object to "store" the sales that weren't
-            # confirmed. Note that this new till operation isn't
-            # opened yet, but it will be considered when opening a
-            # new operation
-            branch_station = opened_sales[0].till.station
-            new_till = Till(connection=trans,
-                            station=branch_station)
-            for sale in opened_sales:
-                sale.till = new_till
-
-        if model.value > 0:
-            # If we forgot to close the till and want to do a remove cash
-            # we must emit a Read X before removing cash
-            if till.needs_closing():
-                self._emit_reading('summarize')
-            self.remove_cash(model.value)
-
-        retval = True
-        while not self._emit_reading('close_till'):
-            response = warning(
-                short=_(u"It's not possible to emit a reduce Z for the "
-                        "configured printer.\nWould you like to ignore "
-                        "this error and continue?"),
-                buttons=((_(u"Cancel"), gtk.RESPONSE_CANCEL),
-                         (_(u"Ignore"), gtk.RESPONSE_YES),
-                         (_(u"Try Again"), gtk.RESPONSE_NONE)))
-            if response  == gtk.RESPONSE_YES:
-                retval = True
-                break
-            elif response == gtk.RESPONSE_CANCEL:
-                retval = False
-
-        if retval:
-            # TillClosingEditor closes the till
-            if not finish_transaction(trans, model):
-                retval = False
-
-        trans.close()
-
-        return retval
+        if value > 0:
+            self.remove_cash(value)
 
     def cancel(self):
         """
@@ -323,7 +224,7 @@ class CouponPrinter(object):
         #        See #3130 for more information
 
         try:
-            self._printer.cancel()
+            self._driver.cancel()
         except CouponNotOpenError:
             return False
 
@@ -339,21 +240,16 @@ class CouponPrinter(object):
         return True
 
     def add_cash(self, value):
-        self._printer.till_add_cash(value)
+        self._driver.till_add_cash(value)
 
     def remove_cash(self, value):
-        self._printer.till_remove_cash(value)
+        self._driver.till_remove_cash(value)
 
     def emit_coupon(self, sale):
         """ Emit a coupon for a Sale instance.
 
         @returns: True if the coupon has been emitted, False otherwise.
         """
-        if not self._printer:
-            raise ValueError("It is not possible to emit coupon "
-                             "since there is no fiscal printer "
-                             "configured for this station")
-
         products = sale.get_products()
         if not products:
             return True
@@ -376,7 +272,7 @@ class CouponPrinter(object):
         @param sale: a L{stoqlib.domain.sale.Sale}
         @returns: a new coupon
         """
-        return _FiscalCoupon(self._printer, self._settings, sale)
+        return _FiscalCoupon(self._driver, self._settings, sale)
 
 
 
@@ -393,14 +289,14 @@ class _FiscalCoupon(object):
     """
     implements(IContainer)
 
-    def __init__(self, printer, settings, sale):
-        self._printer = printer
+    def __init__(self, driver, settings, sale):
+        self._driver = driver
         self._settings = settings
         self._sale = sale
         self._item_ids = {}
 
     def _get_capability(self, name):
-        return self._printer.get_capabilities()[name]
+        return self._driver.get_capabilities()[name]
 
     #
     # IContainer implementation
@@ -431,7 +327,7 @@ class _FiscalCoupon(object):
         max_len = self._get_capability("item_code").max_len
         code = sellable.get_code_str()[:max_len]
         constant = self._settings.get_tax_constant_for_device(sellable)
-        item_id = self._printer.add_item(code, description, item.price,
+        item_id = self._driver.add_item(code, description, item.price,
                                          constant.device_value,
                                          item.quantity, unit,
                                          unit_desc=unit_desc)
@@ -448,7 +344,7 @@ class _FiscalCoupon(object):
             return
         for item_id in self._item_ids.pop(item):
             try:
-                self._printer.cancel_item(item_id)
+                self._driver.cancel_item(item_id)
             except DriverError:
                 return False
         return True
@@ -473,12 +369,12 @@ class _FiscalCoupon(object):
         name = person.name[:max_len]
         max_len = self._get_capability("customer_address").max_len
         address = person.get_address_string()[:max_len]
-        self._printer.identify_customer(name, address, document)
+        self._driver.identify_customer(name, address, document)
 
     def open(self):
         while True:
             try:
-                self._printer.open()
+                self._driver.open()
                 break
             except CouponOpenError:
                 if not self.cancel():
@@ -486,14 +382,14 @@ class _FiscalCoupon(object):
             except OutofPaperError:
                 if not yesno(
                     _(u"The printer %s has run out of paper.\nAdd more paper "
-                      "before continuing.") % self._printer.get_printer_name(),
+                      "before continuing.") % self._driver.get_printer_name(),
                     gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
                     return False
                 return self.open()
             except PrinterOfflineError:
                 if not yesno(
                     (_(u"The printer %s is offline, turn it on and try"
-                       "again") % self._printer.get_model_name()),
+                       "again") % self._driver.get_model_name()),
                     gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
                     return False
                 return self.open()
@@ -524,7 +420,7 @@ class _FiscalCoupon(object):
         discount = self._sale.discount_percentage
 
         try:
-            self._printer.totalize(discount, surcharge, TAX_NONE)
+            self._driver.totalize(discount, surcharge, TAX_NONE)
         except DriverError, details:
             warning(_(u"It is not possible to totalize the coupon"),
                     str(details))
@@ -533,7 +429,7 @@ class _FiscalCoupon(object):
 
     def cancel(self):
         try:
-            self._printer.cancel()
+            self._driver.cancel()
         except DriverError:
             return False
         return True
@@ -550,7 +446,7 @@ class _FiscalCoupon(object):
         sale = self._sale
         group = IPaymentGroup(sale)
         if group.default_method == METHOD_GIFT_CERTIFICATE:
-            self._printer.add_payment(MONEY_PM, sale.get_total_sale_amount())
+            self._driver.add_payment(MONEY_PM, sale.get_total_sale_amount())
             return True
 
         log.info("we have %d payments" % (group.get_items().count()),)
@@ -563,7 +459,7 @@ class _FiscalCoupon(object):
                     method_id = CHEQUE_PM
                 else:
                     method_id = MONEY_PM
-                self._printer.add_payment(method_id, payment.base_value)
+                self._driver.add_payment(method_id, payment.base_value)
                 continue
             method_type = type(method)
             method_id = None
@@ -584,7 +480,7 @@ class _FiscalCoupon(object):
 
             constant = self._settings.get_payment_constant(method_id)
             if constant:
-                self._printer.add_payment(CUSTOM_PM, payment.base_value,
+                self._driver.add_payment(CUSTOM_PM, payment.base_value,
                                           custom_pm=constant.device_value)
             else:
                 method_name = get_method_names()[method_id]
@@ -595,7 +491,7 @@ class _FiscalCoupon(object):
                     _(u"Cancel the checkout")):
                     return False
 
-                self._printer.add_payment(MONEY_PM, payment.base_value)
+                self._driver.add_payment(MONEY_PM, payment.base_value)
 
         return True
 
@@ -604,7 +500,7 @@ class _FiscalCoupon(object):
         if not self._item_ids:
             return True
         try:
-            coupon_id = self._printer.close()
+            coupon_id = self._driver.close()
         except DriverError, details:
             warning(_("It's not possible to close the coupon"), str(details))
             return False
