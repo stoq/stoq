@@ -49,11 +49,12 @@ from stoqlib.domain.till import Till
 from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.drivers import CouponPrinter, read_scale_info
+from stoqlib.lib.drivers import read_scale_info
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
+from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
@@ -88,7 +89,8 @@ class POSApp(AppWindow):
         self.client_table = PersonAdaptToClient
         self._product_table = ProductAdaptToSellable
         self._coupon = None
-        self._printer = CouponPrinter(self.conn)
+        self._printer = FiscalPrinterHelper(
+            self.conn, parent=self.get_toplevel())
         self._scale_settings = DeviceSettings.get_scale_settings(self.conn)
         self._check_till()
         self._setup_widgets()
@@ -457,13 +459,11 @@ class POSApp(AppWindow):
     #
 
     def _open_till(self):
-        parent = self.get_toplevel()
-        if self._printer.open_till(parent):
+        if self._printer.open_till():
             self._update_widgets()
 
     def _close_till(self):
-        parent = self.get_toplevel()
-        retval = self._printer.close_till(parent)
+        retval = self._printer.close_till()
         if retval:
             self._update_widgets()
         return retval
