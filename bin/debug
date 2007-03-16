@@ -29,9 +29,9 @@ import code
 import datetime
 import sys
 
-from kiwi.component import provide_utility
+from kiwi.component import provide_utility, get_utility
 from stoqlib.database.admin import get_admin_user
-from stoqlib.database.interfaces import ICurrentUser
+from stoqlib.database.interfaces import ICurrentUser, IDatabaseSettings
 from stoqlib.database.runtime import (get_connection, new_transaction,
                                       get_current_branch, get_current_station)
 from stoqlib.database.tables import get_table_types
@@ -41,6 +41,7 @@ from stoqlib.lib.parameters import sysparam
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.options import get_option_parser
 from stoq.lib.startup import setup
+from stoq import version as stoq_version
 
 def _interactive(ns):
     import readline
@@ -48,7 +49,14 @@ def _interactive(ns):
     rlcompleter # pyflakes
     readline.parse_and_bind("tab: complete")
 
-    code.interact(local=ns)
+    settings = get_utility(IDatabaseSettings)
+    db_string = '%s on %s:%s (%s)' % (settings.dbname,
+                                      settings.address,
+                                      settings.port,
+                                      settings.rdbms)
+    banner = 'Stoq version %s, connected to %s' % (
+        stoq_version, db_string)
+    code.interact(local=ns, banner=banner)
 
 def main(args):
     parser = get_option_parser()
