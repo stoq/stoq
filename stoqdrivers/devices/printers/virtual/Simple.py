@@ -34,7 +34,8 @@ from zope.interface import implements
 from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.exceptions import (CouponTotalizeError, PaymentAdditionError,
                                     CloseCouponError, CouponOpenError,
-                                    CancelItemError, ItemAdditionError)
+                                    CancelItemError, ItemAdditionError,
+                                    DriverError)
 from stoqdrivers.devices.interfaces import (ICouponPrinter,
                                             IChequePrinter)
 from stoqdrivers.devices.printers.base import BaseDriverConstants
@@ -81,6 +82,7 @@ class Simple:
     coupon_printer_charset = "latin-1"
 
     def __init__(self, port, consts):
+        self._till_closed = False
         self._consts = consts or FakeConstants()
         self._reset_flags()
 
@@ -217,7 +219,10 @@ class Simple:
         return
 
     def close_till(self):
-        return
+        if self._till_closed:
+            raise DriverError(
+                "Reduce Z was already sent today, try again tomorrow")
+        self._till_closed = True
 
     def till_add_cash(self, value):
         pass
@@ -231,4 +236,3 @@ class Simple:
 
     def print_cheque(self, value, thirdparty, city, date=None):
         return
-
