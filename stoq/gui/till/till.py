@@ -39,13 +39,13 @@ from stoqlib.database.runtime import new_transaction, get_current_branch
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.lib.drivers import CouponPrinter
 from stoqlib.lib.message import yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
+from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import SaleSearch
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
@@ -72,7 +72,8 @@ class TillApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
-        self._printer = CouponPrinter(self.conn)
+        self._printer = FiscalPrinterHelper(
+            self.conn, parent=self.get_toplevel())
         self._check_till()
         self._setup_widgets()
         self.searchbar.search_items()
@@ -168,13 +169,11 @@ class TillApp(SearchableAppWindow):
     #
 
     def _open_till(self):
-        parent = self.get_toplevel()
-        if self._printer.open_till(parent):
+        if self._printer.open_till():
             self._update_widgets()
 
     def _close_till(self):
-        parent = self.get_toplevel()
-        retval = self._printer.close_till(parent)
+        retval = self._printer.close_till()
         if retval:
             self._update_widgets()
         return retval
