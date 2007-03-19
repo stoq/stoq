@@ -85,7 +85,7 @@ def _setup_dialogs():
 def _setup_printers():
     log.debug('setting up printers')
     from stoqlib.database.runtime import get_connection, get_current_station
-    from stoqlib.lib.drivers import (
+    from stoqlib.drivers.fiscalprinter import (
         get_fiscal_printer_settings_by_station,
         create_virtual_printer_for_current_station)
 

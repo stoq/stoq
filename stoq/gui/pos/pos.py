@@ -46,10 +46,10 @@ from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.service import ServiceSellableItem, Service
 from stoqlib.domain.till import Till
+from stoqlib.drivers.scale import read_scale_info
 from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.drivers import read_scale_info
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
