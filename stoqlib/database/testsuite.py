@@ -41,8 +41,9 @@ from stoqlib.domain.examples.createall import create
 from stoqlib.domain.person import Person, PersonAdaptToBranch
 from stoqlib.domain.interfaces import IBranch, IUser
 from stoqlib.domain.station import BranchStation
-from stoqlib.lib.drivers import (get_fiscal_printer_settings_by_station,
-                                 create_virtual_printer_for_current_station)
+from stoqlib.drivers.fiscalprinter import (
+    get_fiscal_printer_settings_by_station,
+    create_virtual_printer_for_current_station)
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     ISystemNotifier)
 from stoqlib.lib.message import DefaultSystemNotifier

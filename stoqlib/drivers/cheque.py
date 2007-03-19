@@ -1,0 +1,81 @@
+# -*- coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+## Author(s):   Henrique Romano         <henrique@async.com.br>
+##              Johan Dahlin            <jdahlin@async.com.br>
+##
+
+from stoqdrivers.devices.printers.cheque import ChequePrinter
+
+from stoqlib.database.runtime import get_current_station, get_current_branch
+from stoqlib.domain.devices import DeviceSettings
+from stoqlib.domain.payment.methods import CheckPM
+from stoqlib.lib.message import info
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
+
+def get_current_cheque_printer_settings(conn):
+    res = DeviceSettings.selectOneBy(
+        connection=conn,
+        station=get_current_station(conn),
+        type=DeviceSettings.CHEQUE_PRINTER_DEVICE)
+    if not res:
+        return None
+    elif not isinstance(res, DeviceSettings):
+        raise TypeError("Invalid setting returned by "
+                        "get_current_cheque_printer_settings")
+    return ChequePrinter(brand=res.brand,
+                         model=res.model,
+                         device=res.get_port_name())
+
+def print_cheques_for_payment_group(conn, group):
+    """ Given a instance that implements the IPaymentGroup interface, iterate
+    over all its items printing a cheque for them.
+    """
+    payments = group.get_items()
+    printer = get_current_cheque_printer_settings(conn)
+    if not printer:
+        return
+    printer_banks = printer.get_banks()
+    current_branch = get_current_branch(conn)
+    main_address = current_branch.person.get_main_address()
+    if not main_address:
+        raise ValueError("The cheque can not be printed since there is no "
+                         "main address defined for the current branch.")
+
+    max_len = printer.get_capability("cheque_city").max_len
+    city = main_address.city_location.city[:max_len]
+    for idx, payment in enumerate(payments):
+        method = payment.method
+        if not isinstance(method, CheckPM):
+            continue
+        check_data = method.get_check_data_by_payment(payment)
+        bank_id = check_data.bank_data.bank_id
+        try:
+            bank = printer_banks[bank_id]
+        except KeyError:
+            continue
+        thirdparty = group.get_thirdparty()
+        info(_(u"Insert Cheque %d") % (idx+1))
+        max_len = printer.get_capability("cheque_thirdparty").max_len
+        thirdparty = thirdparty and thirdparty.name[:max_len] or ""
+        printer.print_cheque(bank, payment.value, thirdparty, city)

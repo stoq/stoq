@@ -35,7 +35,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.defaults import interval_types, INTERVALTYPE_MONTH, \
      DECIMAL_PRECISION
-from stoqlib.lib.drivers import get_current_cheque_printer_settings
+from stoqlib.drivers.cheque import get_current_cheque_printer_settings
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.interfaces import IInPayment
 from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,

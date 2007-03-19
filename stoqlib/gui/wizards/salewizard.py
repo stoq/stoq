@@ -35,12 +35,12 @@ from kiwi.argcheck import argcheck
 from kiwi.python import Settable
 
 from stoqlib.database.runtime import StoqlibTransaction
+from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.drivers import print_cheques_for_payment_group
 from stoqlib.lib.defaults import METHOD_MONEY, METHOD_GIFT_CERTIFICATE
 from stoqlib.lib.defaults import get_all_methods_dict
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
