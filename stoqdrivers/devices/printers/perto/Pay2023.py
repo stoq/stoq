@@ -28,7 +28,7 @@
 PertoPay 2023 driver implementation.
 """
 
-from datetime import datetime
+import datetime
 from decimal import Decimal
 
 from serial import PARITY_EVEN
@@ -148,6 +148,9 @@ class Pay2023(SerialBase, BaseChequePrinter):
     CMD_PRINT_CHEQUE = 'ImprimeCheque'
     CMD_GET_COO = "COO"
     CMD_READ_REGISTER_INT = 'LeInteiro'
+    CMD_READ_REGISTER_MONEY = 'LeMoeda'
+    CMD_READ_REGISTER_DATE = 'LeData'
+    CMD_READ_REGISTER_TEXT = 'LeTexto'
 
     # Page 53
     REGISTER_INDICATORS = "Indicadores"
@@ -294,13 +297,38 @@ class Pay2023(SerialBase, BaseChequePrinter):
             value = value.replace(',', '.')
         return Decimal(value)
 
-    def _get_status(self):
-        status = self._send_command(
-            Pay2023.CMD_READ_REGISTER_INT,
-            NomeInteiro=Pay2023.REGISTER_INDICATORS)
 
-        status = int(status[1:-1].split(';')[2].split('=', 1)[1])
-        return status
+    def _read_register(self, name, regtype):
+        if regtype == int:
+            cmd = Pay2023.CMD_READ_REGISTER_INT
+            argname = 'NomeInteiro'
+        elif regtype == Decimal:
+            cmd = Pay2023.CMD_READ_REGISTER_MONEY
+            argname = 'NomeDadoMonetario'
+        elif regtype == datetime.date:
+            cmd = Pay2023.CMD_READ_REGISTER_DATE
+            argname = 'NomeData'
+        elif regtype == str:
+            cmd = Pay2023.CMD_READ_REGISTER_TEXT
+            argname = 'NomeTexto'
+        else:
+            raise AssertionError
+
+        retval = self._send_command(cmd, **dict([(argname, name)]))
+        arg = retval[1:-1].split(';')[2].split('=', 1)[1]
+        if regtype == int:
+            return int(arg)
+        elif regtype == Decimal:
+            arg = arg.replace('.', '')
+            arg = arg.replace(',', '.')
+            return Decimal(arg)
+        elif regtype == datetime.date:
+            return arg[1:-1]
+        elif regtype == str:
+            return arg[1:-1]
+
+    def _get_status(self):
+        return self._read_register(Pay2023.REGISTER_INDICATORS, int)
 
     # This how the printer needs to be configured.
     def setup(self):
@@ -311,7 +339,19 @@ class Pay2023(SerialBase, BaseChequePrinter):
             'DefineNaoFiscal', CodNaoFiscal=0, DescricaoNaoFiscal="Suprimento",
             NomeNaoFiscal="Suprimento", TipoNaoFiscal=False)
 
+    def print_sintegra_data(self):
+        print self._read_register('DataAbertura', datetime.date) # 3
+        print self._read_register('NumeroSerieECF', str) # 4
+        print self._read_register('ECF', int) # 5
+        print self._read_register('COOInicioDia', int) # 7
+        print self._read_register('COO', int) # 8
+        print self._read_register('CRZ', int) # 9
+        print self._read_register('CRO', int) # 10
+        print self._read_register('TotalDiaVendaBruta', Decimal) # 11
+        print self._read_register('GT', Decimal) # 1
+
     def print_status(self):
+
         status = self._get_status()
         print 'Flags'
         for flag in reversed(_status_flags):
@@ -434,7 +474,9 @@ class Pay2023(SerialBase, BaseChequePrinter):
     # IChequePrinter implementation
     #
 
-    def print_cheque(self, bank, value, thirdparty, city, date=datetime.now()):
+    def print_cheque(self, bank, value, thirdparty, city, date=None):
+        if date is None:
+            data = datetime.datetime.now()
         if not isinstance(bank, BankConfiguration):
             raise TypeError("bank parameter must be BankConfiguration instance")
 
