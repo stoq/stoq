@@ -27,7 +27,8 @@
 from stoqlib.gui.base.lists import AdditionListDialog
 from stoqlib.gui.slaves.devicesslave import DeviceSettingsDialogSlave
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.drivers import create_virtual_printer_for_current_station
+from stoqlib.drivers.fiscalprinter import (
+    create_virtual_printer_for_current_station)
 from stoqlib.domain.devices import DeviceSettings
 
 _ = stoqlib_gettext

@@ -30,10 +30,11 @@ from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import (new_transaction, get_current_station)
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
+from stoqlib.drivers.fiscalprinter import (
+    CouponPrinter, get_fiscal_printer_settings_by_station)
 from stoqlib.exceptions import TillError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.tilleditor import TillOpeningEditor
-from stoqlib.lib.drivers import CouponPrinter, get_fiscal_printer_settings_by_station
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 

@@ -36,7 +36,7 @@ from stoqlib.domain.interfaces import IEmployee
 from stoqlib.domain.person import Person
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
-from stoqlib.lib.drivers import CouponPrinter
+from stoqlib.drivers.fiscalprinter import CouponPrinter
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
