@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s):  Evandro Vale Miquelito      <evandro@async.com.br>
+##  Author(s):  Fabio Morbec                <fabio@async.com.br>
 ##
 """ Receiving management """
 
@@ -38,7 +39,6 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.service import Service
 
 _ = stoqlib_gettext
 
@@ -47,12 +47,13 @@ class ReceivingOrderItem(Domain):
     """This class stores information of the purchased items.
 
     B{Importante attributes}
-        - I{quantity_received}: the total quantity received for a certain
+        - I{quantity}: the total quantity received for a certain
           product
         - I{cost}: the cost for each product received
     """
-    quantity_received = DecimalCol()
+    quantity = DecimalCol()
     cost = PriceCol()
+    purchase_item = ForeignKey('PurchaseItem')
     sellable = ForeignKey('ASellable')
     receiving_order = ForeignKey('ReceivingOrder')
 
@@ -60,12 +61,25 @@ class ReceivingOrderItem(Domain):
     # Accessors
     #
 
+    def get_remaining_quantity(self):
+        """Get the remaining quantity from the purchase order this item
+        is included in.
+        @returns: the remaining quantity
+        """
+        return self.purchase_item.get_pending_quantity()
+
+    def get_price(self):
+        """Get the price of this item. It's used by the SellableItemEditor.
+        @returns: the price
+        """
+        return self.sellable.cost
+
     def get_total(self):
-        return currency(self.quantity_received * self.cost)
+        return currency(self.quantity * self.get_price())
 
     def get_quantity_unit_string(self):
         unit = self.sellable.unit
-        return "%s %s" % (self.quantity_received,
+        return "%s %s" % (self.quantity,
                           unit and unit.description or u"")
 
     def get_unit_description(self):
@@ -137,20 +151,13 @@ class ReceivingOrder(Domain):
         # Stock management
         for item in self.get_items():
             # FIXME: Don't use sellable.get_adapted() here
-            adapted = item.sellable.get_adapted()
-            # We don't need manage stock for services, however
-            # we need increase the quantity received for the item
-            if isinstance(adapted, Service):
-                quantity = item.quantity_received
+            storable = IStorable(item.sellable.get_adapted(), None)
+            quantity = item.quantity
+            if storable is not None:
+                storable.increase_stock(quantity, self.branch)
+            if self.purchase:
                 self.purchase.increase_quantity_received(item.sellable,
                                                          quantity)
-                continue
-            sellable = item.sellable
-            storable = IStorable(adapted)
-            quantity = item.quantity_received
-            storable.increase_stock(quantity, self.branch)
-            if self.purchase:
-                self.purchase.increase_quantity_received(sellable, quantity)
 
         group = self._get_payment_group()
         group.create_icmsipi_book_entry(self.cfop, self.invoice_number,
@@ -305,8 +312,9 @@ def get_receiving_items_by_purchase_order(purchase_order, receiving_order):
     """
     conn = purchase_order.get_connection()
     return [ReceivingOrderItem(connection=conn,
-                               quantity_received=item.get_pending_quantity(),
+                               quantity=item.get_pending_quantity(),
                                cost=item.cost,
                                sellable=item.sellable,
+                               purchase_item=item,
                                receiving_order=receiving_order)
             for item in purchase_order.get_pending_items()]

@@ -185,6 +185,10 @@ class DomainTest(unittest.TestCase):
         ex = ExampleCreator(self.trans)
         return ex.create_by_type('ReceivingOrder')
 
+    def create_receiving_order_item(self):
+        ex = ExampleCreator(self.trans)
+        return ex.create_by_type('ReceivingOrderItem')
+
     def create_icms_ipi_book_entry(self):
         ex = ExampleCreator(self.trans)
         return ex.create_by_type('IcmsIpiBookEntry')

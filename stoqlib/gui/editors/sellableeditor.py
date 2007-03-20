@@ -22,6 +22,7 @@
 ## Author(s):   Henrique Romano             <henrique@async.com.br>
 ##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Bruno Rafael Garcia         <brg@async.com.br>
+##              Fabio Morbec                <fabio@async.com.br>
 ##
 """ Editors definitions for sellable"""
 
@@ -38,6 +39,7 @@ from stoqlib.domain.giftcertificate import GiftCertificateItem
 from stoqlib.domain.interfaces import ISellable, IStorable
 from stoqlib.domain.product import ProductSellableItem
 from stoqlib.domain.purchase import PurchaseItem
+from stoqlib.domain.receiving import ReceivingOrderItem
 from stoqlib.domain.service import DeliveryItem
 from stoqlib.domain.sellable import (SellableCategory, ASellable,
                                      SellableUnit,
@@ -323,26 +325,22 @@ class SellableEditor(BaseEditor):
 
 class SellableItemEditor(BaseEditor):
     gladefile = 'SellableItemEditor'
-    size = (550, 115)
     proxy_widgets = ('quantity',
-                     'value',
-                     'total_label')
+                     'price',
+                     'total')
     model_names = {ProductSellableItem: _('Product Item'),
+                   ReceivingOrderItem: _('Receiving Item'),
                    GiftCertificateItem: _('Gift Certificate'),
                    DeliveryItem: _('Delivery Item'),
                    PurchaseItem: _('Gift Certificate')}
 
-    def __init__(self, conn, model_type=ProductSellableItem, model=None,
-                 value_attr=None, restrict_increase_qty=False,
-                 editable_price=True):
+    def __init__(self, conn, model_type=ReceivingOrderItem, model=None,
+                 restrict_increase_qty=True):
         self.model_name = self._get_model_name(model_type)
         self.model_type = model_type
-        self.value_attr = value_attr
         BaseEditor.__init__(self, conn, model)
         if restrict_increase_qty:
             self.quantity.set_range(1, self.model.quantity)
-        if not editable_price:
-            self.disable_price_fields()
         self.set_description(
             self.model.sellable.base_sellable_info.description)
 
@@ -353,10 +351,6 @@ class SellableItemEditor(BaseEditor):
                              'got %s' % model_type)
         return self.model_names[model_type]
 
-    def disable_price_fields(self):
-        for widget in (self.value, self.price_label):
-            widget.set_sensitive(False)
-
     #
     # BaseEditor hooks
     #
@@ -365,8 +359,6 @@ class SellableItemEditor(BaseEditor):
         # We need to setup the widgets format before the proxy fill them
         # with the values.
         self.setup_widgets()
-        if self.value_attr:
-            self.value.set_property('model-attribute', self.value_attr)
         self.proxy = self.add_proxy(self.model,
                                     SellableItemEditor.proxy_widgets)
 
@@ -378,12 +370,5 @@ class SellableItemEditor(BaseEditor):
     # Callbacks
     #
 
-    def on_quantity__value_changed(self, *args):
+    def after_quantity__value_changed(self, spinbutton):
         self.proxy.update('total')
-
-    def after_quantity__value_changed(self, *args):
-        self.proxy.update('total')
-
-    def after_value__changed(self, *args):
-        self.proxy.update('total')
-

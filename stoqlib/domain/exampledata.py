@@ -28,7 +28,7 @@ import datetime
 from stoqdrivers.constants import TAX_CUSTOM
 
 from stoqlib.database.runtime import get_current_station
-from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
                                        IIndividual, ISupplier,
                                        ISellable, IStorable, ISalesPerson,
@@ -137,6 +137,7 @@ class ExampleCreator(object):
             'ProductAdaptToSellable' : self._create_sellable,
             'ProductAdaptToStorable' : self._create_storable,
             'ReceivingOrder' : self._create_receiving_order,
+            'ReceivingOrderItem' : self._create_receiving_order_item,
             'Sale': self._create_sale,
             'ServiceSellableItem': self._create_service_sellable_item,
             'Till': self._create_till,
@@ -305,6 +306,25 @@ class ExampleCreator(object):
                               supplier=supplier, responsible=user,
                               purchase=purchase,
                               branch=branch, cfop=cfop)
+
+    def _create_receiving_order_item(self):
+        from stoqlib.domain.receiving import ReceivingOrderItem
+        sellable = self._create_sellable()
+        receiving_order = self._create_receiving_order
+        supplier = self._create_supplier()
+        branch = self._create_branch()
+        purchase = PurchaseOrder(supplier=supplier, branch=branch,
+                                 connection=self.trans)
+        purchase_item = PurchaseItem(connection=self.trans,
+                                     quantity=8, quantity_received=3,
+                                     cost=125, base_cost=125,
+                                     sellable=sellable,
+                                     order=purchase)
+        return ReceivingOrderItem(connection=self.trans,
+                                  quantity=8, cost=125,
+                                  purchase_item=purchase_item,
+                                  sellable=sellable,
+                                  receiving_order=receiving_order)
 
     def _create_icms_ipi_book_entry(self):
         from stoqlib.domain.fiscal import CfopData, IcmsIpiBookEntry

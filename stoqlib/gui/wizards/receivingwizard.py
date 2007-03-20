@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+## Author(s):   Fabio Morbec                <fabio@async.com.br>
 ##
 ##
 """ Receiving wizard definition """
@@ -40,9 +41,10 @@ from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoqlib.gui.editors.sellableeditor import SellableItemEditor
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
-from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
+from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.domain.sellable import ASellable
@@ -210,7 +212,8 @@ class ReceivingOrderProductStep(SellableItemStep):
         # Hide the search bar, since it does not make sense to add new
         # items to a receivable order.
         self.item_hbox.hide()
-        self.hide_add_and_edit_buttons()
+        self.slave.hide_add_button()
+        self.slave.set_editor(SellableItemEditor)
         self._refresh_next()
 
     def next_step(self):
@@ -220,7 +223,9 @@ class ReceivingOrderProductStep(SellableItemStep):
         return [
             Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),
-            Column('quantity_received', title=_('Quantity'), data_type=float,
+            Column('remaining_quantity', title=_('Quantity'), data_type=int,
+                   width=90, format_func=format_quantity, expand=True),
+            Column('quantity', title=_('Quantity to receive'), data_type=int,
                    width=90, format_func=format_quantity),
             Column('sellable.unit_description', title=_('Unit'), data_type=str,
                    width=50),
@@ -228,10 +233,17 @@ class ReceivingOrderProductStep(SellableItemStep):
             Column('total', title=_('Total'), data_type=currency, width=100)
             ]
 
-    def get_order_item(self, sellable, cost, quantity):
+
+    def get_order_item(self, sellable, cost, total_quantity):
+        purchase_item = PurchaseItem.selectBy(
+            sellable=sellable,
+            order=self.model.purchase,
+            connection=self.conn)
+        quantity = total_quantity - purchase_item.quantity_received
         return ReceivingOrderItem(connection=self.conn, sellable=sellable,
                                   receiving_order=self.model,
-                                  cost=cost, quantity_received=quantity)
+                                  purchase_item=purchase_item,
+                                  cost=cost, quantity=quantity)
 
     def get_saved_items(self):
         if not self.model.purchase:

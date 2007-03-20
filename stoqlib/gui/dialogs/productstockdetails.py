@@ -75,7 +75,7 @@ class ProductStockHistoryDialog(BaseEditor):
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % _("Total:")
         receiving_summary_label = SummaryLabel(klist=self.receiving_list,
-                                               column='quantity_received',
+                                               column='quantity',
                                                label=total_label,
                                                value_format=value_format)
         receiving_summary_label.show()
@@ -102,7 +102,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        title=_("Supplier"), expand=True, data_type=str),
                 Column("receiving_order.invoice_number", title=_("Invoice"),
                        width=80, data_type=str),
-                Column("quantity_received", title=_("Quantity"),
+                Column("quantity", title=_("Quantity"),
                        data_type=Decimal, width=90,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column("unit_description", title=_("Unit"), data_type=str,
