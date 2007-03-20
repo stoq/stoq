@@ -226,7 +226,7 @@ class ReceivingOrderProductStep(SellableItemStep):
             Column('remaining_quantity', title=_('Quantity'), data_type=int,
                    width=90, format_func=format_quantity, expand=True),
             Column('quantity', title=_('Quantity to receive'), data_type=int,
-                   width=90, format_func=format_quantity),
+                   width=110, format_func=format_quantity),
             Column('sellable.unit_description', title=_('Unit'), data_type=str,
                    width=50),
             Column('cost', title=_('Cost'), data_type=currency, width=90),
