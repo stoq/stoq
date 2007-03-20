@@ -14,6 +14,7 @@
                     <widget class="GtkAction" id="AddCash">
                         <property name="name">AddCash</property>
                         <property name="label" translatable="yes">Add cash...</property>
+                        <property name="accelerator">&lt;Control&gt;e</property>
                     </widget>
                 </child>
                 <child>
@@ -38,7 +39,7 @@
                         <property name="name">ClientSearch</property>
                         <property name="label" translatable="yes">Clients...</property>
                         <signal handler="_on_client_search_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;t</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;c</property>
                     </widget>
                 </child>
                 <child>
@@ -116,6 +117,7 @@
                     <widget class="GtkAction" id="RemoveCash">
                         <property name="name">RemoveCash</property>
                         <property name="label" translatable="yes">Remove cash...</property>
+                        <property name="accelerator">&lt;Control&gt;j</property>
                     </widget>
                 </child>
                 <child>
@@ -123,7 +125,7 @@
                         <property name="name">SaleSearch</property>
                         <property name="label" translatable="yes">Sales...</property>
                         <signal handler="_on_sale_search_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;l</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;a</property>
                     </widget>
                 </child>
                 <child>
@@ -154,7 +156,14 @@
                         <property name="name">TillClose</property>
                         <property name="label" translatable="yes">Close Till...</property>
                         <signal handler="_on_close_till_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;s</property>
+                        <property name="accelerator">&lt;Control&gt;F7</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="TillHistory">
+                        <property name="name">TillHistory</property>
+                        <property name="label" translatable="yes">Till history...</property>
+                        <property name="accelerator">&lt;Control&gt;t</property>
                     </widget>
                 </child>
                 <child>
@@ -168,14 +177,7 @@
                         <property name="name">TillOpen</property>
                         <property name="label" translatable="yes">Open Till...</property>
                         <signal handler="_on_open_till_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;p</property>
-                    </widget>
-                </child>
-                <child>
-                    <widget class="GtkAction" id="TillHistory">
-                        <property name="name">TillHistory</property>
-                        <property name="label" translatable="yes">Till history...</property>
-                        <property name="accelerator">&lt;Control&gt;o</property>
+                        <property name="accelerator">&lt;Control&gt;F6</property>
                     </widget>
                 </child>
                 <child>
@@ -250,6 +252,7 @@
                         <child>
                             <widget class="ProxyLabel" id="till_status_label">
                                 <property name="label" context="yes" translatable="yes">Till Opened Since 01/01/2006</property>
+                                <property name="model_attribute"></property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
                             </widget>
@@ -431,6 +434,7 @@
                                         </child>
                                         <child>
                                             <widget class="ProxyLabel" id="total_label">
+                                                <property name="model_attribute"></property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                                 <property name="yalign">1.0</property>

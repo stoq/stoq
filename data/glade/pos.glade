@@ -16,13 +16,14 @@
                     <widget class="GtkAction" id="CancelLastOrder">
                         <property name="name">CancelLastOrder</property>
                         <property name="label" translatable="yes">Cancel Last Order</property>
+                        <property name="accelerator">&lt;Control&gt;F12</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="CancelOrder">
                         <property name="name">CancelOrder</property>
                         <property name="label" translatable="yes">Cancel Order</property>
-                        <property name="accelerator">&lt;Control&gt;o</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;o</property>
                     </widget>
                 </child>
                 <child>
@@ -53,7 +54,7 @@
                     <widget class="GtkAction" id="Clients">
                         <property name="name">Clients</property>
                         <property name="label" translatable="yes">Clients...</property>
-                        <property name="accelerator">&lt;Control&gt;p</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;c</property>
                     </widget>
                 </child>
                 <child>
@@ -83,7 +84,7 @@
                     <widget class="GtkAction" id="EditClient">
                         <property name="name">EditClient</property>
                         <property name="label" translatable="yes">Edit Current Client...</property>
-                        <property name="accelerator">&lt;Control&gt;t</property>
+                        <property name="accelerator">&lt;Control&gt;i</property>
                     </widget>
                 </child>
                 <child>
@@ -117,7 +118,7 @@
                     <widget class="GtkAction" id="NewDelivery">
                         <property name="name">NewDelivery</property>
                         <property name="label" translatable="yes">New Delivery...</property>
-                        <property name="accelerator">&lt;Control&gt;F3</property>
+                        <property name="accelerator">&lt;Control&gt;F5</property>
                     </widget>
                 </child>
                 <child>
@@ -131,7 +132,7 @@
                     <widget class="GtkAction" id="OrderCheckout">
                         <property name="name">OrderCheckout</property>
                         <property name="label" translatable="yes">Order Checkout...</property>
-                        <property name="accelerator">&lt;Control&gt;F4</property>
+                        <property name="accelerator">&lt;Control&gt;F10</property>
                     </widget>
                 </child>
                 <child>
@@ -147,13 +148,14 @@
                         <property name="label" translatable="yes">Print Order...</property>
                         <property name="tooltip" translatable="yes">Print the current sale order</property>
                         <property name="stock_id">gtk-print</property>
+                        <property name="accelerator">&lt;Control&gt;p</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="ProductSearch">
                         <property name="name">ProductSearch</property>
                         <property name="label" translatable="yes">Products...</property>
-                        <property name="accelerator">&lt;Control&gt;j</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;p</property>
                     </widget>
                 </child>
                 <child>
@@ -170,14 +172,14 @@
                         <property name="name">ResetOrder</property>
                         <property name="label" translatable="yes">_New Order...</property>
                         <property name="tooltip" translatable="yes">Reset the order</property>
-                        <property name="accelerator">&lt;Control&gt;F5</property>
+                        <property name="accelerator">&lt;Control&gt;F3</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="Sales">
                         <property name="name">Sales</property>
                         <property name="label" translatable="yes">Sales...</property>
-                        <property name="accelerator">&lt;Control&gt;l</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;a</property>
                     </widget>
                 </child>
                 <child>
@@ -211,7 +213,7 @@
                     <widget class="GtkAction" id="ServiceSearch">
                         <property name="name">ServiceSearch</property>
                         <property name="label" translatable="yes">Services...</property>
-                        <property name="accelerator">&lt;Control&gt;i</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;s</property>
                     </widget>
                 </child>
                 <child>
@@ -226,6 +228,7 @@
                     <widget class="GtkAction" id="TillClose">
                         <property name="name">TillClose</property>
                         <property name="label" translatable="yes">Close Till...</property>
+                        <property name="accelerator">&lt;Control&gt;F7</property>
                     </widget>
                 </child>
                 <child>
@@ -238,13 +241,13 @@
                     <widget class="GtkAction" id="TillOpen">
                         <property name="name">TillOpen</property>
                         <property name="label" translatable="yes">Open Till...</property>
+                        <property name="accelerator">&lt;Control&gt;F6</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="help_menu">
                         <property name="name">help_menu</property>
                         <property name="label" translatable="yes">_Help</property>
-                        <property name="short_label" translatable="yes">_Help</property>
                     </widget>
                 </child>
                 <child>
@@ -457,6 +460,7 @@
                                                 <child>
                                                     <widget class="ProxyLabel" id="kiwilabel2">
                                                         <property name="label" context="yes" translatable="yes">Quantity:</property>
+                                                        <property name="model_attribute"></property>
                                                         <property name="visible">True</property>
                                                         <property name="xalign">1.0</property>
                                                     </widget>
@@ -756,6 +760,7 @@
                                         </child>
                                         <child>
                                             <widget class="ProxyLabel" id="order_total_label">
+                                                <property name="model_attribute"></property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                                 <property name="yalign">1.0</property>
