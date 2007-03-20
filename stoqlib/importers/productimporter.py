@@ -65,6 +65,12 @@ class ProductImporter(CSVImporter):
 
         self.tax_constant = sysparam(conn).DEFAULT_PRODUCT_TAX_CONSTANT
 
+    def _get_or_create(self, table, trans, **attributes):
+        obj = table.selectOneBy(connection=trans, **attributes)
+        if obj is None:
+            obj = table(connection=trans, **attributes)
+        return obj
+
     def process_one(self, data, fields, trans):
         product = Product(connection=trans)
 
@@ -73,18 +79,19 @@ class ProductImporter(CSVImporter):
                             is_main_supplier=True,
                             product=product)
 
-        base_category = BaseSellableCategory(
+        base_category = self._get_or_create(
+            BaseSellableCategory, trans,
             suggested_markup=data.markup,
             salesperson_commission=data.commission,
             description=data.base_category,
             connection=trans)
 
-        category = SellableCategory(
+        category = self._get_or_create(
+            SellableCategory, trans,
             description=data.category,
             salesperson_commission=data.commission2,
             suggested_markup=data.markup2,
-            base_category=base_category,
-            connection=trans)
+            base_category=base_category)
 
         sellable_info = BaseSellableInfo(
             connection=trans,
