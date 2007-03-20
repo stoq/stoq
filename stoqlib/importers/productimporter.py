@@ -83,8 +83,7 @@ class ProductImporter(CSVImporter):
             BaseSellableCategory, trans,
             suggested_markup=data.markup,
             salesperson_commission=data.commission,
-            description=data.base_category,
-            connection=trans)
+            description=data.base_category)
 
         category = self._get_or_create(
             SellableCategory, trans,
