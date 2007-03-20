@@ -104,9 +104,11 @@ class Pay2023Constants(BaseDriverConstants):
     _tax_constants = [
         # These are signed integers, we're storing them
         # as strings and then subtract by 127
-        (TAX_SUBSTITUTION, '\x7e', None),
-        (TAX_EXEMPTION,    '\x7d', None),
-        (TAX_NONE,         '\x7c', None),
+        # Page 10
+        (TAX_SUBSTITUTION, '\x7e', None), # -2
+        (TAX_EXEMPTION,    '\x7d', None), # -3
+        (TAX_NONE,         '\x7c', None), # -4
+
         (TAX_CUSTOM,       '\x80', Decimal(17)),
         (TAX_CUSTOM,       '\x81', Decimal(12)),
         (TAX_CUSTOM,       '\x82', Decimal(25)),
@@ -140,8 +142,6 @@ class Pay2023(SerialBase, BaseChequePrinter):
     CMD_ADD_COUPON_DIFFERENCE = 'AcresceSubtotal'
     CMD_COUPON_CANCEL = 'CancelaCupom'
     CMD_COUPON_CLOSE = 'EncerraDocumento'
-    CMD_GET_INTEGER_REGISTER_DATA = 'LeInteiro'
-    CMD_GET_MONEY_REGISTER_DATA = 'LeMoeda'
     CMD_GET_LAST_ITEM_ID = 'ContadorDocUltimoItemVendido'
     CMD_GET_COUPON_TOTAL_VALUE = 'TotalDocLiquido'
     CMD_GET_COUPON_TOTAL_PAID_VALUE = 'TotalDocValorPago'
@@ -253,34 +253,17 @@ class Pay2023(SerialBase, BaseChequePrinter):
         raise exception(desc)
 
     def _get_last_item_id(self):
-        return self._get_integer_register_data(Pay2023.CMD_GET_LAST_ITEM_ID)
+        return self._read_register(Pay2023.CMD_GET_LAST_ITEM_ID, int)
 
     def _get_coupon_number(self):
-        return self._get_integer_register_data(Pay2023.CMD_GET_COO)
-
-    def _get_integer_register_data(self, data_name):
-        result = self._send_command(Pay2023.CMD_GET_INTEGER_REGISTER_DATA,
-                                    NomeInteiro=data_name)
-        result = result[:-1]
-        substr = "ValorInteiro"
-        index = result.index(substr) + len(substr) + 1
-        return int(result[index:])
-
-    def get_money_register_data(self, data_name):
-        result = self._send_command(Pay2023.CMD_GET_MONEY_REGISTER_DATA,
-                                    NomeDadoMonetario=data_name)
-        result = result[:-1]
-        substr = "ValorMoeda"
-        index = result.index(substr) + len(substr) + 1
-        return self.parse_value(result[index:])
+        return self._read_register(Pay2023.CMD_GET_COO, int)
 
     def get_coupon_total_value(self):
-        name = Pay2023.CMD_GET_COUPON_TOTAL_VALUE
-        return self.get_money_register_data(name)
+        return self._read_register(Pay2023.CMD_GET_COUPON_TOTAL_VALUE, Decimal)
 
     def get_coupon_remainder_value(self):
-        name = Pay2023.CMD_GET_COUPON_TOTAL_PAID_VALUE
-        value =  self.get_money_register_data(name)
+        value = self._read_register(Pay2023.CMD_GET_COUPON_TOTAL_PAID_VALUE,
+                                    Decimal)
         result = self.get_coupon_total_value() - value
         if result < 0.0:
             result = 0.0
