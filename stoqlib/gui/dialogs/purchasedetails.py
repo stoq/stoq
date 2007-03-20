@@ -85,7 +85,7 @@ class PurchaseDetailsDialog(BaseEditor):
                        data_type=str, width=90, editable=True,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('cost', title=_('Cost'), data_type=currency,
-                       editable=True, width=90),
+                       width=90),
                 Column('total', title=_('Total'), data_type=currency,
                        width=100)]
 
