@@ -30,6 +30,7 @@ PertoPay 2023 driver implementation.
 
 import datetime
 from decimal import Decimal
+import re
 
 from serial import PARITY_EVEN
 from zope.interface import implements
@@ -116,6 +117,10 @@ class Pay2023Constants(BaseDriverConstants):
         (TAX_CUSTOM,       '\x84', Decimal(5)),
         ]
 
+_RETVAL_TOKEN_RE = re.compile(r"^\s*([^=\s;]+)")
+_RETVAL_QUOTED_VALUE_RE = re.compile(r"^\s*=\s*\"([^\"\\]*(?:\\.[^\"\\]*)*)\"")
+_RETVAL_VALUE_RE = re.compile(r"^\s*=\s*([^\s;]*)")
+_RETVAL_ESCAPE_RE = re.compile(r"\\(.)")
 
 class Pay2023(SerialBase, BaseChequePrinter):
     implements(IChequePrinter, ICouponPrinter)
@@ -189,9 +194,42 @@ class Pay2023(SerialBase, BaseChequePrinter):
     #
     # Helper methods
     #
+    def _parse_return_value(self, text):
+        # Based on cookielib.split_header_words
+        def unmatched(match):
+            start, end = match.span(0)
+            return match.string[:start] + match.string[end:]
+
+        orig_text = text
+        result = {}
+        while text:
+            m = _RETVAL_TOKEN_RE.search(text)
+            if m:
+                text = unmatched(m)
+                name = m.group(1)
+                m = _RETVAL_QUOTED_VALUE_RE.search(text)
+                if m:  # quoted value
+                    text = unmatched(m)
+                    value = m.group(1)
+                    value = _RETVAL_ESCAPE_RE.sub(r"\1", value)
+                else:
+                    m = _RETVAL_VALUE_RE.search(text)
+                    if m:  # unquoted value
+                        text = unmatched(m)
+                        value = m.group(1)
+                        value = value.rstrip()
+                    else:
+                        # no value, a lone token
+                        value = None
+                result[name] = value
+            else:
+                raise AssertionError
+
+        return result
 
     def _send_command(self, command, **params):
-        args = []
+        # Page 38-39
+        parameters = []
         for param, value in params.items():
             if isinstance(value, Decimal):
                 value = ('%.03f' % value).replace('.', ',')
@@ -203,54 +241,71 @@ class Pay2023(SerialBase, BaseChequePrinter):
                 elif value is True:
                     value = 't'
 
-            args.append('%s=%s' % (param, value))
+            parameters.append('%s=%s' % (param, value))
 
-        data = "%d;%s;%s;" % (self._command_id, command,
-                              ' '.join(args))
-        result = self.writeline("%s" % data)
-        return result
+        reply = self.writeline("%d;%s;%s;" % (self._command_id,
+                                              command,
+                                              ' '.join(parameters)))
+        if reply[0] != '{':
+            raise AssertionError
 
-    def send_command(self, command, **params):
-        result = self._send_command(command, **params)
-        self.handle_error(command, result)
+        # Page 39
+        sections = reply[1:].split(';')
+        if len(sections) != 4:
+            raise AssertionError
 
-    def _parse_error(self, cmd, reply):
-        # removing REPLY_PREFIX and REPLY_SUFFIX
-        reply = reply[1:-1]
+        retdict = self._parse_return_value(sections[2])
+        errorcode = int(sections[1])
+        if errorcode != 0:
+            errorname = retdict['NomeErro']
+            errordesc = retdict['Circunstancia']
+            try:
+                exception = Pay2023.errors_dict[errorcode]
+            except KeyError:
+                raise DriverError(errordesc, errorcode)
+            raise exception(errordesc, errorcode)
 
-        cmd_id, code, desc = reply.split(';')
-        return int(code)
+        return retdict
 
-    def handle_error(self, cmd, reply):
-        """
-        Reply format::
+    def _read_register(self, name, regtype):
+        if regtype == int:
+            cmd = Pay2023.CMD_READ_REGISTER_INT
+            argname = 'NomeInteiro'
+            retname = 'ValorInteiro'
+        elif regtype == Decimal:
+            cmd = Pay2023.CMD_READ_REGISTER_MONEY
+            argname = 'NomeDadoMonetario'
+            retname = 'ValorMoeda'
+        elif regtype == datetime.date:
+            cmd = Pay2023.CMD_READ_REGISTER_DATE
+            argname = 'NomeData'
+            retname = 'ValorData'
+        elif regtype == str:
+            cmd = Pay2023.CMD_READ_REGISTER_TEXT
+            argname = 'NomeTexto'
+            retname = 'ValorTexto'
+        else:
+            raise AssertionError
 
-            {CMD_ID;REPLY_CODE;REPLY_DESCRIPTION;CMD_SIZE}
+        retdict = self._send_command(cmd, **dict([(argname, name)]))
+        assert len(retdict) == 1
+        assert retname in retdict
+        retval = retdict[retname]
+        if regtype == int:
+            return int(retval)
+        elif regtype == Decimal:
+            retval = retval.replace('.', '')
+            retval = retval.replace(',', '.')
+            return Decimal(retval)
+        elif regtype == datetime.date:
+            return retval[1:-1]
+        elif regtype == str:
+            return retval[1:-1]
+        else:
+            raise AssertionError
 
-        Where '{' is the reply prefix and '}' the suffix
-
-        Note that the REPLY_DESCRIPTION field is composed by the following
-        sections::
-
-          NomeErro="A_STRING"
-          Circunstancia="THE_REPLY_DESCRIPTION_ITSELF"
-        """
-        # removing REPLY_PREFIX and REPLY_SUFFIX
-        reply = reply[1:-1]
-
-        cmd_id, code, desc = reply.split(';')
-        code = int(code)
-        if code == 0:
-            return
-        # getting the "raw" reply description
-        substr = "Circunstancia="
-        desc_idx = desc.index(substr) + len(substr)
-        desc = desc[desc_idx:]
-        try:
-            exception = Pay2023.errors_dict[code]
-        except KeyError:
-            raise DriverError("%d: %s" % (code, desc))
-        raise exception(desc)
+    def _get_status(self):
+        return self._read_register(Pay2023.REGISTER_INDICATORS, int)
 
     def _get_last_item_id(self):
         return self._read_register(Pay2023.CMD_GET_LAST_ITEM_ID, int)
@@ -258,60 +313,16 @@ class Pay2023(SerialBase, BaseChequePrinter):
     def _get_coupon_number(self):
         return self._read_register(Pay2023.CMD_GET_COO, int)
 
-    def get_coupon_total_value(self):
+    def _get_coupon_total_value(self):
         return self._read_register(Pay2023.CMD_GET_COUPON_TOTAL_VALUE, Decimal)
 
-    def get_coupon_remainder_value(self):
+    def _get_coupon_remainder_value(self):
         value = self._read_register(Pay2023.CMD_GET_COUPON_TOTAL_PAID_VALUE,
                                     Decimal)
-        result = self.get_coupon_total_value() - value
+        result = self._get_coupon_total_value() - value
         if result < 0.0:
             result = 0.0
         return result
-
-    def parse_value(self, value):
-        """ This method receives a string value (representing the float
-        format used in the FISCnet protocol) and convert it to the
-        Python's float format.
-        """
-        if '.' in value:
-            value = value.replace(".", '')
-        if ',' in value:
-            value = value.replace(',', '.')
-        return Decimal(value)
-
-
-    def _read_register(self, name, regtype):
-        if regtype == int:
-            cmd = Pay2023.CMD_READ_REGISTER_INT
-            argname = 'NomeInteiro'
-        elif regtype == Decimal:
-            cmd = Pay2023.CMD_READ_REGISTER_MONEY
-            argname = 'NomeDadoMonetario'
-        elif regtype == datetime.date:
-            cmd = Pay2023.CMD_READ_REGISTER_DATE
-            argname = 'NomeData'
-        elif regtype == str:
-            cmd = Pay2023.CMD_READ_REGISTER_TEXT
-            argname = 'NomeTexto'
-        else:
-            raise AssertionError
-
-        retval = self._send_command(cmd, **dict([(argname, name)]))
-        arg = retval[1:-1].split(';')[2].split('=', 1)[1]
-        if regtype == int:
-            return int(arg)
-        elif regtype == Decimal:
-            arg = arg.replace('.', '')
-            arg = arg.replace(',', '.')
-            return Decimal(arg)
-        elif regtype == datetime.date:
-            return arg[1:-1]
-        elif regtype == str:
-            return arg[1:-1]
-
-    def _get_status(self):
-        return self._read_register(Pay2023.REGISTER_INDICATORS, int)
 
     # This how the printer needs to be configured.
     def setup(self):
@@ -334,7 +345,6 @@ class Pay2023(SerialBase, BaseChequePrinter):
         print self._read_register('GT', Decimal) # 1
 
     def print_status(self):
-
         status = self._get_status()
         print 'Flags'
         for flag in reversed(_status_flags):
@@ -343,8 +353,14 @@ class Pay2023(SerialBase, BaseChequePrinter):
 
         print 'non-fiscal registers'
         for i in range(15):
-            print self._send_command(
-                'LeNaoFiscal', CodNaoFiscal=i)
+            try:
+                print self._send_command(
+                    'LeNaoFiscal', CodNaoFiscal=i)
+            except DriverError, e:
+                if e.code == 8057:
+                    pass
+                else:
+                    raise
 
     #
     # ICouponPrinter implementation
@@ -356,16 +372,17 @@ class Pay2023(SerialBase, BaseChequePrinter):
         self._customer_address = address
 
     def coupon_open(self):
-        try:
-            customer = self._customer_name
-            document = self._customer_document
-            address = self._customer_address
-            self.send_command(Pay2023.CMD_COUPON_OPEN,
-                              EnderecoConsumidor=address[:80],
-                              IdConsumidor=document[:29],
-                              NomeConsumidor=customer[:30])
-        except InvalidState:
+        status = self._get_status()
+        if status & FLAG_DOCUMENTO_ABERTO:
             raise CouponOpenError(_("Coupon already opened."))
+
+        customer = self._customer_name
+        document = self._customer_document
+        address = self._customer_address
+        self._send_command(Pay2023.CMD_COUPON_OPEN,
+                           EnderecoConsumidor=address[:80],
+                           IdConsumidor=document[:29],
+                           NomeConsumidor=customer[:30])
 
     def coupon_add_item(self, code, description, price, taxcode,
                         quantity=Decimal("1.0"), unit=UNIT_EMPTY,
@@ -381,20 +398,20 @@ class Pay2023(SerialBase, BaseChequePrinter):
             unit = self._consts.get_value(unit)
 
         taxcode = ord(taxcode) - 128
-        self.send_command(Pay2023.CMD_ADD_ITEM,
-                          CodAliquota=taxcode,
-                          CodProduto=code[:48],
-                          NomeProduto=description[:200],
-                          Unidade=unit,
-                          PrecoUnitario=price,
-                          Quantidade=quantity)
+        self._send_command(Pay2023.CMD_ADD_ITEM,
+                           CodAliquota=taxcode,
+                           CodProduto=code[:48],
+                           NomeProduto=description[:200],
+                           Unidade=unit,
+                           PrecoUnitario=price,
+                           Quantidade=quantity)
         return self._get_last_item_id()
 
     def coupon_cancel_item(self, item_id):
-        self.send_command(Pay2023.CMD_CANCEL_ITEM, NumItem=item_id)
+        self._send_command(Pay2023.CMD_CANCEL_ITEM, NumItem=item_id)
 
     def coupon_cancel(self):
-        self.send_command(Pay2023.CMD_COUPON_CANCEL)
+        self._send_command(Pay2023.CMD_COUPON_CANCEL)
 
     def coupon_totalize(self, discount=Decimal("0.0"),
                         surcharge=Decimal("0.0"), taxcode=TAX_NONE):
@@ -403,9 +420,10 @@ class Pay2023(SerialBase, BaseChequePrinter):
         # the discount/surcharge values and applied to the coupon.
         value = discount and (discount * -1) or surcharge
         if value:
-            self.send_command(Pay2023.CMD_ADD_COUPON_DIFFERENCE, Cancelar=False,
-                              ValorPercentual=value)
-        return self.get_coupon_total_value()
+            self._send_command(Pay2023.CMD_ADD_COUPON_DIFFERENCE,
+                               Cancelar=False,
+                               ValorPercentual=value)
+        return self._get_coupon_total_value()
 
     def coupon_add_payment(self, payment_method, value, description=u"",
                            custom_pm=''):
@@ -413,45 +431,45 @@ class Pay2023(SerialBase, BaseChequePrinter):
             pm = int(self._consts.get_value(payment_method))
         else:
             pm = custom_pm
-        self.send_command(Pay2023.CMD_ADD_PAYMENT,
-                          CodMeioPagamento=pm, Valor=value,
-                          TextoAdicional=description[:80])
-        return self.get_coupon_remainder_value()
+        self._send_command(Pay2023.CMD_ADD_PAYMENT,
+                           CodMeioPagamento=pm, Valor=value,
+                           TextoAdicional=description[:80])
+        return self._get_coupon_remainder_value()
 
     def coupon_close(self, message=''):
-        self.send_command(Pay2023.CMD_COUPON_CLOSE,
-                          TextoPromocional=message[:492])
+        self._send_command(Pay2023.CMD_COUPON_CLOSE,
+                           TextoPromocional=message[:492])
         return self._get_coupon_number()
 
     def summarize(self):
-        self.send_command(Pay2023.CMD_READ_X)
+        self._send_command(Pay2023.CMD_READ_X)
 
     def close_till(self):
         status = self._get_status()
         if status & FLAG_DOCUMENTO_ABERTO:
-            self.send_command(Pay2023.CMD_COUPON_CANCEL)
+            self._send_command(Pay2023.CMD_COUPON_CANCEL)
 
-        self.send_command(Pay2023.CMD_CLOSE_TILL)
+        self._send_command(Pay2023.CMD_CLOSE_TILL)
 
     def till_add_cash(self, value):
         status = self._get_status()
         if status & FLAG_DOCUMENTO_ABERTO:
-            self.send_command(Pay2023.CMD_COUPON_CANCEL)
-        self.send_command(Pay2023.CMD_COUPON_OPEN_NOT_FISCAL)
-        self.send_command('EmiteItemNaoFiscal',
-                          NomeNaoFiscal="Suprimento",
-                          Valor=value)
-        self.send_command(Pay2023.CMD_COUPON_CLOSE)
+            self._send_command(Pay2023.CMD_COUPON_CANCEL)
+        self._send_command(Pay2023.CMD_COUPON_OPEN_NOT_FISCAL)
+        self._send_command('EmiteItemNaoFiscal',
+                           NomeNaoFiscal="Suprimento",
+                           Valor=value)
+        self._send_command(Pay2023.CMD_COUPON_CLOSE)
 
     def till_remove_cash(self, value):
         status = self._get_status()
         if status & FLAG_DOCUMENTO_ABERTO:
-            self.send_command(Pay2023.CMD_COUPON_CANCEL)
-        self.send_command(Pay2023.CMD_COUPON_OPEN_NOT_FISCAL)
-        self.send_command('EmiteItemNaoFiscal',
-                          NomeNaoFiscal="Sangria",
-                          Valor=value)
-        self.send_command(Pay2023.CMD_COUPON_CLOSE)
+            self._send_command(Pay2023.CMD_COUPON_CANCEL)
+        self._send_command(Pay2023.CMD_COUPON_OPEN_NOT_FISCAL)
+        self._send_command('EmiteItemNaoFiscal',
+                           NomeNaoFiscal="Sangria",
+                           Valor=value)
+        self._send_command(Pay2023.CMD_COUPON_CLOSE)
 
     #
     # IChequePrinter implementation
@@ -477,10 +495,10 @@ class Pay2023(SerialBase, BaseChequePrinter):
                     VPosFavorecido=bank.get_y_coordinate("thirdparty"),
                     VPosValor=bank.get_y_coordinate("value"))
 
-        self.send_command(Pay2023.CMD_PRINT_CHEQUE, Cidade=city[:27],
-                          Data=date.strftime("#%d/%m/%Y#"),
-                          Favorecido=thirdparty[:45],
-                          Valor=value, **data)
+        self._send_command(Pay2023.CMD_PRINT_CHEQUE, Cidade=city[:27],
+                           Data=date.strftime("#%d/%m/%Y#"),
+                           Favorecido=thirdparty[:45],
+                           Valor=value, **data)
 
     def get_capabilities(self):
         return dict(item_code=Capability(max_len=48),

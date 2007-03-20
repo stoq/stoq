@@ -41,6 +41,11 @@ class PrinterError(Exception):
 
 class DriverError(Exception):
     "Base exception for all printer errors"
+    def __init__(self, error='', code=-1):
+        if code != -1:
+            error = '%d: %s' % (code, error)
+        Exception.__init__(self, error)
+        self.code = code
 
 class OutofPaperError(DriverError):
     "No paper left"
