@@ -25,8 +25,9 @@
                     <widget class="GtkAction" id="ClientSearch">
                         <property name="name">ClientSearch</property>
                         <property name="label" translatable="yes">Clients...</property>
+                        <property name="stock_id">stoq-clients</property>
                         <signal handler="_on_clients_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;t</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;c</property>
                     </widget>
                 </child>
                 <child>
@@ -35,7 +36,7 @@
                         <property name="label" translatable="yes">Clients</property>
                         <property name="stock_id">stoq-clients</property>
                         <signal handler="_on_clients_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;p</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;c</property>
                     </widget>
                 </child>
                 <child>
@@ -69,7 +70,7 @@
                         <property name="name">GiftCertificate</property>
                         <property name="label" translatable="yes">Gift Certificates...</property>
                         <signal handler="_on_gift_certificates_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;f</property>
+                        <property name="accelerator">&lt;Control&gt;g</property>
                     </widget>
                 </child>
                 <child>
@@ -97,8 +98,9 @@
                     <widget class="GtkAction" id="ProductSearch">
                         <property name="name">ProductSearch</property>
                         <property name="label" translatable="yes">Products...</property>
+                        <property name="stock_id">stoq-products</property>
                         <signal handler="_on_products_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;j</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;p</property>
                     </widget>
                 </child>
                 <child>
@@ -107,7 +109,7 @@
                         <property name="label" translatable="yes">Products</property>
                         <property name="stock_id">stoq-products</property>
                         <signal handler="_on_products_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;d</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;p</property>
                     </widget>
                 </child>
                 <child>
@@ -142,8 +144,9 @@
                     <widget class="GtkAction" id="ServiceSearch">
                         <property name="name">ServiceSearch</property>
                         <property name="label" translatable="yes">Services...</property>
+                        <property name="stock_id">stoq-services</property>
                         <signal handler="_on_services_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;i</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;s</property>
                     </widget>
                 </child>
                 <child>
@@ -152,7 +155,7 @@
                         <property name="label" translatable="yes">Services</property>
                         <property name="stock_id">stoq-services</property>
                         <signal handler="_on_services_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;s</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;s</property>
                     </widget>
                 </child>
                 <child>

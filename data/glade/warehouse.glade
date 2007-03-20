@@ -74,7 +74,7 @@
                         <property name="name">PurchaseReceiving</property>
                         <property name="label" translatable="yes">Purchase Receiving...</property>
                         <signal handler="on_receiving_search_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;p</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;u</property>
                     </widget>
                 </child>
                 <child>
@@ -127,7 +127,7 @@
                         <property name="name">TransferSearch</property>
                         <property name="label" translatable="yes">Stock Transfer...</property>
                         <signal handler="on_stock_transfer_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;t</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;k</property>
                     </widget>
                 </child>
                 <child>
@@ -150,7 +150,7 @@
                         <property name="label" translatable="yes">Receive</property>
                         <property name="stock_id">stoq-receiving</property>
                         <signal handler="_on_receive_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;r</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;v</property>
                     </widget>
                 </child>
                 <child>
@@ -165,7 +165,7 @@
                         <property name="name">transfer_action</property>
                         <property name="label" translatable="yes">Transfer</property>
                         <property name="stock_id">stoq-transfer</property>
-                        <property name="accelerator">&lt;Control&gt;t</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;k</property>
                     </widget>
                 </child>
                 <child>

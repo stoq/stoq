@@ -17,7 +17,7 @@
                         <property name="name">BranchStationSearch</property>
                         <property name="label" translatable="yes">Branch Station...</property>
                         <signal handler="_on_branchstation_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;s</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;h</property>
                     </widget>
                 </child>
                 <child>
@@ -71,7 +71,7 @@
                         <property name="name">EmployeeRole</property>
                         <property name="label" translatable="yes">Employee Roles...</property>
                         <signal handler="_on_employee_role__action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;r</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;r</property>
                     </widget>
                 </child>
                 <child>
@@ -79,7 +79,7 @@
                         <property name="name">EmployeeSearch</property>
                         <property name="label" translatable="yes">Employees...</property>
                         <signal handler="_on_employees_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;p</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;e</property>
                     </widget>
                 </child>
                 <child>
@@ -93,7 +93,7 @@
                         <property name="name">FiscalBook</property>
                         <property name="label" translatable="yes">Fiscal Book...</property>
                         <signal handler="_on_fiscalbook_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;m</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;f</property>
                     </widget>
                 </child>
                 <child>
@@ -108,7 +108,7 @@
                         <property name="name">NewUser</property>
                         <property name="label" translatable="yes">New User...</property>
                         <signal handler="_on_new_user_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;n</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;n</property>
                     </widget>
                 </child>
                 <child>
@@ -130,7 +130,7 @@
                         <property name="name">PaymentMethod</property>
                         <property name="label" translatable="yes">Payment Method Settings...</property>
                         <signal handler="on_payment_methods_activate" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;s</property>
+                        <property name="accelerator">&lt;Control&gt;m</property>
                     </widget>
                 </child>
                 <child>
@@ -183,7 +183,7 @@
                         <property name="name">UserProfile</property>
                         <property name="label" translatable="yes">User Profiles...</property>
                         <signal handler="_on_user_profiles_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;f</property>
+                        <property name="accelerator">&lt;Control&gt;u</property>
                     </widget>
                 </child>
                 <child>
@@ -218,13 +218,6 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="tax_constants">
-                        <property name="name">tax_constants</property>
-                        <property name="label" translatable="yes">Sellable Tax Constants...</property>
-                        <property name="short_label" translatable="yes">Tax Constants</property>
-                    </widget>
-                </child>
-                <child>
                     <widget class="GtkAction" id="settings_menu">
                         <property name="name">settings_menu</property>
                         <property name="label" translatable="yes">Settin_gs</property>
@@ -236,7 +229,15 @@
                         <property name="label" translatable="yes">System _Parameters...</property>
                         <property name="short_label" translatable="yes">System _Parameters</property>
                         <signal handler="on_system_parameters_activate" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;p</property>
+                        <property name="accelerator">&lt;Control&gt;y</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="tax_constants">
+                        <property name="name">tax_constants</property>
+                        <property name="label" translatable="yes">Sellable Tax Constants...</property>
+                        <property name="short_label" translatable="yes">Tax Constants</property>
+                        <property name="accelerator">&lt;Control&gt;l</property>
                     </widget>
                 </child>
                 <child>
