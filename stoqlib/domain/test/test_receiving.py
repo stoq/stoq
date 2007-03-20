@@ -58,3 +58,31 @@ class TestReceivingOrder(DomainTest):
         order.purchase.surcharge_value = 8
         order.surcharge_value = 15
         self.assertEqual(order.get_total(), currency(408))
+
+
+class TestReceivingOrderItem(DomainTest):
+
+    def testGetRemainingQuantity(self):
+        order_item = self.create_receiving_order_item()
+        self.assertEqual(order_item.get_remaining_quantity(), 5)
+        self.assertNotEqual(order_item.get_remaining_quantity(), 4)
+        self.assertNotEqual(order_item.get_remaining_quantity(), 8)
+        self.assertNotEqual(order_item.get_remaining_quantity(), 18)
+        self.assertNotEqual(order_item.get_remaining_quantity(), 0)
+
+        order_item.purchase_item.quantity_received = 7
+        self.assertEqual(order_item.get_remaining_quantity(), 1)
+        self.assertNotEqual(order_item.get_remaining_quantity(), 5)
+        self.assertNotEqual(order_item.get_remaining_quantity(), 8)
+
+        order_item.purchase_item.quantity_received = 8
+        self.assertEqual(order_item.get_remaining_quantity(), 0)
+        self.assertNotEqual(order_item.get_remaining_quantity(), 1)
+        self.assertNotEqual(order_item.get_remaining_quantity(), 8)
+
+    def testGetPrice(self):
+        order_item = self.create_receiving_order_item()
+        order_item.sellable.cost = 100
+        self.assertEqual(order_item.get_price(), currency(100))
+        self.assertNotEqual(order_item.get_price(), currency(50))
+        self.assertNotEqual(order_item.get_price(), currency(150))

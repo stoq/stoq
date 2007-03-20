@@ -192,8 +192,7 @@ class DeliveryEditor(BaseEditor):
                                        SellableItemEditor,
                                        items)
         self.slave.register_editor_kwargs(model_type=DeliveryItem,
-                                          restrict_increase_qty=True,
-                                          editable_price=False)
+                                          restrict_increase_qty=True)
         self.slave.hide_add_button()
         self.slave.connect('before-delete-items', self.before_delete_items)
         self.attach_slave('addition_list_holder', self.slave)

@@ -998,10 +998,11 @@ CREATE TABLE receiving_order_item (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    quantity_received numeric(10,2) CONSTRAINT positive_quantity_received CHECK (quantity_received >= 0),
+    quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
     cost numeric(10,2),
     sellable_id bigint REFERENCES asellable(id),
-    receiving_order_id bigint REFERENCES receiving_order(id)
+    receiving_order_id bigint REFERENCES receiving_order(id),
+    purchase_item_id bigint REFERENCES purchase_item(id)
 );
 
 CREATE TABLE renegotiation_data (

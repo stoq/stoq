@@ -83,13 +83,14 @@ def create_purchases():
                                      connection=trans)
 
     for sellable in sellables:
-        item = order.add_item(sellable, 5)
-        order.receive_item(item, 5)
+        purchase_item = order.add_item(sellable, 5)
+        order.receive_item(purchase_item, 5)
 
         ReceivingOrderItem(connection=trans,
                            cost=sellable.cost / 2,
                            sellable=sellable,
-                           quantity_received=5,
+                           quantity=5,
+                           purchase_item=purchase_item,
                            receiving_order=receiving_order)
     order.confirm_order()
 
