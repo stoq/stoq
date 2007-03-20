@@ -47,7 +47,7 @@ class ServiceItemEditor(BaseEditor):
                      'price',
                      'estimated_fix_date',
                      'notes')
-    size = (500, 250)
+    size = (500, 265)
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
