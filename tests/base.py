@@ -3,7 +3,7 @@
 
 ##
 ## Stoqdrivers
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 ## USA.
 ##
 ## Author(s):   Henrique Romano             <henrique@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """
 stoqdrivers/tests/base.py:
@@ -49,6 +50,8 @@ class LogSerialPort:
     def __init__(self, port):
         self._port = port
         self._bytes = []
+        self._last = None
+        self._buffer = ''
 
     def setDTR(self):
         return self._port.setDTR()
@@ -61,18 +64,25 @@ class LogSerialPort:
 
     def read(self, n_bytes=1):
         data = self._port.read(n_bytes)
-        self._bytes.append(('R', data))
+        self._buffer += data
+        self._last = 'R'
         return data
 
     def write(self, bytes):
+        if self._last == 'R':
+            self._bytes.append(('R', self._buffer))
+            self._buffer = ''
+
         self._bytes.append(('W', bytes))
         self._port.write(bytes)
+        self._last = 'R'
 
     def save(self, filename):
+        if self._buffer:
+            self._bytes.append(('R', self._buffer))
         fd = open(filename, "w")
         for type, line in self._bytes:
-            fd.write("%s %s\n"
-                     % (type, "".join(["%02x" % ord(d) for d in line])))
+            fd.write("%s %s\n" % (type, repr(line)[1:-1]))
         fd.close()
 
 class PlaybackPort:
@@ -80,7 +90,7 @@ class PlaybackPort:
 
     def __init__(self, datafile):
         self._input = []
-        self._output = []
+        self._output = ''
         self._load_data(datafile)
 
     def set_options(self, *args, **kwargs):
@@ -95,22 +105,41 @@ class PlaybackPort:
     def write(self, bytes):
         n_bytes = len(bytes)
         data = "".join([self._input.pop(0) for i in xrange(n_bytes)])
-        if not bytes == data:
+        if bytes != data:
             msg = ("Written data differs from the expected:\n"
                    "WROTE: %r\nEXPECTED: %r\n" % (data, bytes))
             raise ValueError(msg)
 
     def read(self, n_bytes=1):
-        return "".join([self._output.pop(0) for i in xrange(n_bytes)])
+        data = self._output[:n_bytes]
+        if not data:
+            return None
+        self._output = self._output[n_bytes:]
+        return data
 
     def _load_data(self, datafile):
         fd = open(datafile, "r")
         for n, line in enumerate(fd.readlines()):
-            data = line[2:-1].decode("hex")
+            data = line[2:-1]
+            data = data.replace('\\n', '\n')
+            data = data.replace('\\r', '\r')
+            data = data.replace('\\t', '\t')
+            data = data.split('\\x')
+            if len(data) == 1:
+                data = data[0]
+            else:
+                n = ''
+                for p in data:
+                    if len(p) <= 1:
+                        n += p
+                    else:
+                        n += p[:2].decode('hex') + p[2:]
+                data = n
+
             if line.startswith("W"):
                 self._input.extend(data)
             elif line.startswith("R"):
-                self._output.extend(data)
+                self._output += data
             else:
                 raise TypeError("Unrecognized entry type at %s:%d: %r"
                                 % (datafile, n + 1, line[0]))
