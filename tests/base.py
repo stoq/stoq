@@ -117,24 +117,27 @@ class PlaybackPort:
         self._output = self._output[n_bytes:]
         return data
 
+    def _convert_data(self, data):
+        data = data.replace('\\n', '\n')
+        data = data.replace('\\r', '\r')
+        data = data.replace('\\t', '\t')
+        data = data.split('\\x')
+        if len(data) == 1:
+            data = data[0]
+        else:
+            n = ''
+            for p in data:
+                if len(p) <= 1:
+                    n += p
+                else:
+                    n += p[:2].decode('hex') + p[2:]
+            data = n
+        return data
+
     def _load_data(self, datafile):
         fd = open(datafile, "r")
         for n, line in enumerate(fd.readlines()):
-            data = line[2:-1]
-            data = data.replace('\\n', '\n')
-            data = data.replace('\\r', '\r')
-            data = data.replace('\\t', '\t')
-            data = data.split('\\x')
-            if len(data) == 1:
-                data = data[0]
-            else:
-                n = ''
-                for p in data:
-                    if len(p) <= 1:
-                        n += p
-                    else:
-                        n += p[:2].decode('hex') + p[2:]
-                data = n
+            data = self._convert_data(line[2:-1])
 
             if line.startswith("W"):
                 self._input.extend(data)
