@@ -37,6 +37,7 @@ class ReceivableView(Viewable):
         thirdparty_name=Person.q.name,
         due_date=Payment.q.due_date,
         status=Payment.q.status,
+        paid_date=Payment.q.paid_date,
         value=Payment.q.value,
         sale_id=Sale.q.id,
         )
