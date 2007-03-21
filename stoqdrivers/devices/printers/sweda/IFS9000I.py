@@ -566,6 +566,7 @@ class IFS9000I(SerialBase):
 
     def coupon_close(self, message=''):
         self.send_command(self.CMD_COUPON_CLOSE)
+        self._customer_document = None
         return self._get_coupon_number()
 
     def close_till(self):

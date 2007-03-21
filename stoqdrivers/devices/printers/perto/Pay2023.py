@@ -186,10 +186,13 @@ class Pay2023(SerialBase, BaseChequePrinter):
         SerialBase.__init__(self, port)
         BaseChequePrinter.__init__(self)
         self._consts = consts or Pay2023Constants
+        self._command_id = 0
+        self._reset()
+
+    def _reset(self):
         self._customer_name = ''
         self._customer_document = ''
         self._customer_address = ''
-        self._command_id = 0
 
     #
     # Helper methods
@@ -439,6 +442,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
     def coupon_close(self, message=''):
         self._send_command(Pay2023.CMD_COUPON_CLOSE,
                            TextoPromocional=message[:492])
+        self._reset()
         return self._get_coupon_number()
 
     def summarize(self):

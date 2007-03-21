@@ -169,6 +169,9 @@ class MP25(SerialBase):
         # XXX: Seems that Bematech doesn't contains any variable with the
         # coupon remainder value, so I need to manage it by myself.
         self.remainder_value = Decimal("0.00")
+        self._reset()
+
+    def _reset(self):
         self._customer_name = None
         self._customer_document = None
         self._customer_address = None
@@ -378,6 +381,7 @@ class MP25(SerialBase):
         new coupons after this is called.
         """
         self._send_command(chr(CMD_COUPON_CLOSE))
+        self._reset()
         return self._get_coupon_number()
 
     def coupon_add_item(self, code, description, price, taxcode,

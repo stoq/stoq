@@ -161,6 +161,9 @@ class FS345(SerialBase):
     def __init__(self, port, consts=None):
         self._consts = consts or FS345Constants
         SerialBase.__init__(self, port)
+        self._reset()
+
+    def _reset(self):
         self._customer_name = u""
         self._customer_document = u""
         self._customer_address = u""
@@ -442,6 +445,7 @@ class FS345(SerialBase):
         except DriverError:
             raise CloseCouponError(_("It is not possible to close the "
                                      "coupon"))
+        self._reset()
         return self._get_coupon_number()
 
     def summarize(self):
