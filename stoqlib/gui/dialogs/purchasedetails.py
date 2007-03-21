@@ -66,7 +66,7 @@ class PurchaseDetailsDialog(BaseEditor):
         self.received_items.set_columns(self._get_received_columns())
 
         self.ordered_items.add_list(self.model.get_items())
-        self.received_items.add_list(self.model.get_received_items())
+        self.received_items.add_list(self.model.get_partially_received_items())
 
         value_format = '<b>%s</b>'
         received_label = '<b>%s</b>' % _('Total Received:')
