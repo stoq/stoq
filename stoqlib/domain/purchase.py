@@ -372,10 +372,9 @@ class PurchaseOrder(Domain):
         return [item for item in self.get_items()
                         if not item.has_been_received()]
 
-    def get_received_items(self):
+    def get_partially_received_items(self):
         return [item for item in self.get_items()
-            if item.has_partial_received()]
-
+                        if item.has_partial_received()]
 
     def get_open_date_as_string(self):
         return self.open_date and self.open_date.strftime("%x") or ""
