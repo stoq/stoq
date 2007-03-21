@@ -50,7 +50,7 @@ def main(args):
                       action="store",
                       dest="port",
                       default="/dev/ttyS0",
-                      help='Printer port')
+                      help='Device port')
 
     options, args = parser.parse_args(args)
     if len(args) < 2:
