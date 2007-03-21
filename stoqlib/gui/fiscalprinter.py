@@ -34,7 +34,6 @@ from stoqlib.drivers.fiscalprinter import (
     CouponPrinter, get_fiscal_printer_settings_by_station)
 from stoqlib.exceptions import TillError
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.tilleditor import TillOpeningEditor
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -60,6 +59,8 @@ class FiscalPrinterHelper(CouponPrinter):
             warning("You already have a till operation opened. "
                     "Close the current Till and open another one.")
             return False
+
+        from stoqlib.gui.editors.tilleditor import TillOpeningEditor
 
         trans = new_transaction()
         try:
