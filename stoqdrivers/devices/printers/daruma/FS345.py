@@ -33,7 +33,7 @@ from decimal import Decimal
 from kiwi.log import Logger
 from zope.interface import implements
 
-from stoqdrivers import abicompcodec
+from stoqdrivers import abicomp
 from stoqdrivers.constants import (TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
                                    TAX_SUBSTITUTION, TAX_CUSTOM,
                                    MONEY_PM, CHEQUE_PM,
@@ -51,7 +51,7 @@ from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.devices.printers.base import BaseDriverConstants
 from stoqdrivers.translation import stoqdrivers_gettext
 
-abicompcodec # pyflakes
+abicomp.register_codec()
 
 _ = lambda msg: stoqdrivers_gettext(msg)
 
