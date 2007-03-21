@@ -443,6 +443,7 @@ class FS345(SerialBase):
         except DriverError:
             raise CloseCouponError(_("It is not possible to close the "
                                      "coupon"))
+        self._reset()
         return self._get_coupon_number()
 
     def summarize(self):
