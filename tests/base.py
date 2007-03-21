@@ -75,7 +75,7 @@ class LogSerialPort:
 
         self._bytes.append(('W', bytes))
         self._port.write(bytes)
-        self._last = 'R'
+        self._last = 'W'
 
     def save(self, filename):
         if self._buffer:
