@@ -89,6 +89,9 @@ class PurchaseItem(Domain):
     def has_been_received(self):
         return self.quantity_received >= self.quantity
 
+    def has_partial_received(self):
+        return self.quantity_received > 0
+
     def get_pending_quantity(self):
         if not self.has_been_received:
             return Decimal(0)
@@ -370,7 +373,8 @@ class PurchaseOrder(Domain):
                         if not item.has_been_received()]
 
     def get_received_items(self):
-        return [item for item in self.get_items() if item.has_been_received()]
+        return [item for item in self.get_items()
+            if item.has_partial_received()]
 
 
     def get_open_date_as_string(self):
