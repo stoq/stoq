@@ -33,6 +33,7 @@ from decimal import Decimal
 from kiwi.log import Logger
 from zope.interface import implements
 
+from stoqdrivers import abicompcodec
 from stoqdrivers.constants import (TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
                                    TAX_SUBSTITUTION, TAX_CUSTOM,
                                    MONEY_PM, CHEQUE_PM,
@@ -49,6 +50,8 @@ from stoqdrivers.devices.interfaces import ICouponPrinter
 from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.devices.printers.base import BaseDriverConstants
 from stoqdrivers.translation import stoqdrivers_gettext
+
+abicompcodec # pyflakes
 
 _ = lambda msg: stoqdrivers_gettext(msg)
 
@@ -153,7 +156,7 @@ class FS345(SerialBase):
     implements(ICouponPrinter)
 
     model_name = "Daruma FS 345"
-    coupon_printer_charset = "cp850"
+    coupon_printer_charset = "abicomp"
 
     def __init__(self, port, consts=None):
         self._consts = consts or FS345Constants
