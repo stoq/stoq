@@ -417,9 +417,7 @@ class FS345(SerialBase):
         # Page 33
         data = '%d%04d00000000' % (mode, int(value * Decimal("1e2")))
         rv = self.send_command(CMD_TOTALIZE_COUPON, data)
-        coupon_subtotal = Decimal(rv) / Decimal("1e2")
-        return (coupon_subtotal + (coupon_subtotal * surcharge / Decimal("1e2"))
-                - (coupon_subtotal * discount / Decimal("1e2")))
+        return Decimal(rv) / Decimal("1e2")
 
     def coupon_close(self, message=''):
         self._check_status()
@@ -445,7 +443,6 @@ class FS345(SerialBase):
         except DriverError:
             raise CloseCouponError(_("It is not possible to close the "
                                      "coupon"))
-        self._reset()
         return self._get_coupon_number()
 
     def summarize(self):
