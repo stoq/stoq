@@ -36,7 +36,7 @@ from stoqlib.domain.interfaces import IEmployee
 from stoqlib.domain.person import Person
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
-from stoqlib.drivers.fiscalprinter import CouponPrinter
+from stoqlib.gui.fiscalprinter import PrinterHelper
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -290,7 +290,7 @@ class CashAdvanceEditor(BaseEditor):
             self.payment.value = self.payment.value
             self.model.value = abs(self.payment.value)
 
-            printer = CouponPrinter(self.conn)
+            printer = PrinterHelper(self.conn, self.get_toplevel())
             printer.remove_cash(self.cash_slave.model.value)
             return self.model
 
@@ -354,7 +354,7 @@ class CashOutEditor(BaseEditor):
                 payment_description = _(u'Cash out')
             self.model.description = payment_description
 
-        printer = CouponPrinter(self.conn)
+        printer = PrinterHelper(self.conn, self.get_toplevel())
         printer.remove_cash(self.cash_slave.model.value)
         return valid
 
@@ -413,6 +413,6 @@ class CashInEditor(BaseEditor):
                 payment_description = _(u'Cash in')
             self.model.description = payment_description
 
-        printer = CouponPrinter(self.conn)
+        printer = PrinterHelper(self.conn, self.get_toplevel())
         printer.add_cash(self.cash_slave.model.value)
         return valid
