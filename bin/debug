@@ -3,7 +3,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -27,13 +27,15 @@
 
 import code
 import datetime
+import socket
 import sys
 
 from kiwi.component import provide_utility, get_utility
 from stoqlib.database.admin import get_admin_user
 from stoqlib.database.interfaces import ICurrentUser, IDatabaseSettings
 from stoqlib.database.runtime import (get_connection, new_transaction,
-                                      get_current_branch, get_current_station)
+                                      get_current_branch, get_current_station,
+                                      set_current_branch_station)
 from stoqlib.database.tables import get_table_types
 from stoqlib.lib.drivers import get_fiscal_printer_settings_by_station
 from stoqlib.lib.parameters import sysparam
@@ -90,6 +92,7 @@ def main(args):
 
     if not options.bare:
         provide_utility(ICurrentUser, get_admin_user(conn))
+        set_current_branch_station(conn, socket.gethostname())
 
         ns['branch'] = get_current_branch(conn)
         ns['station'] = station = get_current_station(conn)
