@@ -182,6 +182,15 @@ class PurchaseOrder(Domain):
     # General methods
     #
 
+    def can_cancel(self):
+        """
+        Find out if it's possible to cancel the order
+        @returns: True if it's possible to cancel the order, otherwise False
+        """
+        return self.status in [self.ORDER_QUOTING,
+                               self.ORDER_PENDING,
+                               self.ORDER_CONFIRMED]
+
     def receive_item(self, item, quantity_to_receive):
         if not item in self.get_pending_items():
             raise StoqlibError('This item is not pending, hence '
@@ -310,6 +319,11 @@ class PurchaseOrder(Domain):
                                         % qty)
         item = items[0]
         item.quantity_received += quantity_received
+
+    def cancel(self):
+        """ Cancel the payment """
+        assert self.can_cancel()
+        self.status = self.ORDER_CANCELLED 
 
     #
     # Classmethods
