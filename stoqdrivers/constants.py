@@ -51,8 +51,8 @@ _ = lambda msg: stoqdrivers_gettext(msg)
     TAX_SUBSTITUTION,
     TAX_EXEMPTION,
     TAX_NONE,
+    TAX_SERVICE,
     TAX_CUSTOM,
-    TAX_CUSTOM_SERVICE,
     # Constants for Payment Method
     MONEY_PM,
     CHEQUE_PM,
@@ -74,6 +74,7 @@ _constant_descriptions = {
     TAX_SUBSTITUTION: _(u"Substitution"),
     TAX_EXEMPTION: _(u"Exemption"),
     TAX_NONE: _(u"No tax"),
+    TAX_SERVICE: _(u"Service tax"),
     MONEY_PM: _(u"Money Payment Method"),
     CHEQUE_PM: _(u"Cheque Payment Method"),
     }
