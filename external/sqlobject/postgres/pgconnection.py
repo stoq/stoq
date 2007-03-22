@@ -378,6 +378,4 @@ class PostgresConnection(DBAPI):
 # Converter for psycopg Binary type.
 def PsycoBinaryConverter(value, db):
     assert db == 'postgres'
-    if value is not None:
-	print value, type(value)
-        return str(value)
+    return str(value)
