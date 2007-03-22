@@ -33,6 +33,7 @@ from kiwi.datatypes import currency
 from kiwi.python import all
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.database.database import rollback_and_begin
+from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.interfaces import IPaymentGroup
@@ -100,11 +101,15 @@ class PurchaseApp(SearchableAppWindow):
             can_send_supplier = all(
                 order.status == PurchaseOrder.ORDER_PENDING
                 for order in selection)
+            can_cancel = all(order_view.purchase.can_cancel()
+                for order_view in selection)
         else:
             can_send_supplier = False
+            can_cancel = False
 
         if one_selected:
             can_edit = selection[0].status == PurchaseOrder.ORDER_PENDING
+        self.cancel_button.set_sensitive(can_cancel)
         self.edit_button.set_sensitive(can_edit)
         self.send_to_supplier_button.set_sensitive(can_send_supplier)
         self.send_to_supplier_action.set_sensitive(can_send_supplier)
@@ -196,6 +201,20 @@ class PurchaseApp(SearchableAppWindow):
     def _print_selected_items(self):
         items = self.orders.get_selected_rows() or self.orders
         self.searchbar.print_report(PurchaseReport, items)
+
+    def _cancel_order(self):
+        order_views = self.orders.get_selected_rows()
+        assert all(ov.purchase.can_cancel() for ov in order_views)
+        msg = _('The selected order(s) will be cancelled.')
+        if yesno(msg, gtk.RESPONSE_NO, _(u"Cancel"), _(u"Confirm")):
+            return
+        trans = new_transaction()
+        for order_view in order_views:
+            order = trans.get(order_view.purchase)
+            order.cancel()
+        trans.commit()
+        self._update_totals()
+        self.searchbar.search_items()
 
     #
     # Hooks
@@ -295,3 +314,5 @@ class PurchaseApp(SearchableAppWindow):
     def _on_transporters_action_clicked(self, action):
         self.run_dialog(TransporterSearch, self.conn, hide_footer=True)
 
+    def on_cancel_button__clicked(self, button):
+        self._cancel_order()
