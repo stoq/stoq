@@ -250,7 +250,9 @@ class Pay2023(SerialBase, BaseChequePrinter):
                                               command,
                                               ' '.join(parameters)))
         if reply[0] != '{':
-            raise AssertionError
+            # This happened once after the first command issued after
+            # the power returned, it should probably be handled gracefully
+            raise AssertionError(repr(reply))
 
         # Page 39
         sections = reply[1:].split(';')
