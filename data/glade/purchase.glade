@@ -9,7 +9,7 @@
                         <property name="name">AddOrder</property>
                         <property name="label" translatable="yes">Add Order...</property>
                         <signal handler="_on_order_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;F8</property>
+                        <property name="accelerator">&lt;Control&gt;o</property>
                     </widget>
                 </child>
                 <child>
@@ -17,14 +17,14 @@
                         <property name="name">BaseCategories</property>
                         <property name="label" translatable="yes">Base Categories...</property>
                         <signal handler="_on_base_categories_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;x</property>
+                        <property name="accelerator">&lt;Control&gt;b</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="Categories">
                         <property name="name">Categories</property>
                         <property name="label" translatable="yes">Categories...</property>
-                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;z</property>
+                        <property name="accelerator">&lt;Control&gt;c</property>
                     </widget>
                 </child>
                 <child>
@@ -98,7 +98,6 @@
                         <property name="label" translatable="yes">Products</property>
                         <property name="stock_id">stoq-products</property>
                         <signal handler="_on_products_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;p</property>
                     </widget>
                 </child>
                 <child>
@@ -106,7 +105,7 @@
                         <property name="name">Products</property>
                         <property name="label" translatable="yes">Products...</property>
                         <signal handler="_on_products_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;p</property>
+                        <property name="accelerator">&lt;Control&gt;d</property>
                     </widget>
                 </child>
                 <child>
@@ -115,7 +114,6 @@
                         <property name="label" translatable="yes">Add Order</property>
                         <property name="stock_id">gtk-new</property>
                         <signal handler="_on_order_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;F8</property>
                     </widget>
                 </child>
                 <child>
@@ -159,7 +157,7 @@
                         <property name="name">Services</property>
                         <property name="label" translatable="yes">Services...</property>
                         <signal handler="_on_services_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;s</property>
+                        <property name="accelerator">&lt;Control&gt;s</property>
                     </widget>
                 </child>
                 <child>
@@ -176,7 +174,7 @@
                         <property name="name">Suppliers</property>
                         <property name="label" translatable="yes">Suppliers...</property>
                         <signal handler="_on_suppliers_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;b</property>
+                        <property name="accelerator">&lt;Control&gt;u</property>
                     </widget>
                 </child>
                 <child>
@@ -185,7 +183,6 @@
                         <property name="label" translatable="yes">Suppliers</property>
                         <property name="stock_id">stoq-suppliers</property>
                         <signal handler="_on_suppliers_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;b</property>
                     </widget>
                 </child>
                 <child>
@@ -193,7 +190,7 @@
                         <property name="name">Transporter</property>
                         <property name="label" translatable="yes">Transporters...</property>
                         <signal handler="_on_transporters_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;t</property>
+                        <property name="accelerator">&lt;Control&gt;t</property>
                     </widget>
                 </child>
                 <child>
@@ -223,7 +220,7 @@
                         <property name="name">send_to_supplier_action</property>
                         <property name="label" translatable="yes">Send to Supplier...</property>
                         <signal handler="_on_send_to_supplier_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;F9</property>
+                        <property name="accelerator">&lt;Control&gt;p</property>
                     </widget>
                 </child>
                 <child>
@@ -346,6 +343,13 @@
                                         <property name="spacing">5</property>
                                         <property name="visible">True</property>
                                         <child>
+                                            <widget class="GtkButton" id="cancel_button">
+                                                <property name="is_focus">True</property>
+                                                <property name="label" context="yes" translatable="yes">Cancel</property>
+                                                <property name="visible">True</property>
+                                            </widget>
+                                        </child>
+                                        <child>
                                             <widget class="GtkButton" id="edit_button">
                                                 <property name="is_focus">True</property>
                                                 <property name="visible">True</property>
@@ -378,6 +382,7 @@
                                             </widget>
                                             <packing>
                                                 <property name="expand">False</property>
+                                                <property name="position">1</property>
                                             </packing>
                                         </child>
                                         <child>
@@ -412,7 +417,7 @@
                                             </widget>
                                             <packing>
                                                 <property name="expand">False</property>
-                                                <property name="position">1</property>
+                                                <property name="position">2</property>
                                             </packing>
                                         </child>
                                         <child>
@@ -424,7 +429,7 @@
                                             </widget>
                                             <packing>
                                                 <property name="expand">False</property>
-                                                <property name="position">2</property>
+                                                <property name="position">3</property>
                                             </packing>
                                         </child>
                                         <child>
@@ -434,7 +439,7 @@
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
-                                                <property name="position">3</property>
+                                                <property name="position">4</property>
                                             </packing>
                                         </child>
                                     </widget>
