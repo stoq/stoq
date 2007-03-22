@@ -122,10 +122,10 @@ class CouponPrinter(object):
         """
         log.info("Closing till")
 
-        self._driver.close_till()
-
         if value > 0:
             self.remove_cash(value)
+
+        self._driver.close_till()
 
     def cancel(self):
         """

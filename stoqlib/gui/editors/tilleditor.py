@@ -149,13 +149,19 @@ class TillClosingEditor(BaseEditor):
                      'total_balance',
                      'opening_date')
 
-    def __init__(self, conn, model=None, visual_mode=False):
+    def __init__(self, conn, model=None, can_remove_cash=True):
+        """
+        @param can_remove_cash: If True, allow the user to remove cash
+                                from the till before closing it.
+        """
         self.till = Till.get_last_opened(conn)
         assert self.till
-        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
+        BaseEditor.__init__(self, conn, model)
 
         self.main_dialog.set_confirm_widget(self.value)
 
+        if not can_remove_cash:
+            self.value.set_sensitive(False)
     #
     # BaseEditorSlave
     #

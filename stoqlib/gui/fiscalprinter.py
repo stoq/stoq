@@ -34,7 +34,7 @@ from stoqlib.drivers.fiscalprinter import (
     CouponPrinter, get_fiscal_printer_settings_by_station)
 from stoqlib.exceptions import TillError
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.lib.message import warning
+from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -103,9 +103,10 @@ class FiscalPrinterHelper(CouponPrinter):
 
         return retval
 
-    def close_till(self):
+    def close_till(self, can_remove_cash):
         """
         Closes the till
+        @param can_remove_cash: If True allow the user to remove cash.
         @returns: True if the till was closed, otherwise False
         """
 
@@ -114,7 +115,8 @@ class FiscalPrinterHelper(CouponPrinter):
 
         from stoqlib.gui.editors.tilleditor import TillClosingEditor
         trans = new_transaction()
-        model = run_dialog(TillClosingEditor, self.parent, trans)
+        model = run_dialog(TillClosingEditor, self.parent, trans,
+                           can_remove_cash=can_remove_cash)
 
         if not model:
             finish_transaction(trans, model)
@@ -167,3 +169,21 @@ class FiscalPrinterHelper(CouponPrinter):
         trans.close()
 
         return retval
+
+    def needs_closing(self):
+        """
+        Checks if the last opened till was closed and asks the
+        user if he wants to close it
+        @returns: True if the till was open and the user wants to
+          close it, otherwise False
+        """
+        till = Till.get_last_opened(self.conn)
+        if till and till.needs_closing():
+            if not yesno(_(u"You need to close the till opened %s before "
+                           "creating a new order.\n\nClose the till?") %
+                         till.opening_date.date(),
+                         gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
+                return True
+
+        return False
+
