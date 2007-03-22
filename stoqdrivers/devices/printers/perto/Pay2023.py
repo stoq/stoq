@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- Mode: Python; coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -41,7 +41,7 @@ from stoqdrivers.devices.interfaces import (ICouponPrinter,
 from stoqdrivers.devices.printers.cheque import (BaseChequePrinter,
                                                  BankConfiguration)
 from stoqdrivers.devices.printers.base import BaseDriverConstants
-from stoqdrivers.constants import (TAX_CUSTOM, TAX_SUBSTITUTION,
+from stoqdrivers.constants import (TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, TAX_NONE)
 from stoqdrivers.constants import (UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
                                    UNIT_EMPTY, UNIT_CUSTOM)
@@ -100,6 +100,13 @@ class Pay2023Constants(BaseDriverConstants):
         UNIT_EMPTY:       '  ',
         MONEY_PM:         '-2',
         CHEQUE_PM:        '2',
+#         PaymentMethodType.MONEY: '-2',
+#         PaymentMethodType.CHEQUE: '0',
+#         PaymentMethodType.BOLETO: '1',
+#         PaymentMethodType.CREDIT_CARD: '2',
+#         PaymentMethodType.DEBIT_CARD: '3',
+#         PaymentMethodType.FINANCIAL: '4',
+#         PaymentMethodType.GIFT_CERTIFICATE: '5,
         }
 
     _tax_constants = [
@@ -109,12 +116,6 @@ class Pay2023Constants(BaseDriverConstants):
         (TAX_SUBSTITUTION, '\x7e', None), # -2
         (TAX_EXEMPTION,    '\x7d', None), # -3
         (TAX_NONE,         '\x7c', None), # -4
-
-        (TAX_CUSTOM,       '\x80', Decimal(17)),
-        (TAX_CUSTOM,       '\x81', Decimal(12)),
-        (TAX_CUSTOM,       '\x82', Decimal(25)),
-        (TAX_CUSTOM,       '\x83', Decimal(8)),
-        (TAX_CUSTOM,       '\x84', Decimal(5)),
         ]
 
 _RETVAL_TOKEN_RE = re.compile(r"^\s*([^=\s;]+)")
@@ -330,13 +331,129 @@ class Pay2023(SerialBase, BaseChequePrinter):
         return result
 
     # This how the printer needs to be configured.
+    def _define_tax_code(self, code, name):
+        try:
+            retdict = self._send_command(
+                'LeNaoFiscal', CodNaoFiscal=code)
+        except DriverError, e:
+            if e.code != 8057: # Not configured
+                raise
+        else:
+            for retname in ['NomeNaoFiscal', 'DescricaoNaoFiscal']:
+                configured_name = retdict[retname]
+                if configured_name  != name:
+                    raise DriverError(
+                        "The name of the tax code %d is set to %r, "
+                        "but it needs to be configured as %r" % (
+                        code, configured_name, name))
+
+        try:
+            self._send_command(
+                'DefineNaoFiscal', CodNaoFiscal=code, DescricaoNaoFiscal=name,
+                NomeNaoFiscal=name, TipoNaoFiscal=False)
+        except DriverError, e:
+            if e.code != 8036:
+                raise
+
+    def _delete_tax_code(self, code):
+        try:
+            self._send_command(
+                'ExcluiNaoFiscal', CodNaoFiscal=code)
+        except DriverError, e:
+            if e.code != 8057: # Not configured
+                raise
+
+    def _define_payment_method(self, code, name):
+        try:
+            retdict = self._send_command(
+                'LeMeioPagamento', CodMeioPagamentoProgram=code)
+        except DriverError, e:
+            if e.code != 8014: # Not configured
+                raise
+        else:
+            configure = False
+            for retname in ['NomeMeioPagamento', 'DescricaoMeioPagamento']:
+                configured_name = retdict[retname]
+                if configured_name  != name:
+                    configure = True
+
+            if not configure:
+                return
+
+        try:
+            self._send_command(
+                'DefineMeioPagamento',
+                CodMeioPagamentoProgram=code, DescricaoMeioPagamento=name,
+                NomeMeioPagamento=name, PermiteVinculado=False)
+        except DriverError, e:
+            raise
+
+    def _delete_payment_method(self, code):
+        try:
+            self._send_command(
+                'ExcluiMeioPagamento', CodMeioPagamentoProgram=code)
+        except DriverError, e:
+            if e.code != 8014: # Not configured
+                raise
+
+    def _define_taxcode(self, code, value, service=False):
+        try:
+            retdict = self._send_command(
+                'LeAliquota', CodAliquotaProgramavel=code)
+        except DriverError, e:
+            if e.code != 8005: # Not configured
+                raise
+        else:
+            configure = False
+            for retname in ['PercentualAliquota']:
+                configured_name = retdict[retname]
+                if configured_name != value:
+                    configure = True
+
+            if not configure:
+                return
+
+        try:
+            self._send_command(
+                'DefineAliquota',
+                CodAliquotaProgramavel=code,
+                DescricaoAliquota='%2.2f%%' % value ,
+                PercentualAliquota=value,
+                AliquotaICMS=not service)
+        except DriverError, e:
+            raise
+
+    def _delete_taxcode(self, code):
+        try:
+            self._send_command(
+                'ExcluiAliquota', CodAliquotaProgramavel=code)
+        except DriverError, e:
+            if e.code != 8005: # Not configured
+                raise
+
     def setup(self):
-        self._send_command(
-            'DefineNaoFiscal', CodNaoFiscal=1, DescricaoNaoFiscal="Sangria",
-            NomeNaoFiscal="Sangria", TipoNaoFiscal=False)
-        self._send_command(
-            'DefineNaoFiscal', CodNaoFiscal=0, DescricaoNaoFiscal="Suprimento",
-            NomeNaoFiscal="Suprimento", TipoNaoFiscal=False)
+        self._define_tax_code(0, "Suprimento".encode('cp850'))
+        self._define_tax_code(1, "Sangria".encode('cp850'))
+        for code in range(2, 15):
+            self._delete_tax_code(code)
+
+        self._define_payment_method(0, u'Cheque'.encode('cp850'))
+        self._define_payment_method(1, u'Boleto'.encode('cp850'))
+        self._define_payment_method(2, u'Cartão credito'.encode('cp850'))
+        self._define_payment_method(3, u'Cartão debito'.encode('cp850'))
+        self._define_payment_method(4, u'Financeira'.encode('cp850'))
+        self._define_payment_method(5, u'Vale compra'.encode('cp850'))
+        for code in range(6, 15):
+            self._delete_payment_method(code)
+
+        self._define_taxcode(0, Decimal("17.00"))
+        self._define_taxcode(1, Decimal("12.00"))
+        self._define_taxcode(2, Decimal("25.00"))
+        self._define_taxcode(3, Decimal("8.00"))
+        self._define_taxcode(4, Decimal("5.00"))
+        self._define_taxcode(5, Decimal("3.00"), service=True)
+        for code in range(6, 16):
+            self._delete_taxcode(code)
 
     def print_sintegra_data(self):
         print self._read_register('DataAbertura', datetime.date) # 3
@@ -362,9 +479,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
                 print self._send_command(
                     'LeNaoFiscal', CodNaoFiscal=i)
             except DriverError, e:
-                if e.code == 8057:
-                    pass
-                else:
+                if e.code != 8057:
                     raise
 
     #
