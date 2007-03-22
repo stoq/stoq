@@ -28,6 +28,7 @@ from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
 from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
+from stoqdrivers.constants import TAX_NONE, TAX_SERVICE
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.parameter import ParameterData
@@ -533,7 +534,8 @@ class ParameterAccess(ClassInittableObject):
         self._set_schema(key, pm.id)
 
     def ensure_delivery_service(self):
-        from stoqlib.domain.sellable import BaseSellableInfo
+        from stoqlib.domain.sellable import (BaseSellableInfo,
+                                             SellableTaxConstant)
         from stoqlib.domain.service import Service
         key = "DELIVERY_SERVICE"
         table = Service.getAdapterClass(ISellable)
@@ -542,10 +544,11 @@ class ParameterAccess(ClassInittableObject):
 
         service = Service(connection=self.conn)
 
+        tax_constant = SellableTaxConstant.get_by_type(TAX_SERVICE, self.conn)
         sellable_info = BaseSellableInfo(connection=self.conn,
                                          description=_(u'Delivery'))
         sellable = service.addFacet(ISellable,
-                                    tax_constant=None,
+                                    tax_constant=tax_constant,
                                     base_sellable_info=sellable_info,
                                     connection=self.conn)
         self._set_schema(key, sellable.id)
@@ -595,7 +598,9 @@ class ParameterAccess(ClassInittableObject):
         key = "DEFAULT_PRODUCT_TAX_CONSTANT"
         if self.get_parameter_by_field(key, SellableTaxConstant):
             return
-        self._set_schema(key, None)
+
+        tax_constant = SellableTaxConstant.get_by_type(TAX_NONE, self.conn)
+        self._set_schema(key, tax_constant.id)
 
 
 #

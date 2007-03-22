@@ -44,7 +44,6 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        IContainer)
 from stoqlib.domain.payment.methods import CheckPM, MoneyPM
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.service import ServiceSellableItem
 from stoqlib.domain.sellable import ASellableItem
 from stoqlib.lib.defaults import (METHOD_GIFT_CERTIFICATE, get_all_methods_dict,
                                   get_method_names)
@@ -218,16 +217,13 @@ class _FiscalCoupon(object):
 
     @argcheck(ASellableItem)
     def add_item(self, item):
-        # Do not add services to the coupon
-        if isinstance(item, ServiceSellableItem):
-            log.info("item %r couldn't added to the coupon, "
-                     "since it is a service" % item)
-            return
         # GiftCertificates are not printed on the fiscal printer
         # See #2985 for more information.
-        elif isinstance(item, GiftCertificateItem):
+        if isinstance(item, GiftCertificateItem):
             return
 
+        if item.price <= 0:
+            return
         sellable = item.sellable
         max_len = self._get_capability("item_description").max_len
         description = sellable.base_sellable_info.description[:max_len]
@@ -240,11 +236,12 @@ class _FiscalCoupon(object):
             unit = sellable.unit.unit_index or UNIT_EMPTY
         max_len = self._get_capability("item_code").max_len
         code = sellable.get_code_str()[:max_len]
-        constant = self._settings.get_tax_constant_for_device(sellable)
+
+        tax_constant = self._settings.get_tax_constant_for_device(sellable)
         item_id = self._driver.add_item(code, description, item.price,
-                                         constant.device_value,
-                                         item.quantity, unit,
-                                         unit_desc=unit_desc)
+                                        tax_constant.device_value,
+                                        item.quantity, unit,
+                                        unit_desc=unit_desc)
         ids = self._item_ids.setdefault(item, [])
         ids.append(item_id)
 
@@ -253,8 +250,7 @@ class _FiscalCoupon(object):
 
     @argcheck(ASellableItem)
     def remove_item(self, item):
-        # Services are not added, so don't try to remove them
-        if isinstance(item, ServiceSellableItem):
+        if item.price <= 0:
             return
         for item_id in self._item_ids.pop(item):
             try:

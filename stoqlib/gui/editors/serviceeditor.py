@@ -29,12 +29,15 @@ import datetime
 
 from kiwi.datatypes import currency, ValidationError
 
+from stoqdrivers.constants import TAX_SERVICE
+
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.domain.service import ServiceSellableItem, Service
-from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.domain.interfaces import ISellable
+from stoqlib.domain.service import ServiceSellableItem, Service
+from stoqlib.domain.sellable import (BaseSellableInfo,
+                                     SellableTaxConstant)
 
 _ = stoqlib_gettext
 
@@ -88,6 +91,8 @@ class ServiceEditor(SellableEditor):
         model = Service(connection=conn)
         sellable_info = BaseSellableInfo(connection=conn,
                                          description='', price=currency(0))
+        tax_constant = SellableTaxConstant.get_by_type(TAX_SERVICE, self.conn)
         model.addFacet(ISellable, base_sellable_info=sellable_info,
+                       tax_constant=tax_constant,
                        connection=conn)
         return model
