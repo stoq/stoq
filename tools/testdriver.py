@@ -64,8 +64,15 @@ def main(args):
     command = args[1]
     cb = getattr(device, command)
 
-    args = map(int, tuple(args[2:]))
-    retval = cb(*args)
+    items = []
+    for item in args[2:]:
+        try:
+            item = int(item)
+        except ValueError:
+            pass
+        items.append(item)
+    print items
+    retval = cb(*items)
     if retval is not None:
         print '%s returned: %r' % (command, retval)
     return 0
