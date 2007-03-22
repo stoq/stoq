@@ -74,7 +74,7 @@ class _BaseCashModel(object):
         self.entry = entry
 
     def get_balance(self):
-        return currency(self.entry.till.get_balance())
+        return currency(self.entry.till.get_balance() - self.value)
 
     def _get_value(self):
         return self.entry.value
@@ -232,7 +232,8 @@ class BaseCashSlave(BaseEditorSlave):
             return ValidationError(_("Value cannot be zero or less than zero"))
 
     def on_value__content_changed(self, entry):
-        self.proxy.update('balance')
+        value = self.model.get_balance() + self.model.value
+        self.proxy.update('balance', currency(value))
 
 class RemoveCashSlave(BaseCashSlave):
 
