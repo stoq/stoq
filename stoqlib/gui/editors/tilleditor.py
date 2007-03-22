@@ -160,8 +160,8 @@ class TillClosingEditor(BaseEditor):
 
         self.main_dialog.set_confirm_widget(self.value)
 
-        if not can_remove_cash:
-            self.value.set_sensitive(False)
+        self.value.set_sensitive(can_remove_cash)
+
     #
     # BaseEditorSlave
     #
