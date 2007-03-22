@@ -172,21 +172,16 @@ class TillApp(SearchableAppWindow):
         if self._printer.open_till():
             self._update_widgets()
 
-    def _close_till(self):
-        retval = self._printer.close_till()
+    def _close_till(self, can_remove_cash=True):
+        retval = self._printer.close_till(can_remove_cash)
         if retval:
             self._update_widgets()
         return retval
 
     def _check_till(self):
-        till = Till.get_last_opened(self.conn)
-        if till and till.needs_closing():
-            if not yesno(_(u"You need to close the till opened %s before "
-                           "creating a new order.\n\nClose the till?") %
-                         till.opening_date.date(),
-                         gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
-                if not self._close_till():
-                    return False
+        if self._printer.needs_closing():
+            if not self._close_till(can_remove_cash=False):
+                return False
 
         return True
 
