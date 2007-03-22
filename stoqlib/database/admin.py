@@ -35,7 +35,8 @@ from kiwi.log import Logger
 
 from stoqdrivers.constants import (UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS,
                                    TAX_SUBSTITUTION, TAX_EXEMPTION,
-                                   TAX_NONE)
+                                   TAX_NONE, TAX_SERVICE,
+                                   describe_constant)
 
 from stoqlib.database.database import execute_sql, clean_database
 from stoqlib.database.interfaces import ICurrentUser, IDatabaseSettings
@@ -138,18 +139,16 @@ def ensure_sellable_constants():
     for desc, index in unit_list:
         SellableUnit(description=desc, unit_index=index, connection=trans)
 
-    log.info("Creating sellable tax constantes")
-    unit_list = [(_(u"Substitution"), TAX_SUBSTITUTION),
-                 (_(u"Exemption"), TAX_EXEMPTION),
-                 (_(u"No tax"), TAX_NONE)]
-    for desc, enum in unit_list:
+    log.info("Creating sellable tax constants")
+    for enum in [TAX_SUBSTITUTION,
+                 TAX_EXEMPTION,
+                 TAX_NONE,
+                 TAX_SERVICE]:
+        desc = describe_constant(enum)
         constant = SellableTaxConstant(description=desc,
                                        tax_type=enum,
                                        tax_value=None,
                                        connection=trans)
-
-    sysparam(trans).update_parameter('DEFAULT_PRODUCT_TAX_CONSTANT',
-                                     constant.id)
 
     trans.commit(close=True)
 
@@ -222,8 +221,8 @@ def initialize_system(delete_only=False, verbose=False):
     clean_database(settings.dbname)
     create_base_schema()
     ensure_payment_methods()
-    ensure_system_parameters()
     ensure_sellable_constants()
+    ensure_system_parameters()
     create_default_profiles()
 
     trans = new_transaction()

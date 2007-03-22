@@ -23,8 +23,11 @@
 ##
 ##
 
+from stoqdrivers.constants import TAX_SERVICE
+
+from stoqlib.database.runtime import get_connection
 from stoqlib.domain.service import Service
-from stoqlib.domain.sellable import BaseSellableInfo
+from stoqlib.domain.sellable import BaseSellableInfo, SellableTaxConstant
 from stoqlib.domain.interfaces import ISellable
 from stoqlib.importers.csvimporter import CSVImporter
 
@@ -35,12 +38,18 @@ class ServiceImporter(CSVImporter):
               'cost',
               ]
 
+    def __init__(self):
+        conn = get_connection()
+        self.tax_constant = SellableTaxConstant.get_by_type(TAX_SERVICE, conn)
+        assert self.tax_constant
+
     def process_one(self, data, fields, trans):
         service = Service(connection=trans)
         sellable_info = BaseSellableInfo(connection=trans,
                                          description=data.description,
                                          price=data.price)
+
         service.addFacet(ISellable, connection=trans,
                          base_sellable_info=sellable_info,
-                         tax_constant=None,
+                         tax_constant=self.tax_constant,
                          cost=data.cost, barcode=data.barcode)
