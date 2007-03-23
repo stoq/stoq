@@ -323,7 +323,7 @@ class PurchaseOrder(Domain):
     def cancel(self):
         """ Cancel the payment """
         assert self.can_cancel()
-        self.status = self.ORDER_CANCELLED 
+        self.status = self.ORDER_CANCELLED
 
     #
     # Classmethods
