@@ -148,7 +148,8 @@ class POSApp(AppWindow):
 
         # Do not allow printing duplicated quantities on fiscal coupon
         item.quantity = new_quantity
-        self._coupon_add_item(item)
+        if self._coupon_add_item(item) == -1:
+            return
 
         item.quantity = current_quantity + new_quantity
         self._update_added_item(item, new_item=False)
@@ -515,7 +516,7 @@ class POSApp(AppWindow):
             return
         if self._coupon is None:
             self._open_coupon()
-        self._coupon.add_item(sellable_item)
+        return self._coupon.add_item(sellable_item)
 
     def _coupon_remove_item(self, sellable_item):
         if self.param.CONFIRM_SALES_ON_TILL:
