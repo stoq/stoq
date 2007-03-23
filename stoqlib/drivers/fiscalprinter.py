@@ -45,6 +45,7 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
 from stoqlib.domain.payment.methods import CheckPM, MoneyPM
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import ASellableItem
+from stoqlib.exceptions import DeviceError
 from stoqlib.lib.defaults import (METHOD_GIFT_CERTIFICATE, get_all_methods_dict,
                                   get_method_names)
 from stoqlib.lib.message import warning, yesno
@@ -233,6 +234,10 @@ class _FiscalCoupon(object):
 
     @argcheck(ASellableItem)
     def add_item(self, item):
+        """
+        @param item: A L{ASellableItem} subclass
+        @returns: id of the item or None if none added
+        """
         # GiftCertificates are not printed on the fiscal printer
         # See #2985 for more information.
         if isinstance(item, GiftCertificateItem):
@@ -253,19 +258,26 @@ class _FiscalCoupon(object):
         max_len = self._get_capability("item_code").max_len
         code = sellable.get_code_str()[:max_len]
 
-        tax_constant = self._settings.get_tax_constant_for_device(sellable)
+        try:
+            tax_constant = self._settings.get_tax_constant_for_device(sellable)
+        except DeviceError, e:
+            warning(_("Could not add"), e)
+            return
         item_id = self._driver.add_item(code, description, item.price,
                                         tax_constant.device_value,
                                         item.quantity, unit,
                                         unit_desc=unit_desc)
         ids = self._item_ids.setdefault(item, [])
         ids.append(item_id)
+        return item_id
 
     def get_items(self):
         return self._item_ids.keys()
 
     @argcheck(ASellableItem)
     def remove_item(self, item):
+        if isinstance(item, GiftCertificateItem):
+            return
         if item.price <= 0:
             return
         for item_id in self._item_ids.pop(item):
