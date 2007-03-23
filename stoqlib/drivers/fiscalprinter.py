@@ -236,15 +236,18 @@ class _FiscalCoupon(object):
     def add_item(self, item):
         """
         @param item: A L{ASellableItem} subclass
-        @returns: id of the item or None if none added
+        @returns: id of the item.:
+          0 >= if it was added successfully
+          -1 if an error happend
+          0 if added but not printed (gift certificates, free deliveries)
         """
         # GiftCertificates are not printed on the fiscal printer
         # See #2985 for more information.
         if isinstance(item, GiftCertificateItem):
-            return
+            return 0
 
         if item.price <= 0:
-            return
+            return 0
         sellable = item.sellable
         max_len = self._get_capability("item_description").max_len
         description = sellable.base_sellable_info.description[:max_len]
@@ -261,8 +264,8 @@ class _FiscalCoupon(object):
         try:
             tax_constant = self._settings.get_tax_constant_for_device(sellable)
         except DeviceError, e:
-            warning(_("Could not add"), e)
-            return
+            warning(_("Could not print item"), e)
+            return -1
         item_id = self._driver.add_item(code, description, item.price,
                                         tax_constant.device_value,
                                         item.quantity, unit,
