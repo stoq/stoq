@@ -41,6 +41,7 @@ def register_iconsets():
                  ("stoq-transfer", "a-convert48px.png"),
                  ("stoq-clients", "config-users48px.png"),
                  ("stoq-services", "gconf-editor48px.png"),
+                 ("stoq-delivery", "delivery24px.png"),
                  ("stoq-admin-app", "admin_24.png"),
                  ("stoq-pos-app", "pos_24.png"),
                  ("stoq-till-app", "till_24.png"),
