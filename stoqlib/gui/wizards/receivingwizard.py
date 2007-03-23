@@ -100,7 +100,8 @@ class PurchaseSelectionStep(WizardEditorStep):
     def on_searchbar_activate(self, slave, objs):
         """Use this callback with SearchBar search-activate signal"""
         self.orders.add_list(objs, clear=True)
-        self.wizard.refresh_next(False)
+        has_selection = self.orders.get_selected() is not None
+        self.wizard.refresh_next(has_selection)
 
     def _update_view(self):
         has_selection = self.orders.get_selected() is not None
