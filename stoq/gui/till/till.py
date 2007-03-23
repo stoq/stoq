@@ -272,15 +272,9 @@ class TillApp(SearchableAppWindow):
     def _on_fiscal_till_operations__action_clicked(self, button):
         self._run_search_dialog(TillFiscalOperationsSearch)
 
-    def _on_till_operation_close_till(self, till_operation):
-        self._close_till()
-
     def on_TillHistory__activate(self, button):
         dialog = TillHistoryDialog(self.conn)
-        signal_id = dialog.connect('close-till',
-                                   self._on_till_operation_close_till)
         self.run_dialog(dialog, self.conn)
-        dialog.disconnect(signal_id)
 
     def on_AddCash__activate(self, action):
         model = run_dialog(CashInEditor, self, self.conn)
