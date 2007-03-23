@@ -264,7 +264,7 @@ class _FiscalCoupon(object):
         try:
             tax_constant = self._settings.get_tax_constant_for_device(sellable)
         except DeviceError, e:
-            warning(_("Could not print item"), e)
+            warning(_("Could not print item"), str(e))
             return -1
         item_id = self._driver.add_item(code, description, item.price,
                                         tax_constant.device_value,
