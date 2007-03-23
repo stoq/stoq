@@ -136,31 +136,6 @@ class Pay2023(SerialBase, BaseChequePrinter):
     CMD_SUFFIX = '}'
     EOL_DELIMIT = CMD_SUFFIX
 
-    CMD_READ_X = 'EmiteLeituraX'
-    CMD_CANCEL_COUPON = 'CancelaCupom'
-    CMD_CLOSE_TILL = 'EmiteReducaoZ'
-    # Page 87
-    CMD_ADD_ITEM = 'VendeItem'
-    CMD_COUPON_OPEN = 'AbreCupomFiscal'
-    CMD_COUPON_OPEN_NOT_FISCAL = 'AbreCupomNaoFiscal'
-    CMD_CANCEL_ITEM = 'CancelaItemFiscal'
-    CMD_ADD_PAYMENT = 'PagaCupom'
-    CMD_ADD_COUPON_DIFFERENCE = 'AcresceSubtotal'
-    CMD_COUPON_CANCEL = 'CancelaCupom'
-    CMD_COUPON_CLOSE = 'EncerraDocumento'
-    CMD_GET_LAST_ITEM_ID = 'ContadorDocUltimoItemVendido'
-    CMD_GET_COUPON_TOTAL_VALUE = 'TotalDocLiquido'
-    CMD_GET_COUPON_TOTAL_PAID_VALUE = 'TotalDocValorPago'
-    CMD_PRINT_CHEQUE = 'ImprimeCheque'
-    CMD_GET_COO = "COO"
-    CMD_READ_REGISTER_INT = 'LeInteiro'
-    CMD_READ_REGISTER_MONEY = 'LeMoeda'
-    CMD_READ_REGISTER_DATE = 'LeData'
-    CMD_READ_REGISTER_TEXT = 'LeTexto'
-
-    # Page 53
-    REGISTER_INDICATORS = "Indicadores"
-
     errors_dict = {
         7003: OutofPaperError,
         7004: OutofPaperError,
@@ -275,19 +250,19 @@ class Pay2023(SerialBase, BaseChequePrinter):
 
     def _read_register(self, name, regtype):
         if regtype == int:
-            cmd = Pay2023.CMD_READ_REGISTER_INT
+            cmd = 'LeInteiro'
             argname = 'NomeInteiro'
             retname = 'ValorInteiro'
         elif regtype == Decimal:
-            cmd = Pay2023.CMD_READ_REGISTER_MONEY
+            cmd = 'LeMoeda'
             argname = 'NomeDadoMonetario'
             retname = 'ValorMoeda'
         elif regtype == datetime.date:
-            cmd = Pay2023.CMD_READ_REGISTER_DATE
+            cmd = 'LeData'
             argname = 'NomeData'
             retname = 'ValorData'
         elif regtype == str:
-            cmd = Pay2023.CMD_READ_REGISTER_TEXT
+            cmd = 'LeTexto'
             argname = 'NomeTexto'
             retname = 'ValorTexto'
         else:
@@ -311,20 +286,19 @@ class Pay2023(SerialBase, BaseChequePrinter):
             raise AssertionError
 
     def _get_status(self):
-        return self._read_register(Pay2023.REGISTER_INDICATORS, int)
+        return self._read_register('Indicadores', int)
 
     def _get_last_item_id(self):
-        return self._read_register(Pay2023.CMD_GET_LAST_ITEM_ID, int)
+        return self._read_register('ContadorDocUltimoItemVendido', int)
 
     def _get_coupon_number(self):
-        return self._read_register(Pay2023.CMD_GET_COO, int)
+        return self._read_register('COO', int)
 
     def _get_coupon_total_value(self):
-        return self._read_register(Pay2023.CMD_GET_COUPON_TOTAL_VALUE, Decimal)
+        return self._read_register('TotalDocLiquido', Decimal)
 
     def _get_coupon_remainder_value(self):
-        value = self._read_register(Pay2023.CMD_GET_COUPON_TOTAL_PAID_VALUE,
-                                    Decimal)
+        value = self._read_register('TotalDocValorPago', Decimal)
         result = self._get_coupon_total_value() - value
         if result < 0.0:
             result = 0.0
@@ -499,7 +473,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
         customer = self._customer_name
         document = self._customer_document
         address = self._customer_address
-        self._send_command(Pay2023.CMD_COUPON_OPEN,
+        self._send_command('AbreCupomFiscal',
                            EnderecoConsumidor=address[:80],
                            IdConsumidor=document[:29],
                            NomeConsumidor=customer[:30])
@@ -518,7 +492,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
             unit = self._consts.get_value(unit)
 
         taxcode = ord(taxcode) - 128
-        self._send_command(Pay2023.CMD_ADD_ITEM,
+        self._send_command('VendeItem',
                            CodAliquota=taxcode,
                            CodProduto=code[:48],
                            NomeProduto=description[:200],
@@ -528,10 +502,10 @@ class Pay2023(SerialBase, BaseChequePrinter):
         return self._get_last_item_id()
 
     def coupon_cancel_item(self, item_id):
-        self._send_command(Pay2023.CMD_CANCEL_ITEM, NumItem=item_id)
+        self._send_command('CancelaItemFiscal', NumItem=item_id)
 
     def coupon_cancel(self):
-        self._send_command(Pay2023.CMD_COUPON_CANCEL)
+        self._send_command('CancelaCupom')
 
     def coupon_totalize(self, discount=Decimal("0.0"),
                         surcharge=Decimal("0.0"), taxcode=TAX_NONE):
@@ -540,7 +514,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
         # the discount/surcharge values and applied to the coupon.
         value = discount and (discount * -1) or surcharge
         if value:
-            self._send_command(Pay2023.CMD_ADD_COUPON_DIFFERENCE,
+            self._send_command('AcresceSubtotal',
                                Cancelar=False,
                                ValorPercentual=value)
         return self._get_coupon_total_value()
@@ -551,46 +525,46 @@ class Pay2023(SerialBase, BaseChequePrinter):
             pm = int(self._consts.get_value(payment_method))
         else:
             pm = custom_pm
-        self._send_command(Pay2023.CMD_ADD_PAYMENT,
+        self._send_command('PagaCupom',
                            CodMeioPagamento=pm, Valor=value,
                            TextoAdicional=description[:80])
         return self._get_coupon_remainder_value()
 
     def coupon_close(self, message=''):
-        self._send_command(Pay2023.CMD_COUPON_CLOSE,
+        self._send_command('EncerraDocumento',
                            TextoPromocional=message[:492])
         self._reset()
         return self._get_coupon_number()
 
     def summarize(self):
-        self._send_command(Pay2023.CMD_READ_X)
+        self._send_command('EmiteLeituraX')
 
     def close_till(self):
         status = self._get_status()
         if status & FLAG_DOCUMENTO_ABERTO:
-            self._send_command(Pay2023.CMD_COUPON_CANCEL)
+            self.coupon_cancel()
 
-        self._send_command(Pay2023.CMD_CLOSE_TILL)
+        self._send_command('EmiteReducaoZ')
 
     def till_add_cash(self, value):
         status = self._get_status()
         if status & FLAG_DOCUMENTO_ABERTO:
-            self._send_command(Pay2023.CMD_COUPON_CANCEL)
-        self._send_command(Pay2023.CMD_COUPON_OPEN_NOT_FISCAL)
+            self.coupon_cancel()
+        self._send_command('AbreCupomNaoFiscal')
         self._send_command('EmiteItemNaoFiscal',
                            NomeNaoFiscal="Suprimento",
                            Valor=value)
-        self._send_command(Pay2023.CMD_COUPON_CLOSE)
+        self._send_command('EncerraDocumento')
 
     def till_remove_cash(self, value):
         status = self._get_status()
         if status & FLAG_DOCUMENTO_ABERTO:
-            self._send_command(Pay2023.CMD_COUPON_CANCEL)
-        self._send_command(Pay2023.CMD_COUPON_OPEN_NOT_FISCAL)
+            self.coupon_cancel()
+        self._send_command('AbreCupomNaoFiscal')
         self._send_command('EmiteItemNaoFiscal',
                            NomeNaoFiscal="Sangria",
                            Valor=value)
-        self._send_command(Pay2023.CMD_COUPON_CLOSE)
+        self._send_command('EncerraDocumento')
 
     #
     # IChequePrinter implementation
@@ -616,7 +590,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
                     VPosFavorecido=bank.get_y_coordinate("thirdparty"),
                     VPosValor=bank.get_y_coordinate("value"))
 
-        self._send_command(Pay2023.CMD_PRINT_CHEQUE, Cidade=city[:27],
+        self._send_command('ImprimeCheque', Cidade=city[:27],
                            Data=date.strftime("#%d/%m/%Y#"),
                            Favorecido=thirdparty[:45],
                            Valor=value, **data)
