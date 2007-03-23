@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 ## Author(s):       Henrique Romano         <henrique@async.com.br>
 ##                  Bruno Rafael Garcia     <brg@async.com.br>
 ##                  Evandro Vale Miquelito  <evandro@async.com.br>
+##                  Johan Dahlin            <jdahlin@async.com.br>
 ##
 """ Implementation of classes related to till operations.  """
 
@@ -30,7 +31,6 @@ import datetime
 
 import gtk
 from kiwi.datatypes import currency
-from kiwi.utils import gsignal
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.list import Column, ColoredColumn
 from sqlobject.sqlbuilder import IN
@@ -57,14 +57,11 @@ class TillHistoryDialog(GladeSlaveDelegate):
     widgets = ('cash_out_button',
                'cash_advance_button',
                'cash_in_button',
-               'close_till_button',
                'total_balance_label',
                'payments')
 
     title = _('Current Till History')
     size = (750, -1)
-
-    gsignal('close-till')
 
     def __init__(self, conn):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
@@ -191,8 +188,3 @@ class TillHistoryDialog(GladeSlaveDelegate):
 
     def on_cash_advance_button__clicked(self, button):
         self._run_editor(CashAdvanceEditor)
-
-    def on_close_till_button__clicked(self, button):
-        self.emit('close-till')
-        if Till.get_current(self.conn) is None:
-            self.main_dialog.close()
