@@ -216,11 +216,12 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="send_to_supplier_action">
-                        <property name="name">send_to_supplier_action</property>
+                    <widget class="GtkAction" id="SendToSupplier">
+                        <property name="name">SendToSupplier</property>
                         <property name="label" translatable="yes">Send to Supplier...</property>
-                        <signal handler="_on_send_to_supplier_action_clicked" name="activate"/>
+                        <property name="short-label" translatable="yes">Send</property>
                         <property name="accelerator">&lt;Control&gt;p</property>
+                        <property name="stock_id">stoq-delivery</property>
                     </widget>
                 </child>
                 <child>
@@ -235,7 +236,7 @@
         <ui id="initial-state"><![CDATA[<ui>
 <menubar action="menubar" name="menubar">
 
- <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem action="AddOrder" name="AddOrder"/><menuitem action="send_to_supplier_action" name="send_to_supplier_action"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu><menu action="SearchMenu"><menuitem action="BaseCategories" name="BaseCategories"/><menuitem action="Categories" name="Categories"/><menuitem action="Products" name="Products"/><menuitem action="Services" name="Services"/><menuitem action="Suppliers" name="Suppliers"/><menuitem action="Transporter" name="Transporter"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
+ <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem action="AddOrder" name="AddOrder"/><menuitem action="SendToSupplier" name="SendToSupplier"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu><menu action="SearchMenu"><menuitem action="BaseCategories" name="BaseCategories"/><menuitem action="Categories" name="Categories"/><menuitem action="Products" name="Products"/><menuitem action="Services" name="Services"/><menuitem action="Suppliers" name="Suppliers"/><menuitem action="Transporter" name="Transporter"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
   
   
@@ -243,7 +244,7 @@
   
   
   
-<toolitem action="Purchase" name="Purchase"/><toolitem action="ProductButton" name="ProductButton"/><toolitem action="SuppliersButton" name="SuppliersButton"/></toolbar>
+<toolitem action="Purchase" name="Purchase"/><toolitem action="ProductButton" name="ProductButton"/><toolitem action="SuppliersButton" name="SuppliersButton"/><toolitem action="SendToSupplier" name="SendToSupplier"/></toolbar>
 </ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="purchase">
@@ -430,16 +431,6 @@
                                             <packing>
                                                 <property name="expand">False</property>
                                                 <property name="position">3</property>
-                                            </packing>
-                                        </child>
-                                        <child>
-                                            <widget class="GtkButton" id="send_to_supplier_button">
-                                                <property name="is_focus">True</property>
-                                                <property name="label" context="yes" translatable="yes">Send To Supplier</property>
-                                                <property name="visible">True</property>
-                                            </widget>
-                                            <packing>
-                                                <property name="position">4</property>
                                             </packing>
                                         </child>
                                     </widget>
