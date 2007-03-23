@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -242,7 +242,8 @@ class RemoveCashSlave(BaseCashSlave):
         if retval:
             return retval
         if value > self.model.get_balance():
-            return ValidationError(_("Value cannot be more than the total Till balance"))
+            return ValidationError(
+                _("Value cannot be more than the total Till balance"))
 
 class CashAdvanceEditor(BaseEditor):
     """
@@ -279,8 +280,10 @@ class CashAdvanceEditor(BaseEditor):
         return CashAdvanceInfo(payment=self.payment)
 
     def setup_slaves(self):
-        self.cash_slave = RemoveCashSlave(self.conn, _BaseCashModel(self.payment))
-        self.cash_slave.value.connect('content-changed', self._on_cash_slave__value_changed)
+        self.cash_slave = RemoveCashSlave(self.conn,
+                                          _BaseCashModel(self.payment))
+        self.cash_slave.value.connect('content-changed',
+                                      self._on_cash_slave__value_changed)
         self.attach_slave("base_cash_holder", self.cash_slave)
         self._setup_widgets()
 
@@ -344,7 +347,8 @@ class CashOutEditor(BaseEditor):
     def setup_slaves(self):
         self.cash_slave = RemoveCashSlave(
             self.conn, _BaseCashModel(self.model))
-        self.cash_slave.value.connect('content-changed', self._on_cash_slave__value_changed)
+        self.cash_slave.value.connect('content-changed',
+                                      self._on_cash_slave__value_changed)
         self.attach_slave("base_cash_holder", self.cash_slave)
 
     def validate_confirm(self):
