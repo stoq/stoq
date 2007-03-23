@@ -159,7 +159,7 @@ class POSApp(AppWindow):
         argument
         """
         if new_item:
-            if self._coupon_add_item(sellable_item):
+            if self._coupon_add_item(sellable_item) != -1:
                 self.sellables.append(sellable_item)
         else:
             self.sellables.update(sellable_item)
