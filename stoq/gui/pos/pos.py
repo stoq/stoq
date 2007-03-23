@@ -327,16 +327,15 @@ class POSApp(AppWindow):
         self._update_widgets()
 
     def _delete_sellable_item(self, item):
-        self.sellables.remove(item)
-        if isinstance(item, ServiceSellableItem):
-            delivery = IDelivery(item, None)
-            if delivery:
-                for item in delivery.get_items():
-                    delivery.remove_item(item)
-                table = type(delivery)
-                table.delete(delivery.id, connection=self.conn)
+        delivery = IDelivery(item, None)
+        if delivery:
+            for delivery_item in delivery.get_items():
+                delivery.remove_item(delivery_item)
+            table = type(delivery)
+            table.delete(delivery.id, connection=self.conn)
         table = type(item)
         table.delete(item.id, connection=self.conn)
+        self.sellables.remove(item)
 
     def _edit_sellable_item(self, item):
         if not isinstance(item, ServiceSellableItem):
