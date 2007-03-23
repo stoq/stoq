@@ -9,3 +9,4 @@ Exec=$prefix/bin/stoq %F
 Icon=$datadir/pixmaps/stoq.png
 Terminal=false
 Categories=Application;Office;Finance;
+StartupNotify=true
