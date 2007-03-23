@@ -301,7 +301,7 @@ class CashAdvanceEditor(BaseEditor):
             self.model.value = abs(self.payment.value)
 
             printer = FiscalPrinterHelper(self.conn, self.get_toplevel())
-            printer.remove_cash(self.cash_slave.model.value)
+            printer.remove_cash(abs(self.cash_slave.model.value))
             return self.model
 
         return valid
@@ -366,7 +366,7 @@ class CashOutEditor(BaseEditor):
             self.model.description = payment_description
 
         printer = FiscalPrinterHelper(self.conn, self.get_toplevel())
-        printer.remove_cash(self.cash_slave.model.value)
+        printer.remove_cash(abs(self.cash_slave.model.value))
         return valid
 
     #

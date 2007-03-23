@@ -102,24 +102,30 @@ class CouponPrinter(object):
         self._driver = driver
         self._settings = settings
 
-    def open_till(self, value):
+    def open_till(self, value=0):
         """
         Opens the till
-        @param value:
+        @param value: optional, how much to add to the till
+          after opening it
         """
         log.info("Opening till")
 
         self._driver.summarize()
 
+        assert value >= 0
+
         if value > 0:
             self.add_cash(value)
 
-    def close_till(self, value):
+    def close_till(self, value=0):
         """
         Closes the till
-        @param value:
+        @param value: optional, how much to remove from the till
+          before closing it
         """
         log.info("Closing till")
+
+        assert value >= 0
 
         if value > 0:
             self.remove_cash(value)
@@ -153,9 +159,19 @@ class CouponPrinter(object):
         return True
 
     def add_cash(self, value):
+        """
+        Remove cash to the till
+        @param value: a positive value indicating how much to add
+        """
+        assert value > 0
         self._driver.till_add_cash(value)
 
     def remove_cash(self, value):
+        """
+        Remove cash from the till
+        @param value: a positive value indicating how much to remove
+        """
+        assert value > 0
         self._driver.till_remove_cash(value)
 
     def emit_coupon(self, sale):
