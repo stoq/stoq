@@ -1,3 +1,14 @@
+Release 0.6.0 - 23/03/2007:
+
+	* Rewrite most of the Perto Driver
+	* Remove logging in favor of kiwi logging
+	* ABICOMP codec for Daruma FS345
+	* Easier/Simpler printer test format
+	* Service taxes implemented (ISS)
+	* Tax constants added
+	* Simple Testscript to send commands to a printer
+	* Add RPM .spec file
+
 Release 0.5.0 - 24/08/2006:
 
 	* Add debian package

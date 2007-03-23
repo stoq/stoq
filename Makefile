@@ -45,4 +45,17 @@ TAGS:
 nightly:
 	/mondo/local/bin/build-svn-deb
 
-.PHONY: sdist deb upload tags TAGS nightly
+clean:
+	debclean
+	rm -fr $(BUILDDIR)
+	rm -f MANIFEST
+
+release: clean sdist release-deb deb
+
+release-deb:
+	debchange -v 1:$(VERSION)-1 "New release"
+
+release-tag:
+	svn cp -m "Tag $(VERSION)" . svn+ssh://svn.async.com.br/pub/stoqdriver/tags/stoqdrivers-$(VERSION)
+
+.PHONY: sdist deb upload tags TAGS nightly clean release release-deb

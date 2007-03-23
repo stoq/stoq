@@ -1,0 +1,21 @@
+Check bugzilla
+Update translations:
+  kiwi-i18n -pstoqdrivers -u -c
+Update NEWS
+Bump version number:
+  stoqdrivers/__init__.py
+make release
+Update ChangeLog, add marker
+Commit
+make release-tag
+make upload-release
+Add bugzilla version:
+  Use your browser, wget won't work
+  http://bugs/editversions.cgi?action=new&product=Kiwi&submit=Add&version=1.9.x
+Update website:
+  make web
+  Add new version to kiwi-www/src/getit.txt
+
+Use release-anouncement.tmpl to write a new announcement
+  Update Y in Subject 
+  Update X in Body

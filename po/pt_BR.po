@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoqdrivers 0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-23 15:36-0300\n"
+"POT-Creation-Date: 2007-03-23 16:55-0300\n"
 "PO-Revision-Date: 2007-01-26 12:57-0200\n"
 "Last-Translator: Lincol Molica <lincoln@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -101,7 +101,7 @@ msgstr ""
 "Não foi possível fechar o cupom porque o total de pagamentos (%.2f) não "
 "confere com o valor totalizado (%.2f)."
 
-#: ../stoqdrivers/devices/printers/perto/Pay2023.py:497
+#: ../stoqdrivers/devices/printers/perto/Pay2023.py:471
 msgid "Coupon already opened."
 msgstr "Cupom já aberto"
 

@@ -1,3 +1,16 @@
+=== 0.6.0 ===
+2007-03-23  Johan Dahlin  <jdahlin@async.com.br>
+
+	* Makefile:
+	* NEWS:
+	* debian/changelog:
+	* docs/release-checklist.txt:
+	* po/pt_BR.po:
+	* po/stoqdrivers.pot:
+	* stoqdrivers/__init__.py:
+
+	Release 0.6.0
+
 2006-06-26  Henrique Romano  <henrique@async.com.br>
 
 	* stoqdrivers/devices/readers/barcode/metrologic/MC630.py:

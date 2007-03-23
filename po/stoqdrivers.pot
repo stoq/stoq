@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-23 15:36-0300\n"
+"POT-Creation-Date: 2007-03-23 16:55-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -100,7 +100,7 @@ msgid ""
 "match the totalized value (%.2f)."
 msgstr ""
 
-#: ../stoqdrivers/devices/printers/perto/Pay2023.py:497
+#: ../stoqdrivers/devices/printers/perto/Pay2023.py:471
 msgid "Coupon already opened."
 msgstr ""
 
