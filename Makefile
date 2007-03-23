@@ -3,8 +3,8 @@ BUILDDIR=tmp
 PACKAGE=stoqdrivers
 TARBALL=$(PACKAGE)-$(VERSION).tar.gz
 DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog|egrep ^Version|cut -d\  -f2|cut -d: -f2)
-DLDIR=/mondo/htdocs/download.stoq.com.br/ubuntu
-TARBALL_DIR=/mondo/htdocs/download.stoq.com.br/sources
+DLDIR=/mondo/htdocs/stoq.com.br/download/ubuntu
+TARBALL_DIR=/mondo/htdocs/stoq.com.br/download/sources
 
 sdist: dist/$(TARBALL)
 	kiwi-i18n -p $(PACKAGE) -c
@@ -56,6 +56,13 @@ release-deb:
 	debchange -v 1:$(VERSION)-1 "New release"
 
 release-tag:
-	svn cp -m "Tag $(VERSION)" . svn+ssh://svn.async.com.br/pub/stoqdriver/tags/stoqdrivers-$(VERSION)
+	svn cp -m "Tag $(VERSION)" . svn+ssh://async.com.br/pub/stoqdrivers/tags/stoqdrivers-$(VERSION)
 
-.PHONY: sdist deb upload tags TAGS nightly clean release release-deb
+upload:
+	cp dist/$(PACKAGE)*_$(DEBVERSION)*.deb $(DLDIR)
+	for suffix in "gz" "dsc" "build" "changes"; do \
+	  cp dist/$(PACKAGE)_$(DEBVERSION)*."$$suffix" $(DLDIR); \
+	done
+	/mondo/local/bin/update-apt-directory $(DLDIR)
+
+.PHONY: sdist deb upload tags TAGS nightly clean release release-deb release-tag upload
