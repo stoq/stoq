@@ -280,16 +280,16 @@ class DeviceSettings(Domain):
             constant = DeviceConstant.get_custom_tax_constant(
                 self, sellable_constant.tax_value, conn)
             if constant is None:
-                raise DeviceError(
-                    "%r is missing a constant for the custom "
-                    "tax %s" %  (self, sellable_constant.tax_value,))
+                raise DeviceError(_(
+                    "fiscal printer is missing a constant for the custom "
+                    "tax constant %s") %  (sellable_constant.description,))
         else:
             constant = DeviceConstant.get_tax_constant(
                 self, sellable_constant.tax_type, conn)
             if constant is None:
-                raise DeviceError(
-                    "%r is missing a constant for the enum "
-                    "value %d" %  (self, sellable_constant.tax_type,))
+                raise DeviceError(_(
+                    "fiscal printer is missing a constant for tax "
+                    "constant %s") %  (sellable_constant.description,))
 
         return constant
 
