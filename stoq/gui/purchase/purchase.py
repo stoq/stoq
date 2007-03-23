@@ -81,8 +81,7 @@ class PurchaseApp(SearchableAppWindow):
                                           value_format=value_format)
         self.summary_total.show()
         self.summary_hbox.pack_start(self.summary_total, False)
-        self.send_to_supplier_button.set_sensitive(False)
-        self.send_to_supplier_action.set_sensitive(False)
+        self.SendToSupplier.set_sensitive(False)
 
     def _update_totals(self):
         self.summary_total.update_total()
@@ -111,8 +110,7 @@ class PurchaseApp(SearchableAppWindow):
             can_edit = selection[0].status == PurchaseOrder.ORDER_PENDING
         self.cancel_button.set_sensitive(can_cancel)
         self.edit_button.set_sensitive(can_edit)
-        self.send_to_supplier_button.set_sensitive(can_send_supplier)
-        self.send_to_supplier_action.set_sensitive(can_send_supplier)
+        self.SendToSupplier.set_sensitive(can_send_supplier)
         self.details_button.set_sensitive(one_selected)
 
     def _open_order(self, order=None, edit_mode=False):
@@ -284,11 +282,11 @@ class PurchaseApp(SearchableAppWindow):
     def on_print_button__clicked(self, button):
         self._print_selected_items()
 
-    def on_send_to_supplier_button__clicked(self, button):
-        self._send_selected_items_to_supplier()
-
     def on_Categories__activate(self, action):
         self.run_dialog(SellableCategorySearch, self.conn)
+
+    def on_SendToSupplier__activate(self, action):
+        self._send_selected_items_to_supplier()
 
     # FIXME: Kiwi autoconnection OR rename, see #2323
 
@@ -301,9 +299,6 @@ class PurchaseApp(SearchableAppWindow):
     def _on_order_action_clicked(self, action):
         self._open_order()
         self.searchbar.search_items()
-
-    def _on_send_to_supplier_action_clicked(self, action):
-        self._send_selected_items_to_supplier()
 
     def _on_base_categories_action_clicked(self, action):
         self.run_dialog(BaseSellableCatSearch, self.conn)
