@@ -3,7 +3,7 @@
 
 ##
 ## Stoqdrivers
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 ## USA.
 ##
 ## Author(s):   Henrique Romano  <henrique@async.com.br>
+##              Johan Dahlin     <jdahlin@async.com.br>
 ##
 ##
 """
@@ -42,7 +43,7 @@ from stoqdrivers.devices.printers.base import BaseDriverConstants
 from stoqdrivers.constants import (TAX_NONE, TAX_EXEMPTION,
                                    TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
                                    UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
-                                   UNIT_EMPTY, TAX_CUSTOM)
+                                   UNIT_EMPTY, TAX_CUSTOM, TAX_SERVICE)
 from stoqdrivers.translation import stoqdrivers_gettext
 
 _ = lambda msg: stoqdrivers_gettext(msg)
@@ -71,6 +72,7 @@ class FakeConstants(BaseDriverConstants):
         (TAX_CUSTOM,       'T1', Decimal(18)),
         (TAX_CUSTOM,       'T2', Decimal(12)),
         (TAX_CUSTOM,       'T3', Decimal(5)),
+        (TAX_SERVICE,      'S0', Decimal(3)),
         ]
 
 
