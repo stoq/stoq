@@ -140,7 +140,7 @@ def _create_slave_test():
         if slave.model_type is Settable:
             continue
         tname = slave.__name__
-        name = 'test_' + tname
+        name = 'test' + tname
         func = lambda self, s=slave: self._test_slave(s)
         func.__name__ = name
         if tname in TODO:
