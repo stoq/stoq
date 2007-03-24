@@ -87,7 +87,7 @@ def _create_adapter_test():
     for klass in get_all_adapters():
 
         tname = klass.__name__
-        name = 'test_' + tname
+        name = 'test' + tname
         func = lambda self, adapter=klass: self._test_adapter(adapter)
         func.__name__ = name
         if tname in TODO:
@@ -109,7 +109,7 @@ def _create_iface_test():
     namespace = dict(_test_class=_test_class)
     for iface in get_interfaces_for_package('stoqlib'):
         tname = iface.__name__
-        name = 'test_' + tname
+        name = 'test' + tname
         func = lambda self, f=iface: self._test_class(f)
         func.__name__ = name
         if tname in TODO:
