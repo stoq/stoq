@@ -272,7 +272,8 @@ class ExampleCreator(object):
                               connection=self.trans)
 
     def _create_device_settings(self):
-        from stoqlib.lib.drivers import get_fiscal_printer_settings_by_station
+        from stoqlib.drivers.fiscalprinter import (
+                get_fiscal_printer_settings_by_station)
 
         station = get_current_station(self.trans)
         return get_fiscal_printer_settings_by_station(self.trans, station)
