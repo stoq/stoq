@@ -29,8 +29,8 @@
 
 
 PSYCOPG_REQUIRED = [2, 0, 5]
-KIWI_REQUIRED = (1, 9, 12)
-STOQDRIVERS_REQUIRED = (0, 5)
+KIWI_REQUIRED = (1, 9, 14)
+STOQDRIVERS_REQUIRED = (0, 6, 0)
 
 def psycopg_check(mod):
     version = mod.__version__.split(' ', 1)[0]
