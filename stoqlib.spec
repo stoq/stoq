@@ -2,7 +2,7 @@
 
 Summary: A powerful retail system library
 Name: stoqlib
-Version: 0.8.9
+Version: 0.8.10
 Release: 1
 License: LGPL
 Group: System Environment/Libraries
@@ -46,8 +46,12 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{_datadir}/stoqlib/glade
 %{_datadir}/stoqlib/pixmaps
 %{_datadir}/stoqlib/sql
+%{_datadir}/stoqlib/csv
 
 %changelog
+* Tue Feb 03 2007 Johan Dahlin <jdahlin@async.com.br> 0.8.10-1
+- New release
+
 * Tue Feb 03 2007 Johan Dahlin <jdahlin@async.com.br> 0.8.9-1
 - Initial RPM release.
 
