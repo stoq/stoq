@@ -33,9 +33,9 @@ FIRST_DB_VERSION = 5
 
 program_name    = "Stoqlib"
 website         = 'http://www.stoq.com.br/'
-version         = "0.8.9"
-db_version      = 10
-release_date    = (2007, 01, 30)
+version         = "0.8.10"
+db_version      = 11
+release_date    = (2007, 03, 26)
 
 __all__ = ['library']
 
