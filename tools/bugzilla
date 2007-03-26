@@ -101,7 +101,7 @@ def main(args):
     for no, res, summary in sorted(hp.bugs, lambda a, b: cmp(a[0], b[0])):
         if res != 'FIXE':
             continue
-        print '#%d: %s' % (no, unicode(summary, 'latin1').encode('utf-8'))
+        print '#%d: %s' % (no, summary)
         fixed += 1
     print '---'
     print '%d bugs fixed' % fixed
