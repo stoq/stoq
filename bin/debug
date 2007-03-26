@@ -37,7 +37,7 @@ from stoqlib.database.runtime import (get_connection, new_transaction,
                                       get_current_branch, get_current_station,
                                       set_current_branch_station)
 from stoqlib.database.tables import get_table_types
-from stoqlib.lib.drivers import get_fiscal_printer_settings_by_station
+from stoqlib.drivers.fiscalprinter import get_fiscal_printer_settings_by_station
 from stoqlib.lib.parameters import sysparam
 
 from stoq.lib.configparser import StoqConfig
