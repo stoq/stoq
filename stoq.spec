@@ -2,16 +2,16 @@
 
 Summary: A powerful retail system
 Name: stoq
-Version: 0.8.9
+Version: 0.8.10
 Release: 1
 License: GPL
 Group: System Environment/Libraries
 URL: http://www.stoq.com.br/
-Source: http://download.stoq.com.br/sources/0.8.9/stoq-%{version}.tar.gz
+Source: http://download.stoq.com.br/sources/0.8.10/stoq-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: python-kiwi >= 1.9.13, stoqlib >= 0.8.9
+Requires: python-kiwi >= 1.9.14, stoqlib >= 0.8.10
 Requires: python-abi = %(%{__python} -c "import sys; print sys.version[:3]")
-BuildRequires: python-kiwi >= 1.9.13, stoqlib >= 0.8.9
+BuildRequires: python-kiwi >= 1.9.14, stoqlib >= 0.8.10
 BuildArch: noarch
 
 %description
@@ -47,6 +47,9 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{python_sitelib}/stoq
 
 %changelog
+* Tue Mar 26 2007 Johan Dahlin <jdahlin@async.com.br> 0.8.10-1
+- New version.
+
 * Tue Feb 03 2007 Johan Dahlin <jdahlin@async.com.br> 0.8.9-1
 - Initial RPM release.
 
