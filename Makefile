@@ -3,8 +3,9 @@ BUILDDIR=tmp
 PACKAGE=stoq
 TARBALL=$(PACKAGE)-$(VERSION).tar.gz
 DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog|egrep ^Version|cut -d\  -f2)
-DLDIR=/mondo/htdocs/download.stoq.com.br/ubuntu
-TARBALL_DIR=/mondo/htdocs/download.stoq.com.br/sources
+DLDIR=/mondo/htdocs/stoq.com.br/download/ubuntu
+TARBALL_DIR=/mondo/htdocs/stoq.com.br/download/sources
+TESTDLDIR=/mondo/htdocs/stoq.com.br/download/test
 
 sdist:
 	kiwi-i18n -p $(PACKAGE) -c
@@ -35,6 +36,17 @@ upload:
 	  cp dist/$(PACKAGE)_$(DEBVERSION)*."$$suffix" $(DLDIR); \
 	done
 	/mondo/local/bin/update-apt-directory $(DLDIR)
+
+test-upload:
+	cp dist/$(PACKAGE)*_$(DEBVERSION)*.deb $(TESTDLDIR)/ubuntu
+	cp dist/$(PACKAGE)-$(VERSION)*.rpm $(TESTDLDIR)/fedora
+	for suffix in "gz" "dsc" "build" "changes"; do \
+	  cp dist/$(PACKAGE)_$(DEBVERSION)*."$$suffix" $(TESTDLDIR)/ubuntu; \
+	done
+	/mondo/local/bin/update-apt-directory $(TESTDLDIR)/ubuntu
+
+release-deb:
+	debchange -v $(VERSION)-1 "New release"
 
 tags:
 	find -name \*.py|xargs ctags
