@@ -1,3 +1,9 @@
+stoqlib (0.8.10-1) dapper; urgency=low
+
+  * New release
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Mon, 26 Mar 2007 11:24:18 -0300
+
 stoqlib (0.8.9-2) dapper; urgency=low
 
   * Include DBSettings fix so stoqdbadmin works
