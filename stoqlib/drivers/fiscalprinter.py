@@ -71,12 +71,12 @@ def get_fiscal_printer_settings_by_station(conn, station):
         station=station,
         type=DeviceSettings.FISCAL_PRINTER_DEVICE)
 
-def create_virtual_printer_for_current_station():
-    trans = new_transaction()
-    station = get_current_station(trans)
-    if get_fiscal_printer_settings_by_station(trans, station):
-        trans.close()
-        return
+def create_virtual_printer(trans, station):
+    """
+    Create a virtual printer for a station
+    @param trans: a database transaction
+    @param station: a station
+    """
     settings = DeviceSettings(station=station,
                               device=DeviceSettings.DEVICE_SERIAL1,
                               brand='virtual',
@@ -84,6 +84,14 @@ def create_virtual_printer_for_current_station():
                               type=DeviceSettings.FISCAL_PRINTER_DEVICE,
                               connection=trans)
     settings.create_fiscal_printer_constants()
+
+def create_virtual_printer_for_current_station():
+    trans = new_transaction()
+    station = get_current_station(trans)
+    if get_fiscal_printer_settings_by_station(trans, station):
+        trans.close()
+        return
+    create_virtual_printer(trans, station)
     trans.commit(close=True)
 
 #
