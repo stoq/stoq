@@ -423,25 +423,24 @@ class EP375(SerialBase, BaseChequePrinter):
     #
 
     def _get_packed(self, command, *params):
-        """ Create a package for the command and its parameters. Package
-        format:
-
-                 +---+-----------+------+---------+--------+--------+
-        NAME:    |STX|CMD_COUNTER|CMD_ID|PARAMS_SZ|[PARAMS]|CHECKSUM|
-                 +---+-----------+------+---------+--------+--------+
-        N_BYTES:   1       1         1        1        ?        1
-
-        Where:
-
-        CMD_COUNTER: the counter for the respective command sent (can be 0)
-        CMD_ID: the ID of the command
-        PARAMS_SZ: the number of parameters for the command
-        PARAMS: the params listing (it's optional and only is used if
-          PARAMS_SZ is greater than 0)
-        CHECKSUM: the sum of all the bytes, starting at CMD_ID and ending
-          at the last byte of PARAMS  (or PARAMS_SZ, if no parameters was
-          sent, of course).
-        """
+        # Create a package for the command and its parameters. Package
+        # format:
+        #
+        #         +---+-----------+------+---------+--------+--------+
+        #NAME:    |STX|CMD_COUNTER|CMD_ID|PARAMS_SZ|[PARAMS]|CHECKSUM|
+        #         +---+-----------+------+---------+--------+--------+
+        #N_BYTES:   1       1         1        1        ?        1
+        #
+        # Where:
+        #
+        # CMD_COUNTER: the counter for the respective command sent (can be 0)
+        # CMD_ID: the ID of the command
+        # PARAMS_SZ: the number of parameters for the command
+        # PARAMS: the params listing (it's optional and only is used if
+        #   PARAMS_SZ is greater than 0)
+        # CHECKSUM: the sum of all the bytes, starting at CMD_ID and ending
+        #   at the last byte of PARAMS  (or PARAMS_SZ, if no parameters was
+        #   sent, of course).
         params = ''.join(params)
         data = '%s%c%s' % (command, len(params), params)
         checksum = sum([ord(d) for d in data]) & 0xff
