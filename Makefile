@@ -5,6 +5,17 @@ TARBALL=$(PACKAGE)-$(VERSION).tar.gz
 DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog|egrep ^Version|cut -d\  -f2|cut -d: -f2)
 DLDIR=/mondo/htdocs/stoq.com.br/download/ubuntu
 TARBALL_DIR=/mondo/htdocs/stoq.com.br/download/sources
+WEBDOC_DIR=/mondo/htdocs/stoq.com.br/doc/devel
+
+stoqdrivers.pickle:
+	pydoctor --project-name="Stoqdrivers" \
+		 --add-package=stoqdrivers \
+		 -o stoqdrivers.pickle stoqdrivers
+
+apidocs: stoqdrivers.pickle
+	pydoctor --project-name="Stoqdrivers" \
+		 --make-html \
+		 -p stoqdrivers.pickle
 
 sdist: dist/$(TARBALL)
 	kiwi-i18n -p $(PACKAGE) -c
@@ -36,6 +47,12 @@ upload:
 	done
 	/mondo/local/bin/update-apt-directory $(DLDIR)
 
+web: apidocs
+	cp -r apidocs $(WEBDOC_DIR)/stoqdrivers-tmp
+	rm -fr $(WEBDOC_DIR)/stoqdrivers
+	mv $(WEBDOC_DIR)/stoqdrivers-tmp $(WEBDOC_DIR)/stoqdrivers
+	cp stoqdrivers.pickle $(WEBDOC_DIR)/stoqdrivers
+
 tags:
 	find -name \*.py|xargs ctags
 
@@ -49,6 +66,7 @@ clean:
 	debclean
 	rm -fr $(BUILDDIR)
 	rm -f MANIFEST
+	rm -fr stoqdrivers.pickle
 
 release: clean sdist release-deb deb
 
@@ -58,11 +76,4 @@ release-deb:
 release-tag:
 	svn cp -m "Tag $(VERSION)" . svn+ssh://async.com.br/pub/stoqdrivers/tags/stoqdrivers-$(VERSION)
 
-upload:
-	cp dist/$(PACKAGE)*_$(DEBVERSION)*.deb $(DLDIR)
-	for suffix in "gz" "dsc" "build" "changes"; do \
-	  cp dist/$(PACKAGE)_$(DEBVERSION)*."$$suffix" $(DLDIR); \
-	done
-	/mondo/local/bin/update-apt-directory $(DLDIR)
-
-.PHONY: sdist deb upload tags TAGS nightly clean release release-deb release-tag upload
+.PHONY: sdist deb upload tags TAGS nightly clean release release-deb release-tag upload stoqdrivers.pickle
