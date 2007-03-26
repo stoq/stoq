@@ -5,6 +5,19 @@ TARBALL=$(PACKAGE)-$(VERSION).tar.gz
 DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog|egrep ^Version|cut -d\  -f2)
 DLDIR=/mondo/htdocs/download.stoq.com.br/ubuntu
 TARBALL_DIR=/mondo/htdocs/download.stoq.com.br/sources
+WEBDOC_DIR=/mondo/htdocs/stoq.com.br/doc/devel
+
+stoqlib.pickle:
+	pydoctor --project-name="Stoqlib" \
+		 --add-package=stoqlib \
+		 -o stoqlib.pickle stoqlib
+
+apidocs: stoqlib.pickle
+	make -C ../stoqdrivers stoqdrivers.pickle
+	pydoctor --project-name="Stoqlib" \
+		 --make-html \
+		 --extra-system=../stoqdrivers/stoqdrivers.pickle:../stoqdrivers \
+		 -p stoqlib.pickle
 
 sdist:
 	kiwi-i18n -p $(PACKAGE) -c
@@ -29,6 +42,12 @@ rpm: sdist
 	mv dist/noarch/* dist
 	rm -fr dist/noarch
 
+web: apidocs
+	cp -r apidocs $(WEBDOC_DIR)/stoqlib-tmp
+	rm -fr $(WEBDOC_DIR)/stoqlib
+	mv $(WEBDOC_DIR)/stoqlib-tmp $(WEBDOC_DIR)/stoqlib
+	cp stoqlib.pickle $(WEBDOC_DIR)/stoqlib
+
 upload:
 	cp dist/$(TARBALL) $(TARBALL_DIR)
 	for suffix in "gz" "dsc" "build" "changes" "deb"; do \
@@ -45,4 +64,4 @@ TAGS:
 nightly:
 	/mondo/local/bin/build-svn-deb
 
-.PHONY: sdist deb upload tags TAGS nightly
+.PHONY: sdist deb upload tags TAGS nightly stoqlib.pickle
