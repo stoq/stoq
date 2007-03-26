@@ -6,6 +6,7 @@ DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog|egrep ^Version|cut -d\
 DLDIR=/mondo/htdocs/stoq.com.br/download/ubuntu
 TARBALL_DIR=/mondo/htdocs/stoq.com.br/download/sources
 WEBDOC_DIR=/mondo/htdocs/stoq.com.br/doc/devel
+TESTDLDIR=/mondo/htdocs/stoq.com.br/download/test
 
 stoqdrivers.pickle:
 	pydoctor --project-name="Stoqdrivers" \
@@ -75,5 +76,13 @@ release-deb:
 
 release-tag:
 	svn cp -m "Tag $(VERSION)" . svn+ssh://async.com.br/pub/stoqdrivers/tags/stoqdrivers-$(VERSION)
+
+test-upload:
+	cp dist/$(PACKAGE)*_$(DEBVERSION)*.deb $(TESTDLDIR)/ubuntu
+	cp dist/$(PACKAGE)-$(VERSION)*.rpm $(TESTDLDIR)/fedora
+	for suffix in "gz" "dsc" "build" "changes"; do \
+	  cp dist/$(PACKAGE)_$(DEBVERSION)*."$$suffix" $(TESTDLDIR)/ubuntu; \
+	done
+	/mondo/local/bin/update-apt-directory $(TESTDLDIR)/ubuntu
 
 .PHONY: sdist deb upload tags TAGS nightly clean release release-deb release-tag upload stoqdrivers.pickle
