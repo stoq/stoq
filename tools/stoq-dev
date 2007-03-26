@@ -1,0 +1,213 @@
+#!/usr/bin/env python
+# -*- Mode: python -*-
+#
+# Copyright (C) 2007 Johan Dahlin (jdahlin@async.com.br)
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+# USA
+#
+
+import optparse
+import os
+import subprocess
+import sys
+
+class Project(object):
+    name = None
+    env = {}
+    repo = ''
+
+class SVNProject(Project):
+    def checkout(self):
+        cmd = 'svn co -q %s/trunk %s' % (self.repo, self.name)
+        os.system(cmd)
+
+    def update(self):
+        cmd = 'svn update'
+        os.system(cmd)
+
+class Stoq(SVNProject):
+    name = 'stoq'
+    env = {'PYTHONPATH': '$tree',
+           'PATH': '$tree/bin'}
+    repo = 'svn+ssh://async.com.br/pub/stoq'
+
+class Stoqlib(SVNProject):
+    name = 'stoqlib'
+    env = {'PYTHONPATH': '$tree'}
+    repo = 'svn+ssh://async.com.br/pub/stoqlib'
+
+class Stoqdrivers(SVNProject):
+    name = 'stoqdrivers'
+    env = {'PYTHONPATH': '$tree'}
+    repo = 'svn+ssh://async.com.br/pub/stoqdrivers'
+
+class Kiwi(SVNProject):
+    name = 'kiwi'
+    env = {'PYTHONPATH': '$tree',
+           'GAZPACHO_PATH': '$tree/gazpacho-plugin',
+           'PATH': '$tree/bin'}
+    repo = 'svn+ssh://async.com.br/pub/kiwi'
+
+PROJECTS = {
+    'stoqlib': Stoqlib(),
+    'stoq': Stoq(),
+    'stoqdrivers': Stoqdrivers(),
+    'kiwi': Kiwi(),
+    }
+
+CONFIG_FILE = os.path.join(os.environ['HOME'], '.stoq-dev')
+
+def checkout(tree, projects):
+    if not os.path.exists(tree):
+        os.makedirs(tree)
+
+    os.chdir(tree)
+
+    for project in projects:
+        print '* Checking out %s' % project.name
+        project.checkout()
+
+    fd = open(os.path.join(tree, '.checkout'), 'w')
+    fd.write(','.join([p.name for p in projects]) + '\n')
+    fd.close()
+
+def shell(tree, projects, bug):
+    env = os.environ.copy()
+    for project in projects:
+        for key, value in project.env.items():
+            project_tree = os.path.join(tree, project.name)
+            value = value.replace('$tree', project_tree)
+            if key in env:
+                env[key] = value + ':' + env[key]
+            else:
+                env[key] = value
+
+    env['PS1'] = '[%s] \\u@\\h:\\w\$ ' % bug
+
+    os.chdir(tree)
+    shell = subprocess.Popen(['bash', '--norc'], env=env)
+    shell.wait()
+
+def update(tree, projects):
+    for project in projects:
+        print '* Updating %s' % project.name
+        os.chdir(os.path.join(tree, project.name))
+        project.update()
+
+def setup(args):
+    if os.path.exists(CONFIG_FILE):
+        config = eval(open(CONFIG_FILE).read())
+    else:
+        config = {}
+
+    def _ask(q, default):
+        return raw_input('%s [%s] ' % (q, default)) or default
+
+    home = os.environ['HOME']
+    root = _ask('Root', config.get('root', '~/devel'))
+    root = os.path.expanduser(root)
+
+    if not os.path.exists(root):
+        os.makedirs(root)
+
+    default = _ask('Default tree', config.get('default', ''))
+
+    ns = dict(root=root, default=default)
+    open(CONFIG_FILE, 'w').write(repr(ns) + '\n')
+
+def main(args):
+    usage = "usage: %prog [options] name [args]"
+    parser = optparse.OptionParser(usage=usage)
+    parser.add_option('-i', '--init',
+                      action="store_true",
+                      dest="init",
+                      help='Create a new checkout')
+    parser.add_option('-l', '--list',
+                      action="store_true",
+                      dest="list",
+                      help='List available checkouts')
+    parser.add_option('-u', '--update',
+                      action="store_true",
+                      dest="update",
+                      help='Update checkouts')
+    parser.add_option('-s', '--setup',
+                      action="store_true",
+                      dest="setup",
+                      help='Run setup again')
+
+    options, args = parser.parse_args(args)
+
+    if not os.path.exists(CONFIG_FILE) or options.setup:
+        setup(args)
+
+    data = open(CONFIG_FILE).read()
+    config = eval(data)
+
+    root = config['root']
+    default = config['default']
+
+    if options.list:
+        if len(args) > 1:
+            raise SystemExit("--list expects no arguments")
+        print default, '(default)'
+        for dirname in os.listdir(root):
+            filename = os.path.join(root, dirname, '.checkout')
+            if os.path.exists(filename):
+                if default != dirname:
+                    print dirname
+        return 0
+
+    if len(args) >= 2:
+        bug = args[1]
+    else:
+        bug = default
+
+    tree = os.path.join(root, bug)
+
+    if len(args) >= 3:
+        project_names = args[2].split(',')
+    else:
+        project_names = PROJECTS.keys()
+    projects = [PROJECTS[name] for name in project_names]
+
+    if options.init:
+        checkout(tree, projects)
+        shell(tree, projects, bug)
+    else:
+        if not os.path.exists(os.path.join(tree, '.checkout')):
+            if default:
+                inp = raw_input(
+                    '%s does not exist, do you want to do a checkout? [Y/n] ' %
+                    (bug,))
+                if inp in ['y','Y', '', 'yes']:
+                    checkout(tree, projects)
+                else:
+                    return 0
+            else:
+                raise SystemExit("Invalid checkout: %s" % bug)
+
+        project_names = open(os.path.join(tree, '.checkout')).readline()[:-1]
+        projects = [PROJECTS[name] for name in project_names.split(',')]
+
+        if options.update:
+            update(tree, projects)
+        else:
+            shell(tree, projects, bug)
+
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))
