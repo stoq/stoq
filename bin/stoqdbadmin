@@ -134,10 +134,11 @@ class StoqCommandHandler:
         from stoqlib.domain.person import Person
         from stoqlib.domain.station import BranchStation
         from stoqlib.exceptions import StoqlibError
+        from stoqlib.drivers.fiscalprinter import (
+            create_virtual_printer)
+        trans = new_transaction()
 
-        conn = new_transaction()
-
-        branches = Person.iselect(IBranch, connection=conn)
+        branches = Person.iselect(IBranch, connection=trans)
         if not branches:
             raise StoqlibError("Schema error, no branches found")
         elif branches.count() != 1:
@@ -145,12 +146,13 @@ class StoqCommandHandler:
         branch = branches[0]
 
         try:
-            station = BranchStation.create(conn, branch=branch,
+            station = BranchStation.create(trans, branch=branch,
                                            name=socket.gethostname())
         except StoqlibError, e:
             raise SystemExit("ERROR: %s" % e)
-        conn.commit()
+        create_virtual_printer(trans, station)
 
+        trans.commit()
         if verbose:
             print 'Registered a new station: %s' % station.name
 
