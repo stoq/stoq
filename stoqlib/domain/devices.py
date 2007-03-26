@@ -241,7 +241,7 @@ class DeviceSettings(Domain):
         """
         Fetchs a list of constants for the current DeviceSettings object.
         @param constant_type: type of constant
-        @type constant: See L(DeviceConstants}
+        @type constant_type: L{DeviceConstant}
         @returns: list of constants
         """
         return DeviceConstant.selectBy(device_settings=self,
@@ -266,7 +266,7 @@ class DeviceSettings(Domain):
         Raises DeviceError if a constant is not found
 
         @param sellable: sellable which has the tax codes
-        @type sellable: L{stoqlib.domain.sellable.Sellable}}
+        @type sellable: L{stoqlib.domain.sellable.Sellable}
         @returns: the tax constant
         @rtype: L{DeviceConstant}
         """
