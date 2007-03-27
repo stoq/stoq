@@ -48,6 +48,9 @@ test-upload:
 release-deb:
 	debchange -v $(VERSION)-1 "New release"
 
+release-tag:
+	svn cp -m "Tag $(VERSION)" . svn+ssh://async.com.br/pub/stoq/tags/stoq-$(VERSION)
+
 tags:
 	find -name \*.py|xargs ctags
 
