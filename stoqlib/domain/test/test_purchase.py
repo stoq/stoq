@@ -20,9 +20,11 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
+##              Fabio Morbec      <fabio@async.com.br>
 ##
 """ This module test all class in stoq/domain/purchase.py """
 
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.interfaces import IPaymentGroup
 
@@ -43,3 +45,21 @@ class TestPurchaseOrder(DomainTest):
 
         order.addFacet(IPaymentGroup, connection=self.trans)
         order.confirm_order()
+
+    def testClose(self):
+        order = self.create_purchase_order()
+        self.assertRaises(ValueError, order.close)
+        order.status = PurchaseOrder.ORDER_PENDING
+        self.assertRaises(ValueError, order.confirm_order)
+        order.addFacet(IPaymentGroup, connection=self.trans)
+        order.confirm_order()
+
+        payments = list(IPaymentGroup(order).get_items())
+        self.failUnless(len(payments) > 0)
+
+        for payment in payments:
+            self.assertEqual(payment.status, Payment.STATUS_PREVIEW)
+
+        order.close()
+        for payment in payments:
+            self.assertEqual(payment.status, Payment.STATUS_PENDING)

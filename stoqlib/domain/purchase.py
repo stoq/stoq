@@ -301,8 +301,11 @@ class PurchaseOrder(Domain):
 
     def close(self):
         if not self.status == self.ORDER_CONFIRMED:
-            raise ValueError('Invalid status, it should be confirmed'
+            raise ValueError('Invalid status, it should be confirmed '
                              'got %s instead' % self.get_status_str())
+        payment = IPaymentGroup(self)
+        for item in payment.get_items():
+            item.set_pending()
         self.status = self.ORDER_CLOSED
 
     def increase_quantity_received(self, sellable,
