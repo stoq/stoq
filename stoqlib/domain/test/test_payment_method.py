@@ -38,7 +38,7 @@ class _TestPaymentMethodBase:
         group = sale.addFacet(IPaymentGroup,
                               connection=self.trans)
 
-        method = self.method.selectOne(connection=self.trans)
+        method = self.method_type.selectOne(connection=self.trans)
         payment = method.create_inpayment(group, Decimal(100))
         self.failUnless(isinstance(payment, PaymentAdaptToInPayment))
         payment = payment.get_adapted()
@@ -50,7 +50,7 @@ class _TestPaymentMethodBase:
         group = sale.addFacet(IPaymentGroup,
                               connection=self.trans)
 
-        method = self.method.selectOne(connection=self.trans)
+        method = self.method_type.selectOne(connection=self.trans)
         payment = method.create_inpayment(group, Decimal(100))
         self.failUnless(isinstance(payment, PaymentAdaptToInPayment))
         payment = payment.get_adapted()
@@ -58,7 +58,7 @@ class _TestPaymentMethodBase:
         self.assertEqual(payment.value, Decimal(100))
 
     def testCreateInPayments(self):
-        if self.method in (MoneyPM, GiftCertificatePM):
+        if self.method_type in (MoneyPM, GiftCertificatePM):
             return
 
         sale = self.create_sale()
@@ -66,7 +66,7 @@ class _TestPaymentMethodBase:
                               connection=self.trans)
 
         d = datetime.datetime.today()
-        method = self.method.selectOne(connection=self.trans)
+        method = self.method_type.selectOne(connection=self.trans)
         payments = method.create_inpayments(group, Decimal(100),
                                             [d, d, d])
         payments = [p.get_adapted() for p in payments]
@@ -79,7 +79,7 @@ class _TestPaymentMethodBase:
         self.assertEqual(payments[2].value, rest)
 
     def testCreateOutPayments(self):
-        if self.method in (MoneyPM, GiftCertificatePM):
+        if self.method_type in (MoneyPM, GiftCertificatePM):
             return
 
         # FIXME: serious abuse here, should create a PurchaseOrder
@@ -88,7 +88,7 @@ class _TestPaymentMethodBase:
                               connection=self.trans)
 
         d = datetime.datetime.today()
-        method = self.method.selectOne(connection=self.trans)
+        method = self.method_type.selectOne(connection=self.trans)
         payments = method.create_outpayments(group, Decimal(100),
                                              [d, d, d])
         payments = [p.get_adapted() for p in payments]
@@ -100,25 +100,30 @@ class _TestPaymentMethodBase:
         self.assertEqual(payments[1].value, athird)
         self.assertEqual(payments[2].value, rest)
 
+    def testDescribePayment(self):
+        sale = self.create_sale()
+        group = sale.addFacet(IPaymentGroup,
+                              connection=self.trans)
+        method = self.method_type.selectOne(connection=self.trans)
+        desc = method.describe_payment(group)
+        self.failUnless(isinstance(desc, unicode))
+        self.failUnless(self.method_type.description in desc)
+
+        self.assertRaises(AssertionError, method.describe_payment, group, 0)
+        self.assertRaises(AssertionError, method.describe_payment, group, 1, 0)
+        self.assertRaises(AssertionError, method.describe_payment, group, 2, 1)
+
 class TestMoneyPM(DomainTest, _TestPaymentMethodBase):
-    method = MoneyPM
-
-    # Money supports only 1 installment
-
-    def testCreateInPayments(self):
-        pass
-
-    def testCreateOutPayments(self):
-        pass
+    method_type = MoneyPM
 
 class TestCheckPM(DomainTest, _TestPaymentMethodBase):
-    method = CheckPM
+    method_type = CheckPM
 
 class TestBillPM(DomainTest, _TestPaymentMethodBase):
-    method = BillPM
+    method_type = BillPM
 
 class TestFinancePM(DomainTest, _TestPaymentMethodBase):
-    method = FinancePM
+    method_type = FinancePM
 
 class TestGiftCertificatePM(DomainTest, _TestPaymentMethodBase):
-    method = GiftCertificatePM
+    method_type = GiftCertificatePM
