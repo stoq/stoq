@@ -75,8 +75,8 @@ def calculate_interval(interval_type, intervals):
     Intervals are useful modes to calculate payment duedates.
     """
     if not interval_values.has_key(interval_type):
-        raise KeyError('Invalid interval_type argument for '
-                       'calculate_interval function.')
+        raise KeyError('Invalid interval_type %r argument for '
+                       'calculate_interval function.' % (interval_type,))
     if not type(intervals) == int:
         raise TypeError('Invalid type for intervals argument. It must be '
                         'integer, got %s' % type(intervals))

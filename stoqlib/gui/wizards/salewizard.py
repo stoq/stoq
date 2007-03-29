@@ -745,7 +745,7 @@ class _AbstractSaleWizard(BaseWizard):
     def setup_cash_payment(self, total=None):
         money_method = MoneyPM.selectOne(connection=self.conn)
         total = total or self.payment_group.get_total_received()
-        money_method.setup_inpayments(total, self.payment_group)
+        money_method.create_inpayment(self.payment_group, total)
 
 class ConfirmSaleWizard(_AbstractSaleWizard):
     """A wizard used when confirming a sale order. It means generate

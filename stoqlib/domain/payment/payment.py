@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 ##
 ## Author(s):   Evandro Vale Miquelito     <evandro@async.com.br>
 ##              Henrique Romano            <henrique@async.com.br>
+##              Johan Dahlin               <jdahlin@async.com.br>
 ##
 """ Payment management implementations."""
 
@@ -434,7 +435,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         return TillEntry.selectBy(payment_groupID=self.id,
                                   connection=self.get_connection())
 
-    def setup_inpayments(self):
+    def add_inpayments(self):
         payment_count = self.get_items().count()
         till_entries_count = self.get_till_entries().count()
         if not (payment_count or till_entries_count):

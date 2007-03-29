@@ -24,7 +24,6 @@
 ##
 
 from decimal import Decimal
-import datetime
 
 from kiwi.datatypes import currency
 from stoqdrivers.constants import TAX_CUSTOM
@@ -48,7 +47,6 @@ from stoqlib.domain.sellable import (BaseSellableInfo, ASellable, OnSaleInfo,
                                      SellableTaxConstant)
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 from stoqlib.lib.parameters import sysparam
 
 from stoqlib.domain.test.domaintest import DomainTest
@@ -224,11 +222,7 @@ class TestSale(DomainTest):
 
         sale_total = sale.get_sale_subtotal()
         check_method = CheckPM.selectOne(connection=self.trans)
-        check_method.setup_inpayments(IPaymentGroup(sale), 4,
-                                      datetime.datetime.today(),
-                                      INTERVALTYPE_MONTH, 1,
-                                      sale_total,
-                                      Decimal(0))
+        check_method.create_inpayment(IPaymentGroup(sale), sale_total)
 
         self.failIf(sale.check_close())
         self.failIf(sale.close_date)
@@ -263,8 +257,8 @@ class TestSale(DomainTest):
         sellable.tax_constant = constant
 
         method = MoneyPM.selectOne(connection=self.trans)
-        method.setup_inpayments(sale.get_sale_subtotal(),
-                                IPaymentGroup(sale))
+        method.create_inpayment(IPaymentGroup(sale),
+                                sale.get_sale_subtotal())
 
         self.assertEqual(
             IcmsIpiBookEntry.select(connection=self.trans).count(), 1)
