@@ -30,11 +30,14 @@ from stoqlib.domain.devices import DeviceConstant, DeviceSettings
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import DeviceError
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
 
 class TestDeviceConstant(DomainTest):
     def testGetConstantDescription(self):
         constant = self.create_device_constant()
-        self.assertEqual(constant.get_constant_type_description(), "Tax")
+        self.assertEqual(constant.get_constant_type_description(), _(u"Tax"))
 
     def testGetCustomTaxConstant(self):
         settings = self.create_device_settings()
