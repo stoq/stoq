@@ -35,23 +35,25 @@ from zope.interface import implements
 from zope.interface.interface import InterfaceClass
 
 from stoqlib.database.columns import DecimalCol
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.defaults import calculate_interval, get_all_methods_dict
 from stoqlib.domain.till import Till
 from stoqlib.domain.account import BankAccount
-from stoqlib.domain.person import Person
-from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
-                                            AbstractPaymentGroup)
 from stoqlib.domain.base import (Domain, InheritableModel)
 from stoqlib.domain.interfaces import (IInPayment, ICreditProvider,
                                        IActive, IOutPayment,
                                        IDescribable)
+from stoqlib.domain.person import Person
+from stoqlib.domain.payment.destination import PaymentDestination
+from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
+                                            AbstractPaymentGroup)
 from stoqlib.exceptions import (PaymentError, DatabaseInconsistency,
                                 PaymentMethodError)
+from stoqlib.lib.defaults import calculate_interval, get_all_methods_dict
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+PaymentDestination # pyflakes
 
 #
 # Domain Classes
@@ -147,6 +149,7 @@ class APaymentMethod(InheritableModel):
     is_active = BoolCol(default=True)
     daily_penalty = DecimalCol(default=0)
     interest = DecimalCol(default=0)
+
 
     #
     # IActive implementation
@@ -297,7 +300,6 @@ class APaymentMethod(InheritableModel):
         thirdparty will be returned.
         """
         return payment_group.get_thirdparty()
-
 
 class MoneyPM(APaymentMethod):
     implements(IActive)
@@ -552,7 +554,6 @@ class CheckPM(_AbstractCheckBillMethodMixin, APaymentMethod):
         BankAccount.delete(bank_data.id, connection=conn)
         Payment.delete(payment.id, connection=conn)
 
-
 class BillPM(_AbstractCheckBillMethodMixin, APaymentMethod):
     implements(IActive)
 
@@ -564,7 +565,6 @@ class BillPM(_AbstractCheckBillMethodMixin, APaymentMethod):
 
     def get_available_bill_accounts(self):
         raise NotImplementedError
-
 
 class CardPM(APaymentMethod):
     implements(IActive)
