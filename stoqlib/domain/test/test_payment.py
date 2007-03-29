@@ -159,6 +159,9 @@ class TestPaymentMethodDetails(DomainTest):
                                                 connection=self.trans)
         max_installments_number = payment_type.get_max_installments_number()
         due_date = datetime.datetime.now()
-        self.assertRaises(NotImplementedError,
-                          method.create_inpayments, group, Decimal(max_installments_number),
-                          [due_date] * max_installments_number)
+#         self.failUnlessRaises(ValueError,  method.create_inpayments,
+#                               group, currency(150),
+#                               [due_date] * (max_installments_number + 1))
+#         installments_number = payment_type.get_max_installments_number()
+        method.create_inpayments(group, Decimal(max_installments_number),
+                                 [due_date] * max_installments_number)
