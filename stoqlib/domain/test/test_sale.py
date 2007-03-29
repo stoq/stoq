@@ -230,13 +230,11 @@ class TestSale(DomainTest):
                                       sale_total,
                                       Decimal(0))
 
-        self.failUnless(sale.check_close())
+        self.failIf(sale.check_close())
         self.failIf(sale.close_date)
         group = sale.check_payment_group()
         group.status = AbstractPaymentGroup.STATUS_CLOSED
         self.failUnlessRaises(ValueError, sale.check_close)
-
-    test_check_close.skip = "exceptions.AttributeError: 'AbstractCheckBillAdapter' object has no attribute '_SO_class_PaymentDestination'"
 
     def test_create_sale_return_adapter(self):
         sale = get_sale(self.trans)[0]
