@@ -70,6 +70,9 @@ release: clean sdist release-deb deb
 release-deb:
 	debchange -v $(VERSION)-1 "New release"
 
+release-tag:
+	svn cp -m "Tag $(VERSION)" . svn+ssh://async.com.br/pub/stoqlib/tags/stoqlib-$(VERSION)
+
 tags:
 	find -name \*.py|xargs ctags
 
