@@ -28,7 +28,7 @@ import datetime
 
 from stoqlib.database.runtime import new_transaction,  get_current_station
 from stoqlib.exceptions import SellError
-from stoqlib.lib.defaults import INTERVALTYPE_MONTH
+from stoqlib.lib.defaults import INTERVALTYPE_MONTH, calculate_interval
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.examples import log
@@ -90,16 +90,21 @@ def _create_sale(trans, open_date, status, salesperson, client, coupon_id,
     sellable_facet.add_sellable_item(sale=sale)
     sale_total = sellable_facet.base_sellable_info.price
     # Sale's payments
-    pg_facet = sale.addFacet(IPaymentGroup, connection=trans,
-                             installments_number=DEFAULT_PAYMENTS_NUMBER)
+    group = sale.addFacet(IPaymentGroup, connection=trans,
+                          installments_number=DEFAULT_PAYMENTS_NUMBER)
     if installments_number > MAX_INSTALLMENTS_NUMBER:
         raise ValueError("Number of installments for this payment method can "
                          "not be greater than %d, got %d"
                          % (MAX_INSTALLMENTS_NUMBER, installments_number))
-    check_method = CheckPM.selectOne(connection=trans)
-    check_method.setup_inpayments(pg_facet, installments_number,
-                                  open_date, DEFAULT_PAYMENT_INTERVAL_TYPE,
-                                  DEFAULT_PAYMENTS_INTERVAL, sale_total)
+    method = CheckPM.selectOne(connection=trans)
+
+    interval = calculate_interval(DEFAULT_PAYMENT_INTERVAL_TYPE,
+                                  DEFAULT_PAYMENTS_INTERVAL)
+    due_dates = []
+    for i in range(installments_number):
+        due_dates.append(open_date + datetime.timedelta(i * interval))
+    method.create_inpayments(group, sale_total, due_dates)
+
     sale.set_valid()
 
     return sale

@@ -159,8 +159,8 @@ class GiftCertificateAdaptToSellable(ASellable):
                                 'as a payment method.')
         conn = self.get_connection()
         method = GiftCertificatePM.selectOne(connection=conn)
-        payment = method.setup_inpayments(self.price, self.group)
-        payment.set_pending()
+        payment = method.create_inpayment(self.group, self.price)
+        payment.get_adapted().set_pending()
         self.status = self.STATUS_CLOSED
 
 

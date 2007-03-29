@@ -701,7 +701,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     def confirm(self, gift_certificate_settings=None):
         has_overpaid = gift_certificate_settings is not None
         if not has_overpaid:
-            self.setup_inpayments()
+            self.add_inpayments()
             self.confirm_money_payments()
         self._confirm_gift_certificates()
         self._create_fiscal_entries()

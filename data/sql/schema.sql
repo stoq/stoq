@@ -653,7 +653,8 @@ CREATE TABLE apayment_method (
     is_active boolean,
     child_name character varying(255),
     daily_penalty numeric(10,2) CHECK (daily_penalty >= 0 AND daily_penalty <= 100),
-    interest numeric(10,2) CONSTRAINT interest_percent CHECK (interest >= 0 AND interest <= 100)
+    interest numeric(10,2) CONSTRAINT interest_percent CHECK (interest >= 0 AND interest <= 100),
+    destination_id bigint REFERENCES payment_destination(id)
 );
 
 CREATE TABLE payment (
@@ -873,7 +874,6 @@ CREATE TABLE payment_operation (
 
 CREATE TABLE bill_p_m (
     id serial NOT NULL PRIMARY KEY,
-    destination_id bigint REFERENCES payment_destination(id),
     max_installments_number integer,
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
@@ -885,7 +885,6 @@ CREATE TABLE card_p_m (
 
 CREATE TABLE check_p_m (
     id serial NOT NULL PRIMARY KEY,
-    destination_id bigint REFERENCES payment_destination(id),
     max_installments_number integer,
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
@@ -902,7 +901,6 @@ CREATE TABLE gift_certificate_p_m (
 
 CREATE TABLE money_p_m (
     id serial NOT NULL PRIMARY KEY,
-    destination_id bigint REFERENCES payment_destination(id),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 

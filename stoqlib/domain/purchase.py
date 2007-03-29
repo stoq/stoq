@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,11 +20,12 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s):  Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Purchase management """
 
 from decimal import Decimal
-from datetime import datetime
+import datetime
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
@@ -36,7 +37,7 @@ from sqlobject import (ForeignKey, IntCol, DateTimeCol, UnicodeCol,
 from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.defaults import (METHOD_CHECK, METHOD_BILL,
-                                  METHOD_MONEY)
+                                  METHOD_MONEY, calculate_interval)
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain, BaseSQLView
@@ -132,9 +133,9 @@ class PurchaseOrder(Domain):
 
     status = IntCol(default=ORDER_QUOTING)
     order_number = AutoIncCol('stoqlib_purchase_ordernumber_seq')
-    open_date = DateTimeCol(default=datetime.now)
+    open_date = DateTimeCol(default=datetime.datetime.now)
     quote_deadline = DateTimeCol(default=None)
-    expected_receival_date = DateTimeCol(default=datetime.now)
+    expected_receival_date = DateTimeCol(default=datetime.datetime.now)
     expected_pay_date = DateTimeCol(default=None)
     receival_date = DateTimeCol(default=None)
     confirm_date = DateTimeCol(default=None)
@@ -203,7 +204,7 @@ class PurchaseOrder(Domain):
         self.increase_quantity_received(item.sellable,
                                         quantity_to_receive)
 
-    def confirm_order(self, confirm_date=datetime.now()):
+    def confirm_order(self, confirm_date=datetime.datetime.now()):
         if self.status != self.ORDER_PENDING:
             raise ValueError('Invalid order status, it should be '
                              'ORDER_PENDING, got %s'
@@ -221,26 +222,27 @@ class PurchaseOrder(Domain):
         self.confirm_date = confirm_date
 
     def _create_preview_outpayments(self, conn, group, base_method, total):
-
-        # FIXME: Move this special cased logic to the specific
-        #        implementation of each payment method
         if group.default_method == METHOD_MONEY:
-            method = MoneyPM.selectOne(connection=conn)
-            method.setup_outpayments(total, group,
-                                     group.installments_number)
-            return
+            method_type = MoneyPM
         elif group.default_method == METHOD_CHECK:
-            method = CheckPM.selectOne(connection=conn)
+            method_type = CheckPM
         elif group.default_method == METHOD_BILL:
-            method = BillPM.selectOne(connection=conn)
+            method_type = BillPM
         else:
             raise ValueError('Invalid payment method, got %d' %
                              group.default_method)
 
-        method.setup_outpayments(group, group.installments_number,
-                                 self.expected_receival_date,
-                                 group.interval_type,
-                                 group.intervals, total)
+        method = method_type.selectOne(connection=conn)
+        if group.interval_type:
+            interval = calculate_interval(group.interval_type, group.intervals)
+            due_dates = []
+            for i in range(group.installments_number):
+                due_dates.append(self.expected_receival_date +
+                                 datetime.timedelta(i * interval))
+
+            method.create_outpayments(group, total, due_dates)
+        else:
+            method.create_outpayment(group, total)
 
     def _get_percentage_value(self, percentage):
         if not percentage:

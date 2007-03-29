@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
 """ Slaves for payment management """
@@ -27,15 +28,10 @@
 from decimal import Decimal
 import datetime
 
+from kiwi.datatypes import format_price, currency, ValidationError
 from kiwi.utils import gsignal
 from kiwi.ui.views import SlaveView
-from kiwi.datatypes import format_price, currency, ValidationError
 
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.lib.defaults import interval_types, INTERVALTYPE_MONTH, \
-     DECIMAL_PRECISION
-from stoqlib.drivers.cheque import get_current_cheque_printer_settings
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.interfaces import IInPayment
 from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
@@ -49,6 +45,11 @@ from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
                                             APaymentMethod,
                                             CheckPM, BillPM)
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.drivers.cheque import get_current_cheque_printer_settings
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.lib.defaults import (interval_types, INTERVALTYPE_MONTH,
+     DECIMAL_PRECISION, calculate_interval)
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -241,7 +242,7 @@ class BillDataSlave(BaseEditorSlave):
     def create_model(self, conn):
         bill_method = BillPM.selectOne(connection=conn)
         inpayment = bill_method.create_inpayment(self._payment_group,
-                                                 self._due_date, self._value)
+                                                 self._value, self._due_date)
         return inpayment.get_adapted()
 
     def setup_proxies(self):
@@ -277,8 +278,8 @@ class CheckDataSlave(BillDataSlave):
     def create_model(self, conn):
         check_method = CheckPM.selectOne(connection=conn)
         inpayment = check_method.create_inpayment(self._payment_group,
-                                                  self._due_date,
-                                                  self._value)
+                                                  self._value,
+                                                  self._due_date)
         adapted = inpayment.get_adapted()
         return check_method.get_check_data_by_payment(adapted)
 
@@ -377,22 +378,24 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             if inpayment:
                 yield inpayment
 
+
+    #
+    # General methods
+    #
     def _setup_payments(self):
-        group = self.wizard.payment_group
-        inst_number = self.model.installments_number
-        due_date = self.model.first_duedate
-        interval_type = self.model.interval_type
-        intervals = self.model.intervals
-        interest = Decimal(0)
         self.payment_list.clear_list()
-        method = self.method
-        total = self.total_value
-        inpayments, interest = method.setup_inpayments(group, inst_number,
-                                                       due_date,
-                                                       interval_type,
-                                                       intervals,
-                                                       total,
-                                                       interest)
+        due_dates = []
+        interval = calculate_interval(self.model.interval_type,
+                                      self.model.intervals)
+        for i in range(self.model.installments_number):
+            due_dates.append(self.model.first_duedate +
+                             datetime.timedelta(i * interval))
+
+        inpayments = self.method.create_inpayments(self.wizard.payment_group,
+                                                   self.total_value,
+                                                   due_dates)
+        interest = Decimal(0)
+
         # This is very useful when calculating the total amount outstanding
         # or overpaid of the payments
         self.interest_total = interest
@@ -674,9 +677,10 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         self._setup_payment_types()
 
     def _setup_payments(self):
-        self.model.payment_type.setup_inpayments(
-            self.wizard.payment_group, self.model.installments_number,
-            self.sale.open_date, self.total_value)
+        # FIXME: This is broken, should create multiple methods
+        self.method.create_inpayment(self.wizard.payment_group,
+                                     self.total_value,
+                                     self.sale.open_date)
 
     #
     # PaymentMethodStep hooks

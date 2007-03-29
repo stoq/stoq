@@ -118,7 +118,7 @@ class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
         from stoqlib.domain.payment.methods import GiftCertificatePM
         group = clone.addFacet(IPaymentGroup, connection=conn)
         method = GiftCertificatePM.selectOne(connection=conn)
-        method.setup_inpayments(overpaid_value, group)
+        method.create_inpayment(overpaid_value, group)
         clone.confirm_sale()
 
         # The new payment for the new sale has it's value already paid
