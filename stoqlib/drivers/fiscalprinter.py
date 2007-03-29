@@ -383,6 +383,7 @@ class _FiscalCoupon(object):
             return False
         return True
 
+    # FIXME: Rename to add_payment_group(group)
     def setup_payments(self):
         """ Add the payments defined in the sale to the coupon. Note that this
         function must be called after all the payments has been created.
