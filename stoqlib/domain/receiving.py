@@ -30,10 +30,10 @@ from decimal import Decimal
 from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
+from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import METHOD_BILL
 from stoqlib.domain.base import Domain
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
@@ -137,7 +137,7 @@ class ReceivingOrder(Domain):
             interval_type = purchase_group.interval_type
             intervals = purchase_group.intervals
         else:
-            default_method = METHOD_BILL
+            default_method = int(PaymentMethodType.BILL)
             installments_number = 1
             interval_type = intervals = None
 

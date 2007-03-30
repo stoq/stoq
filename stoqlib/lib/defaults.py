@@ -27,6 +27,7 @@
 
 import datetime
 
+from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.enums import FiscalBookEntry
 from stoqlib.lib.translation import stoqlib_gettext
@@ -86,31 +87,24 @@ def calculate_interval(interval_type, intervals):
 # Payments
 #
 
-(METHOD_MONEY,
- METHOD_CHECK,
- METHOD_BILL,
- METHOD_CARD,
- METHOD_FINANCE,
- METHOD_GIFT_CERTIFICATE) = range(6)
-
 def get_method_names():
-    return {METHOD_MONEY: _(u'Money'),
-            METHOD_CHECK: _(u'Check'),
-            METHOD_BILL: _(u'Bill'),
-            METHOD_CARD: _(u'Card'),
-            METHOD_FINANCE: _(u'Finance'),
-            METHOD_GIFT_CERTIFICATE: _(u'Gift Certificate')}
+    return {PaymentMethodType.MONEY: _(u'Money'),
+            PaymentMethodType.CHECK: _(u'Check'),
+            PaymentMethodType.BILL: _(u'Bill'),
+            PaymentMethodType.CARD: _(u'Card'),
+            PaymentMethodType.FINANCE: _(u'Finance'),
+            PaymentMethodType.GIFT_CERTIFICATE: _(u'Gift Certificate')}
 
 def get_all_methods_dict():
     from stoqlib.domain.payment.methods import (MoneyPM, BillPM, CheckPM,
                                                 GiftCertificatePM,
                                                 CardPM, FinancePM)
-    return {METHOD_MONEY: MoneyPM,
-            METHOD_CHECK: CheckPM,
-            METHOD_BILL: BillPM,
-            METHOD_CARD: CardPM,
-            METHOD_GIFT_CERTIFICATE: GiftCertificatePM,
-            METHOD_FINANCE: FinancePM}
+    return {PaymentMethodType.MONEY: MoneyPM,
+            PaymentMethodType.CHECK: CheckPM,
+            PaymentMethodType.BILL: BillPM,
+            PaymentMethodType.CARD: CardPM,
+            PaymentMethodType.GIFT_CERTIFICATE: GiftCertificatePM,
+            PaymentMethodType.FINANCE: FinancePM}
 
 def payment_value_colorize(column_data):
     """A helper method for payment value columns used to set different

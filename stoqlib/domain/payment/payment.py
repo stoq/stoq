@@ -32,13 +32,14 @@ from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from sqlobject import IntCol, DateTimeCol, UnicodeCol, ForeignKey
 from zope.interface import implements
+from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.columns import PriceCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.defaults import (get_method_names, METHOD_MONEY)
+from stoqlib.lib.defaults import get_method_names
 from stoqlib.domain.fiscal import (IssBookEntry, IcmsIpiBookEntry,
                                    AbstractFiscalBookEntry)
 from stoqlib.domain.base import Domain, ModelAdapter, InheritableModelAdapter
@@ -282,7 +283,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     open_date = DateTimeCol(default=datetime.datetime.now)
     close_date = DateTimeCol(default=None)
     cancel_date = DateTimeCol(default=None)
-    default_method = IntCol(default=METHOD_MONEY)
+    default_method = IntCol(default=int(PaymentMethodType.MONEY))
     installments_number = IntCol(default=1)
     interval_type = IntCol(default=None)
     intervals = IntCol(default=None)

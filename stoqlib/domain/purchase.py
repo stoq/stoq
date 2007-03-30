@@ -29,6 +29,7 @@ import datetime
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
+from stoqdrivers.enum import PaymentMethodType
 from zope.interface import implements
 
 from sqlobject import (ForeignKey, IntCol, DateTimeCol, UnicodeCol,
@@ -36,8 +37,7 @@ from sqlobject import (ForeignKey, IntCol, DateTimeCol, UnicodeCol,
 
 from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-from stoqlib.lib.defaults import (METHOD_CHECK, METHOD_BILL,
-                                  METHOD_MONEY, calculate_interval)
+from stoqlib.lib.defaults import calculate_interval
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain, BaseSQLView
@@ -222,11 +222,11 @@ class PurchaseOrder(Domain):
         self.confirm_date = confirm_date
 
     def _create_preview_outpayments(self, conn, group, base_method, total):
-        if group.default_method == METHOD_MONEY:
+        if group.default_method == PaymentMethodType.MONEY:
             method_type = MoneyPM
-        elif group.default_method == METHOD_CHECK:
+        elif group.default_method == PaymentMethodType.CHECK:
             method_type = CheckPM
-        elif group.default_method == METHOD_BILL:
+        elif group.default_method == PaymentMethodType.BILL:
             method_type = BillPM
         else:
             raise ValueError('Invalid payment method, got %d' %
