@@ -25,7 +25,7 @@
 
 import datetime
 
-from stoqdrivers.constants import TAX_CUSTOM, TAX_SERVICE
+from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
@@ -267,7 +267,7 @@ class ExampleCreator(object):
         settings = self._create_device_settings()
         return DeviceConstant(constant_name="Fake Tax Constant",
                               constant_type=DeviceConstant.TYPE_TAX,
-                              constant_enum=TAX_CUSTOM,
+                              constant_enum=int(TaxType.CUSTOM),
                               constant_value=99,
                               device_value="XX",
                               device_settings=settings,
@@ -389,7 +389,8 @@ class ExampleCreator(object):
         sellable_info = BaseSellableInfo(connection=self.trans,
                                          description="Description",
                                          price=10)
-        tax_constant = SellableTaxConstant.get_by_type(TAX_SERVICE, self.trans)
+        tax_constant = SellableTaxConstant.get_by_type(
+            TaxType.SERVICE, self.trans)
         service.addFacet(ISellable,
                          tax_constant=tax_constant,
                          base_sellable_info=sellable_info,

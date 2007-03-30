@@ -29,7 +29,7 @@
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
 from sqlobject.sqlbuilder import LIKE, func
-from stoqdrivers.constants import UNIT_CUSTOM, UNIT_WEIGHT, TAX_CUSTOM
+from stoqdrivers.enum import TaxType, UnitType
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
@@ -72,7 +72,7 @@ class SellableTaxConstantEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        return SellableTaxConstant(tax_type=TAX_CUSTOM,
+        return SellableTaxConstant(tax_type=int(TaxType.CUSTOM),
                                    tax_value=None,
                                    description=u'',
                                    connection=conn)
@@ -101,7 +101,7 @@ class SellableTaxConstantsDialog(ModelListDialog):
     def selection_changed(self, constant):
         if constant is None:
             return
-        is_custom = constant.tax_type == TAX_CUSTOM
+        is_custom = constant.tax_type == TaxType.CUSTOM
         self.listcontainer.remove_button.set_sensitive(is_custom)
         self.listcontainer.edit_button.set_sensitive(is_custom)
 
@@ -226,7 +226,7 @@ class SellableEditor(BaseEditor):
         if unit.unit_index == -1:
             self._sellable.unit = None
         else:
-            if unit.unit_index == UNIT_CUSTOM:
+            if unit.unit_index == UnitType.CUSTOM:
                 query = LIKE(func.UPPER(SellableUnit.q.description),
                              "%%%s%%" % unit.description.upper())
             else:
@@ -241,7 +241,7 @@ class SellableEditor(BaseEditor):
 
     def update_unit_entry(self):
         if (self._sellable and self._sellable.unit
-            and self._sellable.unit.unit_index == UNIT_CUSTOM):
+            and self._sellable.unit.unit_index == UnitType.CUSTOM):
             enabled = True
         else:
             enabled = False
@@ -249,7 +249,7 @@ class SellableEditor(BaseEditor):
 
     def update_requires_weighing_label(self):
         if (self._sellable is not None
-            and self._sellable.unit.unit_index == UNIT_WEIGHT):
+            and self._sellable.unit.unit_index == UnitType.WEIGHT):
             self.requires_weighing_label.set_text(self._requires_weighing_text)
         else:
             self.requires_weighing_label.set_text("")
@@ -264,12 +264,12 @@ class SellableEditor(BaseEditor):
         self.category_combo.prefill(items)
 
         primitive_units = SellableUnit.select(
-            SellableUnit.q.unit_index != UNIT_CUSTOM,
+            SellableUnit.q.unit_index != int(UnitType.CUSTOM),
             connection=self.conn)
         items = [(_("No unit"), -1)]
         items.extend([(obj.description, obj.unit_index)
                           for obj in primitive_units])
-        items.append((_("Specify:"), UNIT_CUSTOM))
+        items.append((_("Specify:"), int(UnitType.CUSTOM)))
         self.unit_combo.prefill(items)
 
     def setup_proxies(self):

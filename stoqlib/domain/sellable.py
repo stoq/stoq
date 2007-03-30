@@ -32,8 +32,7 @@ from decimal import Decimal
 from kiwi.datatypes import currency
 from sqlobject import DateTimeCol, UnicodeCol, IntCol, ForeignKey, SQLObject
 from sqlobject.sqlbuilder import AND, IN, OR
-from stoqdrivers.constants import (TAX_NONE, TAX_EXEMPTION,
-                                   TAX_SUBSTITUTION, TAX_SERVICE)
+from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
@@ -80,15 +79,15 @@ class SellableTaxConstant(Domain):
     tax_value = DecimalCol(default=None)
 
     _mapping = {
-        TAX_NONE: 'TAX_NONE',
-        TAX_EXEMPTION: 'TAX_EXEMPTION',
-        TAX_SUBSTITUTION: 'TAX_SUBSTITUTION',
-        TAX_SERVICE: 'TAX_SERVICE',
+        int(TaxType.NONE): 'TAX_NONE',
+        int(TaxType.EXEMPTION): 'TAX_EXEMPTION',
+        int(TaxType.SUBSTITUTION): 'TAX_SUBSTITUTION',
+        int(TaxType.SERVICE): 'TAX_SERVICE',
         }
 
     def get_value(self):
-        return SellableTaxConstant._mapping.get(self.tax_type,
-                                                self.tax_value)
+        return SellableTaxConstant._mapping.get(
+            self.tax_type, self.tax_value)
 
 
     @classmethod
@@ -100,7 +99,7 @@ class SellableTaxConstant(Domain):
         @returns: a L{SellableTaxConstant} or None if none is found
         """
         return SellableTaxConstant.selectOneBy(
-            tax_type=tax_type,
+            tax_type=int(tax_type),
             connection=conn)
 
     # IDescribable

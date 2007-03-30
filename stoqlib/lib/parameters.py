@@ -28,7 +28,7 @@ from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
 from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
-from stoqdrivers.constants import TAX_NONE, TAX_SERVICE
+from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.parameter import ParameterData
@@ -544,7 +544,7 @@ class ParameterAccess(ClassInittableObject):
 
         service = Service(connection=self.conn)
 
-        tax_constant = SellableTaxConstant.get_by_type(TAX_SERVICE, self.conn)
+        tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.conn)
         sellable_info = BaseSellableInfo(connection=self.conn,
                                          description=_(u'Delivery'))
         sellable = service.addFacet(ISellable,
@@ -599,7 +599,7 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, SellableTaxConstant):
             return
 
-        tax_constant = SellableTaxConstant.get_by_type(TAX_NONE, self.conn)
+        tax_constant = SellableTaxConstant.get_by_type(TaxType.NONE, self.conn)
         self._set_schema(key, tax_constant.id)
 
 

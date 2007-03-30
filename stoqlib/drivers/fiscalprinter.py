@@ -30,8 +30,7 @@ from decimal import Decimal
 from kiwi.argcheck import argcheck
 from kiwi.log import Logger
 from zope.interface import implements
-from stoqdrivers.constants import (UNIT_EMPTY, UNIT_CUSTOM, TAX_NONE,
-                                   MONEY_PM, CHEQUE_PM, CUSTOM_PM)
+from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
 from stoqdrivers.exceptions import (CouponOpenError, DriverError,
                                     CouponNotOpenError)
 
@@ -259,11 +258,11 @@ class FiscalCoupon(object):
         description = sellable.base_sellable_info.description[:max_len]
         unit_desc = ''
         if not sellable.unit:
-            unit = UNIT_EMPTY
+            unit = UnitType.EMPTY
         else:
-            if sellable.unit.unit_index == UNIT_CUSTOM:
+            if sellable.unit.unit_index == UnitType.CUSTOM:
                 unit_desc = sellable.unit.description
-            unit = sellable.unit.unit_index or UNIT_EMPTY
+            unit = sellable.unit.unit_index or UnitType.EMPTY
         max_len = self._get_capability("item_code").max_len
         code = sellable.get_code_str()[:max_len]
 
@@ -347,7 +346,7 @@ class FiscalCoupon(object):
         discount = self._sale.discount_percentage
 
         try:
-            self._driver.totalize(discount, surcharge, TAX_NONE)
+            self._driver.totalize(discount, surcharge, TaxType.NONE)
         except DriverError, details:
             warning(_(u"It is not possible to totalize the coupon"),
                     str(details))
@@ -374,7 +373,8 @@ class FiscalCoupon(object):
         sale = self._sale
         group = IPaymentGroup(sale)
         if group.default_method == METHOD_GIFT_CERTIFICATE:
-            self._driver.add_payment(MONEY_PM, sale.get_total_sale_amount())
+            self._driver.add_payment(PaymentMethodType.MONEY,
+                                     sale.get_total_sale_amount())
             return True
 
         log.info("we have %d payments" % (group.get_items().count()),)
@@ -384,9 +384,9 @@ class FiscalCoupon(object):
             method = payment.method
             if isinstance(method, (CheckPM, MoneyPM)):
                 if isinstance(method, CheckPM):
-                    method_id = CHEQUE_PM
+                    method_id = PaymentMethodType.CHECK
                 else:
-                    method_id = MONEY_PM
+                    method_id = PaymentMethodType.MONEY
                 self._driver.add_payment(method_id, payment.base_value)
                 continue
             method_type = type(method)
@@ -413,7 +413,7 @@ class FiscalCoupon(object):
                     _(u"The payment method used in this sale (%s) is not "
                       "configured in the fiscal printer." % method_name))
 
-            self._driver.add_payment(CUSTOM_PM, payment.base_value,
+            self._driver.add_payment(PaymentMethodType.CUSTOM, payment.base_value,
                                      custom_pm=constant.device_value)
 
         return True

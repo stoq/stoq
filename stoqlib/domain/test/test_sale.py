@@ -26,7 +26,7 @@
 from decimal import Decimal
 
 from kiwi.datatypes import currency
-from stoqdrivers.constants import TAX_CUSTOM
+from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station)
@@ -251,7 +251,7 @@ class TestSale(DomainTest):
         sellable = sale.get_items()[0].sellable
         product = sellable.get_adapted()
         constant = SellableTaxConstant(description="18",
-                                       tax_type=TAX_CUSTOM,
+                                       tax_type=int(TaxType.CUSTOM),
                                        tax_value=18,
                                        connection=self.trans)
         sellable.tax_constant = constant
