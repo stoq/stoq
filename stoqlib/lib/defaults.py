@@ -91,7 +91,8 @@ def get_method_names():
     return {PaymentMethodType.MONEY: _(u'Money'),
             PaymentMethodType.CHECK: _(u'Check'),
             PaymentMethodType.BILL: _(u'Bill'),
-            PaymentMethodType.CARD: _(u'Card'),
+            PaymentMethodType.CREDIT_CARD: _(u'Card'),
+            PaymentMethodType.DEBIT_CARD: _(u'Debit Card'),
             PaymentMethodType.FINANCE: _(u'Finance'),
             PaymentMethodType.GIFT_CERTIFICATE: _(u'Gift Certificate')}
 
@@ -102,7 +103,8 @@ def get_all_methods_dict():
     return {PaymentMethodType.MONEY: MoneyPM,
             PaymentMethodType.CHECK: CheckPM,
             PaymentMethodType.BILL: BillPM,
-            PaymentMethodType.CARD: CardPM,
+            PaymentMethodType.CREDIT_CARD: CardPM,
+            PaymentMethodType.DEBIT_CARD: CardPM,
             PaymentMethodType.GIFT_CERTIFICATE: GiftCertificatePM,
             PaymentMethodType.FINANCE: FinancePM}
 
