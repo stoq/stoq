@@ -27,7 +27,7 @@
 
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
-from stoqdrivers.constants import TAX_CUSTOM
+from stoqdrivers.enum import TaxType
 
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import ProductAdaptToSellable
@@ -62,7 +62,7 @@ class TributarySituationSlave(BaseEditorSlave):
         if self.proxy:
             self.proxy.update('tax_value')
 
-        if constant.tax_type == TAX_CUSTOM:
+        if constant.tax_type == TaxType.CUSTOM:
             label = '%'
         else:
             label = ''

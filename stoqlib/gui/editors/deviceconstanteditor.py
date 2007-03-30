@@ -32,7 +32,7 @@ from kiwi.decorators import signal_block
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ObjectList
 
-from stoqdrivers.constants import TAX_CUSTOM
+from stoqdrivers.enum import TaxType
 from stoqlib.domain.devices import DeviceSettings, DeviceConstant
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
@@ -99,7 +99,7 @@ class _DeviceConstantEditor(BaseEditor):
                               constant_type=self.constant_type,
                               constant_value=None,
                               constant_name="Unnamed",
-                              constant_enum=TAX_CUSTOM,
+                              constant_enum=TaxType.CUSTOM,
                               device_value=None)
 
     def on_confirm(self):

@@ -23,7 +23,7 @@
 ##
 ##
 
-from stoqdrivers.constants import TAX_SERVICE
+from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.service import Service
@@ -40,7 +40,8 @@ class ServiceImporter(CSVImporter):
 
     def __init__(self):
         conn = get_connection()
-        self.tax_constant = SellableTaxConstant.get_by_type(TAX_SERVICE, conn)
+        self.tax_constant = SellableTaxConstant.get_by_type(
+            TaxType.SERVICE, conn)
         assert self.tax_constant
 
     def process_one(self, data, fields, trans):

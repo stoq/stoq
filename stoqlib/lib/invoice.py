@@ -30,7 +30,7 @@ from decimal import Decimal
 
 from kiwi.argcheck import argcheck, number
 from kiwi.python import ClassInittableObject
-from stoqdrivers.constants import TAX_SUBSTITUTION, TAX_CUSTOM
+from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
@@ -323,10 +323,10 @@ class SaleInvoice(ClassInittableObject):
             self._insert_data_on_coordinate("%5.2f" % total_value,
                                             "PRODUCT_TOTAL_VALUE",
                                             increment=(i,0))
-            if item.sellable.tax_type == TAX_SUBSTITUTION:
+            if item.sellable.tax_type == TaxType.SUBSTITUTION:
                 value = "%3d" % subst_tax
                 subst_total += total_value
-            elif item.sellable.tax_type == TAX_CUSTOM:
+            elif item.sellable.tax_type == TaxType.CUSTOM:
                 raise NotImplementedError
             else:
                 raise TypeError("Invalid tax type for product %r, got %r"

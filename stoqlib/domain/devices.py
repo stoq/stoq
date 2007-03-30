@@ -30,9 +30,8 @@ from sqlobject.col import (UnicodeCol, IntCol, ForeignKey, BoolCol, BLOBCol)
 from sqlobject.joins import MultipleJoin
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
-from stoqdrivers.constants import (is_unit_constant, is_payment_constant,
-                                   describe_constant,
-                                   TAX_CUSTOM)
+from stoqdrivers.constants import describe_constant
+from stoqdrivers.enum import PaymentMethodType, UnitType, TaxType
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.devices.printers.cheque import ChequePrinter
 from stoqdrivers.devices.scales.scales import Scale
@@ -52,7 +51,7 @@ class DeviceConstant(Domain):
     Describes a device constant
 
     The constant_value field is only used by custom tax codes,
-    eg when constant_type is TYPE_TAX and constant_enum is TAX_CUSTOM
+    eg when constant_type is TYPE_TAX and constant_enum is TaxType.CUSTOM
 
     @cvar constant_type: the type of constant
     @cvar constant_name: name of the constant
@@ -103,7 +102,7 @@ class DeviceConstant(Domain):
         return DeviceConstant.selectOneBy(
             device_settings=device_settings,
             constant_type=DeviceConstant.TYPE_TAX,
-            constant_enum=TAX_CUSTOM,
+            constant_enum=int(TaxType.CUSTOM),
             constant_value=constant_value,
             connection=conn)
 
@@ -122,13 +121,13 @@ class DeviceConstant(Domain):
         @returns: the constant
         @rtype: L{DeviceConstant}
         """
-        if constant_enum == TAX_CUSTOM:
+        if constant_enum == TaxType.CUSTOM:
             raise ValueError("Use get_custom_tax_constant for custom "
                              "tax codes")
         return DeviceConstant.selectOneBy(
             device_settings=device_settings,
             constant_type=DeviceConstant.TYPE_TAX,
-            constant_enum=constant_enum,
+            constant_enum=int(constant_enum),
             connection=conn)
 
     #
@@ -209,30 +208,30 @@ class DeviceSettings(Domain):
         constants = driver.get_constants()
         for constant in constants.get_items():
             constant_value = None
-            if is_unit_constant(constant):
-                constant_type = DeviceConstant.TYPE_UNIT
-            elif is_payment_constant(constant):
+            if isinstance(constant, PaymentMethodType):
                 constant_type = DeviceConstant.TYPE_PAYMENT
+            elif isinstance(constant, UnitType):
+                constant_type = DeviceConstant.TYPE_UNIT
             else:
                 continue
 
             DeviceConstant(constant_type=constant_type,
                            constant_name=describe_constant(constant),
                            constant_value=constant_value,
-                           constant_enum=constant,
+                           constant_enum=int(constant),
                            device_value=constants.get_value(constant, None),
                            device_settings=self,
                            connection=conn)
 
         for constant, device_value, value in constants.get_tax_constants():
-            if constant == TAX_CUSTOM:
+            if constant == TaxType.CUSTOM:
                 constant_name = _('%d %%') % value
             else:
                 constant_name = describe_constant(constant)
             DeviceConstant(constant_type=DeviceConstant.TYPE_TAX,
                            constant_name=constant_name,
                            constant_value=value,
-                           constant_enum=constant,
+                           constant_enum=int(constant),
                            device_value=device_value,
                            device_settings=self,
                            connection=conn)
@@ -257,7 +256,7 @@ class DeviceSettings(Domain):
         return DeviceConstant.selectOneBy(
             device_settings=self,
             constant_type=DeviceConstant.TYPE_PAYMENT,
-            constant_enum=constant_enum,
+            constant_enum=int(constant_enum),
             connection=self.get_connection())
 
     def get_tax_constant_for_device(self, sellable):
@@ -276,20 +275,20 @@ class DeviceSettings(Domain):
             raise DeviceError("No tax constant set for sellable %r" % sellable)
 
         conn = self.get_connection()
-        if sellable_constant.tax_type == TAX_CUSTOM:
+        if sellable_constant.tax_type == TaxType.CUSTOM:
             constant = DeviceConstant.get_custom_tax_constant(
                 self, sellable_constant.tax_value, conn)
             if constant is None:
                 raise DeviceError(_(
                     "fiscal printer is missing a constant for the custom "
-                    "tax constant %s") %  (sellable_constant.description,))
+                    "tax constant %r") %  (sellable_constant.description,))
         else:
             constant = DeviceConstant.get_tax_constant(
                 self, sellable_constant.tax_type, conn)
             if constant is None:
                 raise DeviceError(_(
                     "fiscal printer is missing a constant for tax "
-                    "constant %s") %  (sellable_constant.description,))
+                    "constant %r") %  (sellable_constant.description,))
 
         return constant
 

@@ -23,7 +23,7 @@
 ##                Johan Dahlin    <jdahlin@async.com.br>
 ##
 
-from stoqdrivers.constants import MONEY_PM, TAX_NONE, TAX_CUSTOM
+from stoqdrivers.enum import PaymentMethodType, TaxType
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.devices import DeviceConstant, DeviceSettings
@@ -49,7 +49,7 @@ class TestDeviceConstant(DomainTest):
             settings, 18, self.trans)
         self.assertNotEquals(constant, None)
         self.assertEquals(constant.constant_type, DeviceConstant.TYPE_TAX)
-        self.assertEquals(constant.constant_enum, TAX_CUSTOM)
+        self.assertEquals(constant.constant_enum, TaxType.CUSTOM)
         self.assertEquals(constant.constant_value, 18)
         self.assertEquals(constant.device_value, 'T1')
 
@@ -60,10 +60,10 @@ class TestDeviceConstant(DomainTest):
         self.assertEquals(constant, None)
 
         constant = DeviceConstant.get_tax_constant(
-            settings, TAX_NONE, self.trans)
+            settings, TaxType.NONE, self.trans)
         self.assertNotEquals(constant, None)
         self.assertEquals(constant.constant_type, DeviceConstant.TYPE_TAX)
-        self.assertEquals(constant.constant_enum, TAX_NONE)
+        self.assertEquals(constant.constant_enum, TaxType.NONE)
         self.assertEquals(constant.constant_value, None)
         self.assertEquals(constant.device_value, 'TN')
 
@@ -132,7 +132,7 @@ class TestDeviceSettings(DomainTest):
         sellable = self.create_sellable()
         constant = settings.get_tax_constant_for_device(sellable)
         self.assertEquals(constant.constant_type, DeviceConstant.TYPE_TAX)
-        self.assertEquals(constant.constant_enum, TAX_NONE)
+        self.assertEquals(constant.constant_enum, TaxType.NONE)
         self.assertEquals(constant.constant_value, None)
         self.assertEquals(constant.device_value, "TN")
 
@@ -144,7 +144,7 @@ class TestDeviceSettings(DomainTest):
             connection=self.trans,
             description='',
             tax_value=3.1415,
-            tax_type=TAX_CUSTOM)
+            tax_type=int(TaxType.CUSTOM))
         self.assertRaises(DeviceError,
                           settings.get_tax_constant_for_device, sellable)
 
@@ -163,8 +163,8 @@ class TestDeviceSettings(DomainTest):
     def testGetPaymentConstant(self):
         settings = self.create_device_settings()
         settings.create_fiscal_printer_constants()
-        constant = settings.get_payment_constant(MONEY_PM)
+        constant = settings.get_payment_constant(PaymentMethodType.MONEY)
         self.assertEquals(constant.constant_type, DeviceConstant.TYPE_PAYMENT)
-        self.assertEquals(constant.constant_enum, MONEY_PM)
-        self.assertEquals(constant.device_value, "J")
+        self.assertEquals(constant.constant_enum, PaymentMethodType.MONEY)
+        self.assertEquals(constant.device_value, "M")
 

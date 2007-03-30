@@ -33,10 +33,8 @@ from kiwi.datatypes import currency
 from kiwi.environ import environ
 from kiwi.log import Logger
 
-from stoqdrivers.constants import (UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS,
-                                   TAX_SUBSTITUTION, TAX_EXEMPTION,
-                                   TAX_NONE, TAX_SERVICE,
-                                   describe_constant)
+from stoqdrivers.enum import TaxType, UnitType
+from stoqdrivers.constants import describe_constant
 
 from stoqlib.database.database import execute_sql, clean_database
 from stoqlib.database.interfaces import ICurrentUser, IDatabaseSettings
@@ -133,20 +131,22 @@ def ensure_sellable_constants():
     """ Create native sellable constants. """
     log.info("Creating sellable units")
     trans = new_transaction()
-    unit_list = [("Kg", UNIT_WEIGHT),
-                 ("Lt", UNIT_LITERS),
-                 ("m ", UNIT_METERS)]
-    for desc, index in unit_list:
-        SellableUnit(description=desc, unit_index=index, connection=trans)
+    unit_list = [("Kg", UnitType.WEIGHT),
+                 ("Lt", UnitType.LITERS),
+                 ("m ", UnitType.METERS)]
+    for desc, enum in unit_list:
+        SellableUnit(description=desc,
+                     unit_index=int(enum),
+                     connection=trans)
 
     log.info("Creating sellable tax constants")
-    for enum in [TAX_SUBSTITUTION,
-                 TAX_EXEMPTION,
-                 TAX_NONE,
-                 TAX_SERVICE]:
+    for enum in [TaxType.SUBSTITUTION,
+                 TaxType.EXEMPTION,
+                 TaxType.NONE,
+                 TaxType.SERVICE]:
         desc = describe_constant(enum)
         constant = SellableTaxConstant(description=desc,
-                                       tax_type=enum,
+                                       tax_type=int(enum),
                                        tax_value=None,
                                        connection=trans)
 
