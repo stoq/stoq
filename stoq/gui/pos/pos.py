@@ -35,7 +35,7 @@ from kiwi.argcheck import argcheck
 from kiwi.log import Logger
 from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
-from stoqdrivers.constants import UNIT_WEIGHT
+from stoqdrivers.enum import UnitType
 from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.database.database import rollback_and_begin, finish_transaction
 from stoqlib.database.runtime import new_transaction, get_current_user
@@ -103,7 +103,7 @@ class POSApp(AppWindow):
         # If the sellable has a weight unit specified and we have a scale
         # configured for this station, go and check out what the printer says.
         if (sellable and sellable.unit and
-            sellable.unit.unit_index == UNIT_WEIGHT and
+            sellable.unit.unit_index == UnitType.WEIGHT and
             self._scale_settings):
             self._read_scale()
 
@@ -307,7 +307,7 @@ class POSApp(AppWindow):
             # If the sellable has a weight unit specified and we have a scale
             # configured for this station, go and check what the scale says.
             if (sellable and sellable.unit and
-                sellable.unit.unit_index == UNIT_WEIGHT and
+                sellable.unit.unit_index == UnitType.WEIGHT and
                 self._scale_settings):
                 self._read_scale(sellable)
 
