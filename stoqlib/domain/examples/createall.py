@@ -29,7 +29,6 @@ from stoqlib.importers.employeeimporter import EmployeeImporter
 from stoqlib.importers.productimporter import ProductImporter
 from stoqlib.importers.serviceimporter import ServiceImporter
 from stoqlib.domain.examples.sale import create_sales
-from stoqlib.domain.examples.payment import create_payments
 from stoqlib.domain.examples.purchase import create_purchases
 from stoqlib.domain.examples.giftcertificate import create_giftcertificates
 from stoqlib.domain.examples.devices import create_device_settings
@@ -48,7 +47,6 @@ def create(utilities=False):
     create_device_settings()
     _import_one(ProductImporter, 'products.csv')
     _import_one(ServiceImporter, 'services.csv')
-    create_payments()
     create_sales()
     create_purchases()
     create_giftcertificates()

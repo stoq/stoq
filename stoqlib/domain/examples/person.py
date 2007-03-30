@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 ##
 ##  Author(s):  Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Create person objects for an example database"""
 
@@ -34,15 +35,33 @@ from stoqlib.database.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.examples import log
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (ICompany, ISupplier,
                                        ICreditProvider,
                                        ITransporter)
+from stoqlib.domain.person import Person
+from stoqlib.domain.payment.methods import (CardInstallmentSettings,
+                                            DebitCardDetails,
+                                            CreditCardDetails,
+                                            CardInstallmentsStoreDetails,
+                                            CardInstallmentsProviderDetails,
+                                            FinanceDetails)
 from stoqlib.domain.station import BranchStation
 from stoqlib.lib.parameters import sysparam
 
 _ = gettext.gettext
 
+
+DEFAULT_CLOSING_DAY = 12
+DEFAULT_PAYMENT_DAY = 15
+DEFAULT_C0MMISION = 8
+
+DEFAULT_RECEIVE_DAY = 5
+
+MAX_INSTALLMENTS_NUMBER = 12
+
+def get_percentage_commission():
+    percentage = (100 - DEFAULT_C0MMISION) / 100.0
+    return round(percentage, 2)
 
 def create_people():
     log.info('Creating person data')
@@ -124,14 +143,40 @@ def create_people():
         company_args = company_data[index]
         person_obj.addFacet(ICompany, connection=trans, **company_args)
         person_obj.addFacet(ISupplier, connection=trans)
-        credit_provider = credit_provider_data[index]
-        person_obj.addFacet(ICreditProvider, connection=trans,
-                            open_contract_date=datetime.datetime.today(),
-                            **credit_provider)
 
         transporter_args = transporter_data[index]
         person_obj.addFacet(ITransporter, connection=trans,
                             **transporter_args)
+
+        # CreditProviders
+        provider = person_obj.addFacet(ICreditProvider, connection=trans,
+                                       open_contract_date=datetime.datetime.today(),
+                                       **credit_provider_data[index])
+
+        destination = sysparam(trans).DEFAULT_PAYMENT_DESTINATION
+        inst_settings = CardInstallmentSettings(connection=trans,
+                                                payment_day=DEFAULT_PAYMENT_DAY,
+                                                closing_day=DEFAULT_CLOSING_DAY)
+
+        commission = get_percentage_commission()
+        general_args = dict(commission=commission, destination=destination,
+                            connection=trans, provider=provider)
+
+        # financial
+        if provider.provider_type == finance_table.PROVIDER_FINANCE:
+            FinanceDetails(receive_days=DEFAULT_RECEIVE_DAY, **general_args)
+        else:
+            DebitCardDetails(receive_days=DEFAULT_RECEIVE_DAY, **general_args)
+            CreditCardDetails(installment_settings=inst_settings,
+                              **general_args)
+            CardInstallmentsStoreDetails(
+                installment_settings=inst_settings,
+                max_installments_number=MAX_INSTALLMENTS_NUMBER,
+                **general_args)
+            CardInstallmentsProviderDetails(
+                installment_settings=inst_settings,
+                max_installments_number=MAX_INSTALLMENTS_NUMBER,
+                **general_args)
 
     # Setting up the current branch
     branch = sysparam(trans).MAIN_COMPANY
