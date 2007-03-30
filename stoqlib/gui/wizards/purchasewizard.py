@@ -218,7 +218,7 @@ class PurchasePaymentStep(WizardEditorStep):
         else:
             method = PaymentMethodType.BILL
             interval_type = INTERVALTYPE_MONTH
-            model = model.addFacet(IPaymentGroup, default_method=method,
+            model = model.addFacet(IPaymentGroup, default_method=int(method),
                                    intervals=1,
                                    interval_type=interval_type,
                                    connection=conn)
@@ -227,9 +227,9 @@ class PurchasePaymentStep(WizardEditorStep):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
 
     def _setup_widgets(self):
-        items = [(_('Bill'), PaymentMethodType.BILL),
-                 (_('Check'), PaymentMethodType.CHECK),
-                 (_('Money'), PaymentMethodType.MONEY)]
+        items = [(_('Bill'), int(PaymentMethodType.BILL)),
+                 (_('Check'), int(PaymentMethodType.CHECK)),
+                 (_('Money'), int(PaymentMethodType.MONEY))]
         self.method_combo.prefill(items)
 
     def _update_payment_method_slave(self):
