@@ -137,6 +137,13 @@ class Till(Domain):
     #
 
     def open_till(self):
+        """
+        Open the till.
+
+        It can only be done once per day.
+        The final cash amount of the previous till will be used
+        as the initial value in this one after opening it.
+        """
         if self.status == Till.STATUS_OPEN:
             raise TillError(_('Till is already open'))
 
@@ -155,8 +162,7 @@ class Till(Domain):
                 raise TillError(_("A till has already been opened today"))
 
             # FIXME: Move to sale.confirm()
-            sales = last_till.get_unconfirmed_sales()
-            for sale in sales:
+            for sale in last_till.get_unconfirmed_sales():
                 sale.till = self
 
             initial_cash_amount = last_till.final_cash_amount

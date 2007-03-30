@@ -44,6 +44,8 @@ class TestTill(DomainTest):
         self.assertEqual(Till.get_current(self.trans), None)
         till.open_till()
         self.assertEqual(Till.get_current(self.trans), till)
+        self.assertEqual(till.opening_date.date(), datetime.date.today())
+        self.assertEqual(till.status, Till.STATUS_OPEN)
 
         self.assertRaises(TillError, till.open_till)
 
