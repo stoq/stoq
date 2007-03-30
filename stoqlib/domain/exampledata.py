@@ -25,7 +25,7 @@
 
 import datetime
 
-from stoqdrivers.constants import TAX_CUSTOM
+from stoqdrivers.constants import TAX_CUSTOM, TAX_SERVICE
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
@@ -117,6 +117,7 @@ class ExampleCreator(object):
             'AbstractFiscalBookEntry' : self._create_abstract_fiscal_book_entry,
             'BranchStation': self.get_station,
             'CityLocation': self.get_location,
+            'CouponPrinter': self._create_coupon_printer,
             'DeviceConstant': self._create_device_constant,
             'DeviceSettings': self._create_device_settings,
             'IcmsIpiBookEntry': self._create_icms_ipi_book_entry,
@@ -139,6 +140,7 @@ class ExampleCreator(object):
             'ReceivingOrder' : self._create_receiving_order,
             'ReceivingOrderItem' : self._create_receiving_order_item,
             'Sale': self._create_sale,
+            'Service': self._create_service,
             'ServiceSellableItem': self._create_service_sellable_item,
             'Till': self._create_till,
             'UserProfile': self._create_user_profile,
@@ -366,6 +368,33 @@ class ExampleCreator(object):
                                        branch=branch, drawee=drawee,
                                        payment_group=payment_group,
                                        connection=self.trans)
+
+    def _create_coupon_printer(self):
+        from stoqlib.domain.devices import DeviceSettings
+        from stoqlib.drivers.fiscalprinter import CouponPrinter
+        settings = DeviceSettings(station=get_current_station(self.trans),
+                                  device=DeviceSettings.DEVICE_SERIAL1,
+                                  brand='virtual',
+                                  model='Simple',
+                                  type=DeviceSettings.FISCAL_PRINTER_DEVICE,
+                                  connection=self.trans)
+        settings.create_fiscal_printer_constants()
+        return CouponPrinter(settings.get_interface(), settings)
+
+    def _create_service(self):
+        from stoqlib.domain.sellable import (BaseSellableInfo,
+                                             SellableTaxConstant)
+        from stoqlib.domain.service import Service
+        service = Service(connection=self.trans)
+        sellable_info = BaseSellableInfo(connection=self.trans,
+                                         description="Description",
+                                         price=10)
+        tax_constant = SellableTaxConstant.get_by_type(TAX_SERVICE, self.trans)
+        service.addFacet(ISellable,
+                         tax_constant=tax_constant,
+                         base_sellable_info=sellable_info,
+                         connection=self.trans)
+        return service
 
     def get_station(self):
         return get_current_station(self.trans)

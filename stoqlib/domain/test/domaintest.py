@@ -201,6 +201,14 @@ class DomainTest(unittest.TestCase):
         ex = ExampleCreator(self.trans)
         return ex.create_by_type('AbstractFiscalBookEntry')
 
+    def create_coupon_printer(self):
+        ex = ExampleCreator(self.trans)
+        return ex.create_by_type('CouponPrinter')
+
+    def create_service(self):
+        ex = ExampleCreator(self.trans)
+        return ex.create_by_type('Service')
+
     def get_station(self):
         ex = ExampleCreator(self.trans)
         return ex.create_by_type('BranchStation')

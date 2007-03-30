@@ -27,14 +27,12 @@
 
 from decimal import Decimal
 
-import gtk
 from kiwi.argcheck import argcheck
 from kiwi.log import Logger
 from zope.interface import implements
 from stoqdrivers.constants import (UNIT_EMPTY, UNIT_CUSTOM, TAX_NONE,
                                    MONEY_PM, CHEQUE_PM, CUSTOM_PM)
 from stoqdrivers.exceptions import (CouponOpenError, DriverError,
-                                    OutofPaperError, PrinterOfflineError,
                                     CouponNotOpenError)
 
 from stoqlib.database.runtime import new_transaction, get_current_station
@@ -48,7 +46,7 @@ from stoqlib.domain.sellable import ASellableItem
 from stoqlib.exceptions import DeviceError
 from stoqlib.lib.defaults import (METHOD_GIFT_CERTIFICATE, get_all_methods_dict,
                                   get_method_names)
-from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -210,7 +208,7 @@ class CouponPrinter(object):
         @param sale: a L{stoqlib.domain.sale.Sale}
         @returns: a new coupon
         """
-        return _FiscalCoupon(self._driver, self._settings, sale)
+        return FiscalCoupon(self._driver, self._settings, sale)
 
 
 
@@ -219,7 +217,7 @@ class CouponPrinter(object):
 #
 
 
-class _FiscalCoupon(object):
+class FiscalCoupon(object):
     """ This class is used just to allow us cancel an item with base in a
     ASellable object. Currently, services can't be added, and they
     are just ignored -- be aware, if a coupon with only services is
@@ -321,30 +319,10 @@ class _FiscalCoupon(object):
         self._driver.identify_customer(name, address, document)
 
     def open(self):
-        while True:
-            try:
-                self._driver.open()
-                break
-            except CouponOpenError:
-                if not self.cancel():
-                    return False
-            except OutofPaperError:
-                if not yesno(
-                    _(u"The printer %s has run out of paper.\nAdd more paper "
-                      "before continuing.") % self._driver.get_printer_name(),
-                    gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
-                    return False
-                return self.open()
-            except PrinterOfflineError:
-                if not yesno(
-                    (_(u"The printer %s is offline, turn it on and try"
-                       "again") % self._driver.get_model_name()),
-                    gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
-                    return False
-                return self.open()
-            except DriverError, details:
-                warning(_(u"It is not possible to emit the coupon"),
-                        str(details))
+        try:
+            self._driver.open()
+        except CouponOpenError:
+            if not self.cancel():
                 return False
         return True
 
@@ -429,19 +407,14 @@ class _FiscalCoupon(object):
                     method_type.__name__)
 
             constant = self._settings.get_payment_constant(method_id)
-            if constant:
-                self._driver.add_payment(CUSTOM_PM, payment.base_value,
-                                          custom_pm=constant.device_value)
-            else:
+            if not constant:
                 method_name = get_method_names()[method_id]
-                if not yesno(
+                raise DeviceError(
                     _(u"The payment method used in this sale (%s) is not "
-                      "configured in the fiscal printer." % method_name),
-                    gtk.RESPONSE_YES, _(u"Use Money as payment method"),
-                    _(u"Cancel the checkout")):
-                    return False
+                      "configured in the fiscal printer." % method_name))
 
-                self._driver.add_payment(MONEY_PM, payment.base_value)
+            self._driver.add_payment(CUSTOM_PM, payment.base_value,
+                                     custom_pm=constant.device_value)
 
         return True
 
