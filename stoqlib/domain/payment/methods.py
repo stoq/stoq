@@ -45,7 +45,7 @@ from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
                                             AbstractPaymentGroup)
 from stoqlib.exceptions import (PaymentError, DatabaseInconsistency,
                                 PaymentMethodError)
-from stoqlib.lib.defaults import get_all_methods_dict
+from stoqlib.lib.defaults import get_all_methods_dict, quantize
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -274,7 +274,7 @@ class APaymentMethod(InheritableModel):
         normalized_value = self._calculate_payment_value(
             value, installments, interest)
 
-        normalized_value = normalized_value.quantize(Decimal('10e-2'))
+        normalized_value = quantize(normalized_value)
         if interest:
             interest_total = normalized_value * installments - value
         else:

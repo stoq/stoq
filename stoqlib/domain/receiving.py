@@ -33,12 +33,13 @@ from kiwi.datatypes import currency
 from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain
-from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup
 from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.lib.defaults import quantize
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -253,7 +254,7 @@ class ReceivingOrder(Domain):
                               'at this point')
         total = subtotal - discount_value
         percentage = (1 - total / subtotal) * 100
-        return percentage.quantize(Decimal('10e-2'))
+        return quantize(percentage)
 
     discount_percentage = property(_get_discount_by_percentage,
                                    _set_discount_by_percentage)
@@ -275,7 +276,7 @@ class ReceivingOrder(Domain):
                               'at this point')
         total = subtotal + surcharge_value
         percentage = ((total / subtotal) - 1) * 100
-        return percentage.quantize(Decimal('10e-2'))
+        return quantize(percentage)
 
     surcharge_percentage = property(_get_surcharge_by_percentage,
                                  _set_surcharge_by_percentage)

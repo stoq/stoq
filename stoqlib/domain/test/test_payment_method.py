@@ -31,6 +31,7 @@ from stoqlib.domain.payment.methods import (BillPM, CheckPM, FinancePM,
 from stoqlib.domain.payment.payment import (Payment,
                                             PaymentAdaptToInPayment)
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.defaults import quantize
 
 class _TestPaymentMethodBase:
     def testCreateInPayment(self):
@@ -71,8 +72,8 @@ class _TestPaymentMethodBase:
                                             [d, d, d])
         payments = [p.get_adapted() for p in payments]
 
-        athird = (Decimal(100) / Decimal(3)).quantize(Decimal("10e-2"))
-        rest = (Decimal(100) - (athird * 2)).quantize(Decimal("10e-2"))
+        athird = quantize(Decimal(100) / Decimal(3))
+        rest = quantize(Decimal(100) - (athird * 2))
         self.assertEqual(len(payments), 3)
         self.assertEqual(payments[0].value, athird)
         self.assertEqual(payments[1].value, athird)
@@ -93,8 +94,8 @@ class _TestPaymentMethodBase:
                                              [d, d, d])
         payments = [p.get_adapted() for p in payments]
 
-        athird = (Decimal(100) / Decimal(3)).quantize(Decimal("10e-2"))
-        rest = (Decimal(100) - (athird * 2)).quantize(Decimal("10e-2"))
+        athird = quantize(Decimal(100) / Decimal(3))
+        rest = quantize(Decimal(100) - (athird * 2))
         self.assertEqual(len(payments), 3)
         self.assertEqual(payments[0].value, athird)
         self.assertEqual(payments[1].value, athird)

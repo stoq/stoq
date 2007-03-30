@@ -26,6 +26,7 @@
 """Default values for applications"""
 
 import datetime
+from decimal import Decimal
 
 from stoqdrivers.enum import PaymentMethodType
 
@@ -145,3 +146,18 @@ def get_country_states():
 DECIMAL_PRECISION = 2
 DECIMAL_SIZE = 10
 
+_format = Decimal('10e-%d' % DECIMAL_PRECISION)
+
+def quantize(dec):
+    """
+    Quantities a decimal according to the current settings.
+    if DECIMAL_PRECISION is set to two then everything but
+    the last two decimals will be removed
+
+    >>> quantize(Decimal("10.123"))
+    Decimal("10.12")
+
+    >>> quantize(Decimal("10.678"))
+    Decimal("10.68")
+    """
+    return dec.quantize(_format)

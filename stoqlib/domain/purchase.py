@@ -37,13 +37,13 @@ from sqlobject import (ForeignKey, IntCol, DateTimeCol, UnicodeCol,
 
 from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-from stoqlib.lib.defaults import calculate_interval
-from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
 from stoqlib.domain.payment.methods import CheckPM, BillPM, MoneyPM
 from stoqlib.domain.interfaces import IPaymentGroup, IContainer
+from stoqlib.lib.defaults import calculate_interval, quantize
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
 
 _ = stoqlib_gettext
@@ -267,7 +267,7 @@ class PurchaseOrder(Domain):
                               'at this point')
         total = subtotal - discount_value
         percentage = (1 - total / subtotal) * 100
-        return percentage.quantize(Decimal('10e-2'))
+        return quantize(percentage)
 
     discount_percentage = property(_get_discount_by_percentage,
                                    _set_discount_by_percentage)
@@ -288,7 +288,7 @@ class PurchaseOrder(Domain):
                               'at this point')
         total = subtotal + surcharge_value
         percentage = ((total / subtotal) - 1) * 100
-        return percentage.quantize(Decimal('10e-2'))
+        return quantize(percentage)
 
     surcharge_percentage = property(_get_surcharge_by_percentage,
                                  _set_surcharge_by_percentage)
