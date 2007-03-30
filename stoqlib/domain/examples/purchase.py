@@ -55,11 +55,6 @@ def create_purchases():
         raise ValueError('You must have at least one sellables in your '
                          'database at this point.')
 
-    sellables = ASellable.select(connection=trans)
-    if not sellables.count():
-        raise ValueError('You must have at least one sellables in your '
-                         'database at this point.')
-
     branch = get_current_branch(trans)
     user = get_current_user(trans)
 
