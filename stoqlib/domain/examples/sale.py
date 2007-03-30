@@ -32,7 +32,6 @@ from stoqlib.lib.defaults import INTERVALTYPE_MONTH, calculate_interval
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.examples import log
-from stoqlib.domain.examples.payment import MAX_INSTALLMENTS_NUMBER
 from stoqlib.domain.interfaces import (ISellable, IClient, IPaymentGroup,
                                        ISalesPerson)
 from stoqlib.domain.payment.methods import CheckPM
@@ -54,6 +53,8 @@ DEFAULT_SALE_NUMBER = 4
 
 DEFAULT_PAYMENT_INTERVAL_TYPE = INTERVALTYPE_MONTH
 DEFAULT_PAYMENT_INTERVALS = 1
+
+MAX_INSTALLMENTS_NUMBER = 12
 
 def get_till(trans):
     till = Till.get_current(trans)
