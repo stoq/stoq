@@ -73,8 +73,23 @@ interval_values = {INTERVALTYPE_DAY:        1,
                    INTERVALTYPE_YEAR:       365}
 
 def calculate_interval(interval_type, intervals):
-    """Get the interval type value for a certain INTERVALTYPE_* constant.
+    """
+    Get the interval type value for a certain INTERVALTYPE_* constant.
     Intervals are useful modes to calculate payment duedates.
+
+    @param interval_type:
+    @param intervals:
+    @returns:
+
+    >>> calculate_interval(INTERVALTYPE_DAY, 5)
+    5
+
+    >>> calculate_interval(INTERVALTYPE_MONTH, 3)
+    90
+
+    >>> calculate_interval(INTERVALTYPE_YEAR, 10)
+    3650
+
     """
     if not interval_values.has_key(interval_type):
         raise KeyError('Invalid interval_type %r argument for '
