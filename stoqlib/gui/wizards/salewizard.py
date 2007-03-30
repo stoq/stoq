@@ -33,6 +33,7 @@ from kiwi.ui.wizard import WizardStep
 from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
 from kiwi.python import Settable
+from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
@@ -41,7 +42,6 @@ from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.defaults import METHOD_MONEY, METHOD_GIFT_CERTIFICATE
 from stoqlib.lib.defaults import get_all_methods_dict
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.lists import AdditionListSlave
@@ -565,9 +565,9 @@ class _AbstractSalesPersonStep(WizardEditorStep):
     def next_step(self):
         method_name = self.pm_slave.get_selected_method()
         if method_name == PmSlaveType.MONEY:
-            self.payment_group.set_method(METHOD_MONEY)
+            self.payment_group.set_method(PaymentMethodType.MONEY)
         elif method_name == PmSlaveType.GIFT_CERTIFICATE:
-            self.payment_group.set_method(METHOD_GIFT_CERTIFICATE)
+            self.payment_group.set_method(PaymentMethodType.GIFT_CERTIFICATE)
         elif method_name == PmSlaveType.MULTIPLE:
             # FIXME
             self.payment_group.set_method(10)
@@ -596,9 +596,9 @@ class _AbstractSalesPersonStep(WizardEditorStep):
             raise StoqlibError(
                 "You should have a IPaymentGroup facet defined at this point")
         method = group.default_method
-        if method == METHOD_MONEY:
+        if method == PaymentMethodType.MONEY:
             method_type = PmSlaveType.MONEY
-        elif method == METHOD_GIFT_CERTIFICATE:
+        elif method == PaymentMethodType.GIFT_CERTIFICATE:
             method_type = PmSlaveType.GIFT_CERTIFICATE
         else:
             method_type = PmSlaveType.MULTIPLE

@@ -43,8 +43,7 @@ from stoqlib.domain.payment.methods import CheckPM, MoneyPM
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import ASellableItem
 from stoqlib.exceptions import DeviceError
-from stoqlib.lib.defaults import (METHOD_GIFT_CERTIFICATE, get_all_methods_dict,
-                                  get_method_names)
+from stoqlib.lib.defaults import get_all_methods_dict, get_method_names
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -372,7 +371,7 @@ class FiscalCoupon(object):
             return True
         sale = self._sale
         group = IPaymentGroup(sale)
-        if group.default_method == METHOD_GIFT_CERTIFICATE:
+        if group.default_method == PaymentMethodType.GIFT_CERTIFICATE:
             self._driver.add_payment(PaymentMethodType.MONEY,
                                      sale.get_total_sale_amount())
             return True

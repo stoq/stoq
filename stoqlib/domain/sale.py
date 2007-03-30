@@ -30,7 +30,7 @@ from datetime import datetime
 
 from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol, SQLObject
 from sqlobject.sqlbuilder import AND
-from stoqdrivers.enum import TaxType
+from stoqdrivers.enum import PaymentMethodType, TaxType
 from zope.interface import implements
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
@@ -38,7 +38,6 @@ from kiwi.datatypes import currency
 from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.database.runtime import get_current_user
 from stoqlib.lib.validators import get_formatted_price
-from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
@@ -621,7 +620,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         """Update gift certificates of the current sale, setting their
         status properly.
         """
-        if not self.default_method == METHOD_GIFT_CERTIFICATE:
+        if not self.default_method == PaymentMethodType.GIFT_CERTIFICATE:
             return
         for item in self._get_gift_certificates():
             item.apply_as_payment_method()

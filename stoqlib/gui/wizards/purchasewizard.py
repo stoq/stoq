@@ -28,10 +28,11 @@ import datetime
 
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
+from stoqdrivers.enum import PaymentMethodType
+
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import (INTERVALTYPE_MONTH, METHOD_BILL,
-                                  METHOD_CHECK, METHOD_MONEY)
+from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
@@ -215,7 +216,7 @@ class PurchasePaymentStep(WizardEditorStep):
         if pg:
             model = pg
         else:
-            method = METHOD_BILL
+            method = PaymentMethodType.BILL
             interval_type = INTERVALTYPE_MONTH
             model = model.addFacet(IPaymentGroup, default_method=method,
                                    intervals=1,
@@ -226,9 +227,9 @@ class PurchasePaymentStep(WizardEditorStep):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
 
     def _setup_widgets(self):
-        items = [(_('Bill'), METHOD_BILL),
-                 (_('Check'), METHOD_CHECK),
-                 (_('Money'), METHOD_MONEY)]
+        items = [(_('Bill'), PaymentMethodType.BILL),
+                 (_('Check'), PaymentMethodType.CHECK),
+                 (_('Money'), PaymentMethodType.MONEY)]
         self.method_combo.prefill(items)
 
     def _update_payment_method_slave(self):
@@ -237,7 +238,7 @@ class PurchasePaymentStep(WizardEditorStep):
             self.detach_slave(holder_name)
         if not self.slave:
             self.slave = PurchasePaymentSlave(self.conn, self.model)
-        if self.model.default_method == METHOD_MONEY:
+        if self.model.default_method == PaymentMethodType.MONEY:
             self.slave.get_toplevel().hide()
             return
         self.slave.get_toplevel().show()

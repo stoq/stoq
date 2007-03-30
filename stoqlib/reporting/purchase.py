@@ -28,6 +28,7 @@
 from decimal import Decimal
 
 from kiwi.datatypes import currency
+from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
                                            TableColumn as TC,
@@ -35,7 +36,7 @@ from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
 from stoqlib.reporting.base.flowables import RIGHT, LEFT
 from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
 from stoqlib.lib.validators import get_formatted_price, format_quantity
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX, METHOD_MONEY
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.template import SearchResultsReport, BaseStoqReport
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
@@ -162,7 +163,7 @@ class PurchaseOrderReport(BaseStoqReport):
         group = IPaymentGroup(self._order)
         if not group:
             return
-        if group.default_method == METHOD_MONEY:
+        if group.default_method == PaymentMethodType.MONEY:
             msg = _("Paid in cash")
         else:
             method_name = group.get_default_payment_method_name()

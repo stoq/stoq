@@ -23,6 +23,8 @@
 ##
 """ Create purchase objects for an example database"""
 
+from stoqdrivers.enum import PaymentMethodType
+
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       get_current_user)
 from stoqlib.domain.examples import log
@@ -32,7 +34,7 @@ from stoqlib.domain.interfaces import (ISupplier, IPaymentGroup,
                                        ITransporter)
 from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
 from stoqlib.domain.sellable import ASellable
-from stoqlib.lib.defaults import INTERVALTYPE_MONTH, METHOD_BILL
+from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 
 
 def create_purchases():
@@ -64,7 +66,7 @@ def create_purchases():
                           branch=branch)
     order.set_valid()
     order.addFacet(IPaymentGroup,
-                   default_method=METHOD_BILL,
+                   default_method=int(PaymentMethodType.BILL),
                    intervals=1,
                    interval_type=INTERVALTYPE_MONTH,
                    connection=trans)

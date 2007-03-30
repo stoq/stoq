@@ -24,9 +24,11 @@
 
 import datetime
 
+from stoqdrivers.enum import PaymentMethodType
+
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.lib.defaults import INTERVALTYPE_MONTH, METHOD_BILL
+from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -39,7 +41,7 @@ class TestPaymentGroup(DomainTest):
         item = sellable.add_sellable_item(sale, price=150)
 
         group = sale.addFacet(IPaymentGroup,
-                              default_method=METHOD_BILL,
+                              default_method=int(PaymentMethodType.BILL),
                               intervals=1,
                               interval_type=INTERVALTYPE_MONTH,
                               connection=self.trans)

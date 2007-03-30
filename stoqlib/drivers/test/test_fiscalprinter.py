@@ -25,6 +25,7 @@
 
 from decimal import Decimal
 
+from stoqdrivers.enum import PaymentMethodType
 from stoqdrivers.exceptions import DriverError
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.interfaces import IPaymentGroup, ISellable
@@ -33,7 +34,6 @@ from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.drivers.fiscalprinter import (
     get_fiscal_printer_settings_by_station)
 from stoqdrivers.exceptions import CouponOpenError
-from stoqlib.lib.defaults import METHOD_BILL, METHOD_CHECK, METHOD_MONEY
 
 class TestDrivers(DomainTest):
 
@@ -126,14 +126,14 @@ class _TestFiscalCouponPayments:
 class TestFiscalCouponPaymentsBill(DomainTest, _TestFiscalCouponPayments):
     setUp = _TestFiscalCouponPayments.setUp
     method = BillPM
-    constant = METHOD_BILL
+    constant = PaymentMethodType.BILL
 
 class TestFiscalCouponPaymentsCheck(DomainTest, _TestFiscalCouponPayments):
     setUp = _TestFiscalCouponPayments.setUp
     method = CheckPM
-    constant = METHOD_CHECK
+    constant = PaymentMethodType.CHECK
 
 class TestFiscalCouponPaymentsMoney(DomainTest, _TestFiscalCouponPayments):
     setUp = _TestFiscalCouponPayments.setUp
     method = MoneyPM
-    constant = METHOD_MONEY
+    constant = PaymentMethodType.MONEY
