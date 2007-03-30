@@ -32,6 +32,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.python import all
 from kiwi.ui.widgets.list import Column, SummaryLabel
+from stoqdrivers.enum import PaymentMethodType
 from stoqlib.database.database import rollback_and_begin
 from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.message import warning, yesno
@@ -47,7 +48,7 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.reporting.purchase import PurchaseReport
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX, METHOD_MONEY
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
 
@@ -144,7 +145,7 @@ class PurchaseApp(SearchableAppWindow):
             if not group:
                 raise ValueError('You must have a IPaymentGroup facet '
                                  'defined at this point')
-            if group.default_method == METHOD_MONEY:
+            if group.default_method == PaymentMethodType.MONEY:
                 destination = sysparam(self.conn).DEFAULT_PAYMENT_DESTINATION
                 method = MoneyPM.selectOne(connection=self.conn)
                 first_due_date = order.expected_receival_date
