@@ -24,6 +24,7 @@
 ##
 
 import csv
+import datetime
 
 from kiwi.python import namedAny
 
@@ -46,6 +47,8 @@ class CSVImporter(object):
         'employee': 'employeeimporter.EmployeeImporter',
         'product': 'productimporter.ProductImporter',
         'service': 'serviceimporter.ServiceImporter',
+        'supplier': 'supplierimporter.SupplierImporter',
+        'transporter': 'transporterimporter.TransporterImporter',
         }
 
     #
@@ -94,6 +97,9 @@ class CSVImporter(object):
 
             lineno += 1
         trans.commit()
+
+    def parse_date(self, data):
+        return datetime.date(*map(int, data.split('-')))
 
     #
     # Classmethods

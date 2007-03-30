@@ -27,7 +27,6 @@
 
 import datetime
 import gettext
-from decimal import Decimal
 
 from kiwi.component import provide_utility
 
@@ -35,9 +34,8 @@ from stoqlib.database.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.examples import log
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.interfaces import (ICompany, ISupplier,
-                                       ICreditProvider,
-                                       ITransporter)
+from stoqlib.domain.interfaces import (ICompany,
+                                       ICreditProvider)
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.methods import (CardInstallmentSettings,
                                             DebitCardDetails,
@@ -98,14 +96,6 @@ def create_people():
                          state_registry='3421')]
 
     now = datetime.datetime.now()
-    transporter_data = [dict(open_contract_date=now, is_active=False,
-                             freight_percentage=Decimal('2.5')),
-                        dict(open_contract_date=now + datetime.timedelta(5),
-                             freight_percentage=7),
-                        dict(open_contract_date=now + datetime.timedelta(10),
-                             freight_percentage=Decimal('10.5')),
-                        dict(open_contract_date=now + datetime.timedelta(15),
-                             freight_percentage=Decimal('12.3'))]
 
     cityloc_data = [dict(city='Sao Paulo', country='Brazil', state='SP'),
                     dict(city='Curitiba', country='Brazil', state='PR'),
@@ -142,11 +132,6 @@ def create_people():
 
         company_args = company_data[index]
         person_obj.addFacet(ICompany, connection=trans, **company_args)
-        person_obj.addFacet(ISupplier, connection=trans)
-
-        transporter_args = transporter_data[index]
-        person_obj.addFacet(ITransporter, connection=trans,
-                            **transporter_args)
 
         # CreditProviders
         provider = person_obj.addFacet(ICreditProvider, connection=trans,

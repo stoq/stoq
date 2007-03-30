@@ -28,6 +28,8 @@ from stoqlib.importers.clientimporter import ClientImporter
 from stoqlib.importers.employeeimporter import EmployeeImporter
 from stoqlib.importers.productimporter import ProductImporter
 from stoqlib.importers.serviceimporter import ServiceImporter
+from stoqlib.importers.supplierimporter import SupplierImporter
+from stoqlib.importers.transporterimporter import TransporterImporter
 from stoqlib.domain.examples.sale import create_sales
 from stoqlib.domain.examples.purchase import create_purchases
 from stoqlib.domain.examples.giftcertificate import create_giftcertificates
@@ -40,6 +42,8 @@ def _import_one(klass, filename):
 def create(utilities=False):
     log.info('Creating example database')
     create_people()
+    _import_one(SupplierImporter, 'suppliers.csv')
+    _import_one(TransporterImporter, 'transporters.csv')
     _import_one(EmployeeImporter, 'employees.csv')
     _import_one(ClientImporter, 'clients.csv')
     if utilities:
