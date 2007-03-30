@@ -110,7 +110,7 @@ class _TestFiscalCouponPayments:
     def _add_sale_payments(self, sale, constant, method_type):
         group = sale.addFacet(IPaymentGroup,
                               connection=self.trans,
-                              default_method=constant,
+                              default_method=int(constant),
                               installments_number=1)
 
         method = method_type.selectOne(connection=self.trans)
