@@ -27,24 +27,27 @@ import datetime
 import time
 
 from stoqlib.database.runtime import (get_current_user,
-                                      get_current_station)
+                                      get_current_station,
+                                      new_transaction)
 from stoqlib.domain.person import Person
 from stoqlib.domain.transaction import TransactionEntry
 
 from stoqlib.domain.test.domaintest import DomainTest
 
+NAME = 'dummy transaction test'
+
 class TestTransaction(DomainTest):
-    def test_timestamp(self):
+    def testTimestamp(self):
         before = datetime.datetime.now()
         time.sleep(1)
-        person = Person(name="dummy", connection=self.trans)
+        person = Person(name='dummy', connection=self.trans)
         created = datetime.datetime.now()
 
         self.assertEqual(person.te_created.te_time,
                          person.te_modified.te_time)
 
         self.trans.commit()
-        person.name = 'updated'
+        person.name = NAME
         self.trans.commit()
 
         self.assertNotEqual(person.te_created.te_time,
@@ -65,21 +68,29 @@ class TestTransaction(DomainTest):
                     "'%s' (%s) was expected to be before '%s' (%s)" % (
                     before_name, before, after_name, after))
 
-    def test_user(self):
+    def testUser(self):
         user = get_current_user(self.trans)
-        person = Person(name="dummy", connection=self.trans)
+        person = Person(name=NAME, connection=self.trans)
 
         self.assertEqual(person.te_created.user, user)
 
-    def test_station(self):
+    def testStation(self):
         station = get_current_station(self.trans)
-        person = Person(name="dummy", connection=self.trans)
+        person = Person(name=NAME, connection=self.trans)
 
         self.assertEqual(person.te_created.station, station)
 
-    def test_empty(self):
+    def testEmpty(self):
         entry = TransactionEntry(te_time=datetime.datetime.now(),
                                  connection=self.trans,
                                  type=TransactionEntry.CREATED)
         self.assertEqual(entry.user, None)
         self.assertEqual(entry.station, None)
+
+    def tearDown(self):
+        trans = new_transaction()
+        for person in Person.selectBy(name=NAME,
+                                      connection=trans):
+            Person.delete(person.id, connection=trans)
+        trans.commit()
+        DomainTest.tearDown(self)
