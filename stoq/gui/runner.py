@@ -104,7 +104,7 @@ class ApplicationRunner(object):
         # sorting by app_full_name
         for name, full, icon, descr in sorted(descriptions,
                                               key=operator.itemgetter(1)):
-            if permissions[name]:
+            if name in permissions:
                 available_applications.append(
                     Application(name, full, icon, descr))
 
