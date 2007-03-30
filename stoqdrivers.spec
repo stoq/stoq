@@ -6,13 +6,13 @@
 Summary: Fiscal driver collection
 Name: stoqdrivers
 Version: 0.6.0
-Release: 1
+Release: 2
 License: LGPL
 Group: System Environment/Libraries
 URL: http://www.stoq.com.br/
 Source: http://download.stoq.com.br/sources/0.8.9/stoqdrivers-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: pygobject2 >= 2.8.0, python-zope-interface >= 3.0.1, python-serial >= 2.2, python-kiwi >= 1.9.9
+Requires: pygobject2 >= 2.8.0, python-zope-interface >= 3.0.1, pyserial >= 2.2, python-kiwi >= 1.9.9
 Requires: python-abi = %(%{__python} -c "import sys; print sys.version[:3]")
 BuildRequires: python-kiwi >= 1.9.9
 BuildArch: noarch
