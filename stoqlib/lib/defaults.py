@@ -93,7 +93,7 @@ def get_method_names():
             PaymentMethodType.BILL: _(u'Bill'),
             PaymentMethodType.CREDIT_CARD: _(u'Card'),
             PaymentMethodType.DEBIT_CARD: _(u'Debit Card'),
-            PaymentMethodType.FINANCE: _(u'Finance'),
+            PaymentMethodType.FINANCIAL: _(u'Finance'),
             PaymentMethodType.GIFT_CERTIFICATE: _(u'Gift Certificate')}
 
 def get_all_methods_dict():
@@ -106,7 +106,7 @@ def get_all_methods_dict():
             PaymentMethodType.CREDIT_CARD: CardPM,
             PaymentMethodType.DEBIT_CARD: CardPM,
             PaymentMethodType.GIFT_CERTIFICATE: GiftCertificatePM,
-            PaymentMethodType.FINANCE: FinancePM}
+            PaymentMethodType.FINANCIAL: FinancePM}
 
 def payment_value_colorize(column_data):
     """A helper method for payment value columns used to set different
