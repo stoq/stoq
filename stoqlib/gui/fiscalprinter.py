@@ -24,15 +24,16 @@
 
 import gtk
 
-from stoqdrivers.exceptions import CouponOpenError, DriverError
+from stoqdrivers.exceptions import (CouponOpenError, DriverError,
+                                    OutofPaperError, PrinterOfflineError)
 
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import (new_transaction, get_current_station)
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.drivers.fiscalprinter import (
-    CouponPrinter, get_fiscal_printer_settings_by_station)
-from stoqlib.exceptions import TillError
+    CouponPrinter, FiscalCoupon, get_fiscal_printer_settings_by_station)
+from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -187,3 +188,43 @@ class FiscalPrinterHelper(CouponPrinter):
 
         return False
 
+    def create_coupon(self, sale):
+        """
+        @param sale: a L{stoqlib.domain.sale.Sale}
+        @returns: a new coupon
+        """
+        return FiscalCouponHelper(self._driver, self._settings, sale)
+
+class FiscalCouponHelper(FiscalCoupon):
+
+    def open(self):
+        while True:
+            try:
+                super(FiscalCouponHelper, self).open()
+                break
+            except OutofPaperError:
+                if not yesno(
+                    _(u"The printer %s has run out of paper.\nAdd more paper "
+                      "before continuing.") % self._driver.get_printer_name(),
+                    gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
+                    return False
+                return self.open()
+            except PrinterOfflineError:
+                if not yesno(
+                    (_(u"The printer %s is offline, turn it on and try"
+                       "again") % self._driver.get_model_name()),
+                    gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
+                    return False
+                return self.open()
+            except DriverError, e:
+                warning(_(u"It is not possible to emit the coupon"),
+                        str(e))
+                return False
+        return True
+
+    def setup_payments(self):
+        try:
+            return super(FiscalCouponHelper, self).setup_payments()
+        except DeviceError, e:
+            warning(_(u"It is not possible to add payments to the coupon"),
+                    str(e))

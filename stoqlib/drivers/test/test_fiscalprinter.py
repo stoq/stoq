@@ -26,16 +26,17 @@
 from decimal import Decimal
 
 from stoqdrivers.exceptions import DriverError
-
 from stoqlib.database.runtime import get_current_station
-from stoqlib.domain.devices import DeviceSettings
+from stoqlib.domain.interfaces import IPaymentGroup, ISellable
+from stoqlib.domain.payment.methods import BillPM, CheckPM, MoneyPM
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.lib.drivers import (get_fiscal_printer_settings_by_station,
-                                 CouponPrinter)
+from stoqdrivers.exceptions import CouponOpenError
+from stoqlib.lib.defaults import METHOD_BILL, METHOD_CHECK, METHOD_MONEY
+from stoqlib.lib.drivers import get_fiscal_printer_settings_by_station
 
 class TestDrivers(DomainTest):
 
-    def test_virtual_printer_creation(self):
+    def testVirtualPrinterCreation(self):
         station = get_current_station(self.trans)
         settings = get_fiscal_printer_settings_by_station(self.trans,
                                                           station)
@@ -46,13 +47,7 @@ class TestDrivers(DomainTest):
 class TestCouponPrinter(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
-        settings = DeviceSettings(station=get_current_station(self.trans),
-                                  device=DeviceSettings.DEVICE_SERIAL1,
-                                  brand='virtual',
-                                  model='Simple',
-                                  type=DeviceSettings.FISCAL_PRINTER_DEVICE,
-                                  connection=self.trans)
-        self.printer = CouponPrinter(settings.get_interface(), settings)
+        self.printer = self.create_coupon_printer()
 
     def testCloseTill(self):
         self.printer.close_till(Decimal(0))
@@ -70,3 +65,78 @@ class TestCouponPrinter(DomainTest):
 
     def testCancel(self):
         self.printer.cancel()
+
+class TestFiscalCoupon(DomainTest):
+    def setUp(self):
+        DomainTest.setUp(self)
+        self.printer = self.create_coupon_printer()
+        self.sale = self.create_sale()
+        self.coupon = self.printer.create_coupon(self.sale)
+
+    def testAddItemProduct(self):
+        product = self.create_product()
+        sellable = ISellable(product)
+        item = sellable.add_sellable_item(self.sale)
+
+        self.assertRaises(CouponOpenError, self.coupon.add_item, item)
+
+        self.coupon.open()
+        self.coupon.add_item(item)
+
+    def testAddItemService(self):
+        service = self.create_service()
+        sellable = ISellable(service)
+        item = sellable.add_sellable_item(self.sale)
+
+        self.coupon.open()
+        self.coupon.add_item(item)
+
+class _TestFiscalCouponPayments:
+    def setUp(self):
+        DomainTest.setUp(self)
+        self.printer = self.create_coupon_printer()
+        self.sale = self.create_sale()
+        self.coupon = self.printer.create_coupon(self.sale)
+
+    def _open_and_add(self, product):
+        sellable = ISellable(product)
+        item = sellable.add_sellable_item(self.sale)
+
+        self.coupon.open()
+        self.coupon.add_item(item)
+        self.coupon.totalize()
+
+    def _add_sale_payments(self, sale, constant, method_type):
+        group = sale.addFacet(IPaymentGroup,
+                              connection=self.trans,
+                              default_method=constant,
+                              installments_number=1)
+
+        method = method_type.selectOne(connection=self.trans)
+        method.create_inpayment(group, sale.get_total_sale_amount())
+        self.sale.set_valid()
+
+    def testSetupPayment(self):
+        product = self.create_product()
+        self._open_and_add(product)
+        self._add_sale_payments(self.sale, self.constant, self.method)
+        self.coupon.setup_payments()
+
+class TestFiscalCouponPaymentsBill(DomainTest, _TestFiscalCouponPayments):
+    setUp = _TestFiscalCouponPayments.setUp
+    method = BillPM
+    constant = METHOD_BILL
+
+    # FIXME
+    def testSetupPayment(self):
+        pass
+
+class TestFiscalCouponPaymentsCheck(DomainTest, _TestFiscalCouponPayments):
+    setUp = _TestFiscalCouponPayments.setUp
+    method = CheckPM
+    constant = METHOD_CHECK
+
+class TestFiscalCouponPaymentsMoney(DomainTest, _TestFiscalCouponPayments):
+    setUp = _TestFiscalCouponPayments.setUp
+    method = MoneyPM
+    constant = METHOD_MONEY
