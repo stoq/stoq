@@ -36,7 +36,6 @@ from stoqlib.domain.examples import log
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (ICompany, ISupplier,
-                                       IClient, IIndividual,
                                        ICreditProvider,
                                        ITransporter)
 from stoqlib.domain.station import BranchStation
@@ -65,15 +64,6 @@ def create_people():
                         phone_number='1111-1111',
                         mobile_number='2222-2222',
                         email='gigi@stoq.com')]
-
-    individual_data = [dict(cpf='234675098',
-                            rg_number='222653658'),
-                       dict(cpf='23487593826',
-                            rg_number='447896754'),
-                       dict(cpf='634423111',
-                            rg_number='234568976'),
-                       dict(cpf='234576849',
-                            rg_number='323458382')]
 
     company_data = [dict(cnpj='66782278129',
                          fancy_name='RJA',
@@ -131,13 +121,8 @@ def create_people():
                           person=person_obj, city_location=ctloc,
                           connection=trans, **address_data[index])
 
-        individual_args = individual_data[index]
-        person_obj.addFacet(IIndividual, connection=trans,
-                            **individual_args)
-
         company_args = company_data[index]
         person_obj.addFacet(ICompany, connection=trans, **company_args)
-        person_obj.addFacet(IClient, connection=trans)
         person_obj.addFacet(ISupplier, connection=trans)
         credit_provider = credit_provider_data[index]
         person_obj.addFacet(ICreditProvider, connection=trans,

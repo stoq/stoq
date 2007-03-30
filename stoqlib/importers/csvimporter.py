@@ -42,9 +42,10 @@ class CSVImporter(object):
 
     # Available importers, the value is relative to stoqlib.importers
     _available_importers = {
+        'client': 'clientimporter.ClientImporter',
+        'employee': 'employeeimporter.EmployeeImporter',
         'product': 'productimporter.ProductImporter',
         'service': 'serviceimporter.ServiceImporter',
-        'employee': 'employeeimporter.EmployeeImporter'
         }
 
     #
