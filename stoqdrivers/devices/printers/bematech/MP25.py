@@ -40,13 +40,10 @@ from stoqdrivers.exceptions import (DriverError, OutofPaperError, PrinterError,
                                     PrinterOfflineError, PaymentAdditionError,
                                     ItemAdditionError, CancelItemError,
                                     CouponTotalizeError, CouponNotOpenError)
-from stoqdrivers.constants import (TAX_NONE, TAX_EXEMPTION,
-                                   TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
-                                   UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
-                                   UNIT_EMPTY, UNIT_CUSTOM)
 from stoqdrivers.devices.interfaces import ICouponPrinter
 from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.devices.printers.base import BaseDriverConstants
+from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
 from stoqdrivers.translation import stoqdrivers_gettext
 
 _ = lambda msg: stoqdrivers_gettext(msg)
@@ -77,19 +74,19 @@ STX = 2
 
 class MP25Constants(BaseDriverConstants):
     _constants = {
-        UNIT_WEIGHT:      'Kg',
-        UNIT_METERS:      'm ',
-        UNIT_LITERS:      'Lt',
-        UNIT_EMPTY:       '  ',
-        MONEY_PM:         '01',
-        CHEQUE_PM:        '01'
+        UnitType.WEIGHT:      'Kg',
+        UnitType.METERS:      'm ',
+        UnitType.LITERS:      'Lt',
+        UnitType.EMPTY:       '  ',
+        PaymentMethodType.MONEY:         '01',
+        PaymentMethodType.CHECK:        '01'
         }
 
     _tax_constants = [
         # FIXME: when we have the printer working, use FF & NN
-        (TAX_SUBSTITUTION, 'II', None),
-        (TAX_EXEMPTION,    'II', None),
-        (TAX_NONE,         'II', None),
+        (TaxType.SUBSTITUTION, 'II', None),
+        (TaxType.EXEMPTION,    'II', None),
+        (TaxType.NONE,         'II', None),
         ]
 
 
@@ -385,10 +382,10 @@ class MP25(SerialBase):
         return self._get_coupon_number()
 
     def coupon_add_item(self, code, description, price, taxcode,
-                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        quantity=Decimal("1.0"), unit=UnitType.EMPTY,
                         discount=Decimal("0.0"), markup=Decimal("0.0"),
                         unit_desc=""):
-        if unit == UNIT_CUSTOM:
+        if unit == UnitType.CUSTOM:
             unit = unit_desc
         else:
             unit = self._consts.get_value(unit)
@@ -437,7 +434,7 @@ class MP25(SerialBase):
         return self.remainder_value
 
     def coupon_totalize(self, discount=Decimal("0.0"), markup=Decimal("0.0"),
-                        taxcode=TAX_NONE):
+                        taxcode=TaxType.NONE):
         if discount:
             type = 'D'
             val = '%04d' % int(float(discount) * 1e2)

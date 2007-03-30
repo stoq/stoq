@@ -32,9 +32,8 @@ import gobject
 from kiwi.log import Logger
 
 from stoqdrivers.configparser import StoqdriversConfig
+from stoqdrivers.enum import DeviceType
 from stoqdrivers.exceptions import CriticalError, ConfigError
-from stoqdrivers.constants import (PRINTER_DEVICE, SCALE_DEVICE,
-                                   BARCODE_READER_DEVICE)
 from stoqdrivers.translation import stoqdrivers_gettext
 from stoqdrivers.devices.serialbase import SerialPort
 
@@ -48,9 +47,9 @@ class BaseDevice:
     the configuration file.
     """
     typename_translate_dict = {
-        PRINTER_DEVICE: "Printer",
-        SCALE_DEVICE: "Scale",
-        BARCODE_READER_DEVICE: "Barcode Reader",
+        DeviceType.PRINTER: "Printer",
+        DeviceType.SCALE: "Scale",
+        DeviceType.BARCODE_READER: "Barcode Reader",
         }
     # Subclasses must define these attributes
     device_dirname = None

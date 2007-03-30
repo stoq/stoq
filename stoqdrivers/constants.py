@@ -29,54 +29,29 @@
 StoqDrivers constants
 """
 
+from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
 from stoqdrivers.translation import stoqdrivers_gettext
 
 _ = lambda msg: stoqdrivers_gettext(msg)
 
-#
-# Special note regarding the constant values: it is *VERY IMPORTANT* each
-# constant have an unique value. When adding new constants, add this at
-# the end of the tuple, *never* at middle or top, this can break user's
-# application.
-#
-(
-    # Constants for product unit labels
-    UNIT_WEIGHT,
-    UNIT_METERS,
-    UNIT_LITERS,
-    UNIT_EMPTY,
-    UNIT_CUSTOM,
-    # Constants for product tax
-    TAX_ICMS,
-    TAX_SUBSTITUTION,
-    TAX_EXEMPTION,
-    TAX_NONE,
-    TAX_SERVICE,
-    TAX_CUSTOM,
-    # Constants for Payment Method
-    MONEY_PM,
-    CHEQUE_PM,
-    # Constants for device types
-    PRINTER_DEVICE,
-    SCALE_DEVICE,
-    # Custom payment method
-    CUSTOM_PM,
-    BARCODE_READER_DEVICE,
-) = range(17)
-
 # TODO: Improve these descriptions
 _constant_descriptions = {
-    UNIT_WEIGHT: _(u"Weight unit"),
-    UNIT_METERS: _(u"Meters unit"),
-    UNIT_LITERS: _(u"Liters unit"),
-    UNIT_EMPTY: _(u"Empty unit"),
-    TAX_ICMS: _(u"ICMS"),
-    TAX_SUBSTITUTION: _(u"Substitution"),
-    TAX_EXEMPTION: _(u"Exemption"),
-    TAX_NONE: _(u"No tax"),
-    TAX_SERVICE: _(u"Service tax"),
-    MONEY_PM: _(u"Money Payment Method"),
-    CHEQUE_PM: _(u"Cheque Payment Method"),
+    UnitType.WEIGHT: _(u"Weight unit"),
+    UnitType.METERS: _(u"Meters unit"),
+    UnitType.LITERS: _(u"Liters unit"),
+    UnitType.EMPTY: _(u"Empty unit"),
+    TaxType.ICMS: _(u"ICMS"),
+    TaxType.SUBSTITUTION: _(u"Substitution"),
+    TaxType.EXEMPTION: _(u"Exemption"),
+    TaxType.NONE: _(u"No tax"),
+    TaxType.SERVICE: _(u"Service tax"),
+    PaymentMethodType.MONEY: _(u"Money Payment Method"),
+    PaymentMethodType.CHECK: _(u"Check Payment Method"),
+    PaymentMethodType.DEBIT_CARD: _(u"Debit card Payment Method"),
+    PaymentMethodType.CREDIT_CARD: _(u"Credit card Payment Method"),
+    PaymentMethodType.BILL: _(u"Bill Payment Method"),
+    PaymentMethodType.FINANCIAL: _(u"Financial Payment Method"),
+    PaymentMethodType.GIFT_CERTIFICATE: _(u"Gift certificate Payment Method"),
     }
 
 def describe_constant(constant_id):
@@ -86,14 +61,3 @@ def describe_constant(constant_id):
         raise ValueError("The constant by id %r doesn't exists or there "
                          "is no description for it." % constant_id)
     return _constant_descriptions[constant_id]
-
-def is_unit_constant(constant):
-    return constant in [UNIT_WEIGHT,
-                        UNIT_METERS,
-                        UNIT_LITERS,
-                        UNIT_EMPTY,
-                        UNIT_CUSTOM]
-
-def is_payment_constant(constant):
-    return constant in [CHEQUE_PM, MONEY_PM, CUSTOM_PM]
-

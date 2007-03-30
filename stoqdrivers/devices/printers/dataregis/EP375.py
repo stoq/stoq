@@ -42,10 +42,7 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ, PendingReadX,
                                     HardwareFailure, OutofPaperError,
                                     CouponNotOpenError, CancelItemError,
                                     CouponOpenError)
-from stoqdrivers.constants import (MONEY_PM, CHEQUE_PM, TAX_NONE,
-                                   TAX_SUBSTITUTION, TAX_EXEMPTION,
-                                   UNIT_LITERS, UNIT_METERS, UNIT_WEIGHT,
-                                   UNIT_EMPTY, UNIT_CUSTOM)
+from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
 from stoqdrivers.devices.printers.cheque import (BaseChequePrinter,
                                                  BankConfiguration)
 from stoqdrivers.devices.printers.capabilities import Capability
@@ -72,18 +69,18 @@ def format_value(value, max_len):
 
 class EP375Constants(BaseDriverConstants):
     _constants = {
-        UNIT_WEIGHT:      '00',
-        UNIT_METERS:      '04',
-        UNIT_LITERS:      '03',
-        UNIT_EMPTY:       '02',
-        MONEY_PM:         '00',
-        CHEQUE_PM:        '01',
+        UnitType.WEIGHT:      '00',
+        UnitType.METERS:      '04',
+        UnitType.LITERS:      '03',
+        UnitType.EMPTY:       '02',
+        PaymentMethodType.MONEY:         '00',
+        PaymentMethodType.CHECK:        '01',
         }
 
     _tax_constants = [
-        (TAX_SUBSTITUTION, '02', None),
-        (TAX_EXEMPTION,    '03', None),
-        (TAX_NONE,         '04', None),
+        (TaxType.SUBSTITUTION, '02', None),
+        (TaxType.EXEMPTION,    '03', None),
+        (TaxType.NONE,         '04', None),
         ]
 
 
@@ -486,13 +483,13 @@ class EP375(SerialBase, BaseChequePrinter):
         self._is_coupon_open = True
 
     def coupon_add_item(self, code, description, price, taxcode,
-                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        quantity=Decimal("1.0"), unit=UnitType.EMPTY,
                         discount=Decimal("0.0"),
                         surcharge=Decimal("0.0"), unit_desc=""):
         if not self._is_coupon_open:
             raise CouponNotOpenError("There is no coupon opened")
-        if unit == UNIT_CUSTOM:
-            unit = UNIT_EMPTY
+        if unit == UnitType.CUSTOM:
+            unit = UnitType.EMPTY
         if surcharge:
             cmd = self.CMD_ADD_ITEM_WITH_SURCHARGE
             D = surcharge
@@ -533,7 +530,8 @@ class EP375(SerialBase, BaseChequePrinter):
     def coupon_cancel(self):
         status = self._get_status()
         if status.has_opened_sale():
-            self.coupon_add_payment(MONEY_PM, self._get_coupon_remaining_value())
+            self.coupon_add_payment(PaymentMethodType.MONEY,
+                                    self._get_coupon_remaining_value())
         elif status.has_opened_report():
             self._send_command('K')
         # We can have the "coupon state flag" set to True, but no coupon really
@@ -546,7 +544,7 @@ class EP375(SerialBase, BaseChequePrinter):
         self._is_coupon_open = False
 
     def coupon_totalize(self, discount=Decimal("0.0"),
-                        surcharge=Decimal("0.0"), taxcode=TAX_NONE):
+                        surcharge=Decimal("0.0"), taxcode=TaxType.NONE):
         # The callsite must check if discount and charge are used together,
         # if so must raise an exception -- here we have a second check for
         # this.

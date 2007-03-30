@@ -34,7 +34,7 @@ from decimal import Decimal
 from zope.interface import Interface, Attribute
 from serial import EIGHTBITS, PARITY_NONE, STOPBITS_ONE
 
-from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE
+from stoqdrivers.enum import TaxType, UnitType
 
 __all__ = ["ISerialPort",
            "IDriverConstants",
@@ -125,7 +125,7 @@ class ICouponPrinter(IDevice):
         """
 
     def coupon_add_item(code, description, price, taxcode,
-                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        quantity=Decimal("1.0"), unit=UnitType.EMPTY,
                         discount=Decimal("0.0"),
                         surcharge=Decimal("0.0"), unit_desc=""):
         """ Adds an item to the coupon.
@@ -146,8 +146,8 @@ class ICouponPrinter(IDevice):
         @type  quantity:  Decimal
 
         @param unit:      constant to describe the unit
-        @type unit:       integer constant one of: UNIT_LITERS, UNIT_EMPTY,
-                          UNIT_METERS, UNIT_WEIGHT, UNIT_CUSTOM.
+        @type unit:       integer constant one of: UnitType.LITERS, UnitType.EMPTY,
+                          UnitType.METERS, UnitType.WEIGHT, UnitType.CUSTOM.
 
         @param discount:  discount in %
         @type  discount:  Decimal between 0-100
@@ -178,7 +178,7 @@ class ICouponPrinter(IDevice):
         """
 
     def coupon_totalize(discount=Decimal("0.0"), surcharge=Decimal("0.0"),
-                        taxcode=TAX_NONE):
+                        taxcode=TaxType.NONE):
         """ Closes the coupon applies addition a discount or surcharge and tax.
         This can only be called when the coupon is open, has items added and
         payments added.
@@ -190,8 +190,8 @@ class ICouponPrinter(IDevice):
         @type  surcharge: Decimal between 0-100
 
         @param taxcode:   constant to descrive the tax
-        @type  taxcode:   integer constant one of: TAX_NONE, TAX_SUBSTITUTION,
-                          TAX_EXEMPTION
+        @type  taxcode:   integer constant one of: TaxType.NONE, TaxType.SUBSTITUTION,
+                          TaxType.EXEMPTION
 
         @rtype:           Decimal
         @returns          the coupon total value

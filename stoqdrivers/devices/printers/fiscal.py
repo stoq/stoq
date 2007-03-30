@@ -32,10 +32,7 @@ from kiwi.log import Logger
 
 from stoqdrivers.exceptions import (CloseCouponError, PaymentAdditionError,
                                     AlreadyTotalized, InvalidValue)
-from stoqdrivers.constants import (TAX_NONE, TAX_ICMS, TAX_SUBSTITUTION,
-                                   TAX_EXEMPTION, UNIT_EMPTY, UNIT_LITERS,
-                                   UNIT_WEIGHT, UNIT_METERS, MONEY_PM, CHEQUE_PM,
-                                   UNIT_CUSTOM, CUSTOM_PM)
+from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
 from stoqdrivers.devices.printers.base import BasePrinter
 from stoqdrivers.devices.printers.capabilities import capcheck
 from stoqdrivers.utils import encode_text
@@ -52,21 +49,22 @@ log = Logger('stoqdrivers.fiscalprinter')
 class taxcode(number):
     @classmethod
     def value_check(cls, name, value):
-        if value not in (TAX_NONE, TAX_ICMS, TAX_SUBSTITUTION,
-                         TAX_EXEMPTION):
-            raise ValueError("%s must be one of TAX_* constants" % name)
+        if value not in (TaxType.NONE, TaxType.ICMS, TaxType.SUBSTITUTION,
+                         TaxType.EXEMPTION):
+            raise ValueError("%s must be one of TaxType.* constants" % name)
 
 class unit(number):
     @classmethod
     def value_check(cls, name, value):
-        if value not in (UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
-                         UNIT_EMPTY, UNIT_CUSTOM):
+        if value not in (UnitType.WEIGHT, UnitType.METERS, UnitType.LITERS,
+                         UnitType.EMPTY, UnitType.CUSTOM):
             raise ValueError("%s must be one of UNIT_* constants" % name)
 
 class payment_method(number):
     @classmethod
     def value_check(cls, name, value):
-        if value not in (MONEY_PM, CHEQUE_PM, CUSTOM_PM):
+        if value not in (PaymentMethodType.MONEY, PaymentMethodType.CHECK,
+                         PaymentMethodType.CUSTOM):
             raise ValueError("%s must be one of *_PM constants" % name)
 
 #
@@ -109,7 +107,7 @@ class FiscalPrinter(BasePrinter):
     @capcheck(basestring, basestring, Decimal, str, Decimal, unit,
               Decimal, Decimal, basestring)
     def add_item(self, item_code, item_description, item_price, taxcode,
-                 items_quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                 items_quantity=Decimal("1.0"), unit=UnitType.EMPTY,
                  discount=Decimal("0.0"), surcharge=Decimal("0.0"),
                  unit_desc=""):
         log.info("add_item(code=%r, description=%r, price=%r, "
@@ -123,13 +121,13 @@ class FiscalPrinter(BasePrinter):
                                    "can't add more items")
         if discount and surcharge:
             raise TypeError("discount and surcharge can not be used together")
-        elif unit != UNIT_CUSTOM and unit_desc:
+        elif unit != UnitType.CUSTOM and unit_desc:
             raise ValueError("You can't specify the unit description if "
-                             "you aren't using UNIT_CUSTOM constant.")
-        elif unit == UNIT_CUSTOM and not unit_desc:
+                             "you aren't using UnitType.CUSTOM constant.")
+        elif unit == UnitType.CUSTOM and not unit_desc:
             raise ValueError("You must specify the unit description when "
-                             "using UNIT_CUSTOM constant.")
-        elif unit == UNIT_CUSTOM and len(unit_desc) != 2:
+                             "using UnitType.CUSTOM constant.")
+        elif unit == UnitType.CUSTOM and len(unit_desc) != 2:
             raise ValueError("unit description must be 2-byte sized string")
         if not item_price:
             raise InvalidValue("The item value must be greater than zero")
@@ -141,13 +139,13 @@ class FiscalPrinter(BasePrinter):
 
     @capcheck(percent, percent, taxcode)
     def totalize(self, discount=Decimal("0.0"), surcharge=Decimal("0.0"),
-                 taxcode=TAX_NONE):
+                 taxcode=TaxType.NONE):
         log.info('totalize(discount=%r, surcharge=%r, taxcode=%r)' % (
             discount, surcharge, taxcode))
 
         if discount and surcharge:
             raise TypeError("discount and surcharge can not be used together")
-        if surcharge and taxcode == TAX_NONE:
+        if surcharge and taxcode == TaxType.NONE:
             raise ValueError("to specify a surcharge you need specify its "
                              "tax code")
         result = self._driver.coupon_totalize(discount, surcharge, taxcode)
@@ -165,13 +163,13 @@ class FiscalPrinter(BasePrinter):
         if not self._has_been_totalized:
             raise PaymentAdditionError(_("You must totalize the coupon "
                                          "before add payments."))
-        if custom_pm and payment_method != CUSTOM_PM:
+        if custom_pm and payment_method != PaymentMethodType.CUSTOM:
             raise ValueError("You can't specify a custom payment method "
                              "string if you aren't using this payment "
                              "method type")
-        elif not custom_pm and payment_method == CUSTOM_PM:
+        elif not custom_pm and payment_method == PaymentMethodType.CUSTOM:
             raise ValueError("You must specify the payment method string "
-                             "when using CUSTOM_PM")
+                             "when using PaymentMethodType.CUSTOM")
         result = self._driver.coupon_add_payment(
             payment_method, payment_value,
             self._format_text(payment_description),

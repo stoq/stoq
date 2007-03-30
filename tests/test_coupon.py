@@ -28,8 +28,7 @@
 from decimal import Decimal
 
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
-from stoqdrivers.constants import (TAX_NONE, UNIT_LITERS, UNIT_CUSTOM,
-                                   MONEY_PM, TAX_ICMS, CUSTOM_PM,)
+from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
 from stoqdrivers.exceptions import (CouponOpenError, PendingReduceZ,
                                     PendingReadX, PaymentAdditionError,
                                     AlreadyTotalized, CancelItemError,
@@ -70,20 +69,20 @@ class TestCoupon(object):
                               self._taxnone, discount=Decimal("1"),
                               surcharge=Decimal("1"))
 
-        # 2. Specify unit_desc with unit different from UNIT_CUSTOM
+        # 2. Specify unit_desc with unit different from UnitType.CUSTOM
         self.failUnlessRaises(ValueError, self._device.add_item, u"123456",
                               u"Monitor LG Flatron T910B", Decimal("500"),
-                              self._taxnone, unit=UNIT_LITERS, unit_desc="XX")
+                              self._taxnone, unit=UnitType.LITERS, unit_desc="XX")
 
-        # 3. Specify unit as UNIT_CUSTOM and not supply a unit_desc
+        # 3. Specify unit as UnitType.CUSTOM and not supply a unit_desc
         self.failUnlessRaises(ValueError, self._device.add_item, u"123456",
                               u"Monitor LG Flatron T910B", Decimal("500"),
-                              self._taxnone, unit=UNIT_CUSTOM)
+                              self._taxnone, unit=UnitType.CUSTOM)
 
-        # 4. Specify unit as UNIT_CUSTOM and unit_desc greater than 2 chars
+        # 4. Specify unit as UnitType.CUSTOM and unit_desc greater than 2 chars
         self.failUnlessRaises(ValueError, self._device.add_item, u"123456",
                               u"Monitor LG Flatron T910B", Decimal("500"),
-                              self._taxnone, unit=UNIT_CUSTOM, unit_desc="XXXX")
+                              self._taxnone, unit=UnitType.CUSTOM, unit_desc="XXXX")
 
         # 5. Add item without price
         self.failUnlessRaises(InvalidValue, self._device.add_item, u"123456",
@@ -103,7 +102,7 @@ class TestCoupon(object):
         # A item with customized unit
         self._device.add_item(u"123456", u"Monitor LG 775N", Decimal("10"),
                               self._taxnone, items_quantity=Decimal("1"),
-                              unit=UNIT_CUSTOM, unit_desc="Tx")
+                              unit=UnitType.CUSTOM, unit_desc="Tx")
 
         # A item with surcharge
         self._device.add_item(u"123456", u"Monitor LG 775N", Decimal("10"),
@@ -116,7 +115,7 @@ class TestCoupon(object):
             self._device.add_item, u"123456", u"Monitor LG Flatron T910B",
             Decimal("10"), self._taxnone)
 
-        self._device.add_payment(MONEY_PM, Decimal("100"))
+        self._device.add_payment(PaymentMethodType.MONEY, Decimal("100"))
         self._device.close()
 
         # 8. Add item without coupon
@@ -140,7 +139,7 @@ class TestCoupon(object):
                                         Decimal("10"), self._taxnone,
                                         items_quantity=Decimal("1"))
         self._device.totalize()
-        self._device.add_payment(MONEY_PM, Decimal("100"))
+        self._device.add_payment(PaymentMethodType.MONEY, Decimal("100"))
         self._device.close()
 
     def test_totalize(self):
@@ -151,18 +150,18 @@ class TestCoupon(object):
         self.failUnlessRaises(TypeError, self._device.totalize,
                               Decimal("1"), Decimal("1"))
 
-        # 2. specify surcharge with taxcode equals TAX_NONE
+        # 2. specify surcharge with taxcode equals TaxType.NONE
         self.failUnlessRaises(ValueError, self._device.totalize,
-                              surcharge=Decimal("1"), taxcode=TAX_NONE)
+                              surcharge=Decimal("1"), taxcode=TaxType.NONE)
 
-        # 3. surcharge with taxcode equals to TAX_ICMS
+        # 3. surcharge with taxcode equals to TaxType.ICMS
         # (daruma FS345 specific)
         coupon_total = self._device.totalize(surcharge=Decimal("1"),
-                                             taxcode=TAX_ICMS)
+                                             taxcode=TaxType.ICMS)
         self.failUnless(coupon_total == Decimal("10.10"),
                         "The coupon total value should be 10.10, not %r"
                         % coupon_total)
-        self._device.add_payment(MONEY_PM, Decimal("12"))
+        self._device.add_payment(PaymentMethodType.MONEY, Decimal("12"))
         self._device.close()
 
     def test_add_payment(self):
@@ -171,18 +170,21 @@ class TestCoupon(object):
                               self._taxnone)
         # 1. Add payment without totalize the coupon
         self.failUnlessRaises(PaymentAdditionError,
-                              self._device.add_payment, MONEY_PM,
+                              self._device.add_payment,
+                              PaymentMethodType.MONEY,
                               Decimal("100"))
         self._device.totalize()
 
         # 2. Add payment with customized type without describe it
         self.failUnlessRaises(ValueError,
-                              self._device.add_payment, CUSTOM_PM,
+                              self._device.add_payment,
+                              PaymentMethodType.CUSTOM,
                               Decimal("100"))
 
         # 3. Describe the payment type not using CUSTOM_PM
         self.failUnlessRaises(ValueError,
-                              self._device.add_payment, MONEY_PM,
+                              self._device.add_payment,
+                              PaymentMethodType.MONEY,
                               Decimal("100"), custom_pm="02")
 
         # 4. Add payment with customized type.
@@ -191,7 +193,7 @@ class TestCoupon(object):
         # the coupon printers, we can't just assume a "always existent"
         # payment type.
 
-        self._device.add_payment(MONEY_PM, Decimal("100"))
+        self._device.add_payment(PaymentMethodType.MONEY, Decimal("100"))
         self._device.close()
 
     def test_close_coupon(self):
@@ -206,10 +208,10 @@ class TestCoupon(object):
         self.failUnlessRaises(CloseCouponError, self._device.close)
 
         # 3. Close with the payments total value lesser than the totalized
-        self._device.add_payment(MONEY_PM, Decimal("5"))
+        self._device.add_payment(PaymentMethodType.MONEY, Decimal("5"))
         self.failUnlessRaises(CloseCouponError, self._device.close)
 
-        self._device.add_payment(MONEY_PM, Decimal("100"))
+        self._device.add_payment(PaymentMethodType.MONEY, Decimal("100"))
         # 4. Close the coupon with a BIG message
         self._device.close(u"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
                            "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

@@ -36,11 +36,11 @@ from stoqdrivers.utils import get_module_list
 from stoqdrivers.devices import scales
 from stoqdrivers.devices.interfaces import IScale
 from stoqdrivers.devices.base import BaseDevice
-from stoqdrivers.constants import SCALE_DEVICE
+from stoqdrivers.enum import DeviceType
 
 class BaseScale(BaseDevice):
     device_dirname = "scales"
-    device_type = SCALE_DEVICE
+    device_type = DeviceType.SCALE
 
     def check_interfaces(self):
         driver_interfaces = providedBy(self._driver)

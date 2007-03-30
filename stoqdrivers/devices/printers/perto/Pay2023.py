@@ -41,11 +41,7 @@ from stoqdrivers.devices.interfaces import (ICouponPrinter,
 from stoqdrivers.devices.printers.cheque import (BaseChequePrinter,
                                                  BankConfiguration)
 from stoqdrivers.devices.printers.base import BaseDriverConstants
-from stoqdrivers.constants import (TAX_SUBSTITUTION,
-                                   TAX_EXEMPTION, TAX_NONE)
-from stoqdrivers.constants import (UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
-                                   UNIT_EMPTY, UNIT_CUSTOM)
-from stoqdrivers.constants import MONEY_PM, CHEQUE_PM
+from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
 from stoqdrivers.exceptions import (
     DriverError, PendingReduceZ, CommandParametersError, CommandError,
     ReadXError, OutofPaperError, CouponTotalizeError, PaymentAdditionError,
@@ -94,14 +90,14 @@ _flagnames = {
 
 class Pay2023Constants(BaseDriverConstants):
     _constants = {
-        UNIT_WEIGHT:      'km',
-        UNIT_LITERS:      'lt',
-        UNIT_METERS:      'm ',
-        UNIT_EMPTY:       '  ',
-        MONEY_PM:         '-2',
-        CHEQUE_PM:        '2',
+        UnitType.WEIGHT:      'km',
+        UnitType.LITERS:      'lt',
+        UnitType.METERS:      'm ',
+        UnitType.EMPTY:       '  ',
+        PaymentMethodType.MONEY:         '-2',
+        PaymentMethodType.CHECK:        '2',
 #         PaymentMethodType.MONEY: '-2',
-#         PaymentMethodType.CHEQUE: '0',
+#         PaymentMethodType.CHECK: '0',
 #         PaymentMethodType.BOLETO: '1',
 #         PaymentMethodType.CREDIT_CARD: '2',
 #         PaymentMethodType.DEBIT_CARD: '3',
@@ -113,9 +109,9 @@ class Pay2023Constants(BaseDriverConstants):
         # These are signed integers, we're storing them
         # as strings and then subtract by 127
         # Page 10
-        (TAX_SUBSTITUTION, '\x7e', None), # -2
-        (TAX_EXEMPTION,    '\x7d', None), # -3
-        (TAX_NONE,         '\x7c', None), # -4
+        (TaxType.SUBSTITUTION, '\x7e', None), # -2
+        (TaxType.EXEMPTION,    '\x7d', None), # -3
+        (TaxType.NONE,         '\x7c', None), # -4
         ]
 
 _RETVAL_TOKEN_RE = re.compile(r"^\s*([^=\s;]+)")
@@ -479,14 +475,14 @@ class Pay2023(SerialBase, BaseChequePrinter):
                            NomeConsumidor=customer[:30])
 
     def coupon_add_item(self, code, description, price, taxcode,
-                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        quantity=Decimal("1.0"), unit=UnitType.EMPTY,
                         discount=Decimal("0.0"), surcharge=Decimal("0.0"),
                         unit_desc=""):
         status = self._get_status()
         if not status & FLAG_DOCUMENTO_ABERTO:
             raise CouponNotOpenError
 
-        if unit == UNIT_CUSTOM:
+        if unit == UnitType.CUSTOM:
             unit = unit_desc
         else:
             unit = self._consts.get_value(unit)
@@ -508,7 +504,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
         self._send_command('CancelaCupom')
 
     def coupon_totalize(self, discount=Decimal("0.0"),
-                        surcharge=Decimal("0.0"), taxcode=TAX_NONE):
+                        surcharge=Decimal("0.0"), taxcode=TaxType.NONE):
         # The FISCnet protocol (the protocol used in this printer model)
         # doesn't have a command to totalize the coupon, so we just get
         # the discount/surcharge values and applied to the coupon.

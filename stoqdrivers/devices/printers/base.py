@@ -36,8 +36,8 @@ from stoqdrivers.devices.interfaces import (ICouponPrinter,
                                             IDriverConstants,
                                             IChequePrinter)
 from stoqdrivers.devices.base import BaseDevice
+from stoqdrivers.enum import DeviceType
 from stoqdrivers.utils import get_module_list
-from stoqdrivers.constants import PRINTER_DEVICE
 from stoqdrivers.translation import stoqdrivers_gettext
 
 _ = lambda msg: stoqdrivers_gettext(msg)
@@ -76,7 +76,7 @@ class BaseDriverConstants:
 
 class BasePrinter(BaseDevice):
     device_dirname = "printers"
-    device_type = PRINTER_DEVICE
+    device_type = DeviceType.PRINTER
 
     def check_interfaces(self):
         driver_interfaces = providedBy(self._driver)

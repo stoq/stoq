@@ -40,10 +40,7 @@ from stoqdrivers.exceptions import (CouponTotalizeError, PaymentAdditionError,
 from stoqdrivers.devices.interfaces import (ICouponPrinter,
                                             IChequePrinter)
 from stoqdrivers.devices.printers.base import BaseDriverConstants
-from stoqdrivers.constants import (TAX_NONE, TAX_EXEMPTION,
-                                   TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
-                                   UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
-                                   UNIT_EMPTY, TAX_CUSTOM, TAX_SERVICE)
+from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
 from stoqdrivers.translation import stoqdrivers_gettext
 
 _ = lambda msg: stoqdrivers_gettext(msg)
@@ -57,22 +54,29 @@ class CouponItem:
 
 class FakeConstants(BaseDriverConstants):
     _constants = {
-        UNIT_WEIGHT:      'F',
-        UNIT_METERS:      'G ',
-        UNIT_LITERS:      'H',
-        UNIT_EMPTY:       'I',
-        MONEY_PM:         'J',
-        CHEQUE_PM:        'K'
+        UnitType.WEIGHT:      'F',
+        UnitType.METERS:      'G ',
+        UnitType.LITERS:      'H',
+        UnitType.EMPTY:       'I',
+
+        PaymentMethodType.MONEY: 'M',
+        PaymentMethodType.CHECK: 'C',
+        PaymentMethodType.BILL: 'B',
+        PaymentMethodType.CREDIT_CARD: 'R',
+        PaymentMethodType.DEBIT_CARD: 'D',
+        PaymentMethodType.FINANCIAL: 'F',
+        PaymentMethodType.GIFT_CERTIFICATE: 'G',
+
         }
 
     _tax_constants = [
-        (TAX_SUBSTITUTION, 'TS', None),
-        (TAX_EXEMPTION,    'TE', None),
-        (TAX_NONE,         'TN', None),
-        (TAX_CUSTOM,       'T1', Decimal(18)),
-        (TAX_CUSTOM,       'T2', Decimal(12)),
-        (TAX_CUSTOM,       'T3', Decimal(5)),
-        (TAX_SERVICE,      'S0', Decimal(3)),
+        (TaxType.SUBSTITUTION, 'TS', None),
+        (TaxType.EXEMPTION,    'TE', None),
+        (TaxType.NONE,         'TN', None),
+        (TaxType.CUSTOM,       'T1', Decimal(18)),
+        (TaxType.CUSTOM,       'T2', Decimal(12)),
+        (TaxType.CUSTOM,       'T3', Decimal(5)),
+        (TaxType.SERVICE,      'S0', Decimal(3)),
         ]
 
 
@@ -123,7 +127,7 @@ class Simple:
         self.is_coupon_opened = True
 
     def coupon_add_item(self, code, description, price, taxcode,
-                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        quantity=Decimal("1.0"), unit=UnitType.EMPTY,
                         discount=Decimal("0.0"),
                         surcharge=Decimal("0.0"), unit_desc=""):
         self._check_coupon_is_opened()
@@ -152,7 +156,7 @@ class Simple:
         self._reset_flags()
 
     def coupon_totalize(self, discount=Decimal("0.0"),
-                        surcharge=Decimal("0.0"), taxcode=TAX_NONE):
+                        surcharge=Decimal("0.0"), taxcode=TaxType.NONE):
         self._check_coupon_is_opened()
         if not self.items_quantity:
             raise CouponTotalizeError(_("The coupon can't be totalized, since "

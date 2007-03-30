@@ -34,21 +34,17 @@ from kiwi.log import Logger
 from zope.interface import implements
 
 from stoqdrivers import abicomp
-from stoqdrivers.constants import (TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
-                                   TAX_SUBSTITUTION, TAX_CUSTOM,
-                                   MONEY_PM, CHEQUE_PM,
-                                   UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
-                                   UNIT_EMPTY, UNIT_CUSTOM)
 from stoqdrivers.devices.serialbase import SerialBase
+from stoqdrivers.devices.interfaces import ICouponPrinter
+from stoqdrivers.devices.printers.capabilities import Capability
+from stoqdrivers.devices.printers.base import BaseDriverConstants
+from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
 from stoqdrivers.exceptions import (DriverError, PendingReduceZ, HardwareFailure,
                                     AuthenticationFailure, CommError,
                                     PendingReadX, CouponNotOpenError,
                                     OutofPaperError, PrinterOfflineError,
                                     CouponOpenError, CancelItemError,
                                     CloseCouponError)
-from stoqdrivers.devices.interfaces import ICouponPrinter
-from stoqdrivers.devices.printers.capabilities import Capability
-from stoqdrivers.devices.printers.base import BaseDriverConstants
 from stoqdrivers.translation import stoqdrivers_gettext
 
 abicomp.register_codec()
@@ -130,24 +126,24 @@ def ifset(value, bit, false='', true=''):
 
 class FS345Constants(BaseDriverConstants):
     _constants = {
-        UNIT_WEIGHT:      'Kg',
-        UNIT_METERS:      'm ',
-        UNIT_LITERS:      'Lt',
-        UNIT_EMPTY:       '  ',
-        MONEY_PM:         'A',
-        CHEQUE_PM:        'B'
+        UnitType.WEIGHT:      'Kg',
+        UnitType.METERS:      'm ',
+        UnitType.LITERS:      'Lt',
+        UnitType.EMPTY:       '  ',
+        PaymentMethodType.MONEY:         'A',
+        PaymentMethodType.CHECK:        'B'
         }
 
     _tax_constants = [
         # These definitions can be found on Page 60
-        (TAX_SUBSTITUTION,   'Fb', None),
-        (TAX_EXEMPTION,      'Ib', None),
-        (TAX_NONE,           'Nb', None),
+        (TaxType.SUBSTITUTION,   'Fb', None),
+        (TaxType.EXEMPTION,      'Ib', None),
+        (TaxType.NONE,           'Nb', None),
 
         # Reducao Z output
-        (TAX_CUSTOM,         'Ta', Decimal(18)),
-        (TAX_CUSTOM,         'Tb', Decimal(12)),
-        (TAX_CUSTOM,         'Tc', Decimal(5)),
+        (TaxType.CUSTOM,         'Ta', Decimal(18)),
+        (TaxType.CUSTOM,         'Tb', Decimal(12)),
+        (TaxType.CUSTOM,         'Tc', Decimal(5)),
         ]
 
 class FS345(SerialBase):
@@ -358,7 +354,7 @@ class FS345(SerialBase):
         self.send_command(CMD_OPEN_COUPON)
 
     def coupon_add_item(self, code, description, price, taxcode,
-                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        quantity=Decimal("1.0"), unit=UnitType.EMPTY,
                         discount=Decimal("0.0"),
                         surcharge=Decimal("0.0"), unit_desc=""):
         if surcharge:
@@ -368,7 +364,7 @@ class FS345(SerialBase):
             d = 0
             E = discount
 
-        if unit == UNIT_CUSTOM:
+        if unit == UnitType.CUSTOM:
             unit = unit_desc
         else:
             unit = self._consts.get_value(unit)
@@ -399,15 +395,15 @@ class FS345(SerialBase):
         self.send_command(CMD_CANCEL_COUPON)
 
     def coupon_totalize(self, discount=Decimal("0.0"), surcharge=Decimal("0.0"),
-                        taxcode=TAX_NONE):
+                        taxcode=TaxType.NONE):
         self._check_status()
         self._verify_coupon_open()
         if surcharge:
             value = surcharge
-            if taxcode == TAX_ICMS:
+            if taxcode == TaxType.ICMS:
                 mode = 2
             else:
-                raise ValueError("tax_code must be TAX_ICMS")
+                raise ValueError("tax_code must be TaxType.ICMS")
         elif discount:
             value = discount
             mode = 0
@@ -455,7 +451,7 @@ class FS345(SerialBase):
 
     def till_add_cash(self, value):
         self._add_voucher(CASH_IN_TYPE, value)
-        self._add_payment(MONEY_PM, value, '')
+        self._add_payment(PaymentMethodType.MONEY, value, '')
 
     def till_remove_cash(self, value):
         self._add_voucher(CASH_OUT_TYPE, value)

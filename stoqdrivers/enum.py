@@ -3,7 +3,7 @@
 
 ##
 ## Stoqdrivers
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,27 +21,54 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s):   Henrique Romano  <henrique@async.com.br>
+## Author(s):   Johan Dahlin                <jdahlin@async.com.br>
 ##
 """
-Barcode reader interface implementation.
+StoqDrivers enums
 """
 
-from zope.interface import providedBy
+from kiwi.python import enum
 
-from stoqdrivers.devices.interfaces import IBarcodeReader
-from stoqdrivers.devices.base import BaseDevice
-from stoqdrivers.enum import DeviceType
+class PaymentMethodType(enum):
+    """
+    Enum for Payment Methods
+    """
+    (MONEY,
+     CHECK,
+     BILL,
+     CREDIT_CARD,
+     DEBIT_CARD,
+     FINANCIAL,
+     GIFT_CERTIFICATE,
+     CUSTOM) = range(8)
 
-class BarcodeReader(BaseDevice):
-    device_dirname = "readers.barcode"
-    device_type = DeviceType.BARCODE_READER
+class UnitType(enum):
+    """
+    Enum for units
+    """
+    (WEIGHT,
+     METERS,
+     LITERS,
+     EMPTY,
+     CUSTOM) = range(20, 25)
 
-    def check_interfaces(self):
-        if not IBarcodeReader in providedBy(self._driver):
-            raise TypeError("The driver `%r' doesn't implements a valid "
-                            "interface" % self._driver)
+class TaxType(enum):
+    """
+    Enum for taxes
+    """
+    (ICMS,
+     SUBSTITUTION,
+     EXEMPTION,
+     NONE,
+     SERVICE,
+     CUSTOM) = range(40, 46)
 
-    def get_code(self):
-        return self._driver.get_code()
+class DeviceType(enum):
+    """
+    Enum for device types
+    """
+
+    (PRINTER,
+     SCALE,
+     BARCODE_READER) = range(3)
 

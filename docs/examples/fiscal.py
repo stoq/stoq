@@ -32,11 +32,8 @@ from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.exceptions import (PendingReduceZ,
                                     PendingReadX,
                                     CouponOpenError,)
-from stoqdrivers.constants import (TAX_SUBSTITUTION,
-                                   UNIT_CUSTOM,
-                                   TAX_NONE,
-                                   UNIT_LITERS,
-                                   MONEY_PM,)
+from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
+
 def example():
     printer = FiscalPrinter()
     printer.identify_customer('Henrique Romano', 'Async', '1234567890')
@@ -54,16 +51,16 @@ def example():
             printer.cancel()
 
     item1_id = printer.add_item("123456", u"Hollywóód",
-                                Decimal("2.00"), TAX_SUBSTITUTION,
-                                unit=UNIT_CUSTOM, unit_desc=u"mç")
+                                Decimal("2.00"), TaxType.SUBSTITUTION,
+                                unit=UnitType.CUSTOM, unit_desc=u"mç")
     item2_id = printer.add_item("654321", u"Heineken Beer",
-                                Decimal("1.53"), TAX_NONE,
+                                Decimal("1.53"), TaxType.NONE,
                                 items_quantity=Decimal("5"),
-                                unit=UNIT_LITERS)
+                                unit=UnitType.LITERS)
     printer.cancel_item(item1_id)
     coupon_total = printer.totalize(discount=Decimal('1.0'))
-    printer.add_payment(MONEY_PM, Decimal('2.00'))
-    printer.add_payment(MONEY_PM, Decimal('11.00'))
+    printer.add_payment(PaymentMethodType.MONEY, Decimal('2.00'))
+    printer.add_payment(PaymentMethodType.MONEY, Decimal('11.00'))
     coupon_id = printer.close()
     print "+++ coupon %d created." % coupon_id
 

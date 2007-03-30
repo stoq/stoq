@@ -34,10 +34,7 @@ from decimal import Decimal
 from kiwi.log import Logger
 from zope.interface import implements
 
-from stoqdrivers.constants import (TAX_SUBSTITUTION,
-                                   TAX_EXEMPTION, TAX_NONE,  UNIT_WEIGHT,
-                                   UNIT_METERS, UNIT_LITERS, UNIT_EMPTY,
-                                   UNIT_CUSTOM)
+from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
 from stoqdrivers.exceptions import (PrinterError, CloseCouponError,
                                     PendingReadX, CommandError,
                                     CouponOpenError, CommandParametersError,
@@ -48,7 +45,6 @@ from stoqdrivers.exceptions import (PrinterError, CloseCouponError,
                                     AlreadyTotalized)
 from stoqdrivers.devices.interfaces import ICouponPrinter
 from stoqdrivers.devices.serialbase import SerialBase
-from stoqdrivers.constants import MONEY_PM, CHEQUE_PM
 from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.devices.printers.base import BaseDriverConstants
 from stoqdrivers.translation import stoqdrivers_gettext
@@ -60,19 +56,19 @@ log = Logger('stoqdrivers.sweda')
 class IFS9000IConstants(BaseDriverConstants):
     _constants = {
         # Page 4-12, two decimals
-        UNIT_WEIGHT:      '!',
-        UNIT_METERS:      '@',
-        UNIT_LITERS:      ')',
-        UNIT_EMPTY:       '^',
-        MONEY_PM:         '01',
-        CHEQUE_PM:        '01'
+        UnitType.WEIGHT:      '!',
+        UnitType.METERS:      '@',
+        UnitType.LITERS:      ')',
+        UnitType.EMPTY:       '^',
+        PaymentMethodType.MONEY:         '01',
+        PaymentMethodType.CHECK:        '01'
         }
 
     _tax_constants = [
         # Page 4-8
-        (TAX_SUBSTITUTION, 'F', None),
-        (TAX_EXEMPTION,    'I', None),
-        (TAX_NONE,         'N', None),
+        (TaxType.SUBSTITUTION, 'F', None),
+        (TaxType.EXEMPTION,    'I', None),
+        (TaxType.NONE,         'N', None),
         # Custom, see Page 4-78
         ]
 
@@ -307,7 +303,8 @@ class IFS9000I(SerialBase):
         #
         # Setting up the payment methods
         #
-        for method in (MONEY_PM, CHEQUE_PM):
+        for method in (PaymentMethodType.MONEY,
+                       PaymentMethodType.CHECK):
             label = ("%-15s" % method.get_description())[:15]
             self.send_command(self.CMD_SETUP_PAYMENT_METHOD, 'S', label)
 
@@ -473,11 +470,11 @@ class IFS9000I(SerialBase):
 
 
     def coupon_add_item(self, code, description, price, taxcode,
-                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        quantity=Decimal("1.0"), unit=UnitType.EMPTY,
                         discount=Decimal("0.0"),
                         surcharge=Decimal("0.0"), unit_desc=""):
-        if unit == UNIT_CUSTOM:
-            unit = UNIT_EMPTY
+        if unit == UnitType.CUSTOM:
+            unit = UnitType.EMPTY
         unit_code = self._consts.get_value(unit)
         code = self._format_string(code, self.PRODUCT_CODE_CHAR_LEN, 'code')
         orig_qty = quantity
@@ -552,7 +549,7 @@ class IFS9000I(SerialBase):
         return self.get_remainder_value()
 
     def coupon_totalize(self, discount=Decimal("0.0"),
-                        surcharge=Decimal("0.0"), taxcode=TAX_NONE):
+                        surcharge=Decimal("0.0"), taxcode=TaxType.NONE):
         """ Print the total value of the coupon.
         The taxcode argument is useless here and exists only for API
         compatibility
@@ -598,7 +595,7 @@ class IFS9000I(SerialBase):
         # the counter used by the printer at Async for cash in ("03")
         self._open_voucher(1)
         self._add_value_to_counter(value, "03")
-        self.coupon_add_payment(MONEY_PM, value)
+        self.coupon_add_payment(PaymentMethodType.MONEY, value)
         self.coupon_close()
 
     def till_remove_cash(self, value):
