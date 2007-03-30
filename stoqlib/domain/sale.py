@@ -37,6 +37,7 @@ from kiwi.datatypes import currency
 
 from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.database.runtime import get_current_user
+from stoqlib.lib.defaults import quantize
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
@@ -164,7 +165,7 @@ class Sale(Domain):
                               'at this point')
         total = subtotal - discount_value
         percentage = (1 - total / subtotal) * 100
-        return percentage.quantize(Decimal('10e-2'))
+        return quantize(percentage)
 
     discount_percentage = property(_get_discount_by_percentage,
                                    _set_discount_by_percentage)
@@ -185,7 +186,7 @@ class Sale(Domain):
                               'at this point')
         total = subtotal + surcharge_value
         percentage = ((total / subtotal) - 1) * 100
-        return percentage.quantize(Decimal('10e-2'))
+        return quantize(percentage)
 
     surcharge_percentage = property(_get_surcharge_by_percentage,
                                     _set_surcharge_by_percentage)
