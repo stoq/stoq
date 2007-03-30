@@ -121,7 +121,7 @@ class PaymentMethodStep(WizardEditorStep):
                 break
         else:
             raise AssertionError
-        self.group.set_method(method_name)
+        self.group.set_method(int(method_name))
 
     def _update_payment_method_slave(self):
         selected = self.method_combo.get_selected_data()
