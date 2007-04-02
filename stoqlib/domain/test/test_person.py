@@ -29,19 +29,21 @@ import datetime
 
 from kiwi.datatypes import currency
 from sqlobject.main import SQLObjectMoreThanOneResultError
+from sqlobject.sqlbuilder import AND
 
 from stoqlib.database.runtime import get_current_station
-from stoqlib.domain.account import BankAccount, Bank
+from stoqlib.domain.account import BankAccount
+from stoqlib.domain.address import Address, CityLocation
+from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IClient,
                                        ITransporter, ISupplier,
                                        ICreditProvider, IEmployee,
                                        IUser, IBranch, ISalesPerson,
-                                       ISellable, IBankBranch)
-from stoqlib.domain.address import Address, CityLocation
+                                       ISellable)
 from stoqlib.domain.person import (Person,
                                    EmployeeRole, WorkPermitData,
-                                   MilitaryData, VoterData, Liaison, Calls,
+                                   MilitaryData, VoterData,
                                    PersonAdaptToClient,
                                    PersonAdaptToBranch,
                                    PersonAdaptToSalesPerson,
@@ -55,79 +57,44 @@ from stoqlib.domain.person import (Person,
 from stoqlib.domain.product import Product
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.till import Till
 from stoqlib.lib.translation import stoqlib_gettext
-
-from stoqlib.domain.test.domaintest import BaseDomainTest, DomainTest
 
 
 _ = stoqlib_gettext
 
-PHONE_DATA_VALUES = ('7133524563','1633767277')
-MOBILE_DATA_VALUES = ('7188152345', '1699786748')
-FAX_DATA_VALUES = ('1681359875', '1633760125')
 
+class TestEmployeeRoleHistory(DomainTest):
+     def testCreate(self):
+          EmployeeRole(connection=self.trans, name='ajudante')
 
-def get_existing_city_location(conn):
-    items = CityLocation.select(connection=conn)
-    assert items
-    return items[0]
+     def testHasRole(self):
+          role = EmployeeRole(connection=self.trans, name='role')
+          self.failIf(role.has_other_role('Role'))
+          role = EmployeeRole(connection=self.trans, name='Role')
+          self.failUnless(role.has_other_role('role'))
 
-def get_empty_city_location(conn):
-    return CityLocation(connection=conn)
+class TestEmployeeRole(DomainTest):
+    def test_get_description(self):
+        role = self.create_employee_role()
+        role.name =  'manager'
+        self.assertEquals(role.name, role.get_description())
 
-def get_new_city_location(conn):
-    return CityLocation(city='Birigui', state='MT', country='Paraguai',
-                        connection=conn)
-def get_person(conn):
-    return Person(name='John', connection=conn)
+class TestPerson(DomainTest):
 
-def get_client(conn):
-    person = Person(name='Laun', connection=conn)
-    person.addFacet(IIndividual, connection=conn)
-    return person.addFacet(IClient, connection=conn)
-
-def get_employee(conn, role_name):
-    person = Person(name='Denis', connection=conn)
-    person.addFacet(IIndividual, connection=conn)
-    role = EmployeeRole(connection=conn, name=role_name)
-    workpermit_data = WorkPermitData(connection=conn)
-    military_data = MilitaryData(connection=conn)
-    voter_data = VoterData(connection=conn)
-    bank_account = BankAccount(connection=conn)
-    return person.addFacet(IEmployee, connection=conn, role=role,
-                           workpermit_data=workpermit_data,
-                           voter_data=voter_data, bank_account=bank_account)
-
-def get_salesperson(conn, role_name):
-    employee = get_employee(conn, role_name)
-    person = employee.person
-    return person.addFacet(ISalesPerson, connection=conn)
-
-
-class TestPerson(BaseDomainTest):
-    """
-    C{Person} TestCase
-    """
-    _table = Person
-
-    def get_extra_field_values(self):
-        return dict(phone_number=PHONE_DATA_VALUES,
-                    mobile_number=MOBILE_DATA_VALUES,
-                    fax_number=FAX_DATA_VALUES)
-
-    def test_get_main_address(self):
-        self.create_instance()
-        assert not self._instance.get_main_address()
+    def testGetMainAddress(self):
+        person = self.create_person()
+        assert not person.get_main_address()
         ctlocs = CityLocation.select(connection=self.trans)
         assert ctlocs
         ctloc = ctlocs[0]
-        address = Address(connection=self.trans, person=self._instance,
+        address = Address(connection=self.trans, person=person,
                           city_location=ctloc, is_main_address=True)
-        assert self._instance.get_main_address() is not None
+        assert person.get_main_address() is not None
 
     def test_get_address_string(self):
-        person = get_person(self.trans)
+        person = self.create_person()
         ctloc = CityLocation(connection=self.trans)
         address = Address(connection=self.trans, person=person,
                           city_location=ctloc, street ='bla', number=2,
@@ -147,11 +114,11 @@ class TestPerson(BaseDomainTest):
 
     def test_check_individual_or_company_facets(self):
         #First Person testcase without facets
-        person = get_person(self.trans)
+        person = self.create_person()
         assert not self._check_has_individual_or_company_facets(person)
 
         #Second Person testcase with an individual facet
-        person = get_person(self.trans)
+        person = self.create_person()
         assert not self._check_has_individual_or_company_facets(person)
         person.addFacet(IIndividual, connection=self.trans)
         assert self._check_has_individual_or_company_facets(person)
@@ -161,7 +128,7 @@ class TestPerson(BaseDomainTest):
         assert self._check_has_individual_or_company_facets(person)
 
         #Fourth Person testcase with company facet
-        company = get_person(self.trans)
+        company = self.create_person()
         assert not self._check_has_individual_or_company_facets(company)
         company.addFacet(ICompany, connection=self.trans)
         assert self._check_has_individual_or_company_facets(company)
@@ -178,28 +145,28 @@ class TestPerson(BaseDomainTest):
             return False
 
     def test_facet_IClient_add(self):
-        person = get_person(self.trans)
+        person = self.create_person()
         assert self._check_create_facet_fails(person, IClient)
         assert not self._check_create_facet_fails(person, IIndividual)
         assert not self._check_create_facet_fails(person, IClient)
         assert not self._check_create_facet_fails(person, ICompany)
 
     def test_facet_ITransporter_add(self):
-        person = get_person(self.trans)
+        person = self.create_person()
         assert self._check_create_facet_fails(person, ITransporter)
         assert not self._check_create_facet_fails(person, ICompany)
         assert not self._check_create_facet_fails(person, ITransporter)
         assert not self._check_create_facet_fails(person, IIndividual)
 
     def test_facet_ISupplier_add(self):
-        person = get_person(self.trans)
+        person = self.create_person()
         assert self._check_create_facet_fails(person, ISupplier)
         assert not self._check_create_facet_fails(person, IIndividual)
         assert not self._check_create_facet_fails(person, ISupplier)
         assert not self._check_create_facet_fails(person, ICompany)
 
     def test_facet_ICreditProvider_add(self):
-        person = get_person(self.trans)
+        person = self.create_person()
         short_name = 'Credicard'
         date = datetime.date(2006, 06, 01)
         assert self._check_create_facet_fails(person, ICreditProvider,
@@ -212,7 +179,7 @@ class TestPerson(BaseDomainTest):
         assert not self._check_create_facet_fails(person, IIndividual)
 
     def test_facet_IEmployee_add(self, **kwargs):
-        person = get_person(self.trans)
+        person = self.create_person()
         assert self._check_create_facet_fails(person, IEmployee)
         assert not self._check_create_facet_fails(person, IIndividual)
         role = EmployeeRole(connection=self.trans, name='Escriba')
@@ -229,7 +196,7 @@ class TestPerson(BaseDomainTest):
         assert not self._check_create_facet_fails(person, ICompany)
 
     def test_facet_IUser_add(self, **kwargs):
-        person = get_person(self.trans)
+        person = self.create_person()
         assert self._check_create_facet_fails(person, IUser)
         assert not self._check_create_facet_fails(person, IIndividual)
         profile = UserProfile(name='profile', connection=self.trans)
@@ -240,14 +207,14 @@ class TestPerson(BaseDomainTest):
         assert not self._check_create_facet_fails(person, ICompany)
 
     def test_facet_IBranch_add(self, **kwargs):
-        person = get_person(self.trans)
+        person = self.create_person()
         assert self._check_create_facet_fails(person, IBranch)
         assert not self._check_create_facet_fails(person, ICompany)
         assert not self._check_create_facet_fails(person, IBranch)
         assert not self._check_create_facet_fails(person, IIndividual)
 
     def test_facet_ISalesPerson_add(self, **kwargs):
-        person = get_person(self.trans)
+        person = self.create_person()
         assert self._check_create_facet_fails(person, ISalesPerson)
         assert not self._check_create_facet_fails(person, IIndividual)
         assert self._check_create_facet_fails(person, ISalesPerson)
@@ -264,55 +231,32 @@ class TestPerson(BaseDomainTest):
                                                   bank_account=bank_account)
         assert not self._check_create_facet_fails(person, ICompany)
 
-class TestEmployeeRole(BaseDomainTest):
-    """
-    C{EmployeeRole} TestCase
-    """
-    _table = EmployeeRole
+class _PersonFacetTest(object):
+    facet = None
 
-    def test_get_description(self):
-        self.create_instance()
-        name = 'manager'
-        self._instance.name = name
-        desc = self._instance.get_description()
-        self.assertEquals(desc, name)
+    def _create_person_facet(self):
+        ex = ExampleCreator(self.trans)
+        return ex.create_by_type(self.facet.__name__)
 
+    def testInactivate(self):
+        facet = self._create_person_facet()
+        facet.is_active = True
+        facet.inactivate()
+        self.failIf(facet.is_active)
 
-class TestWorkPermitData(BaseDomainTest):
-    """
-    C{WorkPermitData} TestCase
-    """
-    _table = WorkPermitData
+    def testActivate(self):
+        facet = self._create_person_facet()
+        facet.is_active = False
+        facet.activate()
+        self.failUnless(facet.is_active)
 
+    def testGetDescription(self):
+        facet = self._create_person_facet()
+        self.failUnless(facet.get_description(), facet.person.name)
 
-class TestMilitaryData(BaseDomainTest):
-    """
-    C{MilitaryData} TestCase
-    """
-    _table = MilitaryData
+class TestIndividual(_PersonFacetTest, DomainTest):
+    facet = Person.getAdapterClass(IIndividual)
 
-
-class TestVoterData(BaseDomainTest):
-    """
-    C{VoterData} TestCase
-    """
-    _table = VoterData
-
-class TestLiaison(BaseDomainTest):
-    """
-    C{Liaison} TestCase
-    """
-    _table = Liaison
-
-
-class TestCalls(BaseDomainTest):
-    """
-    C{Calls} TestCase
-    """
-    _table = Calls
-
-
-class TestIndividual(DomainTest):
     def testIndividual(self):
         person = self.create_person()
         individual = person.addFacet(IIndividual, connection=self.trans)
@@ -338,46 +282,19 @@ class TestIndividual(DomainTest):
         individual.ensure_birth_location()
         self.assertEqual(individual.birth_location, old_location)
 
-class TestCompany(DomainTest):
-    def testCompany(self):
-        person = self.create_person()
-        company = person.addFacet(ICompany, connection=self.trans)
-        self.assertEqual(company.get_description(), person.name)
+class TestCompany(_PersonFacetTest, DomainTest):
+    facet = Person.getAdapterClass(ICompany)
 
-class TestClient(BaseDomainTest):
-    """
-    C{PersonAdaptToClient} TestCase
-    """
-    _table = PersonAdaptToClient
-
-    def get_adapter(self):
-        person = get_person(self.trans)
-        person.addFacet(IIndividual, connection=self.trans)
-        return person.addFacet(IClient, connection=self.trans)
-
-    def test_is_active(self):
-        client = get_client(self.trans)
-        client.status = PersonAdaptToClient.STATUS_INDEBTED
-        assert not client.is_active()
-
-    def test_inactivate(self):
-        client = get_client(self.trans)
-        client.status = PersonAdaptToClient.STATUS_SOLVENT
-        client.inactivate()
-        assert not client.is_active()
-
-    def test_activate(self):
-        client = get_client(self.trans)
-        client.status = PersonAdaptToClient.STATUS_INACTIVE
-        client.activate()
-        assert client.is_active()
+class TestClient(_PersonFacetTest, DomainTest):
+    facet = PersonAdaptToClient
 
     def test_get_name(self):
-        client = get_client(self.trans)
+        client = self.create_client()
+        client.person.name = u'Laun'
         self.assertEquals(client.get_name(), u'Laun')
 
     def test_get_status_string(self):
-        client = get_client(self.trans)
+        client = self.create_client()
         status = client.status
         status = client.statuses[status]
         self.assertEquals(client.get_status_string(), status)
@@ -385,7 +302,7 @@ class TestClient(BaseDomainTest):
     def test_get_active_clients(self):
          table = PersonAdaptToClient
          active_clients = table.get_active_clients(self.trans).count()
-         client = get_client(self.trans)
+         client = self.create_client()
          client.status = table.STATUS_SOLVENT
          one_more_active_client = table.get_active_clients(self.trans).count()
          self.assertEquals(active_clients + 1, one_more_active_client)
@@ -422,44 +339,34 @@ class TestClient(BaseDomainTest):
         #Testing get_last_purchase_date method bellow
         self.assertEquals(client.get_last_purchase_date(), date)
 
-class TestSupplier(BaseDomainTest):
-    """
-    C{PersonAdaptToSupplier} TestCase
-    """
-    _table = PersonAdaptToSupplier
+class TestSupplier(_PersonFacetTest, DomainTest):
+    facet = PersonAdaptToSupplier
 
-    def get_adapter(self):
-        person = get_person(self.trans)
-        person.addFacet(IIndividual, connection=self.trans)
-        return person.addFacet(ISupplier, connection=self.trans)
+    def testGetActiveSuppliers(self):
+        for supplier in PersonAdaptToSupplier.get_active_suppliers(self.trans):
+            self.assertEquals(supplier.status,
+                              PersonAdaptToSupplier.STATUS_ACTIVE)
 
-    def test_get_active_suppliers(self):
-        table = PersonAdaptToSupplier
-        active_suppliers = table.get_active_suppliers(self.trans)
-        for supplier in active_suppliers:
-            self.assertEquals(supplier.status, table.STATUS_ACTIVE)
+    def testGetAllSuppliers(self):
+        query = AND(Person.q.name ==  "test",
+                    PersonAdaptToSupplier.q._originalID == Person.q.id)
 
-    def test_get_description(self):
-        person = get_person(self.trans)
-        person.addFacet(IIndividual, connection=self.trans)
-        supplier = person.addFacet(ISupplier, connection=self.trans)
-        self.assertEquals(supplier.get_description(), person.name)
+        suppliers = Person.select(query, connection=self.trans)
+        self.assertEqual(suppliers.count(), 0)
 
+        supplier = self.create_supplier()
+        supplier.person.name =  "test"
 
-class TestEmployee(BaseDomainTest):
-    """
-    C{PersonAdaptToEmployee} TestCase
-    """
-    _table = PersonAdaptToEmployee
+        suppliers = Person.select(query, connection=self.trans)
+        self.assertEqual(suppliers.count(), 1)
 
-    def get_adapter(self):
-        role_name = 'idiot'
-        return get_employee(self.trans, role_name)
+class TestEmployee(_PersonFacetTest, DomainTest):
+    facet = PersonAdaptToEmployee
 
     def test_role_history(self):
         #this test depends bug 2457
         role_name = 'crazypaper'
-        employee = get_employee(self.trans, role_name)
+        employee = self.create_employee()
         history = EmployeeRoleHistory(role=employee.role,
                                       employee=employee,
                                       connection=self.trans,
@@ -475,7 +382,7 @@ class TestEmployee(BaseDomainTest):
 
     def test_get_active_role_history(self):
         role_name = 'boss'
-        employee = get_employee(self.trans, role_name)
+        employee = self.create_employee()
 
         #creating 2 active role history, asserting it fails
         history = EmployeeRoleHistory(role=employee.role,
@@ -498,34 +405,8 @@ class TestEmployee(BaseDomainTest):
         #history2.is_active = False
         #assert employee.get_role_history()
 
-class TestUser(BaseDomainTest):
-    """
-    C{PersonAdaptToUser} TestCase
-    """
-    _table = PersonAdaptToUser
-
-    def get_adapter(self):
-        person = get_person(self.trans)
-        person.addFacet(IIndividual, connection=self.trans)
-        profile = UserProfile(name='vai', connection=self.trans)
-        return person.addFacet(IUser, connection=self.trans, username='bla',
-                               password='ble', profile=profile)
-
-    def test_inactivate(self):
-        users = PersonAdaptToUser.select(connection=self.trans)
-        assert users
-        user = users[0]
-        user.is_active = True
-        user.inactivate()
-        assert user.is_active is False
-
-    def test_activate(self):
-        users = PersonAdaptToUser.select(connection=self.trans)
-        assert users
-        user = users[0]
-        user.is_active = False
-        user.activate()
-        assert user.is_active is True
+class TestUser(_PersonFacetTest, DomainTest):
+    facet = PersonAdaptToUser
 
     def test_get_status_str(self):
         users = PersonAdaptToUser.select(connection=self.trans)
@@ -536,33 +417,8 @@ class TestUser(BaseDomainTest):
         self.assertEquals(string, _(u'Inactive'))
 
 
-class TestBranch(BaseDomainTest):
-    """
-    C{PersonAdaptToBranch} TestCase
-    """
-    _table = PersonAdaptToBranch
-
-    def get_adapter(self):
-        person = get_person(self.trans)
-        person.addFacet(ICompany, connection=self.trans)
-        return person.addFacet(IBranch, connection=self.trans,
-                                 manager=person)
-
-    def test_inactivate(self):
-        branches = PersonAdaptToBranch.select(connection=self.trans)
-        assert branches
-        branch = branches[0]
-        branch.is_active = True
-        branch.inactivate()
-        self.assertEquals(branch.is_active, False)
-
-    def test_activate(self):
-        branches = PersonAdaptToBranch.select(connection=self.trans)
-        assert branches
-        branch = branches[0]
-        branch.is_active = False
-        branch.activate()
-        assert branch.is_active is True
+class TestBranch(_PersonFacetTest, DomainTest):
+    facet = PersonAdaptToBranch
 
     def test_get_status_str(self):
         branches = PersonAdaptToBranch.select(connection=self.trans)
@@ -572,15 +428,8 @@ class TestBranch(BaseDomainTest):
         string = branch.get_status_string()
         self.assertEquals(string, _(u'Inactive'))
 
-    def test_get_description(self):
-        person = Person(name='Winston', connection=self.trans)
-        person.addFacet(ICompany, connection=self.trans)
-        branch = person.addFacet(IBranch, connection=self.trans,
-                                 manager=person)
-        self.failUnless(branch.get_description(), person.name)
-
     def test_get_active_branches(self):
-        person = get_person(self.trans)
+        person = self.create_person()
         person.addFacet(ICompany, connection=self.trans)
         count = PersonAdaptToBranch.get_active_branches(self.trans).count()
         branch = person.addFacet(IBranch, connection=self.trans,
@@ -588,180 +437,44 @@ class TestBranch(BaseDomainTest):
         assert branch.get_active_branches(self.trans).count() == count + 1
 
 
-class TestBankBranch(BaseDomainTest):
-    """
-    C{PersonAdaptToBankBranch} TestCase
-    """
-    _table = PersonAdaptToBankBranch
+class TestBankBranch(_PersonFacetTest, DomainTest):
+    facet = PersonAdaptToBankBranch
 
-    def setUp(self):
-        BaseDomainTest.setUp(self)
-        person = get_person(self.trans)
-        bank = Bank(connection=self.trans, name='Boston', short_name='short',
-                    compensation_code='1234')
-        person.addFacet(ICompany, connection=self.trans)
-        self._adapter = person.addFacet(IBankBranch, connection=self.trans,
-                                        bank=bank)
-    def get_adapter(self):
-        return self._adapter
+class TestCreditProvider(_PersonFacetTest, DomainTest):
+    facet = PersonAdaptToCreditProvider
 
-    def test_inactivate(self):
-        bankbranches = PersonAdaptToBankBranch.select(connection=self.trans)
-        assert bankbranches
-        bankbranch = bankbranches[0]
-        bankbranch.is_active = True
-        bankbranch.inactivate()
-        assert bankbranch.is_active == False
-
-    def test_activate(self):
-        bankbranches = PersonAdaptToBankBranch.select(connection=self.trans)
-        assert bankbranches
-        bankbranch = bankbranches[0]
-        bankbranch.is_active = False
-        bankbranch.activate()
-        assert bankbranch.is_active is True
-
-
-class TestCreditProvider(BaseDomainTest):
-    """
-    C{PersonAdaptToCreditProvider} TestCase
-    """
-    _table = PersonAdaptToCreditProvider
-
-    def get_adapter(self):
-        person = get_person(self.trans)
-        person.addFacet(ICompany, connection=self.trans)
-        return  person.addFacet(ICreditProvider,
-                                connection=self.trans,
-                                short_name='Velec',
-                                open_contract_date=datetime.date(2006, 01, 01))
-
-
-    def test_get_card_providers(self):
-        person = get_person(self.trans)
-        person.addFacet(ICompany, connection=self.trans)
+    def testGetCardProviders(self):
         count = PersonAdaptToCreditProvider.get_card_providers(self.trans).count()
-        credit_provider = person.addFacet(ICreditProvider, connection=self.trans,
-                                          short_name='Plus',
-                                          open_contract_date=datetime.date(2006, 02, 02),
-                                          provider_type=0)
-        assert credit_provider.get_card_providers(self.trans).count() == count + 1
+        facet = self._create_person_facet()
+        self.assertEqual(facet.get_card_providers(self.trans).count(),
+                         count + 1)
 
-    def test_get_card_providers(self):
-        person = get_person(self.trans)
-        person.addFacet(ICompany, connection=self.trans)
-        count = PersonAdaptToCreditProvider.get_finance_companies(self.trans).count()
-        credit_provider = person.addFacet(ICreditProvider, connection=self.trans,
-                                          short_name='Cards',
-                                          open_contract_date=datetime.date(2006, 02, 02),
-                                          provider_type=1)
-        assert credit_provider.get_finance_companies(self.trans).count() == count + 1
+class SalesPersonTest(_PersonFacetTest, DomainTest):
 
-    def test_inactivate(self):
-        cproviders = PersonAdaptToCreditProvider.select(connection=self.trans)
-        assert cproviders
-        cprovider = cproviders[0]
-        cprovider.is_active = True
-        cprovider.inactivate()
-        assert cprovider.is_active is False
-
-    def test_activate(self):
-        table = PersonAdaptToCreditProvider
-        credit_providers = table.select(connection=self.trans)
-        assert credit_providers
-        credit_provider = credit_providers[0]
-        credit_provider.is_active = False
-        credit_provider.activate()
-        assert credit_provider.is_active is True
-
-class TestSalesPerson(BaseDomainTest):
-    """
-    C{PersonAdaptToSalesPerson} TestCase
-    """
-    _table = PersonAdaptToSalesPerson
-
-    def get_adapter(self):
-        return get_salesperson(self.trans, 'vigia')
-
-    def test_inactivate(self):
-        people = PersonAdaptToSalesPerson.select(connection=self.trans)
-        assert people
-        salesperson = people[0]
-        salesperson.is_active = True
-        salesperson.inactivate()
-        assert salesperson.is_active is False
-
-    def test_activate(self):
-        people = PersonAdaptToSalesPerson.select(connection=self.trans)
-        assert people
-        salesperson = people[0]
-        salesperson.is_active = False
-        salesperson.activate()
-        assert salesperson.is_active is True
+    facet = PersonAdaptToSalesPerson
 
     def test_get_active_salespersons(self):
-        table = PersonAdaptToSalesPerson
-        count = table.get_active_salespersons(self.trans).count()
-        salesperson = get_salesperson(self.trans, 'vendedor')
+        count = PersonAdaptToSalesPerson.get_active_salespersons(self.trans).count()
+        salesperson = self.create_sales_person()
         one_more = salesperson.get_active_salespersons(self.trans).count()
         assert count + 1 == one_more
 
     def test_get_status_string(self):
-        salesperson = get_salesperson(self.trans, 'entregador')
+        salesperson = self.create_sales_person()
         string = salesperson.get_status_string()
         self.assertEquals(string, _(u'Active'))
 
+class TransporterTest(_PersonFacetTest, DomainTest):
 
-class TestTransporter(BaseDomainTest):
-    """
-    C{PersonAdaptToTransporter} TestCase
-    """
-    _table = PersonAdaptToTransporter
+    facet = PersonAdaptToTransporter
 
-    def get_adapter(self):
-        person = get_person(self.trans)
-        person.addFacet(ICompany, connection=self.trans)
-        return person.addFacet(ITransporter, connection=self.trans)
-
-    def test_inactivate(self):
-        transporters = PersonAdaptToTransporter.select(connection=self.trans)
-        assert transporters
-        transporter = transporters[0]
-        transporter.is_active = True
-        transporter.inactivate()
-        assert not transporter.is_active
-
-    def test_activate(self):
-        transporters = PersonAdaptToTransporter.select(connection=self.trans)
-        assert transporters
-        transporter = transporters[0]
-        transporter.is_active = False
-        transporter.activate()
-        assert transporter.is_active
-
-    def test_get_status_string(self):
-        person = get_person(self.trans)
-        person.addFacet(ICompany, connection=self.trans)
-        transporter = person.addFacet(ITransporter, connection=self.trans)
+    def testGetStatusString(self):
+        transporter = self.create_transporter()
         string = transporter.get_status_string()
         self.assertEquals(string, _(u'Active'))
 
-    def test_get_active_transporters(self):
-        table = PersonAdaptToTransporter
-        count = table.get_active_transporters(self.trans).count()
-        person = get_person(self.trans)
-        person.addFacet(ICompany, connection=self.trans)
-        transporter = person.addFacet(ITransporter, connection=self.trans)
+    def testGetActiveTransporters(self):
+        count = PersonAdaptToTransporter.get_active_transporters(self.trans).count()
+        transporter = self.create_transporter()
         one_more = transporter.get_active_transporters(self.trans).count()
-        assert count + 1 == one_more
-
-
-class TestEmployeeRoleHistory(DomainTest):
-     def testCreate(self):
-          EmployeeRole(connection=self.trans, name='ajudante')
-
-     def testHasRole(self):
-          role = EmployeeRole(connection=self.trans, name='role')
-          self.failIf(role.has_other_role('Role'))
-          role = EmployeeRole(connection=self.trans, name='Role')
-          self.failUnless(role.has_other_role('role'))
+        self.assertEqual(count + 1, one_more)

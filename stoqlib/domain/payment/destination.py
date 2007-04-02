@@ -77,4 +77,5 @@ class BankDestination(PaymentDestination):
         - I{branch}: the bank branch where all the paid payments are send
                      to.
     """
+    _inheritable = False
     branch = ForeignKey('PersonAdaptToBankBranch')

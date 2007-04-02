@@ -305,11 +305,34 @@ class Person(Domain):
 #
 
 class _PersonAdapter(ModelAdapter):
-    implements(IPersonFacet)
+    implements(IActive, IDescribable, IPersonFacet)
 
     @property
     def person(self):
         return self.get_adapted()
+
+    #
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This person facet is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This personf facet is already active')
+        self.is_active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
+
+    # IDescribable
+
+    def get_description(self):
+        return self.person.name
+
 
 class _PersonAdaptToIndividual(_PersonAdapter):
     """An individual facet of a person.
@@ -357,6 +380,7 @@ class _PersonAdaptToIndividual(_PersonAdapter):
     gender = IntCol(default=None)
     spouse_name = UnicodeCol(default='')
     birth_location = ForeignKey('CityLocation', default=None)
+    is_active = BoolCol(default=True)
 
     #
     # Acessors
@@ -383,7 +407,7 @@ class _PersonAdaptToCompany(_PersonAdapter):
                    Brazil-specific information.
         - I{fancy_name}: Represents the fancy name of a company.
     """
-    implements(ICompany, IDescribable)
+    implements(ICompany)
 
     class sqlmeta:
         table = 'person_adapt_to_company'
@@ -393,25 +417,19 @@ class _PersonAdaptToCompany(_PersonAdapter):
     cnpj  = UnicodeCol(default='')
     fancy_name = UnicodeCol(default='')
     state_registry = UnicodeCol(default='')
-
-    #
-    # IDescribable implementation
-    #
-
-    def get_description(self):
-        return self.person.name
+    is_active = BoolCol(default=True)
 
 Person.registerFacet(_PersonAdaptToCompany, ICompany)
 
 class PersonAdaptToClient(_PersonAdapter):
     """A client facet of a person."""
 
-    implements(IClient, IActive)
-
     (STATUS_SOLVENT,
      STATUS_INDEBTED,
      STATUS_INSOLVENT,
      STATUS_INACTIVE) = range(4)
+
+    implements(IClient)
 
     statuses = {STATUS_SOLVENT:     _(u'Solvent'),
                 STATUS_INDEBTED:    _(u'Indebted'),
@@ -420,21 +438,7 @@ class PersonAdaptToClient(_PersonAdapter):
 
     status = IntCol(default=STATUS_SOLVENT)
     days_late = IntCol(default=0)
-
-    #
-    # IActive implementation
-    #
-
-    def is_active(self):
-        return self.status == self.STATUS_SOLVENT
-
-    def inactivate(self):
-        assert self.is_active(), ('This client is already inactive')
-        self.status = self.STATUS_INACTIVE
-
-    def activate(self):
-        assert not self.is_active(), ('This client is already active')
-        self.status = self.STATUS_SOLVENT
+    is_active = BoolCol(default=True)
 
     #
     # Auxiliar methods
@@ -482,7 +486,7 @@ class PersonAdaptToSupplier(_PersonAdapter):
     B{Notes}:
         - I{product_desc}: Basic description of the products of a supplier.
     """
-    implements(ISupplier, IDescribable)
+    implements(ISupplier)
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE,
@@ -494,6 +498,7 @@ class PersonAdaptToSupplier(_PersonAdapter):
 
     status = IntCol(default=STATUS_ACTIVE)
     product_desc = UnicodeCol(default='')
+    is_active = BoolCol(default=True)
 
     #
     # Auxiliar methods
@@ -503,13 +508,6 @@ class PersonAdaptToSupplier(_PersonAdapter):
     def get_active_suppliers(cls, conn):
         query = cls.q.status == cls.STATUS_ACTIVE
         return cls.select(query, connection=conn)
-
-    #
-    # IDescribable implementation
-    #
-
-    def get_description(self):
-        return self.person.name
 
 Person.registerFacet(PersonAdaptToSupplier, ISupplier)
 
@@ -557,7 +555,7 @@ Person.registerFacet(PersonAdaptToEmployee, IEmployee)
 
 class PersonAdaptToUser(_PersonAdapter):
     """An user facet of a person."""
-    implements(IUser, IActive, IDescribable)
+    implements(IUser)
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
@@ -568,30 +566,6 @@ class PersonAdaptToUser(_PersonAdapter):
     password = UnicodeCol()
     is_active = BoolCol(default=True)
     profile  = ForeignKey('UserProfile')
-
-    #
-    # IActive implementation
-    #
-
-    def inactivate(self):
-        assert self.is_active, ('This user is already inactive')
-        self.is_active = False
-
-    def activate(self):
-        assert not self.is_active, ('This user is already active')
-        self.is_active = True
-
-    def get_status_string(self):
-        if self.is_active:
-            return _('Active')
-        return _('Inactive')
-
-    #
-    # IDescribable implementation
-    #
-
-    def get_description(self):
-        return self.person.name
 
     @classmethod
     def check_password_for(cls, username, password, conn):
@@ -605,7 +579,7 @@ Person.registerFacet(PersonAdaptToUser, IUser)
 
 class PersonAdaptToBranch(_PersonAdapter):
     """A branch facet of a person."""
-    implements(IBranch, IActive, IDescribable)
+    implements(IBranch)
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
@@ -615,30 +589,6 @@ class PersonAdaptToBranch(_PersonAdapter):
 
     manager = ForeignKey('Person', default=None)
     is_active = BoolCol(default=True)
-
-    #
-    # IActive implementation
-    #
-
-    def inactivate(self):
-        assert self.is_active, ('This user is already inactive')
-        self.is_active = False
-
-    def activate(self):
-        assert not self.is_active, ('This user is already active')
-        self.is_active = True
-
-    def get_status_string(self):
-        if self.is_active:
-            return _(u'Active')
-        return _(u'Inactive')
-
-    #
-    # IDescribable implementation
-    #
-
-    def get_description(self):
-        return self.person.name
 
     #
     # Branch Company methods
@@ -693,38 +643,16 @@ Person.registerFacet(PersonAdaptToBranch, IBranch)
 
 class PersonAdaptToBankBranch(_PersonAdapter):
     """A bank branch facet of a person."""
-    implements(IBankBranch, IActive, IDescribable)
+    implements(IBankBranch)
 
     is_active = BoolCol(default=True)
     bank = ForeignKey('Bank')
-
-    #
-    # IActive implementation
-    #
-
-    def inactivate(self):
-        assert self.is_active, ('This bank branch is already inactive')
-        self.is_active = False
-
-    def activate(self):
-        assert not self.is_active, ('This bank branch is already active')
-        self.is_active = True
-
-    def get_status_string(self):
-        if self.is_active:
-            return _('Active')
-        return _('Inactive')
-
-    # IDescribable
-
-    def get_description(self):
-        return self.person.name
 
 Person.registerFacet(PersonAdaptToBankBranch, IBankBranch)
 
 class PersonAdaptToCreditProvider(_PersonAdapter):
     """A credit provider facet of a person."""
-    implements(ICreditProvider, IActive)
+    implements(ICreditProvider)
 
     (PROVIDER_CARD,
      PROVIDER_FINANCE) = range(2)
@@ -758,23 +686,6 @@ class PersonAdaptToCreditProvider(_PersonAdapter):
         return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_FINANCE,
                             connection=conn)
 
-    #
-    # IActive implementation
-    #
-
-    def inactivate(self):
-        assert self.is_active, ('This provider is already inactive')
-        self.is_active = False
-
-    def activate(self):
-        assert not self.is_active, ('This bank branch is already active')
-        self.is_active = True
-
-    def get_status_string(self):
-        if self.is_active:
-            return _('Active')
-        return _('Inactive')
-
 Person.registerFacet(PersonAdaptToCreditProvider, ICreditProvider)
 
 class PersonAdaptToSalesPerson(_PersonAdapter):
@@ -784,7 +695,7 @@ class PersonAdaptToSalesPerson(_PersonAdapter):
         - I{commission_type}: specifies the type of commission to be used by
                              the salesman.
     """
-    implements(ISalesPerson, IActive, IDescribable)
+    implements(ISalesPerson)
 
     (COMMISSION_GLOBAL,
      COMMISSION_BY_SALESPERSON,
@@ -810,25 +721,6 @@ class PersonAdaptToSalesPerson(_PersonAdapter):
     is_active = BoolCol(default=True)
 
     #
-    # IActive implementation
-    #
-
-    def inactivate(self):
-        assert self.is_active, ('This salesperson is already inactive')
-        self.is_active = False
-
-    def activate(self):
-        assert not self.is_active, ('This salesperson is already active')
-        self.is_active = True
-
-    #
-    # IDescribable implementation
-    #
-
-    def get_description(self):
-        return self.person.name
-
-    #
     # Auxiliar methods
     #
 
@@ -847,35 +739,11 @@ Person.registerFacet(PersonAdaptToSalesPerson, ISalesPerson)
 
 class PersonAdaptToTransporter(_PersonAdapter):
     """A transporter facet of a person."""
-    implements(ITransporter, IActive, IDescribable)
+    implements(ITransporter)
 
     is_active = BoolCol(default=True)
     open_contract_date = DateTimeCol(default=datetime.datetime.now)
     freight_percentage = DecimalCol(default=None)
-
-    #
-    # IActive implementation
-    #
-
-    def inactivate(self):
-        assert self.is_active, ('This transporter is already inactive')
-        self.is_active = False
-
-    def activate(self):
-        assert not self.is_active, ('This transporter is already active')
-        self.is_active = True
-
-    def get_status_string(self):
-        if self.is_active:
-            return _(u'Active')
-        return _(u'Inactive')
-
-    #
-    # IDescribable implementation
-    #
-
-    def get_description(self):
-        return self.person.name
 
     #
     # Auxiliar methods
