@@ -227,7 +227,7 @@ class TillApp(SearchableAppWindow):
         return _('Stoq - Till for Branch %03d') % get_current_branch(self.conn).id
 
     def get_columns(self):
-        return [Column('order_number', title=_('Number'), width=80,
+        return [Column('id', title=_('Number'), width=80,
                        data_type=int, format='%05d', sorted=True),
                 Column('open_date', title=_('Date Started'), width=120,
                        data_type=date, justify=gtk.JUSTIFY_RIGHT),
