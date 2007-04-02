@@ -72,7 +72,6 @@ CREATE TABLE person_adapt_to_branch (
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-
     manager_id bigint REFERENCES person(id),
     is_active boolean,
     original_id bigint UNIQUE REFERENCES person(id)
@@ -83,6 +82,7 @@ CREATE TABLE person_adapt_to_client (
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    is_active boolean,
     status integer,
     days_late integer,
     original_id bigint UNIQUE REFERENCES person(id)
@@ -93,6 +93,7 @@ CREATE TABLE person_adapt_to_company (
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    is_active boolean,
     cnpj text,
     fancy_name text,
     state_registry text,
@@ -127,6 +128,7 @@ CREATE TABLE person_adapt_to_individual (
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    is_active boolean,
     cpf text,
     rg_number text,
     birth_date timestamp,
@@ -197,6 +199,7 @@ CREATE TABLE person_adapt_to_employee (
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    is_active boolean,
     admission_date timestamp,
     expire_vacation timestamp,
     salary numeric(10,2),
@@ -228,6 +231,7 @@ CREATE TABLE person_adapt_to_supplier (
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    is_active boolean,
     status integer,
     product_desc text,
     original_id bigint UNIQUE REFERENCES person(id)

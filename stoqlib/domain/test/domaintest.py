@@ -209,6 +209,18 @@ class DomainTest(unittest.TestCase):
         ex = ExampleCreator(self.trans)
         return ex.create_by_type('Service')
 
+    def create_transporter(self):
+        ex = ExampleCreator(self.trans)
+        return ex.create_by_type('ITransporter')
+
+    def create_employee_role(self):
+        ex = ExampleCreator(self.trans)
+        return ex.create_by_type('EmployeeRole')
+
+    def create_sales_person(self):
+        ex = ExampleCreator(self.trans)
+        return ex.create_by_type('PersonAdaptToSalesPerson')
+
     def get_station(self):
         ex = ExampleCreator(self.trans)
         return ex.create_by_type('BranchStation')

@@ -31,7 +31,9 @@ from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
                                        IIndividual, ISupplier,
                                        ISellable, IStorable, ISalesPerson,
-                                       IClient, IUser)
+                                       IClient, IUser, ITransporter,
+                                       IBankBranch,
+                                       ICreditProvider)
 from stoqlib.lib.parameters import sysparam
 
 # Do not remove, these are used by doctests
@@ -118,6 +120,7 @@ class ExampleCreator(object):
             'AbstractFiscalBookEntry' : self._create_abstract_fiscal_book_entry,
             'BaseSellableInfo': self._create_base_sellable_info,
             'BranchStation': self.get_station,
+            'Bank': self._create_bank,
             'CityLocation': self.get_location,
             'CfopData': self._create_cfop_data,
             'CouponPrinter': self._create_coupon_printer,
@@ -132,15 +135,20 @@ class ExampleCreator(object):
             'IIndividual': self._create_individual,
             'ISalesPerson': self._create_sales_person,
             'ISupplier': self._create_supplier,
+            'ITransporter': self._create_transporter,
             'IUser': self._create_user,
             'ParameterData': self._create_parameter_data,
             'Person': self._create_person,
+            'PersonAdaptToBankBranch': self._create_bank_branch,
             'PersonAdaptToBranch': self._create_branch,
-            'PersonAdaptToCompany': self._create_company,
+            '_PersonAdaptToCompany': self._create_company,
             'PersonAdaptToClient': self._create_client,
+            'PersonAdaptToCreditProvider': self._create_credit_provider,
             'PersonAdaptToEmployee': self._create_employee,
+            '_PersonAdaptToIndividual': self._create_individual,
             'PersonAdaptToSalesPerson': self._create_sales_person,
             'PersonAdaptToSupplier': self._create_supplier,
+            'PersonAdaptToTransporter': self._create_transporter,
             'PersonAdaptToUser': self._create_user,
             'Product': self._create_product,
             'ProductAdaptToSellable' : self._create_sellable,
@@ -412,13 +420,10 @@ class ExampleCreator(object):
         return CouponPrinter(settings.get_interface(), settings)
 
     def _create_service(self):
-        from stoqlib.domain.sellable import (BaseSellableInfo,
-                                             SellableTaxConstant)
+        from stoqlib.domain.sellable import SellableTaxConstant
         from stoqlib.domain.service import Service
         service = Service(connection=self.trans)
-        sellable_info = BaseSellableInfo(connection=self.trans,
-                                         description="Description",
-                                         price=10)
+        sellable_info = self._create_base_sellable_info()
         tax_constant = SellableTaxConstant.get_by_type(
             TaxType.SERVICE, self.trans)
         service.addFacet(ISellable,
@@ -434,6 +439,30 @@ class ExampleCreator(object):
                                  paid_total=10,
                                  invoice_number=None,
                                  responsible=person)
+
+    def _create_transporter(self):
+        person = self._create_person()
+        person.addFacet(ICompany, connection=self.trans)
+        return person.addFacet(ITransporter, connection=self.trans)
+
+    def _create_bank(self):
+        from stoqlib.domain.account import Bank
+        return Bank(connection=self.trans, name='Boston', short_name='short',
+                    compensation_code='1234')
+
+    def _create_bank_branch(self):
+        person = self._create_person()
+        person.addFacet(ICompany, connection=self.trans)
+        return person.addFacet(IBankBranch, connection=self.trans,
+                               bank=self._create_bank())
+
+    def _create_credit_provider(self):
+        person = self._create_person()
+        person.addFacet(ICompany, connection=self.trans)
+        return  person.addFacet(ICreditProvider,
+                                connection=self.trans,
+                                short_name='Velec',
+                                open_contract_date=datetime.date(2006, 01, 01))
 
     def get_station(self):
         return get_current_station(self.trans)
