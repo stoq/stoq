@@ -730,11 +730,6 @@ class PersonAdaptToSalesPerson(_PersonAdapter):
         query = cls.q.is_active == True
         return cls.select(query, connection=conn)
 
-    def get_status_string(self):
-        if self.is_active:
-            return _(u'Active')
-        return _(u'Inactive')
-
 Person.registerFacet(PersonAdaptToSalesPerson, ISalesPerson)
 
 class PersonAdaptToTransporter(_PersonAdapter):
