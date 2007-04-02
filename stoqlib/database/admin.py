@@ -189,13 +189,17 @@ def create_base_schema():
 
     settings = get_utility(IDatabaseSettings)
 
+    log.info('Creating base schema')
+
     # A Base schema shared between all RDBMS implementations
     schema = environ.find_resource('sql', 'schema.sql')
     execute_sql(schema)
 
-    log.info('Creating base schema')
-    schema = environ.find_resource('sql', '%s-schema.sql' % settings.rdbms)
-    execute_sql(schema)
+    try:
+        schema = environ.find_resource('sql', '%s-schema.sql' % settings.rdbms)
+        execute_sql(schema)
+    except EnvironmentError:
+        pass
 
     log.info('Creating views')
     schema = environ.find_resource('sql', 'views.sql')

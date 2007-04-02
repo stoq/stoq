@@ -70,7 +70,7 @@ class SaleSearch(SearchDialog):
     #
 
     def get_columns(self):
-        return [Column('order_number', title=_('Number'), width=70,
+        return [Column('id', title=_('Number'), width=70,
                        data_type=int, sorted=True),
                 Column('open_date', title=_('Date Started'), width=120,
                        data_type=date, justify=gtk.JUSTIFY_RIGHT),

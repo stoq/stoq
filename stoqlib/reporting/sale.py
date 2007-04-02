@@ -120,7 +120,7 @@ class SalesReport(SearchResultsReport):
         person_col_width = 140
         if self._landscape_mode:
             person_col_width += 84
-        columns = [OTC(_("Number"), lambda obj: obj.order_number, width=50,
+        columns = [OTC(_("Number"), lambda obj: obj.id, width=50,
                        align=RIGHT),
                    OTC(_("Date"), lambda obj: obj.get_open_date_as_string(),
                        width=70, align=RIGHT),

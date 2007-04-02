@@ -89,13 +89,13 @@ class ProductStockHistoryDialog(BaseEditor):
         self.sales_vbox.pack_start(sales_summary_label, False)
 
     def _get_receiving_columns(self):
-        return [Column("receiving_order.receiving_number",
+        return [Column("receiving_order.id",
                        title=_("#"), data_type=int, sorted=True,
                        justify=gtk.JUSTIFY_RIGHT, width=45),
                 Column("receiving_order.receival_date", title=_("Date"),
                        data_type=date, justify=gtk.JUSTIFY_RIGHT,
                        width=80),
-                Column("receiving_order.order_number",
+                Column("receiving_order.id",
                        title=_("Purchase Order"), data_type=str,
                        justify=gtk.JUSTIFY_RIGHT, width=140),
                 Column("receiving_order.supplier_name",
@@ -109,7 +109,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        width=70)]
 
     def _get_sale_columns(self):
-        return [Column("sale.order_number", title=_("#"),
+        return [Column("sale.id", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
                        width=45, sorted=True),
                 Column("sale.open_date",

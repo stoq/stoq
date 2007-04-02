@@ -35,7 +35,7 @@ from sqlobject.sqlbuilder import AND, IN, OR
 from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
-from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
+from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.interfaces import ISellable, IContainer, IDescribable
 from stoqlib.domain.base import (Domain, InheritableModelAdapter,
@@ -230,7 +230,6 @@ class ASellable(InheritableModelAdapter):
                 STATUS_CLOSED:      _(u"Closed"),
                 STATUS_BLOCKED:     _(u"Blocked")}
 
-    code = AutoIncCol('stoqlib_sellable_code_seq')
     barcode = UnicodeCol(default='')
     # This default status is used when a new sellable is created,
     # so it must be *always* SOLD (that means no stock for it).
@@ -324,6 +323,11 @@ class ASellable(InheritableModelAdapter):
 
     commission = property(_get_commission, _set_commission)
 
+    @property
+    def code(self):
+        return self.id
+
+
     #
     # IContainer methods
     #
@@ -388,10 +392,10 @@ class ASellable(InheritableModelAdapter):
                                        sale=sale, sellable=self,
                                        price=price, **kwargs)
     def get_code_str(self):
-        return u"%05d" % self.code
+        return u"%05d" % self.id
 
     def get_short_description(self):
-        return u'%s %s' % (self.code, self.base_sellable_info.description)
+        return u'%s %s' % (self.id, self.base_sellable_info.description)
 
     def get_suggested_markup(self):
         return self.category and self.category.get_markup()
@@ -511,7 +515,6 @@ class SellableView(SQLObject, BaseSQLView):
     companies
     """
     stock = DecimalCol()
-    code = IntCol()
     barcode = UnicodeCol()
     status = IntCol()
     cost = PriceCol()

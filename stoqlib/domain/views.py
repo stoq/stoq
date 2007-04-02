@@ -38,7 +38,6 @@ class ProductFullStockView(Viewable):
     This view is used to query stock information on a certain branch.
 
     @cvar id: the id of the asellable table
-    @cvar code: the sellable code
     @cvar barcode: the sellable barcode
     @cvar status: the sellable status
     @cvar cost: the sellable cost
@@ -54,7 +53,6 @@ class ProductFullStockView(Viewable):
 
     columns = dict(
         id=ASellable.q.id,
-        code=ASellable.q.code,
         barcode=ASellable.q.barcode,
         status=ASellable.q.status,
         cost=ASellable.q.cost,

@@ -382,7 +382,6 @@ CREATE TABLE asellable (
     --    service_adapt_to_sellable
     --    gift_certificate_adapt_to_sellable
     id serial NOT NULL PRIMARY KEY,
-    code integer NOT NULL UNIQUE,
     barcode text,
     status integer,
     cost numeric(10,2),
@@ -402,7 +401,6 @@ CREATE TABLE purchase_order (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     status integer,
-    order_number integer NOT NULL UNIQUE,
     open_date timestamp,
     quote_deadline timestamp,
     expected_receival_date timestamp,
@@ -479,7 +477,6 @@ CREATE TABLE sale (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    order_number integer NOT NULL UNIQUE,
     coupon_id integer,
     service_invoice_number integer,
     open_date timestamp ,
@@ -969,7 +966,6 @@ CREATE TABLE receiving_order (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    receiving_number integer NOT NULL UNIQUE,
     status integer,
     receival_date timestamp ,
     confirm_date timestamp ,

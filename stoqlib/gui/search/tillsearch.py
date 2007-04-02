@@ -59,7 +59,7 @@ class TillFiscalOperationsSearch(SearchDialog):
     #
 
     def get_columns(self, *args):
-        return [Column('identifier', title=_('#'), width=60,
+        return [Column('id', title=_('#'), width=60,
                        justify=gtk.JUSTIFY_RIGHT, format="%05d",
                        data_type=int, sorted=True),
                 Column('date', title=_('Date'), width=80,

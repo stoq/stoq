@@ -80,11 +80,11 @@ class ClientDetailsDialog(BaseEditor):
                 total_value = price * qty
                 unit = product.sellable.get_unit_description()
                 qty_str = '%s %s' % (qty, unit)
-                product_codes = [item.code for item in product_dict.values()]
+                product_codes = [item.id for item in product_dict.values()]
                 sellable = product.sellable
-                if not sellable.code in product_codes:
+                if not sellable.id in product_codes:
                     desc = sellable.base_sellable_info.description
-                    obj = Settable(code=sellable.code, description=desc,
+                    obj = Settable(code=sellable.id, description=desc,
                                    _total_qty=qty, total_value=total_value,
                                    qty_str=qty_str, unit=unit, price=price)
                     product_dict[sellable] = obj
@@ -120,7 +120,7 @@ class ClientDetailsDialog(BaseEditor):
         self.sales_vbox.pack_start(sales_summary_label, False)
 
     def _get_sale_columns(self):
-        return [Column("order_number", title=_("#"),
+        return [Column("id", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
                        format='%04d', width=90, sorted=True),
                 Column("open_date", title=_("Date"), data_type=date,
@@ -133,7 +133,7 @@ class ClientDetailsDialog(BaseEditor):
                        data_type=currency, width=100)]
 
     def _get_product_columns(self):
-        return [Column("code", title=_("Code"), data_type=int,
+        return [Column("id", title=_("Code"), data_type=int,
                        format='%04d', justify=gtk.JUSTIFY_RIGHT,
                        width=90, sorted=True),
                 Column("description", title=_("Description"), data_type=str,
@@ -144,7 +144,7 @@ class ClientDetailsDialog(BaseEditor):
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT,)]
 
     def _get_services_columns(self):
-        return [Column("sellable.code", title=_("Code"), data_type=int,
+        return [Column("sellable.id", title=_("Code"), data_type=int,
                        justify=gtk.JUSTIFY_RIGHT, width=120, sorted=True),
                 Column("sellable.base_sellable_info.description",
                        title=_("Description"), data_type=str, expand=True,
@@ -153,7 +153,7 @@ class ClientDetailsDialog(BaseEditor):
                        width=130,data_type=date)]
 
     def _get_payments_columns(self):
-        return [Column("identifier", title=_("#"),
+        return [Column("id", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
                        format='%04d', width=50),
                 Column("method.description", title=_("Type"),

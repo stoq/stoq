@@ -55,7 +55,7 @@ class ProductReport(SearchResultsReport):
 
     def _get_columns(self):
         return [
-            OTC(_("Code"), lambda obj: '%03d' % obj.code, width=120,
+            OTC(_("Code"), lambda obj: '%03d' % obj.id, width=120,
                 truncate=True),
             OTC(_("Description"), lambda obj: obj.description, truncate=True),
             OTC(_("Supplier"), lambda obj: obj.supplier_name,

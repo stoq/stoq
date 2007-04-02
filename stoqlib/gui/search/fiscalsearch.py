@@ -106,7 +106,7 @@ class FiscalBookEntrySearch(SearchEditor):
     #
 
     def get_columns(self):
-        return [Column('identifier', title=_('#'), width=80,
+        return [Column('id', title=_('#'), width=80,
                        data_type=int, sorted=True),
                 Column('date', title=_('Date'), width=80,
                        data_type=date, justify=gtk.JUSTIFY_RIGHT),

@@ -35,7 +35,7 @@ from zope.interface import implements
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 
-from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
+from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import get_current_user
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.validators import get_formatted_price
@@ -84,8 +84,6 @@ class Sale(Domain):
     """Sale object implementation.
 
     B{Important attributes}:
-        - I{order_number}: an optional identifier for this sale defined by
-                           the store.
         - I{open_date}: The day when we started this sale.
         - I{close_date}: The day when we confirmed this sale.
         - I{notes}: Some optional additional information related to this
@@ -117,7 +115,6 @@ class Sale(Domain):
                 STATUS_CANCELLED:   _(u"Cancelled"),
                 STATUS_ORDER:       _(u"Order")}
 
-    order_number = AutoIncCol('stoqlib_sale_ordernumber_seq')
     coupon_id = IntCol()
     service_invoice_number = IntCol(default=None)
     open_date = DateTimeCol(default=datetime.now)
@@ -266,6 +263,15 @@ class Sale(Domain):
             return results[0]
 
     #
+    # Properties
+    #
+
+    @property
+    def order_number(self):
+        return self.id
+
+
+    #
     # Public API
     #
 
@@ -408,7 +414,7 @@ class Sale(Domain):
     #
 
     def get_order_number_str(self):
-        return u'%05d' % self.order_number
+        return u'%05d' % self.id
 
     def get_salesperson_name(self):
         return self.salesperson.get_description()
@@ -596,9 +602,8 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
         order = self.sale
         if regtype == GiftCertificateOverpaidSettings.TYPE_RETURN_MONEY:
-            order_number = order.order_number
             reason = _(u'1/1 Money returned for gift certificate '
-                        'acquittance on sale %04d' % order_number)
+                        'acquittance on sale %04d' % order.id)
             self.create_debit(overpaid_value, reason, order.till)
 
         elif (regtype ==
@@ -723,7 +728,6 @@ Sale.registerFacet(SaleAdaptToPaymentGroup, IPaymentGroup)
 class SaleView(SQLObject, BaseSQLView):
     """Stores general informatios about sales"""
     coupon_id = IntCol()
-    order_number = IntCol()
     open_date = DateTimeCol()
     close_date = DateTimeCol()
     confirm_date = DateTimeCol()
@@ -743,7 +747,7 @@ class SaleView(SQLObject, BaseSQLView):
         return self.client_name or u""
 
     def get_order_number_str(self):
-        return u"%05d" % self.order_number
+        return u"%05d" % self.id
 
     def get_open_date_as_string(self):
         return self.open_date.strftime("%x")

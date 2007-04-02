@@ -138,7 +138,7 @@ class TillHistoryDialog(GladeSlaveDelegate):
             self.total_balance_label.set_color('black')
 
     def _get_columns(self, *args):
-        return [Column('identifier', _('Number'), data_type=int, width=80,
+        return [Column('id', _('Number'), data_type=int, width=80,
                         format='%03d', sorted=True),
                 Column('date', _('Due Date'),
                        data_type=datetime.date, width=110),

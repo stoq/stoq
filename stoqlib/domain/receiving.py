@@ -32,7 +32,7 @@ from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from stoqdrivers.enum import PaymentMethodType
 
-from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
+from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup
@@ -94,7 +94,6 @@ class ReceivingOrder(Domain):
     (STATUS_PENDING,
      STATUS_CLOSED) = range(2)
 
-    receiving_number = AutoIncCol("stoqlib_purchasereceiving_number_seq")
     status = IntCol(default=STATUS_PENDING)
     receival_date = DateTimeCol(default=datetime.now)
     confirm_date = DateTimeCol(default=None)
@@ -176,6 +175,16 @@ class ReceivingOrder(Domain):
         for item in self.get_items():
             item.receiving_order = None
 
+
+    #
+    # Properties
+    #
+
+    @property
+    def receiving_number(self):
+        return self.id
+
+
     #
     # Accessors
     #
@@ -187,7 +196,7 @@ class ReceivingOrder(Domain):
         return self.transporter.get_description()
 
     def get_receiving_number_str(self):
-        return u"%04d" % self.receiving_number
+        return u"%04d" % self.id
 
     def get_branch_name(self):
         return self.branch.get_description()
@@ -296,7 +305,7 @@ class ReceivingOrderAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def get_group_description(self):
         order = self.get_adapted()
-        return _(u'purchase receiving %s') % order.receiving_number
+        return _(u'purchase receiving %s') % order.id
 
 ReceivingOrder.registerFacet(ReceivingOrderAdaptToPaymentGroup, IPaymentGroup)
 
