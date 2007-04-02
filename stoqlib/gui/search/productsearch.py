@@ -109,7 +109,7 @@ class ProductSearch(SellableSearch):
         return product_full_stock_view.product
 
     def get_columns(self):
-        return [Column('code', title=_('Code'), data_type=int, sorted=True,
+        return [Column('id', title=_('Code'), data_type=int, sorted=True,
                        format='%03d', width=70),
                 Column('barcode', title=_('Barcode'), data_type=str,
                        width=120),

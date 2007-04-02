@@ -153,7 +153,7 @@ class GiftCertificateSearch(SearchEditor):
         self.search_bar.search_items()
 
     def get_columns(self):
-        return [Column('code', _('Number'), data_type=int,
+        return [Column('id', _('Number'), data_type=int,
                        format='%03d', width=80),
                 Column('barcode', title=_('Barcode'), data_type=str,
                        visible=True, width=120),

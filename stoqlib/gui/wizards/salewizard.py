@@ -361,7 +361,7 @@ class GiftCertificateSelectionStep(WizardEditorStep):
         self.certificate_number.prefill(items)
 
     def _get_columns(self):
-        return [Column('code', title=_('Number'), data_type=str, width=90),
+        return [Column('id', title=_('Number'), data_type=str, width=90),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True, searchable=True),
                 Column('price', title=_('Price'), data_type=currency,
@@ -565,9 +565,9 @@ class _AbstractSalesPersonStep(WizardEditorStep):
     def next_step(self):
         method_name = self.pm_slave.get_selected_method()
         if method_name == PmSlaveType.MONEY:
-            self.payment_group.set_method(PaymentMethodType.MONEY)
+            self.payment_group.set_method(int(PaymentMethodType.MONEY))
         elif method_name == PmSlaveType.GIFT_CERTIFICATE:
-            self.payment_group.set_method(PaymentMethodType.GIFT_CERTIFICATE)
+            self.payment_group.set_method(int(PaymentMethodType.GIFT_CERTIFICATE))
         elif method_name == PmSlaveType.MULTIPLE:
             # FIXME
             self.payment_group.set_method(10)

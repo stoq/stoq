@@ -347,11 +347,6 @@ class SearchBar(GladeSlaveDelegate):
 
         attributes = [c.attribute for c in self._columns]
 
-        # Searching by id fields is evil, avoid it.
-        if 'id' in attributes:
-            raise ValueError('Private field id should not be added to '
-                             'the search list')
-
         for k_column in self._columns:
             if isinstance(k_column, FacetColumn):
                 if issubclass(self._table, Adapter):

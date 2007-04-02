@@ -191,7 +191,7 @@ class Payment(Domain):
         self.status = self.STATUS_CANCELLED
         payment = self.clone()
         description = (_('Cancellation of payment number %s')
-                       % self.identifier)
+                       % self.id)
         payment.description = description
         payment.value *= -1
         payment.due_date = datetime.datetime.now()
@@ -258,11 +258,6 @@ class Payment(Domain):
         if thirdparty:
             return thirdparty.name
         return _(u'Anonymous')
-
-    # FIXME: Remove
-    @property
-    def identifier(self):
-        return self.id
 
 class AbstractPaymentGroup(InheritableModelAdapter):
     """A base class for payment group adapters. """

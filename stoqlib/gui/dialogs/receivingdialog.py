@@ -77,7 +77,7 @@ class ReceivingOrderDetailsDialog(BaseEditor):
         self.products_vbox.pack_start(products_summary_label, False)
 
     def _get_product_columns(self):
-        return [Column("sellable.code", title=_("Code"),
+        return [Column("sellable.id", title=_("Code"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
                        format="%04d", width=80),
                 Column("sellable.description", title=_("Description"),

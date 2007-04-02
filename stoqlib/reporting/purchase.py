@@ -62,7 +62,7 @@ class PurchaseReport(SearchResultsReport):
 
     def _get_columns(self):
         # XXX Bug #2430 will improve this part
-        columns = [OTC(_("Number"), lambda obj: obj.order_number,
+        columns = [OTC(_("Number"), lambda obj: obj.id,
                        width=60, align=RIGHT),
                    OTC(_("Date"), lambda obj: obj.get_open_date_as_string(),
                        width=70),
@@ -112,7 +112,7 @@ class PurchaseOrderReport(BaseStoqReport):
     def _get_items_table_columns(self):
         return [
             OTC(_("Item"),
-                lambda obj: ("%s - %s" % (obj.sellable.code,
+                lambda obj: ("%s - %s" % (obj.sellable.id,
                                           obj.sellable.get_description())),
                 expand=True, truncate=True),
             OTC(_("Quantity"), lambda obj: format_quantity(obj.quantity),

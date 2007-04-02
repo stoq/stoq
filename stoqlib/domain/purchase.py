@@ -35,7 +35,7 @@ from zope.interface import implements
 from sqlobject import (ForeignKey, IntCol, DateTimeCol, UnicodeCol,
                        SQLObject)
 
-from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
+from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
@@ -132,7 +132,6 @@ class PurchaseOrder(Domain):
                      FREIGHT_CIF    : _(u'CIF')}
 
     status = IntCol(default=ORDER_QUOTING)
-    order_number = AutoIncCol('stoqlib_purchase_ordernumber_seq')
     open_date = DateTimeCol(default=datetime.datetime.now)
     quote_deadline = DateTimeCol(default=None)
     expected_receival_date = DateTimeCol(default=datetime.datetime.now)
@@ -178,6 +177,16 @@ class PurchaseOrder(Domain):
         # Purchase objects must be set as valid explicitly
         kw['_is_valid_model'] = False
         Domain._create(self, id, **kw)
+
+
+    #
+    # Properties
+    #
+
+    @property
+    def order_number(self):
+        return self.id
+
 
     #
     # General methods
@@ -366,7 +375,7 @@ class PurchaseOrder(Domain):
         return self.transporter.get_description()
 
     def get_order_number_str(self):
-        return u'%05d' % self.order_number
+        return u'%05d' % self.id
 
     def get_purchase_subtotal(self):
         total = sum([i.get_total() for i in self.get_items()], currency(0))
@@ -424,7 +433,7 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def get_group_description(self):
         order = self.get_adapted()
-        return _(u'order %s') % order.order_number
+        return _(u'order %s') % order.id
 
     def create_preview_outpayments(self):
         conn = self.get_connection()
@@ -446,7 +455,6 @@ PurchaseOrder.registerFacet(PurchaseOrderAdaptToPaymentGroup, IPaymentGroup)
 class PurchaseOrderView(SQLObject, BaseSQLView):
     """General information about purchase orders"""
     status = IntCol()
-    order_number = IntCol()
     open_date = DateTimeCol()
     quote_deadline = DateTimeCol()
     expected_receival_date = DateTimeCol()

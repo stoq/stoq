@@ -66,7 +66,7 @@ class PurchaseReceivingSearch(SearchDialog):
                        width=80,),
                 Column('receival_date', _('Receival Date'),
                        data_type=datetime.date, sorted=True, width=130),
-                Column('order_number', _('Purchase Order #'), data_type=unicode,
+                Column('id', _('Purchase Order #'), data_type=unicode,
                        width=130),
                 Column('supplier_name', _('Supplier'), data_type=unicode,
                        expand=True),

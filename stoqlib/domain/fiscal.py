@@ -66,10 +66,6 @@ class AbstractFiscalBookEntry(InheritableModel):
     drawee = ForeignKey("Person")
     payment_group = ForeignKey("AbstractPaymentGroup")
 
-    @property
-    def identifier(self):
-        return self.id
-
     def reverse_entry(self, invoice_number):
         raise NotImplementedError("This method must be overwrited on child")
 
@@ -151,11 +147,6 @@ class AbstractFiscalView(SQLObject, BaseSQLView):
     drawee_id = IntCol()
     branch_id = IntCol()
     payment_group_id = IntCol()
-
-    @property
-    def identifier(self):
-        return self.id
-
 
 class IcmsIpiView(AbstractFiscalView):
     """Stores general informations about ICMS/IPI book entries"""

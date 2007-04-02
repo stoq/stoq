@@ -101,7 +101,7 @@ class SaleDetailsDialog(BaseEditor):
         self._setup_summary_labels()
 
     def _get_payments_columns(self):
-        return [Column('identifier', "#", data_type=int, width=50,
+        return [Column('id', "#", data_type=int, width=50,
                        format='%04d', justify=gtk.JUSTIFY_RIGHT),
                 Column('method.description', _("Type"),
                        data_type=str, width=90),
@@ -117,7 +117,7 @@ class SaleDetailsDialog(BaseEditor):
                               data_func=payment_value_colorize)]
 
     def _get_items_columns(self):
-        return [Column('sellable.code', _("Code"), sorted=True,
+        return [Column('sellable.id', _("Code"), sorted=True,
                        data_type=int, width=80, format='%04d'),
                 Column('sellable.base_sellable_info.description',
                        _("Description"), data_type=str, expand=True,

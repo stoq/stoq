@@ -47,7 +47,7 @@ class BankAccount(Domain):
     """A bank account definition.
 
     B{Important atributes}:
-        - I{bank_id}: the bank identifier.
+        - I{bank_id}: the bank id.
         - I{branch}: the bank branch where this account lives.
         - I{account}: an identifier of this account in the branch.
     """

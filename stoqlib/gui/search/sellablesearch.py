@@ -110,7 +110,7 @@ class SellableSearch(SearchEditor):
 
     def get_columns(self):
         """Hook called by SearchEditor"""
-        columns = [Column('code', title=_('Code'), data_type=int,
+        columns = [Column('id', title=_('Code'), data_type=int,
                           format="%03d", sorted=True, width=90,
                           justify=gtk.JUSTIFY_RIGHT),
                    Column('barcode', title=_('Barcode'), data_type=str,

@@ -341,11 +341,6 @@ class TillEntry(Domain):
     till = ForeignKey("Till")
     payment_group = ForeignKey("AbstractPaymentGroup", default=None)
 
-    # FIXME: Remove
-    @property
-    def identifier(self):
-        return self.id
-
 
 #
 # Adapters
@@ -407,7 +402,6 @@ class TillFiscalOperationsView(SQLObject, BaseSQLView):
     """Stores informations about till payment tables
     """
 
-    identifier = IntCol()
     date = DateTimeCol()
     description = UnicodeCol()
     station_name = UnicodeCol()

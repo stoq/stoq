@@ -29,8 +29,7 @@ from decimal import Decimal
 
 from formencode.validators import Validator
 from kiwi.datatypes import currency
-from sqlobject.col import SODecimalCol, Col, SOIntCol
-from sqlobject.sqlbuilder import func
+from sqlobject.col import SODecimalCol, Col
 from sqlobject.converters import registerConverter
 
 from stoqlib.lib.defaults import DECIMAL_PRECISION, DECIMAL_SIZE
@@ -75,27 +74,3 @@ class SOPriceCol(AbstractDecimalCol):
 
 class PriceCol(DecimalCol):
     baseClass = SOPriceCol
-
-# Autoinc
-
-class SOAutoIncCol(SOIntCol):
-    def __init__(self, **kw):
-        kw['default'] = func.nextval(kw.pop('seq_name'))
-        kw['alternateID'] = True
-        SOIntCol.__init__(self, **kw)
-
-    def _sqlType(self):
-        return 'BIGINT'
-
-class AutoIncCol(Col):
-    """This column defines an auto increment integer column. Domain classes
-    must always supply a 'sequence name' argument when instantiating this
-    column.
-
-    @cvar seq_name: the postgres database sequence name
-    """
-    baseClass = SOAutoIncCol
-
-    def __init__(self, seq_name, *args, **kw):
-        kw['seq_name'] = seq_name
-        Col.__init__(self, *args, **kw)

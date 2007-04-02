@@ -87,7 +87,7 @@ class ServiceSearch(SellableSearch):
         return Service.get(model.service_id, connection=self.conn)
 
     def get_columns(self):
-        columns = [Column('code', title=_('Code'), data_type=int, sorted=True,
+        columns = [Column('id', title=_('Code'), data_type=int, sorted=True,
                           format="%03d", width=80),
                    Column('barcode', title=_('Barcode'), data_type=str,
                           visible=True, width=120),

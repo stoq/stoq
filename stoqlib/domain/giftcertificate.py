@@ -182,7 +182,6 @@ def get_volatile_gift_certificate():
 
 class GiftCertificateView(SQLObject, BaseSQLView):
     """Stores general gift certificate informations"""
-    code = IntCol()
     barcode = UnicodeCol()
     status = IntCol()
     cost = PriceCol()
