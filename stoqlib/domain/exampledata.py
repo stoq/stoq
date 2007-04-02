@@ -28,78 +28,11 @@ import datetime
 from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_current_station
-from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
                                        IIndividual, ISupplier,
                                        ISellable, IStorable, ISalesPerson,
                                        IClient, IUser)
 from stoqlib.lib.parameters import sysparam
-
-def create_person(trans):
-    return ExampleCreator.create(trans, 'Person')
-
-def create_branch(trans):
-    return ExampleCreator.create(trans, 'IBranch')
-
-def create_supplier(trans):
-    return ExampleCreator.create(trans, 'ISupplier')
-
-def create_employee(trans):
-    return ExampleCreator.create(trans, 'IEmployee')
-
-def create_salesperson(trans):
-    return ExampleCreator.create(trans, 'ISalesPerson')
-
-def create_client(trans):
-    return ExampleCreator.create(trans, 'IClient')
-
-def create_individual(trans):
-    return ExampleCreator.create(trans, 'IIndividual')
-
-def create_user(trans):
-    return ExampleCreator.create(trans, 'IUser')
-
-def create_storable(trans):
-    return ExampleCreator.create(trans, 'ProductAdaptToStorable')
-
-def create_product(trans):
-    return ExampleCreator.create(trans, 'Product')
-
-def create_sellable(trans):
-    return ExampleCreator.create(trans, 'ProductAdaptToSellable')
-
-def create_sale(trans):
-    return ExampleCreator.create(trans, 'Sale')
-
-def create_city_location(trans):
-    return ExampleCreator.create(trans, 'CityLocation')
-
-def create_parameter_data(trans):
-    return ExampleCreator.create(trans, 'ParameterData')
-
-def create_service_sellable_item(trans):
-    return ExampleCreator.create(trans, 'ServiceSellableItem')
-
-def create_device_settings(trans):
-    return ExampleCreator.create(trans, 'DeviceSettings')
-
-def create_device_constant(trans):
-    return ExampleCreator.create(trans, 'DeviceConstant')
-
-def create_company(trans):
-    return ExampleCreator.create(trans, 'ICompany')
-
-def create_till(trans):
-    return ExampleCreator.create(trans, 'Till')
-
-def create_user_profile(trans):
-    return ExampleCreator.create(trans, 'UserProfile')
-
-def get_station(trans):
-    return ExampleCreator.create(trans, 'BranchStation')
-
-def get_location(trans):
-    return ExampleCreator.create(trans, 'CityLocation')
 
 class ExampleCreator(object):
     def __init__(self, trans):
@@ -115,17 +48,21 @@ class ExampleCreator(object):
         known_types = {
             'ASellable': self._create_sellable,
             'AbstractFiscalBookEntry' : self._create_abstract_fiscal_book_entry,
+            'BaseSellableInfo': self._create_base_sellable_info,
             'BranchStation': self.get_station,
             'CityLocation': self.get_location,
+            'CfopData': self._create_cfop_data,
             'CouponPrinter': self._create_coupon_printer,
             'DeviceConstant': self._create_device_constant,
             'DeviceSettings': self._create_device_settings,
+            'EmployeeRole': self._create_employee_role,
             'IcmsIpiBookEntry': self._create_icms_ipi_book_entry,
             'IssBookEntry': self._create_iss_book_entry,
             'IClient': self._create_client,
             'IBranch': self._create_branch,
             'IEmployee': self._create_employee,
             'IIndividual': self._create_individual,
+            'ISalesPerson': self._create_sales_person,
             'ISupplier': self._create_supplier,
             'IUser': self._create_user,
             'ParameterData': self._create_parameter_data,
@@ -133,12 +70,19 @@ class ExampleCreator(object):
             'PersonAdaptToBranch': self._create_branch,
             'PersonAdaptToCompany': self._create_company,
             'PersonAdaptToClient': self._create_client,
+            'PersonAdaptToEmployee': self._create_employee,
+            'PersonAdaptToSalesPerson': self._create_sales_person,
+            'PersonAdaptToSupplier': self._create_supplier,
             'PersonAdaptToUser': self._create_user,
             'Product': self._create_product,
             'ProductAdaptToSellable' : self._create_sellable,
             'ProductAdaptToStorable' : self._create_storable,
+            'ProductSellableItem': self._create_product_sellable_item,
+            'PurchaseOrder' : self._create_purchase_order,
+            'PurchaseItem' : self._create_purchase_order_item,
             'ReceivingOrder' : self._create_receiving_order,
             'ReceivingOrderItem' : self._create_receiving_order_item,
+            'RenegotiationData' : self._create_renegotiation_data,
             'Sale': self._create_sale,
             'Service': self._create_service,
             'ServiceSellableItem': self._create_service_sellable_item,
@@ -172,15 +116,19 @@ class ExampleCreator(object):
                         connection=self.trans)
         return person.addFacet(ISupplier, connection=self.trans)
 
+    def _create_employee_role(self):
+        from stoqlib.domain.person import EmployeeRole
+        return EmployeeRole(name='Role', connection=self.trans)
 
     def _create_employee(self):
-        from stoqlib.domain.person import Person, EmployeeRole
+        from stoqlib.domain.person import Person
         person = Person(name='SalesPerson', connection=self.trans)
         person.addFacet(IIndividual, connection=self.trans)
-        role = EmployeeRole(name='Role', connection=self.trans)
-        return person.addFacet(IEmployee, role=role, connection=self.trans)
+        return person.addFacet(IEmployee,
+                               role=self._create_employee,
+                               connection=self.trans)
 
-    def _create_salesperson(self):
+    def _create_sales_person(self):
         employee = self._create_employee()
         return employee.person.addFacet(ISalesPerson, connection=self.trans)
 
@@ -218,23 +166,35 @@ class ExampleCreator(object):
                             product=product, is_main_supplier=True)
         return product
 
+    def _create_product_sellable_item(self):
+        from stoqlib.domain.service import ProductSellableItem
+        sale = self._create_sale()
+        sellable = self._create_sellable()
+        return ProductSellableItem(
+            sellable=sellable,
+            quantity=1, price=10,
+            sale=sale, connection=self.trans)
+
+    def _create_base_sellable_info(self):
+        from stoqlib.domain.sellable import BaseSellableInfo
+        return BaseSellableInfo(connection=self.trans,
+                                description="Description",
+                                price=10)
+
     def _create_sellable(self):
         from stoqlib.domain.product import Product
-        from stoqlib.domain.sellable import BaseSellableInfo
         product = Product(connection=self.trans)
-        sellable_info = BaseSellableInfo(connection=self.trans,
-                                         description="Description",
-                                         price=10)
         tax_constant = sysparam(self.trans).DEFAULT_PRODUCT_TAX_CONSTANT
+        base_sellable_info = self._create_base_sellable_info()
         return product.addFacet(ISellable,
                                 tax_constant=tax_constant,
-                                base_sellable_info=sellable_info,
+                                base_sellable_info=base_sellable_info,
                                 connection=self.trans)
     def _create_sale(self):
         from stoqlib.domain.sale import Sale
         from stoqlib.domain.till import Till
         till = Till.get_current(self.trans)
-        salesperson = self._create_salesperson()
+        salesperson = self._create_sales_person()
         return Sale(till=till,
                     coupon_id=0,
                     open_date=datetime.datetime.now(),
@@ -295,59 +255,62 @@ class ExampleCreator(object):
         from stoqlib.domain.profile import UserProfile
         return UserProfile(connection=self.trans, name='assistant')
 
+    def _create_purchase_order(self):
+        from stoqlib.domain.purchase import PurchaseOrder
+        return PurchaseOrder(supplier=self._create_supplier(),
+                             branch=self._create_branch(),
+                             connection=self.trans)
+
+    def _create_purchase_order_item(self):
+        from stoqlib.domain.purchase import PurchaseItem
+        return PurchaseItem(connection=self.trans,
+                            quantity=8, quantity_received=3,
+                            cost=125, base_cost=125,
+                            sellable=self._create_sellable(),
+                            order=self._create_purchase_order())
+
+    def _create_cfop_data(self):
+        from stoqlib.domain.fiscal import CfopData
+        return CfopData(connection=self.trans, code=u'123',
+                        description=u'test')
+
     def _create_receiving_order(self):
         from stoqlib.domain.receiving import ReceivingOrder
-        from stoqlib.domain.fiscal import CfopData
-        user = self._create_user()
-        supplier = self._create_supplier()
-        branch = self._create_branch()
-        cfop = CfopData(connection=self.trans, code=u'123',
-                        description=u'test')
-        purchase = PurchaseOrder(supplier=supplier, branch=branch,
-                                 connection=self.trans)
-        return ReceivingOrder(connection=self.trans, invoice_number=222,
-                              supplier=supplier, responsible=user,
+        purchase = self._create_purchase_order()
+        return ReceivingOrder(connection=self.trans,
+                              invoice_number=222,
+                              supplier=purchase.supplier,
+                              responsible=self._create_user(),
                               purchase=purchase,
-                              branch=branch, cfop=cfop)
+                              branch=self._create_branch(),
+                              cfop=self._create_cfop_data())
 
     def _create_receiving_order_item(self):
         from stoqlib.domain.receiving import ReceivingOrderItem
-        sellable = self._create_sellable()
-        receiving_order = self._create_receiving_order
-        supplier = self._create_supplier()
-        branch = self._create_branch()
-        purchase = PurchaseOrder(supplier=supplier, branch=branch,
-                                 connection=self.trans)
-        purchase_item = PurchaseItem(connection=self.trans,
-                                     quantity=8, quantity_received=3,
-                                     cost=125, base_cost=125,
-                                     sellable=sellable,
-                                     order=purchase)
+        receiving_order = self._create_receiving_order()
+        purchase_item = self._create_purchase_order_item()
         return ReceivingOrderItem(connection=self.trans,
                                   quantity=8, cost=125,
                                   purchase_item=purchase_item,
-                                  sellable=sellable,
+                                  sellable=purchase_item.sellable,
                                   receiving_order=receiving_order)
 
     def _create_icms_ipi_book_entry(self):
-        from stoqlib.domain.fiscal import CfopData, IcmsIpiBookEntry
+        from stoqlib.domain.fiscal import IcmsIpiBookEntry
         from stoqlib.domain.payment.payment import AbstractPaymentGroup
-        cfop = CfopData(code=u"2365", description=u"blabla",
-                        connection=self.trans)
-        branch = self._create_branch()
-        drawee = self._create_person()
         payment_group = AbstractPaymentGroup(connection=self.trans)
-        return IcmsIpiBookEntry(connection=self.trans, cfop=cfop,
-                                branch=branch, drawee=drawee,
+        return IcmsIpiBookEntry(connection=self.trans,
+                                cfop=self._create_cfop_data(),
+                                branch=self._create_branch(),
+                                drawee=self._create_person(),
                                 payment_group=payment_group,
                                 icms_value=10, ipi_value=10,
                                 invoice_number=200)
 
     def _create_iss_book_entry(self):
         from stoqlib.domain.payment.payment import AbstractPaymentGroup
-        from stoqlib.domain.fiscal import CfopData, IssBookEntry
-        cfop = CfopData(code=u"2365", description=u"blabla",
-                        connection=self.trans)
+        from stoqlib.domain.fiscal import IssBookEntry
+        cfop = self._create_cfop_data()
         branch = self._create_branch()
         drawee = self._create_person()
         payment_group = AbstractPaymentGroup(connection=self.trans)
@@ -358,9 +321,8 @@ class ExampleCreator(object):
 
     def _create_abstract_fiscal_book_entry(self):
         from stoqlib.domain.payment.payment import AbstractPaymentGroup
-        from stoqlib.domain.fiscal import CfopData, AbstractFiscalBookEntry
-        cfop = CfopData(code=u"2365", description=u"blabla",
-                        connection=self.trans)
+        from stoqlib.domain.fiscal import AbstractFiscalBookEntry
+        cfop = self._create_cfop_data()
         branch = self._create_branch()
         drawee = self._create_person()
         payment_group = AbstractPaymentGroup(connection=self.trans)
@@ -396,6 +358,14 @@ class ExampleCreator(object):
                          base_sellable_info=sellable_info,
                          connection=self.trans)
         return service
+
+    def _create_renegotiation_data(self):
+        from stoqlib.domain.renegotiation import RenegotiationData
+        person = self._create_person()
+        return RenegotiationData(connection=self.trans,
+                                 paid_total=10,
+                                 invoice_number=None,
+                                 responsible=person)
 
     def get_station(self):
         return get_current_station(self.trans)

@@ -103,7 +103,9 @@ def _create_domain_test():
             value = get_random(col)
             setattr(obj, name, value)
 
-    TODO = {}
+    TODO = {
+        'ReceivingOrder': 'invalid invoice number',
+        }
     namespace = dict(_test_domain=_test_domain)
     for table in get_table_types():
         tname = table.__name__
