@@ -82,7 +82,6 @@ CREATE TABLE person_adapt_to_client (
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    is_active boolean,
     status integer,
     days_late integer,
     original_id bigint UNIQUE REFERENCES person(id)
