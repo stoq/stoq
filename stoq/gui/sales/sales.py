@@ -160,7 +160,7 @@ class SalesApp(SearchableAppWindow):
         return Sale.STATUS_CONFIRMED
 
     def get_columns(self):
-        return [Column('order_number', title=_('Number'), width=80,
+        return [Column('id', title=_('Number'), width=80,
                        format='%05d', data_type=int, sorted=True),
                 Column('client_name', title=_('Client'),
                        data_type=str, width=140, expand=True),

@@ -238,7 +238,7 @@ class PurchaseApp(SearchableAppWindow):
         self._update_totals()
 
     def get_columns(self):
-        return [Column('order_number', title=_('Number'), sorted=True,
+        return [Column('id', title=_('Number'), sorted=True,
                        data_type=str, width=80),
                 Column('open_date', title=_('Date Started'),
                        data_type=datetime.date),

@@ -97,7 +97,7 @@ class ReceivableApp(SearchableAppWindow):
     #
 
     def get_columns(self):
-        return [Column('identifier', title=_('Number'), width=80,
+        return [Column('id', title=_('Number'), width=80,
                        data_type=str, sorted=True, format='%03d'),
                 Column('description', title=_('Description'), width=190,
                        data_type=str, expand=True),

@@ -109,7 +109,7 @@ class WarehouseApp(SearchableAppWindow):
         return self._update_filter_slave
 
     def get_columns(self):
-        return [Column('code', title=_('Code'), sorted=True,
+        return [Column('id', title=_('Code'), sorted=True,
                        data_type=int, format='%03d', width=80),
                 Column('description', title=_("Description"),
                        data_type=str, expand=True),

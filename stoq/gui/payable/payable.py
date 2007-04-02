@@ -94,7 +94,7 @@ class PayableApp(SearchableAppWindow):
     #
 
     def get_columns(self):
-        return [Column('identifier', title=_('Number'), width=100,
+        return [Column('id', title=_('Number'), width=100,
                        data_type=str, sorted=True, format='%03d'),
                 Column('description', title=_('Description'), width=220,
                        data_type=str, expand=True),
