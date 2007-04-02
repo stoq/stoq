@@ -438,7 +438,36 @@ class PersonAdaptToClient(_PersonAdapter):
 
     status = IntCol(default=STATUS_SOLVENT)
     days_late = IntCol(default=0)
-    is_active = BoolCol(default=True)
+
+    #
+    # IActive implementation
+    #
+
+    def get_status_string(self):
+        if not self.statuses.has_key(self.status):
+            raise DatabaseInconsistency('Invalid status for client, '
+                                        'got %d' % self.status)
+        return self.statuses[self.status]
+
+    def inactivate(self):
+        if self.status == PersonAdaptToClient.STATUS_INACTIVE:
+            raise AssertionError('This client is already inactive')
+        self.status = self.STATUS_INACTIVE
+
+    def activate(self):
+        if self.status == PersonAdaptToClient.STATUS_SOLVENT:
+            raise AssertionError('This client is already active')
+        self.status = self.STATUS_SOLVENT
+
+    def _get_is_active(self):
+        return self.status == self.STATUS_SOLVENT
+
+    def _set_is_active(self, value):
+        if value:
+            self.activate()
+        else:
+            self.inactivate()
+    is_active = property(_get_is_active, _set_is_active)
 
     #
     # Auxiliar methods
@@ -447,27 +476,17 @@ class PersonAdaptToClient(_PersonAdapter):
     def get_name(self):
         return self.person.name
 
-    def get_status_string(self):
-        if not self.statuses.has_key(self.status):
-            raise DatabaseInconsistency('Invalid status for client, '
-                                        'got %d' % self.status)
-        return self.statuses[self.status]
-
     @classmethod
-    def get_active_clients(cls, conn, extra_query=None):
+    def get_active_clients(cls, conn):
         """Return a list of active clients.
         An active client is a person who are authorized to make new sales
         """
-        query = cls.q.status == cls.STATUS_SOLVENT
-        if extra_query:
-            query = AND(query, extra_query)
-        return cls.select(query, connection=conn)
+        return cls.select(cls.q.status == cls.STATUS_SOLVENT, connection=conn)
 
     def get_client_sales(self):
         from stoqlib.domain.sale import SaleView
-        conn = self.get_connection()
-        query = SaleView.q.client_id == self.id
-        return SaleView.select(query, connection=conn,
+        return SaleView.select(SaleView.q.client_id == self.id,
+                               connection=self.get_connection(),
                                orderBy=SaleView.q.open_date)
 
     def get_last_purchase_date(self):
@@ -476,7 +495,6 @@ class PersonAdaptToClient(_PersonAdapter):
             # The get_client_sales method already returns a sorted list of
             # sales by open_date column
             return sales[-1].open_date.date()
-
 
 Person.registerFacet(PersonAdaptToClient, IClient)
 
@@ -533,6 +551,7 @@ class PersonAdaptToEmployee(_PersonAdapter):
     education_level = UnicodeCol(default=None)
     dependent_person_number = IntCol(default=None)
     role = ForeignKey('EmployeeRole')
+    is_active = BoolCol(default=True)
 
     # This is Brazil-specific information
     workpermit_data = ForeignKey('WorkPermitData', default=None)

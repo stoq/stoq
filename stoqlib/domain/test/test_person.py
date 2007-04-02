@@ -240,15 +240,18 @@ class _PersonFacetTest(object):
 
     def testInactivate(self):
         facet = self._create_person_facet()
-        facet.is_active = True
+        if not facet.is_active:
+            facet.is_active = True
         facet.inactivate()
         self.failIf(facet.is_active)
+        self.assertRaises(AssertionError, facet.inactivate)
 
     def testActivate(self):
         facet = self._create_person_facet()
         facet.is_active = False
         facet.activate()
         self.failUnless(facet.is_active)
+        self.assertRaises(AssertionError, facet.activate)
 
     def testGetDescription(self):
         facet = self._create_person_facet()
