@@ -34,6 +34,74 @@ from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
                                        IClient, IUser)
 from stoqlib.lib.parameters import sysparam
 
+# Do not remove, these are used by doctests
+
+def create_person(trans):
+    return ExampleCreator.create(trans, 'Person')
+
+def create_branch(trans):
+    return ExampleCreator.create(trans, 'IBranch')
+
+def create_supplier(trans):
+    return ExampleCreator.create(trans, 'ISupplier')
+
+def create_employee(trans):
+    return ExampleCreator.create(trans, 'IEmployee')
+
+def create_salesperson(trans):
+    return ExampleCreator.create(trans, 'ISalesPerson')
+
+def create_client(trans):
+    return ExampleCreator.create(trans, 'IClient')
+
+def create_individual(trans):
+    return ExampleCreator.create(trans, 'IIndividual')
+
+def create_user(trans):
+    return ExampleCreator.create(trans, 'IUser')
+
+def create_storable(trans):
+    return ExampleCreator.create(trans, 'ProductAdaptToStorable')
+
+def create_product(trans):
+    return ExampleCreator.create(trans, 'Product')
+
+def create_sellable(trans):
+    return ExampleCreator.create(trans, 'ProductAdaptToSellable')
+
+def create_sale(trans):
+    return ExampleCreator.create(trans, 'Sale')
+
+def create_city_location(trans):
+    return ExampleCreator.create(trans, 'CityLocation')
+
+def create_parameter_data(trans):
+    return ExampleCreator.create(trans, 'ParameterData')
+
+def create_service_sellable_item(trans):
+    return ExampleCreator.create(trans, 'ServiceSellableItem')
+
+def create_device_settings(trans):
+    return ExampleCreator.create(trans, 'DeviceSettings')
+
+def create_device_constant(trans):
+    return ExampleCreator.create(trans, 'DeviceConstant')
+
+def create_company(trans):
+    return ExampleCreator.create(trans, 'ICompany')
+
+def create_till(trans):
+    return ExampleCreator.create(trans, 'Till')
+
+def create_user_profile(trans):
+    return ExampleCreator.create(trans, 'UserProfile')
+
+def get_station(trans):
+    return ExampleCreator.create(trans, 'BranchStation')
+
+def get_location(trans):
+    return ExampleCreator.create(trans, 'CityLocation')
+
 class ExampleCreator(object):
     def __init__(self, trans):
         self.trans = trans
