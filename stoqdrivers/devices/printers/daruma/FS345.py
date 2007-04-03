@@ -446,6 +446,9 @@ class FS345(SerialBase):
         self.send_command(CMD_GET_X)
 
     def close_till(self):
+        status = self._check_status()
+        if self._is_open(status):
+            self.send_command(CMD_CANCEL_COUPON)
         date = time.strftime('%d%m%y%H%M%S', time.localtime())
         self.send_command(CMD_REDUCE_Z, date)
 
