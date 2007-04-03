@@ -348,7 +348,7 @@ class FS345(SerialBase):
         self._customer_address = address
 
     def coupon_open(self):
-        status = self._check_status()
+        status = self._get_status()
         if self._is_open(status):
             raise CouponOpenError(_("Coupon already open"))
         self.send_command(CMD_OPEN_COUPON)
