@@ -3,7 +3,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -158,11 +158,16 @@ class StoqCommandHandler:
 
     def cmd_updateschema(self, options):
         from stoqlib.database.migration import schema_migration
+        from stoqlib.database.runtime import get_connection
         self._read_config(options, check_schema=False)
 
-        schema_migration.update_schema()
-
-        print 'Database schema updated'
+        conn = get_connection()
+        if schema_migration.check_updated(conn):
+            print 'Database is already at revision %d' % (
+                schema_migration.get_current_version(conn),)
+        else:
+            from_, to = schema_migration.update_schema()
+            print 'Database schema updated from %d to %d' % (from_, to)
 
     def cmd_serve(self, options):
         from stoqlib.database.synchronization import SynchronizationService
