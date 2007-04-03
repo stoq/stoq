@@ -20,14 +20,16 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
+##              Fabio Morbec      <fabio@async.com.br>
 ##
 ##
 """ Installment confirmation slave """
 
 import datetime
 
-from kiwi.datatypes import currency
+from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.objectlist import Column
+from kiwi import ValueUnset
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
@@ -42,6 +44,9 @@ class _ConfirmationModel(object):
 
     def get_installment_value(self):
         return currency(sum(p.value for p in self.payments))
+
+    def get_discount(self):
+        return currency(0)
 
     def get_interest(self):
         if not self.pay_interest:
@@ -74,9 +79,21 @@ class _SaleConfirmationModel(_ConfirmationModel):
     def get_order_number(self):
         return self._sale.id
 
-    def get_client_name(self):
+    def get_person_name(self):
         if self._sale.client:
             return self._sale.client.person.name
+
+class _PurchaseConfirmationModel(_ConfirmationModel):
+    def __init__(self, payments, purchase):
+        _ConfirmationModel.__init__(self, payments)
+        self._purchase = purchase
+
+    def get_order_number(self):
+        return self._purchase.id
+
+    def get_person_name(self):
+        if self._purchase.supplier:
+            return self._purchase.supplier.person.name
 
 class _InstallmentConfirmationSlave(BaseEditor):
     """
@@ -102,8 +119,9 @@ class _InstallmentConfirmationSlave(BaseEditor):
                      'installment_value',
                      'interest',
                      'penalty',
+                     'discount',
                      'total_value',
-                     'client_name',
+                     'person_name',
                      'pay_penalty',
                      'pay_interest')
 
@@ -154,3 +172,34 @@ class _InstallmentConfirmationSlave(BaseEditor):
 class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
     model_type = _SaleConfirmationModel
 
+class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
+    model_type = _PurchaseConfirmationModel
+
+    def _setup_widgets(self):
+        _InstallmentConfirmationSlave._setup_widgets(self)
+        self.discount_label.show()
+        self.discount.show()
+        self.person_label.set_text(_("Supplier: "))
+        self.expander.set_expanded(True)
+
+    def after_discount__content_changed(self, proxy_entry):
+        try:
+            value = proxy_entry.read()
+        except ValidationError:
+            value = ValueUnset
+        installments_number = len(self._payments)
+        for payment in self._payments:
+            if value == ValueUnset:
+                payment.value = payment.base_value
+            else:
+                payment.value = payment.base_value - (value/installments_number)
+            self.installments.update(payment)
+        self._proxy.update('total_value')
+
+    def on_discount__validate(self, entry, value):
+        if value >= self._payments[0].base_value:
+            return ValidationError(_("Discount can not be greater than value"))
+
+    def create_model(self, conn):
+        return _PurchaseConfirmationModel(self._payments,
+                                          self._payments[0].group.get_adapted())
