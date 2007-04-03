@@ -97,7 +97,7 @@ class BaseDevice:
         if not self._port:
             self._port = SerialPort(self.device)
         self._driver = driver_class(self._port, consts=self._driver_constants)
-        log.info(("Config data: brand=%s,device=%s,model=%s\n"
+        log.info(("Config data: brand=%s,device=%s,model=%s"
                   % (self.brand, self.device, self.model)))
         self.check_interfaces()
 
