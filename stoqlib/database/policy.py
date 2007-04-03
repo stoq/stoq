@@ -75,7 +75,6 @@ class Shop(SynchronizationPolicy):
         ('BankAccount', SyncPolicy.INITIAL),
         ('APaymentMethod', SyncPolicy.INITIAL),
         ('PaymentMethodDetails', SyncPolicy.INITIAL),
-        ('SystemTable', SyncPolicy.INITIAL),
         ('SellableUnit', SyncPolicy.INITIAL),
         ]
 

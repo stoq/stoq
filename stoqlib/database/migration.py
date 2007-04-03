@@ -32,6 +32,7 @@ import shutil
 import tempfile
 
 from kiwi.environ import environ
+from kiwi.log import Logger
 
 from stoqlib.database.database import execute_sql
 from stoqlib.database.runtime import new_transaction, get_connection
@@ -43,6 +44,7 @@ from stoqlib.lib.parameters import (check_parameter_presence,
                                     ensure_system_parameters)
 
 _ = stoqlib_gettext
+log = Logger('stoqlib.database.migration')
 
 def _extract_version(patch_filename):
     return int(patch_filename[:-4].split('-', 1)[1])
@@ -95,8 +97,10 @@ class SchemaMigration:
         it's needed
         """
         conn = get_connection()
+        log.info("Updating schema")
 
         if self._check_up_to_date(conn):
+            log.info("Schema is already up to date")
             return
 
         patches = self._get_patches()
@@ -108,6 +112,9 @@ class SchemaMigration:
         for patch, patchlevel in patches:
             if patchlevel <= current_version:
                 continue
+
+            log.info('Applying: %s' % (patch,))
+
             temporary = tempfile.mktemp(prefix="patch-%d" % patchlevel)
             shutil.copy(patch, temporary)
             open(temporary, 'a').write(
@@ -126,6 +133,8 @@ class SchemaMigration:
 
             # Updating the parameter list
             ensure_system_parameters(update=True)
+
+        log.info("All patches applied")
 
         return current_version, patchlevel
 
