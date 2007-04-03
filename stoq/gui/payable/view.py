@@ -58,3 +58,7 @@ class PayableView(Viewable):
     @property
     def purchase(self):
         return PurchaseOrder.get(self.purchase_id)
+
+    @property
+    def payment(self):
+        return Payment.get(self.id)
