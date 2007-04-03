@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -38,6 +38,7 @@ from stoqdrivers.constants import describe_constant
 
 from stoqlib.database.database import execute_sql, clean_database
 from stoqlib.database.interfaces import ICurrentUser, IDatabaseSettings
+from stoqlib.database.migration import schema_migration
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
                                        ISalesPerson)
@@ -45,7 +46,6 @@ from stoqlib.domain.person import EmployeeRole, Person
 from stoqlib.domain.person import EmployeeRoleHistory
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.sellable import SellableTaxConstant, SellableUnit
-from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
 from stoqlib.lib.translation import stoqlib_gettext
@@ -205,6 +205,8 @@ def create_base_schema():
     schema = environ.find_resource('sql', 'views.sql')
     execute_sql(schema)
 
+    schema_migration.update_schema()
+
 def create_default_profiles():
     trans = new_transaction()
 
@@ -228,7 +230,3 @@ def initialize_system(delete_only=False, verbose=False):
     ensure_sellable_constants()
     ensure_system_parameters()
     create_default_profiles()
-
-    trans = new_transaction()
-    SystemTable.update(trans, check_new_db=True)
-    trans.commit(close=True)

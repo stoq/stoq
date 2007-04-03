@@ -216,6 +216,15 @@ class PostgresConnection(DBAPI):
             name)
         return res[0] == 1
 
+    def tableHasColumn(self, table_name, column):
+        res = self.queryOne(
+            """SELECT 1 FROM pg_class, pg_attribute
+             WHERE pg_attribute.attrelid = pg_class.oid AND
+                   pg_class.relname=%s AND
+                   attname=%s""" % (self.sqlrepr(table_name),
+                                    self.sqlrepr(column)))
+        return bool(res)
+
     def dbVersion(self):
         version_string = self.queryOne('SELECT VERSION();')[0]
         version = version_string.split(' ', 2)[1]

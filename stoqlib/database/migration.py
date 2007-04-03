@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,102 +20,126 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
+##                  Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
 """ Routines for database schema migration"""
 
-from kiwi.component import get_utility
+import glob
+import operator
+import os
+import shutil
+import tempfile
+
 from kiwi.environ import environ
 
-import stoqlib
-from stoqlib.database.admin import create_base_schema
 from stoqlib.database.database import execute_sql
-from stoqlib.database.interfaces import IDatabaseSettings
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.domain.profile import update_profile_applications
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.defaults import stoqlib_gettext
 from stoqlib.lib.parameters import (check_parameter_presence,
                                     ensure_system_parameters)
+
+_ = stoqlib_gettext
+
+def _extract_version(patch_filename):
+    return int(patch_filename[:-4].split('-', 1)[1])
 
 class SchemaMigration:
     """Schema migration management"""
 
-    def __init__(self):
-        self.current_db_version = None
-        self.db_version = stoqlib.db_version
+    def _get_patches(self):
+        patches = []
+        for directory in environ.get_resource_paths('sql'):
+            for patch in glob.glob(os.path.join(directory, 'patch-*.sql')):
+                patches.append((patch, _extract_version(os.path.basename(patch))))
+        return sorted(patches, key=operator.itemgetter(1))
 
-    def _get_migration_files(self, current_db_version, db_version):
-        """Returns a list of all the migration sql files for a certain
-        db schema version
-        """
-        rdbms_name = get_utility(IDatabaseSettings).rdbms
-        migration_files = []
-        for version in range(current_db_version + 1, self.db_version +1):
-            filename = '%s-schema-migration-%s.sql' % (rdbms_name, version)
-            sql_file = environ.find_resource('sql', filename)
-            migration_files.append(sql_file)
-        return migration_files
+    def _get_generation(self, conn, current_version):
+        if current_version > 0:
+            generation = SystemTable.select(connection=conn).max('generation')
+        else:
+            generation = 0
+
+        return generation
 
     def _check_up_to_date(self, conn):
-        """Checks if the current database schema is up to date"""
-        if not conn.tableExists(SystemTable.sqlmeta.table):
-            SystemTable.createTable(connection=conn)
-            self.current_db_version = stoqlib.FIRST_DB_VERSION
-            SystemTable.update(conn, check_new_db=True,
-                               version=self.current_db_version)
+        # Fetch the latest, eg the last in the list
+        patches = self._get_patches()
+        unused, latest_available = patches[-1]
+
+        current_version = self.get_current_version(conn)
+        if current_version == latest_available:
             return True
-        results = SystemTable.select(connection=conn)
-        self.current_db_version = results.max('version')
-        if self.current_db_version == self.db_version:
-            return False
-        if self.current_db_version > self.db_version:
-            raise DatabaseInconsistency('The current version of database '
-                                        '(%s) is greater than the system '
-                                        'version (%s)'
-                                        % (self.current_db_version,
-                                           self.db_version))
-        return True
+        elif current_version > latest_available:
+            raise DatabaseInconsistency(
+                'The current version of database (%d) is greater than the '
+                'latest available version (%d)'
+                % (current_version, latest_available))
+
+        return False
 
     def check_updated(self, conn):
         if not self._check_up_to_date(conn):
-            return True
+            return False
 
-        if check_parameter_presence(conn):
-            return True
+        if not check_parameter_presence(conn):
+            return False
 
-        return False
+        return True
 
     def update_schema(self):
         """Check the current version of database and update the schema if
         it's needed
         """
-        trans = new_transaction()
+        conn = get_connection()
 
-        if not self._check_up_to_date(trans):
-            trans.commit(close=True)
+        if self._check_up_to_date(conn):
             return
 
-        # Updating the schema for all the versions from the current database
-        # version to the last schema version.
-        sql_files = self._get_migration_files(self.current_db_version,
-                                              self.db_version)
-        for sql_file in sql_files:
-            execute_sql(sql_file, trans)
-            parts = sql_file.replace('.sql', '').split('-')
-            version = parts[-1]
-            try:
-                version = int(version)
-            except ValueError:
-                raise ValueError("Bad sql file name, got %s" % sql_file)
-            SystemTable.update(trans, version=version)
-        # checks if there is new applications and update all the user
-        # profiles on the system
-        update_profile_applications(trans)
-        # Updating the parameter list
-        ensure_system_parameters(update=True)
-        # Update the base schema
-        create_base_schema()
-        trans.commit(close=True)
+        patches = self._get_patches()
+        current_version = self.get_current_version(conn)
+        generation = self._get_generation(conn, current_version)
+
+        initializing = current_version == 0
+
+        for patch, patchlevel in patches:
+            if patchlevel <= current_version:
+                continue
+            temporary = tempfile.mktemp(prefix="patch-%d" % patchlevel)
+            shutil.copy(patch, temporary)
+            open(temporary, 'a').write(
+                """INSERT INTO system_table (updated, patchlevel, generation) VALUES
+                (NOW(), %s, %s)""" % (conn.sqlrepr(patchlevel),
+                                      conn.sqlrepr(generation)))
+            execute_sql(temporary)
+            os.unlink(temporary)
+
+        if not initializing:
+            # checks if there is new applications and update all the user
+            # profiles on the system
+            trans = new_transaction()
+            update_profile_applications(trans)
+            trans.commit(close=True)
+
+            # Updating the parameter list
+            ensure_system_parameters(update=True)
+
+        return current_version, patchlevel
+
+    def get_current_version(self, conn):
+        assert conn.tableExists('system_table')
+
+        if conn.tableHasColumn('system_table', 'generation'):
+            results = SystemTable.select(connection=conn)
+            current_version = results.max('patchlevel')
+        elif conn.tableHasColumn('asellable', 'code'):
+            raise SystemExit(_("Unsupported database version, you need to reinstall"))
+        else:
+            current_version = 0
+
+        return current_version
 
 schema_migration = SchemaMigration()
