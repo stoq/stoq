@@ -79,8 +79,10 @@ class FiscalPrinterHelper(CouponPrinter):
             try:
                 CouponPrinter.open_till(self, value)
             except CouponOpenError:
+                # The document is already open, cancel the existing one
+                # and try again
                 self.cancel()
-                retval = False
+                continue
             except DriverError:
                 response = warning(
                     _(u"It's not possible to emit a read X for the "
