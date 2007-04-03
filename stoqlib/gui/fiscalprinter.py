@@ -79,9 +79,8 @@ class FiscalPrinterHelper(CouponPrinter):
             try:
                 CouponPrinter.open_till(self, value)
             except CouponOpenError:
-                # A document is open, cancel it and try again
                 self.cancel()
-                continue
+                retval = False
             except DriverError:
                 response = warning(
                     _(u"It's not possible to emit a read X for the "
@@ -146,9 +145,8 @@ class FiscalPrinterHelper(CouponPrinter):
             try:
                 CouponPrinter.close_till(self, value)
             except CouponOpenError:
-                # A document is open, cancel it and try again
                 self.cancel()
-                continue
+                retval = False
             except DriverError:
                 response = warning(
                     short=_(u"It's not possible to emit a reduce Z for the "
