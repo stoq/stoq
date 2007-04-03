@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,40 +25,21 @@
 ##
 """ Routines for system data management"""
 
-import datetime
-
 from sqlobject import SQLObject
 from sqlobject import DateTimeCol, IntCol
 
-from stoqlib import db_version
 from stoqlib.domain.base import AbstractModel
 
 class SystemTable(SQLObject, AbstractModel):
     """Stores information about database schema migration
 
-    I{update_date}: the date when the database schema was updated
-    I{version}: the version of the schema installed
+    I{update}: the date when the database schema was updated
+    I{patchlevel}: the version of the schema installed
     """
 
-    update_date = DateTimeCol()
-    version = IntCol()
-
-    @classmethod
-    def update(cls, trans, check_new_db=False, version=None):
-        """Add a new entry on SystemTable with the current schema version"""
-        result = cls.select(connection=trans)
-        if result and check_new_db:
-            raise ValueError(
-                'SystemTable should be empty at this point got %d results' %
-                result.count())
-        elif not result and not check_new_db:
-            raise ValueError(
-                'SystemTable should have at least one item at this point, '
-                'got nothing')
-
-        return cls(version=version or db_version,
-                   update_date=datetime.datetime.now(),
-                   connection=trans)
+    updated = DateTimeCol()
+    patchlevel = IntCol()
+    generation = IntCol()
 
     @classmethod
     def is_available(cls, conn):

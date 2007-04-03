@@ -29,8 +29,6 @@ import sys
 
 from kiwi.environ import Library
 
-FIRST_DB_VERSION = 5
-
 program_name    = "Stoqlib"
 website         = 'http://www.stoq.com.br/'
 version         = "0.8.10"
