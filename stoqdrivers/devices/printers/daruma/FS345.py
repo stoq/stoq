@@ -248,7 +248,7 @@ class FS345(SerialBase):
         elif error == 16:
             raise DriverError("Bad discount/markup parameter")
         elif error == 21:
-            raise OutofPaperError(_('No paper'))
+            log.warning(_('No paper'))
         elif error == 22:
             raise DriverError("Reduce Z was already sent today, try again tomorrow")
         elif error == 23:
