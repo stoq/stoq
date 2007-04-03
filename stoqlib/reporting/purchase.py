@@ -115,38 +115,41 @@ class PurchaseOrderReport(BaseStoqReport):
                 lambda obj: ("%s - %s" % (obj.sellable.id,
                                           obj.sellable.get_description())),
                 expand=True, truncate=True),
-            OTC(_("Quantity"), lambda obj: format_quantity(obj.quantity),
-                width=80, align=RIGHT),
             # FIXME: This column should be virtual, waiting for bug #2764
             OTC("Unit", lambda obj: obj.sellable.get_unit_description(),
-                virtual=False, width=60, align=LEFT),
+                virtual=False, width=50, align=LEFT),
             OTC(_("Cost"), lambda obj: get_formatted_price(obj.cost),
                 width=70, align=RIGHT),
+            OTC(_("Quantity"), lambda obj: format_quantity(obj.quantity),
+                width=70, align=RIGHT),
             OTC(_("Total"),
-                lambda obj: get_formatted_price(obj.get_total()), width=70,
+                lambda obj: get_formatted_price(obj.get_total()), width=90,
+                align=RIGHT),
+            OTC(_("Qty Received"), lambda obj: format_quantity(obj.quantity_received),
+                width=90, align=RIGHT),
+            OTC(_("Total"),
+                lambda obj: get_formatted_price(obj.get_received_total()), width=90,
                 align=RIGHT),
             ]
-
     def _add_items_table(self, items):
-        total_cost = Decimal(0)
+        total_quantity = Decimal(0)
+        total_qty_received = Decimal(0)
+        total_received = Decimal(0)
         total_value = Decimal(0)
         for item in items:
+            total_quantity += item.quantity
+            total_qty_received += item.quantity_received
             total_value += item.quantity * item.cost
-            total_cost += item.cost
-        extra_row = ["", _("Totals:"), "", get_formatted_price(total_cost),
-                     get_formatted_price(total_value)]
+            total_received += item.quantity_received * item.cost
+        extra_row = ["", "", _("Totals:"), format_quantity(total_quantity),
+                     get_formatted_price(total_value),
+                     format_quantity(total_qty_received),
+                     get_formatted_price(total_received)]
         self.add_object_table(items, self._get_items_table_columns(),
                               summary_row=extra_row)
 
     def _add_ordered_items_table(self, items):
-        self.add_paragraph(_("Ordered Items"), style="Title")
-        self._add_items_table(items)
-
-    def _add_received_items_table(self, items):
-        self.add_paragraph(_("Received Items"), style="Title")
-        if not items:
-            self.add_paragraph(_("There is no received items"))
-            return
+        self.add_paragraph(_("Purchase Ordered Items"), style="Title")
         self._add_items_table(items)
 
     def _get_freight_line(self):
@@ -199,12 +202,10 @@ class PurchaseOrderReport(BaseStoqReport):
 
     def _setup_items_table(self):
         items = self._order.get_items()
-        received_items = [item for item in items if item.has_been_received()]
         # XXX: Stoqlib Reporting try to apply len() on the table data, but
         # Purchase's get_items returns a SelectResult instance (SQLObject)
         # that not supports the len operator.
         self._add_ordered_items_table(list(self._order.get_items()))
-        self._add_received_items_table(received_items)
 
     #
     # BaseStoqReport hooks
