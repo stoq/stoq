@@ -34,7 +34,8 @@ from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
                                        ISellable, IStorable, ISalesPerson,
                                        IClient, IUser, ITransporter,
                                        IBankBranch,
-                                       ICreditProvider)
+                                       ICreditProvider,
+                                       IPaymentGroup)
 from stoqlib.lib.parameters import sysparam
 
 # Do not remove, these are used by doctests
@@ -338,9 +339,11 @@ class ExampleCreator(object):
 
     def _create_purchase_order(self):
         from stoqlib.domain.purchase import PurchaseOrder
-        return PurchaseOrder(supplier=self._create_supplier(),
-                             branch=self._create_branch(),
-                             connection=self.trans)
+        order = PurchaseOrder(supplier=self._create_supplier(),
+                              branch=self._create_branch(),
+                            connection=self.trans)
+        order.addFacet(IPaymentGroup, connection=self.trans)
+        return order
 
     def _create_purchase_order_item(self):
         from stoqlib.domain.purchase import PurchaseItem
