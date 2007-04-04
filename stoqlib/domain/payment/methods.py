@@ -458,7 +458,6 @@ class APaymentMethod(InheritableModel):
         """
 
 class MoneyPM(APaymentMethod):
-    implements(IActive)
 
     # Money payment method must be always available
     active_editable = False
@@ -475,7 +474,6 @@ class MoneyPM(APaymentMethod):
         return 1
 
 class GiftCertificatePM(APaymentMethod):
-    implements(IActive)
 
     description = _(u'Gift Certificate')
 
@@ -498,7 +496,6 @@ class _AbstractCheckBillMethodMixin(object):
 
 
 class CheckPM(_AbstractCheckBillMethodMixin, APaymentMethod):
-    implements(IActive)
 
     description = _(u'Check')
 
@@ -543,7 +540,6 @@ class CheckPM(_AbstractCheckBillMethodMixin, APaymentMethod):
         Payment.delete(payment.id, connection=conn)
 
 class BillPM(_AbstractCheckBillMethodMixin, APaymentMethod):
-    implements(IActive)
 
     description = _(u'Bill')
 
@@ -554,7 +550,6 @@ class BillPM(_AbstractCheckBillMethodMixin, APaymentMethod):
         raise NotImplementedError
 
 class CardPM(APaymentMethod):
-    implements(IActive)
 
     description = _(u'Card')
 
@@ -579,7 +574,6 @@ class CardPM(APaymentMethod):
         return 12
 
 class FinancePM(APaymentMethod):
-    implements(IActive)
 
     description = _(u'Finance')
 
