@@ -165,7 +165,7 @@ class PurchaseApp(SearchableAppWindow):
         trans = new_transaction()
         for order_view in valid_order_views:
             order = trans.get(order_view.purchase)
-            order.confirm_order()
+            order.confirm()
         trans.commit()
         self.searchbar.search_items()
 
