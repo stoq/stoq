@@ -108,7 +108,9 @@ def _create_domain_test():
         'ReceivingOrder': 'invalid invoice number',
         'ProductAdaptToSellable' : '',
         'ServiceAdaptToSellable' : '',
+        'PurchaseOrderAdaptToPaymentGroup': '',
         }
+
     namespace = dict(_test_domain=_test_domain)
     for table in get_table_types():
         tname = table.__name__
