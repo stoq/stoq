@@ -386,7 +386,7 @@ class APaymentMethod(InheritableModel):
         @param due_dates: a list of datetime objects
         @returns: a list of L{PaymentAdaptToOutPayment}
         """
-        return self._create_payments(IInPayment, payment_group,
+        return self._create_payments(IOutPayment, payment_group,
                                      value, due_dates)
 
     def get_implemented_iface(self):

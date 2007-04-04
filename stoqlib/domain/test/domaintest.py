@@ -221,6 +221,10 @@ class DomainTest(unittest.TestCase):
         ex = ExampleCreator(self.trans)
         return ex.create_by_type('PersonAdaptToSalesPerson')
 
+    def create_purchase_order(self):
+        ex = ExampleCreator(self.trans)
+        return ex.create_by_type('PurchaseOrder')
+
     def get_station(self):
         ex = ExampleCreator(self.trans)
         return ex.create_by_type('BranchStation')
