@@ -40,6 +40,7 @@ from stoqlib.domain.profile import update_profile_applications
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.defaults import stoqlib_gettext
+from stoqlib.lib.message import error
 from stoqlib.lib.parameters import (check_parameter_presence,
                                     ensure_system_parameters)
 
@@ -121,7 +122,11 @@ class SchemaMigration:
                 """INSERT INTO system_table (updated, patchlevel, generation) VALUES
                 (NOW(), %s, %s)""" % (conn.sqlrepr(patchlevel),
                                       conn.sqlrepr(generation)))
-            execute_sql(temporary)
+            retcode = execute_sql(temporary)
+            if retcode != 0:
+                error('Failed to apply %s, psql returned error code: %d' % (
+                    os.path.basename(patch), retcode))
+
             os.unlink(temporary)
 
         if not initializing:

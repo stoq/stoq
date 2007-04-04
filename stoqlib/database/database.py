@@ -34,7 +34,6 @@ from kiwi.log import Logger
 
 from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.message import error
 
 _ = stoqlib_gettext
 
@@ -83,6 +82,8 @@ def execute_sql(filename):
     """
     Inserts Raw SQL commands into the database read from a file.
     @param filename: filename with SQL commands
+    @returns: return code, 0 if succeeded, positive integer for failure
+    @rtype: int
     """
     settings = get_utility(IDatabaseSettings)
 
@@ -120,8 +121,6 @@ def execute_sql(filename):
         proc.stdin.write(data)
         proc.stdin.close()
 
-        returncode = proc.wait()
-        if returncode != 0:
-            error('psql returned error code %d' % returncode)
+        return proc.wait()
     else:
         raise NotImplementedError(settings.rdbms)
