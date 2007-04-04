@@ -51,8 +51,7 @@ class _TestPaymentMethod:
 
     def createOutPayment(self):
         purchase = self.create_purchase_order()
-        group = purchase.addFacet(IPaymentGroup,
-                              connection=self.trans)
+        group = IPaymentGroup(purchase)
 
         method = self.method_type.selectOne(connection=self.trans)
         return method.create_outpayment(group, Decimal(100))
@@ -71,8 +70,7 @@ class _TestPaymentMethod:
 
     def createOutPayments(self):
         purchase = self.create_purchase_order()
-        group = purchase.addFacet(IPaymentGroup,
-                              connection=self.trans)
+        group = IPaymentGroup(purchase)
 
         d = datetime.datetime.today()
         method = self.method_type.selectOne(connection=self.trans)
