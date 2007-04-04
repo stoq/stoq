@@ -24,10 +24,13 @@
 ##
 """ Purchase details dialogs """
 
+import datetime
+
 import gtk
 from kiwi.datatypes import currency
-from kiwi.ui.widgets.list import Column, SummaryLabel
+from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
 
+from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import print_report
@@ -41,7 +44,7 @@ class PurchaseDetailsDialog(BaseEditor):
     gladefile = "PurchaseDetailsDialog"
     model_type = PurchaseOrder
     title = _("Purchase Details")
-    size = (650, 460)
+    size = (750, 460)
     hide_footer = True
     proxy_widgets = ('branch',
                      'order_number',
@@ -61,14 +64,16 @@ class PurchaseDetailsDialog(BaseEditor):
     payment_proxy = ('payment_method',
                      'installments_number')
 
-    def _setup_widgets(self):
-        self.ordered_items.set_columns(self._get_ordered_columns())
-        self.received_items.set_columns(self._get_received_columns())
-
-        self.ordered_items.add_list(self.model.get_items())
-        self.received_items.add_list(self.model.get_partially_received_items())
-
+    def _setup_summary_labels(self):
         value_format = '<b>%s</b>'
+
+        payment_summary_label = SummaryLabel(klist=self.payments_list,
+                                             column='base_value',
+                                             label='<b>%s</b>' % _(u"Total:"),
+                                             value_format=value_format)
+        payment_summary_label.show()
+        self.payments_vbox.pack_start(payment_summary_label, False)
+
         received_label = '<b>%s</b>' % _('Total Received:')
         received_summary_label = SummaryLabel(klist=self.received_items,
                                               column='received_total',
@@ -76,6 +81,19 @@ class PurchaseDetailsDialog(BaseEditor):
                                               value_format=value_format)
         received_summary_label.show()
         self.received_vbox.pack_start(received_summary_label, False)
+
+    def _setup_widgets(self):
+        self.ordered_items.set_columns(self._get_ordered_columns())
+        self.received_items.set_columns(self._get_received_columns())
+
+        self.ordered_items.add_list(self.model.get_items())
+        self.received_items.add_list(self.model.get_partially_received_items())
+
+        self.payments_list.set_columns(self._get_payments_columns())
+        group = IPaymentGroup(self.model)
+        self.payments_list.add_list(group.get_items())
+
+        self._setup_summary_labels()
 
     def _get_ordered_columns(self):
         return [Column('sellable.base_sellable_info.description',
@@ -101,6 +119,26 @@ class PurchaseDetailsDialog(BaseEditor):
                        editable=True, width=90),
                 Column('received_total', title=_('Total'),
                        data_type=currency, width=100)]
+
+    def _get_payments_columns(self):
+        return [Column('id', "#", data_type=int, width=50,
+                       format='%04d', justify=gtk.JUSTIFY_RIGHT),
+                Column('method.description', _("Type"),
+                       data_type=str, width=90),
+                Column('description', _("Description"), data_type=str,
+                       width=190, expand=True),
+                Column('due_date', _("Due Date"), sorted=True,
+                       data_type=datetime.date, width=110,
+                       justify=gtk.JUSTIFY_RIGHT),
+                Column('status_str', _("Status"), data_type=str, width=80),
+                ColoredColumn('paid_value', _("Paid Value"), data_type=currency,
+                              width=90, color='red',
+                              justify=gtk.JUSTIFY_RIGHT,
+                              data_func=payment_value_colorize),
+                ColoredColumn('base_value', _("Value"), data_type=currency,
+                              width=90, color='red',
+                              justify=gtk.JUSTIFY_RIGHT,
+                              data_func=payment_value_colorize)]
 
     #
     # BaseEditor hooks
