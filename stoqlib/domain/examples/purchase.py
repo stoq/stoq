@@ -89,7 +89,7 @@ def create_purchases():
                            quantity=5,
                            purchase_item=purchase_item,
                            receiving_order=receiving_order)
-    order.confirm_order()
+    order.confirm()
 
     receiving_order.set_valid()
     receiving_order.confirm()

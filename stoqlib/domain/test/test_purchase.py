@@ -39,20 +39,20 @@ class TestPurchaseOrder(DomainTest):
     def testConfirmOrder(self):
         order = self.create_purchase_order()
         # FIXME: Use a better exception?
-        self.assertRaises(ValueError, order.confirm_order)
+        self.assertRaises(ValueError, order.confirm)
         order.status = PurchaseOrder.ORDER_PENDING
-        self.assertRaises(ValueError, order.confirm_order)
+        self.assertRaises(ValueError, order.confirm)
 
         order.addFacet(IPaymentGroup, connection=self.trans)
-        order.confirm_order()
+        order.confirm()
 
     def testClose(self):
         order = self.create_purchase_order()
         self.assertRaises(ValueError, order.close)
         order.status = PurchaseOrder.ORDER_PENDING
-        self.assertRaises(ValueError, order.confirm_order)
+        self.assertRaises(ValueError, order.confirm)
         order.addFacet(IPaymentGroup, connection=self.trans)
-        order.confirm_order()
+        order.confirm()
 
         payments = list(IPaymentGroup(order).get_items())
         self.failUnless(len(payments) > 0)

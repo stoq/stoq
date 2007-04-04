@@ -29,17 +29,16 @@ import datetime
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
-from stoqdrivers.enum import PaymentMethodType
 from zope.interface import implements
-
+from stoqdrivers.enum import PaymentMethodType
 from sqlobject import (ForeignKey, IntCol, DateTimeCol, UnicodeCol,
                        SQLObject)
 
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.domain.base import Domain, BaseSQLView
+from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
-from stoqlib.domain.payment.methods import CheckPM, BillPM, MoneyPM
 from stoqlib.domain.interfaces import IPaymentGroup, IContainer
 from stoqlib.lib.defaults import calculate_interval, quantize
 from stoqlib.lib.parameters import sysparam
@@ -183,83 +182,6 @@ class PurchaseOrder(Domain):
     # Properties
     #
 
-    @property
-    def order_number(self):
-        return self.id
-
-
-    #
-    # General methods
-    #
-
-    def can_cancel(self):
-        """
-        Find out if it's possible to cancel the order
-        @returns: True if it's possible to cancel the order, otherwise False
-        """
-        return self.status in [self.ORDER_QUOTING,
-                               self.ORDER_PENDING,
-                               self.ORDER_CONFIRMED]
-
-    def receive_item(self, item, quantity_to_receive):
-        if not item in self.get_pending_items():
-            raise StoqlibError('This item is not pending, hence '
-                               'cannot be received')
-        quantity = item.quantity - item.quantity_received
-        if quantity < quantity_to_receive:
-            raise StoqlibError('The quantity that you want to receive '
-                               'is greater than the total quantity of '
-                               'this item %r' % item)
-        self.increase_quantity_received(item.sellable,
-                                        quantity_to_receive)
-
-    def confirm_order(self, confirm_date=datetime.datetime.now()):
-        if self.status != self.ORDER_PENDING:
-            raise ValueError('Invalid order status, it should be '
-                             'ORDER_PENDING, got %s'
-                             % self.get_status_str())
-        conn = self.get_connection()
-        if sysparam(conn).USE_PURCHASE_PREVIEW_PAYMENTS:
-            group = IPaymentGroup(self, None)
-            if not group:
-                raise ValueError('You must have a IPaymentGroup facet '
-                                 'defined at this point')
-            base_method = None
-            total = self.get_purchase_total()
-            self._create_preview_outpayments(conn, group, base_method, total)
-        self.status = self.ORDER_CONFIRMED
-        self.confirm_date = confirm_date
-
-    def _create_preview_outpayments(self, conn, group, base_method, total):
-        if group.default_method == PaymentMethodType.MONEY:
-            method_type = MoneyPM
-        elif group.default_method == PaymentMethodType.CHECK:
-            method_type = CheckPM
-        elif group.default_method == PaymentMethodType.BILL:
-            method_type = BillPM
-        else:
-            raise ValueError('Invalid payment method, got %d' %
-                             group.default_method)
-
-        method = method_type.selectOne(connection=conn)
-        if group.interval_type:
-            interval = calculate_interval(group.interval_type, group.intervals)
-            due_dates = []
-            for i in range(group.installments_number):
-                due_dates.append(self.expected_receival_date +
-                                 datetime.timedelta(i * interval))
-
-            method.create_outpayments(group, total, due_dates)
-        else:
-            method.create_outpayment(group, total)
-
-    def _get_percentage_value(self, percentage):
-        if not percentage:
-            return currency(0)
-        subtotal = self.get_purchase_subtotal()
-        percentage = Decimal(percentage)
-        return subtotal * (percentage / 100)
-
     def _set_discount_by_percentage(self, value):
         """Sets a discount by percentage.
         Note that percentage must be added as an absolute value not as a
@@ -300,17 +222,71 @@ class PurchaseOrder(Domain):
         return quantize(percentage)
 
     surcharge_percentage = property(_get_surcharge_by_percentage,
-                                 _set_surcharge_by_percentage)
-    def reset_discount_and_surcharge(self):
-        self.discount_value = self.surcharge_value = currency(0)
+                                    _set_surcharge_by_percentage)
 
-    def can_close(self):
-        for item in self.get_items():
-            if not item.has_been_received():
-                return False
-        return True
+    @property
+    def order_number(self):
+        return self.id
+
+
+    #
+    # Private
+    #
+
+    def _create_preview_outpayments(self, conn, group, total):
+        method = APaymentMethod.get_by_enum(
+            conn, PaymentMethodType.get(group.default_method))
+        if group.interval_type:
+            interval = calculate_interval(group.interval_type, group.intervals)
+            due_dates = []
+            for i in range(group.installments_number):
+                due_dates.append(self.expected_receival_date +
+                                 datetime.timedelta(i * interval))
+
+            method.create_outpayments(group, total, due_dates)
+        else:
+            method.create_outpayment(group, total)
+
+
+    def _get_percentage_value(self, percentage):
+        if not percentage:
+            return currency(0)
+        subtotal = self.get_purchase_subtotal()
+        percentage = Decimal(percentage)
+        return subtotal * (percentage / 100)
+
+    #
+    # Public API
+    #
+
+    def confirm(self, confirm_date=None):
+        """
+        Confirms the purchase order
+
+        @param confirm_data: optional, datetime
+        """
+        if confirm_date is None:
+            confirm_date = datetime.datetime.now()
+
+        if self.status != self.ORDER_PENDING:
+            raise ValueError('Invalid order status, it should be '
+                             'ORDER_PENDING, got %s'
+                             % self.get_status_str())
+        conn = self.get_connection()
+        if sysparam(conn).USE_PURCHASE_PREVIEW_PAYMENTS:
+            group = IPaymentGroup(self, None)
+            if not group:
+                raise ValueError('You must have a IPaymentGroup facet '
+                                 'defined at this point')
+            self._create_preview_outpayments(conn, group,
+                                             self.get_purchase_total())
+        self.status = self.ORDER_CONFIRMED
+        self.confirm_date = confirm_date
 
     def close(self):
+        """
+        Closes the purchase order
+        """
         if not self.status == self.ORDER_CONFIRMED:
             raise ValueError('Invalid status, it should be confirmed '
                              'got %s instead' % self.get_status_str())
@@ -319,8 +295,48 @@ class PurchaseOrder(Domain):
             item.set_pending()
         self.status = self.ORDER_CLOSED
 
-    def increase_quantity_received(self, sellable,
-                                   quantity_received):
+    def cancel(self):
+        """
+        Cancels the purchase order
+        """
+        assert self.can_cancel()
+        self.status = self.ORDER_CANCELLED
+
+    def receive_item(self, item, quantity_to_receive):
+        if not item in self.get_pending_items():
+            raise StoqlibError('This item is not pending, hence '
+                               'cannot be received')
+        quantity = item.quantity - item.quantity_received
+        if quantity < quantity_to_receive:
+            raise StoqlibError('The quantity that you want to receive '
+                               'is greater than the total quantity of '
+                               'this item %r' % item)
+        self.increase_quantity_received(item.sellable,
+                                        quantity_to_receive)
+
+    def can_cancel(self):
+        """
+        Find out if it's possible to cancel the order
+        @returns: True if it's possible to cancel the order, otherwise False
+        """
+        return self.status in [self.ORDER_QUOTING,
+                               self.ORDER_PENDING,
+                               self.ORDER_CONFIRMED]
+
+    def can_close(self):
+        """
+        Find out if it's possible to close the order
+        @returns: True if it's possible to close the order, otherwise False
+        """
+        for item in self.get_items():
+            if not item.has_been_received():
+                return False
+        return True
+
+    def reset_discount_and_surcharge(self):
+        self.discount_value = self.surcharge_value = currency(0)
+
+    def increase_quantity_received(self, sellable, quantity_received):
         items = [item for item in self.get_items()
                     if item.sellable.id == sellable.id]
         qty = len(items)
@@ -333,26 +349,6 @@ class PurchaseOrder(Domain):
                                         % qty)
         item = items[0]
         item.quantity_received += quantity_received
-
-    def cancel(self):
-        """ Cancel the payment """
-        assert self.can_cancel()
-        self.status = self.ORDER_CANCELLED
-
-    #
-    # Classmethods
-    #
-
-    @classmethod
-    def translate_status(cls, status):
-        if not cls.statuses.has_key(status):
-            raise DatabaseInconsistency('Got an unexpected status value: '
-                                        '%s' % status)
-        return cls.statuses[status]
-
-    #
-    # Accessors
-    #
 
     def get_status_str(self):
         return PurchaseOrder.translate_status(self.status)
@@ -407,6 +403,18 @@ class PurchaseOrder(Domain):
     def get_open_date_as_string(self):
         return self.open_date and self.open_date.strftime("%x") or ""
 
+    #
+    # Classmethods
+    #
+
+    @classmethod
+    def translate_status(cls, status):
+        if not cls.statuses.has_key(status):
+            raise DatabaseInconsistency('Got an unexpected status value: '
+                                        '%s' % status)
+        return cls.statuses[status]
+
+
 class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
 
     _inheritable = False
@@ -434,16 +442,6 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
     def get_group_description(self):
         order = self.get_adapted()
         return _(u'order %s') % order.id
-
-    def create_preview_outpayments(self):
-        conn = self.get_connection()
-        base_method = None
-        order = self.get_adapted()
-        total = order.get_purchase_total()
-        #first_due_date = order.expected_receival_date
-        order._create_preview_outpayments(conn=conn, group=self,
-                                          base_method=base_method,
-                                          total=total)
 
 PurchaseOrder.registerFacet(PurchaseOrderAdaptToPaymentGroup, IPaymentGroup)
 
