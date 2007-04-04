@@ -47,6 +47,7 @@ from stoqlib.domain.person import EmployeeRoleHistory
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.sellable import SellableTaxConstant, SellableUnit
 from stoqlib.exceptions import StoqlibError
+from stoqlib.lib.message import error
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -193,17 +194,20 @@ def create_base_schema():
 
     # A Base schema shared between all RDBMS implementations
     schema = environ.find_resource('sql', 'schema.sql')
-    execute_sql(schema)
+    if execute_sql(schema) != 0:
+        error('Failed to create base schema')
 
     try:
         schema = environ.find_resource('sql', '%s-schema.sql' % settings.rdbms)
-        execute_sql(schema)
+        if execute_sql(schema) != 0:
+            error('Failed to create %s specific schema' % (settings.rdbms,))
     except EnvironmentError:
         pass
 
     log.info('Creating views')
     schema = environ.find_resource('sql', 'views.sql')
-    execute_sql(schema)
+    if execute_sql(schema) != 0:
+        error('Failed to create views schema')
 
     schema_migration.update_schema()
 
