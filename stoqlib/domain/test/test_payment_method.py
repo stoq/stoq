@@ -159,8 +159,7 @@ class TestAPaymentMethod(DomainTest, _TestPaymentMethod):
     def testCreateOutPaymentsUnClosedTill(self):
         # Test for bug 3270
         self._createUnclosedTill()
-        payment = self.createOutPayment()
-        self.failUnless(isinstance(payment, PaymentAdaptToOutPayment))
+        self.createOutPayments()
 
     def testCreateInPaymentUnClosedTill(self):
         self._createUnclosedTill()
