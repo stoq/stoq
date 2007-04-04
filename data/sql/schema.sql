@@ -280,8 +280,6 @@ CREATE TABLE product_adapt_to_sellable (
     original_id bigint UNIQUE REFERENCES product(id)
 );
 
--- FIXME: original_id should be marked as UNIQUE
-
 CREATE TABLE product_adapt_to_storable (
     id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,

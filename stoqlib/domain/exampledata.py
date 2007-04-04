@@ -236,7 +236,6 @@ class ExampleCreator(object):
         from stoqlib.domain.product import ProductSupplierInfo
         sellable = self._create_sellable()
         product = sellable.get_adapted()
-        product.addFacet(IStorable, connection=self.trans)
         ProductSupplierInfo(connection=self.trans,
                             supplier=self._create_supplier(),
                             product=product, is_main_supplier=True)
