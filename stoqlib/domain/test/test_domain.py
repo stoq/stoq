@@ -29,9 +29,10 @@ from kiwi.datatypes import currency
 from sqlobject.col import (SOBoolCol, SODateTimeCol, SOForeignKey, SOIntCol,
                            SOStringCol, SOUnicodeCol)
 from sqlobject.sqlbuilder import NoDefault
+from twisted.trial.unittest import SkipTest
+
 from stoqlib.database.columns import AbstractDecimalCol, SOPriceCol
 from stoqlib.database.tables import get_table_types
-from twisted.trial.unittest import SkipTest
 
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -105,6 +106,8 @@ def _create_domain_test():
 
     TODO = {
         'ReceivingOrder': 'invalid invoice number',
+        'ProductAdaptToSellable' : '',
+        'ServiceAdaptToSellable' : '',
         }
     namespace = dict(_test_domain=_test_domain)
     for table in get_table_types():

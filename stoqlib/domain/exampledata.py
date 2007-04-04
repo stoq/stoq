@@ -24,6 +24,7 @@
 ##
 
 import datetime
+from decimal import Decimal
 
 from stoqdrivers.enum import TaxType
 
@@ -116,8 +117,10 @@ class ExampleCreator(object):
 
     def create_by_type(self, model_type):
         known_types = {
+            'APaymentMethod': self._create_payment_method,
             'ASellable': self._create_sellable,
             'AbstractFiscalBookEntry' : self._create_abstract_fiscal_book_entry,
+            'AbstractPaymentGroup' : self._create_payment_group,
             'BaseSellableInfo': self._create_base_sellable_info,
             'BranchStation': self.get_station,
             'Bank': self._create_bank,
@@ -137,6 +140,9 @@ class ExampleCreator(object):
             'ISupplier': self._create_supplier,
             'ITransporter': self._create_transporter,
             'IUser': self._create_user,
+            'OnSaleInfo': self._create_on_sale_info,
+            'Payment': self._create_payment,
+            'PaymentDestination' : self._create_payment_destination,
             'ParameterData': self._create_parameter_data,
             'Person': self._create_person,
             'PersonAdaptToBankBranch': self._create_bank_branch,
@@ -462,6 +468,34 @@ class ExampleCreator(object):
                                 connection=self.trans,
                                 short_name='Velec',
                                 open_contract_date=datetime.date(2006, 01, 01))
+
+    def _create_payment_method(self):
+        from stoqdrivers.enum import PaymentMethodType
+        from stoqlib.domain.payment.methods import APaymentMethod
+        return APaymentMethod.get_by_enum(self.trans, PaymentMethodType.MONEY)
+
+    def _create_payment(self):
+        from stoqlib.domain.payment.payment import Payment
+        return Payment(group=None,
+                       due_date=None,
+                       destination=None,
+                       value=Decimal(10),
+                       till=None,
+                       method=self._create_payment_method(),
+                       connection=self.trans)
+
+    def _create_payment_group(self):
+        from stoqlib.domain.payment.payment import AbstractPaymentGroup
+        return AbstractPaymentGroup(connection=self.trans)
+
+    def _create_payment_destination(self):
+        from stoqlib.domain.payment.destination import PaymentDestination
+        return PaymentDestination(description='foobar',
+                                  connection=self.trans)
+
+    def _create_on_sale_info(self):
+        from stoqlib.domain.sellable import OnSaleInfo
+        return OnSaleInfo(connection=self.trans)
 
     def get_station(self):
         return get_current_station(self.trans)

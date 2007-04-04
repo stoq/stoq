@@ -304,7 +304,7 @@ class Person(Domain):
 # Adapters
 #
 
-class _PersonAdapter(ModelAdapter):
+class PersonAdapter(ModelAdapter):
     implements(IActive, IDescribable, IPersonFacet)
 
     @property
@@ -334,7 +334,7 @@ class _PersonAdapter(ModelAdapter):
         return self.person.name
 
 
-class _PersonAdaptToIndividual(_PersonAdapter):
+class _PersonAdaptToIndividual(PersonAdapter):
     """An individual facet of a person.
 
     B{Important attributes}:
@@ -399,7 +399,7 @@ class _PersonAdaptToIndividual(_PersonAdapter):
 
 Person.registerFacet(_PersonAdaptToIndividual, IIndividual)
 
-class _PersonAdaptToCompany(_PersonAdapter):
+class _PersonAdaptToCompany(PersonAdapter):
     """A company facet of a person.
 
     B{Important attributes}:
@@ -421,7 +421,7 @@ class _PersonAdaptToCompany(_PersonAdapter):
 
 Person.registerFacet(_PersonAdaptToCompany, ICompany)
 
-class PersonAdaptToClient(_PersonAdapter):
+class PersonAdaptToClient(PersonAdapter):
     """A client facet of a person."""
 
     (STATUS_SOLVENT,
@@ -498,7 +498,7 @@ class PersonAdaptToClient(_PersonAdapter):
 
 Person.registerFacet(PersonAdaptToClient, IClient)
 
-class PersonAdaptToSupplier(_PersonAdapter):
+class PersonAdaptToSupplier(PersonAdapter):
     """A supplier facet of a person.
 
     B{Notes}:
@@ -529,7 +529,7 @@ class PersonAdaptToSupplier(_PersonAdapter):
 
 Person.registerFacet(PersonAdaptToSupplier, ISupplier)
 
-class PersonAdaptToEmployee(_PersonAdapter):
+class PersonAdaptToEmployee(PersonAdapter):
     """An employee facet of a person."""
     implements(IEmployee)
 
@@ -572,7 +572,7 @@ class PersonAdaptToEmployee(_PersonAdapter):
 
 Person.registerFacet(PersonAdaptToEmployee, IEmployee)
 
-class PersonAdaptToUser(_PersonAdapter):
+class PersonAdaptToUser(PersonAdapter):
     """An user facet of a person."""
     implements(IUser)
 
@@ -596,7 +596,7 @@ class PersonAdaptToUser(_PersonAdapter):
 
 Person.registerFacet(PersonAdaptToUser, IUser)
 
-class PersonAdaptToBranch(_PersonAdapter):
+class PersonAdaptToBranch(PersonAdapter):
     """A branch facet of a person."""
     implements(IBranch)
 
@@ -660,7 +660,7 @@ class PersonAdaptToBranch(_PersonAdapter):
 
 Person.registerFacet(PersonAdaptToBranch, IBranch)
 
-class PersonAdaptToBankBranch(_PersonAdapter):
+class PersonAdaptToBankBranch(PersonAdapter):
     """A bank branch facet of a person."""
     implements(IBankBranch)
 
@@ -669,7 +669,7 @@ class PersonAdaptToBankBranch(_PersonAdapter):
 
 Person.registerFacet(PersonAdaptToBankBranch, IBankBranch)
 
-class PersonAdaptToCreditProvider(_PersonAdapter):
+class PersonAdaptToCreditProvider(PersonAdapter):
     """A credit provider facet of a person."""
     implements(ICreditProvider)
 
@@ -707,7 +707,7 @@ class PersonAdaptToCreditProvider(_PersonAdapter):
 
 Person.registerFacet(PersonAdaptToCreditProvider, ICreditProvider)
 
-class PersonAdaptToSalesPerson(_PersonAdapter):
+class PersonAdaptToSalesPerson(PersonAdapter):
     """A sales person facet of a person.
 
     B{Important attributes}:
@@ -751,7 +751,7 @@ class PersonAdaptToSalesPerson(_PersonAdapter):
 
 Person.registerFacet(PersonAdaptToSalesPerson, ISalesPerson)
 
-class PersonAdaptToTransporter(_PersonAdapter):
+class PersonAdaptToTransporter(PersonAdapter):
     """A transporter facet of a person."""
     implements(ITransporter)
 
