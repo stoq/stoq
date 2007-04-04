@@ -133,8 +133,8 @@ class _InstallmentConfirmationSlave(BaseEditor):
                 Column('description', _("Description"), data_type=str),
                 Column('due_date', _("Due"), data_type=datetime.date),
                 Column('paid_date', _("Paid date"), data_type=datetime.date),
-                Column('value', _("Value"), data_type=currency),
-                Column('paid_value', _("Paid value"), data_type=currency)]
+                Column('base_value', _("Value"), data_type=currency),
+                Column('value', _("Paid value"), data_type=currency)]
 
     def _setup_widgets(self):
         self.installments.set_columns(self._get_columns())

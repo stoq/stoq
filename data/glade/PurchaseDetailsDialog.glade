@@ -45,8 +45,8 @@
                             <packing>
                                 <property name="top_attach">2</property>
                                 <property name="bottom_attach">3</property>
-                                <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
-                                <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                <property name="x_options"></property>
+                                <property name="y_options"></property>
                             </packing>
                         </child>
                         <child>
@@ -181,6 +181,31 @@
                         <property name="is_focus">True</property>
                         <property name="visible">True</property>
                         <child>
+                            <widget class="GtkVBox" id="payments_vbox">
+                                <property name="border_width">6</property>
+                                <property name="spacing">6</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="ObjectList" id="payments_list">
+                                        <property name="is_focus">True</property>
+                                        <property name="shadow_type">in</property>
+                                        <property name="visible">True</property>
+                                        <property name="vscrollbar_policy">automatic</property>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="tab_label" context="yes" translatable="yes">Payments</property>
+                            </packing>
+                        </child>
+                        <child>
                             <widget class="GtkVBox" id="vbox">
                                 <property name="border_width">6</property>
                                 <property name="spacing">18</property>
@@ -215,13 +240,14 @@
                                         <child>
                                             <placeholder/>
                                             <packing>
-                                                <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
-                                                <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                                <property name="x_options"></property>
+                                                <property name="y_options"></property>
                                             </packing>
                                         </child>
                                         <child>
                                             <widget class="ProxyLabel" id="discount">
                                                 <property name="label" context="yes" translatable="yes">Discount:</property>
+                                                <property name="model_attribute"></property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>
@@ -237,7 +263,7 @@
                                             <packing>
                                                 <property name="left_attach">1</property>
                                                 <property name="right_attach">2</property>
-                                                <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                                <property name="y_options"></property>
                                             </packing>
                                         </child>
                                         <child>
@@ -261,13 +287,14 @@
                                             <packing>
                                                 <property name="left_attach">2</property>
                                                 <property name="right_attach">3</property>
-                                                <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
-                                                <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                                <property name="x_options"></property>
+                                                <property name="y_options"></property>
                                             </packing>
                                         </child>
                                         <child>
                                             <widget class="ProxyLabel" id="surcharge">
                                                 <property name="label" context="yes" translatable="yes">Surcharge:</property>
+                                                <property name="model_attribute"></property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
@@ -284,7 +311,7 @@
                                             <packing>
                                                 <property name="left_attach">3</property>
                                                 <property name="right_attach">4</property>
-                                                <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                                <property name="y_options"></property>
                                             </packing>
                                         </child>
                                         <child>
@@ -306,6 +333,7 @@
                                             <widget class="ProxyLabel" id="subtotal">
                                                 <property name="data_type">bool</property>
                                                 <property name="label" context="yes" translatable="yes">Subtotal:</property>
+                                                <property name="model_attribute"></property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>
@@ -320,6 +348,7 @@
                                             <widget class="ProxyLabel" id="total">
                                                 <property name="data_type">bool</property>
                                                 <property name="label" context="yes" translatable="yes">Total:</property>
+                                                <property name="model_attribute"></property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>
@@ -369,6 +398,7 @@
                                 </child>
                             </widget>
                             <packing>
+                                <property name="position">1</property>
                                 <property name="tab_label" context="yes" translatable="yes">Ordered</property>
                             </packing>
                         </child>
@@ -393,7 +423,7 @@
                                 </child>
                             </widget>
                             <packing>
-                                <property name="position">1</property>
+                                <property name="position">2</property>
                                 <property name="tab_label" context="yes" translatable="yes">Received</property>
                             </packing>
                         </child>
@@ -411,6 +441,7 @@
                                         <child>
                                             <widget class="ProxyLabel" id="kiwilabel1">
                                                 <property name="label" context="yes" translatable="yes">Payment Method:</property>
+                                                <property name="model_attribute"></property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
@@ -418,6 +449,7 @@
                                         <child>
                                             <widget class="ProxyLabel" id="kiwilabel10">
                                                 <property name="label" context="yes" translatable="yes">Salesperson:</property>
+                                                <property name="model_attribute"></property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
@@ -439,6 +471,7 @@
                                         <child>
                                             <widget class="ProxyLabel" id="kiwilabel5">
                                                 <property name="label" context="yes" translatable="yes">Transporter:</property>
+                                                <property name="model_attribute"></property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
@@ -450,6 +483,7 @@
                                         <child>
                                             <widget class="ProxyLabel" id="kiwilabel9">
                                                 <property name="label" context="yes" translatable="yes">Freight Type:</property>
+                                                <property name="model_attribute"></property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
@@ -471,6 +505,7 @@
                                         <child>
                                             <widget class="ProxyLabel" id="kiwilabel14">
                                                 <property name="label" context="yes" translatable="yes">Notes:</property>
+                                                <property name="model_attribute"></property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
@@ -504,6 +539,7 @@
                                         <child>
                                             <widget class="ProxyLabel" id="payment_method">
                                                 <property name="data_type">unicode</property>
+                                                <property name="justify">right</property>
                                                 <property name="model_attribute">default_payment_method_name</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
@@ -567,6 +603,7 @@
                                         <child>
                                             <widget class="ProxyLabel" id="kiwilabel3">
                                                 <property name="label" context="yes" translatable="yes">Number of Installments:</property>
+                                                <property name="model_attribute"></property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
@@ -587,6 +624,7 @@
                                         <child>
                                             <widget class="ProxyLabel" id="kiwilabel7">
                                                 <property name="label" context="yes" translatable="yes">Expected Receival Date:</property>
+                                                <property name="model_attribute"></property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
@@ -600,6 +638,7 @@
                                         <child>
                                             <widget class="ProxyLabel" id="kiwilabel11">
                                                 <property name="label" context="yes" translatable="yes">Freight:</property>
+                                                <property name="model_attribute"></property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
@@ -667,6 +706,7 @@
                                                 <child>
                                                     <widget class="ProxyLabel" id="kiwilabel13">
                                                         <property name="label" context="yes" translatable="yes">%</property>
+                                                        <property name="model_attribute"></property>
                                                         <property name="visible">True</property>
                                                         <property name="xalign">0.0</property>
                                                     </widget>
@@ -711,7 +751,7 @@
                                 </child>
                             </widget>
                             <packing>
-                                <property name="position">2</property>
+                                <property name="position">3</property>
                                 <property name="tab_label" context="yes" translatable="yes">Additional Info</property>
                             </packing>
                         </child>
