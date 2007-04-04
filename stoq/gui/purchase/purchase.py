@@ -153,12 +153,6 @@ class PurchaseApp(SearchableAppWindow):
                    % len(valid_order_views))
         else:
             msg = _('The selected order will be marked as sent.')
-        if len(orders) - len(valid_order_views) != len(orders):
-            msg += "\n"
-            msg += _(u"Warning: there are %d order(s) with "
-                     "status different than pending that "
-                     "will not be included") % (
-                len(orders) - len(valid_order_views))
         if yesno(msg, gtk.RESPONSE_NO, _(u"Don't Send"), _(u"Send to supplier")):
             return
 
