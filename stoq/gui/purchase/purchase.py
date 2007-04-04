@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Main gui definition for purchase application.  """
 
@@ -32,13 +33,10 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.python import all
 from kiwi.ui.widgets.list import Column, SummaryLabel
-from stoqdrivers.enum import PaymentMethodType
 from stoqlib.database.database import rollback_and_begin
 from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
-from stoqlib.domain.interfaces import IPaymentGroup
-from stoqlib.domain.payment.methods import MoneyPM
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.search.categorysearch import (SellableCategorySearch,
@@ -49,7 +47,6 @@ from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.reporting.purchase import PurchaseReport
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_quantity
-from stoqlib.lib.parameters import sysparam
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -127,70 +124,49 @@ class PurchaseApp(SearchableAppWindow):
         if qty != 1:
             raise ValueError('You should have only one order selected, '
                              'got %d instead' % qty )
-        order = PurchaseOrder.get(selected[0].id, connection=self.conn)
-        self._open_order(order, edit_mode=True)
+        self._open_order(selected[0].purchase, edit_mode=True)
         self.searchbar.search_items()
 
-    def _confirm_order(self, order):
-        # FIXME: HACK to avoid creating till entry when payment method
-        # is money.  So, directly from PurchaseOrder's confirm_order()
-        # implementation, we have:
-        if order.status != PurchaseOrder.ORDER_PENDING:
-            raise ValueError('Invalid order status, it should be '
-                             'ORDER_PENDING, got %s'
-                             % PurchaseOrder.get_status_str(order.status))
-        if sysparam(self.conn).USE_PURCHASE_PREVIEW_PAYMENTS:
-            group = IPaymentGroup(order, None)
-            if not group:
-                raise ValueError('You must have a IPaymentGroup facet '
-                                 'defined at this point')
-            if group.default_method == PaymentMethodType.MONEY:
-                method = MoneyPM.selectOne(connection=self.conn)
-                method.create_outpayment(group, order.get_purchase_total(),
-                                         order.expected_receival_date) 
-            else:
-                group.create_preview_outpayments()
-        order.status = PurchaseOrder.ORDER_CONFIRMED
-        order.confirm_date = datetime.datetime.now()
-
     def _run_details_dialog(self):
-        orders = self.orders.get_selected_rows()
-        qty = len(orders)
+        order_views = self.orders.get_selected_rows()
+        qty = len(order_views)
         if qty != 1:
             raise ValueError('You should have only one order selected '
                              'at this point, got %d' % qty)
-        order = PurchaseOrder.get(orders[0].id, connection=self.conn)
-        self.run_dialog(PurchaseDetailsDialog, self.conn, model=order)
+        self.run_dialog(PurchaseDetailsDialog, self.conn,
+                        model=order_views[0].purchas)
 
     def _send_selected_items_to_supplier(self):
         rollback_and_begin(self.conn)
 
         orders = self.orders.get_selected_rows()
-        valid_orders = [order for order in orders
-                                  if order.status ==
-                                     PurchaseOrder.ORDER_PENDING]
+        valid_order_views = [
+            order for order in orders
+                      if order.status == PurchaseOrder.ORDER_PENDING]
 
-        valid_orders_len = len(valid_orders)
-        if not valid_orders_len:
-            return warning(_("There are no orders with status "
-                             "pending in the selection"))
-        elif valid_orders_len > 1:
+        if not valid_order_views:
+            warning(_("There are no orders with status "
+                      "pending in the selection"))
+            return
+        elif len(valid_order_views) > 1:
             msg = (_("The %d selected orders will be marked as sent.")
-                   % valid_orders_len)
+                   % len(valid_order_views))
         else:
             msg = _('The selected order will be marked as sent.')
-        invalid_qty = len(orders) - valid_orders_len
-        if valid_orders_len != len(orders):
+        if len(orders) - len(valid_order_views) != len(orders):
             msg += "\n"
             msg += _(u"Warning: there are %d order(s) with "
                      "status different than pending that "
-                     "will not be included") % invalid_qty
-        if yesno(msg, gtk.RESPONSE_NO, _(u"Cancel"), _(u"Confirm")):
+                     "will not be included") % (
+                len(orders) - len(valid_order_views))
+        if yesno(msg, gtk.RESPONSE_NO, _(u"Don't Send"), _(u"Send to supplier")):
             return
-        for item in valid_orders:
-            order = PurchaseOrder.get(item.id, connection=self.conn)
-            self._confirm_order(order)
-        self.conn.commit()
+
+        trans = new_transaction()
+        for order_view in valid_order_views:
+            order = trans.get(order_view.purchase)
+            order.confirm_order()
+        trans.commit()
         self.searchbar.search_items()
 
     def _print_selected_items(self):
@@ -200,8 +176,9 @@ class PurchaseApp(SearchableAppWindow):
     def _cancel_order(self):
         order_views = self.orders.get_selected_rows()
         assert all(ov.purchase.can_cancel() for ov in order_views)
-        msg = _('The selected order(s) will be cancelled.')
-        if yesno(msg, gtk.RESPONSE_NO, _(u"Cancel"), _(u"Confirm")):
+        if yesno(
+            _('The selected order(s) will be cancelled.'),
+            gtk.RESPONSE_NO, _(u"Don't Cancel"), _(u"Cancel order(s)")):
             return
         trans = new_transaction()
         for order_view in order_views:
