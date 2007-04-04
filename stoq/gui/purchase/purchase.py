@@ -134,7 +134,7 @@ class PurchaseApp(SearchableAppWindow):
             raise ValueError('You should have only one order selected '
                              'at this point, got %d' % qty)
         self.run_dialog(PurchaseDetailsDialog, self.conn,
-                        model=order_views[0].purchas)
+                        model=order_views[0].purchase)
 
     def _send_selected_items_to_supplier(self):
         rollback_and_begin(self.conn)
