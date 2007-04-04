@@ -27,13 +27,16 @@ from decimal import Decimal
 
 from stoqdrivers.enum import PaymentMethodType
 
+from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.payment.methods import (APaymentMethod,
                                             BillPM, CheckPM, FinancePM,
                                             MoneyPM, GiftCertificatePM)
 from stoqlib.domain.payment.payment import (Payment,
-                                            PaymentAdaptToInPayment)
+                                            PaymentAdaptToInPayment,
+                                            PaymentAdaptToOutPayment)
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.domain.till import Till
 from stoqlib.lib.defaults import quantize
 
 class _TestPaymentMethodBase:
@@ -50,13 +53,13 @@ class _TestPaymentMethodBase:
         self.assertEqual(payment.value, Decimal(100))
 
     def testCreateOutPayment(self):
-        sale = self.create_sale()
-        group = sale.addFacet(IPaymentGroup,
+        purchase = self.create_purchase_order()
+        group = purchase.addFacet(IPaymentGroup,
                               connection=self.trans)
 
         method = self.method_type.selectOne(connection=self.trans)
-        payment = method.create_inpayment(group, Decimal(100))
-        self.failUnless(isinstance(payment, PaymentAdaptToInPayment))
+        payment = method.create_outpayment(group, Decimal(100))
+        self.failUnless(isinstance(payment, PaymentAdaptToOutPayment))
         payment = payment.get_adapted()
         self.failUnless(isinstance(payment, Payment))
         self.assertEqual(payment.value, Decimal(100))
@@ -86,9 +89,8 @@ class _TestPaymentMethodBase:
         if self.method_type in (MoneyPM, GiftCertificatePM):
             return
 
-        # FIXME: serious abuse here, should create a PurchaseOrder
-        sale = self.create_sale()
-        group = sale.addFacet(IPaymentGroup,
+        purchase = self.create_purchase_order()
+        group = purchase.addFacet(IPaymentGroup,
                               connection=self.trans)
 
         d = datetime.datetime.today()
@@ -121,6 +123,30 @@ class _TestPaymentMethodBase:
         self.assertEqual(APaymentMethod.get_by_enum(self.trans,
                                                     self.enum),
                          self.method_type.selectOne(connection=self.trans))
+
+
+
+class TestAPaymentMethod(DomainTest, _TestPaymentMethodBase):
+    method_type = MoneyPM
+    enum = PaymentMethodType.MONEY
+
+    def _createUnclosedTill(self):
+        till = Till(station=get_current_station(self.trans),
+                    connection=self.trans)
+        till.open_till()
+
+        # Update the opening date to yesterday
+        yesterday = (datetime.datetime.today() - datetime.timedelta(1)).date()
+        till.opening_date = yesterday
+
+    def testCreateOutPaymentUnClosedTill(self):
+        self._createUnclosedTill()
+        self.testCreateOutPayment()
+
+    def testCreateOutPaymentsUnClosedTill(self):
+        # Test for bug 3270
+        self._createUnclosedTill()
+        self.testCreateOutPayments()
 
 
 class TestMoneyPM(DomainTest, _TestPaymentMethodBase):
