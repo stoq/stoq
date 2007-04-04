@@ -39,7 +39,6 @@ from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.payment.methods import MoneyPM
-from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.search.categorysearch import (SellableCategorySearch,
@@ -146,12 +145,9 @@ class PurchaseApp(SearchableAppWindow):
                 raise ValueError('You must have a IPaymentGroup facet '
                                  'defined at this point')
             if group.default_method == PaymentMethodType.MONEY:
-                destination = sysparam(self.conn).DEFAULT_PAYMENT_DESTINATION
                 method = MoneyPM.selectOne(connection=self.conn)
-                first_due_date = order.expected_receival_date
-                Payment(value=order.get_purchase_total(), method=method,
-                        due_date=first_due_date, group=group, till=None,
-                        destination=destination, connection=self.conn)
+                method.create_outpayment(group, order.get_purchase_total(),
+                                         order.expected_receival_date) 
             else:
                 group.create_preview_outpayments()
         order.status = PurchaseOrder.ORDER_CONFIRMED
