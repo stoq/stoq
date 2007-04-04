@@ -37,28 +37,60 @@ from stoqlib.domain.payment.payment import (Payment,
                                             PaymentAdaptToOutPayment)
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.till import Till
+from stoqlib.exceptions import TillError
 from stoqlib.lib.defaults import quantize
 
-class _TestPaymentMethodBase:
-    def testCreateInPayment(self):
+class _TestPaymentMethod:
+    def createInPayment(self):
         sale = self.create_sale()
         group = sale.addFacet(IPaymentGroup,
                               connection=self.trans)
 
         method = self.method_type.selectOne(connection=self.trans)
-        payment = method.create_inpayment(group, Decimal(100))
+        return method.create_inpayment(group, Decimal(100))
+
+    def createOutPayment(self):
+        purchase = self.create_purchase_order()
+        group = purchase.addFacet(IPaymentGroup,
+                              connection=self.trans)
+
+        method = self.method_type.selectOne(connection=self.trans)
+        return method.create_outpayment(group, Decimal(100))
+
+    def createInPayments(self):
+        sale = self.create_sale()
+        group = sale.addFacet(IPaymentGroup,
+                              connection=self.trans)
+
+        d = datetime.datetime.today()
+        method = self.method_type.selectOne(connection=self.trans)
+        payments = method.create_inpayments(group, Decimal(100),
+                                            [d, d, d])
+
+        return [p.get_adapted() for p in payments]
+
+    def createOutPayments(self):
+        purchase = self.create_purchase_order()
+        group = purchase.addFacet(IPaymentGroup,
+                              connection=self.trans)
+
+        d = datetime.datetime.today()
+        method = self.method_type.selectOne(connection=self.trans)
+        payments = method.create_outpayments(group, Decimal(100),
+                                             [d, d, d])
+        return [p.get_adapted() for p in payments]
+
+
+class _TestPaymentMethodsBase(_TestPaymentMethod):
+    def testCreateInPayment(self):
+        payment = self.createInPayment()
         self.failUnless(isinstance(payment, PaymentAdaptToInPayment))
         payment = payment.get_adapted()
         self.failUnless(isinstance(payment, Payment))
         self.assertEqual(payment.value, Decimal(100))
 
     def testCreateOutPayment(self):
-        purchase = self.create_purchase_order()
-        group = purchase.addFacet(IPaymentGroup,
-                              connection=self.trans)
-
-        method = self.method_type.selectOne(connection=self.trans)
-        payment = method.create_outpayment(group, Decimal(100))
+        payment = self.createOutPayment()
         self.failUnless(isinstance(payment, PaymentAdaptToOutPayment))
         payment = payment.get_adapted()
         self.failUnless(isinstance(payment, Payment))
@@ -68,16 +100,7 @@ class _TestPaymentMethodBase:
         if self.method_type in (MoneyPM, GiftCertificatePM):
             return
 
-        sale = self.create_sale()
-        group = sale.addFacet(IPaymentGroup,
-                              connection=self.trans)
-
-        d = datetime.datetime.today()
-        method = self.method_type.selectOne(connection=self.trans)
-        payments = method.create_inpayments(group, Decimal(100),
-                                            [d, d, d])
-        payments = [p.get_adapted() for p in payments]
-
+        payments = self.createInPayments()
         athird = quantize(Decimal(100) / Decimal(3))
         rest = quantize(Decimal(100) - (athird * 2))
         self.assertEqual(len(payments), 3)
@@ -89,16 +112,7 @@ class _TestPaymentMethodBase:
         if self.method_type in (MoneyPM, GiftCertificatePM):
             return
 
-        purchase = self.create_purchase_order()
-        group = purchase.addFacet(IPaymentGroup,
-                              connection=self.trans)
-
-        d = datetime.datetime.today()
-        method = self.method_type.selectOne(connection=self.trans)
-        payments = method.create_outpayments(group, Decimal(100),
-                                             [d, d, d])
-        payments = [p.get_adapted() for p in payments]
-
+        payments = self.createOutPayments()
         athird = quantize(Decimal(100) / Decimal(3))
         rest = quantize(Decimal(100) - (athird * 2))
         self.assertEqual(len(payments), 3)
@@ -126,45 +140,53 @@ class _TestPaymentMethodBase:
 
 
 
-class TestAPaymentMethod(DomainTest, _TestPaymentMethodBase):
-    method_type = MoneyPM
-    enum = PaymentMethodType.MONEY
+class TestAPaymentMethod(DomainTest, _TestPaymentMethod):
+    method_type = CheckPM
+    enum = PaymentMethodType.CHECK
 
     def _createUnclosedTill(self):
         till = Till(station=get_current_station(self.trans),
                     connection=self.trans)
         till.open_till()
-
-        # Update the opening date to yesterday
         yesterday = (datetime.datetime.today() - datetime.timedelta(1)).date()
         till.opening_date = yesterday
 
     def testCreateOutPaymentUnClosedTill(self):
         self._createUnclosedTill()
-        self.testCreateOutPayment()
+        payment = self.createOutPayment()
+        self.failUnless(isinstance(payment, PaymentAdaptToOutPayment))
 
     def testCreateOutPaymentsUnClosedTill(self):
         # Test for bug 3270
         self._createUnclosedTill()
-        self.testCreateOutPayments()
+        payment = self.createOutPayment()
+        self.failUnless(isinstance(payment, PaymentAdaptToOutPayment))
+
+    def testCreateInPaymentUnClosedTill(self):
+        self._createUnclosedTill()
+        self.assertRaises(TillError, self.createInPayment)
+
+    def testCreateInPaymentsUnClosedTill(self):
+        self._createUnclosedTill()
+        self.assertRaises(TillError, self.createInPayments)
 
 
-class TestMoneyPM(DomainTest, _TestPaymentMethodBase):
+class TestMoneyPM(DomainTest, _TestPaymentMethodsBase):
     method_type = MoneyPM
     enum = PaymentMethodType.MONEY
 
-class TestCheckPM(DomainTest, _TestPaymentMethodBase):
+class TestCheckPM(DomainTest, _TestPaymentMethodsBase):
     method_type = CheckPM
     enum = PaymentMethodType.CHECK
 
-class TestBillPM(DomainTest, _TestPaymentMethodBase):
+class TestBillPM(DomainTest, _TestPaymentMethodsBase):
     method_type = BillPM
     enum = PaymentMethodType.BILL
 
-class TestFinancePM(DomainTest, _TestPaymentMethodBase):
+class TestFinancePM(DomainTest, _TestPaymentMethodsBase):
     method_type = FinancePM
     enum = PaymentMethodType.FINANCIAL
 
-class TestGiftCertificatePM(DomainTest, _TestPaymentMethodBase):
+class TestGiftCertificatePM(DomainTest, _TestPaymentMethodsBase):
     method_type = GiftCertificatePM
     enum = PaymentMethodType.GIFT_CERTIFICATE
