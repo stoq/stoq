@@ -203,7 +203,7 @@ class TestParameter(DomainTest):
 #                                  branch=branch,
 #                                  status=PurchaseOrder.ORDER_PENDING)
 #         purchase.addFacet(IPaymentGroup, connection=self.trans)
-#         purchase.confirm_order()
+#         purchase.confirm()
 #         param = self.sparam.USE_PURCHASE_PREVIEW_PAYMENTS
 #         assert isinstance (param, int)
 

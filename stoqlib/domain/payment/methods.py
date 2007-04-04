@@ -30,6 +30,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from kiwi.argcheck import argcheck
 from sqlobject import IntCol, DateTimeCol, ForeignKey, BoolCol
+from stoqdrivers.enum import PaymentMethodType
 from zope.interface import implements
 
 from stoqlib.database.columns import DecimalCol
@@ -413,6 +414,32 @@ class APaymentMethod(InheritableModel):
         active payment methods
         """
         return APaymentMethod.selectBy(is_active=True, connection=conn)
+
+    @classmethod
+    def get_by_enum(cls, conn, enum):
+        """
+        Returns the Payment method associated with a enum
+
+        @param enum: a PaymentMethodType enum
+        @returns: the payment method class
+        @type: L{APaymentMethod} instance
+        """
+        assert isinstance(enum, PaymentMethodType), enum
+
+        if enum == PaymentMethodType.MONEY:
+            method_type = MoneyPM
+        elif enum == PaymentMethodType.CHECK:
+            method_type = CheckPM
+        elif enum == PaymentMethodType.BILL:
+            method_type = BillPM
+        elif enum == PaymentMethodType.FINANCIAL:
+            method_type = FinancePM
+        elif enum == PaymentMethodType.GIFT_CERTIFICATE:
+            method_type = GiftCertificatePM
+        else:
+            raise ValueError('Invalid payment method, got %r' % (enum,))
+
+        return method_type.selectOne(connection=conn)
 
     def get_payment_number_by_group(self, payment_group):
         """

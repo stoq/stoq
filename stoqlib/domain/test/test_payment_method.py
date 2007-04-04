@@ -25,8 +25,11 @@
 import datetime
 from decimal import Decimal
 
+from stoqdrivers.enum import PaymentMethodType
+
 from stoqlib.domain.interfaces import IPaymentGroup
-from stoqlib.domain.payment.methods import (BillPM, CheckPM, FinancePM,
+from stoqlib.domain.payment.methods import (APaymentMethod,
+                                            BillPM, CheckPM, FinancePM,
                                             MoneyPM, GiftCertificatePM)
 from stoqlib.domain.payment.payment import (Payment,
                                             PaymentAdaptToInPayment)
@@ -114,17 +117,28 @@ class _TestPaymentMethodBase:
         self.assertRaises(AssertionError, method.describe_payment, group, 1, 0)
         self.assertRaises(AssertionError, method.describe_payment, group, 2, 1)
 
+    def testGetByEnum(self):
+        self.assertEqual(APaymentMethod.get_by_enum(self.trans,
+                                                    self.enum),
+                         self.method_type.selectOne(connection=self.trans))
+
+
 class TestMoneyPM(DomainTest, _TestPaymentMethodBase):
     method_type = MoneyPM
+    enum = PaymentMethodType.MONEY
 
 class TestCheckPM(DomainTest, _TestPaymentMethodBase):
     method_type = CheckPM
+    enum = PaymentMethodType.CHECK
 
 class TestBillPM(DomainTest, _TestPaymentMethodBase):
     method_type = BillPM
+    enum = PaymentMethodType.BILL
 
 class TestFinancePM(DomainTest, _TestPaymentMethodBase):
     method_type = FinancePM
+    enum = PaymentMethodType.FINANCIAL
 
 class TestGiftCertificatePM(DomainTest, _TestPaymentMethodBase):
     method_type = GiftCertificatePM
+    enum = PaymentMethodType.GIFT_CERTIFICATE
