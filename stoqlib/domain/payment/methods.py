@@ -209,11 +209,14 @@ class APaymentMethod(InheritableModel):
                              % interest)
 
     def _calculate_payment_value(self, total_value, installments_number,
-                                interest=None):
+                                iface, interest=None):
         if not installments_number:
             raise ValueError('The payment_qty argument must be greater '
                              'than zero')
-        self._check_installments_number(installments_number)
+
+        if iface is IInPayment:
+            self._check_installments_number(installments_number)
+
         self._check_interest_value(interest)
 
         if not interest:
@@ -235,15 +238,16 @@ class APaymentMethod(InheritableModel):
         else:
             destination = self.destination
             max = self.get_max_installments_number()
-        if created_number == max:
-            raise PaymentMethodError('You can not create more inpayments '
-                                     'for this payment group since the '
-                                     'maximum allowed for this payment '
-                                     'method is %d' % max)
-        elif created_number > max:
-            raise DatabaseInconsistency('You have more inpayments in '
-                                        'database than the maximum '
-                                        'allowed for this payment method')
+        if iface is IInPayment:
+            if created_number == max:
+                raise PaymentMethodError('You can not create more inpayments '
+                                         'for this payment group since the '
+                                         'maximum allowed for this payment '
+                                         'method is %d' % max)
+            elif created_number > max:
+                raise DatabaseInconsistency('You have more inpayments in '
+                                            'database than the maximum '
+                                            'allowed for this payment method')
         if not description:
             description = self.describe_payment(payment_group)
 
@@ -273,7 +277,7 @@ class APaymentMethod(InheritableModel):
         interest = Decimal(0)
 
         normalized_value = self._calculate_payment_value(
-            value, installments, interest)
+            value, installments, iface, interest)
 
         normalized_value = quantize(normalized_value)
         if interest:
