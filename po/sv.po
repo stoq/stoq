@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-23 15:00-0300\n"
+"POT-Creation-Date: 2007-04-05 17:02-0300\n"
 "PO-Revision-Date: 2006-08-25 16:15-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -214,60 +214,60 @@ msgid ""
 "for application %s"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:50 ../stoq/gui/payable/__init__.py:30
+#: ../stoq/gui/payable/payable.py:54 ../stoq/gui/payable/__init__.py:30
 msgid "Payable"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:55 ../stoq/gui/receivable/receivable.py:60
+#: ../stoq/gui/payable/payable.py:59 ../stoq/gui/receivable/receivable.py:60
 msgid "payment"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:55 ../stoq/gui/receivable/receivable.py:60
+#: ../stoq/gui/payable/payable.py:59 ../stoq/gui/receivable/receivable.py:60
 msgid "payments"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:56 ../stoq/gui/purchase/purchase.py:65
+#: ../stoq/gui/payable/payable.py:60 ../stoq/gui/purchase/purchase.py:62
 #: ../stoq/gui/admin/admin.py:63 ../stoq/gui/sales/sales.py:60
 #: ../stoq/gui/till/till.py:69 ../stoq/gui/receivable/receivable.py:61
 msgid "matching:"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:57 ../stoq/gui/receivable/receivable.py:62
+#: ../stoq/gui/payable/payable.py:61 ../stoq/gui/receivable/receivable.py:62
 #, fuzzy
 msgid "Show payments with status"
 msgstr "Ingen produkt vald"
 
-#: ../stoq/gui/payable/payable.py:89 ../stoq/gui/purchase/purchase.py:232
+#: ../stoq/gui/payable/payable.py:94 ../stoq/gui/purchase/purchase.py:200
 #: ../stoq/gui/admin/admin.py:73 ../stoq/gui/sales/sales.py:156
 #: ../stoq/gui/till/till.py:220 ../stoq/gui/receivable/receivable.py:92
 msgid "Any"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:97 ../stoq/gui/purchase/purchase.py:240
+#: ../stoq/gui/payable/payable.py:102 ../stoq/gui/purchase/purchase.py:208
 #: ../stoq/gui/sales/sales.py:163 ../stoq/gui/till/till.py:230
 #: ../stoq/gui/receivable/receivable.py:100
 msgid "Number"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:99 ../stoq/gui/warehouse/warehouse.py:114
-#: ../stoq/gui/receivable/receivable.py:102 ../stoq/gui/pos/pos.py:561
+#: ../stoq/gui/payable/payable.py:104 ../stoq/gui/warehouse/warehouse.py:114
+#: ../stoq/gui/receivable/receivable.py:102 ../stoq/gui/pos/pos.py:560
 msgid "Description"
 msgstr "Beskrivning"
 
-#: ../stoq/gui/payable/payable.py:101 ../stoq/gui/purchase/purchase.py:244
+#: ../stoq/gui/payable/payable.py:106 ../stoq/gui/purchase/purchase.py:212
 msgid "Supplier"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:103 ../stoq/gui/receivable/receivable.py:106
+#: ../stoq/gui/payable/payable.py:108 ../stoq/gui/receivable/receivable.py:106
 msgid "Due Date"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:105 ../stoq/gui/admin/admin.py:93
+#: ../stoq/gui/payable/payable.py:110 ../stoq/gui/admin/admin.py:93
 #: ../stoq/gui/receivable/receivable.py:110
 msgid "Status"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:107 ../stoq/gui/receivable/receivable.py:112
+#: ../stoq/gui/payable/payable.py:112 ../stoq/gui/receivable/receivable.py:112
 msgid "Value"
 msgstr ""
 
@@ -275,77 +275,78 @@ msgstr ""
 msgid "Payable application."
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:59 ../stoq/gui/purchase/__init__.py:29
+#: ../stoq/gui/purchase/purchase.py:56 ../stoq/gui/purchase/__init__.py:29
 msgid "Purchase"
 msgstr "Köp"
 
-#: ../stoq/gui/purchase/purchase.py:64 ../stoq/gui/till/till.py:68
+#: ../stoq/gui/purchase/purchase.py:61 ../stoq/gui/till/till.py:68
 msgid "order"
 msgstr "order"
 
-#: ../stoq/gui/purchase/purchase.py:64 ../stoq/gui/till/till.py:68
+#: ../stoq/gui/purchase/purchase.py:61 ../stoq/gui/till/till.py:68
 msgid "orders"
 msgstr "order"
 
-#: ../stoq/gui/purchase/purchase.py:66 ../stoq/gui/till/till.py:70
+#: ../stoq/gui/purchase/purchase.py:63 ../stoq/gui/till/till.py:70
 #, fuzzy
 msgid "Show orders with status"
 msgstr "Ingen produkt vald"
 
-#: ../stoq/gui/purchase/purchase.py:77
+#: ../stoq/gui/purchase/purchase.py:74
 msgid "Total:"
 msgstr "Total:"
 
-#: ../stoq/gui/purchase/purchase.py:178
+#: ../stoq/gui/purchase/purchase.py:148
 msgid "There are no orders with status pending in the selection"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:181
+#: ../stoq/gui/purchase/purchase.py:152
 #, python-format
 msgid "The %d selected orders will be marked as sent."
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:184
+#: ../stoq/gui/purchase/purchase.py:155
 msgid "The selected order will be marked as sent."
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:188
-#, python-format
-msgid ""
-"Warning: there are %d order(s) with status different than pending that will "
-"not be included"
+#: ../stoq/gui/purchase/purchase.py:156
+msgid "Don't Send"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:191 ../stoq/gui/purchase/purchase.py:207
-#: ../stoq/gui/pos/pos.py:511 ../data/glade/purchase.glade.h:6
-#, fuzzy
-msgid "Cancel"
-msgstr "_Nollställ order"
-
-#: ../stoq/gui/purchase/purchase.py:191 ../stoq/gui/purchase/purchase.py:207
-msgid "Confirm"
+#: ../stoq/gui/purchase/purchase.py:156
+msgid "Send to supplier"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:206
+#: ../stoq/gui/purchase/purchase.py:174
 msgid "The selected order(s) will be cancelled."
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:242 ../stoq/gui/sales/sales.py:64
+#: ../stoq/gui/purchase/purchase.py:175
+#, fuzzy
+msgid "Don't Cancel"
+msgstr "_Nollställ order"
+
+#: ../stoq/gui/purchase/purchase.py:175
+#, fuzzy
+msgid "Cancel order(s)"
+msgstr "_Nollställ order"
+
+#: ../stoq/gui/purchase/purchase.py:210 ../stoq/gui/sales/sales.py:64
 #: ../stoq/gui/till/till.py:232
 msgid "Date Started"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:247
+#: ../stoq/gui/purchase/purchase.py:215
 #, fuzzy
 msgid "Qty Ordered"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/purchase/purchase.py:250
+#: ../stoq/gui/purchase/purchase.py:218
 #, fuzzy
 msgid "Qty Received"
 msgstr "Antal"
 
-#: ../stoq/gui/purchase/purchase.py:253
+#: ../stoq/gui/purchase/purchase.py:221
 #, fuzzy
 msgid "Order Total"
 msgstr "Totalt"
@@ -451,7 +452,7 @@ msgid "Items Quantity"
 msgstr "Antal"
 
 #: ../stoq/gui/sales/sales.py:172 ../stoq/gui/till/till.py:241
-#: ../stoq/gui/pos/pos.py:570
+#: ../stoq/gui/pos/pos.py:569
 msgid "Total"
 msgstr "Totalt"
 
@@ -487,19 +488,19 @@ msgstr ""
 msgid "Stoq - Till for Branch %03d"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:257 ../stoq/gui/pos/pos.py:624
+#: ../stoq/gui/till/till.py:257 ../stoq/gui/pos/pos.py:623
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
 "Close the till?"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:259 ../stoq/gui/pos/pos.py:483
-#: ../stoq/gui/pos/pos.py:626
+#: ../stoq/gui/till/till.py:259 ../stoq/gui/pos/pos.py:482
+#: ../stoq/gui/pos/pos.py:625
 msgid "Not now"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:259 ../stoq/gui/pos/pos.py:626
+#: ../stoq/gui/till/till.py:259 ../stoq/gui/pos/pos.py:625
 #, fuzzy
 msgid "Close Till"
 msgstr "Kod"
@@ -537,11 +538,11 @@ msgstr ""
 msgid "Code"
 msgstr "Kod"
 
-#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:565
+#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:564
 msgid "Quantity"
 msgstr "Antal"
 
-#: ../stoq/gui/warehouse/warehouse.py:120 ../stoq/gui/pos/pos.py:568
+#: ../stoq/gui/warehouse/warehouse.py:120 ../stoq/gui/pos/pos.py:567
 msgid "Unit"
 msgstr ""
 
@@ -598,66 +599,71 @@ msgstr ""
 msgid "Can not sell this product"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:358
+#: ../stoq/gui/pos/pos.py:357
 msgid "You need open the till before start doing sales."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:365
+#: ../stoq/gui/pos/pos.py:364
 msgid "You can't start a new sale, since you are not a salesperson."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:395
+#: ../stoq/gui/pos/pos.py:394
 msgid "The current order will be canceled, Confirm?"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:396
+#: ../stoq/gui/pos/pos.py:395
 msgid "Go Back"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:396 ../data/glade/pos.glade.h:9
+#: ../stoq/gui/pos/pos.py:395 ../data/glade/pos.glade.h:9
 #, fuzzy
 msgid "Cancel Order"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/pos/pos.py:409
+#: ../stoq/gui/pos/pos.py:408
 msgid "You don't have products to delivery."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:417
+#: ../stoq/gui/pos/pos.py:416
 msgid "All the products already have delivery instructions"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:482
+#: ../stoq/gui/pos/pos.py:481
 msgid "Do you really want to cancel the last order?"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:483 ../data/glade/pos.glade.h:8
+#: ../stoq/gui/pos/pos.py:482 ../data/glade/pos.glade.h:8
 #, fuzzy
 msgid "Cancel Last Order"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/pos/pos.py:488
+#: ../stoq/gui/pos/pos.py:487
 msgid "Cancelling sale failed, nothing to cancel"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:490
+#: ../stoq/gui/pos/pos.py:489
 msgid "Sale was cancelled"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:509
+#: ../stoq/gui/pos/pos.py:508
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:511
+#: ../stoq/gui/pos/pos.py:510
 msgid "Try Again"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:557
+#: ../stoq/gui/pos/pos.py:510 ../data/glade/purchase.glade.h:6
+#, fuzzy
+msgid "Cancel"
+msgstr "_Nollställ order"
+
+#: ../stoq/gui/pos/pos.py:556
 msgid "Reference"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:563
+#: ../stoq/gui/pos/pos.py:562
 msgid "Price"
 msgstr "Pris"
 
@@ -745,7 +751,7 @@ msgstr ""
 #: ../data/glade/sales_app.glade.h:14 ../data/glade/till.glade.h:17
 #: ../data/glade/admin.glade.h:22 ../data/glade/purchase.glade.h:18
 #: ../data/glade/pos.glade.h:34 ../data/glade/receivable.glade.h:11
-#: ../data/glade/warehouse.glade.h:12 ../data/glade/payable.glade.h:11
+#: ../data/glade/warehouse.glade.h:12 ../data/glade/payable.glade.h:12
 #, fuzzy
 msgid "Quit"
 msgstr "_Avsluta"
@@ -753,7 +759,7 @@ msgstr "_Avsluta"
 #: ../data/glade/sales_app.glade.h:15 ../data/glade/till.glade.h:18
 #: ../data/glade/admin.glade.h:23 ../data/glade/purchase.glade.h:19
 #: ../data/glade/pos.glade.h:35 ../data/glade/receivable.glade.h:12
-#: ../data/glade/warehouse.glade.h:13 ../data/glade/payable.glade.h:12
+#: ../data/glade/warehouse.glade.h:13 ../data/glade/payable.glade.h:13
 msgid "Quit the program"
 msgstr ""
 
@@ -765,12 +771,12 @@ msgstr "_Försäljning"
 #: ../data/glade/sales_app.glade.h:17 ../data/glade/till.glade.h:24
 #: ../data/glade/admin.glade.h:26 ../data/glade/purchase.glade.h:21
 #: ../data/glade/pos.glade.h:44 ../data/glade/receivable.glade.h:14
-#: ../data/glade/warehouse.glade.h:19 ../data/glade/payable.glade.h:13
+#: ../data/glade/warehouse.glade.h:19 ../data/glade/payable.glade.h:14
 msgid "Save a file"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:18 ../data/glade/till.glade.h:25
-#: ../data/glade/receivable.glade.h:15 ../data/glade/payable.glade.h:14
+#: ../data/glade/receivable.glade.h:15 ../data/glade/payable.glade.h:15
 msgid "Save with a different name"
 msgstr ""
 
@@ -791,28 +797,28 @@ msgid "Services..."
 msgstr "Pris"
 
 #: ../data/glade/sales_app.glade.h:22 ../data/glade/till.glade.h:26
-#: ../data/glade/receivable.glade.h:16 ../data/glade/payable.glade.h:15
+#: ../data/glade/receivable.glade.h:16 ../data/glade/payable.glade.h:16
 msgid "Store Cookie"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:23 ../data/glade/till.glade.h:29
 #: ../data/glade/admin.glade.h:36 ../data/glade/purchase.glade.h:30
 #: ../data/glade/pos.glade.h:50 ../data/glade/receivable.glade.h:18
-#: ../data/glade/warehouse.glade.h:23 ../data/glade/payable.glade.h:17
+#: ../data/glade/warehouse.glade.h:23 ../data/glade/payable.glade.h:18
 msgid "_Edit"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:24 ../data/glade/till.glade.h:30
 #: ../data/glade/purchase.glade.h:32 ../data/glade/pos.glade.h:51
 #: ../data/glade/receivable.glade.h:19 ../data/glade/warehouse.glade.h:24
-#: ../data/glade/payable.glade.h:18
+#: ../data/glade/payable.glade.h:19
 msgid "_File"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:25 ../data/glade/till.glade.h:31
 #: ../data/glade/purchase.glade.h:33 ../data/glade/pos.glade.h:52
 #: ../data/glade/receivable.glade.h:20 ../data/glade/warehouse.glade.h:25
-#: ../data/glade/payable.glade.h:19
+#: ../data/glade/payable.glade.h:20
 msgid "_Help"
 msgstr "_Hjälp"
 
@@ -823,7 +829,7 @@ msgstr ""
 #: ../data/glade/sales_app.glade.h:27 ../data/glade/till.glade.h:33
 #: ../data/glade/admin.glade.h:40 ../data/glade/purchase.glade.h:37
 #: ../data/glade/pos.glade.h:56 ../data/glade/receivable.glade.h:22
-#: ../data/glade/warehouse.glade.h:28 ../data/glade/payable.glade.h:21
+#: ../data/glade/warehouse.glade.h:28 ../data/glade/payable.glade.h:22
 msgid "_User"
 msgstr "_Användare"
 
@@ -1343,7 +1349,7 @@ msgstr ""
 msgid "Receive payment"
 msgstr "Ta bort"
 
-#: ../data/glade/receivable.glade.h:17 ../data/glade/payable.glade.h:16
+#: ../data/glade/receivable.glade.h:17 ../data/glade/payable.glade.h:17
 msgid "_Conference"
 msgstr ""
 
@@ -1392,11 +1398,16 @@ msgstr ""
 msgid "_Warehouse"
 msgstr ""
 
-#: ../data/glade/payable.glade.h:20
+#: ../data/glade/payable.glade.h:11
+#, fuzzy
+msgid "Pay order"
+msgstr "order"
+
+#: ../data/glade/payable.glade.h:21
 msgid "_Payable"
 msgstr ""
 
-#: ../data/glade/payable.glade.h:22
+#: ../data/glade/payable.glade.h:23
 msgid "payable"
 msgstr ""
 
