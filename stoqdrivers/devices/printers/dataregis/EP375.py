@@ -609,6 +609,9 @@ class EP375(SerialBase, BaseChequePrinter):
         self._send_command(self.CMD_GERENCIAL_REPORT, "01", "Valor = " + value)
         self._send_command(self.CMD_CLOSE_GERENCIAL_REPORT)
 
+    def till_read_memory(self, start, end):
+        raise NotImplementedError
+
     def get_capabilities(self):
         # FIXME: As always, we have a problem here with Dataregis printer:
         # only one of the last 100 items can be cancelled, so the 'item_id'

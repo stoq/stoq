@@ -608,6 +608,9 @@ class IFS9000I(SerialBase):
         self._add_value_to_counter(value, "02")
         self.coupon_close()
 
+    def till_read_memory(self, start, end):
+        raise NotImplementedError
+
     def get_status(self):
         # TODO retornar status de impressão com string de interpretação.
         self.send_command(self.CMD_PRINTER_STATUS)

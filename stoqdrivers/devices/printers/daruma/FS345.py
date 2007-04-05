@@ -70,7 +70,7 @@ CMD_CANCEL_ITEM = 205
 CMD_CANCEL_COUPON = 206
 CMD_GET_X = 207
 CMD_REDUCE_Z = 208
-# [ESC] 209 Leitura da Memória Fiscal
+CMD_READ_MEMORY = 209
 # [ESC] 210 Emissão de Cupom Adicional
 # [ESC] 211 Abertura de Relatório Gerencial (Leitura X)
 # [ESC] 212 Fechamento de Relatório Gerencial (Leitura X)
@@ -458,6 +458,11 @@ class FS345(SerialBase):
 
     def till_remove_cash(self, value):
         self._add_voucher(CASH_OUT_TYPE, value)
+
+    def till_read_memory(self, start, end):
+        # Page 39
+        self.send_command(CMD_READ_MEMORY, 's%s%s' % (start.strftime('%d%m%y'),
+                                                      end.strftime('%d%m%y')))
 
     def get_capabilities(self):
         return dict(item_code=Capability(max_len=13),

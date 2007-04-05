@@ -215,6 +215,8 @@ class Pay2023(SerialBase, BaseChequePrinter):
                     value = 'f'
                 elif value is True:
                     value = 't'
+            elif isinstance(value, datetime.date):
+                value = value.strftime('#%d/%m/%y#')
 
             parameters.append('%s=%s' % (param, value))
 
@@ -561,6 +563,12 @@ class Pay2023(SerialBase, BaseChequePrinter):
                            NomeNaoFiscal="Sangria",
                            Valor=value)
         self._send_command('EncerraDocumento')
+
+    def till_read_memory(self, start=None, end=None):
+        self._send_command('EmiteLeituraMF',
+                           LeituraSimplificada=True,
+                           DataInicial=start,
+                           DataFinal=end)
 
     #
     # IChequePrinter implementation

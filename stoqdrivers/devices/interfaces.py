@@ -258,6 +258,16 @@ class ICouponPrinter(IDevice):
         @type value:      Decimal
         """
 
+    def till_read_memory(start, end):
+        """
+        Reads the fiscal memory, from the date start to the date end
+
+        @param start: start date
+        @type start: datetime.date
+        @param end: end date
+        @type end: datetime.date
+        """
+
     #
     # Getting printer status
     #

@@ -236,6 +236,9 @@ class Simple:
     def till_remove_cash(self, value):
         pass
 
+    def till_read_memory(self, start, end):
+        pass
+
     #
     # IChequePrinter implementation
     #

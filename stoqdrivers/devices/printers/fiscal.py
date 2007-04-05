@@ -25,6 +25,7 @@
 ##              Henrique Romano  <henrique@async.com.br>
 ##
 
+import datetime
 from decimal import Decimal
 
 from kiwi.argcheck import number, percent
@@ -232,3 +233,10 @@ class FiscalPrinter(BasePrinter):
             remove_cash_value,))
 
         return self._driver.till_remove_cash(remove_cash_value)
+
+    @capcheck(datetime.date, datetime.date)
+    def till_read_memory(self, start, end):
+        log.info('till_read_memory(start=%r, end=%r)' % (
+            start, end))
+
+        return self._driver.read_memory(start, end)

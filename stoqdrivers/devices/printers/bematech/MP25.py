@@ -351,6 +351,9 @@ class MP25(SerialBase):
     def till_remove_cash(self, value):
         self._add_voucher(CASH_OUT_TYPE,value)
 
+    def till_read_memory(self, start, end):
+        raise NotImplementedError
+
     def coupon_identify_customer(self, customer, address, document):
         self._customer_name = customer
         self._customer_document = document
