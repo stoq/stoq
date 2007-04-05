@@ -216,7 +216,7 @@ class PurchaseApp(SearchableAppWindow):
                        data_type=Decimal, width=120,
                        format_func=format_quantity),
                 Column('received_quantity', title=_('Qty Received'),
-                       data_type=Decimal, width=150,
+                       data_type=Decimal, width=120,
                        format_func=format_quantity),
                 Column('total', title=_('Order Total'),
                        data_type=currency, width=110)]
