@@ -72,26 +72,6 @@ class TestTill(DomainTest):
 
         self.assertRaises(TillError, till.open_till)
 
-    def testTillOpenOnce(self):
-        station = get_current_station(self.trans)
-        till = Till(connection=self.trans, station=station)
-
-        till.open_till()
-        till.close_till()
-
-        self.assertRaises(TillError, till.open_till)
-
-    def testGetCurrentTillClose(self):
-        station = get_current_station(self.trans)
-
-        self.assertEqual(Till.get_current(self.trans), None)
-        till = Till(connection=self.trans, station=station)
-        till.open_till()
-
-        self.assertEqual(Till.get_current(self.trans), till)
-        till.close_till()
-        self.assertEqual(Till.get_current(self.trans), None)
-
     def testGetCurrentOtherStation(self):
         # Test bug #2734
         self.assertEqual(Till.get_current(self.trans), None)
@@ -108,6 +88,41 @@ class TestTill(DomainTest):
         # Verify that it's set for "us" as well since
         # Till.get_current calls get_current_branch()
         self.assertEqual(Till.get_current(self.trans), till)
+
+    def testGetCurrentTillClose(self):
+        station = get_current_station(self.trans)
+
+        self.assertEqual(Till.get_current(self.trans), None)
+        till = Till(connection=self.trans, station=station)
+        till.open_till()
+
+        self.assertEqual(Till.get_current(self.trans), till)
+        till.close_till()
+        self.assertEqual(Till.get_current(self.trans), None)
+
+    def testTillOpenOnce(self):
+        station = get_current_station(self.trans)
+        till = Till(connection=self.trans, station=station)
+
+        till.open_till()
+        till.close_till()
+
+        self.assertRaises(TillError, till.open_till)
+
+    def testTillClose(self):
+        station = get_current_station(self.trans)
+        till = Till(connection=self.trans, station=station)
+        till.open_till()
+        self.assertEqual(till.status, Till.STATUS_OPEN)
+        till.close_till()
+        self.assertEqual(till.status, Till.STATUS_CLOSED)
+        self.assertRaises(TillError, till.close_till)
+
+    def testTillCloseMoreThanBalance(self):
+        station = get_current_station(self.trans)
+        till = Till(connection=self.trans, station=station)
+        till.open_till()
+        self.assertRaises(ValueError, till.close_till, 20)
 
     def testGetBalance(self):
         till = Till(connection=self.trans,
