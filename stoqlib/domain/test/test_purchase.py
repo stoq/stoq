@@ -63,3 +63,17 @@ class TestPurchaseOrder(DomainTest):
         order.close()
         for payment in payments:
             self.assertEqual(payment.status, Payment.STATUS_PENDING)
+
+    def testCanCancelPartial(self):
+        order = self.create_purchase_order()
+        self.assertEqual(order.can_cancel(), True)
+        sellable = self.create_sellable()
+        purchase_item = order.add_item(sellable, 2)
+        order.receive_item(purchase_item, 1)
+        self.assertEqual(order.can_cancel(), False)
+
+    def testCanCancel(self):
+        order = self.create_purchase_order()
+        self.assertEqual(order.can_cancel(), True)
+        order.cancel()
+        self.assertEqual(order.can_cancel(), False)
