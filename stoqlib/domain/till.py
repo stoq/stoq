@@ -27,7 +27,7 @@
 
 import datetime
 
-from sqlobject import (IntCol, DateTimeCol, ForeignKey, BoolCol, UnicodeCol,
+from sqlobject import (IntCol, DateTimeCol, ForeignKey, UnicodeCol,
                        SQLObject)
 
 from sqlobject.sqlbuilder import AND
@@ -42,7 +42,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.interfaces import (IPaymentGroup,
                                        IOutPayment, IInPayment)
-from stoqlib.exceptions import TillError, DatabaseInconsistency
+from stoqlib.exceptions import TillError
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -302,21 +302,6 @@ class Till(Domain):
         return TillEntry.selectBy(
             till=self, connection=self.get_connection())
 
-    def get_initial_cash_amount(self):
-        """
-        Get the total amount we have in the moment we are opening the till.
-        This value is useful when providing change during sales.
-        @returns: the initial amount
-        """
-        entry = TillEntry.selectOneBy(
-            till=self,
-            is_initial_cash_amount=True,
-            connection=self.get_connection())
-        if not entry:
-            raise DatabaseInconsistency("You should have only one initial "
-                                        "cash amount entry at this point")
-        return entry.value
-
     def get_credits_total(self):
         """
         Calculates the total credit for all entries in this till
@@ -354,19 +339,21 @@ class Till(Domain):
             return results[-1]
 
 class TillEntry(Domain):
-    #
-    # It's usefull to use the same sequence of Payment table since we want
-    # sometimes do mix payments and till entries in the same database view,
-    # so we can search properly by identifier field
-    #
-    # TODO: Document that a positive "value" attribute represents something
-    #       completely different from a negative value.
-    #
+    """
+    A TillEntry is a representing cash added or removed in a L{Till}.
+    A value which is positive represent a addition of money
+    A value which is negative represent a removal of money
+
+    @cvar date: the date the entry was created
+    @cvar description:
+    @cvar value: value of transaction
+    @cvar till: the till the entry takes part of
+    @cvar payment: optional, if a payment referrers the TillEntry
+    """
 
     date = DateTimeCol(default=datetime.datetime.now)
     description = UnicodeCol()
     value = PriceCol()
-    is_initial_cash_amount = BoolCol(default=False)
     till = ForeignKey("Till", notNull=True)
     payment = ForeignKey("Payment", default=None)
 
