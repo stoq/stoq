@@ -50,7 +50,7 @@ class SaleDetailsDialog(BaseEditor):
     gladefile = "SaleDetailsDialog"
     model_type = SaleView
     title = _(u"Sale Details")
-    size = (650, 460)
+    size = (750, 460)
     hide_footer = True
     proxy_widgets = ('status_lbl',
                      'client_lbl',
@@ -111,6 +111,10 @@ class SaleDetailsDialog(BaseEditor):
                        data_type=datetime.date, width=110,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('status_str', _("Status"), data_type=str, width=80),
+                ColoredColumn('paid_value', _("Paid Value"), data_type=currency,
+                              width=90, color='red',
+                              justify=gtk.JUSTIFY_RIGHT,
+                              data_func=payment_value_colorize),
                 ColoredColumn('base_value', _("Value"), data_type=currency,
                               width=90, color='red',
                               justify=gtk.JUSTIFY_RIGHT,
