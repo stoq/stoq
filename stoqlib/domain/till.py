@@ -23,7 +23,9 @@
 ##               Evandro Vale Miquelito <evandro@async.com.br>
 ##               Johan Dahlin           <jdahlin@async.com.br>
 ##
-""" Implementation of classes related to Payment management. """
+"""
+Implementation of classes related to Fiscal operations.
+"""
 
 import datetime
 
@@ -37,7 +39,6 @@ from kiwi.log import Logger
 from stoqlib.database.columns import PriceCol
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain, BaseSQLView
-from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.interfaces import (IPaymentGroup,
@@ -54,23 +55,34 @@ _ = stoqlib_gettext
 log = Logger('stoqlib.till')
 
 class Till(Domain):
-    """A definition of till operation.
+    """
+    The Till describes the financial operations of a specific day.
 
-    B{Attributes}:
-        - I{STATUS_PENDING}: this till is created, but not yet opened
-        - I{STATUS_OPEN}: this till is opened and we can make sales for it.
-        - I{STATUS_CLOSED}: end of the day, the till is closed and no more
-                            financial operations can be done in this store.
-        - I{initial_cash_amount}: The total amount we have in the moment we
-                                  are opening the till.
-        - I{final_cash_amount}: The total amount we have in the moment we
-                                are closing the till.
-        - I{opening_date}: When the till was opened or None if it has not yet
-                           been opened.
-        - I{closing_date}: When the till was closed or None if it has not yet
-                           been closed
-        - I{station}: the station associated with the till, eg the computer
-                      which opened it.
+    The operations that are recorded in a Till:
+      - Sales
+      - Adding cash
+      - Removing cash
+      - Giving out an early salary
+
+    Each operation is associated with a L{TillEntry}.
+
+    You can only open a Till once per day, and you cannot open a new
+    till before you closed the previously opened one.
+
+    @cvar STATUS_PENDING: this till is created, but not yet opened
+    @cvar STATUS_OPEN: this till is opened and we can make sales for it.
+    @cvar STATUS_CLOSED: end of the day, the till is closed and no more
+      financial operations can be done in this store.
+    @ivar initial_cash_amount: The total amount we have in the moment we
+      are opening the till.
+    @ivar final_cash_amount: The total amount we have in the moment we
+      are closing the till.
+    @ivar opening_date: When the till was opened or None if it has not yet
+      been opened.
+    @ivar closing_date: When the till was closed or None if it has not yet
+      been closed
+    @ivar station: the station associated with the till, eg the computer
+      which opened it.
     """
 
     (STATUS_PENDING,
@@ -199,7 +211,7 @@ class Till(Domain):
 
             # FIXME: Move this to payment itself
             for payment in group.get_items():
-                payment.status = Payment.STATUS_PENDING
+                payment.set_pending()
 
         self.closing_date = datetime.datetime.now()
         self.final_cash_amount = self.get_balance()
