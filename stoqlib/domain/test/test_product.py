@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,30 +21,19 @@
 ##
 ## Author(s):   Grazieno Pellegrino         <grazieno1@yahoo.com.br>
 ##              Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
-""" This module test all class in stoq/domain/product.py """
+""" This module test all class in stoqlib/domain/product.py """
 
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.sellable import BaseSellableInfo
-from stoqlib.domain.person import Person, EmployeeRole
-from stoqlib.domain.sale import Sale
-from stoqlib.domain.till import Till
+from stoqlib.domain.person import Person
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
-                                    ProductStockReference,
                                     ProductSellableItem)
-from stoqlib.domain.interfaces import (IStorable, IBranch, ISellable,
-                                       ISalesPerson, IEmployee, IIndividual)
+from stoqlib.domain.interfaces import IStorable, IBranch, ISellable,
 
-from stoqlib.domain.test.domaintest import BaseDomainTest, DomainTest
-
-def get_sellable(conn):
-    product = Product(connection=conn)
-    base_sellable_info = BaseSellableInfo(connection=conn)
-    return product.addFacet(ISellable, barcode='abcd',
-                            base_sellable_info=base_sellable_info,
-                            connection=conn)
-
+from stoqlib.domain.test.domaintest import DomainTest
 
 class TestProductSupplierInfo(DomainTest):
 
@@ -74,46 +63,20 @@ class TestProduct(DomainTest):
                             product=self.product, is_main_supplier=True)
         self.failUnless(self.product.get_main_supplier_info())
 
-class TestProductStockReference(BaseDomainTest):
-    _table = ProductStockReference
+class TestProductSellableItem(DomainTest):
 
-    @classmethod
-    def get_foreign_key_data(cls):
-        sellable = get_sellable(cls.conn)
-        sales = Sale.select(connection=cls.conn)
-        assert sales
-        sale = sales[0]
-        product_item = sellable.add_sellable_item(sale)
-        branch = get_current_branch(cls.conn)
-        return branch, product_item
-
-
-class TestProductSellableItem(BaseDomainTest):
-    _table = ProductSellableItem
-
-    def get_foreign_key_data(self):
-        till = Till.get_current(self.trans)
-        person = Person(name='mr been', connection=self.trans)
-        person.addFacet(IIndividual, connection=self.trans)
-        role = EmployeeRole(connection=self.trans, name="god")
-        person.addFacet(IEmployee, connection=self.trans, role=role)
-        salesperson = person.addFacet(ISalesPerson, connection=self.trans)
-        sales = Sale.select(connection=self.trans)
-        assert sales
-        sale = sales[0]
-        sellable = get_sellable(self.trans)
-        return sale, sellable
-
-    def test_sell(self):
-        self.create_instance()
-        # Makes the whole process a bit more consistent and creating a new
-        # sellable from the beginning
+    def testSell(self):
+        sale = self.create_sale()
         product = Product(connection=self.trans)
         base_sellable_info = BaseSellableInfo(connection=self.trans)
         sellable = product.addFacet(ISellable, barcode='xyz',
                                     base_sellable_info=base_sellable_info,
                                     connection=self.trans)
-        self._instance.sellable = sellable
+        product_sellable_item = ProductSellableItem(connection=self.trans,
+                                                    sellable=sellable,
+                                                    quantity=1,
+                                                    price=1,
+                                                    sale=sale)
         storable = product.addFacet(IStorable, connection=self.trans)
 
         branch = get_current_branch(self.trans)
@@ -128,6 +91,6 @@ class TestProductSellableItem(BaseDomainTest):
         assert storable.get_stock_item(branch) is not None
         assert storable.get_stock_item(branch).quantity == sold_qty
         # now setting the proper sold quantity in the sellable item
-        self._instance.quantity = sold_qty
-        self._instance.sell(branch)
+        product_sellable_item.quantity = sold_qty
+        product_sellable_item.sell(branch)
         assert not storable.get_stock_item(branch).quantity
