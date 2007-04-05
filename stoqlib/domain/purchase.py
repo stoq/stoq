@@ -319,6 +319,10 @@ class PurchaseOrder(Domain):
         Find out if it's possible to cancel the order
         @returns: True if it's possible to cancel the order, otherwise False
         """
+        # FIXME: Canceling partial orders disabled until we fix bug 3282
+        for item in self.get_items():
+            if item.has_partial_received():
+                return False
         return self.status in [self.ORDER_QUOTING,
                                self.ORDER_PENDING,
                                self.ORDER_CONFIRMED]
