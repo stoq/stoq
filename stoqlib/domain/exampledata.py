@@ -268,14 +268,19 @@ class ExampleCreator(object):
         product = Product(connection=self.trans)
         tax_constant = sysparam(self.trans).DEFAULT_PRODUCT_TAX_CONSTANT
         base_sellable_info = self._create_base_sellable_info()
+        on_sale_info = self._create_on_sale_info()
         return product.addFacet(ISellable,
                                 tax_constant=tax_constant,
                                 base_sellable_info=base_sellable_info,
+                                on_sale_info=on_sale_info,
                                 connection=self.trans)
     def _create_sale(self):
         from stoqlib.domain.sale import Sale
         from stoqlib.domain.till import Till
         till = Till.get_current(self.trans)
+        if till is None:
+            till = self._create_till()
+            till.open_till()
         salesperson = self._create_sales_person()
         return Sale(till=till,
                     coupon_id=0,
