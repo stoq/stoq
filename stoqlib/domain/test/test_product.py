@@ -31,7 +31,7 @@ from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductSellableItem)
-from stoqlib.domain.interfaces import IStorable, IBranch, ISellable,
+from stoqlib.domain.interfaces import IStorable, IBranch, ISellable
 
 from stoqlib.domain.test.domaintest import DomainTest
 
