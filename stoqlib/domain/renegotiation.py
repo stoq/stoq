@@ -147,7 +147,7 @@ class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
                   % sale_order.get_order_number_str())
 
         if regtype == GiftCertificateOverpaidSettings.TYPE_RETURN_MONEY:
-            group.create_debit(-overpaid_value, reason, sale_order.till)
+            sale_order.till.add_debit_entry(overpaid_value, reason)
 
         elif (regtype ==
               GiftCertificateOverpaidSettings.TYPE_GIFT_CERTIFICATE):

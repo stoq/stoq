@@ -184,18 +184,6 @@ class Payment(Domain):
         operation.addFacet(IPaymentDevolution, connection=conn, reason=reason)
         self.status = self.STATUS_PAID
 
-    def cancel_till_entry(self):
-        if self.status == Payment.STATUS_CANCELLED:
-            raise StoqlibError("This payment is already cancelled")
-        self._check_status(self.STATUS_PENDING, 'reverse selection')
-        self.status = self.STATUS_CANCELLED
-        payment = self.clone()
-        description = (_('Cancellation of payment number %s')
-                       % self.id)
-        payment.description = description
-        payment.value *= -1
-        payment.due_date = datetime.datetime.now()
-
     def cancel(self):
         # TODO Check for till entries here and call cancel_till_entry if
         # it's possible. Bug 2598
@@ -282,13 +270,6 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     installments_number = IntCol(default=1)
     interval_type = IntCol(default=None)
     intervals = IntCol(default=None)
-
-    def _create_till_entry(self, value, description, till):
-        from stoqlib.domain.till import TillEntry
-        conn = self.get_connection()
-        return TillEntry(connection=conn,
-                         description=description, value=value, till=till,
-                         payment_group=self)
 
     #
     # IPaymentGroup implementation
@@ -407,16 +388,6 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         self.cancel_date = datetime.datetime.now()
         self.revert_fiscal_entry(invoice_number)
 
-    @argcheck(Decimal, unicode, object)
-    def create_debit(self, value, description, till):
-        value = - abs(value)
-        return self._create_till_entry(value, description, till)
-
-    @argcheck(Decimal, unicode, object)
-    def create_credit(self, value, description, till):
-        value = abs(value)
-        return self._create_till_entry(value, description, till)
-
     def get_total_paid(self):
         # FIXME: Move sum to SQL statement
         paid_values = [payment.paid_value
@@ -426,25 +397,18 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     def set_method(self, method):
         self.default_method = method
 
-    def get_till_entries(self):
-        from stoqlib.domain.till import TillEntry
-        return TillEntry.selectBy(payment_groupID=self.id,
-                                  connection=self.get_connection())
-
-    def add_inpayments(self):
+    def add_inpayments(self, till):
         payment_count = self.get_items().count()
-        till_entries_count = self.get_till_entries().count()
-        if not (payment_count or till_entries_count):
-            raise ValueError('You must have at least one payment for each '
-                             'payment group')
+        if not payment_count:
+            raise ValueError(
+                'You must have at least one payment for each payment group')
         self.installments_number = payment_count
 
         # FIXME: Check if all the payments are in STATUS_PREVIEW state?
         for payment in self.get_items():
             payment.set_pending()
-            self.create_credit(payment.value,
-                               payment.description,
-                               payment.till)
+            assert IInPayment(payment, None)
+            till.add_entry(payment)
 
     def confirm_money_payments(self):
         from stoqlib.domain.payment.methods import MoneyPM

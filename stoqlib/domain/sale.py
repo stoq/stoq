@@ -604,7 +604,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         if regtype == GiftCertificateOverpaidSettings.TYPE_RETURN_MONEY:
             reason = _(u'1/1 Money returned for gift certificate '
                         'acquittance on sale %04d' % order.id)
-            self.create_debit(overpaid_value, reason, order.till)
+            order.till.add_debit_entry(overpaid_value, reason)
 
         elif (regtype ==
               GiftCertificateOverpaidSettings.TYPE_GIFT_CERTIFICATE):
@@ -706,7 +706,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     def confirm(self, gift_certificate_settings=None):
         has_overpaid = gift_certificate_settings is not None
         if not has_overpaid:
-            self.add_inpayments()
+            self.add_inpayments(self.sale.till)
             self.confirm_money_payments()
         self._confirm_gift_certificates()
         self._create_fiscal_entries()

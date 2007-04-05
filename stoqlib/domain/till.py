@@ -31,20 +31,19 @@ from sqlobject import (IntCol, DateTimeCol, ForeignKey, BoolCol, UnicodeCol,
                        SQLObject)
 
 from sqlobject.sqlbuilder import AND
-from zope.interface import implements
 from kiwi.datatypes import currency
 from kiwi.log import Logger
 
 from stoqlib.database.columns import PriceCol
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.exceptions import TillError, DatabaseInconsistency
 from stoqlib.domain.base import Domain, BaseSQLView
-from stoqlib.domain.interfaces import (IPaymentGroup, ITillOperation,
-                                       IOutPayment, IInPayment)
-from stoqlib.domain.payment.payment import AbstractPaymentGroup, Payment
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
+from stoqlib.domain.interfaces import (IPaymentGroup,
+                                       IOutPayment, IInPayment)
+from stoqlib.exceptions import TillError, DatabaseInconsistency
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -171,11 +170,6 @@ class Till(Domain):
 
         self.initial_cash_amount = initial_cash_amount
 
-        if IPaymentGroup(self, None) is None:
-            # Add a IPaymentGroup facet for the new till and make it easily
-            # available to receive new payments
-            self.addFacet(IPaymentGroup, connection=conn)
-
         self.opening_date = datetime.datetime.now()
         self.status = Till.STATUS_OPEN
 
@@ -196,9 +190,9 @@ class Till(Domain):
                 raise ValueError("The cash amount that you want to send is "
                                  "greater than the current balance.")
 
-            self.create_debit(removed,
-                              _(u'Amount removed from Till on %s' %
-                                self.opening_date.strftime('%x')))
+            self.add_debit_entry(removed,
+                           _(u'Amount removed from Till on %s' %
+                             self.opening_date.strftime('%x')))
 
         for sale in self.get_unconfirmed_sales():
             group = IPaymentGroup(sale)
@@ -211,25 +205,52 @@ class Till(Domain):
         self.final_cash_amount = self.get_balance()
         self.status = Till.STATUS_CLOSED
 
-    def create_debit(self, value, reason=u""):
+    def add_entry(self, payment):
+        """
+        @param payment:
+        @returns: till entry representing the added debit
+        @rtype: L{TillEntry}
+        """
+        if IInPayment(payment, None):
+            value = abs(payment.value)
+        elif IOutPayment(payment, None):
+            value = -abs(payment.value)
+        else:
+            raise AssertionError(payment)
+
+        return TillEntry(description=payment.description,
+                         payment=payment,
+                         value=value,
+                         till=self,
+                         connection=self.get_connection())
+
+    def add_debit_entry(self, value, reason=u""):
         """
         Add debit to the till
         @param value: amount to add
         @param reason: description of payment
-        @returns: payment group representing the added debit
+        @returns: till entry representing the added debit
+        @rtype: L{TillEntry}
         """
-        group = self._get_payment_group()
-        return group.create_debit(value, reason, self)
+        return TillEntry(description=reason,
+                         payment=None,
+                         value=-abs(value),
+                         till=self,
+                         connection=self.get_connection())
 
-    def create_credit(self, value, reason=u""):
+    def add_credit_entry(self, value, reason=u""):
         """
         Add credit to the till
         @param value: amount to add
         @param reason: description of payment
-        @returns: payment group representing the added credit
+        @returns: till entry representing the added credit
+        @rtype: L{TillEntry}
         """
-        group = self._get_payment_group()
-        return group.create_credit(value, reason, self)
+        return TillEntry(description=reason,
+                         payment=None,
+                         value=abs(value),
+                         till=self,
+                         connection=self.get_connection())
 
     def get_unconfirmed_sales(self):
         """
@@ -259,17 +280,25 @@ class Till(Domain):
         return False
 
     def get_balance(self):
-        """ Return the total of all "extra" payments (like cash
+        """
+        Gets the total of all "extra" payments (like cash
         advance, till complement, ...) associated to this till
         operation *plus* all the payments, which payment method is
         money, of all the sales associated with this operation
         *plus* the initial cash amount.
+        @returns: the balance
+        @rtype: currency
         """
         results = TillEntry.selectBy(
             till=self, connection=self.get_connection())
         return currency(self.initial_cash_amount + (results.sum('value') or 0))
 
     def get_entries(self):
+        """
+        Fetches all the entries related to this till
+        @returns: all entries
+        @rtype: sequence of L{TillEntry}
+        """
         return TillEntry.selectBy(
             till=self, connection=self.get_connection())
 
@@ -289,12 +318,22 @@ class Till(Domain):
         return entry.value
 
     def get_credits_total(self):
+        """
+        Calculates the total credit for all entries in this till
+        @returns: total credit
+        @rtype: currency
+        """
         results = TillEntry.select(AND(TillEntry.q.value > 0,
                                        TillEntry.q.tillID == self.id),
                                    connection=self.get_connection())
         return currency(results.sum('value') or 0)
 
     def get_debits_total(self):
+        """
+        Calculates the total debit for all entries in this till
+        @returns: total debit
+        @rtype: currency
+        """
         results = TillEntry.select(AND(TillEntry.q.value < 0,
                                        TillEntry.q.tillID == self.id),
                                    connection=self.get_connection())
@@ -314,16 +353,6 @@ class Till(Domain):
         if results:
             return results[-1]
 
-    def _get_payment_group(self):
-        group = IPaymentGroup(self, None)
-
-        # TODO: Add a payment group when we create the till, or is
-        #       okay/better to do it only when it's needed?
-        if group is None:
-            group = self.addFacet(IPaymentGroup,
-                                  connection=self.get_connection())
-        return group
-
 class TillEntry(Domain):
     #
     # It's usefull to use the same sequence of Payment table since we want
@@ -338,59 +367,8 @@ class TillEntry(Domain):
     description = UnicodeCol()
     value = PriceCol()
     is_initial_cash_amount = BoolCol(default=False)
-    till = ForeignKey("Till")
-    payment_group = ForeignKey("AbstractPaymentGroup", default=None)
-
-
-#
-# Adapters
-#
-
-
-class TillAdaptToPaymentGroup(AbstractPaymentGroup):
-    implements(IPaymentGroup, ITillOperation)
-
-    _inheritable = False
-
-    @property
-    def till(self):
-        return self.get_adapted()
-
-    #
-    # ITillOperation implementation
-    #
-
-    def add_debit(self, value, reason, category, date=None):
-        payment = self.add_payment(value, reason, category, date)
-
-        return payment.addFacet(IOutPayment)
-
-    def add_credit(self, value, reason, category, date=None):
-        payment = self.add_payment(value, reason, category, date)
-
-        return payment.addFacet(IInPayment)
-
-    def add_complement(self, value, reason, category, date=None):
-        raise NotImplementedError
-
-    def get_cash_advance(self, value, reason, category, employee, date=None):
-        raise NotImplementedError
-
-    def cancel_payment(self, payment, reason, date=None):
-        raise NotImplementedError
-
-    #
-    # IPaymentGroup implementation
-    #
-
-    def get_thirdparty(self):
-        return self.till.branch.person
-
-    def get_group_description(self):
-        today_str = self.till.opening_date.strftime(_(u'%d of %B'))
-        return _(u'till of %s') % today_str
-
-Till.registerFacet(TillAdaptToPaymentGroup, IPaymentGroup)
+    till = ForeignKey("Till", notNull=True)
+    payment = ForeignKey("Payment", default=None)
 
 
 #

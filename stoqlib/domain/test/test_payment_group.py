@@ -22,33 +22,28 @@
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##
 
-import datetime
+from decimal import Decimal
 
 from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.domain.interfaces import IPaymentGroup
+from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.lib.defaults import INTERVALTYPE_MONTH
-
 from stoqlib.domain.test.domaintest import DomainTest
 
 class TestPaymentGroup(DomainTest):
     def testConfirm(self):
         # Actually it tests SaleAdaptToPaymentGroup.confirm
         sale = self.create_sale()
-
         sellable = self.create_sellable()
         item = sellable.add_sellable_item(sale, price=150)
+        group = sale.addFacet(IPaymentGroup, connection=self.trans)
 
-        group = sale.addFacet(IPaymentGroup,
-                              default_method=int(PaymentMethodType.BILL),
-                              intervals=1,
-                              interval_type=INTERVALTYPE_MONTH,
-                              connection=self.trans)
         self.assertRaises(ValueError, group.confirm)
 
-        payment = group.add_payment(10, "foo", None, destination=None,
-                                    due_date=datetime.datetime.now())
+        method = APaymentMethod.get_by_enum(self.trans, PaymentMethodType.BILL)
+        payment = method.create_inpayment(group, Decimal(10))
+        payment = payment.get_adapted()
         self.assertEqual(payment.status, Payment.STATUS_PREVIEW)
         group.confirm()
         self.assertEqual(payment.status, Payment.STATUS_PENDING)

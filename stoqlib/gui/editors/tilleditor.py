@@ -120,9 +120,9 @@ class TillOpeningEditor(BaseEditor):
 
         value = self.proxy.model.value
         if value:
-            till.create_credit(value,
-                               (_(u'Initial Cash amount of %s')
-                                % till.opening_date.strftime('%x')))
+            till.add_credit_entry(value,
+                            (_(u'Initial Cash amount of %s')
+                             % till.opening_date.strftime('%x')))
             # The callsite is responsible for interacting with
             # the fiscal printer
         return self.model
@@ -275,7 +275,7 @@ class CashAdvanceEditor(BaseEditor):
     def create_model(self, conn):
         till = Till.get_current(conn)
         assert till
-        self.payment = till.create_debit(currency(0))
+        self.payment = till.add_debit_entry(currency(0))
 
         return CashAdvanceInfo(payment=self.payment)
 
@@ -342,7 +342,7 @@ class CashOutEditor(BaseEditor):
         description = (_(u'Cash out for station "%s" of branch "%s"')
                        % (till.station.name,
                           till.station.branch.person.name))
-        return till.create_debit(currency(0), description)
+        return till.add_debit_entry(currency(0), description)
 
     def setup_slaves(self):
         self.cash_slave = RemoveCashSlave(
@@ -403,7 +403,7 @@ class CashInEditor(BaseEditor):
         description = (_(u'Cash in for station "%s" of branch "%s"')
                        % (till.station.name,
                           till.station.branch.person.name))
-        return till.create_credit(currency(0), description)
+        return till.add_credit_entry(currency(0), description)
 
     def setup_slaves(self):
         self.cash_slave = BaseCashSlave(

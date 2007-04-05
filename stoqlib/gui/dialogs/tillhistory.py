@@ -166,8 +166,7 @@ class TillHistoryDialog(GladeSlaveDelegate):
     def get_extra_query(self):
         current_till = Till.get_current(self.conn)
         assert current_till
-        group = IPaymentGroup(current_till)
-        group_ids = [group.id]
+        group_ids = []
         for sale in Sale.get_available_sales(self.conn, current_till):
             group = IPaymentGroup(sale)
             group_ids.append(group.id)

@@ -24,17 +24,40 @@
 """ This module test all class in stoq/domain/station.py """
 
 import datetime
+from decimal import Decimal
 
 from kiwi.datatypes import currency
 
+from stoqdrivers.enum import PaymentMethodType
+
 from stoqlib.exceptions import TillError
 from stoqlib.database.runtime import get_current_station
+from stoqlib.domain.interfaces import IPaymentGroup
+from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
-
 from stoqlib.domain.test.domaintest import DomainTest
 
 class TestTill(DomainTest):
+
+    def _create_inpayment(self):
+        sale = self.create_sale()
+        sellable = self.create_sellable()
+        sellable.add_sellable_item(sale, price=10)
+        group = sale.addFacet(IPaymentGroup, connection=self.trans)
+        method = APaymentMethod.get_by_enum(self.trans, PaymentMethodType.BILL)
+        payment = method.create_inpayment(group, Decimal(10))
+        return payment.get_adapted()
+
+    def _create_outpayment(self):
+        purchase = self.create_purchase_order()
+        sellable = self.create_sellable()
+        purchase.add_item(sellable, 1)
+        group = IPaymentGroup(purchase)
+        method = APaymentMethod.get_by_enum(self.trans, PaymentMethodType.BILL)
+        payment = method.create_outpayment(group, Decimal(10))
+        return payment.get_adapted()
+
     def testGetCurrentTillOpen(self):
         self.assertEqual(Till.get_current(self.trans), None)
 
@@ -92,9 +115,9 @@ class TestTill(DomainTest):
         till.open_till()
 
         old = till.get_balance()
-        till.create_credit(currency(10), u"")
+        till.add_credit_entry(currency(10), u"")
         self.assertEqual(till.get_balance(), old + 10)
-        till.create_debit(currency(5), u"")
+        till.add_debit_entry(currency(5), u"")
         self.assertEqual(till.get_balance(), old + 5)
 
     def testGetCreditsTotal(self):
@@ -103,10 +126,10 @@ class TestTill(DomainTest):
         till.open_till()
 
         old = till.get_credits_total()
-        till.create_credit(currency(10), u"")
+        till.add_credit_entry(currency(10), u"")
         self.assertEqual(till.get_credits_total(), old + 10)
         # This should not affect the credit
-        till.create_debit(currency(5), u"")
+        till.add_debit_entry(currency(5), u"")
         self.assertEqual(till.get_credits_total(), old + 10)
 
     def testGetDebitsTotal(self):
@@ -115,10 +138,10 @@ class TestTill(DomainTest):
         till.open_till()
 
         old = till.get_debits_total()
-        till.create_debit(currency(10), u"")
+        till.add_debit_entry(currency(10), u"")
         self.assertEqual(till.get_debits_total(), old - 10)
         # This should not affect the debit
-        till.create_credit(currency(5), u"")
+        till.add_credit_entry(currency(5), u"")
         self.assertEqual(till.get_debits_total(), old - 10)
 
     def testTillOpenYesterday(self):
@@ -137,7 +160,6 @@ class TestTill(DomainTest):
 
         self.assertEqual(Till.get_current(self.trans), None)
 
-
     def testNeedsClosing(self):
         till = Till(connection=self.trans, station=get_current_station(self.trans))
         self.failIf(till.needs_closing())
@@ -147,3 +169,41 @@ class TestTill(DomainTest):
         self.failUnless(till.needs_closing())
         till.close_till()
         self.failIf(till.needs_closing())
+
+    def testAddEntryInPayment(self):
+        till = Till(connection=self.trans,
+                    station=get_current_station(self.trans))
+        till.open_till()
+
+        payment = self._create_inpayment()
+        self.assertEqual(till.get_balance(), 0)
+        till.add_entry(payment)
+        self.assertEqual(till.get_balance(), 10)
+
+    def testAddEntryOutPayment(self):
+        till = Till(connection=self.trans,
+                    station=get_current_station(self.trans))
+        till.open_till()
+
+        payment = self._create_outpayment()
+        self.assertEqual(till.get_balance(), 0)
+        till.add_entry(payment)
+        self.assertEqual(till.get_balance(), -10)
+
+    def testAddCreditEntry(self):
+        till = Till(connection=self.trans,
+                    station=get_current_station(self.trans))
+        till.open_till()
+
+        self.assertEqual(till.get_balance(), 0)
+        till.add_credit_entry(10)
+        self.assertEqual(till.get_balance(), 10)
+
+    def testAddDebitEntry(self):
+        till = Till(connection=self.trans,
+                    station=get_current_station(self.trans))
+        till.open_till()
+
+        self.assertEqual(till.get_balance(), 0)
+        till.add_debit_entry(10)
+        self.assertEqual(till.get_balance(), -10)

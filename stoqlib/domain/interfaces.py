@@ -492,25 +492,6 @@ class IDelivery(Interface):
         """
 
 
-class ITillOperation(Interface):
-    """Basic payment operation like adding a credit and a debit"""
-
-    def add_debit(value, reason, category, date=None):
-        """Add a payment which represents a debit"""
-
-    def add_credit(value, reason, category, date=None):
-        """Add a payment which represents a credit"""
-
-    def add_complement(value, reason, category, date=None):
-        """Add a cash value which is a till complement"""
-
-    def get_cash_advance(value, reason, category, employee, date=None):
-        """Get the total amount of cash advance"""
-
-    def cancel_payment(payment, reason, date=None):
-        """Cancel a payment in the current till"""
-
-
 class IRenegotiationReturnSale(Interface):
     """A definition of a return (or cancellation) of a sale order."""
 
