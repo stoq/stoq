@@ -56,7 +56,7 @@ class _TestPaymentMethod:
         method = self.method_type.selectOne(connection=self.trans)
         return method.create_outpayment(group, Decimal(100))
 
-    def createInPayments(self):
+    def createInPayments(self, no=3):
         sale = self.create_sale()
         group = sale.addFacet(IPaymentGroup,
                               connection=self.trans)
@@ -64,18 +64,18 @@ class _TestPaymentMethod:
         d = datetime.datetime.today()
         method = self.method_type.selectOne(connection=self.trans)
         payments = method.create_inpayments(group, Decimal(100),
-                                            [d, d, d])
+                                            [d] * no)
 
         return [p.get_adapted() for p in payments]
 
-    def createOutPayments(self):
+    def createOutPayments(self, no=3):
         purchase = self.create_purchase_order()
         group = IPaymentGroup(purchase)
 
         d = datetime.datetime.today()
         method = self.method_type.selectOne(connection=self.trans)
         payments = method.create_outpayments(group, Decimal(100),
-                                             [d, d, d])
+                                             [d] * no)
         return [p.get_adapted() for p in payments]
 
 
@@ -137,6 +137,15 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
                          self.method_type.selectOne(connection=self.trans))
 
 
+    def testMaxInPaymnets(self):
+        method = self.method_type.selectOne(connection=self.trans)
+        max = method.get_max_installments_number()
+        self.assertRaises(ValueError, self.createInPayments, max + 1)
+
+    def testMaxOutPaymnets(self):
+        method = self.method_type.selectOne(connection=self.trans)
+        max = method.get_max_installments_number()
+        self.createOutPayments(max + 1)
 
 class TestAPaymentMethod(DomainTest, _TestPaymentMethod):
     method_type = CheckPM
@@ -166,7 +175,6 @@ class TestAPaymentMethod(DomainTest, _TestPaymentMethod):
     def testCreateInPaymentsUnClosedTill(self):
         self._createUnclosedTill()
         self.assertRaises(TillError, self.createInPayments)
-
 
 class TestMoneyPM(DomainTest, _TestPaymentMethodsBase):
     method_type = MoneyPM
