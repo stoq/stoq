@@ -39,6 +39,7 @@ from kiwi.log import Logger
 from stoqlib.database.columns import PriceCol
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain, BaseSQLView
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.interfaces import (IPaymentGroup,
@@ -211,7 +212,7 @@ class Till(Domain):
 
             # FIXME: Move this to payment itself
             for payment in group.get_items():
-                payment.set_pending()
+                payment.status = Payment.STATUS_PENDING
 
         self.closing_date = datetime.datetime.now()
         self.final_cash_amount = self.get_balance()
