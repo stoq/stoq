@@ -71,8 +71,8 @@ class TestsuiteNotifier(DefaultSystemNotifier):
 def _provide_database_settings():
     username = os.environ.get('STOQLIB_TEST_USERNAME',
                               pwd.getpwuid(os.getuid())[0])
-    hostname = os.environ.get('STOQLIB_TEST_HOSTNAME', 'localhost')
-    port = int(os.environ.get('STOQLIB_TEST_PORT', '5432'))
+    hostname = os.environ.get('PGHOST', 'localhost')
+    port = int(os.environ.get('PGPORT', '5432'))
     dbname =  os.environ.get('STOQLIB_TEST_DBNAME',
                              '%s_test' % username)
     password = ''
