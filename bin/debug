@@ -107,7 +107,7 @@ def main(args):
             mod = __import__(name, {}, {}, ' ')
             ns.update(mod.__dict__)
 
-    if options.debug:
+    if options.sqldebug:
         conn.debug = True
 
     if options.script:

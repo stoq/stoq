@@ -45,6 +45,16 @@ from stoq.lib.configparser import register_config, StoqConfig
 
 _ = gettext.gettext
 
+def _debug_hook(exctype, value, tb):
+    import traceback
+
+    traceback.print_exception(exctype, value, tb)
+    print
+    print '-- Starting debugger --'
+    print
+    import pdb
+    pdb.pm()
+
 def setup(config, options=None, register_station=True, check_schema=True):
     """
     Loads the configuration from arguments and configuration file.
@@ -89,14 +99,17 @@ def setup(config, options=None, register_station=True, check_schema=True):
                     "not been updated. Run 'stoqdbadmin updateschema` to"
                     "update the schema  to the latest available version."))
 
-    if options and options.debug:
-        from stoqlib.gui.keyboardhandler import install_global_keyhandler
-        from stoqlib.gui.introspection import introspect_slaves
-        from gtk import keysyms
+    if options:
+        if options.debug:
+            import sys
+            from gtk import keysyms
+            from stoqlib.gui.keyboardhandler import install_global_keyhandler
+            from stoqlib.gui.introspection import introspect_slaves
+            install_global_keyhandler(keysyms.F12, introspect_slaves)
+            sys.excepthook = _debug_hook
 
-        install_global_keyhandler(keysyms.F12, introspect_slaves)
-
-        conn.debug = True
+        if options.sqldebug:
+            conn.debug = True
     sqlhub.threadConnection = conn
 
 def clean_database(config, options=None):
