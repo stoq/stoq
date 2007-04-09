@@ -130,6 +130,10 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         self.assertRaises(AssertionError, method.describe_payment, group, 0)
         self.assertRaises(AssertionError, method.describe_payment, group, 1, 0)
         self.assertRaises(AssertionError, method.describe_payment, group, 2, 1)
+        desc = method.describe_payment(group, 123, 456)
+        self.failUnless('123' in desc, desc)
+        self.failUnless('456' in desc, desc)
+        self.failUnless('123/456' in desc, desc)
 
     def testGetByEnum(self):
         self.assertEqual(APaymentMethod.get_by_enum(self.trans,

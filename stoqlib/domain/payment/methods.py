@@ -318,7 +318,8 @@ class APaymentMethod(InheritableModel):
         assert installments > 0
         assert installments >= installment
         group_desc = payment_group.get_group_description()
-        return _(u'1/1 %s for %s') % (self.description, group_desc)
+        return _(u'%s/%s %s for %s') % (installment, installments,
+                                        self.description, group_desc)
 
     @argcheck(AbstractPaymentGroup, Decimal, datetime.datetime, object,
               basestring, Decimal)
