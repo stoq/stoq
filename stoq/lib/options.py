@@ -49,6 +49,9 @@ def get_option_parser():
                      action="store_true",
                      dest="verbose",
                      default=False)
+    group.add_option('', '--sql',
+                     action="store_true",
+                     dest="sqldebug")
     group.add_option('', '--debug',
                      action="store_true",
                      dest="debug")
