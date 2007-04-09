@@ -28,6 +28,7 @@ import optparse
 import sys
 
 import stoqlib
+stoqlib # pyflakes
 
 class StoqCommandHandler:
     def __init__(self, prog_name):
@@ -157,17 +158,12 @@ class StoqCommandHandler:
             print 'Registered a new station: %s' % station.name
 
     def cmd_updateschema(self, options):
-        from stoqlib.database.migration import schema_migration
-        from stoqlib.database.runtime import get_connection
+        from stoqlib.database.migration import SchemaMigration
+
         self._read_config(options, check_schema=False)
 
-        conn = get_connection()
-        if schema_migration.check_updated(conn):
-            print 'Database is already at revision %d' % (
-                schema_migration.get_current_version(conn),)
-        else:
-            from_, to = schema_migration.update_schema()
-            print 'Database schema updated from %d to %d' % (from_, to)
+        migration = SchemaMigration()
+        migration.update()
 
     def cmd_serve(self, options):
         from stoqlib.database.synchronization import SynchronizationService
