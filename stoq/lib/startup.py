@@ -83,7 +83,7 @@ def setup(config, options=None, register_station=True, check_schema=True):
     if register_station:
         set_current_branch_station(conn, socket.gethostname())
     if check_schema:
-        if not SchemaMigration().check_updated():
+        if not SchemaMigration().check_uptodate():
             error(_("Database schema error"),
                   _("The database schema has changed, but the database has "
                     "not been updated. Run 'stoqdbadmin updateschema` to"
