@@ -33,7 +33,7 @@ from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from sqlobject import sqlhub
 from stoqlib.database.admin import ensure_admin_user, initialize_system
-from stoqlib.database.migration import schema_migration
+from stoqlib.database.migration import SchemaMigration
 from stoqlib.database.runtime import get_connection, set_current_branch_station, new_transaction
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.profile import ProfileSettings
@@ -83,7 +83,7 @@ def setup(config, options=None, register_station=True, check_schema=True):
     if register_station:
         set_current_branch_station(conn, socket.gethostname())
     if check_schema:
-        if not schema_migration.check_updated(conn):
+        if not SchemaMigration().check_updated():
             error(_("Database schema error"),
                   _("The database schema has changed, but the database has "
                     "not been updated. Run 'stoqdbadmin updateschema` to"
