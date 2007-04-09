@@ -24,7 +24,7 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-04-05 17:15-0300\n"
-"PO-Revision-Date: 2005-12-01 18:33+0200\n"
+"PO-Revision-Date: 2007-04-09 10:04-0300\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -921,7 +921,7 @@ msgstr "Vendas"
 
 #: ../stoqlib/lib/parameters.py:59
 msgid "Default Salesperson Role"
-msgstr "Cargo padrão para vendedor:"
+msgstr "Cargo padrão para vendedor"
 
 #: ../stoqlib/lib/parameters.py:60
 msgid ""
@@ -1324,7 +1324,7 @@ msgstr ""
 
 #: ../stoqlib/lib/parameters.py:267
 msgid "Default area code"
-msgstr "Código de área padrão:"
+msgstr "Código de área padrão"
 
 #: ../stoqlib/lib/parameters.py:268
 msgid ""
@@ -2508,7 +2508,7 @@ msgstr ""
 #: ../stoqlib/gui/slaves/receivingslave.py:147
 #: ../stoqlib/gui/wizards/salewizard.py:623
 msgid "Additional Information"
-msgstr "Informação Adicional:"
+msgstr "Informação Adicional"
 
 #: ../stoqlib/gui/slaves/receivingslave.py:151
 msgid "Receving order number must be between 1 and 999999"
@@ -2577,7 +2577,7 @@ msgstr "A pagar:"
 #: ../stoqlib/gui/slaves/paymentslave.py:507
 #, python-format
 msgid "The number of installments must be less then %d"
-msgstr "Número de parcelas deve ser menor que %d:"
+msgstr "Número de parcelas deve ser menor que %d"
 
 #: ../stoqlib/gui/slaves/paymentslave.py:520
 msgid "Expected first installment date must be set to a future date"
@@ -2660,7 +2660,7 @@ msgstr "%s não pode ser menor que 0"
 
 #: ../stoqlib/gui/slaves/saleslave.py:113
 msgid "Surcharge"
-msgstr "Acréscimo:"
+msgstr "Acréscimo"
 
 #: ../stoqlib/gui/slaves/saleslave.py:116
 msgid "Discount"
@@ -2906,7 +2906,7 @@ msgstr "A data prevista para recebimento deve ser uma data futura"
 
 #: ../stoqlib/gui/editors/serviceeditor.py:82
 msgid "Service details"
-msgstr "Detalhes do Serviço:"
+msgstr "Detalhes do Serviço"
 
 #: ../stoqlib/gui/editors/profileeditor.py:43
 msgid "User Profile"
@@ -3131,7 +3131,7 @@ msgstr "Produto"
 
 #: ../stoqlib/gui/editors/producteditor.py:225
 msgid "Product details"
-msgstr "Detalhes do Produto:"
+msgstr "Detalhes do Produto"
 
 #: ../stoqlib/gui/editors/baseeditor.py:196
 #, python-format
@@ -3179,7 +3179,7 @@ msgstr "tipos"
 #: ../stoqlib/gui/search/giftcertificatesearch.py:128
 #: ../stoqlib/gui/search/personsearch.py:341
 msgid "matching"
-msgstr "contendo:"
+msgstr "contendo"
 
 #: ../stoqlib/gui/search/giftcertificatesearch.py:68
 msgid "Show gift certificate types with status"
@@ -3433,7 +3433,7 @@ msgstr "Qualquer Transportadora"
 
 #: ../stoqlib/gui/search/personsearch.py:288
 msgid "Show:"
-msgstr "Exibir"
+msgstr "Exibir:"
 
 #: ../stoqlib/gui/search/personsearch.py:302
 msgid "Freight (%)"
@@ -3445,7 +3445,7 @@ msgstr "Pesquisa de Cargo de Funcionário"
 
 #: ../stoqlib/gui/search/personsearch.py:325
 msgid "Role Matching"
-msgstr "Cargo Contendo:"
+msgstr "Cargo Contendo"
 
 #: ../stoqlib/gui/search/personsearch.py:326
 msgid "role"
@@ -3622,7 +3622,7 @@ msgstr "entradas fiscais"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:82
 msgid "ICMS Total"
-msgstr "ICMS Total:"
+msgstr "ICMS Total"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:86
 #: ../data/glade/ReceivingInvoiceSlave.glade.h:8
@@ -3639,7 +3639,7 @@ msgstr "IPI Total:"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:98
 msgid "ISS Total"
-msgstr "ISS Total:"
+msgstr "ISS Total"
 
 #: ../stoqlib/gui/search/fiscalsearch.py:102
 msgid "ISS Total:"
@@ -3786,7 +3786,7 @@ msgstr "Que tipo de %s você está adicionando?"
 
 #: ../stoqlib/gui/dialogs/productstockdetails.py:53
 msgid "Product Stock History"
-msgstr "Histórico de Produtos em Estoque:"
+msgstr "Histórico de Produtos em Estoque"
 
 #: ../stoqlib/gui/dialogs/productretention.py:41
 msgid "Product Retention"
@@ -3886,7 +3886,7 @@ msgstr "Stoq - %s em %s"
 
 #: ../stoqlib/gui/dialogs/tillhistory.py:97
 msgid "Items Matching"
-msgstr "Vendas contendo:"
+msgstr "Vendas contendo"
 
 #: ../stoqlib/gui/dialogs/tillhistory.py:98
 msgid "item"
@@ -4086,7 +4086,7 @@ msgstr "Itens"
 #: ../data/glade/SaleDetailsDialog.glade.h:5
 #: ../data/glade/ReceivingOrderDetailsDialog.glade.h:1
 msgid "Notes"
-msgstr "Notas:"
+msgstr "Notas"
 
 #: ../data/glade/SaleDetailsDialog.glade.h:7
 #: ../data/glade/StartPurchaseStep.glade.h:11
@@ -4129,7 +4129,7 @@ msgstr "Informação Adicional:"
 
 #: ../data/glade/ProductSupplierEditor.glade.h:6
 msgid "ICMS:"
-msgstr "ICMS"
+msgstr "ICMS:"
 
 #: ../data/glade/ProductSupplierEditor.glade.h:7
 msgid "Standard Supplier:"
@@ -4617,11 +4617,11 @@ msgstr "<b>Detalhes de Cancelamento</b>"
 
 #: ../data/glade/SaleReturnSlave.glade.h:2
 msgid "Cancel Date:"
-msgstr "Data de Cancelamento"
+msgstr "Data de Cancelamento:"
 
 #: ../data/glade/SaleReturnSlave.glade.h:3
 msgid "Cancellation Type:"
-msgstr "Tipo de Cancelamento"
+msgstr "Tipo de Cancelamento:"
 
 #: ../data/glade/SaleReturnSlave.glade.h:4
 msgid "Deduction:"
@@ -5140,7 +5140,7 @@ msgstr "valor a adicionar:"
 
 #: ../data/glade/ProductRetentionDialog.glade.h:2
 msgid "Available:"
-msgstr "Disponível"
+msgstr "Disponível:"
 
 #: ../data/glade/ProductRetentionDialog.glade.h:3
 msgid "Main Supplier:"
@@ -5152,7 +5152,7 @@ msgstr "Número de itens a bloquear: "
 
 #: ../data/glade/StationEditor.glade.h:1
 msgid "Active:"
-msgstr "Ativo"
+msgstr "Ativo:"
 
 #: ../data/glade/IndividualDetailsSlave.glade.h:1
 msgid "Birth City:"
@@ -5268,23 +5268,23 @@ msgstr "Juros diários"
 
 #: ../data/glade/InstallmentConfirmation.glade.h:8
 msgid "Penalty:"
-msgstr "Juros diários"
+msgstr "Juros diários:"
 
 #: ../data/glade/InstallmentConfirmation.glade.h:9
 msgid "Total value:"
-msgstr "Valor total"
+msgstr "Valor total:"
 
 #: ../data/glade/DeviceConstantEditor.glade.h:1
 msgid "ASCII value:"
-msgstr "Valor ASCII"
+msgstr "Valor ASCII:"
 
 #: ../data/glade/DeviceConstantEditor.glade.h:2
 msgid "HEX value:"
-msgstr "HEX Valor"
+msgstr "HEX Valor:"
 
 #: ../data/glade/DeviceConstantEditor.glade.h:4
 msgid "Type:"
-msgstr "Tipo"
+msgstr "Tipo:"
 
 #~ msgid "Use Money as payment method"
 #~ msgstr "Usar forma de pagamento dinheiro"
