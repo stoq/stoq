@@ -100,7 +100,7 @@ class SchemaMigration:
         conn = get_connection()
         log.info("Updating schema")
 
-        if self._check_up_to_date(conn):
+        if self.check_updated(conn):
             log.info("Schema is already up to date")
             return
 
