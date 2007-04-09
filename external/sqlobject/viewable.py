@@ -13,10 +13,10 @@ from sqlobject.classregistry import registry
 class ViewableMeta(object):
     table = None
     defaultOrder = None
-    columnList = []
-    columnNames = []
+    columnList = None
+    columnNames = None
     idName = 'id'
-    columns = {}
+    columns = None
     parentClass = None
 
 
@@ -47,6 +47,12 @@ class Viewable(object):
     clause = None
 
     def __classinit__(cls, new_attrs):
+        if not cls.__bases__ == (object,):
+            cls.sqlmeta = type('sqlmeta', (cls.sqlmeta,), {})
+            cls.sqlmeta.columns = {}
+            cls.sqlmeta.columnList = []
+            cls.sqlmeta.columnNames = []
+
         setup_attributes(cls, new_attrs)
 
         columns = new_attrs['columns']
@@ -55,11 +61,12 @@ class Viewable(object):
 
         cols = columns.copy()
         if not 'id' in cols:
-            raise TypeError("You need a id column in %r" % Viewable)
+            raise TypeError("You need a id column in %r" % cls)
 
         idquery = cols.pop('id')
         cls.sqlmeta.table = idquery.tableName
 
+        assert not cls.sqlmeta.columns
         for colName in sorted(cols):
             cls.addColumn(colName, cols[colName])
 
