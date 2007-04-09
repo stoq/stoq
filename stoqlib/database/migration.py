@@ -60,7 +60,7 @@ class Patch(object):
         @param filename:
         """
         self.filename = filename
-        self.level = int(filename[:-4].split('-', 1)[1])
+        self.level = int(os.path.basename(filename)[:-4].split('-', 1)[1])
         self.generation = 0
 
     def __cmp__(self, other):
