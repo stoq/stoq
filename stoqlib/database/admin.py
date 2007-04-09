@@ -38,7 +38,7 @@ from stoqdrivers.constants import describe_constant
 
 from stoqlib.database.database import execute_sql, clean_database
 from stoqlib.database.interfaces import ICurrentUser, IDatabaseSettings
-from stoqlib.database.migration import schema_migration
+from stoqlib.database.migration import SchemaMigration
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
                                        ISalesPerson)
@@ -209,7 +209,8 @@ def create_base_schema():
     if execute_sql(schema) != 0:
         error('Failed to create views schema')
 
-    schema_migration.update_schema()
+    migration = SchemaMigration()
+    migration.apply_all_patches()
 
 def create_default_profiles():
     trans = new_transaction()
