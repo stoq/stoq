@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,7 +20,8 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
-## Author(s):   Fabio Morbec                <fabio@async.com.br>
+##              Fabio Morbec                <fabio@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
 """ Receiving wizard definition """
@@ -52,6 +53,9 @@ from stoqlib.domain.sellable import ASellable
 _ = stoqlib_gettext
 
 
+# Workaround, so PurchaseSelectionStep does not complain about empty model
+class _FakeReceivingOrder(object):
+    pass
 
 #
 # Wizard Steps
@@ -61,7 +65,7 @@ _ = stoqlib_gettext
 class PurchaseSelectionStep(WizardEditorStep):
     gladefile = 'PurchaseSelectionStep'
     size = (800, 450)
-    model_type = ReceivingOrder
+    model_type = _FakeReceivingOrder
 
     def __init__(self, wizard, conn, model):
         self._next_step = None
@@ -120,11 +124,22 @@ class PurchaseSelectionStep(WizardEditorStep):
 
     def next_step(self):
         selected = self.orders.get_selected()
-        purchase = PurchaseOrder.get(selected.id, connection=self.conn)
+        purchase = selected.purchase
+
+        # We cannot create the model in the wizard since we haven't
+        # selected a PurchaseOrder yet which ReceivingOrder depends on
+        # Create the order here since this is the first place where we
+        # actually have a purchase selected
+        if not self.wizard.model:
+            self.wizard.model = self.model = ReceivingOrder(
+                responsible=get_current_user(self.conn),
+                supplier=None, invoice_number=None,
+                branch=None, purchase=purchase,
+                connection=self.conn)
 
         # Remove all the items added previously, used if we hit back
         # at any point in the wizard.
-        if self.model.purchase and self.model.purchase != purchase:
+        if self.model.purchase != purchase:
             self.model.remove_items()
             # This forces ReceivingOrderProductStep to create a new model
             self._next_step = None
@@ -183,8 +198,8 @@ class PurchaseSelectionStep(WizardEditorStep):
         if not selected:
             raise ValueError('You should have one order selected '
                              'at this point, got nothing')
-        order = PurchaseOrder.get(selected.id, connection=self.conn)
-        run_dialog(PurchaseDetailsDialog, self, self.conn, model=order)
+        run_dialog(PurchaseDetailsDialog, self, self.conn,
+                   model=selected.purchase)
 
 
 class ReceivingOrderProductStep(SellableItemStep):
@@ -298,22 +313,18 @@ class ReceivingOrderWizard(BaseWizard):
     size = (750, 560)
 
     def __init__(self, conn):
-        model = self._create_model(conn)
-        first_step = PurchaseSelectionStep(self, conn, model)
-        BaseWizard.__init__(self, conn, first_step, model)
+        self.model = None
+        first_step = PurchaseSelectionStep(self, conn,
+                                           _FakeReceivingOrder())
+        BaseWizard.__init__(self, conn, first_step, self.model)
         self.next_button.set_sensitive(False)
-
-    def _create_model(self, conn):
-        current_user = get_current_user(conn)
-        return ReceivingOrder(responsible=current_user, supplier=None,
-                              invoice_number=None, branch=None,
-                              connection=conn)
 
     #
     # WizardStep hooks
     #
 
     def finish(self):
+        assert self.model
         assert self.model.branch
 
         if not self.model.get_valid():
