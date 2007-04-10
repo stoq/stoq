@@ -37,6 +37,7 @@ from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
 from stoqlib.lib.validators import get_price_format_str
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.database.database import finish_transaction
 from stoqlib.exceptions import StoqlibError
@@ -57,6 +58,7 @@ class DiscountSurchargeSlave(BaseEditorSlave):
 
     def __init__(self, conn, model, model_type, visual_mode=False):
         self.model_type = model_type
+        self.max_discount = sysparam(conn).MAX_SALE_DISCOUNT
         BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
     def setup_widgets(self):
@@ -87,10 +89,10 @@ class DiscountSurchargeSlave(BaseEditorSlave):
         self.emit('discount-changed')
 
     def _validate_percentage(self, value, type_text):
-        if value > 100:
+        if value > self.max_discount:
             self.model.discount_percentage = 0
-            return ValidationError(_("%s can not be greater then 100")
-                                     % type_text)
+            return ValidationError(_("%s can not be greater then %d%%")
+                                     % (type_text, self.max_discount))
         if value < 0:
             self.model.discount_percentage = 0
             return ValidationError(_("%s can not be less then 0")
@@ -121,14 +123,16 @@ class DiscountSurchargeSlave(BaseEditorSlave):
 
     @signal_block('discount_perc.changed')
     def after_discount_value__changed(self, *args):
-        if self.model.discount_percentage > 100:
-            msg = _("Discount can not be greater then 100 percent")
+        percentage = self.model.discount_percentage
+        if percentage > self.max_discount:
+            msg = _("Discount can not be greater then %d%%" \
+                    % self.max_discount)
             self.discount_value.set_invalid(msg)
             self.model.discount_percentage = 0
         elif self.model.discount_percentage < 0:
-           msg = _("Discount can not be negative")
-           self.discount_value.set_invalid(msg)
-           self.model.discount_percentage = 0
+            msg = _("Discount can not be negative")
+            self.discount_value.set_invalid(msg)
+            self.model.discount_percentage = 0
 
         self.setup_discount_surcharge()
 

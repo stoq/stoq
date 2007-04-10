@@ -209,6 +209,11 @@ _parameter_info = dict(
     _(u'Max sale order validity'),
     _(u'The max number of days that a sale order is valid')),
 
+    MAX_SALE_DISCOUNT=ParameterDetails(
+    _(u'Sales'),
+    _(u'Max discount for sales'),
+    _(u'The max discount for salesperson in a sale')),
+
     # XXX: USE_SCALES_PRICE
     USE_SCALE_PRICE=ParameterDetails(
     _(u'Sales'),
@@ -319,6 +324,7 @@ class ParameterAccess(ClassInittableObject):
                       initial=True),
         ParameterAttr('ASK_SALES_CFOP', bool, initial=False),
         ParameterAttr('MAX_SALE_ORDER_VALIDITY', int, initial=30),
+        ParameterAttr('MAX_SALE_DISCOUNT', int, initial=5),
         ParameterAttr('USE_SCALE_PRICE', bool, initial=False),
         ParameterAttr('ICMS_TAX', int, initial=18),
         ParameterAttr('ISS_TAX', int, initial=18),
