@@ -26,7 +26,7 @@
 ##
 """ Classes for product stock details """
 
-from datetime import date
+import datetime
 from decimal import Decimal
 
 import gtk
@@ -93,7 +93,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        title=_("#"), data_type=int, sorted=True,
                        justify=gtk.JUSTIFY_RIGHT, width=45),
                 Column("receiving_order.receival_date", title=_("Date"),
-                       data_type=date, justify=gtk.JUSTIFY_RIGHT,
+                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT,
                        width=80),
                 Column("receiving_order.id",
                        title=_("Purchase Order"), data_type=str,
@@ -113,7 +113,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
                        width=45, sorted=True),
                 Column("sale.open_date",
-                       title=_("Date Started"), data_type=date,
+                       title=_("Date Started"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT, width=130),
                 Column("sale.client_name",
                        title=_("Client"), expand=True, data_type=str),

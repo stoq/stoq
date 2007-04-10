@@ -25,7 +25,7 @@
 ##
 """ Sales invoice implementation. All this module is brazil-specific """
 
-from datetime import datetime, date, time
+import datetime
 from decimal import Decimal
 
 from kiwi.argcheck import argcheck, number
@@ -192,8 +192,8 @@ class SaleInvoice(ClassInittableObject):
     # default filename for the invoice
     default_filename = _(u"invoice") + ".txt"
 
-    @argcheck(basestring, Sale, datetime, InvoiceType)
-    def __init__(self, filename, sale, date=datetime.now(),
+    @argcheck(basestring, Sale, datetime.datetime, InvoiceType)
+    def __init__(self, filename, sale, date=datetime.datetime.now(),
                  invoice_type=INVOICE_TYPE_OUT):
         """
         @param filename:  The filename where the invoice will be saved in.
@@ -257,9 +257,9 @@ class SaleInvoice(ClassInittableObject):
 
     def _insert_data_on_coordinate(self, data, coord_name, max_len=None,
                                    increment=None):
-        if isinstance(data, date):
+        if isinstance(data, datetime.date):
             data = data.strftime("%d/%m/%y")
-        elif isinstance(data, time):
+        elif isinstance(data, datetime.time):
             data = data.strftime("%X")
         elif isinstance(data, unicode):
             data = data.encode("cp850")

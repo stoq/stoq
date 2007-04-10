@@ -28,7 +28,7 @@
 Note that this whole module is Brazil-specific.
 """
 
-from datetime import datetime
+import datetime
 
 from sqlobject.sqlbuilder import AND
 from sqlobject import (UnicodeCol, DateTimeCol, ForeignKey, IntCol,
@@ -58,7 +58,7 @@ class CfopData(Domain):
 class AbstractFiscalBookEntry(InheritableModel):
     implements(IReversal)
 
-    date = DateTimeCol(default=datetime.now)
+    date = DateTimeCol(default=datetime.datetime.now)
     is_reversal = BoolCol(default=False)
     invoice_number = IntCol()
     cfop = ForeignKey("CfopData")

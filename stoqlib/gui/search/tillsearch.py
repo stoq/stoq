@@ -24,7 +24,7 @@
 ##
 """ Search dialogs for fiscal objects """
 
-from datetime import date
+import datetime
 
 import gtk
 from kiwi.ui.widgets.list import Column, ColoredColumn
@@ -63,7 +63,7 @@ class TillFiscalOperationsSearch(SearchDialog):
                        justify=gtk.JUSTIFY_RIGHT, format="%05d",
                        data_type=int, sorted=True),
                 Column('date', title=_('Date'), width=80,
-                       data_type=date, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 Column('description', title=_('Description'),
                        data_type=str, expand=True),
                 Column('station_name', title=_('Station'), data_type=str,

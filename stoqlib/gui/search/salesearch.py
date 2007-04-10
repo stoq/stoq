@@ -25,8 +25,8 @@
 """ Search dialogs for sale objects """
 
 
+import datetime
 from decimal import Decimal
-from datetime import date
 
 import gtk
 from kiwi.datatypes import currency
@@ -73,7 +73,7 @@ class SaleSearch(SearchDialog):
         return [Column('id', title=_('Number'), width=70,
                        data_type=int, sorted=True),
                 Column('open_date', title=_('Date Started'), width=120,
-                       data_type=date, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 Column('client_name', title=_('Client'),
                        data_type=str, width=140),
                 Column('salesperson_name', title=_('Salesperson'),

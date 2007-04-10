@@ -25,8 +25,8 @@
 ##
 """ Sale object and related objects implementation """
 
+import datetime
 from decimal import Decimal
-from datetime import datetime
 
 from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol, SQLObject
 from sqlobject.sqlbuilder import AND
@@ -117,7 +117,7 @@ class Sale(Domain):
 
     coupon_id = IntCol()
     service_invoice_number = IntCol(default=None)
-    open_date = DateTimeCol(default=datetime.now)
+    open_date = DateTimeCol(default=datetime.datetime.now)
     close_date = DateTimeCol(default=None)
     confirm_date = DateTimeCol(default=None)
     cancel_date = DateTimeCol(default=None)
@@ -350,7 +350,7 @@ class Sale(Domain):
         if not group.check_close():
             return False
 
-        self.close_date = datetime.now()
+        self.close_date = datetime.datetime.now()
         return True
 
     def create_sale_return_adapter(self):
@@ -374,7 +374,7 @@ class Sale(Domain):
             raise StoqlibError("Invalid status for cancel operation, got %s"
                                % Sale.get_status_name(self.status))
         self.cancel_items()
-        self.cancel_date = datetime.now()
+        self.cancel_date = datetime.datetime.now()
         group = self.check_payment_group()
 
         # FIXME: Don't use renegotiation_adapter.get_adapted()
@@ -406,7 +406,7 @@ class Sale(Domain):
         group = IPaymentGroup(self)
         group.confirm(gift_certificate_settings)
         self.status = self.STATUS_CONFIRMED
-        self.confirm_date = datetime.now()
+        self.confirm_date = datetime.datetime.now()
         self.check_close()
 
     #
