@@ -27,9 +27,9 @@
 Dataregis EP 275 drivers
 """
 
-import time
+import datetime
 from decimal import Decimal
-from datetime import datetime
+import time
 
 from zope.interface import implements
 
@@ -657,7 +657,7 @@ class EP375(SerialBase, BaseChequePrinter):
             raise TypeError("bank parameter must be a BankConfiguration "
                             "instance")
         if date is None:
-            date = datetime.now()
+            date = datetime.datetime.now()
         value = '%014d' % int(value * int(1e2))
         thirdparty = '%-50s' % thirdparty[:50]
         city = "%-20s" % city[:20]

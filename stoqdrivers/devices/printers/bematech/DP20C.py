@@ -27,7 +27,7 @@
 Bematech DP20C driver
 """
 
-from datetime import datetime
+import datetime
 
 from zope.interface import implements
 
@@ -74,7 +74,9 @@ class DP20C(SerialBase, BaseChequePrinter):
                                       data, DP20C.CMD_SUFFIX))
 
     def _setup_cheque(self, bank, value, thirdparty, city,
-                      date=datetime.now()):
+                      date=None):
+        if date is None:
+            date = datetime.datetime.now()
         self._setup_positions(bank)
         value = "%.02f" % value
         if "." in value:
