@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,21 +20,20 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s):  Evandro Vale Miquelito      <evandro@async.com.br>
-##  Author(s):  Fabio Morbec                <fabio@async.com.br>
+##              Fabio Morbec                <fabio@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Receiving management """
 
-from datetime import datetime
+import datetime
 from decimal import Decimal
 
-from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
-from stoqdrivers.enum import PaymentMethodType
+from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain
-from stoqlib.domain.payment.payment import AbstractPaymentGroup
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.lib.defaults import quantize
@@ -95,7 +94,7 @@ class ReceivingOrder(Domain):
      STATUS_CLOSED) = range(2)
 
     status = IntCol(default=STATUS_PENDING)
-    receival_date = DateTimeCol(default=datetime.now)
+    receival_date = DateTimeCol(default=datetime.datetime.now)
     confirm_date = DateTimeCol(default=None)
     notes = UnicodeCol(default='')
     freight_total = PriceCol(default=0)
@@ -112,7 +111,7 @@ class ReceivingOrder(Domain):
     responsible = ForeignKey('PersonAdaptToUser')
     supplier = ForeignKey('PersonAdaptToSupplier')
     branch = ForeignKey('PersonAdaptToBranch')
-    purchase = ForeignKey('PurchaseOrder', default=None)
+    purchase = ForeignKey('PurchaseOrder')
     transporter = ForeignKey('PersonAdaptToTransporter', default=None)
 
     def _create(self, id, **kw):
@@ -122,30 +121,6 @@ class ReceivingOrder(Domain):
         if not 'cfop' in kw:
             kw['cfop'] = sysparam(conn).DEFAULT_RECEIVING_CFOP
         Domain._create(self, id, **kw)
-
-    def _get_payment_group(self):
-        conn = self.get_connection()
-        group = IPaymentGroup(self, None)
-        if group:
-            raise ValueError("You should not have a IPaymentGroup facet "
-                             "defined at this point")
-
-        purchase_group = IPaymentGroup(self.purchase, None)
-        if self.purchase and purchase_group:
-            default_method = purchase_group.default_method
-            installments_number = purchase_group.installments_number
-            interval_type = purchase_group.interval_type
-            intervals = purchase_group.intervals
-        else:
-            default_method = int(PaymentMethodType.BILL)
-            installments_number = 1
-            interval_type = intervals = None
-
-        return self.addFacet(IPaymentGroup, open_date=datetime.now(),
-                             default_method=default_method,
-                             installments_number=installments_number,
-                             interval_type=interval_type,
-                             intervals=intervals, connection=conn)
 
     def confirm(self):
         # Stock management
@@ -159,7 +134,7 @@ class ReceivingOrder(Domain):
                 self.purchase.increase_quantity_received(item.sellable,
                                                          quantity)
 
-        group = self._get_payment_group()
+        group = IPaymentGroup(self.purchase)
         group.create_icmsipi_book_entry(self.cfop, self.invoice_number,
                                         self.icms_total, self.ipi_total)
 
@@ -289,25 +264,6 @@ class ReceivingOrder(Domain):
 
     surcharge_percentage = property(_get_surcharge_by_percentage,
                                  _set_surcharge_by_percentage)
-
-
-class ReceivingOrderAdaptToPaymentGroup(AbstractPaymentGroup):
-
-    _inheritable = False
-
-    #
-    # IPaymentGroup implementation
-    #
-
-    def get_thirdparty(self):
-        order = self.get_adapted()
-        return order.supplier.person
-
-    def get_group_description(self):
-        order = self.get_adapted()
-        return _(u'purchase receiving %s') % order.id
-
-ReceivingOrder.registerFacet(ReceivingOrderAdaptToPaymentGroup, IPaymentGroup)
 
 
 @argcheck(PurchaseOrder, ReceivingOrder)

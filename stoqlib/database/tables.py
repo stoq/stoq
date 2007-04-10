@@ -136,8 +136,7 @@ _tables = [
      ('purchase', ["PurchaseOrder",
                    "PurchaseOrderAdaptToPaymentGroup",
                    "PurchaseItem"]),
-     ('receiving', ["ReceivingOrder", "ReceivingOrderItem",
-                    "ReceivingOrderAdaptToPaymentGroup"]),
+     ('receiving', ["ReceivingOrder", "ReceivingOrderItem"]),
      ('devices', ["DeviceConstant",
                   "DeviceSettings"]),
 ]
