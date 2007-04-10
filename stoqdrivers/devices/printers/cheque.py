@@ -151,7 +151,7 @@ class ChequePrinter(BasePrinter):
         self.info("get_banks")
         return self._driver.get_banks()
 
-    @argcheck(object, number, basestring, basestring, datetime)
+    @argcheck(object, number, basestring, basestring, datetime.datetime)
     def print_cheque(self, bank, value, thirdparty, city, date=None):
         if date is None:
             date = datetime.datetime.now()
