@@ -25,7 +25,7 @@
 ##
 """ Editors implementation for open/close operation on till operation"""
 
-from datetime import datetime
+import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import ValidationError, currency
@@ -219,7 +219,7 @@ class BaseCashSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, BaseCashSlave.proxy_widgets)
-        self.date.set_text(str(datetime.today().date()))
+        self.date.set_text(str(datetime.date.today()))
         self.proxy.update('value', Decimal('0.01'))
 
     #

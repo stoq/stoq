@@ -26,7 +26,7 @@
 ##
 """ Classes for client details """
 
-from datetime import date
+import datetime
 
 import gtk
 from kiwi.python import Settable
@@ -123,7 +123,7 @@ class ClientDetailsDialog(BaseEditor):
         return [Column("id", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
                        format='%04d', width=90, sorted=True),
-                Column("open_date", title=_("Date"), data_type=date,
+                Column("open_date", title=_("Date"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT, width=80),
                 Column("salesperson_name", title=_("Salesperson"),
                        searchable=True, expand=True, data_type=str),
@@ -150,7 +150,7 @@ class ClientDetailsDialog(BaseEditor):
                        title=_("Description"), data_type=str, expand=True,
                        searchable=True),
                 Column("estimated_fix_date", title=_("Estimated Fix Date"),
-                       width=130,data_type=date)]
+                       width=130,data_type=datetime.date)]
 
     def _get_payments_columns(self):
         return [Column("id", title=_("#"),
@@ -162,7 +162,7 @@ class ClientDetailsDialog(BaseEditor):
                        data_type=str, searchable=True, width=190,
                        expand=True),
                 Column("due_date", title=_("Due Date"), width=110,
-                       data_type=date, sorted=True),
+                       data_type=datetime.date, sorted=True),
                 Column("status_str", title=_("Status"), width=80,
                        data_type=str),
                 ColoredColumn("base_value", title=_("Value"),

@@ -24,7 +24,7 @@
 ##
 """ Search dialogs for fiscal objects """
 
-from datetime import date
+import datetime
 
 import gtk
 from kiwi.ui.widgets.list import Column
@@ -109,7 +109,7 @@ class FiscalBookEntrySearch(SearchEditor):
         return [Column('id', title=_('#'), width=80,
                        data_type=int, sorted=True),
                 Column('date', title=_('Date'), width=80,
-                       data_type=date, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 Column('invoice_number', title=_('Invoice'),
                        data_type=int, width=110),
                 Column('cfop_code', title=_('CFOP'), data_type=str, width=90),

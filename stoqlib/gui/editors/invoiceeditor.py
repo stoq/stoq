@@ -25,7 +25,7 @@
 """ Invoice details editor implementation. This is a Brazil-specific
 editor. """
 
-from datetime import datetime
+import datetime
 
 from kiwi.python import Settable
 
@@ -39,7 +39,7 @@ class InvoiceDetailsEditor(BaseEditor):
     model_type = Settable
 
     def create_model(self, conn):
-        dt = datetime.now()
+        dt = datetime.datetime.now()
         return Settable(date=dt.date(), time=dt.time())
 
     def get_title(self, dummy):
@@ -52,4 +52,4 @@ class InvoiceDetailsEditor(BaseEditor):
         self.add_proxy(self.model, self.get_proxy_widgets())
 
     def on_confirm(self):
-        return datetime.combine(self.model.date, self.model.time)
+        return datetime.datetime.combine(self.model.date, self.model.time)
