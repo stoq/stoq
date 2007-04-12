@@ -150,6 +150,13 @@ class ISellable(Interface):
     def get_unit_description():
         """Undocumented"""
 
+    def get_tax_constant():
+        """
+        Returns the tax constant for this sellable.
+        If it's unset, return the constant from the category, if any
+        @returns: the tax constant or None if unset
+        """
+
 class IStorable(Interface):
     """Storable documentation for a certain product or a sellable item.
     Each storable can have references to many concrete items which will

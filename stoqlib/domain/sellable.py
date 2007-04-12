@@ -436,11 +436,6 @@ class ASellable(InheritableModelAdapter):
         return self.unit and self.unit.description or u""
 
     def get_tax_constant(self):
-        """
-        Returns the tax constant for this sellable.
-        If it's unset, return the constant from the category, if any
-        @returns: the tax constant or None if unset
-        """
         if self.tax_constant:
             return self.tax_constant
 
