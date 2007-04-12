@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):     Henrique Romano <henrique@async.com.br>
+##                Johan Dahlin <jdahlin@async.com.br>
 ##
 
 from kiwi.datatypes import currency
@@ -62,6 +63,23 @@ class TestSellableCategory(DomainTest):
         self.failUnless(base_category in categories)
         self.failIf(category in categories)
         self.assertEqual(categories.count(), count + 1)
+
+    def testGetTaxConstant(self):
+        base_category = SellableCategory(description="Monitor",
+                                         connection=self.trans)
+        category = SellableCategory(description="LCD Monitor",
+                                    category=base_category,
+                                    connection=self.trans)
+
+        self.assertEquals(category.get_tax_constant(), None)
+
+        constant = self.create_sellable_tax_constant()
+        base_category.tax_constant = constant
+        self.assertEquals(category.get_tax_constant(), constant)
+
+        constant2 = self.create_sellable_tax_constant()
+        category.tax_constant = constant2
+        self.assertEquals(category.get_tax_constant(), constant2)
 
 class TestASellable(DomainTest):
     def setUp(self):
@@ -168,3 +186,27 @@ class TestASellable(DomainTest):
         sellable.price = currency(0)
         self.failUnless(sellable.markup == 0,
                         "Expected markup %r, got %r" % (0, sellable.markup))
+
+    def testGetTaxConstant(self):
+        base_category = SellableCategory(description="Monitor",
+                                         connection=self.trans)
+        category = SellableCategory(description="LCD Monitor",
+                                    category=base_category,
+                                    connection=self.trans)
+        sellable = self.create_sellable()
+        sellable.tax_constant = None
+        sellable.category = category
+
+        self.assertEquals(sellable.get_tax_constant(), None)
+
+        constant = self.create_sellable_tax_constant()
+        base_category.tax_constant = constant
+        self.assertEquals(sellable.get_tax_constant(), constant)
+
+        constant2 = self.create_sellable_tax_constant()
+        category.tax_constant = constant2
+        self.assertEquals(sellable.get_tax_constant(), constant2)
+
+        constant3 = self.create_sellable_tax_constant()
+        sellable.tax_constant = constant3
+        self.assertEquals(sellable.get_tax_constant(), constant3)

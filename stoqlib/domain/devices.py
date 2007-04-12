@@ -270,7 +270,7 @@ class DeviceSettings(Domain):
         @rtype: L{DeviceConstant}
         """
 
-        sellable_constant = sellable.tax_constant
+        sellable_constant = sellable.get_tax_constant()
         if sellable_constant is None:
             raise DeviceError("No tax constant set for sellable %r" % sellable)
 

@@ -6,7 +6,7 @@
             <widget class="GtkTable" id="table1">
                 <property name="column_spacing">3</property>
                 <property name="n_columns">2</property>
-                <property name="n_rows">3</property>
+                <property name="n_rows">4</property>
                 <property name="row_spacing">5</property>
                 <property name="visible">True</property>
                 <child>
@@ -46,6 +46,17 @@
                         <property name="top_attach">2</property>
                         <property name="x_options">fill</property>
                         <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label6">
+                        <property name="label" context="yes" translatable="yes">Tax:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="top_attach">3</property>
                     </packing>
                 </child>
                 <child>
@@ -134,6 +145,19 @@
                         <property name="right_attach">2</property>
                         <property name="top_attach">2</property>
                         <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyComboBox" id="tax_constant">
+                        <property name="data_type">object</property>
+                        <property name="model_attribute">tax_constant</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">3</property>
                     </packing>
                 </child>
             </widget>

@@ -541,7 +541,8 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
             sellable = item.sellable
             if sellable.tax_constant.tax_type != TaxType.CUSTOM:
                 continue
-            icms_tax = sellable.tax_constant.tax_value / Decimal(100)
+            tax_constant = sellable.get_tax_constant()
+            icms_tax = tax_constant.tax_value / Decimal(100)
             icms_total += icms_tax * (price * item.quantity)
 
         return icms_total

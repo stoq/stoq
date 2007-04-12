@@ -503,6 +503,14 @@ class ExampleCreator(object):
         from stoqlib.domain.sellable import OnSaleInfo
         return OnSaleInfo(connection=self.trans)
 
+    def create_sellable_tax_constant(self):
+        from stoqdrivers.enum import TaxType
+        from stoqlib.domain.sellable import SellableTaxConstant
+        return SellableTaxConstant(description="18",
+                                   tax_type=int(TaxType.CUSTOM),
+                                   tax_value=18,
+                                   connection=self.trans)
+
     def get_station(self):
         return get_current_station(self.trans)
 
