@@ -1,4 +1,4 @@
--- #XXXX:
+-- #3301: Refactor SellableCategory
 
 --
 -- 1) Remove InheritableModel inheritence
@@ -13,8 +13,8 @@ UPDATE asellable_category
    SET te_created_id = inheritable_model.te_created_id,
        te_modified_id = inheritable_model.te_modified_id,
        is_valid_model = inheritable_model.is_valid_model
- FROM inheritable_model
-WHERE inheritable_model.child_name = 'ASellableCategory';
+  FROM inheritable_model
+ WHERE inheritable_model.child_name = 'ASellableCategory';
 DELETE FROM inheritable_model WHERE child_name = 'ASellableCategory';
 
 --
@@ -25,8 +25,8 @@ DELETE FROM inheritable_model WHERE child_name = 'ASellableCategory';
 ALTER TABLE asellable_category ADD COLUMN category_id bigint REFERENCES asellable_category(id);
 UPDATE asellable_category 
    SET category_id = sellable_category.base_category_id 
- FROM sellable_category 
-WHERE asellable_category.id = sellable_category.id;
+  FROM sellable_category 
+ WHERE asellable_category.id = sellable_category.id;
 
 -- Point to ASellableCategory instead of SellableCategory
 ALTER TABLE asellable DROP CONSTRAINT asellable_category_id_fkey;
