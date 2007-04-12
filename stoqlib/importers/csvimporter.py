@@ -23,23 +23,42 @@
 ##
 ##
 
+"""
+CSV import classes
+"""
 import csv
 import datetime
+import time
 
 from kiwi.python import namedAny
 
 from stoqlib.database.runtime import new_transaction
 
-class CSVDataLine:
-    pass
+class CSVRow(object):
+    """
+    A row in a CSV file
+    """
+    def __init__(self, item, field_names):
+        self.fields = []
+        for i, field in enumerate(item):
+            setattr(self, field_names[i], field)
+            self.fields.append(field_names[i])
+
+    def __repr__(self):
+        return '<CSV line %s>' % ', '.join(
+            ['%s=%r' % (f, getattr(self, f)) for f in self.fields])
 
 class CSVImporter(object):
     """
+    Class to assist the process of importing csv files.
+
     @cvar fields: field names, a list of strings
     @cvar optional_fields: optional field names, a list of strings
+    @cvar dialect: optional, csv dialect, defaults to excel
     """
     fields = []
     optional_fields = []
+    dialect = 'excel'
 
     # Available importers, the value is relative to stoqlib.importers
     _available_importers = {
@@ -51,55 +70,100 @@ class CSVImporter(object):
         'transporter': 'transporterimporter.TransporterImporter',
         }
 
+    def __init__(self, lines=500, dry=False):
+        """
+        @param lines: see L{set_lines_per_commit}
+        @param dry: see L{set_dry}
+        """
+        self.lines = lines
+        self.dry = dry
+
     #
     # Public API
     #
 
-    def feed_file(self, filename):
+    def feed_file(self, filename, skip=0):
         """
         Feeds csv data from filename to the importer
         @param filename: filename
+        @param skip: optional, number of rows to initially skip
         """
-        self.feed(open(filename), filename)
+        self.feed(open(filename), filename, skip=skip)
 
-    def feed(self, iterable, filename='<stdin>'):
+    def feed(self, iterable, filename='<stdin>', skip=0):
         """
         Feeds csv data from an iterable
         @param iterable: an iterable
-        @param filename: optinal filename
+        @param filename: optinal, name of input file
+        @param skip: optional, number of rows to initially skip
         """
         field_names = self.fields + self.optional_fields
 
+        t = time.time()
         trans = new_transaction()
         lineno = 1
-        for item in csv.reader(iterable):
+        for item in self.read(iterable):
+            if skip > lineno:
+                lineno += 1
+                continue
+
             if not item or item[0].startswith('%'):
                 lineno += 1
                 continue
             if len(item) < len(self.fields):
                 raise ValueError(
                     "line %d in file %s has %d fields, but we need at "
-                    "least %d fields to be able to process it, fields=%s" % (
+                    "least %d fields to be able to process it" % (
                     lineno, filename, len(item), len(self.fields)))
             if len(item) > len(field_names):
                 raise ValueError(
                     "line %d in file %s has %d fields, but we can at most "
-                    "handle %d fields" % (
-                    lineno, filename, len(item), len(field_names), list(item)))
+                    "handle %d fields, fields=%r" % (
+                    lineno, filename, len(item), len(field_names), item))
 
-            data = CSVDataLine()
-            fields = []
-            for i, field in enumerate(item):
-                setattr(data, field_names[i], field)
-                fields.append(field_names[i])
+            row = CSVRow(item, field_names)
+            try:
+                self.process_one(row, row.fields, trans)
+            except Exception, e:
+                print
+                print 'Error while processing row %d %r' % (lineno, row,)
+                print
+                raise
 
-            self.process_one(data, fields, trans)
+            if self.lines != -1:
+                if lineno % self.lines == 0:
+                    if not self.dry:
+                        trans.commit()
+                    t2 = time.time()
+                    print '%s Imported %d entries in %2.2f sec total=%d' % (
+                        datetime.datetime.now().strftime('%T'), self.lines,
+                        t2-t, lineno)
+                    t = t2
+                    trans = new_transaction()
 
             lineno += 1
-        trans.commit()
+        if not self.dry:
+            trans.commit(close=True)
 
     def parse_date(self, data):
         return datetime.date(*map(int, data.split('-')))
+
+    def set_lines_per_commit(self, lines):
+        """
+        Sets the number of lines which should be parsed between commits.
+        Defaults to 500. -1 means that the whole file should be parsed
+        before committing
+        @param lines: number of lines or
+        """
+        self.lines = lines
+
+    def set_dry(self, dry):
+        """
+        Tells the CSVImporter to run in dry mode, eg without committing
+        anything.
+        @param dry: dry mode
+        """
+        self.dry = dry
 
     #
     # Classmethods
@@ -125,12 +189,21 @@ class CSVImporter(object):
     # Override this in a subclass
     #
 
-    def process_one(self, data, fields, trans):
+    def process_one(self, row, fields, trans):
         """
         Processes one line in a csv file, you can access the columns
         using attributes on the data object.
-        @param data: object with data attributes
+        @param row: object representing a row in the input
         @param fields: a list of fields set in data
         @param trans: a database transaction
         """
         raise NotImplementedError
+
+    def read(self, iterable):
+        """
+        This can be overridden by as subclass which wishes to specialize
+        the CSV reader.
+        @param iterable: a sequence of lines which are going to be read
+        @returns: a sequence of parsed items
+        """
+        return csv.reader(iterable, dialect=self.dialect)
