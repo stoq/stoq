@@ -27,13 +27,13 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 
 from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.sellable import BaseSellableCategory, SellableCategory
+from stoqlib.domain.sellable import SellableCategory
 
 _ = stoqlib_gettext
 
 class BaseSellableCategoryEditor(BaseEditor):
     gladefile = 'BaseSellableCategoryDataSlave'
-    model_type = BaseSellableCategory
+    model_type = SellableCategory
     model_name = _('Base Category')
     proxy_widgets = ('description',
                      'markup',
@@ -45,12 +45,11 @@ class BaseSellableCategoryEditor(BaseEditor):
         self.set_description(self.model.get_description())
 
     def create_model(self, conn):
-        return BaseSellableCategory(description=u"", connection=conn)
+        return SellableCategory(description=u"", category=None, connection=conn)
 
     def setup_proxies(self):
         self.add_proxy(model=self.model,
                        widgets=BaseSellableCategoryEditor.proxy_widgets)
-
 
 class SellableCategoryEditor(BaseEditor):
     gladefile = 'SellableCategoryDataSlave'
@@ -67,14 +66,16 @@ class SellableCategoryEditor(BaseEditor):
 
     def create_model(self, conn):
         return SellableCategory(
-            description=u"", base_category=sysparam(conn).DEFAULT_BASE_CATEGORY,
+            description=u"", category=sysparam(conn).DEFAULT_BASE_CATEGORY,
             connection=conn)
 
+    def get_combo_entries(self):
+        return SellableCategory.get_base_categories(self.conn)
+
     def setup_combo(self):
-        base_category_list = BaseSellableCategory.select(connection=self.conn)
-        items = [(base_cat.description, base_cat)
-                     for base_cat in base_category_list]
-        self.base_category.prefill(items)
+        self.base_category.prefill(
+            [(c.description, c)
+                  for c in self.get_combo_entries()])
 
     def setup_proxies(self):
         # We need to prefill combobox before to set a proxy, since we want
@@ -82,4 +83,3 @@ class SellableCategoryEditor(BaseEditor):
         self.setup_combo()
         self.add_proxy(model=self.model,
                        widgets=SellableCategoryEditor.proxy_widgets)
-

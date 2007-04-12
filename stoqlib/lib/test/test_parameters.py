@@ -39,7 +39,7 @@ from stoqlib.domain.address import CityLocation
 from stoqlib.domain.person import Person, EmployeeRole
 from stoqlib.domain.payment.methods import BillPM, MoneyPM
 from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
-from stoqlib.domain.sellable import BaseSellableCategory, ASellable
+from stoqlib.domain.sellable import SellableCategory, ASellable
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.sale import Sale
@@ -103,7 +103,7 @@ class TestParameter(DomainTest):
 
     def testDefaultBaseCategory(self):
         base_category = self.sparam.DEFAULT_BASE_CATEGORY
-        assert isinstance(base_category, BaseSellableCategory)
+        assert isinstance(base_category, SellableCategory)
 
     def testPaymentDestination(self):
         self._create_examples()

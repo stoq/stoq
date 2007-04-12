@@ -33,40 +33,22 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.editors.categoryeditor import (BaseSellableCategoryEditor,
                                                 SellableCategoryEditor)
-from stoqlib.domain.sellable import (BaseSellableCategory,
-                                     SellableCategory)
+from stoqlib.domain.sellable import SellableCategory
 
 _ = stoqlib_gettext
-
-class BaseSellableCatSearch(SearchEditor):
-    size = (700, 500)
-    title = _('Base Sellable Category Search')
-
-    def __init__(self, conn):
-        SearchEditor.__init__(self, conn, BaseSellableCategory,
-                              BaseSellableCategoryEditor)
-        self.set_searchbar_labels(_('Base Categories Matching:'))
-        self.set_result_strings(_('base category'), _('base categories'))
-
-    def get_columns(self):
-        return [Column("description", _("Description"), data_type=str,
-                       sorted=True, expand=True),
-                Column("suggested_markup", _("Suggested Markup (%)"),
-                       data_type=float, width=200),
-                Column("salesperson_commission",
-                       _("Salesperson Commission (%)"), data_type=float,
-                       width=200),
-            ]
 
 class SellableCategorySearch(SearchEditor):
     size = (700, 500)
     title = _('Sellable Category Search')
 
+    searchbar_label = _('Categories Matching:')
+    result_strings = _('category'), _('categories')
+    editor = SellableCategoryEditor
+
     def __init__(self, conn):
-        SearchEditor.__init__(self, conn, SellableCategory,
-                              SellableCategoryEditor)
-        self.set_searchbar_labels(_('Categories Matching:'))
-        self.set_result_strings(_('category'), _('categories'))
+        SearchEditor.__init__(self, conn, SellableCategory, self.editor)
+        self.set_searchbar_labels(self.searchbar_label)
+        self.set_result_strings(*self.result_strings)
 
     def get_columns(self):
         return [
@@ -79,4 +61,25 @@ class SellableCategorySearch(SearchEditor):
                    width=190),
             ]
 
+    def get_extra_query(self):
+        return SellableCategory.q.categoryID != None
 
+class BaseSellableCatSearch(SellableCategorySearch):
+    size = (700, 500)
+    title = _('Base Sellable Category Search')
+    searchbar_label = _('Base Categories Matching:')
+    result_strings = _('base category'), _('base categories')
+    editor = BaseSellableCategoryEditor
+
+    def get_columns(self):
+        columns = SellableCategorySearch.get_columns(self)
+        del columns[-1]
+        columns.append(
+            Column("salesperson_commission",
+                   _("Salesperson Commission (%)"), data_type=float,
+                   width=200),
+            )
+        return columns
+
+    def get_extra_query(self):
+        return SellableCategory.q.categoryID == None
