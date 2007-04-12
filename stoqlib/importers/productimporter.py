@@ -27,8 +27,7 @@ from stoqlib.database.runtime import get_connection
 from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
-from stoqlib.domain.sellable import (BaseSellableCategory,
-                                     SellableCategory,
+from stoqlib.domain.sellable import (SellableCategory,
                                      SellableUnit,
                                      BaseSellableInfo)
 from stoqlib.importers.csvimporter import CSVImporter
@@ -81,9 +80,10 @@ class ProductImporter(CSVImporter):
                             product=product)
 
         base_category = self._get_or_create(
-            BaseSellableCategory, trans,
+            SellableCategory, trans,
             suggested_markup=data.markup,
             salesperson_commission=data.commission,
+            category=None,
             description=data.base_category)
 
         category = self._get_or_create(
@@ -91,7 +91,7 @@ class ProductImporter(CSVImporter):
             description=data.category,
             salesperson_commission=data.commission2,
             suggested_markup=data.markup2,
-            base_category=base_category)
+            category=base_category)
 
         sellable_info = BaseSellableInfo(
             connection=trans,

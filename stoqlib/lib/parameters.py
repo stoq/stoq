@@ -341,7 +341,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('MAIN_COMPANY',
                       u'person.PersonAdaptToBranch'),
         ParameterAttr('DEFAULT_BASE_CATEGORY',
-                      u'sellable.BaseSellableCategory'),
+                      u'sellable.SellableCategory'),
         ParameterAttr('DEFAULT_SALESPERSON_ROLE',
                       u'person.EmployeeRole'),
         ParameterAttr('DEFAULT_PAYMENT_DESTINATION',
@@ -490,12 +490,12 @@ class ParameterAccess(ClassInittableObject):
         self._set_schema(key, supplier.id)
 
     def ensure_default_base_category(self):
-        from stoqlib.domain.sellable import BaseSellableCategory
+        from stoqlib.domain.sellable import SellableCategory
         key = "DEFAULT_BASE_CATEGORY"
-        if self.get_parameter_by_field(key, BaseSellableCategory):
+        if self.get_parameter_by_field(key, SellableCategory):
             return
-        base_category = BaseSellableCategory(description=key,
-                                             connection=self.conn)
+        base_category = SellableCategory(description=key,
+                                         connection=self.conn)
         self._set_schema(key, base_category.id)
 
     def ensure_default_salesperson_role(self):

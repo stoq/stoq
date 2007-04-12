@@ -25,7 +25,6 @@
 from kiwi.datatypes import currency
 
 from stoqlib.domain.sellable import (SellableCategory,
-                                     BaseSellableCategory,
                                      BaseSellableInfo)
 from stoqlib.domain.product import Product
 from stoqlib.domain.interfaces import ISellable
@@ -34,30 +33,43 @@ from stoqlib.domain.test.domaintest import DomainTest
 class TestSellableCategory(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
-        base_category = BaseSellableCategory(description="Monitor",
-                                             connection=self.trans)
+        base_category = SellableCategory(description="Monitor",
+                                         connection=self.trans)
         self._category = SellableCategory(description="LCD",
-                                          base_category=base_category,
+                                          category=base_category,
                                           connection=self.trans)
 
-    def test_description(self):
+    def testGetDescription(self):
         self.failUnless(self._category.get_description() == "LCD")
         self.failUnless(self._category.get_full_description() == "Monitor LCD")
 
-    def test_markup(self):
+    def testMarkup(self):
         self._category.suggested_markup = currency(10)
-        self._category.base_category.suggested_markup = currency(20)
+        self._category.category.suggested_markup = currency(20)
         self.failUnless(self._category.get_markup() == currency(10))
         self._category.suggested_markup = None
         self.failUnless(self._category.get_markup() == currency(20))
 
+    def testGetBaseCategories(self):
+        categories = SellableCategory.get_base_categories(self.trans)
+        count = categories.count()
+        base_category = SellableCategory(description="Monitor",
+                                         connection=self.trans)
+        category = SellableCategory(description="LCD Monitor",
+                                    category=base_category,
+                                    connection=self.trans)
+        categories = SellableCategory.get_base_categories(self.trans)
+        self.failUnless(base_category in categories)
+        self.failIf(category in categories)
+        self.assertEqual(categories.count(), count + 1)
+
 class TestASellable(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
-        self._base_category = BaseSellableCategory(description="Cigarro",
-                                                   connection=self.trans)
+        self._base_category = SellableCategory(description="Cigarro",
+                                               connection=self.trans)
         self._category = SellableCategory(description="Hollywood",
-                                          base_category=self._base_category,
+                                          category=self._base_category,
                                           suggested_markup=10,
                                           connection=self.trans)
 

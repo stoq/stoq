@@ -114,8 +114,6 @@ _tables = [
                         "RenegotiationAdaptToChangeInstallments"]),
      ('sellable', ["SellableUnit",
                    "SellableTaxConstant",
-                   "ASellableCategory",
-                   "BaseSellableCategory",
                    "SellableCategory",
                    "ASellable",
                    "ASellableItem"]),

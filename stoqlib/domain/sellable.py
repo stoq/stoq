@@ -107,8 +107,9 @@ class SellableTaxConstant(Domain):
     def get_description(self):
         return self.description
 
-class ASellableCategory(InheritableModel):
-    """ Abstract class for sellable's category. This class can represents a
+
+class SellableCategory(Domain):
+    """ Sellable category. This class can represents a
     sellable's category as well its base category.
 
     @cvar description: The category description
@@ -116,40 +117,60 @@ class ASellableCategory(InheritableModel):
        sellable's price.
     @cvar salesperson_comission: A percentage comission suggested for all the
        sales which products belongs to this category.
+    @cvar category: base category of this category, None for base categories
+       themselves
     """
+
     description = UnicodeCol()
     suggested_markup = DecimalCol(default=0)
     salesperson_commission = DecimalCol(default=0)
+    category = ForeignKey('SellableCategory', default=None)
 
     implements(IDescribable)
 
     def get_commission(self):
+        """
+        Returns the commission for this category.
+        If it's unset, return the value of the base category, if any
+        @returns: the commission
+        """
+        if self.category:
+            return (self.salesperson_commission or
+                    self.category.get_commission())
         return self.salesperson_commission
 
+    def get_markup(self):
+        """
+        Returns the markup for this category.
+        If it's unset, return the value of the base category, if any
+        @returns: the markup
+        """
+        if self.category:
+            return self.suggested_markup or self.category.get_markup()
+        return self.suggested_markup
+
+    # FIXME: Remove?
     def get_description(self):
         return self.description
 
-class BaseSellableCategory(ASellableCategory):
-    _inheritable = False
-
-
-class SellableCategory(ASellableCategory):
-
-    implements(IDescribable)
-
-    _inheritable = False
-    base_category = ForeignKey('BaseSellableCategory')
-
-    def get_commission(self):
-        return (self.salesperson_commission or
-                self.base_category.get_commission())
-
-    def get_markup(self):
-        return self.suggested_markup or self.base_category.suggested_markup
-
     def get_full_description(self):
-        return ("%s %s"
-                % (self.base_category.get_description(), self.description))
+        if self.category:
+            return ("%s %s"
+                    % (self.category.get_description(), self.description))
+        return self.description
+
+    #
+    # Classmethods
+    #
+
+    @classmethod
+    def get_base_categories(cls, conn):
+        """
+        Returns all available base categories
+        @param conn: a database connection
+        @returns: categories
+        """
+        return cls.select(cls.q.categoryID == None, connection=conn)
 
 class ASellableItem(InheritableModel):
     """Abstract representation of a concrete sellable."""
