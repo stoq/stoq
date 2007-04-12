@@ -52,6 +52,7 @@ class ProductImporter(CSVImporter):
         ]
 
     def __init__(self):
+        super(ProductImporter, self).__init__()
         conn = get_connection()
         suppliers = Person.iselect(ISupplier, connection=conn)
         if not suppliers.count():

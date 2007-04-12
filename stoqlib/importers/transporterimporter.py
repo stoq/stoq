@@ -44,9 +44,6 @@ class TransporterImporter(CSVImporter):
               'open_contract',
               'freight_percentage']
 
-    def __init__(self):
-        pass
-
     def process_one(self, data, fields, trans):
         person = Person(
             connection=trans,

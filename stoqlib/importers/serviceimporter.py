@@ -39,6 +39,7 @@ class ServiceImporter(CSVImporter):
               ]
 
     def __init__(self):
+        super(ServiceImporter, self).__init__()
         conn = get_connection()
         self.tax_constant = SellableTaxConstant.get_by_type(
             TaxType.SERVICE, conn)

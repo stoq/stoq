@@ -42,9 +42,6 @@ class ClientImporter(CSVImporter):
               'street_number',
               'district']
 
-    def __init__(self):
-        pass
-
     def process_one(self, data, fields, trans):
         person = Person(
             connection=trans,
