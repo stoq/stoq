@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito  <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Sellable category editors implementation"""
 
@@ -27,7 +28,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 
 from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.sellable import SellableCategory
+from stoqlib.domain.sellable import SellableCategory, SellableTaxConstant
 
 _ = stoqlib_gettext
 
@@ -37,8 +38,9 @@ class BaseSellableCategoryEditor(BaseEditor):
     model_name = _('Base Category')
     proxy_widgets = ('description',
                      'markup',
-                     'commission')
-    size = (400, 175)
+                     'commission',
+                     'tax_constant')
+    size = (400, -1)
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
@@ -47,7 +49,14 @@ class BaseSellableCategoryEditor(BaseEditor):
     def create_model(self, conn):
         return SellableCategory(description=u"", category=None, connection=conn)
 
+    def setup_combo(self):
+        self.tax_constant.prefill(
+            [(_('(unset)'), None)] +
+            [(c.description, c)
+                  for c in SellableTaxConstant.select(connection=self.conn)])
+
     def setup_proxies(self):
+        self.setup_combo()
         self.add_proxy(model=self.model,
                        widgets=BaseSellableCategoryEditor.proxy_widgets)
 
@@ -57,7 +66,7 @@ class SellableCategoryEditor(BaseEditor):
     model_name = _('Category')
     proxy_widgets = ('description',
                      'suggested_markup',
-                     'base_category',
+                     'category',
                      'commission')
 
     def __init__(self, conn, model):
@@ -73,9 +82,13 @@ class SellableCategoryEditor(BaseEditor):
         return SellableCategory.get_base_categories(self.conn)
 
     def setup_combo(self):
-        self.base_category.prefill(
+        self.category.prefill(
             [(c.description, c)
                   for c in self.get_combo_entries()])
+        self.tax_constant.prefill(
+            [(_('(unset)'), None)] +
+            [(c.description, c)
+                  for c in SellableTaxConstant.select(connection=self.conn)])
 
     def setup_proxies(self):
         # We need to prefill combobox before to set a proxy, since we want

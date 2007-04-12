@@ -125,6 +125,7 @@ class SellableCategory(Domain):
     suggested_markup = DecimalCol(default=0)
     salesperson_commission = DecimalCol(default=0)
     category = ForeignKey('SellableCategory', default=None)
+    tax_constant = ForeignKey('SellableTaxConstant', default=None)
 
     implements(IDescribable)
 
@@ -148,6 +149,16 @@ class SellableCategory(Domain):
         if self.category:
             return self.suggested_markup or self.category.get_markup()
         return self.suggested_markup
+
+    def get_tax_constant(self):
+        """
+        Returns the tax constant for this category.
+        If it's unset, return the value of the base category, if any
+        @returns: the tax constant
+        """
+        if self.category:
+            return self.tax_constant or self.category.get_tax_constant()
+        return self.tax_constant
 
     # FIXME: Remove?
     def get_description(self):
@@ -423,6 +434,18 @@ class ASellable(InheritableModelAdapter):
 
     def get_unit_description(self):
         return self.unit and self.unit.description or u""
+
+    def get_tax_constant(self):
+        """
+        Returns the tax constant for this sellable.
+        If it's unset, return the constant from the category, if any
+        @returns: the tax constant or None if unset
+        """
+        if self.tax_constant:
+            return self.tax_constant
+
+        if self.category:
+            return self.category.get_tax_constant()
 
     #
     # IDescribable implementation
