@@ -218,7 +218,6 @@ class ASellableItem(InheritableModel):
 
 
 class OnSaleInfo(Domain):
-    _inheritable = False
     on_sale_price = PriceCol(default=0)
     on_sale_start_date = DateTimeCol(default=None)
     on_sale_end_date = DateTimeCol(default=None)
@@ -227,7 +226,6 @@ class OnSaleInfo(Domain):
 class BaseSellableInfo(Domain):
     implements(IDescribable)
 
-    _inheritable = False
     price = PriceCol(default=0)
     description = UnicodeCol(default='')
     max_discount = DecimalCol(default=0)
