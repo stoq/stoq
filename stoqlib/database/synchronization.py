@@ -22,6 +22,10 @@
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##
 
+"""
+Synchronization, Distributed database replication.
+"""
+
 import datetime
 import sets
 import socket

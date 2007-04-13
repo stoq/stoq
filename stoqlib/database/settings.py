@@ -24,6 +24,9 @@
 ##
 ##
 
+"""
+Settings required to access the database, hostname, username etc
+"""
 import os
 import pwd
 import sys

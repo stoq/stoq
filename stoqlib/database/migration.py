@@ -23,7 +23,9 @@
 ##                  Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
-""" Routines for database schema migration"""
+"""
+Schema migration
+"""
 
 import glob
 import os

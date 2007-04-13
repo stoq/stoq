@@ -22,3 +22,7 @@
 ## Author(s):       Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
+
+"""
+Stoqdrivers integration
+"""

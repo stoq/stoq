@@ -23,6 +23,12 @@
 ##
 ##
 
+"""
+Database exceptions
+
+This is just a layer on top of the Python DBAPI we're using to access the
+database
+"""
 import psycopg2
 
 PostgreSQLError = psycopg2.Error

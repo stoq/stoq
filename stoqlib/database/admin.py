@@ -23,7 +23,11 @@
 ##              Henrique Romano             <henrique@async.com.br>
 ##              Johan Dahlin                <jdahlin@async.com.br>
 ##
-""" Helper functions related to administration of the database, creating
+
+"""
+Administration
+
+Helper functions related to administration of the database, creating
 tables, removing tables and configuring administration user.
 """
 

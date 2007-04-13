@@ -22,6 +22,10 @@
 ## Author(s):   Johan Dahlin   <jdahlin@async.com.br>
 ##
 
+"""
+Database Interfaces: Connection, Settings etc
+"""
+
 from zope.interface import Attribute
 from zope.interface.interface import Interface
 
