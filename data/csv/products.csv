@@ -1,12 +1,12 @@
 % base_category, barcode, category, description, price,
 % cost, commission, commission2, markup, markup2 [, unit]
-Bermudas,2368694135945,Sarja,Bermuda Sarja,149,70,15,28,36,15
-Bermudas,6234564656756,Shorts,Shorts com Costuras,198,139,15,28,36,15
+Bermudas,2368694135945,Bermudas Sarja,Bermuda Sarja,149,70,15,28,36,15
+Bermudas,6234564656756,Bermudas Shorts,Shorts com Costuras,198,139,15,28,36,15
 Camisetas,6985413595971,Tinturada,Camiseta Tinturada Xcuba Comp,89,56,10,12,43,33
 Calçados,2692149835416,Chinelos,Chinelo de Dedo,79,43,10,23,35,45
-Calças,1595843695465,Jeans,Calça Jeans com Bolso Traseiro,189,101,27,12,32,52
-Calças,8596458216412,Poliester,Calça Brigilda,438,325,27,12,32,52
+Calças,1595843695465,Calças Jeans,Calça Jeans com Bolso Traseiro,189,101,27,12,32,52
+Calças,8596458216412,Calças Poliester,Calça Brigilda,438,325,27,12,32,52
 Casacos,9586249534513,Algodão,Casaco Vilan,503,401,25,35,35,55
-Blusas,7826592136954,Algodão,Blusa Frente-Única com Pregas,220,153,23,25,45,52
-Blusas,5892458629421,Poliester,Blusa Balonê com Bordado nas Costas,150,99,23,25,45,52
+Blusas,7826592136954,Blusas Algodão,Blusa Frente-Única com Pregas,220,153,23,25,45,52
+Blusas,5892458629421,Blusas Poliester,Blusa Balonê com Bordado nas Costas,150,99,23,25,45,52
 Vestido,1598756984265,Viscose,Vestido Vadalena,383,199,25,15,26,58
