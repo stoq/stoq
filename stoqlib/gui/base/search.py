@@ -416,7 +416,6 @@ class SearchEditor(SearchDialog):
         it uses the rest of the available width.
 
     """
-    model_editor_lookup_attr = 'id'
     has_new_button = has_edit_button = True
     model_list_lookup_attr = 'id'
 
