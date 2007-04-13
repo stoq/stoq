@@ -22,6 +22,10 @@
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##
 
+"""
+Synchronization policies
+"""
+
 from stoqlib.enums import SyncPolicy
 
 _policies = []
