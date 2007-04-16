@@ -105,6 +105,7 @@
                             <widget class="ProxyEntry" id="cost">
                                 <property name="data_type">Decimal</property>
                                 <property name="is_focus">True</property>
+                                <property name="editable">False</property>
                                 <property name="model_attribute">cost</property>
                                 <property name="visible">True</property>
                                 <property name="width_chars">7</property>
