@@ -81,21 +81,38 @@ class GiftCertificateOverpaidSettings:
 
 
 class Sale(Domain):
-    """Sale object implementation.
+    """
+    Sale object implementation.
 
-    B{Important attributes}:
-        - I{open_date}: The day when we started this sale.
-        - I{close_date}: The day when we confirmed this sale.
-        - I{notes}: Some optional additional information related to this
-                    sale.
-        - I{till}: The Till operation where this sale lives. Note that every
-                   sale and payment generated are always in a till operation
-                   which defines a financial history of a store.
-        - I{client_role}: This field indicates what client role is tied with
-                          the sale order. This is important since a client
-                          can have two roles associated, i.e, Individual and/or
-                          Company. This is useful when printing the sale
-                          invoice.
+    @cvar STATUS_OPENED:
+    @cvar STATUS_CONFIRMED:
+    @cvar STATUS_CLOSED:
+    @cvar STATUS_CANCELLED:
+    @cvar STATUS_ORDER:
+    @cvar CLIENT_INDIVIDUAL: The sale was done by an individual
+    @cvar CLIENT_COMPANY: The sale was done by a company
+    @ivar status: status of the sale
+    @ivar client: who we sold the sale to
+    @ivar salesperson: who sold the sale
+    @ivar till: The Till operation where this sale lives. Note that every
+       sale and payment generated are always in a till operation
+       which defines a financial history of a store.
+    @ivar open_date: the date sale was created
+    @ivar close_date: the date sale was closed
+    @ivar confirm_date: the date sale was confirmed
+    @ivar cancel_date: the date sale was cancelled
+    @ivar discount_value:
+    @ivar surcharge_value:
+    @ivar notes: Some optional additional information related to this sale.
+    @ivar client_role: This field indicates what client role is tied with
+       the sale order. This is important since a client can have two roles
+       associated, i.e, Individual and/or Company. This is useful when
+       printing the sale invoice. One of Sale.CLIENT_INDIVIDUAL or
+       Sale.CLIENT_COMPANY.
+    @ivar coupon_id:
+    @ivar service_invoice_number:
+    @ivar cfop:
+    @ivar renegotiation_data:
     """
 
     implements(IContainer)
@@ -115,36 +132,92 @@ class Sale(Domain):
                 STATUS_CANCELLED:   _(u"Cancelled"),
                 STATUS_ORDER:       _(u"Order")}
 
-    coupon_id = IntCol()
-    service_invoice_number = IntCol(default=None)
+    status = IntCol(default=STATUS_OPENED)
+    client = ForeignKey('PersonAdaptToClient', default=None)
+    salesperson = ForeignKey('PersonAdaptToSalesPerson')
+    till = ForeignKey('Till')
     open_date = DateTimeCol(default=datetime.datetime.now)
     close_date = DateTimeCol(default=None)
     confirm_date = DateTimeCol(default=None)
     cancel_date = DateTimeCol(default=None)
-    status = IntCol(default=STATUS_OPENED)
     discount_value = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     notes = UnicodeCol(default='')
-    # It should be one of ClIENT_INDIVIDUAL or CLIENT_COMPANY and it is
-    # used to build properly the sale's invoice for a client which have
-    # both Individual and Company facets.
+    coupon_id = IntCol()
+    service_invoice_number = IntCol(default=None)
     client_role = IntCol(default=None)
-
-    client = ForeignKey('PersonAdaptToClient', default=None)
     cfop = ForeignKey("CfopData")
-    till = ForeignKey('Till')
-    salesperson = ForeignKey('PersonAdaptToSalesPerson')
     renegotiation_data = ForeignKey("AbstractRenegotiationAdapter",
                                     default=None)
 
+    #
+    # SQLObject hooks
+    #
 
-    def _get_percentage_value(self, percentage):
-        if not percentage:
-            return currency(0)
-        subtotal = self.get_sale_subtotal()
-        percentage = Decimal(percentage)
-        perc_value = subtotal * (percentage / Decimal(100))
-        return currency(perc_value)
+    def _create(self, id, **kw):
+        # Sales objects must be set as valid explicitly
+        kw['_is_valid_model'] = False
+        conn = self.get_connection()
+        if not 'cfop' in kw:
+            kw['cfop'] = sysparam(conn).DEFAULT_SALES_CFOP
+        Domain._create(self, id, **kw)
+
+    #
+    # IContainer implementation
+    #
+
+    # FIXME: Should only accept ASellableItem
+    #@argcheck(ASellable)
+    def add_item(self, item):
+        #item.add_sellable_item(sale=self)
+        raise NotImplementedError
+
+    def get_items(self):
+        conn = self.get_connection()
+        return ASellableItem.selectBy(connection=conn, saleID=self.id)
+
+    @argcheck(ASellableItem)
+    def remove_item(self, item):
+        conn = self.get_connection()
+        table = type(item)
+        table.delete(item.id, connection=conn)
+
+    #
+    # Classmethods
+    #
+
+    @classmethod
+    def get_available_sales(cls, conn, till):
+        """Returns a list of all available sales for a given
+        till operation
+
+        @param conn: a Transaction sqlobject instance
+        @param till: a Till instance
+        """
+        return cls.selectBy(till=till, connection=conn)
+
+    @classmethod
+    def get_status_name(cls, status):
+        if not status in cls.statuses:
+            raise DatabaseInconsistency("Invalid status %d" % status)
+        return cls.statuses[status]
+
+    @classmethod
+    def get_last_confirmed(cls, conn):
+        """
+        Fetch the last confirmed sale
+        @param conn: a database connection
+        """
+        results = cls.select(AND(cls.q.status == cls.STATUS_CONFIRMED,
+                                 cls.q.confirm_date != None),
+                             orderBy='-confirm_date',
+                             connection=conn).limit(1)
+        if results:
+            return results[0]
+
+    #
+    # Properties
+    #
 
     def _set_discount_by_percentage(self, value):
         """Sets a discount by percentage.
@@ -196,75 +269,6 @@ class Sale(Domain):
 #                             "CLIENT_INDIVIDUAL or CLIENT_COMPANY")
 #         self._SO_set_client_role(value)
 
-    #
-    # SQLObject hooks
-    #
-
-    def _create(self, id, **kw):
-        # Sales objects must be set as valid explicitly
-        kw['_is_valid_model'] = False
-        conn = self.get_connection()
-        if not 'cfop' in kw:
-            kw['cfop'] = sysparam(conn).DEFAULT_SALES_CFOP
-        Domain._create(self, id, **kw)
-
-    #
-    # IContainer methods
-    #
-
-    # FIXME: Should only accept ASellableItem
-    #@argcheck(ASellable)
-    def add_item(self, item):
-        #item.add_sellable_item(sale=self)
-        raise NotImplementedError
-
-    def get_items(self):
-        conn = self.get_connection()
-        return ASellableItem.selectBy(connection=conn, saleID=self.id)
-
-    @argcheck(ASellableItem)
-    def remove_item(self, item):
-        conn = self.get_connection()
-        table = type(item)
-        table.delete(item.id, connection=conn)
-
-    #
-    # Classmethods
-    #
-
-    @classmethod
-    def get_available_sales(cls, conn, till):
-        """Returns a list of all available sales for a given
-        till operation
-
-        @param conn: a Transaction sqlobject instance
-        @param till: a Till instance
-        """
-        query = cls.q.tillID == till.id
-        return cls.select(query, connection=conn)
-
-    @classmethod
-    def get_status_name(cls, status):
-        if not status in cls.statuses:
-            raise DatabaseInconsistency("Invalid status %d" % status)
-        return cls.statuses[status]
-
-    @classmethod
-    def get_last_confirmed(cls, conn):
-        """
-        Fetch the last confirmed sale
-        @param conn: a database connection
-        """
-        results = cls.select(AND(cls.q.status == cls.STATUS_CONFIRMED,
-                                 cls.q.confirm_date != None),
-                             orderBy='-confirm_date',
-                             connection=conn).limit(1)
-        if results:
-            return results[0]
-
-    #
-    # Properties
-    #
 
     @property
     def order_number(self):
@@ -304,6 +308,7 @@ class Sale(Domain):
         from stoqlib.domain.till import Till
         conn = self.get_connection()
         till = Till.get_current(conn)
+        assert till
         return Sale(client_role=self.client_role, client=self.client,
                     cfop=self.cfop, till=till, coupon_id=None,
                     salesperson=self.salesperson, connection=conn)
@@ -409,6 +414,18 @@ class Sale(Domain):
         self.confirm_date = datetime.datetime.now()
         self.check_close()
 
+    def has_items(self):
+        return self.get_items().count() > 0
+
+    def has_products(self):
+        return len(self.get_products()) > 0
+
+    def has_services(self):
+        return len(self.get_services()) > 0
+
+    def has_gift_certifificates(self):
+        return len(self.get_gift_certificates()) > 0
+
     #
     # Accessors
     #
@@ -445,6 +462,7 @@ class Sale(Domain):
         return self.till.station.branch
 
     def get_sale_subtotal(self):
+        # FIXME: Use SQL
         subtotal = sum([item.get_total() for item in self.get_items()],
                        currency(0))
         return currency(subtotal)
@@ -471,39 +489,44 @@ class Sale(Domain):
     def get_total_interest(self):
         raise NotImplementedError
 
-    def has_items(self):
-        return self.get_items().count() > 0
-
-    def has_products(self):
-        return len(self.get_products()) > 0
-
-    def has_services(self):
-        return len(self.get_services()) > 0
-
-    def has_gift_certifificates(self):
-        return len(self.get_gift_certificates()) > 0
-
     def get_services(self):
+        # FIXME: Use SQL
         return [item for item in self.get_items()
                     if isinstance(item, ServiceSellableItem)]
 
     def get_products(self):
+        # FIXME: Use SQL
         return [item for item in self.get_items()
                     if isinstance(item, ProductSellableItem)]
 
     def get_gift_certificates(self):
         """Returns a list of gift certificates tied to the current sale"""
+        # FIXME: Use SQL
         return [item for item in self.get_items()
                     if isinstance(item, GiftCertificateItem)]
 
     def get_items_total_quantity(self):
+        # FIXME: Use SQL
         return sum([item.quantity for item in self.get_items()],
                    Decimal(0))
 
     def get_items_total_value(self):
+        # FIXME: Use SQL
         total = sum([item.get_total() for item in self.get_items()],
                    currency(0))
         return currency(total)
+
+    #
+    # Private API
+    #
+
+    def _get_percentage_value(self, percentage):
+        if not percentage:
+            return currency(0)
+        subtotal = self.get_sale_subtotal()
+        percentage = Decimal(percentage)
+        perc_value = subtotal * (percentage / Decimal(100))
+        return currency(perc_value)
 
 
 #
@@ -515,9 +538,49 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
     _inheritable = False
 
+    #
+    # Properties
+    #
+
     @property
     def sale(self):
         return self.get_adapted()
+
+    #
+    # IPaymentGroup implementation
+    #
+
+    def get_thirdparty(self):
+        client = self.sale.client
+        return client and client.person or None
+
+    def get_group_description(self):
+        return _(u'sale %s') % self.sale.get_order_number_str()
+
+    def get_total_received(self):
+        return (self.sale.get_total_sale_amount() -
+                self._get_pm_commission_total())
+
+    def get_default_payment_method(self):
+        return self.default_method
+
+    @argcheck(GiftCertificateOverpaidSettings)
+    def confirm(self, gift_certificate_settings=None):
+        has_overpaid = gift_certificate_settings is not None
+        if not has_overpaid:
+            self.add_inpayments(self.sale.till)
+            self.confirm_money_payments()
+        self._confirm_gift_certificates()
+        self._create_fiscal_entries()
+        if gift_certificate_settings is None:
+            return
+        # Here we have the payment method set as gift certificate but there
+        # is an overpaid value to deal with.
+        self._setup_gift_certificate_overpaid_value(gift_certificate_settings)
+
+    #
+    # Private API
+    #
 
     def _get_pm_commission_total(self):
         """Return the payment method commission total. Usually credit
@@ -547,7 +610,6 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
         return icms_total
 
-    @argcheck(Decimal)
     def _get_iss_total(self, av_difference):
         """A Brazil-specific method
         Calculates the iss total value
@@ -594,7 +656,6 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         return IssBookEntry.get_entry_by_payment_group(
                                         self.get_connection(), self)
 
-    @argcheck(GiftCertificateOverpaidSettings)
     def _setup_gift_certificate_overpaid_value(self,
                                                gift_certificate_settings):
         regtype = gift_certificate_settings.renegotiation_type
@@ -685,38 +746,6 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 #                                    sale.service_invoice_number,
 #                                    iss_total)
 
-    #
-    # IPaymentGroup implementation
-    #
-
-    def get_thirdparty(self):
-        client = self.sale.client
-        return client and client.person or None
-
-    def get_group_description(self):
-        return _(u'sale %s') % self.sale.get_order_number_str()
-
-    def get_total_received(self):
-        return (self.sale.get_total_sale_amount() -
-                self._get_pm_commission_total())
-
-    def get_default_payment_method(self):
-        return self.default_method
-
-    @argcheck(GiftCertificateOverpaidSettings)
-    def confirm(self, gift_certificate_settings=None):
-        has_overpaid = gift_certificate_settings is not None
-        if not has_overpaid:
-            self.add_inpayments(self.sale.till)
-            self.confirm_money_payments()
-        self._confirm_gift_certificates()
-        self._create_fiscal_entries()
-        if gift_certificate_settings is None:
-            return
-        # Here we have the payment method set as gift certificate but there
-        # is an overpaid value to deal with.
-        self._setup_gift_certificate_overpaid_value(gift_certificate_settings)
-
 
 Sale.registerFacet(SaleAdaptToPaymentGroup, IPaymentGroup)
 
@@ -744,6 +773,18 @@ class SaleView(SQLObject, BaseSQLView):
     total = PriceCol()
     total_quantity = DecimalCol()
 
+    #
+    # Properties
+    #
+
+    @property
+    def sale(self):
+        return Sale.get(self.id)
+
+    #
+    # Public API
+    #
+
     def get_client_name(self):
         return self.client_name or u""
 
@@ -756,6 +797,3 @@ class SaleView(SQLObject, BaseSQLView):
     def get_status_name(self):
         return Sale.get_status_name(self.status)
 
-    @property
-    def sale(self):
-        return Sale.get(self.id)
