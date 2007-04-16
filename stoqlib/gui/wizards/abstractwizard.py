@@ -254,6 +254,7 @@ class SellableItemStep(WizardEditorStep):
 
     def on_add_item_button__clicked(self, button):
         self._add_item()
+        self.quantity.update(self.get_quantity())
 
     def on_item__activate(self, combo):
         self._get_sellable()
@@ -266,7 +267,7 @@ class SellableItemStep(WizardEditorStep):
         if not (item and self.item.get_text()):
             self.proxy.set_model(None, relax_type=True)
             return
-        model = Settable(quantity=Decimal(1), cost=item.cost,
+        model = Settable(quantity=self.quantity.read(), cost=item.cost,
                          item=item)
         self.proxy.set_model(model)
 
