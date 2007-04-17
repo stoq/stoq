@@ -134,11 +134,13 @@ class TillApp(SearchableAppWindow):
         self.AddCash.set_sensitive(has_till)
         self.RemoveCash.set_sensitive(has_till)
         self.TillHistory.set_sensitive(has_till)
+        self.Summary.set_sensitive(has_till)
 
         if not till:
             text = _(u"Till Closed")
             self.sales.clear()
             self.searchbar.clear()
+            self.setup_focus()
         else:
             text = _(u"Till Opened on %s") % till.opening_date.strftime('%x')
 
@@ -197,6 +199,9 @@ class TillApp(SearchableAppWindow):
             return
         self.conn.commit()
         self.searchbar.search_items()
+
+    def _summary(self):
+        self._printer.summarize()
 
     #
     # SearchableAppWindow hooks
@@ -283,6 +288,9 @@ class TillApp(SearchableAppWindow):
     def on_RemoveCash__activate(self, action):
         model = run_dialog(CashOutEditor, self, self.conn)
         finish_transaction(self.conn, model)
+
+    def on_Summary__activate(self, button):
+        self._summary()
 
     #
     # Callbacks

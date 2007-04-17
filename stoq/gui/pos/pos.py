@@ -217,10 +217,12 @@ class POSApp(AppWindow):
             has_till = Till.get_current(self.conn) is not None
             till_close = has_till
             till_open = not has_till
+            till_summarize = has_till and self._coupon is None
         except TillError:
             has_till = False
             till_close = True
             till_open = False
+            till_summarize = False
 
         self.TillOpen.set_sensitive(till_open and self.sale is None)
         self.TillClose.set_sensitive(till_close and self.sale is None)
@@ -237,6 +239,7 @@ class POSApp(AppWindow):
         model = self.sellables.get_selected()
         self.edit_item_button.set_sensitive(
             model is not None and isinstance(model, ServiceSellableItem))
+        self.Summary.set_sensitive(till_summarize)
         self._update_totals()
         self._update_add_button()
 
@@ -488,6 +491,9 @@ class POSApp(AppWindow):
         else:
             info(_("Sale was cancelled"))
 
+    def _summarize(self):
+        self._printer.summarize()
+
     #
     # Coupon related
     #
@@ -630,6 +636,9 @@ class POSApp(AppWindow):
 
     def on_CancelLastOrder__activate(self, action):
         self._cancel_last_order()
+
+    def on_Summary__activate(self, action):
+        self._summarize()
 
     #
     # Other callbacks
