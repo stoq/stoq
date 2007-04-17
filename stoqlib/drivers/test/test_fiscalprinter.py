@@ -67,6 +67,9 @@ class TestCouponPrinter(DomainTest):
     def testCancel(self):
         self.printer.cancel()
 
+    def testSummarize(self):
+        self.printer.summarize()
+
 class TestFiscalCoupon(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)

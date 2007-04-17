@@ -208,6 +208,13 @@ class CouponPrinter(object):
         """
         return FiscalCoupon(self._driver, self._settings, sale)
 
+    def summarize(self):
+        """sends a summarize (leituraX) command to the printer"""
+        try:
+            self._driver.summarize()
+        except DriverError, details:
+                    warning(_("Could not print summary"),
+                        str(details))
 
 
 #
