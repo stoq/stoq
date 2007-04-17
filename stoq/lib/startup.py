@@ -28,6 +28,7 @@
 
 import gettext
 import socket
+import sys
 
 from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
@@ -42,6 +43,7 @@ from stoqlib.lib.interfaces import  IApplicationDescriptions
 from stoqlib.lib.message import error
 
 from stoq.lib.configparser import register_config, StoqConfig
+from stoq.lib.options import get_option_parser
 
 _ = gettext.gettext
 
@@ -55,7 +57,7 @@ def _debug_hook(exctype, value, tb):
     import pdb
     pdb.pm()
 
-def setup(config, options=None, register_station=True, check_schema=True):
+def setup(config=None, options=None, register_station=True, check_schema=True):
     """
     Loads the configuration from arguments and configuration file.
 
@@ -73,12 +75,19 @@ def setup(config, options=None, register_station=True, check_schema=True):
     #       bin/stoqdbadmin
     #       python stoq/tests/runtest.py
 
-    if options:
-        if options.verbose:
-            # FIXME: Set KIWI_LOG
-            pass
+    if config is None:
+        config = StoqConfig()
+        config.load()
 
-        config.set_from_options(options)
+    if options is None:
+        parser = get_option_parser()
+        options, args = parser.parse_args(sys.argv)
+
+    if options.verbose:
+        # FIXME: Set KIWI_LOG
+        pass
+
+    config.set_from_options(options)
 
     register_config(config)
 
@@ -101,7 +110,6 @@ def setup(config, options=None, register_station=True, check_schema=True):
 
     if options:
         if options.debug:
-            import sys
             from gtk import keysyms
             from stoqlib.gui.keyboardhandler import install_global_keyhandler
             from stoqlib.gui.introspection import introspect_slaves

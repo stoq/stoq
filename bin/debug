@@ -72,12 +72,9 @@ def main(args):
                       action="store",
                       type="string",
                       dest="script")
-
     options, args = parser.parse_args(args)
 
-    config = StoqConfig()
-    config.load()
-    setup(config, options, register_station=False, check_schema=False)
+    setup(options=options, register_station=False, check_schema=False)
 
     # Namespace
     ns = locals().copy()
