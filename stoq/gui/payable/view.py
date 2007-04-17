@@ -37,6 +37,7 @@ class PayableView(Viewable):
         supplier_name=Person.q.name,
         due_date=Payment.q.due_date,
         status=Payment.q.status,
+        paid_date=Payment.q.paid_date,
         value=Payment.q.value,
         purchase_id=PurchaseOrder.q.id,
         )
