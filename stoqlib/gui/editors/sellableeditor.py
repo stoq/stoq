@@ -23,9 +23,11 @@
 ##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Bruno Rafael Garcia         <brg@async.com.br>
 ##              Fabio Morbec                <fabio@async.com.br>
+##              Gilma Gomes de Souza        <anaiort@gmail.com>
 ##
 """ Editors definitions for sellable"""
 
+from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
 from sqlobject.sqlbuilder import LIKE, func
@@ -323,7 +325,15 @@ class SellableEditor(BaseEditor):
             self._sellable.barcode = barcode
         self.ensure_sellable_unit()
         return True
+   
+    def on_price__validate(self, entry, value):
+        if value <= 0:
+           return ValidationError(_("Price cannot be zero or negative"))
 
+    def on_cost__validate(self, entry, value):
+        if value <= 0:
+           return ValidationError(_("Cost cannot be zero or negative"))
+    
 class SellableItemEditor(BaseEditor):
     gladefile = 'SellableItemEditor'
     proxy_widgets = ('quantity',
