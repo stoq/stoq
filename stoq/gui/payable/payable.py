@@ -99,18 +99,20 @@ class PayableApp(SearchableAppWindow):
     #
 
     def get_columns(self):
-        return [Column('id', title=_('Number'), width=100,
+        return [Column('id', title=_('Number'), width=80,
                        data_type=str, sorted=True, format='%03d'),
-                Column('description', title=_('Description'), width=220,
+                Column('description', title=_('Description'), width=190,
                        data_type=str, expand=True),
                 Column('supplier_name', title=_('Supplier'), data_type=str,
                        width=170),
                 Column('due_date', title=_('Due Date'),
                        data_type=datetime.date, width=90),
-                Column('status_str', title=_('Status'), width=80,
+                Column('paid_date', title=_('Paid Date'),
+                        data_type=datetime.date, width=90),
+                Column('status_str', title=_('Status'), width=70,
                        data_type=str),
                 Column('value', title=_('Value'), data_type=currency,
-                       width=100)]
+                       width=80)]
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
