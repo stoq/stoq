@@ -20,12 +20,17 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Gilma Gomes de Souza        <anaiort@gmail.com>
 ##
 """ Slaves for sellables """
 
+from kiwi.datatypes import ValidationError
+
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.domain.sellable import OnSaleInfo
+from stoqlib.lib.translation import stoqlib_gettext
 
+_ = stoqlib_gettext
 
 class OnSaleInfoSlave(BaseEditorSlave):
     """A slave for price and dates information when a certain product,
@@ -46,3 +51,11 @@ class OnSaleInfoSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+  
+    #
+    # Kiwi callbacks
+    #
+
+    def on_on_sale_price__validate(self, entry, value):
+        if value < 0:
+           return ValidationError(_("Sale price can not be 0"))
