@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source
+## Copyright (C) 2005-2007 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -21,6 +21,7 @@
 ##
 ## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
 ##                  Gustavo Rahal               <gustavo@async.com.br>
+##                  Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Some extra methods to deal with gtk/kiwi widgets """
 
@@ -78,3 +79,31 @@ def change_button_appearance(button, icon=None, text=None):
         image.set_from_stock(icon, gtk.ICON_SIZE_BUTTON)
     if text is not None:
         label.set_text_with_mnemonic(text)
+
+def button_set_image_with_label(button, filename, text):
+    """
+    Sets an image above the text
+    @param button:
+    @param filename:
+    @param text:
+    """
+
+    # Base on code in gazpacho by Lorenzo Gil Sanchez.
+    button.remove(button.child)
+    filename = environ.find_resource('pixmaps', filename)
+
+    align = gtk.Alignment(0.5, 0.5, 1.0, 1.0)
+    box = gtk.VBox()
+    align.add(box)
+    image = gtk.Image()
+    image.set_from_file(filename)
+    label = gtk.Label(text)
+    if '_' in text:
+        label.set_use_underline(True)
+
+    box.pack_start(image)
+    box.pack_start(label)
+
+    align.show_all()
+    button.add(align)
+
