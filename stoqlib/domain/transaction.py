@@ -48,8 +48,8 @@ class TransactionEntry(SQLObject):
     # us to use circular dependencies so instead we define them
     # as IntCol and implement our own ForeignKey like wrappers below
 
-    user_id = IntCol(default=0) # ForeignKey('PersonAdaptToUser')
-    station_id = IntCol(default=0) # ForeignKey('BranchStation')
+    user_id = IntCol(default=None) # ForeignKey('PersonAdaptToUser')
+    station_id = IntCol(default=None) # ForeignKey('BranchStation')
     type = IntCol()
 
     @property

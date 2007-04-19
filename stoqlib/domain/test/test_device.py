@@ -30,6 +30,7 @@ from stoqlib.domain.devices import DeviceConstant, DeviceSettings
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import DeviceError
+from stoqlib.database.exceptions import IntegrityError
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -152,13 +153,16 @@ class TestDeviceSettings(DomainTest):
         settings = self.create_device_settings()
         settings.create_fiscal_printer_constants()
         sellable = self.create_sellable()
-        sellable.tax_constant = SellableTaxConstant(
-            connection=self.trans,
-            description='',
-            tax_value=18,
-            tax_type=999)
-        self.assertRaises(DeviceError,
-                          settings.get_tax_constant_for_device, sellable)
+        try:
+            sellable.tax_constant = SellableTaxConstant(
+                connection=self.trans,
+                description='',
+                tax_value=18,
+                tax_type=999)
+        except IntegrityError:
+            pass
+        else:
+            raise AssertionError
 
     def testGetPaymentConstant(self):
         settings = self.create_device_settings()

@@ -105,7 +105,7 @@ class ReceivingOrder(Domain):
     icms_total = PriceCol(default=0)
     ipi_total = PriceCol(default=0)
     invoice_number = IntCol()
-    invoice_total = PriceCol(default=0)
+    invoice_total = PriceCol(default=None)
     cfop = ForeignKey("CfopData")
 
     responsible = ForeignKey('PersonAdaptToUser')
