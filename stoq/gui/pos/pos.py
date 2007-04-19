@@ -50,6 +50,7 @@ from stoqlib.drivers.scale import read_scale_info
 from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
+from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
@@ -120,6 +121,10 @@ class POSApp(AppWindow):
         if self.param.POS_SEPARATE_CASHIER:
             for proxy in self.TillMenu.get_proxies():
                 proxy.hide()
+        if self.param.CONFIRM_SALES_ON_TILL:
+            button_set_image_with_label(self.checkout_button,
+                                        'confirm24px.png', _('Close'))
+
         self.order_total_label.set_size('xx-large')
         self.order_total_label.set_bold(True)
 
