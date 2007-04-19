@@ -190,7 +190,7 @@ ALTER TABLE receiving_order
     ADD CONSTRAINT positive_discount_value
         CHECK (discount_value >= 0),
     ADD CONSTRAINT positive_invoice_total
-        CHECK (invoice_total > 0);
+        CHECK (invoice_total >= 0);
 
 ALTER TABLE receiving_order_item
     ADD CONSTRAINT positive_cost
