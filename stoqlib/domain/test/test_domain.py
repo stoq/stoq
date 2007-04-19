@@ -57,7 +57,7 @@ def get_random(column):
     elif isinstance(column, SODateTimeCol):
         value = datetime.datetime.now()
     elif isinstance(column, SOIntCol):
-        value = 0
+        value = None
     elif isinstance(column, SOPriceCol):
         value = currency(20)
     elif isinstance(column, SOBoolCol):
