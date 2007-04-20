@@ -187,7 +187,7 @@ def _create_procedural_languages():
 
     # Create the plpgsql language
     trans.query('CREATE LANGUAGE plpgsql')
-    trans.commit()
+    trans.commit(close=True)
 
 def create_base_schema():
     log.info('Creating base schema')

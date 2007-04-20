@@ -36,15 +36,16 @@ from kiwi.log import Logger
 
 from dateutil.parser import parse
 from sqlobject import SQLObjectNotFound
+
 from stoqlib.database.admin import create_base_schema
 from stoqlib.database.interfaces import (ICurrentBranchStation, ICurrentBranch,
                                          IDatabaseSettings)
 from stoqlib.database.policy import get_policy_by_name
 from stoqlib.database.runtime import (get_connection, new_transaction,
                                       get_current_branch)
-
 from stoqlib.database.tables import get_table_type_by_name
 from stoqlib.domain.base import AdaptableSQLObject
+from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.synchronization import BranchSynchronization
 from stoqlib.domain.transaction import TransactionEntry
@@ -207,6 +208,17 @@ class SynchronizationService(XMLRPCService):
         log.info('service.clean()')
         create_base_schema()
 
+        # If we're going to copy the transaction_entry, drop the
+        # user_id/station_id constraints before copying it, so we
+        # can copy the whole table before copying anything else
+        log.info('removing transaction entry constraints ')
+        conn = get_connection()
+        conn.query(
+            '''ALTER TABLE %(t)s
+            DROP CONSTRAINT %(t)s_station_id_fkey,
+            DROP CONSTRAINT %(t)s_user_id_fkey;
+            COMMIT;''' % dict(t='transaction_entry'))
+
     def get_station_name(self):
         """
         @returns: the name of the station
@@ -288,8 +300,8 @@ class SynchronizationService(XMLRPCService):
 
         proc = self._processes.pop(sid)
 
-        log.info('sql_finish: closing stdin for pg_dump process %d' % (sid,))
         proc.stdin.close()
+        log.info('sql_finish: waiting for process %d to finish' % (proc.pid,))
         returncode = proc.wait()
         log.info('sql_finish: psql process returned %d' % (returncode,))
 
@@ -392,9 +404,21 @@ class SynchronizationClient(object):
                 if len(combined) >= CHUNKSIZE:
                     yield combined[:CHUNKSIZE]
                     combined = combined[CHUNKSIZE:]
+
         # Finally send leftovers
         if combined:
             yield combined
+
+        # PersonAdaptToUser and BranchStation are now copied, add back the
+        # constraints on the TransactionEntry table.
+        if TransactionEntry in tables:
+            assert PersonAdaptToUser in tables
+            assert BranchStation in tables
+            yield '''ALTER TABLE %(t)s
+              ADD CONSTRAINT %(t)s_user_id_fkey FOREIGN KEY(user_id)
+                REFERENCES person_adapt_to_user (id),
+              ADD CONSTRAINT %(t)s_station_id_fkey FOREIGN KEY(station_id)
+                REFERENCES branch_station (id);''' % dict(t='transaction_entry')
 
     def _get_policy(self, policy):
         log.info('Fetching policy %s' % (policy,))
@@ -602,6 +626,7 @@ class SynchronizationClient(object):
             return
         self._update_synchronization(trans, station, timestamp, policy.name)
         trans.commit()
+
         # All objects are now transferred, we need to set the active station
         # and branch now because updating the database depends on it
         self.proxy.set_station_by_name(station.name)

@@ -109,7 +109,7 @@ def _provide_current_station(station_name=None, branch_name=None):
     station = BranchStation.get_station(trans, branch, station_name)
     if not station:
         station = BranchStation.create(trans, branch, station_name)
-        trans.commit()
+        trans.commit(close=True)
 
     assert station
     assert station.is_active
