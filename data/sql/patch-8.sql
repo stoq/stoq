@@ -1,24 +1,8 @@
-CREATE OR REPLACE FUNCTION add_foreign_key_constraint(tblname text, name text, col text, reftbl text, refcol text) 
-RETURNS text
-AS $$
-BEGIN
-    SELECT INTO has_constraint COUNT(*) FROM information_schema.constraint_table_usage WHERE constraint_name=$2;
-
-    IF has_constraint = 1 THEN
-        EXECUTE 'ALTER TABLE ' || quote_ident($1) || ' ' ||
-    	        'ADD CONSTRAINT '  || quote_ident($2) || ' ' ||
-  	        'FOREIGN KEY (' || quote_ident($3) || ') ' ||
-	        'REFERENCES ' || quote_ident($4) ||
-	        '(' || quote_ident($5) || ')';
-    END IF;
-END;
-$$ LANGUAGE plpgsql;
-
-
-SELECT add_foreign_key_constraint('transaction_entry', 
-       'transaction_entry_user_id_fkey', 'station_id', 'branch_station', 'id');
-SELECT add_foreign_key_constraint('transaction_entry', 
-       'transaction_entry_user_id_fkey', 'user_id', 'person_adapt_to_user', 'id');
+ALTER TABLE transaction_entry
+    ADD CONSTRAINT transaction_entry_user_id_fkey FOREIGN KEY
+        (user_id) REFERENCES person_adapt_to_user (id),
+    ADD CONSTRAINT transaction_entry_station_id_fkey FOREIGN KEY
+        (station_id) REFERENCES branch_station (id);
 
 ALTER TABLE person_adapt_to_client
     ADD CONSTRAINT valid_status
