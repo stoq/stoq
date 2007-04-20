@@ -325,7 +325,7 @@ class SellableEditor(BaseEditor):
             self._sellable.barcode = barcode
         self.ensure_sellable_unit()
         return True
-   
+
     def on_price__validate(self, entry, value):
         if value <= 0:
            return ValidationError(_("Price cannot be zero or negative"))
@@ -333,7 +333,7 @@ class SellableEditor(BaseEditor):
     def on_cost__validate(self, entry, value):
         if value <= 0:
            return ValidationError(_("Cost cannot be zero or negative"))
-    
+
 class SellableItemEditor(BaseEditor):
     gladefile = 'SellableItemEditor'
     proxy_widgets = ('quantity',
