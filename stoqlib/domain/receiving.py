@@ -203,16 +203,16 @@ class ReceivingOrder(Domain):
         purchase order and the receiving order.
         """
 
-        total = self.invoice_total
+        total = self.invoice_total or 0
         if self.discount_value:
-            total += self.discount_value
+            total -= self.discount_value
         if self.surcharge_value:
-            total - self.surcharge_value
+            total += self.surcharge_value
 
         if self.purchase.discount_value:
-            total += self.purchase.discount_value
+            total -= self.purchase.discount_value
         if self.purchase.surcharge_value:
-            total -= self.purchase.surcharge_value
+            total += self.purchase.surcharge_value
         return currency(total)
 
 
