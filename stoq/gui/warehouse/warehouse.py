@@ -170,7 +170,7 @@ class WarehouseApp(SearchableAppWindow):
 
     def on_print_button__clicked(self, button):
         results = self.results.get_selected_rows() or self.results
-        self.searchbar.print_report(ProductReport, results)
+        self.print_report(ProductReport, results)
 
     def on_history_button__clicked(self, button):
         selected = self._klist.get_selected_rows()
