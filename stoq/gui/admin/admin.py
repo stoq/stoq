@@ -119,7 +119,7 @@ class AdminApp(SearchableAppWindow):
     def _add_user(self):
         model = run_person_role_dialog(UserEditor, self, self.conn)
         if finish_transaction(self.conn, model):
-            self.searchbar.search_items()
+            self.refresh()
             model = self.table.get(model.id, connection=self.conn)
             self.results.select(model)
 

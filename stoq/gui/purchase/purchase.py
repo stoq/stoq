@@ -75,10 +75,10 @@ class PurchaseApp(SearchableAppWindow):
         date_filter = DateSearchFilter(_('Open date is:'))
         self.add_filter(
             date_filter, ['open_date'])
-        status_filter = ComboSearchFilter(_('Show orders with status'),
-                                          self._get_status_values())
-        status_filter.select(PurchaseOrder.ORDER_CONFIRMED)
-        self.add_filter(status_filter, ['status'], SearchFilterPosition.TOP)
+        self.status_filter = ComboSearchFilter(_('Show orders with status'),
+                                               self._get_status_values())
+        self.status_filter.select(PurchaseOrder.ORDER_CONFIRMED)
+        self.add_filter(self.status_filter, ['status'], SearchFilterPosition.TOP)
 
     def get_columns(self):
         return [Column('id', title=_('Number'), sorted=True,
@@ -192,11 +192,12 @@ class PurchaseApp(SearchableAppWindow):
             order = trans.get(order_view.purchase)
             order.confirm()
         trans.commit()
-        self.searchbar.search_items()
+        self.refresh()
 
     def _print_selected_items(self):
         items = self.results.get_selected_rows() or self.results
-        self.searchbar.print_report(PurchaseReport, items)
+        self.print_report(PurchaseReport, self.results,
+                          self.status_filter.get_state().value)
 
     def _cancel_order(self):
         order_views = self.results.get_selected_rows()
@@ -211,7 +212,7 @@ class PurchaseApp(SearchableAppWindow):
             order.cancel()
         trans.commit()
         self._update_totals()
-        self.searchbar.search_items()
+        self.refresh()
 
     def _get_status_values(self):
         items = [(text, value)
@@ -264,8 +265,8 @@ class PurchaseApp(SearchableAppWindow):
 
     def _on_order_action_clicked(self, action):
         self._open_order()
-        self.searchbar.search_items()
-
+        self.refresh()
+        
     def _on_base_categories_action_clicked(self, action):
         self.run_dialog(BaseSellableCatSearch, self.conn)
 

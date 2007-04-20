@@ -304,10 +304,10 @@ class TillApp(SearchableAppWindow):
     # Callbacks
     #
 
-    def on_searchbar_activate(self, slave, objs):
-        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
-        self._update_toolbar_buttons()
-        self._update_total()
+#     def on_searchbar_activate(self, slave, objs):
+#         SearchableAppWindow.on_searchbar_activate(self, slave, objs)
+#         self._update_toolbar_buttons()
+#         self._update_total()
 
     #
     # Kiwi callbacks
