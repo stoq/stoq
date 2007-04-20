@@ -59,10 +59,10 @@ class _PriceValidator(Validator):
 
     def to_python(self, value, state):
         # Do not allow empty strings or None Values
-        value = value or currency(0)
-        if not isinstance(value, Decimal):
-            value = Decimal(str(value))
-        return currency(value)
+        if value is not None:
+            if not isinstance(value, Decimal):
+                value = Decimal(str(value))
+            return currency(value)
 
     def from_python(self, value, state):
         return value

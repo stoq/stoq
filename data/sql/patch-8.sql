@@ -136,7 +136,7 @@ ALTER TABLE payment
     ADD CONSTRAINT valid_status
         CHECK (status >= 0 AND status < 6),
     ADD CONSTRAINT positive_paid_value
-        CHECK (paid_value > 0),
+        CHECK (paid_value >= 0),
     ADD CONSTRAINT positive_base_value
         CHECK (base_value >= 0),
     ADD CONSTRAINT positive_value
