@@ -141,7 +141,7 @@ fiscal_book_entries = {FiscalBookEntry.ICMS: _("ICMS"),
 
 ALL_ITEMS_INDEX = -1
 
-ALL_BRANCHES = _('All branches'), None
+ALL_BRANCHES = _('All branches'), ALL_ITEMS_INDEX
 
 #
 # Common methods
