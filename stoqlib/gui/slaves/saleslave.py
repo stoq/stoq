@@ -31,16 +31,17 @@ from kiwi.decorators import signal_block
 from kiwi.datatypes import ValidationError
 from kiwi.ui.delegates import GladeSlaveDelegate
 
+from stoqlib.database.database import finish_transaction
+from stoqlib.domain.sale import SaleView, Sale
+from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
+from stoqlib.exceptions import StoqlibError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.domain.sale import SaleView, Sale
-from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
+from stoqlib.gui.base.dialogs import print_report
 from stoqlib.lib.validators import get_price_format_str
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.database.database import finish_transaction
-from stoqlib.exceptions import StoqlibError
 from stoqlib.reporting.sale import SalesReport
 
 _ = stoqlib_gettext
@@ -167,7 +168,7 @@ class SaleListToolbar(GladeSlaveDelegate):
     """
     gladefile = "SaleListToolbar"
 
-    def __init__(self, conn, searchbar, klist, parent=None):
+    def __init__(self, conn, klist, parent=None):
         self.conn = conn
         if klist.get_selection_mode() != gtk.SELECTION_BROWSE:
             raise TypeError("Only SELECTION_BROWSE mode for the "
@@ -177,7 +178,6 @@ class SaleListToolbar(GladeSlaveDelegate):
 
         GladeSlaveDelegate.__init__(self)
 
-        self.searchbar = searchbar
         self._update_print_button(False)
         self._update_buttons(False)
         self.edit_button.hide()
@@ -238,7 +238,7 @@ class SaleListToolbar(GladeSlaveDelegate):
         self._show_details(self.sales.get_selected())
 
     def on_print_button__clicked(self, button):
-        self.searchbar.print_report(SalesReport, self.sales)
+        print_report(SalesReport, self.sales)
 
 class SaleReturnSlave(BaseEditorSlave):
     """A slave for sale return data """
