@@ -202,9 +202,18 @@ class ReceivingOrder(Domain):
         Fetch the total, including discount and surcharge for both the
         purchase order and the receiving order.
         """
-        return currency(self.invoice_total -
-                        self.purchase.discount_value + self.purchase.surcharge_value -
-                        self.discount_value + self.surcharge_value)
+
+        total = self.invoice_total
+        if self.discount_value:
+            total += self.discount_value
+        if self.surcharge_value:
+            total - self.surcharge_value
+
+        if self.purchase.discount_value:
+            total += self.purchase.discount_value
+        if self.purchase.surcharge_value:
+            total -= self.purchase.surcharge_value
+        return currency(total)
 
 
     #
