@@ -29,10 +29,10 @@ from datetime import date
 
 import gtk
 from kiwi.datatypes import currency
+from kiwi.enums import SearchFilterPosition
+from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
 from kiwi.ui.widgets.list import Column, SummaryLabel
 
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
@@ -41,6 +41,7 @@ from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.gui.editors.invoiceeditor import InvoiceDetailsEditor
 from stoqlib.lib.invoice import SaleInvoice
+from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import print_report
 
 from stoq.gui.application import SearchableAppWindow
@@ -54,12 +55,8 @@ class SalesApp(SearchableAppWindow):
     app_name = _('Sales')
     app_icon_name = 'stoq-sales-app'
     gladefile = 'sales_app'
-    searchbar_table = SaleView
-    searchbar_use_dates = True
-    searchbar_result_strings = (_('sale'), _('sales'))
-    searchbar_labels = (_('matching:'),)
-    filter_slave_label = _('Show sales with status')
-    klist_name = 'sales'
+    search_table = SaleView
+    search_label = _('matching:')
 
     cols_info = {Sale.STATUS_OPENED: ('open_date', _("Date Started")),
                  Sale.STATUS_CONFIRMED: ('confirm_date', _("Confirm Date")),
@@ -75,20 +72,51 @@ class SalesApp(SearchableAppWindow):
         self._setup_columns()
         self._setup_slaves()
 
+    #
+    # SearchableAppWindow
+    #
+
+    def create_filters(self):
+        self.set_text_field_columns(['client_name', 'salesperson_name'])
+        date_filter = DateSearchFilter(_('Paid or due date:'))
+        self.add_filter(
+            date_filter, ['open_date'])
+        status_filter = ComboSearchFilter(_('Show sales with status'),
+                                          self._get_status_values())
+        status_filter.select(Sale.STATUS_CONFIRMED)
+        self.executer.add_filter_query_callback(
+            status_filter, self._get_status_query)
+        self.add_filter(status_filter, position=SearchFilterPosition.TOP)
+
+    def get_columns(self):
+        return [Column('id', title=_('Number'), width=80,
+                       format='%05d', data_type=int, sorted=True),
+                Column('client_name', title=_('Client'),
+                       data_type=str, width=140, expand=True),
+                Column('salesperson_name', title=_('Salesperson'),
+                       data_type=str, width=130),
+                Column('total_quantity', title=_('Items Quantity'),
+                       data_type=decimal.Decimal, width=140,
+                       format_func=format_quantity),
+                Column('total', title=_('Total'), data_type=currency,
+                       width=120)]
+
+    #
+    # Private
+    #
+
     def _create_summary_label(self):
         if self.summary_label is not None:
             self.list_vbox.remove(self.summary_label)
-        value_format = '<b>%s</b>'
-        self.summary_label = SummaryLabel(klist=self.sales,
+        self.summary_label = SummaryLabel(klist=self.results,
                                           column='total',
                                           label='<b>Total:</b>',
-                                          value_format=value_format)
-        self.summary_label.show()
+                                          value_format='<b>%s</b>')
         self.list_vbox.pack_start(self.summary_label, False)
+        self.summary_label.show()
 
     def _setup_slaves(self):
-        self.sale_toolbar = SaleListToolbar(self.conn, self.searchbar,
-                                            self.sales)
+        self.sale_toolbar = SaleListToolbar(self.conn, self.results)
         self.attach_slave("list_toolbar_holder", self.sale_toolbar)
         self._klist.connect("selection-changed",
                             self._update_toolbar)
@@ -127,7 +155,7 @@ class SalesApp(SearchableAppWindow):
                      preview_label=_(u"Preview Model"))
 
     def _setup_columns(self, sale_status=Sale.STATUS_CONFIRMED):
-        if sale_status == ALL_ITEMS_INDEX:
+        if sale_status is None:
             # When there is no filter for sale status, show the
             # 'date started' column by default
             sale_status = Sale.STATUS_OPENED
@@ -143,51 +171,22 @@ class SalesApp(SearchableAppWindow):
         # Adding summary label again and make it properly aligned with the
         # new columns setup
         self._create_summary_label()
-        self.set_searchbar_columns(cols)
+        #self.set_searchbar_columns(cols)
 
-    #
-    # SearchableAppWindow Hooks
-    #
-
-    def get_filter_slave_items(self):
+    def _get_status_values(self):
         items = [(value, key) for key, value in Sale.statuses.items()
                     # No reason to show orders in sales app
                     if key != Sale.STATUS_ORDER]
-        items.insert(0, (_('Any'), ALL_ITEMS_INDEX))
+        items.insert(0, (_('Any'), None))
         return items
 
-    def get_filterslave_default_selected_item(self):
-        return Sale.STATUS_CONFIRMED
-
-    def get_columns(self):
-        return [Column('id', title=_('Number'), width=80,
-                       format='%05d', data_type=int, sorted=True),
-                Column('client_name', title=_('Client'),
-                       data_type=str, width=140, expand=True),
-                Column('salesperson_name', title=_('Salesperson'),
-                       data_type=str, width=130),
-                Column('total_quantity', title=_('Items Quantity'),
-                       data_type=decimal.Decimal, width=140,
-                       format_func=format_quantity),
-                Column('total', title=_('Total'), data_type=currency,
-                       width=120)]
-
-    def get_extra_query(self):
-        status = self.filter_slave.get_selected_status()
+    def _get_status_query(self, state):
         if not self._columns_set:
-            self._setup_columns(status)
+            self._setup_columns(state.value)
             self._columns_set = True
-        if status == ALL_ITEMS_INDEX:
+        if state.value is None:
             return SaleView.q.status != Sale.STATUS_ORDER
-        return SaleView.q.status == status
-
-    #
-    # Callbacks
-    #
-
-    def on_searchbar_activate(self, slave, objs):
-        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
-        self._update_widgets()
+        return SaleView.q.status == state.value
 
     #
     # Kiwi callbacks

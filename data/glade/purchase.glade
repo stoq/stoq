@@ -278,7 +278,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkVBox" id="vbox2">
+                    <widget class="GtkVBox" id="list_vbox">
                         <property name="spacing">2</property>
                         <property name="visible">True</property>
                         <child>
@@ -291,45 +291,14 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkEventBox" id="searchbar_holder">
+                            <widget class="GtkEventBox" id="search_holder">
                                 <property name="visible">True</property>
                                 <child>
                                     <placeholder/>
                                 </child>
                             </widget>
                             <packing>
-                                <property name="expand">False</property>
                                 <property name="position">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="GtkVBox" id="vbox3">
-                                <property name="border_width">6</property>
-                                <property name="visible">True</property>
-                                <child>
-                                    <widget class="ObjectList" id="orders">
-                                        <property name="is_focus">True</property>
-                                        <property name="shadow_type">in</property>
-                                        <property name="visible">True</property>
-                                        <property name="vscrollbar_policy">automatic</property>
-                                    </widget>
-                                </child>
-                                <child>
-                                    <widget class="GtkHBox" id="summary_hbox">
-                                        <property name="visible">True</property>
-                                        <child>
-                                            <placeholder/>
-                                            <packing/>
-                                        </child>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
-                            </widget>
-                            <packing>
-                                <property name="position">2</property>
                             </packing>
                         </child>
                         <child>

@@ -292,26 +292,12 @@
                         <property name="spacing">2</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="GtkEventBox" id="searchbar_holder">
+                            <widget class="GtkEventBox" id="search_holder">
                                 <property name="visible">True</property>
                                 <child>
                                     <placeholder/>
                                 </child>
                             </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="ObjectList" id="users">
-                                <property name="is_focus">True</property>
-                                <property name="shadow_type">in</property>
-                                <property name="visible">True</property>
-                                <property name="vscrollbar_policy">automatic</property>
-                            </widget>
-                            <packing>
-                                <property name="position">1</property>
-                            </packing>
                         </child>
                         <child>
                             <widget class="GtkHBox" id="hbox7">

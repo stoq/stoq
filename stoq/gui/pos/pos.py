@@ -695,3 +695,4 @@ class POSApp(AppWindow):
 
     def on_sellables__row_activated(self, sellables, sellable):
         self._edit_sellable_item(sellable)
+

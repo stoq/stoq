@@ -27,7 +27,9 @@
 
 import gettext
 
+from kiwi.enums import SearchFilterPosition
 from kiwi.ui.widgets.list import Column
+from kiwi.ui.search import ComboSearchFilter
 from sqlobject.sqlbuilder import AND
 
 from stoqlib.database.database import finish_transaction
@@ -58,28 +60,21 @@ class AdminApp(SearchableAppWindow):
     app_name = _('Administrative')
     app_icon_name = 'stoq-admin-app'
     gladefile = "admin"
-    table = searchbar_table = PersonAdaptToUser
-    searchbar_result_strings = (_('user'), _('users'))
-    searchbar_labels = (_('matching:'),)
-    filter_slave_label = _('Show users with status')
-    klist_name = 'users'
+    search_table = PersonAdaptToUser
+    search_label = _('matching:')
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
         self._update_view()
 
-    def get_filter_slave_items(self):
-        items = [(value, key) for key, value in self.table.statuses.items()]
-        items.insert(0, (_('Any'), ALL_ITEMS_INDEX))
-        return items
-
-    def on_searchbar_activate(self, slave, objs):
-        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
-        self._update_view()
-
-    def _update_view(self):
-        has_selected = self.users.get_selected() is not None
-        self.edit_button.set_sensitive(has_selected)
+    def create_filters(self):
+        # FIXME: Convert the query to a Viewable so we can add name
+        self.set_text_field_columns(['username'])
+        status_filter = ComboSearchFilter(_('Show users with status'),
+                                          self._get_status_values())
+        self.executer.add_filter_query_callback(
+            status_filter, self._get_status_query)
+        self.add_filter(status_filter, position=SearchFilterPosition.TOP)
 
     def get_columns(self):
         return [Column('username', title=_('Login Name'), sorted=True,
@@ -92,34 +87,41 @@ class AdminApp(SearchableAppWindow):
                                  width=300),
                 Column('status_str', title=_('Status'), data_type=str)]
 
-    def _edit_user(self):
-        user = self.users.get_selected()
-        model =  run_person_role_dialog(UserEditor, self, self.conn, user)
-        if finish_transaction(self.conn, model):
-            self.users.update(model)
-
     #
-    # Hooks
+    # Private
     #
 
-    def get_extra_query(self):
-        """Hook called by SearchBar"""
-        status = self.filter_slave.get_selected_status()
-        query = AND(self.table.q._originalID == Person.q.id,
-                    UserProfile.q.id == self.table.q.profileID)
-        if status == self.table.STATUS_ACTIVE:
+    def _get_status_values(self):
+        items = [(v, k) for k, v in PersonAdaptToUser.statuses.items()]
+        items.insert(0, (_('Any'), ALL_ITEMS_INDEX))
+        return items
+
+    def _get_status_query(self, state):
+        query = AND(PersonAdaptToUser.q._originalID == Person.q.id,
+                    UserProfile.q.id == PersonAdaptToUser.q.profileID)
+        if state.value == PersonAdaptToUser.STATUS_ACTIVE:
             query = AND(query, PersonAdaptToUser.q.is_active == True)
-        elif status == self.table.STATUS_INACTIVE:
+        elif state.value == PersonAdaptToUser.STATUS_INACTIVE:
             query = AND(query, PersonAdaptToUser.q.is_active == False)
 
         return query
+
+    def _update_view(self):
+        has_selected = self.results.get_selected() is not None
+        self.edit_button.set_sensitive(has_selected)
+
+    def _edit_user(self):
+        user = self.results.get_selected()
+        model =  run_person_role_dialog(UserEditor, self, self.conn, user)
+        if finish_transaction(self.conn, model):
+            self.results.update(model)
 
     def _add_user(self):
         model = run_person_role_dialog(UserEditor, self, self.conn)
         if finish_transaction(self.conn, model):
             self.searchbar.search_items()
             model = self.table.get(model.id, connection=self.conn)
-            self.users.select(model)
+            self.results.select(model)
 
     #
     # Callbacks
@@ -131,10 +133,10 @@ class AdminApp(SearchableAppWindow):
     def _on_new_user_action_clicked(self, button):
         self._add_user()
 
-    def on_users__double_click(self, users, user):
+    def on_results__double_click(self, results, user):
         self._edit_user()
 
-    def on_users__selection_changed(self, users, user):
+    def on_results__selection_changed(self, results, user):
         self._update_view()
 
     def _on_cfop_action_clicked(self, button):

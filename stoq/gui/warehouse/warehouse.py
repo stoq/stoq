@@ -28,16 +28,18 @@ import gettext
 import decimal
 
 import gtk
+from kiwi.enums import SearchFilterPosition
+from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction, get_current_branch
-from stoqlib.domain.interfaces import ISellable, IBranch, IStorable
+from stoqlib.domain.interfaces import IBranch, IStorable
 from stoqlib.domain.person import Person
-from stoqlib.domain.product import (Product, ProductAdaptToSellable)
+from stoqlib.domain.product import ProductAdaptToSellable
 from stoqlib.domain.views import ProductFullStockView
+from stoqlib.lib.defaults import ALL_BRANCHES
 from stoqlib.lib.message import warning
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
@@ -53,60 +55,26 @@ class WarehouseApp(SearchableAppWindow):
     app_name = _('Warehouse')
     app_icon_name = 'stoq-warehouse-app'
     gladefile = "warehouse"
-    searchbar_table = ProductFullStockView
-    searchbar_result_strings = (_('product'), _('products'))
-    searchbar_labels = (_('Matching:'),)
-    filter_slave_label = _('Show products at:')
+    search_table = ProductFullStockView
+    search_labels = _('Matching:')
     klist_selection_mode = gtk.SELECTION_MULTIPLE
-    klist_name = 'products'
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
-        self.table = Product.getAdapterClass(ISellable)
         self._setup_widgets()
         self._update_widgets()
 
-    def _setup_widgets(self):
-        value_format = '<b>%s</b>'
-        self.summary_label = SummaryLabel(klist=self.products,
-                                          column='stock',
-                                          label=_('<b>Stock Total:</b>'),
-                                          value_format=value_format)
-        self.summary_label.show()
-        self.list_vbox.pack_start(self.summary_label, False)
+    #
+    # SearchableAppWindow
+    #
 
-    def get_filter_slave_items(self):
-        items = [(b.person.name, b)
-                  for b in Person.iselect(IBranch, connection=self.conn)]
-        if not items:
-            raise DatabaseInconsistency('You should have at least one '
-                                        'branch on your database.'
-                                        'Found zero')
-        items.insert(0, ALL_BRANCHES)
-        return items
-
-    def _update_widgets(self):
-        has_stock = len(self.products) > 0
-        self.retention_button.set_sensitive(has_stock)
-        one_selected = len(self.products.get_selected_rows()) == 1
-        self.history_button.set_sensitive(one_selected)
-        self.retention_button.set_sensitive(one_selected)
-        self.print_button.set_sensitive(has_stock)
-        self._update_stock_total()
-
-    def on_searchbar_activate(self, slave, objs):
-        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
-        self._update_widgets()
-
-    def _update_stock_total(self):
-        self.summary_label.update_total()
-
-    def _update_filter_slave(self, slave):
-        self.searchbar.search_items()
-        self._update_stock_total()
-
-    def get_on_filter_slave_status_changed(self):
-        return self._update_filter_slave
+    def create_filters(self):
+        self.set_text_field_columns(['description', 'supplier_name'])
+        self.branch_filter = ComboSearchFilter(
+            _('Show products at:'), self._get_branches())
+        self.add_filter(self.branch_filter, position=SearchFilterPosition.TOP)
+        self.branch_filter.select(get_current_branch(self.conn))
+        self.executer.set_query(self.query)
 
     def get_columns(self):
         return [Column('id', title=_('Code'), sorted=True,
@@ -119,25 +87,56 @@ class WarehouseApp(SearchableAppWindow):
                        data_type=decimal.Decimal, width=90),
                 Column('unit', title=_("Unit"), data_type=str,
                        width=70)]
+
+    def query(self, query, conn):
+        branch = self.branch_filter.get_state().value
+        return self.search_table.select_by_branch(query, branch,
+                                                  connection=conn)
+
     #
-    # Hooks
+    # Private API
     #
 
-    def get_filterslave_default_selected_item(self):
-        return get_current_branch(self.conn)
+    def _setup_widgets(self):
+        self.summary_label = SummaryLabel(klist=self.results,
+                                          column='stock',
+                                          label=_('<b>Stock Total:</b>'),
+                                          value_format='<b>%s</b>')
+        self.vbox2.pack_start(self.summary_label, False)
+        self.vbox2.reorder_child(self.summary_label, 2)
+        self.summary_label.show()
 
-    def query(self, table, query, args):
-        branch = self.filter_slave.get_selected_status()
-        if branch == ALL_ITEMS_INDEX:
-            branch = None
-        return ProductFullStockView.select_by_branch(query, branch,
-                                                     connection=self.conn)
+    def _get_branches(self):
+        items = [(b.person.name, b)
+                  for b in Person.iselect(IBranch, connection=self.conn)]
+        if not items:
+            raise DatabaseInconsistency('You should have at least one '
+                                        'branch on your database.'
+                                        'Found zero')
+        items.insert(0, ALL_BRANCHES)
+        return items
+
+    def _update_widgets(self):
+        has_stock = len(self.results) > 0
+        self.retention_button.set_sensitive(has_stock)
+        one_selected = len(self.results.get_selected_rows()) == 1
+        self.history_button.set_sensitive(one_selected)
+        self.retention_button.set_sensitive(one_selected)
+        self.print_button.set_sensitive(has_stock)
+        self._update_stock_total()
+
+    def _update_stock_total(self):
+        self.summary_label.update_total()
+
+    def _update_filter_slave(self, slave):
+        self.refresh()
+        self._update_stock_total()
 
     #
     # Callbacks
     #
 
-    def on_products__selection_changed(self, products, product):
+    def on_results__selection_changed(self, results, product):
         self._update_widgets()
 
     def _on_receive_action_clicked(self, button):
@@ -151,7 +150,7 @@ class WarehouseApp(SearchableAppWindow):
         pass
 
     def on_retention_button__clicked(self, button):
-        sellable_view = self.products.get_selected_rows()[0]
+        sellable_view = self.results.get_selected_rows()[0]
         storable = IStorable(sellable_view.product, None)
         warehouse_branch = get_current_branch(self.conn)
         if (not storable
@@ -164,14 +163,14 @@ class WarehouseApp(SearchableAppWindow):
         if not finish_transaction(self.conn, model):
             return
         sellable_view.sync()
-        self.products.update(sellable_view)
+        self.results.update(sellable_view)
 
     def on_receiving_search_action_clicked(self, button):
         self.run_dialog(PurchaseReceivingSearch, self.conn)
 
     def on_print_button__clicked(self, button):
-        products = self.products.get_selected_rows() or self.products
-        self.searchbar.print_report(ProductReport, products)
+        results = self.results.get_selected_rows() or self.results
+        self.searchbar.print_report(ProductReport, results)
 
     def on_history_button__clicked(self, button):
         selected = self._klist.get_selected_rows()
