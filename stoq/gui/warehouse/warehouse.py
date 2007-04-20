@@ -38,7 +38,6 @@ from stoqlib.domain.interfaces import IBranch, IStorable
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import ProductAdaptToSellable
 from stoqlib.domain.views import ProductFullStockView
-from stoqlib.lib.defaults import ALL_BRANCHES
 from stoqlib.lib.message import warning
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
@@ -113,7 +112,7 @@ class WarehouseApp(SearchableAppWindow):
             raise DatabaseInconsistency('You should have at least one '
                                         'branch on your database.'
                                         'Found zero')
-        items.insert(0, ALL_BRANCHES)
+        items.insert(0, [_('All branches'), None])
         return items
 
     def _update_widgets(self):
