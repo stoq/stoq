@@ -33,7 +33,10 @@ import gettext
 
 import gtk
 from kiwi.datatypes import currency
+from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
+from kiwi.ui.search import (DateSearchFilter, ComboSearchFilter,
+                            DateSearchOption)
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction
@@ -41,7 +44,6 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import SaleView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.receivable.view import ReceivableView
@@ -49,18 +51,33 @@ from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 
 _ = gettext.gettext
 
+class NextMonthOption(DateSearchOption):
+    name = _('Next month')
+    def get_interval(self):
+        today = datetime.date.today()
+        year = today.year
+        month = today.month + 1
+        if month > 12:
+            month = 1
+            year += 1
+        # Try 31 first then add one until date() does not complain.
+        day = today.day
+        while True:
+            try:
+                end_date = datetime.date(year, month, day)
+                break
+            except ValueError:
+                day += 1
+        return datetime.date.today(), end_date
 
 class ReceivableApp(SearchableAppWindow):
 
     app_name = _('Receivable')
     app_icon_name = 'stoq-bills'
     gladefile = 'receivable'
-    searchbar_table = ReceivableView
-    searchbar_use_dates = True
-    searchbar_result_strings = (_('payment'), _('payments'))
-    searchbar_labels = (_('matching:'),)
-    filter_slave_label = _('Show payments with status')
-    klist_name = 'receivables'
+
+    search_table = ReceivableView
+    search_label = _('matching:')
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
@@ -69,13 +86,12 @@ class ReceivableApp(SearchableAppWindow):
         self._update_widgets()
 
     def _setup_widgets(self):
-        value_format = '<b>%s</b>'
-        self.summary_label = SummaryLabel(klist=self.receivables,
+        self.summary_label = SummaryLabel(klist=self.results,
                                           column='value',
                                           label='<b>Total:</b>',
-                                          value_format=value_format)
+                                          value_format='<b>%s</b>')
+        self.list_vbox.pack_start(self.summary_label, False, False)
         self.summary_label.show()
-        self.list_vbox.pack_start(self.summary_label, False)
 
     def _update_widgets(self):
         self._update_total_label()
@@ -83,18 +99,25 @@ class ReceivableApp(SearchableAppWindow):
     def _update_total_label(self):
         self.summary_label.update_total()
 
-    def on_searchbar_activate(self, slave, objs):
-        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
-        self._update_widgets()
-
-    def get_filter_slave_items(self):
-        items = [(value, key) for key, value in Payment.statuses.items()]
-        items.insert(0, (_('Any'), ALL_ITEMS_INDEX))
-        return items
+    def _get_status_values(self):
+        values = [(v, k) for k, v in Payment.statuses.items()]
+        values.insert(0, (_("Any"), None))
+        return values
 
     #
-    # SearchBar hooks
+    # SearchableAppWindow hooks
     #
+
+    def create_filters(self):
+        self.set_text_field_columns(['description'])
+        date_filter = DateSearchFilter(_('Paid or due date:'))
+        date_filter.add_option(NextMonthOption)
+        self.add_filter(
+            date_filter, ['paid_date', 'due_date'])
+        self.add_filter(
+            ComboSearchFilter(_('Show payments with status'),
+                              self._get_status_values()),
+            ['status'], SearchFilterPosition.TOP)
 
     def get_columns(self):
         return [Column('id', title=_('Number'), width=80,
@@ -111,11 +134,6 @@ class ReceivableApp(SearchableAppWindow):
                        data_type=str),
                 Column('value', title=_('Value'), data_type=currency,
                        width=80)]
-
-    def get_extra_query(self):
-        status = self.filter_slave.get_selected_status()
-        if status != ALL_ITEMS_INDEX:
-            return Payment.q.status == status
 
     #
     # Private
@@ -181,8 +199,12 @@ class ReceivableApp(SearchableAppWindow):
     # Kiwi callbacks
     #
 
-    def on_receivables__row_activated(self, klist, receivable_view):
+    def on_results__row_activated(self, klist, receivable_view):
         self._show_details(receivable_view)
+
+    def on_results__selection_changed(self, receivables, selected):
+        self.receive_button.set_sensitive(self._can_receive(selected))
+        self.details_button.set_sensitive(self._same_sale(selected))
 
     def on_details_button__clicked(self, button):
         selected = self.receivables.get_selected_rows()[0]
@@ -191,6 +213,3 @@ class ReceivableApp(SearchableAppWindow):
     def on_receive_button__clicked(self, button):
         self._receive(self.receivables.get_selected_rows())
 
-    def on_receivables__selection_changed(self, receivables, selected):
-        self.receive_button.set_sensitive(self._can_receive(selected))
-        self.details_button.set_sensitive(self._same_sale(selected))

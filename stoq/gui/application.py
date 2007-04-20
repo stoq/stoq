@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s):      Evandro Vale Miquelito  <evandro@async.com.br>
+##                  Johan Dahlin            <jdahlin@async.com.br>
 ##
 """ Base classes for application's GUI """
 
@@ -28,16 +29,16 @@ import gettext
 
 import gtk
 from kiwi.component import get_utility
+from kiwi.db.sqlobj import SQLObjectQueryExecuter
+from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
-from stoqlib.database.database import rollback_and_begin
-from stoqlib.database.runtime import get_current_user, new_transaction
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
+from kiwi.ui.search import SearchSlaveDelegate
+from stoqlib.database.runtime import (get_current_user, new_transaction,
+                                      get_connection)
 from stoqlib.lib.interfaces import ICookieFile
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.dialogs import print_report
-from stoqlib.gui.base.search import SearchBar
 from stoqlib.gui.introspection import introspect_slaves
-from stoqlib.gui.slaves.filterslave import FilterSlave
 
 import stoq
 
@@ -252,123 +253,97 @@ class AppWindow(BaseAppWindow):
         introspect_slaves(window)
 
 class SearchableAppWindow(AppWindow):
-    """ Base class for searchable applications.
+    """
+    Base class for applications which main interface consists of a list
 
-    @cvar searchbar_table: The we will query on to perform the search
-    @cvar searchbar_use_dates: Do we also need to search by date ?
-    @cvar searchbar_result_strings: Plural and singular forms for search
-                                     bar results
-    @cvar searchbar_labels: A label that will be showed in the search bar
-    @cvar filter_slave_label: A label for the filter_slave attached in
-                               searchbar
-
+    @cvar search_table: The we will query on to perform the search
+    @cvar search_label: Label left of the search entry
     """
 
-    searchbar_table = None
-    searchbar_use_dates = False
-    searchbar_result_strings = ()
-    searchbar_labels = ()
-    filter_slave_label = None
+    search_table = None
+    search_label = _('Search:')
+    klist_name = 'results'
 
     def __init__(self, app):
+        if self.search_table is None:
+            raise TypeError("%r must define a search_table attribute" % self)
+
+        self.executer = SQLObjectQueryExecuter(get_connection())
+        self.executer.set_table(self.search_table)
+
+        self.search = SearchSlaveDelegate(self.get_columns())
+        self.results = self.search.search.results
+        self.set_text_field_label(self.search_label)
+
         AppWindow.__init__(self, app)
-        self._create_searchbar()
 
-    def _create_searchbar(self):
-        if not self.searchbar_table:
-            return
-        filter_slave = self._get_filter_slave()
-        self.searchbar = SearchBar(self.conn, self.searchbar_table,
-                                   self.get_columns(),
-                                   filter_slave=filter_slave,
-                                   searching_by_date=self.searchbar_use_dates,
-                                   query_args=self.get_query_args())
-        extra_query = self.get_extra_query
-        if extra_query:
-            self.searchbar.register_extra_query_callback(extra_query)
-        self.searchbar.set_result_strings(*self.searchbar_result_strings)
-        self.searchbar.set_searchbar_labels(*self.searchbar_labels)
-        self.searchbar.set_query_callback(self.query)
-        self.searchbar.connect('before-search-activate',
-                               self.on_searchbar_before_activate)
-        self.searchbar.connect('search-activate', self.on_searchbar_activate)
-        if filter_slave:
-            filter_slave.connect('status-changed',
-                                 self.get_on_filter_slave_status_changed())
-        self.attach_slave('searchbar_holder', self.searchbar)
-        self.searchbar.set_focus()
+        self.search.set_query_executer(self.executer)
+        self.attach_slave('search_holder', self.search)
 
+        self.create_filters()
 
-    def _get_filter_slave(self):
-        items = self.get_filter_slave_items()
-        if not items:
-            return
-        selected = self.get_filterslave_default_selected_item()
-        self.filter_slave = FilterSlave(items, selected)
-        if not self.filter_slave_label:
-            raise ValueError('You must define a valid filter_slave_label '
-                             'attribute')
-        self.filter_slave.set_filter_label(self.filter_slave_label)
-        return self.filter_slave
-
-    #
-    # Callbacks
-    #
-
-    def on_searchbar_before_activate(self, *args):
-        rollback_and_begin(self.conn)
-
-    def on_searchbar_activate(self, slave, objs):
-        """Use this callback with SearchBar search-activate signal"""
-        self._klist.add_list(objs, clear=True)
+        self.search.focus_search_entry()
+        self.search.show()
 
     #
     # Public API
     #
 
     def set_searchtable(self, search_table):
-        self.searchbar_table = search_table
-        self.searchbar.set_searchtable(search_table)
+        """
+        @param search_table:
+        """
+        self.executer.set_table(search_table)
+        self.search_table = search_table
 
-    def set_searchbar_columns(self, columns):
-        self.searchbar.set_columns(columns)
+    def add_summary_label(self, label):
+        """
+        @param label:
+        """
+        toplevel = self.search.get_toplevel().parent.parent
+        toplevel.pack_start(label, False)
+        toplevel.reorder_child(label, 1)
 
-    def search_items(self):
-        self.searchbar.search_items()
+    def add_filter(self, search_filter, columns=None, position=SearchFilterPosition.BOTTOM):
+        """
+        @param search_filter:
+        @param columns:
+        @param position:
+        """
+        self.search.add_filter(search_filter, position=position)
+        if columns:
+            self.executer.set_filter_columns(search_filter, columns)
+
+    def set_text_field_label(self, label):
+        """
+        @param label:
+        """
+        search_filter = self.search.get_primary_filter()
+        search_filter.set_label(label)
+
+    def set_text_field_columns(self, columns):
+        """
+        @param columns:
+        """
+        search_filter = self.search.get_primary_filter()
+        self.executer.set_filter_columns(search_filter, columns)
+
+    def refresh(self):
+        """
+        See L{kiwi.ui.search.SearchSlaveDelegate.refresh}
+        """
+        self.search.refresh()
+
+    def clear(self):
+        """
+        See L{kiwi.ui.search.SearchSlaveDelegate.clear}
+        """
+        self.search.clear()
 
     #
     # Hooks
     #
 
-    def get_filterslave_default_selected_item(self):
-        return ALL_ITEMS_INDEX
+    def create_filters(self):
+        pass
 
-    def get_extra_query(self):
-        """A hook method for stoqlib SearchBar
-        @returns: a sqlbuilder operator that will be added in the searchbar
-                  main query
-        """
-
-    def get_filter_slave_items(self):
-        """Define this method on parent when a FilterSlave is needed to be
-        joined in a SearchBar
-        @returns: a python list of objects that will be added in a combo. IT
-                  must be a list of touples
-        """
-    def get_query_args(self):
-        """Define this method on parent when an extra querry arguments is
-        needed.
-        @returns: a dictionary with sqlobject select method extra arguments
-        """
-
-    def get_on_filter_slave_status_changed(self):
-        """Overwride this method on parent when it's needed
-        @returns: a method that will be called by filter slave
-        """
-        return self.searchbar.search_items
-
-    def query(self, table, query, queries):
-        """Override this to control the queries made by the
-        searchbar, see searchbar.set_query_callback for documentation
-        """
-        return table.select(query, **queries)

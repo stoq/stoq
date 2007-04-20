@@ -33,14 +33,15 @@ import gettext
 
 import gtk
 from kiwi.datatypes import currency
+from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
+from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.payable.view import PayableView
@@ -54,13 +55,9 @@ class PayableApp(SearchableAppWindow):
     app_name = _('Payable')
     app_icon_name = 'stoq-payable-app'
     gladefile = 'payable'
-    searchbar_table = PayableView
-    searchbar_use_dates = True
-    searchbar_result_strings = (_('payment'), _('payments'))
-    searchbar_labels = (_('matching:'),)
-    filter_slave_label = _('Show payments with status')
+    search_table = PayableView
+    search_label = _('matching:')
     klist_selection_mode = gtk.SELECTION_MULTIPLE
-    klist_name = 'payables'
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
@@ -68,35 +65,19 @@ class PayableApp(SearchableAppWindow):
         self._update_widgets()
         self.pay_order_button.set_sensitive(False)
 
-    def _setup_widgets(self):
-        value_format = '<b>%s</b>'
-        self.summary_label = SummaryLabel(klist=self.payables,
-                                          column='value',
-                                          label='<b>Total:</b>',
-                                          value_format=value_format)
-        self.summary_label.show()
-        self.list_vbox.pack_start(self.summary_label, False)
-
-    def _update_widgets(self):
-        has_sales = len(self.payables) > 0
-        self.details_button.set_sensitive(has_sales)
-        self._update_total_label()
-
-    def _update_total_label(self):
-        self.summary_label.update_total()
-
-    def on_searchbar_activate(self, slave, objs):
-        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
-        self._update_widgets()
-
-    def get_filter_slave_items(self):
-        items = [(value, key) for key, value in Payment.statuses.items()]
-        items.insert(0, (_('Any'), ALL_ITEMS_INDEX))
-        return items
-
     #
-    # SearchBar hooks
+    # SearchableAppWindow
     #
+
+    def create_filters(self):
+        self.set_text_field_columns(['description', 'supplier_name'])
+        date_filter = DateSearchFilter(_('Paid or due date:'))
+        self.add_filter(
+            date_filter, ['paid_date', 'due_date'])
+        self.add_filter(
+            ComboSearchFilter(_('Show payments with status'),
+                              self._get_status_values()),
+            ['status'], SearchFilterPosition.TOP)
 
     def get_columns(self):
         return [Column('id', title=_('Number'), width=80,
@@ -113,11 +94,6 @@ class PayableApp(SearchableAppWindow):
                        data_type=str),
                 Column('value', title=_('Value'), data_type=currency,
                        width=80)]
-
-    def get_extra_query(self):
-        status = self.filter_slave.get_selected_status()
-        if status != ALL_ITEMS_INDEX:
-            return Payment.q.status == status
 
     #
     # Private
@@ -145,7 +121,7 @@ class PayableApp(SearchableAppWindow):
         if finish_transaction(trans, retval):
             for view in payable_views:
                 view.sync()
-                self.payables.update(view)
+                self.results.update(view)
 
         trans.close()
         self.pay_order_button.set_sensitive(self._can_pay(payable_views))
@@ -177,22 +153,43 @@ class PayableApp(SearchableAppWindow):
         purchase = payable_views[0].purchase
         return all(view.purchase == purchase for view in payable_views)
 
+    def _setup_widgets(self):
+        self.summary_label = SummaryLabel(klist=self.results,
+                                          column='value',
+                                          label='<b>Total:</b>',
+                                          value_format='<b>%s</b>')
+        self.list_vbox.pack_start(self.summary_label, False, False)
+        self.summary_label.show()
+
+    def _update_widgets(self):
+        has_sales = len(self.results) > 0
+        self.details_button.set_sensitive(has_sales)
+        self._update_total_label()
+
+    def _update_total_label(self):
+        self.summary_label.update_total()
+
+    def _get_status_values(self):
+        items = [(value, key) for key, value in Payment.statuses.items()]
+        items.insert(0, (_('Any'), None))
+        return items
+
     #
     # Kiwi callbacks
     #
 
-    def on_payables__row_activated(self, klist, payable_view):
+    def on_results__row_activated(self, klist, payable_view):
         self._show_details(payable_view)
 
     def on_details_button__clicked(self, button):
-        if len(self.payables):
-            if not self.payables.get_selected_rows():
-                self.payables.select(self.payables[0])
-            self._show_details(self.payables.get_selected_rows()[0])
+        if len(self.results):
+            if not self.results.get_selected_rows():
+                self.results.select(self.results[0])
+            self._show_details(self.results.get_selected_rows()[0])
 
     def on_pay_order_button__clicked(self, button):
-        self._pay(self.payables.get_selected_rows())
+        self._pay(self.results.get_selected_rows())
 
-    def on_payables__selection_changed(self, payables, selected):
+    def on_results__selection_changed(self, results, selected):
         self.pay_order_button.set_sensitive(self._same_order(selected))
         self.pay_order_button.set_sensitive(self._can_pay(selected))

@@ -31,7 +31,9 @@ from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import currency
+from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
+from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.database.database import rollback_and_begin
 from stoqlib.database.runtime import new_transaction
@@ -45,7 +47,6 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.reporting.purchase import PurchaseReport
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_quantity
 
 from stoq.gui.application import SearchableAppWindow
@@ -56,28 +57,58 @@ class PurchaseApp(SearchableAppWindow):
     app_name = _('Purchase')
     app_icon_name = 'stoq-purchase-app'
     gladefile = "purchase"
-    searchbar_table = PurchaseOrderView
-    searchbar_use_dates = True
-    searchbar_result_strings = (_('order'), _('orders'))
-    searchbar_labels = (_('matching:'),)
-    filter_slave_label = _('Show orders with status')
+    search_table = PurchaseOrderView
+    search_label = _('matching:')
     klist_selection_mode = gtk.SELECTION_MULTIPLE
-    klist_name = 'orders'
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
         self._update_view()
 
+    #
+    # SearchableAppWindow
+    #
+
+    def create_filters(self):
+        self.set_text_field_columns(['supplier_name'])
+        date_filter = DateSearchFilter(_('Open date is:'))
+        self.add_filter(
+            date_filter, ['open_date'])
+        status_filter = ComboSearchFilter(_('Show orders with status'),
+                                          self._get_status_values())
+        status_filter.select(PurchaseOrder.ORDER_CONFIRMED)
+        self.add_filter(status_filter, ['status'], SearchFilterPosition.TOP)
+
+    def get_columns(self):
+        return [Column('id', title=_('Number'), sorted=True,
+                       data_type=str, width=80),
+                Column('open_date', title=_('Date Started'),
+                       data_type=datetime.date),
+                Column('supplier_name', title=_('Supplier'),
+                       data_type=str, searchable=True, width=200,
+                       expand=True),
+                Column('ordered_quantity', title=_('Qty Ordered'),
+                       data_type=Decimal, width=120,
+                       format_func=format_quantity),
+                Column('received_quantity', title=_('Qty Received'),
+                       data_type=Decimal, width=120,
+                       format_func=format_quantity),
+                Column('total', title=_('Order Total'),
+                       data_type=currency, width=110)]
+
+    #
+    # Private
+    #
+
     def _setup_widgets(self):
-        value_format = '<b>%s</b>'
-        label = '<b>%s</b>' % _('Total:')
-        self.summary_total = SummaryLabel(klist=self.orders,
+        self.summary_total = SummaryLabel(klist=self.results,
                                           column='total',
-                                          label=label,
-                                          value_format=value_format)
+                                          label='<b>%s</b>' % _('Total:'),
+                                          value_format='<b>%s</b>')
+        self.list_vbox.pack_start(self.summary_total, False, False)
+        self.list_vbox.reorder_child(self.summary_total, 2)
         self.summary_total.show()
-        self.summary_hbox.pack_start(self.summary_total, False)
         self.SendToSupplier.set_sensitive(False)
 
     def _update_totals(self):
@@ -90,8 +121,8 @@ class PurchaseApp(SearchableAppWindow):
             widget.set_sensitive(has_items)
 
     def _update_view(self):
-        self._update_list_aware_widgets(len(self.orders))
-        selection = self.orders.get_selected_rows()
+        self._update_list_aware_widgets(len(self.results))
+        selection = self.results.get_selected_rows()
         can_edit = one_selected = len(selection) == 1
         if selection:
             can_send_supplier = all(
@@ -119,16 +150,16 @@ class PurchaseApp(SearchableAppWindow):
         return order
 
     def _edit_order(self):
-        selected = self.orders.get_selected_rows()
+        selected = self.results.get_selected_rows()
         qty = len(selected)
         if qty != 1:
             raise ValueError('You should have only one order selected, '
                              'got %d instead' % qty )
         self._open_order(selected[0].purchase, edit_mode=True)
-        self.searchbar.search_items()
+        self.refresh()
 
     def _run_details_dialog(self):
-        order_views = self.orders.get_selected_rows()
+        order_views = self.results.get_selected_rows()
         qty = len(order_views)
         if qty != 1:
             raise ValueError('You should have only one order selected '
@@ -139,7 +170,7 @@ class PurchaseApp(SearchableAppWindow):
     def _send_selected_items_to_supplier(self):
         rollback_and_begin(self.conn)
 
-        orders = self.orders.get_selected_rows()
+        orders = self.results.get_selected_rows()
         valid_order_views = [
             order for order in orders
                       if order.status == PurchaseOrder.ORDER_PENDING]
@@ -164,11 +195,11 @@ class PurchaseApp(SearchableAppWindow):
         self.searchbar.search_items()
 
     def _print_selected_items(self):
-        items = self.orders.get_selected_rows() or self.orders
+        items = self.results.get_selected_rows() or self.results
         self.searchbar.print_report(PurchaseReport, items)
 
     def _cancel_order(self):
-        order_views = self.orders.get_selected_rows()
+        order_views = self.results.get_selected_rows()
         assert all(ov.purchase.can_cancel() for ov in order_views)
         if yesno(
             _('The selected order(s) will be cancelled.'),
@@ -182,44 +213,11 @@ class PurchaseApp(SearchableAppWindow):
         self._update_totals()
         self.searchbar.search_items()
 
-    #
-    # Hooks
-    #
-
-    def get_extra_query(self):
-        status = self.filter_slave.get_selected_status()
-        if status != ALL_ITEMS_INDEX:
-            return PurchaseOrderView.q.status == status
-
-    def get_filterslave_default_selected_item(self):
-        return PurchaseOrder.ORDER_CONFIRMED
-
-    def get_filter_slave_items(self):
+    def _get_status_values(self):
         items = [(text, value)
                     for value, text in PurchaseOrder.statuses.items()]
-        items.insert(0, (_('Any'), ALL_ITEMS_INDEX))
+        items.insert(0, (_('Any'), None))
         return items
-
-    def on_searchbar_activate(self, slave, objs):
-        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
-        self._update_totals()
-
-    def get_columns(self):
-        return [Column('id', title=_('Number'), sorted=True,
-                       data_type=str, width=80),
-                Column('open_date', title=_('Date Started'),
-                       data_type=datetime.date),
-                Column('supplier_name', title=_('Supplier'),
-                       data_type=str, searchable=True, width=200,
-                       expand=True),
-                Column('ordered_quantity', title=_('Qty Ordered'),
-                       data_type=Decimal, width=120,
-                       format_func=format_quantity),
-                Column('received_quantity', title=_('Qty Received'),
-                       data_type=Decimal, width=120,
-                       format_func=format_quantity),
-                Column('total', title=_('Order Total'),
-                       data_type=currency, width=110)]
 
     #
     # Kiwi Callbacks
@@ -229,20 +227,20 @@ class PurchaseApp(SearchableAppWindow):
         # FIXME Remove this method after gazpacho bug fix.
         self._open_order()
 
-    def on_orders__row_activated(self, klist, purchase_order_view):
+    def on_results__row_activated(self, klist, purchase_order_view):
         self._run_details_dialog()
+
+    def on_results__selection_changed(self, results, selected):
+        self._update_view()
+
+    def _on_results__double_click(self, results, order):
+        self._run_details_dialog()
+
+    def _on_results__has_rows(self, results, has_items):
+        self._update_list_aware_widgets(has_items)
 
     def on_details_button__clicked(self, button):
         self._run_details_dialog()
-
-    def on_orders__selection_changed(self, orders, selected):
-        self._update_view()
-
-    def _on_orders__double_click(self, orders, order):
-        self._run_details_dialog()
-
-    def _on_orders__has_rows(self, orders, has_items):
-        self._update_list_aware_widgets(has_items)
 
     def on_edit_button__clicked(self, button):
         self._edit_order()
