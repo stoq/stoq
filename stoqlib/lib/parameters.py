@@ -431,6 +431,8 @@ class ParameterAccess(ClassInittableObject):
         if value is None:
             return
         if issubclass(field_type, AbstractModel):
+            if value.field_value == '':
+                return
             param = field_type.get(value.field_value, connection=self.conn)
         else:
             # XXX: workaround to works with boolean types:
