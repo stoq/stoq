@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,31 +19,10 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+## Author(s):   Johan Dahlin                <jdahlin@async.com.br>
 ##
-"""
-stoq/gui/pos/app.py:
-
-    Main callsite for POS application
-"""
-
-import gettext
-
-from stoqlib.database.runtime import get_connection
-from stoqlib.domain.till import Till
-from stoqlib.lib.message import error
-from stoqlib.lib.parameters import sysparam
 
 from stoq.gui.pos.pos import POSApp
 
-_ = gettext.gettext
-
-# Here we define config in the call site: /bin/stoq file
 def main(config):
-    conn = get_connection()
-    param = sysparam(conn)
-    if (param.POS_SEPARATE_CASHIER and
-        not Till.get_current(conn)):
-        error(_(u"You need to open the till before start doing sales."))
-
     return POSApp
