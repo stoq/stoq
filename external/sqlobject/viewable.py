@@ -249,8 +249,11 @@ _cache = {}
 def table_from_name(name):
     # O(1), but initially expensive
     global _cache
-    if not _cache:
+    def _rebuild():
         for table in registry(None).allClasses():
             _cache[table.sqlmeta.table] = table
+
+    if not name in _cache:
+        _rebuild()
     return _cache[name]
 
