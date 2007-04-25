@@ -27,13 +27,13 @@
 import gtk
 
 from kiwi.datatypes import currency
+from kiwi.enums import SearchFilterPosition
+from kiwi.ui.search import ComboSearchFilter
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.giftcertificate import (GiftCertificateType,
                                             GiftCertificateView)
-from stoqlib.gui.slaves.filterslave import FilterSlave
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.columns import Column
 from stoqlib.gui.editors.giftcertificateeditor import (
@@ -53,31 +53,20 @@ class GiftCertificateTypeSearch(SearchEditor):
         SearchEditor.__init__(self, conn, self.table, self.editor_class,
                               hide_footer=hide_footer,
                               title=self.title)
-        self.search_bar.set_result_strings(_('gift certificate type'),
-                                           _('gift certificate types'))
-        self.search_bar.set_searchbar_labels(_('matching'))
+        self.set_searchbar_labels(_('matching'))
 
     #
     # SearchDialog Hooks
     #
 
-    def get_filter_slave(self):
-        certificates = [(_('Active'), True), (_('Inactive'), False)]
-        certificates.insert(0, (_('Any'), ALL_ITEMS_INDEX))
-        self.filter_slave = FilterSlave(certificates, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show gift certificate types '
-                                             'with status'))
-        return self.filter_slave
-
-    def after_search_bar_created(self):
-        self.filter_slave.connect('status-changed',
-                                  self.search_bar.search_items)
-
-    def on_cell_edited(self, klist, obj, attr):
-        # Waiting for bug 2177. We should only call commit for
-        # self.conn here.
-        conn = obj.get_connection()
-        conn.commit()
+    def create_filters(self):
+        self.set_text_field_columns([])
+        certificates = [(_('Any'), None),
+                        (_('Active'), True),
+                        (_('Inactive'), False)]
+        status_filter = ComboSearchFilter(
+            _('Show gift certificate types with status'), certificates)
+        self.add_filter(status_filter, SearchFilterPosition.TOP, ['is_active'])
 
     #
     # SearchEditor Hooks
@@ -102,11 +91,6 @@ class GiftCertificateTypeSearch(SearchEditor):
                 Column('is_active', _('Active'), data_type=bool,
                        editable=True)]
 
-    def get_extra_query(self):
-        status = self.filter_slave.get_selected_status()
-        if status != ALL_ITEMS_INDEX:
-            return GiftCertificateType.q.is_active == status
-
 
 class GiftCertificateSearch(SearchEditor):
     """A search dialog for gift certificates. A gift certificate is a
@@ -123,34 +107,31 @@ class GiftCertificateSearch(SearchEditor):
                               hide_toolbar=hide_toolbar,
                               title=self.title)
         self.hide_edit_button()
-        self.search_bar.set_result_strings(_('gift certificate'),
-                                           _('gift certificates'))
-        self.search_bar.set_searchbar_labels(_('matching'))
+        self.set_result_strings(_('gift certificate'),
+                                _('gift certificates'))
+        self.set_searchbar_labels(_('matching'))
 
     #
     # SearchDialog Hooks
     #
 
-    def get_filter_slave(self):
+    def create_filters(self):
+        self.set_text_field_columns([])
         statuses = [(value, constant)
                     for constant, value in ASellable.statuses.items()]
-        statuses.insert(0, (_('Any'), ALL_ITEMS_INDEX))
-        selected = ASellable.STATUS_AVAILABLE
-        self.filter_slave = FilterSlave(statuses, selected=selected)
-        self.filter_slave.set_filter_label(_('Show gift certificates with '
-                                             'status'))
-        return self.filter_slave
+        statuses.insert(0, (_('Any'), None))
+        status_filter = ComboSearchFilter(
+            _('Show gift certificates with status'), statuses)
+        status_filter.select(ASellable.STATUS_AVAILABLE)
+        self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
 
-    def after_search_bar_created(self):
-        self.filter_slave.connect('status-changed',
-                                  self.search_bar.search_items)
 
     #
     # SearchEditor Hooks
     #
 
     def update_edited_item(self, *args):
-        self.search_bar.search_items()
+        self.search.refresh()
 
     def get_columns(self):
         return [Column('id', _('Number'), data_type=int,
@@ -163,8 +144,3 @@ class GiftCertificateSearch(SearchEditor):
                        data_type=currency, width=120),
                 Column('on_sale_price', title=_('On Sale Price'),
                        data_type=currency, width=140)]
-
-    def get_extra_query(self):
-        status = self.filter_slave.get_selected_status()
-        if status != ALL_ITEMS_INDEX:
-            return self.table.q.status == status

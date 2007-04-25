@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,25 +20,25 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s): Evandro Vale Miquelito   <evandro@async.com.br>
-##
+##             Johan Dahlin             <jdahlin@async.com.br>
 ##
 """ Search dialogs for fiscal objects """
 
 import datetime
 
 import gtk
-from kiwi.ui.widgets.list import Column
 from kiwi.datatypes import currency
+from kiwi.enums import SearchFilterPosition
+from kiwi.ui.search import ComboSearchFilter
+from kiwi.ui.widgets.list import Column
 
-from stoqlib.enums import FiscalBookEntry
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.gui.base.search import SearchEditor
-from stoqlib.gui.editors.fiscaleditor import CfopEditor
-from stoqlib.gui.slaves.fiscalslave import FiscalBookEntryFilterSlave
-from stoqlib.gui.editors.fiscaleditor import FiscalBookEntryEditor
 from stoqlib.domain.fiscal import CfopData, IcmsIpiView, IssView
-
+from stoqlib.enums import FiscalBookEntry
+from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.editors.fiscaleditor import (CfopEditor,
+                                              FiscalBookEntryEditor)
+from stoqlib.lib.defaults import fiscal_book_entries
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -53,6 +53,9 @@ class CfopSearch(SearchEditor):
     #
     # SearchDialog Hooks
     #
+
+    def create_filters(self):
+        self.set_text_field_columns(['description', 'code'])
 
     def get_columns(self):
         return [Column('code', _('CFOP'), data_type=str, sorted=True,
@@ -70,35 +73,35 @@ class FiscalBookEntrySearch(SearchEditor):
     has_new_button = False
     searchbar_result_strings = _("fiscal entry"), _("fiscal entries")
 
-    def _setup_columns(self, columns, table, col_name, summary_label_text):
+    def _setup_columns(self, column, table, col_name, summary_label_text):
         label_text = '<b>%s</b>' % summary_label_text
-        self.klist.set_columns(columns)
-        self.set_searchtable(table)
-        self.set_searchbar_columns(columns)
-        self.setup_summary_label(col_name, label_text)
+        columns = self.get_columns() + [column]
+        self.results.set_columns(columns)
+        self.set_table(table)
+        #self.setup_summary_label(col_name, label_text)
 
     def _setup_icms_columns(self):
-        cols = self.get_columns() + [Column('icms_value',
-                                            title=_('ICMS Total'),
-                                            justify=gtk.JUSTIFY_RIGHT,
-                                            data_type=currency, width=120)]
-        self._setup_columns(cols, IcmsIpiView, 'icms_value',
+        col = Column('icms_value',
+                     title=_('ICMS Total'),
+                     justify=gtk.JUSTIFY_RIGHT,
+                     data_type=currency, width=120)
+        self._setup_columns(col, IcmsIpiView, 'icms_value',
                             _("ICMS Total:"))
 
     def _setup_ipi_columns(self):
-        cols = self.get_columns() + [Column('ipi_value',
-                                            title=_('IPI Total'),
-                                            justify=gtk.JUSTIFY_RIGHT,
-                                            data_type=currency, width=120)]
-        self._setup_columns(cols, IcmsIpiView, 'ipi_value',
+        col = Column('ipi_value',
+                     title=_('IPI Total'),
+                     justify=gtk.JUSTIFY_RIGHT,
+                     data_type=currency, width=120)
+        self._setup_columns(col, IcmsIpiView, 'ipi_value',
                             _("IPI Total:"))
 
     def _setup_iss_columns(self):
-        cols = self.get_columns() + [Column('iss_value',
-                                            title=_('ISS Total'),
-                                            justify=gtk.JUSTIFY_RIGHT,
-                                            data_type=currency, width=120)]
-        self._setup_columns(cols, IssView, 'iss_value',
+        col = Column('iss_value',
+                     title=_('ISS Total'),
+                     justify=gtk.JUSTIFY_RIGHT,
+                     data_type=currency, width=120)
+        self._setup_columns(col, IssView, 'iss_value',
                             _("ISS Total:"))
 
     #
@@ -117,9 +120,8 @@ class FiscalBookEntrySearch(SearchEditor):
                        data_type=str, expand=True)]
 
 
-    def get_extra_query(self):
-        branch = self.filter_slave.get_selected_branch()
-        entry_type = self.filter_slave.get_selected_entry_type()
+    def _get_entry_type_query(self, state):
+        entry_type = state.value
         if entry_type == FiscalBookEntry.ICMS:
             self._setup_icms_columns()
         elif entry_type == FiscalBookEntry.ISS:
@@ -129,17 +131,21 @@ class FiscalBookEntrySearch(SearchEditor):
         else:
             raise ValueError("Invalid fical book entry type, got %s"
                              % entry_type)
-        if branch != ALL_ITEMS_INDEX:
-            return self.search_table.q.branch_id == branch.id
 
     #
     # SearchDialog Hooks
     #
 
-    def get_filter_slave(self):
-        self.filter_slave = FiscalBookEntryFilterSlave(self.conn)
-        return self.filter_slave
+    def create_filters(self):
+        self.set_text_field_columns([])
 
-    def after_search_bar_created(self):
-        self.filter_slave.connect('status-changed',
-                                  self.search_bar.search_items)
+        branch_filter = self.create_branch_filter(_('In branch:'))
+        branch_filter.select(None)
+        self.add_filter(branch_filter, columns=['branch_id'])
+
+        items = [(v, k)
+                    for k, v in fiscal_book_entries.items()]
+        entry_type = ComboSearchFilter(_('Show entries of type'), items)
+        self.add_filter(entry_type, callback=self._get_entry_type_query,
+                        position=SearchFilterPosition.TOP)
+

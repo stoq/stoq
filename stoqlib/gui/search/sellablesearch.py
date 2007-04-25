@@ -30,22 +30,19 @@ from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import currency
+from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import Column
 from sqlobject.sqlbuilder import AND, OR
 
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.search import SearchEditor
-from stoqlib.gui.slaves.filterslave import FilterSlave
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
-from stoqlib.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.sellable import (ASellable, SellableView,
                                      SellableFullStockView)
 from stoqlib.domain.product import Product
-from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import IBranch, ISellable, IStorable
+from stoqlib.domain.interfaces import ISellable, IStorable
 
 _ = stoqlib_gettext
 
@@ -75,6 +72,7 @@ class SellableSearch(SearchEditor):
         """
         self.quantity = quantity
         self.has_stock_mode = sysparam(conn).HAS_STOCK_MODE
+        self._delivery_service = sysparam(conn).DELIVERY_SERVICE
         SearchEditor.__init__(self, conn, table=self.table,
                               search_table=self.search_table,
                               editor_class=self.editor_class,
@@ -108,6 +106,17 @@ class SellableSearch(SearchEditor):
     # Hooks
     #
 
+    def create_filters(self):
+        #if not self.has_stock_mode:
+        #    return
+        self.set_text_field_columns(['description'])
+        branch_filter = self.create_branch_filter(
+            _('Show sale items at'))
+        self.executer.add_filter_query_callback(
+            branch_filter, self._get_branch_query)
+        self.executer.add_query_callback(self._get_query)
+        self.search.add_filter(branch_filter, SearchFilterPosition.TOP)
+
     def get_columns(self):
         """Hook called by SearchEditor"""
         columns = [Column('id', title=_('Code'), data_type=int,
@@ -130,54 +139,8 @@ class SellableSearch(SearchEditor):
             columns.append(column)
         return columns
 
-    def _get_available_stock(self, sellable_view):
-        if sellable_view.stock is None:
-            return None
-        return sellable_view.stock - self.current_sale_stock.get(
-            sellable_view.id, 0)
-
-    def get_extra_query(self):
-        """Hook called by SearchBar"""
-        branch_query = None
-        if (not self.has_stock_mode
-            or self.filter_slave.get_selected_status() == ALL_ITEMS_INDEX):
-            self.set_searchtable(SellableFullStockView)
-            branch_query = 1 == 1
-        else:
-            self.set_searchtable(SellableView)
-            branch = self.filter_slave.get_selected_status()
-            branch_query = OR(SellableView.q.branch_id == branch.id,
-                              SellableView.q.branch_id == None)
-        service = sysparam(self.conn).DELIVERY_SERVICE
-        return AND(self.search_table.q.id != service.id,
-                   (self.search_table.q.status
-                    == ASellable.STATUS_AVAILABLE),
-                   branch_query)
-
-    def get_filter_slave(self):
-        if not self.has_stock_mode:
-            return
-        # FIXME: Implement and use IDescribable on PersonAdaptToBranch
-        table = Person.getAdapterClass(IBranch)
-        branch_list = table.get_active_branches(self.conn)
-        items = [(branch.person.name, branch)
-                    for branch in branch_list]
-        if not items:
-            raise ValueError('You should have at least one branch at '
-                             'this point')
-        items.insert(0, ALL_BRANCHES)
-        selected = get_current_branch(self.conn)
-        self.filter_slave = FilterSlave(items, selected=selected)
-        self.filter_slave.set_filter_label(_('Show sale items at'))
-        return self.filter_slave
-
-    def after_search_bar_created(self):
-        if self.has_stock_mode:
-            self.filter_slave.connect('status-changed',
-                                      self.search_bar.search_items)
-
     def update_widgets(self):
-        sellable_view = self.klist.get_selected()
+        sellable_view = self.results.get_selected()
         if not sellable_view:
             return
         sellable = ASellable.get(sellable_view.id, self.conn)
@@ -186,3 +149,33 @@ class SellableSearch(SearchEditor):
             self.ok_button.set_sensitive(False)
         else:
             self.ok_button.set_sensitive(True)
+
+    #
+    # Private
+    #
+
+    def _get_branch_query(self, state):
+        query = None
+        if self.has_stock_mode and state.value is not None:
+            table = SellableView
+            query = OR(SellableView.q.branch_id == state.value,
+                       SellableView.q.branch_id == None)
+        else:
+            table = SellableFullStockView
+
+        self.set_table(table)
+        return query
+
+    def _get_query(self, states):
+        query = self.search_table.q.status == ASellable.STATUS_AVAILABLE
+        if self._delivery_service:
+            query =  AND(query,
+                         self.search_table.q.id != self._delivery_service.id)
+        return query
+
+    def _get_available_stock(self, sellable_view):
+        if sellable_view.stock is None:
+            return None
+        return sellable_view.stock - self.current_sale_stock.get(
+            sellable_view.id, 0)
+

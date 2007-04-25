@@ -31,12 +31,13 @@ from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import currency
+from kiwi.db.sqlobj import SQLObjectQueryExecuter
+from kiwi.ui.search import SearchSlaveDelegate, DateSearchFilter
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.database.runtime import get_current_user
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.base.searchbar import SearchBar
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
 from stoqlib.gui.search.productsearch import ProductSearch
@@ -75,8 +76,32 @@ class PurchaseSelectionStep(WizardEditorStep):
         if sysparam(self.conn).RECEIVE_PRODUCTS_WITHOUT_ORDER:
             validation_value = True
         else:
-            validation_value = len(self.orders) == 1
+            validation_value = len(self.search.results) == 1
         self.wizard.refresh_next(validation_value)
+
+    def _create_search(self):
+        self.order_label.set_size('large')
+        self.order_label.set_bold(True)
+        self.search = SearchSlaveDelegate(self._get_columns())
+        self.attach_slave('searchbar_holder', self.search)
+        self.executer = SQLObjectQueryExecuter()
+        self.search.set_query_executer(self.executer)
+        self.executer.set_table(PurchaseOrderView)
+        self.executer.add_query_callback(self._get_extra_query)
+        self._create_filters()
+        self.search.results.connect('selection-changed',
+                                    self._on_results__selection_changed)
+        self.search.results.connect('row-activated',
+                                    self._on_results__row_activated)
+        self.search.focus_search_entry()
+
+    def _create_filters(self):
+        self.search.set_text_field_columns(['supplier_name'])
+        date_filter = DateSearchFilter(_('Date:'))
+        self.search.add_filter(date_filter, columns=['open_date'])
+
+    def _get_extra_query(self, states):
+        return PurchaseOrderView.q.status == PurchaseOrder.ORDER_CONFIRMED
 
     def _get_columns(self):
         return [Column('id', title=_('Number'), sorted=True,
@@ -95,20 +120,8 @@ class PurchaseSelectionStep(WizardEditorStep):
                 Column('total', title=_('Order Total'),
                        data_type=currency, width=120)]
 
-    def _get_extra_query(self):
-        return PurchaseOrderView.q.status == PurchaseOrder.ORDER_CONFIRMED
-
-    def on_searchbar_before_activate(self, *args):
-        self.conn.commit()
-
-    def on_searchbar_activate(self, slave, objs):
-        """Use this callback with SearchBar search-activate signal"""
-        self.orders.add_list(objs, clear=True)
-        has_selection = self.orders.get_selected() is not None
-        self.wizard.refresh_next(has_selection)
-
     def _update_view(self):
-        has_selection = self.orders.get_selected() is not None
+        has_selection = self.search.results.get_selected() is not None
         self.details_button.set_sensitive(has_selection)
         if not sysparam(self.conn).RECEIVE_PRODUCTS_WITHOUT_ORDER:
             self.wizard.refresh_next(has_selection)
@@ -123,7 +136,7 @@ class PurchaseSelectionStep(WizardEditorStep):
         self.force_validation()
 
     def next_step(self):
-        selected = self.orders.get_selected()
+        selected = self.search.results.get_selected()
         purchase = selected.purchase
 
         # We cannot create the model in the wizard since we haven't
@@ -166,35 +179,28 @@ class PurchaseSelectionStep(WizardEditorStep):
         return False
 
     def setup_slaves(self):
-        self.order_label.set_size('large')
-        self.order_label.set_bold(True)
-        self.orders.set_columns(self._get_columns())
-        self.searchbar = SearchBar(self.conn, PurchaseOrderView,
-                                   self._get_columns(),
-                                   searching_by_date=True)
-        self.searchbar.register_extra_query_callback(self._get_extra_query)
-        self.searchbar.set_result_strings(_('order'), _('orders'))
-        self.searchbar.set_searchbar_labels(_('Orders Maching:'))
-        self.searchbar.connect('before-search-activate',
-                               self.on_searchbar_before_activate)
-        self.searchbar.connect('search-activate', self.on_searchbar_activate)
-        self.attach_slave('searchbar_holder', self.searchbar)
-        self.searchbar.set_focus()
+        self._create_search()
 
     #
     # Kiwi callbacks
     #
 
-    def on_orders__row_activated(self, klist, purchase_order_view):
-        run_dialog(PurchaseDetailsDialog, self, self.conn,
-                   model=purchase_order_view.purchase)
+#     def on_searchbar_activate(self, slave, objs):
+#         """Use this callback with SearchBar search-activate signal"""
+#         self.results.add_list(objs, clear=True)
+#         has_selection = self.results.get_selected() is not None
+#         self.wizard.refresh_next(has_selection)
 
-    def on_orders__selection_changed(self, *args):
+    def _on_results__selection_changed(self, results, purchase_order_view):
         self.force_validation()
         self._update_view()
 
+    def _on_results__row_activated(self, results, purchase_order_view):
+        run_dialog(PurchaseDetailsDialog, self, self.conn,
+                   model=purchase_order_view.purchase)
+
     def on_details_button__clicked(self, *args):
-        selected = self.orders.get_selected()
+        selected = self.search.results.get_selected()
         if not selected:
             raise ValueError('You should have one order selected '
                              'at this point, got nothing')

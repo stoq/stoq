@@ -31,20 +31,8 @@
                         </child>
                     </widget>
                     <packing>
-                        <property name="expand">False</property>
+                        <property name="expand">True</property>
                         <property name="position">1</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="ObjectList" id="orders">
-                        <property name="is_focus">True</property>
-                        <property name="selection_mode">single</property>
-                        <property name="shadow_type">in</property>
-                        <property name="visible">True</property>
-                        <property name="vscrollbar_policy">automatic</property>
-                    </widget>
-                    <packing>
-                        <property name="position">2</property>
                     </packing>
                 </child>
                 <child>
@@ -75,7 +63,7 @@
                     </widget>
                     <packing>
                         <property name="expand">False</property>
-                        <property name="position">3</property>
+                        <property name="position">2</property>
                     </packing>
                 </child>
             </widget>

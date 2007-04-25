@@ -128,7 +128,7 @@ setup(name='stoqlib',
       description="A powerful retail system library",
       long_description="""
       Stoqlib offers many special tools for retail system applications
-      such reports infrastructure, basic dialogs and searchbars and
+      such reports infrastructure, basic dialogs, search windows and
       domain data in a persistent level.
       """,
       url=website,
