@@ -94,7 +94,7 @@ class StoqlibTransaction(Transaction):
 
     def get(self, obj):
         if not isinstance(obj, (SQLObject, InheritableSQLObject)):
-            raise TypeError("obj must be a SQLObject")
+            raise TypeError("obj must be a SQLObject, not %r" % (obj,))
 
         table = type(obj)
         return table.get(obj.id, connection=self)
