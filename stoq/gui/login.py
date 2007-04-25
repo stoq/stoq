@@ -65,6 +65,9 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
 
         self.main_dialog = BasicWrappingDialog(self, self.title,
                                                size=self.size)
+        toplevel = self.main_dialog.get_toplevel()
+        icon = toplevel.render_icon('stoq-warehouse-app', gtk.ICON_SIZE_MENU)
+        toplevel.set_icon(icon)
 
         self.applications = applications
         self._setup_applist()
@@ -98,8 +101,7 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
                        expand=True, searchable=True)]
 
     def on_confirm(self):
-        app = self.klist.get_selected()
-        return app.name
+        return self.klist.get_selected()
 
     def on_cancel(self):
         return None

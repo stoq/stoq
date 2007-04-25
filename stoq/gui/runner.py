@@ -25,11 +25,11 @@
 import gettext
 import operator
 
+import gtk
 from kiwi.log import Logger
 from stoqlib.exceptions import LoginError
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.message import error, info
-
 from kiwi.component import get_utility
 
 from stoq.gui.login import LoginHelper
@@ -71,13 +71,13 @@ class ApplicationRunner(object):
 
         return splash
 
-    def _load_app(self, appname):
+    def _load_app(self, appdesc):
         splash = None
         # Only show the splash screen the first time
         if not self._current_app:
             splash = self._show_splash()
 
-        module = self._import(appname)
+        module = self._import(appdesc.name)
         window_class = module.main(self._login)
 
         from stoq.gui.application import App
@@ -86,6 +86,10 @@ class ApplicationRunner(object):
         if splash:
             import gobject
             gobject.idle_add(splash.hide)
+
+        toplevel = app.main_window.get_toplevel()
+        icon = toplevel.render_icon(appdesc.icon, gtk.ICON_SIZE_MENU)
+        toplevel.set_icon(icon)
 
         return app
 
@@ -129,26 +133,26 @@ class ApplicationRunner(object):
                                                    available_applications))
 
 
-    def run(self, appname):
+    def run(self, appdesc):
         """
         Runs an application
         @param appname: application to run
         """
-        if not self._user.profile.check_app_permission(appname):
+        if not self._user.profile.check_app_permission(appdesc.name):
             error(_("This user lacks credentials \nfor application %s") %
-                  appname)
+                  appdesc.name)
             return
 
         if self._current_app:
             self._current_app.hide()
 
-        app = self._application_cache.get(appname)
+        app = self._application_cache.get(appdesc.name)
         if app is None:
-            app = self._load_app(appname)
-            self._application_cache[appname] = app
+            app = self._load_app(appdesc)
+            self._application_cache[appdesc.name] = app
 
         self._current_app = app
-        self._appname = appname
+        self._appname = appdesc.name
 
         app.run()
 
@@ -188,3 +192,13 @@ class ApplicationRunner(object):
             self.run(appname)
 
 
+    def get_app_by_name(self, appname):
+        """
+        @param appname: a string
+        @returns: a L{Application} object
+        """
+        from stoq.lib.applist import Application
+        descriptions = get_utility(IApplicationDescriptions).get_descriptions()
+        for name, full, icon, descr in descriptions:
+            if name == appname:
+                return Application(name, full, icon, descr)
