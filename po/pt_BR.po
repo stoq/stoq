@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-19 11:34-0300\n"
+"POT-Creation-Date: 2007-04-25 17:44-0300\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -71,67 +71,71 @@ msgstr ""
 msgid "Choose application"
 msgstr "Selecione uma aplicação"
 
-#: ../stoq/gui/login.py:131 ../stoq/gui/login.py:137
+#: ../stoq/gui/login.py:133 ../stoq/gui/login.py:139
 msgid "Invalid user or password"
 msgstr "Usuário ou senha inválidos"
 
-#: ../stoq/gui/login.py:134
+#: ../stoq/gui/login.py:136
 msgid "This user is inactive"
 msgstr "Este usuário está inativo"
 
-#: ../stoq/gui/login.py:173
+#: ../stoq/gui/login.py:175
 msgid "Access Control"
 msgstr "Controle de acesso"
 
-#: ../stoq/gui/login.py:188
+#: ../stoq/gui/login.py:190
 msgid "specify an username"
 msgstr "especifique um usuário"
 
-#: ../stoq/gui/application.py:171
+#: ../stoq/gui/application.py:172
 msgid "_Store"
 msgstr "Gravar"
 
-#: ../stoq/gui/application.py:172
+#: ../stoq/gui/application.py:173
 msgid "Store a cookie"
 msgstr "Gravar Cookie"
 
-#: ../stoq/gui/application.py:173
+#: ../stoq/gui/application.py:174
 msgid "_Clear"
 msgstr "Limpar"
 
-#: ../stoq/gui/application.py:174
+#: ../stoq/gui/application.py:175
 msgid "Clear the cookie"
 msgstr "Limpar Cookie"
 
-#: ../stoq/gui/application.py:175
+#: ../stoq/gui/application.py:176
 msgid "C_hange User"
 msgstr "Trocar de Usuário"
 
-#: ../stoq/gui/application.py:176
+#: ../stoq/gui/application.py:177
 msgid "Change user"
 msgstr "Trocar de Usuário"
 
-#: ../stoq/gui/application.py:177
+#: ../stoq/gui/application.py:178
 msgid "Change Application"
 msgstr "Alternar Aplicação"
 
-#: ../stoq/gui/application.py:178
+#: ../stoq/gui/application.py:179
 msgid "Change application"
 msgstr "Alternar aplicação"
 
-#: ../stoq/gui/application.py:200
+#: ../stoq/gui/application.py:201
 msgid "Debug"
 msgstr "Debug"
 
-#: ../stoq/gui/application.py:201
+#: ../stoq/gui/application.py:202
 msgid "Introspect slaves"
 msgstr "Introspectar slave"
 
 #. This method must be redefined in child when it's needed
-#: ../stoq/gui/application.py:226
+#: ../stoq/gui/application.py:227
 #, python-format
 msgid "Stoq - %s"
 msgstr "Stoq - %s"
+
+#: ../stoq/gui/application.py:264
+msgid "Search:"
+msgstr "Pesquisar:"
 
 #: ../stoq/gui/config.py:94
 msgid "Trust"
@@ -242,7 +246,7 @@ msgstr "O password fornecido não é válido."
 msgid "Setting up Stoq"
 msgstr "Configurando o Stoq"
 
-#: ../stoq/gui/runner.py:138
+#: ../stoq/gui/runner.py:142
 #, python-format
 msgid ""
 "This user lacks credentials \n"
@@ -251,65 +255,63 @@ msgstr ""
 "Este usuário não tem credencial \n"
 "para a aplicação %s"
 
-#: ../stoq/gui/payable/payable.py:54 ../stoq/gui/payable/__init__.py:30
+#: ../stoq/gui/payable/payable.py:55 ../stoq/gui/payable/__init__.py:30
 msgid "Payable"
 msgstr "Contas a Pagar"
 
-#: ../stoq/gui/payable/payable.py:59 ../stoq/gui/receivable/receivable.py:60
-msgid "payment"
-msgstr "pagamentos"
-
-#: ../stoq/gui/payable/payable.py:59 ../stoq/gui/receivable/receivable.py:60
-msgid "payments"
-msgstr "pagamentos"
-
-#: ../stoq/gui/payable/payable.py:60 ../stoq/gui/purchase/purchase.py:62
-#: ../stoq/gui/admin/admin.py:63 ../stoq/gui/sales/sales.py:60
-#: ../stoq/gui/till/till.py:69 ../stoq/gui/receivable/receivable.py:61
+#: ../stoq/gui/payable/payable.py:59 ../stoq/gui/purchase/purchase.py:61
+#: ../stoq/gui/admin/admin.py:65 ../stoq/gui/sales/sales.py:59
+#: ../stoq/gui/till/till.py:68 ../stoq/gui/receivable/receivable.py:80
 msgid "matching:"
 msgstr "contendo:"
 
-#: ../stoq/gui/payable/payable.py:61 ../stoq/gui/receivable/receivable.py:62
+#: ../stoq/gui/payable/payable.py:74 ../stoq/gui/sales/sales.py:81
+#: ../stoq/gui/till/till.py:96 ../stoq/gui/receivable/receivable.py:113
+msgid "Paid or due date:"
+msgstr "Pagamento ou vencimento:"
+
+#: ../stoq/gui/payable/payable.py:78 ../stoq/gui/receivable/receivable.py:118
 msgid "Show payments with status"
 msgstr "Exibir pagamentos com situação"
 
-#: ../stoq/gui/payable/payable.py:94 ../stoq/gui/purchase/purchase.py:200
-#: ../stoq/gui/admin/admin.py:73 ../stoq/gui/sales/sales.py:156
-#: ../stoq/gui/till/till.py:225 ../stoq/gui/receivable/receivable.py:92
-msgid "Any"
-msgstr "Qualquer"
-
-#: ../stoq/gui/payable/payable.py:102 ../stoq/gui/purchase/purchase.py:208
-#: ../stoq/gui/sales/sales.py:163 ../stoq/gui/till/till.py:235
-#: ../stoq/gui/receivable/receivable.py:100
+#: ../stoq/gui/payable/payable.py:83 ../stoq/gui/purchase/purchase.py:84
+#: ../stoq/gui/sales/sales.py:92 ../stoq/gui/till/till.py:110
+#: ../stoq/gui/receivable/receivable.py:123
 msgid "Number"
 msgstr "Número"
 
-#: ../stoq/gui/payable/payable.py:104 ../stoq/gui/warehouse/warehouse.py:114
-#: ../stoq/gui/receivable/receivable.py:102 ../stoq/gui/pos/pos.py:571
+#: ../stoq/gui/payable/payable.py:85 ../stoq/gui/warehouse/warehouse.py:81
+#: ../stoq/gui/warehouse/warehouse.py:140
+#: ../stoq/gui/receivable/receivable.py:125 ../stoq/gui/pos/pos.py:544
 msgid "Description"
 msgstr "Descrição"
 
-#: ../stoq/gui/payable/payable.py:106 ../stoq/gui/purchase/purchase.py:212
+#: ../stoq/gui/payable/payable.py:87 ../stoq/gui/purchase/purchase.py:88
 msgid "Supplier"
 msgstr "Fornecedor"
 
-#: ../stoq/gui/payable/payable.py:108 ../stoq/gui/receivable/receivable.py:106
+#: ../stoq/gui/payable/payable.py:89 ../stoq/gui/receivable/receivable.py:129
 msgid "Due Date"
 msgstr "Vencimento"
 
-#: ../stoq/gui/payable/payable.py:110 ../stoq/gui/receivable/receivable.py:108
+#: ../stoq/gui/payable/payable.py:91 ../stoq/gui/receivable/receivable.py:131
 msgid "Paid Date"
 msgstr "Data do Pagamento"
 
-#: ../stoq/gui/payable/payable.py:112 ../stoq/gui/admin/admin.py:93
-#: ../stoq/gui/receivable/receivable.py:110
+#: ../stoq/gui/payable/payable.py:93 ../stoq/gui/admin/admin.py:89
+#: ../stoq/gui/receivable/receivable.py:133
 msgid "Status"
 msgstr "Situação"
 
-#: ../stoq/gui/payable/payable.py:114 ../stoq/gui/receivable/receivable.py:112
+#: ../stoq/gui/payable/payable.py:95 ../stoq/gui/receivable/receivable.py:135
 msgid "Value"
 msgstr "Valor"
+
+#: ../stoq/gui/payable/payable.py:174 ../stoq/gui/purchase/purchase.py:220
+#: ../stoq/gui/admin/admin.py:97 ../stoq/gui/sales/sales.py:180
+#: ../stoq/gui/till/till.py:160 ../stoq/gui/receivable/receivable.py:104
+msgid "Any"
+msgstr "Qualquer"
 
 #: ../stoq/gui/payable/__init__.py:31
 msgid "Payable application."
@@ -317,75 +319,71 @@ msgstr ""
 "Aplicativo para gerenciamento e cadastro de\n"
 "pagamentos de contas e parcelas."
 
-#: ../stoq/gui/purchase/purchase.py:56 ../stoq/gui/purchase/__init__.py:29
+#: ../stoq/gui/purchase/purchase.py:57 ../stoq/gui/purchase/__init__.py:29
 msgid "Purchase"
 msgstr "Compras"
 
-#: ../stoq/gui/purchase/purchase.py:61 ../stoq/gui/till/till.py:68
-msgid "order"
-msgstr "pedido"
+#: ../stoq/gui/purchase/purchase.py:75
+msgid "Open date is:"
+msgstr "Data de Abertura é:"
 
-#: ../stoq/gui/purchase/purchase.py:61 ../stoq/gui/till/till.py:68
-msgid "orders"
-msgstr "pedidos"
-
-#: ../stoq/gui/purchase/purchase.py:63 ../stoq/gui/till/till.py:70
+#: ../stoq/gui/purchase/purchase.py:78 ../stoq/gui/till/till.py:99
 msgid "Show orders with status"
 msgstr "Exibir pedidos com situação"
 
-#: ../stoq/gui/purchase/purchase.py:74
+#: ../stoq/gui/purchase/purchase.py:86 ../stoq/gui/sales/sales.py:61
+#: ../stoq/gui/till/till.py:112
+msgid "Date Started"
+msgstr "Data de Abertura"
+
+#: ../stoq/gui/purchase/purchase.py:91
+msgid "Qty Ordered"
+msgstr "Qtde solicitada"
+
+#: ../stoq/gui/purchase/purchase.py:94
+msgid "Qty Received"
+msgstr "Qtde Recebida"
+
+#: ../stoq/gui/purchase/purchase.py:97
+msgid "Order Total"
+msgstr "Total do Pedido"
+
+#: ../stoq/gui/purchase/purchase.py:107
 msgid "Total:"
 msgstr "Total:"
 
-#: ../stoq/gui/purchase/purchase.py:148
+#: ../stoq/gui/purchase/purchase.py:179
 msgid "There are no orders with status pending in the selection"
 msgstr "Não há nenhum pedido pendente na seleção"
 
-#: ../stoq/gui/purchase/purchase.py:152
+#: ../stoq/gui/purchase/purchase.py:183
 #, python-format
 msgid "The %d selected orders will be marked as sent."
 msgstr "Os %d pedidos selecionados serão marcados como enviados."
 
-#: ../stoq/gui/purchase/purchase.py:155
+#: ../stoq/gui/purchase/purchase.py:186
 msgid "The selected order will be marked as sent."
 msgstr "O pedido selecionado será marcado como enviado."
 
-#: ../stoq/gui/purchase/purchase.py:156
+#: ../stoq/gui/purchase/purchase.py:187
 msgid "Don't Send"
 msgstr "Não Enviar"
 
-#: ../stoq/gui/purchase/purchase.py:156
+#: ../stoq/gui/purchase/purchase.py:187
 msgid "Send to supplier"
 msgstr "Enviar ao Fornecedor..."
 
-#: ../stoq/gui/purchase/purchase.py:174
+#: ../stoq/gui/purchase/purchase.py:206
 msgid "The selected order(s) will be cancelled."
 msgstr "O pedido selecionado será cancelado."
 
-#: ../stoq/gui/purchase/purchase.py:175
+#: ../stoq/gui/purchase/purchase.py:207
 msgid "Don't Cancel"
 msgstr "Não Cancelar"
 
-#: ../stoq/gui/purchase/purchase.py:175
+#: ../stoq/gui/purchase/purchase.py:207
 msgid "Cancel order(s)"
 msgstr "Cancelar Pedido(s)"
-
-#: ../stoq/gui/purchase/purchase.py:210 ../stoq/gui/sales/sales.py:64
-#: ../stoq/gui/till/till.py:237
-msgid "Date Started"
-msgstr "Data de Abertura"
-
-#: ../stoq/gui/purchase/purchase.py:215
-msgid "Qty Ordered"
-msgstr "Qtde solicitada"
-
-#: ../stoq/gui/purchase/purchase.py:218
-msgid "Qty Received"
-msgstr "Qtde Recebida"
-
-#: ../stoq/gui/purchase/purchase.py:221
-msgid "Order Total"
-msgstr "Total do Pedido"
 
 #: ../stoq/gui/purchase/__init__.py:30
 msgid "Purchase application."
@@ -393,7 +391,7 @@ msgstr ""
 "Aplicativo para execução dos pedidos\n"
 "de compras e cadastro de produtos."
 
-#: ../stoq/gui/admin/__init__.py:29 ../stoq/gui/admin/admin.py:58
+#: ../stoq/gui/admin/__init__.py:29 ../stoq/gui/admin/admin.py:61
 msgid "Administrative"
 msgstr "Administrativo"
 
@@ -403,31 +401,23 @@ msgstr ""
 "Aplicativo para administração\n"
 "e parametrização do sistema."
 
-#: ../stoq/gui/admin/admin.py:62
-msgid "user"
-msgstr "usuário"
-
-#: ../stoq/gui/admin/admin.py:62
-msgid "users"
-msgstr "usuários"
-
-#: ../stoq/gui/admin/admin.py:64
+#: ../stoq/gui/admin/admin.py:74
 msgid "Show users with status"
 msgstr "Exibir usuários com situação"
 
-#: ../stoq/gui/admin/admin.py:85
+#: ../stoq/gui/admin/admin.py:81
 msgid "Login Name"
 msgstr "Usuário"
 
-#: ../stoq/gui/admin/admin.py:87
+#: ../stoq/gui/admin/admin.py:83
 msgid "Profile"
 msgstr "Perfil"
 
-#: ../stoq/gui/admin/admin.py:90
+#: ../stoq/gui/admin/admin.py:86
 msgid "Name"
 msgstr "Nome"
 
-#: ../stoq/gui/sales/__init__.py:29 ../stoq/gui/sales/sales.py:54
+#: ../stoq/gui/sales/__init__.py:29 ../stoq/gui/sales/sales.py:55
 msgid "Sales"
 msgstr "Vendas"
 
@@ -437,56 +427,48 @@ msgstr ""
 "Aplicativo para gerenciamento e cadastro de\n"
 "vale compras, impressão de notas fiscais."
 
-#: ../stoq/gui/sales/sales.py:59
-msgid "sale"
-msgstr "venda"
-
-#: ../stoq/gui/sales/sales.py:59 ../data/glade/sales_app.glade.h:28
-msgid "sales"
-msgstr "vendas"
-
-#: ../stoq/gui/sales/sales.py:61
-msgid "Show sales with status"
-msgstr "Exibir vendas com situação"
-
-#: ../stoq/gui/sales/sales.py:65
+#: ../stoq/gui/sales/sales.py:62
 msgid "Confirm Date"
 msgstr "Data de Confirmação"
 
-#: ../stoq/gui/sales/sales.py:66
+#: ../stoq/gui/sales/sales.py:63
 msgid "Close Date"
 msgstr "Data de Fechamento:"
 
-#: ../stoq/gui/sales/sales.py:67
+#: ../stoq/gui/sales/sales.py:64
 msgid "Cancel Date"
 msgstr "Data de Cancelamento"
 
-#: ../stoq/gui/sales/sales.py:126
-msgid "Printing Invoice"
-msgstr "Imprimindo Nota Fiscal"
+#: ../stoq/gui/sales/sales.py:84
+msgid "Show sales with status"
+msgstr "Exibir vendas com situação"
 
-#: ../stoq/gui/sales/sales.py:127
-msgid "Preview Model"
-msgstr "Exibir Modelo"
-
-#: ../stoq/gui/sales/sales.py:165 ../stoq/gui/till/till.py:239
+#: ../stoq/gui/sales/sales.py:94 ../stoq/gui/till/till.py:114
 msgid "Client"
 msgstr "Cliente"
 
-#: ../stoq/gui/sales/sales.py:167 ../stoq/gui/till/till.py:241
+#: ../stoq/gui/sales/sales.py:96 ../stoq/gui/till/till.py:116
 msgid "Salesperson"
 msgstr "Vendedor"
 
-#: ../stoq/gui/sales/sales.py:169 ../stoq/gui/till/till.py:243
+#: ../stoq/gui/sales/sales.py:98 ../stoq/gui/till/till.py:118
 msgid "Items Quantity"
 msgstr "Quantidade de Itens"
 
-#: ../stoq/gui/sales/sales.py:172 ../stoq/gui/till/till.py:246
-#: ../stoq/gui/pos/pos.py:580
+#: ../stoq/gui/sales/sales.py:101 ../stoq/gui/till/till.py:121
+#: ../stoq/gui/pos/pos.py:553
 msgid "Total"
 msgstr "Total"
 
-#: ../stoq/gui/till/__init__.py:29 ../stoq/gui/till/till.py:63
+#: ../stoq/gui/sales/sales.py:154
+msgid "Printing Invoice"
+msgstr "Imprimindo Nota Fiscal"
+
+#: ../stoq/gui/sales/sales.py:155
+msgid "Preview Model"
+msgstr "Exibir Modelo"
+
+#: ../stoq/gui/till/__init__.py:29 ../stoq/gui/till/till.py:64
 msgid "Till"
 msgstr "Caixa"
 
@@ -496,30 +478,30 @@ msgstr ""
 "Aplicativo para abertura e fechamento do \n"
 "caixa, suprimento e sangria."
 
-#: ../stoq/gui/till/till.py:88 ../stoq/gui/pos/pos.py:136
-#, python-format
-msgid "Total: %s"
-msgstr "Total: %s"
-
-#: ../stoq/gui/till/till.py:140
-msgid "Till Closed"
-msgstr "Caixa Fechado"
-
-#: ../stoq/gui/till/till.py:145
-#, python-format
-msgid "Till Opened on %s"
-msgstr "Caixa Aberto em %s"
-
-#: ../stoq/gui/till/till.py:194
-msgid "Confirm Sale"
-msgstr "Confirmar a Venda"
-
-#: ../stoq/gui/till/till.py:232
+#: ../stoq/gui/till/till.py:107
 #, python-format
 msgid "Stoq - Till for Branch %03d"
 msgstr "Stoq - Caixa para Unidade %03d"
 
-#: ../stoq/gui/till/till.py:262 ../stoq/gui/pos/pos.py:634
+#: ../stoq/gui/till/till.py:167
+msgid "Confirm Sale"
+msgstr "Confirmar a Venda"
+
+#: ../stoq/gui/till/till.py:185 ../stoq/gui/pos/pos.py:136
+#, python-format
+msgid "Total: %s"
+msgstr "Total: %s"
+
+#: ../stoq/gui/till/till.py:237
+msgid "Till Closed"
+msgstr "Caixa Fechado"
+
+#: ../stoq/gui/till/till.py:241
+#, python-format
+msgid "Till Opened on %s"
+msgstr "Caixa Aberto em %s"
+
+#: ../stoq/gui/till/till.py:270 ../stoq/gui/pos/pos.py:607
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
@@ -529,16 +511,16 @@ msgstr ""
 "\n"
 "Fechar o caixa?"
 
-#: ../stoq/gui/till/till.py:264 ../stoq/gui/pos/pos.py:490
-#: ../stoq/gui/pos/pos.py:636
+#: ../stoq/gui/till/till.py:272 ../stoq/gui/pos/pos.py:463
+#: ../stoq/gui/pos/pos.py:609
 msgid "Not now"
 msgstr "Não agora"
 
-#: ../stoq/gui/till/till.py:264 ../stoq/gui/pos/pos.py:636
+#: ../stoq/gui/till/till.py:272 ../stoq/gui/pos/pos.py:609
 msgid "Close Till"
 msgstr "Fechar o caixa..."
 
-#: ../stoq/gui/warehouse/__init__.py:29 ../stoq/gui/warehouse/warehouse.py:53
+#: ../stoq/gui/warehouse/__init__.py:29 ../stoq/gui/warehouse/warehouse.py:54
 msgid "Warehouse"
 msgstr "Almoxarifado"
 
@@ -548,48 +530,51 @@ msgstr ""
 "Aplicativo para recebimento de compra e\n"
 "transferência de estoque."
 
-#: ../stoq/gui/warehouse/warehouse.py:57
-msgid "product"
-msgstr "produto"
-
-#: ../stoq/gui/warehouse/warehouse.py:57
-msgid "products"
-msgstr "produtos"
-
 #: ../stoq/gui/warehouse/warehouse.py:58
 msgid "Matching:"
 msgstr "contendo:"
 
-#: ../stoq/gui/warehouse/warehouse.py:59
+#: ../stoq/gui/warehouse/warehouse.py:74
 msgid "Show products at:"
 msgstr "Exibir produtos em"
 
-#: ../stoq/gui/warehouse/warehouse.py:73
-msgid "<b>Stock Total:</b>"
-msgstr "<b>Estoque Total</b>"
-
-#: ../stoq/gui/warehouse/warehouse.py:112
+#: ../stoq/gui/warehouse/warehouse.py:79
+#: ../stoq/gui/warehouse/warehouse.py:138
 msgid "Code"
 msgstr "Código"
 
-#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:575
+#: ../stoq/gui/warehouse/warehouse.py:85
+#: ../stoq/gui/warehouse/warehouse.py:144 ../stoq/gui/pos/pos.py:548
 msgid "Quantity"
 msgstr "Quantidade"
 
-#: ../stoq/gui/warehouse/warehouse.py:120 ../stoq/gui/pos/pos.py:578
+#: ../stoq/gui/warehouse/warehouse.py:87
+#: ../stoq/gui/warehouse/warehouse.py:146 ../stoq/gui/pos/pos.py:551
 msgid "Unit"
 msgstr "Unidade"
 
-#: ../stoq/gui/warehouse/warehouse.py:159
+#: ../stoq/gui/warehouse/warehouse.py:102
+msgid "<b>Stock Total:</b>"
+msgstr "<b>Estoque Total</b>"
+
+#: ../stoq/gui/warehouse/warehouse.py:115
+msgid "All branches"
+msgstr "Todas as Unidades"
+
+#: ../stoq/gui/warehouse/warehouse.py:170
 msgid "You must have at least one item in stock to perfom this action."
 msgstr "É necessário ao menos um item em estoque para realizar esta ação."
 
 #: ../stoq/gui/receivable/receivable.py:55
+msgid "Next month"
+msgstr "Próximo mês"
+
+#: ../stoq/gui/receivable/receivable.py:75
 #: ../stoq/gui/receivable/__init__.py:29
 msgid "Receivable"
 msgstr "Contas a Receber"
 
-#: ../stoq/gui/receivable/receivable.py:104
+#: ../stoq/gui/receivable/receivable.py:127
 msgid "Drawee"
 msgstr "Sacado"
 
@@ -609,10 +594,6 @@ msgstr ""
 "Aplicativo para cadastro de venda de\n"
 "produtos e emissão de cupom fiscal."
 
-#: ../stoq/gui/pos/app.py:47
-msgid "You need to open the till before start doing sales."
-msgstr "Você precisa abrir o caixa antes de começar as vendas."
-
 #: ../stoq/gui/pos/pos.py:126
 msgid "Close"
 msgstr "Fechar"
@@ -620,7 +601,7 @@ msgstr "Fechar"
 #. It's not a common operation to add more than one item at
 #. a time, it's also problematic since you'd have to show
 #. one dialog per service item. See #3092
-#: ../stoq/gui/pos/pos.py:193
+#: ../stoq/gui/pos/pos.py:166
 msgid ""
 "Only one service was added since its not possible toadd more than one "
 "service to an order at a time."
@@ -628,7 +609,7 @@ msgstr ""
 "Apenas um serviço deve ser adicionado pois não é possivel adicionar mas que "
 "um serviço por ordem ao mesmo tempo."
 
-#: ../stoq/gui/pos/pos.py:311
+#: ../stoq/gui/pos/pos.py:284
 msgid ""
 "There is no stock of this product in this branch, please, select another "
 "item."
@@ -636,74 +617,74 @@ msgstr ""
 "Não existe estoque deste produto nesta unidade da empresa. por favor "
 "selecione outro item."
 
-#: ../stoq/gui/pos/pos.py:313
+#: ../stoq/gui/pos/pos.py:286
 msgid "Can not sell this product"
 msgstr "Não é possivel vender este produto"
 
-#: ../stoq/gui/pos/pos.py:365
+#: ../stoq/gui/pos/pos.py:338
 msgid "You need open the till before start doing sales."
 msgstr "Você precisa abrir o caixa antes de começar as vendas."
 
-#: ../stoq/gui/pos/pos.py:372
+#: ../stoq/gui/pos/pos.py:345
 msgid "You can't start a new sale, since you are not a salesperson."
 msgstr "Você não pode iniciar uma nova venda, desde que você não é um vendedor"
 
-#: ../stoq/gui/pos/pos.py:402
+#: ../stoq/gui/pos/pos.py:375
 msgid "The current order will be canceled, Confirm?"
 msgstr "O pedido atual será cancelado, confirmar?"
 
-#: ../stoq/gui/pos/pos.py:403
+#: ../stoq/gui/pos/pos.py:376
 msgid "Go Back"
 msgstr "Voltar"
 
-#: ../stoq/gui/pos/pos.py:403 ../data/glade/pos.glade.h:9
+#: ../stoq/gui/pos/pos.py:376 ../data/glade/pos.glade.h:9
 msgid "Cancel Order"
 msgstr "Cancelar Pedido"
 
-#: ../stoq/gui/pos/pos.py:416
+#: ../stoq/gui/pos/pos.py:389
 msgid "You don't have products to delivery."
 msgstr "Não há produtos para entrega."
 
-#: ../stoq/gui/pos/pos.py:424
+#: ../stoq/gui/pos/pos.py:397
 msgid "All the products already have delivery instructions"
 msgstr "Todos os produtos já tem instruções de entrega"
 
-#: ../stoq/gui/pos/pos.py:489
+#: ../stoq/gui/pos/pos.py:462
 msgid "Do you really want to cancel the last order?"
 msgstr "Está certo que deseja cancelar o ultimo pedido?"
 
-#: ../stoq/gui/pos/pos.py:490 ../data/glade/pos.glade.h:8
+#: ../stoq/gui/pos/pos.py:463 ../data/glade/pos.glade.h:8
 msgid "Cancel Last Order"
 msgstr "Cancelar Ultimo Pedido"
 
-#: ../stoq/gui/pos/pos.py:495
+#: ../stoq/gui/pos/pos.py:468
 msgid "Cancelling sale failed, nothing to cancel"
 msgstr "Cancelamento de venda falhou, nenhum cancelamento feito"
 
-#: ../stoq/gui/pos/pos.py:497
+#: ../stoq/gui/pos/pos.py:470
 msgid "Sale was cancelled"
 msgstr "Venda cancelada"
 
-#: ../stoq/gui/pos/pos.py:519
+#: ../stoq/gui/pos/pos.py:492
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 "Não é possível iniciar uma nova venda se o coupon fiscal não puder ser "
 "aberto."
 
-#: ../stoq/gui/pos/pos.py:521
+#: ../stoq/gui/pos/pos.py:494
 msgid "Try Again"
 msgstr "Tente Novamente"
 
-#: ../stoq/gui/pos/pos.py:521 ../data/glade/purchase.glade.h:6
+#: ../stoq/gui/pos/pos.py:494 ../data/glade/purchase.glade.h:6
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: ../stoq/gui/pos/pos.py:567
+#: ../stoq/gui/pos/pos.py:540
 msgid "Reference"
 msgstr "Referência"
 
-#: ../stoq/gui/pos/pos.py:573
+#: ../stoq/gui/pos/pos.py:546
 msgid "Price"
 msgstr "Preço"
 
@@ -866,6 +847,10 @@ msgstr "Im_primir Nota Fiscal"
 #: ../data/glade/warehouse.glade.h:28 ../data/glade/payable.glade.h:22
 msgid "_User"
 msgstr "_Usuario"
+
+#: ../data/glade/sales_app.glade.h:28
+msgid "sales"
+msgstr "vendas"
 
 #: ../data/glade/till.glade.h:2
 msgid "Add cash..."
@@ -1430,6 +1415,36 @@ msgstr "Contas a _Pagar"
 #: ../data/glade/payable.glade.h:23
 msgid "payable"
 msgstr "Contas a Pagar"
+
+#~ msgid "payment"
+#~ msgstr "pagamentos"
+
+#~ msgid "payments"
+#~ msgstr "pagamentos"
+
+#~ msgid "order"
+#~ msgstr "pedido"
+
+#~ msgid "orders"
+#~ msgstr "pedidos"
+
+#~ msgid "user"
+#~ msgstr "usuário"
+
+#~ msgid "users"
+#~ msgstr "usuários"
+
+#~ msgid "sale"
+#~ msgstr "venda"
+
+#~ msgid "product"
+#~ msgstr "produto"
+
+#~ msgid "products"
+#~ msgstr "produtos"
+
+#~ msgid "You need to open the till before start doing sales."
+#~ msgstr "Você precisa abrir o caixa antes de começar as vendas."
 
 #~ msgid ""
 #~ "Warning: there are %d order(s) with status different than pending that "
@@ -2264,9 +2279,6 @@ msgstr "Contas a Pagar"
 
 #~ msgid "Years"
 #~ msgstr "Anos"
-
-#~ msgid "All branches"
-#~ msgstr "Todas as Unidades"
 
 #~ msgid "Individual/Company Data"
 #~ msgstr "Dados de Pessoa Física/Pessoa Jurídica"
@@ -3175,9 +3187,6 @@ msgstr "Contas a Pagar"
 
 #~ msgid "Notes:"
 #~ msgstr "Notas:"
-
-#~ msgid "Open Date:"
-#~ msgstr "Data de Abertura:"
 
 #~ msgid "Order Status:"
 #~ msgstr "Situação do Pedido:"

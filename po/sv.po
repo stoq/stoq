@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-19 11:34-0300\n"
+"POT-Creation-Date: 2007-04-25 17:44-0300\n"
 "PO-Revision-Date: 2006-08-25 16:15-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -52,67 +52,72 @@ msgstr ""
 msgid "Choose application"
 msgstr ""
 
-#: ../stoq/gui/login.py:131 ../stoq/gui/login.py:137
+#: ../stoq/gui/login.py:133 ../stoq/gui/login.py:139
 msgid "Invalid user or password"
 msgstr ""
 
-#: ../stoq/gui/login.py:134
+#: ../stoq/gui/login.py:136
 msgid "This user is inactive"
 msgstr "Den här användaren är inaktiv"
 
-#: ../stoq/gui/login.py:173
+#: ../stoq/gui/login.py:175
 msgid "Access Control"
 msgstr ""
 
-#: ../stoq/gui/login.py:188
+#: ../stoq/gui/login.py:190
 msgid "specify an username"
 msgstr ""
 
-#: ../stoq/gui/application.py:171
+#: ../stoq/gui/application.py:172
 msgid "_Store"
 msgstr "_Lagra"
 
-#: ../stoq/gui/application.py:172
+#: ../stoq/gui/application.py:173
 msgid "Store a cookie"
 msgstr "Lagra en kaka"
 
-#: ../stoq/gui/application.py:173
+#: ../stoq/gui/application.py:174
 msgid "_Clear"
 msgstr "_Rensa"
 
-#: ../stoq/gui/application.py:174
+#: ../stoq/gui/application.py:175
 msgid "Clear the cookie"
 msgstr "Rensa kakan"
 
-#: ../stoq/gui/application.py:175
+#: ../stoq/gui/application.py:176
 msgid "C_hange User"
 msgstr "_Byt användare"
 
-#: ../stoq/gui/application.py:176
+#: ../stoq/gui/application.py:177
 msgid "Change user"
 msgstr "Byt användare"
 
-#: ../stoq/gui/application.py:177
+#: ../stoq/gui/application.py:178
 msgid "Change Application"
 msgstr ""
 
-#: ../stoq/gui/application.py:178
+#: ../stoq/gui/application.py:179
 msgid "Change application"
 msgstr ""
 
-#: ../stoq/gui/application.py:200
+#: ../stoq/gui/application.py:201
 msgid "Debug"
 msgstr ""
 
-#: ../stoq/gui/application.py:201
+#: ../stoq/gui/application.py:202
 msgid "Introspect slaves"
 msgstr ""
 
 #. This method must be redefined in child when it's needed
-#: ../stoq/gui/application.py:226
+#: ../stoq/gui/application.py:227
 #, python-format
 msgid "Stoq - %s"
 msgstr "Stoq - %s"
+
+#: ../stoq/gui/application.py:264
+#, fuzzy
+msgid "Search:"
+msgstr "_Sök"
 
 #: ../stoq/gui/config.py:94
 msgid "Trust"
@@ -207,160 +212,155 @@ msgstr ""
 msgid "Setting up Stoq"
 msgstr ""
 
-#: ../stoq/gui/runner.py:138
+#: ../stoq/gui/runner.py:142
 #, python-format
 msgid ""
 "This user lacks credentials \n"
 "for application %s"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:54 ../stoq/gui/payable/__init__.py:30
+#: ../stoq/gui/payable/payable.py:55 ../stoq/gui/payable/__init__.py:30
 msgid "Payable"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:59 ../stoq/gui/receivable/receivable.py:60
-msgid "payment"
-msgstr ""
-
-#: ../stoq/gui/payable/payable.py:59 ../stoq/gui/receivable/receivable.py:60
-msgid "payments"
-msgstr ""
-
-#: ../stoq/gui/payable/payable.py:60 ../stoq/gui/purchase/purchase.py:62
-#: ../stoq/gui/admin/admin.py:63 ../stoq/gui/sales/sales.py:60
-#: ../stoq/gui/till/till.py:69 ../stoq/gui/receivable/receivable.py:61
+#: ../stoq/gui/payable/payable.py:59 ../stoq/gui/purchase/purchase.py:61
+#: ../stoq/gui/admin/admin.py:65 ../stoq/gui/sales/sales.py:59
+#: ../stoq/gui/till/till.py:68 ../stoq/gui/receivable/receivable.py:80
 msgid "matching:"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:61 ../stoq/gui/receivable/receivable.py:62
+#: ../stoq/gui/payable/payable.py:74 ../stoq/gui/sales/sales.py:81
+#: ../stoq/gui/till/till.py:96 ../stoq/gui/receivable/receivable.py:113
+#, fuzzy
+msgid "Paid or due date:"
+msgstr "_Nollställ order"
+
+#: ../stoq/gui/payable/payable.py:78 ../stoq/gui/receivable/receivable.py:118
 #, fuzzy
 msgid "Show payments with status"
 msgstr "Ingen produkt vald"
 
-#: ../stoq/gui/payable/payable.py:94 ../stoq/gui/purchase/purchase.py:200
-#: ../stoq/gui/admin/admin.py:73 ../stoq/gui/sales/sales.py:156
-#: ../stoq/gui/till/till.py:225 ../stoq/gui/receivable/receivable.py:92
-msgid "Any"
-msgstr ""
-
-#: ../stoq/gui/payable/payable.py:102 ../stoq/gui/purchase/purchase.py:208
-#: ../stoq/gui/sales/sales.py:163 ../stoq/gui/till/till.py:235
-#: ../stoq/gui/receivable/receivable.py:100
+#: ../stoq/gui/payable/payable.py:83 ../stoq/gui/purchase/purchase.py:84
+#: ../stoq/gui/sales/sales.py:92 ../stoq/gui/till/till.py:110
+#: ../stoq/gui/receivable/receivable.py:123
 msgid "Number"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:104 ../stoq/gui/warehouse/warehouse.py:114
-#: ../stoq/gui/receivable/receivable.py:102 ../stoq/gui/pos/pos.py:571
+#: ../stoq/gui/payable/payable.py:85 ../stoq/gui/warehouse/warehouse.py:81
+#: ../stoq/gui/warehouse/warehouse.py:140
+#: ../stoq/gui/receivable/receivable.py:125 ../stoq/gui/pos/pos.py:544
 msgid "Description"
 msgstr "Beskrivning"
 
-#: ../stoq/gui/payable/payable.py:106 ../stoq/gui/purchase/purchase.py:212
+#: ../stoq/gui/payable/payable.py:87 ../stoq/gui/purchase/purchase.py:88
 msgid "Supplier"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:108 ../stoq/gui/receivable/receivable.py:106
+#: ../stoq/gui/payable/payable.py:89 ../stoq/gui/receivable/receivable.py:129
 msgid "Due Date"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:110 ../stoq/gui/receivable/receivable.py:108
+#: ../stoq/gui/payable/payable.py:91 ../stoq/gui/receivable/receivable.py:131
 #, fuzzy
 msgid "Paid Date"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/payable/payable.py:112 ../stoq/gui/admin/admin.py:93
-#: ../stoq/gui/receivable/receivable.py:110
+#: ../stoq/gui/payable/payable.py:93 ../stoq/gui/admin/admin.py:89
+#: ../stoq/gui/receivable/receivable.py:133
 msgid "Status"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:114 ../stoq/gui/receivable/receivable.py:112
+#: ../stoq/gui/payable/payable.py:95 ../stoq/gui/receivable/receivable.py:135
 msgid "Value"
+msgstr ""
+
+#: ../stoq/gui/payable/payable.py:174 ../stoq/gui/purchase/purchase.py:220
+#: ../stoq/gui/admin/admin.py:97 ../stoq/gui/sales/sales.py:180
+#: ../stoq/gui/till/till.py:160 ../stoq/gui/receivable/receivable.py:104
+msgid "Any"
 msgstr ""
 
 #: ../stoq/gui/payable/__init__.py:31
 msgid "Payable application."
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:56 ../stoq/gui/purchase/__init__.py:29
+#: ../stoq/gui/purchase/purchase.py:57 ../stoq/gui/purchase/__init__.py:29
 msgid "Purchase"
 msgstr "Köp"
 
-#: ../stoq/gui/purchase/purchase.py:61 ../stoq/gui/till/till.py:68
-msgid "order"
-msgstr "order"
+#: ../stoq/gui/purchase/purchase.py:75
+msgid "Open date is:"
+msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:61 ../stoq/gui/till/till.py:68
-msgid "orders"
-msgstr "order"
-
-#: ../stoq/gui/purchase/purchase.py:63 ../stoq/gui/till/till.py:70
+#: ../stoq/gui/purchase/purchase.py:78 ../stoq/gui/till/till.py:99
 #, fuzzy
 msgid "Show orders with status"
 msgstr "Ingen produkt vald"
 
-#: ../stoq/gui/purchase/purchase.py:74
-msgid "Total:"
-msgstr "Total:"
-
-#: ../stoq/gui/purchase/purchase.py:148
-msgid "There are no orders with status pending in the selection"
-msgstr ""
-
-#: ../stoq/gui/purchase/purchase.py:152
-#, python-format
-msgid "The %d selected orders will be marked as sent."
-msgstr ""
-
-#: ../stoq/gui/purchase/purchase.py:155
-msgid "The selected order will be marked as sent."
-msgstr ""
-
-#: ../stoq/gui/purchase/purchase.py:156
-msgid "Don't Send"
-msgstr ""
-
-#: ../stoq/gui/purchase/purchase.py:156
-msgid "Send to supplier"
-msgstr ""
-
-#: ../stoq/gui/purchase/purchase.py:174
-msgid "The selected order(s) will be cancelled."
-msgstr ""
-
-#: ../stoq/gui/purchase/purchase.py:175
-#, fuzzy
-msgid "Don't Cancel"
-msgstr "_Nollställ order"
-
-#: ../stoq/gui/purchase/purchase.py:175
-#, fuzzy
-msgid "Cancel order(s)"
-msgstr "_Nollställ order"
-
-#: ../stoq/gui/purchase/purchase.py:210 ../stoq/gui/sales/sales.py:64
-#: ../stoq/gui/till/till.py:237
+#: ../stoq/gui/purchase/purchase.py:86 ../stoq/gui/sales/sales.py:61
+#: ../stoq/gui/till/till.py:112
 msgid "Date Started"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:215
+#: ../stoq/gui/purchase/purchase.py:91
 #, fuzzy
 msgid "Qty Ordered"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/purchase/purchase.py:218
+#: ../stoq/gui/purchase/purchase.py:94
 #, fuzzy
 msgid "Qty Received"
 msgstr "Antal"
 
-#: ../stoq/gui/purchase/purchase.py:221
+#: ../stoq/gui/purchase/purchase.py:97
 #, fuzzy
 msgid "Order Total"
 msgstr "Totalt"
+
+#: ../stoq/gui/purchase/purchase.py:107
+msgid "Total:"
+msgstr "Total:"
+
+#: ../stoq/gui/purchase/purchase.py:179
+msgid "There are no orders with status pending in the selection"
+msgstr ""
+
+#: ../stoq/gui/purchase/purchase.py:183
+#, python-format
+msgid "The %d selected orders will be marked as sent."
+msgstr ""
+
+#: ../stoq/gui/purchase/purchase.py:186
+msgid "The selected order will be marked as sent."
+msgstr ""
+
+#: ../stoq/gui/purchase/purchase.py:187
+msgid "Don't Send"
+msgstr ""
+
+#: ../stoq/gui/purchase/purchase.py:187
+msgid "Send to supplier"
+msgstr ""
+
+#: ../stoq/gui/purchase/purchase.py:206
+msgid "The selected order(s) will be cancelled."
+msgstr ""
+
+#: ../stoq/gui/purchase/purchase.py:207
+#, fuzzy
+msgid "Don't Cancel"
+msgstr "_Nollställ order"
+
+#: ../stoq/gui/purchase/purchase.py:207
+#, fuzzy
+msgid "Cancel order(s)"
+msgstr "_Nollställ order"
 
 #: ../stoq/gui/purchase/__init__.py:30
 msgid "Purchase application."
 msgstr ""
 
-#: ../stoq/gui/admin/__init__.py:29 ../stoq/gui/admin/admin.py:58
+#: ../stoq/gui/admin/__init__.py:29 ../stoq/gui/admin/admin.py:61
 msgid "Administrative"
 msgstr ""
 
@@ -368,35 +368,25 @@ msgstr ""
 msgid "Administrative application."
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:62
-#, fuzzy
-msgid "user"
-msgstr "_Användare"
-
-#: ../stoq/gui/admin/admin.py:62
-#, fuzzy
-msgid "users"
-msgstr "_Användare"
-
-#: ../stoq/gui/admin/admin.py:64
+#: ../stoq/gui/admin/admin.py:74
 #, fuzzy
 msgid "Show users with status"
 msgstr "Ingen produkt vald"
 
-#: ../stoq/gui/admin/admin.py:85
+#: ../stoq/gui/admin/admin.py:81
 msgid "Login Name"
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:87
+#: ../stoq/gui/admin/admin.py:83
 #, fuzzy
 msgid "Profile"
 msgstr "Pris"
 
-#: ../stoq/gui/admin/admin.py:90
+#: ../stoq/gui/admin/admin.py:86
 msgid "Name"
 msgstr ""
 
-#: ../stoq/gui/sales/__init__.py:29 ../stoq/gui/sales/sales.py:54
+#: ../stoq/gui/sales/__init__.py:29 ../stoq/gui/sales/sales.py:55
 #, fuzzy
 msgid "Sales"
 msgstr "_Försäljning"
@@ -405,63 +395,53 @@ msgstr "_Försäljning"
 msgid "Sales application."
 msgstr ""
 
-#: ../stoq/gui/sales/sales.py:59
-#, fuzzy
-msgid "sale"
-msgstr "_Försäljning"
-
-#: ../stoq/gui/sales/sales.py:59 ../data/glade/sales_app.glade.h:28
-#, fuzzy
-msgid "sales"
-msgstr "_Försäljning"
-
-#: ../stoq/gui/sales/sales.py:61
-#, fuzzy
-msgid "Show sales with status"
-msgstr "Ingen produkt vald"
-
-#: ../stoq/gui/sales/sales.py:65
+#: ../stoq/gui/sales/sales.py:62
 msgid "Confirm Date"
 msgstr ""
 
-#: ../stoq/gui/sales/sales.py:66
+#: ../stoq/gui/sales/sales.py:63
 #, fuzzy
 msgid "Close Date"
 msgstr "Kod"
 
-#: ../stoq/gui/sales/sales.py:67
+#: ../stoq/gui/sales/sales.py:64
 #, fuzzy
 msgid "Cancel Date"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/sales/sales.py:126
-msgid "Printing Invoice"
-msgstr ""
-
-#: ../stoq/gui/sales/sales.py:127
+#: ../stoq/gui/sales/sales.py:84
 #, fuzzy
-msgid "Preview Model"
-msgstr "Pris"
+msgid "Show sales with status"
+msgstr "Ingen produkt vald"
 
-#: ../stoq/gui/sales/sales.py:165 ../stoq/gui/till/till.py:239
+#: ../stoq/gui/sales/sales.py:94 ../stoq/gui/till/till.py:114
 msgid "Client"
 msgstr ""
 
-#: ../stoq/gui/sales/sales.py:167 ../stoq/gui/till/till.py:241
+#: ../stoq/gui/sales/sales.py:96 ../stoq/gui/till/till.py:116
 msgid "Salesperson"
 msgstr ""
 
-#: ../stoq/gui/sales/sales.py:169 ../stoq/gui/till/till.py:243
+#: ../stoq/gui/sales/sales.py:98 ../stoq/gui/till/till.py:118
 #, fuzzy
 msgid "Items Quantity"
 msgstr "Antal"
 
-#: ../stoq/gui/sales/sales.py:172 ../stoq/gui/till/till.py:246
-#: ../stoq/gui/pos/pos.py:580
+#: ../stoq/gui/sales/sales.py:101 ../stoq/gui/till/till.py:121
+#: ../stoq/gui/pos/pos.py:553
 msgid "Total"
 msgstr "Totalt"
 
-#: ../stoq/gui/till/__init__.py:29 ../stoq/gui/till/till.py:63
+#: ../stoq/gui/sales/sales.py:154
+msgid "Printing Invoice"
+msgstr ""
+
+#: ../stoq/gui/sales/sales.py:155
+#, fuzzy
+msgid "Preview Model"
+msgstr "Pris"
+
+#: ../stoq/gui/till/__init__.py:29 ../stoq/gui/till/till.py:64
 msgid "Till"
 msgstr ""
 
@@ -469,48 +449,48 @@ msgstr ""
 msgid "Till application."
 msgstr ""
 
-#: ../stoq/gui/till/till.py:88 ../stoq/gui/pos/pos.py:136
-#, fuzzy, python-format
-msgid "Total: %s"
-msgstr "Totalt"
-
-#: ../stoq/gui/till/till.py:140
-#, fuzzy
-msgid "Till Closed"
-msgstr "Kod"
-
-#: ../stoq/gui/till/till.py:145
-#, python-format
-msgid "Till Opened on %s"
-msgstr ""
-
-#: ../stoq/gui/till/till.py:194
-msgid "Confirm Sale"
-msgstr ""
-
-#: ../stoq/gui/till/till.py:232
+#: ../stoq/gui/till/till.py:107
 #, python-format
 msgid "Stoq - Till for Branch %03d"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:262 ../stoq/gui/pos/pos.py:634
+#: ../stoq/gui/till/till.py:167
+msgid "Confirm Sale"
+msgstr ""
+
+#: ../stoq/gui/till/till.py:185 ../stoq/gui/pos/pos.py:136
+#, fuzzy, python-format
+msgid "Total: %s"
+msgstr "Totalt"
+
+#: ../stoq/gui/till/till.py:237
+#, fuzzy
+msgid "Till Closed"
+msgstr "Kod"
+
+#: ../stoq/gui/till/till.py:241
+#, python-format
+msgid "Till Opened on %s"
+msgstr ""
+
+#: ../stoq/gui/till/till.py:270 ../stoq/gui/pos/pos.py:607
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
 "Close the till?"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:264 ../stoq/gui/pos/pos.py:490
-#: ../stoq/gui/pos/pos.py:636
+#: ../stoq/gui/till/till.py:272 ../stoq/gui/pos/pos.py:463
+#: ../stoq/gui/pos/pos.py:609
 msgid "Not now"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:264 ../stoq/gui/pos/pos.py:636
+#: ../stoq/gui/till/till.py:272 ../stoq/gui/pos/pos.py:609
 #, fuzzy
 msgid "Close Till"
 msgstr "Kod"
 
-#: ../stoq/gui/warehouse/__init__.py:29 ../stoq/gui/warehouse/warehouse.py:53
+#: ../stoq/gui/warehouse/__init__.py:29 ../stoq/gui/warehouse/warehouse.py:54
 msgid "Warehouse"
 msgstr ""
 
@@ -518,49 +498,53 @@ msgstr ""
 msgid "Warehouse application."
 msgstr ""
 
-#: ../stoq/gui/warehouse/warehouse.py:57
-msgid "product"
-msgstr ""
-
-#: ../stoq/gui/warehouse/warehouse.py:57
-msgid "products"
-msgstr ""
-
 #: ../stoq/gui/warehouse/warehouse.py:58
 msgid "Matching:"
 msgstr ""
 
-#: ../stoq/gui/warehouse/warehouse.py:59
+#: ../stoq/gui/warehouse/warehouse.py:74
 #, fuzzy
 msgid "Show products at:"
 msgstr "Ingen produkt vald"
 
-#: ../stoq/gui/warehouse/warehouse.py:73
-msgid "<b>Stock Total:</b>"
-msgstr ""
-
-#: ../stoq/gui/warehouse/warehouse.py:112
+#: ../stoq/gui/warehouse/warehouse.py:79
+#: ../stoq/gui/warehouse/warehouse.py:138
 msgid "Code"
 msgstr "Kod"
 
-#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:575
+#: ../stoq/gui/warehouse/warehouse.py:85
+#: ../stoq/gui/warehouse/warehouse.py:144 ../stoq/gui/pos/pos.py:548
 msgid "Quantity"
 msgstr "Antal"
 
-#: ../stoq/gui/warehouse/warehouse.py:120 ../stoq/gui/pos/pos.py:578
+#: ../stoq/gui/warehouse/warehouse.py:87
+#: ../stoq/gui/warehouse/warehouse.py:146 ../stoq/gui/pos/pos.py:551
 msgid "Unit"
 msgstr ""
 
-#: ../stoq/gui/warehouse/warehouse.py:159
+#: ../stoq/gui/warehouse/warehouse.py:102
+msgid "<b>Stock Total:</b>"
+msgstr ""
+
+#: ../stoq/gui/warehouse/warehouse.py:115
+#, fuzzy
+msgid "All branches"
+msgstr "Pris"
+
+#: ../stoq/gui/warehouse/warehouse.py:170
 msgid "You must have at least one item in stock to perfom this action."
 msgstr ""
 
 #: ../stoq/gui/receivable/receivable.py:55
+msgid "Next month"
+msgstr ""
+
+#: ../stoq/gui/receivable/receivable.py:75
 #: ../stoq/gui/receivable/__init__.py:29
 msgid "Receivable"
 msgstr ""
 
-#: ../stoq/gui/receivable/receivable.py:104
+#: ../stoq/gui/receivable/receivable.py:127
 msgid "Drawee"
 msgstr ""
 
@@ -576,10 +560,6 @@ msgstr ""
 msgid "Point Of Sale application."
 msgstr ""
 
-#: ../stoq/gui/pos/app.py:47
-msgid "You need to open the till before start doing sales."
-msgstr ""
-
 #: ../stoq/gui/pos/pos.py:126
 #, fuzzy
 msgid "Close"
@@ -588,87 +568,87 @@ msgstr "Kod"
 #. It's not a common operation to add more than one item at
 #. a time, it's also problematic since you'd have to show
 #. one dialog per service item. See #3092
-#: ../stoq/gui/pos/pos.py:193
+#: ../stoq/gui/pos/pos.py:166
 msgid ""
 "Only one service was added since its not possible toadd more than one "
 "service to an order at a time."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:311
+#: ../stoq/gui/pos/pos.py:284
 msgid ""
 "There is no stock of this product in this branch, please, select another "
 "item."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:313
+#: ../stoq/gui/pos/pos.py:286
 msgid "Can not sell this product"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:365
+#: ../stoq/gui/pos/pos.py:338
 msgid "You need open the till before start doing sales."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:372
+#: ../stoq/gui/pos/pos.py:345
 msgid "You can't start a new sale, since you are not a salesperson."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:402
+#: ../stoq/gui/pos/pos.py:375
 msgid "The current order will be canceled, Confirm?"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:403
+#: ../stoq/gui/pos/pos.py:376
 msgid "Go Back"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:403 ../data/glade/pos.glade.h:9
+#: ../stoq/gui/pos/pos.py:376 ../data/glade/pos.glade.h:9
 #, fuzzy
 msgid "Cancel Order"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/pos/pos.py:416
+#: ../stoq/gui/pos/pos.py:389
 msgid "You don't have products to delivery."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:424
+#: ../stoq/gui/pos/pos.py:397
 msgid "All the products already have delivery instructions"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:489
+#: ../stoq/gui/pos/pos.py:462
 msgid "Do you really want to cancel the last order?"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:490 ../data/glade/pos.glade.h:8
+#: ../stoq/gui/pos/pos.py:463 ../data/glade/pos.glade.h:8
 #, fuzzy
 msgid "Cancel Last Order"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/pos/pos.py:495
+#: ../stoq/gui/pos/pos.py:468
 msgid "Cancelling sale failed, nothing to cancel"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:497
+#: ../stoq/gui/pos/pos.py:470
 msgid "Sale was cancelled"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:519
+#: ../stoq/gui/pos/pos.py:492
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:521
+#: ../stoq/gui/pos/pos.py:494
 msgid "Try Again"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:521 ../data/glade/purchase.glade.h:6
+#: ../stoq/gui/pos/pos.py:494 ../data/glade/purchase.glade.h:6
 #, fuzzy
 msgid "Cancel"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/pos/pos.py:567
+#: ../stoq/gui/pos/pos.py:540
 msgid "Reference"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:573
+#: ../stoq/gui/pos/pos.py:546
 msgid "Price"
 msgstr "Pris"
 
@@ -837,6 +817,11 @@ msgstr ""
 #: ../data/glade/warehouse.glade.h:28 ../data/glade/payable.glade.h:22
 msgid "_User"
 msgstr "_Användare"
+
+#: ../data/glade/sales_app.glade.h:28
+#, fuzzy
+msgid "sales"
+msgstr "_Försäljning"
 
 #: ../data/glade/till.glade.h:2
 msgid "Add cash..."
@@ -1419,6 +1404,24 @@ msgstr ""
 #: ../data/glade/payable.glade.h:23
 msgid "payable"
 msgstr ""
+
+#~ msgid "order"
+#~ msgstr "order"
+
+#~ msgid "orders"
+#~ msgstr "order"
+
+#, fuzzy
+#~ msgid "user"
+#~ msgstr "_Användare"
+
+#, fuzzy
+#~ msgid "users"
+#~ msgstr "_Användare"
+
+#, fuzzy
+#~ msgid "sale"
+#~ msgstr "_Försäljning"
 
 #, fuzzy
 #~ msgid "New Order..."
