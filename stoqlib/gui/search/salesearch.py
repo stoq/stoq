@@ -65,7 +65,7 @@ class SaleSearch(SearchDialog):
         items = [(value, key) for key, value in Sale.statuses.items()]
         items.insert(0, (_('Any'), None))
 
-        status_filter = ComboSearchFilter(_('Show sales witbh status'), items)
+        status_filter = ComboSearchFilter(_('Show sales with status'), items)
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
