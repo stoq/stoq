@@ -80,7 +80,7 @@ class SalesApp(SearchableAppWindow):
         self.set_text_field_columns(['client_name', 'salesperson_name'])
         date_filter = DateSearchFilter(_('Paid or due date:'))
         self.add_filter(
-            date_filter, ['open_date'])
+            date_filter, columns=['open_date'])
         status_filter = ComboSearchFilter(_('Show sales with status'),
                                           self._get_status_values())
         status_filter.select(Sale.STATUS_CONFIRMED)

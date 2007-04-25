@@ -68,12 +68,12 @@ class WarehouseApp(SearchableAppWindow):
     #
 
     def create_filters(self):
+        self.executer.set_query(self.query)
         self.set_text_field_columns(['description', 'supplier_name'])
         self.branch_filter = ComboSearchFilter(
             _('Show products at:'), self._get_branches())
-        self.add_filter(self.branch_filter, position=SearchFilterPosition.TOP)
         self.branch_filter.select(get_current_branch(self.conn))
-        self.executer.set_query(self.query)
+        self.add_filter(self.branch_filter, position=SearchFilterPosition.TOP)
 
     def get_columns(self):
         return [Column('id', title=_('Code'), sorted=True,

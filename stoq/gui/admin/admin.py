@@ -33,6 +33,7 @@ from kiwi.ui.search import ComboSearchFilter
 from sqlobject.sqlbuilder import AND
 
 from stoqlib.database.database import finish_transaction
+from stoqlib.database.runtime import get_connection
 from stoqlib.domain.person import Person, PersonAdaptToUser
 from stoqlib.domain.profile import UserProfile
 from stoqlib.gui.base.columns import ForeignKeyColumn
@@ -143,7 +144,8 @@ class AdminApp(SearchableAppWindow):
         self.run_dialog(CfopSearch, self.conn, hide_footer=True)
 
     def _on_employees_action_clicked(self, button):
-        self.run_dialog(EmployeeSearch, self.conn, hide_footer=True)
+        conn = get_connection()
+        self.run_dialog(EmployeeSearch, conn, hide_footer=True)
 
     def _on_user_profiles_action_clicked(self, button):
         self.run_dialog(UserProfileSearch, self.conn)

@@ -74,11 +74,11 @@ class PurchaseApp(SearchableAppWindow):
         self.set_text_field_columns(['supplier_name'])
         date_filter = DateSearchFilter(_('Open date is:'))
         self.add_filter(
-            date_filter, ['open_date'])
+            date_filter, columns=['open_date'])
         self.status_filter = ComboSearchFilter(_('Show orders with status'),
                                                self._get_status_values())
         self.status_filter.select(PurchaseOrder.ORDER_CONFIRMED)
-        self.add_filter(self.status_filter, ['status'], SearchFilterPosition.TOP)
+        self.add_filter(self.status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
         return [Column('id', title=_('Number'), sorted=True,
