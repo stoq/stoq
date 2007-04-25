@@ -109,7 +109,7 @@ class IndividualDetailsSlave(BaseEditorSlave):
         if self.model.birth_location:
             self.model.birth_location = self.model.birth_location.clone()
         else:
-            cityloc = CityLocation(connection=self.conn)
+            cityloc = CityLocation(connection=self.model.get_connection())
             self.model.birth_location = cityloc
         self.birth_loc_proxy = self.add_proxy(
             self.model.birth_location,

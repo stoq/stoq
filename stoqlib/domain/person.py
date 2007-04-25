@@ -74,7 +74,9 @@ import datetime
 
 from sqlobject import (DateTimeCol, UnicodeCol, IntCol,
                        ForeignKey, MultipleJoin, BoolCol, SQLObject)
-from sqlobject.sqlbuilder import func, AND
+from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn
+from sqlobject.viewable import Viewable
+
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol
@@ -793,3 +795,127 @@ class ClientView(SQLObject, BaseSQLView):
     cpf = UnicodeCol()
     rg_number = UnicodeCol()
     phone_number = UnicodeCol()
+
+    @property
+    def client(self):
+        return PersonAdaptToClient.get(self.client_id,
+                                       connection=self._connection)
+
+class EmployeeView(Viewable):
+    columns = dict(
+        id=Person.q.id,
+        employee_id=PersonAdaptToEmployee.q.id,
+        name=Person.q.name,
+        role=EmployeeRole.q.name,
+        status=PersonAdaptToEmployee.q.status,
+        registry_number=PersonAdaptToEmployee.q.registry_number,
+        )
+
+    joins = [
+        INNERJOINOn(None, PersonAdaptToEmployee,
+                   Person.q.id == PersonAdaptToEmployee.q._originalID),
+        INNERJOINOn(None, EmployeeRole,
+                   PersonAdaptToEmployee.q.roleID == EmployeeRole.q.id),
+        ]
+
+    def get_status_string(self):
+        return PersonAdaptToEmployee.statuses[self.status]
+
+    @property
+    def employee(self):
+        return PersonAdaptToEmployee.get(self.employee_id,
+                                         connection=self.get_connection())
+
+class SupplierView(Viewable):
+    columns = dict(
+        id=Person.q.id,
+        name=Person.q.name,
+        phone_number=Person.q.phone_number,
+        fancy_name=_PersonAdaptToCompany.q.fancy_name,
+        cnpj=_PersonAdaptToCompany.q.cnpj,
+        supplier_id=PersonAdaptToSupplier.q.id,
+        status=PersonAdaptToSupplier.q.status,
+        )
+
+    joins = [
+        INNERJOINOn(None, PersonAdaptToSupplier,
+                   Person.q.id == PersonAdaptToSupplier.q._originalID),
+        LEFTJOINOn(None, _PersonAdaptToCompany,
+                   Person.q.id == _PersonAdaptToCompany.q._originalID),
+        ]
+
+    def get_status_string(self):
+        return PersonAdaptToSupplier.statuses[self.status]
+
+    @property
+    def supplier(self):
+        return PersonAdaptToSupplier.get(self.supplier_id,
+                                         connection=self.get_connection())
+
+class TransporterView(Viewable):
+    """
+    @cvar id:
+    @cvar name:
+    @cvar phone_number:
+    @cvar transporter_id:
+    @cvar status:
+    @cvar freight_percentage:
+    """
+    columns = dict(
+        id=Person.q.id,
+        name=Person.q.name,
+        phone_number=Person.q.phone_number,
+        transporter_id=PersonAdaptToTransporter.q.id,
+        freight_percentage=PersonAdaptToTransporter.q.freight_percentage,
+        )
+
+    joins = [
+        INNERJOINOn(None, PersonAdaptToTransporter,
+                   Person.q.id == PersonAdaptToTransporter.q._originalID),
+        ]
+
+    @property
+    def transporter(self):
+        return PersonAdaptToTransporter.get(self.transporter_id,
+                                            connection=self.get_connection())
+
+
+class BranchView(Viewable):
+    columns = dict(
+        id=Person.q.id,
+        name=Person.q.name,
+        branch_id=PersonAdaptToBranch.q.id,
+        phone_number=Person.q.phone_number,
+        )
+
+    joins = [
+        INNERJOINOn(None, PersonAdaptToBranch,
+                   Person.q.id == PersonAdaptToBranch.q._originalID),
+        ]
+
+    @property
+    def branch(self):
+        return PersonAdaptToBranch.get(self.branch_id,
+                                       connection=self.get_connection())
+
+
+class CreditProviderView(Viewable):
+    columns = dict(
+        id=Person.q.id,
+        name=Person.q.name,
+        provider_id=PersonAdaptToCreditProvider.q.id,
+        phone_number=Person.q.phone_number,
+        short_name=PersonAdaptToCreditProvider.q.short_name,
+        is_active=PersonAdaptToCreditProvider.q.is_active,
+        )
+
+    joins = [
+        INNERJOINOn(None, PersonAdaptToCreditProvider,
+                   Person.q.id == PersonAdaptToCreditProvider.q._originalID),
+        ]
+
+    @property
+    def provider(self):
+        return PersonAdaptToCreditProvider.get(self.provider_id,
+                                               connection=self.get_connection())
+

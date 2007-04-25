@@ -27,15 +27,15 @@
 import datetime
 
 import gtk
-from kiwi.ui.widgets.list import Column, ColoredColumn
 from kiwi.datatypes import currency
-from sqlobject.sqlbuilder import AND
+from kiwi.enums import SearchFilterPosition
+from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
+from kiwi.ui.widgets.list import Column, ColoredColumn
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX, payment_value_colorize
+from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.gui.base.search import SearchDialog
-from stoqlib.gui.slaves.filterslave import FilterSlave
 from stoqlib.domain.till import TillFiscalOperationsView, Till
 
 
@@ -50,13 +50,28 @@ class TillFiscalOperationsSearch(SearchDialog):
     searchbar_labels = _(u"matching:"),
     searchbar_result_strings = _(u"fiscal operation"), _(u"fiscal operations")
 
-    def __init__(self, conn):
-        SearchDialog.__init__(self, conn)
-        self.setup_summary_label('value', "<b>%s</b>" % (u"Total:"))
-
     #
     # SearchDialog Hooks
     #
+
+    def create_filters(self):
+        self.set_text_field_columns(['description'])
+        self.executer.add_query_callback(self._get_query)
+
+        # Status
+        items = [(v, k) for k, v in Till.statuses.items()
+                    if k != Till.STATUS_PENDING]
+        items.insert(0, (_(u'Any'), None))
+        status_filter = ComboSearchFilter(_(u'Show entries of type'), items)
+        status_filter.select(Till.STATUS_OPEN)
+        self.add_filter(status_filter,
+                        position=SearchFilterPosition.TOP,
+                        columns=['status'])
+
+        # Date
+        date_filter = DateSearchFilter(_('Date:'))
+        self.add_filter(
+            date_filter, columns=['date'])
 
     def get_columns(self, *args):
         return [Column('id', title=_('#'), width=60,
@@ -72,26 +87,11 @@ class TillFiscalOperationsSearch(SearchDialog):
                        color='red', data_func=payment_value_colorize,
                        width=80)]
 
-    def get_extra_query(self):
-        branch_id = get_current_branch(self.conn).id
-        base_query = self.search_table.q.branch_id == branch_id
-        status = self.filter_slave.get_selected_status()
-        if status == ALL_ITEMS_INDEX:
-            return base_query
-        return AND(base_query, TillFiscalOperationsView.q.status == status)
+    #
+    # Private
+    #
 
-    def update_klist(self, *args):
-        SearchDialog.update_klist(self, *args)
-
-    def get_filter_slave(self):
-        items = [(value, key) for key, value in Till.statuses.items()
-                    if key != Till.STATUS_PENDING]
-        items.insert(0, (_(u'Any'), ALL_ITEMS_INDEX))
-        self.filter_slave = FilterSlave(items, selected=Till.STATUS_OPEN)
-        self.filter_slave.set_filter_label(_(u'Show entries of type'))
-        return self.filter_slave
-
-    def after_search_bar_created(self):
-        self.filter_slave.connect('status-changed',
-                                  self.search_bar.search_items)
+    def _get_query(self, state):
+        branch = get_current_branch(self.conn)
+        return self.search_table.q.branch_id == branch.id
 

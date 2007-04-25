@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,21 +20,22 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
 """ Search dialogs for services """
 
 import gtk
-from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
+from kiwi.datatypes import currency
+from kiwi.enums import SearchFilterPosition
+from kiwi.ui.search import ComboSearchFilter
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.service import Service, ServiceView
 from stoqlib.gui.base.columns import Column
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
-from stoqlib.gui.slaves.filterslave import FilterSlave
 from stoqlib.gui.search.sellablesearch import SellableSearch
 
 _ = stoqlib_gettext
@@ -65,13 +66,15 @@ class ServiceSearch(SellableSearch):
     # SearchDialog Hooks
     #
 
-    def get_filter_slave(self):
-        statuses = [(value, key)
-                        for key, value in ASellable.statuses.items()]
-        statuses.insert(0, (_('Any'), ALL_ITEMS_INDEX))
-        self.filter_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show services with status'))
-        return self.filter_slave
+    def create_filters(self):
+        self.set_text_field_columns(['description', 'barcode'])
+        items = [(v, k) for k, v in ASellable.statuses.items()]
+        items.insert(0, (_('Any'), None))
+        service_filter = ComboSearchFilter(_('Show services with status'),
+                                          items)
+        service_filter.select(None)
+        self.executer.add_query_callback(self._get_query)
+        self.add_filter(service_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_branch(self):
         # We have not a filter for branches in this dialog and in this case
@@ -105,8 +108,3 @@ class ServiceSearch(SellableSearch):
         columns.append(Column('unit', title=_('Unit'),
                               data_type=str, width=80))
         return columns
-
-    def get_extra_query(self):
-        status = self.filter_slave.get_selected_status()
-        if status != ALL_ITEMS_INDEX:
-            return self.search_table.q.status == status

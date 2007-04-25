@@ -50,6 +50,10 @@ class SellableCategorySearch(SearchEditor):
         self.set_searchbar_labels(self.searchbar_label)
         self.set_result_strings(*self.result_strings)
 
+    def create_filters(self):
+        self.set_text_field_columns(['description'])
+        self.executer.add_query_callback(self._get_query)
+
     def get_columns(self):
         return [
             Column("description", _("Description"), data_type=str,
@@ -61,7 +65,11 @@ class SellableCategorySearch(SearchEditor):
                    width=190),
             ]
 
-    def get_extra_query(self):
+    #
+    # Private
+    #
+
+    def _get_query(self, states):
         return SellableCategory.q.categoryID != None
 
 class BaseSellableCatSearch(SellableCategorySearch):
@@ -70,6 +78,10 @@ class BaseSellableCatSearch(SellableCategorySearch):
     searchbar_label = _('Base Categories Matching:')
     result_strings = _('base category'), _('base categories')
     editor = BaseSellableCategoryEditor
+
+    def create_filters(self):
+        self.set_text_field_columns(['description'])
+        self.executer.add_query_callback(self._get_query)
 
     def get_columns(self):
         columns = SellableCategorySearch.get_columns(self)
@@ -81,5 +93,9 @@ class BaseSellableCatSearch(SellableCategorySearch):
             )
         return columns
 
-    def get_extra_query(self):
+    #
+    # Private
+    #
+
+    def _get_query(self, states):
         return SellableCategory.q.categoryID == None

@@ -93,6 +93,9 @@ class StoqlibTransaction(Transaction):
         self._obsolete = True
 
     def get(self, obj):
+        if obj is None:
+            return None
+
         if not isinstance(obj, (SQLObject, InheritableSQLObject)):
             raise TypeError("obj must be a SQLObject, not %r" % (obj,))
 

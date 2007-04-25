@@ -35,7 +35,7 @@ from stoqlib.gui.base.search import SearchDialog
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.reporting.purchase_receival import PurchaseReceivalReport
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
-from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.dialogs import print_report, run_dialog
 
 _ = stoqlib_gettext
 
@@ -85,7 +85,7 @@ class PurchaseReceivingSearch(SearchDialog):
         self._show_receiving_order(receiving_order)
 
     def on_print_button_clicked(self, button):
-        self.search_bar.print_report(PurchaseReceivalReport, list(self.klist))
+        print_report(PurchaseReceivalReport, list(self.klist))
 
     def on_details_button_clicked(self, button):
         items = self.klist.get_selected_rows()

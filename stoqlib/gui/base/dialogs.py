@@ -216,6 +216,10 @@ class BasicDialog(AbstractDialog):
                 dialog, widget))
         widget.connect('activate', self.cancel)
 
+    @property
+    def action_area(self):
+        return self.get_toplevel().action_area
+
 
     #
     # Kiwi handlers

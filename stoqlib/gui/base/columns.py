@@ -27,26 +27,6 @@
 from kiwi.accessor import kgetattr
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.lib.component import Adapter
-
-
-class FacetColumn(Column):
-    def __init__(self, iface, *args, **kwargs):
-        self._iface = iface
-        Column.__init__(self, *args, **kwargs)
-
-    def get_attribute(self, instance, name, default=None):
-        if not isinstance(instance, Adapter):
-            facet = self._iface(instance, None)
-        else:
-            original = instance.get_adapted()
-            facet = self._iface(original, None)
-        if not facet:
-            return
-        return kgetattr(facet, name, default)
-
-    def get_iface(self):
-        return self._iface
 
 class ForeignKeyColumn(Column):
     """

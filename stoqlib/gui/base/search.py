@@ -25,19 +25,20 @@
 """ Implementation of basic dialogs for searching data """
 
 import gtk
-from kiwi.utils import gsignal
-from kiwi.ui.delegates import GladeSlaveDelegate
-from kiwi.ui.objectlist import ObjectList
-from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.argcheck import argcheck
-from sqlobject.sresults import SelectResults
-from sqlobject.dbconnection import Transaction
+from kiwi.db.sqlobj import SQLObjectQueryExecuter
+from kiwi.enums import SearchFilterPosition
+from kiwi.ui.delegates import GladeSlaveDelegate
+from kiwi.ui.search import ComboSearchFilter, SearchSlaveDelegate
+from kiwi.ui.widgets.list import SummaryLabel
+from kiwi.utils import gsignal
+from sqlobject.main import SQLObject
 
-from stoqlib.database.database import rollback_and_begin
+from stoqlib.database.database import finish_transaction
+from stoqlib.database.runtime import get_connection, new_transaction
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.base.searchbar import SearchBar
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -86,7 +87,6 @@ class SearchDialog(BasicDialog):
     >>> def __init__(self, *args):
     ...     SearchDialog.__init__(self)
 
-    Some important parameters:
     @cvar table: the table type which we will query on to get the objects.
     @cvar searchbar_labels: labels for SearchBar entry and date fields
     @cvar searchbar_result_strings: a tuple where each item has a singular
@@ -96,13 +96,11 @@ class SearchDialog(BasicDialog):
     title = ''
     table = None
     search_table = None
+    search_labels = None
     selection_mode = gtk.SELECTION_BROWSE
-    searchbar_labels = None
-    searchbar_result_strings = None
-    searching_by_date = False
     size = ()
 
-    @argcheck(Transaction, object, object, bool, basestring, int)
+    @argcheck(object, object, object, bool, basestring, int)
     def __init__(self, conn, table=None, search_table=None, hide_footer=True,
                  title='', selection_mode=None):
         """
@@ -116,13 +114,36 @@ class SearchDialog(BasicDialog):
         """
 
         self.conn = conn
+        self.search_table = self._setup_search_table(table, search_table)
+        self.selection_mode = self._setup_selection_mode(selection_mode)
+        self.summary_label = None
+
+        BasicDialog.__init__(self)
+        BasicDialog._initialize(self, hide_footer=hide_footer,
+                                main_label_text=self.main_label_text,
+                                title=title or self.title,
+                                size=self.size)
+
+        self.executer = SQLObjectQueryExecuter(get_connection())
+        self.set_table(self.search_table)
+
+        self.disable_ok()
+        self.set_ok_label(_('Se_lect Items'))
+        self._setup_search()
+        self._setup_details_slave()
+
+        self.create_filters()
+        self.setup_widgets()
+
+    def _setup_search_table(self, table, search_table):
         search_table = search_table or self.search_table
         table = table or self.table
         if not (table or search_table):
             raise ValueError(
                 "%r must define a table or search_table attribute" % self)
-        self.search_table = search_table or table
+        return search_table or table
 
+    def _setup_selection_mode(self, selection_mode):
         # For consistency do not allow none or single, in other words,
         # only allowed values are browse and multiple so we always will
         # be able to use both the keyboard and the mouse to select items
@@ -131,63 +152,18 @@ class SearchDialog(BasicDialog):
         if (selection_mode != gtk.SELECTION_BROWSE and
             selection_mode != gtk.SELECTION_MULTIPLE):
             raise ValueError('Invalid selection mode %r' % selection_mode)
-        self.selection_mode = selection_mode
+        return selection_mode
 
-        BasicDialog.__init__(self)
-        title = title or self.title
-        self.summary_label = None
-        BasicDialog._initialize(self, hide_footer=hide_footer,
-                                main_label_text=self.main_label_text,
-                                title=title, size=self.size)
-        self.set_ok_label(_('Se_lect Items'))
-        self.setup_slaves()
+    def _setup_search(self):
+        self.search = SearchSlaveDelegate(self.get_columns())
+        self.search.set_query_executer(self.executer)
+        self.attach_slave('main', self.search)
+        self.header.hide()
 
-    def _sync(self, *args):
-        rollback_and_begin(self.conn)
-
-    def _check_searchbar_settings(self, value, attr_name):
-        if not value:
-            return False
-        if not isinstance(value, tuple):
-            raise TypeError("%s attribute must be of typle tuple, "
-                            "got %s" % (attr_name, type(value)))
-        return True
-
-    def _setup_searchbar(self):
-        columns = self.get_columns()
-        query_args = self.get_query_args()
-        use_dates = self.searching_by_date
-        self.search_bar = SearchBar(self.conn, self.search_table,
-                                    columns, query_args=query_args,
-                                    filter_slave=self.get_filter_slave(),
-                                    searching_by_date=use_dates)
-        self.search_bar.set_query_callback(self.query)
-        extra_query = self.get_extra_query
-        if extra_query:
-            self.search_bar.register_extra_query_callback(extra_query)
-        self.search_bar.connect('before-search-activate', self._sync)
-        self.search_bar.connect('search-activate', self.update_klist)
-        if self._check_searchbar_settings(self.searchbar_result_strings,
-                                          "searchbar_result_strings"):
-            self.set_result_strings(*self.searchbar_result_strings)
-        if self._check_searchbar_settings(self.searchbar_labels,
-                                          "searchbar_labels"):
-            self.set_searchbar_labels(*self.searchbar_labels)
-        self.after_search_bar_created()
-        self.attach_slave('header', self.search_bar)
-
-    def _setup_klist(self):
-        self.klist_vbox = gtk.VBox()
-        self.klist = ObjectList(self.get_columns(), mode=self.selection_mode)
-        self.klist_vbox.pack_start(self.klist)
-        self.klist_vbox.show_all()
-        # XXX: I think that BasicDialog must be redesigned, if so we don't
-        # need this ".remove" crap
-        self.main.remove(self.main_label)
-        self.main.add(self.klist_vbox)
-        self.klist.show()
-        self.klist.connect('cell_edited', self.on_cell_edited)
-        self.klist.connect('selection-changed', self._on_selection_changed)
+        self.results = self.search.search.results
+        self.results.connect('cell-edited', self._on_results__cell_edited)
+        self.results.connect('selection-changed',
+                             self._on_results__selection_changed)
 
     def _setup_details_slave(self):
         # FIXME: Gross hack
@@ -212,145 +188,119 @@ class SearchDialog(BasicDialog):
     # Public API
     #
 
-    def set_searchtable(self, search_table):
-        self.search_table = search_table
-        self.search_bar.set_searchtable(search_table)
-
-    def set_searchbar_columns(self, columns):
-        self.search_bar.set_columns(columns)
-
-    def set_searchbar_search_string(self, search_str):
-        self.search_bar.set_search_string(search_str)
-
-    def perform_search(self):
-        self.search_bar.search_items()
-
-    def setup_summary_label(self, column_name, label_text):
-        if self.summary_label is not None:
-            self.klist_vbox.remove(self.summary_label)
-        value_format = '<b>%s</b>'
-        self.clear_klist()
-        self.summary_label = SummaryLabel(klist=self.klist,
-                                          column=column_name,
-                                          label=label_text,
-                                          value_format=value_format)
-        self.summary_label.show()
-        self.klist_vbox.pack_start(self.summary_label, False)
-
-    def setup_slaves(self, **kwargs):
-        self.disable_ok()
-        self._setup_klist()
-        self._setup_searchbar()
-        self._setup_details_slave()
-
     @argcheck(bool)
     def set_details_button_sensitive(self, value):
         self._details_slave.details_button.set_sensitive(value)
 
-    def get_query_args(self):
-        """An optional list of SQLObject arguments for select function."""
-
-    def get_extra_query(self):
-        """An optional SQLObject.sqlbuilder query for select statement."""
-
-    def get_filter_slave(self):
-        """Returns a slave which will be used as filter by SearchBar.
-        By default it returns None which means that no filter will be
-        attached. Redefine this method in child when it's needed
-        """
-        return None
-
-    def after_search_bar_created(self):
-        """This method will be called after creating the SearchBar
-        instance.  Redefine this method in child when it's needed
-        """
-
-    def on_cell_edited(self, klist, obj, attr):
-        """Override this method on child when it's needed to perform some
-        tasks when editing a row.
-        """
-
-    def _on_selection_changed(self, klist, selected):
-        self.update_widgets()
-
-    def set_searchbar_labels(self, search_entry_lbl, date_search_lbl=None):
-        # Second argument is only used by Stoq's SearchableAppWindow
-        self.search_bar.set_searchbar_labels(search_entry_lbl,
-                                             date_search_lbl)
-
-    def set_result_strings(self, singular_form, plural_form):
-        """This method defines strings to be used in the
-        search_results_label for SearchBar class.
-        """
-        self.search_bar.set_result_strings(singular_form, plural_form)
-
     def get_selection(self):
-        mode = self.klist.get_selection_mode()
+        mode = self.results.get_selection_mode()
         if mode == gtk.SELECTION_BROWSE:
-            return self.klist.get_selected()
-        return self.klist.get_selected_rows()
-
-    def clear_klist(self):
-        self.klist.clear()
-        self.update_widgets()
+            return self.results.get_selected()
+        return self.results.get_selected_rows()
 
     def confirm(self):
-        objs = self.get_selection()
-        self.retval = objs
+        self.retval = self.get_selection()
         self.close()
 
     def cancel(self, *args):
         self.retval = []
         self.close()
 
+    def add_summary_label(self, column_name, label_text):
+        """
+        @param column_name:
+        @param label_text:
+        """
+        if self.summary_label is not None:
+            self.results_vbox.remove(self.summary_label)
+        self.summary_label = SummaryLabel(klist=self.results,
+                                          column=column_name,
+                                          label=label_text,
+                                          value_format='<b>%s</b>')
+        self.summary_label.show()
+        self.results_vbox.pack_start(self.summary_label, False)
+
+    def set_table(self, table):
+        self.executer.set_table(table)
+        self.search_table = table
+
+    # FIXME: -> remove/use
+
+    def set_searchbar_labels(self, *args):
+        search_filter = self.search.get_primary_filter()
+        search_filter.set_label(args[0])
+
+    def set_result_strings(self, *args):
+        pass
+
+    def set_text_field_columns(self, columns):
+        """
+        See L{SearchSlaveDelegate.set_text_field_columns}
+        """
+        self.search.set_text_field_columns(columns)
+
+    def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
+                   columns=None, callback=None):
+        """
+        See L{SearchSlaveDelegate.add_filter}
+        """
+        self.search.add_filter(search_filter, position, columns, callback)
+
+    #
+    # Filters
+    #
+
+    def create_branch_filter(self, label=None):
+        from stoqlib.domain.person import PersonAdaptToBranch
+        from stoqlib.database.runtime import get_current_branch
+        branches = PersonAdaptToBranch.get_active_branches(self.conn)
+        items = [(b.person.name, b.id) for b in branches]
+        #if not items:
+        #    raise ValueError('You should have at least one branch at '
+        #                      'this point')
+        items.insert(0, (_("Any"), None))
+
+        if not label:
+            label = _('Branch')
+        branch_filter = ComboSearchFilter(label, items)
+        current = get_current_branch(self.conn)
+        if current:
+            branch_filter.select(current.id)
+
+        return branch_filter
+
+    #
+    # Callbacks
+    #
+
+    def _on_results__cell_edited(self, results, obj, attr):
+        """Override this method on child when it's needed to perform some
+        tasks when editing a row.
+        """
+
+    def _on_results__selection_changed(self, results, selected):
+        self.update_widgets()
+
     #
     # Hooks
     #
 
-    def update_klist(self, slave, objs):
-        """A hook called by SearchBar and instances."""
-        if not objs:
-            self.klist.clear()
-            self.disable_ok()
-            self.update_widgets()
-            return
+    def create_filters(self):
+        raise NotImplementedError(
+            "create_filters() must be implemented in %r" % self)
 
-        if isinstance(objs, (list, tuple)):
-            count = len(objs)
-        elif isinstance(objs, SelectResults):
-            count = objs.count()
-        else:
-            msg = 'Invalid type for result objects: Type: %s'
-            raise TypeError, msg % type(objs)
-
-        if count:
-            self.klist.add_list(objs)
-            objs = iter(objs)
-            selected = objs.next()
-            self.klist.select(selected)
-            self.enable_ok()
-        if self.summary_label:
-            self.summary_label.update_total()
-        self.update_widgets()
-
-    def update_widgets(self):
-        """ Subclass can have an 'update_widgets', and this method will be
-        called when a signal is emitted by 'Filter' or 'Clear' buttons and
-        also when a list item is selected. """
-
-    def query(self, table, query, queries):
-        """Override this to control the queries made by the
-        searchbar, see searchbar.set_query_callback for documentation
-        """
-        return table.select(query, **queries)
-
-    #
-    # Specification of methods that all subclasses *must* to implement
-    #
+    def setup_widgets(self):
+        pass
 
     def get_columns(self):
         raise NotImplementedError(
             "get_columns() must be implemented in %r" % self)
+
+    def update_widgets(self):
+        """
+        Subclass can have an 'update_widgets', and this method will be
+        called when a signal is emitted by 'Filter' or 'Clear' buttons and
+        also when a list item is selected. """
 
 
 class SearchEditorToolBar(GladeSlaveDelegate):
@@ -442,6 +392,7 @@ class SearchEditor(SearchDialog):
                               hide_footer=hide_footer, title=title,
                               selection_mode=selection_mode)
 
+        self._setup_slaves()
         if hide_toolbar:
             self.accept_edit_data = False
             self._toolbar.get_toplevel().hide()
@@ -463,15 +414,15 @@ class SearchEditor(SearchDialog):
             if not self.has_edit_button:
                 self.hide_edit_button()
         self._selected = None
-        self.klist.connect('double_click', self._on_list__double_click)
+        self.results.connect('double_click', self._on_results__double_click)
         self.update_widgets()
 
-    def setup_slaves(self):
-        SearchDialog.setup_slaves(self)
+
+    def _setup_slaves(self):
         self._toolbar = SearchEditorToolBar()
-        self.attach_slave('extra_holder', self._toolbar)
         self._toolbar.connect("edit", self._on_toolbar__edit)
         self._toolbar.connect("add", self._on_toolbar__new)
+        self.attach_slave('extra_holder', self._toolbar)
 
     # Public API
 
@@ -481,7 +432,7 @@ class SearchEditor(SearchDialog):
         self._toolbar.edit_button.set_sensitive(value)
 
     def update_widgets(self, *args):
-        self._toolbar.edit_button.set_sensitive(len(self.klist))
+        self._toolbar.edit_button.set_sensitive(len(self.results))
 
     def hide_edit_button(self):
         self.accept_edit_data = False
@@ -499,12 +450,12 @@ class SearchEditor(SearchDialog):
         if self._selected:
             selected = self._selected
             selected.sync()
-            self.klist.update(selected)
+            self.results.update(selected)
         else:
             # user just added a new instance
             selected = self.get_searchlist_model(model)
-            self.klist.append(selected)
-        self.klist.select(selected)
+            self.results.append(selected)
+        self.results.select(selected)
 
     def run(self, obj=None):
         self._selected = obj
@@ -516,20 +467,27 @@ class SearchEditor(SearchDialog):
             else:
                 adapted = obj
             obj = self.interface(adapted)
+
         rv = self.run_editor(obj)
-        if not rv:
-            rollback_and_begin(self.conn)
-            return
+        if rv:
+            if self.editor_class.model_iface:
+                rv = rv.get_adapted()
 
-        if self.editor_class.model_iface:
-            rv = rv.get_adapted()
+            self.search.refresh()
+            self.enable_ok()
 
-        self.conn.commit()
-        self.update_edited_item(rv)
-        self.enable_ok()
+    def run_dialog(self, editor_class, parent, *args):
+        run_dialog(editor_class, parent, *args)
 
     def run_editor(self, obj):
-        return run_dialog(self.editor_class, self, self.conn, obj)
+        trans = new_transaction()
+        retval = self.run_dialog(self.editor_class, self, trans,
+                                 trans.get(obj))
+        if finish_transaction(trans, retval):
+            assert isinstance(retval, SQLObject)
+            retval = type(retval).get(retval.id, connection=self.conn)
+        trans.close()
+        return retval
 
     # Private
 
@@ -538,15 +496,15 @@ class SearchEditor(SearchDialog):
             return
 
         if obj is None:
-            if self.klist.get_selection_mode() == gtk.SELECTION_MULTIPLE:
-                obj = self.klist.get_selected_rows()
+            if self.results.get_selection_mode() == gtk.SELECTION_MULTIPLE:
+                obj = self.results.get_selected_rows()
                 qty = len(obj)
                 if qty != 1:
                     raise AssertionError(
                       "There should be only one item selected. Got %s items"
                       % qty)
             else:
-                obj = self.klist.get_selected()
+                obj = self.results.get_selected()
                 if not obj:
                     raise AssertionError(
                         "There should be at least one item selected")
@@ -561,7 +519,7 @@ class SearchEditor(SearchDialog):
     def _on_toolbar__new(self, toolbar):
         self.run()
 
-    def _on_list__double_click(self, list, obj):
+    def _on_results__double_click(self, results, obj):
         self._edit(obj)
 
     #
