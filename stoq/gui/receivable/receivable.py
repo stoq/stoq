@@ -162,7 +162,7 @@ class ReceivableApp(SearchableAppWindow):
         if finish_transaction(trans, retval):
             for view in receivable_views:
                 view.sync()
-                self.receivables.update(view)
+                self.results.update(view)
 
         trans.close()
 
@@ -207,9 +207,9 @@ class ReceivableApp(SearchableAppWindow):
         self.details_button.set_sensitive(self._same_sale(selected))
 
     def on_details_button__clicked(self, button):
-        selected = self.receivables.get_selected_rows()[0]
+        selected = self.results.get_selected_rows()[0]
         self._show_details(selected)
 
     def on_receive_button__clicked(self, button):
-        self._receive(self.receivables.get_selected_rows())
+        self._receive(self.results.get_selected_rows())
 
