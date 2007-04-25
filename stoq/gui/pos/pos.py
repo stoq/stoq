@@ -136,30 +136,6 @@ class POSApp(AppWindow):
         text = _(u"Total: %s") % converter.as_string(currency, subtotal)
         self.order_total_label.set_text(text)
 
-    @argcheck(ASellable)
-    def _update_klist_item(self, sellable):
-        """Checks if a certain sellable was already added to the order and
-        update the item quantity on the sellable list. Returns True if the
-        list was update and False if not
-        """
-        existing_item = [item for item in self.sellables
-                                  if item.sellable.id == sellable.id]
-        if not existing_item:
-            return False
-        item = existing_item[0]
-
-        new_quantity = self.sellableitem_proxy.model.quantity
-        current_quantity = item.quantity
-
-        # Do not allow printing duplicated quantities on fiscal coupon
-        item.quantity = new_quantity
-        if self._coupon_add_item(item) == -1:
-            return
-
-        item.quantity = current_quantity + new_quantity
-        self._update_added_item(item, new_item=False)
-        return True
-
     def _update_added_item(self, sellable_item, new_item=True):
         """Insert or update a klist item according with the new_item
         argument
@@ -178,9 +154,6 @@ class POSApp(AppWindow):
 
     @argcheck(ASellable, bool)
     def _update_list(self, sellable, notify_on_entry=False):
-        if not isinstance(sellable.get_adapted(), Service):
-            if self._update_klist_item(sellable):
-                return
         quantity = self.sellableitem_proxy.model.quantity
 
         registered_price = self.sellableitem_proxy.model.price
