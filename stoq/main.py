@@ -187,12 +187,14 @@ def _run_app(options, appname):
     except LoginError, e:
         error(e)
 
-    if not appname:
-        appname = runner.choose()
-        if not appname:
+    if appname:
+        app = runner.get_app_by_name(appname)
+    else:
+        app = runner.choose()
+        if not app:
             return
 
-    runner.run(appname)
+    runner.run(app)
 
     _setup_printers()
 
