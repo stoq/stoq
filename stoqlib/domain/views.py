@@ -23,6 +23,8 @@
 ##
 
 from sqlobject.viewable import Viewable
+from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn
+
 from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.domain.product import (Product, ProductAdaptToSellable,
                                     ProductAdaptToStorable,
@@ -30,7 +32,6 @@ from stoqlib.domain.product import (Product, ProductAdaptToSellable,
                                     ProductSupplierInfo)
 from stoqlib.domain.sellable import ASellable, SellableUnit, BaseSellableInfo
 from stoqlib.domain.stock import AbstractStockItem
-from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn
 
 class ProductFullStockView(Viewable):
     """
