@@ -73,11 +73,11 @@ class PayableApp(SearchableAppWindow):
         self.set_text_field_columns(['description', 'supplier_name'])
         date_filter = DateSearchFilter(_('Paid or due date:'))
         self.add_filter(
-            date_filter, ['paid_date', 'due_date'])
+            date_filter, columns=['paid_date', 'due_date'])
         self.add_filter(
             ComboSearchFilter(_('Show payments with status'),
                               self._get_status_values()),
-            ['status'], SearchFilterPosition.TOP)
+            SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
         return [Column('id', title=_('Number'), width=80,

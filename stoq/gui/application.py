@@ -272,18 +272,17 @@ class SearchableAppWindow(AppWindow):
         self.executer.set_table(self.search_table)
 
         self.search = SearchSlaveDelegate(self.get_columns())
+        self.search.set_query_executer(self.executer)
         self.results = self.search.search.results
         self.set_text_field_label(self.search_label)
 
         AppWindow.__init__(self, app)
 
-        self.search.set_query_executer(self.executer)
         self.attach_slave('search_holder', self.search)
 
         self.create_filters()
 
         self.search.focus_search_entry()
-        self.search.show()
 
     #
     # Public API
@@ -304,15 +303,18 @@ class SearchableAppWindow(AppWindow):
         toplevel.pack_start(label, False)
         toplevel.reorder_child(label, 1)
 
-    def add_filter(self, search_filter, columns=None, position=SearchFilterPosition.BOTTOM):
+    def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
+                   columns=None, callback=None):
         """
-        @param search_filter:
-        @param columns:
-        @param position:
+        See L{SearchSlaveDelegate.add_filter}
         """
-        self.search.add_filter(search_filter, position=position)
-        if columns:
-            self.executer.set_filter_columns(search_filter, columns)
+        self.search.add_filter(search_filter, position, columns, callback)
+
+    def set_text_field_columns(self, columns):
+        """
+        See L{SearchSlaveDelegate.set_text_field_columns}
+        """
+        self.search.set_text_field_columns(columns)
 
     def set_text_field_label(self, label):
         """
@@ -320,13 +322,6 @@ class SearchableAppWindow(AppWindow):
         """
         search_filter = self.search.get_primary_filter()
         search_filter.set_label(label)
-
-    def set_text_field_columns(self, columns):
-        """
-        @param columns:
-        """
-        search_filter = self.search.get_primary_filter()
-        self.executer.set_filter_columns(search_filter, columns)
 
     def refresh(self):
         """
