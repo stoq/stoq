@@ -22,7 +22,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
 ##              Johan Dahlin                <jdahlin@async.com.br>
-##
+#
 """ Main gui definition for purchase application.  """
 
 import gettext
@@ -266,7 +266,7 @@ class PurchaseApp(SearchableAppWindow):
     def _on_order_action_clicked(self, action):
         self._open_order()
         self.refresh()
-        
+
     def _on_base_categories_action_clicked(self, action):
         self.run_dialog(BaseSellableCatSearch, self.conn)
 
