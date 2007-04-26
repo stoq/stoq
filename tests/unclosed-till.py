@@ -8,7 +8,7 @@ till = Till(station=get_current_station(trans), connection=trans)
 till.open_till()
 
 # Update the opening date to yesterday
-yesterday = (datetime.datetime.today() - datetime.timedelta(1)).date()
+yesterday = datetime.date.today() - datetime.timedelta(1)
 till.opening_date = yesterday
 
 trans.commit()
