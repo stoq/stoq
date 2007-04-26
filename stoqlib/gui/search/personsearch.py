@@ -74,7 +74,7 @@ class BasePersonSearch(SearchEditor):
         self.set_result_strings(*self.result_strings)
 
     def run_dialog(self, editor_class, parent, *args):
-        run_person_role_dialog(editor_class, parent, *args)
+        return run_person_role_dialog(editor_class, parent, *args)
 
 class EmployeeSearch(BasePersonSearch):
     title = _('Employee Search')
