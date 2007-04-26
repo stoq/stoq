@@ -511,6 +511,12 @@ class ExampleCreator(object):
                                    tax_value=18,
                                    connection=self.trans)
 
+    def create_station(self):
+        from stoqlib.domain.station import BranchStation
+        return BranchStation(name="station",
+                             branch=None,
+                             connection=self.trans)
+
     def get_station(self):
         return get_current_station(self.trans)
 
