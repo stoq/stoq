@@ -37,7 +37,8 @@ from kiwi.datatypes import currency
 from kiwi.log import Logger
 
 from stoqlib.database.columns import PriceCol
-from stoqlib.database.runtime import get_current_branch
+from stoqlib.database.runtime import (get_current_branch,
+                                      get_current_station)
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
@@ -140,6 +141,7 @@ class Till(Domain):
         """
 
         result = Till.selectBy(status=Till.STATUS_OPEN,
+                               station=get_current_station(conn),
                                connection=conn).orderBy('opening_date')
         if result:
             return result[0]
