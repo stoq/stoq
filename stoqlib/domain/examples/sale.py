@@ -153,7 +153,7 @@ def create_sales():
     # This is sort of hack, set the opening/closing dates to the date before
     # it's run, so we can open/close the till in the tests, which uses
     # the examples.
-    yesterday = (datetime.datetime.today() - datetime.timedelta(1)).date()
+    yesterday = datetime.date.today() - datetime.timedelta(1)
     till.opening_date = yesterday
     till.closing_date = yesterday
 

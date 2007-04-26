@@ -159,7 +159,7 @@ class TestAPaymentMethod(DomainTest, _TestPaymentMethod):
         till = Till(station=get_current_station(self.trans),
                     connection=self.trans)
         till.open_till()
-        yesterday = (datetime.datetime.today() - datetime.timedelta(1)).date()
+        yesterday = datetime.date.today() - datetime.timedelta(1)
         till.opening_date = yesterday
 
     def testCreateOutPaymentUnClosedTill(self):
