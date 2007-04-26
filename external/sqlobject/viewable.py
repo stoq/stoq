@@ -29,22 +29,30 @@ class DynamicViewColumn(object):
 
 class SQLObjectView(object):
 
-    def __init__(self, cls):
+    def __init__(self, cls, columns):
         self.cls = cls
+        self.columns = columns.copy()
 
     def __getattr__(self, attr):
         if attr == 'id':
             return SQLObjectField(self.cls.sqlmeta.table,
                                   self.cls.sqlmeta.idName, attr)
-        return self.cls.sqlmeta.columns[attr].value
+        return self.columns[attr]
 
 
 class Viewable(object):
+    """
+    @cvar columns:
+    @cvar hidden_columns: a string list of columns which means that the
+      column will not included in the SELECT part, but you will still be able
+      to query for it using the Viewable.q.column magic
+    """
     __metaclass__ = DeclarativeMeta
 
     sqlmeta = ViewableMeta
     columns = {}
     clause = None
+    hidden_columns = []
 
     def __classinit__(cls, new_attrs):
         if not cls.__bases__ == (object,):
@@ -59,6 +67,8 @@ class Viewable(object):
         if not columns:
             return
 
+        cls.q = SQLObjectView(cls, columns)
+
         cols = columns.copy()
         if not 'id' in cols:
             raise TypeError("You need a id column in %r" % cls)
@@ -66,11 +76,17 @@ class Viewable(object):
         idquery = cols.pop('id')
         cls.sqlmeta.table = idquery.tableName
 
+        for hidden in cls.hidden_columns:
+            if not hidden in columns:
+                raise TypeError(
+                    "%s specified in hidden_columns is not a column" % (
+                    hidden))
+            del cols[hidden]
+            del columns[hidden]
+
         assert not cls.sqlmeta.columns
         for colName in sorted(cols):
             cls.addColumn(colName, cols[colName])
-
-        cls.q = SQLObjectView(cls)
 
     @classmethod
     def addColumn(cls, name, query):
