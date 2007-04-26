@@ -164,7 +164,7 @@ class Till(Domain):
         conn = self.get_connection()
 
         # Make sure that the till has not been opened today
-        today = datetime.datetime.today().date()
+        today = datetime.date.today()
         if Till.select(AND(Till.q.opening_date >= today,
                            Till.q.stationID == self.station.id),
                        connection=conn):
@@ -291,7 +291,7 @@ class Till(Domain):
 
             # Verify that the currently open till was opened today
             open_date = self.opening_date.date()
-            if open_date != datetime.datetime.today().date():
+            if open_date != datetime.date.today():
                 return True
 
         return False
