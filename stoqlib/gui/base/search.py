@@ -161,6 +161,7 @@ class SearchDialog(BasicDialog):
         self.header.hide()
 
         self.results = self.search.search.results
+        self.results.set_selection_mode(self.selection_mode)
         self.results.connect('cell-edited', self._on_results__cell_edited)
         self.results.connect('selection-changed',
                              self._on_results__selection_changed)

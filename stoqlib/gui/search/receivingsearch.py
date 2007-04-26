@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
 """ Search dialogs for purchase receiving"""
@@ -28,14 +29,15 @@ import datetime
 
 import gtk
 from kiwi.datatypes import currency
+from kiwi.ui.search import DateSearchFilter
 
+from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.columns import Column
 from stoqlib.gui.base.search import SearchDialog
-from stoqlib.domain.receiving import ReceivingOrder
-from stoqlib.reporting.purchase_receival import PurchaseReceivalReport
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
 from stoqlib.gui.base.dialogs import print_report, run_dialog
+from stoqlib.reporting.purchase_receival import PurchaseReceivalReport
 
 _ = stoqlib_gettext
 
@@ -45,8 +47,6 @@ class PurchaseReceivingSearch(SearchDialog):
     size = (750, 500)
     table = ReceivingOrder
     selection_mode = gtk.SELECTION_MULTIPLE
-    searching_by_date = True
-    searchbar_labels = _('Receiving Orders Matching:'), None
     searchbar_result_strings = _('receiving order'), _('receiving orders')
 
     def _show_receiving_order(self, receiving_order):
@@ -59,7 +59,16 @@ class PurchaseReceivingSearch(SearchDialog):
 
     def setup_slaves(self):
         SearchDialog.setup_slaves(self)
-        self.klist.connect('row_activated', self.on_row_activated)
+        self.results.connect('row_activated', self.on_row_activated)
+
+    def create_filters(self):
+        self.set_searchbar_labels(_('Receiving Orders Matching:'))
+        self.set_text_field_columns([])
+
+        # Date
+        date_filter = DateSearchFilter(_('Date:'))
+        self.add_filter(
+            date_filter, columns=['receival_date'])
 
     def get_columns(self):
         return [Column('receiving_number_str', _('#'), data_type=unicode,
@@ -85,10 +94,10 @@ class PurchaseReceivingSearch(SearchDialog):
         self._show_receiving_order(receiving_order)
 
     def on_print_button_clicked(self, button):
-        print_report(PurchaseReceivalReport, list(self.klist))
+        print_report(PurchaseReceivalReport, list(self.results))
 
     def on_details_button_clicked(self, button):
-        items = self.klist.get_selected_rows()
+        items = self.results.get_selected_rows()
         if  not len(items) == 1:
             raise ValueError("You should have only one item selected at "
                              "this point ")
@@ -97,6 +106,6 @@ class PurchaseReceivingSearch(SearchDialog):
         self._show_receiving_order(order)
 
     def update_widgets(self, *args):
-        items = self.klist.get_selected_rows()
+        items = self.results.get_selected_rows()
         has_one_selected = len(items) == 1
         self.set_details_button_sensitive(has_one_selected)

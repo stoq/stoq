@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s): Bruno Rafael Garcia           <brg@async.com.br>
+##            Johan Dahlin                  <jdahlin@async.com.br>
 ##
 ##
 """ Search dialogs for profile objects """
@@ -45,11 +46,10 @@ class UserProfileSearch(SearchEditor):
     def __init__(self, conn):
         SearchEditor.__init__(self, conn, self.table, self.editor_class,
                               title=self.title)
-        self._setup_widgets()
 
-    def _setup_widgets(self):
+    def create_filters(self):
         self.set_searchbar_labels(_('Profiles Matching:'))
-        self.set_result_strings(_('profile'), _('profiles'))
+        self.set_text_field_columns(['name'])
 
     #
     # SearchDialog Hooks
