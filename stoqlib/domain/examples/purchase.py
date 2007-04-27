@@ -81,7 +81,6 @@ def create_purchases():
 
     for sellable in sellables:
         purchase_item = order.add_item(sellable, 5)
-        order.receive_item(purchase_item, 5)
 
         ReceivingOrderItem(connection=trans,
                            cost=sellable.cost / 2,

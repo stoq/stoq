@@ -372,9 +372,10 @@ class ExampleCreator(object):
                               branch=self.create_branch(),
                               cfop=self.create_cfop_data())
 
-    def create_receiving_order_item(self):
+    def create_receiving_order_item(self, receiving_order=None):
         from stoqlib.domain.receiving import ReceivingOrderItem
-        receiving_order = self.create_receiving_order()
+        if receiving_order is None:
+            receiving_order = self.create_receiving_order()
         purchase_item = self.create_purchase_order_item()
         return ReceivingOrderItem(connection=self.trans,
                                   quantity=8, cost=125,
