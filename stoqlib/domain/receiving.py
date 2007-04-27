@@ -140,7 +140,6 @@ class ReceivingOrder(Domain):
                 ProductHistory(connection=conn,
                                 quantity_received=item.quantity,
                                 branch=self.branch, sellable=item.sellable,
-                                description=item.sellable.get_description(),
                                 received_date=self.receival_date)
             self.purchase.increase_quantity_received(item.sellable,
                                                      item.quantity)
