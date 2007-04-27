@@ -24,7 +24,7 @@
 ##
 """ Purchase receiving slaves implementation"""
 
-from kiwi.datatypes import ValidationError
+from kiwi.datatypes import ValidationError, ValueUnset
 
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.receiving import ReceivingOrder
@@ -150,3 +150,32 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         if value < 1 or value > 999999:
             return ValidationError(_("Receving order number must be "
                                      "between 1 and 999999"))
+
+    def _positive_validator(self, widget, value):
+        if value < 0:
+            return ValidationError(_("This field cannot be negative"))
+
+    on_freight__validate = _positive_validator
+    on_ipi__validate = _positive_validator
+    on_icms_total__validate = _positive_validator
+
+    def on_freight__content_changed(self, widget):
+        try:
+            value = widget.read()
+        except ValidationError:
+            value = ValueUnset
+
+        if value is ValueUnset:
+            self.model.freight_total = 0
+        self.proxy.update('total')
+
+    def on_ipi__content_changed(self, widget):
+        try:
+            value = widget.read()
+        except ValidationError:
+            value = ValueUnset
+
+        if value is ValueUnset:
+            self.model.ipi_total = 0
+        self.proxy.update('total')
+

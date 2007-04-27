@@ -216,6 +216,12 @@ class ReceivingOrder(Domain):
             total -= self.purchase.discount_value
         if self.purchase.surcharge_value:
             total += self.purchase.surcharge_value
+
+        if self.ipi_total:
+            total += self.ipi_total
+        if self.freight_total:
+            total += self.freight_total
+
         return currency(total)
 
 
