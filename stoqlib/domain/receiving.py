@@ -35,6 +35,7 @@ from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup
+from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.parameters import sysparam
@@ -123,22 +124,32 @@ class ReceivingOrder(Domain):
         Domain._create(self, id, **kw)
 
     def confirm(self):
+        conn = self.get_connection()
         # Stock management
         for item in self.get_items():
             # FIXME: Don't use sellable.get_adapted() here
             storable = IStorable(item.sellable.get_adapted(), None)
-            quantity = item.quantity
+            if item.quantity > item.get_remaining_quantity():
+                raise ValueError(
+                    "Quantity received (%d) is greater than "
+                    "quantity ordered (%d)" % (
+                        item.quantity,
+                        item.get_remaining_quantity()))
             if storable is not None:
-                storable.increase_stock(quantity, self.branch)
-            if self.purchase:
-                self.purchase.increase_quantity_received(item.sellable,
-                                                         quantity)
+                storable.increase_stock(item.quantity, self.branch)
+                ProductHistory(connection=conn,
+                                quantity_received=item.quantity,
+                                branch=self.branch, sellable=item.sellable,
+                                description=item.sellable.get_description(),
+                                received_date=self.receival_date)
+            self.purchase.increase_quantity_received(item.sellable,
+                                                     item.quantity)
 
         group = IPaymentGroup(self.purchase)
         group.create_icmsipi_book_entry(self.cfop, self.invoice_number,
                                         self.icms_total, self.ipi_total)
 
-        if self.purchase and self.purchase.can_close():
+        if self.purchase.can_close():
             self.purchase.close()
 
     def get_items(self):
@@ -190,8 +201,6 @@ class ReceivingOrder(Domain):
         return currency(total)
 
     def get_order_number(self):
-        if not self.purchase:
-            return _(u'No order set')
         return self.purchase.get_order_number_str()
 
     def get_receival_date_str(self):

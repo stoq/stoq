@@ -59,6 +59,15 @@ class TestReceivingOrder(DomainTest):
         order.surcharge_value = 15
         self.assertEqual(order.get_total(), currency(408))
 
+    def testConfirm(self):
+        order = self.create_receiving_order()
+        order.quantity = 8
+        order_item = self.create_receiving_order_item(order)
+        order_item.quantity_received = 10
+        self.assertRaises(ValueError, order.confirm)
+        order_item.quantity_received = 8
+        self.assertRaises(ValueError, order.confirm)
+        self.assertRaises(ValueError, order.confirm)
 
 class TestReceivingOrderItem(DomainTest):
 
