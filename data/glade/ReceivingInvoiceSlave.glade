@@ -657,6 +657,7 @@
                                 <child>
                                     <widget class="ProxyEntry" id="total">
                                         <property name="data_type">currency</property>
+                                        <property name="editable">False</property>
                                         <property name="is_focus">True</property>
                                         <property name="mandatory">True</property>
                                         <property name="model_attribute">total</property>
