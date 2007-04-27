@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
 """ Purchase wizard definition """
@@ -37,12 +38,10 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.dialogs import print_report
-from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
-from stoqlib.gui.editors.serviceeditor import ServiceEditor
 from stoqlib.gui.slaves.purchaseslave import PurchasePaymentSlave
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 from stoqlib.domain.sellable import ASellable
@@ -347,28 +346,6 @@ class FinishPurchaseStep(WizardEditorStep):
 
     def on_print_button__clicked(self, button):
         print_report(PurchaseOrderReport, self.model)
-
-
-class SellableSelectionEditor(BaseEditor):
-    gladefile = 'SellableTypeStep'
-
-    def on_confirm(self):
-        if self.radio_product.get_active():
-            return ProductEditor
-        elif self.radio_service.get_active():
-            return ServiceEditor
-        raise AssertionError
-
-    # XXX: Remove this, we need to add better infrastructure to handle
-    #      dialogs with a slave but without a model
-    model_name = _('Item')
-    model_type = object
-    def create_model(self, conn):
-        return ProductEditor
-
-
-
-
 
 
 #
