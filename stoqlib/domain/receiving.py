@@ -35,7 +35,6 @@ from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup
-from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.parameters import sysparam
@@ -137,10 +136,6 @@ class ReceivingOrder(Domain):
                         item.get_remaining_quantity()))
             if storable is not None:
                 storable.increase_stock(item.quantity, self.branch)
-                ProductHistory(connection=conn,
-                                quantity_received=item.quantity,
-                                branch=self.branch, sellable=item.sellable,
-                                received_date=self.receival_date)
             self.purchase.increase_quantity_received(item.sellable,
                                                      item.quantity)
 
