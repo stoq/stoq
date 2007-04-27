@@ -44,7 +44,7 @@ class SaleOrderReport(BaseStoqReport):
     report_name = _("Sale Order")
 
     def __init__(self, filename, sale_order):
-        self.order = sale_order
+        self.sale = sale_order
         BaseStoqReport.__init__(self, filename, SaleOrderReport.report_name,
                                 do_footer=True, landscape=True)
         self._identify_client()
@@ -52,9 +52,9 @@ class SaleOrderReport(BaseStoqReport):
         self._setup_items_table()
 
     def _identify_client(self):
-        if not self.order.client:
+        if not self.sale.client:
             return
-        person = self.order.client.get_adapted()
+        person = self.sale.client.get_adapted()
         text = "<b>%s:</b> %s" % (_("Client"), person.name)
         if person.phone_number:
             phone_str = ("<b>%s:</b> %s" %
@@ -79,14 +79,14 @@ class SaleOrderReport(BaseStoqReport):
 
     def _setup_items_table(self):
         # XXX Bug #2430 will improve this part
-        items_qty = self.order.get_items_total_quantity()
-        total_value = get_formatted_price(self.order.get_items_total_value())
+        items_qty = self.sale.get_items_total_quantity()
+        total_value = get_formatted_price(self.sale.get_items_total_value())
         if items_qty > 1:
             items_text = _("%s items") % format_quantity(items_qty)
         else:
             items_text = _("%s item") % format_quantity(items_qty)
         summary = ["", "", items_text, "", total_value]
-        self.add_object_table(list(self.order.get_items()),
+        self.add_object_table(list(self.sale.get_items()),
                               self._get_table_columns(), summary_row=summary)
 
     #
@@ -95,7 +95,7 @@ class SaleOrderReport(BaseStoqReport):
 
     def get_title(self):
         return (_("Sale Order on %s, with due date of %d days")
-                % (self.order.open_date.strftime("%x"),
+                % (self.sale.open_date.strftime("%x"),
                    sysparam(get_connection()).MAX_SALE_ORDER_VALIDITY))
 
 class SalesReport(SearchResultsReport):
