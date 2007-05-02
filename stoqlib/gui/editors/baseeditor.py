@@ -67,11 +67,14 @@ class BaseEditorSlave(GladeSlaveDelegate):
             created = "created "
             model = self.create_model(self.conn)
 
+            if model is None:
+                raise ValueError(
+                    "%s.create_model() must return a valid model, not %r" % (
+                    self.__class__.__name__, model))
+
+
         log.info("%s editor using a %smodel %s" % (
             self.__class__.__name__, created, type(model).__name__))
-
-        if not model:
-            raise ValueError("Editors must define a model at this point")
 
         if self.model_iface:
             if not isinstance(model, Adapter):
