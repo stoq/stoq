@@ -49,7 +49,7 @@ from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.sellable import ASellableItem
 from stoqlib.domain.fiscal import IssBookEntry, IcmsIpiBookEntry
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
-from stoqlib.domain.product import ProductSellableItem
+from stoqlib.domain.product import ProductSellableItem, ProductHistory
 from stoqlib.domain.service import ServiceSellableItem
 from stoqlib.domain.giftcertificate import (GiftCertificateItem,
                                             GiftCertificateAdaptToSellable,
@@ -328,10 +328,12 @@ class Sale(Domain):
         """Update the stock of all products tied with the current
         sale order
         """
+        conn = self.get_connection()
         branch = self.get_till_branch()
         for item in self.get_items():
             if isinstance(item, ProductSellableItem):
                 # TODO add support for ordering products, bug #2469
+                ProductHistory.add_sold_item(conn, branch, item)
                 item.sell(branch)
                 continue
             item.sell()

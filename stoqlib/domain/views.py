@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Johan Dahlin <jdahlin@async.com.br>
+##              Fabio Morbec <fabio@async.com.br>
 ##
 
 from sqlobject.viewable import Viewable
@@ -29,6 +30,7 @@ from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.domain.product import (Product, ProductAdaptToSellable,
                                     ProductAdaptToStorable,
                                     ProductStockItem,
+                                    ProductHistory,
                                     ProductSupplierInfo)
 from stoqlib.domain.sellable import ASellable, SellableUnit, BaseSellableInfo
 from stoqlib.domain.stock import AbstractStockItem
@@ -114,3 +116,37 @@ class ProductFullStockView(Viewable):
     @property
     def product(self):
         return Product.get(self.product_id, connection=self.get_connection())
+
+
+class ProductQuantityView(Viewable):
+    """
+    Stores information about products solded and received.
+
+    @cvar id: the id of the sellable_id of products_quantity table
+    @cvar description: the product description
+    @cvar branch_id: the id of person_adapt_to_branch table
+    @cvar quantity_sold: the quantity solded of product
+    @cvar quantity_received: the quantity received of product
+    @cvar branch: the id of the branch_id of producst_quantity table
+    @cvar date_sale: the date of product's sale
+    @cvar date_received: the date of product's received
+     """
+
+    columns = dict(
+        id=ProductHistory.q.sellableID,
+        description=BaseSellableInfo.q.description,
+        branch=ProductHistory.q.branchID,
+        sold_date=ProductHistory.q.sold_date,
+        received_date=ProductHistory.q.received_date,
+        quantity_sold=func.SUM(ProductHistory.q.quantity_sold),
+        quantity_received=func.SUM(ProductHistory.q.quantity_received),
+        )
+
+    hidden_columns = ['sold_date', 'received_date']
+
+    joins = [
+        INNERJOINOn(None, ASellable,
+                    ProductHistory.q.sellableID == ASellable.q.id),
+        INNERJOINOn(None, BaseSellableInfo,
+                    ASellable.q.base_sellable_infoID == BaseSellableInfo.q.id)
+    ]

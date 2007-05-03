@@ -21,6 +21,7 @@
 ##
 ##  Author(s):  Henrique Romano         <henrique@async.com.br>
 ##              Evandro Miquelito       <evandro@async.com.br>
+##              Fabio Morbec            <fabio@async.com.br>
 ##
 ##
 """ Products report implementation """
@@ -33,6 +34,7 @@ from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.domain.sellable import SellableView
+from stoqlib.domain.product import ProductHistory
 
 class ProductReport(SearchResultsReport):
     """ This report show a list of all products returned by a SearchBar,
@@ -70,5 +72,54 @@ class ProductReport(SearchResultsReport):
         total_qty = sum([item.stock for item in self._products],
                         Decimal(0))
         summary_row = ["", "", _("Total:"), format_quantity(total_qty), ""]
+        self.add_object_table(self._products, self._get_columns(),
+                              summary_row=summary_row)
+
+
+def format_data(data):
+    # must return zero or relatory show None instead of 0
+    if data is None:
+        return 0
+    return format_quantity(data)
+
+
+class ProductQuantityReport(SearchResultsReport):
+    """ This report show a list of all products returned by a SearchBar,
+    listing both its description, quantity solded and quantity received.
+    """
+    # This should be properly verified on SearchResultsReport. Waiting for
+    # bug 2517
+    obj_type = ProductHistory
+    report_name = _("Product Listing")
+    main_object_name = _("products")
+
+    def __init__(self, filename, products, *args, **kwargs):
+        self._products = products
+        SearchResultsReport.__init__(self, filename, products,
+                                     ProductReport.report_name,
+                                     landscape=True,
+                                     *args, **kwargs)
+        self._setup_items_table()
+
+    def _get_columns(self):
+        return [
+            OTC(_("Code"), lambda obj: '%03d' % obj.id, width=120,
+                truncate=True),
+            OTC(_("Description"), lambda obj: obj.description, truncate=True),
+            OTC(_("Quantity Sold"), lambda obj:
+                format_data(obj.quantity_sold), width=110,
+                align=RIGHT, truncate=True),
+            OTC(_("Quantity Received"), lambda obj:
+                format_data(obj.quantity_received), width=120,
+                align=RIGHT, truncate=True)
+            ]
+
+    def _setup_items_table(self):
+        qty_sold = sum([item.quantity_sold for item in self._products
+                           if item.quantity_sold is not None], Decimal(0))
+        qty_received = sum([item.quantity_received for item in self._products
+                           if item.quantity_received is not None], Decimal(0))
+        summary_row = ["", _("Total:"), format_data(qty_sold),
+                       format_data(qty_received)]
         self.add_object_table(self._products, self._get_columns(),
                               summary_row=summary_row)

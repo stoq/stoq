@@ -77,9 +77,9 @@ class TestReceivingOrderItem(DomainTest):
 
     def testGetRemainingQuantity(self):
         order_item = self.create_receiving_order_item()
-        self.assertEqual(order_item.get_remaining_quantity(), 5)
+        self.assertEqual(order_item.get_remaining_quantity(), 8)
         self.assertNotEqual(order_item.get_remaining_quantity(), 4)
-        self.assertNotEqual(order_item.get_remaining_quantity(), 8)
+        self.assertNotEqual(order_item.get_remaining_quantity(), 5)
         self.assertNotEqual(order_item.get_remaining_quantity(), 18)
         self.assertNotEqual(order_item.get_remaining_quantity(), 0)
 
