@@ -35,6 +35,7 @@ from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup
+from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.parameters import sysparam
@@ -126,18 +127,18 @@ class ReceivingOrder(Domain):
         conn = self.get_connection()
         # Stock management
         for item in self.get_items():
-            # FIXME: Don't use sellable.get_adapted() here
-            storable = IStorable(item.sellable.get_adapted(), None)
             if item.quantity > item.get_remaining_quantity():
                 raise ValueError(
                     "Quantity received (%d) is greater than "
                     "quantity ordered (%d)" % (
                         item.quantity,
                         item.get_remaining_quantity()))
-            if storable is not None:
+            storable = IStorable(item.sellable.get_adapted(), None)
+            if not storable is None:
                 storable.increase_stock(item.quantity, self.branch)
             self.purchase.increase_quantity_received(item.sellable,
                                                      item.quantity)
+            ProductHistory.add_received_item(conn, self.branch, item)
 
         group = IPaymentGroup(self.purchase)
         group.create_icmsipi_book_entry(self.cfop, self.invoice_number,

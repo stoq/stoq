@@ -351,7 +351,7 @@ class ExampleCreator(object):
     def create_purchase_order_item(self):
         from stoqlib.domain.purchase import PurchaseItem
         return PurchaseItem(connection=self.trans,
-                            quantity=8, quantity_received=3,
+                            quantity=8, quantity_received=0,
                             cost=125, base_cost=125,
                             sellable=self.create_sellable(),
                             order=self.create_purchase_order())
@@ -376,11 +376,14 @@ class ExampleCreator(object):
         from stoqlib.domain.receiving import ReceivingOrderItem
         if receiving_order is None:
             receiving_order = self.create_receiving_order()
-        purchase_item = self.create_purchase_order_item()
+        sellable = self.create_sellable()
+        product = sellable.get_adapted()
+        product.addFacet(IStorable, connection=self.trans)
+        purchase_item = receiving_order.purchase.add_item(sellable, 8)
         return ReceivingOrderItem(connection=self.trans,
                                   quantity=8, cost=125,
                                   purchase_item=purchase_item,
-                                  sellable=purchase_item.sellable,
+                                  sellable=sellable,
                                   receiving_order=receiving_order)
 
     def create_icms_ipi_book_entry(self):

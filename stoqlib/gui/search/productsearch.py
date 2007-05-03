@@ -22,6 +22,7 @@
 ## Author(s):   Bruno Rafael Garcia         <brg@async.com.br>
 ##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Johan Dahlin                <jdahlin@async.com.br>
+##              Fabio Morbec                <fabio@async.com.br>
 ##
 """ Search dialogs for product objects """
 
@@ -30,21 +31,23 @@ from decimal import Decimal
 import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import ComboSearchFilter
+from kiwi.ui.search import ComboSearchFilter, DateSearchFilter, Today
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import ASellable
-from stoqlib.domain.views import ProductFullStockView
+from stoqlib.domain.views import ProductFullStockView, ProductQuantityView
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.base.dialogs import print_report
+from stoqlib.gui.base.search import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
-from stoqlib.reporting.product import ProductReport
+from stoqlib.reporting.product import ProductReport, ProductQuantityReport
 
 _ = stoqlib_gettext
+
 
 class ProductSearch(SellableSearch):
     title = _('Product Search')
@@ -152,3 +155,54 @@ class ProductSearch(SellableSearch):
     def on_selection_changed(self, results, selected):
         can_edit = bool(selected)
         self.set_edit_button_sensitive(can_edit)
+
+
+def format_data(data):
+    # must return zero or report printed show None instead of 0
+    if data is None:
+        return 0
+    return format_quantity(data)
+
+
+class ProductSearchQuantity(SearchDialog):
+    title = _('Product Search')
+    size = (775, 450)
+    table = search_table = ProductQuantityView
+
+    def on_print_button_clicked(self, button):
+        print_report(ProductQuantityReport, list(self.results))
+
+    #
+    # SearchDialog Hooks
+    #
+
+    def create_filters(self):
+        self.set_text_field_columns(['description'])
+
+        # Branch
+        branch_filter = self.create_branch_filter(_('In branch:'))
+        branch_filter.select(None)
+        self.add_filter(branch_filter, SearchFilterPosition.TOP,
+                        columns=['branch'])
+        self.branch_filter = branch_filter
+
+        # Date
+        date_filter = DateSearchFilter(_('Date:'))
+        date_filter.select(Today)
+        self.add_filter(date_filter, columns=['sold_date', 'received_date'])
+
+    #
+    # SearchEditor Hooks
+    #
+
+    def get_columns(self):
+        return [Column('id', title=_('Code'), data_type=int,
+                       sorted=True, format='%03d', width=70),
+                Column('description', title=_('Description'), data_type=str,
+                       expand=True),
+                Column('quantity_sold', title=_('Quantity Sold'),
+                       format_func=format_data,
+                       data_type=Decimal, width=150),
+                Column('quantity_received', title=_('Quantity Received'),
+                       format_func=format_data,
+                       data_type=Decimal, width=150)]

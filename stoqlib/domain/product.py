@@ -24,11 +24,12 @@
 
 """ Base classes to manage product's informations """
 
+import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
-from sqlobject import (UnicodeCol, ForeignKey, MultipleJoin,
+from sqlobject import (UnicodeCol, ForeignKey, MultipleJoin, DateTimeCol,
                        BoolCol, BLOBCol)
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
@@ -156,6 +157,51 @@ class Product(Domain):
                 "but %d suppliers were found: %r" % (len(main_suppliers),
                                                      main_suppliers))
         return main_suppliers[0]
+
+
+class ProductHistory(Domain):
+    """Stores product history, such as sold and received quantity.
+    """
+    # We keep a reference to ASellable instead of Product because we want to
+    # display the sellable id in the interface instead of the product id for
+    # consistency with interfaces that display both
+    quantity_sold = DecimalCol(default=0)
+    quantity_received = DecimalCol(default=0)
+    sold_date = DateTimeCol(default=datetime.datetime.now)
+    received_date = DateTimeCol(default=datetime.datetime.now)
+    branch = ForeignKey("PersonAdaptToBranch")
+    sellable = ForeignKey("ASellable")
+
+    @classmethod
+    def add_sold_item(cls, conn, branch, product_sellable_item):
+        """
+        Adds a sold item, populates the ProductHistory table using a
+        product_sellable_item created during a sale.
+
+        @oaram conn: a database connection
+        @param branch: the branch
+        @param product_sellable_item: the sellable item for the sold
+        """
+        cls(branch=branch,
+            sellable=product_sellable_item.sellable,
+            quantity_sold=product_sellable_item.quantity,
+            sold_date=datetime.datetime.now(),
+            connection=conn)
+
+    @classmethod
+    def add_received_item(cls, conn, branch, receiving_order_item):
+        """
+        Adds a received_item, populates the ProductHistory table using a
+        receiving_order_item created during a purchase
+
+        @param conn: a database connection
+        @param branch: the branch
+        @receiving_order_item: the item received for puchase
+        """
+        cls(branch=branch, sellable=receiving_order_item.sellable,
+            quantity_received=receiving_order_item.quantity,
+            received_date=receiving_order_item.receiving_order.receival_date,
+            connection=conn)
 
 
 class ProductStockReference(Domain):

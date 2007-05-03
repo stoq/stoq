@@ -22,16 +22,21 @@
 ## Author(s):   Grazieno Pellegrino         <grazieno1@yahoo.com.br>
 ##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Johan Dahlin                <jdahlin@async.com.br>
+##              Fabio Morbec                <fabio@async.com.br>
 ##
 """ This module test all class in stoqlib/domain/product.py """
 
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.sellable import BaseSellableInfo
+from stoqlib.domain.sellable import BaseSellableInfo, ASellable
+from stoqlib.domain.payment.methods import MoneyPM
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
-                                    ProductSellableItem)
-from stoqlib.domain.interfaces import IStorable, IBranch, ISellable
+                                    ProductSellableItem,
+                                    ProductHistory)
+from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.interfaces import (IStorable, IBranch, ISellable,
+                                       IPaymentGroup)
 
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -94,3 +99,45 @@ class TestProductSellableItem(DomainTest):
         product_sellable_item.quantity = sold_qty
         product_sellable_item.sell(branch)
         assert not storable.get_stock_item(branch).quantity
+
+class TestProductHistory(DomainTest):
+
+    def testAddReceivedQuantity(self):
+        order_item = self.create_receiving_order_item()
+        order_item.receiving_order.purchase.status = PurchaseOrder.ORDER_PENDING
+        order_item.receiving_order.purchase.confirm()
+        order_item.receiving_order.set_valid()
+        self.failIf(
+            ProductHistory.selectOneBy(connection=self.trans,
+                                       sellable=order_item.sellable))
+        order_item.receiving_order.confirm()
+        prod_hist = ProductHistory.selectOneBy(connection=self.trans,
+                                               sellable=order_item.sellable)
+        self.failUnless(prod_hist)
+        self.assertEqual(prod_hist.quantity_received,
+                         order_item.quantity)
+
+    def testAddSoldQuantity(self):
+        sale = self.create_sale()
+        sale.addFacet(IPaymentGroup, connection=self.trans)
+        sellable = self.create_sellable()
+        sellable.status = ASellable.STATUS_AVAILABLE
+        product = sellable.get_adapted()
+        storable = product.addFacet(IStorable, connection=self.trans)
+        storable.increase_stock(100, get_current_branch(self.trans))
+        sellable.add_sellable_item(sale, quantity=5)
+
+        method = MoneyPM.selectOne(connection=self.trans)
+        method.create_inpayment(IPaymentGroup(sale),
+                                sale.get_sale_subtotal())
+
+        self.failIf(ProductHistory.selectOneBy(connection=self.trans,
+                                               sellable=sellable))
+        sale.confirm_sale()
+        prod_hist = ProductHistory.selectOneBy(connection=self.trans,
+                                               sellable=sellable)
+        self.failUnless(prod_hist)
+        product_sellable_item = sellable.get_items()[0]
+        self.assertEqual(prod_hist.quantity_sold, 5)
+        self.assertEqual(prod_hist.quantity_sold,
+                         product_sellable_item.quantity)
