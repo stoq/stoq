@@ -1,3 +1,4 @@
+-- #3309: Add missing database constraints
 ALTER TABLE transaction_entry
     ADD CONSTRAINT transaction_entry_user_id_fkey FOREIGN KEY
         (user_id) REFERENCES person_adapt_to_user (id),
