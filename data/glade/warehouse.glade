@@ -70,6 +70,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="ProductHistory">
+                        <property name="name">ProductHistory</property>
+                        <property name="label" translatable="yes">Product history...</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;t</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="PurchaseReceiving">
                         <property name="name">PurchaseReceiving</property>
                         <property name="label" translatable="yes">Purchase Receiving...</property>
@@ -180,7 +187,7 @@
         <ui id="initial-state"><![CDATA[<ui>
 <menubar action="menubar" name="menubar">
 
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="receive_action" name="receive_action"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="TransferSearch" name="TransferSearch"/><menuitem action="PurchaseReceiving" name="PurchaseReceiving"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
+<menu action="SalesMenu" name="SalesMenu"><menuitem action="receive_action" name="receive_action"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="TransferSearch" name="TransferSearch"/><menuitem action="PurchaseReceiving" name="PurchaseReceiving"/> <menuitem action="ProductHistory" name="ProductHistory"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
   
   
@@ -241,6 +248,9 @@
                                     <placeholder/>
                                 </child>
                             </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
                         </child>
                         <child>
                             <widget class="GtkHBox" id="hbox7">
@@ -336,7 +346,7 @@
                             <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">False</property>
-                                <property name="position">3</property>
+                                <property name="position">2</property>
                             </packing>
                         </child>
                     </widget>
