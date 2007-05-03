@@ -41,6 +41,7 @@ from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.message import warning
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
+from stoqlib.gui.search.productsearch import ProductSearchQuantity
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.productretention import ProductRetentionDialog
 from stoqlib.reporting.product import ProductReport
@@ -163,6 +164,9 @@ class WarehouseApp(SearchableAppWindow):
             return
         sellable_view.sync()
         self.results.update(sellable_view)
+
+    def on_ProductHistory__activate(self, action):
+        self.run_dialog(ProductSearchQuantity, self.conn)
 
     def on_receiving_search_action_clicked(self, button):
         self.run_dialog(PurchaseReceivingSearch, self.conn)
