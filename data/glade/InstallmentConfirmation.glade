@@ -21,8 +21,8 @@
                                 <property name="row_spacing">6</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="GtkLabel" id="label5">
-                                        <property name="label" context="yes" translatable="yes">Order number:</property>
+                                    <widget class="GtkLabel" id="date_lbl">
+                                        <property name="label" context="yes" translatable="yes">Paid date:</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -63,6 +63,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="discount_label">
                                         <property name="label" context="yes" translatable="yes">Discount:</property>
+                                        <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
@@ -82,15 +83,17 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="ProxyLabel" id="order_number">
-                                        <property name="data_type">int</property>
-                                        <property name="model_attribute">order_number</property>
+                                    <widget class="ProxyDateEntry" id="close_date">
+                                        <property name="can_focus">True</property>
+                                        <property name="data_type">date</property>
+                                        <property name="mandatory">True</property>
+                                        <property name="model_attribute">close_date</property>
                                         <property name="visible">True</property>
-                                        <property name="xalign">0.0</property>
                                     </widget>
                                     <packing>
                                         <property name="left_attach">1</property>
                                         <property name="right_attach">2</property>
+                                        <property name="x_options">fill</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -143,6 +146,7 @@
                                     <widget class="ProxyEntry" id="discount">
                                         <property name="data_type">currency</property>
                                         <property name="model_attribute">discount</property>
+                                        <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
@@ -177,17 +181,46 @@
                                     <widget class="GtkTable" id="table2">
                                         <property name="column_spacing">6</property>
                                         <property name="n_columns">2</property>
-                                        <property name="n_rows">2</property>
+                                        <property name="n_rows">3</property>
                                         <property name="row_spacing">6</property>
                                         <property name="visible">True</property>
                                         <child>
+                                            <widget class="GtkLabel" id="label5">
+                                                <property name="label" context="yes" translatable="yes">Order number:</property>
+                                                <property name="visible">True</property>
+                                                <property name="xalign">1.0</property>
+                                            </widget>
+                                        </child>
+                                        <child>
                                             <widget class="GtkLabel" id="person_label">
+                                                <property name="justify">right</property>
                                                 <property name="label" context="yes" translatable="yes">Client:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
                                             <packing>
+                                                <property name="bottom_attach">2</property>
+                                                <property name="top_attach">1</property>
                                                 <property name="y_options"></property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <placeholder/>
+                                            <packing>
+                                                <property name="top_attach">2</property>
+                                                <property name="bottom_attach">3</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <widget class="ProxyLabel" id="order_number">
+                                                <property name="data_type">int</property>
+                                                <property name="model_attribute">order_number</property>
+                                                <property name="visible">True</property>
+                                                <property name="xalign">0.0</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="left_attach">1</property>
+                                                <property name="right_attach">2</property>
                                             </packing>
                                         </child>
                                         <child>
@@ -200,8 +233,19 @@
                                                 <property name="ypad">2</property>
                                             </widget>
                                             <packing>
+                                                <property name="bottom_attach">2</property>
                                                 <property name="left_attach">1</property>
                                                 <property name="right_attach">2</property>
+                                                <property name="top_attach">1</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <placeholder/>
+                                            <packing>
+                                                <property name="left_attach">1</property>
+                                                <property name="right_attach">2</property>
+                                                <property name="top_attach">2</property>
+                                                <property name="bottom_attach">3</property>
                                             </packing>
                                         </child>
                                     </widget>

@@ -41,6 +41,7 @@ class _ConfirmationModel(object):
         self.payments = payments
         self.pay_penalty = True
         self.pay_interest = True
+        self.close_date = datetime.date.today()
 
     def get_installment_value(self):
         return currency(sum(p.value for p in self.payments))
@@ -51,12 +52,14 @@ class _ConfirmationModel(object):
     def get_interest(self):
         if not self.pay_interest:
             return currency(0)
-        return currency(sum(p.get_interest() for p in self.payments))
+        return currency(sum(p.get_interest(self.close_date)
+                            for p in self.payments))
 
     def get_penalty(self):
         if not self.pay_penalty:
             return currency(0)
-        return currency(sum(p.get_penalty() for p in self.payments))
+        return currency(sum(p.get_penalty(self.close_date)
+                            for p in self.payments))
 
     def get_total_value(self):
         return currency(self.get_installment_value() +
@@ -66,15 +69,16 @@ class _ConfirmationModel(object):
     def get_payment_total_value(self, payment):
         value = payment.value
         if self.pay_penalty:
-            value += payment.get_penalty()
+            value += payment.get_penalty(self.close_date)
         if self.pay_interest:
-            value += payment.get_interest()
+            value += payment.get_interest(self.close_date)
         return value
 
 class _SaleConfirmationModel(_ConfirmationModel):
     def __init__(self, payments):
         _ConfirmationModel.__init__(self, payments)
         self._sale = payments[0].group.get_adapted()
+        self.open_date = self._sale.open_date.date()
 
     def get_order_number(self):
         return self._sale.id
@@ -83,10 +87,12 @@ class _SaleConfirmationModel(_ConfirmationModel):
         if self._sale.client:
             return self._sale.client.person.name
 
+
 class _PurchaseConfirmationModel(_ConfirmationModel):
     def __init__(self, payments, purchase):
         _ConfirmationModel.__init__(self, payments)
         self._purchase = purchase
+        self.open_date = purchase.open_date.date()
 
     def get_order_number(self):
         return self._purchase.id
@@ -123,7 +129,8 @@ class _InstallmentConfirmationSlave(BaseEditor):
                      'total_value',
                      'person_name',
                      'pay_penalty',
-                     'pay_interest')
+                     'pay_interest',
+                     'close_date')
 
     # Private
 
@@ -152,14 +159,20 @@ class _InstallmentConfirmationSlave(BaseEditor):
             self.model, _InstallmentConfirmationSlave.proxy_widgets)
 
     def on_confirm(self):
-        today = datetime.date.today()
+        pay_date = self.close_date.get_date()
         for payment in self._payments:
-            payment.pay(today, self.model.get_payment_total_value(payment))
+            payment.pay(pay_date,
+                        self.model.get_payment_total_value(payment))
         return True
 
     #
     # Callbacks
     #
+
+    def on_close_date__validate(self, widget, date):
+        if date > datetime.date.today() or date < self.model.open_date:
+            return ValidationError(_("Paid date must be between "
+                                     "%s and today") % (self.model.open_date,))
 
     def on_pay_penalty__toggled(self, toggle):
         self.penalty.set_sensitive(toggle.get_active())
@@ -171,6 +184,11 @@ class _InstallmentConfirmationSlave(BaseEditor):
 
 class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
     model_type = _SaleConfirmationModel
+
+    def on_close_date__changed(self, proxy_date_entry):
+        self._proxy.update('total_value')
+        self._proxy.update('penalty')
+        self._proxy.update('interest')
 
 class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
     model_type = _PurchaseConfirmationModel

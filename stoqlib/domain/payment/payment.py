@@ -206,32 +206,47 @@ class Payment(Domain):
 
         return self.value + self.get_penalty()
 
-    def get_penalty(self):
+    def get_penalty(self, date=None):
         """
         Calculate the penalty in an absolute value
+        @param date: date of payment
         @returns: penalty
         @rtype: currency
         """
+        if not date:
+            date = datetime.date.today()
+        elif date < self.open_date.date():
+            raise ValueError("Date can not be less then open date")
+        elif date > datetime.date.today():
+            raise ValueError("Date can not be greather then future date")
+
         if not self.method.daily_penalty:
             return currency(0)
 
-        days = (datetime.date.today() - self.due_date.date()).days
+        days = (date - self.due_date.date()).days
         if days <= 0:
             return currency(0)
 
         return currency(days * self.method.daily_penalty / 100 * self.value)
 
-    def get_interest(self):
+    def get_interest(self, date=None):
         """
         Calculate the interest in an absolute value
+        @param date: date of payment
         @returns: interest
         @rtype: currency
         """
+        if not date:
+            date = datetime.date.today()
+        elif date < self.open_date.date():
+            raise ValueError("Date can not be less then open date")
+        elif date > datetime.date.today():
+            raise ValueError("Date can not be greather then future date")
         if not self.method.interest:
             return currency(0)
 
         # Don't add interest if we pay in time!
-        if self.due_date.date() >= datetime.date.today():
+        if self.due_date.date() >= date:
             return currency(0)
 
         return currency(self.method.interest / 100 * self.value)
