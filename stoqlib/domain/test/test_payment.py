@@ -41,12 +41,13 @@ class TestPayment(DomainTest):
         self.failUnless(payment.status == Payment.STATUS_PREVIEW)
 
     def _get_relative_day(self, days):
-        return datetime.datetime.today() + datetime.timedelta(days)
+        return datetime.date.today() + datetime.timedelta(days)
 
     def testGetPenalty(self):
         method = CheckPM.selectOne(connection=self.trans)
         payment = Payment(value=currency(100),
                           due_date=datetime.datetime.now(),
+                          open_date=datetime.datetime.now(),
                           method=method,
                           group=None,
                           till=None,
@@ -68,6 +69,17 @@ class TestPayment(DomainTest):
                                     (30, 0)]:
             payment.due_date = self._get_relative_day(day)
             self.assertEqual(payment.get_penalty(), currency(expected_value))
+
+        due_date = self._get_relative_day(-15)
+        paid_date = self._get_relative_day(-5)
+        payment.due_date = payment.open_date = due_date
+        method.daily_penalty = Decimal(2)
+        self.assertEqual(payment.get_penalty(paid_date), currency(20))
+        self.assertEqual(payment.get_penalty(due_date), currency(0))
+
+        for day in (18, -18):
+            paid_date = self._get_relative_day(day)
+            self.assertRaises(ValueError, payment.get_penalty, paid_date)
 
     def testGetInterest(self):
         method = CheckPM.selectOne(connection=self.trans)
@@ -95,3 +107,12 @@ class TestPayment(DomainTest):
             payment.due_date = self._get_relative_day(day)
             self.assertEqual(payment.get_interest(), currency(expected_value))
 
+        due_date = self._get_relative_day(-15)
+        paid_date = self._get_relative_day(-5)
+        payment.due_date = payment.open_date = due_date
+        self.assertEqual(payment.get_interest(paid_date), currency(20))
+        self.assertEqual(payment.get_interest(due_date), currency(0))
+
+        for day in (18, -18):
+            paid_date = self._get_relative_day(day)
+            self.assertRaises(ValueError, payment.get_interest, paid_date)

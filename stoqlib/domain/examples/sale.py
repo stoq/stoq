@@ -104,7 +104,8 @@ def _create_sale(trans, open_date, status, salesperson, client, coupon_id,
     due_dates = []
     for i in range(installments_number):
         due_dates.append(open_date + datetime.timedelta(i * interval))
-    method.create_inpayments(group, sale_total, due_dates)
+    for p in method.create_inpayments(group, sale_total, due_dates):
+        p.get_adapted().open_date = open_date
 
     sale.set_valid()
 
