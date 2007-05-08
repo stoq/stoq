@@ -250,6 +250,17 @@
                                                 <property name="position">1</property>
                                             </packing>
                                         </child>
+                                        <child>
+                                            <widget class="GtkButton" id="print_button">
+                                                <property name="label">gtk-print</property>
+                                                <property name="use_stock">True</property>
+                                                <property name="visible">True</property>
+                                                <property name="sensitive">False</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="position">2</property>
+                                            </packing>
+                                        </child>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -258,8 +269,8 @@
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
-                                <property name="pack-type">end</property>
-                                <property name="position">2</property>
+                                <property name="pack_type">end</property>
+                                <property name="position">1</property>
                             </packing>
                         </child>
                     </widget>

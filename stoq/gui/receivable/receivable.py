@@ -42,7 +42,7 @@ from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import SaleView
-from stoqlib.reporting.payment import PaymentReport
+from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 
@@ -216,4 +216,4 @@ class ReceivableApp(SearchableAppWindow):
         self._receive(self.results.get_selected_rows())
 
     def on_print_button__clicked(self, button):
-        print_report(PaymentReport, list(self.results))
+        print_report(ReceivablePaymentReport, list(self.results))
