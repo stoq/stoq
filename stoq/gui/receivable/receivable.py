@@ -42,7 +42,8 @@ from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import SaleView
-from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.reporting.payment import PaymentReport
+from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 
 from stoq.gui.application import SearchableAppWindow
@@ -205,6 +206,7 @@ class ReceivableApp(SearchableAppWindow):
     def on_results__selection_changed(self, receivables, selected):
         self.receive_button.set_sensitive(self._can_receive(selected))
         self.details_button.set_sensitive(self._same_sale(selected))
+        self.print_button.set_sensitive(bool(selected))
 
     def on_details_button__clicked(self, button):
         selected = self.results.get_selected_rows()[0]
@@ -213,3 +215,5 @@ class ReceivableApp(SearchableAppWindow):
     def on_receive_button__clicked(self, button):
         self._receive(self.results.get_selected_rows())
 
+    def on_print_button__clicked(self, button):
+        print_report(PaymentReport, list(self.results))
