@@ -199,9 +199,6 @@
                                     <placeholder/>
                                 </child>
                             </widget>
-                            <packing>
-                                <property name="expand">True</property>
-                            </packing>
                         </child>
                         <child>
                             <widget class="GtkHBox" id="hbox1">
@@ -216,7 +213,7 @@
                                             <widget class="GtkButton" id="details_button">
                                                 <property name="is_focus">True</property>
                                                 <property name="label" context="yes" translatable="yes">Details</property>
-                                                <property name="sensitive">False</property> 
+                                                <property name="sensitive">False</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                         </child>
@@ -224,11 +221,22 @@
                                             <widget class="GtkButton" id="receive_button">
                                                 <property name="is_focus">True</property>
                                                 <property name="label" context="yes" translatable="yes">Receive payment</property>
-                                                <property name="sensitive">False</property> 
+                                                <property name="sensitive">False</property>
                                                 <property name="visible">True</property>
-                                           </widget>
+                                            </widget>
                                             <packing>
                                                 <property name="position">1</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <widget class="GtkButton" id="print_button">
+                                                <property name="label">gtk-print</property>
+                                                <property name="sensitive">False</property>
+                                                <property name="use_stock">True</property>
+                                                <property name="visible">True</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="position">2</property>
                                             </packing>
                                         </child>
                                     </widget>
@@ -239,8 +247,8 @@
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
-                                <property name="pack-type">end</property>
-                                <property name="position">2</property>
+                                <property name="pack_type">end</property>
+                                <property name="position">1</property>
                             </packing>
                         </child>
                     </widget>
