@@ -40,8 +40,9 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoqlib.reporting.payment import PaymentPayableReport
 
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.payable.view import PayableView
@@ -193,3 +194,7 @@ class PayableApp(SearchableAppWindow):
     def on_results__selection_changed(self, results, selected):
         self.pay_order_button.set_sensitive(self._same_order(selected))
         self.pay_order_button.set_sensitive(self._can_pay(selected))
+        self.print_button.set_sensitive(bool(self.results))
+
+    def on_print_button__clicked(self, button):
+        print_report(PaymentPayableReport, list(self.results))
