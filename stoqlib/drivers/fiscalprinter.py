@@ -35,7 +35,8 @@ from stoqdrivers.exceptions import (CouponOpenError, DriverError,
                                     CouponNotOpenError)
 
 from stoqlib.database.runtime import new_transaction, get_current_station
-from stoqlib.domain.devices import DeviceSettings
+from stoqlib.domain.devices import (DeviceSettings, FiscalDayHistory,
+                                    FiscalDayTax)
 from stoqlib.domain.giftcertificate import GiftCertificateItem
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        IContainer)
@@ -107,6 +108,10 @@ class CouponPrinter(object):
         self._driver = driver
         self._settings = settings
 
+    #
+    # Public API
+    #
+
     def open_till(self, value=0):
         """
         Opens the till
@@ -135,7 +140,8 @@ class CouponPrinter(object):
         if value > 0:
             self.remove_cash(value)
 
-        self._driver.close_till()
+        data = self._driver.close_till()
+        self._update_sintegra_data(data)
 
     def cancel(self):
         """
@@ -215,6 +221,28 @@ class CouponPrinter(object):
         except DriverError, details:
                     warning(_("Could not print summary"),
                         str(details))
+
+    # Private
+    def _update_sintegra_data(self, data):
+        if data is None:
+            return
+        trans = new_transaction()
+        day = FiscalDayHistory(connection=trans,
+                               emission_date=data.opening_date,
+                               device=self._settings,
+                               serial=data.serial,
+                               serial_id=data.serial_id,
+                               coupon_start=data.coupon_start,
+                               coupon_end=data.coupon_end,
+                               crz=data.crz,
+                               cro=data.cro,
+                               period_total=data.period_total,
+                               total=data.total)
+        for code, value in data.taxes:
+            FiscalDayTax(fiscal_day_history=day,
+                         code=code, value=value,
+                         connection=trans)
+        trans.commit(close=True)
 
 
 #

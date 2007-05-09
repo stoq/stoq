@@ -118,6 +118,15 @@ class Address(Domain):
     def get_state(self):
         return self.city_location.state
 
+    def get_postal_code_number(self):
+        """
+        Returns the postal code without any non-numeric characters
+        @returns: the postal code as a number
+        @rtype: integer
+        """
+        return int(''.join([c for c in self.postal_code
+                                  if c in '1234567890']))
+
     def get_address_string(self):
         if self.street and self.number and self.district:
             return u'%s %s, %s' % (self.street, self.number,

@@ -246,6 +246,23 @@ class Person(Domain):
             return u''
         return address.get_address_string()
 
+    def get_phone_number_number(self):
+        """
+        Returns the phone number without any non-numeric characters
+        @returns: the phone number as a number
+        @rtype: integer
+        """
+        return int(''.join([c for c in self.phone_number
+                                  if c in '1234567890']))
+    def get_fax_number_number(self):
+        """
+        Returns the fax number without any non-numeric characters
+        @returns: the fax number as a number
+        @rtype: integer
+        """
+        return int(''.join([c for c in self.fax_number
+                                  if c in '1234567890']))
+
     #
     # Public API
     #
@@ -421,6 +438,14 @@ class _PersonAdaptToCompany(PersonAdapter):
     state_registry = UnicodeCol(default='')
     is_active = BoolCol(default=True)
 
+    def get_cnpj_number(self):
+        """
+        Returns the cnpj number without any non-numeric characters
+        @returns: the cnpj number as a number
+        @rtype: integer
+        """
+        return int(''.join([c for c in self.cnpj
+                                  if c in '1234567890']))
 Person.registerFacet(_PersonAdaptToCompany, ICompany)
 
 class PersonAdaptToClient(PersonAdapter):

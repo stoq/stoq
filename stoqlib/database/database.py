@@ -117,7 +117,7 @@ def execute_sql(filename):
 
         data = open(filename).read()
         # Rename serial into bigserial, for 64-bit id columns
-        data = data.replace('serial', 'bigserial')
+        data = data.replace('id serial', 'id bigserial')
         proc.stdin.write(data)
         proc.stdin.close()
 

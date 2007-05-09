@@ -240,6 +240,12 @@ class SearchDialog(BasicDialog):
         """
         self.search.set_text_field_columns(columns)
 
+    def disable_search_entry(self):
+        """
+        See L{SearchSlaveDelegate.disable_search_entry}
+        """
+        self.search.disable_search_entry()
+
     def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
                    columns=None, callback=None):
         """

@@ -284,6 +284,13 @@ class ICompany(IPersonFacet):
     state_registry = Attribute('A Brazilian register number associated with '
                                'a certain state')
 
+    def get_cnpj_number():
+        """
+        Returns the cnpj number without any non-numeric characters
+        @returns: the cnpj number as a number
+        @rtype: integer
+        """
+
 class IClient(IPersonFacet):
     """An individual or a company who pays for goods or services"""
 

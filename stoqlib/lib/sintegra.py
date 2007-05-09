@@ -1,0 +1,369 @@
+# -*- coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2007 Async Open Source
+##
+## This program is free software; you can redistribute it and/or
+## modify it under the terms of the GNU Lesser General Public License
+## as published by the Free Software Foundation; either version 2
+## of the License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+##
+## Author(s): Johan Dahlin <jdahlin@async.com.br>
+##
+
+import datetime
+from decimal import Decimal
+
+number = (int, long, Decimal)
+
+def argtype_name(argtype):
+    if argtype == number:
+        return 'number'
+    else:
+        return argtype.__name__
+
+
+class SintegraError(Exception):
+    pass
+
+
+class SintegraFile(object):
+    def __init__(self):
+        self._registers = []
+
+    def add(self, register):
+        """
+        Adds a register to the file
+        @param register: a register
+        @type register: L{SintegraRegister}
+        """
+        if not isinstance(register, SintegraRegister):
+            raise TypeError("register must be a SintegraRegister instance")
+
+        numbers = [f.sintegra_number for f in self._registers]
+        if register.sintegra_unique:
+            if register.sintegra_number in numbers:
+                raise SintegraError("%s can only be added once" % (register.sintegra_number,))
+        if register.sintegra_requires:
+            for number in register.sintegra_requires:
+                if not number in numbers:
+                    raise SintegraError("%s must be added at this point" % (number,))
+
+        self._registers.append(register)
+
+    def add_header(self, cgc, estadual, company, city, state, fax, start, end):
+        """
+        @param cgc:
+        @param estadual:
+        @param company:
+        @param city:
+        @param state:
+        @param fax:
+        @param start:
+        @type start: datetime.date
+        @param end:
+        @type end: datetime.date
+        """
+        if isinstance(company, unicode):
+            company = company.encode('latin1')
+        if isinstance(city, unicode):
+            city = city.encode('latin1')
+        if isinstance(state, unicode):
+            state = state.encode('latin1')
+        self.add(SintegraRegister10(
+            cgc, estadual, company,
+            city, state, fax,
+            int(start.strftime('%Y%m%d')),
+            int(end.strftime('%Y%m%d')),
+            '331'))
+
+    def add_complement_header(self, address, number, complement, district, postal, name, phone):
+        """
+        @param address:
+        @param number:
+        @param complement:
+        @param district:
+        @param postal:
+        @param name:
+        @param phone:
+        """
+        if isinstance(address, unicode):
+            address = address.encode('latin1')
+        if isinstance(complement, unicode):
+            complement = complement.encode('latin1')
+        if isinstance(district, unicode):
+            district = district.encode('latin1')
+        if isinstance(name, unicode):
+            name = name.encode('latin1')
+        self.add(SintegraRegister11(
+            address, number, complement, district,
+            postal, name, phone))
+
+    def add_fiscal_coupon(self, date, printerserial, printerid,
+                          coupon_start, coupon_end, crz, cro, period_total, total):
+        """
+        @param date:
+        @type date: datetime.date
+        @param printerserial:
+        @param printerid:
+        @param coupon_start:
+        @param coupon_end:
+        @param crz:
+        @param cro:
+        @param period_total:
+        @param total:
+        """
+        if not isinstance(date, datetime.date):
+            raise TypeError
+        idate = int(date.strftime('%Y%m%d'))
+        total = int(total * 100)
+        self.add(SintegraRegister60M('M', idate, printerserial, printerid, '2D',
+                                     coupon_start, coupon_end, crz, cro,
+                                     period_total * 100,
+                                     total * 100))
+
+    def add_fiscal_tax(self, date, printerserial, code, value):
+        """
+        @param date:
+        @type date: datetime.date
+        @param printerserial:
+        @param code:
+        @param value:
+        """
+        self.add(SintegraRegister60A(
+            'A', int(date.strftime('%Y%m%d')), printerserial,
+            code,
+            value * 100))
+
+    def close(self):
+        """
+        Closes the file.
+        This will add a couple of registers of type 90.
+        """
+        sums = {}
+        for register in self._registers[2:]:
+            number = register.sintegra_number
+            if not number in sums:
+                sums[number] = 1
+            else:
+                sums[number] += 1
+
+        cgc = self._registers[0].cgc
+        estadual = self._registers[0].estadual
+        totalizers = len(sums) + 1
+        for number, fsum in sorted(sums.items()):
+            self.add(SintegraRegister90(cgc, estadual, number, fsum, '',
+                                        totalizers))
+        self.add(SintegraRegister90(cgc, estadual, 99,
+                                 len(self._registers)+1, '', totalizers))
+
+    def write(self, filename=None, fp=None):
+        """
+        Writes out of the content of the file to a filename or fp
+
+        @param filename: filename
+        @param fp: file object, anything implementing write(data)
+        """
+        if filename is None and fp is None:
+            raise TypeError
+        if filename is not None and fp is not None:
+            raise TypeError
+        if fp is None:
+            fp = open(filename, 'w')
+
+        last_register = self._registers[-1]
+        if (last_register.sintegra_number != 90 or
+            last_register.type != 99):
+            raise TypeError("You need to close the document before calling write()")
+        for register in self._registers:
+            fp.write(register.get_string())
+
+
+class SintegraRegister(object):
+    """
+    @cvar sintegra_number:
+    @cvar sintegra_fields:
+    @cvar sintegra_unique:
+    @cvar sintegra_requires:
+    """
+
+    sintegra_number = 0
+    sintegra_fields = None
+    sintegra_unique = False
+    sintegra_requires = None
+
+    def __init__(self, *args, **kwargs):
+        """
+        Creates a new SintegraRegister.
+        Note that this is an abstract class, you have to subclass this.
+        The arguments depends on what is defined in the class variable
+        sintegra_fields
+        """
+        if not self.sintegra_fields:
+            raise TypeError
+        if not self.sintegra_number:
+            raise TypeError
+        if len(args) != len(self.sintegra_fields):
+            raise TypeError('%s expected %d parameters but got %d' % (
+                self.__class__.__name__, len(self.sintegra_fields), len(args)))
+
+        sent_args = dict([(field[0], field[1:2])
+                          for field in zip(self.sintegra_fields, args)])
+        for key in kwargs:
+            if key in sent_args:
+                raise SintegraRegister("%s specified two times" % (key,))
+
+        total = 0
+        self._values = {}
+        for (name, length, argtype), arg in zip(self.sintegra_fields, args):
+            if not isinstance(arg, argtype):
+                raise TypeError(
+                    "argument %s should be of type %s but got %s" % (
+                    name, argtype_name(argtype), type(arg).__name__))
+            self._values[name] = self._arg_to_string(arg, length, argtype)
+            setattr(self, name, arg)
+            total += length
+
+        if total > 124:
+            raise TypeError(
+                "There are items with a total length of %d in %s, "
+                "but only 124 is allowed" % (total, self.__class__.__name__))
+        elif total < 124:
+            self.padding = 124-total
+        else:
+            self.padding = 0
+
+    #
+    # Public API
+    #
+
+    def get_string(self):
+        """
+        @returns:
+        """
+        values = [self._values[name] for (name, _, _) in self.sintegra_fields]
+        if self.padding:
+            values.append(' '  * self.padding)
+        return '%02d%s\r\n'% (self.sintegra_number,
+                              ''.join(values))
+
+    # Private
+
+    def _arg_to_string(self, value, length, argtype):
+        if argtype == number:
+            arg = '%0*d' % (length, value)
+        elif argtype == str:
+            arg = '%-*s' % (length, value)
+        if len(arg) > length:
+            arg = arg[:length]
+        return arg
+
+
+class SintegraRegister10(SintegraRegister):
+    sintegra_number = 10
+    sintegra_fields = [
+        ('cgc', 14, number),
+        ('estadual', 14, str),
+        ('company', 35, str),
+        ('city', 30, str),
+        ('state', 2, str),
+        ('fax', 10, number),
+        ('start_date', 8, number),
+        ('end_date', 8, number),
+        ('codes', 3, str),
+        # 1: 1..3
+        # 2: 1..3
+        # 3: 1..3,5
+        ]
+    sintegra_unique = True
+
+
+class SintegraRegister11(SintegraRegister):
+    sintegra_number = 11
+    sintegra_fields = [
+        ('place', 34, str),
+        ('number', 5, number),
+        ('complement', 22, str),
+        ('district', 15, str),
+        ('postal', 8, number),
+        ('name', 28, str),
+        ('phone', 12, number),
+        ]
+
+    sintegra_requires = 10,
+    sintegra_unique = True
+
+
+class SintegraRegister60M(SintegraRegister):
+    sintegra_number = 60
+    sintegra_fields = [
+        ('type', 1, str),
+        ('date', 8, number),
+        ('printerserial', 20, str),
+        ('printerid', 3, number),
+        ('model', 2, str),
+        ('start_coo', 6, number),
+        ('end_coo', 6, number),
+        ('crz', 6, number),
+        ('cro', 3, number),
+        ('period_total', 16, number),
+        ('total', 16, number),
+        ]
+    sintegra_requires = 10, 11
+
+
+class SintegraRegister60A(SintegraRegister):
+    sintegra_number = 60
+    sintegra_fields = [
+        ('type', 1, str),
+        ('date', 8, number),
+        ('printerserial', 20, str),
+        ('tax', 4, str),
+        ('total', 12, number),
+        ]
+    sintegra_requires = 10, 11
+
+
+class SintegraRegister90(SintegraRegister):
+    sintegra_number = 90
+    sintegra_fields = [
+        ('cgc', 14, number),
+        ('estadual', 14, str),
+        ('type', 2, number),
+        ('registers', 8, number),
+        ('blank', 85, str),
+        ('number', 1, number),
+        ]
+    sintegra_requires = 10, 11
+
+def test():
+    s = SintegraFile()
+    cgc = int('03852995000107')
+    estadual = '110042490114'
+    s.add(SintegraRegister10(
+        cgc, estadual, 'TESTES E TESTES LTDA',
+        'CANDEIAS', 'SP', int('0710802316'),
+        20070401, 20070430, '331'))
+    s.add(SintegraRegister11(
+        'RODOVIA BA 000 KM 00', 12,',CX',
+        'POSTAL 60', 43800000, 'EDSON / PEDRO',
+        int('07100000000')))
+    s.add_fiscal_coupon(datetime.date(2007, 4, 1),
+                        '12345678901234567890', 1,
+                        1, 10, 1, 1, 100)
+    s.close()
+    s.write('/mondo/tmp/sintegra-dos.txt')
+
+if __name__ == '__main__':
+    test()
