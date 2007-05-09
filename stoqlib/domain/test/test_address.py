@@ -107,3 +107,10 @@ class TestAddress(DomainTest):
         string = address.get_address_string()
         self.assertEquals(string, u'')
 
+    def testGetPostalNumber(self):
+        person = self.create_person()
+        location = self.create_city_location()
+        address = Address(person=person, city_location=location,
+                          postal_code='12345-678', connection=self.trans)
+
+        self.assertEquals(address.get_postal_code_number(), 12345678)

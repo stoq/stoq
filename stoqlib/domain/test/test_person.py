@@ -231,6 +231,17 @@ class TestPerson(DomainTest):
                                                   bank_account=bank_account)
         assert not self._check_create_facet_fails(person, ICompany)
 
+    def testGetPhoneNumberNumber(self):
+        person = self.create_person()
+        person.phone_number = '0321-12345'
+        self.assertEquals(person.get_phone_number_number(), 32112345)
+
+    def testGetFaxNumberNumber(self):
+        person = self.create_person()
+        person.fax_number = '0321-12345'
+        self.assertEquals(person.get_fax_number_number(), 32112345)
+
+
 class _PersonFacetTest(object):
     facet = None
 
@@ -287,6 +298,11 @@ class TestIndividual(_PersonFacetTest, DomainTest):
 
 class TestCompany(_PersonFacetTest, DomainTest):
     facet = Person.getAdapterClass(ICompany)
+
+    def testGetCnpjNumberNumber(self):
+        company = self.create_company()
+        company.cnpj = '111.222.333.444'
+        self.assertEquals(company.get_cnpj_number(), 111222333444)
 
 class TestClient(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToClient

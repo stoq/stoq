@@ -26,7 +26,8 @@
 Domain classes related to stoqdrivers package.
 """
 
-from sqlobject.col import (UnicodeCol, IntCol, ForeignKey, BoolCol, BLOBCol)
+from sqlobject.col import (UnicodeCol, IntCol, ForeignKey, BoolCol, BLOBCol,
+                           DateTimeCol, StringCol)
 from sqlobject.joins import MultipleJoin
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
@@ -403,3 +404,30 @@ class DeviceSettings(Domain):
         return (self.is_a_printer() and self.brand == "virtual" and
                 self.model == "Simple")
 
+
+class FiscalDayTax(Domain):
+    """
+    This represents the information that needs to be used to
+    generate a Sintegra file of type 60M.
+    """
+    fiscal_day_history = ForeignKey('FiscalDayHistory')
+    code = StringCol()
+    value = DecimalCol()
+
+
+class FiscalDayHistory(Domain):
+    """
+    This represents the information that needs to be used to
+    generate a Sintegra file of type 60A.
+    """
+    emission_date = DateTimeCol()
+    device = ForeignKey('DeviceSettings')
+    serial = StringCol()
+    serial_id = IntCol()
+    coupon_start = IntCol()
+    coupon_end = IntCol()
+    cro = IntCol()
+    crz = IntCol()
+    period_total = DecimalCol()
+    total = DecimalCol()
+    taxes = MultipleJoin('FiscalDayTax')
