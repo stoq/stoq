@@ -85,6 +85,7 @@ class ReceivableApp(SearchableAppWindow):
         SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
         self._update_widgets()
+        self.results.connect('has-rows', self._has_rows)
 
     def _setup_widgets(self):
         self.summary_label = SummaryLabel(klist=self.results,
@@ -96,6 +97,9 @@ class ReceivableApp(SearchableAppWindow):
 
     def _update_widgets(self):
         self._update_total_label()
+
+    def _has_rows(self, result_list, has_rows):
+        self.print_button.set_sensitive(has_rows)
 
     def _update_total_label(self):
         self.summary_label.update_total()
@@ -206,7 +210,6 @@ class ReceivableApp(SearchableAppWindow):
     def on_results__selection_changed(self, receivables, selected):
         self.receive_button.set_sensitive(self._can_receive(selected))
         self.details_button.set_sensitive(self._same_sale(selected))
-        self.print_button.set_sensitive(bool(selected))
 
     def on_details_button__clicked(self, button):
         selected = self.results.get_selected_rows()[0]
