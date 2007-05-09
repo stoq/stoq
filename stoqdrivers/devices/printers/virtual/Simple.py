@@ -28,8 +28,10 @@
 """
 A simple implementation of a virtual printer.
 """
+import datetime
 from decimal import Decimal
 
+from kiwi.python import Settable
 from zope.interface import implements
 
 from stoqdrivers.devices.printers.capabilities import Capability
@@ -238,6 +240,25 @@ class Simple:
 
     def till_read_memory(self, start, end):
         pass
+
+    def get_sintegra_data(self):
+        total = sum(i.get_total_value() for i in self._items.values())
+        if self._items:
+            last_item = max(self._items.keys())
+        else:
+            last_item = 0
+
+        return Settable(
+            opening_date=datetime.date.today(),
+            serial='Stoq Virtual Printer',
+            serial_id=000,
+            coupon_start=0,
+            coupon_end=last_item,
+            crz=1,
+            cro=1,
+            period_total=total,
+            total=total,
+            tax_total=total)
 
     #
     # IChequePrinter implementation

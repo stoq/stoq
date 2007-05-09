@@ -474,6 +474,9 @@ class MP25(SerialBase):
     def get_constants(self):
         return self._consts
 
+    def get_sintegra_data(self):
+        return None
+
     #
     # Here ends the implementation of the ICouponPrinter Driver Interface
     #

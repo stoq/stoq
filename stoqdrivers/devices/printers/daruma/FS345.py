@@ -483,3 +483,7 @@ class FS345(SerialBase):
 
     def get_constants(self):
         return self._consts
+
+    def get_sintegra_data(self):
+        return None
+

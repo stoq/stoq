@@ -337,6 +337,13 @@ class IChequePrinter(IDevice):
         * cheque_city         (str)
         """
 
+    def get_sintegra_data():
+        """
+        Fetches data from the printer suitable for sending to sintegra.
+        This is normally done just before closing the till.
+        @returns: an object implementing ISintegraData
+        """
+
 class IScaleInfo(Interface):
     """ This interface list the data read by the scale """
     weight = Attribute("The weight read")
@@ -364,3 +371,18 @@ class IBarcodeReader(IDevice):
         notify_read() to be notified when data was received), or it
         will block in loop waiting the data.
         """
+
+class ISintegraData(Interface):
+    # This is used to generate a Sintegra 60M entry
+    opening_date = Attribute('the day the till was opened')
+    serial = Attribute('identifier of the printer')
+    serial_id = Attribute('identifier of the printer, for the branch')
+    coupon_start = Attribute('first coupon generated during the period')
+    coupon_end = Attribute('last coupon generated during the period')
+    crz = Attribute('Total number of times the till has been closed')
+    cro = Attribute('Total number of times the till has been opened')
+    period_total = Attribute('The value of all sales during the specified period')
+    total = Attribute('The total value for all sales done by this printer')
+    # This is used to generate a Sintegra 60A entry
+    tax_total = Attribute('The total value including taxes')
+

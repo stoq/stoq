@@ -32,6 +32,7 @@ import datetime
 from decimal import Decimal
 import re
 
+from kiwi.python import Settable
 from serial import PARITY_EVEN
 from zope.interface import implements
 
@@ -277,8 +278,11 @@ class Pay2023(SerialBase, BaseChequePrinter):
             retval = retval.replace(',', '.')
             return Decimal(retval)
         elif regtype == datetime.date:
-            return retval[1:-1]
+            # "29/03/2007" -> datetime.date(2007, 3, 29)
+            d, m, y = map(int, retval[1:-1].split('/'))
+            return datetime.date(y, m, d)
         elif regtype == str:
+            # '"string"' -> 'string'
             return retval[1:-1]
         else:
             raise AssertionError
@@ -426,17 +430,6 @@ class Pay2023(SerialBase, BaseChequePrinter):
         self._define_taxcode(5, Decimal("3.00"), service=True)
         for code in range(6, 16):
             self._delete_taxcode(code)
-
-    def print_sintegra_data(self):
-        print self._read_register('DataAbertura', datetime.date) # 3
-        print self._read_register('NumeroSerieECF', str) # 4
-        print self._read_register('ECF', int) # 5
-        print self._read_register('COOInicioDia', int) # 7
-        print self._read_register('COO', int) # 8
-        print self._read_register('CRZ', int) # 9
-        print self._read_register('CRO', int) # 10
-        print self._read_register('TotalDiaVendaBruta', Decimal) # 11
-        print self._read_register('GT', Decimal) # 1
 
     def print_status(self):
         status = self._get_status()
@@ -617,3 +610,17 @@ class Pay2023(SerialBase, BaseChequePrinter):
 
     def get_constants(self):
         return self._consts
+
+    def get_sintegra_data(self):
+        return Settable(
+            opening_date=self._read_register('DataAbertura', datetime.date),
+            serial=self._read_register('NumeroSerieECF', str),
+            serial_id=self._read_register('ECF', int),
+            coupon_start=self._read_register('COOInicioDia', int),
+            coupon_end=self._read_register('COO', int),
+            crz=self._read_register('CRZ', int),
+            cro=self._read_register('CRO', int),
+            period_total=self._read_register('TotalDiaVendaBruta', Decimal),
+            total=self._read_register('GT', Decimal),
+            tax_total=0)
+
