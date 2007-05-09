@@ -39,6 +39,7 @@ from stoqlib.domain.profile import UserProfile
 from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
+from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
 from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
 from stoqlib.gui.parameters import ParametersListingDialog
@@ -179,3 +180,6 @@ class AdminApp(SearchableAppWindow):
 
     def on_tax_constants__activate(self, action):
         self.run_dialog(SellableTaxConstantsDialog, self.conn)
+
+    def on_sintegra__activate(self, action):
+        self.run_dialog(SintegraDialog, self.conn)
