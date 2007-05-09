@@ -232,17 +232,19 @@ class Simple:
                 "Reduce Z was already sent today, try again tomorrow")
         self._till_closed = True
 
+        # Sintegra is disabled until we solve connection problems in stoqlib
+        return None
         total = sum(i.get_total_value() for i in self._items.values())
         if self._items:
             last_item = max(self._items.keys())
         else:
-            last_item = 0
+            last_item = 1
 
         return Settable(
             opening_date=datetime.date.today(),
             serial='Stoq Virtual Printer',
             serial_id=000,
-            coupon_start=0,
+            coupon_start=1,
             coupon_end=last_item,
             crz=1,
             cro=1,
