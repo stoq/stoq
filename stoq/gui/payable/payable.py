@@ -65,6 +65,7 @@ class PayableApp(SearchableAppWindow):
         self._setup_widgets()
         self._update_widgets()
         self.pay_order_button.set_sensitive(False)
+        self.results.connect('has-rows', self._has_rows)
 
     #
     # SearchableAppWindow
@@ -79,6 +80,9 @@ class PayableApp(SearchableAppWindow):
             ComboSearchFilter(_('Show payments with status'),
                               self._get_status_values()),
             SearchFilterPosition.TOP, ['status'])
+
+    def _has_rows(self, result_list, has_rows):
+        self.print_button.set_sensitive(has_rows)
 
     def get_columns(self):
         return [Column('id', title=_('Number'), width=80,
