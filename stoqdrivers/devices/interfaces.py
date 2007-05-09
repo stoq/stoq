@@ -241,6 +241,8 @@ class ICouponPrinter(IDevice):
     def close_till():
         """ Close the till for the day, no other actions can be done after
         this is called. In Brazil this is 'reduce Z' operation
+
+        @returns: an object implementing ISintegraData or None
         """
 
     def till_add_cash(value):
@@ -335,13 +337,6 @@ class IChequePrinter(IDevice):
         * cheque_thirdparty   (str)
         * cheque_value        (Decimal)
         * cheque_city         (str)
-        """
-
-    def get_sintegra_data():
-        """
-        Fetches data from the printer suitable for sending to sintegra.
-        This is normally done just before closing the till.
-        @returns: an object implementing ISintegraData
         """
 
 class IScaleInfo(Interface):

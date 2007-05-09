@@ -278,9 +278,14 @@ class Pay2023(SerialBase, BaseChequePrinter):
             retval = retval.replace(',', '.')
             return Decimal(retval)
         elif regtype == datetime.date:
-            # "29/03/2007" -> datetime.date(2007, 3, 29)
-            d, m, y = map(int, retval[1:-1].split('/'))
-            return datetime.date(y, m, d)
+            # This happens the first time we send a ReducaoZ after
+            # opening the printer and removing the jumper.
+            if retval == '#00/00/0000#':
+                return datetime.date.today()
+            else:
+                # "29/03/2007" -> datetime.date(2007, 3, 29)
+                d, m, y = map(int, retval[1:-1].split('/'))
+                return datetime.date(y, m, d)
         elif regtype == str:
             # '"string"' -> 'string'
             return retval[1:-1]
@@ -307,7 +312,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
         return result
 
     # This how the printer needs to be configured.
-    def _define_tax_code(self, code, name):
+    def _define_tax_name(self, code, name):
         try:
             retdict = self._send_command(
                 'LeNaoFiscal', CodNaoFiscal=code)
@@ -331,7 +336,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
             if e.code != 8036:
                 raise
 
-    def _delete_tax_code(self, code):
+    def _delete_tax_name(self, code):
         try:
             self._send_command(
                 'ExcluiNaoFiscal', CodNaoFiscal=code)
@@ -372,7 +377,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
             if e.code != 8014: # Not configured
                 raise
 
-    def _define_taxcode(self, code, value, service=False):
+    def _define_tax_code(self, code, value, service=False):
         try:
             retdict = self._send_command(
                 'LeAliquota', CodAliquotaProgramavel=code)
@@ -399,7 +404,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
         except DriverError, e:
             raise
 
-    def _delete_taxcode(self, code):
+    def _delete_tax_code(self, code):
         try:
             self._send_command(
                 'ExcluiAliquota', CodAliquotaProgramavel=code)
@@ -407,11 +412,29 @@ class Pay2023(SerialBase, BaseChequePrinter):
             if e.code != 8005: # Not configured
                 raise
 
+    def _get_taxes(self):
+        taxes = [
+            ('I', self._read_register('TotalDocIsencaoICMS', Decimal)),
+            ('F', self._read_register('TotalDocSubstituicaoTributariaICMS', Decimal)),
+            ('N', self._read_register('TotalDocNaoTributadoICMS', Decimal))
+            ]
+
+        crz = self._read_register('CRZ', int)
+        for reg in range(16):
+            value = self._read_register('TotalAliquota%02dReducao[%d]' % (
+                reg, crz), Decimal)
+            if value:
+                retdict = self._send_command(
+                    'LeAliquota', CodAliquotaProgramavel=reg)
+                desc = retdict['PercentualAliquota'].replace(',', '')
+                taxes.append((desc, value))
+        return taxes
+
     def setup(self):
-        self._define_tax_code(0, "Suprimento".encode('cp850'))
-        self._define_tax_code(1, "Sangria".encode('cp850'))
+        self._define_tax_name(0, "Suprimento".encode('cp850'))
+        self._define_tax_name(1, "Sangria".encode('cp850'))
         for code in range(2, 15):
-            self._delete_tax_code(code)
+            self._delete_tax_name(code)
 
         self._define_payment_method(0, u'Cheque'.encode('cp850'))
         self._define_payment_method(1, u'Boleto'.encode('cp850'))
@@ -422,14 +445,14 @@ class Pay2023(SerialBase, BaseChequePrinter):
         for code in range(6, 15):
             self._delete_payment_method(code)
 
-        self._define_taxcode(0, Decimal("17.00"))
-        self._define_taxcode(1, Decimal("12.00"))
-        self._define_taxcode(2, Decimal("25.00"))
-        self._define_taxcode(3, Decimal("8.00"))
-        self._define_taxcode(4, Decimal("5.00"))
-        self._define_taxcode(5, Decimal("3.00"), service=True)
+        self._define_tax_code(0, Decimal("17.00"))
+        self._define_tax_code(1, Decimal("12.00"))
+        self._define_tax_code(2, Decimal("25.00"))
+        self._define_tax_code(3, Decimal("8.00"))
+        self._define_tax_code(4, Decimal("5.00"))
+        self._define_tax_code(5, Decimal("3.00"), service=True)
         for code in range(6, 16):
-            self._delete_taxcode(code)
+            self._delete_tax_code(code)
 
     def print_status(self):
         status = self._get_status()
@@ -535,7 +558,23 @@ class Pay2023(SerialBase, BaseChequePrinter):
         if status & FLAG_DOCUMENTO_ABERTO:
             self.coupon_cancel()
 
+        data = Settable(
+            opening_date=self._read_register('DataAbertura', datetime.date),
+            serial=self._read_register('NumeroSerieECF', str),
+            serial_id=self._read_register('ECF', int),
+            coupon_start=self._read_register('COOInicioDia', int),
+            coupon_end=self._read_register('COO', int),
+            cro=self._read_register('CRO', int),
+            period_total=self._read_register('TotalDiaVendaBruta', Decimal),
+            total=self._read_register('GT', Decimal),
+            taxes=[])
+
         self._send_command('EmiteReducaoZ')
+
+        data.crz = self._read_register('CRZ', int)
+        data.taxes = self._get_taxes()
+
+        return data
 
     def till_add_cash(self, value):
         status = self._get_status()
@@ -610,17 +649,3 @@ class Pay2023(SerialBase, BaseChequePrinter):
 
     def get_constants(self):
         return self._consts
-
-    def get_sintegra_data(self):
-        return Settable(
-            opening_date=self._read_register('DataAbertura', datetime.date),
-            serial=self._read_register('NumeroSerieECF', str),
-            serial_id=self._read_register('ECF', int),
-            coupon_start=self._read_register('COOInicioDia', int),
-            coupon_end=self._read_register('COO', int),
-            crz=self._read_register('CRZ', int),
-            cro=self._read_register('CRO', int),
-            period_total=self._read_register('TotalDiaVendaBruta', Decimal),
-            total=self._read_register('GT', Decimal),
-            tax_total=0)
-

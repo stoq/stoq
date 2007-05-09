@@ -232,16 +232,6 @@ class Simple:
                 "Reduce Z was already sent today, try again tomorrow")
         self._till_closed = True
 
-    def till_add_cash(self, value):
-        pass
-
-    def till_remove_cash(self, value):
-        pass
-
-    def till_read_memory(self, start, end):
-        pass
-
-    def get_sintegra_data(self):
         total = sum(i.get_total_value() for i in self._items.values())
         if self._items:
             last_item = max(self._items.keys())
@@ -259,6 +249,16 @@ class Simple:
             period_total=total,
             total=total,
             tax_total=total)
+
+    def till_add_cash(self, value):
+        pass
+
+    def till_remove_cash(self, value):
+        pass
+
+    def till_read_memory(self, start, end):
+        pass
+
 
     #
     # IChequePrinter implementation

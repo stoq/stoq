@@ -634,9 +634,6 @@ class IFS9000I(SerialBase):
     def get_constants(self):
         return self._consts
 
-    def get_sintegra_data(self):
-        return None
-
     #
     # Auxiliar methods
     #

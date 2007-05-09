@@ -240,9 +240,3 @@ class FiscalPrinter(BasePrinter):
             start, end))
 
         return self._driver.read_memory(start, end)
-
-    def get_sintegra_data(self):
-        log.info('get_sintegra_data()')
-
-        return self._driver.get_sintegra_data()
-
