@@ -23,7 +23,7 @@ CREATE TABLE fiscal_day_tax (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    code text,
+    code text CONSTRAINT valid_code CHECK (code ~ '^([0-9][0-9][0-9][0-9]|I|F|N|ISS|DESC|CANC)$'),
     value numeric(10, 2) CONSTRAINT positive_value CHECK (value >= 0),
     fiscal_day_history_id bigint REFERENCES fiscal_day_history(id)
 );
