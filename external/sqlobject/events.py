@@ -1,8 +1,8 @@
 import sys
 import types
-from sqlobject.include.pydispatch import dispatcher
 from weakref import ref
 
+from pydispatch import dispatcher
 
 subclassClones = {}
 
