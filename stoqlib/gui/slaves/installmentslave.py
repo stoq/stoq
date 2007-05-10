@@ -101,6 +101,13 @@ class _PurchaseConfirmationModel(_ConfirmationModel):
         if self._purchase.supplier:
             return self._purchase.supplier.person.name
 
+    def get_penalty(self):
+        return currency(0)
+
+    def get_interest(self):
+        return currency(0)
+
+
 class _InstallmentConfirmationSlave(BaseEditor):
     """
     This slave is responsible for confirming a list of payments and
@@ -198,25 +205,51 @@ class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         self.discount_label.show()
         self.discount.show()
         self.person_label.set_text(_("Supplier: "))
-        self.expander.set_expanded(True)
+        self.expander.hide()
+        self.discount_value = currency(0)
+        self.penalty_value = currency(0)
+        self.interest_value = currency(0)
+        self.installments_number = len(self._payments)
 
-    def after_discount__content_changed(self, proxy_entry):
+    def _calculate_payment(self):
+        total = self.penalty_value - self.discount_value + self.interest_value
+        value = total/self.installments_number
+        for payment in self._payments:
+            payment.value = payment.base_value + value
+        self._proxy.update('total_value')
+
+    def _read_widget_value(self, proxy_entry):
         try:
             value = proxy_entry.read()
         except ValidationError:
-            value = ValueUnset
-        installments_number = len(self._payments)
-        for payment in self._payments:
-            if value == ValueUnset:
-                payment.value = payment.base_value
-            else:
-                payment.value = payment.base_value - (value/installments_number)
-            self.installments.update(payment)
-        self._proxy.update('total_value')
+            value = currency(0)
+        if value == ValueUnset:
+            value = currency(0)
+        return value
+
+    def after_discount__content_changed(self, proxy_entry):
+        self.discount_value = self._read_widget_value(proxy_entry)
+        self._calculate_payment()
 
     def on_discount__validate(self, entry, value):
         if value >= self._payments[0].base_value:
             return ValidationError(_("Discount can not be greater than value"))
+
+    def after_penalty__content_changed(self, proxy_entry):
+        self.penalty_value = self._read_widget_value(proxy_entry)
+        self._calculate_payment()
+
+    def on_penalty__validate(self, entry, value):
+        if value < 0:
+            return ValidationError(_("Penalty can not be less than zero"))
+
+    def after_interest__content_changed(self, proxy_entry):
+        self.interest_value = self._read_widget_value(proxy_entry)
+        self._calculate_payment()
+
+    def on_interest__validate(self, entry, value):
+        if value < 0:
+            return ValidationError(_("Penalty can not be less than zero"))
 
     def create_model(self, conn):
         return _PurchaseConfirmationModel(self._payments,
