@@ -414,20 +414,31 @@ class Pay2023(SerialBase, BaseChequePrinter):
 
     def _get_taxes(self):
         taxes = [
-            ('I', self._read_register('TotalDocIsencaoICMS', Decimal)),
-            ('F', self._read_register('TotalDocSubstituicaoTributariaICMS', Decimal)),
-            ('N', self._read_register('TotalDocNaoTributadoICMS', Decimal))
+            ('I', self._read_register('TotalDiaIsencaoICMS', Decimal)),
+            ('F', self._read_register('TotalDiaSubstituicaoTributariaICMS',
+                                      Decimal)),
+            ('N', self._read_register('TotalDiaNaoTributadoICMS', Decimal)),
+            ('DESC',
+             self._read_register('TotalDiaDescontos', Decimal)),
+            ('CANC',
+             self._read_register('TotalDiaCancelamentosICMS', Decimal) +
+             self._read_register('TotalDiaCancelamentosISSQN', Decimal)),
+            ('ISS',
+             self._read_register('TotalDiaISSQN', Decimal)),
             ]
 
-        crz = self._read_register('CRZ', int)
         for reg in range(16):
-            value = self._read_register('TotalAliquota%02dReducao[%d]' % (
-                reg, crz), Decimal)
+            value = self._read_register('TotalDiaValorAliquota[%d]' % (
+                reg,), Decimal)
             if value:
                 retdict = self._send_command(
                     'LeAliquota', CodAliquotaProgramavel=reg)
+                # The service taxes are already added in the 'ISS' tax
+                # Skip non-ICMS taxes here.
+                if retdict['AliquotaICMS'] == 'N':
+                    continue
                 desc = retdict['PercentualAliquota'].replace(',', '')
-                taxes.append((desc, value))
+                taxes.append(('%04d' % int(desc), value))
         return taxes
 
     def setup(self):
@@ -565,14 +576,12 @@ class Pay2023(SerialBase, BaseChequePrinter):
             coupon_start=self._read_register('COOInicioDia', int),
             coupon_end=self._read_register('COO', int),
             cro=self._read_register('CRO', int),
+            crz=self._read_register('CRZ', int),
             period_total=self._read_register('TotalDiaVendaBruta', Decimal),
             total=self._read_register('GT', Decimal),
-            taxes=[])
+            taxes=self._get_taxes())
 
         self._send_command('EmiteReducaoZ')
-
-        data.crz = self._read_register('CRZ', int)
-        data.taxes = self._get_taxes()
 
         return data
 
