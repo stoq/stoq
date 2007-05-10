@@ -12,6 +12,15 @@ except:
     import sets
     Set = sets.Set
 
+try:
+    from cStringIO import StringIO
+    # pyflakes
+    StringIO
+except:
+    from StringIO import StringIO
+    # pyflakes
+    StringIO
+
 import os, time
 
 try:
