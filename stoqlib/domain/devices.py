@@ -409,6 +409,14 @@ class FiscalDayTax(Domain):
     """
     This represents the information that needs to be used to
     generate a Sintegra file of type 60M.
+    @cvar code: four bytes, either the percental of the tax, 1800 for 18%
+    or one of:
+    - I: Isento
+    - F: Substitucao
+    - N: Nao tributado
+    - ISS: ISS
+    - CANC: Cancelled
+    - DESC: Discount
     """
     fiscal_day_history = ForeignKey('FiscalDayHistory')
     code = StringCol()
