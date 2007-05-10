@@ -38,9 +38,9 @@ from stoqlib.lib import test
 class SintegraTest(DomainTest):
     def testComplete(self):
         settings = self.create_device_settings()
-        today = datetime.date.today()
+        today = datetime.date(2007, 1, 1)
         day = FiscalDayHistory(connection=self.trans,
-                               emission_date=datetime.date.today(),
+                               emission_date=today,
                                device=settings,
                                serial='Stoqlib test serial',
                                serial_id=1,
@@ -60,7 +60,7 @@ class SintegraTest(DomainTest):
         address = branch.person.get_main_address()
 
         start = today + relativedelta(day=1)
-        end = today - relativedelta(day=31, months=1)
+        end = today + relativedelta(day=31)
 
         s = SintegraFile()
         s.add_header(company.get_cnpj_number(),
