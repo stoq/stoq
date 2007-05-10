@@ -155,7 +155,7 @@ class SintegraDialog(SearchDialog):
 
         s = SintegraFile()
         s.add_header(company.get_cnpj_number(),
-                     '110042490114',
+                     str(company.get_state_registry_number()) or 'ISENTO',
                      company.fancy_name,
                      address.get_city(),
                      address.get_state(),

@@ -188,6 +188,7 @@ def create_people():
     company = ICompany(person)
     company.cnpj = '03.852.995/0001-07'
     company.fancy_name = u"Async Open Source"
+    company.state_registry = '110042490114'
 
     trans.commit()
 
