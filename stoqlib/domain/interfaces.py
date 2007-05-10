@@ -290,6 +290,13 @@ class ICompany(IPersonFacet):
         @returns: the cnpj number as a number
         @rtype: integer
         """
+    def get_state_registry_number():
+        """
+        Returns the state registry number without any non-numeric characters
+        @returns: the state registry number as a number
+        @rtype: integer
+        """
+
 
 class IClient(IPersonFacet):
     """An individual or a company who pays for goods or services"""
