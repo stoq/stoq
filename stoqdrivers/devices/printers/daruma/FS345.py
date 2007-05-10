@@ -27,10 +27,12 @@
 """
 Daruma FS345 driver
 """
-import time
+import datetime
 from decimal import Decimal
+import time
 
 from kiwi.log import Logger
+from kiwi.python import Settable
 from zope.interface import implements
 
 from stoqdrivers import abicomp
@@ -39,7 +41,8 @@ from stoqdrivers.devices.interfaces import ICouponPrinter
 from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.devices.printers.base import BaseDriverConstants
 from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
-from stoqdrivers.exceptions import (DriverError, PendingReduceZ, HardwareFailure,
+from stoqdrivers.exceptions import (DriverError, PendingReduceZ,
+                                    HardwareFailure,
                                     AuthenticationFailure, CommError,
                                     PendingReadX, CouponNotOpenError,
                                     OutofPaperError, PrinterOfflineError,
@@ -92,10 +95,10 @@ CMD_ADD_ITEM_3L13D53U = 223
 # [ESC] 228 Configuração da IF
 CMD_GET_CONFIGURATION = 229
 # [ESC] 230 Leitura do relógio interno da impressora
-# [ESC] 231 Leitura das alíquotas fiscais carregadas
+CMD_GET_TAX_CODES = 231
 # [ESC] 232 Leitura do clichê do proprietário
 # [ESC] 234 Retransmissão de mensagens da IF
-# [ESC] 236 Leitura da identificação da IF
+CMD_GET_IDENTIFIER = 236
 # [ESC] 238 Leitura das mensagens personalizadas
 CMD_GET_DOCUMENT_STATUS = 239
 CMD_GET_FISCAL_REGISTRIES = 240
@@ -107,7 +110,7 @@ CMD_GET_TOTALIZERS = 244
 # [ESC] 246 Leitura Horária
 # [ESC] 247 Descrição Estendida
 # [ESC] 248 Estorno de forma de pagamento
-# [ESC] 250 Leitura de datas de Controle Fiscal
+CMD_GET_DATES = 250
 # [ESC] 251 Leitura das informações cadastrais do usuário
 # [ESC] V   Controle de horário de verão
 
@@ -250,7 +253,8 @@ class FS345(SerialBase):
         elif error == 21:
             log.warning(_('No paper'))
         elif error == 22:
-            raise DriverError("Reduce Z was already sent today, try again tomorrow")
+            raise DriverError(
+                "Reduce Z was already sent today, try again tomorrow")
         elif error == 23:
             raise DriverError("Bad description: %r" % raw)
         elif error == 24:
@@ -297,14 +301,15 @@ class FS345(SerialBase):
         print 'Sum', int(value[27:41]) / 100.0
         print 'GT atual', value[41:59]
 
-    def show_fiscal_registers(self):
+    def _get_fiscal_registers(self):
         value = self.send_command(CMD_GET_FISCAL_REGISTRIES)
         assert value[:2] == '\x1b' + chr(CMD_GET_FISCAL_REGISTRIES)
+        return value[2:]
 
-    def show_registers(self):
+    def _get_registers(self):
         value = self.send_command(CMD_GET_REGISTRIES)
         assert value[:2] == '\x1b' + chr(CMD_GET_REGISTRIES)
-        print value[48:62]
+        return value[2:]
 
     # High level commands
     def _verify_coupon_open(self):
@@ -337,6 +342,60 @@ class FS345(SerialBase):
         data = "%s1%s%012d\xff" % (type, "0" * 12, # padding
                                    int(float(value) * 1e2))
         self.send_command(CMD_OPEN_VOUCHER, data)
+
+    def _get_taxes(self):
+        fiscal_registries = self._get_fiscal_registers()
+        tax_codes = self.send_command(CMD_GET_TAX_CODES)[1:]
+
+        taxes = []
+        for i in range(14):
+            if tax_codes[i*5] in 'ABCDEFGHIJKLMNOP':
+                reg = tax_codes[i*5+1:i*5+5]
+                if reg == '////':
+                    continue
+                reg = reg.replace('.', '')
+            else:
+                reg = 'ISS'
+            sold = fiscal_registries[87+(i*14):101+(i*14)]
+            taxes.append((reg, Decimal(sold)/100))
+
+        taxes.append(('DESC', Decimal(fiscal_registries[19:32]) / 100))
+        taxes.append(('CANC', Decimal(fiscal_registries[33:46]) / 100))
+        taxes.append(('I', Decimal(fiscal_registries[47:60]) / 100))
+        taxes.append(('N', Decimal(fiscal_registries[61:74]) / 100))
+        taxes.append(('F', Decimal(fiscal_registries[75:88]) / 100))
+        return taxes
+
+    def _generate_sintegra(self):
+        registries = self._get_registers()
+        fiscal_registries = self._get_fiscal_registers()
+
+        taxes = self._get_taxes()
+        total_sold = sum(value for _, value in taxes)
+
+        old_total = Decimal(fiscal_registries[:18]) / 100
+        cancelled = Decimal(fiscal_registries[33:46]) / 100
+        period_total = total_sold + cancelled
+
+        dates = self.send_command(CMD_GET_DATES)
+        if dates[:6] == '000000':
+            opening_date = datetime.date.today()
+        else:
+            d, m, y = map(int, [dates[:2], dates[2:4], dates[4:6]])
+            opening_date = datetime.date(2000+y, m, d)
+
+        identifier = self.send_command(CMD_GET_IDENTIFIER)
+        return Settable(
+             opening_date=opening_date,
+             serial=identifier[1:9],
+             serial_id=int(identifier[13:17]),
+             coupon_start=int(registries[:6]),
+             coupon_end=int(registries[7:12]),
+             cro=int(registries[35:38]),
+             crz=int(registries[39:42]),
+             period_total=period_total,
+             total=period_total + old_total,
+             taxes=taxes)
 
     #
     # API implementation
@@ -449,8 +508,13 @@ class FS345(SerialBase):
         status = self._get_status()
         if self._is_open(status):
             self.send_command(CMD_CANCEL_COUPON)
+
+        data = self._generate_sintegra()
+
         date = time.strftime('%d%m%y%H%M%S', time.localtime())
         self.send_command(CMD_REDUCE_Z, date)
+
+        return data
 
     def till_add_cash(self, value):
         self._add_voucher(CASH_IN_TYPE, value)
