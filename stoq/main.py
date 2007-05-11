@@ -40,7 +40,39 @@ from stoq.lib.applist import get_application_names
 from stoq.lib.options import get_option_parser
 
 _ = gettext.gettext
+_stream = None
+
 log = Logger('stoq.main')
+
+def _write_exception_hook(exctype, value, tb):
+    global _stream
+    import traceback
+    from stoq.gui.runner import get_runner
+    from stoqlib.gui.base.dialogs import get_current_toplevel
+
+    runner = get_runner()
+
+    window = get_current_toplevel()
+    if window:
+        window_name = window.name
+    else:
+        window_name = 'unknown'
+
+    log.info('An error occurred in application "%s", toplevel window=%s:' % (
+        runner.get_current_app_name(), window_name))
+
+    traceback.print_exception(exctype, value, tb, file=_stream)
+    traceback.print_exception(exctype, value, tb)
+
+def _debug_hook(exctype, value, tb):
+    import traceback
+    _write_exception_hook(exctype, value, tb)
+    traceback.print_exception(exctype, value, tb)
+    print
+    print '-- Starting debugger --'
+    print
+    import pdb
+    pdb.pm()
 
 def _check_dependencies():
     if 0:
@@ -118,13 +150,19 @@ def _check_tables():
     # FIXME: Check so SystemTable is up-to-date
 
 def _initialize(options):
+    global _stream
     # Do this as early as possible to get as much as possible into the
     # log file itself, which means we cannot depend on the config or
     # anything else
     stoqdir = os.path.join(os.environ['HOME'], '.stoq')
     if not os.path.exists(stoqdir):
         os.mkdir(stoqdir)
-    set_log_file(os.path.join(stoqdir, 'stoq.log'), 'stoq*')
+    _stream = set_log_file(os.path.join(stoqdir, 'stoq.log'), 'stoq*')
+    if options.debug:
+        hook = _debug_hook
+    else:
+        hook = _write_exception_hook
+    sys.excepthook = hook
 
     _check_dependencies()
     _setup_dialogs()

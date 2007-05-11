@@ -47,16 +47,6 @@ from stoq.lib.options import get_option_parser
 
 _ = gettext.gettext
 
-def _debug_hook(exctype, value, tb):
-    import traceback
-
-    traceback.print_exception(exctype, value, tb)
-    print
-    print '-- Starting debugger --'
-    print
-    import pdb
-    pdb.pm()
-
 def setup(config=None, options=None, register_station=True, check_schema=True):
     """
     Loads the configuration from arguments and configuration file.
@@ -114,7 +104,6 @@ def setup(config=None, options=None, register_station=True, check_schema=True):
             from stoqlib.gui.keyboardhandler import install_global_keyhandler
             from stoqlib.gui.introspection import introspect_slaves
             install_global_keyhandler(keysyms.F12, introspect_slaves)
-            sys.excepthook = _debug_hook
 
         if options.sqldebug:
             conn.debug = True
