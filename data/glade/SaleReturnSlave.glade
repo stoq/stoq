@@ -473,12 +473,21 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyTextView" id="reason">
-                        <property name="data_type">unicode</property>
+                    <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                        <property name="hscrollbar_policy">never</property>
                         <property name="is_focus">True</property>
-                        <property name="model_attribute">reason</property>
+                        <property name="shadow_type">in</property>
                         <property name="visible">True</property>
-                        <property name="wrap_mode">word</property>
+                        <property name="vscrollbar_policy">automatic</property>
+                        <child>
+                            <widget class="ProxyTextView" id="reason">
+                                <property name="data_type">unicode</property>
+                                <property name="is_focus">True</property>
+                                <property name="model_attribute">reason</property>
+                                <property name="visible">True</property>
+                                <property name="wrap_mode">word</property>
+                            </widget>
+                        </child>
                     </widget>
                     <packing>
                         <property name="position">1</property>
