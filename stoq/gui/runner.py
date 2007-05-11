@@ -36,6 +36,7 @@ from stoq.gui.login import LoginHelper
 
 log = Logger('stoq.runner')
 _ = gettext.gettext
+_runner = None
 
 class ApplicationRunner(object):
     """
@@ -46,6 +47,10 @@ class ApplicationRunner(object):
     good start-up performance
     """
     def __init__(self, options):
+        global _runner
+        if _runner:
+            raise AssertionError("There can only be one runner at a time")
+        _runner = self
         self._current_app = None
         self._options = options
         self._appname = None
@@ -202,3 +207,18 @@ class ApplicationRunner(object):
         for name, full, icon, descr in descriptions:
             if name == appname:
                 return Application(name, full, icon, descr)
+
+    def get_current_app_name(self):
+        """
+        Get the name of the currently running application
+        @returns: the name
+        @rtype: str
+        """
+        return self._appname
+
+def get_runner():
+    """
+    @returns: the runner
+    @rtype: L{ApplicationRunner}
+    """
+    return _runner
