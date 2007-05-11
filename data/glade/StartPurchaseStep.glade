@@ -68,6 +68,7 @@
                                 <property name="data_type">date</property>
                                 <property name="model_attribute">open_date</property>
                                 <property name="visible">True</property>
+                                <property name="sensitive">False</property>
                             </widget>
                             <packing>
                                 <property name="left_attach">1</property>
