@@ -107,6 +107,9 @@ class _PurchaseConfirmationModel(_ConfirmationModel):
     def get_interest(self):
         return currency(0)
 
+    def get_payment_total_value(self, payment):
+        return currency(0)
+
 
 class _InstallmentConfirmationSlave(BaseEditor):
     """
@@ -216,6 +219,7 @@ class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         value = total/self.installments_number
         for payment in self._payments:
             payment.value = payment.base_value + value
+            self.installments.update(payment)
         self._proxy.update('total_value')
 
     def _read_widget_value(self, proxy_entry):
