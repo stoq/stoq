@@ -44,44 +44,30 @@ from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToOutPayment,
                                             AbstractPaymentGroup)
 from stoqlib.domain.payment.methods import CheckPM, MoneyPM
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.sellable import ASellable, SellableTaxConstant
+from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.parameters import sysparam
 
 class TestSale(DomainTest):
 
-    def _create_sale_filled(self):
-        # FIXME: Move to exampledata? create_sale_with_product
-        sale = self.create_sale()
-        sale.addFacet(IPaymentGroup, connection=self.trans)
-        sellable = self.create_sellable()
-        sellable.status = ASellable.STATUS_AVAILABLE
-        product = sellable.get_adapted()
-        storable = product.addFacet(IStorable, connection=self.trans)
-        storable.increase_stock(100, get_current_branch(self.trans))
-        sellable.add_sellable_item(sale, quantity=5)
-
-        return sale, sellable, storable
-
-    def _create_paid_sale(self):
-        sale = self._create_sale_filled()[0]
-        sale.order()
-        self._add_payments(sale)
-        return sale
-
-    def _add_payments(self, sale):
+    def _add_payments(self, sale, method_type=MoneyPM):
         group = IPaymentGroup(sale, None)
         if group is None:
             group = sale.addFacet(IPaymentGroup, connection=self.trans)
 
-        method = MoneyPM.selectOne(connection=self.trans)
+        method = method_type.selectOne(connection=self.trans)
         payment = method.create_inpayment(group,
                                           sale.get_sale_subtotal())
 
     def _add_product(self, sale):
         product = self.create_product()
         sellable = ISellable(product)
+        sellable.tax_constant = SellableTaxConstant(
+            description="18",
+            tax_type=int(TaxType.CUSTOM),
+            tax_value=18,
+            connection=self.trans)
         sellable.add_sellable_item(sale, quantity=1)
         storable = product.addFacet(IStorable, connection=self.trans)
         storable.increase_stock(100, get_current_branch(self.trans))
@@ -210,51 +196,12 @@ class TestSale(DomainTest):
         self.failIf(sale.can_order())
 
     def testConfirmMoney(self):
-        sale, sellable, _ = self._create_sale_filled()
+        sale = self.create_sale()
+        self._add_product(sale)
         sale.order()
 
-        sellable.tax_constant = SellableTaxConstant(
-            description="18",
-            tax_type=int(TaxType.CUSTOM),
-            tax_value=18,
-            connection=self.trans)
-
+        self._add_payments(sale, method_type=MoneyPM)
         group = IPaymentGroup(sale)
-        method = MoneyPM.selectOne(connection=self.trans)
-        method.create_inpayment(group, sale.get_sale_subtotal())
-
-        self.failIf(IcmsIpiBookEntry.selectOneBy(payment_group=group,
-                                                 connection=self.trans))
-        self.failUnless(sale.can_confirm())
-        sale.confirm()
-        self.failIf(sale.can_confirm())
-        self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
-        self.assertEqual(sale.confirm_date.date(), datetime.date.today())
-
-        book_entry = IcmsIpiBookEntry.selectOneBy(
-            payment_group=group, connection=self.trans)
-        self.failUnless(book_entry)
-        self.assertEqual(book_entry.icms_value, Decimal("9"))
-
-        for payment in group.get_items():
-            self.assertEquals(payment.status, Payment.STATUS_PAID)
-            entry = TillEntry.selectOneBy(payment=payment, connection=self.trans)
-            self.assertEquals(entry.value, payment.value)
-
-    def testConfirmCheck(self):
-        sale, sellable, _ = self._create_sale_filled()
-        sale.order()
-
-        sellable.tax_constant = SellableTaxConstant(
-            description="18",
-            tax_type=int(TaxType.CUSTOM),
-            tax_value=18,
-            connection=self.trans)
-
-        group = IPaymentGroup(sale)
-        method = CheckPM.selectOne(connection=self.trans)
-        method.create_inpayment(group, sale.get_sale_subtotal())
-
         self.failIf(IcmsIpiBookEntry.selectOneBy(payment_group=group,
                                                  connection=self.trans))
         self.failUnless(sale.can_confirm())
@@ -267,7 +214,33 @@ class TestSale(DomainTest):
             payment_group=group, connection=self.trans)
         self.failUnless(book_entry)
         self.assertEqual(book_entry.cfop.code, '5.102')
-        self.assertEqual(book_entry.icms_value, Decimal("9"))
+        self.assertEqual(book_entry.icms_value, Decimal("1.8"))
+
+        for payment in group.get_items():
+            self.assertEquals(payment.status, Payment.STATUS_PAID)
+            entry = TillEntry.selectOneBy(payment=payment, connection=self.trans)
+            self.assertEquals(entry.value, payment.value)
+
+    def testConfirmCheck(self):
+        sale = self.create_sale()
+        self._add_product(sale)
+        sale.order()
+
+        self._add_payments(sale, method_type=CheckPM)
+        group = IPaymentGroup(sale)
+        self.failIf(IcmsIpiBookEntry.selectOneBy(payment_group=group,
+                                                 connection=self.trans))
+        self.failUnless(sale.can_confirm())
+        sale.confirm()
+        self.failIf(sale.can_confirm())
+        self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
+        self.assertEqual(sale.confirm_date.date(), datetime.date.today())
+
+        book_entry = IcmsIpiBookEntry.selectOneBy(
+            payment_group=group, connection=self.trans)
+        self.failUnless(book_entry)
+        self.assertEqual(book_entry.cfop.code, '5.102')
+        self.assertEqual(book_entry.icms_value, Decimal("1.8"))
 
         for payment in group.get_items():
             self.assertEquals(payment.status, Payment.STATUS_PENDING)
@@ -345,7 +318,8 @@ class TestSale(DomainTest):
         book_entry = IcmsIpiBookEntry.selectOneBy(
             payment_group=group, cfop=cfop, connection=self.trans)
         self.failUnless(book_entry)
-        self.assertEqual(book_entry.icms_value, 0)
+        self.assertEqual(book_entry.icms_value,
+                         Decimal("0.18") * paid_payment.value)
 
     def testCanCancel(self):
         sale = self.create_sale()
