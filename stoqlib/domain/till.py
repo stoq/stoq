@@ -29,8 +29,7 @@ Implementation of classes related to Fiscal operations.
 
 import datetime
 
-from sqlobject import (IntCol, DateTimeCol, ForeignKey, UnicodeCol,
-                       SQLObject)
+from sqlobject import IntCol, DateTimeCol, ForeignKey, UnicodeCol
 
 from sqlobject.sqlbuilder import AND
 from kiwi.datatypes import currency
@@ -39,7 +38,7 @@ from kiwi.log import Logger
 from stoqlib.database.columns import PriceCol
 from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station)
-from stoqlib.domain.base import Domain, BaseSQLView
+from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.interfaces import (IPaymentGroup,
@@ -375,18 +374,3 @@ class TillEntry(Domain):
     payment = ForeignKey("Payment", default=None)
 
 
-#
-# Views
-#
-
-
-class TillFiscalOperationsView(SQLObject, BaseSQLView):
-    """Stores informations about till payment tables
-    """
-
-    date = DateTimeCol()
-    description = UnicodeCol()
-    station_name = UnicodeCol()
-    value = PriceCol()
-    branch_id = IntCol()
-    status = IntCol()
