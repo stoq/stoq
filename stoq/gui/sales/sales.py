@@ -58,9 +58,9 @@ class SalesApp(SearchableAppWindow):
     search_table = SaleView
     search_label = _('matching:')
 
-    cols_info = {Sale.STATUS_OPENED: ('open_date', _("Date Started")),
+    cols_info = {Sale.STATUS_INITIAL: ('open_date', _("Date Started")),
                  Sale.STATUS_CONFIRMED: ('confirm_date', _("Confirm Date")),
-                 Sale.STATUS_CLOSED: ('close_date', _("Close Date")),
+                 Sale.STATUS_PAID: ('close_date', _("Close Date")),
                  Sale.STATUS_CANCELLED: ('cancel_date', _("Cancel Date"))}
 
     def __init__(self, app):
@@ -131,7 +131,7 @@ class SalesApp(SearchableAppWindow):
                                  selected.client_name is not None)
         self.print_invoice.set_sensitive(can_print_invoice)
 
-        rejected = Sale.STATUS_CANCELLED, Sale.STATUS_ORDER
+        rejected = Sale.STATUS_CANCELLED, Sale.STATUS_ORDERED
         can_cancel = bool(selected and selected.status not in rejected)
         self.sale_toolbar.return_sale_button.set_sensitive(can_cancel)
 
@@ -158,7 +158,7 @@ class SalesApp(SearchableAppWindow):
         if sale_status is None:
             # When there is no filter for sale status, show the
             # 'date started' column by default
-            sale_status = Sale.STATUS_OPENED
+            sale_status = Sale.STATUS_INITIAL
         cols = self.get_columns()
         if not sale_status in self.cols_info.keys():
             raise ValueError("Invalid Sale status, got %d" % sale_status)
@@ -176,7 +176,7 @@ class SalesApp(SearchableAppWindow):
     def _get_status_values(self):
         items = [(value, key) for key, value in Sale.statuses.items()
                     # No reason to show orders in sales app
-                    if key != Sale.STATUS_ORDER]
+                    if key != Sale.STATUS_ORDERED]
         items.insert(0, (_('Any'), None))
         return items
 
@@ -185,7 +185,7 @@ class SalesApp(SearchableAppWindow):
             self._setup_columns(state.value)
             self._columns_set = True
         if state.value is None:
-            return SaleView.q.status != Sale.STATUS_ORDER
+            return SaleView.q.status != Sale.STATUS_ORDERED
         return SaleView.q.status == state.value
 
     #
