@@ -30,7 +30,6 @@ from kiwi.db.sqlobj import SQLObjectQueryExecuter
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.search import ComboSearchFilter, SearchSlaveDelegate
-from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.utils import gsignal
 from sqlobject.main import SQLObject
 
@@ -206,20 +205,6 @@ class SearchDialog(BasicDialog):
     def cancel(self, *args):
         self.retval = []
         self.close()
-
-    def add_summary_label(self, column_name, label_text):
-        """
-        @param column_name:
-        @param label_text:
-        """
-        if self.summary_label is not None:
-            self.results_vbox.remove(self.summary_label)
-        self.summary_label = SummaryLabel(klist=self.results,
-                                          column=column_name,
-                                          label=label_text,
-                                          value_format='<b>%s</b>')
-        self.summary_label.show()
-        self.results_vbox.pack_start(self.summary_label, False)
 
     def set_table(self, table):
         self.executer.set_table(table)
