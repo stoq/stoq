@@ -41,7 +41,6 @@ from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station)
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.interfaces import (IPaymentGroup,
                                        IOutPayment, IInPayment)
@@ -275,6 +274,7 @@ class Till(Domain):
 
         @returns: a list of L{stoqlib.domain.sale.Sale} objects
         """
+        from stoqlib.domain.sale import Sale
         sales = Sale.get_available_sales(self.get_connection(), self)
         return [sale for sale in sales
                          if sale.status != Sale.STATUS_CONFIRMED]

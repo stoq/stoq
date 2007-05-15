@@ -226,7 +226,8 @@ class APaymentMethod(InheritableModel):
         return (total_value / installments_number) * interest_rate
 
     def _create_payment(self, iface, payment_group, value, due_date=None,
-                        method_details=None, description=None, base_value=None):
+                        method_details=None, description=None, base_value=None,
+                        till=None):
         conn = self.get_connection()
         created_number = self.get_payment_number_by_group(payment_group)
 
@@ -251,13 +252,16 @@ class APaymentMethod(InheritableModel):
         if not description:
             description = self.describe_payment(payment_group)
 
-        # We only need a till for inpayments
-        if iface is IInPayment:
-            till = Till.get_current(conn)
-        elif iface is IOutPayment:
-            till = None
-        else:
-            raise AssertionError(iface)
+        # If till is unset, do some clever guessing
+        if till is None:
+            # We only need a till for inpayments
+            if iface is IInPayment:
+                till = Till.get_current(conn)
+            elif iface is IOutPayment:
+                till = None
+            else:
+                raise AssertionError(iface)
+
         payment = Payment(connection=conn,
                           destination=destination,
                           due_date=due_date,
@@ -322,10 +326,10 @@ class APaymentMethod(InheritableModel):
                                         self.description, group_desc)
 
     @argcheck(AbstractPaymentGroup, Decimal, datetime.datetime, object,
-              basestring, Decimal)
+              basestring, Decimal, Till)
     def create_inpayment(self, payment_group, value, due_date=None,
                          details=None, description=None,
-                         base_value=None):
+                         base_value=None, till=None):
         """
         Creates a new inpayment
         @param payment_group: a L{APaymentGroup} subclass
@@ -334,18 +338,19 @@ class APaymentMethod(InheritableModel):
         @param details: optional
         @param description: optional, description of the payment
         @param base_value: optional
+        @param till: optional
         @returns: a L{PaymentAdaptToInPayment}
         """
         return self._create_payment(IInPayment, payment_group,
                                     value, due_date,
                                     details, description,
-                                    base_value)
+                                    base_value, till)
 
     @argcheck(AbstractPaymentGroup, Decimal, datetime.datetime, object,
-              basestring, Decimal)
+              basestring, Decimal, Till)
     def create_outpayment(self, payment_group, value, due_date=None,
                           details=None, description=None,
-                          base_value=None):
+                          base_value=None, till=None):
         """
         Creates a new outpayment
         @param payment_group: a L{APaymentGroup} subclass
@@ -354,12 +359,13 @@ class APaymentMethod(InheritableModel):
         @param details: optional
         @param description: optional, description of the payment
         @param base_value: optional
+        @param till: optional
         @returns: a L{PaymentAdaptToOutPayment}
         """
         return self._create_payment(IOutPayment, payment_group,
                                     value, due_date,
                                     details, description,
-                                    base_value)
+                                    base_value, till)
 
     @argcheck(AbstractPaymentGroup, Decimal, object)
     def create_inpayments(self, payment_group, value, due_dates):

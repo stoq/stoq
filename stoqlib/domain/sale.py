@@ -39,16 +39,19 @@ from zope.interface import implements
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.base import Domain, BaseSQLView
-from stoqlib.domain.fiscal import IssBookEntry, IcmsIpiBookEntry
+from stoqlib.domain.fiscal import (IssBookEntry, IcmsIpiBookEntry,
+                                   AbstractFiscalBookEntry)
 from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IContainer, IClient,
                                        IPaymentGroup, ISellable,
                                        IIndividual, ICompany)
-from stoqlib.domain.payment.payment import AbstractPaymentGroup
+from stoqlib.domain.payment.payment import Payment, AbstractPaymentGroup
+from stoqlib.domain.payment.methods import MoneyPM
 from stoqlib.domain.product import ProductSellableItem, ProductHistory
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sellable import ASellableItem
 from stoqlib.domain.service import ServiceSellableItem
+from stoqlib.domain.till import Till
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
                                 StoqlibError)
 from stoqlib.lib.defaults import quantize
@@ -291,14 +294,18 @@ class Sale(Domain):
         self.cancel_date = datetime.datetime.now()
         self.status = Sale.STATUS_CANCELLED
 
-    def return_(self, renegotiation=None):
+    @argcheck(RenegotiationData)
+    def return_(self, renegotiation):
+        """
+        Return an sold item, needs to supply a renegotiation object which
+        contains the invoice number and the eventual penalty
+        @param renegotiation: renegotiation information
+        @type renegotiation: L{RenegotiationData}
+        """
         assert self.can_return()
 
         group = IPaymentGroup(self)
-
-        if renegotiation:
-            group.cancel(renegotiation.invoice_number)
-            self.renegotiation_data = renegotiation
+        group.cancel(renegotiation)
 
         self.return_date = datetime.datetime.now()
         self.status = Sale.STATUS_RETURNED
@@ -578,8 +585,53 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         self.add_inpayments(self.sale.till)
         self._create_fiscal_entries()
 
+    def cancel(self, renegotiation):
+        assert self.can_cancel()
+
+        self._cancel_pending_payments()
+        self._payback_paid_payments()
+        self._revert_fiscal_entry(renegotiation.invoice_number)
+
+        AbstractPaymentGroup.cancel(self, renegotiation)
+
+
     # Private API
     #
+
+    def _cancel_pending_payments(self):
+        for payment in Payment.selectBy(group=self,
+                                        status=Payment.STATUS_PENDING,
+                                        connection=self.get_connection()):
+            payment.cancel()
+
+    def _payback_paid_payments(self):
+        paid_value = self.get_total_paid()
+        if not paid_value:
+            return
+
+        conn = self.get_connection()
+        till = Till.get_current(conn)
+        money = MoneyPM.selectOne(connection=conn)
+        out_payment = money.create_outpayment(
+            self, paid_value,
+            description='%s Money Returned for Sale %d' % (
+            '1/1', self.sale.id), till=till)
+        payment = out_payment.get_adapted()
+        payment.set_pending()
+        payment.pay()
+
+        till.add_entry(payment)
+
+    def _revert_fiscal_entry(self, invoice_number):
+        conn = self.get_connection()
+        entries = AbstractFiscalBookEntry.selectBy(payment_groupID=self.id,
+                                                   connection=conn)
+        if entries.count() > 1:
+            raise DatabaseInconsistency("You should have only one fiscal "
+                                        "entry per payment group")
+        if not entries:
+            return
+        entries[0].reverse_entry(invoice_number)
 
     def _get_pm_commission_total(self):
         """Return the payment method commission total. Usually credit

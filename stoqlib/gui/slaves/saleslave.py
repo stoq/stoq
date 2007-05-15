@@ -166,13 +166,14 @@ class SaleListToolbar(GladeSlaveDelegate):
     changing installments and showing its details.
     """
     gladefile = "SaleListToolbar"
+    gsignal('sale-returned', object)
 
-    def __init__(self, conn, klist, parent=None):
+    def __init__(self, conn, sales, parent=None):
         self.conn = conn
-        if klist.get_selection_mode() != gtk.SELECTION_BROWSE:
+        if sales.get_selection_mode() != gtk.SELECTION_BROWSE:
             raise TypeError("Only SELECTION_BROWSE mode for the "
                             "list is supported on this slave")
-        self.sales = klist
+        self.sales = sales
         self.parent = parent
 
         GladeSlaveDelegate.__init__(self)
@@ -189,9 +190,9 @@ class SaleListToolbar(GladeSlaveDelegate):
         """
         Disables editing of the sales
         """
-        sale = self.sales.get_selected()
-        self.details_button.set_sensitive(bool(sale))
-        can_return = bool(sale and sale.status == Sale.STATUS_CONFIRMED)
+        sale_view = self.sales.get_selected()
+        self.details_button.set_sensitive(bool(sale_view))
+        can_return = bool(sale_view and sale_view.sale.can_return())
         self.return_sale_button.set_sensitive(can_return)
 
     #
@@ -228,6 +229,8 @@ class SaleListToolbar(GladeSlaveDelegate):
         sale = self.sales.get_selected()
         retval = run_dialog(SaleReturnWizard, self.parent, self.conn, sale)
         finish_transaction(self.conn, retval)
+        if retval:
+            self.emit('sale-returned', retval)
 
     def on_edit_button__clicked(self, button):
         # TODO: this method will be implemented on bug #2189
