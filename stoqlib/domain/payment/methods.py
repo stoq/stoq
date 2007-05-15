@@ -557,6 +557,7 @@ class CheckPM(_AbstractCheckBillMethodMixin, APaymentMethod):
     # Public API
     #
 
+    @argcheck(Payment)
     def get_check_data_by_payment(self, payment):
         """Get an existing CheckData instance from a payment object."""
         return CheckData.selectOneBy(payment=payment,

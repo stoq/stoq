@@ -188,6 +188,12 @@ class TestCheckPM(DomainTest, _TestPaymentMethodsBase):
     method_type = CheckPM
     enum = PaymentMethodType.CHECK
 
+    def testCheckDataCreated(self):
+        payment = self.createInPayment()
+        method = self.method_type.selectOne(connection=self.trans)
+        check_data = method.get_check_data_by_payment(payment.get_adapted())
+        self.failUnless(check_data)
+
 class TestBillPM(DomainTest, _TestPaymentMethodsBase):
     method_type = BillPM
     enum = PaymentMethodType.BILL
