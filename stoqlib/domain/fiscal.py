@@ -69,15 +69,6 @@ class AbstractFiscalBookEntry(InheritableModel):
     def reverse_entry(self, invoice_number):
         raise NotImplementedError("This method must be overwrited on child")
 
-    def get_reversal_clone(self, invoice_number, **kwargs):
-        conn = self.get_connection()
-        cfop = sysparam(conn).DEFAULT_RETURN_SALES_CFOP
-        cls = self.__class__
-        return cls(connection=conn, cfop=cfop, branch=self.branch,
-                   invoice_number=invoice_number, drawee=self.drawee,
-                   is_reversal=True, payment_group=self.payment_group,
-                   **kwargs)
-
     #
     # Classmethods
     #
@@ -118,10 +109,17 @@ class IcmsIpiBookEntry(AbstractFiscalBookEntry):
     ipi_value = PriceCol()
 
     def reverse_entry(self, invoice_number):
-        icms = -self.icms_value
-        ipi = -self.ipi_value
-        return self.get_reversal_clone(invoice_number, icms_value=icms,
-                                       ipi_value=ipi)
+        conn = self.get_connection()
+        return IcmsIpiBookEntry(
+            icms_value=self.icms_value,
+            ipi_value=self.ipi_value,
+            cfop=sysparam(conn).DEFAULT_RETURN_SALES_CFOP,
+            branch=self.branch,
+            invoice_number=invoice_number,
+            drawee=self.drawee,
+            is_reversal=True,
+            payment_group=self.payment_group,
+            connection=conn)
 
 class IssBookEntry(AbstractFiscalBookEntry):
 
@@ -129,8 +127,16 @@ class IssBookEntry(AbstractFiscalBookEntry):
     iss_value = PriceCol()
 
     def reverse_entry(self, invoice_number):
-        iss = -self.iss_value
-        return self.get_reversal_clone(invoice_number, iss_value=iss)
+        conn = self.get_connection()
+        return IcmsIpiBookEntry(
+            iss_value=self.iss_value,
+            cfop=sysparam(conn).DEFAULT_RETURN_SALES_CFOP,
+            branch=self.branch,
+            invoice_number=invoice_number,
+            drawee=self.drawee,
+            is_reversal=True,
+            payment_group=self.payment_group,
+            connection=conn)
 
 #
 # Views
