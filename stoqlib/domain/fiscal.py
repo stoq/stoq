@@ -128,7 +128,7 @@ class IssBookEntry(AbstractFiscalBookEntry):
 
     def reverse_entry(self, invoice_number):
         conn = self.get_connection()
-        return IcmsIpiBookEntry(
+        return IssBookEntry(
             iss_value=self.iss_value,
             cfop=sysparam(conn).DEFAULT_RETURN_SALES_CFOP,
             branch=self.branch,
