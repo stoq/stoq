@@ -30,23 +30,23 @@ from decimal import Decimal
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
-from sqlobject import IntCol, DateTimeCol, UnicodeCol, ForeignKey
-from zope.interface import implements
+from sqlobject.col import IntCol, DateTimeCol, UnicodeCol, ForeignKey
+from sqlobject.sqlbuilder import AND, IN
 from stoqdrivers.enum import PaymentMethodType
+from zope.interface import implements
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.columns import PriceCol
-from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.defaults import get_method_names
-from stoqlib.domain.fiscal import (IssBookEntry, IcmsIpiBookEntry,
-                                   AbstractFiscalBookEntry)
+from stoqlib.domain.fiscal import IssBookEntry, IcmsIpiBookEntry
 from stoqlib.domain.base import Domain, ModelAdapter, InheritableModelAdapter
 from stoqlib.domain.payment.operation import PaymentOperation
 from stoqlib.domain.interfaces import (IInPayment, IOutPayment, IPaymentGroup,
                                        IContainer, IPaymentDevolution,
                                        IPaymentDeposit)
+from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
+from stoqlib.lib.defaults import get_method_names
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -381,46 +381,39 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         self._create_fiscal_entry(IssBookEntry, cfop, invoice_number,
                                   iss_value=iss_value)
 
-    def revert_fiscal_entry(self, invoice_number):
-        conn = self.get_connection()
-        entries = AbstractFiscalBookEntry.selectBy(payment_groupID=self.id,
-                                                   connection=conn)
-        if entries.count() > 1:
-            raise DatabaseInconsistency("You should have only one fiscal "
-                                        "entry per payment group")
-        if not entries:
-            return
-        entries[0].reverse_entry(invoice_number)
-
     def _get_paid_payments(self):
-        # FIXME: Logic in SQL
-        statuses = (Payment.STATUS_PAID, Payment.STATUS_REVIEWING,
-                    Payment.STATUS_CONFIRMED)
-        return [p for p in self.get_items() if p.status in statuses]
-
-    def _get_unpaid_payments(self):
-        # FIXME: Logic in SQL
-        statuses = Payment.STATUS_PREVIEW, Payment.STATUS_PENDING
-        return [p for p in self.get_items() if p.status in statuses]
+        return Payment.select(AND(Payment.q.groupID == self.id,
+                                  IN(Payment.q.status,
+                                     [Payment.STATUS_PAID,
+                                      Payment.STATUS_REVIEWING,
+                                      Payment.STATUS_CONFIRMED])),
+                              connection=self.get_connection())
 
     #
     # Public API
     #
 
-    def cancel(self, invoice_number):
-        if self.status == AbstractPaymentGroup.STATUS_CANCELLED:
-            raise StoqlibError("This payment group is already cancelled")
-        for payment in self._get_unpaid_payments():
-            payment.cancel()
+    def can_cancel(self):
+        """
+        @returns: True if it's possible to cancel the payment, otherwise False
+        """
+        return self.status != AbstractPaymentGroup.STATUS_CANCELLED
+
+    def cancel(self, renegotiation):
+        """
+        Cancels the payment group.
+        This method does very little, it just changes the status and
+        marks the payment group as cancelled. It's up to the subclasses
+        to decide how to treat cancellation of all the contained payments
+        @param renegotiation: renegotiation information
+        @type renegotiation: L{RenegotiationData}
+        """
+        assert self.can_cancel()
         self.status = AbstractPaymentGroup.STATUS_CANCELLED
         self.cancel_date = datetime.datetime.now()
-        self.revert_fiscal_entry(invoice_number)
 
     def get_total_paid(self):
-        # FIXME: Move sum to SQL statement
-        paid_values = [payment.paid_value
-                            for payment in self._get_paid_payments()]
-        return sum(paid_values, currency(0))
+        return currency(self._get_paid_payments().sum('value') or 0)
 
     def set_method(self, method):
         self.default_method = method

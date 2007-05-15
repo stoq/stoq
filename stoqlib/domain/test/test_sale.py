@@ -27,22 +27,25 @@ import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import currency
+from sqlobject.sqlbuilder import AND
 from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.fiscal import IcmsIpiBookEntry
+from stoqlib.domain.fiscal import CfopData, IcmsIpiBookEntry
 from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IClient,
                                        IIndividual,
                                        IPaymentGroup,
                                        ISellable,
-                                       IStorable)
+                                       IStorable,
+                                       IOutPayment)
 from stoqlib.domain.person import Person
-from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToOutPayment,
+                                            AbstractPaymentGroup)
 from stoqlib.domain.payment.methods import CheckPM, MoneyPM
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import ASellable, SellableTaxConstant
-from stoqlib.domain.till import TillEntry
+from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.parameters import sysparam
 
@@ -263,6 +266,7 @@ class TestSale(DomainTest):
         book_entry = IcmsIpiBookEntry.selectOneBy(
             payment_group=group, connection=self.trans)
         self.failUnless(book_entry)
+        self.assertEqual(book_entry.cfop.code, '5.102')
         self.assertEqual(book_entry.icms_value, Decimal("9"))
 
         for payment in group.get_items():
@@ -321,6 +325,28 @@ class TestSale(DomainTest):
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
 
+        till = Till.get_current(self.trans)
+        group = IPaymentGroup(sale)
+        self.assertEqual(group.cancel_date.date(), datetime.date.today())
+        self.assertEqual(group.status, AbstractPaymentGroup.STATUS_CANCELLED)
+        paid_payment = group.get_items()[0]
+        payment = Payment.selectOne(
+            AND(Payment.q.groupID == group.id,
+                Payment.q.tillID == till.id,
+                Payment.q.id == PaymentAdaptToOutPayment.q._originalID),
+            connection=self.trans)
+        self.failUnless(payment)
+        self.failUnless(IOutPayment(payment, None))
+        self.assertEqual(payment.value, paid_payment.value)
+        self.assertEqual(payment.status, Payment.STATUS_PAID)
+        self.failUnless(isinstance(payment.method, MoneyPM))
+
+        cfop = CfopData.selectOneBy(code='5.202', connection=self.trans)
+        book_entry = IcmsIpiBookEntry.selectOneBy(
+            payment_group=group, cfop=cfop, connection=self.trans)
+        self.failUnless(book_entry)
+        self.assertEqual(book_entry.icms_value, 0)
+
     def testCanCancel(self):
         sale = self.create_sale()
         self.failIf(sale.can_cancel())
@@ -336,7 +362,7 @@ class TestSale(DomainTest):
         sale.set_paid()
         self.failIf(sale.can_cancel())
 
-        sale.return_()
+        sale.return_(sale.create_sale_return_adapter())
         self.failIf(sale.can_cancel())
 
     def testCancel(self):

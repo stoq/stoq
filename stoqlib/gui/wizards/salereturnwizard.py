@@ -63,8 +63,9 @@ class SaleReturnStep(WizardEditorStep):
 
     def setup_slaves(self):
         self.order = Sale.get(self.model.id, connection=self.conn)
-        renegotiation = self.order.create_sale_return_adapter()
-        self.slave = SaleReturnSlave(self.conn, self.order, renegotiation)
+        self.wizard.renegotiation = self.order.create_sale_return_adapter()
+        self.slave = SaleReturnSlave(self.conn, self.order,
+                                     self.wizard.renegotiation)
         self.slave.connect('on-penalty-changed', self.on_penalty_changed)
         self.attach_slave("place_holder", self.slave)
 
@@ -78,6 +79,7 @@ class SaleReturnStep(WizardEditorStep):
         else:
             self.wizard.disable_finish()
 
+
 #
 # Main wizard
 #
@@ -88,6 +90,7 @@ class SaleReturnWizard(BaseWizard):
     title = _('Return Sale Order')
 
     def __init__(self, conn, model):
+        self.renegotiation = None
         first_step = SaleReturnStep(conn, self, model)
         BaseWizard.__init__(self, conn, first_step, model)
 
@@ -97,7 +100,7 @@ class SaleReturnWizard(BaseWizard):
 
     def finish(self):
         sale = Sale.get(self.model.id, connection=self.conn)
-        sale.return_()
+        sale.return_(self.renegotiation)
 
         self.retval = True
         self.close()

@@ -496,6 +496,12 @@ class IPaymentGroup(Interface):
     def confirm():
         """Validate the current payment group, create payments."""
 
+    def cancel(renegotiation):
+        pass
+
+    def can_cancel():
+        pass
+
 class IDelivery(Interface):
     """ Specification of a Delivery interface for a sellable. """
 

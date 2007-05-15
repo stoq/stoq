@@ -45,4 +45,3 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(payment.status, Payment.STATUS_PREVIEW)
         group.confirm()
         self.assertEqual(payment.status, Payment.STATUS_PENDING)
-
