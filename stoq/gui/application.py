@@ -295,14 +295,6 @@ class SearchableAppWindow(AppWindow):
         self.executer.set_table(search_table)
         self.search_table = search_table
 
-    def add_summary_label(self, label):
-        """
-        @param label:
-        """
-        toplevel = self.search.get_toplevel().parent.parent
-        toplevel.pack_start(label, False)
-        toplevel.reorder_child(label, 1)
-
     def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
                    columns=None, callback=None):
         """

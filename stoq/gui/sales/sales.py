@@ -31,7 +31,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
-from kiwi.ui.widgets.list import Column, SummaryLabel
+from kiwi.ui.widgets.list import Column
 
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -67,8 +67,6 @@ class SalesApp(SearchableAppWindow):
         SearchableAppWindow.__init__(self, app)
         self.summary_label = None
         self._columns_set = False
-        self._create_summary_label()
-        self._update_widgets()
         self._setup_columns()
         self._setup_slaves()
 
@@ -106,14 +104,9 @@ class SalesApp(SearchableAppWindow):
     #
 
     def _create_summary_label(self):
-        if self.summary_label is not None:
-            self.list_vbox.remove(self.summary_label)
-        self.summary_label = SummaryLabel(klist=self.results,
-                                          column='total',
-                                          label='<b>Total:</b>',
-                                          value_format='<b>%s</b>')
-        self.list_vbox.pack_start(self.summary_label, False)
-        self.summary_label.show()
+        self.search.set_summary_label(column='total',
+                                      label='<b>Total:</b>',
+                                      format='<b>%s</b>')
 
     def _setup_slaves(self):
         self.sale_toolbar = SaleListToolbar(self.conn, self.results)
@@ -124,9 +117,6 @@ class SalesApp(SearchableAppWindow):
                             self._update_toolbar)
         self._update_toolbar()
 
-    def _update_widgets(self):
-        self._update_total_label()
-
     def _update_toolbar(self, *args):
         sale_view = self._klist.get_selected()
         can_print_invoice = bool(sale_view and
@@ -135,9 +125,6 @@ class SalesApp(SearchableAppWindow):
 
         can_return = bool(sale_view and sale_view.sale.can_return())
         self.sale_toolbar.return_sale_button.set_sensitive(can_return)
-
-    def _update_total_label(self):
-        self.summary_label.update_total()
 
     def _preview_invoice_as_pdf(self, fiscal_note, sale, *args, **kwargs):
         raise NotImplementedError("not implemented yet :)")
