@@ -23,7 +23,7 @@
 ##              Fabio Morbec <fabio@async.com.br>
 ##
 
-from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.payment import Payment, PaymentAdaptToOutPayment
 from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderAdaptToPaymentGroup
 
@@ -43,22 +43,27 @@ class PayableView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, PurchaseOrderAdaptToPaymentGroup,
-                    PurchaseOrderAdaptToPaymentGroup.q.id == Payment.q.groupID),
-        INNERJOINOn(None, PurchaseOrder,
-                    PurchaseOrder.q.id == PurchaseOrderAdaptToPaymentGroup.q._originalID),
+        INNERJOINOn(None, PaymentAdaptToOutPayment,
+                    PaymentAdaptToOutPayment.q._originalID == Payment.q.id),
+        LEFTJOINOn(None, PurchaseOrderAdaptToPaymentGroup,
+                   PurchaseOrderAdaptToPaymentGroup.q.id == Payment.q.groupID),
+        LEFTJOINOn(None, PurchaseOrder,
+                   PurchaseOrder.q.id == PurchaseOrderAdaptToPaymentGroup.q._originalID),
         LEFTJOINOn(None, PersonAdaptToSupplier,
                     PersonAdaptToSupplier.q.id == PurchaseOrder.q.supplierID),
         LEFTJOINOn(None, Person,
                    Person.q.id == PersonAdaptToSupplier.q._originalID),
         ]
 
+    hidden_columns = ['paid_date', 'due_date']
+
     def get_status_str(self):
         return Payment.statuses[self.status]
 
     @property
     def purchase(self):
-        return PurchaseOrder.get(self.purchase_id)
+        if self.purchase_id:
+            return PurchaseOrder.get(self.purchase_id)
 
     @property
     def payment(self):

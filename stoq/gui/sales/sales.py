@@ -117,6 +117,8 @@ class SalesApp(SearchableAppWindow):
 
     def _setup_slaves(self):
         self.sale_toolbar = SaleListToolbar(self.conn, self.results)
+        self.sale_toolbar.connect('sale-returned',
+                                  self._on_sale_toolbar__sale_returned)
         self.attach_slave("list_toolbar_holder", self.sale_toolbar)
         self._klist.connect("selection-changed",
                             self._update_toolbar)
@@ -126,14 +128,13 @@ class SalesApp(SearchableAppWindow):
         self._update_total_label()
 
     def _update_toolbar(self, *args):
-        selected = self._klist.get_selected()
-        can_print_invoice = bool(selected and
-                                 selected.client_name is not None)
+        sale_view = self._klist.get_selected()
+        can_print_invoice = bool(sale_view and
+                                 sale_view.client_name is not None)
         self.print_invoice.set_sensitive(can_print_invoice)
 
-        rejected = Sale.STATUS_CANCELLED, Sale.STATUS_ORDERED
-        can_cancel = bool(selected and selected.status not in rejected)
-        self.sale_toolbar.return_sale_button.set_sensitive(can_cancel)
+        can_return = bool(sale_view and sale_view.sale.can_return())
+        self.sale_toolbar.return_sale_button.set_sensitive(can_return)
 
     def _update_total_label(self):
         self.summary_label.update_total()
@@ -208,3 +209,6 @@ class SalesApp(SearchableAppWindow):
 
     def _on_print_invoice__activate(self, action):
         return self._print_invoice()
+
+    def _on_sale_toolbar__sale_returned(self, toolbar, sale):
+        self.search.refresh()
