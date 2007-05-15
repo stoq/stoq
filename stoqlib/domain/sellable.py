@@ -200,7 +200,7 @@ class ASellableItem(InheritableModel):
             kw['base_price'] = base_price
         InheritableModel._create(self, id, **kw)
 
-    def sell(self):
+    def sell(self, branch):
         self.sellable.sell()
 
     def cancel(self, branch):

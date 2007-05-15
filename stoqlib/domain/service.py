@@ -67,7 +67,7 @@ class ServiceSellableItem(ASellableItem):
     # Auxiliary methods
     #
 
-    def sell(self):
+    def sell(self, branch):
         if not self.sellable.can_be_sold():
             msg = '%s is already sold' % self.get_adapted()
             raise SellError(msg)

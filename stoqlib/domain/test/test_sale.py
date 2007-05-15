@@ -43,8 +43,8 @@ from stoqlib.domain.payment.methods import CheckPM, MoneyPM
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import ASellable, SellableTaxConstant
 from stoqlib.domain.till import TillEntry
-
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.parameters import sysparam
 
 class TestSale(DomainTest):
 
@@ -82,6 +82,10 @@ class TestSale(DomainTest):
         sellable.add_sellable_item(sale, quantity=1)
         storable = product.addFacet(IStorable, connection=self.trans)
         storable.increase_stock(100, get_current_branch(self.trans))
+
+    def _add_delivery(self, sale):
+        sellable = sysparam(self.trans).DELIVERY_SERVICE
+        sellable.add_sellable_item(sale, quantity=1)
 
     def testGetPercentageValue(self):
         sale = self.create_sale()
@@ -375,3 +379,14 @@ class TestSale(DomainTest):
 
         self.failUnless(sale.services)
 
+    def testSaleWithDelivery(self):
+        sale = self.create_sale()
+        self.failIf(sale.can_set_paid())
+
+        self._add_product(sale)
+        self._add_delivery(sale)
+        sale.order()
+        self.failIf(sale.can_set_paid())
+
+        self._add_payments(sale)
+        sale.confirm()
