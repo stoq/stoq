@@ -56,16 +56,30 @@ from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.methods import (APaymentMethod,
                                             MoneyPM, BillPM, CheckPM,
-                                            CardPM, FinancePM)
+                                            CardPM, FinancePM,
+                                            GiftCertificatePM)
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
-from stoqlib.domain.sale import Sale, GiftCertificateOverpaidSettings
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import ASellable
-from stoqlib.domain.giftcertificate import (GiftCertificate,
-                                            get_volatile_gift_certificate)
+from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IPaymentGroup, ISalesPerson,
                                        ISellable)
 
 _ = stoqlib_gettext
+
+
+class GiftCertificateOverpaidSettings:
+    """Stores general settings for sale orders with gift certificates and
+    when the sum of gift certificate values is greater then the total sale
+    amount
+    """
+
+    (TYPE_RETURN_MONEY,
+     TYPE_GIFT_CERTIFICATE) = range(2)
+
+    renegotiation_value = Decimal(0)
+    certificate_number = None
+
 
 
 #
@@ -260,7 +274,7 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
         certificate = sysparam(self.conn).DEFAULT_GIFT_CERTIFICATE_TYPE
         description = certificate.base_sellable_info.description
         text = _('Create a <u>%s</u> with this value') % description
-        self.certificate_label.set_text(text)
+        self.certificate_check.child.set_markup(text)
         header_text = (_('There is %s overpaid') %
                        get_formatted_price(self.overpaid_value))
         self.header_label.set_text(header_text)
@@ -268,8 +282,8 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
         self.header_label.set_bold(True)
 
     def refresh_next(self, validation_value):
-        if (self.certificate_check.get_active()
-            and not self.model.number):
+        if (self.certificate_check.get_active() and
+            not self.model.certificate_number):
             validation_value = False
         self.wizard.refresh_next(validation_value)
 
@@ -277,7 +291,7 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
         settings = GiftCertificateOverpaidSettings()
         settings.renegotiation_type = rtype
         settings.renegotiation_value = value
-        settings.gift_certificate_number = number
+        settings.certificate_number = number
         return settings
 
     #
@@ -285,19 +299,21 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
     #
 
     def create_model(self, conn):
-        return get_volatile_gift_certificate()
+        return Settable(certificate_number=None,
+                        first_number=None, last_number=None,
+                        gift_certificate_type=None)
 
     def setup_proxies(self):
         self._setup_widgets()
-        klass = SaleRenegotiationOverpaidStep
-        self.proxy = self.add_proxy(self.model, klass.proxy_widgets)
+        self.proxy = self.add_proxy(
+            self.model, SaleRenegotiationOverpaidStep.proxy_widgets)
 
     #
     # WizardStep hooks
     #
 
     def validate_step(self):
-        number = self.model.number
+        number = self.model.certificate_number
         if ASellable.check_barcode_exists(number):
             msg = _(u"The barcode %s already exists") % number
             self.certificate_number.set_invalid(msg)
@@ -330,7 +346,7 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
         self.certificate_number.set_sensitive(not can_return_money)
         self.force_validation()
 
-    def after_certificate_number__changed(self, *args):
+    def after_certificate_number__changed(self, entry):
         self._update_widgets()
 
     def on_certificate_check__toggled(self, *args):
@@ -432,7 +448,9 @@ class GiftCertificateSelectionStep(WizardEditorStep):
     #
 
     def create_model(self, conn):
-        return get_volatile_gift_certificate()
+        return Settable(certificate_number=None,
+                        first_number=None, last_number=None,
+                        gift_certificate_type=None)
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -463,8 +481,9 @@ class GiftCertificateSelectionStep(WizardEditorStep):
             raise ValueError('You should have at least one gift certificate '
                              'selected at this point')
         gift_total = 0
+        method = GiftCertificatePM.selectOne(connection=self.conn)
         for certificate in self.slave.klist:
-            self.wizard.gift_certificates.append(certificate)
+            method.create_inpayment(self.group, certificate.price)
             gift_total += certificate.price
         if gift_total == self.sale_total:
             # finish the wizard
@@ -478,8 +497,6 @@ class GiftCertificateSelectionStep(WizardEditorStep):
             step = SaleRenegotiationOverpaidStep(
                 self.wizard, self, self.conn, self.sale, self.group,
                 overpaid_value)
-            step.connect('on-validate-step',
-                         self.wizard.set_gift_certificate_settings)
             return step
 
     def post_init(self):
@@ -713,7 +730,6 @@ class _AbstractSaleWizard(BaseWizard):
 
     def __init__(self, conn, model):
         self._check_payment_group(model, conn)
-        self.initialize()
         # Saves the initial state of the sale order and allow us to call
         # rollback safely when it's needed
         conn.commit()
@@ -730,15 +746,6 @@ class _AbstractSaleWizard(BaseWizard):
         self.payment_group = group
 
     #
-    # Hooks
-    #
-
-    def initialize(self):
-        """Overwrite this method on child when performing some tasks before
-        calling the wizard constructor is an important requirement
-        """
-
-    #
     # Public API
     #
 
@@ -747,6 +754,7 @@ class _AbstractSaleWizard(BaseWizard):
         total = total or self.payment_group.get_total_received()
         money_method.create_inpayment(self.payment_group, total)
 
+
 class ConfirmSaleWizard(_AbstractSaleWizard):
     """A wizard used when confirming a sale order. It means generate
     payments, fiscal data and update stock
@@ -754,32 +762,23 @@ class ConfirmSaleWizard(_AbstractSaleWizard):
     first_step = SalesPersonStep
     title = _("Sale Checkout")
 
-    @argcheck(object, GiftCertificateOverpaidSettings)
-    def set_gift_certificate_settings(self, slave, settings):
-        self.gift_certificate_settings = settings
-
-    #
-    # Hooks
-    #
-
-    def initialize(self):
-        self.gift_certificates = []
-        # Stores specific informations for orders with gift certificate
-        self.gift_certificate_settings = None
-
     #
     # BaseWizard hooks
     #
 
+    def __init__(self, conn, model):
+        _AbstractSaleWizard.__init__(self, conn, model)
+
+        if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
+            self.model.order()
+
     def finish(self):
-        if self.gift_certificates:
-            group = self.payment_group
-            for certificate in self.gift_certificates:
-                # FIXME: This is wrong, we must use IPaymentGroup's add_payment
-                certificate.group = group
-        self.model.confirm_sale(self.gift_certificate_settings)
-        print_cheques_for_payment_group(self.conn,
-                                        self.payment_group)
+        self.model.confirm()
+
+        if self.model.paid_with_money():
+            self.model.set_paid()
+
+        print_cheques_for_payment_group(self.conn, self.payment_group)
         self.retval = True
         self.close()
 
@@ -797,6 +796,5 @@ class PreOrderWizard(_AbstractSaleWizard):
     #
 
     def finish(self):
-        self.model.validate()
         self.retval = True
         self.close()

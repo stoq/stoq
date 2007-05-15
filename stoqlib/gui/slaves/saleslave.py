@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -33,7 +33,6 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 
 from stoqlib.database.database import finish_transaction
 from stoqlib.domain.sale import SaleView, Sale
-from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
 from stoqlib.exceptions import StoqlibError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
@@ -258,13 +257,8 @@ class SaleReturnSlave(BaseEditorSlave):
                      sale_widgets)
     gsignal('on-penalty-changed', object)
 
-    def __init__(self, conn, model, return_adapter, visual_mode=False):
-        if not isinstance(return_adapter, AbstractRenegotiationAdapter):
-            raise StoqlibError("Invalid Type for return_adapter argument. "
-                               "It should be AbstractRenegotiationAdapter, "
-                               "got %s" % return_adapter.__class__)
-        self._return_adapter = return_adapter
-        self._adapted = self._return_adapter.get_adapted()
+    def __init__(self, conn, model, return_data, visual_mode=False):
+        self._return_data = return_data
         BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
     def _hide_status_widgets(self):
@@ -276,11 +270,11 @@ class SaleReturnSlave(BaseEditorSlave):
 
     def _setup_widgets(self):
         if not self.visual_mode:
-            has_paid_value = self._adapted.paid_total > 0
+            has_paid_value = self._return_data.paid_total > 0
             self.penalty_value.set_sensitive(has_paid_value)
             self._hide_status_widgets()
 
-        if self._adapted.new_order is None:
+        if self._return_data.new_order is None:
             self.new_order_button.hide()
         else:
             self.new_order_button.show()
@@ -296,13 +290,13 @@ class SaleReturnSlave(BaseEditorSlave):
         self._setup_widgets()
 
         widgets = SaleReturnSlave.renegotiationdata_widgets
-        self.adaptable_proxy = self.add_proxy(self._adapted, widgets)
+        self.adaptable_proxy = self.add_proxy(self._return_data, widgets)
 
         self.sale_proxy = self.add_proxy(self.model,
                                          SaleReturnSlave.sale_widgets)
 
         widgets = SaleReturnSlave.salereturn_widgets
-        self.return_proxy = self.add_proxy(self._return_adapter, widgets)
+        self.return_proxy = self.add_proxy(self._return_data, widgets)
 
     #
     # Kiwi callbacks
@@ -312,7 +306,7 @@ class SaleReturnSlave(BaseEditorSlave):
         if value < 0 :
             return ValidationError(_(u"Deduction value can not be "
                                       "lesser then 0"))
-        if value > self._adapted.paid_total:
+        if value > self._return_data.paid_total:
             return ValidationError(_(u"Deduction value can not be greater "
                                       "then the paid value"))
 
@@ -325,8 +319,8 @@ class SaleReturnSlave(BaseEditorSlave):
         # TODO to be implemented on bugs 2230 and 2190
         pass
 
-    def on_new_order_button__clicked(self, *args):
-        new_order = self._adapted.new_order
+    def on_new_order_button__clicked(self, button):
+        new_order = self._return_data.new_order
         if not new_order:
             raise StoqlibError("The renegotiation instance must have a "
                                "new_order attribute set at this point")

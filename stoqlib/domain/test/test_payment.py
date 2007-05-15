@@ -116,3 +116,18 @@ class TestPayment(DomainTest):
         for day in (18, -18):
             paid_date = self._get_relative_day(day)
             self.assertRaises(ValueError, payment.get_interest, paid_date)
+
+    def testIsPaid(self):
+        method = CheckPM.selectOne(connection=self.trans)
+        payment = Payment(value=currency(100),
+                          due_date=datetime.datetime.now(),
+                          method=method,
+                          group=None,
+                          till=None,
+                          destination=None,
+                          connection=self.trans)
+        self.failIf(payment.is_paid())
+        payment.set_pending()
+        self.failIf(payment.is_paid())
+        payment.pay()
+        self.failUnless(payment.is_paid())

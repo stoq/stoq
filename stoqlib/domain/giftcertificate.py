@@ -25,7 +25,6 @@
 
 
 from sqlobject import UnicodeCol, ForeignKey, BoolCol, SQLObject, IntCol
-from kiwi.python import Settable
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol
@@ -165,14 +164,6 @@ class GiftCertificateAdaptToSellable(ASellable):
 
 
 GiftCertificate.registerFacet(GiftCertificateAdaptToSellable, ISellable)
-
-#
-# General methods
-#
-
-def get_volatile_gift_certificate():
-    return Settable(number=None, first_number=None, last_number=None,
-                    gift_certificate_type=None)
 
 
 #

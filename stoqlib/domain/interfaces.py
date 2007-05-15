@@ -493,10 +493,8 @@ class IPaymentGroup(Interface):
     def get_default_payment_method():
         """FIXME"""
 
-    def confirm(gift_certificate_settings=None):
-        """Validate the current payment group, create payments and setup the
-        associated gift certificates properly.
-        """
+    def confirm():
+        """Validate the current payment group, create payments."""
 
 class IDelivery(Interface):
     """ Specification of a Delivery interface for a sellable. """
@@ -511,23 +509,6 @@ class IDelivery(Interface):
         @type sellable: ASellable
         @returns: a list of DeliveryItems
         """
-
-
-class IRenegotiationReturnSale(Interface):
-    """A definition of a return (or cancellation) of a sale order."""
-
-    def confirm(payment_group):
-        """Confirm the sale return process."""
-
-
-class IRenegotiationExchange(Interface):
-    def confirm():
-        """Confirm the exchange operation """
-
-
-class IRenegotiationInstallments(Interface):
-    def confirm():
-        """Confirm the operation """
 
 
 class IPaymentDevolution(Interface):

@@ -32,8 +32,7 @@ from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
 from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.sellable import BaseSellableInfo, ASellable
 from stoqlib.domain.giftcertificate import (GiftCertificate,
-                                            GiftCertificateType,
-                                            get_volatile_gift_certificate)
+                                            GiftCertificateType)
 
 _ = stoqlib_gettext
 
@@ -122,7 +121,8 @@ class GiftCertificateEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        return get_volatile_gift_certificate()
+        return Settable(number=None, first_number=None, last_number=None,
+                        gift_certificate_type=None)
 
     def setup_proxies(self):
         table = GiftCertificateType

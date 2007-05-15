@@ -71,10 +71,10 @@ class ClientDetailsDialog(BaseEditor):
         product_dict = {}
         for sale_view in sales:
             sale = Sale.get(sale_view.id, connection=self.conn)
-            self.services.extend(sale.get_services())
+            self.services.extend(sale.services)
             group = IPaymentGroup(sale)
             self.payments.extend(group.get_items())
-            for product in sale.get_products():
+            for product in sale.products:
                 qty = product.quantity
                 price = product.price
                 total_value = price * qty

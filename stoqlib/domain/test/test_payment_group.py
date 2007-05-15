@@ -39,8 +39,6 @@ class TestPaymentGroup(DomainTest):
         item = sellable.add_sellable_item(sale, price=150)
         group = sale.addFacet(IPaymentGroup, connection=self.trans)
 
-        self.assertRaises(ValueError, group.confirm)
-
         method = APaymentMethod.get_by_enum(self.trans, PaymentMethodType.BILL)
         payment = method.create_inpayment(group, Decimal(10))
         payment = payment.get_adapted()
