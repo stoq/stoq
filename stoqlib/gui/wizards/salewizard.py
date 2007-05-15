@@ -58,7 +58,7 @@ from stoqlib.domain.payment.methods import (APaymentMethod,
                                             MoneyPM, BillPM, CheckPM,
                                             CardPM, FinancePM,
                                             GiftCertificatePM)
-from stoqlib.domain.payment.payment import AbstractPaymentGroup
+from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.giftcertificate import GiftCertificate

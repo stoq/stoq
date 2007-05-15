@@ -38,7 +38,7 @@ from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.payment.methods import APaymentMethod
-from stoqlib.domain.payment.payment import AbstractPaymentGroup
+from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.interfaces import IPaymentGroup, IContainer
 from stoqlib.lib.defaults import calculate_interval, quantize
 from stoqlib.lib.parameters import sysparam

@@ -34,7 +34,6 @@ from stoqdrivers.enum import PaymentMethodType
 from zope.interface import implements
 
 from stoqlib.database.columns import DecimalCol
-from stoqlib.domain.till import Till
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.base import (Domain, InheritableModel)
 from stoqlib.domain.interfaces import (IInPayment, ICreditProvider,
@@ -42,8 +41,9 @@ from stoqlib.domain.interfaces import (IInPayment, ICreditProvider,
                                        IDescribable)
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.destination import PaymentDestination
-from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
-                                            AbstractPaymentGroup)
+from stoqlib.domain.payment.group import AbstractPaymentGroup
+from stoqlib.domain.payment.payment import Payment, PaymentAdaptToInPayment
+from stoqlib.domain.till import Till
 from stoqlib.exceptions import (PaymentError, DatabaseInconsistency,
                                 PaymentMethodError)
 from stoqlib.lib.defaults import get_all_methods_dict, quantize
