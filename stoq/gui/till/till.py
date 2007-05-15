@@ -99,9 +99,8 @@ class TillApp(SearchableAppWindow):
         status_filter = ComboSearchFilter(_(u"Show orders with status"),
                                           self._get_status_values())
         status_filter.select(Sale.STATUS_CONFIRMED)
-        self.executer.add_filter_query_callback(
-            status_filter, self._get_status_query)
-        self.add_filter(status_filter, position=SearchFilterPosition.TOP)
+        self.add_filter(status_filter, position=SearchFilterPosition.TOP,
+                        columns=['status'])
 
     def get_title(self):
         return _('Stoq - Till for Branch %03d') % get_current_branch(self.conn).id
@@ -115,18 +114,11 @@ class TillApp(SearchableAppWindow):
                        data_type=str, width=160, expand=True),
                 Column('salesperson_name', title=_('Salesperson'),
                        data_type=str, width=160),
-                Column('total_quantity', title=_('Items Quantity'),
-                       data_type=decimal.Decimal, width=140,
+                Column('total_quantity', title=_('Quantity'),
+                       data_type=decimal.Decimal, width=100,
                        format_func=format_quantity),
                 Column('total', title=_('Total'), data_type=currency,
                        width=120)]
-
-    def _get_status_query(self, state):
-        if state.value is None:
-            # The Till does not display items with the STATUS_ORDER set,
-            # filter it out when displaying all items.
-            return SaleView.q.status != Sale.STATUS_ORDER
-        return SaleView.q.status == state.value
 
     #
     # Till methods
@@ -154,9 +146,7 @@ class TillApp(SearchableAppWindow):
     #
 
     def _get_status_values(self):
-        keys = Sale.STATUS_OPENED, Sale.STATUS_CONFIRMED, Sale.STATUS_CANCELLED
-        statuses = [(value, key) for key, value in Sale.statuses.items()
-            if key in [v for k, v in enumerate(keys)]]
+        statuses = [(v, k) for k, v in Sale.statuses.items()]
         statuses.insert(0, (_('Any'), None))
         return statuses
 
@@ -192,18 +182,16 @@ class TillApp(SearchableAppWindow):
         self.till_status_label.set_bold(True)
 
     def _update_toolbar_buttons(self):
-        has_sales = len(self.results) > 0
-        has_selected = bool(has_sales and self.results.get_selected())
-        for widget in [self.confirm_order_button, self.details_button,
-                       self.return_button]:
-            widget.set_sensitive(has_selected)
-        if not has_selected:
-            return
-        status = self.results.get_selected().status
-        accept_confirm = status == Sale.STATUS_OPENED
-        self.confirm_order_button.set_sensitive(accept_confirm)
-        can_return = status == Sale.STATUS_CANCELLED
-        self.return_button.set_sensitive(not can_return)
+        sale_view = self.results.get_selected()
+        if sale_view:
+            can_confirm = sale_view.sale.can_confirm()
+            can_return = sale_view.sale.can_return()
+        else:
+            can_confirm = can_return = False
+
+        self.details_button.set_sensitive(bool(sale_view))
+        self.confirm_order_button.set_sensitive(can_confirm)
+        self.return_button.set_sensitive(can_return)
 
     def _update_widgets(self):
         # Three different options;

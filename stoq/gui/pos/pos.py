@@ -62,7 +62,7 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import SaleSearch
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard, PreOrderWizard
+from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.reporting.sale import SaleOrderReport
 
@@ -280,7 +280,7 @@ class POSApp(AppWindow):
             # XXX Probably we could get rid of this check using a view and
             # not allowing products without stocks for a certain branch in
             # the pos item list. Waiting for bug 2339
-            if not storable.has_stock_by_branch(self.sale.get_till_branch()):
+            if not storable.has_stock_by_branch(self.sale.branch):
                 msg = _("There is no stock of this product in this branch, "
                         "please, select another item.")
                 warning(_("Can not sell this product"), msg)
@@ -418,23 +418,20 @@ class POSApp(AppWindow):
         self._update_added_item(service)
 
     def _checkout(self):
-        can_confirm = not self.param.CONFIRM_SALES_ON_TILL
-        if can_confirm:
-            wizard = ConfirmSaleWizard
+        if self.param.CONFIRM_SALES_ON_TILL:
+            self.sale.order()
         else:
-            wizard = PreOrderWizard
-
-        if self.run_dialog(wizard, self.conn, self.sale):
-            if can_confirm:
+            if self.run_dialog(ConfirmSaleWizard, self.conn, self.sale):
                 if not self._finish_coupon():
                     return
-            log.info("Checking out")
-            self._coupon = self.sale = None
-            self.conn.commit()
-            self._clear_order()
-        else:
-            rollback_and_begin(self.conn)
-            self.new_order_button.grab_focus()
+            else:
+                rollback_and_begin(self.conn)
+                return
+
+        log.info("Checking out")
+        self._coupon = self.sale = None
+        self.conn.commit()
+        self._clear_order()
 
     #
     # Till methods
