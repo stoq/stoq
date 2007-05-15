@@ -32,15 +32,49 @@ from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from kiwi.ui.widgets.list import Column, ColoredColumn
+from sqlobject.viewable import Viewable
+from sqlobject.sqlbuilder import INNERJOINOn
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.gui.base.search import SearchDialog
-from stoqlib.domain.till import TillFiscalOperationsView, Till
+from stoqlib.domain.person import PersonAdaptToBranch
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.station import BranchStation
+from stoqlib.domain.till import Till
 
 
 _ = stoqlib_gettext
+
+class TillFiscalOperationsView(Viewable):
+    """
+    Stores informations about till payment tables
+
+    @ivar date:         the date when the entry was created
+    @ivar description:  the entry description
+    @ivar value:        the entry value
+    @ivar station_name: the value of name branch_station name column
+    """
+
+    columns = dict(
+        id=Payment.q.id,
+        date=Payment.q.open_date,
+        description=Payment.q.description,
+        value=Payment.q.value,
+        station_name=BranchStation.q.name,
+        branch_id=PersonAdaptToBranch.q.id,
+        status=Till.q.status,
+        )
+
+    joins = [
+        INNERJOINOn(None, Till,
+                    Till.q.id == Payment.q.tillID),
+        INNERJOINOn(None, BranchStation,
+                    BranchStation.q.id == Till.q.stationID),
+        INNERJOINOn(None, PersonAdaptToBranch,
+                    PersonAdaptToBranch.q.id == BranchStation.q.branchID),
+        ]
 
 
 class TillFiscalOperationsSearch(SearchDialog):

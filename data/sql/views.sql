@@ -516,29 +516,3 @@ CREATE VIEW iss_view AS
 
   WHERE iss_book_entry.id = abstract_fiscal_book_entry.id AND
         cfop_data.id = abstract_fiscal_book_entry.cfop_id;
-
-
---
--- Stores information about payments
--- Available fields are:
---    date                    - the date when the entry was created
---    description             - the entry description
---    value                   - the entry value
---    station_name            - the value of name branch_station name column
---
-CREATE VIEW till_fiscal_operations_view AS
-
-  SELECT DISTINCT
-    payment.id AS id,
-    payment.open_date AS date,
-    payment.description AS description,
-    payment.value AS value,
-    branch_station.name AS station_name,
-    person_adapt_to_branch.id AS branch_id,
-    till.status AS status
-
-  FROM payment, till, branch_station, person_adapt_to_branch
-
-  WHERE payment.till_id = till.id AND
-        till.station_id = branch_station.id AND
-        branch_station.branch_id = person_adapt_to_branch.id;
