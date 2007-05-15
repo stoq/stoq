@@ -26,7 +26,7 @@
 
 from stoqlib.exceptions import StoqlibError
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.payment.payment import AbstractPaymentGroup
+from stoqlib.domain.payment.group import AbstractPaymentGroup
 
 from stoqlib.domain.test.domaintest import DomainTest
 

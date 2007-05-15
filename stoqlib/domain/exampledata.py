@@ -388,7 +388,7 @@ class ExampleCreator(object):
 
     def create_icms_ipi_book_entry(self):
         from stoqlib.domain.fiscal import IcmsIpiBookEntry
-        from stoqlib.domain.payment.payment import AbstractPaymentGroup
+        from stoqlib.domain.payment.group import AbstractPaymentGroup
         payment_group = AbstractPaymentGroup(connection=self.trans)
         return IcmsIpiBookEntry(connection=self.trans,
                                 cfop=self.create_cfop_data(),
@@ -399,7 +399,7 @@ class ExampleCreator(object):
                                 invoice_number=200)
 
     def create_iss_book_entry(self):
-        from stoqlib.domain.payment.payment import AbstractPaymentGroup
+        from stoqlib.domain.payment.group import AbstractPaymentGroup
         from stoqlib.domain.fiscal import IssBookEntry
         cfop = self.create_cfop_data()
         branch = self.create_branch()
@@ -411,7 +411,7 @@ class ExampleCreator(object):
                             iss_value=10, invoice_number=201)
 
     def create_abstract_fiscal_book_entry(self):
-        from stoqlib.domain.payment.payment import AbstractPaymentGroup
+        from stoqlib.domain.payment.group import AbstractPaymentGroup
         from stoqlib.domain.fiscal import AbstractFiscalBookEntry
         cfop = self.create_cfop_data()
         branch = self.create_branch()
@@ -495,7 +495,7 @@ class ExampleCreator(object):
                        connection=self.trans)
 
     def create_payment_group(self):
-        from stoqlib.domain.payment.payment import AbstractPaymentGroup
+        from stoqlib.domain.payment.group import AbstractPaymentGroup
         return AbstractPaymentGroup(connection=self.trans)
 
     def create_payment_destination(self):

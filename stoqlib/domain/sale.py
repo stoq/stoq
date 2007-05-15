@@ -45,8 +45,9 @@ from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IContainer, IClient,
                                        IPaymentGroup, ISellable,
                                        IIndividual, ICompany)
-from stoqlib.domain.payment.payment import Payment, AbstractPaymentGroup
+from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.payment.methods import MoneyPM
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import ProductSellableItem, ProductHistory
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sellable import ASellableItem
@@ -365,7 +366,6 @@ class Sale(Domain):
         return sellable_cert
 
     def get_clone(self):
-        from stoqlib.domain.till import Till
         conn = self.get_connection()
         till = Till.get_current(conn)
         assert till

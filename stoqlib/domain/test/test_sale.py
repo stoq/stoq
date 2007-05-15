@@ -40,9 +40,9 @@ from stoqlib.domain.interfaces import (IClient,
                                        IStorable,
                                        IOutPayment)
 from stoqlib.domain.person import Person
-from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToOutPayment,
-                                            AbstractPaymentGroup)
+from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.payment.methods import CheckPM, MoneyPM
+from stoqlib.domain.payment.payment import Payment, PaymentAdaptToOutPayment
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.till import Till, TillEntry

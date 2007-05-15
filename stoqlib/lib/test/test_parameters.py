@@ -72,7 +72,6 @@ class TestParameter(DomainTest):
 
         self.group = self.sale.addFacet(IPaymentGroup, connection=self.trans)
 
-
     def setUp(self):
         DomainTest.setUp(self)
         self.sparam = sysparam(self.trans)

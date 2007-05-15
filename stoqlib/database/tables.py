@@ -78,12 +78,12 @@ _tables = [
     # XXX Unfortunately we must add 'methods.py' module in two places
     # here since the class Payment needs one of its classes. This will
     # be fixed in bug 2036.
+     ('payment.group', ["AbstractPaymentGroup"]),
      ('payment.methods', ["APaymentMethod",
                           "PaymentMethodDetails"]),
-     ('payment.payment', ["AbstractPaymentGroup",
-                       "Payment",
-                       "PaymentAdaptToInPayment",
-                       "PaymentAdaptToOutPayment"]),
+     ('payment.payment', ["Payment",
+                          "PaymentAdaptToInPayment",
+                          "PaymentAdaptToOutPayment"]),
      ('fiscal', ["CfopData", "AbstractFiscalBookEntry", "IcmsIpiBookEntry",
                  "IssBookEntry"]),
      ('payment.methods', ["BillCheckGroupData",
