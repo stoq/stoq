@@ -22,7 +22,7 @@
 ## Author(s):   Johan Dahlin <jdahlin@async.com.br>
 ##
 
-from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.payment import Payment, PaymentAdaptToInPayment
 from stoqlib.domain.person import Person, PersonAdaptToClient
 from stoqlib.domain.sale import Sale, SaleAdaptToPaymentGroup
 
@@ -42,12 +42,14 @@ class ReceivableView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, SaleAdaptToPaymentGroup,
-                    SaleAdaptToPaymentGroup.q.id == Payment.q.groupID),
-        INNERJOINOn(None, Sale,
-                    Sale.q.id == SaleAdaptToPaymentGroup.q._originalID),
+        INNERJOINOn(None, PaymentAdaptToInPayment,
+                    PaymentAdaptToInPayment.q._originalID == Payment.q.id),
+        LEFTJOINOn(None, SaleAdaptToPaymentGroup,
+                   SaleAdaptToPaymentGroup.q.id == Payment.q.groupID),
+        LEFTJOINOn(None, Sale,
+                   Sale.q.id == SaleAdaptToPaymentGroup.q._originalID),
         LEFTJOINOn(None, PersonAdaptToClient,
-                    PersonAdaptToClient.q.id == Sale.q.id),
+                   PersonAdaptToClient.q.id == Sale.q.id),
         LEFTJOINOn(None, Person,
                    Person.q.id == PersonAdaptToClient.q._originalID),
         ]
@@ -57,7 +59,8 @@ class ReceivableView(Viewable):
 
     @property
     def sale(self):
-        return Sale.get(self.sale_id)
+        if self.sale_id:
+            return Sale.get(self.sale_id)
 
     @property
     def payment(self):
