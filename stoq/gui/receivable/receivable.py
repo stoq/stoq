@@ -37,7 +37,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.search import (DateSearchFilter, ComboSearchFilter,
                             DateSearchOption)
-from kiwi.ui.widgets.list import Column, SummaryLabel
+from kiwi.ui.widgets.list import Column
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.payment.payment import Payment
@@ -84,25 +84,14 @@ class ReceivableApp(SearchableAppWindow):
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
-        self._update_widgets()
         self.results.connect('has-rows', self._has_rows)
 
     def _setup_widgets(self):
-        self.summary_label = SummaryLabel(klist=self.results,
-                                          column='value',
-                                          label='<b>Total:</b>',
-                                          value_format='<b>%s</b>')
-        self.list_vbox.pack_start(self.summary_label, False, False)
-        self.summary_label.show()
-
-    def _update_widgets(self):
-        self._update_total_label()
+        self.search.set_summary_label(
+            'value', '<b>Total:</b>', '<b>%s</b>')
 
     def _has_rows(self, result_list, has_rows):
         self.print_button.set_sensitive(has_rows)
-
-    def _update_total_label(self):
-        self.summary_label.update_total()
 
     def _get_status_values(self):
         values = [(v, k) for k, v in Payment.statuses.items()]

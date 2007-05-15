@@ -34,7 +34,7 @@ from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
-from kiwi.ui.widgets.list import Column, SummaryLabel
+from kiwi.ui.widgets.list import Column
 from stoqlib.database.database import rollback_and_begin
 from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.message import warning, yesno
@@ -102,17 +102,12 @@ class PurchaseApp(SearchableAppWindow):
     #
 
     def _setup_widgets(self):
-        self.summary_total = SummaryLabel(klist=self.results,
-                                          column='total',
-                                          label='<b>%s</b>' % _('Total:'),
-                                          value_format='<b>%s</b>')
-        self.list_vbox.pack_start(self.summary_total, False, False)
-        self.list_vbox.reorder_child(self.summary_total, 2)
-        self.summary_total.show()
+        self.search.set_summary_label(column='total',
+                                      label='<b>Total:</b>',
+                                      format='<b>%s</b>')
         self.SendToSupplier.set_sensitive(False)
 
     def _update_totals(self):
-        self.summary_total.update_total()
         self._update_view()
 
     def _update_list_aware_widgets(self, has_items):

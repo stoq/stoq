@@ -36,7 +36,7 @@ from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
-from kiwi.ui.widgets.list import Column, SummaryLabel
+from kiwi.ui.widgets.list import Column
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.payment.payment import Payment
@@ -159,20 +159,13 @@ class PayableApp(SearchableAppWindow):
         return all(view.purchase == purchase for view in payable_views)
 
     def _setup_widgets(self):
-        self.summary_label = SummaryLabel(klist=self.results,
-                                          column='value',
-                                          label='<b>Total:</b>',
-                                          value_format='<b>%s</b>')
-        self.list_vbox.pack_start(self.summary_label, False, False)
-        self.summary_label.show()
+        self.search.set_summary_label(column='value',
+                                      label='<b>Total:</b>',
+                                      format='<b>%s</b>')
 
     def _update_widgets(self):
         has_sales = len(self.results) > 0
         self.details_button.set_sensitive(has_sales)
-        self._update_total_label()
-
-    def _update_total_label(self):
-        self.summary_label.update_total()
 
     def _get_status_values(self):
         items = [(value, key) for key, value in Payment.statuses.items()]

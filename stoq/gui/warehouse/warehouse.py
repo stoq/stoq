@@ -30,7 +30,7 @@ import decimal
 import gtk
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.widgets.list import Column, SummaryLabel
+from kiwi.ui.widgets.list import Column
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction, get_current_branch
@@ -98,13 +98,9 @@ class WarehouseApp(SearchableAppWindow):
     #
 
     def _setup_widgets(self):
-        self.summary_label = SummaryLabel(klist=self.results,
-                                          column='stock',
-                                          label=_('<b>Stock Total:</b>'),
-                                          value_format='<b>%s</b>')
-        self.vbox2.pack_start(self.summary_label, False)
-        self.vbox2.reorder_child(self.summary_label, 2)
-        self.summary_label.show()
+        self.set_summary_label(column='stock',
+                               label=_('<b>Stock Total:</b>'),
+                               value_format='<b>%s</b>')
 
     def _get_branches(self):
         items = [(b.person.name, b)
@@ -123,14 +119,9 @@ class WarehouseApp(SearchableAppWindow):
         self.history_button.set_sensitive(one_selected)
         self.retention_button.set_sensitive(one_selected)
         self.print_button.set_sensitive(has_stock)
-        self._update_stock_total()
-
-    def _update_stock_total(self):
-        self.summary_label.update_total()
 
     def _update_filter_slave(self, slave):
         self.refresh()
-        self._update_stock_total()
 
     #
     # Callbacks
