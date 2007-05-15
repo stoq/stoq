@@ -30,7 +30,7 @@ from decimal import Decimal
 
 from stoqlib.lib.parameters import sysparam
 from stoqlib.database.runtime import get_current_station
-from stoqlib.domain.fiscal import AbstractFiscalBookEntry
+from stoqlib.domain.fiscal import IssBookEntry
 from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        ISalesPerson, IClient,
                                        IUser, IPaymentGroup, IEmployee,
@@ -242,13 +242,14 @@ class TestParameter(DomainTest):
         self._create_examples()
         wrong_param = self.sparam.DEFAULT_SALES_CFOP
         drawee = Person(name='Antonione', connection=self.trans)
-        book_entry = AbstractFiscalBookEntry(invoice_number=123,
-                                             cfop=wrong_param,
-                                             branch=self.branch,
-                                             drawee=drawee,
-                                             payment_group=self.group,
-                                             connection=self.trans)
-        reversal = book_entry.get_reversal_clone(invoice_number=124)
+        book_entry = IssBookEntry(invoice_number=123,
+                                  cfop=wrong_param,
+                                  branch=self.branch,
+                                  drawee=drawee,
+                                  payment_group=self.group,
+                                  iss_value=1,
+                                  connection=self.trans)
+        reversal = book_entry.reverse_entry(invoice_number=124)
         self.failIfEqual(wrong_param, reversal.cfop)
         self.assertEqual(self.sparam.DEFAULT_RETURN_SALES_CFOP,
                          reversal.cfop)

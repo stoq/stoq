@@ -44,11 +44,6 @@ class TestAbstractFiscalBookEntry(DomainTest):
         entry = self.create_abstract_fiscal_book_entry()
         self.assertRaises(NotImplementedError, entry.reverse_entry, 0xdeadbeef)
 
-    def testGetReversalClone(self):
-        entry = self.create_abstract_fiscal_book_entry()
-        reversal = entry.get_reversal_clone(invoice_number=13)
-        self.assertEquals(reversal.invoice_number, 13)
-
     def testHasEntryByPaymentGroup(self):
         new_payment_group = AbstractPaymentGroup.select(
             connection=self.trans)[0]
@@ -73,12 +68,12 @@ class TestIcmsIpiBookEntry(DomainTest):
     def testReverseEntry(self):
        icmsipibookentry = self.create_icms_ipi_book_entry()
        reversal = icmsipibookentry.reverse_entry(100)
-       self.assertEquals(reversal.icms_value, -10)
-       self.assertEquals(reversal.ipi_value, -10)
+       self.assertEquals(reversal.icms_value, 10)
+       self.assertEquals(reversal.ipi_value, 10)
 
 
 class TestIssBookEntry(DomainTest):
     def testReverseEntry(self):
        issbookentry = self.create_iss_book_entry()
        reversal = issbookentry.reverse_entry(201)
-       self.assertEquals(reversal.iss_value, -10)
+       self.assertEquals(reversal.iss_value, 10)
