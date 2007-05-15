@@ -100,7 +100,7 @@ class WarehouseApp(SearchableAppWindow):
     def _setup_widgets(self):
         self.search.set_summary_label(column='stock',
                                       label=_('<b>Stock Total:</b>'),
-                                      value_format='<b>%s</b>')
+                                      format='<b>%s</b>')
 
     def _get_branches(self):
         items = [(b.person.name, b)
