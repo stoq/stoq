@@ -38,7 +38,6 @@ from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
 from stoqlib.domain.address import CityLocation
 from stoqlib.domain.person import Person, EmployeeRole
 from stoqlib.domain.payment.methods import BillPM, MoneyPM
-from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
 from stoqlib.domain.sellable import SellableCategory, ASellable
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.receiving import ReceivingOrder
@@ -64,11 +63,9 @@ class TestParameter(DomainTest):
 
         till = Till(connection=self.trans,
                     station=get_current_station(self.trans))
-        renegotiation = AbstractRenegotiationAdapter(connection=self.trans)
         self.sale = Sale(coupon_id=123, client=client,
                          cfop=self.sparam.DEFAULT_SALES_CFOP,
                          salesperson=self.salesperson,
-                         renegotiation_data=renegotiation,
                          till=till, connection=self.trans)
 
         self.storable = self.create_storable()

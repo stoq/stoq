@@ -69,8 +69,7 @@ class Payment(Domain):
     # Status description
     # Sale: (PENDING, PAID, CANCELLED)
     # A payment is created in STATUS_PREVIEW
-    # setup_installments is immediatelly called and the status is modified
-    # to STATUS_PENDING
+    # When you confirm a sale or a purchase, the status is modified to PENDING
     # If you pay with money, status is set to STATUS_PAID
     # Otherwise it's left as pending until the money is received.
     # Finally if you cancel the payment (or use a gift certificate),
@@ -160,7 +159,6 @@ class Payment(Domain):
         self.paid_value = paid_value
         self.paid_date = paid_date or datetime.datetime.now()
         self.status = self.STATUS_PAID
-
 
     def submit(self, submit_date=None):
         """The first stage of payment acquittance is submiting and mark a
@@ -262,6 +260,21 @@ class Payment(Domain):
             return thirdparty.name
         return _(u'Anonymous')
 
+    def is_paid(self):
+        """
+        Check if the payment is paid.
+        @returns: True if the payment is paid, otherwise False
+        """
+        return self.status == Payment.STATUS_PAID
+
+    def is_preview(self):
+        """
+        Check if the payment is in preview state
+        @returns: True if the payment is paid, otherwise False
+        """
+        return self.status == Payment.STATUS_PREVIEW
+
+
 class AbstractPaymentGroup(InheritableModelAdapter):
     """A base class for payment group adapters. """
 
@@ -327,7 +340,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
                        description=description, group=self, method=method,
                        destination=destination, connection=conn)
 
-    def confirm(self, gift_certificate_settings=None):
+    def confirm(self):
         """This can be implemented in a subclass, but it's not required"""
 
     #
@@ -413,24 +426,22 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         self.default_method = method
 
     def add_inpayments(self, till):
+        from stoqlib.domain.payment.methods import MoneyPM
+
         payment_count = self.get_items().count()
         if not payment_count:
             raise ValueError(
                 'You must have at least one payment for each payment group')
         self.installments_number = payment_count
 
-        # FIXME: Check if all the payments are in STATUS_PREVIEW state?
         for payment in self.get_items():
+            assert payment.is_preview()
             payment.set_pending()
             assert IInPayment(payment, None)
             till.add_entry(payment)
 
-    def confirm_money_payments(self):
-        from stoqlib.domain.payment.methods import MoneyPM
-        for payment in self.get_items():
-            if not isinstance(payment.method, MoneyPM):
-                continue
-            payment.pay()
+            if isinstance(payment.method, MoneyPM):
+                payment.pay()
 
     def check_close(self):
         """Verifies if the payment group can be closed and close it.

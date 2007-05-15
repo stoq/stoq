@@ -123,7 +123,7 @@ class FiscalPrinterHelper(CouponPrinter):
             finish_transaction(trans, model)
             return
 
-        opened_sales = Sale.selectBy(status=Sale.STATUS_OPENED,
+        opened_sales = Sale.selectBy(status=Sale.STATUS_INITIAL,
                                      connection=trans)
         if opened_sales:
             # A new till object to "store" the sales that weren't

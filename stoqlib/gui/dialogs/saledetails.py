@@ -96,8 +96,9 @@ class SaleDetailsDialog(BaseEditor):
             self.cancel_details_button.hide()
 
         self.items_list.add_list(self.sale_order.get_items())
-        group = IPaymentGroup(self.sale_order)
-        self.payments_list.add_list(group.get_items())
+        group = IPaymentGroup(self.sale_order, None)
+        if group:
+            self.payments_list.add_list(group.get_items())
         self._setup_summary_labels()
 
     def _get_payments_columns(self):

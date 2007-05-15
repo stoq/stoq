@@ -28,36 +28,33 @@
 import datetime
 from decimal import Decimal
 
-from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol, SQLObject
-from sqlobject.sqlbuilder import AND
-from stoqdrivers.enum import PaymentMethodType, TaxType
-from zope.interface import implements
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
+from sqlobject.col import ForeignKey, UnicodeCol, DateTimeCol, IntCol
+from sqlobject.main import SQLObject
+from sqlobject.sqlbuilder import AND
+from stoqdrivers.enum import TaxType
+from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import get_current_user
+from stoqlib.domain.base import Domain, BaseSQLView
+from stoqlib.domain.fiscal import IssBookEntry, IcmsIpiBookEntry
+from stoqlib.domain.giftcertificate import GiftCertificate
+from stoqlib.domain.interfaces import (IContainer, IClient,
+                                       IPaymentGroup, ISellable,
+                                       IIndividual, ICompany)
+from stoqlib.domain.payment.payment import AbstractPaymentGroup
+from stoqlib.domain.product import ProductSellableItem, ProductHistory
+from stoqlib.domain.renegotiation import RenegotiationData
+from stoqlib.domain.sellable import ASellableItem
+from stoqlib.domain.service import ServiceSellableItem
+from stoqlib.exceptions import (SellError, DatabaseInconsistency,
+                                StoqlibError)
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.exceptions import (SellError, DatabaseInconsistency,
-                                StoqlibError)
-from stoqlib.domain.renegotiation import (RenegotiationData,
-                                          AbstractRenegotiationAdapter)
-from stoqlib.domain.base import Domain, BaseSQLView
-from stoqlib.domain.sellable import ASellableItem
-from stoqlib.domain.fiscal import IssBookEntry, IcmsIpiBookEntry
-from stoqlib.domain.payment.payment import AbstractPaymentGroup
-from stoqlib.domain.product import ProductSellableItem, ProductHistory
-from stoqlib.domain.service import ServiceSellableItem
-from stoqlib.domain.giftcertificate import (GiftCertificateItem,
-                                            GiftCertificateAdaptToSellable,
-                                            GiftCertificate)
-from stoqlib.domain.interfaces import (IContainer, IClient,
-                                       IPaymentGroup, ISellable,
-                                       IIndividual, ICompany,
-                                       IRenegotiationReturnSale)
 
 _ = stoqlib_gettext
 
@@ -66,29 +63,22 @@ _ = stoqlib_gettext
 #
 
 
-class GiftCertificateOverpaidSettings:
-    """Stores general settings for sale orders with gift certificates and
-    when the sum of gift certificate values is greater then the total sale
-    amount
-    """
-
-    (TYPE_RETURN_MONEY,
-     TYPE_GIFT_CERTIFICATE) = range(2)
-
-    renegotiation_type = TYPE_GIFT_CERTIFICATE
-    renegotiation_value = Decimal(0)
-    gift_certificate_number = None
-
-
 class Sale(Domain):
     """
     Sale object implementation.
 
-    @cvar STATUS_OPENED:
-    @cvar STATUS_CONFIRMED:
-    @cvar STATUS_CLOSED:
-    @cvar STATUS_CANCELLED:
-    @cvar STATUS_ORDER:
+    @cvar STATUS_INITIAL: The sale is opened, products or other sellable items
+      might have been added.
+    @cvar STATUS_ORDERED: The sale is orded, it has sellable items but not any payments yet.
+      This state is mainly used when the parameter CONFIRM_SALES_AT_TILL is enabled.
+    @cvar STATUS_CONFIRMED: The sale has been confirmed and all payments have been registered,
+      but not necessarily paid.
+    @cvar STATUS_CLOSED: All the payments of the sale has been confirmed and the client
+      does not owe anything to us.
+    @cvar STATUS_CANCELLED: The sale has been canceled, this can only happen to an sale
+      which has not yet reached the SALE_CONFIRMED status.
+    @cvar STATUS_RETURNED: The sale has been returned, all the payments made have been canceled
+      and the client has been compensated for everything already paid.
     @cvar CLIENT_INDIVIDUAL: The sale was done by an individual
     @cvar CLIENT_COMPANY: The sale was done by a company
     @ivar status: status of the sale
@@ -101,6 +91,7 @@ class Sale(Domain):
     @ivar close_date: the date sale was closed
     @ivar confirm_date: the date sale was confirmed
     @ivar cancel_date: the date sale was cancelled
+    @ivar return_date: the date sale was returned
     @ivar discount_value:
     @ivar surcharge_value:
     @ivar notes: Some optional additional information related to this sale.
@@ -117,29 +108,32 @@ class Sale(Domain):
 
     implements(IContainer)
 
-    (STATUS_OPENED,
+    (STATUS_INITIAL,
      STATUS_CONFIRMED,
-     STATUS_CLOSED,
+     STATUS_PAID,
      STATUS_CANCELLED,
-     STATUS_ORDER) = range(5)
+     STATUS_ORDERED,
+     STATUS_RETURNED) = range(6)
 
     (CLIENT_INDIVIDUAL,
      CLIENT_COMPANY) = range(2)
 
-    statuses = {STATUS_OPENED:      _(u"Opened"),
+    statuses = {STATUS_INITIAL:     _(u"Opened"),
                 STATUS_CONFIRMED:   _(u"Confirmed"),
-                STATUS_CLOSED:      _(u"Closed"),
+                STATUS_PAID:        _(u"Paid"),
                 STATUS_CANCELLED:   _(u"Cancelled"),
-                STATUS_ORDER:       _(u"Order")}
+                STATUS_ORDERED:     _(u"Ordered"),
+                STATUS_RETURNED:    _(u"Returned")}
 
-    status = IntCol(default=STATUS_OPENED)
+    status = IntCol(default=STATUS_INITIAL)
     client = ForeignKey('PersonAdaptToClient', default=None)
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
     till = ForeignKey('Till')
     open_date = DateTimeCol(default=datetime.datetime.now)
-    close_date = DateTimeCol(default=None)
     confirm_date = DateTimeCol(default=None)
+    close_date = DateTimeCol(default=None)
     cancel_date = DateTimeCol(default=None)
+    return_date = DateTimeCol(default=None)
     discount_value = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     notes = UnicodeCol(default='')
@@ -147,8 +141,6 @@ class Sale(Domain):
     service_invoice_number = IntCol(default=None)
     client_role = IntCol(default=None)
     cfop = ForeignKey("CfopData")
-    renegotiation_data = ForeignKey("AbstractRenegotiationAdapter",
-                                    default=None)
 
     #
     # SQLObject hooks
@@ -161,26 +153,6 @@ class Sale(Domain):
         if not 'cfop' in kw:
             kw['cfop'] = sysparam(conn).DEFAULT_SALES_CFOP
         Domain._create(self, id, **kw)
-
-    #
-    # IContainer implementation
-    #
-
-    # FIXME: Should only accept ASellableItem
-    #@argcheck(ASellable)
-    def add_item(self, item):
-        #item.add_sellable_item(sale=self)
-        raise NotImplementedError
-
-    def get_items(self):
-        conn = self.get_connection()
-        return ASellableItem.selectBy(connection=conn, saleID=self.id)
-
-    @argcheck(ASellableItem)
-    def remove_item(self, item):
-        conn = self.get_connection()
-        table = type(item)
-        table.delete(item.id, connection=conn)
 
     #
     # Classmethods
@@ -216,68 +188,149 @@ class Sale(Domain):
             return results[0]
 
     #
-    # Properties
+    # IContainer implementation
     #
 
-    def _set_discount_by_percentage(self, value):
-        """Sets a discount by percentage.
-        Note that percentage must be added as an absolute value not as a
-        factor like 1.05 = 5 % of surcharge
-        The correct form is 'percentage = 3' for a discount of 3 %"""
-        self.discount_value = self._get_percentage_value(value)
+    # FIXME: Should only accept ASellableItem
+    #@argcheck(ASellable)
+    def add_item(self, item):
+        #item.add_sellable_item(sale=self)
+        raise NotImplementedError
 
-    def _get_discount_by_percentage(self):
-        discount_value = self.discount_value
-        if not discount_value:
-            return Decimal(0)
-        subtotal = self.get_sale_subtotal()
-        assert subtotal > 0, ('the sale subtotal should not be zero '
-                              'at this point')
-        total = subtotal - discount_value
-        percentage = (1 - total / subtotal) * 100
-        return quantize(percentage)
+    def get_items(self):
+        conn = self.get_connection()
+        return ASellableItem.selectBy(connection=conn, saleID=self.id)
 
-    discount_percentage = property(_get_discount_by_percentage,
-                                   _set_discount_by_percentage)
+    @argcheck(ASellableItem)
+    def remove_item(self, item):
+        conn = self.get_connection()
+        table = type(item)
+        table.delete(item.id, connection=conn)
 
-    def _set_surcharge_by_percentage(self, value):
-        """Sets a surcharge by percentage.
-        Note that surcharge must be added as an absolute value not as a
-        factor like 0.97 = 3 % of discount.
-        The correct form is 'percentage = 3' for a surcharge of 3 %"""
-        self.surcharge_value = self._get_percentage_value(value)
+    # New API
 
-    def _get_surcharge_by_percentage(self):
-        surcharge_value = self.surcharge_value
-        if not surcharge_value:
-            return Decimal(0)
-        subtotal = self.get_sale_subtotal()
-        assert subtotal > 0, ('the sale subtotal should not be zero '
-                              'at this point')
-        total = subtotal + surcharge_value
-        percentage = ((total / subtotal) - 1) * 100
-        return quantize(percentage)
+    def can_order(self):
+        """
+        @returns: True if the sale can be ordered, otherwise False
+        """
+        return self.status == Sale.STATUS_INITIAL
 
-    surcharge_percentage = property(_get_surcharge_by_percentage,
-                                    _set_surcharge_by_percentage)
+    def can_confirm(self):
+        """
+        @returns: True if the sale can be confirmed, otherwise False
+        """
+        return self.status == Sale.STATUS_ORDERED
 
-    # XXX: depends on bug #2893
-#     def _set_client_role(self, value):
-#         if value not in (Sale.CLIENT_INDIVIDUAL,
-#                          Sale.CLIENT_COMPANY):
-#             raise TypeError("The client role should be one of constantes "
-#                             "CLIENT_INDIVIDUAL or CLIENT_COMPANY")
-#         self._SO_set_client_role(value)
+    def can_set_paid(self):
+        """
+        @returns: True if the sale can be set as paid, otherwise False
+        """
+        return self.status == Sale.STATUS_CONFIRMED
 
+    def can_cancel(self):
+        """
+        @returns: True if the sale can be cancelled, otherwise False
+        """
+        return self.status == Sale.STATUS_ORDERED
 
-    @property
-    def order_number(self):
-        return self.id
+    def can_return(self):
+        """
+        @returns: True if the sale can be returned, otherwise False
+        """
+        return (self.status == Sale.STATUS_CONFIRMED or
+                self.status == Sale.STATUS_PAID)
 
+    def order(self):
+        assert self.can_order()
+
+        if not self.get_items():
+            raise SellError('The sale must have sellable items')
+        if self.client and not self.client.is_active:
+            raise SellError('Unable to make sales for clients with status '
+                            '%s' % self.client.get_status_string())
+
+        self.set_valid()
+
+        self.status = Sale.STATUS_ORDERED
+
+    def confirm(self):
+        assert self.can_confirm()
+
+        branch = self.branch
+        conn = self.get_connection()
+        for item in self.get_items():
+            if isinstance(item, ProductSellableItem):
+                ProductHistory.add_sold_item(conn, branch, item)
+            item.sell(branch)
+
+        group = IPaymentGroup(self)
+        group.confirm()
+
+        self.confirm_date = datetime.datetime.now()
+        self.status = Sale.STATUS_CONFIRMED
+
+    def set_paid(self):
+        assert self.can_set_paid()
+
+        group = IPaymentGroup(self)
+        for payment in group.get_items():
+            if not payment.is_paid():
+                raise StoqlibError(
+                    "You cannot close a sale without paying all the payment")
+
+        self.close_date = datetime.datetime.now()
+        self.status = Sale.STATUS_PAID
+
+    def cancel(self):
+        assert self.can_cancel()
+
+        branch = self.branch
+        for item in self.get_items():
+            item.cancel(branch)
+
+        self.cancel_date = datetime.datetime.now()
+        self.status = Sale.STATUS_CANCELLED
+
+    def return_(self, renegotiation=None):
+        assert self.can_return()
+
+        group = IPaymentGroup(self)
+
+        if renegotiation:
+            group.cancel(renegotiation.invoice_number)
+            self.renegotiation_data = renegotiation
+
+        self.return_date = datetime.datetime.now()
+        self.status = Sale.STATUS_RETURNED
+
+    def paid_with_money(self):
+        from stoqlib.domain.payment.methods import MoneyPM
+        group = IPaymentGroup(self, None)
+        assert group
+        for payment in group.get_items():
+            if not isinstance(payment.method, MoneyPM):
+                return False
+        return True
+
+    def get_items_total_quantity(self):
+        return self.get_items().sum('quantity') or Decimal(0)
+
+    def create_sale_return_adapter(self):
+        conn = self.get_connection()
+        current_user = get_current_user(conn)
+        assert current_user
+        group = IPaymentGroup(self)
+        paid_total = group.get_total_paid()
+        return RenegotiationData(connection=conn,
+                                     paid_total=paid_total,
+                                     invoice_number=None,
+                                     responsible=current_user.person,
+                                     sale=self)
 
     #
-    # Public API
+    # MOVE away!
     #
+
 
     @argcheck(Decimal, unicode)
     def add_custom_gift_certificate(self, certificate_value,
@@ -313,121 +366,6 @@ class Sale(Domain):
                     cfop=self.cfop, till=till, coupon_id=None,
                     salesperson=self.salesperson, connection=conn)
 
-    def check_payment_group(self):
-        return IPaymentGroup(self, None)
-
-    def update_client(self, person):
-        # Do not change the name of this method to set_client: this is a
-        # callback in SQLObject
-        self.client = IClient(person)
-
-    def reset_discount_and_surcharge(self):
-        self.discount_value = self.surcharge_value = currency(0)
-
-    def sell_items(self):
-        """Update the stock of all products tied with the current
-        sale order
-        """
-        conn = self.get_connection()
-        branch = self.get_till_branch()
-        for item in self.get_items():
-            if isinstance(item, ProductSellableItem):
-                # TODO add support for ordering products, bug #2469
-                ProductHistory.add_sold_item(conn, branch, item)
-                item.sell(branch)
-                continue
-            item.sell()
-
-    def cancel_items(self):
-        """Restore the stock of all sellable items tied with the current
-        sale order
-        """
-        branch = self.get_till_branch()
-        for item in self.get_items():
-            item.cancel(branch)
-
-    def check_close(self):
-        """Checks if the payment group has all the payments paid and close
-        the group and the sale order
-        """
-        group = IPaymentGroup(self, None)
-        if group is None:
-            return False
-
-        if not group.check_close():
-            return False
-
-        self.close_date = datetime.datetime.now()
-        return True
-
-    def create_sale_return_adapter(self):
-        conn = self.get_connection()
-        current_user = get_current_user(conn)
-        if current_user is None:
-            raise StoqlibError("You should have a user for a sale "
-                               "renegotiation")
-        group = self.check_payment_group()
-        paid_total = group.get_total_paid()
-        reg_data = RenegotiationData(connection=conn,
-                                     paid_total=paid_total,
-                                     invoice_number=None,
-                                     responsible=current_user.person)
-        return reg_data.addFacet(IRenegotiationReturnSale, connection=conn)
-
-    @argcheck(AbstractRenegotiationAdapter)
-    def cancel(self, renegotiation_adapter):
-        rejected = Sale.STATUS_CANCELLED, Sale.STATUS_ORDER
-        if self.status in rejected:
-            raise StoqlibError("Invalid status for cancel operation, got %s"
-                               % Sale.get_status_name(self.status))
-        self.cancel_items()
-        self.cancel_date = datetime.datetime.now()
-        group = self.check_payment_group()
-
-        # FIXME: Don't use renegotiation_adapter.get_adapted()
-        adapted = renegotiation_adapter.get_adapted()
-        return_invoice_number = adapted.invoice_number
-        group.cancel(return_invoice_number)
-
-        self.renegotiation_data = renegotiation_adapter
-        self.status = self.STATUS_CANCELLED
-
-    def validate(self):
-        if not self.get_items():
-            raise SellError('The sale must have sellable items')
-        if self.client and not self.client.is_active:
-            raise SellError('Unable to make sales for clients with status '
-                            '%s' % self.client.get_status_string())
-        if not self.status == self.STATUS_OPENED:
-            raise SellError('The sale must have STATUS_OPENED for this '
-                            'operation, got status %s instead'
-                            % self.get_status_name(self.status))
-        self.check_payment_group()
-        if not self.get_valid():
-            self.set_valid()
-
-    @argcheck(GiftCertificateOverpaidSettings)
-    def confirm_sale(self, gift_certificate_settings=None):
-        self.validate()
-        self.sell_items()
-        group = IPaymentGroup(self)
-        group.confirm(gift_certificate_settings)
-        self.status = self.STATUS_CONFIRMED
-        self.confirm_date = datetime.datetime.now()
-        self.check_close()
-
-    def has_items(self):
-        return self.get_items().count() > 0
-
-    def has_products(self):
-        return len(self.get_products()) > 0
-
-    def has_services(self):
-        return len(self.get_services()) > 0
-
-    def has_gift_certifificates(self):
-        return len(self.get_gift_certificates()) > 0
-
     #
     # Accessors
     #
@@ -460,14 +398,14 @@ class Sale(Domain):
             raise DatabaseInconsistency("Invalid client_role for sale %r, "
                                         "got %r" % (self, self.client_role))
 
-    def get_till_branch(self):
-        return self.till.station.branch
+    # XXX: depends on bug #2893
+#     def _set_client_role(self, value):
+#         if value not in (Sale.CLIENT_INDIVIDUAL,
+#                          Sale.CLIENT_COMPANY):
+#             raise TypeError("The client role should be one of constantes "
+#                             "CLIENT_INDIVIDUAL or CLIENT_COMPANY")
+#         self._SO_set_client_role(value)
 
-    def get_sale_subtotal(self):
-        # FIXME: Use SQL
-        subtotal = sum([item.get_total() for item in self.get_items()],
-                       currency(0))
-        return currency(subtotal)
 
     def get_total_sale_amount(self):
         """
@@ -485,38 +423,108 @@ class Sale(Domain):
         total_amount = subtotal + surcharge_value - discount_value
         return currency(total_amount)
 
-    def get_total_amount_as_string(self):
-        return get_formatted_price(self.get_total_sale_amount())
+    #
+    # Re-evaluate
+    #
+
+    def check_payment_group(self):
+        return IPaymentGroup(self, None)
+
+    def update_client(self, person):
+        # Do not change the name of this method to set_client: this is a
+        # callback in SQLObject
+        self.client = IClient(person)
+
+    def reset_discount_and_surcharge(self):
+        self.discount_value = self.surcharge_value = currency(0)
 
     def get_total_interest(self):
         raise NotImplementedError
 
-    def get_services(self):
-        # FIXME: Use SQL
-        return [item for item in self.get_items()
-                    if isinstance(item, ServiceSellableItem)]
+    def has_items(self):
+        return self.get_items().count() > 0
 
-    def get_products(self):
-        # FIXME: Use SQL
-        return [item for item in self.get_items()
-                    if isinstance(item, ProductSellableItem)]
+    def get_total_amount_as_string(self):
+        return get_formatted_price(self.get_total_sale_amount())
 
-    def get_gift_certificates(self):
-        """Returns a list of gift certificates tied to the current sale"""
+    def get_sale_subtotal(self):
         # FIXME: Use SQL
-        return [item for item in self.get_items()
-                    if isinstance(item, GiftCertificateItem)]
-
-    def get_items_total_quantity(self):
-        # FIXME: Use SQL
-        return sum([item.quantity for item in self.get_items()],
-                   Decimal(0))
+        subtotal = sum([item.get_total() for item in self.get_items()],
+                       currency(0))
+        return currency(subtotal)
 
     def get_items_total_value(self):
         # FIXME: Use SQL
         total = sum([item.get_total() for item in self.get_items()],
                    currency(0))
         return currency(total)
+    #
+    # Properties
+    #
+
+    @property
+    def order_number(self):
+        return self.id
+
+    @property
+    def branch(self):
+        return self.till.station.branch
+
+    @property
+    def products(self):
+        return ProductSellableItem.selectBy(
+            sale=self, connection=self.get_connection())
+
+    @property
+    def services(self):
+        return ServiceSellableItem.selectBy(
+            sale=self, connection=self.get_connection())
+
+    def _get_discount_by_percentage(self):
+        discount_value = self.discount_value
+        if not discount_value:
+            return Decimal(0)
+        subtotal = self.get_sale_subtotal()
+        assert subtotal > 0, ('the sale subtotal should not be zero '
+                              'at this point')
+        total = subtotal - discount_value
+        percentage = (1 - total / subtotal) * 100
+        return quantize(percentage)
+
+    def _set_discount_by_percentage(self, value):
+        self.discount_value = self._get_percentage_value(value)
+
+    discount_percentage = property(_get_discount_by_percentage,
+                                   _set_discount_by_percentage,
+                                   doc=(
+        """Sets a discount by percentage.
+        Note that percentage must be added as an absolute value not as a
+        factor like 1.05 = 5 % of surcharge
+        The correct form is 'percentage = 3' for a discount of 3 %"""
+        ))
+
+    def _get_surcharge_by_percentage(self):
+        surcharge_value = self.surcharge_value
+        if not surcharge_value:
+            return Decimal(0)
+        subtotal = self.get_sale_subtotal()
+        assert subtotal > 0, ('the sale subtotal should not be zero '
+                              'at this point')
+        total = subtotal + surcharge_value
+        percentage = ((total / subtotal) - 1) * 100
+        return quantize(percentage)
+
+    def _set_surcharge_by_percentage(self, value):
+        self.surcharge_value = self._get_percentage_value(value)
+
+    surcharge_percentage = property(_get_surcharge_by_percentage,
+                                    _set_surcharge_by_percentage,
+                                    doc=(
+        """Sets a surcharge by percentage.
+        Note that surcharge must be added as an absolute value not as a
+        factor like 0.97 = 3 % of discount.
+        The correct form is 'percentage = 3' for a surcharge of 3 %"""
+        ))
 
     #
     # Private API
@@ -566,21 +574,10 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     def get_default_payment_method(self):
         return self.default_method
 
-    @argcheck(GiftCertificateOverpaidSettings)
-    def confirm(self, gift_certificate_settings=None):
-        has_overpaid = gift_certificate_settings is not None
-        if not has_overpaid:
-            self.add_inpayments(self.sale.till)
-            self.confirm_money_payments()
-        self._confirm_gift_certificates()
+    def confirm(self):
+        self.add_inpayments(self.sale.till)
         self._create_fiscal_entries()
-        if gift_certificate_settings is None:
-            return
-        # Here we have the payment method set as gift certificate but there
-        # is an overpaid value to deal with.
-        self._setup_gift_certificate_overpaid_value(gift_certificate_settings)
 
-    #
     # Private API
     #
 
@@ -601,7 +598,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         """
         icms_total = Decimal(0)
         conn = self.get_connection()
-        for item in self.sale.get_products():
+        for item in self.sale.products:
             price = item.price + av_difference
             sellable = item.sellable
             if sellable.tax_constant.tax_type != TaxType.CUSTOM:
@@ -623,25 +620,25 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         iss_total = Decimal(0)
         conn = self.get_connection()
         iss_tax = sysparam(conn).ISS_TAX / Decimal(100)
-        for item in self.sale.get_services():
+        for item in self.sale.services:
             price = item.price + av_difference
             iss_total += iss_tax * (price * item.quantity)
         return iss_total
 
     def _has_iss_entry(self):
         return IssBookEntry.has_entry_by_payment_group(
-                                     self.get_connection(), self)
+            self.get_connection(), self)
 
     def _has_icms_entry(self):
         return IcmsIpiBookEntry.has_entry_by_payment_group(
-                                            self.get_connection(), self)
+            self.get_connection(), self)
 
     def _get_average_difference(self):
         sale = self.sale
-        if not sale.has_items():
-            raise DatabaseInconsistency("Sale orders must have items, which "
-                                        "means products or services or gift "
-                                        "certificates")
+        if not sale.get_items():
+            raise DatabaseInconsistency(
+                "Sale orders must have items, which means products or "
+                "services or gift certificates")
         total_quantity = sale.get_items_total_quantity()
         if not total_quantity:
             raise DatabaseInconsistency("Sale total quantity should never "
@@ -657,43 +654,6 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     def _get_iss_entry(self):
         return IssBookEntry.get_entry_by_payment_group(
                                         self.get_connection(), self)
-
-    def _setup_gift_certificate_overpaid_value(self,
-                                               gift_certificate_settings):
-        regtype = gift_certificate_settings.renegotiation_type
-        overpaid_value = gift_certificate_settings.renegotiation_value
-        number = gift_certificate_settings.gift_certificate_number
-
-        order = self.sale
-        if regtype == GiftCertificateOverpaidSettings.TYPE_RETURN_MONEY:
-            reason = _(u'1/1 Money returned for gift certificate '
-                        'acquittance on sale %04d' % order.id)
-            order.till.add_debit_entry(overpaid_value, reason)
-
-        elif (regtype ==
-              GiftCertificateOverpaidSettings.TYPE_GIFT_CERTIFICATE):
-            sellable_cert = order.add_custom_gift_certificate(overpaid_value,
-                                                              number)
-            sellable_cert.sell()
-
-        else:
-            raise StoqlibError("Invalid type for "
-                               "GiftCertificateOverpaidSettings instance "
-                               "got %s" % regtype)
-
-    def _get_gift_certificates(self):
-        conn = self.get_connection()
-        table = GiftCertificateAdaptToSellable
-        return table.selectBy(groupID=self.id, connection=conn)
-
-    def _confirm_gift_certificates(self):
-        """Update gift certificates of the current sale, setting their
-        status properly.
-        """
-        if not self.default_method == PaymentMethodType.GIFT_CERTIFICATE:
-            return
-        for item in self._get_gift_certificates():
-            item.apply_as_payment_method()
 
     def _create_fiscal_entries(self):
         """A Brazil-specific method
@@ -711,12 +671,12 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         sale = self.sale
         av_difference = self._get_average_difference()
 
-        if sale.has_products():
+        if sale.products:
             icms_total = self._get_icms_total(av_difference)
             self.create_icmsipi_book_entry(sale.cfop, sale.coupon_id,
                                            icms_total)
 
-        if sale.has_services() and sale.service_invoice_number:
+        if sale.services and sale.service_invoice_number:
             iss_total = self._get_iss_total(av_difference)
             self.create_iss_book_entry(sale.cfop,
                                        sale.service_invoice_number,

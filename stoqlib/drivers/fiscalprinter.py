@@ -163,7 +163,7 @@ class CouponPrinter(object):
         sale = Sale.get_last_confirmed(trans)
         if not sale:
             return False
-        sale.cancel(sale.create_sale_return_adapter())
+        sale.return_(sale.create_sale_return_adapter())
 
         trans.commit(close=True)
 
@@ -190,8 +190,7 @@ class CouponPrinter(object):
 
         @returns: True if the coupon has been emitted, False otherwise.
         """
-        products = sale.get_products()
-        if not products:
+        if not sale.products:
             return True
 
         coupon = self.create_coupon(sale)
@@ -199,7 +198,7 @@ class CouponPrinter(object):
             coupon.identify_customer(sale.client.person)
         if not coupon.open():
             return False
-        for product in products:
+        for product in sale.products:
             coupon.add_item(product)
         if not coupon.totalize():
             return False
@@ -226,6 +225,7 @@ class CouponPrinter(object):
     def _update_sintegra_data(self, data):
         if data is None:
             return
+
         trans = new_transaction()
         day = FiscalDayHistory(connection=trans,
                                emission_date=data.opening_date,

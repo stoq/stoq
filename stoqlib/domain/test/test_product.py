@@ -133,7 +133,8 @@ class TestProductHistory(DomainTest):
 
         self.failIf(ProductHistory.selectOneBy(connection=self.trans,
                                                sellable=sellable))
-        sale.confirm_sale()
+        sale.order()
+        sale.confirm()
         prod_hist = ProductHistory.selectOneBy(connection=self.trans,
                                                sellable=sellable)
         self.failUnless(prod_hist)

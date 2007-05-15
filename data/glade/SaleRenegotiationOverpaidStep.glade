@@ -13,6 +13,7 @@
                 <child>
                     <widget class="ProxyLabel" id="header_label">
                         <property name="label" context="yes" translatable="yes">There is %s overpaid.</property>
+                        <property name="model_attribute"></property>
                         <property name="visible">True</property>
                     </widget>
                 </child>
@@ -20,14 +21,14 @@
                     <widget class="GtkTable" id="table1">
                         <property name="border_width">6</property>
                         <property name="column_spacing">6</property>
-                        <property name="n_columns">4</property>
+                        <property name="n_columns">2</property>
                         <property name="n_rows">4</property>
                         <property name="row_spacing">6</property>
                         <property name="visible">True</property>
                         <child>
                             <placeholder/>
                             <packing>
-                                <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                <property name="x_options"></property>
                             </packing>
                         </child>
                         <child>
@@ -42,7 +43,7 @@
                             <packing>
                                 <property name="top_attach">2</property>
                                 <property name="bottom_attach">3</property>
-                                <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                <property name="x_options"></property>
                             </packing>
                         </child>
                         <child>
@@ -54,55 +55,14 @@
                         </child>
                         <child>
                             <widget class="GtkRadioButton" id="certificate_check">
-                                <property name="label" context="yes" translatable="yes"></property>
-                                <property name="visible">True</property>
-                            </widget>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="GtkRadioButton" id="return_check">
-                                <property name="active">False</property>
-                                <property name="group">certificate_check</property>
-                                <property name="label" context="yes" translatable="yes"></property>
-                                <property name="visible">True</property>
-                            </widget>
-                            <packing>
-                                <property name="bottom_attach">4</property>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="ProxyLabel" id="certificate_label">
+                                <property name="is_focus">True</property>
                                 <property name="label" context="yes" translatable="yes">Create a %s with this value.</property>
+                                <property name="use_underline">True</property>
                                 <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
                             </widget>
                             <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
                             </packing>
                         </child>
                         <child>
@@ -112,15 +72,17 @@
                                 <child>
                                     <widget class="ProxyLabel" id="kiwilabel1">
                                         <property name="label" context="yes" translatable="yes">Gift Certificate Barcode:</property>
+                                        <property name="model_attribute">kiwilabel1</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">0.0</property>
+                                        <property name="xpad">22</property>
                                     </widget>
                                 </child>
                                 <child>
                                     <widget class="ProxyEntry" id="certificate_number">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
-                                        <property name="model_attribute">number</property>
+                                        <property name="model_attribute">certificate_number</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
@@ -130,67 +92,35 @@
                             </widget>
                             <packing>
                                 <property name="bottom_attach">2</property>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
                                 <property name="top_attach">1</property>
                             </packing>
                         </child>
                         <child>
                             <widget class="ProxyLabel" id="kiwilabel2">
+                                <property name="model_attribute">kiwilabel2</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">3</property>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
                                 <property name="top_attach">2</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyLabel" id="labelx">
+                            <widget class="GtkRadioButton" id="return_check">
+                                <property name="active">False</property>
+                                <property name="group">certificate_check</property>
                                 <property name="label" context="yes" translatable="yes">Return the value in money</property>
                                 <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">4</property>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
                                 <property name="top_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
                             </packing>
                         </child>
                     </widget>
@@ -201,6 +131,7 @@
                 </child>
                 <child>
                     <widget class="ProxyLabel" id="kiwilabel4">
+                        <property name="model_attribute"></property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
