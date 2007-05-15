@@ -36,17 +36,17 @@ from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.parameters import sysparam
-from stoqlib.exceptions import (StockError, SellError, DatabaseInconsistency,
-                                StoqlibError)
-from stoqlib.domain.person import Person
-from stoqlib.domain.stock import AbstractStockItem
 from stoqlib.domain.base import Domain, ModelAdapter
-from stoqlib.domain.sellable import (ASellable, ASellableItem,
-                                     SellableView)
+from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (ISellable, IStorable, IContainer,
                                        IDelivery, IBranch)
+from stoqlib.domain.sellable import (ASellable, ASellableItem,
+                                     SellableView)
+from stoqlib.domain.stock import AbstractStockItem
+from stoqlib.exceptions import (StockError, SellError, DatabaseInconsistency,
+                                StoqlibError)
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.parameters import sysparam
 
 _ = stoqlib_gettext
 
@@ -96,6 +96,7 @@ class ProductSupplierInfo(Domain):
     def get_name(self):
         return self.supplier.get_description()
 
+
 class ProductRetentionHistory(Domain):
     """Class responsible to store information about product's retention."""
 
@@ -109,6 +110,7 @@ class Product(Domain):
 
     suppliers = MultipleJoin('ProductSupplierInfo')
     image = BLOBCol(default='')
+
     #
     # Facet hooks
     #
@@ -338,6 +340,7 @@ class ProductStockItem(AbstractStockItem):
     _inheritable = False
     storable = ForeignKey('ProductAdaptToStorable')
 
+
 #
 # Adapters
 #
@@ -351,6 +354,7 @@ class ProductAdaptToSellable(ASellable):
     sellableitem_table = ProductSellableItem
 
 Product.registerFacet(ProductAdaptToSellable, ISellable)
+
 
 class ProductAdaptToStorable(ModelAdapter):
     """A product implementation as a storable facet."""
