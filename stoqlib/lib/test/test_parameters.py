@@ -29,7 +29,6 @@
 from decimal import Decimal
 
 from stoqlib.lib.parameters import sysparam
-from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.fiscal import IssBookEntry
 from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        ISalesPerson, IClient,
@@ -43,7 +42,6 @@ from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.service import ServiceAdaptToSellable
-from stoqlib.domain.till import Till
 from stoqlib.exceptions import PaymentError, StockError
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -61,12 +59,10 @@ class TestParameter(DomainTest):
         client = person.addFacet(IClient, connection=self.trans)
         self.branch = person.addFacet(IBranch, connection=self.trans)
 
-        till = Till(connection=self.trans,
-                    station=get_current_station(self.trans))
         self.sale = Sale(coupon_id=123, client=client,
                          cfop=self.sparam.DEFAULT_SALES_CFOP,
                          salesperson=self.salesperson,
-                         till=till, connection=self.trans)
+                         connection=self.trans)
 
         self.storable = self.create_storable()
 
@@ -227,14 +223,12 @@ class TestParameter(DomainTest):
     def testDefaultSalesCFOP(self):
         self._create_examples()
         param = self.sparam.DEFAULT_SALES_CFOP
-        till = Till(connection=self.trans,
-                    station=get_current_station(self.trans))
         sale = Sale(coupon_id=123, salesperson=self.salesperson,
-                    till=till, connection=self.trans)
+                    connection=self.trans)
         self.assertEqual(sale.cfop, param)
         param = self.sparam.DEFAULT_RECEIVING_CFOP
         sale = Sale(coupon_id=432, salesperson=self.salesperson,
-                    till=till, connection=self.trans, cfop=param)
+                    connection=self.trans, cfop=param)
         self.failIfEqual(sale.cfop, self.sparam.DEFAULT_SALES_CFOP)
 
     def testDefaultReturnSalesCFOP(self):
