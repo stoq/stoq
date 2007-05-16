@@ -42,6 +42,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.reporting.payment import PaymentPayableReport
+from stoqlib.reporting.payment_receipt import PaymentReceipt
 
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.payable.view import PayableView
@@ -64,6 +65,7 @@ class PayableApp(SearchableAppWindow):
         self._setup_widgets()
         self._update_widgets()
         self.pay_order_button.set_sensitive(False)
+        self.receipt_button.set_sensitive(False)
         self.results.connect('has-rows', self._has_rows)
 
     #
@@ -145,6 +147,20 @@ class PayableApp(SearchableAppWindow):
                    view.status == Payment.STATUS_PENDING
                    for view in payable_views)
 
+    def _are_paid(self, payable_views):
+        """
+        Determines if a list of payables_views are paid.
+        To do so they must meet the following conditions:
+          - Be in the same order
+          - The payment status needs to be set to PAID
+        """
+        if not payable_views:
+            return False
+
+        purchase = payable_views[0].purchase
+        return all(view.purchase == purchase and
+                   view.payment.is_paid() for view in payable_views)
+
     def _same_order(self, payable_views):
         """
         Determines if a list of payable_views are in the same order
@@ -191,6 +207,13 @@ class PayableApp(SearchableAppWindow):
         self.pay_order_button.set_sensitive(self._same_order(selected))
         self.pay_order_button.set_sensitive(self._can_pay(selected))
         self.print_button.set_sensitive(bool(self.results))
+        self.receipt_button.set_sensitive(self._are_paid(selected))
 
     def on_print_button__clicked(self, button):
         print_report(PaymentPayableReport, list(self.results))
+
+    def on_receipt_button__clicked(self, button):
+        payment_views = self.results.get_selected_rows()
+        payments = [v.payment for v in payment_views]
+        print_report(PaymentReceipt, payments=payments,
+                     purchase=payment_views[0].purchase)
