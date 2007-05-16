@@ -163,16 +163,6 @@ class Sale(Domain):
     #
 
     @classmethod
-    def get_available_sales(cls, conn, till):
-        """Returns a list of all available sales for a given
-        till operation
-
-        @param conn: a Transaction sqlobject instance
-        @param till: a Till instance
-        """
-        return cls.selectBy(till=till, connection=conn)
-
-    @classmethod
     def get_status_name(cls, status):
         if not status in cls.statuses:
             raise DatabaseInconsistency("Invalid status %d" % status)

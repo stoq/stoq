@@ -39,10 +39,8 @@ from stoqlib.database.columns import PriceCol
 from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station)
 from stoqlib.domain.base import Domain
-from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.station import BranchStation
-from stoqlib.domain.interfaces import (IPaymentGroup,
-                                       IOutPayment, IInPayment)
+from stoqlib.domain.interfaces import IOutPayment, IInPayment
 from stoqlib.exceptions import TillError
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -203,13 +201,6 @@ class Till(Domain):
                            _(u'Amount removed from Till on %s' %
                              self.opening_date.strftime('%x')))
 
-        for sale in self.get_unconfirmed_sales():
-            group = IPaymentGroup(sale)
-
-            # FIXME: Move this to payment itself
-            for payment in group.get_items():
-                payment.status = Payment.STATUS_PENDING
-
         self.closing_date = datetime.datetime.now()
         self.final_cash_amount = self.get_balance()
         self.status = Till.STATUS_CLOSED
@@ -260,17 +251,6 @@ class Till(Domain):
                          value=abs(value),
                          till=self,
                          connection=self.get_connection())
-
-    def get_unconfirmed_sales(self):
-        """
-        Fetches a list of all sales which are not confirmed
-
-        @returns: a list of L{stoqlib.domain.sale.Sale} objects
-        """
-        from stoqlib.domain.sale import Sale
-        sales = Sale.get_available_sales(self.get_connection(), self)
-        return [sale for sale in sales
-                         if sale.status != Sale.STATUS_CONFIRMED]
 
     def needs_closing(self):
         """
