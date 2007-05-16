@@ -138,13 +138,6 @@ class TestSale(DomainTest):
         sale.remove_item(item)
         self.assertEqual(sale.get_items().count(), 0)
 
-    def testGetAvailableSales(self):
-        sale = self.create_sale()
-        sale.set_valid()
-        res = Sale.get_available_sales(conn=self.trans, till=sale.till)
-        self.assertEqual(res.count(), 1)
-    testGetAvailableSales.todo = "Global Till issue"
-
     def test_get_status_name(self):
         sale = self.create_sale()
         self.failUnlessRaises(TypeError,

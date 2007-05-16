@@ -81,8 +81,8 @@ def get_all_products(trans):
     return list(result)
 
 def _create_sale(trans, open_date, status, salesperson, client, coupon_id,
-                 product, installments_number, till):
-    sale = Sale(till=till, client=client, status=status,
+                 product, installments_number):
+    sale = Sale(client=client, status=status,
                 open_date=open_date, coupon_id=coupon_id,
                 salesperson=salesperson,
                 cfop=sysparam(trans).DEFAULT_SALES_CFOP,
@@ -147,7 +147,7 @@ def create_sales():
                                                       product_list,
                                                       installments_numbers)):
         _create_sale(trans, open_date, status, salesperson, client, index,
-                     product, installments_number, till)
+                     product, installments_number)
 
     till.close_till()
 

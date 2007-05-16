@@ -29,7 +29,6 @@ from stoqdrivers.exceptions import (CouponOpenError, DriverError,
 
 from stoqlib.database.runtime import (new_transaction, get_current_station,
                                       finish_transaction)
-from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.drivers.fiscalprinter import (
     CouponPrinter, FiscalCoupon, get_fiscal_printer_settings_by_station)
@@ -122,19 +121,6 @@ class FiscalPrinterHelper(CouponPrinter):
         if not model:
             finish_transaction(trans, model)
             return
-
-        opened_sales = Sale.selectBy(status=Sale.STATUS_INITIAL,
-                                     connection=trans)
-        if opened_sales:
-            # A new till object to "store" the sales that weren't
-            # confirmed. Note that this new till operation isn't
-            # opened yet, but it will be considered when opening a
-            # new operation
-            branch_station = opened_sales[0].till.station
-            new_till = Till(connection=trans,
-                            station=branch_station)
-            for sale in opened_sales:
-                sale.till = new_till
 
         value = 0
         if model and model.value > 0:

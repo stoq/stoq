@@ -116,8 +116,6 @@ class Till(Domain):
 
         till = cls.selectOne(AND(cls.q.status == Till.STATUS_OPEN,
                                  cls.q.stationID == BranchStation.q.id,
-                                 # Bug 2978: Empty till objects are sometimes created
-                                 cls.q.opening_date != None,
                                  BranchStation.q.branchID == branch.id),
                              connection=conn)
 
@@ -174,10 +172,6 @@ class Till(Domain):
                 raise TillError(_("Previous till was not closed"))
             elif last_till.opening_date.date() == today:
                 raise TillError(_("A till has already been opened today"))
-
-            # FIXME: Move to sale.confirm()
-            for sale in last_till.get_unconfirmed_sales():
-                sale.till = self
 
             initial_cash_amount = last_till.final_cash_amount
         else:

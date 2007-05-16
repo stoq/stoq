@@ -198,8 +198,10 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     def set_method(self, method):
         self.default_method = method
 
-    def add_inpayments(self, till):
+    def add_inpayments(self):
         from stoqlib.domain.payment.methods import MoneyPM
+        conn = self.get_connection()
+        till = Till.get_current(conn)
 
         payment_count = self.get_items().count()
         if not payment_count:
