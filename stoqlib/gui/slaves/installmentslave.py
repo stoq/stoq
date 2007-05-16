@@ -33,6 +33,8 @@ from kiwi import ValueUnset
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.sale import Sale
 
 _ = stoqlib_gettext
 
@@ -75,9 +77,11 @@ class _ConfirmationModel(object):
         return value
 
 class _SaleConfirmationModel(_ConfirmationModel):
-    def __init__(self, payments):
+    def __init__(self, payments, sale):
+        if not isinstance(sale, Sale):
+            raise TypeError("sale must be a Sale")
         _ConfirmationModel.__init__(self, payments)
-        self._sale = payments[0].group.get_adapted()
+        self._sale = sale
         self.open_date = self._sale.open_date.date()
 
     def get_order_number(self):
@@ -90,6 +94,8 @@ class _SaleConfirmationModel(_ConfirmationModel):
 
 class _PurchaseConfirmationModel(_ConfirmationModel):
     def __init__(self, payments, purchase):
+        if not isinstance(purchase, PurchaseOrder):
+            raise TypeError("purchase must be a PurchaseOrder")
         _ConfirmationModel.__init__(self, payments)
         self._purchase = purchase
         self.open_date = purchase.open_date.date()
@@ -162,7 +168,8 @@ class _InstallmentConfirmationSlave(BaseEditor):
     #
 
     def create_model(self, conn):
-        return _SaleConfirmationModel(self._payments)
+        return _SaleConfirmationModel(self._payments,
+                                      self._payments[0].group.get_adapted())
 
     def setup_proxies(self):
         self._proxy = self.add_proxy(
