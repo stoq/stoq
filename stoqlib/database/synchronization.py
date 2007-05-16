@@ -38,6 +38,7 @@ from dateutil.parser import parse
 from sqlobject import SQLObjectNotFound
 
 from stoqlib.database.admin import create_base_schema
+from stoqlib.database.database import dump_table
 from stoqlib.database.interfaces import (ICurrentBranchStation, ICurrentBranch,
                                          IDatabaseSettings)
 from stoqlib.database.policy import get_policy_by_name
@@ -371,29 +372,16 @@ class SynchronizationService(XMLRPCService):
     xmlrpc_sql_finish = sql_finish
     xmlrpc_quit = quit
 
-DUMP = "pg_dump -E UTF-8 -a -d -h %(address)s -p %(port)s -t %%s %(dbname)s"
-
 class SynchronizationClient(object):
     def __init__(self, hostname, port):
         self._commit = True
         log.info('Connecting to %s:%d' % (hostname, port))
         self.proxy = ServerProxy("http://%s:%d" % (hostname, port))
 
-        settings = get_utility(IDatabaseSettings)
-        self._pgdump_cmd = DUMP % dict(address=settings.address,
-                                       port=settings.port,
-                                       dbname=settings.dbname)
-
-    def _pg_dump_table(self, table):
-        cmd = self._pgdump_cmd % table.sqlmeta.table
-        log.info('executing %s' % cmd)
-        return subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-                                env=dict(LANG='C'))
-
     def _dump_tables(self, tables):
         combined = ''
         for table in tables:
-            proc = self._pg_dump_table(table)
+            proc = dump_table(table.sqlmeta.table)
             # This is kind of tricky, only send data when we reached CHUNKSIZE,
             # it saves resources since rpc calls can be expensive
             while True:
