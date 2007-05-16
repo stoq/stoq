@@ -99,14 +99,14 @@ def execute_sql(filename):
         #    an error
         cmd = ("psql -n -h %(address)s -U %(username)s "
                "-p %(port)s %(dbname)s -q "
-               "--variable ON_ERROR_STOP= -f \"%(schema)s\"")% dict(
+               "--variable ON_ERROR_STOP= -f \"%(schema)s\"") % dict(
             address=settings.address,
             username=settings.username,
             port=settings.port,
             dbname=settings.dbname,
             schema='-')
 
-        log.debug('sql_prepare: executing %s' % cmd)
+        log.debug('executing %s' % cmd)
         proc = subprocess.Popen(cmd, shell=True,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE)
@@ -120,6 +120,33 @@ def execute_sql(filename):
         data = data.replace('id serial', 'id bigserial')
         proc.stdin.write(data)
         proc.stdin.close()
+
+        return proc.wait()
+    else:
+        raise NotImplementedError(settings.rdbms)
+
+def dump_database(filename):
+    """
+    Dump the contents of the current database
+    @param filename: filename to write the database dump to
+    """
+    settings = get_utility(IDatabaseSettings)
+
+    log.info("Dumping database to %s" % filename)
+
+    if settings.rdbms == 'postgres':
+        cmd = ("pg_dump -E UTF-8 -h %(address)s -U %(username)s "
+               "-p %(port)s %(dbname)s") % dict(
+            address=settings.address,
+            username=settings.username,
+            port=settings.port,
+            dbname=settings.dbname,
+            )
+        if filename:
+            cmd += ' -f ' + filename
+
+        log.debug('executing %s' % cmd)
+        proc = subprocess.Popen(cmd, shell=True)
 
         return proc.wait()
     else:
