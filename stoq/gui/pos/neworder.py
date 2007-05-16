@@ -29,7 +29,6 @@ from stoqlib.database.runtime import get_current_user
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.till import Till
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (IClient, ISalesPerson, IIndividual,
                                        ICompany)
@@ -111,11 +110,10 @@ class NewOrderEditor(BaseEditor):
         return _('New Order')
 
     def create_model(self, conn):
-        till = Till.get_current(conn)
         user = get_current_user(conn)
         salesperson = ISalesPerson(user.person)
         cfop = sysparam(conn).DEFAULT_SALES_CFOP
-        return Sale(connection=conn, till=till, salesperson=salesperson,
+        return Sale(connection=conn, salesperson=salesperson,
                     cfop=cfop, coupon_id=None)
 
     def setup_proxies(self):
