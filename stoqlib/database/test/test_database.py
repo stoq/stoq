@@ -25,7 +25,7 @@
 
 import unittest
 
-from stoqlib.database.database import finish_transaction, rollback_and_begin
+from stoqlib.database.runtime import finish_transaction, rollback_and_begin
 
 class FakeTransaction:
     def __init__(self):

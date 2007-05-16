@@ -31,7 +31,7 @@ from kiwi.decorators import signal_block
 from kiwi.datatypes import ValidationError
 from kiwi.ui.delegates import GladeSlaveDelegate
 
-from stoqlib.database.database import finish_transaction
+from stoqlib.database.runtime import finish_transaction
 from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.exceptions import StoqlibError
 from stoqlib.gui.base.dialogs import run_dialog

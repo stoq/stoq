@@ -32,7 +32,7 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_phone_number, raw_phone_number
-from stoqlib.database.database import rollback_and_begin
+from stoqlib.database.runtime import rollback_and_begin
 from stoqlib.domain.person import Person
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
