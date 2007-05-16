@@ -46,11 +46,11 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+log = Logger('stoqlib.till')
+
 #
 # Domain Classes
 #
-
-log = Logger('stoqlib.till')
 
 class Till(Domain):
     """
@@ -218,11 +218,7 @@ class Till(Domain):
         else:
             raise AssertionError(payment)
 
-        return TillEntry(description=payment.description,
-                         payment=payment,
-                         value=value,
-                         till=self,
-                         connection=self.get_connection())
+        return self._add_till_entry(value, payment.description, payment)
 
     def add_debit_entry(self, value, reason=u""):
         """
@@ -232,11 +228,7 @@ class Till(Domain):
         @returns: till entry representing the added debit
         @rtype: L{TillEntry}
         """
-        return TillEntry(description=reason,
-                         payment=None,
-                         value=-abs(value),
-                         till=self,
-                         connection=self.get_connection())
+        return self._add_till_entry(-abs(value), reason)
 
     def add_credit_entry(self, value, reason=u""):
         """
@@ -246,11 +238,7 @@ class Till(Domain):
         @returns: till entry representing the added credit
         @rtype: L{TillEntry}
         """
-        return TillEntry(description=reason,
-                         payment=None,
-                         value=abs(value),
-                         till=self,
-                         connection=self.get_connection())
+        return self._add_till_entry(abs(value), reason)
 
     def needs_closing(self):
         """
@@ -258,16 +246,14 @@ class Till(Domain):
         we can do any further fiscal operations.
         @returns: True if it needs to be closed, otherwise false
         """
-        if self.status != Till.STATUS_CLOSED:
-            if not self.opening_date:
-                return False
+        if self.status != Till.STATUS_OPEN:
+            return False
 
-            # Verify that the currently open till was opened today
-            open_date = self.opening_date.date()
-            if open_date != datetime.date.today():
-                return True
+        # Verify that the currently open till was opened today
+        if self.opening_date.date() == datetime.date.today():
+            return False
 
-        return False
+        return True
 
     def get_balance(self):
         """
@@ -327,6 +313,14 @@ class Till(Domain):
 
         if results:
             return results[-1]
+
+    def _add_till_entry(self, value, description, payment=None):
+        return TillEntry(value=value,
+                         description=description,
+                         payment=payment,
+                         till=self,
+                         connection=self.get_connection())
+
 
 class TillEntry(Domain):
     """
