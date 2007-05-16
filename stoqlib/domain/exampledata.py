@@ -280,8 +280,7 @@ class ExampleCreator(object):
             till = self.create_till()
             till.open_till()
         salesperson = self.create_sales_person()
-        return Sale(till=till,
-                    coupon_id=0,
+        return Sale(coupon_id=0,
                     open_date=datetime.datetime.now(),
                     salesperson=salesperson,
                     cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,

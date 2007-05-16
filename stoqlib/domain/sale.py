@@ -37,7 +37,8 @@ from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol
-from stoqlib.database.runtime import get_current_user
+from stoqlib.database.runtime import (get_current_user,
+                                      get_current_branch)
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.fiscal import (IssBookEntry, IcmsIpiBookEntry,
                                    AbstractFiscalBookEntry)
@@ -132,7 +133,6 @@ class Sale(Domain):
     status = IntCol(default=STATUS_INITIAL)
     client = ForeignKey('PersonAdaptToClient', default=None)
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
-    till = ForeignKey('Till')
     open_date = DateTimeCol(default=datetime.datetime.now)
     confirm_date = DateTimeCol(default=None)
     close_date = DateTimeCol(default=None)
@@ -260,8 +260,8 @@ class Sale(Domain):
     def confirm(self):
         assert self.can_confirm()
 
-        branch = self.branch
         conn = self.get_connection()
+        branch = get_current_branch(conn)
         for item in self.get_items():
             if isinstance(item, ProductSellableItem):
                 ProductHistory.add_sold_item(conn, branch, item)
@@ -288,7 +288,8 @@ class Sale(Domain):
     def cancel(self):
         assert self.can_cancel()
 
-        branch = self.branch
+        conn = self.get_connection()
+        branch = get_current_branch(conn)
         for item in self.get_items():
             item.cancel(branch)
 
@@ -367,10 +368,8 @@ class Sale(Domain):
 
     def get_clone(self):
         conn = self.get_connection()
-        till = Till.get_current(conn)
-        assert till
         return Sale(client_role=self.client_role, client=self.client,
-                    cfop=self.cfop, till=till, coupon_id=None,
+                    cfop=self.cfop, coupon_id=None,
                     salesperson=self.salesperson, connection=conn)
 
     #
@@ -472,10 +471,6 @@ class Sale(Domain):
     @property
     def order_number(self):
         return self.id
-
-    @property
-    def branch(self):
-        return self.till.station.branch
 
     @property
     def products(self):
@@ -582,7 +577,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         return self.default_method
 
     def confirm(self):
-        self.add_inpayments(self.sale.till)
+        self.add_inpayments()
         self._create_fiscal_entries()
 
     def cancel(self, renegotiation):

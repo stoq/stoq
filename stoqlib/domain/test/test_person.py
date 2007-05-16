@@ -31,7 +31,6 @@ from kiwi.datatypes import currency
 from sqlobject.main import SQLObjectMoreThanOneResultError
 from sqlobject.sqlbuilder import AND
 
-from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
@@ -58,7 +57,6 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.domain.till import Till
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -334,15 +332,13 @@ class TestClient(_PersonFacetTest, DomainTest):
         branches = PersonAdaptToBranch.select(connection=self.trans)
         assert branches
         branch = branches[0]
-        till = Till(connection=self.trans,
-                    station=get_current_station(self.trans))
         people = PersonAdaptToSalesPerson.select(connection=self.trans)
         assert people
         salesperson = people[0]
         count_sales = client.get_client_sales().count()
         date = datetime.date(2050, 11, 11)
         new_sale = Sale(coupon_id=123, client=client, cfop=cfop,
-                        till=till, salesperson=salesperson,
+                        salesperson=salesperson,
                         connection=self.trans,
                         open_date=date)
         new_sale.set_valid()
