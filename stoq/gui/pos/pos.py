@@ -37,8 +37,8 @@ from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
 from stoqdrivers.enum import UnitType
 from stoqlib.exceptions import StoqlibError, TillError
-from stoqlib.database.database import rollback_and_begin, finish_transaction
-from stoqlib.database.runtime import new_transaction, get_current_user
+from stoqlib.database.runtime import (new_transaction, get_current_user,
+                                      rollback_and_begin, finish_transaction)
 from stoqlib.domain.interfaces import IDelivery, IStorable, ISalesPerson
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable

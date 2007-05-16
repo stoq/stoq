@@ -32,8 +32,8 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.widgets.list import Column
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.database.database import finish_transaction
-from stoqlib.database.runtime import new_transaction, get_current_branch
+from stoqlib.database.runtime import (new_transaction, get_current_branch,
+                                      finish_transaction)
 from stoqlib.domain.interfaces import IBranch, IStorable
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import ProductAdaptToSellable
