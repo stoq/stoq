@@ -210,6 +210,17 @@ class StoqCommandHandler:
                          action='store_true',
                          dest='dry')
 
+    def cmd_dump(self, options, output):
+        from stoqlib.database.database import dump_database
+        from stoqlib.database.runtime import get_connection
+        self._read_config(options)
+
+        if output == '-':
+            output = None
+        conn = get_connection()
+        dump_database(output)
+
+
 def main(args):
     pname = args[0]
     args = args[1:]
