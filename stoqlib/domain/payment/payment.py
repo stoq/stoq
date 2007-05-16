@@ -261,7 +261,26 @@ class Payment(Domain):
         """
         return self.status == Payment.STATUS_PREVIEW
 
+    @property
+    def bank(self):
+        """
+        Get a BankAccount instance
+        @returns: a BankAccount instance, if the payment method does not
+        provide a bank account.
+        """
+        if self.method.name == 'check':
+            data = self.method.get_check_data_by_payment(self)
+            return data.bank_data
 
+    def get_paid_date_string(self):
+        """
+        Get a paid date string
+        @returns: the paid date string or PAID DATE if the payment isn't
+        paid
+        """
+        if self.paid_date:
+            return self.paid_date.date().strftime('%x')
+        return _('NOT PAID')
 
 #
 # Payment adapters

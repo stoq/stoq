@@ -151,6 +151,12 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         max = method.get_max_installments_number()
         self.createOutPayments(max + 1)
 
+    def testBank(self):
+        method = self.method_type.selectOne(connection=self.trans)
+        group = IPaymentGroup(self.create_purchase_order())
+        payment = method.create_outpayment(group, Decimal(10))
+        self.failIf(payment.get_adapted().bank)
+
 class TestAPaymentMethod(DomainTest, _TestPaymentMethod):
     method_type = CheckPM
     enum = PaymentMethodType.CHECK
@@ -193,6 +199,12 @@ class TestCheckPM(DomainTest, _TestPaymentMethodsBase):
         method = self.method_type.selectOne(connection=self.trans)
         check_data = method.get_check_data_by_payment(payment.get_adapted())
         self.failUnless(check_data)
+
+    def testBank(self):
+        method = self.method_type.selectOne(connection=self.trans)
+        group = IPaymentGroup(self.create_purchase_order())
+        payment = method.create_outpayment(group, Decimal(10))
+        self.failUnless(payment.get_adapted().bank)
 
 class TestBillPM(DomainTest, _TestPaymentMethodsBase):
     method_type = BillPM

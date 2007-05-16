@@ -131,3 +131,18 @@ class TestPayment(DomainTest):
         self.failIf(payment.is_paid())
         payment.pay()
         self.failUnless(payment.is_paid())
+
+    def testGetPaidDateString(self):
+        method = CheckPM.selectOne(connection=self.trans)
+        payment = Payment(value=currency(100),
+                          due_date=datetime.datetime.now(),
+                          method=method,
+                          group=None,
+                          till=None,
+                          destination=None,
+                          connection=self.trans)
+        today = datetime.date.today().strftime('%x')
+        self.failIf(payment.get_paid_date_string() == today)
+        payment.set_pending()
+        payment.pay()
+        self.failUnless(payment.get_paid_date_string() == today)

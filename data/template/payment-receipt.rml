@@ -1,0 +1,127 @@
+<%
+##
+## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+##
+## Author(s):       George Y. Kussumoto      <george@async.com.br>
+##
+%>
+<%page args="title, payments, order, document"/>
+<%include file="header.rml"/>
+<%
+  payer = order.branch.person
+  drawner = order.supplier.person
+  value = sum([payment.value for payment in payments])
+  payment_description = ", ".join([payment.description
+                                        for payment in payments])
+%>
+<%include file="receipt-style.rml"/>
+<story>
+    <blockTable style="6cols_tableStyle"
+                colWidths="7.3cm, 0cm, 3cm, 3.3cm, 2.5cm, 3.5cm">
+      <tr>
+        <td>RECEIPT</td>
+        <td></td>
+        <td>NUMBER:</td>
+        <td>${order.id}</td>
+        <td>VALUE:</td>
+        <td>${value}</td>
+      </tr>
+    </blockTable>
+    <spacer length="0.5cm"/>
+    <blockTable style="2cols_tableStyle" colWidths="6cm, 13.6cm">
+      <tr>
+        <td>I/WE RECEIVED FROM</td>
+        <td>${payer.name}</td>
+      </tr>
+    </blockTable>
+    <blockTable style="2cols_tableStyle" colWidths="3.3cm, 16.3cm">
+      <tr>
+         <td>ADDRESS:</td>
+         <td>${payer.get_address_string()}</td>
+      </tr>
+    </blockTable>
+    <blockTable style="2cols_tableStyle" colWidths="6cm, 13.6cm">
+      <tr>
+        <td>THE IMPORTANCE OF:</td>
+        <td></td>
+      </tr>
+    </blockTable>
+    <blockTable style="2cols_tableStyle" colWidths="4.5cm, 15.1cm">
+      <tr>
+        <td>REFERRING TO:</td>
+        ## para: wraps the string
+        <td><para style="para_style">${payment_description}</para></td>
+      </tr>
+    </blockTable>
+% for payment in payments:
+% if payment.method.name == 'check':
+    <blockTable style="2cols_tableStyle" colWidths="7cm, 12.6cm">
+      <tr>
+        <td></td>
+        <td>CHECK PAYMENT</td>
+      </tr>
+    </blockTable>
+    <blockTable style="6cols_tableStyle"
+                colWidths="3cm, 3.6cm, 2.2cm, 4.2cm, 3cm, 3.6cm">
+      <tr>
+        <td>NUMBER:</td>
+        <td>${payment.bank.account or ""}</td>
+        <td>BANK:</td>
+        <td></td>
+        <td>AGENCY:</td>
+        <td></td>
+      </tr>
+    </blockTable>
+% endif
+% endfor
+    <spacer length="0.5cm"/>
+    <blockTable style="2cols_tableStyle" colWidths="3.3cm, 16.3cm">
+      <tr>
+        <td>DRAWNER:</td>
+        <td>${drawner.name}</td>
+      </tr>
+    </blockTable>
+    <blockTable style="2cols_tableStyle" colWidths="3.3cm, 16.3cm">
+      <tr>
+        <td>ADDRESS:</td>
+        <td>${drawner.get_address_string()}</td>
+      </tr>
+    </blockTable>
+    <blockTable style="4cols_tableStyle"
+                colWidths="4cm, 6cm, 2cm, 7.6cm">
+      <tr>
+        <td>CPF/CNPJ/RG:</td>
+        <td>${document}</td>
+        <td>DATE:</td>
+        <td>${payment.get_paid_date_string()}</td>
+      </tr>
+    </blockTable>
+    <blockTable style="2cols_tableStyle" colWidths="3.5cm, 16.1cm">
+      <tr>
+        <td>SIGNATURE:</td>
+        <td></td>
+      </tr>
+    </blockTable>
+    <spacer length="0.5cm"/>
+    <!-- breaks if the next receipt do not fit in page
+    <hr width="19.6cm"/>
+    <condPageBreak height="12cm"/>
+    -->
+</story>
+<%include file="footer.rml"/>
