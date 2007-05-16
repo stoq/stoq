@@ -68,3 +68,11 @@ class PayableView(Viewable):
     @property
     def payment(self):
         return Payment.get(self.id)
+
+    @property
+    def due_date(self):
+        return self.payment.due_date
+
+    @property
+    def paid_date(self):
+        return self.payment.paid_date
