@@ -155,13 +155,11 @@ class Till(Domain):
         if self.status == Till.STATUS_OPEN:
             raise TillError(_('Till is already open'))
 
-        conn = self.get_connection()
-
         # Make sure that the till has not been opened today
         today = datetime.date.today()
         if Till.select(AND(Till.q.opening_date >= today,
                            Till.q.stationID == self.station.id),
-                       connection=conn):
+                       connection=self.get_connection()):
             raise TillError(_("A till has already been opened today"))
 
         last_till = self._get_last_closed_till()
@@ -249,7 +247,7 @@ class Till(Domain):
         if self.status != Till.STATUS_OPEN:
             return False
 
-        # Verify that the currently open till was opened today
+        # Verify that the till wasn't opened today
         if self.opening_date.date() == datetime.date.today():
             return False
 
