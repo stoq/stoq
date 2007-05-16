@@ -204,7 +204,7 @@ class POSApp(AppWindow):
 
         self.TillOpen.set_sensitive(till_open and self.sale is None)
         self.TillClose.set_sensitive(till_close and self.sale is None)
-        self.CancelLastOrder.set_sensitive(till_close and self.sale is None)
+        self.CancelLastDocument.set_sensitive(till_close and self.sale is None)
         has_sellables = len(self.sellables) >= 1
         self.set_sensitive((self.checkout_button, self.remove_item_button,
                             self.PrintOrder, self.NewDelivery,
@@ -445,17 +445,17 @@ class POSApp(AppWindow):
 
         return True
 
-    def _cancel_last_order(self):
+    def _cancel_last_document(self):
         if yesno(
-            _(u"Do you really want to cancel the last order?"),
-            gtk.RESPONSE_NO, _(u"Not now"), _("Cancel Last Order")):
+            _(u"Do you really want to cancel the last document?"),
+            gtk.RESPONSE_NO, _(u"Not now"), _("Cancel Last Document")):
             return
 
         cancelled = self._printer.cancel()
         if not cancelled:
             info(_("Cancelling sale failed, nothing to cancel"))
         else:
-            info(_("Sale was cancelled"))
+            info(_("Document was cancelled"))
 
     def _summarize(self):
         self._printer.summarize()
@@ -600,8 +600,8 @@ class POSApp(AppWindow):
     def on_TillOpen__activate(self, action):
         self._open_till()
 
-    def on_CancelLastOrder__activate(self, action):
-        self._cancel_last_order()
+    def on_CancelLastDocument__activate(self, action):
+        self._cancel_last_document()
 
     def on_Summary__activate(self, action):
         self._summarize()
