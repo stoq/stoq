@@ -26,6 +26,7 @@
 from stoqlib.domain.payment.payment import Payment, PaymentAdaptToOutPayment
 from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderAdaptToPaymentGroup
+from stoqlib.domain.sale import Sale, SaleAdaptToPaymentGroup, SaleView
 
 from sqlobject.sqlbuilder import LEFTJOINOn, INNERJOINOn
 from sqlobject.viewable import Viewable
@@ -40,6 +41,7 @@ class PayableView(Viewable):
         paid_date=Payment.q.paid_date,
         value=Payment.q.value,
         purchase_id=PurchaseOrder.q.id,
+        sale_id=Sale.q.id,
         )
 
     joins = [
@@ -49,6 +51,10 @@ class PayableView(Viewable):
                    PurchaseOrderAdaptToPaymentGroup.q.id == Payment.q.groupID),
         LEFTJOINOn(None, PurchaseOrder,
                    PurchaseOrder.q.id == PurchaseOrderAdaptToPaymentGroup.q._originalID),
+        LEFTJOINOn(None, SaleAdaptToPaymentGroup,
+                   SaleAdaptToPaymentGroup.q.id == Payment.q.groupID),
+        LEFTJOINOn(None, Sale,
+                   Sale.q.id == SaleAdaptToPaymentGroup.q._originalID),
         LEFTJOINOn(None, PersonAdaptToSupplier,
                     PersonAdaptToSupplier.q.id == PurchaseOrder.q.supplierID),
         LEFTJOINOn(None, Person,
@@ -66,13 +72,11 @@ class PayableView(Viewable):
             return PurchaseOrder.get(self.purchase_id)
 
     @property
+    def sale(self):
+        if self.sale_id:
+            return SaleView.get(self.sale_id)
+
+    @property
     def payment(self):
         return Payment.get(self.id)
 
-    @property
-    def due_date(self):
-        return self.payment.due_date
-
-    @property
-    def paid_date(self):
-        return self.payment.paid_date

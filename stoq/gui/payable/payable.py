@@ -41,6 +41,7 @@ from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.reporting.payment import PaymentPayableReport
 from stoqlib.reporting.payment_receipt import PaymentReceipt
 
@@ -106,8 +107,21 @@ class PayableApp(SearchableAppWindow):
     #
 
     def _show_details(self, payable_view):
-        run_dialog(PurchaseDetailsDialog, self, self.conn,
-                   payable_view.purchase)
+        if payable_view.purchase:
+            run_dialog(PurchaseDetailsDialog, self,
+                       self.conn, payable_view.purchase)
+        elif payable_view.sale:
+            run_dialog(SaleDetailsDialog, self,
+                       self.conn, payable_view.sale)
+        else:
+            raise AssertionError
+
+    def _can_show_details(self, payable_views):
+        """
+        Determines if we can show details for a list of payables
+        """
+        return (self._same_purchase(payable_views) or
+                self._same_sale(payable_views))
 
     def _pay(self, payable_views):
         """
@@ -130,13 +144,13 @@ class PayableApp(SearchableAppWindow):
                 self.results.update(view)
 
         trans.close()
-        self.pay_order_button.set_sensitive(self._can_pay(payable_views))
+        self._update_widgets()
 
     def _can_pay(self, payable_views):
         """
         Determines if a list of payables_views can be paid.
         To do so they must meet the following conditions:
-          - Be in the same order
+          - Be in the same purchase order
           - The payment status needs to be set to PENDING
         """
         if not payable_views:
@@ -153,27 +167,37 @@ class PayableApp(SearchableAppWindow):
         """
         Determines if a list of payables_views are paid.
         To do so they must meet the following conditions:
-          - Be in the same order
+          - Be in the same purchase order
           - The payment status needs to be set to PAID
         """
         if not payable_views:
             return False
 
         purchase = payable_views[0].purchase
+        if purchase is None:
+            return False
         return all(view.purchase == purchase and
                    view.payment.is_paid() for view in payable_views)
 
-    def _same_order(self, payable_views):
-        """
-        Determines if a list of payable_views are in the same order
-        To do so they must meet the following conditions:
-          - Be in the same order
-        """
+    def _same_purchase(self, payable_views):
+        """Determines if a list of payable_views are in the same purchase"""
         if not payable_views:
             return False
 
         purchase = payable_views[0].purchase
+        if purchase is None:
+            return False
         return all(view.purchase == purchase for view in payable_views)
+
+    def _same_sale(self, payable_views):
+        """Determines if a list of payable_views are in the same sale"""
+        if not payable_views:
+            return False
+
+        sale = payable_views[0].sale
+        if sale is None:
+            return False
+        return all(view.sale == sale for view in payable_views)
 
     def _setup_widgets(self):
         self.search.set_summary_label(column='value',
@@ -181,8 +205,12 @@ class PayableApp(SearchableAppWindow):
                                       format='<b>%s</b>')
 
     def _update_widgets(self):
-        has_sales = len(self.results) > 0
-        self.details_button.set_sensitive(has_sales)
+        selected = self.results.get_selected_rows()
+        self.details_button.set_sensitive(self._can_show_details(selected))
+        self.pay_order_button.set_sensitive(self._same_purchase(selected))
+        self.pay_order_button.set_sensitive(self._can_pay(selected))
+        self.print_button.set_sensitive(bool(self.results))
+        self.receipt_button.set_sensitive(self._are_paid(selected))
 
     def _get_status_values(self):
         items = [(value, key) for key, value in Payment.statuses.items()]
@@ -194,22 +222,18 @@ class PayableApp(SearchableAppWindow):
     #
 
     def on_results__row_activated(self, klist, payable_view):
-        self._show_details(payable_view)
+        if self._can_show_details([payable_view]):
+            self._show_details(payable_view)
 
     def on_details_button__clicked(self, button):
-        if len(self.results):
-            if not self.results.get_selected_rows():
-                self.results.select(self.results[0])
-            self._show_details(self.results.get_selected_rows()[0])
+        payable_view = self.results.get_selected_rows()[0]
+        self._show_details(payable_view)
 
     def on_pay_order_button__clicked(self, button):
         self._pay(self.results.get_selected_rows())
 
     def on_results__selection_changed(self, results, selected):
-        self.pay_order_button.set_sensitive(self._same_order(selected))
-        self.pay_order_button.set_sensitive(self._can_pay(selected))
-        self.print_button.set_sensitive(bool(self.results))
-        self.receipt_button.set_sensitive(self._are_paid(selected))
+        self._update_widgets()
 
     def on_print_button__clicked(self, button):
         print_report(PaymentPayableReport, list(self.results))
