@@ -39,7 +39,7 @@ from stoqdrivers.enum import UnitType
 from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.database.runtime import (new_transaction, get_current_user,
                                       rollback_and_begin, finish_transaction)
-from stoqlib.domain.interfaces import IDelivery, IStorable, ISalesPerson
+from stoqlib.domain.interfaces import IDelivery, ISalesPerson
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable
 from stoqlib.domain.person import PersonAdaptToClient
@@ -276,15 +276,6 @@ class POSApp(AppWindow):
 
         if isinstance(sellable, self._product_table):
             adapted = sellable.get_adapted()
-            storable = IStorable(adapted)
-            # XXX Probably we could get rid of this check using a view and
-            # not allowing products without stocks for a certain branch in
-            # the pos item list. Waiting for bug 2339
-            if not storable.has_stock_by_branch(self.sale.branch):
-                msg = _("There is no stock of this product in this branch, "
-                        "please, select another item.")
-                warning(_("Can not sell this product"), msg)
-                return
             # If the sellable has a weight unit specified and we have a scale
             # configured for this station, go and check what the scale says.
             if (sellable and sellable.unit and
