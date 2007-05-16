@@ -171,6 +171,8 @@ class ReceivableApp(SearchableAppWindow):
             return False
 
         sale = receivable_views[0].sale
+        if sale is None:
+            return False
         return all(view.sale == sale and
                    view.status == Payment.STATUS_PENDING
                    for view in receivable_views)

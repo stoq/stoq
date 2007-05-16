@@ -143,6 +143,8 @@ class PayableApp(SearchableAppWindow):
             return False
 
         purchase = payable_views[0].purchase
+        if purchase is None:
+            return False
         return all(view.purchase == purchase and
                    view.status == Payment.STATUS_PENDING
                    for view in payable_views)
