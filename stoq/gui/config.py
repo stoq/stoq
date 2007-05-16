@@ -52,8 +52,7 @@ from kiwi.python import Settable
 from kiwi.ui.dialogs import info
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
 from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME, user_has_usesuper
-from stoqlib.database.database import rollback_and_begin
-from stoqlib.database.runtime import (new_transaction,
+from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
                                       set_current_branch_station)
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.person import Person

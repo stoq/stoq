@@ -36,8 +36,8 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
 from kiwi.ui.widgets.list import Column
 from stoqlib.exceptions import StoqlibError, TillError
-from stoqlib.database.database import rollback_and_begin, finish_transaction
-from stoqlib.database.runtime import new_transaction, get_current_branch
+from stoqlib.database.runtime import (new_transaction, get_current_branch,
+                                      rollback_and_begin, finish_transaction)
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
 from stoqlib.lib.message import yesno

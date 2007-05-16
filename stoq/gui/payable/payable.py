@@ -37,8 +37,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
 from kiwi.ui.widgets.list import Column
-from stoqlib.database.database import finish_transaction
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog

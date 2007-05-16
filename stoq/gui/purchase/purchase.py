@@ -35,8 +35,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
 from kiwi.ui.widgets.list import Column
-from stoqlib.database.database import rollback_and_begin
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_transaction, rollback_and_begin
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch

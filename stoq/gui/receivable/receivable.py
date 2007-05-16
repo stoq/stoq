@@ -38,8 +38,7 @@ from kiwi.python import all
 from kiwi.ui.search import (DateSearchFilter, ComboSearchFilter,
                             DateSearchOption)
 from kiwi.ui.widgets.list import Column
-from stoqlib.database.database import finish_transaction
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import SaleView
 from stoqlib.reporting.payment import ReceivablePaymentReport

@@ -32,8 +32,8 @@ from kiwi.ui.widgets.list import Column
 from kiwi.ui.search import ComboSearchFilter
 from sqlobject.sqlbuilder import AND
 
-from stoqlib.database.database import finish_transaction
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import (get_connection,
+                                      finish_transaction)
 from stoqlib.domain.person import Person, PersonAdaptToUser
 from stoqlib.domain.profile import UserProfile
 from stoqlib.gui.base.columns import ForeignKeyColumn
