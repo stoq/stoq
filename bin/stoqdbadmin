@@ -220,6 +220,13 @@ class StoqCommandHandler:
         conn = get_connection()
         dump_database(output)
 
+    def cmd_restore(self, options, schema):
+        from stoqlib.database.database import execute_sql
+
+        self._read_config(options, register_station=False,
+                          check_schema=False)
+        execute_sql(schema)
+
 
 def main(args):
     pname = args[0]
