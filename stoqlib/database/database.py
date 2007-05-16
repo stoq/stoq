@@ -133,7 +133,8 @@ def dump_database(filename):
 def dump_table(table):
     """
     Dump the contents of a table.
-    Note this does not include the schema itself, just the data
+    Note this does not include the schema itself, just the data.
+    To get the data call stdout.read() on the returned object.
     @param table: table to write
     @param proc: a subprocess.Popen instance
     """
