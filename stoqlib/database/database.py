@@ -57,27 +57,6 @@ def clean_database(dbname):
 #
 
 
-def rollback_and_begin(conn):
-    conn.rollback()
-    conn.begin()
-
-
-def finish_transaction(trans, model):
-    """
-    Encapsulated method for committing/aborting changes in models.
-    @param trans: a transaction
-    @param model: abort if None else commit
-    """
-
-    # Allow false and None
-    if model:
-        trans.commit()
-    else:
-        rollback_and_begin(trans)
-
-    return model
-
-
 def execute_sql(filename):
     """
     Inserts Raw SQL commands into the database read from a file.
@@ -147,7 +126,33 @@ def dump_database(filename):
 
         log.debug('executing %s' % cmd)
         proc = subprocess.Popen(cmd, shell=True)
-
         return proc.wait()
     else:
         raise NotImplementedError(settings.rdbms)
+
+def dump_table(table):
+    """
+    Dump the contents of a table.
+    Note this does not include the schema itself, just the data
+    @param table: table to write
+    @param proc: a subprocess.Popen instance
+    """
+    settings = get_utility(IDatabaseSettings)
+
+    log.info("Dumping table to %s" % table)
+
+    if settings.rdbms == 'postgres':
+        cmd = ("pg_dump -E UTF-8 -h %(address)s -U %(username)s "
+               "-p %(port)s %(dbname)s -t %(table)s -a -d") % dict(
+            address=settings.address,
+            username=settings.username,
+            port=settings.port,
+            dbname=settings.dbname,
+            table=table)
+        log.info('executing %s' % cmd)
+        return subprocess.Popen(cmd, shell=True,
+                                stdout=subprocess.PIPE,
+                                env=dict(LANG='C'))
+    else:
+        raise NotImplementedError(settings.rdbms)
+

@@ -33,8 +33,8 @@ from kiwi.ui.search import ComboSearchFilter, SearchSlaveDelegate
 from kiwi.utils import gsignal
 from sqlobject.main import SQLObject
 
-from stoqlib.database.database import finish_transaction
-from stoqlib.database.runtime import get_connection, new_transaction
+from stoqlib.database.runtime import (get_connection, new_transaction,
+                                      finish_transaction)
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor

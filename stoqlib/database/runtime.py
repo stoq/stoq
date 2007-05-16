@@ -149,11 +149,37 @@ def get_connection():
     return conn
 
 def new_transaction():
+    """
+    @returns: a transaction
+    """
     log.debug('Creating a new transaction in %s()'
               % sys._getframe(1).f_code.co_name)
     _transaction = StoqlibTransaction(get_connection())
     assert _transaction is not None
     return _transaction
+
+def rollback_and_begin(trans):
+    """
+    @param trans: a transaction
+    """
+    trans.rollback()
+    trans.begin()
+
+def finish_transaction(trans, commit):
+    """
+    Encapsulated method for committing/aborting changes in models.
+    @param trans: a transaction
+    @param commit: True for commit, False for rollback_and_begin
+    """
+
+    # Allow False/None
+    if commit:
+        trans.commit()
+    else:
+        rollback_and_begin(trans)
+
+    return commit
+
 
 #
 # User methods

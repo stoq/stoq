@@ -31,7 +31,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.search import DateSearchFilter, Today
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
-from stoqlib.database.database import finish_transaction
+from stoqlib.database.runtime import finish_transaction
 from stoqlib.domain.till import TillEntry
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.base.dialogs import run_dialog

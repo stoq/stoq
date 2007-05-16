@@ -29,7 +29,7 @@ from kiwi.ui.objectlist import Column, ObjectList
 from kiwi.argcheck import argcheck
 from zope.interface import providedBy
 
-from stoqlib.database.database import rollback_and_begin
+from stoqlib.database.runtime import rollback_and_begin
 from stoqlib.domain.base import AbstractModel
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.parameter import ParameterData

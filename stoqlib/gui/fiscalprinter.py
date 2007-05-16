@@ -27,8 +27,8 @@ import gtk
 from stoqdrivers.exceptions import (CouponOpenError, DriverError,
                                     OutofPaperError, PrinterOfflineError)
 
-from stoqlib.database.database import finish_transaction
-from stoqlib.database.runtime import (new_transaction, get_current_station)
+from stoqlib.database.runtime import (new_transaction, get_current_station,
+                                      finish_transaction)
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.drivers.fiscalprinter import (

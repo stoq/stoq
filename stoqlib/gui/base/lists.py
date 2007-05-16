@@ -30,8 +30,7 @@ from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.listdialog import ListDialog
 from kiwi.utils import gsignal
 
-from stoqlib.database.database import finish_transaction
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.exceptions import SelectionError, StoqlibError
 from stoqlib.gui.base.dialogs import (run_dialog, BasicPluggableDialog,
