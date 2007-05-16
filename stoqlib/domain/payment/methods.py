@@ -144,6 +144,7 @@ class APaymentMethod(InheritableModel):
 
     implements(IActive, IDescribable)
 
+    name = ""
     description = None
 
     active_editable = True
@@ -499,6 +500,7 @@ class MoneyPM(APaymentMethod):
 
     # Money payment method must be always available
     active_editable = False
+    name = 'money'
     description = _(u'Money')
 
     _inheritable = False
@@ -513,6 +515,7 @@ class MoneyPM(APaymentMethod):
 
 class GiftCertificatePM(APaymentMethod):
 
+    name = 'gift certificate'
     description = _(u'Gift Certificate')
 
     _inheritable = False
@@ -535,6 +538,7 @@ class _AbstractCheckBillMethodMixin(object):
 
 class CheckPM(_AbstractCheckBillMethodMixin, APaymentMethod):
 
+    name = 'check'
     description = _(u'Check')
 
     _inheritable = False
@@ -580,6 +584,7 @@ class CheckPM(_AbstractCheckBillMethodMixin, APaymentMethod):
 
 class BillPM(_AbstractCheckBillMethodMixin, APaymentMethod):
 
+    name = 'bill'
     description = _(u'Bill')
 
     _inheritable = False
@@ -590,6 +595,7 @@ class BillPM(_AbstractCheckBillMethodMixin, APaymentMethod):
 
 class CardPM(APaymentMethod):
 
+    name = 'card'
     description = _(u'Card')
 
     _inheritable = False
@@ -614,6 +620,7 @@ class CardPM(APaymentMethod):
 
 class FinancePM(APaymentMethod):
 
+    name = 'finance'
     description = _(u'Finance')
 
     _inheritable = False

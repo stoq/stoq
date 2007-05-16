@@ -109,6 +109,7 @@ data_files = [
     ('$datadir/glade', listfiles('data', 'glade', '*.glade')),
     ('$datadir/fonts', listfiles('data', 'fonts', '*.ttf')),
     ('$datadir/csv', listfiles('data', 'csv', '*.csv')),
+    ('$datadir/template', listfiles('data', 'template', '*.rml')),
     ('share/doc/stoqlib',
      ('AUTHORS', 'CONTRIBUTORS', 'README'))]
 data_files += listexternal()
@@ -119,7 +120,8 @@ global_resources = dict(
     sql='$datadir/sql',
     glade='$datadir/glade',
     fonts='$datadir/fonts',
-    csv='$datadir/csv')
+    csv='$datadir/csv',
+    template='$datadir/template')
 
 setup(name='stoqlib',
       version=version,

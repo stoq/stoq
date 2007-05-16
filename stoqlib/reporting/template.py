@@ -25,14 +25,16 @@
 """ Base class implementation for all Stoq reports """
 
 from kiwi.environ import environ
+from mako.lookup import TemplateLookup
 from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
+from trml2pdf.trml2pdf import parseString
 
 from stoqlib.database.runtime import new_transaction, get_current_branch
-from stoqlib.reporting.base.printing import ReportTemplate
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_phone_number
-from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.reporting.base.printing import ReportTemplate
 
 _ = stoqlib_gettext
 
@@ -185,3 +187,45 @@ class SearchResultsReport(BaseStoqReport):
         if notes:
             notes = "%s %s" % (self.main_object_name.capitalize(), notes)
         return (title, notes)
+
+class BaseRMLReport(object):
+    """
+    A base class for all rml reports
+    @cvar template_name: the name of the template to be used in report
+    @cvar title: the report title
+    """
+    template_name = None
+    title = 'Untitled'
+
+    def __init__(self, filename, template_name=None):
+        """
+        @param filename: filename to save report as
+        @param template_name: optional, name of the rml template to use
+        """
+        template_name = template_name or self.template_name
+        lookup = TemplateLookup(directories=environ.get_resource_paths('template'))
+        self._template = lookup.get_template(template_name)
+        self.filename = filename
+
+    def save(self):
+        """Build the report file properly"""
+        ns = self.get_namespace()
+        if not type(ns) is dict:
+            raise TypeError(
+                "%s.get_namespace must return a dictionary, not $r" %
+                (self.__class__.__name__, ns))
+        ns['title'] = self.title
+        template = self._template.render(**ns)
+        pdf_file = open(self.filename, 'w')
+        # create the pdf file
+        pdf_file.write(parseString(template))
+        pdf_file.close()
+
+    def get_namespace(self):
+        """
+        Each child must to build your namespace and implement this
+        method to give us a common way to access it
+        """
+        raise NotImplementedError(
+            '%s needs to implement get_namespace()' %
+            (self.__class__.__name,))

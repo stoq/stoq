@@ -43,7 +43,8 @@ if library.uninstalled:
                                  sql='data/sql',
                                  glade='data/glade',
                                  fonts='data/fonts',
-                                 csv='data/csv')
+                                 csv='data/csv',
+                                 template='data/template')
     externals = os.path.join(library.get_root(), 'external')
 else:
     # root = $prefix/lib/pythonX.Y/site-packages
