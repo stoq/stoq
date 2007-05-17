@@ -37,6 +37,9 @@ class SQLObjectView(object):
         if attr == 'id':
             return SQLObjectField(self.cls.sqlmeta.table,
                                   self.cls.sqlmeta.idName, attr)
+        if not attr in self.columns:
+            raise AttributeError("%s object has no attribute %s" % (
+                self.cls.__name__, attr))
         return self.columns[attr]
 
 
