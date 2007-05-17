@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -31,7 +31,6 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.person import Person
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.addressslave import AddressSlave
@@ -61,7 +60,7 @@ class AddressEditor(BaseEditor):
 
     def create_model(self, conn):
         ct_location = CityLocation.get_default(conn)
-        return Address(connection=self.conn, person=self.person,
+        return Address(connection=conn, person=self.person,
                        city_location=ct_location)
 
     def setup_slaves(self):
@@ -80,6 +79,7 @@ class AddressEditor(BaseEditor):
             self.current_main_address.is_main_address = False
         return self.address_slave.on_confirm()
 
+
 class AddressAdditionDialog(ModelListDialog):
     title = _('Additional Addresses')
     size = (600, 250)
@@ -94,14 +94,18 @@ class AddressAdditionDialog(ModelListDialog):
 
     model_type = Address
 
-    def __init__(self, conn, person):
+    def __init__(self, trans, person):
         self.person = person
-        ModelListDialog.__init__(self, conn)
+        self.trans = trans
+        ModelListDialog.__init__(self, trans)
+        self.set_reuse_transaction(trans)
 
     def populate(self):
-        return self.person.addresses
+        # This is only additional addresses, eg non-main ones
+        return Address.selectBy(
+            person=self.person, is_main_address=False,
+            connection=self.trans)
 
     def run_editor(self, trans, model):
-        return run_dialog(
-            AddressEditor, parent=self,
-            conn=trans, person=trans.get(self.person), address=model)
+        return self.run_dialog(AddressEditor,
+            conn=trans, person=self.person, address=model)
