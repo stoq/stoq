@@ -33,8 +33,8 @@ from kiwi.utils import gsignal
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.exceptions import SelectionError, StoqlibError
-from stoqlib.gui.base.dialogs import (run_dialog, BasicPluggableDialog,
-                                      BasicDialog)
+from stoqlib.gui.base.dialogs import (run_dialog, get_dialog,
+                                      BasicPluggableDialog, BasicDialog)
 from stoqlib.gui.base.wizards import BaseWizard
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
@@ -61,11 +61,12 @@ class ModelListDialog(ListDialog):
     size = None
     title = None
 
-    def __init__(self, conn):
+    def __init__(self, conn=None):
         """
         @param conn: A database connection
         """
         self.conn = conn
+
         if self.model_type is None:
             raise TypeError("%s must define a model_type class attribute" %
                             type(self).__name__)
@@ -79,28 +80,37 @@ class ModelListDialog(ListDialog):
         if self.title:
             self.set_title(self.title)
 
-    def _delete_model(self, model):
-        trans = new_transaction()
+    def _delete_with_transaction(self, model, trans):
         self.model_type.delete(model.id, connection=trans)
-        trans.commit(close=True)
+
+    def _delete_model(self, model):
+        if self._reuse_transaction:
+            self._delete_with_transaction(model, self._reuse_transaction)
+        else:
+            trans = new_transaction()
+            self._delete_with_transaction(model, trans)
+            trans.commit(close=True)
 
     def _prepare_run_editor(self, item):
-        # 1) Create a new transaction
-        # 2) Fetch the model from that transactions POW
-        # 3) Sent it to the editor and run the editor
-        # 4) If the return value is not None fetch it in the
-        #    original connection (eg, self.conn)
-        # 5) Return the value, so it can be populated by the list
-        trans = new_transaction()
-        if item is not None:
-            model = trans.get(item)
+        if self._reuse_transaction:
+            retval = self.run_editor(self._reuse_transaction, item)
         else:
-            model = None
-        retval = self.run_editor(trans, model)
-        finish_transaction(trans, retval)
-        if retval:
-            retval = self.model_type.get(retval.id, connection=self.conn)
-        trans.close()
+            # 1) Create a new transaction
+            # 2) Fetch the model from that transactions POW
+            # 3) Sent it to the editor and run the editor
+            # 4) If the return value is not None fetch it in the
+            #    original connection (eg, self.conn)
+            # 5) Return the value, so it can be populated by the list
+            trans = new_transaction()
+            if item is not None:
+                model = trans.get(item)
+            else:
+                model = None
+            retval = self.run_editor(trans, model)
+            finish_transaction(trans, retval)
+            if retval:
+                retval = self.model_type.get(retval.id, connection=self.conn)
+            trans.close()
         return retval
 
     #
@@ -108,22 +118,56 @@ class ModelListDialog(ListDialog):
     #
 
     def populate(self):
-        return self.model_type.select(connection=self.conn)
+        if self._reuse_transaction:
+            conn = self._reuse_transaction
+        else:
+            conn = self.conn
+        return self.model_type.select(connection=conn)
 
     def add_item(self):
         return self._prepare_run_editor(None)
 
-    def remove_item(self, constant):
-        retval = self.default_remove(IDescribable(constant).get_description())
+    def remove_item(self, item):
+        retval = self.default_remove(IDescribable(item).get_description())
         if retval:
             # Remove the list before deleting it because it'll be late
             # afterwards, the object is invalid and SQLObject will complain
-            self.remove_list_item(constant)
-            self._delete_model(constant)
+            self.remove_list_item(item)
+            self._delete_model(item)
         return False
 
     def edit_item(self, item):
         return bool(self._prepare_run_editor(item))
+
+    #
+    # Public API
+    #
+
+    def set_reuse_transaction(self, trans):
+        """
+        @param reuse_transaction: a transaction
+        """
+        self._reuse_transaction = trans
+
+    def run_dialog(self, dialog_class, *args, **kwargs):
+        """
+        A special variant of run_dialog which deletes objects
+        when a transaction is reused, it's safe to use when it's disabled,
+        so always use this in your run_editor hook
+        """
+        dialog = get_dialog(self, dialog_class, *args, **kwargs)
+        retval = run_dialog(dialog)
+        if not retval:
+            if (self._reuse_transaction and
+                issubclass(dialog_class, BaseEditor)):
+                dialog.model.delete(dialog.model.id,
+                                    connection=self._reuse_transaction)
+
+            # We must return None because of ListDialog's add-item signal
+            # expects that
+            retval = None
+
+        return retval
 
     #
     # Hooks
@@ -138,7 +182,7 @@ class ModelListDialog(ListDialog):
             raise ValueError("editor_class cannot be None in %s" % (
                 type(self).__name__))
 
-        return run_dialog(
+        return self.run_dialog(
             self.editor_class, parent=self,
             conn=trans, model=model)
 
