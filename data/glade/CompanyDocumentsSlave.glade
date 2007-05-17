@@ -34,7 +34,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="fancy_name">
+                    <widget class="ProxyEntry" id="fancy_name">
                         <property name="data_type">unicode</property>
                         <property name="is_focus">True</property>
                         <property name="model_attribute">fancy_name</property>
@@ -47,8 +47,10 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="cnpj">
+                    <widget class="ProxyEntry" id="cnpj">
                         <property name="data_type">unicode</property>
+                        <property name="is_focus">True</property>
+                        <property name="mask" context="yes" translatable="yes">00.000.000/0000-00</property>
                         <property name="model_attribute">cnpj</property>
                         <property name="visible">True</property>
                     </widget>
@@ -75,7 +77,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="state_registry">
+                    <widget class="ProxyEntry" id="state_registry">
                         <property name="data_type">unicode</property>
                         <property name="model_attribute">state_registry</property>
                         <property name="visible">True</property>
