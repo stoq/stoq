@@ -122,8 +122,11 @@ class AdminApp(SearchableAppWindow):
         model = run_person_role_dialog(UserEditor, self, self.conn)
         if finish_transaction(self.conn, model):
             self.refresh()
-            model = self.table.get(model.id, connection=self.conn)
-            self.results.select(model)
+            model = self.search_table.get(model.id, connection=self.conn)
+            # This is wrong, a workaround for a bug I don't know where it is
+            # Johan 2007-05-17
+            if model in self.results:
+                self.results.select(model)
 
     #
     # Callbacks
