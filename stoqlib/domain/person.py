@@ -904,6 +904,7 @@ class TransporterView(Viewable):
         phone_number=Person.q.phone_number,
         transporter_id=PersonAdaptToTransporter.q.id,
         freight_percentage=PersonAdaptToTransporter.q.freight_percentage,
+        is_active=PersonAdaptToTransporter.q.is_active,
         )
 
     joins = [

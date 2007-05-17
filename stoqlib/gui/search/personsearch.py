@@ -255,6 +255,9 @@ class TransporterSearch(BasePersonSearch):
                 Column('freight_percentage', _('Freight (%)'), float,
                        width=150)]
 
+    def get_editor_model(self, model):
+        return model.transporter
+
 
 class EmployeeRoleSearch(SearchEditor):
     title = _('Employee Role Search')
