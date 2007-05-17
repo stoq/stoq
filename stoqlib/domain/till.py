@@ -199,8 +199,9 @@ class Till(Domain):
                            _(u'Amount removed from Till on %s' %
                              self.opening_date.strftime('%x')))
 
-        self.closing_date = datetime.datetime.now()
         self.final_cash_amount = self.get_balance()
+
+        self.closing_date = datetime.datetime.now()
         self.status = Till.STATUS_CLOSED
 
     def add_entry(self, payment):
@@ -323,8 +324,8 @@ class Till(Domain):
 class TillEntry(Domain):
     """
     A TillEntry is a representing cash added or removed in a L{Till}.
-    A value which is positive represent a addition of money
-    A value which is negative represent a removal of money
+    A positive value represents addition
+    A negative value represents removal
 
     @cvar date: the date the entry was created
     @cvar description:
