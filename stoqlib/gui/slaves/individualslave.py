@@ -106,11 +106,9 @@ class IndividualDetailsSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model,
                                     IndividualDetailsSlave.general_widgets)
         self.update_marital_status()
-        if self.model.birth_location:
-            self.model.birth_location = self.model.birth_location.clone()
-        else:
-            cityloc = CityLocation(connection=self.model.get_connection())
-            self.model.birth_location = cityloc
+        if not self.model.birth_location:
+            self.model.birth_location = CityLocation.get_default(
+                self.model.get_connection())
         self.birth_loc_proxy = self.add_proxy(
             self.model.birth_location,
             IndividualDetailsSlave.birth_loc_widgets)
