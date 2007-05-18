@@ -45,7 +45,8 @@ from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
+from stoqlib.gui.editors.tilleditor import (CashInEditor, CashOutEditor,
+                                            FiscalMemoryEditor)
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import SaleSearch
@@ -287,6 +288,10 @@ class TillApp(SearchableAppWindow):
 
     def on_Summary__activate(self, button):
         self._summary()
+
+    def on_Memory__activate(self, action):
+        dialog = FiscalMemoryEditor(self.conn)
+        self.run_dialog(dialog, self.conn)
 
     #
     # Callbacks
