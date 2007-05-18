@@ -270,6 +270,17 @@ class ICouponPrinter(IDevice):
         @type end: datetime.date
         """
 
+    def till_read_memory_by_reductions(start, end):
+        """
+        Reads the fiscal memory, from the start reductions to the end
+        reductions
+
+        @param start: start reductions
+        @type start: int
+        @param end: end reductions
+        @type end: int
+        """
+
     #
     # Getting printer status
     #

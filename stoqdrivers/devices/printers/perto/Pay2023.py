@@ -606,10 +606,20 @@ class Pay2023(SerialBase, BaseChequePrinter):
         self._send_command('EncerraDocumento')
 
     def till_read_memory(self, start=None, end=None):
+        try:
+            self._send_command('EmiteLeituraMF',
+                               LeituraSimplificada=True,
+                               DataInicial=start,
+                               DataFinal=end)
+        except DriverError, e:
+            if e == 8089:
+                return
+
+    def till_read_memory_by_reductions(self, start=None, end=None):
         self._send_command('EmiteLeituraMF',
                            LeituraSimplificada=True,
-                           DataInicial=start,
-                           DataFinal=end)
+                           ReducaoInicial=start,
+                           ReducaoFinal=end)
 
     #
     # IChequePrinter implementation

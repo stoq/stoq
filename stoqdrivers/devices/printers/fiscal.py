@@ -236,7 +236,18 @@ class FiscalPrinter(BasePrinter):
 
     @capcheck(datetime.date, datetime.date)
     def till_read_memory(self, start, end):
+        assert start <= end <= datetime.date.today(), (
+            "start must be less then end and both must be less today")
         log.info('till_read_memory(start=%r, end=%r)' % (
             start, end))
 
-        return self._driver.read_memory(start, end)
+        return self._driver.till_read_memory(start, end)
+
+    @capcheck(int, int)
+    def till_read_memory_by_reductions(self, start, end):
+        assert end >= start > 0, ("start must be less then end "
+                                  "and both must be positive")
+        log.info('till_read_memory_by_reductions(start=%r, end=%r)' % (
+            start, end))
+
+        self._driver.till_read_memory_by_reductions(start, end)

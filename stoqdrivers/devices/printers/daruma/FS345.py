@@ -42,7 +42,7 @@ from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.devices.printers.base import BaseDriverConstants
 from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
 from stoqdrivers.exceptions import (DriverError, PendingReduceZ,
-                                    HardwareFailure,
+                                    HardwareFailure, ReduceZError,
                                     AuthenticationFailure, CommError,
                                     PendingReadX, CouponNotOpenError,
                                     OutofPaperError, PrinterOfflineError,
@@ -215,6 +215,9 @@ class FS345(SerialBase):
             print 'Authentication', ifset(S3, 2, 'disabled', 'enabled')
             print 'Guillotine', ifset(S3, 1, 'disabled', 'enabled')
             print 'Auto close CF?', ifset(S3, 0, 'no', 'yes')
+
+        if self.status_check(status, 6, 1):
+            raise ReduceZError(_("readZ is already emitted"))
 
         if self.needs_read_x(status):
             raise PendingReadX(_("readX is not emitted yet"))
@@ -525,8 +528,12 @@ class FS345(SerialBase):
 
     def till_read_memory(self, start, end):
         # Page 39
-        self.send_command(CMD_READ_MEMORY, 's%s%s' % (start.strftime('%d%m%y'),
+        self.send_command(CMD_READ_MEMORY, 'x%s%s' % (start.strftime('%d%m%y'),
                                                       end.strftime('%d%m%y')))
+
+    def till_read_memory_by_reductions(self, start, end):
+        # Page 39
+        self.send_command(CMD_READ_MEMORY, 'x00%04d00%04d' % (start, end))
 
     def get_capabilities(self):
         return dict(item_code=Capability(max_len=13),
