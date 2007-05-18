@@ -25,7 +25,8 @@
 
 import gettext
 
-from stoqlib.database.runtime import get_current_user
+from stoqlib.database.runtime import (get_current_user,
+                                      get_current_branch)
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.sale import Sale
@@ -111,10 +112,11 @@ class NewOrderEditor(BaseEditor):
 
     def create_model(self, conn):
         user = get_current_user(conn)
+        branch = get_current_branch(conn)
         salesperson = ISalesPerson(user.person)
         cfop = sysparam(conn).DEFAULT_SALES_CFOP
-        return Sale(connection=conn, salesperson=salesperson,
-                    cfop=cfop, coupon_id=None)
+        return Sale(connection=conn, branch=branch,
+                    salesperson=salesperson, cfop=cfop, coupon_id=None)
 
     def setup_proxies(self):
         self._setup_widgets()
