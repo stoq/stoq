@@ -22,6 +22,7 @@
 ## Author(s):        Henrique Romano            <henrique@async.com.br>
 ##                   Evandro Vale Miquelito     <evandro@async.com.br>
 ##                   Johan Dahlin               <jdahlin@async.com.br>
+##                   Fabio Morbec               <fabio@async.com.br>
 ##
 """ Editors implementation for open/close operation on till operation"""
 
@@ -427,3 +428,82 @@ class CashInEditor(BaseEditor):
         printer = FiscalPrinterHelper(self.conn, self.get_toplevel())
         printer.add_cash(self.cash_slave.model.value)
         return valid
+
+
+class FiscalMemoryEditor(BaseEditor):
+    title = "Print Fiscal Memory"
+    model_type = Settable
+    gladefile = 'FiscalMemoryEditor'
+    proxy_widgets = ('start_date',
+                     'end_date',
+                     'start_reductions_number',
+                     'end_reductions_number')
+
+    def __init__(self, conn, model=None):
+        BaseEditor.__init__(self, conn, model)
+        self._toggle_sensitivity(True)
+
+    def _toggle_sensitivity(self, date):
+        for widget in (self.start_date, self.end_date):
+            widget.set_sensitive(date)
+        for widget in (self.start_reductions_number,
+                       self.end_reductions_number):
+            widget.set_sensitive(not date)
+
+    #
+    # BaseEditor
+    #
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model,
+                                    FiscalMemoryEditor.proxy_widgets)
+
+    def on_confirm(self):
+        printer = FiscalPrinterHelper(self.conn, parent=self.get_toplevel())
+        if self.date_radio_button.get_active():
+            printer.memory_by_date(self.model.start_date,
+                           self.model.end_date)
+        else:
+            printer.memory_by_reductions(self.model.start_reductions_number,
+                                         self.model.end_reductions_number)
+
+    def create_model(self, conn):
+        return Settable(start_date=datetime.date.today(),
+                        end_date=datetime.date.today(),
+                        start_reductions_number=1,
+                        end_reductions_number=1)
+
+    #
+    # callbacks
+    #
+
+    def on_reductions_radio_button__toggled(self, radio_button):
+        self._toggle_sensitivity(False)
+
+    def on_date_radio_button__toggled(self, radio_button):
+        self._toggle_sensitivity(True)
+
+    def on_start_date__validate(self, widget, date):
+        if date > datetime.date.today():
+            return ValidationError(_("Start date must be less than today"))
+        if date > self.model.end_date:
+            self.end_date.set_date(date)
+
+    def on_end_date__validate(self, widget, date):
+        if date > datetime.date.today():
+            return ValidationError(_("End date must be less than today"))
+        if date < self.model.start_date:
+            self.start_date.set_date(date)
+
+    def on_start_reductions_number__validate(self, widget, number):
+        if number <= 0:
+            return ValidationError(_("This number must be positive "
+                                     "and greater than 0"))
+        self.end_reductions_number.set_range(number, 9999)
+
+    def on_end_reductions_number__validate(self, widget, number):
+        if number <= 0:
+            return ValidationError(_("This number must be positive "
+                                     "and greater than 0"))
+        if number < self.model.start_reductions_number:
+            self.end_reductions_number.set_range(number, 9999)
