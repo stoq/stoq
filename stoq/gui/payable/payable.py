@@ -66,7 +66,7 @@ class PayableApp(SearchableAppWindow):
         self._setup_widgets()
         self._update_widgets()
         self.pay_order_button.set_sensitive(False)
-        self.receipt_button.set_sensitive(False)
+        self.Receipt.set_sensitive(False)
         self.results.connect('has-rows', self._has_rows)
 
     #
@@ -210,7 +210,7 @@ class PayableApp(SearchableAppWindow):
         self.pay_order_button.set_sensitive(self._same_purchase(selected))
         self.pay_order_button.set_sensitive(self._can_pay(selected))
         self.print_button.set_sensitive(bool(self.results))
-        self.receipt_button.set_sensitive(self._are_paid(selected))
+        self.Receipt.set_sensitive(self._are_paid(selected))
 
     def _get_status_values(self):
         items = [(value, key) for key, value in Payment.statuses.items()]
@@ -238,7 +238,7 @@ class PayableApp(SearchableAppWindow):
     def on_print_button__clicked(self, button):
         print_report(PaymentPayableReport, list(self.results))
 
-    def on_receipt_button__clicked(self, button):
+    def on_Receipt__activate(self, action):
         payment_views = self.results.get_selected_rows()
         payments = [v.payment for v in payment_views]
         print_report(PaymentReceipt, payments=payments,

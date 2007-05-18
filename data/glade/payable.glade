@@ -93,6 +93,12 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="Receipt">
+                        <property name="name">Receipt</property>
+                        <property name="label" translatable="yes">_Receipt</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Save">
                         <property name="name">Save</property>
                         <property name="tooltip" translatable="yes">Save a file</property>
@@ -157,7 +163,7 @@
 <menubar action="menubar" name="menubar">
 
 
-<menu action="TillMenu" name="TillMenu"><menuitem action="quit_action" name="quit_action"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
+<menu action="TillMenu" name="TillMenu"><menuitem action="Receipt" name="Receipt"/><menuitem action="quit_action" name="quit_action"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
 </ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="payable">
@@ -284,16 +290,6 @@
                                             </widget>
                                             <packing>
                                                 <property name="position">2</property>
-                                            </packing>
-                                        </child>
-                                        <child>
-                                            <widget class="GtkButton" id="receipt_button">
-                                                <property name="is_focus">True</property>
-                                                <property name="label" context="yes" translatable="yes">Receipt</property>
-                                                <property name="visible">True</property>
-                                            </widget>
-                                            <packing>
-                                                <property name="position">3</property>
                                             </packing>
                                         </child>
                                     </widget>
