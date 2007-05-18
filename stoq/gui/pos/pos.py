@@ -55,6 +55,7 @@ from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
+from stoqlib.gui.editors.tilleditor import FiscalMemoryEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -605,6 +606,10 @@ class POSApp(AppWindow):
 
     def on_Summary__activate(self, action):
         self._summarize()
+
+    def on_Memory__activate(self, action):
+        dialog = FiscalMemoryEditor(self.conn)
+        self.run_dialog(dialog, self.conn)
 
     #
     # Other callbacks
