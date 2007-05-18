@@ -89,6 +89,7 @@ class Sale(Domain):
     @ivar status: status of the sale
     @ivar client: who we sold the sale to
     @ivar salesperson: who sold the sale
+    @ivar branch: branch where the sale was done
     @ivar till: The Till operation where this sale lives. Note that every
        sale and payment generated are always in a till operation
        which defines a financial history of a store.
@@ -133,6 +134,7 @@ class Sale(Domain):
     status = IntCol(default=STATUS_INITIAL)
     client = ForeignKey('PersonAdaptToClient', default=None)
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
+    branch = ForeignKey('PersonAdaptToBranch', default=None)
     open_date = DateTimeCol(default=datetime.datetime.now)
     confirm_date = DateTimeCol(default=None)
     close_date = DateTimeCol(default=None)
@@ -249,9 +251,12 @@ class Sale(Domain):
 
     def confirm(self):
         assert self.can_confirm()
+        assert self.branch
 
         conn = self.get_connection()
-        branch = get_current_branch(conn)
+
+        assert self.branch == get_current_branch(conn)
+        branch = self.branch
         for item in self.get_items():
             if isinstance(item, ProductSellableItem):
                 ProductHistory.add_sold_item(conn, branch, item)
@@ -279,7 +284,7 @@ class Sale(Domain):
         assert self.can_cancel()
 
         conn = self.get_connection()
-        branch = get_current_branch(conn)
+        branch = self.branch
         for item in self.get_items():
             item.cancel(branch)
 
@@ -359,7 +364,7 @@ class Sale(Domain):
     def get_clone(self):
         conn = self.get_connection()
         return Sale(client_role=self.client_role, client=self.client,
-                    cfop=self.cfop, coupon_id=None,
+                    cfop=self.cfop, coupon_id=None, branch=self.branch,
                     salesperson=self.salesperson, connection=conn)
 
     #

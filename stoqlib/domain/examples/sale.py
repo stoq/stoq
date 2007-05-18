@@ -26,7 +26,8 @@
 import sys
 import datetime
 
-from stoqlib.database.runtime import new_transaction,  get_current_station
+from stoqlib.database.runtime import (new_transaction,
+                            get_current_station, get_current_branch)
 from stoqlib.exceptions import SellError
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH, calculate_interval
 from stoqlib.lib.parameters import sysparam
@@ -80,11 +81,11 @@ def get_all_products(trans):
         sys.exit()
     return list(result)
 
-def _create_sale(trans, open_date, status, salesperson, client, coupon_id,
-                 product, installments_number):
+def _create_sale(trans, open_date, status, branch, salesperson, client,
+                    coupon_id, product, installments_number):
     sale = Sale(client=client, status=status,
                 open_date=open_date, coupon_id=coupon_id,
-                salesperson=salesperson,
+                salesperson=salesperson, branch=branch,
                 cfop=sysparam(trans).DEFAULT_SALES_CFOP,
                 connection=trans)
     sellable_facet = ISellable(product)
@@ -132,6 +133,7 @@ def create_sales():
         raise ValueError('You should have at last %d salespersons defined '
                          'in database at this point, got %d instead' %
                          (DEFAULT_SALE_NUMBER, salespersons.count()))
+    branch = get_current_branch(trans)
     till = get_till(trans)
     open_dates = [datetime.datetime.today(),
                   datetime.datetime.today() + datetime.timedelta(10),
@@ -146,8 +148,8 @@ def create_sales():
                                                       clients,
                                                       product_list,
                                                       installments_numbers)):
-        _create_sale(trans, open_date, status, salesperson, client, index,
-                     product, installments_number)
+        _create_sale(trans, open_date, status, branch, salesperson,
+                     client, index, product, installments_number)
 
     till.close_till()
 
