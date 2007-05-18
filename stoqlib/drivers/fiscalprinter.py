@@ -221,6 +221,12 @@ class CouponPrinter(object):
                     warning(_("Could not print summary"),
                         str(details))
 
+    def memory_by_date(self, start_date, end_date):
+        self._driver.till_read_memory(start_date, end_date)
+
+    def memory_by_reductions(self, start, end):
+        self._driver.till_read_memory_by_reductions(start, end)
+
     # Private
     def _update_sintegra_data(self, data):
         if data is None:
