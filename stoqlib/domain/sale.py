@@ -255,8 +255,8 @@ class Sale(Domain):
 
         conn = self.get_connection()
 
-        assert self.branch == get_current_branch(conn)
-        branch = self.branch
+        # FIXME: We should use self.branch, but it's not supported yet
+        branch = get_current_branch(conn)
         for item in self.get_items():
             if isinstance(item, ProductSellableItem):
                 ProductHistory.add_sold_item(conn, branch, item)
@@ -284,7 +284,8 @@ class Sale(Domain):
         assert self.can_cancel()
 
         conn = self.get_connection()
-        branch = self.branch
+        # FIXME: We should use self.branch, but it's not supported yet
+        branch = get_current_branch(conn)
         for item in self.get_items():
             item.cancel(branch)
 
