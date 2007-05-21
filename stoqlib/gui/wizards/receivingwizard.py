@@ -65,7 +65,7 @@ class _FakeReceivingOrder(object):
 
 class PurchaseSelectionStep(WizardEditorStep):
     gladefile = 'PurchaseSelectionStep'
-    size = (800, 450)
+    size = (800, -1)
     model_type = _FakeReceivingOrder
 
     def __init__(self, wizard, conn, model):
@@ -107,7 +107,7 @@ class PurchaseSelectionStep(WizardEditorStep):
         return [Column('id', title=_('Number'), sorted=True,
                        data_type=str, width=80),
                 Column('open_date', title=_('Date Started'),
-                       data_type=datetime.date),
+                       data_type=datetime.date, width=100),
                 Column('supplier_name', title=_('Supplier'),
                        data_type=str, searchable=True, width=130,
                        expand=True),
@@ -316,7 +316,7 @@ class ReceivingInvoiceStep(WizardEditorStep):
 
 class ReceivingOrderWizard(BaseWizard):
     title = _("Receiving Order")
-    size = (750, 560)
+    size = (750, 450)
 
     def __init__(self, conn):
         self.model = None

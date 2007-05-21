@@ -830,43 +830,6 @@
                         <property name="expand">False</property>
                     </packing>
                 </child>
-                <child>
-                    <widget class="GtkHBox" id="hbox3">
-                        <property name="visible">True</property>
-                        <child>
-                            <widget class="GtkExpander" id="discount_surcharge_expander">
-                                <property name="label" context="yes" translatable="yes">Further Details</property>
-                                <property name="visible">True</property>
-                                <child>
-                                    <widget class="GtkEventBox" id="discount_surcharge_holder">
-                                        <property name="visible">True</property>
-                                        <child>
-                                            <placeholder/>
-                                        </child>
-                                    </widget>
-                                </child>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="position">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="position">2</property>
-                            </packing>
-                        </child>
-                    </widget>
-                    <packing>
-                        <property name="position">1</property>
-                    </packing>
-                </child>
             </widget>
         </child>
     </widget>
