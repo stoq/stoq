@@ -61,8 +61,6 @@ class PayableView(Viewable):
                    Person.q.id == PersonAdaptToSupplier.q._originalID),
         ]
 
-    hidden_columns = ['paid_date', 'due_date']
-
     def get_status_str(self):
         return Payment.statuses[self.status]
 
