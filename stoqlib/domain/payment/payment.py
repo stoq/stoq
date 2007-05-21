@@ -282,6 +282,15 @@ class Payment(Domain):
             return self.paid_date.date().strftime('%x')
         return _('NOT PAID')
 
+    def get_open_date_string(self):
+        """
+        Get a open date string
+        @returns: the open date string or empty string
+        """
+        if self.open_date:
+            return self.open_date.date().strftime('%x')
+        return ""
+
 #
 # Payment adapters
 #

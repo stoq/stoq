@@ -21,14 +21,13 @@
 ## Author(s):       George Y. Kussumoto      <george@async.com.br>
 ##
 %>
-<%page args="title, payments, order, document"/>
+<%page args="title, payments, order, document, payer, drawee"/>
 <%include file="header.rml"/>
 <%
-  payer = order.branch.person
-  drawner = order.supplier.person
   value = sum([payment.value for payment in payments])
   payment_description = ", ".join([payment.description
                                         for payment in payments])
+  payment_description += " made in " + payment.get_open_date_string()
 %>
 <%include file="receipt-style.rml"/>
 <story>
@@ -93,14 +92,14 @@
     <spacer length="0.5cm"/>
     <blockTable style="2cols_tableStyle" colWidths="3.3cm, 16.3cm">
       <tr>
-        <td>DRAWNER:</td>
-        <td>${drawner.name}</td>
+        <td>DRAWEE:</td>
+        <td>${drawee.name}</td>
       </tr>
     </blockTable>
     <blockTable style="2cols_tableStyle" colWidths="3.3cm, 16.3cm">
       <tr>
         <td>ADDRESS:</td>
-        <td>${drawner.get_address_string()}</td>
+        <td>${drawee.get_address_string()}</td>
       </tr>
     </blockTable>
     <blockTable style="4cols_tableStyle"
