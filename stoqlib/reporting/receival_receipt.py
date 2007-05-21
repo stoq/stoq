@@ -23,24 +23,24 @@
 ##  Author(s):  George Y. Kussumoto         <george@async.com.br>
 ##
 ##
-""" A payment receipt implementation """
+""" A receival receipt implementation """
 
-from stoqlib.domain.interfaces import ICompany, IIndividual
+from stoqlib.domain.interfaces import ICompany
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.template import BaseRMLReport
 
 _ = stoqlib_gettext
 
-class PaymentReceipt(BaseRMLReport):
-    """Payment receipt
+class ReceivalReceipt(BaseRMLReport):
+    """Receival receipt
         This class builds the namespace used in template
     """
     template_name = 'receipt.rml'
-    title = "Payment receipt"
+    title = "Receival receipt"
 
-    def __init__(self, filename, payments, purchase):
+    def __init__(self, filename, payments, sale):
         self.payments = payments
-        self.order = purchase
+        self.sale = sale
         BaseRMLReport.__init__(self, filename)
 
     #
@@ -48,16 +48,13 @@ class PaymentReceipt(BaseRMLReport):
     #
 
     def get_namespace(self):
-        company = ICompany(self.order.supplier.person, None)
-        individual = IIndividual(self.order.supplier.person, None)
+        company = ICompany(self.sale.branch.person, None)
         if company:
             document = company.cnpj
-        elif individual:
-            document = individual.cpf
         else:
             document = ""
         return dict(document=document,
-                    drawee=self.order.supplier.person,
-                    order=self.order,
-                    payer=self.order.branch.person,
+                    order=self.sale,
+                    drawee=self.sale.branch.person,
+                    payer=self.sale.client.person,
                     payments=self.payments)
