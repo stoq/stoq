@@ -284,15 +284,17 @@ class Paragraph(RParagraph):
             avail_width = widths[0]
             total_width, frags = self._first_line_frags
             for frag in frags[::-1]:
+                text = frag.text.decode('utf-8')
                 ellipsis_width = stringWidth(ELLIPSIS_STRING, frag.fontName,
                                              frag.fontSize)
-                frag_width = stringWidth(frag.text, frag.fontName,
+                frag_width = stringWidth(text,
+                                         frag.fontName,
                                          frag.fontSize)
                 if total_width + ellipsis_width >= avail_width:
                     if (frag_width - (total_width - avail_width)
                         > ellipsis_width):
-                        for letter in frag.text[::-1]:
-                            frag.text = frag.text[:-1]
+                        for letter in text[::-1]:
+                            frag.text = text[:-1]
                             total_width -= stringWidth(letter, frag.fontName,
                                                        frag.fontSize)
                             if total_width + ellipsis_width < avail_width:
