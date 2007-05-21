@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-11 14:47-0300\n"
+"POT-Creation-Date: 2007-05-21 18:52-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,26 +16,26 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../stoqlib/drivers/fiscalprinter.py:222
+#: ../stoqlib/drivers/fiscalprinter.py:221
 msgid "Could not print summary"
 msgstr ""
 
-#: ../stoqlib/drivers/fiscalprinter.py:306
+#: ../stoqlib/drivers/fiscalprinter.py:312
 msgid "Could not print item"
 msgstr ""
 
-#: ../stoqlib/drivers/fiscalprinter.py:385
+#: ../stoqlib/drivers/fiscalprinter.py:391
 msgid "It is not possible to totalize the coupon"
 msgstr ""
 
-#: ../stoqlib/drivers/fiscalprinter.py:447
+#: ../stoqlib/drivers/fiscalprinter.py:453
 #, python-format
 msgid ""
 "The payment method used in this sale (%s) is not configured in the fiscal "
 "printer."
 msgstr ""
 
-#: ../stoqlib/drivers/fiscalprinter.py:462
+#: ../stoqlib/drivers/fiscalprinter.py:468
 msgid "It's not possible to close the coupon"
 msgstr ""
 
@@ -78,18 +78,19 @@ msgstr ""
 #: ../stoqlib/gui/search/giftcertificatesearch.py:137
 #: ../stoqlib/gui/search/salesearch.py:72
 #: ../stoqlib/gui/wizards/receivingwizard.py:107
-#: ../stoqlib/gui/wizards/salewizard.py:364
+#: ../stoqlib/gui/wizards/salewizard.py:380
 #: ../stoqlib/gui/dialogs/tillhistory.py:62
 msgid "Number"
 msgstr ""
 
 #: ../stoqlib/reporting/purchase.py:67 ../stoqlib/reporting/sale.py:125
-#: ../stoqlib/gui/search/tillsearch.py:81
+#: ../stoqlib/gui/search/tillsearch.py:115
 #: ../stoqlib/gui/search/fiscalsearch.py:114
 #: ../stoqlib/gui/dialogs/productstockdetails.py:95
 #: ../stoqlib/gui/dialogs/clientdetails.py:126
 #: ../stoqlib/gui/dialogs/tillhistory.py:64
 #: ../stoqlib/gui/dialogs/sintegradialog.py:77
+#: ../data/glade/FiscalMemoryEditor.glade.h:2
 msgid "Date"
 msgstr ""
 
@@ -121,7 +122,7 @@ msgstr ""
 #: ../stoqlib/gui/wizards/purchasewizard.py:190
 #: ../stoqlib/gui/wizards/receivingwizard.py:255
 #: ../stoqlib/gui/dialogs/receivingdialog.py:90
-#: ../stoqlib/gui/dialogs/saledetails.py:134
+#: ../stoqlib/gui/dialogs/saledetails.py:135
 #: ../stoqlib/gui/dialogs/purchasedetails.py:107
 #: ../stoqlib/gui/dialogs/purchasedetails.py:120
 #: ../stoqlib/gui/dialogs/clientdetails.py:132
@@ -133,8 +134,8 @@ msgstr ""
 #: ../stoqlib/reporting/purchase.py:81 ../stoqlib/reporting/sale.py:135
 #: ../stoqlib/reporting/payment.py:74 ../stoqlib/reporting/payment.py:101
 #: ../stoqlib/gui/search/personsearch.py:106
-#: ../stoqlib/gui/search/personsearch.py:313
-#: ../stoqlib/gui/dialogs/saledetails.py:115
+#: ../stoqlib/gui/search/personsearch.py:316
+#: ../stoqlib/gui/dialogs/saledetails.py:116
 #: ../stoqlib/gui/dialogs/purchasedetails.py:135
 #: ../stoqlib/gui/dialogs/clientdetails.py:130
 #: ../stoqlib/gui/dialogs/clientdetails.py:166
@@ -174,7 +175,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/productstockdetails.py:105
 #: ../stoqlib/gui/dialogs/productstockdetails.py:120
 #: ../stoqlib/gui/dialogs/receivingdialog.py:85
-#: ../stoqlib/gui/dialogs/saledetails.py:131
+#: ../stoqlib/gui/dialogs/saledetails.py:132
 #: ../stoqlib/gui/dialogs/purchasedetails.py:102
 msgid "Quantity"
 msgstr ""
@@ -184,14 +185,14 @@ msgid "Purchase Ordered Items"
 msgstr ""
 
 #: ../stoqlib/reporting/purchase.py:157 ../stoqlib/reporting/purchase.py:198
-#: ../stoqlib/domain/sale.py:443
+#: ../stoqlib/domain/sale.py:383
 msgid "Not Specified"
 msgstr ""
 
 #: ../stoqlib/reporting/purchase.py:158
 #: ../data/glade/PurchaseDetailsDialog.glade.h:23
 #: ../data/glade/FinishPurchaseStep.glade.h:5
-#: ../data/glade/ReceivingInvoiceSlave.glade.h:17
+#: ../data/glade/ReceivingInvoiceSlave.glade.h:16
 msgid "Transporter:"
 msgstr ""
 
@@ -230,7 +231,7 @@ msgstr ""
 #: ../stoqlib/reporting/purchase.py:188
 #: ../data/glade/StartPurchaseStep.glade.h:12
 #: ../data/glade/PurchaseDetailsDialog.glade.h:20
-#: ../data/glade/ReceivingInvoiceSlave.glade.h:16
+#: ../data/glade/ReceivingInvoiceSlave.glade.h:15
 msgid "Supplier:"
 msgstr ""
 
@@ -252,46 +253,46 @@ msgstr ""
 msgid "Purchase Order #%s"
 msgstr ""
 
-#: ../stoqlib/reporting/template.py:103
+#: ../stoqlib/reporting/template.py:105
 #, python-format
 msgid "Phone: %s"
 msgstr ""
 
-#: ../stoqlib/reporting/template.py:108
+#: ../stoqlib/reporting/template.py:110
 #, python-format
 msgid "Fax: %s"
 msgstr ""
 
-#: ../stoqlib/reporting/template.py:157
+#: ../stoqlib/reporting/template.py:159
 msgid "Listing"
 msgstr ""
 
-#: ../stoqlib/reporting/template.py:162
+#: ../stoqlib/reporting/template.py:164
 #, python-format
 msgid "%d of a total of %d %s"
 msgstr ""
 
-#: ../stoqlib/reporting/template.py:167
+#: ../stoqlib/reporting/template.py:169
 #, python-format
 msgid "all %s"
 msgstr ""
 
-#: ../stoqlib/reporting/template.py:172
+#: ../stoqlib/reporting/template.py:174
 #, python-format
 msgid "matching \"%s\""
 msgstr ""
 
-#: ../stoqlib/reporting/template.py:176
+#: ../stoqlib/reporting/template.py:178
 #, python-format
 msgid "between %s and %s"
 msgstr ""
 
-#: ../stoqlib/reporting/template.py:180
+#: ../stoqlib/reporting/template.py:182
 #, python-format
 msgid "and since %s"
 msgstr ""
 
-#: ../stoqlib/reporting/template.py:183
+#: ../stoqlib/reporting/template.py:185
 #, python-format
 msgid "until %s"
 msgstr ""
@@ -319,7 +320,7 @@ msgstr ""
 #: ../stoqlib/gui/search/productsearch.py:199
 #: ../stoqlib/gui/search/servicesearch.py:93
 #: ../stoqlib/gui/dialogs/receivingdialog.py:80
-#: ../stoqlib/gui/dialogs/saledetails.py:126
+#: ../stoqlib/gui/dialogs/saledetails.py:127
 #: ../stoqlib/gui/dialogs/clientdetails.py:136
 #: ../stoqlib/gui/dialogs/clientdetails.py:147
 msgid "Code"
@@ -328,12 +329,12 @@ msgstr ""
 #: ../stoqlib/reporting/product.py:62 ../stoqlib/reporting/product.py:108
 #: ../stoqlib/reporting/payment.py:65 ../stoqlib/reporting/payment.py:92
 #: ../stoqlib/gui/slaves/devicesslave.py:57
-#: ../stoqlib/gui/slaves/installmentslave.py:147
+#: ../stoqlib/gui/slaves/installmentslave.py:156
 #: ../stoqlib/gui/editors/sellableeditor.py:98
 #: ../stoqlib/gui/editors/deliveryeditor.py:183
 #: ../stoqlib/gui/search/giftcertificatesearch.py:77
 #: ../stoqlib/gui/search/sellablesearch.py:127
-#: ../stoqlib/gui/search/tillsearch.py:83
+#: ../stoqlib/gui/search/tillsearch.py:117
 #: ../stoqlib/gui/search/categorysearch.py:59
 #: ../stoqlib/gui/search/productsearch.py:136
 #: ../stoqlib/gui/search/productsearch.py:201
@@ -341,10 +342,10 @@ msgstr ""
 #: ../stoqlib/gui/search/fiscalsearch.py:63
 #: ../stoqlib/gui/wizards/purchasewizard.py:183
 #: ../stoqlib/gui/wizards/receivingwizard.py:246
-#: ../stoqlib/gui/wizards/salewizard.py:365
+#: ../stoqlib/gui/wizards/salewizard.py:381
 #: ../stoqlib/gui/dialogs/receivingdialog.py:83
-#: ../stoqlib/gui/dialogs/saledetails.py:108
-#: ../stoqlib/gui/dialogs/saledetails.py:129
+#: ../stoqlib/gui/dialogs/saledetails.py:109
+#: ../stoqlib/gui/dialogs/saledetails.py:130
 #: ../stoqlib/gui/dialogs/purchasedetails.py:100
 #: ../stoqlib/gui/dialogs/purchasedetails.py:112
 #: ../stoqlib/gui/dialogs/purchasedetails.py:128
@@ -413,8 +414,8 @@ msgstr ""
 #: ../stoqlib/gui/search/sellablesearch.py:131
 #: ../stoqlib/gui/search/productsearch.py:142
 #: ../stoqlib/gui/search/servicesearch.py:105
-#: ../stoqlib/gui/wizards/salewizard.py:367
-#: ../stoqlib/gui/dialogs/saledetails.py:133
+#: ../stoqlib/gui/wizards/salewizard.py:383
+#: ../stoqlib/gui/dialogs/saledetails.py:134
 msgid "Price"
 msgstr ""
 
@@ -464,7 +465,7 @@ msgid "Received Date"
 msgstr ""
 
 #: ../stoqlib/reporting/purchase_receival.py:52
-#: ../stoqlib/gui/base/search.py:271
+#: ../stoqlib/gui/base/search.py:256
 #: ../stoqlib/gui/editors/personeditor.py:355
 #: ../stoqlib/gui/search/receivingsearch.py:82
 #: ../stoqlib/gui/search/stationsearch.py:62
@@ -491,16 +492,16 @@ msgid "Due date"
 msgstr ""
 
 #: ../stoqlib/reporting/payment.py:72 ../stoqlib/reporting/payment.py:99
-#: ../stoqlib/gui/slaves/installmentslave.py:149
+#: ../stoqlib/gui/slaves/installmentslave.py:158
 msgid "Paid date"
 msgstr ""
 
 #: ../stoqlib/reporting/payment.py:76 ../stoqlib/reporting/payment.py:103
-#: ../stoqlib/gui/slaves/installmentslave.py:150
+#: ../stoqlib/gui/slaves/installmentslave.py:159
 #: ../stoqlib/gui/editors/sellableeditor.py:100
 #: ../stoqlib/gui/editors/deviceconstanteditor.py:135
-#: ../stoqlib/gui/search/tillsearch.py:87
-#: ../stoqlib/gui/dialogs/saledetails.py:116
+#: ../stoqlib/gui/search/tillsearch.py:121
+#: ../stoqlib/gui/dialogs/saledetails.py:117
 #: ../stoqlib/gui/dialogs/purchasedetails.py:136
 #: ../stoqlib/gui/dialogs/clientdetails.py:168
 #: ../stoqlib/gui/dialogs/tillhistory.py:69
@@ -512,13 +513,13 @@ msgstr ""
 msgid "Page % 2d"
 msgstr ""
 
-#: ../stoqlib/domain/giftcertificate.py:65 ../stoqlib/domain/person.py:347
-#: ../stoqlib/domain/person.py:552 ../stoqlib/domain/person.py:620
-#: ../stoqlib/domain/person.py:645 ../stoqlib/domain/station.py:105
-#: ../stoqlib/domain/devices.py:396 ../stoqlib/domain/payment/methods.py:171
-#: ../stoqlib/domain/payment/methods.py:673
-#: ../stoqlib/domain/test/test_person.py:484
-#: ../stoqlib/domain/test/test_person.py:493
+#: ../stoqlib/domain/giftcertificate.py:64 ../stoqlib/domain/person.py:347
+#: ../stoqlib/domain/person.py:545 ../stoqlib/domain/person.py:613
+#: ../stoqlib/domain/person.py:638 ../stoqlib/domain/station.py:105
+#: ../stoqlib/domain/devices.py:396 ../stoqlib/domain/payment/methods.py:172
+#: ../stoqlib/domain/payment/methods.py:687
+#: ../stoqlib/domain/test/test_person.py:466
+#: ../stoqlib/domain/test/test_person.py:475
 #: ../stoqlib/gui/slaves/devicesslave.py:66
 #: ../stoqlib/gui/editors/personeditor.py:178
 #: ../stoqlib/gui/search/giftcertificatesearch.py:65
@@ -534,14 +535,14 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: ../stoqlib/domain/giftcertificate.py:66 ../stoqlib/domain/person.py:348
-#: ../stoqlib/domain/person.py:476 ../stoqlib/domain/person.py:553
-#: ../stoqlib/domain/person.py:621 ../stoqlib/domain/person.py:646
+#: ../stoqlib/domain/giftcertificate.py:65 ../stoqlib/domain/person.py:348
+#: ../stoqlib/domain/person.py:469 ../stoqlib/domain/person.py:546
+#: ../stoqlib/domain/person.py:614 ../stoqlib/domain/person.py:639
 #: ../stoqlib/domain/station.py:106 ../stoqlib/domain/devices.py:397
-#: ../stoqlib/domain/payment/methods.py:172
-#: ../stoqlib/domain/payment/methods.py:674
-#: ../stoqlib/domain/test/test_person.py:436
-#: ../stoqlib/domain/test/test_person.py:448
+#: ../stoqlib/domain/payment/methods.py:173
+#: ../stoqlib/domain/payment/methods.py:688
+#: ../stoqlib/domain/test/test_person.py:418
+#: ../stoqlib/domain/test/test_person.py:430
 #: ../stoqlib/gui/search/giftcertificatesearch.py:66
 #: ../stoqlib/gui/search/personsearch.py:241
 #: ../data/glade/UserStatusSlave.glade.h:3
@@ -550,43 +551,42 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
-#: ../stoqlib/domain/till.py:94 ../stoqlib/domain/purchase.py:123
+#: ../stoqlib/domain/till.py:90 ../stoqlib/domain/purchase.py:123
 msgid "Pending"
 msgstr ""
 
-#: ../stoqlib/domain/till.py:95 ../stoqlib/domain/sale.py:129
+#: ../stoqlib/domain/till.py:91 ../stoqlib/domain/sale.py:127
 msgid "Opened"
 msgstr ""
 
-#: ../stoqlib/domain/till.py:96 ../stoqlib/domain/purchase.py:125
-#: ../stoqlib/domain/sellable.py:260 ../stoqlib/domain/sale.py:131
-#: ../stoqlib/domain/payment/payment.py:275
+#: ../stoqlib/domain/till.py:92 ../stoqlib/domain/purchase.py:125
+#: ../stoqlib/domain/sellable.py:260 ../stoqlib/domain/payment/group.py:69
 msgid "Closed"
 msgstr ""
 
-#: ../stoqlib/domain/till.py:128
+#: ../stoqlib/domain/till.py:122
 #, python-format
 msgid ""
 "You need to close the till opened at %s before doing any fiscal operations"
 msgstr ""
 
-#: ../stoqlib/domain/till.py:162
+#: ../stoqlib/domain/till.py:156
 msgid "Till is already open"
 msgstr ""
 
-#: ../stoqlib/domain/till.py:171 ../stoqlib/domain/till.py:178
+#: ../stoqlib/domain/till.py:163 ../stoqlib/domain/till.py:170
 msgid "A till has already been opened today"
 msgstr ""
 
-#: ../stoqlib/domain/till.py:176
+#: ../stoqlib/domain/till.py:168
 msgid "Previous till was not closed"
 msgstr ""
 
-#: ../stoqlib/domain/till.py:203
+#: ../stoqlib/domain/till.py:191
 msgid "Till is already closed"
 msgstr ""
 
-#: ../stoqlib/domain/till.py:211
+#: ../stoqlib/domain/till.py:199
 #, python-format
 msgid "Amount removed from Till on %s"
 msgstr ""
@@ -625,89 +625,77 @@ msgstr ""
 msgid "Female"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:473
+#: ../stoqlib/domain/person.py:466
 msgid "Solvent"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:474
+#: ../stoqlib/domain/person.py:467
 msgid "Indebted"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:475
+#: ../stoqlib/domain/person.py:468
 msgid "Insolvent"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:554 ../stoqlib/domain/sellable.py:261
+#: ../stoqlib/domain/person.py:547 ../stoqlib/domain/sellable.py:261
 msgid "Blocked"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:580
+#: ../stoqlib/domain/person.py:573
 msgid "Normal"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:581
+#: ../stoqlib/domain/person.py:574
 msgid "Away"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:582
+#: ../stoqlib/domain/person.py:575
 msgid "Vacation"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:583
+#: ../stoqlib/domain/person.py:576
 msgid "Off"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:718
+#: ../stoqlib/domain/person.py:711
 msgid "Card Provider"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:719
+#: ../stoqlib/domain/person.py:712
 msgid "Finance Provider"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:766
+#: ../stoqlib/domain/person.py:759
 msgid "Globally"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:767
+#: ../stoqlib/domain/person.py:760
 msgid "By Salesperson"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:768
+#: ../stoqlib/domain/person.py:761
 msgid "By Sellable"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:769
+#: ../stoqlib/domain/person.py:762
 msgid "By Payment Method"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:770
+#: ../stoqlib/domain/person.py:763
 msgid "By Base Sellable Category"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:773
+#: ../stoqlib/domain/person.py:766
 msgid "By Sellable Category"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:775
+#: ../stoqlib/domain/person.py:768
 msgid "By Sale Total"
 msgstr ""
 
-#: ../stoqlib/domain/renegotiation.py:103
-msgid "Return Sale"
-msgstr ""
-
-#: ../stoqlib/domain/renegotiation.py:171
-msgid "Exchange"
-msgstr ""
-
-#: ../stoqlib/domain/renegotiation.py:186
-msgid "Installments Renegotiation"
-msgstr ""
-
-#: ../stoqlib/domain/purchase.py:121 ../stoqlib/domain/sale.py:132
-#: ../stoqlib/domain/payment/payment.py:93
-#: ../stoqlib/domain/payment/payment.py:276
+#: ../stoqlib/domain/purchase.py:121 ../stoqlib/domain/sale.py:130
+#: ../stoqlib/domain/payment/payment.py:79
+#: ../stoqlib/domain/payment/group.py:70
 msgid "Cancelled"
 msgstr ""
 
@@ -715,8 +703,8 @@ msgstr ""
 msgid "Quoting"
 msgstr ""
 
-#: ../stoqlib/domain/purchase.py:124 ../stoqlib/domain/sale.py:130
-#: ../stoqlib/domain/payment/payment.py:92
+#: ../stoqlib/domain/purchase.py:124 ../stoqlib/domain/sale.py:128
+#: ../stoqlib/domain/payment/payment.py:78
 msgid "Confirmed"
 msgstr ""
 
@@ -733,7 +721,7 @@ msgstr ""
 msgid "order %s"
 msgstr ""
 
-#: ../stoqlib/domain/product.py:268
+#: ../stoqlib/domain/product.py:270
 msgid "This company doesn't allow order products"
 msgstr ""
 
@@ -799,102 +787,106 @@ msgid ""
 "The sellable with barcode '%s' doesn't exists or is not available to be sold"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:133
-msgid "Order"
+#: ../stoqlib/domain/sale.py:129 ../stoqlib/domain/payment/payment.py:76
+msgid "Paid"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:560
+#: ../stoqlib/domain/sale.py:131
+#: ../data/glade/PurchaseDetailsDialog.glade.h:14
+msgid "Ordered"
+msgstr ""
+
+#: ../stoqlib/domain/sale.py:132
+msgid "Returned"
+msgstr ""
+
+#: ../stoqlib/domain/sale.py:566
 #, python-format
 msgid "sale %s"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:669
-#, python-format
-msgid "1/1 Money returned for gift certificate acquittance on sale %04d"
-msgstr ""
-
-#: ../stoqlib/domain/payment/methods.py:321
+#: ../stoqlib/domain/payment/methods.py:326
 #, python-format
 msgid "%s/%s %s for %s"
 msgstr ""
 
-#: ../stoqlib/domain/payment/methods.py:496 ../stoqlib/lib/defaults.py:107
+#: ../stoqlib/domain/payment/methods.py:504 ../stoqlib/lib/defaults.py:107
 #: ../stoqlib/gui/wizards/purchasewizard.py:231
 msgid "Money"
 msgstr ""
 
-#: ../stoqlib/domain/payment/methods.py:510 ../stoqlib/lib/defaults.py:113
+#: ../stoqlib/domain/payment/methods.py:519 ../stoqlib/lib/defaults.py:113
 #: ../stoqlib/gui/editors/sellableeditor.py:344
 #: ../stoqlib/gui/editors/sellableeditor.py:346
 #: ../data/glade/SelectPaymentMethodSlave.glade.h:2
 msgid "Gift Certificate"
 msgstr ""
 
-#: ../stoqlib/domain/payment/methods.py:532
-#: ../stoqlib/domain/payment/methods.py:799 ../stoqlib/lib/defaults.py:108
+#: ../stoqlib/domain/payment/methods.py:542
+#: ../stoqlib/domain/payment/methods.py:813 ../stoqlib/lib/defaults.py:108
 #: ../stoqlib/gui/wizards/purchasewizard.py:230
 msgid "Check"
 msgstr ""
 
-#: ../stoqlib/domain/payment/methods.py:576
-#: ../stoqlib/domain/payment/methods.py:799 ../stoqlib/lib/defaults.py:109
+#: ../stoqlib/domain/payment/methods.py:588
+#: ../stoqlib/domain/payment/methods.py:813 ../stoqlib/lib/defaults.py:109
 #: ../stoqlib/gui/wizards/purchasewizard.py:229
 msgid "Bill"
 msgstr ""
 
-#: ../stoqlib/domain/payment/methods.py:586 ../stoqlib/lib/defaults.py:110
+#: ../stoqlib/domain/payment/methods.py:599 ../stoqlib/lib/defaults.py:110
 msgid "Card"
 msgstr ""
 
-#: ../stoqlib/domain/payment/methods.py:610
-#: ../stoqlib/domain/payment/methods.py:801 ../stoqlib/lib/defaults.py:112
+#: ../stoqlib/domain/payment/methods.py:624
+#: ../stoqlib/domain/payment/methods.py:815 ../stoqlib/lib/defaults.py:112
 msgid "Finance"
 msgstr ""
 
-#: ../stoqlib/domain/payment/methods.py:725 ../stoqlib/lib/defaults.py:111
+#: ../stoqlib/domain/payment/methods.py:739 ../stoqlib/lib/defaults.py:111
 msgid "Debit Card"
 msgstr ""
 
-#: ../stoqlib/domain/payment/methods.py:748
-#: ../stoqlib/domain/payment/methods.py:760
-#: ../stoqlib/domain/payment/methods.py:780
+#: ../stoqlib/domain/payment/methods.py:762
+#: ../stoqlib/domain/payment/methods.py:774
+#: ../stoqlib/domain/payment/methods.py:794
 msgid "Credit Card"
 msgstr ""
 
-#: ../stoqlib/domain/payment/methods.py:758
+#: ../stoqlib/domain/payment/methods.py:772
 msgid "Installments Store"
 msgstr ""
 
-#: ../stoqlib/domain/payment/methods.py:778
+#: ../stoqlib/domain/payment/methods.py:792
 msgid "Installments Provider"
 msgstr ""
 
-#: ../stoqlib/domain/payment/payment.py:88
-#: ../stoqlib/domain/payment/payment.py:273
+#: ../stoqlib/domain/payment/payment.py:74
+#: ../stoqlib/domain/payment/group.py:67
 msgid "Preview"
 msgstr ""
 
-#: ../stoqlib/domain/payment/payment.py:89
+#: ../stoqlib/domain/payment/payment.py:75
 msgid "To Pay"
 msgstr ""
 
-#: ../stoqlib/domain/payment/payment.py:90
-msgid "Paid"
-msgstr ""
-
-#: ../stoqlib/domain/payment/payment.py:91
+#: ../stoqlib/domain/payment/payment.py:77
 msgid "Reviewing"
 msgstr ""
 
-#: ../stoqlib/domain/payment/payment.py:263
+#: ../stoqlib/domain/payment/payment.py:248
 msgid "Anonymous"
 msgstr ""
 
-#: ../stoqlib/domain/payment/payment.py:274
+#: ../stoqlib/domain/payment/payment.py:283
+msgid "NOT PAID"
+msgstr ""
+
+#: ../stoqlib/domain/payment/group.py:68
 msgid "Open"
 msgstr ""
 
-#: ../stoqlib/domain/test/test_person.py:102
+#: ../stoqlib/domain/test/test_person.py:100
 #, python-format
 msgid "%s %s, %s"
 msgstr ""
@@ -2356,32 +2348,32 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:86
+#: ../stoqlib/gui/fiscalprinter.py:85
 msgid ""
 "It's not possible to emit a read X for the configured printer.\n"
 "Would you like to ignore this error and continue?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:89 ../stoqlib/gui/fiscalprinter.py:155
-#: ../stoqlib/gui/base/lists.py:271
+#: ../stoqlib/gui/fiscalprinter.py:88 ../stoqlib/gui/fiscalprinter.py:141
+#: ../stoqlib/gui/base/lists.py:315
 msgid "Cancel"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:90 ../stoqlib/gui/fiscalprinter.py:156
+#: ../stoqlib/gui/fiscalprinter.py:89 ../stoqlib/gui/fiscalprinter.py:142
 msgid "Ignore"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:91 ../stoqlib/gui/fiscalprinter.py:157
+#: ../stoqlib/gui/fiscalprinter.py:90 ../stoqlib/gui/fiscalprinter.py:143
 msgid "Try Again"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:152
+#: ../stoqlib/gui/fiscalprinter.py:138
 msgid ""
 "It's not possible to emit a reduce Z for the configured printer.\n"
 "Would you like to ignore this error and continue?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:183
+#: ../stoqlib/gui/fiscalprinter.py:169
 #, python-format
 msgid ""
 "You need to close the till opened %s before creating a new order.\n"
@@ -2389,76 +2381,76 @@ msgid ""
 "Close the till?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:186
+#: ../stoqlib/gui/fiscalprinter.py:172
 msgid "Not now"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:186
+#: ../stoqlib/gui/fiscalprinter.py:172
 msgid "Close Till"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:207
+#: ../stoqlib/gui/fiscalprinter.py:193
 #, python-format
 msgid ""
 "The printer %s has run out of paper.\n"
 "Add more paper before continuing."
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:209 ../stoqlib/gui/fiscalprinter.py:216
+#: ../stoqlib/gui/fiscalprinter.py:195 ../stoqlib/gui/fiscalprinter.py:202
 #: ../data/glade/TillFiscalOperationsToolbar.glade.h:1
 msgid "Resume"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:209 ../stoqlib/gui/fiscalprinter.py:216
+#: ../stoqlib/gui/fiscalprinter.py:195 ../stoqlib/gui/fiscalprinter.py:202
 msgid "Confirm later"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:214
+#: ../stoqlib/gui/fiscalprinter.py:200
 #, python-format
 msgid "The printer %s is offline, turn it on and tryagain"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:220
+#: ../stoqlib/gui/fiscalprinter.py:206
 msgid "It is not possible to emit the coupon"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:229
+#: ../stoqlib/gui/fiscalprinter.py:215
 msgid "It is not possible to add payments to the coupon"
 msgstr ""
 
-#: ../stoqlib/gui/templates/persontemplate.py:91
-#: ../data/glade/PersonEditorTemplate.glade.h:10
-msgid "Individual/Company Data"
-msgstr ""
-
-#: ../stoqlib/gui/templates/persontemplate.py:92
-#: ../stoqlib/gui/templates/persontemplate.py:102
-#: ../data/glade/PersonEditorTemplate.glade.h:2
-msgid "Company Data"
-msgstr ""
-
-#: ../stoqlib/gui/templates/persontemplate.py:94
-#: ../stoqlib/gui/templates/persontemplate.py:97
-#: ../data/glade/PersonEditorTemplate.glade.h:9
-msgid "Individual Data"
-msgstr ""
-
-#: ../stoqlib/gui/templates/persontemplate.py:115
+#: ../stoqlib/gui/templates/persontemplate.py:118
 msgid ""
 "You must define a valid main address before\n"
 "adding additional addresses"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/receivingslave.py:147
-#: ../stoqlib/gui/wizards/salewizard.py:623
+#: ../stoqlib/gui/templates/persontemplate.py:148
+#: ../data/glade/PersonEditorTemplate.glade.h:10
+msgid "Individual/Company Data"
+msgstr ""
+
+#: ../stoqlib/gui/templates/persontemplate.py:149
+#: ../stoqlib/gui/templates/persontemplate.py:159
+#: ../data/glade/PersonEditorTemplate.glade.h:2
+msgid "Company Data"
+msgstr ""
+
+#: ../stoqlib/gui/templates/persontemplate.py:151
+#: ../stoqlib/gui/templates/persontemplate.py:154
+#: ../data/glade/PersonEditorTemplate.glade.h:9
+msgid "Individual Data"
+msgstr ""
+
+#: ../stoqlib/gui/slaves/receivingslave.py:137
+#: ../stoqlib/gui/wizards/salewizard.py:640
 msgid "Additional Information"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/receivingslave.py:151
+#: ../stoqlib/gui/slaves/receivingslave.py:141
 msgid "Receving order number must be between 1 and 999999"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/receivingslave.py:156
+#: ../stoqlib/gui/slaves/receivingslave.py:146
 msgid "This field cannot be negative"
 msgstr ""
 
@@ -2473,7 +2465,7 @@ msgstr ""
 #: ../stoqlib/gui/search/personsearch.py:152
 #: ../stoqlib/gui/search/personsearch.py:210
 #: ../stoqlib/gui/search/personsearch.py:250
-#: ../stoqlib/gui/search/personsearch.py:307
+#: ../stoqlib/gui/search/personsearch.py:310
 #: ../stoqlib/gui/search/stationsearch.py:56
 #: ../stoqlib/gui/wizards/personwizard.py:105
 msgid "Name"
@@ -2484,7 +2476,7 @@ msgstr ""
 #: ../stoqlib/gui/search/personsearch.py:154
 #: ../stoqlib/gui/search/personsearch.py:212
 #: ../stoqlib/gui/search/personsearch.py:253
-#: ../stoqlib/gui/search/personsearch.py:309
+#: ../stoqlib/gui/search/personsearch.py:312
 #: ../stoqlib/gui/wizards/personwizard.py:107
 msgid "Phone Number"
 msgstr ""
@@ -2503,12 +2495,12 @@ msgid "Select Image"
 msgstr ""
 
 #: ../stoqlib/gui/slaves/paymentslave.py:123
-#: ../stoqlib/gui/wizards/salewizard.py:383
+#: ../stoqlib/gui/wizards/salewizard.py:399
 msgid "Overpaid:"
 msgstr ""
 
 #: ../stoqlib/gui/slaves/paymentslave.py:125
-#: ../stoqlib/gui/wizards/salewizard.py:381
+#: ../stoqlib/gui/wizards/salewizard.py:397
 #: ../data/glade/PaymentListSlave.glade.h:2
 msgid "Outstanding:"
 msgstr ""
@@ -2553,7 +2545,7 @@ msgstr ""
 
 #: ../stoqlib/gui/slaves/employeeslave.py:248
 #: ../stoqlib/gui/search/personsearch.py:102
-#: ../stoqlib/gui/search/personsearch.py:279
+#: ../stoqlib/gui/search/personsearch.py:282
 msgid "Role"
 msgstr ""
 
@@ -2566,7 +2558,7 @@ msgid "Device Type"
 msgstr ""
 
 #: ../stoqlib/gui/slaves/devicesslave.py:61
-#: ../stoqlib/gui/search/tillsearch.py:85
+#: ../stoqlib/gui/search/tillsearch.py:119
 #: ../stoqlib/gui/search/stationsearch.py:42
 #: ../stoqlib/gui/dialogs/sintegradialog.py:75
 msgid "Station"
@@ -2576,64 +2568,64 @@ msgstr ""
 msgid "Sale price can not be 0"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/saleslave.py:95
+#: ../stoqlib/gui/slaves/saleslave.py:94
 #, python-format
 msgid "%s can not be greater then %d%%"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/saleslave.py:99
+#: ../stoqlib/gui/slaves/saleslave.py:98
 #, python-format
 msgid "%s can not be less then 0"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/saleslave.py:116
+#: ../stoqlib/gui/slaves/saleslave.py:115
 msgid "Surcharge"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/saleslave.py:119
+#: ../stoqlib/gui/slaves/saleslave.py:118
 msgid "Discount"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/saleslave.py:129
+#: ../stoqlib/gui/slaves/saleslave.py:128
 #, python-format
 msgid "Discount can not be greater then %d%%"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/saleslave.py:134
+#: ../stoqlib/gui/slaves/saleslave.py:133
 msgid "Discount can not be negative"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/saleslave.py:313
+#: ../stoqlib/gui/slaves/saleslave.py:310
 msgid "Deduction value can not be lesser then 0"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/saleslave.py:316
+#: ../stoqlib/gui/slaves/saleslave.py:313
 msgid "Deduction value can not be greater then the paid value"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/installmentslave.py:148
+#: ../stoqlib/gui/slaves/installmentslave.py:157
 msgid "Due"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/installmentslave.py:151
+#: ../stoqlib/gui/slaves/installmentslave.py:160
 msgid "Paid value"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/installmentslave.py:181
+#: ../stoqlib/gui/slaves/installmentslave.py:191
 #, python-format
 msgid "Paid date must be between %s and today"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/installmentslave.py:207
+#: ../stoqlib/gui/slaves/installmentslave.py:217
 msgid "Supplier: "
 msgstr ""
 
-#: ../stoqlib/gui/slaves/installmentslave.py:236
+#: ../stoqlib/gui/slaves/installmentslave.py:247
 msgid "Discount can not be greater than value"
 msgstr ""
 
-#: ../stoqlib/gui/slaves/installmentslave.py:244
-#: ../stoqlib/gui/slaves/installmentslave.py:252
+#: ../stoqlib/gui/slaves/installmentslave.py:255
+#: ../stoqlib/gui/slaves/installmentslave.py:263
 msgid "Penalty can not be less than zero"
 msgstr ""
 
@@ -2645,35 +2637,35 @@ msgstr ""
 msgid "Select the file"
 msgstr ""
 
-#: ../stoqlib/gui/base/lists.py:268
+#: ../stoqlib/gui/base/lists.py:312
 #, python-format
 msgid "Delete these %d items?"
 msgstr ""
 
-#: ../stoqlib/gui/base/lists.py:270
+#: ../stoqlib/gui/base/lists.py:314
 msgid "Delete this item?"
 msgstr ""
 
-#: ../stoqlib/gui/base/lists.py:271
+#: ../stoqlib/gui/base/lists.py:315
 msgid "Delete items"
 msgstr ""
 
-#: ../stoqlib/gui/base/search.py:131
+#: ../stoqlib/gui/base/search.py:130
 msgid "Se_lect Items"
 msgstr ""
 
 #. if not items:
 #. raise ValueError('You should have at least one branch at '
 #. 'this point')
-#: ../stoqlib/gui/base/search.py:268
+#: ../stoqlib/gui/base/search.py:253
 #: ../stoqlib/gui/search/giftcertificatesearch.py:64
 #: ../stoqlib/gui/search/giftcertificatesearch.py:122
 #: ../stoqlib/gui/search/salesearch.py:66
-#: ../stoqlib/gui/search/tillsearch.py:65
+#: ../stoqlib/gui/search/tillsearch.py:99
 #: ../stoqlib/gui/search/personsearch.py:94
 #: ../stoqlib/gui/search/personsearch.py:203
 #: ../stoqlib/gui/search/personsearch.py:242
-#: ../stoqlib/gui/search/personsearch.py:298
+#: ../stoqlib/gui/search/personsearch.py:301
 #: ../stoqlib/gui/search/productsearch.py:113
 #: ../stoqlib/gui/search/servicesearch.py:72
 msgid "Any"
@@ -2701,7 +2693,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/sellableeditor.py:322
 #: ../stoqlib/gui/editors/giftcertificateeditor.py:136
-#: ../stoqlib/gui/wizards/salewizard.py:302
+#: ../stoqlib/gui/wizards/salewizard.py:318
 #, python-format
 msgid "The barcode %s already exists"
 msgstr ""
@@ -2760,15 +2752,15 @@ msgid ""
 "defined yet."
 msgstr ""
 
-#: ../stoqlib/gui/editors/giftcertificateeditor.py:45
+#: ../stoqlib/gui/editors/giftcertificateeditor.py:44
 msgid "Gift Certificate Type"
 msgstr ""
 
-#: ../stoqlib/gui/editors/giftcertificateeditor.py:78
+#: ../stoqlib/gui/editors/giftcertificateeditor.py:77
 msgid "Gift Certificate price must be greater than zero."
 msgstr ""
 
-#: ../stoqlib/gui/editors/giftcertificateeditor.py:91
+#: ../stoqlib/gui/editors/giftcertificateeditor.py:90
 msgid "Add Gift Certificates"
 msgstr ""
 
@@ -2777,18 +2769,18 @@ msgid "New Delivery"
 msgstr ""
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:124
-#: ../stoqlib/gui/editors/addresseditor.py:42
-#: ../stoqlib/gui/editors/addresseditor.py:88
+#: ../stoqlib/gui/editors/addresseditor.py:143
+#: ../stoqlib/gui/editors/addresseditor.py:192
 msgid "Address"
 msgstr ""
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:126
-#: ../stoqlib/gui/editors/addresseditor.py:90
+#: ../stoqlib/gui/editors/addresseditor.py:194
 msgid "City"
 msgstr ""
 
 #: ../stoqlib/gui/editors/deliveryeditor.py:127
-#: ../stoqlib/gui/editors/addresseditor.py:92
+#: ../stoqlib/gui/editors/addresseditor.py:196
 msgid "State"
 msgstr ""
 
@@ -2804,7 +2796,7 @@ msgstr ""
 msgid "Expected delivery date must be set to a future date"
 msgstr ""
 
-#: ../stoqlib/gui/editors/addresseditor.py:84
+#: ../stoqlib/gui/editors/addresseditor.py:188
 msgid "Additional Addresses"
 msgstr ""
 
@@ -2864,90 +2856,103 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:95 ../data/glade/TillOpening.glade.h:3
+#: ../stoqlib/gui/editors/tilleditor.py:96 ../data/glade/TillOpening.glade.h:3
 msgid "Till Opening"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:124
+#: ../stoqlib/gui/editors/tilleditor.py:125
 #, python-format
 msgid "Initial Cash amount of %s"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:138
+#: ../stoqlib/gui/editors/tilleditor.py:139
 msgid "You cannot add a negative amount when opening the till."
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:144
+#: ../stoqlib/gui/editors/tilleditor.py:145
 msgid "Closing Opened Till"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:193
+#: ../stoqlib/gui/editors/tilleditor.py:194
 msgid "Value cannot be less than zero"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:196
+#: ../stoqlib/gui/editors/tilleditor.py:197
 msgid "You can not specify an amount removed greater than the till balance."
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:232
+#: ../stoqlib/gui/editors/tilleditor.py:233
 msgid "Value cannot be zero or less than zero"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:246
+#: ../stoqlib/gui/editors/tilleditor.py:247
 msgid "Value cannot be more than the total Till balance"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:254
+#: ../stoqlib/gui/editors/tilleditor.py:255
 msgid "Cash Advance"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:296
+#: ../stoqlib/gui/editors/tilleditor.py:297
 #, python-format
 msgid "Cash advance paid to employee: %s"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:323
+#: ../stoqlib/gui/editors/tilleditor.py:324
 msgid "Cash Out"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:326
+#: ../stoqlib/gui/editors/tilleditor.py:327
 msgid "Reverse Payment"
 msgstr ""
 
 #. FIXME: Implement and use IDescribable on PersonAdaptToBranch
-#: ../stoqlib/gui/editors/tilleditor.py:342
+#: ../stoqlib/gui/editors/tilleditor.py:343
 #, python-format
 msgid "Cash out for station \"%s\" of branch \"%s\""
 msgstr ""
 
 #. %s is the description used when removing money
-#: ../stoqlib/gui/editors/tilleditor.py:363
+#: ../stoqlib/gui/editors/tilleditor.py:364
 #, python-format
 msgid "Cash out: %s"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:365
+#: ../stoqlib/gui/editors/tilleditor.py:366
 msgid "Cash out"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:385
+#: ../stoqlib/gui/editors/tilleditor.py:386
 msgid "Cash In"
 msgstr ""
 
 #. FIXME: Implement and use IDescribable on PersonAdaptToBranch
-#: ../stoqlib/gui/editors/tilleditor.py:403
+#: ../stoqlib/gui/editors/tilleditor.py:404
 #, python-format
 msgid "Cash in for station \"%s\" of branch \"%s\""
 msgstr ""
 
 #. %s is the description used when removing money
-#: ../stoqlib/gui/editors/tilleditor.py:422
+#: ../stoqlib/gui/editors/tilleditor.py:423
 #, python-format
 msgid "Cash in: %s"
 msgstr ""
 
-#: ../stoqlib/gui/editors/tilleditor.py:424
+#: ../stoqlib/gui/editors/tilleditor.py:425
 msgid "Cash in"
+msgstr ""
+
+#: ../stoqlib/gui/editors/tilleditor.py:488
+msgid "Start date must be less than today"
+msgstr ""
+
+#: ../stoqlib/gui/editors/tilleditor.py:494
+msgid "End date must be less than today"
+msgstr ""
+
+#: ../stoqlib/gui/editors/tilleditor.py:500
+#: ../stoqlib/gui/editors/tilleditor.py:506
+msgid "This number must be positive and greater than 0"
 msgstr ""
 
 #: ../stoqlib/gui/editors/personeditor.py:64
@@ -3100,7 +3105,7 @@ msgstr ""
 
 #: ../stoqlib/gui/search/giftcertificatesearch.py:56
 #: ../stoqlib/gui/search/giftcertificatesearch.py:112
-#: ../stoqlib/gui/search/personsearch.py:287
+#: ../stoqlib/gui/search/personsearch.py:290
 msgid "matching"
 msgstr ""
 
@@ -3166,7 +3171,7 @@ msgstr ""
 
 #: ../stoqlib/gui/search/sellablesearch.py:82
 #: ../stoqlib/gui/search/salesearch.py:64
-#: ../stoqlib/gui/search/tillsearch.py:51
+#: ../stoqlib/gui/search/tillsearch.py:85
 #: ../stoqlib/gui/search/personsearch.py:83
 #: ../stoqlib/gui/search/personsearch.py:193
 #: ../stoqlib/gui/search/personsearch.py:235
@@ -3197,25 +3202,25 @@ msgstr ""
 msgid "Items Quantity"
 msgstr ""
 
-#: ../stoqlib/gui/search/tillsearch.py:47
+#: ../stoqlib/gui/search/tillsearch.py:81
 msgid "Till Fiscal Operations"
 msgstr ""
 
-#: ../stoqlib/gui/search/tillsearch.py:52
+#: ../stoqlib/gui/search/tillsearch.py:86
 msgid "fiscal operation"
 msgstr ""
 
-#: ../stoqlib/gui/search/tillsearch.py:52
+#: ../stoqlib/gui/search/tillsearch.py:86
 msgid "fiscal operations"
 msgstr ""
 
-#: ../stoqlib/gui/search/tillsearch.py:66
+#: ../stoqlib/gui/search/tillsearch.py:100
 #: ../stoqlib/gui/search/fiscalsearch.py:148
 msgid "Show entries of type"
 msgstr ""
 
 #. Date
-#: ../stoqlib/gui/search/tillsearch.py:73
+#: ../stoqlib/gui/search/tillsearch.py:107
 #: ../stoqlib/gui/search/receivingsearch.py:69
 #: ../stoqlib/gui/search/productsearch.py:190
 #: ../stoqlib/gui/wizards/receivingwizard.py:100
@@ -3226,7 +3231,7 @@ msgstr ""
 msgid "Date:"
 msgstr ""
 
-#: ../stoqlib/gui/search/tillsearch.py:78
+#: ../stoqlib/gui/search/tillsearch.py:112
 #: ../stoqlib/gui/search/receivingsearch.py:74
 #: ../stoqlib/gui/search/fiscalsearch.py:112
 #: ../stoqlib/gui/dialogs/productstockdetails.py:93
@@ -3364,35 +3369,35 @@ msgstr ""
 msgid "Freight (%)"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:260
+#: ../stoqlib/gui/search/personsearch.py:263
 msgid "Employee Role Search"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:268
+#: ../stoqlib/gui/search/personsearch.py:271
 msgid "role"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:268
+#: ../stoqlib/gui/search/personsearch.py:271
 msgid "roles"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:276
+#: ../stoqlib/gui/search/personsearch.py:279
 msgid "Role Matching"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:284
+#: ../stoqlib/gui/search/personsearch.py:287
 msgid "Branch Search"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:288
+#: ../stoqlib/gui/search/personsearch.py:291
 msgid "branch"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:288
+#: ../stoqlib/gui/search/personsearch.py:291
 msgid "branches"
 msgstr ""
 
-#: ../stoqlib/gui/search/personsearch.py:299
+#: ../stoqlib/gui/search/personsearch.py:302
 msgid "Show branches with status"
 msgstr ""
 
@@ -3549,7 +3554,7 @@ msgid "ICMS Total"
 msgstr ""
 
 #: ../stoqlib/gui/search/fiscalsearch.py:89
-#: ../data/glade/ReceivingInvoiceSlave.glade.h:8
+#: ../data/glade/ReceivingInvoiceSlave.glade.h:7
 msgid "ICMS Total:"
 msgstr ""
 
@@ -3623,50 +3628,50 @@ msgstr ""
 msgid "Receiving Order"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salereturnwizard.py:113
+#: ../stoqlib/gui/wizards/salereturnwizard.py:90
 msgid "Return Sale Order"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:202
+#: ../stoqlib/gui/wizards/salewizard.py:216
 #, python-format
 msgid "Select method of payment for the %s outstanding value"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:262
+#: ../stoqlib/gui/wizards/salewizard.py:276
 #, python-format
 msgid "Create a <u>%s</u> with this value"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:264
+#: ../stoqlib/gui/wizards/salewizard.py:278
 #, python-format
 msgid "There is %s overpaid"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:396
+#: ../stoqlib/gui/wizards/salewizard.py:412
 #, python-format
 msgid "The gift certificate with code '%s' doesn't exists."
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:416
+#: ../stoqlib/gui/wizards/salewizard.py:432
 #, python-format
 msgid "The gift certificate '%s' was already added to thelist"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:451
+#: ../stoqlib/gui/wizards/salewizard.py:469
 msgid "<b>Total:</b>"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:676
+#: ../stoqlib/gui/wizards/salewizard.py:693
 msgid ""
 "There is no sold gift certificates at this moment.\n"
 "Please select another payment method."
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:755
+#: ../stoqlib/gui/wizards/salewizard.py:763
 msgid "Sale Checkout"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:793
+#: ../stoqlib/gui/wizards/salewizard.py:792
 msgid "Confirm PreOrder"
 msgstr ""
 
@@ -3719,29 +3724,29 @@ msgstr ""
 msgid "Sale Details"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/saledetails.py:106
+#: ../stoqlib/gui/dialogs/saledetails.py:107
 #: ../stoqlib/gui/dialogs/purchasedetails.py:126
 #: ../stoqlib/gui/dialogs/clientdetails.py:159
 msgid "Type"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/saledetails.py:110
+#: ../stoqlib/gui/dialogs/saledetails.py:111
 #: ../stoqlib/gui/dialogs/purchasedetails.py:130
 #: ../stoqlib/gui/dialogs/clientdetails.py:164
 msgid "Due Date"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/saledetails.py:113
+#: ../stoqlib/gui/dialogs/saledetails.py:114
 #: ../stoqlib/gui/dialogs/purchasedetails.py:133
 msgid "Paid Date"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/saledetails.py:120
+#: ../stoqlib/gui/dialogs/saledetails.py:121
 #: ../stoqlib/gui/dialogs/purchasedetails.py:140
 msgid "Paid Value"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/saledetails.py:168
+#: ../stoqlib/gui/dialogs/saledetails.py:169
 msgid "Sale Cancellation Details"
 msgstr ""
 
@@ -3911,22 +3916,22 @@ msgid ""
 "connection settings you have set and try again."
 msgstr ""
 
-#: ../stoqlib/database/runtime.py:172
+#: ../stoqlib/database/runtime.py:198
 #, python-format
 msgid "The computer <u>%s</u> is not registered in Stoq"
 msgstr ""
 
-#: ../stoqlib/database/runtime.py:174
+#: ../stoqlib/database/runtime.py:200
 msgid ""
 "To solve this, open the administrator application and register this computer."
 msgstr ""
 
-#: ../stoqlib/database/runtime.py:178
+#: ../stoqlib/database/runtime.py:204
 #, python-format
 msgid "The computer <u>%s</u> is not active in Stoq"
 msgstr ""
 
-#: ../stoqlib/database/runtime.py:180
+#: ../stoqlib/database/runtime.py:206
 msgid ""
 "To solve this, open the administrator application and re-activate this "
 "computer."
@@ -3991,7 +3996,6 @@ msgid "Client:"
 msgstr ""
 
 #: ../data/glade/ClientDetailsDialog.glade.h:2
-#: ../data/glade/ReceivingInvoiceSlave.glade.h:7
 msgid "Further Details"
 msgstr ""
 
@@ -4059,7 +4063,7 @@ msgstr ""
 #: ../data/glade/SaleDetailsDialog.glade.h:7
 #: ../data/glade/StartPurchaseStep.glade.h:11
 #: ../data/glade/PurchaseDetailsDialog.glade.h:12
-#: ../data/glade/ReceivingInvoiceSlave.glade.h:13
+#: ../data/glade/ReceivingInvoiceSlave.glade.h:12
 #: ../data/glade/PaymentDateChangeDialog.glade.h:3
 msgid "Order Number:"
 msgstr ""
@@ -4284,7 +4288,7 @@ msgid "0.00"
 msgstr ""
 
 #: ../data/glade/SalesPersonStep.glade.h:2
-#: ../data/glade/ReceivingInvoiceSlave.glade.h:12
+#: ../data/glade/ReceivingInvoiceSlave.glade.h:11
 msgid "Notes..."
 msgstr ""
 
@@ -4343,10 +4347,6 @@ msgstr ""
 msgid "Salary:"
 msgstr ""
 
-#: ../data/glade/AddressEditor.glade.h:1
-msgid "Main address"
-msgstr ""
-
 #: ../data/glade/CheckBillSettingsSlave.glade.h:3
 #: ../data/glade/PurchasePaymentSlave.glade.h:1
 #: ../data/glade/SellableItemEditor.glade.h:1
@@ -4395,6 +4395,7 @@ msgstr ""
 
 #: ../data/glade/DateSearchSlave.glade.h:3
 #: ../data/glade/OnSaleInfoSlave.glade.h:2
+#: ../data/glade/FiscalMemoryEditor.glade.h:5
 msgid "From:"
 msgstr ""
 
@@ -4415,6 +4416,7 @@ msgid "Supplied by: "
 msgstr ""
 
 #: ../data/glade/PurchasePaymentSlave.glade.h:2
+#: ../data/glade/FiscalMemoryEditor.glade.h:1
 msgid "1"
 msgstr ""
 
@@ -4560,14 +4562,18 @@ msgid "_Search..."
 msgstr ""
 
 #: ../data/glade/CompanyDocumentsSlave.glade.h:1
-msgid "CNPJ:"
+msgid "00.000.000/0000-00"
 msgstr ""
 
 #: ../data/glade/CompanyDocumentsSlave.glade.h:2
-msgid "Fancy Name:"
+msgid "CNPJ:"
 msgstr ""
 
 #: ../data/glade/CompanyDocumentsSlave.glade.h:3
+msgid "Fancy Name:"
+msgstr ""
+
+#: ../data/glade/CompanyDocumentsSlave.glade.h:4
 msgid "State Registry:"
 msgstr ""
 
@@ -4692,10 +4698,6 @@ msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.glade.h:13
 msgid "Order Status:"
-msgstr ""
-
-#: ../data/glade/PurchaseDetailsDialog.glade.h:14
-msgid "Ordered"
 msgstr ""
 
 #: ../data/glade/PurchaseDetailsDialog.glade.h:17
@@ -4927,6 +4929,7 @@ msgid "<u>Currently on Sale:</u>"
 msgstr ""
 
 #: ../data/glade/OnSaleInfoSlave.glade.h:4
+#: ../data/glade/FiscalMemoryEditor.glade.h:8
 msgid "To:"
 msgstr ""
 
@@ -4965,7 +4968,7 @@ msgid "There is %s overpaid."
 msgstr ""
 
 #: ../data/glade/FiscalBookEntryEditor.glade.h:3
-#: ../data/glade/ReceivingInvoiceSlave.glade.h:10
+#: ../data/glade/ReceivingInvoiceSlave.glade.h:9
 msgid "Invoice Number:"
 msgstr ""
 
@@ -5082,19 +5085,19 @@ msgstr ""
 msgid "<b>Receiving Details:</b>"
 msgstr ""
 
-#: ../data/glade/ReceivingInvoiceSlave.glade.h:9
+#: ../data/glade/ReceivingInvoiceSlave.glade.h:8
 msgid "IPI:"
 msgstr ""
 
-#: ../data/glade/ReceivingInvoiceSlave.glade.h:11
+#: ../data/glade/ReceivingInvoiceSlave.glade.h:10
 msgid "Invoice Total:"
 msgstr ""
 
-#: ../data/glade/ReceivingInvoiceSlave.glade.h:14
+#: ../data/glade/ReceivingInvoiceSlave.glade.h:13
 msgid "Products Total:"
 msgstr ""
 
-#: ../data/glade/ReceivingInvoiceSlave.glade.h:15
+#: ../data/glade/ReceivingInvoiceSlave.glade.h:14
 msgid "Receiving Number:"
 msgstr ""
 
@@ -5192,6 +5195,22 @@ msgstr ""
 
 #: ../data/glade/BranchDetailsSlave.glade.h:4
 msgid "Manager:"
+msgstr ""
+
+#: ../data/glade/FiscalMemoryEditor.glade.h:3
+msgid "End Date:"
+msgstr ""
+
+#: ../data/glade/FiscalMemoryEditor.glade.h:4
+msgid "Fiscal Memory"
+msgstr ""
+
+#: ../data/glade/FiscalMemoryEditor.glade.h:6
+msgid "Reductions"
+msgstr ""
+
+#: ../data/glade/FiscalMemoryEditor.glade.h:7
+msgid "Start Date:"
 msgstr ""
 
 #: ../data/glade/SaleListToolbar.glade.h:3
