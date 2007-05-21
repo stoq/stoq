@@ -34,7 +34,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 
 _ = stoqlib_gettext
 
@@ -127,15 +126,6 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                                  purchase.freight / 100)
                 self.model.freight_total = freight_value
                 self.proxy.update('freight_total')
-
-    def setup_slaves(self):
-        slave_holder = 'discount_surcharge_holder'
-        if self.get_slave(slave_holder):
-            return
-        self.discount_surcharge_slave = DiscountSurchargeSlave(
-            self.conn, self.model, ReceivingOrder,
-            visual_mode=self.visual_mode)
-        self.attach_slave(slave_holder, self.discount_surcharge_slave)
 
 
     #
