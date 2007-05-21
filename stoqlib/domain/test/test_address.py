@@ -36,15 +36,21 @@ class TestCityLocation(DomainTest):
         invalid_location = CityLocation(connection=self.trans)
         self.failIf(invalid_location.is_valid_model())
 
-    def testGetSimilar(self):
-        location = self.create_city_location()
-        self.assertEquals(location.get_similar().count(), 0)
+    def testGetOrCreate(self):
+        loc = CityLocation.get_or_create(self.trans, 'City',
+                                         'State', 'Country')
+        self.failUnless(loc)
+        self.assertEqual(loc.city, 'City')
+        self.assertEqual(loc.state, 'State')
+        self.assertEqual(loc.country, 'Country')
 
-        clone = location.clone()
-        self.assertEquals(location.get_similar().count(), 1)
-
-        clone.city = "Chicago"
-        self.assertEquals(location.get_similar().count(), 0)
+        loc2 = CityLocation.get_or_create(self.trans, 'city',
+                                          'state', 'country')
+        self.failUnless(loc2)
+        self.assertEqual(loc2.city, 'City')
+        self.assertEqual(loc2.state, 'State')
+        self.assertEqual(loc2.country, 'Country')
+        self.assertEqual(loc2, loc)
 
     def testGetDefault(self):
         location = CityLocation.get_default(self.trans)
@@ -65,17 +71,6 @@ class TestAddress(DomainTest):
                                 city_location=empty_location)
         is_valid_model = empty_address.is_valid_model()
         assert bool(is_valid_model) is False
-
-    def test_ensure_address(self):
-        addresses = Address.select(connection=self.trans)
-        self.failUnless(addresses)
-        address = addresses[0]
-
-        old_location = address.city_location
-        address.city_location = old_location.clone()
-
-        address.ensure_address()
-        self.assertEqual(address.city_location, old_location)
 
     def test_get_city_location_attributes(self):
         person = self.create_person()

@@ -79,17 +79,16 @@ class EmployeeImporter(CSVImporter):
             began=start,
             salary=data.salary)
 
-        ctloc = CityLocation(connection=trans,
-                             city=data.city,
-                             state=data.state,
-                             country=data.country)
+        ctloc = CityLocation.get_or_create(trans=trans,
+                                           city=data.city,
+                                           state=data.state,
+                                           country=data.country)
         address = Address(is_main_address=True,
                           person=person, city_location=ctloc,
                           connection=trans,
                           street=data.street,
                           number=int(data.street_number),
                           district=data.district)
-        address.ensure_address()
 
         profile = UserProfile.selectOneBy(name=data.profile, connection=trans)
 

@@ -15,19 +15,6 @@
                         </child>
                     </widget>
                 </child>
-                <child>
-                    <widget class="kiwi+ui+widgets+checkbutton+CheckButton" id="is_main_address_checkbutton">
-                        <property name="data_type">bool</property>
-                        <property name="is_focus">True</property>
-                        <property name="label" context="yes" translatable="yes">Main address</property>
-                        <property name="model_attribute">is_main_address</property>
-                        <property name="visible">True</property>
-                    </widget>
-                    <packing>
-                        <property name="expand">False</property>
-                        <property name="position">1</property>
-                    </packing>
-                </child>
             </widget>
         </child>
     </widget>

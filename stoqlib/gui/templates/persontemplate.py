@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,25 +22,24 @@
 ## Author(s):   Daniel Saran R. da Cunha    <daniel@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
 ##              Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
 """ Templates implementation for person editors.  """
 
-
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.message import warning
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.interfaces import IIndividual, ICompany
 from stoqlib.domain.person import Person
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.base.slaves import NoteSlave
-from stoqlib.gui.editors.addresseditor import AddressAdditionDialog
+from stoqlib.gui.editors.addresseditor import (AddressAdditionDialog,
+                                               AddressSlave)
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.slaves.liaisonslave import LiaisonListDialog
-from stoqlib.gui.slaves.addressslave import AddressSlave
-from stoqlib.gui.slaves.companyslave import CompanyDocumentsSlave
-from stoqlib.gui.slaves.individualslave import (IndividualDetailsSlave,
-                                           IndividualDocuments)
+from stoqlib.gui.templates.companytemplate import CompanyEditorTemplate
+from stoqlib.gui.templates.individualtemplate import IndividualEditorTemplate
+from stoqlib.lib.message import warning
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -54,6 +53,35 @@ class _PersonEditorTemplate(BaseEditorSlave):
                      'fax_number',
                      'mobile_number',
                      'email')
+
+    #
+    # BaseEditorSlave hooks
+    #
+
+    def create_model(self, conn):
+        return Person(name="", connection=conn)
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.model,
+                                    _PersonEditorTemplate.proxy_widgets)
+
+    def setup_slaves(self):
+        self.address_slave = AddressSlave(
+            self.conn, self.model, self.model.get_main_address(),
+            visual_mode=self.visual_mode)
+        self.attach_slave('address_holder', self.address_slave)
+        self.attach_model_slave('note_holder', NoteSlave, self.model)
+
+    def on_confirm(self):
+        self.address_slave.on_confirm()
+        main_address = self.address_slave.model
+        main_address.person = self.model
+        return self.model
+
+    #
+    # Public API
+    #
 
     def set_phone_number(self, phone_number):
         self.model.phone_number = phone_number
@@ -80,6 +108,35 @@ class _PersonEditorTemplate(BaseEditorSlave):
         self.attach_slave(name, slave)
         return slave
 
+    #
+    # Kiwi handlers
+    #
+
+    def on_address_button__clicked(self, button):
+        main_address = self.model.get_main_address()
+        if not main_address.is_valid_model():
+            msg = _(u"You must define a valid main address before\n"
+                    "adding additional addresses")
+            warning(msg)
+            return
+
+        result = run_dialog(AddressAdditionDialog, self, self.conn,
+                            person=self.model)
+        if not result:
+            return
+
+        new_main_address = self.model.get_main_address()
+        if new_main_address is not main_address:
+            self.address_slave.set_model(new_main_address)
+
+    def on_contacts_button__clicked(self, button):
+        run_dialog(LiaisonListDialog, self, self.conn, self.model,
+                   self.model.liaisons, visual_mode=self.visual_mode)
+
+    #
+    # Private API
+    #
+
     def _setup_widgets(self):
         facet_individual = IIndividual(self.model, None)
         facet_company = ICompany(self.model, None)
@@ -105,144 +162,15 @@ class _PersonEditorTemplate(BaseEditorSlave):
             self.company_frame.show()
         self.person_notebook.set_tab_label_text(tab_child, tab_text)
 
-    #
-    # Kiwi handlers
-    #
-
-    def on_address_button__clicked(self, *args):
-        main_address = self.model.get_main_address()
-        if not main_address.is_valid_model():
-            msg = _(u"You must define a valid main address before\n"
-                    "adding additional addresses")
-            warning(msg)
-            return
-
-        result = run_dialog(AddressAdditionDialog, self, self.conn,
-                            person=self.model)
-        if not result:
-            return
-
-        new_main_address = self.model.get_main_address()
-        if new_main_address is not main_address:
-            self.address_slave.set_model(new_main_address)
-
-    def on_contacts_button__clicked(self, *args):
-        run_dialog(LiaisonListDialog, self, self.conn, self.model,
-                   self.model.liaisons, visual_mode=self.visual_mode)
-
-    #
-    # BaseEditorSlave hooks
-    #
-
-    def create_model(self, conn):
-        return Person(name="", connection=conn)
-
-    def setup_proxies(self):
-        self._setup_widgets()
-        self.proxy = self.add_proxy(self.model,
-                                    _PersonEditorTemplate.proxy_widgets)
-
-    def setup_slaves(self):
-        main_address = self.model.get_main_address()
-        self.address_slave = AddressSlave(self.conn, self.model,
-                                          main_address,
-                                          visual_mode=self.visual_mode)
-        self.attach_slave('address_holder', self.address_slave)
-        self.attach_model_slave('note_holder', NoteSlave, self.model)
-
-    def on_confirm(self):
-        self.address_slave.on_confirm()
-        main_address = self.address_slave.model
-        main_address.person = self.model
-        return self.model
-
-
-class _IndividualEditorTemplate(BaseEditorSlave):
-    model_iface = IIndividual
-    gladefile = 'BaseTemplate'
-
-
-    def __init__(self, conn, model=None, person_slave=None,
-                 visual_mode=False):
-        self._person_slave = person_slave
-        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
-
-    def get_person_slave(self):
-        return self._person_slave
-
-    def attach_person_slave(self, slave):
-        self._person_slave.attach_slave('person_status_holder', slave)
-
-    #
-    # BaseEditorSlave hooks
-    #
-
-    def setup_slaves(self):
-        if not self._person_slave:
-            klass = _PersonEditorTemplate
-            self._person_slave = klass(self.conn, self.model.person,
-                                       visual_mode=self.visual_mode)
-            self.attach_slave('main_holder', self._person_slave)
-
-        slave = self._person_slave
-        slave_class = IndividualDocuments
-        self.documents_slave = slave.attach_model_slave('individual_holder',
-                                                        slave_class,
-                                                        self.model)
-        holder_name = 'details_holder'
-        slave_class = IndividualDetailsSlave
-        self.details_slave = slave.attach_model_slave(holder_name,
-                                                      slave_class,
-                                                      self.model)
-
-    def on_confirm(self, confirm_person=True):
-        self.details_slave.on_confirm()
-        if confirm_person:
-            self._person_slave.on_confirm()
-        return self.model
-
-
-class _CompanyEditorTemplate(BaseEditorSlave):
-    model_iface = ICompany
-    gladefile = 'BaseTemplate'
-
-    def __init__(self, conn, model=None, person_slave=None,
-                 visual_mode=False):
-        self._person_slave = person_slave
-        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
-
-    def get_person_slave(self):
-        return self._person_slave
-
-    def attach_person_slave(self, slave):
-        self._person_slave.attach_slave('person_status_holder', slave)
-
-    #
-    # BaseEditor hooks
-    #
-
-    def setup_slaves(self):
-        if not self._person_slave:
-            klass = _PersonEditorTemplate
-            self._person_slave = klass(self.conn, self.model.person,
-                                       visual_mode=self.visual_mode)
-            self.attach_slave('main_holder', self._person_slave)
-
-        klass = CompanyDocumentsSlave
-        self.company_docs_slave = klass(self.conn, self.model,
-                                        visual_mode=self.visual_mode)
-        self._person_slave.attach_slave('company_holder',
-                                       self.company_docs_slave)
-
-    def on_confirm(self, confirm_person=True):
-        if confirm_person:
-            self._person_slave.on_confirm()
-        return self.model
-
 
 class BasePersonRoleEditor(BaseEditor):
-    """A base class for person role editors. This class can not be
+    """
+    A base class for person role editors. This class can not be
     instantiated directly.
+
+    @ivar main_slave:
+    @ivar individual_slave:
+    @ivar company_slave:
     """
 
     def __init__(self, conn, model=None, role_type=None, person=None,
@@ -256,54 +184,35 @@ class BasePersonRoleEditor(BaseEditor):
         """
         if not (model or role_type is not None):
             raise ValueError('A role_type attribute is required')
+        self.individual_slave = None
+        self.company_slave = None
+        self._person_slave = None
+        self.main_slave = None
         self.role_type = role_type
         self.person = person
+
         BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
         # FIXME: Implement and use IDescribable on the model
         self.set_description(self.model.person.name)
 
-    def get_person_slave(self):
-        return self.main_slave.get_person_slave()
-
-    def set_phone_number(self, phone_number):
-        slave = self.get_person_slave()
-        slave.set_phone_number(phone_number)
-
-    def _check_role_type(self):
-        available_types = Person.ROLE_INDIVIDUAL, Person.ROLE_COMPANY
-        if not self.role_type in available_types:
-            raise ValueError('Invalid value for role_type attribute')
-
-    def _create_company_slave(self, company, person_slave=None):
-        klass = _CompanyEditorTemplate
-        self.company_slave = klass(self.conn, company,
-                                   person_slave=person_slave,
-                                   visual_mode=self.visual_mode)
-        return self.company_slave
-
-    def _create_individual_slave(self, individual, person_slave=None):
-        klass = _IndividualEditorTemplate
-        self.individual_slave = klass(self.conn, individual,
-                                      person_slave=person_slave,
-                                      visual_mode=self.visual_mode)
-        return self.individual_slave
-
     #
     # BaseEditor hooks
     #
-
 
     def create_model(self, conn):
         # XXX: Waiting fix for bug 2163. We should not need anymore to
         # provide empty values for mandatory attributes
         if not self.person:
             self.person = Person(name="", connection=conn)
-        self._check_role_type()
-        if (self.role_type == Person.ROLE_INDIVIDUAL and not
-            IIndividual(self.person, None)):
+        if not self.role_type in [Person.ROLE_INDIVIDUAL,
+                                  Person.ROLE_COMPANY]:
+            raise ValueError("Invalid value for role_type attribute, %r" % (
+                self.role_type,))
+        if (self.role_type == Person.ROLE_INDIVIDUAL and
+            not IIndividual(self.person, None)):
             self.person.addFacet(IIndividual, connection=conn)
-        elif (self.role_type == Person.ROLE_COMPANY and not
-              ICompany(self.person, None)):
+        elif (self.role_type == Person.ROLE_COMPANY and
+              not ICompany(self.person, None)):
             self.person.addFacet(ICompany, connection=conn)
         else:
             pass
@@ -312,26 +221,29 @@ class BasePersonRoleEditor(BaseEditor):
     def setup_slaves(self):
         individual = IIndividual(self.model.person, None)
         company = ICompany(self.model.person, None)
+        assert individual or company
 
-        if not (individual or company):
-            raise ValueError('This person must have at least an '
-                             'IIndividual or ICompany facets')
+        self._person_slave = _PersonEditorTemplate(
+            self.conn, self.model.person, visual_mode=self.visual_mode)
 
-        if individual and company:
-            slave = self._create_individual_slave(individual)
-            person_slave = slave.get_person_slave()
-            self._create_company_slave(company, person_slave)
+        if individual:
+            slave = IndividualEditorTemplate(self.conn,
+                                             model=individual,
+                                             person_slave=self._person_slave,
+                                             visual_mode=self.visual_mode)
+            self.individual_slave = slave
+            self.main_slave = slave
 
-        elif individual:
-            slave = self._create_individual_slave(individual)
-            self.company_slave = None
-
-        else:
-            slave = self._create_company_slave(company)
-            self.individual_slave = None
+        if company:
+            slave = CompanyEditorTemplate(self.conn,
+                                          model=company,
+                                          person_slave=self._person_slave,
+                                          visual_mode=self.visual_mode)
+            self.company_slave = slave
+            self.main_slave = slave
 
         self.attach_slave('main_holder', slave)
-        self.main_slave = slave
+        self.main_slave.attach_slave('main_holder', self._person_slave)
 
     def on_confirm(self):
         if self.individual_slave and self.company_slave:
@@ -342,3 +254,14 @@ class BasePersonRoleEditor(BaseEditor):
         else:
             self.company_slave.on_confirm()
         return self.model
+
+    #
+    # Public API
+    #
+
+    def get_person_slave(self):
+        return self._person_slave
+
+    def set_phone_number(self, phone_number):
+        slave = self.get_person_slave()
+        slave.set_phone_number(phone_number)

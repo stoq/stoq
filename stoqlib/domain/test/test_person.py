@@ -280,20 +280,6 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.assertEqual(type(statuses[0][0]), unicode)
         self.assertEqual(type(statuses[0][1]), int)
 
-    def testEnsureBirthLocation(self):
-        location = CityLocation(city='city', state='state',
-                                country='country',
-                                connection=self.trans)
-
-        person = self.create_person()
-        individual = person.addFacet(IIndividual, birth_location=location,
-                                     connection=self.trans)
-        old_location = individual.birth_location
-        individual.birth_location = old_location.clone()
-
-        individual.ensure_birth_location()
-        self.assertEqual(individual.birth_location, old_location)
-
 class TestCompany(_PersonFacetTest, DomainTest):
     facet = Person.getAdapterClass(ICompany)
 
