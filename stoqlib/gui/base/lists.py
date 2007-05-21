@@ -66,6 +66,7 @@ class ModelListDialog(ListDialog):
         @param conn: A database connection
         """
         self.conn = conn
+        self._reuse_transaction = False
 
         if self.model_type is None:
             raise TypeError("%s must define a model_type class attribute" %
