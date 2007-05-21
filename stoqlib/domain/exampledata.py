@@ -152,7 +152,7 @@ class ExampleCreator(object):
             'PersonAdaptToClient': self.create_client,
             'PersonAdaptToCreditProvider': self.create_credit_provider,
             'PersonAdaptToEmployee': self.create_employee,
-            '_PersonAdaptToIndividual': self.create_individual,
+            'PersonAdaptToIndividual': self.create_individual,
             'PersonAdaptToSalesPerson': self.create_sales_person,
             'PersonAdaptToSupplier': self.create_supplier,
             'PersonAdaptToTransporter': self.create_transporter,

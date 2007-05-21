@@ -64,16 +64,29 @@ class CityLocation(Domain):
     def is_valid_model(self):
         return bool(self.country and self.city and self.state)
 
-    def get_similar(self):
+    @classmethod
+    @argcheck(StoqlibTransaction, basestring, basestring, basestring)
+    def get_or_create(cls, trans, city, state, country):
         """
-        Returns a list of CityLocations which are similar to the current one
+        @param trans: a database transaction
+        @param city: city
+        @param state: state
+        @param country: country
+        @returns: a L{CityLocation} or None
         """
-        return CityLocation.select(
-            AND(func.UPPER(CityLocation.q.city) == self.city.upper(),
-                func.UPPER(CityLocation.q.state) == self.state.upper(),
-                func.UPPER(CityLocation.q.country) == self.country.upper(),
-                CityLocation.q.id != self.id),
-            connection=self.get_connection())
+        location = CityLocation.selectOne(
+            AND(func.UPPER(CityLocation.q.city) == city.upper(),
+                func.UPPER(CityLocation.q.state) == state.upper(),
+                func.UPPER(CityLocation.q.country) == country.upper()),
+            connection=trans)
+        if not location:
+            location = CityLocation(
+                city=city,
+                state=state,
+                country=country,
+                connection=trans)
+        return location
+
 
 class Address(Domain):
     """Class to store person's addresses.
@@ -97,17 +110,6 @@ class Address(Domain):
     def is_valid_model(self):
         return (self.street and self.number and self.district
                 and self.city_location.is_valid_model())
-
-    def ensure_address(self):
-        """
-        Verify that the current CityLocation instance is unique.
-        If it's not unique replace it with the one which is similar/identical
-        """
-        similar = self.city_location.get_similar()
-        if similar:
-            location = self.city_location
-            self.city_location = similar.getOne()
-            CityLocation.delete(location.id, connection=self.get_connection())
 
     def get_city(self):
         return self.city_location.city

@@ -146,7 +146,7 @@
                         <property name="data_type">unicode</property>
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
-                        <property name="model_attribute">city_location.state</property>
+                        <property name="model_attribute">state</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -217,7 +217,7 @@
                         <property name="completion">True</property>
                         <property name="data_type">unicode</property>
                         <property name="mandatory">True</property>
-                        <property name="model_attribute">city_location.city</property>
+                        <property name="model_attribute">city</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -230,7 +230,7 @@
                 <child>
                     <widget class="ProxyComboEntry" id="country">
                         <property name="data_type">unicode</property>
-                        <property name="model_attribute">city_location.country</property>
+                        <property name="model_attribute">country</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>

@@ -270,11 +270,6 @@ class IIndividual(IPersonFacet):
     def get_marital_statuses():
         """FIXME"""
 
-    def ensure_birth_location():
-        """
-        Verify that the current CityLocation instance is unique.
-        If it's not unique replace it with the one which is similar/identical
-        """
 
 class ICompany(IPersonFacet):
     """An institution created to conduct business"""

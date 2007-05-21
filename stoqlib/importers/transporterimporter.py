@@ -56,17 +56,16 @@ class TransporterImporter(CSVImporter):
                         cpf=data.cpf,
                         rg_number=data.rg)
 
-        ctloc = CityLocation(connection=trans,
-                             city=data.city,
-                             state=data.state,
-                             country=data.country)
+        ctloc = CityLocation.get_or_create(trans=trans,
+                                           city=data.city,
+                                           state=data.state,
+                                           country=data.country)
         address = Address(is_main_address=True,
                           person=person, city_location=ctloc,
                           connection=trans,
                           street=data.street,
                           number=int(data.street_number),
                           district=data.district)
-        address.ensure_address()
 
         dict(open_contract_date=self.parse_date(data.open_contract),
              freight_percentage=data.freight_percentage),
