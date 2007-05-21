@@ -85,6 +85,12 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="Receipt">
+                        <property name="name">Receipt</property>
+                        <property name="label" translatable="yes">R_eceipt</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
                         <property name="label" translatable="yes">Quit</property>
@@ -157,7 +163,7 @@
 <menubar action="menubar" name="menubar">
 
 
-<menu action="TillMenu" name="TillMenu"><menuitem action="quit_action" name="quit_action"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
+<menu action="TillMenu" name="TillMenu"><menuitem action="Receipt" name="Receipt"/><menuitem action="quit_action" name="quit_action"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
 </ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="receivable">
