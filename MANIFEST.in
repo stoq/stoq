@@ -3,6 +3,7 @@ recursive-include data/fonts *.ttf
 recursive-include data/pixmaps *.png
 recursive-include data/sql *.sql
 recursive-include data/csv *.csv
+recursive-include data/templates *.rml
 recursive-include docs *
 recursive-include external *.py
 recursive-include locale stoqlib.mo
