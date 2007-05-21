@@ -42,6 +42,7 @@ from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import SaleView
 from stoqlib.reporting.payment import ReceivablePaymentReport
+from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 
@@ -83,11 +84,18 @@ class ReceivableApp(SearchableAppWindow):
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
+        self._update_widgets()
         self.results.connect('has-rows', self._has_rows)
 
     def _setup_widgets(self):
         self.search.set_summary_label(
             'value', '<b>Total:</b>', '<b>%s</b>')
+
+    def _update_widgets(self):
+        selected = self.results.get_selected_rows()
+        self.receive_button.set_sensitive(self._can_receive(selected))
+        self.details_button.set_sensitive(self._same_sale(selected))
+        self.Receipt.set_sensitive(self._can_emit_receipt(selected))
 
     def _has_rows(self, result_list, has_rows):
         self.print_button.set_sensitive(has_rows)
@@ -158,6 +166,24 @@ class ReceivableApp(SearchableAppWindow):
                 self.results.update(view)
 
         trans.close()
+        self._update_widgets()
+
+    def _can_emit_receipt(self, receivable_views):
+        """
+        Determines if we can emit the receipt for a list of
+        receivable views.
+        To do so they must meet the following conditions:
+          - Be in the same sale
+          - The payment status needs to be set to PAID
+        """
+        if not receivable_views:
+            return False
+
+        sale = receivable_views[0].sale
+        if sale is None:
+            return False
+        return all(view.sale == sale and view.payment.is_paid()
+                   for view in receivable_views)
 
     def _can_receive(self, receivable_views):
         """
@@ -198,8 +224,7 @@ class ReceivableApp(SearchableAppWindow):
         self._show_details(receivable_view)
 
     def on_results__selection_changed(self, receivables, selected):
-        self.receive_button.set_sensitive(self._can_receive(selected))
-        self.details_button.set_sensitive(self._same_sale(selected))
+        self._update_widgets()
 
     def on_details_button__clicked(self, button):
         selected = self.results.get_selected_rows()[0]
@@ -210,3 +235,9 @@ class ReceivableApp(SearchableAppWindow):
 
     def on_print_button__clicked(self, button):
         print_report(ReceivablePaymentReport, list(self.results))
+
+    def on_Receipt__activate(self, action):
+        receivable_views = self.results.get_selected_rows()
+        payments = [v.payment for v in receivable_views]
+        print_report(ReceivalReceipt, payments=payments,
+                     sale=receivable_views[0].sale)
