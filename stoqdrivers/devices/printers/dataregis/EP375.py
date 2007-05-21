@@ -612,6 +612,9 @@ class EP375(SerialBase, BaseChequePrinter):
     def till_read_memory(self, start, end):
         raise NotImplementedError
 
+    def till_read_memory_by_reductions(self, start, end):
+        raise NotImplementedError
+
     def get_capabilities(self):
         # FIXME: As always, we have a problem here with Dataregis printer:
         # only one of the last 100 items can be cancelled, so the 'item_id'

@@ -261,6 +261,9 @@ class Simple:
     def till_read_memory(self, start, end):
         pass
 
+    def till_read_memory_by_reductions(self, start, end):
+        pass
+
 
     #
     # IChequePrinter implementation

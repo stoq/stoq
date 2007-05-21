@@ -611,6 +611,9 @@ class IFS9000I(SerialBase):
     def till_read_memory(self, start, end):
         raise NotImplementedError
 
+    def till_read_memory_by_reductions(self, start, end):
+        raise NotImplementedError
+
     def get_status(self):
         # TODO retornar status de impressão com string de interpretação.
         self.send_command(self.CMD_PRINTER_STATUS)
