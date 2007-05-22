@@ -102,10 +102,10 @@ def _check_dependencies():
                          gazpacho.__version__)
     log.debug('gazpacho okay')
 
-def _run_first_time_wizard(config):
+def _run_first_time_wizard(options):
     from stoqlib.gui.base.dialogs import run_dialog
     from stoq.gui.config import FirstTimeConfigWizard
-    model = run_dialog(FirstTimeConfigWizard, None, config)
+    model = run_dialog(FirstTimeConfigWizard, None, options)
     if not model:
         raise SystemExit("No configuration data provided")
 
@@ -180,7 +180,7 @@ def _initialize(options):
     wizard = False
     if (options.wizard or
         not os.path.exists(os.path.join(config_dir, 'stoq.conf'))):
-        _run_first_time_wizard(config)
+        _run_first_time_wizard(options)
         wizard = True
 
     # There must be ICookieFile registration now, regardless if we
