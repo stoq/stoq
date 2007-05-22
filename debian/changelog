@@ -1,3 +1,27 @@
+stoqlib (0.9.0-4) dapper; urgency=low
+
+  * Remove debian/preinst and bump stoqdrivers+kiwi versions
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 17:01:18 -0300
+
+sto qlib (0.9.0-3) dapper; urgency=low
+
+  * Remove absolute pixmap paths 
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 16:41:17 -0300
+
+stoqlib (0.9.0-2) dapper; urgency=low
+
+  * Get the externals directory from the prefix
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 16:27:57 -0300
+
+stoqlib (0.9.0-1) dapper; urgency=low
+
+  * New release
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 14:48:47 -0300
+
 stoqlib (0.8.10-1) dapper; urgency=low
 
   * New release
