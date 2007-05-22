@@ -99,6 +99,8 @@ class SintegraDialog(SearchDialog):
         self.action_area.set_layout(gtk.BUTTONBOX_START)
         self.action_area.pack_start(b, False, False, 6)
         b.show()
+        has_start_date = bool(self.date_filter.get_start_date())
+        b.set_sensitive(has_start_date)
 
     #
     # Callbacks
