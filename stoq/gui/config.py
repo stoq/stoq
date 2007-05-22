@@ -486,7 +486,7 @@ class BranchSettingsStep(WizardEditorStep):
         self.tax_proxy = self.add_proxy(model, widgets)
 
     def setup_slaves(self):
-        from stoqlib.gui.editor.addresseditor import AddressSlave
+        from stoqlib.gui.editors.addresseditor import AddressSlave
         address = self.model.get_main_address()
         slave = AddressSlave(self.conn, self.model, address)
         self.attach_slave("address_holder", slave)
