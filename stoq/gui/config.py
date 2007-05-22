@@ -59,6 +59,7 @@ from stoqlib.domain.station import BranchStation
 from stoqlib.domain.examples import createall as examples
 from stoqlib.domain.interfaces import IUser
 from stoqlib.domain.system import SystemTable
+from stoqlib.drivers.fiscalprinter import create_virtual_printer
 from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
@@ -504,7 +505,8 @@ class DeviceSettingsStep(BaseWizardStep):
 
     def _setup_slaves(self, station):
         from stoqlib.gui.slaves.devicesslave import DeviceSettingsDialogSlave
-        slave = DeviceSettingsDialogSlave(self.conn, station=self.wizard.station)
+        self.wizard.device_slave = slave = DeviceSettingsDialogSlave(
+            self.conn, station=self.wizard.station)
         self.attach_slave("devices_holder", slave)
 
     #
@@ -533,6 +535,7 @@ class FirstTimeConfigWizard(BaseWizard):
         self.options = options
         self._conn = None
         self.station = None
+        self.device_slave = None
         self.model = Settable(db_settings=None, stoq_user_data=None)
         first_step = DatabaseSettingsStep(self, self.model)
         BaseWizard.__init__(self, None, first_step, self.model,
@@ -551,6 +554,8 @@ class FirstTimeConfigWizard(BaseWizard):
     #
 
     def finish(self):
+        if self.device_slave and len(self.device_slave.klist) == 0:
+            create_virtual_printer(self._conn, self.station)
         self._conn.commit(close=True)
 
         # Write configuration to disk
