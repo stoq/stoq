@@ -15,7 +15,7 @@ deb: sdist
 	rm -fr $(BUILDDIR)
 	mkdir $(BUILDDIR)
 	cd $(BUILDDIR) && tar xfz ../dist/$(TARBALL)
-	cd $(BUILDDIR)/$(PACKAGE)-$(VERSION) && debuild
+	cd $(BUILDDIR)/$(PACKAGE)-$(VERSION) && debuild -S
 	rm -fr $(BUILDDIR)/$(PACKAGE)-$(VERSION)
 	mv $(BUILDDIR)/* dist
 	rm -fr $(BUILDDIR)
@@ -30,7 +30,7 @@ rpm: sdist
 	mv dist/noarch/* dist
 	rm -fr dist/noarch
 
-upload:	
+upload:
 	cp dist/$(TARBALL) $(TARBALL_DIR)
 	for suffix in "gz" "dsc" "build" "changes" "deb"; do \
 	  cp dist/$(PACKAGE)_$(DEBVERSION)*."$$suffix" $(DLDIR); \
