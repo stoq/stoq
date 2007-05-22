@@ -1,0 +1,23 @@
+#!/bin/sh -e
+
+#DEBHELPER#
+
+# handle problem caused probably by an earlier version of python-setuptools
+# which was buggy (not sure)
+case $1 in
+    install|upgrade)
+	for pyversion in 2.3 2.4 2.5; do
+	    test -d /var/lib/python-support/python${pyversion}/kiwi-1.9.8.egg-info && \
+		rm -rf /var/lib/python-support/python${pyversion}/kiwi-1.9.8.egg-info || \
+		true
+	    test -d /var/lib/python-support/python${pyversion}/kiwi && \
+		rm -rf /var/lib/python-support/python${pyversion}/kiwi || \
+		true
+	    test -L /var/lib/python-support/python${pyversion}/gazpacho/widgets/kiwiwidgets.py && \
+		rm -f /var/lib/python-support/python${pyversion}/gazpacho/widgets/kiwiwidgets.py || \
+		true
+	done
+	;;
+    *)
+	;;
+esac

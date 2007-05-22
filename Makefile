@@ -18,7 +18,7 @@ apidocs: stoqdrivers.pickle
 		 --make-html \
 		 -p stoqdrivers.pickle
 
-sdist: dist/$(TARBALL)
+sdist:
 	kiwi-i18n -p $(PACKAGE) -c
 	python setup.py -q sdist
 
@@ -26,7 +26,7 @@ deb: sdist
 	rm -fr $(BUILDDIR)
 	mkdir $(BUILDDIR)
 	cd $(BUILDDIR) && tar xfz ../dist/$(TARBALL)
-	cd $(BUILDDIR)/$(PACKAGE)-$(VERSION) && debuild
+	cd $(BUILDDIR)/$(PACKAGE)-$(VERSION) && debuild -S
 	rm -fr $(BUILDDIR)/$(PACKAGE)-$(VERSION)
 	mv $(BUILDDIR)/* dist
 	rm -fr $(BUILDDIR)

@@ -1,11 +1,14 @@
 #!/usr/bin/make -f
 
+DEB_PYTHON_SYSTEM := pysupport
+
+include /usr/share/cdbs/1/rules/buildcore.mk
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
-clean::
-	find . -name '*.pyc' | xargs rm -f
+DEB_COMPRESS_EXCLUDE += .py
+DEB_PYTHON_INSTALL_ARGS_ALL += --single-version-externally-managed
 
-binary-install::
-	dh_python
+clean::
+	-find . -name \*.mo -exec rm {} \;

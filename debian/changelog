@@ -1,3 +1,9 @@
+stoqdrivers (1:0.7.0-1) dapper; urgency=low
+
+  * New release
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 13:56:33 -0300
+
 stoqdrivers (1:0.6.0-1) dapper; urgency=low
 
   * New release

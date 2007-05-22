@@ -3,12 +3,12 @@ Section: python
 Priority: optional
 Maintainer: Johan Dahlin <jdahlin@async.com.br>
 Build-Depends: debhelper (>= 4.2.28)
-Build-Depends-Indep: cdbs, python-dev (>= 2.4), python-zopeinterface (>= 3.2.1), kiwi (>= 1.9.9), python-serial (>= 2.2)
+Build-Depends-Indep: cdbs, python-dev (>= 2.4), python-zopeinterface (>= 3.2.1), python-kiwi (>= 1.9.15), python-serial (>= 2.2)
 Standards-Version: 3.6.2
 
 Package: stoqdrivers
 Architecture: all
-Depends: python2.4, ${shlibs:Depends}, python-zopeinterface (>= 3.2.1), python-serial (>= 2.2), kiwi (>= 1.9.9)
+Depends: python2.4, ${shlibs:Depends}, python-zopeinterface (>= 3.2.1), python-serial (>= 2.2), python-kiwi (>= 1.9.15)
 Description: Fiscal driver collection
  This is a powerful collection of device drivers written in Python and totally
  focused on retail systems. Stoqdrivers also offers an unified API for devices
