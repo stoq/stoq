@@ -409,6 +409,7 @@ class ExampleDatabaseStep(WizardEditorStep):
         else:
             self.conn.commit()
             examples.create()
+            self.wizard.installed_examples = True
             stepclass = DeviceSettingsStep
         return stepclass(self.conn, self.wizard, self.model, self)
 
@@ -534,6 +535,7 @@ class FirstTimeConfigWizard(BaseWizard):
         self.config = StoqConfig()
         self.options = options
         self._conn = None
+        self.installed_examples = False
         self.station = None
         self.device_slave = None
         self.model = Settable(db_settings=None, stoq_user_data=None)
@@ -554,7 +556,9 @@ class FirstTimeConfigWizard(BaseWizard):
     #
 
     def finish(self):
-        if self.device_slave and len(self.device_slave.klist) == 0:
+        if (self.device_slave and
+            len(self.device_slave.klist) == 0 and
+            not self.installed_examples):
             create_virtual_printer(self._conn, self.station)
         self._conn.commit(close=True)
 
