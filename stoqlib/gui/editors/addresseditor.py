@@ -27,6 +27,7 @@
 """ Person address editor implementation"""
 
 from kiwi.argcheck import argcheck
+from kiwi.datatypes import ValidationError
 from kiwi.python import AttributeForwarder
 from kiwi.ui.widgets.list import Column
 
@@ -138,6 +139,14 @@ class AddressSlave(BaseEditorSlave):
         self.model.ensure_address()
         return self.model.target
 
+    #
+    # Kiwi callbacks
+    #
+
+    def on_number__validate(self, entry, number):
+        if number <= 0:
+            return ValidationError(_("Number cannot be zero or less"
+                                      " than zero"))
 
 class AddressEditor(BaseEditor):
     model_name = _('Address')
