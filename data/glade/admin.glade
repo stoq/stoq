@@ -335,7 +335,7 @@
                                                                         <property name="visible">True</property>
                                                                         <child>
                                                                             <widget class="GtkImage" id="image1">
-                                                                                <property name="file">/home/silvio/devel/trunk/stoqlib/data/pixmaps/add24px.png</property>
+                                                                                <property name="file">add24px.png</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                         </child>
@@ -366,7 +366,7 @@
                                                                         <property name="visible">True</property>
                                                                         <child>
                                                                             <widget class="GtkImage" id="image3">
-                                                                                <property name="file">/home/silvio/devel/trunk/stoqlib/data/pixmaps/edit24px.png</property>
+                                                                                <property name="file">edit24px.png</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                         </child>
