@@ -47,7 +47,6 @@ import os
 import socket
 
 import gtk
-from kiwi.argcheck import argcheck
 from kiwi.python import Settable
 from kiwi.ui.dialogs import info
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
@@ -224,10 +223,10 @@ class DatabaseSettingsStep(WizardEditorStep):
         # Save password if using password authentication
         if self.authentication_type.get_selected() == PASSWORD_AUTHENTICATION:
             self._setup_pgpass()
-
         self.wizard.config.load_settings(self.wizard_model.db_settings)
 
-        setup(self.wizard.config, register_station=False, check_schema=False)
+        setup(self.wizard.config, self.wizard.options,
+              register_station=False, check_schema=False)
 
         if not self.has_installed_db:
             # Initialize database connections and create system data if the
@@ -529,9 +528,9 @@ class FirstTimeConfigWizard(BaseWizard):
     title = _("Setting up Stoq")
     size = (550, 450)
 
-    @argcheck(StoqConfig)
-    def __init__(self, config):
+    def __init__(self, options):
         self.config = StoqConfig()
+        self.options = options
         self._conn = None
         self.station = None
         self.model = Settable(db_settings=None, stoq_user_data=None)
