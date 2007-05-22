@@ -133,6 +133,10 @@ class SupplierSearch(BasePersonSearch):
                        width=180),
                 Column('cnpj', _('CNPJ'), str, width=140)]
 
+    def get_editor_model(self, supplier_view):
+        return supplier_view.supplier
+
+
 class AbstractCreditProviderSearch(BasePersonSearch):
     title = ""
     table = CreditProviderView
