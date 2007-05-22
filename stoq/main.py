@@ -51,6 +51,10 @@ def _write_exception_hook(exctype, value, tb):
     from stoqlib.gui.base.dialogs import get_current_toplevel
 
     runner = get_runner()
+    if runner:
+        appname = runner.get_current_app_name()
+    else:
+        appname = 'unknown'
 
     window = get_current_toplevel()
     if window:
@@ -59,7 +63,7 @@ def _write_exception_hook(exctype, value, tb):
         window_name = 'unknown'
 
     log.info('An error occurred in application "%s", toplevel window=%s:' % (
-        runner.get_current_app_name(), window_name))
+        appname, window_name))
 
     traceback.print_exception(exctype, value, tb, file=_stream)
     traceback.print_exception(exctype, value, tb)
