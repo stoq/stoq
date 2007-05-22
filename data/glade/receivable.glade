@@ -228,7 +228,7 @@
                                                                 <property name="visible">True</property>
                                                                 <child>
                                                                     <widget class="GtkImage" id="image2">
-                                                                        <property name="file">/home/silvio/devel/trunk/stoqlib/data/pixmaps/kfind22px.png</property>
+                                                                        <property name="file">kfind22px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>
