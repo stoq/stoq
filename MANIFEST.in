@@ -12,4 +12,5 @@ include INSTALL
 include CONTRIBUTORS
 include stoq.desktop
 include debian/changelog debian/compat debian/copyright debian/control debian/rules
+include debian/pycompat debian/pyversions
 include stoq.spec

@@ -1,3 +1,29 @@
+stoq (0.9.0-4) dapper; urgency=low
+
+  * Fix a bug in the configuration wizard, do not always create a
+    virtual printer
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 17:18:09 -0300
+
+stoq (0.9.0-3) dapper; urgency=low
+
+  * Remove debian/preinst
+  * Bump stoqlib version 
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 17:01:47 -0300
+
+stoq (0.9.0-2) dapper; urgency=low
+
+  * Bump stoqlib requirement, do not use absolute paths for pixmaps 
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 16:43:37 -0300
+
+stoq (0.9.0-1) dapper; urgency=low
+
+  * New release
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 14:57:56 -0300
+
 stoq (0.8.10-1) dapper; urgency=low
 
   * New release
