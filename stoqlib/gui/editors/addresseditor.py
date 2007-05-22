@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -136,7 +136,7 @@ class AddressSlave(BaseEditorSlave):
 
     def on_confirm(self):
         self.model.ensure_address()
-        return self.model
+        return self.model.target
 
 
 class AddressEditor(BaseEditor):
@@ -153,6 +153,7 @@ class AddressEditor(BaseEditor):
         self.current_main_address = self.person.get_main_address()
 
         if address is not None:
+            assert isinstance(address, Address)
             address = conn.get(address)
             address = _AddressModel(address, conn)
 
@@ -181,7 +182,8 @@ class AddressEditor(BaseEditor):
 
     def on_confirm(self):
         self.model.ensure_address()
-        return self.model
+
+        return self.model.target
 
 
 class AddressAdditionDialog(ModelListDialog):
@@ -207,7 +209,8 @@ class AddressAdditionDialog(ModelListDialog):
     def populate(self):
         # This is only additional addresses, eg non-main ones
         return Address.selectBy(
-            person=self.person, is_main_address=False,
+            person=self.person,
+            is_main_address=False,
             connection=self.trans)
 
     def run_editor(self, trans, model):

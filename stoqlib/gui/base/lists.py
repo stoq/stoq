@@ -159,11 +159,6 @@ class ModelListDialog(ListDialog):
         dialog = get_dialog(self, dialog_class, *args, **kwargs)
         retval = run_dialog(dialog)
         if not retval:
-            if (self._reuse_transaction and
-                issubclass(dialog_class, BaseEditor)):
-                dialog.model.delete(dialog.model.id,
-                                    connection=self._reuse_transaction)
-
             # We must return None because of ListDialog's add-item signal
             # expects that
             retval = None
@@ -184,8 +179,9 @@ class ModelListDialog(ListDialog):
                 type(self).__name__))
 
         return self.run_dialog(
-            self.editor_class, parent=self,
+            self.editor_class,
             conn=trans, model=model)
+
 
 class AdditionListSlave(GladeSlaveDelegate):
     """
