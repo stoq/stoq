@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s):      Evandro Vale Miquelito  <evandro@async.com.br>
+##                  Johan Dahlin            <jdahlin@async.com.br>
 ##
 """ Create purchase objects for an example database"""
 
@@ -28,8 +29,9 @@ from stoqdrivers.enum import PaymentMethodType
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       get_current_user)
 from stoqlib.domain.examples import log
-from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.person import Person
+from stoqlib.domain.product import Product
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.interfaces import (ISupplier, IPaymentGroup,
                                        ITransporter)
 from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
@@ -80,6 +82,8 @@ def create_purchases():
                                      connection=trans)
 
     for sellable in sellables:
+        if not isinstance(sellable.get_adapted(), Product):
+            continue
         purchase_item = order.add_item(sellable, 5)
 
         ReceivingOrderItem(connection=trans,
