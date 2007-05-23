@@ -80,7 +80,7 @@ class ClientDetailsDialog(BaseEditor):
                 total_value = price * qty
                 unit = product.sellable.get_unit_description()
                 qty_str = '%s %s' % (qty, unit)
-                product_codes = [item.id for item in product_dict.values()]
+                product_codes = [item.code for item in product_dict.values()]
                 sellable = product.sellable
                 if not sellable.id in product_codes:
                     desc = sellable.base_sellable_info.description
