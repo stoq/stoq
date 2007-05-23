@@ -227,6 +227,7 @@
                     <widget class="GtkAction" id="sintegra">
                         <property name="name">sintegra</property>
                         <property name="label" translatable="yes">Create Sintegra Archive...</property>
+                        <property name="accelerator">&lt;Control&gt;w</property>
                     </widget>
                 </child>
                 <child>

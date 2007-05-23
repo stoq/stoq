@@ -88,6 +88,7 @@
                     <widget class="GtkAction" id="Receipt">
                         <property name="name">Receipt</property>
                         <property name="label" translatable="yes">R_eceipt</property>
+                        <property name="accelerator">&lt;Control&gt;r</property>
                     </widget>
                 </child>
                 <child>
