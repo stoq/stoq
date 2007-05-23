@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-21 18:42-0300\n"
+"POT-Creation-Date: 2007-05-23 11:01-0300\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -31,11 +31,11 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../stoq/main.py:146 ../stoq/lib/startup.py:96
+#: ../stoq/main.py:150 ../stoq/lib/startup.py:96
 msgid "Database schema error"
 msgstr "Erro na base de dados"
 
-#: ../stoq/main.py:147
+#: ../stoq/main.py:151
 msgid ""
 "Table `system_table' does not exist.\n"
 "Consult your database administrator to solve this problem."
@@ -43,17 +43,17 @@ msgstr ""
 "Tabela `system_table' não existe.\n"
 "Consulte o administrador da base de dados para resolver."
 
-#: ../stoq/main.py:195
+#: ../stoq/main.py:199
 msgid "Could not open database config file"
 msgstr "impossível abrir o arquivo de configuração do banco de dados"
 
-#: ../stoq/main.py:196
+#: ../stoq/main.py:200
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
 msgstr ""
 "Dados inválidos do arquivo de configuração, obtido erro '%s', do tipo '%s'"
 
-#: ../stoq/main.py:207
+#: ../stoq/main.py:211
 msgid "Could not connect to database"
 msgstr "Não foi possível conectar ao banco de dados"
 
@@ -242,7 +242,7 @@ msgstr "<b>Conta do Administrador</b>"
 msgid "The password supplied is not valid."
 msgstr "O password fornecido não é válido."
 
-#: ../stoq/gui/config.py:529
+#: ../stoq/gui/config.py:531
 msgid "Setting up Stoq"
 msgstr "Configurando o Stoq"
 
