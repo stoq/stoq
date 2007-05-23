@@ -49,14 +49,9 @@ class ReceivalReceipt(BaseRMLReport):
 
     def get_namespace(self):
         document = ""
-        drawee = None
-        # This is backwards compatiblity code, future sales will
-        # all contain a branch
-        if self.sale.branch:
-            drawee = self.sale.branch.person
-            company = ICompany(drawee, None)
-            if company:
-                document = company.cnpj
+        company = ICompany(self.sale.branch.person, None)
+        if company:
+            document = company.cnpj
 
         if self.sale.client:
             payer = self.sale.client.person
@@ -64,6 +59,6 @@ class ReceivalReceipt(BaseRMLReport):
             payer = None
         return dict(document=document,
                     order=self.sale,
-                    drawee=drawee,
+                    drawee=self.sale.branch.person,
                     payer=payer,
                     payments=self.payments)
