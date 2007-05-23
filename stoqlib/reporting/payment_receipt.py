@@ -36,7 +36,7 @@ class PaymentReceipt(BaseRMLReport):
         This class builds the namespace used in template
     """
     template_name = 'receipt.rml'
-    title = "Payment receipt"
+    title = _("Payment receipt")
 
     def __init__(self, filename, payments, purchase):
         self.payments = payments

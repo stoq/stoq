@@ -34,7 +34,7 @@ from stoqlib.lib.validators import get_formatted_price
 
 class _BasePaymentReport(SearchResultsReport):
     """Base report for Payable and Receivable reports"""
-    report_name = "Payment Report"
+    report_name = _("Payment Report")
     main_object_name = "payments"
 
     def __init__(self, filename, payments, *args, **kwargs):
