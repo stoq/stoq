@@ -431,7 +431,7 @@ class CashInEditor(BaseEditor):
 
 
 class FiscalMemoryEditor(BaseEditor):
-    title = "Print Fiscal Memory"
+    title = _("Print Fiscal Memory")
     model_type = Settable
     gladefile = 'FiscalMemoryEditor'
     proxy_widgets = ('start_date',
