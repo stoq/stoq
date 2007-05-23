@@ -605,7 +605,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         money = MoneyPM.selectOne(connection=conn)
         out_payment = money.create_outpayment(
             self, paid_value,
-            description='%s Money Returned for Sale %d' % (
+            description=_('%s Money Returned for Sale %d') % (
             '1/1', self.sale.id), till=till)
         payment = out_payment.get_adapted()
         payment.set_pending()
