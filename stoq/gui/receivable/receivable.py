@@ -45,10 +45,10 @@ from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.receivable.view import ReceivableView
-from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 
 _ = gettext.gettext
 
@@ -110,7 +110,7 @@ class ReceivableApp(SearchableAppWindow):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description'])
+        self.set_text_field_columns(['description', 'drawee'])
         date_filter = DateSearchFilter(_('Paid or due date:'))
         date_filter.add_option(NextMonthOption)
         self.add_filter(
@@ -125,7 +125,7 @@ class ReceivableApp(SearchableAppWindow):
                        data_type=str, sorted=True, format='%03d'),
                 Column('description', title=_('Description'), width=190,
                        data_type=str, expand=True),
-                Column('thirdparty_name', title=_('Drawee'), data_type=str,
+                Column('drawee', title=_('Drawee'), data_type=str,
                        width=170),
                 Column('due_date', title=_('Due Date'),
                        data_type=datetime.date, width=90),

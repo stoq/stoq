@@ -33,7 +33,7 @@ class ReceivableView(Viewable):
     columns = dict(
         id=Payment.q.id,
         description=Payment.q.description,
-        thirdparty_name=Person.q.name,
+        drawee=Person.q.name,
         due_date=Payment.q.due_date,
         status=Payment.q.status,
         paid_date=Payment.q.paid_date,
@@ -49,7 +49,7 @@ class ReceivableView(Viewable):
         LEFTJOINOn(None, Sale,
                    Sale.q.id == SaleAdaptToPaymentGroup.q._originalID),
         LEFTJOINOn(None, PersonAdaptToClient,
-                   PersonAdaptToClient.q.id == Sale.q.id),
+                   PersonAdaptToClient.q.id == Sale.q.clientID),
         LEFTJOINOn(None, Person,
                    Person.q.id == PersonAdaptToClient.q._originalID),
         ]
