@@ -3950,7 +3950,7 @@ msgstr "Adiantamento..."
 
 #: ../stoqlib/gui/dialogs/tillhistory.py:78
 msgid "Cash _In..."
-msgstr "Entrada.."
+msgstr "Entrada..."
 
 #: ../stoqlib/gui/dialogs/tillhistory.py:79
 msgid "Cash _Out..."
