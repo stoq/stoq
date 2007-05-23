@@ -92,6 +92,7 @@ class SellableTaxConstantsDialog(ModelListDialog):
     model_type = SellableTaxConstant
     editor_class = SellableTaxConstantEditor
     size = (500, 300)
+    title = _("Tax constants")
 
     # ListDialog
     columns = [
