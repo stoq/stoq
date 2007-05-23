@@ -195,7 +195,7 @@ class BaseRMLReport(object):
     @cvar title: the report title
     """
     template_name = None
-    title = 'Untitled'
+    title = _('Untitled')
 
     def __init__(self, filename, template_name=None):
         """
