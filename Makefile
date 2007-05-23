@@ -65,10 +65,10 @@ test-upload:
 	/mondo/local/bin/update-apt-directory $(TESTDLDIR)/ubuntu
 
 
-release: clean sdist release-deb deb
+release: clean sdist
 
 release-deb:
-	debchange -v $(VERSION)-1 "New release"
+	debchange -i "New release"
 
 release-tag:
 	svn cp -m "Tag $(VERSION)" . svn+ssh://async.com.br/pub/stoqlib/tags/stoqlib-$(VERSION)
@@ -82,4 +82,9 @@ TAGS:
 nightly:
 	/mondo/local/bin/build-svn-deb
 
-.PHONY: sdist deb upload tags TAGS nightly stoqlib.pickle
+clean:
+	rm -fr $(BUILDDIR)
+	rm -f MANIFEST
+	rm -fr stoqdrivers.pickle
+
+.PHONY: sdist deb upload tags TAGS nightly clean stoqlib.pickle
