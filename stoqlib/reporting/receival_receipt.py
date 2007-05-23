@@ -53,8 +53,12 @@ class ReceivalReceipt(BaseRMLReport):
             document = company.cnpj
         else:
             document = ""
+        if self.sale.client:
+            payer = self.sale.client.person
+        else:
+            payer = None
         return dict(document=document,
                     order=self.sale,
                     drawee=self.sale.branch.person,
-                    payer=self.sale.client.person,
+                    payer=payer,
                     payments=self.payments)
