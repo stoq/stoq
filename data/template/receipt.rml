@@ -91,6 +91,7 @@
     </blockTable>
 % endif
 % endfor
+% if drawee:
     <spacer length="0.5cm"/>
     <blockTable style="2cols_tableStyle" colWidths="3.3cm, 16.3cm">
       <tr>
@@ -104,6 +105,7 @@
         <td>${drawee.get_address_string()}</td>
       </tr>
     </blockTable>
+% endif
     <blockTable style="4cols_tableStyle"
                 colWidths="4cm, 6cm, 2cm, 7.6cm">
       <tr>
