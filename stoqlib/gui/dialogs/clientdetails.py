@@ -133,7 +133,7 @@ class ClientDetailsDialog(BaseEditor):
                        data_type=currency, width=100)]
 
     def _get_product_columns(self):
-        return [Column("id", title=_("Code"), data_type=int,
+        return [Column("code", title=_("Code"), data_type=int,
                        format='%04d', justify=gtk.JUSTIFY_RIGHT,
                        width=90, sorted=True),
                 Column("description", title=_("Description"), data_type=str,
