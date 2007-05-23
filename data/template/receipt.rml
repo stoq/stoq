@@ -1,4 +1,4 @@
-<% -*- mode: xml -*-
+<% # -*- mode: xml -*-
 ##
 ## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
@@ -43,6 +43,7 @@
       </tr>
     </blockTable>
     <spacer length="0.5cm"/>
+% if payer:
     <blockTable style="2cols_tableStyle" colWidths="6cm, 13.6cm">
       <tr>
         <td>I/WE RECEIVED FROM</td>
@@ -55,6 +56,7 @@
          <td>${payer.get_address_string()}</td>
       </tr>
     </blockTable>
+% endif
     <blockTable style="2cols_tableStyle" colWidths="6cm, 13.6cm">
       <tr>
         <td>THE IMPORTANCE OF:</td>
