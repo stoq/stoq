@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-23 11:15-0300\n"
+"POT-Creation-Date: 2007-05-23 12:50-0300\n"
 "PO-Revision-Date: 2007-04-09 10:04-0300\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -5421,6 +5421,62 @@ msgstr "HEX Valor:"
 #: ../data/glade/DeviceConstantEditor.glade.h:4
 msgid "Type:"
 msgstr "Tipo:"
+
+#: ../data/template/receipt.rml.extracted.h:1
+msgid "ADDRESS:"
+msgstr "ENDEREÇO:"
+
+#: ../data/template/receipt.rml.extracted.h:2
+msgid "AGENCY:"
+msgstr "AGÊNCIA:"
+
+#: ../data/template/receipt.rml.extracted.h:3
+msgid "BANK:"
+msgstr "BANCO:"
+
+#: ../data/template/receipt.rml.extracted.h:4
+msgid "CHECK PAYMENT"
+msgstr "PAGAMENTO EM CHEQUE"
+
+#: ../data/template/receipt.rml.extracted.h:5
+msgid "CPF/CNPJ/RG:"
+msgstr "CPF/CNPJ/RG:"
+
+#: ../data/template/receipt.rml.extracted.h:6
+msgid "DATE:"
+msgstr "DATA:"
+
+#: ../data/template/receipt.rml.extracted.h:7
+msgid "DRAWEE:"
+msgstr "EMITENTE:"
+
+#: ../data/template/receipt.rml.extracted.h:8
+msgid "I/WE RECEIVED FROM"
+msgstr "EU/NÓS RECEBI(EMOS) DE"
+
+#: ../data/template/receipt.rml.extracted.h:9
+msgid "NUMBER:"
+msgstr "NÚMERO:"
+
+#: ../data/template/receipt.rml.extracted.h:10
+msgid "RECEIPT"
+msgstr "RECIBO"
+
+#: ../data/template/receipt.rml.extracted.h:11
+msgid "REFERRING TO:"
+msgstr "REFERENTE A:"
+
+#: ../data/template/receipt.rml.extracted.h:12
+msgid "SIGNATURE:"
+msgstr "ASSINATURA:"
+
+#: ../data/template/receipt.rml.extracted.h:13
+msgid "THE IMPORTANCE OF:"
+msgstr "A IMPORTÂNCIA DE:"
+
+#: ../data/template/receipt.rml.extracted.h:14
+msgid "VALUE:"
+msgstr "VALOR:"
 
 #~ msgid "%d of %B"
 #~ msgstr "%d de %B"
