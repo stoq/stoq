@@ -1,3 +1,95 @@
+Release 0.9.0 23-May-2007
+
+    - New reporting framework based on trml2pdf & mako
+    - Returning Sales is now properly support
+    - It's now possible to confirm Sales in the Till application
+    - There's new search infrastructure which will play nicely with full
+      text indexing, it's known to scale to hundred thousands of objects
+    - You can now pay and receive payments properly
+    - Support for generating sintegra files in FS345 and Perto 2023.
+    - Many other bugs fixed
+
+    - Bugs fixed:
+
+     #2752: Rework database migration
+     #2789: Add support for a default area code
+     #2878: Do not use SQLObject to create schemas
+     #2968: Implementar cancelamentos de venda com definições corretas
+     #2978: Empty till objects are sometimes created
+     #2997: Implementar opção de impressão para recebimentos
+     #3029: Criar máscara para o campo CNPJ
+     #3050: A função do botão " estornar " na aplicação, deve ser alterada, pois utiliza do mesmo principio do botão " devolução " em vendas
+     #3051: Implementar opção de baixa para pagamentos
+     #3053: Implementar opção de impressão para pagamentos
+     #3152: Impressão de recibo para pagamentos em carteira
+     #3162: Impressão de recibo para recebimentos em carteira
+     #3198: Ao alternar entre os aplicativos um erro é gerado
+     #3203: Status de compras não é atualizado quando uma compra é recebida.
+     #3216: Último wizard permite inserção de valores negativos.
+     #3218: Geração de arquivo para sintegra
+     #3223: O desconto não pode ser maior ou igual a 100%
+     #3229: Não agrupar produtos adicionados em uma Venda.
+     #3242: Relatório em " Receiving Order " não exibe items recebidos parcialmente
+     #3253: Pagamento com dinheiro não tem descrição no contas a pagar
+     #3254: Criar no menu opção para emissão de leitura X
+     #3255: Criar no menu opção para emissão de memória fiscal das ECFs
+     #3257: Error when accessing APaymentMethod.destination
+     #3260: Refactor payment creation in APaymentMethod
+     #3261: Na aplicação Purchase, ao executarmos uma compra podemos escolher até 100 parcelas
+     #3262: Use kiwi.python.enum for all enums/constants
+     #3263: Quantidade de itens possiveis para compra no deve ser igual o de vendas
+     #3264: Problemas com  impressão Daruma
+     #3265: Make interfaces consistent among person facets
+     #3266: Get rid of sequences/autoinc columns
+     #3270: Erro ao enviar pedido de compra ao almoxarifado
+     #3271: Nos detalhes de pagamentos é necessário que seja exibido as condições do mesmo
+     #3272: Improve error message when database migration fails
+     #3273: Purchase application improvements
+     #3274: Clean up Purchase domain class
+     #3276: Adicionar a coluna " Paid Value " no dialogo de detalhes.
+     #3277: Aplicativo mostra valores para 'penalty' e 'interest' configurados no Admin.
+     #3279: Cost não deve ser editável.
+     #3280: Não permitir cancelamento de compras com recebimento parcial
+     #3282: Separate Till and Payments
+     #3286: Vendas a prazo nao mostra informação correta das parcelas.
+     #3287: Implement an interface to read the fiscal memory
+     #3288: Remove TillEntry.is_initial_cash_amount
+     #3291: Clean up database migration
+     #3292: Cadastro de produto aceita preço de venda negativo
+     #3295: Criar consulta de entrada e saida de estoque por periodo
+     #3297: Remove ReceivingOrder IPaymentGroup implementation
+     #3298: Consistent datetime importing
+     #3299: Adicionar coluna Paid Date nos detalhes de pagamento na aba " Payments " 
+     #3300: Adicionar coluna Paid Date na interface de Contas a Pagar
+     #3301: Refactor SellableCategory
+     #3302: Add a tax constant to SellableCategory
+     #3318: Nas baixas de pagamento é preciso ter a opção de escolha de data
+     #3322: When using CONFIRM_SALES_ON_TILL, don't say confirm
+     #3324: Use Kiwi's SearchContainer in all Stoq applications
+     #3327: Ao clicar em receber/detalhes da parcela um erro é gerado
+     #3330: Use SearchContainer from kiwi in stoqlib
+     #3331: Make sure the debian packages works across different python versions
+     #3338: Ao tentar utilizar o tipo de frete como FOB um erro é gerado
+     #3346: Total das aplicações não é atualizado, sendo fixado nele o valor de abertura da aplicação
+     #3347: O botão imprimir deve estar habilitado mesmo que nenhum recebimento tenha sido selecionado
+     #3348: Add a way to fetch Sintegra data
+     #3351: Ao exibir detalhes de um pagamento pago atrasado, o valor pago mostrado é diferente do valor real que foi pago.
+     #3352: Data de abertura de order deve ser a data de movimentação atual
+     #3353: Error while trying to add an address to a newly created person
+     #3354: Redo address/city location validation
+     #3355: Tracebacks needs to be logged in stoq.log
+     #3358: Sale rewrite
+     #3360: Make TillFiscalOperationView into a Viewable instead of an sql view
+     #3361: Rename the function " _cancel_last_order " for " _cancel_last_document " 
+     #3363: O sistema permite lançar datas anteriores a 1900 gerando um erro em seguida
+     #3365: Ao tentar criar uma transportadora um erro é gerado
+     #3368: Retirar o botão Receipt e coloca-lo no menu bar
+     #3369: Padronizando botões nas aplicações de Contas a Pagar e Contas a Receber
+     #3370: Padronizando botões em todas as aplicações
+     #3372: Add a reference to a Branch in Sale
+     #3374: Erro ao pedir impressão de memória fiscal por número de redução
+     #3385: Atalho de teclado para a função de criação de arquivo sintegra
+
 Release 0.8.10 27-March-2007
 
     - New application: Payable

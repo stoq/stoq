@@ -3,12 +3,12 @@ Section: python
 Priority: optional
 Maintainer: Johan Dahlin <jdahlin@async.com.br>
 Build-Depends: debhelper (>= 4.2.28)
-Build-Depends-Indep: cdbs, python-dev (>= 2.4), python-kiwi (>= 1.9.15-5), stoqlib (>= 0.9.0-4)
+Build-Depends-Indep: cdbs, python-dev (>= 2.4), python-kiwi (>= 1.9.15-5), stoqlib (>= 0.9.0-6)
 Standards-Version: 3.6.2
 
 Package: stoq
 Architecture: all
-Depends: stoqlib (>= 0.9.0-3)
+Depends: stoqlib (>= 0.9.0-6)
 Description: An advanced retail system
  Stoq is an advanced retails system which has as main goals the
  usability, good devices support, and useful features for retails.
