@@ -2,16 +2,16 @@
 
 Summary: A powerful retail system library
 Name: stoqlib
-Version: 0.8.10
+Version: 0.9.0
 Release: 1
 License: LGPL
 Group: System Environment/Libraries
 URL: http://www.stoq.com.br/
 Source: http://download.stoq.com.br/sources/0.8.9/stoqlib-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: pygtk2 >= 2.8.1, python-zope-interface >= 3.0.1, stoqdrivers >= 0.6.0, python-kiwi >= 1.9.14, python-psycopg2 >= 2.0.5, gazpacho >= 0.6.6, python-imaging >= 1.1.5, python-reportlab >= 1.20
+Requires: pygtk2 >= 2.8.1, python-zope-interface >= 3.0.1, stoqdrivers >= 0.7.0, python-kiwi >= 1.9.15, python-psycopg2 >= 2.0.5, gazpacho >= 0.6.6, python-imaging >= 1.1.5, python-reportlab >= 1.20
 Requires: python-abi = %(%{__python} -c "import sys; print sys.version[:3]")
-BuildRequires: python-kiwi >= 1.9.14, python-reportlab >= 1.20, python-psycopg2 >= 2.0.5
+BuildRequires: python-kiwi >= 1.9.15, python-reportlab >= 1.20, python-psycopg2 >= 2.0.5
 BuildArch: noarch
 
 %description
@@ -47,6 +47,7 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{_datadir}/stoqlib/pixmaps
 %{_datadir}/stoqlib/sql
 %{_datadir}/stoqlib/csv
+%{_datadir}/stoqlib/template
 
 %changelog
 * Tue Feb 03 2007 Johan Dahlin <jdahlin@async.com.br> 0.8.10-1

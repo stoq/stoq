@@ -1,3 +1,9 @@
+stoqlib (0.9.0-7) dapper; urgency=low
+
+  * New release
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Wed, 23 May 2007 15:27:33 -0300
+
 stoqlib (0.9.0-6) dapper; urgency=low
 
   * Fix translation for reports, update translations and bump
