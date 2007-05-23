@@ -48,11 +48,7 @@ class TillHistoryDialog(SearchDialog):
     table = TillEntry
     selection_mode = gtk.SELECTION_MULTIPLE
     searchbar_labels = _('Till Entries matching:')
-
-    @property
-    def title(self):
-        return _('Till history %s') % (
-            datetime.date.today().strftime(_('%d of %B')))
+    title = _('Till history')
 
     #
     # SearchDialog
