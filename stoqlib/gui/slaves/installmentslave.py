@@ -126,6 +126,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
     gladefile = 'InstallmentConfirmation'
     model_type = _ConfirmationModel
     size = (640, 420)
+    title = _("Confirm payment")
 
     def __init__(self, conn, payments):
         """
