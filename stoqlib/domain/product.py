@@ -180,7 +180,7 @@ class ProductHistory(Domain):
         Adds a sold item, populates the ProductHistory table using a
         product_sellable_item created during a sale.
 
-        @oaram conn: a database connection
+        @param conn: a database connection
         @param branch: the branch
         @param product_sellable_item: the sellable item for the sold
         """
@@ -198,7 +198,7 @@ class ProductHistory(Domain):
 
         @param conn: a database connection
         @param branch: the branch
-        @receiving_order_item: the item received for puchase
+        @param receiving_order_item: the item received for puchase
         """
         cls(branch=branch, sellable=receiving_order_item.sellable,
             quantity_received=receiving_order_item.quantity,
