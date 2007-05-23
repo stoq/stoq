@@ -1,3 +1,16 @@
+stoqlib (0.9.0-6) dapper; urgency=low
+
+  * Fix translation for reports, update translations and bump
+    kiwi required version
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Wed, 23 May 2007 13:31:29 -0300
+
+stoqlib (0.9.0-5) dapper; urgency=low
+
+  * Update stoqdrivers dependency
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 18:39:07 -0300
+
 stoqlib (0.9.0-4) dapper; urgency=low
 
   * Remove debian/preinst and bump stoqdrivers+kiwi versions
