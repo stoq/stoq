@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoqdrivers 0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-19 12:10-0300\n"
+"POT-Creation-Date: 2007-05-23 11:38-0300\n"
 "PO-Revision-Date: 2007-01-26 12:57-0200\n"
 "Last-Translator: Lincol Molica <lincoln@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -121,64 +121,68 @@ msgstr ""
 "Não foi possível fechar o cupom porque o total de pagamentos (%.2f) não "
 "confere com o valor totalizado (%.2f)."
 
-#: ../stoqdrivers/devices/printers/perto/Pay2023.py:469
+#: ../stoqdrivers/devices/printers/perto/Pay2023.py:496
 msgid "Coupon already opened."
 msgstr "Cupom já aberto"
 
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:195
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:198
 #: ../stoqdrivers/devices/printers/dataregis/EP375.py:135
 #: ../stoqdrivers/devices/printers/dataregis/EP375.py:478
 msgid "Pending Reduce Z"
 msgstr "Redução Z pendente"
 
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:197
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:200
 msgid "Mechanical failure"
 msgstr "Falha Mecânica"
 
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:199
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:202
 msgid "Not properly authenticated"
 msgstr "Não autenticado corretamente"
 
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:201
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:251
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:204
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:257
 msgid "No paper"
 msgstr "Sem papel"
 
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:203
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:206
 msgid "Offline"
 msgstr "Desconectado"
 
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:205
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:208
 msgid "Peripheral is not connected to AUX"
 msgstr "Periférico não está conectado à porta"
 
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:217
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:220
+msgid "readZ is already emitted"
+msgstr "Leitura X ainda já foi emitida"
+
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:223
 msgid "readX is not emitted yet"
 msgstr "Leitura X ainda não foi emitida"
 
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:240
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:246
 msgid "Document is already open"
 msgstr "Documento já está aberto"
 
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:242
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:312
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:248
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:320
 msgid "Coupon is not open"
 msgstr "O Cupom não está aberto"
 
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:244
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:250
 #: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:197
 msgid "There's no open document to cancel"
 msgstr "Não há documento aberto para cancelar"
 
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:246
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:252
 msgid "There is no such item in the coupon"
 msgstr "Este item não se encontra no cupom"
 
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:353
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:415
 msgid "Coupon already open"
 msgstr "Cupom já aberto"
 
-#: ../stoqdrivers/devices/printers/daruma/FS345.py:440
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:502
 msgid "It is not possible to close the coupon"
 msgstr "Não é possível fechar o cupom"
 
@@ -343,54 +347,54 @@ msgstr "Acréscimo ao sub-total já efetuado"
 msgid "Discount on subtotal already effected"
 msgstr "Desconto ao subtotal já efetuado"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:110
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:112
 msgid "There is no coupon opened!"
 msgstr "Não há cupom aberto!"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:114
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:116
 msgid "There is a coupon already open"
 msgstr "Já existe um cupom aberto"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:135
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:137
 msgid "The coupon is already totalized, you can't add items anymore."
 msgstr "O cupom já está totalizado, não é possível adicionar mais itens"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:145
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:147
 #, python-format
 msgid "There is no item with this ID (%d)"
 msgstr "Não há item com o ID (%d)"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:148
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:150
 msgid "The coupon is already totalized, you can't cancel items anymore."
 msgstr "O cupom já está totalizado, não é mais possível cancelar itens."
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:162
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:164
 msgid "The coupon can't be totalized, since there is no items added"
 msgstr ""
 "O cupom não pode ser totalizado, desde que não existem itens adicionados"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:165
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:167
 #: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:191
 msgid "The coupon is already totalized"
 msgstr "O cupom já está totalizado"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:175
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:177
 msgid "Coupon totalized must be greater than zero!"
 msgstr "Cupom totalizado deve ser maior que zero!"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:184
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:186
 msgid "Isn't possible add payments to the coupon since it isn't totalized"
 msgstr "Não é possível adicionar pagamentos ao cupom se ele não foi totalizado"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:193
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:195
 msgid "Isn't possible close the coupon since it isn't totalized yet!"
 msgstr "Não é possível fechar o cupom se ele ainda não foi totalizado!"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:196
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:198
 msgid "Isn't possible close the coupon since there is no payments added."
 msgstr "Não é possível fechar o cupom se não houver pagamentos adicionados"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:199
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:201
 msgid "The payments total value doesn't match the totalized value."
 msgstr "O valor total de pagamentos não confere com o valor totalizado"
 
