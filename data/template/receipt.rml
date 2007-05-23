@@ -34,11 +34,11 @@
     <blockTable style="6cols_tableStyle"
                 colWidths="7.3cm, 0cm, 3cm, 3.3cm, 2.5cm, 3.5cm">
       <tr>
-        <td>RECEIPT</td>
+        <_td>RECEIPT</_td>
         <td></td>
-        <td>NUMBER:</td>
+        <_td>NUMBER:</_td>
         <td>${order.id}</td>
-        <td>VALUE:</td>
+        <_td>VALUE:</_td>
         <td>${value}</td>
       </tr>
     </blockTable>
@@ -46,26 +46,26 @@
 % if payer:
     <blockTable style="2cols_tableStyle" colWidths="6cm, 13.6cm">
       <tr>
-        <td>I/WE RECEIVED FROM</td>
+        <_td>I/WE RECEIVED FROM</_td>
         <td>${payer.name}</td>
       </tr>
     </blockTable>
     <blockTable style="2cols_tableStyle" colWidths="3.3cm, 16.3cm">
       <tr>
-         <td>ADDRESS:</td>
+         <_td>ADDRESS:</_td>
          <td>${payer.get_address_string()}</td>
       </tr>
     </blockTable>
 % endif
     <blockTable style="2cols_tableStyle" colWidths="6cm, 13.6cm">
       <tr>
-        <td>THE IMPORTANCE OF:</td>
+        <_td>THE IMPORTANCE OF:</_td>
         <td></td>
       </tr>
     </blockTable>
     <blockTable style="2cols_tableStyle" colWidths="4.5cm, 15.1cm">
       <tr>
-        <td>REFERRING TO:</td>
+        <_td>REFERRING TO:</_td>
         ## para: wraps the string
         <td><para style="para_style">${payment_description}</para></td>
       </tr>
@@ -75,17 +75,17 @@
     <blockTable style="2cols_tableStyle" colWidths="7cm, 12.6cm">
       <tr>
         <td></td>
-        <td>CHECK PAYMENT</td>
+        <_td>CHECK PAYMENT</_td>
       </tr>
     </blockTable>
     <blockTable style="6cols_tableStyle"
                 colWidths="3cm, 3.6cm, 2.2cm, 4.2cm, 3cm, 3.6cm">
       <tr>
-        <td>NUMBER:</td>
+        <_td>NUMBER:</_td>
         <td>${payment.bank.account or ""}</td>
-        <td>BANK:</td>
+        <_td>BANK:</_td>
         <td></td>
-        <td>AGENCY:</td>
+        <_td>AGENCY:</_td>
         <td></td>
       </tr>
     </blockTable>
@@ -94,28 +94,28 @@
     <spacer length="0.5cm"/>
     <blockTable style="2cols_tableStyle" colWidths="3.3cm, 16.3cm">
       <tr>
-        <td>DRAWEE:</td>
+        <_td>DRAWEE:</_td>
         <td>${drawee.name}</td>
       </tr>
     </blockTable>
     <blockTable style="2cols_tableStyle" colWidths="3.3cm, 16.3cm">
       <tr>
-        <td>ADDRESS:</td>
+        <_td>ADDRESS:</_td>
         <td>${drawee.get_address_string()}</td>
       </tr>
     </blockTable>
     <blockTable style="4cols_tableStyle"
                 colWidths="4cm, 6cm, 2cm, 7.6cm">
       <tr>
-        <td>CPF/CNPJ/RG:</td>
+        <_td>CPF/CNPJ/RG:</_td>
         <td>${document}</td>
-        <td>DATE:</td>
+        <_td>DATE:</_td>
         <td>${payment.get_paid_date_string()}</td>
       </tr>
     </blockTable>
     <blockTable style="2cols_tableStyle" colWidths="3.5cm, 16.1cm">
       <tr>
-        <td>SIGNATURE:</td>
+        <_td>SIGNATURE:</_td>
         <td></td>
       </tr>
     </blockTable>

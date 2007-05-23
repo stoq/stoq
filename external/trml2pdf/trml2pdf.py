@@ -32,16 +32,24 @@ from reportlab import platypus
 import utils
 import color
 
+# FIXME: Fix this properly
+from stoqlib.lib.translation import stoqlib_gettext as _
+
 #
 # Change this to UTF-8 if you plan tu use Reportlab's UTF-8 support
 #
 encoding = 'latin1'
 
-def _child_get(node, childs):
+def _child_get(node, tag):
 	clds = []
 	for n in node.childNodes:
-		if (n.nodeType==n.ELEMENT_NODE) and (n.localName==childs):
-			clds.append(n)
+		if n.nodeType==n.ELEMENT_NODE:
+			if n.localName == tag:
+				clds.append(n)
+			elif n.localName == '_' + tag:
+				n.tagName = tag
+				n.childNodes[0].data = _(n.childNodes[0].data)
+				clds.append(n)
 	return clds
 
 class _rml_styles(object):

@@ -1,2 +1,3 @@
 recursive-include stoqlib *.py
 recursive-include data *.glade
+recursive-include data *.rml
