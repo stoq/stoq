@@ -190,7 +190,9 @@ class _rml_canvas(object):
 				rc += n.data
 			elif (n.nodeType == node.TEXT_NODE):
 				rc += n.data
-		return rc.encode(encoding)
+		if not isinstance(rc, unicode):
+			rc = unicode(rc, encoding)
+		return rc
 
 	def _drawString(self, node):
 		self.canvas.drawString(text=self._textual(node), **utils.attr_get(node, ['x','y']))
@@ -381,7 +383,9 @@ class _rml_flowable(object):
 				rc += n.data
 			elif (n.nodeType == node.TEXT_NODE):
 				rc += n.data
-		return rc.encode(encoding)
+		if not isinstance(rc, unicode):
+			rc = unicode(rc, encoding)
+		return rc
 
 	def _table(self, node):
 		length = 0
