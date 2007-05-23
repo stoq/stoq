@@ -476,8 +476,10 @@ class SearchEditor(SearchDialog):
         retval = self.run_dialog(self.editor_class, self, trans,
                                  trans.get(obj))
         if finish_transaction(trans, retval):
-            assert isinstance(retval, SQLObject)
-            retval = type(retval).get(retval.id, connection=self.conn)
+            # If the return value is an SQLObject, fetch it from
+            # the right connection
+            if isinstance(retval, SQLObject):
+                retval = type(retval).get(retval.id, connection=self.conn)
         trans.close()
         return retval
 
