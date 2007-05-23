@@ -1,3 +1,12 @@
+Release 0.7.0 - 23/05/2007:
+
+    * Updated packages
+    * Use kiwi.enum for constants/enums
+    * Add APIs to read the fiscal memory of couponprinters
+    * Support for extracting information required by
+      Sintegra 60A+60M in Daruma FS345 and Perto Pay 2023
+    * Updated translations
+
 Release 0.6.0 - 23/03/2007:
 
 	* Rewrite most of the Perto Driver

@@ -69,10 +69,7 @@ clean:
 	rm -f MANIFEST
 	rm -fr stoqdrivers.pickle
 
-release: clean sdist release-deb deb
-
-release-deb:
-	debchange -v 1:$(VERSION)-1 "New release"
+release: clean sdist
 
 release-tag:
 	svn cp -m "Tag $(VERSION)" . svn+ssh://async.com.br/pub/stoqdrivers/tags/stoqdrivers-$(VERSION)

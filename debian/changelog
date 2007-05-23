@@ -1,3 +1,9 @@
+stoqdrivers (1:0.7.0-3) dapper; urgency=low
+
+  * Update to trunk!
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 18:30:15 -0300
+
 stoqdrivers (1:0.7.0-2) dapper; urgency=low
 
   * Remove preinst 
