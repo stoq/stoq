@@ -64,7 +64,6 @@ test-upload:
 	done
 	/mondo/local/bin/update-apt-directory $(TESTDLDIR)/ubuntu
 
-
 release: clean sdist
 
 release-deb:
