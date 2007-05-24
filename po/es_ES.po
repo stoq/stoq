@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-24 10:03-0300\n"
+"POT-Creation-Date: 2007-05-24 11:36-0300\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Rafael Villar Burke <pachi@rvburke.com>\n"
 "Language-Team: Spanish <es_ES@li.org>\n"
@@ -420,7 +420,7 @@ msgstr "Ventas"
 msgid "Sales application."
 msgstr ""
 "Aplicación para la gestión y registro de\n"
-"tickets e impresión de facturas."
+"comprobantes e impresión de facturas."
 
 #: ../stoq/gui/sales/sales.py:62
 msgid "Confirm Date"
@@ -957,7 +957,7 @@ msgstr "Unidades..."
 
 #: ../data/glade/admin.glade.h:5
 msgid "CFOP..."
-msgstr "CFOP..."
+msgstr "Código de operación contable..."
 
 #: ../data/glade/admin.glade.h:6 ../data/glade/purchase.glade.h:8
 #: ../data/glade/warehouse.glade.h:3
@@ -1087,11 +1087,11 @@ msgstr "Fax:"
 
 #: ../data/glade/BranchSettingsStep.glade.h:6
 msgid "ICMS:"
-msgstr "ICMS"
+msgstr "IVA"
 
 #: ../data/glade/BranchSettingsStep.glade.h:7
 msgid "ISS:"
-msgstr "ISS"
+msgstr "IVA (2)"
 
 #: ../data/glade/BranchSettingsStep.glade.h:8
 msgid "Main Address"
@@ -1101,9 +1101,10 @@ msgstr "Dirección principal"
 msgid "Phone Number:"
 msgstr "Teléfono:"
 
+# no matching concept?
 #: ../data/glade/BranchSettingsStep.glade.h:10
 msgid "Substitution ICMS:"
-msgstr "ICMS por Substitución:"
+msgstr "IVA Soportado:"
 
 #: ../data/glade/purchase.glade.h:2
 msgid "Add Order"
@@ -1172,7 +1173,7 @@ msgstr "Añadir/Editar..."
 
 #: ../data/glade/NewOrderEditor.glade.h:2
 msgid "CFOP:"
-msgstr "CFOP:"
+msgstr "Código de operación contable:"
 
 #: ../data/glade/NewOrderEditor.glade.h:3 ../data/glade/pos.glade.h:12
 msgid "Client:"
