@@ -633,23 +633,20 @@ msgid "All the products already have delivery instructions"
 msgstr "Todos los productos ya tienen orden de entrega"
 
 #: ../stoq/gui/pos/pos.py:451
-#, fuzzy
 msgid "Do you really want to cancel the last document?"
-msgstr "¿Está seguro de que desea cancelar el último pedido?"
+msgstr "¿Está seguro de que desea cancelar el último documento?"
 
 #: ../stoq/gui/pos/pos.py:452 ../data/glade/pos.glade.h:8
-#, fuzzy
 msgid "Cancel Last Document"
-msgstr "Cancelar Último Pedido"
+msgstr "Cancelar Último Documento"
 
 #: ../stoq/gui/pos/pos.py:457
 msgid "Cancelling sale failed, nothing to cancel"
 msgstr "La cancelación de la venta no tuvo éxito. Nada que cancelar"
 
 #: ../stoq/gui/pos/pos.py:459
-#, fuzzy
 msgid "Document was cancelled"
-msgstr "Venta cancelada"
+msgstr "Documento cancelado"
 
 #: ../stoq/gui/pos/pos.py:481
 msgid ""
@@ -805,7 +802,7 @@ msgstr "Guardar Cookie"
 #: ../data/glade/payable.glade.h:18 ../data/glade/pos.glade.h:52
 #: ../data/glade/receivable.glade.h:19 ../data/glade/warehouse.glade.h:24
 msgid "_Edit"
-msgstr "Editar"
+msgstr "_Editar"
 
 #: ../data/glade/sales_app.glade.h:24 ../data/glade/till.glade.h:32
 #: ../data/glade/purchase.glade.h:32 ../data/glade/payable.glade.h:19
@@ -864,7 +861,7 @@ msgstr "Operaciones Contables de Caja..."
 
 #: ../data/glade/till.glade.h:14 ../data/glade/pos.glade.h:23
 msgid "Memory"
-msgstr ""
+msgstr "Memoria"
 
 #: ../data/glade/till.glade.h:15 ../data/glade/pos.glade.h:26
 msgid "Open Till..."
@@ -977,7 +974,6 @@ msgid "Devices _Settings..."
 msgstr "Configuración de Dispo_sitivos..."
 
 #: ../data/glade/admin.glade.h:14 ../data/glade/purchase.glade.h:14
-#, fuzzy
 msgid "Edit..."
 msgstr "Editar..."
 
@@ -1217,16 +1213,15 @@ msgstr "Pagar pedido"
 
 #: ../data/glade/payable.glade.h:17 ../data/glade/receivable.glade.h:18
 msgid "_Conference"
-msgstr "Conferencia"
+msgstr "_Conferencia"
 
 #: ../data/glade/payable.glade.h:21
 msgid "_Payable"
 msgstr "Cuentas por _Pagar"
 
 #: ../data/glade/payable.glade.h:22
-#, fuzzy
 msgid "_Receipt"
-msgstr "Recibir"
+msgstr "_Recibo"
 
 #: ../data/glade/payable.glade.h:24
 msgid "payable"
@@ -1367,9 +1362,8 @@ msgid "_Search"
 msgstr "Buscar"
 
 #: ../data/glade/receivable.glade.h:13
-#, fuzzy
 msgid "R_eceipt"
-msgstr "Recibir"
+msgstr "R_ecibo"
 
 #: ../data/glade/receivable.glade.h:14
 msgid "Receive payment"
