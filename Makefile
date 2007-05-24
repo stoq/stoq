@@ -41,13 +41,6 @@ rpm: sdist
 	mv dist/noarch/* dist
 	rm -fr dist/noarch
 
-upload:
-	cp dist/$(TARBALL) $(TARBALL_DIR)
-	for suffix in "gz" "dsc" "build" "changes" "deb"; do \
-	  cp dist/$(PACKAGE)_$(DEBVERSION)*."$$suffix" $(DLDIR); \
-	done
-	/mondo/local/bin/update-apt-directory $(DLDIR)
-
 web: apidocs
 	cp -r apidocs $(WEBDOC_DIR)/stoqdrivers-tmp
 	rm -fr $(WEBDOC_DIR)/stoqdrivers
@@ -82,4 +75,4 @@ test-upload:
 	done
 	/mondo/local/bin/update-apt-directory $(TESTDLDIR)/ubuntu
 
-.PHONY: sdist deb upload tags TAGS nightly clean release release-deb release-tag upload stoqdrivers.pickle
+.PHONY: sdist deb upload tags TAGS nightly clean release release-tag stoqdrivers.pickle
