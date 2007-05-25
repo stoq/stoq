@@ -171,7 +171,9 @@ class Simple:
 
         surcharge_value = self.totalized_value * surcharge / 100
         discount_value = self.totalized_value * discount / 100
-        self.totalized_value += -discount_value + surcharge_value
+        self.totalized_value += (
+            Decimal(-discount_value).quantize(Decimal('.01')) +
+            Decimal(surcharge_value).quantize(Decimal('.01')))
 
         if not self.totalized_value > 0:
             raise CouponTotalizeError(_("Coupon totalized must be greater "
