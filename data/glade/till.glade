@@ -14,7 +14,7 @@
                     <widget class="GtkAction" id="AddCash">
                         <property name="name">AddCash</property>
                         <property name="label" translatable="yes">Add cash...</property>
-                        <property name="accelerator">&lt;Control&gt;e</property>
+                        <property name="accelerator">&lt;Control&gt;s</property>
                     </widget>
                 </child>
                 <child>
