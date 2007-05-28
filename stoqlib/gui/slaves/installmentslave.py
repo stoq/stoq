@@ -76,11 +76,18 @@ class _ConfirmationModel(object):
             value += payment.get_interest(self.close_date)
         return value
 
+    def calculate_paid_value(self, payments):
+        installments_number = len(payments)
+        for payment in payments:
+            payment.paid_value = self.get_payment_total_value(payment)
+
+
 class _SaleConfirmationModel(_ConfirmationModel):
     def __init__(self, payments, sale):
         if not isinstance(sale, Sale):
             raise TypeError("sale must be a Sale")
         _ConfirmationModel.__init__(self, payments)
+        self.calculate_paid_value(payments)
         self._sale = sale
         self.open_date = self._sale.open_date.date()
 
@@ -158,7 +165,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
                 Column('due_date', _("Due"), data_type=datetime.date),
                 Column('paid_date', _("Paid date"), data_type=datetime.date),
                 Column('base_value', _("Value"), data_type=currency),
-                Column('value', _("Paid value"), data_type=currency)]
+                Column('paid_value', _("Paid value"), data_type=currency)]
 
     def _setup_widgets(self):
         self.installments.set_columns(self._get_columns())
@@ -194,10 +201,14 @@ class _InstallmentConfirmationSlave(BaseEditor):
 
     def on_pay_penalty__toggled(self, toggle):
         self.penalty.set_sensitive(toggle.get_active())
+        self.model.calculate_paid_value(self._payments)
+        self.installments.refresh()
         self._proxy.update('total_value')
 
     def on_pay_interest__toggled(self, toggle):
         self.interest.set_sensitive(toggle.get_active())
+        self.model.calculate_paid_value(self._payments)
+        self.installments.refresh()
         self._proxy.update('total_value')
 
 class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
