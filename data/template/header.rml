@@ -34,7 +34,26 @@
           <!-- limits of frames                                    -->
     <pageTemplate id="main">
           <pageGraphics>
+                <!-- header -->
+                <image file="${logo}"  x="0.7cm" y="27.4cm"/>
+                <setFont name="Helvetica-Bold" size="14"/>
+                <drawString x="8cm" y="28.7cm">${branch.person.name}</drawString>
+                <setFont name="Helvetica" size="14"/>
+                <drawString x="8cm" y="28.2cm">${branch.person.get_address_string()}</drawString>
+                <drawString x="8cm" y="27.8cm">${branch.person.address.get_details_string()}</drawString>
+% if branch.person.phone_number:
+                <drawString x="8cm" y="27.3cm">Phone: ${branch.person.get_formatted_phone_number()}</drawString>
+% endif
+% if branch.person.fax_number and branch.person.phone_number:
+                <drawString x="13cm" y="27.3cm">Fax: ${branch.person.get_formatted_fax_number()}</drawString>
+% elif branch.person.fax_number:
+                <drawString x="8cm" y="27.3cm">Fax: ${branch.person.get_formatted_fax_number()}</drawString>
+% endif
+                <nextFrame/>
+                <!-- footer -->
+                <drawString x="1cm" y="1cm">${title}</drawString>
+                <drawRightString x="19cm" y="1cm">Page <pageNumber/></drawRightString>
           </pageGraphics>
-          <frame id="main_frame" x1="2.5cm" y1="2.5cm" width="16.1cm" height="24.2cm"/>
+          <frame id="main_frame" x1="0.7cm" y1="2.5cm" width="19.6cm" height="24.7cm"/>
     </pageTemplate>
 </template>

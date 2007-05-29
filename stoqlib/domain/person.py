@@ -81,7 +81,7 @@ from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import raw_phone_number
+from stoqlib.lib.validators import raw_phone_number, format_phone_number
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.base import Domain, ModelAdapter, BaseSQLView
 from stoqlib.domain.address import Address
@@ -210,6 +210,10 @@ class Person(Domain):
                 'The person you want to adapt must have at '
                 'least an individual or a company facet')
 
+    @property
+    def address(self):
+        return self.get_main_address()
+
     #
     # SQLObject setters
     #
@@ -262,6 +266,20 @@ class Person(Domain):
         """
         return int(''.join([c for c in self.fax_number
                                   if c in '1234567890']))
+
+    def get_formatted_phone_number(self):
+        """Returns a dash-separated phone number or an empty string
+        """
+        if self.phone_number:
+            return format_phone_number(self.phone_number)
+        return ""
+
+    def get_formatted_fax_number(self):
+        """Returns a dash-separated fax number or an empty string
+        """
+        if self.fax_number:
+            return format_phone_number(self.fax_number)
+        return ""
 
     #
     # Public API

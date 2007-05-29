@@ -30,7 +30,8 @@ from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
 from trml2pdf.trml2pdf import parseString
 
-from stoqlib.database.runtime import new_transaction, get_current_branch
+from stoqlib.database.runtime import (new_transaction,
+                                get_current_branch, get_connection)
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_phone_number
@@ -214,12 +215,23 @@ class BaseRMLReport(object):
             raise TypeError(
                 "%s.get_namespace must return a dictionary, not $r" %
                 (self.__class__.__name__, ns))
-        ns['title'] = self.title
+        self._complete_namespace(ns)
         template = self._template.render(**ns)
         pdf_file = open(self.filename, 'w')
         # create the pdf file
         pdf_file.write(parseString(template))
         pdf_file.close()
+
+    def _complete_namespace(self, ns):
+        """Add common information in namespace
+        """
+        branch = get_current_branch(get_connection())
+        branch_address = branch.person.address
+        logo = environ.find_resource('pixmaps', 'stoq_logo_bgwhite.png')
+
+        ns['title'] = self.title
+        ns['logo'] = logo
+        ns['branch'] = branch
 
     def get_namespace(self):
         """
