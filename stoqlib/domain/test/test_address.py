@@ -109,3 +109,30 @@ class TestAddress(DomainTest):
                           postal_code='12345-678', connection=self.trans)
 
         self.assertEquals(address.get_postal_code_number(), 12345678)
+
+    def testGetDetailsString(self):
+        person = self.create_person()
+        city = 'Ubatuba'
+        state = 'SP'
+        country = 'Brazil'
+        postal_code = '12345-678'
+        location = CityLocation(city=city, state=state, country=country,
+                                connection=self.trans)
+        address = Address(person=person, city_location=location,
+                          postal_code=postal_code, connection=self.trans)
+        string = address.get_details_string()
+        self.assertEquals(string, u'%s - %s - %s' % (postal_code,
+                                                     city, state))
+        location.city = ''
+        string = address.get_details_string()
+        self.assertEquals(string, u'%s' % postal_code)
+        location.state = ''
+        string = address.get_details_string()
+        self.assertEquals(string, u'%s' % postal_code)
+        address.postal_code = ''
+        string = address.get_details_string()
+        self.assertEquals(string, u'')
+        location.city = city
+        location.state = state
+        string = address.get_details_string()
+        self.assertEquals(string, u'%s - %s' % (city, state))
