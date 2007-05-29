@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-24 11:36-0300\n"
+"POT-Creation-Date: 2007-05-29 12:04-0300\n"
 "PO-Revision-Date: 2006-08-25 16:15-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -46,13 +46,6 @@ msgid ""
 "The database schema has changed, but the database has not been updated. Run "
 "'stoqdbadmin updateschema` toupdate the schema  to the latest available "
 "version."
-msgstr ""
-
-#: ../stoq/gui/runner.py:147
-#, python-format
-msgid ""
-"This user lacks credentials \n"
-"for application %s"
 msgstr ""
 
 #: ../stoq/gui/login.py:52
@@ -217,6 +210,13 @@ msgstr ""
 
 #: ../stoq/gui/config.py:531
 msgid "Setting up Stoq"
+msgstr ""
+
+#: ../stoq/gui/runner.py:147
+#, python-format
+msgid ""
+"This user lacks credentials \n"
+"for application %s"
 msgstr ""
 
 #: ../stoq/gui/payable/payable.py:57 ../stoq/gui/payable/__init__.py:30
@@ -528,21 +528,21 @@ msgstr "Pris"
 msgid "You must have at least one item in stock to perfom this action."
 msgstr ""
 
-#: ../stoq/gui/receivable/__init__.py:29
-#: ../stoq/gui/receivable/receivable.py:76
-msgid "Receivable"
-msgstr ""
-
-#: ../stoq/gui/receivable/__init__.py:30
-msgid "Receivable application."
-msgstr ""
-
 #: ../stoq/gui/receivable/receivable.py:56
 msgid "Next month"
 msgstr ""
 
+#: ../stoq/gui/receivable/receivable.py:76
+#: ../stoq/gui/receivable/__init__.py:29
+msgid "Receivable"
+msgstr ""
+
 #: ../stoq/gui/receivable/receivable.py:128
 msgid "Drawee"
+msgstr ""
+
+#: ../stoq/gui/receivable/__init__.py:30
+msgid "Receivable application."
 msgstr ""
 
 #: ../stoq/gui/pos/__init__.py:29 ../stoq/gui/pos/pos.py:78
@@ -622,7 +622,7 @@ msgstr ""
 msgid "Try Again"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:483 ../data/glade/purchase.glade.h:6
+#: ../stoq/gui/pos/pos.py:483
 #, fuzzy
 msgid "Cancel"
 msgstr "_Nollställ order"
@@ -641,21 +641,21 @@ msgid "New Order"
 msgstr "_Nollställ order"
 
 #: ../data/glade/sales_app.glade.h:1 ../data/glade/till.glade.h:1
-#: ../data/glade/admin.glade.h:1 ../data/glade/purchase.glade.h:1
-#: ../data/glade/payable.glade.h:1 ../data/glade/pos.glade.h:2
-#: ../data/glade/receivable.glade.h:1 ../data/glade/warehouse.glade.h:1
+#: ../data/glade/admin.glade.h:2 ../data/glade/purchase.glade.h:1
+#: ../data/glade/pos.glade.h:2 ../data/glade/receivable.glade.h:1
+#: ../data/glade/warehouse.glade.h:1 ../data/glade/payable.glade.h:1
 msgid "About"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:2 ../data/glade/till.glade.h:3
-#: ../data/glade/payable.glade.h:3 ../data/glade/receivable.glade.h:3
+#: ../data/glade/receivable.glade.h:3 ../data/glade/payable.glade.h:3
 msgid "Change User"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:3 ../data/glade/till.glade.h:4
-#: ../data/glade/admin.glade.h:7 ../data/glade/purchase.glade.h:9
-#: ../data/glade/payable.glade.h:4 ../data/glade/receivable.glade.h:4
-#: ../data/glade/warehouse.glade.h:4
+#: ../data/glade/admin.glade.h:8 ../data/glade/purchase.glade.h:8
+#: ../data/glade/receivable.glade.h:4 ../data/glade/warehouse.glade.h:4
+#: ../data/glade/payable.glade.h:4
 msgid "Clear Cookie"
 msgstr ""
 
@@ -664,140 +664,142 @@ msgid "Clients"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:5 ../data/glade/till.glade.h:5
-#: ../data/glade/pos.glade.h:13
+#: ../data/glade/pos.glade.h:12
 msgid "Clients..."
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:6 ../data/glade/till.glade.h:8
-#: ../data/glade/admin.glade.h:8 ../data/glade/purchase.glade.h:10
-#: ../data/glade/payable.glade.h:5 ../data/glade/pos.glade.h:15
-#: ../data/glade/receivable.glade.h:5 ../data/glade/warehouse.glade.h:5
+#: ../data/glade/sales_app.glade.h:6 ../data/glade/till.glade.h:7
+#: ../data/glade/admin.glade.h:9 ../data/glade/purchase.glade.h:9
+#: ../data/glade/pos.glade.h:14 ../data/glade/receivable.glade.h:5
+#: ../data/glade/warehouse.glade.h:5 ../data/glade/payable.glade.h:5
 msgid "Copy selected object into the clipboard"
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:7 ../data/glade/till.glade.h:9
-#: ../data/glade/admin.glade.h:10 ../data/glade/purchase.glade.h:11
-#: ../data/glade/payable.glade.h:6 ../data/glade/pos.glade.h:16
-#: ../data/glade/receivable.glade.h:6 ../data/glade/warehouse.glade.h:6
+#: ../data/glade/sales_app.glade.h:7 ../data/glade/till.glade.h:8
+#: ../data/glade/admin.glade.h:11 ../data/glade/purchase.glade.h:10
+#: ../data/glade/pos.glade.h:15 ../data/glade/receivable.glade.h:6
+#: ../data/glade/warehouse.glade.h:6 ../data/glade/payable.glade.h:6
 msgid "Create a new file"
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:8 ../data/glade/till.glade.h:11
-#: ../data/glade/admin.glade.h:11 ../data/glade/purchase.glade.h:12
-#: ../data/glade/payable.glade.h:7 ../data/glade/pos.glade.h:18
-#: ../data/glade/receivable.glade.h:7 ../data/glade/warehouse.glade.h:7
+#: ../data/glade/sales_app.glade.h:8 ../data/glade/till.glade.h:10
+#: ../data/glade/admin.glade.h:12 ../data/glade/purchase.glade.h:11
+#: ../data/glade/pos.glade.h:17 ../data/glade/receivable.glade.h:7
+#: ../data/glade/warehouse.glade.h:7 ../data/glade/payable.glade.h:7
 msgid "Cut selected object into the clipboard"
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:9 ../data/glade/pos.glade.h:22
+#: ../data/glade/sales_app.glade.h:9 ../data/glade/pos.glade.h:20
 msgid "Gift Certificates..."
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:10 ../data/glade/till.glade.h:16
-#: ../data/glade/admin.glade.h:21 ../data/glade/purchase.glade.h:15
-#: ../data/glade/payable.glade.h:9 ../data/glade/pos.glade.h:27
-#: ../data/glade/receivable.glade.h:9 ../data/glade/warehouse.glade.h:9
+#: ../data/glade/sales_app.glade.h:10 ../data/glade/till.glade.h:14
+#: ../data/glade/admin.glade.h:19 ../data/glade/purchase.glade.h:13
+#: ../data/glade/pos.glade.h:24 ../data/glade/receivable.glade.h:8
+#: ../data/glade/warehouse.glade.h:9 ../data/glade/payable.glade.h:8
 msgid "Open a file"
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:11 ../data/glade/till.glade.h:17
-#: ../data/glade/admin.glade.h:22 ../data/glade/purchase.glade.h:16
-#: ../data/glade/payable.glade.h:10 ../data/glade/pos.glade.h:30
-#: ../data/glade/receivable.glade.h:10 ../data/glade/warehouse.glade.h:10
+#: ../data/glade/sales_app.glade.h:11 ../data/glade/till.glade.h:15
+#: ../data/glade/admin.glade.h:20 ../data/glade/purchase.glade.h:14
+#: ../data/glade/pos.glade.h:27 ../data/glade/receivable.glade.h:9
+#: ../data/glade/warehouse.glade.h:10 ../data/glade/payable.glade.h:10
 msgid "Paste object from the Clipboard"
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:12 ../data/glade/purchase.glade.h:17
+#: ../data/glade/sales_app.glade.h:12 ../data/glade/purchase.glade.h:15
 msgid "Products"
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:13 ../data/glade/purchase.glade.h:18
-#: ../data/glade/pos.glade.h:33
+#: ../data/glade/sales_app.glade.h:13 ../data/glade/purchase.glade.h:16
+#: ../data/glade/pos.glade.h:30
 msgid "Products..."
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:14 ../data/glade/till.glade.h:18
-#: ../data/glade/admin.glade.h:24 ../data/glade/purchase.glade.h:19
-#: ../data/glade/payable.glade.h:12 ../data/glade/pos.glade.h:35
-#: ../data/glade/receivable.glade.h:11 ../data/glade/warehouse.glade.h:13
+#: ../data/glade/sales_app.glade.h:14 ../data/glade/till.glade.h:16
+#: ../data/glade/admin.glade.h:22 ../data/glade/purchase.glade.h:17
+#: ../data/glade/pos.glade.h:32 ../data/glade/receivable.glade.h:10
+#: ../data/glade/warehouse.glade.h:13 ../data/glade/payable.glade.h:11
 #, fuzzy
 msgid "Quit"
 msgstr "_Avsluta"
 
-#: ../data/glade/sales_app.glade.h:15 ../data/glade/till.glade.h:19
-#: ../data/glade/admin.glade.h:25 ../data/glade/purchase.glade.h:20
-#: ../data/glade/payable.glade.h:13 ../data/glade/pos.glade.h:36
-#: ../data/glade/receivable.glade.h:12 ../data/glade/warehouse.glade.h:14
+#: ../data/glade/sales_app.glade.h:15 ../data/glade/till.glade.h:17
+#: ../data/glade/admin.glade.h:23 ../data/glade/purchase.glade.h:18
+#: ../data/glade/pos.glade.h:33 ../data/glade/receivable.glade.h:11
+#: ../data/glade/warehouse.glade.h:14 ../data/glade/payable.glade.h:12
 msgid "Quit the program"
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:16
+#: ../data/glade/sales_app.glade.h:16 ../data/glade/pos.glade.h:37
 #, fuzzy
-msgid "S_ales"
+msgid "Sal_es"
 msgstr "_Försäljning"
 
-#: ../data/glade/sales_app.glade.h:17 ../data/glade/till.glade.h:25
-#: ../data/glade/admin.glade.h:28 ../data/glade/purchase.glade.h:22
-#: ../data/glade/payable.glade.h:14 ../data/glade/pos.glade.h:45
-#: ../data/glade/receivable.glade.h:15 ../data/glade/warehouse.glade.h:20
+#: ../data/glade/sales_app.glade.h:17 ../data/glade/till.glade.h:21
+#: ../data/glade/admin.glade.h:27 ../data/glade/purchase.glade.h:20
+#: ../data/glade/pos.glade.h:41 ../data/glade/receivable.glade.h:14
+#: ../data/glade/warehouse.glade.h:18 ../data/glade/payable.glade.h:13
 msgid "Save a file"
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:18 ../data/glade/till.glade.h:26
-#: ../data/glade/payable.glade.h:15 ../data/glade/receivable.glade.h:16
+#: ../data/glade/sales_app.glade.h:18 ../data/glade/till.glade.h:22
+#: ../data/glade/receivable.glade.h:15 ../data/glade/payable.glade.h:14
 msgid "Save with a different name"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:19
 #, fuzzy
-msgid "Searc_h"
-msgstr "_Sök"
-
-#: ../data/glade/sales_app.glade.h:20
-#, fuzzy
 msgid "Services"
 msgstr "Pris"
 
-#: ../data/glade/sales_app.glade.h:21 ../data/glade/purchase.glade.h:27
-#: ../data/glade/pos.glade.h:48
+#: ../data/glade/sales_app.glade.h:20 ../data/glade/purchase.glade.h:24
+#: ../data/glade/pos.glade.h:43
 #, fuzzy
 msgid "Services..."
 msgstr "Pris"
 
-#: ../data/glade/sales_app.glade.h:22 ../data/glade/till.glade.h:27
-#: ../data/glade/payable.glade.h:16 ../data/glade/receivable.glade.h:17
+#: ../data/glade/sales_app.glade.h:21 ../data/glade/till.glade.h:23
+#: ../data/glade/receivable.glade.h:16 ../data/glade/payable.glade.h:15
 msgid "Store Cookie"
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:23 ../data/glade/till.glade.h:31
-#: ../data/glade/admin.glade.h:38 ../data/glade/purchase.glade.h:31
-#: ../data/glade/payable.glade.h:18 ../data/glade/pos.glade.h:52
-#: ../data/glade/receivable.glade.h:19 ../data/glade/warehouse.glade.h:24
+#: ../data/glade/sales_app.glade.h:22 ../data/glade/till.glade.h:29
+#: ../data/glade/admin.glade.h:34 ../data/glade/purchase.glade.h:30
+#: ../data/glade/pos.glade.h:49 ../data/glade/receivable.glade.h:19
+#: ../data/glade/warehouse.glade.h:22 ../data/glade/payable.glade.h:18
 msgid "_Edit"
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:24 ../data/glade/till.glade.h:32
-#: ../data/glade/purchase.glade.h:32 ../data/glade/payable.glade.h:19
-#: ../data/glade/pos.glade.h:53 ../data/glade/receivable.glade.h:20
-#: ../data/glade/warehouse.glade.h:25
+#: ../data/glade/sales_app.glade.h:23 ../data/glade/till.glade.h:30
+#: ../data/glade/purchase.glade.h:31 ../data/glade/pos.glade.h:50
+#: ../data/glade/receivable.glade.h:20 ../data/glade/warehouse.glade.h:23
+#: ../data/glade/payable.glade.h:19
 msgid "_File"
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:25 ../data/glade/till.glade.h:33
-#: ../data/glade/purchase.glade.h:33 ../data/glade/payable.glade.h:20
-#: ../data/glade/pos.glade.h:54 ../data/glade/receivable.glade.h:21
-#: ../data/glade/warehouse.glade.h:26
+#: ../data/glade/sales_app.glade.h:24 ../data/glade/till.glade.h:31
+#: ../data/glade/admin.glade.h:35 ../data/glade/purchase.glade.h:32
+#: ../data/glade/pos.glade.h:51 ../data/glade/receivable.glade.h:21
+#: ../data/glade/warehouse.glade.h:24 ../data/glade/payable.glade.h:20
 msgid "_Help"
 msgstr "_Hjälp"
 
-#: ../data/glade/sales_app.glade.h:26
+#: ../data/glade/sales_app.glade.h:25
 msgid "_Print Invoice"
 msgstr ""
 
+#: ../data/glade/sales_app.glade.h:26 ../data/glade/till.glade.h:33
+#: ../data/glade/admin.glade.h:39 ../data/glade/purchase.glade.h:35
+#: ../data/glade/pos.glade.h:55 ../data/glade/warehouse.glade.h:27
+#, fuzzy
+msgid "_Search"
+msgstr "_Sök"
+
 #: ../data/glade/sales_app.glade.h:27 ../data/glade/till.glade.h:35
 #: ../data/glade/admin.glade.h:41 ../data/glade/purchase.glade.h:37
-#: ../data/glade/payable.glade.h:23 ../data/glade/pos.glade.h:58
-#: ../data/glade/receivable.glade.h:23 ../data/glade/warehouse.glade.h:29
+#: ../data/glade/pos.glade.h:57 ../data/glade/receivable.glade.h:23
+#: ../data/glade/warehouse.glade.h:29 ../data/glade/payable.glade.h:23
 msgid "_User"
 msgstr "_Användare"
 
@@ -810,72 +812,67 @@ msgstr "_Försäljning"
 msgid "Add cash..."
 msgstr ""
 
-#: ../data/glade/till.glade.h:6 ../data/glade/pos.glade.h:14
+#: ../data/glade/till.glade.h:6 ../data/glade/pos.glade.h:13
 msgid "Close Till..."
 msgstr ""
 
-#: ../data/glade/till.glade.h:7
-msgid "Confirm..."
-msgstr ""
-
-#: ../data/glade/till.glade.h:10
+#: ../data/glade/till.glade.h:9
 msgid "Current Till"
 msgstr ""
 
-#: ../data/glade/till.glade.h:12 ../data/glade/purchase.glade.h:13
-#: ../data/glade/NewOrderEditor.glade.h:5 ../data/glade/payable.glade.h:8
-#: ../data/glade/receivable.glade.h:8
-msgid "Details"
-msgstr ""
-
-#: ../data/glade/till.glade.h:13
+#: ../data/glade/till.glade.h:11
 msgid "Fiscal Till Operations..."
 msgstr ""
 
-#: ../data/glade/till.glade.h:14 ../data/glade/pos.glade.h:23
+#: ../data/glade/till.glade.h:12 ../data/glade/pos.glade.h:21
 msgid "Memory"
 msgstr ""
 
-#: ../data/glade/till.glade.h:15 ../data/glade/pos.glade.h:26
+#: ../data/glade/till.glade.h:13 ../data/glade/pos.glade.h:23
 msgid "Open Till..."
 msgstr ""
 
-#: ../data/glade/till.glade.h:20
+#: ../data/glade/till.glade.h:18
 #, fuzzy
 msgid "Remove cash..."
 msgstr "Ta bort"
 
-#: ../data/glade/till.glade.h:21
-msgid "Return..."
-msgstr ""
-
-#: ../data/glade/till.glade.h:22
+#: ../data/glade/till.glade.h:19
 msgid "STOQ - Till Application"
 msgstr ""
 
-#: ../data/glade/till.glade.h:23 ../data/glade/warehouse.glade.h:18
-#, fuzzy
-msgid "S_earch"
-msgstr "_Sök"
-
-#: ../data/glade/till.glade.h:24 ../data/glade/pos.glade.h:42
+#: ../data/glade/till.glade.h:20 ../data/glade/pos.glade.h:38
 #, fuzzy
 msgid "Sales..."
 msgstr "_Försäljning"
 
-#: ../data/glade/till.glade.h:28 ../data/glade/pos.glade.h:50
+#: ../data/glade/till.glade.h:24 ../data/glade/pos.glade.h:45
 msgid "Summary"
 msgstr ""
 
-#: ../data/glade/till.glade.h:29
+#: ../data/glade/till.glade.h:25
 msgid "Till Opened Since 01/01/2006"
 msgstr ""
 
-#: ../data/glade/till.glade.h:30
+#: ../data/glade/till.glade.h:26
 msgid "Till history..."
 msgstr ""
 
-#: ../data/glade/till.glade.h:34 ../data/glade/pos.glade.h:57
+#: ../data/glade/till.glade.h:27
+msgid "_Confirm..."
+msgstr ""
+
+#: ../data/glade/till.glade.h:28 ../data/glade/purchase.glade.h:29
+#: ../data/glade/receivable.glade.h:18 ../data/glade/payable.glade.h:17
+msgid "_Details"
+msgstr ""
+
+#: ../data/glade/till.glade.h:32
+#, fuzzy
+msgid "_Return..."
+msgstr "_Sök"
+
+#: ../data/glade/till.glade.h:34 ../data/glade/pos.glade.h:56
 msgid "_Till"
 msgstr ""
 
@@ -907,128 +904,119 @@ msgid ""
 "admin application and create them."
 msgstr ""
 
-#: ../data/glade/admin.glade.h:2 ../data/glade/pos.glade.h:4
+#: ../data/glade/admin.glade.h:1
+msgid "A_dmin"
+msgstr ""
+
+#: ../data/glade/admin.glade.h:3 ../data/glade/pos.glade.h:4
 msgid "Arquivo"
 msgstr ""
 
-#: ../data/glade/admin.glade.h:3
+#: ../data/glade/admin.glade.h:4
 #, fuzzy
 msgid "Branch Station..."
 msgstr "Pris"
 
-#: ../data/glade/admin.glade.h:4
+#: ../data/glade/admin.glade.h:5
 #, fuzzy
 msgid "Branches..."
 msgstr "Pris"
 
-#: ../data/glade/admin.glade.h:5
+#: ../data/glade/admin.glade.h:6
 msgid "CFOP..."
 msgstr ""
 
-#: ../data/glade/admin.glade.h:6 ../data/glade/purchase.glade.h:8
+#: ../data/glade/admin.glade.h:7 ../data/glade/purchase.glade.h:7
 #: ../data/glade/warehouse.glade.h:3
 msgid "Change User..."
 msgstr ""
 
-#: ../data/glade/admin.glade.h:9
+#: ../data/glade/admin.glade.h:10
 msgid "Create Sintegra Archive..."
 msgstr ""
 
-#: ../data/glade/admin.glade.h:12
+#: ../data/glade/admin.glade.h:13
 #, fuzzy
 msgid "Devices _Settings"
 msgstr "Pris"
 
-#: ../data/glade/admin.glade.h:13
+#: ../data/glade/admin.glade.h:14
 #, fuzzy
 msgid "Devices _Settings..."
 msgstr "Pris"
 
-#: ../data/glade/admin.glade.h:14 ../data/glade/purchase.glade.h:14
-msgid "Edit..."
-msgstr ""
-
-#: ../data/glade/admin.glade.h:15
-msgid "Employee Roles..."
+#: ../data/glade/admin.glade.h:15 ../data/glade/purchase.glade.h:12
+msgid "Ed_it..."
 msgstr ""
 
 #: ../data/glade/admin.glade.h:16
-msgid "Employees..."
+msgid "Employee Roles..."
 msgstr ""
 
 #: ../data/glade/admin.glade.h:17
-msgid "Fiscal Book..."
+msgid "Employees..."
 msgstr ""
 
 #: ../data/glade/admin.glade.h:18
-#, fuzzy
-msgid "Help"
-msgstr "_Hjälp"
+msgid "Fiscal Book..."
+msgstr ""
 
-#: ../data/glade/admin.glade.h:19
-#, fuzzy
-msgid "New User..."
-msgstr "_Nollställ order"
-
-#: ../data/glade/admin.glade.h:20 ../data/glade/pos.glade.h:25
-#, fuzzy
-msgid "New..."
-msgstr "_Försäljning"
-
-#: ../data/glade/admin.glade.h:23
+#: ../data/glade/admin.glade.h:21
 #, fuzzy
 msgid "Payment Method Settings..."
 msgstr "Pris"
 
-#: ../data/glade/admin.glade.h:26 ../data/glade/pos.glade.h:37
+#: ../data/glade/admin.glade.h:24 ../data/glade/pos.glade.h:34
 msgid "Recortar"
 msgstr ""
 
-#: ../data/glade/admin.glade.h:27 ../data/glade/purchase.glade.h:21
-#: ../data/glade/pos.glade.h:44 ../data/glade/warehouse.glade.h:19
+#: ../data/glade/admin.glade.h:25
+#, fuzzy
+msgid "S_ettings"
+msgstr "Pris"
+
+#: ../data/glade/admin.glade.h:26 ../data/glade/purchase.glade.h:19
+#: ../data/glade/pos.glade.h:40 ../data/glade/warehouse.glade.h:17
 msgid "Save _as"
 msgstr ""
 
-#: ../data/glade/admin.glade.h:29 ../data/glade/purchase.glade.h:23
-#: ../data/glade/pos.glade.h:46 ../data/glade/warehouse.glade.h:21
+#: ../data/glade/admin.glade.h:28 ../data/glade/purchase.glade.h:21
+#: ../data/glade/pos.glade.h:42 ../data/glade/warehouse.glade.h:19
 msgid "Save with a differente name"
 msgstr ""
 
-#: ../data/glade/admin.glade.h:30
-#, fuzzy
-msgid "Sear_ch"
-msgstr "_Sök"
-
-#: ../data/glade/admin.glade.h:31
+#: ../data/glade/admin.glade.h:29
 msgid "Sellable Tax Constants..."
 msgstr ""
 
-#: ../data/glade/admin.glade.h:32
-msgid "Settin_gs"
-msgstr ""
-
-#: ../data/glade/admin.glade.h:33
+#: ../data/glade/admin.glade.h:30
 msgid "System _Parameters"
 msgstr ""
 
-#: ../data/glade/admin.glade.h:34
+#: ../data/glade/admin.glade.h:31
 msgid "System _Parameters..."
 msgstr ""
 
-#: ../data/glade/admin.glade.h:35
+#: ../data/glade/admin.glade.h:32
 msgid "Tax Constants"
 msgstr ""
 
-#: ../data/glade/admin.glade.h:36
+#: ../data/glade/admin.glade.h:33
 #, fuzzy
 msgid "User Profiles..."
 msgstr "Pris"
 
-#: ../data/glade/admin.glade.h:37
-msgid "_Admin"
-msgstr ""
+#: ../data/glade/admin.glade.h:36
+#, fuzzy
+msgid "_New User..."
+msgstr "_Nollställ order"
 
-#: ../data/glade/admin.glade.h:39 ../data/glade/purchase.glade.h:35
+#: ../data/glade/admin.glade.h:37 ../data/glade/pos.glade.h:53
+#, fuzzy
+msgid "_New..."
+msgstr "_Försäljning"
+
+#: ../data/glade/admin.glade.h:38 ../data/glade/purchase.glade.h:34
 msgid "_Receive"
 msgstr ""
 
@@ -1096,37 +1084,37 @@ msgstr ""
 msgid "C_ut"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:7
+#: ../data/glade/purchase.glade.h:6
 #, fuzzy
 msgid "Categories..."
 msgstr "Pris"
 
-#: ../data/glade/purchase.glade.h:24 ../data/glade/pos.glade.h:47
-#, fuzzy
-msgid "Se_arch"
-msgstr "_Sök"
-
-#: ../data/glade/purchase.glade.h:25
+#: ../data/glade/purchase.glade.h:22
 msgid "Send"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:26
+#: ../data/glade/purchase.glade.h:23
 msgid "Send to Supplier..."
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:28
+#: ../data/glade/purchase.glade.h:25
 msgid "Suppliers"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:29
+#: ../data/glade/purchase.glade.h:26
 msgid "Suppliers..."
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:30
+#: ../data/glade/purchase.glade.h:27
 msgid "Transporters..."
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:34
+#: ../data/glade/purchase.glade.h:28
+#, fuzzy
+msgid "_Cancel"
+msgstr "_Nollställ order"
+
+#: ../data/glade/purchase.glade.h:33
 #, fuzzy
 msgid "_Order"
 msgstr "_Nollställ order"
@@ -1149,12 +1137,16 @@ msgstr ""
 msgid "CFOP:"
 msgstr ""
 
-#: ../data/glade/NewOrderEditor.glade.h:3 ../data/glade/pos.glade.h:12
+#: ../data/glade/NewOrderEditor.glade.h:3 ../data/glade/pos.glade.h:11
 msgid "Client:"
 msgstr ""
 
 #: ../data/glade/NewOrderEditor.glade.h:4
 msgid "Company"
+msgstr ""
+
+#: ../data/glade/NewOrderEditor.glade.h:5
+msgid "Details"
 msgstr ""
 
 #: ../data/glade/NewOrderEditor.glade.h:6
@@ -1165,11 +1157,11 @@ msgstr ""
 msgid "Not Specified"
 msgstr ""
 
-#: ../data/glade/NewOrderEditor.glade.h:8 ../data/glade/pos.glade.h:29
+#: ../data/glade/NewOrderEditor.glade.h:8 ../data/glade/pos.glade.h:26
 msgid "Order Number:"
 msgstr ""
 
-#: ../data/glade/NewOrderEditor.glade.h:9 ../data/glade/pos.glade.h:43
+#: ../data/glade/NewOrderEditor.glade.h:9 ../data/glade/pos.glade.h:39
 msgid "Salesperson:"
 msgstr ""
 
@@ -1181,32 +1173,6 @@ msgstr ""
 #, fuzzy
 msgid "Select:"
 msgstr "Välj"
-
-#: ../data/glade/payable.glade.h:2 ../data/glade/receivable.glade.h:2
-msgid "Bills"
-msgstr ""
-
-#: ../data/glade/payable.glade.h:11
-#, fuzzy
-msgid "Pay order"
-msgstr "order"
-
-#: ../data/glade/payable.glade.h:17 ../data/glade/receivable.glade.h:18
-msgid "_Conference"
-msgstr ""
-
-#: ../data/glade/payable.glade.h:21
-msgid "_Payable"
-msgstr ""
-
-#: ../data/glade/payable.glade.h:22
-#, fuzzy
-msgid "_Receipt"
-msgstr "Ta bort"
-
-#: ../data/glade/payable.glade.h:24
-msgid "payable"
-msgstr ""
 
 #: ../data/glade/SelectApplicationsSlave.glade.h:1
 msgid "Select an Application:"
@@ -1268,98 +1234,97 @@ msgid "C_hange User..."
 msgstr "_Nollställ order"
 
 #: ../data/glade/pos.glade.h:10
-#, fuzzy
-msgid "Checkout"
-msgstr "Checkout"
-
-#: ../data/glade/pos.glade.h:11
 msgid "Cl_ear Cookie"
 msgstr ""
 
-#: ../data/glade/pos.glade.h:17
+#: ../data/glade/pos.glade.h:16
 msgid "Current Client Details..."
 msgstr ""
 
-#: ../data/glade/pos.glade.h:19
-msgid "Delivery"
-msgstr "Utdelning"
-
-#: ../data/glade/pos.glade.h:20
-msgid "Edit"
+#: ../data/glade/pos.glade.h:18
+msgid "Ed_it"
 msgstr ""
 
-#: ../data/glade/pos.glade.h:21
+#: ../data/glade/pos.glade.h:19
 msgid "Edit Current Client..."
 msgstr ""
 
-#: ../data/glade/pos.glade.h:24
+#: ../data/glade/pos.glade.h:22
 #, fuzzy
 msgid "New Delivery..."
 msgstr "Utdelning"
 
-#: ../data/glade/pos.glade.h:28
+#: ../data/glade/pos.glade.h:25
 #, fuzzy
 msgid "Order Checkout..."
 msgstr "Checkout"
 
-#: ../data/glade/pos.glade.h:31
+#: ../data/glade/pos.glade.h:28
 #, fuzzy
 msgid "Print Order..."
 msgstr "_Nollställ order"
 
-#: ../data/glade/pos.glade.h:32
+#: ../data/glade/pos.glade.h:29
 msgid "Print the current sale order"
 msgstr ""
 
-#: ../data/glade/pos.glade.h:34
+#: ../data/glade/pos.glade.h:31
 msgid "Quantity:"
 msgstr "Kvantitet:"
 
-#: ../data/glade/pos.glade.h:38
-#, fuzzy
-msgid "Remove"
-msgstr "Ta bort"
-
-#: ../data/glade/pos.glade.h:39
+#: ../data/glade/pos.glade.h:35
 msgid "Reset the order"
 msgstr ""
 
-#: ../data/glade/pos.glade.h:40
+#: ../data/glade/pos.glade.h:36
 msgid "STOQ - POS Application"
 msgstr ""
 
-#: ../data/glade/pos.glade.h:41
-#, fuzzy
-msgid "Sal_es"
-msgstr "_Försäljning"
-
-#: ../data/glade/pos.glade.h:49
+#: ../data/glade/pos.glade.h:44
 msgid "Store Coo_kie"
 msgstr ""
 
-#: ../data/glade/pos.glade.h:51
+#: ../data/glade/pos.glade.h:46
+#, fuzzy
+msgid "_Checkout"
+msgstr "Checkout"
+
+#: ../data/glade/pos.glade.h:47
 msgid "_Confirm Order"
 msgstr ""
 
-#: ../data/glade/pos.glade.h:55
+#: ../data/glade/pos.glade.h:48
+#, fuzzy
+msgid "_Delivery"
+msgstr "Utdelning"
+
+#: ../data/glade/pos.glade.h:52
 #, fuzzy
 msgid "_New Order..."
 msgstr "_Nollställ order"
 
-#: ../data/glade/pos.glade.h:56
+#: ../data/glade/pos.glade.h:54
 #, fuzzy
-msgid "_Search"
-msgstr "_Sök"
+msgid "_Remove"
+msgstr "Ta bort"
 
-#: ../data/glade/receivable.glade.h:13
+#: ../data/glade/receivable.glade.h:2 ../data/glade/payable.glade.h:2
+msgid "Bills"
+msgstr ""
+
+#: ../data/glade/receivable.glade.h:12
 #, fuzzy
 msgid "R_eceipt"
 msgstr "Ta bort"
 
-#: ../data/glade/receivable.glade.h:14
+#: ../data/glade/receivable.glade.h:13
 #, fuzzy
-msgid "Receive payment"
+msgid "R_eceive payment"
 msgstr "Ta bort"
+
+#: ../data/glade/receivable.glade.h:17 ../data/glade/payable.glade.h:16
+msgid "_Conference"
+msgstr ""
 
 #: ../data/glade/receivable.glade.h:22
 msgid "_Receivable"
@@ -1370,7 +1335,7 @@ msgid "receivable"
 msgstr ""
 
 #: ../data/glade/warehouse.glade.h:8
-msgid "History"
+msgid "H_istory"
 msgstr ""
 
 #: ../data/glade/warehouse.glade.h:11
@@ -1387,28 +1352,74 @@ msgid "Receive"
 msgstr "Ta bort"
 
 #: ../data/glade/warehouse.glade.h:16
-msgid "Retention..."
-msgstr ""
-
-#: ../data/glade/warehouse.glade.h:17
 msgid "STOQ - Warehouse Application"
 msgstr ""
 
-#: ../data/glade/warehouse.glade.h:22
+#: ../data/glade/warehouse.glade.h:20
 msgid "Stock Transfer..."
 msgstr ""
 
-#: ../data/glade/warehouse.glade.h:23
+#: ../data/glade/warehouse.glade.h:21
 msgid "Transfer"
 msgstr ""
 
-#: ../data/glade/warehouse.glade.h:27
+#: ../data/glade/warehouse.glade.h:25
 msgid "_Retention"
+msgstr ""
+
+#: ../data/glade/warehouse.glade.h:26
+msgid "_Retention..."
 msgstr ""
 
 #: ../data/glade/warehouse.glade.h:30
 msgid "_Warehouse"
 msgstr ""
+
+#: ../data/glade/payable.glade.h:9
+#, fuzzy
+msgid "P_ay order"
+msgstr "order"
+
+#: ../data/glade/payable.glade.h:21
+msgid "_Payable"
+msgstr ""
+
+#: ../data/glade/payable.glade.h:22
+#, fuzzy
+msgid "_Receipt"
+msgstr "Ta bort"
+
+#: ../data/glade/payable.glade.h:24
+msgid "payable"
+msgstr ""
+
+#, fuzzy
+#~ msgid "New..."
+#~ msgstr "_Försäljning"
+
+#, fuzzy
+#~ msgid "S_ales"
+#~ msgstr "_Försäljning"
+
+#, fuzzy
+#~ msgid "Searc_h"
+#~ msgstr "_Sök"
+
+#, fuzzy
+#~ msgid "S_earch"
+#~ msgstr "_Sök"
+
+#, fuzzy
+#~ msgid "Se_arch"
+#~ msgstr "_Sök"
+
+#, fuzzy
+#~ msgid "Help"
+#~ msgstr "_Hjälp"
+
+#, fuzzy
+#~ msgid "Sear_ch"
+#~ msgstr "_Sök"
 
 #, fuzzy
 #~ msgid "Cancel Last Order"
@@ -1674,10 +1685,6 @@ msgstr ""
 #, fuzzy
 #~ msgid " Delivery _Tax:"
 #~ msgstr "Utdelning"
-
-#, fuzzy
-#~ msgid "_Search..."
-#~ msgstr "_Sök"
 
 #, fuzzy
 #~ msgid "Invoice Total:"
