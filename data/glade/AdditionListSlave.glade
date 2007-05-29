@@ -87,7 +87,8 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">Delete</property>
+                                                                        <property name="label" context="yes" translatable="yes">_Delete</property>
+                                                                        <property name="use-underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>

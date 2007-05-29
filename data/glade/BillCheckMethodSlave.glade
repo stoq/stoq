@@ -224,7 +224,8 @@
                                 <child>
                                     <widget class="GtkButton" id="reset_button">
                                         <property name="is_focus">True</property>
-                                        <property name="label" context="yes" translatable="yes">Reset List</property>
+                                        <property name="label" context="yes" translatable="yes">_Reset List</property>
+                                        <property name="use-underline">True</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>

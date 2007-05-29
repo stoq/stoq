@@ -21,7 +21,8 @@
                                     <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="cash_check">
                                         <property name="data_type">bool</property>
                                         <property name="is_focus">True</property>
-                                        <property name="label" context="yes" translatable="yes">Cash</property>
+                                        <property name="label" context="yes" translatable="yes">C_ash</property>
+                                        <property name="use-underline">True</property>
                                         <property name="visible">True</property>
                                     </widget>
                                 </child>
@@ -30,7 +31,8 @@
                                         <property name="active">False</property>
                                         <property name="data_type">bool</property>
                                         <property name="group">cash_check</property>
-                                        <property name="label" context="yes" translatable="yes">Gift Certificate</property>
+                                        <property name="label" context="yes" translatable="yes">_Gift Certificate</property>
+                                        <property name="use-underline">True</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
@@ -42,7 +44,8 @@
                                         <property name="active">False</property>
                                         <property name="data_type">bool</property>
                                         <property name="group">cash_check</property>
-                                        <property name="label" context="yes" translatable="yes">Other Methods</property>
+                                        <property name="label" context="yes" translatable="yes">_Other Methods</property>
+                                        <property name="use-underline">True</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
