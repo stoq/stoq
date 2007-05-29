@@ -117,7 +117,7 @@
                 <child>
                     <widget class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
-                        <property name="label" translatable="yes">S_earch</property>
+                        <property name="label" translatable="yes">_Search</property>
                     </widget>
                 </child>
                 <child>
@@ -279,7 +279,8 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="label2">
-                                                                        <property name="label" context="yes" translatable="yes">History</property>
+                                                                        <property name="label" context="yes" translatable="yes">H_istory</property>
+                                                                        <property name="use-underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
@@ -310,7 +311,8 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="label2">
-                                                                        <property name="label" context="yes" translatable="yes">Retention...</property>
+                                                                        <property name="label" context="yes" translatable="yes">_Retention...</property>
+                                                                        <property name="use-underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>

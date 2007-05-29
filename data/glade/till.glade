@@ -7,7 +7,7 @@
                 <child>
                     <widget class="GtkAction" id="Actions">
                         <property name="name">Actions</property>
-                        <property name="label" translatable="yes">S_earch</property>
+                        <property name="label" translatable="yes">_Search</property>
                     </widget>
                 </child>
                 <child>
@@ -357,7 +357,8 @@ action="Summary" name="Summary"/><menuitem action="Memory" name="Memory"/><separ
                                                                         </child>
                                                                         <child>
                                                                             <widget class="GtkLabel" id="label1">
-                                                                                <property name="label" context="yes" translatable="yes">Confirm...</property>
+                                                                                <property name="label" context="yes" translatable="yes">_Confirm...</property>
+                                                                                <property name="use-underline">True</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                             <packing>
@@ -387,7 +388,8 @@ action="Summary" name="Summary"/><menuitem action="Memory" name="Memory"/><separ
                                                                         </child>
                                                                         <child>
                                                                             <widget class="GtkLabel" id="label2">
-                                                                                <property name="label" context="yes" translatable="yes">Return...</property>
+                                                                                <property name="label" context="yes" translatable="yes">_Return...</property>
+                                                                                <property name="use-underline">True</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                             <packing>
@@ -420,7 +422,8 @@ action="Summary" name="Summary"/><menuitem action="Memory" name="Memory"/><separ
                                                                         </child>
                                                                         <child>
                                                                             <widget class="GtkLabel" id="label3">
-                                                                                <property name="label" context="yes" translatable="yes">Details</property>
+                                                                                <property name="label" context="yes" translatable="yes">_Details</property>
+                                                                                <property name="use-underline">True</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                             <packing>

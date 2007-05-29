@@ -234,7 +234,8 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="label2">
-                                                                        <property name="label" context="yes" translatable="yes">Details</property>
+                                                                        <property name="label" context="yes" translatable="yes">_Details</property>
+                                                                        <property name="use-underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
@@ -265,7 +266,8 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="label3">
-                                                                        <property name="label" context="yes" translatable="yes">Pay order</property>
+                                                                        <property name="label" context="yes" translatable="yes">P_ay order</property>
+                                                                        <property name="use-underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
