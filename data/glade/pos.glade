@@ -206,7 +206,7 @@
                 <child>
                     <widget class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
-                        <property name="label" translatable="yes">Se_arch</property>
+                        <property name="label" translatable="yes">_Search</property>
                     </widget>
                 </child>
                 <child>
@@ -333,7 +333,8 @@
                                                         </child>
                                                         <child>
                                                             <widget class="GtkLabel" id="label3">
-                                                                <property name="label" context="yes" translatable="yes">New...</property>
+                                                                <property name="label" context="yes" translatable="yes">_New...</property>
+                                                                <property name="use-underline">True</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                             <packing>
@@ -635,7 +636,8 @@
                                                                                 </child>
                                                                                 <child>
                                                                                     <widget class="GtkLabel" id="label8">
-                                                                                        <property name="label" context="yes" translatable="yes">Edit</property>
+                                                                                        <property name="label" context="yes" translatable="yes">Ed_it</property>
+                                                                                        <property name="use-underline">True</property>
                                                                                         <property name="visible">True</property>
                                                                                     </widget>
                                                                                     <packing>
@@ -666,7 +668,8 @@
                                                                                 </child>
                                                                                 <child>
                                                                                     <widget class="GtkLabel" id="label46">
-                                                                                        <property name="label" context="yes" translatable="yes">Remove</property>
+                                                                                        <property name="label" context="yes" translatable="yes">_Remove</property>
+                                                                                        <property name="use-underline">True</property>
                                                                                         <property name="visible">True</property>
                                                                                     </widget>
                                                                                     <packing>
@@ -706,7 +709,8 @@
                                                                                 </child>
                                                                                 <child>
                                                                                     <widget class="GtkLabel" id="label5">
-                                                                                        <property name="label" context="yes" translatable="yes">Delivery</property>
+                                                                                        <property name="label" context="yes" translatable="yes">_Delivery</property>
+                                                                                        <property name="use-underline">True</property>
                                                                                         <property name="visible">True</property>
                                                                                     </widget>
                                                                                     <packing>
@@ -740,7 +744,8 @@
                                                                                 </child>
                                                                                 <child>
                                                                                     <widget class="GtkLabel" id="label6">
-                                                                                        <property name="label" context="yes" translatable="yes">Checkout</property>
+                                                                                        <property name="label" context="yes" translatable="yes">_Checkout</property>
+                                                                                        <property name="use-underline">True</property>
                                                                                         <property name="visible">True</property>
                                                                                     </widget>
                                                                                     <packing>

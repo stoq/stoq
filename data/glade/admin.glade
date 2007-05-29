@@ -106,7 +106,7 @@
                 <child>
                     <widget class="GtkAction" id="NewUser">
                         <property name="name">NewUser</property>
-                        <property name="label" translatable="yes">New User...</property>
+                        <property name="label" translatable="yes">_New User...</property>
                         <signal handler="_on_new_user_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;n</property>
                     </widget>
@@ -145,7 +145,7 @@
                 <child>
                     <widget class="GtkAction" id="SalesMenu">
                         <property name="name">SalesMenu</property>
-                        <property name="label" translatable="yes">_Admin</property>
+                        <property name="label" translatable="yes">A_dmin</property>
                     </widget>
                 </child>
                 <child>
@@ -166,7 +166,7 @@
                 <child>
                     <widget class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
-                        <property name="label" translatable="yes">Sear_ch</property>
+                        <property name="label" translatable="yes">_Search</property>
                     </widget>
                 </child>
                 <child>
@@ -206,7 +206,7 @@
                 <child>
                     <widget class="GtkAction" id="help_menu">
                         <property name="name">help_menu</property>
-                        <property name="label" translatable="yes">Help</property>
+                        <property name="label" translatable="yes">_Help</property>
                     </widget>
                 </child>
                 <child>
@@ -220,7 +220,7 @@
                 <child>
                     <widget class="GtkAction" id="settings_menu">
                         <property name="name">settings_menu</property>
-                        <property name="label" translatable="yes">Settin_gs</property>
+                        <property name="label" translatable="yes">S_ettings</property>
                     </widget>
                 </child>
                 <child>
@@ -342,7 +342,8 @@
                                                                         </child>
                                                                         <child>
                                                                             <widget class="GtkLabel" id="label3">
-                                                                                <property name="label" context="yes" translatable="yes">New...</property>
+                                                                                <property name="label" context="yes" translatable="yes">_New...</property>
+                                                                                <property name="use-underline">True</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                             <packing>
@@ -373,7 +374,8 @@
                                                                         </child>
                                                                         <child>
                                                                             <widget class="GtkLabel" id="label5">
-                                                                                <property name="label" context="yes" translatable="yes">Edit...</property>
+                                                                                <property name="label" context="yes" translatable="yes">Ed_it...</property>
+                                                                                <property name="use_underline">True</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                             <packing>

@@ -137,7 +137,7 @@
                 <child>
                     <widget class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
-                        <property name="label" translatable="yes">Searc_h</property>
+                        <property name="label" translatable="yes">_Search</property>
                     </widget>
                 </child>
                 <child>
@@ -170,7 +170,7 @@
                 <child>
                     <widget class="GtkAction" id="TillMenu">
                         <property name="name">TillMenu</property>
-                        <property name="label" translatable="yes">S_ales</property>
+                        <property name="label" translatable="yes">Sal_es</property>
                     </widget>
                 </child>
                 <child>
