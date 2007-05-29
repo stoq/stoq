@@ -31,7 +31,8 @@
                                                 </child>
                                                 <child>
                                                     <widget class="GtkLabel" id="label2">
-                                                        <property name="label" context="yes" translatable="yes">Return</property>
+                                                        <property name="label" context="yes" translatable="yes">_Return</property>
+                                                        <property name="use-underline">True</property>
                                                         <property name="visible">True</property>
                                                     </widget>
                                                     <packing>
@@ -62,7 +63,8 @@
                                                 </child>
                                                 <child>
                                                     <widget class="GtkLabel" id="label3">
-                                                        <property name="label" context="yes" translatable="yes">Edit</property>
+                                                        <property name="label" context="yes" translatable="yes">Ed_it</property>
+                                                        <property name="use-underline">True</property>
                                                         <property name="visible">True</property>
                                                     </widget>
                                                     <packing>
@@ -96,7 +98,8 @@
                                                 </child>
                                                 <child>
                                                     <widget class="GtkLabel" id="label5">
-                                                        <property name="label" context="yes" translatable="yes">Details</property>
+                                                        <property name="label" context="yes" translatable="yes">_Details</property>
+                                                        <property name="use-underline">True</property>
                                                         <property name="visible">True</property>
                                                     </widget>
                                                     <packing>
