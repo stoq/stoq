@@ -70,7 +70,7 @@ class WarehouseApp(SearchableAppWindow):
 
     def create_filters(self):
         self.executer.set_query(self.query)
-        self.set_text_field_columns(['description', 'supplier_name'])
+        self.set_text_field_columns(['description'])
         self.branch_filter = ComboSearchFilter(
             _('Show products at:'), self._get_branches())
         self.branch_filter.select(get_current_branch(self.conn))
@@ -81,8 +81,6 @@ class WarehouseApp(SearchableAppWindow):
                        data_type=int, format='%03d', width=80),
                 Column('description', title=_("Description"),
                        data_type=str, expand=True),
-                Column('supplier_name', title=('Supplier'),
-                       data_type=str, width=200),
                 Column('stock', title=_('Quantity'),
                        data_type=decimal.Decimal, width=90),
                 Column('unit', title=_("Unit"), data_type=str,
