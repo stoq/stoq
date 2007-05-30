@@ -135,8 +135,6 @@ class ProductSearch(SellableSearch):
                        width=120),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
-                Column('supplier_name', title=_('Supplier'), data_type=str,
-                       width=150),
                 Column('cost', _('Cost'), data_type=currency,
                        width=90),
                 Column('price', title=_('Price'), data_type=currency,

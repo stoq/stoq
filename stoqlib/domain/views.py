@@ -26,12 +26,10 @@
 from sqlobject.viewable import Viewable
 from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn
 
-from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.domain.product import (Product, ProductAdaptToSellable,
                                     ProductAdaptToStorable,
                                     ProductStockItem,
-                                    ProductHistory,
-                                    ProductSupplierInfo)
+                                    ProductHistory)
 from stoqlib.domain.sellable import ASellable, SellableUnit, BaseSellableInfo
 from stoqlib.domain.stock import AbstractStockItem
 
@@ -49,7 +47,6 @@ class ProductFullStockView(Viewable):
     @cvar description: the sellable description
     @cvar unit: the unit of the product
     @cvar product_id: the id of the product table
-    @cvar supplier_name: the supplier name of the product
     @cvar branch_id: the id of person_adapt_to_branch table
     @cvar stock: the stock of the product
      """
@@ -64,7 +61,6 @@ class ProductFullStockView(Viewable):
         description=BaseSellableInfo.q.description,
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
-        supplier_name=Person.q.name,
         stock=func.SUM(AbstractStockItem.q.quantity +
                        AbstractStockItem.q.logic_quantity),
         )
@@ -79,22 +75,13 @@ class ProductFullStockView(Viewable):
         INNERJOINOn(None, Product,
                     Product.q.id == ProductAdaptToSellable.q._originalID),
         # Product Stock Item
-        INNERJOINOn(None, ProductAdaptToStorable,
-                    ProductAdaptToStorable.q._originalID == Product.q.id),
-        INNERJOINOn(None, ProductStockItem,
-                    ProductStockItem.q.storableID ==
-                    ProductAdaptToStorable.q.id),
-        INNERJOINOn(None, AbstractStockItem,
-                    AbstractStockItem.q.id == ProductStockItem.q.id),
-        # Product Supplier
-        INNERJOINOn(None, ProductSupplierInfo,
-                    AND(ProductSupplierInfo.q.productID == Product.q.id,
-                        ProductSupplierInfo.q.is_main_supplier == True)),
-        INNERJOINOn(None, PersonAdaptToSupplier,
-                    PersonAdaptToSupplier.q.id ==
-                    ProductSupplierInfo.q.supplierID),
-        INNERJOINOn(None, Person,
-                    Person.q.id == PersonAdaptToSupplier.q._originalID),
+        LEFTJOINOn(None, ProductAdaptToStorable,
+                   ProductAdaptToStorable.q._originalID == Product.q.id),
+        LEFTJOINOn(None, ProductStockItem,
+                   ProductStockItem.q.storableID ==
+                   ProductAdaptToStorable.q.id),
+        LEFTJOINOn(None, AbstractStockItem,
+                   AbstractStockItem.q.id == ProductStockItem.q.id),
         ]
 
     clause = AND(
