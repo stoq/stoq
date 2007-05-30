@@ -40,8 +40,7 @@ from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (ISellable, IStorable, IContainer,
                                        IDelivery, IBranch)
-from stoqlib.domain.sellable import (ASellable, ASellableItem,
-                                     SellableView)
+from stoqlib.domain.sellable import ASellable, ASellableItem
 from stoqlib.domain.stock import AbstractStockItem
 from stoqlib.exceptions import (StockError, SellError, DatabaseInconsistency,
                                 StoqlibError)
@@ -548,16 +547,6 @@ class ProductAdaptToStorable(ModelAdapter):
                                             connection=self.get_connection())
 
 Product.registerFacet(ProductAdaptToStorable, IStorable)
-
-
-#
-# Views
-#
-
-class ProductFullStockView(SellableView):
-    """Stores general informations about products and the stock total in
-    all branch companies
-    """
 
 #
 # Auxiliary functions
