@@ -30,7 +30,7 @@ import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import currency
-from sqlobject import DateTimeCol, UnicodeCol, IntCol, ForeignKey, SQLObject
+from sqlobject import DateTimeCol, UnicodeCol, IntCol, ForeignKey
 from sqlobject.sqlbuilder import AND, IN, OR
 from stoqdrivers.enum import TaxType
 from zope.interface import implements
@@ -39,7 +39,7 @@ from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.interfaces import ISellable, IContainer, IDescribable
 from stoqlib.domain.base import (Domain, InheritableModelAdapter,
-                                 InheritableModel, BaseSQLView)
+                                 InheritableModel)
 from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
                                 BarcodeDoesNotExists)
 from stoqlib.lib.parameters import sysparam
@@ -542,34 +542,3 @@ class ASellable(InheritableModelAdapter):
         return cls._get_sellables_by_barcode(conn, barcode,
                                              IN(cls.q.status, statuses))
 
-#
-# Views
-#
-
-
-class SellableView(SQLObject, BaseSQLView):
-    """Stores general sellable informations and stock for all branch
-    companies
-    """
-    stock = DecimalCol()
-    barcode = UnicodeCol()
-    status = IntCol()
-    cost = PriceCol()
-    price = PriceCol()
-    description = UnicodeCol()
-    supplier_name = UnicodeCol()
-    unit = UnicodeCol()
-    branch_id = IntCol()
-    product_id = IntCol()
-
-    def get_supplier_name(self):
-        return self.supplier_name or u""
-
-    def get_unit(self):
-        return self.unit or u""
-
-
-class SellableFullStockView(SellableView):
-    """Stores the total stock in all branch companies and other general
-    informations for sellables
-    """
