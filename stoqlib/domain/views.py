@@ -31,7 +31,6 @@ from stoqlib.domain.product import (Product, ProductAdaptToSellable,
                                     ProductStockItem,
                                     ProductHistory)
 from stoqlib.domain.sellable import ASellable, SellableUnit, BaseSellableInfo
-from stoqlib.domain.stock import AbstractStockItem
 
 class ProductFullStockView(Viewable):
     """
@@ -61,8 +60,8 @@ class ProductFullStockView(Viewable):
         description=BaseSellableInfo.q.description,
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
-        stock=func.SUM(AbstractStockItem.q.quantity +
-                       AbstractStockItem.q.logic_quantity),
+        stock=func.SUM(ProductStockItem.q.quantity +
+                       ProductStockItem.q.logic_quantity),
         )
 
     joins = [
@@ -80,8 +79,6 @@ class ProductFullStockView(Viewable):
         LEFTJOINOn(None, ProductStockItem,
                    ProductStockItem.q.storableID ==
                    ProductAdaptToStorable.q.id),
-        LEFTJOINOn(None, AbstractStockItem,
-                   AbstractStockItem.q.id == ProductStockItem.q.id),
         ]
 
     clause = AND(
@@ -92,7 +89,7 @@ class ProductFullStockView(Viewable):
     @classmethod
     def select_by_branch(cls, query, branch, connection=None):
         if branch:
-            branch_query = AbstractStockItem.q.branchID == branch.id
+            branch_query = ProductStockItem.q.branchID == branch.id
             if query:
                 query = AND(query, branch_query)
             else:
@@ -166,8 +163,8 @@ class SellableFullStockView(Viewable):
         description=BaseSellableInfo.q.description,
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
-        stock=func.SUM(AbstractStockItem.q.quantity +
-                       AbstractStockItem.q.logic_quantity),
+        stock=func.SUM(ProductStockItem.q.quantity +
+                       ProductStockItem.q.logic_quantity),
         )
 
     joins = [
@@ -185,8 +182,6 @@ class SellableFullStockView(Viewable):
         LEFTJOINOn(None, ProductStockItem,
                    ProductStockItem.q.storableID ==
                    ProductAdaptToStorable.q.id),
-        LEFTJOINOn(None, AbstractStockItem,
-                   AbstractStockItem.q.id == ProductStockItem.q.id),
         ]
 
     clause = AND(
