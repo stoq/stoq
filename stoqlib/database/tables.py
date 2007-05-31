@@ -113,7 +113,6 @@ _tables = [
                    "SellableCategory",
                    "ASellable",
                    "ASellableItem"]),
-     ('stock', ["AbstractStockItem"]),
      ('service', ["Service",
                   "ServiceAdaptToSellable",
                   "ServiceSellableItem",

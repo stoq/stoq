@@ -41,7 +41,6 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (ISellable, IStorable, IContainer,
                                        IDelivery, IBranch)
 from stoqlib.domain.sellable import ASellable, ASellableItem
-from stoqlib.domain.stock import AbstractStockItem
 from stoqlib.exceptions import (StockError, SellError, DatabaseInconsistency,
                                 StoqlibError)
 from stoqlib.lib.translation import stoqlib_gettext
@@ -332,11 +331,14 @@ class ProductSellableItem(ASellableItem):
                                      branch=branch, product_item=self)
 
 
-class ProductStockItem(AbstractStockItem):
+class ProductStockItem(Domain):
     """Class that makes a reference to the product stock of a
     certain branch company."""
 
-    _inheritable = False
+    stock_cost = PriceCol(default=0)
+    quantity = DecimalCol(default=0)
+    logic_quantity = DecimalCol(default=0)
+    branch =  ForeignKey('PersonAdaptToBranch')
     storable = ForeignKey('ProductAdaptToStorable')
 
 
