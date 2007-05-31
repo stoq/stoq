@@ -137,3 +137,70 @@ class ProductQuantityView(Viewable):
         INNERJOINOn(None, BaseSellableInfo,
                     ASellable.q.base_sellable_infoID == BaseSellableInfo.q.id)
     ]
+
+class SellableFullStockView(Viewable):
+    """
+    Stores information about products.
+    This view is used to query stock information on a certain branch.
+
+    @cvar id: the id of the asellable table
+    @cvar barcode: the sellable barcode
+    @cvar status: the sellable status
+    @cvar cost: the sellable cost
+    @cvar price: the sellable price
+    @cvar is_valid_model: the sellable is_valid_model system attribute
+    @cvar description: the sellable description
+    @cvar unit: the unit of the product or None
+    @cvar product_id: the id of the product table or None
+    @cvar branch_id: the id of person_adapt_to_branch table or None
+    @cvar stock: the stock of the product or None
+     """
+
+    columns = dict(
+        id=ASellable.q.id,
+        barcode=ASellable.q.barcode,
+        status=ASellable.q.status,
+        cost=ASellable.q.cost,
+        price=BaseSellableInfo.q.price,
+        is_valid_model=BaseSellableInfo.q._is_valid_model,
+        description=BaseSellableInfo.q.description,
+        unit=SellableUnit.q.description,
+        product_id=Product.q.id,
+        stock=func.SUM(AbstractStockItem.q.quantity +
+                       AbstractStockItem.q.logic_quantity),
+        )
+
+    joins = [
+        # Sellable unit
+        LEFTJOINOn(None, SellableUnit,
+                   SellableUnit.q.id == ASellable.q.unitID),
+        # Product
+        LEFTJOINOn(None, ProductAdaptToSellable,
+                   ProductAdaptToSellable.q.id == ASellable.q.id),
+        LEFTJOINOn(None, Product,
+                   Product.q.id == ProductAdaptToSellable.q._originalID),
+        # Product Stock Item
+        LEFTJOINOn(None, ProductAdaptToStorable,
+                   ProductAdaptToStorable.q._originalID == Product.q.id),
+        LEFTJOINOn(None, ProductStockItem,
+                   ProductStockItem.q.storableID ==
+                   ProductAdaptToStorable.q.id),
+        LEFTJOINOn(None, AbstractStockItem,
+                   AbstractStockItem.q.id == ProductStockItem.q.id),
+        ]
+
+    clause = AND(
+        BaseSellableInfo.q.id == ASellable.q.base_sellable_infoID,
+        BaseSellableInfo.q._is_valid_model == True,
+        )
+
+    @classmethod
+    def select_by_branch(cls, query, branch, connection=None):
+        if branch:
+            branch_query = ProductStockItem.q.branchID == branch.id
+            if query:
+                query = AND(query, branch_query)
+            else:
+                query = branch_query
+
+        return cls.select(query, connection=connection)

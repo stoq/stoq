@@ -32,17 +32,18 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import Column
-from sqlobject.sqlbuilder import AND, OR
+from sqlobject.sqlbuilder import AND
 
+from stoqlib.domain.person import PersonAdaptToBranch
+from stoqlib.domain.product import Product
+from stoqlib.domain.interfaces import ISellable, IStorable
+from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.views import SellableFullStockView
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.domain.sellable import (ASellable, SellableView,
-                                     SellableFullStockView)
-from stoqlib.domain.product import Product
-from stoqlib.domain.interfaces import ISellable, IStorable
 
 _ = stoqlib_gettext
 
@@ -50,7 +51,7 @@ _ = stoqlib_gettext
 class SellableSearch(SearchEditor):
     title = _('Search for sale items')
     size = (750, 500)
-    table = search_table = SellableView
+    table = search_table = SellableFullStockView
     editor_class = None
     model_list_lookup_attr = 'product_id'
     footer_ok_label = _('_Add sale items')
@@ -110,12 +111,11 @@ class SellableSearch(SearchEditor):
         #if not self.has_stock_mode:
         #    return
         self.set_text_field_columns(['description'])
-        branch_filter = self.create_branch_filter(
+        self.executer.set_query(self._executer_query)
+
+        self.branch_filter = self.create_branch_filter(
             _('Show sale items at'))
-        self.executer.add_filter_query_callback(
-            branch_filter, self._get_branch_query)
-        self.executer.add_query_callback(self._get_query)
-        self.search.add_filter(branch_filter, SearchFilterPosition.TOP)
+        self.search.add_filter(self.branch_filter, SearchFilterPosition.TOP)
 
     def get_columns(self):
         """Hook called by SearchEditor"""
@@ -126,8 +126,6 @@ class SellableSearch(SearchEditor):
                           width=90, visible=False),
                    Column('description', title= _('Description'),
                           data_type=str, expand=True),
-                   Column('supplier_name', title= _('Supplier'),
-                          data_type=str, width=120),
                    Column('price', title=_('Price'), data_type=currency,
                           width=80, justify=gtk.JUSTIFY_RIGHT)]
         if self.has_stock_mode:
@@ -154,24 +152,16 @@ class SellableSearch(SearchEditor):
     # Private
     #
 
-    def _get_branch_query(self, state):
-        query = None
-        if self.has_stock_mode and state.value is not None:
-            table = SellableView
-            query = OR(SellableView.q.branch_id == state.value,
-                       SellableView.q.branch_id == None)
-        else:
-            table = SellableFullStockView
-
-        self.set_table(table)
-        return query
-
-    def _get_query(self, states):
-        query = self.search_table.q.status == ASellable.STATUS_AVAILABLE
+    def _executer_query(self, query, conn):
         if self._delivery_service:
-            query =  AND(query,
-                         self.search_table.q.id != self._delivery_service.id)
-        return query
+            query =  AND(
+                SellableFullStockView.q.status == ASellable.STATUS_AVAILABLE,
+                SellableFullStockView.q.id != self._delivery_service.id)
+        branch = self.branch_filter.get_state().value
+        if branch is not None:
+            branch = PersonAdaptToBranch.get(branch, connection=conn)
+        return SellableFullStockView.select_by_branch(query, branch,
+                                                      connection=conn)
 
     def _get_available_stock(self, sellable_view):
         if sellable_view.stock is None:
