@@ -594,7 +594,7 @@ class BillMethodSlave(BasePaymentMethodSlave):
 # Classes related to "credit provider" payment method
 #
 
-class CreditProviderMethodSlave(BaseEditorSlave):
+class _CreditProviderMethodSlave(BaseEditorSlave):
     """A base payment method slave for card and finance methods.
     Available slaves are: CardMethodSlave, FinanceMethodSlave
     """
@@ -697,7 +697,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
-                                    CreditProviderMethodSlave.proxy_widgets)
+                                    _CreditProviderMethodSlave.proxy_widgets)
 
     def create_model(self, conn):
         if not self.providers:
@@ -723,7 +723,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         self.update_view()
 
 
-class CardMethodSlave(CreditProviderMethodSlave):
+class CardMethodSlave(_CreditProviderMethodSlave):
 
     _payment_types = (CardInstallmentsStoreDetails,
                       CardInstallmentsProviderDetails, DebitCardDetails,
@@ -740,7 +740,7 @@ class CardMethodSlave(CreditProviderMethodSlave):
         self.ptypes_items = [(p.payment_type_name, p) for p in payment_types]
         self.payment_type.prefill(self.ptypes_items)
 
-class FinanceMethodSlave(CreditProviderMethodSlave):
+class FinanceMethodSlave(_CreditProviderMethodSlave):
     _payment_types = FinanceDetails,
 
     def _get_credit_providers(self):

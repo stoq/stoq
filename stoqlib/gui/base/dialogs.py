@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2006 Async Open Source
+## Copyright (C) 2005-2007 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -26,15 +26,13 @@
 """ Basic dialogs definition """
 
 import inspect
-import os
-import shutil
 
 import gtk
 from gtk import keysyms
 from kiwi.log import Logger
 from kiwi.ui.delegates import GladeSlaveDelegate, GladeDelegate
 from kiwi.ui.views import BaseView
-from kiwi.ui.dialogs import ask_overwrite, error, warning, info, yesno
+from kiwi.ui.dialogs import error, warning, info, yesno
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
@@ -42,7 +40,6 @@ from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.interfaces import ISystemNotifier
 from stoqlib.gui.base.gtkadds import change_button_appearance
-from stoqlib.reporting.base.utils import print_file
 
 _ = stoqlib_gettext
 _toplevel_stack = []
@@ -349,68 +346,6 @@ class NotifyDialog(ConfirmDialog):
                                ok_label=ok_label)
         self.cancel_button.hide()
 
-class PrintDialog(BasicDialog):
-    """ A simple report print dialog, with options to preview or print the
-    report on a file.
-    """
-
-    title = _("Print Dialog")
-
-    def __init__(self, report_class, *args, **kwargs):
-        # We don't have to check the relation of report_class with
-        # BaseDocTemplate,  since we can just use the PrintDialog
-        # to print a text file, for instance.
-        BasicDialog.__init__(self)
-        self._report_class = report_class
-        preview_label = kwargs.pop("preview_label", None)
-        default_filename = kwargs.pop("default_filename", None)
-        title = kwargs.pop("title", PrintDialog.title)
-        self._kwargs = kwargs
-        self._args = args
-        self._initialize(preview_label=preview_label, title=title,
-                         default_filename=default_filename)
-        self.register_validate_function(self.refresh_ok)
-        self.force_validation()
-
-    def _initialize(self, preview_label=None, default_filename=None, *args,
-                    **kwargs):
-        BasicDialog._initialize(self, *args, **kwargs)
-        self.ok_button.set_label(gtk.STOCK_PRINT)
-        self._setup_slaves(preview_label=preview_label,
-                           default_filename=default_filename)
-
-    def refresh_ok(self, validation_value):
-        if validation_value:
-            self.enable_ok()
-        else:
-            self.disable_ok()
-
-    def _setup_slaves(self, preview_label=None, default_filename=None):
-        # XXX Avoiding circular import
-        from stoqlib.gui.base.slaves import PrintDialogSlave
-        self.print_slave = PrintDialogSlave(self._report_class,
-                                            default_filename=default_filename,
-                                            preview_label=preview_label,
-                                            *self._args, **self._kwargs)
-        self.attach_slave('main', self.print_slave)
-
-    def confirm(self):
-        printer = self.print_slave.get_printer_name()
-        reportfile = self.print_slave.get_report_file()
-        if not printer:
-            filename = self.print_slave.get_filename()
-            assert filename
-            if os.path.exists(filename):
-                if not ask_overwrite(filename):
-                    return
-            try:
-                shutil.copy(reportfile, filename)
-            except IOError, e:
-                error("The file can't be saved", e.strerror)
-            os.unlink(reportfile)
-        else:
-            print_file(reportfile, printer)
-        BasicDialog.confirm(self)
 
 #
 # General methods
@@ -526,6 +461,3 @@ class DialogSystemNotifier:
                        (verbs[1], gtk.RESPONSE_NO))
         return (yesno(text, get_current_toplevel(), default, buttons)
                 == gtk.RESPONSE_YES)
-
-def print_report(report_class, *args, **kwargs):
-    run_dialog(PrintDialog, None, report_class, *args, **kwargs)

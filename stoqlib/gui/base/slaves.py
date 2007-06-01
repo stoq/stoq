@@ -24,14 +24,8 @@
 ##
 """ Basic slave definitions """
 
-import commands
-
-from kiwi.ui.dialogs import save
-from kiwi.python import Settable
-
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.reporting.base.utils import print_preview, build_report
 
 _ = stoqlib_gettext
 
@@ -53,106 +47,3 @@ class NoteSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model,
                                     NoteSlave.proxy_widgets)
 
-class PrintDialogSlave(BaseEditorSlave):
-    gladefile = 'PrintDialogSlave'
-    proxy_widgets = ('printer_combo',
-                     'filename_entry')
-    model_type = Settable
-
-    def __init__(self, report_class, *args, **kwargs):
-        self._available_printers = []
-        BaseEditorSlave.__init__(self, None, None)
-        preview_label = kwargs.pop("preview_label", None)
-        if preview_label is not None:
-            self.print_preview_button.set_label(preview_label)
-        self._preview_callback = kwargs.pop("preview_callback", None)
-        default_filename = kwargs.pop("default_filename", None)
-        if default_filename:
-            self.model.filename = default_filename
-            self.proxy.update("filename")
-        self._report_class = report_class
-        self._report_kwargs = kwargs
-        self._report_args = args
-        self._update_view()
-
-    def get_printer_name(self):
-        if self.printer_radio.get_active():
-            return self.model.printer_name
-        return None
-
-    def get_filename(self):
-        if self.file_radio.get_active():
-            return self.model.filename
-        return None
-
-    def get_report_file(self):
-        return build_report(self._report_class, *self._report_args,
-                            **self._report_kwargs)
-
-    def _setup_printer_combo(self):
-        self._available_printers = self._get_available_printers()
-        if self._available_printers:
-            self.printer_combo.prefill(self._available_printers)
-
-    def _get_available_printers(self):
-        #TODO check also if cups is running or not and give
-        # proper messages to users
-        func = commands.getoutput
-        if not func("lpstat -v"):
-            return []
-        printers = []
-        res = func("lpstat -d").split(":")
-        if len(res) > 1:
-            printers.append(res[1].strip())
-        for p in func('lpstat -a').split('\n'):
-            printer_name = p.split()[0].strip()
-            if printer_name in printers:
-                continue
-            printers.append(printer_name)
-        return printers
-
-    def _setup_widgets(self):
-        self._setup_printer_combo()
-
-    def _update_view(self):
-        if self._available_printers:
-            is_active = self.printer_radio.get_active()
-            self.filename_entry.set_sensitive(not is_active)
-            self.file_selection_button.set_sensitive(not is_active)
-            self.printer_combo.set_sensitive(is_active)
-        else:
-            self.printer_radio.set_sensitive(False)
-            self.printer_combo.set_sensitive(False)
-
-    #
-    # BaseEditorSlave hooks
-    #
-
-    def create_model(self, dummy):
-        return Settable(printer_name=None, filename=u'relat1.pdf')
-
-    def get_title(self, dummy):
-        return _("Print Dialog")
-
-    def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, PrintDialogSlave.proxy_widgets)
-        self._setup_widgets()
-
-    #
-    # Kiwi callbacks
-    #
-
-    def on_printer_radio__toggled(self, widget):
-        self._update_view()
-
-    def on_file_selection_button__clicked(self, *args):
-        filename = save(_("Select the file"))
-        if not filename:
-            return
-        self.filename_entry.set_text(filename)
-
-    def on_print_preview_button__clicked(self, *args):
-        if self._preview_callback is not None:
-            return self._preview_callback(
-                self._report_class, *self._report_args, **self._report_kwargs)
-        return print_preview(self.get_report_file())
