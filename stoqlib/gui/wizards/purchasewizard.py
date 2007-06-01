@@ -37,7 +37,7 @@ from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.base.dialogs import print_report
+from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor

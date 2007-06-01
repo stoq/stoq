@@ -37,7 +37,7 @@ from stoqlib.exceptions import StoqlibError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.base.dialogs import print_report
+from stoqlib.gui.printing import print_report
 from stoqlib.lib.validators import get_price_format_str
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext

@@ -33,7 +33,7 @@ from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.base.dialogs import print_report
+from stoqlib.gui.printing import print_report
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.reporting.purchase import PurchaseOrderReport
