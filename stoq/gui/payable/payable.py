@@ -39,9 +39,10 @@ from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
 from kiwi.ui.widgets.list import Column
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.gui.base.dialogs import run_dialog, print_report
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.printing import print_report
 from stoqlib.reporting.payment import PaymentPayableReport
 from stoqlib.reporting.payment_receipt import PaymentReceipt
 

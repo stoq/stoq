@@ -42,7 +42,7 @@ from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.gui.editors.invoiceeditor import InvoiceDetailsEditor
 from stoqlib.lib.invoice import SaleInvoice
 from stoqlib.lib.validators import format_quantity
-from stoqlib.gui.base.dialogs import print_report
+from stoqlib.gui.printing import print_report
 
 from stoq.gui.application import SearchableAppWindow
 

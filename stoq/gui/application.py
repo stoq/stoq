@@ -37,7 +37,7 @@ from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       get_connection)
 from stoqlib.lib.interfaces import ICookieFile
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
-from stoqlib.gui.base.dialogs import print_report
+from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
 
 import stoq
