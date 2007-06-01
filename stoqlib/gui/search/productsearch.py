@@ -40,8 +40,8 @@ from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.views import ProductFullStockView, ProductQuantityView
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.search.sellablesearch import SellableSearch
-from stoqlib.gui.base.dialogs import print_report
 from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
 from stoqlib.reporting.product import ProductReport, ProductQuantityReport
@@ -99,7 +99,7 @@ class ProductSearch(SellableSearch):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description'])
+        self.set_text_field_columns(['description', 'barcode'])
         self.executer.set_query(self._executer_query)
 
         # Branch
