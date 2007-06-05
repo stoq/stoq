@@ -24,6 +24,7 @@
 <%page args="title, payments, order, document, payer, drawee"/>
 <%include file="header.rml"/>
 <%
+  from stoqlib.lib.cardinal_formatters import get_price_cardinal
   value = sum([payment.value for payment in payments])
   payment_description = ", ".join([payment.description
                                         for payment in payments])
@@ -60,7 +61,9 @@
     <blockTable style="2cols_tableStyle" colWidths="6cm, 13.6cm">
       <tr>
         <_td>THE IMPORTANCE OF:</_td>
-        <td></td>
+        <td><para style="para_style">
+            ${get_price_cardinal(value).upper()}
+        </para></td>
       </tr>
     </blockTable>
     <blockTable style="2cols_tableStyle" colWidths="4.5cm, 15.1cm">
