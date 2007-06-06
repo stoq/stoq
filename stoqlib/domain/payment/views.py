@@ -69,7 +69,7 @@ class InPaymentView(Viewable):
 
     @property
     def payment(self):
-        return Payment.get(self.id)
+        return Payment.get(self.id, connection=self.get_connection())
 
 
 class OutPaymentView(Viewable):
