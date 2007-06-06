@@ -40,6 +40,7 @@ from kiwi.ui.search import (DateSearchFilter, ComboSearchFilter,
 from kiwi.ui.widgets.list import Column
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.sale import SaleView
 from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.receival_receipt import ReceivalReceipt
@@ -49,7 +50,6 @@ from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 
 from stoq.gui.application import SearchableAppWindow
-from stoq.gui.receivable.view import ReceivableView
 
 _ = gettext.gettext
 
@@ -78,7 +78,7 @@ class ReceivableApp(SearchableAppWindow):
     app_icon_name = 'stoq-bills'
     gladefile = 'receivable'
 
-    search_table = ReceivableView
+    search_table = InPaymentView
     search_label = _('matching:')
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
