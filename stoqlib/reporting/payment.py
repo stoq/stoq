@@ -65,7 +65,7 @@ class ReceivablePaymentReport(_BasePaymentReport):
                 OTC(_("Description"),
                     lambda obj: obj.description, width=150),
                 OTC(_("Drawee"),
-                    lambda obj: obj.thirdparty_name, width=50,
+                    lambda obj: obj.drawee, width=50,
                     expand=True, expand_factor=1),
                 OTC(_("Due date"),
                     lambda obj: format_date(obj.due_date), width=80),
@@ -79,7 +79,7 @@ class ReceivablePaymentReport(_BasePaymentReport):
             ]
 
 
-class PaymentPayableReport(_BasePaymentReport):
+class PayablePaymentReport(_BasePaymentReport):
     """
     This report shows a list of payable payments. For each payment it shows:
     payment number, description, supplier, due date, paid date,
