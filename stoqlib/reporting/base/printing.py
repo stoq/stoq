@@ -44,7 +44,7 @@ class ReportTemplate(BaseReportTemplate):
     report_name_prefix = ""
 
     def __init__(self, filename, report_name, timestamp=False, do_header=True,
-                 do_footer=True, **kwargs):
+                 do_footer=True, date=None, **kwargs):
         """ Common parameters to BaseReportTemplate was ommited, maybe
         you want look at BaseReportTemplate documentation?
         @param timestamp: The time when the report was created must be
@@ -62,6 +62,7 @@ class ReportTemplate(BaseReportTemplate):
             raise ValueError("You don't can have a timestamped footer if "
                              "you don't have a footer")
         self.timestamp = timestamp
+        self.date = date
         BaseReportTemplate.__init__(self, filename, report_name,
                                     do_header=do_header, do_footer=do_footer,
                                     **kwargs)
@@ -88,7 +89,10 @@ class ReportTemplate(BaseReportTemplate):
         optional and drawed if time_stamp  attribute is setted, and X the page
         number.
         """
-        ts = datetime.datetime.now()
+        if self.date is None:
+            ts = datetime.datetime.now()
+        else:
+            ts = self.date
         date_string = ts.strftime("%x")
         if self.timestamp:
             date_string += ts.strftime(" %X")
