@@ -185,14 +185,13 @@ class SalesApp(SearchableAppWindow):
 
     def _on_products_action__clicked(self, button):
         self.run_dialog(ProductSearch, self.conn, hide_footer=True,
-                        hide_toolbar=True, hide_cost_column=True)
+                        hide_toolbar=True)
 
     def _on_gift_certificates_action_clicked(self, button):
         self.run_dialog(GiftCertificateSearch, self.conn)
 
     def _on_services_action_clicked(self, button):
-        self.run_dialog(ServiceSearch, self.conn, hide_cost_column=True,
-                        hide_toolbar=True)
+        self.run_dialog(ServiceSearch, self.conn, hide_toolbar=True)
 
     def _on_print_invoice__activate(self, action):
         return self._print_invoice()
