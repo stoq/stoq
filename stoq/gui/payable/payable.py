@@ -39,15 +39,15 @@ from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
 from kiwi.ui.widgets.list import Column
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.printing import print_report
-from stoqlib.reporting.payment import PaymentPayableReport
+from stoqlib.reporting.payment import PayablePaymentReport
 from stoqlib.reporting.payment_receipt import PaymentReceipt
 
 from stoq.gui.application import SearchableAppWindow
-from stoq.gui.payable.view import PayableView
 from stoqlib.gui.slaves.installmentslave import PurchaseInstallmentConfirmationSlave
 
 _ = gettext.gettext
@@ -58,7 +58,7 @@ class PayableApp(SearchableAppWindow):
     app_name = _('Payable')
     app_icon_name = 'stoq-payable-app'
     gladefile = 'payable'
-    search_table = PayableView
+    search_table = OutPaymentView
     search_label = _('matching:')
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
@@ -237,7 +237,7 @@ class PayableApp(SearchableAppWindow):
         self._update_widgets()
 
     def on_print_button__clicked(self, button):
-        print_report(PaymentPayableReport, list(self.results))
+        print_report(PayablePaymentReport, list(self.results),do_footer=False)
 
     def on_Receipt__activate(self, action):
         payment_views = self.results.get_selected_rows()
