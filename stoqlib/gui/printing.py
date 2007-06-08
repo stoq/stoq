@@ -27,15 +27,24 @@
 import commands
 import os
 import shutil
+import tempfile
 
 import gtk
 from kiwi.python import Settable
 from kiwi.ui.dialogs import ask_overwrite, error, save
 
-from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
+from stoqlib.gui.base.dialogs import (BasicDialog, run_dialog,
+                                      get_current_toplevel)
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.base.utils import print_file, print_preview, build_report
+from stoqlib.reporting.base.utils import (print_file, print_preview,
+                                          build_report)
+
+try:
+    import gtkunixprint
+    gtkunixprint # pyflakes
+except ImportError:
+    gtkunixprint = None
 
 _ = stoqlib_gettext
 
@@ -205,5 +214,78 @@ class PrintDialog(BasicDialog):
         BasicDialog.confirm(self)
 
 
+class GtkPrintDialog(object):
+    """
+    A dialog to print PDFs using the printer dialog in Gtk+ 2.10+
+    """
+    def __init__(self, report):
+        self._report = report
+        self._dialog = self._create_dialog()
+
+    def _create_dialog(self):
+        dialog = gtkunixprint.PrintUnixDialog(parent=get_current_toplevel())
+        dialog.set_manual_capabilities(gtkunixprint.PRINT_CAPABILITY_COPIES |
+                                       gtkunixprint.PRINT_CAPABILITY_PAGE_SET)
+        button = self._add_preview_button(dialog)
+        button.connect('clicked', self._on_preview_button__clicked)
+        return dialog
+
+    def _add_preview_button(self, dialog):
+        # Add a preview button
+        button = gtk.Button(stock=gtk.STOCK_PRINT_PREVIEW)
+        dialog.action_area.pack_start(button)
+        dialog.action_area.reorder_child(button, 0)
+        button.show()
+        return button
+
+    def _send_to_printer(self, printer, settings, page_setup):
+        job = gtkunixprint.PrintJob(self._report.title, printer,
+                                    settings, page_setup)
+        job.set_source_file(self._report.filename)
+        job.send(self._on_print_job_complete)
+
+    def _print_preview(self):
+        print_preview(self._report.filename, keep_file=True)
+
+    #
+    # Public API
+    #
+
+    def run(self):
+        response = self._dialog.run()
+        if response in [gtk.RESPONSE_CANCEL,
+                        gtk.RESPONSE_DELETE_EVENT]:
+            self._dialog.destroy()
+            self._dialog = None
+        elif response == gtk.RESPONSE_OK:
+            self._dialog.destroy()
+            self._dialog = None
+            self._send_to_printer(self._dialog.get_selected_printer(),
+                                  self._dialog.dialog.get_settings(),
+                                  self._dialog.dialog.get_page_setup())
+        else:
+            raise AssertionError("unhandled response: %d" % (response,))
+
+    #
+    # Callbacks
+    #
+
+    def _on_preview_button__clicked(self, button):
+        self._print_preview()
+
+    def _on_print_job_complete(self, job, data, error):
+        if error:
+            print 'FIXME, handle error:', error
+
+
 def print_report(report_class, *args, **kwargs):
-    run_dialog(PrintDialog, None, report_class, *args, **kwargs)
+    if gtkunixprint:
+        tmp = tempfile.mktemp(prefix='stoqlib-reporting')
+        report = report_class(tmp, *args, **kwargs)
+        report.filename = tmp
+        report.save()
+        dialog = GtkPrintDialog(report)
+        dialog.run()
+        os.unlink(report.filename)
+    else:
+        run_dialog(PrintDialog, report_class, *args, **kwargs)
