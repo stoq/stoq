@@ -29,7 +29,7 @@ import os
 import tempfile
 
 # a list of programs to be tried when a report needs be viewed
-PROGRAMS = ['evince', ('xpdf', '-z 100'), 'ggv']
+PROGRAMS = [('evince', '--preview'), ('xpdf', '-z 100'), 'ggv']
 
 def build_report(report_class, *args, **kwargs):
     """ Given a class (BaseReportTemplate instance), build a report. It is
