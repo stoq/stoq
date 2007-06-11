@@ -258,11 +258,11 @@ class GtkPrintDialog(object):
             self._dialog.destroy()
             self._dialog = None
         elif response == gtk.RESPONSE_OK:
+            self._send_to_printer(self._dialog.get_selected_printer(),
+                                  self._dialog.get_settings(),
+                                  self._dialog.get_page_setup())
             self._dialog.destroy()
             self._dialog = None
-            self._send_to_printer(self._dialog.get_selected_printer(),
-                                  self._dialog.dialog.get_settings(),
-                                  self._dialog.dialog.get_page_setup())
         else:
             raise AssertionError("unhandled response: %d" % (response,))
 
