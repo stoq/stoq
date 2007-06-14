@@ -68,8 +68,8 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkLabel" id="label50">
-                                <property name="label" context="yes" translatable="yes">Deduction:</property>
+                            <widget class="ProxyLabel" id="label50">
+                                <property name="label" context="yes" translatable="yes">Deduction ($CURRENCY):</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>

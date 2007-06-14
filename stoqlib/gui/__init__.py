@@ -23,3 +23,8 @@
 """
 Graphical User Interface: Dialogs, Editors, Search, Slaves, Wizards etc
 """
+
+from kiwi.ui.widgets.label import ProxyLabel
+from kiwi.datatypes import get_localeconv
+
+ProxyLabel.replace('$CURRENCY', get_localeconv()['currency_symbol'])
