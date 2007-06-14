@@ -33,8 +33,8 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkLabel" id="label2">
-                                <property name="label" context="yes" translatable="yes"> Delivery _Tax:</property>
+                            <widget class="ProxyLabel" id="label2">
+                                <property name="label" context="yes" translatable="yes"> Delivery _Tax ($CURRENCY):</property>
                                 <property name="mnemonic_widget">price</property>
                                 <property name="use_underline">True</property>
                                 <property name="visible">True</property>

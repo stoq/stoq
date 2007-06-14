@@ -36,8 +36,8 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkLabel" id="label4">
-                                <property name="label" context="yes" translatable="yes">Products Total:</property>
+                            <widget class="ProxyLabel" id="label4">
+                                <property name="label" context="yes" translatable="yes">Products Total ($CURRENCY):</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -428,7 +428,7 @@
                         </child>
                         <child>
                             <widget class="ProxyLabel" id="kiwilabel54">
-                                <property name="label" context="yes" translatable="yes">Freight:</property>
+                                <property name="label" context="yes" translatable="yes">Freight ($CURRENCY):</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -441,7 +441,7 @@
                         </child>
                         <child>
                             <widget class="ProxyLabel" id="kiwilabel6">
-                                <property name="label" context="yes" translatable="yes">IPI:</property>
+                                <property name="label" context="yes" translatable="yes">IPI ($CURRENCY):</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -454,7 +454,7 @@
                         </child>
                         <child>
                             <widget class="ProxyLabel" id="kiwilabel200">
-                                <property name="label" context="yes" translatable="yes">ICMS Total:</property>
+                                <property name="label" context="yes" translatable="yes">ICMS Total ($CURRENCY):</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -467,7 +467,7 @@
                         </child>
                         <child>
                             <widget class="ProxyLabel" id="kiwilabel11">
-                                <property name="label" context="yes" translatable="yes">Invoice Total:</property>
+                                <property name="label" context="yes" translatable="yes">Invoice Total ($CURRENCY):</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>

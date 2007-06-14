@@ -9,8 +9,8 @@
                 <property name="spacing">5</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="GtkLabel" id="label1">
-                        <property name="label" context="yes" translatable="yes">Price:</property>
+                    <widget class="ProxyLabel" id="label1">
+                        <property name="label" context="yes" translatable="yes">Price ($CURRENCY):</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
