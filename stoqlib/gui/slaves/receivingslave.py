@@ -28,8 +28,7 @@ from kiwi.datatypes import ValidationError, ValueUnset
 
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.receiving import ReceivingOrder
-from stoqlib.domain.person import (PersonAdaptToSupplier,
-                                   PersonAdaptToTransporter)
+from stoqlib.domain.person import PersonAdaptToTransporter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
@@ -46,14 +45,15 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                      'freight',
                      'ipi',
                      'cfop',
-                     'receiving_number',
                      'branch',
-                     'supplier',
                      'supplier_label',
                      'order_number',
                      'total',
                      'invoice_number',
-                     'icms_total')
+                     'icms_total',
+                     'discount_value',
+                     'secure_value',
+                     'expense_value')
 
     #
     # BaseEditorSlave hooks
@@ -68,30 +68,18 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         items = [(t.person.name, t) for t in transporters]
         self.transporter.prefill(items)
 
-    def _setup_supplier_entry(self):
-        # FIXME: Implement and use IDescribable on PersonAdaptToSupplier
-        table = PersonAdaptToSupplier
-        suppliers = table.get_active_suppliers(self.conn)
-        items = [(s.person.name, s) for s in suppliers]
-        self.supplier.prefill(items)
-
     def _setup_widgets(self):
-        purchase_widgets = (self.purchase_details_label,
-                            self.purchase_number_label,
+        self.total.set_bold(True)
+        purchase_widgets = (self.purchase_number_label,
                             self.purchase_supplier_label,
                             self.order_number, self.supplier_label)
         if self.model.purchase:
             for widget in purchase_widgets:
                 widget.show()
-            self.receiving_supplier_label.hide()
-            self.supplier.hide()
         else:
             for widget in purchase_widgets:
                 widget.hide()
-            self.receiving_supplier_label.show()
-            self.supplier.show()
         self._setup_transporter_entry()
-        self._setup_supplier_entry()
         cfop_items = [(item.get_description(), item)
                         for item in CfopData.select(connection=self.conn)]
         self.cfop.prefill(cfop_items)
@@ -120,7 +108,6 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             self.model.transporter = transporter
             self.proxy.update('transporter')
             self.model.supplier = purchase.supplier
-            self.proxy.update('supplier')
             if purchase.freight:
                 freight_value = (self.model.get_products_total() *
                                  purchase.freight / 100)
@@ -148,6 +135,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     on_freight__validate = _positive_validator
     on_ipi__validate = _positive_validator
     on_icms_total__validate = _positive_validator
+    on_secure_value__validate = _positive_validator
+    on_expense_value__validate = _positive_validator
 
     def on_freight__content_changed(self, widget):
         try:
@@ -169,3 +158,39 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             self.model.ipi_total = 0
         self.proxy.update('total')
 
+    def on_discount_value__content_changed(self, widget):
+        try:
+            value = widget.read()
+        except ValidationError:
+            value = ValueUnset
+
+        if value is ValueUnset:
+            self.model.discount_value = 0
+        self.proxy.update('total')
+
+    def on_discount_value__validate(self, widget, value):
+        if value < 0:
+            return ValidationError(_("Discount must be greater than zero"))
+        if value > self.model.get_total():
+            return ValidationError(_("Discount must be less "
+                                     "than %s" % (self.model.get_total(),)))
+
+    def on_secure_value__content_changed(self, widget):
+        try:
+            value = widget.read()
+        except ValidationError:
+            value = ValueUnset
+
+        if value is ValueUnset:
+            self.model.secure_value = 0
+        self.proxy.update('total')
+
+    def on_expense_value__content_changed(self, widget):
+        try:
+            value = widget.read()
+        except ValidationError:
+            value = ValueUnset
+
+        if value is ValueUnset:
+            self.model.expense_value = 0
+        self.proxy.update('total')

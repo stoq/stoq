@@ -89,7 +89,23 @@ class ReceivingOrderItem(Domain):
 
 
 class ReceivingOrder(Domain):
-    """Receiving order definition."""
+    """Receiving order definition.
+
+    @cvar STATUS_PENDING: Products in the order was not received
+      or received partially.
+    @cvar STATUS_CLOSED: All products in the order has been received then
+        the order is closed.
+    @ivar status: status of the order
+    @ivar receival_date: Date that order has been closed.
+    @ivar confirm_date: Date that order was send to Warehouse application.
+    @ivar notes: Some optional additional information related to this order.
+    @ivar freight_total: Total of freight paid in receiving order.
+    @ivar surcharge_value:
+    @ivar discount_value: Discount value in receiving order's payment.
+    @ivar secure_value: Secure value paid in receiving order's payment.
+    @ivar expense_value: Other expenditures paid in receiving order's payment.
+    @ivar invoice_number: The number of the order that has been received.
+    """
 
     (STATUS_PENDING,
      STATUS_CLOSED) = range(2)
@@ -101,6 +117,8 @@ class ReceivingOrder(Domain):
     freight_total = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     discount_value = PriceCol(default=0)
+    secure_value = PriceCol(default=0)
+    expense_value = PriceCol(default=0)
 
     # This is Brazil-specific information
     icms_total = PriceCol(default=0)
@@ -212,6 +230,10 @@ class ReceivingOrder(Domain):
             total -= self.discount_value
         if self.surcharge_value:
             total += self.surcharge_value
+        if self.secure_value:
+            total += self.secure_value
+        if self.expense_value:
+            total += self.expense_value
 
         if self.purchase.discount_value:
             total -= self.purchase.discount_value
@@ -283,6 +305,7 @@ class ReceivingOrder(Domain):
 
     surcharge_percentage = property(_get_surcharge_by_percentage,
                                  _set_surcharge_by_percentage)
+
 
 
 @argcheck(PurchaseOrder, ReceivingOrder)
