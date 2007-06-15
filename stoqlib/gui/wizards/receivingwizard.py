@@ -65,7 +65,6 @@ class _FakeReceivingOrder(object):
 
 class PurchaseSelectionStep(WizardEditorStep):
     gladefile = 'PurchaseSelectionStep'
-    size = (800, -1)
     model_type = _FakeReceivingOrder
 
     def __init__(self, wizard, conn, model):
@@ -80,8 +79,6 @@ class PurchaseSelectionStep(WizardEditorStep):
         self.wizard.refresh_next(validation_value)
 
     def _create_search(self):
-        self.order_label.set_size('large')
-        self.order_label.set_bold(True)
         self.search = SearchSlaveDelegate(self._get_columns())
         self.attach_slave('searchbar_holder', self.search)
         self.executer = SQLObjectQueryExecuter()
@@ -316,7 +313,7 @@ class ReceivingInvoiceStep(WizardEditorStep):
 
 class ReceivingOrderWizard(BaseWizard):
     title = _("Receiving Order")
-    size = (750, 450)
+    size = (750, 350)
 
     def __init__(self, conn):
         self.model = None

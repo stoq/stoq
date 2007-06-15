@@ -62,6 +62,10 @@ class TestReceivingOrder(DomainTest):
         self.assertEqual(order.get_total(), currency(418))
         order.freight_total = 6
         self.assertEqual(order.get_total(), currency(424))
+        order.secure_value = 6
+        self.assertEqual(order.get_total(), currency(430))
+        order.expense_value = 12
+        self.assertEqual(order.get_total(), currency(442))
 
     def testConfirm(self):
         order = self.create_receiving_order()
