@@ -74,16 +74,18 @@ class Sale(Domain):
 
     @cvar STATUS_INITIAL: The sale is opened, products or other sellable items
       might have been added.
-    @cvar STATUS_ORDERED: The sale is orded, it has sellable items but not any payments yet.
-      This state is mainly used when the parameter CONFIRM_SALES_AT_TILL is enabled.
-    @cvar STATUS_CONFIRMED: The sale has been confirmed and all payments have been registered,
-      but not necessarily paid.
-    @cvar STATUS_CLOSED: All the payments of the sale has been confirmed and the client
-      does not owe anything to us.
-    @cvar STATUS_CANCELLED: The sale has been canceled, this can only happen to an sale
-      which has not yet reached the SALE_CONFIRMED status.
-    @cvar STATUS_RETURNED: The sale has been returned, all the payments made have been canceled
-      and the client has been compensated for everything already paid.
+    @cvar STATUS_ORDERED: The sale is orded, it has sellable items but not any
+      payments yet. This state is mainly used when the parameter
+      CONFIRM_SALES_AT_TILL is enabled.
+    @cvar STATUS_CONFIRMED: The sale has been confirmed and all payments
+      have been registered, but not necessarily paid.
+    @cvar STATUS_CLOSED: All the payments of the sale has been confirmed
+      and the client does not owe anything to us.
+    @cvar STATUS_CANCELLED: The sale has been canceled, this can only happen
+      to an sale which has not yet reached the SALE_CONFIRMED status.
+    @cvar STATUS_RETURNED: The sale has been returned, all the payments made
+      have been canceled and the client has been compensated for
+      everything already paid.
     @cvar CLIENT_INDIVIDUAL: The sale was done by an individual
     @cvar CLIENT_COMPANY: The sale was done by a company
     @ivar status: status of the sale
