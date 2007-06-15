@@ -27,8 +27,8 @@
 """ Editors implementation for open/close operation on till operation"""
 
 import datetime
-from decimal import Decimal
 
+from kiwi import ValueUnset
 from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
 
@@ -221,7 +221,7 @@ class BaseCashSlave(BaseEditorSlave):
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, BaseCashSlave.proxy_widgets)
         self.date.set_text(str(datetime.date.today()))
-        self.proxy.update('value', Decimal('0.01'))
+        self.proxy.update('value', currency(0))
 
     #
     # Kiwi handlers
@@ -233,8 +233,16 @@ class BaseCashSlave(BaseEditorSlave):
             return ValidationError(_("Value cannot be zero or less than zero"))
 
     def on_value__content_changed(self, entry):
-        value = self.model.get_balance() + self.model.value
+        try:
+            value_read = entry.read()
+        except ValidationError:
+            value_read = ValueUnset
+
+        value = self.model.get_balance()
+        if not (value_read < 0 or value_read == ValueUnset):
+            value += self.model.value
         self.proxy.update('balance', currency(value))
+
 
 class RemoveCashSlave(BaseCashSlave):
 
