@@ -275,14 +275,13 @@ class FS345(SerialBase):
         self._check_status(verbose=True)
 
     def show_information(self):
-        print 'Model:', self.send_command(CMD_GET_MODEL, debug=False)
-        print 'Firmware:', self.send_command(CMD_GET_FIRMWARE, debug=False)
-        data = self.send_command(CMD_LAST_RECORD, debug=False)
+        print 'Model:', self.send_command(CMD_GET_MODEL)
+        print 'Firmware:', self.send_command(CMD_GET_FIRMWARE)
+        data = self.send_command(CMD_LAST_RECORD)
 
         tt = time.strptime(data[:12], '%d%m%y%H%M%S')
         print 'Last record:', time.strftime('%c', tt)
-        print 'Configuration:', self.send_command(CMD_GET_CONFIGURATION,
-                                               debug=False)
+        print 'Configuration:', self.send_command(CMD_GET_CONFIGURATION)
 
     def show_document_status(self):
         print '== DOCUMENT STATUS =='
