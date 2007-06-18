@@ -131,6 +131,8 @@ def _set_default_profile_settings():
     profile = UserProfile.selectOneBy(name='Salesperson', connection=trans)
     assert profile
     ProfileSettings.set_permission(trans, profile, 'pos', True)
+    ProfileSettings.set_permission(trans, profile, 'sales', True)
+    ProfileSettings.set_permission(trans, profile, 'till', True)
     trans.commit(close=True)
 
 @argcheck(StoqConfig)
