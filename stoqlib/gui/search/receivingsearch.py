@@ -50,6 +50,11 @@ class PurchaseReceivingSearch(SearchDialog):
     selection_mode = gtk.SELECTION_MULTIPLE
     searchbar_result_strings = _('receiving order'), _('receiving orders')
 
+    def __init__(self, conn):
+        SearchDialog.__init__(self, conn, self.search_table,
+                              title=self.title)
+        self._setup_widgets()
+
     def _show_receiving_order(self, receiving_order):
         run_dialog(ReceivingOrderDetailsDialog, self, self.conn,
                    receiving_order)
@@ -57,10 +62,6 @@ class PurchaseReceivingSearch(SearchDialog):
     #
     # SearchDialog Hooks
     #
-
-    def setup_slaves(self):
-        SearchDialog.setup_slaves(self)
-        self.results.connect('row_activated', self.on_row_activated)
 
     def create_filters(self):
         self.set_searchbar_labels(_('Receiving Orders Matching:'))
@@ -86,6 +87,14 @@ class PurchaseReceivingSearch(SearchDialog):
                        width=80),
                 Column('invoice_total', _('Invoice Total'),
                        data_type=currency, width=120)]
+
+    #
+    # Private
+    #
+
+    def _setup_widgets(self):
+        self.results.connect('row_activated', self.on_row_activated)
+        self.set_details_button_sensitive(False)
 
     #
     # Callbacks
