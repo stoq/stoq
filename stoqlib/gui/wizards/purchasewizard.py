@@ -283,6 +283,7 @@ class PurchasePaymentStep(WizardEditorStep):
         self.attach_slave(slave_holder, self.discount_surcharge_slave)
         self.discount_surcharge_slave.connect('discount-changed',
                                            self._update_totals)
+        self.discount_surcharge_slave.set_max_discount(100)
         self._update_totals()
 
     #

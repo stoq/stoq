@@ -98,6 +98,14 @@ class DiscountSurchargeSlave(BaseEditorSlave):
             return ValidationError(_("%s can not be less then 0")
                                     % type_text)
 
+    def set_max_discount(self, discount):
+        """
+        Set the maximum percentage value for a discount.
+        @param discount: the value for a discount.
+        @type discount: L{int} in absolute value like 3
+        """
+        self.max_discount = discount
+
     #
     # BaseEditorSlave hooks
     #
