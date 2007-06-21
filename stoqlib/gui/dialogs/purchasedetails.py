@@ -136,7 +136,7 @@ class PurchaseDetailsDialog(BaseEditor):
                 ColoredColumn('base_value', _("Value"), data_type=currency,
                               width=90, color='red',
                               justify=gtk.JUSTIFY_RIGHT,
-                              data_func=payment_value_colorize), 
+                              data_func=payment_value_colorize),
                 ColoredColumn('paid_value', _("Paid Value"), data_type=currency,
                               width=92, color='red',
                               justify=gtk.JUSTIFY_RIGHT,
