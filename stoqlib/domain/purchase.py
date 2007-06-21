@@ -363,6 +363,19 @@ class PurchaseOrder(Domain):
                                         % self.freight_type)
         return self.freight_types[self.freight_type]
 
+    def get_freight(self):
+        """
+        @returns: the percentage value of freight in agreement
+                  of freight's type.
+        """
+        type_freight = self.get_freight_type_name()
+        if type_freight == "FOB":
+            return self.freight
+        elif type_freight == "CIF" and self.transporter:
+            return self.transporter.freight_percentage or currency(0)
+        else:
+            return currency(0)
+
     def get_branch_name(self):
         return self.branch.get_description()
 
