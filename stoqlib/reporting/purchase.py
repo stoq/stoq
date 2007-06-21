@@ -125,11 +125,11 @@ class PurchaseOrderReport(BaseStoqReport):
             OTC(_("Total"),
                 lambda obj: get_formatted_price(obj.get_total()), width=90,
                 align=RIGHT),
-            OTC(_("Qty Received"), lambda obj: format_quantity(obj.quantity_received),
-                width=90, align=RIGHT),
+            OTC(_("Qty Received"), lambda obj: format_quantity(
+                obj.quantity_received), width=90, align=RIGHT),
             OTC(_("Total"),
-                lambda obj: get_formatted_price(obj.get_received_total()), width=90,
-                align=RIGHT),
+                lambda obj: get_formatted_price(obj.get_received_total()),
+                width=90, align=RIGHT),
             ]
     def _add_items_table(self, items):
         total_quantity = Decimal(0)
@@ -157,9 +157,10 @@ class PurchaseOrderReport(BaseStoqReport):
         transporter = self._order.get_transporter_name() or _("Not Specified")
         freight_line.extend([_("Transporter:"), transporter, _("Freight:")])
         if self._order.freight_type == PurchaseOrder.FREIGHT_FOB:
-            freight_line.append("%.2f %%" % self._order.freight)
+            freight_line.append("FOB (%.2f %%)" % self._order.freight)
         else:
-            freight_line.append("CIF")
+            freight_line.append("CIF (%.2f %%)" % (
+                                self._order.transporter.freight_percentage,))
         return freight_line
 
     def _setup_payment_group_data(self):

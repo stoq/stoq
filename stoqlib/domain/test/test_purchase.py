@@ -24,6 +24,10 @@
 ##
 """ This module test all class in stoq/domain/purchase.py """
 
+from decimal import Decimal
+
+from kiwi.datatypes import currency
+
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.interfaces import IPaymentGroup
@@ -77,3 +81,19 @@ class TestPurchaseOrder(DomainTest):
         self.assertEqual(order.can_cancel(), True)
         order.cancel()
         self.assertEqual(order.can_cancel(), False)
+
+    def testGetFreight(self):
+        order = self.create_purchase_order()
+        sellable = self.create_sellable()
+        purchase_item = order.add_item(sellable, 1)
+        order.freight = Decimal(10)
+        self.assertEqual(order.get_freight(), Decimal(10))
+
+        order.freight_type = order.FREIGHT_CIF
+        self.assertEqual(order.get_freight(), currency(0))
+
+        transporter = self.create_transporter()
+        order.transporter = transporter
+        self.assertEqual(order.get_freight(), currency(0))
+        transporter.freight_percentage = Decimal(7)
+        self.assertEqual(order.get_freight(), Decimal(7))
