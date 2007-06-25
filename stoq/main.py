@@ -106,7 +106,8 @@ def _check_dependencies():
         except ImportError:
             _missing_module_error("gtk", "PyGTK")
 
-    _setup_dialogs()
+    _setup_ui_dialogs()
+
     if gtk.pygtk_version < PYGTK_REQUIRED:
         error(_("PyGTK too old"),
               _("PyGTK version too old, needs %s but found %s") % (
@@ -161,7 +162,7 @@ def _run_first_time_wizard(options):
     if not model:
         raise SystemExit("No configuration data provided")
 
-def _setup_dialogs():
+def _setup_ui_dialogs():
     # This needs to be here otherwise we can't install the dialog
     if 'STOQ_TEST_MODE' in os.environ:
         return
