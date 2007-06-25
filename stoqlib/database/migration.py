@@ -134,7 +134,8 @@ class SchemaMigration(object):
                 applied.append(patch.level)
 
             assert applied
-            log.info("All patches (%s) applied." % (''.join(str(p) for p in applied)))
+            log.info("All patches (%s) applied." % (
+                ''.join(str(p) for p in applied)))
             last_level = applied[-1]
 
         # checks if there is new applications and update all the user
@@ -155,7 +156,8 @@ class SchemaMigration(object):
             results = SystemTable.select(connection=self.conn)
             current_version = results.max('patchlevel')
         elif self.conn.tableHasColumn('asellable', 'code'):
-            raise SystemExit(_("Unsupported database version, you need to reinstall"))
+            raise SystemExit(
+                _("Unsupported database version, you need to reinstall"))
         else:
             current_version = 0
 
