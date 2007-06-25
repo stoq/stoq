@@ -125,6 +125,10 @@ class DiscountSurchargeSlave(BaseEditorSlave):
     def on_discount_perc__validate(self, entry, value):
         return self._validate_percentage(value, _('Discount'))
 
+    def on_discount_value__validate(self, entry, value):
+        if value < 0:
+            return self._validate_percentage(value, _('Discount'))
+
     @signal_block('discount_value.changed')
     def after_discount_perc__changed(self, *args):
         self.setup_discount_surcharge()
@@ -135,10 +139,6 @@ class DiscountSurchargeSlave(BaseEditorSlave):
         if percentage > self.max_discount:
             msg = _("Discount can not be greater then %d%%" \
                     % self.max_discount)
-            self.discount_value.set_invalid(msg)
-            self.model.discount_percentage = 0
-        elif self.model.discount_percentage < 0:
-            msg = _("Discount can not be negative")
             self.discount_value.set_invalid(msg)
             self.model.discount_percentage = 0
 
