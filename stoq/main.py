@@ -78,29 +78,81 @@ def _debug_hook(exctype, value, tb):
     import pdb
     pdb.pm()
 
+PYGTK_REQUIRED = (2, 10, 0)
+KIWI_REQUIRED = (1, 9, 15)
+GAZPACHO_REQUIRED = (0, 6, 6)
+REPORTLAB_REQUIRED = (1, 20)
+
 def _check_dependencies():
-    if 0:
-        log.debug('checking dependencies')
+    log.debug('checking dependencies')
+
+    def _missing_module_error(module, fancy=None):
+        error(
+            _("%s not found") % (fancy or module),
+            _("Could not find the required python module %s on your system") %
+            module)
+
+    # PyGTK
+    try:
+        import gtk
+        gtk # stuid pyflakes
+    except ImportError:
         try:
-            import reportlab
+            import pygtk
+            # This modifies sys.path
+            pygtk.require('2.0')
+            # Try again now when pygtk is imported
+            import gtk
         except ImportError:
-            raise SystemExit("Reportlab 1.20 is required but could not be found.")
+            _missing_module_error("gtk", "PyGTK")
 
-        if map(int, reportlab.Version.split('.')) < [1, 20]:
-            raise SystemExit("Reportlab 1.20 is required but %s found" %
-                             reportlab.Version)
-        log.debug('reportlab okay')
+    _setup_dialogs()
+    if gtk.pygtk_version < PYGTK_REQUIRED:
+        error(_("PyGTK too old"),
+              _("PyGTK version too old, needs %s but found %s") % (
+            '.'.join(map(str, PYGTK_REQUIRED)),
+            '.'.join(map(str, gtk.pygtk_version))))
+    log.debug('pygtk %s found, okay' % ('.'.join(map(str, gtk.pygtk_version))))
 
+    # Kiwi
+    try:
+        import kiwi
+    except ImportError:
+        _missing_module_error("kiwi")
+
+    kiwi_version = kiwi.__version__.version
+    if kiwi_version < KIWI_REQUIRED:
+        error(_("Kiwi too old"),
+              _("kiwi version too old, needs %s but found %s") % (
+            '.'.join(map(str, KIWI_REQUIRED)),
+            '.'.join(map(str, kiwi_version))))
+    log.debug('kiwi %s found, okay' % ('.'.join(map(str, kiwi_version))))
+
+    # Gazpacho
     try:
         import gazpacho
     except ImportError:
-        raise SystemExit(
-           "Gazpacho 0.6.6 or higher is required but could not be found.")
+        _missing_module_error("gazpacho")
 
-    if map(int, gazpacho.__version__.split('.')) < [0, 6, 6]:
-        raise SystemExit("Gazpacho 0.6.6 is required but %s found" %
-                         gazpacho.__version__)
-    log.debug('gazpacho okay')
+    if map(int, gazpacho.__version__.split('.')) < list(GAZPACHO_REQUIRED):
+        error(_("Gazpacho too old"),
+              _("Gazpacho %s is required but %s found") % (
+            '.'.join(map(str, GAZPACHO_REQUIRED)),
+            gazpacho.__version__))
+    log.debug('gazpacho %s found, okay' % (gazpacho.__version__,))
+
+    # Reportlab
+    try:
+        import reportlab
+    except ImportError:
+        _missing_module_error("reportlab")
+
+    if map(int, reportlab.Version.split('.')) < list(REPORTLAB_REQUIRED):
+        error(_("Reportlab too old"),
+              _("reportlab %s is required but %s found") % (
+            '.'.join(map(str, REPORTLAB_REQUIRED)),
+            reportlab.Version))
+    log.debug('reportlab okay')
 
 def _run_first_time_wizard(options):
     from stoqlib.gui.base.dialogs import run_dialog
@@ -169,7 +221,6 @@ def _initialize(options):
     sys.excepthook = hook
 
     _check_dependencies()
-    _setup_dialogs()
 
     from stoq.lib.configparser import StoqConfig
     log.debug('reading configuration')
