@@ -40,6 +40,7 @@ from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.domain.base import Domain, BaseSQLView
+from stoqlib.domain.events import SaleConfirmEvent
 from stoqlib.domain.fiscal import (IssBookEntry, IcmsIpiBookEntry,
                                    AbstractFiscalBookEntry)
 from stoqlib.domain.giftcertificate import GiftCertificate
@@ -60,6 +61,7 @@ from stoqlib.lib.defaults import quantize
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
+
 
 _ = stoqlib_gettext
 
@@ -267,6 +269,7 @@ class Sale(Domain):
         group = IPaymentGroup(self)
         group.confirm()
 
+        SaleConfirmEvent.emit(self)
         self.confirm_date = datetime.datetime.now()
         self.status = Sale.STATUS_CONFIRMED
 
