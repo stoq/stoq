@@ -28,6 +28,7 @@ import operator
 import gtk
 from kiwi.log import Logger
 from stoqlib.exceptions import LoginError
+from stoqlib.gui.events import StartApplicationEvent
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.message import error, info
 from kiwi.component import get_utility
@@ -95,6 +96,8 @@ class ApplicationRunner(object):
         toplevel = app.main_window.get_toplevel()
         icon = toplevel.render_icon(appdesc.icon, gtk.ICON_SIZE_MENU)
         toplevel.set_icon(icon)
+
+        StartApplicationEvent.emit(appdesc.name, app)
 
         return app
 
