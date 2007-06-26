@@ -39,8 +39,10 @@ from stoqlib.database.columns import PriceCol
 from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station)
 from stoqlib.domain.base import Domain
-from stoqlib.domain.station import BranchStation
+from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
+                                   TillAddCashEvent, TillRemoveCashEvent)
 from stoqlib.domain.interfaces import IOutPayment, IInPayment
+from stoqlib.domain.station import BranchStation
 from stoqlib.exceptions import TillError
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -175,6 +177,8 @@ class Till(Domain):
 
         self.initial_cash_amount = initial_cash_amount
 
+        value = TillOpenEvent.emit(till=self)
+
         self.opening_date = datetime.datetime.now()
         self.status = Till.STATUS_OPEN
 
@@ -196,10 +200,12 @@ class Till(Domain):
                                  "greater than the current balance.")
 
             self.add_debit_entry(removed,
-                           _(u'Amount removed from Till on %s' %
-                             self.opening_date.strftime('%x')))
+                                 _(u'Amount removed from Till on %s' %
+                                   self.opening_date.strftime('%x')))
 
         self.final_cash_amount = self.get_balance()
+
+        TillCloseEvent.emit(till=self)
 
         self.closing_date = datetime.datetime.now()
         self.status = Till.STATUS_CLOSED
@@ -227,7 +233,11 @@ class Till(Domain):
         @returns: till entry representing the added debit
         @rtype: L{TillEntry}
         """
-        return self._add_till_entry(-abs(value), reason)
+        value = -abs(value)
+        if value:
+            TillRemoveCashEvent.emit(till=self, value=value)
+
+        return self._add_till_entry(value, reason)
 
     def add_credit_entry(self, value, reason=u""):
         """
@@ -237,7 +247,11 @@ class Till(Domain):
         @returns: till entry representing the added credit
         @rtype: L{TillEntry}
         """
-        return self._add_till_entry(abs(value), reason)
+        value = abs(value)
+        if value:
+            TillAddCashEvent.emit(till=self, value=value)
+
+        return self._add_till_entry(value, reason)
 
     def needs_closing(self):
         """
