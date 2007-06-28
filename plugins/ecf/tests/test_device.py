@@ -25,13 +25,13 @@
 
 from stoqdrivers.enum import PaymentMethodType, TaxType
 
-from stoqlib.database.runtime import get_current_station
-from stoqlib.domain.devices import DeviceConstant, DeviceSettings
+from stoqlib.database.exceptions import IntegrityError
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import DeviceError
-from stoqlib.database.exceptions import IntegrityError
 from stoqlib.lib.translation import stoqlib_gettext
+
+from ecf.ecfdomain import ECFPrinter, DeviceConstant
 
 _ = stoqlib_gettext
 
@@ -41,7 +41,7 @@ class TestDeviceConstant(DomainTest):
         self.assertEqual(constant.get_constant_type_description(), _(u"Tax"))
 
     def testGetCustomTaxConstant(self):
-        settings = self.create_device_settings()
+        settings = self.create_ecf_printer()
         constant = DeviceConstant.get_custom_tax_constant(
             settings, 0, self.trans)
         self.assertEquals(constant, None)
@@ -55,7 +55,7 @@ class TestDeviceConstant(DomainTest):
         self.assertEquals(constant.device_value, 'T1')
 
     def testGetTaxConstant(self):
-        settings = self.create_device_settings()
+        settings = self.create_ecf_printer()
         constant = DeviceConstant.get_tax_constant(
             settings, -1, self.trans)
         self.assertEquals(constant, None)
@@ -69,53 +69,21 @@ class TestDeviceConstant(DomainTest):
         self.assertEquals(constant.device_value, 'TN')
 
 
-class TestDeviceSettings(DomainTest):
+class TestECFPrinter(DomainTest):
+
+    def create_ecf_printer(self):
+        return
 
     def testIsAFiscalPrinter(self):
-        settings = self.create_device_settings()
-        settings.type = DeviceSettings.FISCAL_PRINTER_DEVICE
+        settings = self.create_ecf_printer()
+        settings.type = ECFPrinter.FISCAL_PRINTER_DEVICE
         self.failUnless(settings.is_a_fiscal_printer())
-        settings = self.create_device_settings()
-        settings.type = DeviceSettings.CHEQUE_PRINTER_DEVICE
+        settings = self.create_ecf_printer()
+        settings.type = ECFPrinter.CHEQUE_PRINTER_DEVICE
         self.failIf(settings.is_a_fiscal_printer())
 
-    def testCreateFiscalPrinterConstants(self):
-        settings = DeviceSettings(station=get_current_station(self.trans),
-                                  device=DeviceSettings.DEVICE_SERIAL1,
-                                  brand='virtual',
-                                  model='Simple',
-                                  type=DeviceSettings.FISCAL_PRINTER_DEVICE,
-                                  connection=self.trans)
-        self.assertEquals(list(settings.constants), [])
-        settings.create_fiscal_printer_constants()
-        constants = list(settings.constants)
-        self.assertNotEquals(constants, [])
-        settings.create_fiscal_printer_constants()
-        self.assertEquals(list(settings.constants), constants)
-
-    def testClone(self):
-        settings = self.create_device_settings()
-        clone = settings.clone()
-        self.assertEqual(len(settings.constants), len(clone.constants))
-        settings.create_fiscal_printer_constants()
-        clone = settings.clone()
-        self.assertEqual(len(settings.constants), len(clone.constants))
-
-    def testDelete(self):
-        settings = self.create_device_settings()
-        settings.create_fiscal_printer_constants()
-
-        results = DeviceConstant.selectBy(device_settings=settings,
-                                          connection=self.trans)
-        self.failUnless(results.count() > 0)
-        DeviceSettings.delete(settings.id, connection=self.trans)
-
-        results = DeviceConstant.selectBy(device_settings=settings,
-                                          connection=self.trans)
-        self.failIf(results.count() > 0)
-
     def testGetConstantsByType(self):
-        settings = self.create_device_settings()
+        settings = self.create_ecf_printer()
         settings.create_fiscal_printer_constants()
 
         constants = list(settings.constants)
@@ -128,7 +96,7 @@ class TestDeviceSettings(DomainTest):
                        if c.constant_type == constant_type])
 
     def testGetTaxConstantForDevice(self):
-        settings = self.create_device_settings()
+        settings = self.create_ecf_printer()
         settings.create_fiscal_printer_constants()
         sellable = self.create_sellable()
         constant = settings.get_tax_constant_for_device(sellable)
@@ -138,7 +106,7 @@ class TestDeviceSettings(DomainTest):
         self.assertEquals(constant.device_value, "TN")
 
     def testGetTaxConstantForDeviceInvalidTaxValue(self):
-        settings = self.create_device_settings()
+        settings = self.create_ecf_printer()
         settings.create_fiscal_printer_constants()
         sellable = self.create_sellable()
         sellable.tax_constant = SellableTaxConstant(
@@ -150,7 +118,7 @@ class TestDeviceSettings(DomainTest):
                           settings.get_tax_constant_for_device, sellable)
 
     def testGetTaxConstantForDeviceInvalidTaxType(self):
-        settings = self.create_device_settings()
+        settings = self.create_ecf_printer()
         settings.create_fiscal_printer_constants()
         sellable = self.create_sellable()
         try:
@@ -165,7 +133,7 @@ class TestDeviceSettings(DomainTest):
             raise AssertionError
 
     def testGetPaymentConstant(self):
-        settings = self.create_device_settings()
+        settings = self.create_ecf_printer()
         settings.create_fiscal_printer_constants()
         constant = settings.get_payment_constant(PaymentMethodType.MONEY)
         self.assertEquals(constant.constant_type, DeviceConstant.TYPE_PAYMENT)

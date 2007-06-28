@@ -24,7 +24,6 @@
 """ Device settings slaves implementation """
 
 from kiwi.ui.objectlist import Column
-from sqlobject.sqlbuilder import AND
 
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.editors.deviceseditor import DeviceSettingsEditor
@@ -68,9 +67,9 @@ class DeviceSettingsDialogSlave(AdditionListSlave):
                        width=100)]
 
     def get_items(self):
-        query = DeviceSettings.q.brand != 'virtual'
+        query = None
         if self._station:
-            query = AND(query, DeviceSettings.q.stationID == self._station.id)
+            query = DeviceSettings.q.stationID == self._station.id
         return DeviceSettings.select(query, connection=self.conn)
 
     #

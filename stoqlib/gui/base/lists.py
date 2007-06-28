@@ -30,7 +30,8 @@ from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.listdialog import ListDialog
 from kiwi.utils import gsignal
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.database.runtime import (new_transaction, finish_transaction,
+                                      get_connection)
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.exceptions import SelectionError, StoqlibError
 from stoqlib.gui.base.dialogs import (run_dialog, get_dialog,
@@ -65,6 +66,8 @@ class ModelListDialog(ListDialog):
         """
         @param conn: A database connection
         """
+        if not conn:
+            conn = get_connection()
         self.conn = conn
         self._reuse_transaction = False
 
@@ -157,6 +160,7 @@ class ModelListDialog(ListDialog):
         so always use this in your run_editor hook
         """
         dialog = get_dialog(self, dialog_class, *args, **kwargs)
+
         retval = run_dialog(dialog)
         if not retval:
             # We must return None because of ListDialog's add-item signal

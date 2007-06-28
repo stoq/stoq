@@ -33,12 +33,13 @@ from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ObjectList
 
 from stoqdrivers.enum import TaxType
-from stoqlib.domain.devices import DeviceSettings, DeviceConstant
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.defaults import UNKNOWN_CHARACTER
 from stoqlib.lib.translation import stoqlib_gettext
+
+from ecfdomain import ECFPrinter, DeviceConstant
 
 _ = stoqlib_gettext
 
@@ -67,10 +68,10 @@ class _DeviceConstantEditor(BaseEditor):
                      'device_value_hex',
                      )
 
-    def __init__(self, conn, model=None, settings=None, constant_type=None):
-        if not isinstance(settings, DeviceSettings):
-            raise TypeError("settings should be a DeviceSettings, not %s" % settings)
-        self.settings = settings
+    def __init__(self, conn, model=None, printer=None, constant_type=None):
+        if not isinstance(printer, ECFPrinter):
+            raise TypeError("printer should be a ECFPrinter, not %s" % printer)
+        self.printer = printer
         self.constant_type = constant_type
 
         BaseEditor.__init__(self, conn, model)
@@ -95,7 +96,7 @@ class _DeviceConstantEditor(BaseEditor):
 
     def create_model(self, conn):
         return DeviceConstant(connection=conn,
-                              device_settings=self.settings,
+                              printer=self.printer,
                               constant_type=self.constant_type,
                               constant_value=None,
                               constant_name="Unnamed",
@@ -121,8 +122,8 @@ class _DeviceConstantEditor(BaseEditor):
         self._update_hex(dec2hex(entry.get_text()))
 
 class _DeviceConstantsList(AdditionListSlave):
-    def __init__(self, conn, settings):
-        self._settings = settings
+    def __init__(self, conn, printer):
+        self._printer = printer
         self._constant_type = None
         AdditionListSlave.__init__(self, conn,
                                    self._get_columns())
@@ -136,14 +137,12 @@ class _DeviceConstantsList(AdditionListSlave):
                        width=120, format_func=lambda x: repr(x)[1:-1])]
 
     def _before_delete_items(self, list_slave, items):
-        for item in items:
-            DeviceSettings.delete(item.id, connection=self.conn)
         self.conn.commit()
         self._refresh()
 
     def _refresh(self):
         self.klist.clear()
-        self.klist.extend(self._settings.get_constants_by_type(
+        self.klist.extend(self._printer.get_constants_by_type(
             self._constant_type))
 
     #
@@ -153,7 +152,7 @@ class _DeviceConstantsList(AdditionListSlave):
     def run_editor(self, model):
         return run_dialog(_DeviceConstantEditor, conn=self.conn,
                           model=model,
-                          settings=self._settings,
+                          printer=self._printer,
                           constant_type=self._constant_type)
 
     #
@@ -178,10 +177,10 @@ class _DeviceConstantsList(AdditionListSlave):
 
 class DeviceConstantsDialog(BasicDialog):
     size = (500, 300)
-    def __init__(self, conn, settings):
+    def __init__(self, conn, printer):
         self._constant_slave = None
         self.conn = conn
-        self.settings = settings
+        self.printer = printer
 
         BasicDialog.__init__(self)
         BasicDialog._initialize(self, hide_footer=False, title='edit',
@@ -207,7 +206,7 @@ class DeviceConstantsDialog(BasicDialog):
             self.klist.append(Settable(name=name, type=ctype))
         self.klist.show()
 
-        self._constant_slave = _DeviceConstantsList(self.conn, self.settings)
+        self._constant_slave = _DeviceConstantsList(self.conn, self.printer)
         self._constant_slave.switch(DeviceConstant.TYPE_UNIT)
 
         hbox.pack_start(self._constant_slave.get_toplevel())

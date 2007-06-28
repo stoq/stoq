@@ -25,7 +25,7 @@
 ##
 """ Editors implementation for Stoq devices configuration"""
 
-from stoqdrivers.devices.interfaces import ICouponPrinter, IChequePrinter
+from stoqdrivers.devices.interfaces import IChequePrinter
 from stoqdrivers.devices.printers.base import (get_supported_printers,
                                                get_supported_printers_by_iface)
 from stoqdrivers.devices.scales.base import get_supported_scales
@@ -34,8 +34,6 @@ from stoqlib.database.runtime import get_connection, get_current_station
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.person import BranchStation
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.editors.deviceconstanteditor import DeviceConstantsDialog
-from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -88,7 +86,6 @@ class DeviceSettingsEditor(BaseEditor):
     def setup_device_types_combo(self):
         items = [(_("Choose..."), None)]
         device_types = (DeviceSettings.SCALE_DEVICE,
-                        DeviceSettings.FISCAL_PRINTER_DEVICE,
                         DeviceSettings.CHEQUE_PRINTER_DEVICE)
         items.extend([(self.model.get_device_type_name(t), t)
                       for t in device_types])
@@ -104,8 +101,6 @@ class DeviceSettingsEditor(BaseEditor):
     def _get_supported_types(self):
         if self.model.type == DeviceSettings.SCALE_DEVICE:
             supported_types = get_supported_scales()
-        elif self.model.type == DeviceSettings.FISCAL_PRINTER_DEVICE:
-            supported_types = get_supported_printers_by_iface(ICouponPrinter)
         elif self.model.type == DeviceSettings.CHEQUE_PRINTER_DEVICE:
             supported_types = get_supported_printers_by_iface(IChequePrinter)
         else:
@@ -140,11 +135,6 @@ class DeviceSettingsEditor(BaseEditor):
         items.extend([(obj.model_name, obj.__name__)
                           for obj in supported_models])
         self.model_combo.prefill(items)
-
-    def _edit_driver_constants(self):
-        if self.model.type == DeviceSettings.FISCAL_PRINTER_DEVICE:
-            self.model.create_fiscal_printer_constants()
-        run_dialog(DeviceConstantsDialog, self, self.conn, self.model)
 
     #
     # BaseEditor hooks
@@ -198,15 +188,6 @@ class DeviceSettingsEditor(BaseEditor):
                         "because there are no constants defined yet."))
             self.model.inactivate()
 
-        # Ensure that the fiscal constants are created, even if the
-        # user did not click on the edit constants button
-        self.model.create_fiscal_printer_constants()
-
-        # Check if we have a virtual printer, if so we must remove it
-        settings = DeviceSettings.get_virtual_printer_settings(
-            self.conn, self.model.station)
-        if settings:
-            DeviceSettings.delete(settings.id, connection=self.conn)
         return self.model
 
     #
@@ -230,6 +211,3 @@ class DeviceSettingsEditor(BaseEditor):
 
     def on_device_combo__changed(self, *args):
         self.refresh_ok()
-
-    def on_constants_button__clicked(self, button):
-        self._edit_driver_constants()

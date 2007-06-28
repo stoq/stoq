@@ -31,13 +31,10 @@ from kiwi.argcheck import argcheck
 from kiwi.log import Logger
 from zope.interface import implements
 from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
-from stoqdrivers.exceptions import (CouponOpenError, DriverError,
-                                    CouponNotOpenError)
+from stoqdrivers.exceptions import DriverError, CouponNotOpenError
 
-from stoqlib.database.runtime import new_transaction, get_current_station
-from stoqlib.domain.devices import (DeviceSettings, FiscalDayHistory,
-                                    FiscalDayTax)
-from stoqlib.domain.giftcertificate import GiftCertificateItem
+from stoqlib.database.runtime import new_transaction
+from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        IContainer)
 from stoqlib.domain.payment.methods import CheckPM, MoneyPM
@@ -50,53 +47,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-log = Logger("stoqlib.drivers.fiscalprinter")
-
-
-#
-# Public API
-#
-
-
-def get_fiscal_printer_settings_by_station(conn, station):
-    """ Returns the DeviceSettings object representing the printer currently
-    associated with the given station or None if there is not settings for
-    it.
-    """
-    return DeviceSettings.selectOneBy(
-        connection=conn,
-        station=station,
-        type=DeviceSettings.FISCAL_PRINTER_DEVICE)
-
-def create_virtual_printer(trans, station):
-    """
-    Create a virtual printer for a station
-    @param trans: a database transaction
-    @param station: a station
-    """
-    settings = DeviceSettings(station=station,
-                              device=DeviceSettings.DEVICE_SERIAL1,
-                              brand='virtual',
-                              model='Simple',
-                              type=DeviceSettings.FISCAL_PRINTER_DEVICE,
-                              connection=trans)
-    settings.create_fiscal_printer_constants()
-
-def create_virtual_printer_for_current_station():
-    trans = new_transaction()
-    station = get_current_station(trans)
-    if get_fiscal_printer_settings_by_station(trans, station):
-        trans.close()
-        return
-    create_virtual_printer(trans, station)
-    trans.commit(close=True)
-
-#
-# Coupon & Cheque
-#
-
-
-
+log = Logger("stoq-ecf-plugin.couponprinter")
 
 
 class CouponPrinter(object):
@@ -104,41 +55,29 @@ class CouponPrinter(object):
     CouponPrinter is a wrapper around the FiscalPrinter class inside
     stoqdrivers, refer to it for documentation
     """
-    def __init__(self, driver, settings):
-        self._driver = driver
-        self._settings = settings
+    def __init__(self, printer):
+        self._printer = printer
+        self._driver = printer.get_fiscal_driver()
 
     #
     # Public API
     #
 
-    def open_till(self, value=0):
+    def open_till(self):
         """
         Opens the till
-        @param value: optional, how much to add to the till
-          after opening it
         """
         log.info("Opening till")
 
         self._driver.summarize()
 
-        assert value >= 0
-
-        if value > 0:
-            self.add_cash(value)
-
-    def close_till(self, value=0):
+    def close_till(self):
         """
         Closes the till
         @param value: optional, how much to remove from the till
           before closing it
         """
         log.info("Closing till")
-
-        assert value >= 0
-
-        if value > 0:
-            self.remove_cash(value)
 
         data = self._driver.close_till()
         self._update_sintegra_data(data)
@@ -206,13 +145,6 @@ class CouponPrinter(object):
             return False
         return coupon.close()
 
-    def create_coupon(self, sale):
-        """
-        @param sale: a L{stoqlib.domain.sale.Sale}
-        @returns: a new coupon
-        """
-        return FiscalCoupon(self._driver, self._settings, sale)
-
     def summarize(self):
         """sends a summarize (leituraX) command to the printer"""
         try:
@@ -227,6 +159,18 @@ class CouponPrinter(object):
     def memory_by_reductions(self, start, end):
         self._driver.till_read_memory_by_reductions(start, end)
 
+    def create_coupon(self, coupon):
+        return Coupon(coupon, self._printer, self._driver)
+
+    def check_serial(self):
+        driver_serial = self._driver.get_serial()
+        if self._printer.device_serial != driver_serial:
+            warning(_("Invalid serial number for fiscal printer connected to %s" % (
+                self._printer.device_name)))
+            return False
+
+        return True
+
     # Private
     def _update_sintegra_data(self, data):
         if data is None:
@@ -235,7 +179,7 @@ class CouponPrinter(object):
         trans = new_transaction()
         day = FiscalDayHistory(connection=trans,
                                emission_date=data.opening_date,
-                               device=self._settings,
+                               station=self._printer.station,
                                serial=data.serial,
                                serial_id=data.serial_id,
                                coupon_start=data.coupon_start,
@@ -250,13 +194,19 @@ class CouponPrinter(object):
                          connection=trans)
         trans.commit(close=True)
 
+    def get_printer(self):
+        return self._printer
+
+    def get_driver(self):
+        return self._driver
+
 
 #
 # Class definitions
 #
 
 
-class FiscalCoupon(object):
+class Coupon(object):
     """ This class is used just to allow us cancel an item with base in a
     ASellable object. Currently, services can't be added, and they
     are just ignored -- be aware, if a coupon with only services is
@@ -264,10 +214,10 @@ class FiscalCoupon(object):
     """
     implements(IContainer)
 
-    def __init__(self, driver, settings, sale):
+    def __init__(self, coupon, printer, driver):
+        self._coupon = coupon
+        self._printer = printer
         self._driver = driver
-        self._settings = settings
-        self._sale = sale
         self._item_ids = {}
 
     def _get_capability(self, name):
@@ -286,13 +236,6 @@ class FiscalCoupon(object):
           -1 if an error happend
           0 if added but not printed (gift certificates, free deliveries)
         """
-        # GiftCertificates are not printed on the fiscal printer
-        # See #2985 for more information.
-        if isinstance(item, GiftCertificateItem):
-            return 0
-
-        if item.price <= 0:
-            return 0
         sellable = item.sellable
         max_len = self._get_capability("item_description").max_len
         description = sellable.base_sellable_info.description[:max_len]
@@ -307,33 +250,18 @@ class FiscalCoupon(object):
         code = sellable.get_code_str()[:max_len]
 
         try:
-            tax_constant = self._settings.get_tax_constant_for_device(sellable)
+            tax_constant = self._printer.get_tax_constant_for_device(sellable)
         except DeviceError, e:
             warning(_("Could not print item"), str(e))
             return -1
-        item_id = self._driver.add_item(code, description, item.price,
-                                        tax_constant.device_value,
-                                        item.quantity, unit,
-                                        unit_desc=unit_desc)
-        ids = self._item_ids.setdefault(item, [])
-        ids.append(item_id)
-        return item_id
-
-    def get_items(self):
-        return self._item_ids.keys()
+        return self._driver.add_item(code, description, item.price,
+                                     tax_constant.device_value,
+                                     item.quantity, unit,
+                                     unit_desc=unit_desc)
 
     @argcheck(ASellableItem)
-    def remove_item(self, item):
-        if isinstance(item, GiftCertificateItem):
-            return
-        if item.price <= 0:
-            return
-        for item_id in self._item_ids.pop(item):
-            try:
-                self._driver.cancel_item(item_id)
-            except DriverError:
-                return False
-        return True
+    def remove_item(self, item_id):
+        self._driver.cancel_item(item_id)
 
     #
     # Fiscal coupon related functions
@@ -358,59 +286,22 @@ class FiscalCoupon(object):
         self._driver.identify_customer(name, address, document)
 
     def open(self):
-        try:
-            self._driver.open()
-        except CouponOpenError:
-            if not self.cancel():
-                return False
-        return True
+        return self._driver.open()
 
-    def totalize(self):
-        # XXX: Remove this when bug #2827 is fixed.
-        if not self._item_ids:
-            return True
-
-        # Surcharge is currently disabled, see #2811
-        #if discount > surcharge:
-        #    discount = discount - surcharge
-        #    surcharge = 0
-        #elif surcharge > discount:
-        #    surcharge = surcharge - discount
-        #    discount = 0
-        #else:
-        #    # If these values are greater than zero we will get problems in
-        #    # stoqdrivers
-        #    surcharge = discount = 0
-        surcharge = Decimal('0')
-
-        discount = self._sale.discount_percentage
-
-        try:
-            self._driver.totalize(discount, surcharge, TaxType.NONE)
-        except DriverError, details:
-            warning(_(u"It is not possible to totalize the coupon"),
-                    str(details))
-            return False
-        return True
+    def totalize(self, sale):
+        return self._driver.totalize(sale.discount_percentage,
+                                     Decimal('0'),
+                                     TaxType.NONE)
 
     def cancel(self):
-        try:
-            self._driver.cancel()
-        except DriverError:
-            return False
-        return True
+        return self._driver.cancel()
 
-    # FIXME: Rename to add_payment_group(group)
-    def setup_payments(self):
+    def add_payments(self, sale):
         """ Add the payments defined in the sale to the coupon. Note that this
         function must be called after all the payments has been created.
         """
-        log.info("setting up payments")
+        log.info("setting up payments for %r" % (sale,))
 
-        # XXX: Remove this when bug #2827 is fixed.
-        if not self._item_ids:
-            return True
-        sale = self._sale
         group = IPaymentGroup(sale)
         if group.default_method == PaymentMethodType.GIFT_CERTIFICATE:
             self._driver.add_payment(PaymentMethodType.MONEY,
@@ -446,27 +337,18 @@ class FiscalCoupon(object):
                     "the payment on the coupon" %
                     method_type.__name__)
 
-            constant = self._settings.get_payment_constant(method_id)
+            constant = self._printer.get_payment_constant(method_id)
             if not constant:
                 method_name = get_method_names()[method_id]
                 raise DeviceError(
                     _(u"The payment method used in this sale (%s) is not "
                       "configured in the fiscal printer." % method_name))
 
-            self._driver.add_payment(PaymentMethodType.CUSTOM, payment.base_value,
+            self._driver.add_payment(PaymentMethodType.CUSTOM,
+                                     payment.base_value,
                                      custom_pm=constant.device_value)
 
         return True
 
     def close(self):
-        # XXX: Remove this when bug #2827 is fixed.
-        if not self._item_ids:
-            return True
-        try:
-            coupon_id = self._driver.close()
-        except DriverError, details:
-            warning(_("It's not possible to close the coupon"), str(details))
-            return False
-        self._sale.coupon_id = coupon_id
-        return True
-
+        return self._driver.close()

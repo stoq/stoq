@@ -33,7 +33,6 @@ from stoqlib.importers.transporterimporter import TransporterImporter
 from stoqlib.domain.examples.sale import create_sales
 from stoqlib.domain.examples.purchase import create_purchases
 from stoqlib.domain.examples.giftcertificate import create_giftcertificates
-from stoqlib.domain.examples.devices import create_device_settings
 
 def _import_one(klass, filename):
     imp = klass()
@@ -48,7 +47,6 @@ def create(utilities=False):
     _import_one(ClientImporter, 'clients.csv')
     if utilities:
         set_person_utilities()
-    create_device_settings()
     _import_one(ProductImporter, 'products.csv')
     _import_one(ServiceImporter, 'services.csv')
     create_sales()

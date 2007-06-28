@@ -91,7 +91,7 @@ class ProgressDialog(GladeDelegate):
 
     def _real_start(self):
         self.show()
-        self.toplevel.present()
+        #self.toplevel.present()
         self._start_id = -1
         return False
 

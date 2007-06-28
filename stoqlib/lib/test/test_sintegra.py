@@ -37,11 +37,11 @@ from stoqlib.lib import test
 
 class SintegraTest(DomainTest):
     def testComplete(self):
-        settings = self.create_device_settings()
+        station = self.create_station()
         today = datetime.date(2007, 1, 1)
         day = FiscalDayHistory(connection=self.trans,
                                emission_date=today,
-                               device=settings,
+                               station=station,
                                serial='Stoqlib test serial',
                                serial_id=1,
                                coupon_start=1,

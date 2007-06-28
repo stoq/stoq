@@ -1,0 +1,8 @@
+[Plugin]
+Module=ecfplugin
+Version=1
+Name=ECF Fiscal Printer
+Name[pt_BR]=ECF Impressora Fiscal
+Authors=Johan Dahlin <jdahlin@async.com.br>
+Copyright=Copyright © 2007 Async Open Source
+Website=http://www.stoq.com.br/

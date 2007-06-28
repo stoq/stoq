@@ -34,16 +34,12 @@ from sqlobject.sqlbuilder import AND
 from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.interfaces import (
     ICurrentBranch, ICurrentBranchStation, ICurrentUser, IDatabaseSettings)
-from stoqlib.database.runtime import (new_transaction, get_connection,
-                                      get_current_station)
+from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.examples.createall import create
 from stoqlib.domain.person import Person, PersonAdaptToBranch
 from stoqlib.domain.interfaces import IBranch, IUser
 from stoqlib.domain.station import BranchStation
-from stoqlib.drivers.fiscalprinter import (
-    get_fiscal_printer_settings_by_station,
-    create_virtual_printer_for_current_station)
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     ISystemNotifier)
 from stoqlib.lib.message import DefaultSystemNotifier
@@ -117,13 +113,6 @@ def _provide_current_station(station_name=None, branch_name=None):
     provide_utility(ICurrentBranchStation, station)
     trans.commit(close=True)
 
-def _provide_devices():
-    conn = get_connection()
-
-    station = get_current_station(conn)
-    if not get_fiscal_printer_settings_by_station(conn, station):
-        create_virtual_printer_for_current_station()
-
 # Public API
 
 def provide_database_settings(dbname=None, address=None, port=None, username=None,
@@ -175,7 +164,6 @@ def provide_utilities(station_name, branch_name=None):
     """
     _provide_current_user()
     _provide_current_station(station_name, branch_name)
-    _provide_devices()
 
 def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
                         password="", station_name=None, quick=False):
