@@ -157,11 +157,16 @@ class StoqCommandHandler:
 
     def cmd_updateschema(self, options):
         from stoqlib.database.migration import StoqlibSchemaMigration
+        from stoqlib.lib.pluginmanager import provide_plugin_manager
 
-        self._read_config(options, check_schema=False)
+        self._read_config(options, check_schema=False, load_plugins=False)
 
+        # This is a little bit tricky to be able to apply the initial
+        # plugin infrastructure
         migration = StoqlibSchemaMigration()
-        migration.update()
+        migration.update(plugins=False)
+        provide_plugin_manager()
+        migration.update_plugins()
 
     def cmd_serve(self, options):
         from stoqlib.database.synchronization import SynchronizationService
