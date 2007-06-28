@@ -191,21 +191,6 @@ def _setup_cookiefile(config_dir):
     cookiefile = os.path.join(config_dir, "cookie")
     provide_utility(ICookieFile, Base64CookieFile(cookiefile))
 
-def _check_tables():
-    from stoqlib.database.runtime import get_connection
-
-    log.debug('checking tables')
-
-    # Check so SystemTable is present
-    conn = get_connection()
-    if not conn.tableExists('system_table'):
-        error(
-            _("Database schema error"),
-            _("Table `system_table' does not exist.\n"
-              "Consult your database administrator to solve this problem."))
-
-    # FIXME: Check so SystemTable is up-to-date
-
 def _initialize(options):
     global _stream
     # Do this as early as possible to get as much as possible into the
@@ -263,8 +248,6 @@ def _initialize(options):
         error(_('Could not connect to database'),
               'error=%s uri=%s' % (str(e), config.get_connection_uri()))
         raise SystemExit("Error: bad connection settings provided")
-
-    _check_tables()
 
 def _run_app(options, appname):
     from stoqlib.gui.base.gtkadds import register_iconsets
