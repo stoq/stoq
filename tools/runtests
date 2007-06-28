@@ -1,0 +1,9 @@
+#!/bin/sh
+
+LANGUAGE=C
+LANG=C
+LC_ALL=C
+export LANGUAGE LANG LC_ALL
+trial stoqlib tests
+
+
