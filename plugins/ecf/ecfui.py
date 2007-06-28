@@ -31,7 +31,7 @@ from stoqlib.domain.events import (SaleConfirmEvent, TillAddCashEvent,
                                    TillCloseEvent)
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
-from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
 from stoqlib.gui.events import StartApplicationEvent, CouponCreatedEvent
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.lib.message import info, warning, yesno
@@ -322,7 +322,8 @@ class ECFUI(object):
         self._printer.summarize()
 
     def _show_open_till_dialog(self):
-        helper = FiscalPrinterHelper(self.conn)
+        parent = get_current_toplevel()
+        helper = FiscalPrinterHelper(self.conn, parent)
         helper.open_till()
         self._update_ui_actions()
 
