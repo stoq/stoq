@@ -162,6 +162,10 @@ class ReceivingOrder(Domain):
         group.create_icmsipi_book_entry(self.cfop, self.invoice_number,
                                         self.icms_total, self.ipi_total)
 
+        for payment in group.get_items():
+            payment.value = payment.base_value = (
+                self.get_total()/group.installments_number)
+        self.invoice_total = self.get_total()
         if self.purchase.can_close():
             self.purchase.close()
 
@@ -225,7 +229,7 @@ class ReceivingOrder(Domain):
         purchase order and the receiving order.
         """
 
-        total = self.invoice_total or 0
+        total = self.get_products_total()
         if self.discount_value:
             total -= self.discount_value
         if self.surcharge_value:

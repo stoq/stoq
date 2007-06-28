@@ -25,6 +25,7 @@
 from kiwi.datatypes import currency
 
 from stoqlib.database.exceptions import IntegrityError
+from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.test.domaintest import DomainTest
 """ This module test all class in stoq/domain/receiving.py """
 
@@ -50,22 +51,29 @@ class TestReceivingOrder(DomainTest):
 
     def testGetTotal(self):
         order = self.create_receiving_order()
-        self.assertEqual(order.get_total(), currency(0))
-        order.invoice_total = 400
-        self.assertEqual(order.get_total(), currency(400))
+        order_item = self.create_receiving_order_item(order)
+        self.assertEqual(order.get_total(), currency(1000))
+
         order.discount_value = 10
+        self.assertEqual(order.get_total(), currency(990))
         order.purchase.discount_value = 5
+        self.assertEqual(order.get_total(), currency(985))
         order.purchase.surcharge_value = 8
         order.surcharge_value = 15
-        self.assertEqual(order.get_total(), currency(408))
+        self.assertEqual(order.get_total(), currency(1008))
         order.ipi_total = 10
-        self.assertEqual(order.get_total(), currency(418))
+        self.assertEqual(order.get_total(), currency(1018))
         order.freight_total = 6
-        self.assertEqual(order.get_total(), currency(424))
+        self.assertEqual(order.get_total(), currency(1024))
         order.secure_value = 6
-        self.assertEqual(order.get_total(), currency(430))
+        self.assertEqual(order.get_total(), currency(1030))
         order.expense_value = 12
-        self.assertEqual(order.get_total(), currency(442))
+        self.assertEqual(order.get_total(), currency(1042))
+
+        order.purchase.status = order.purchase.ORDER_PENDING
+        order.purchase.confirm()
+        order.confirm()
+        self.assertEqual(order.invoice_total, order.get_total())
 
     def testConfirm(self):
         order = self.create_receiving_order()
@@ -76,6 +84,20 @@ class TestReceivingOrder(DomainTest):
         order_item.quantity_received = 8
         self.assertRaises(ValueError, order.confirm)
         self.assertRaises(ValueError, order.confirm)
+
+        for item in order.purchase.get_items():
+            item.quantity_received = 0
+        order.purchase.status = order.purchase.ORDER_PENDING
+        order.purchase.confirm()
+        order.confirm()
+        group = IPaymentGroup(order.purchase)
+        for pay in group.get_items():
+            self.assertEqual(pay.value,
+                order.get_total()/group.installments_number)
+            self.assertEqual(pay.base_value,
+                order.get_total()/group.installments_number)
+        self.assertEqual(order.invoice_total, order.get_total())
+
 
 class TestReceivingOrderItem(DomainTest):
 
