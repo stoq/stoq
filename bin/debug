@@ -37,7 +37,6 @@ from stoqlib.database.runtime import (get_connection, new_transaction,
                                       get_current_branch, get_current_station,
                                       set_current_branch_station)
 from stoqlib.database.tables import get_table_types
-from stoqlib.drivers.fiscalprinter import get_fiscal_printer_settings_by_station
 from stoqlib.lib.parameters import sysparam
 
 from stoq.lib.configparser import StoqConfig
@@ -74,7 +73,8 @@ def main(args):
                       dest="script")
     options, args = parser.parse_args(args)
 
-    setup(options=options, register_station=False, check_schema=False)
+    setup(options=options, register_station=(not options.bare),
+          check_schema=False)
 
     # Namespace
     ns = locals().copy()
@@ -88,14 +88,10 @@ def main(args):
     ns['sysparam'] = sysparam
 
     if not options.bare:
-        provide_utility(ICurrentUser, get_admin_user(conn))
-        set_current_branch_station(conn, socket.gethostname())
-
         ns['branch'] = get_current_branch(conn)
         ns['station'] = station = get_current_station(conn)
         ns['now'] = datetime.datetime.now
         ns['today'] = datetime.date.today
-        ns['settings'] = get_fiscal_printer_settings_by_station(conn, station)
 
         for name in ('sqlobject', 'sqlobject.sqlbuilder',
                      'stoqlib.database.runtime',

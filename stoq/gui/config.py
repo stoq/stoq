@@ -32,12 +32,12 @@ Current flow of the database steps:
 
 -> DatabaseSettingsStep
     If Existing DB -> ExistingAdminPasswordStep
-        -> DeviceSettingsStep
+        -> ECFPluginStep
     If New DB -> AdminPasswordStep
         -> ExampleDatabaseStep
-            If DB is empty -> DeviceSettingsStep
+            If DB is empty -> ECFPluginStep
             Otherwise      -> BranchSettingsStep
-                -> DeviceSettingsStep
+                -> ECFPluginStep
 
 """
 
@@ -59,13 +59,13 @@ from stoqlib.domain.station import BranchStation
 from stoqlib.domain.examples import createall as examples
 from stoqlib.domain.interfaces import IUser
 from stoqlib.domain.system import SystemTable
-from stoqlib.drivers.fiscalprinter import create_virtual_printer
 from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import provide_plugin_manager
 
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.startup import clean_database, setup
@@ -80,6 +80,7 @@ _ = gettext.gettext
 
 (TRUST_AUTHENTICATION,
  PASSWORD_AUTHENTICATION) = range(2)
+
 
 class DatabaseSettingsStep(WizardEditorStep):
     gladefile = 'DatabaseSettingsStep'
@@ -227,7 +228,8 @@ class DatabaseSettingsStep(WizardEditorStep):
         self.wizard.config.load_settings(self.wizard_model.db_settings)
 
         setup(self.wizard.config, self.wizard.options,
-              register_station=False, check_schema=False)
+              register_station=False, check_schema=False,
+              load_plugins=False)
 
         if not self.has_installed_db:
             # Initialize database connections and create system data if the
@@ -276,6 +278,7 @@ class DatabaseSettingsStep(WizardEditorStep):
 
     def on_authentication_type__content_changed(self, *args):
         self._update_widgets()
+
 
 class AdminPasswordStep(BaseWizardStep):
     """ Ask a password for the new user being created. """
@@ -331,6 +334,7 @@ class AdminPasswordStep(BaseWizardStep):
     def next_step(self):
         return ExampleDatabaseStep(
             self.conn, self.wizard, self._next_model, self)
+
 
 class ExistingAdminPasswordStep(AdminPasswordStep):
     def _check_password(self, conn, password):
@@ -396,8 +400,9 @@ class ExistingAdminPasswordStep(AdminPasswordStep):
         return False
 
     def next_step(self):
-        return DeviceSettingsStep(self.conn, self.wizard,
-                                  self._next_model, self)
+        return ECFPluginStep(self.conn, self.wizard, self._next_model)
+
+
 
 class ExampleDatabaseStep(WizardEditorStep):
     gladefile = "ExampleDatabaseStep"
@@ -405,13 +410,14 @@ class ExampleDatabaseStep(WizardEditorStep):
 
     def next_step(self):
         if self.empty_database_radio.get_active():
-            stepclass = BranchSettingsStep
+            return BranchSettingsStep(self.conn, self.wizard,
+                                      self.model, self)
         else:
             self.conn.commit()
             examples.create()
             self.wizard.installed_examples = True
-            stepclass = DeviceSettingsStep
-        return stepclass(self.conn, self.wizard, self.model, self)
+            return ECFPluginStep(self.conn, self.wizard, self.model)
+
 
 class BranchSettingsStep(WizardEditorStep):
     gladefile = 'BranchSettingsStep'
@@ -472,7 +478,7 @@ class BranchSettingsStep(WizardEditorStep):
         branch = self.param.MAIN_COMPANY
         self._update_system_parameters(branch)
         conn = self.wizard.get_connection()
-        return DeviceSettingsStep(conn, self.wizard, self.model, self)
+        return ECFPluginStep(conn, self.wizard, self.model)
 
     def setup_proxies(self):
         widgets = BranchSettingsStep.person_widgets
@@ -492,34 +498,18 @@ class BranchSettingsStep(WizardEditorStep):
         slave = AddressSlave(self.conn, self.model, address)
         self.attach_slave("address_holder", slave)
 
-class DeviceSettingsStep(BaseWizardStep):
-    gladefile = 'DeviceSettingsStep'
 
-    def __init__(self, conn, wizard, station, previous):
-        BaseWizardStep.__init__(self, conn, wizard, previous=previous)
-        self._setup_widgets()
-        self._setup_slaves(station)
-
-    def _setup_widgets(self):
-        self.title_label.set_size('large')
-        self.title_label.set_bold(True)
-
-    def _setup_slaves(self, station):
-        from stoqlib.gui.slaves.devicesslave import DeviceSettingsDialogSlave
-        self.wizard.device_slave = slave = DeviceSettingsDialogSlave(
-            self.conn, station=self.wizard.station)
-        self.attach_slave("devices_holder", slave)
-
-    #
-    # WizardStep hooks
-    #
-
-    def post_init(self):
-        self.register_validate_function(self.wizard.refresh_next)
-        self.force_validation()
+class ECFPluginStep(BaseWizardStep):
+    gladefile = 'ECFPluginStep'
 
     def has_next_step(self):
         return False
+
+    def post_init(self):
+        self.wizard.enable_ecf = True
+
+    def on_yes__toggled(self, radio):
+        self.wizard.enable_ecf = radio.get_active()
 
 
 #
@@ -538,6 +528,7 @@ class FirstTimeConfigWizard(BaseWizard):
         self.installed_examples = False
         self.station = None
         self.device_slave = None
+        self.enable_ecf = False
         self.model = Settable(db_settings=None, stoq_user_data=None)
         first_step = DatabaseSettingsStep(self, self.model)
         BaseWizard.__init__(self, None, first_step, self.model,
@@ -556,11 +547,18 @@ class FirstTimeConfigWizard(BaseWizard):
     #
 
     def finish(self):
-        if (self.device_slave and
-            len(self.device_slave.klist) == 0 and
-            not self.installed_examples):
-            create_virtual_printer(self._conn, self.station)
+        # Commit data created during the wizard, such as stations
         self._conn.commit(close=True)
+
+        # We need to provide the plugin manager at some point since
+        # we're skipping it above
+
+        manager = provide_plugin_manager()
+        if self.enable_ecf:
+            manager.enable_plugin('ecf')
+
+        # Okay, all plugins enabled go on and activate them
+        manager.activate_plugins()
 
         # Write configuration to disk
         self.config.flush()

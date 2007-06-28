@@ -84,13 +84,6 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="Memory">
-                        <property name="name">Memory</property>
-                        <property name="label" translatable="yes">Memory</property>
-                        <property name="accelerator">&lt;Control&gt;F9</property>
-                    </widget>
-                </child>
-                <child>
                     <widget class="GtkAction" id="New">
                         <property name="name">New</property>
                         <property name="tooltip" translatable="yes">Create a new file</property>
@@ -159,14 +152,6 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="Summary">
-                        <property name="name">Summary</property>
-                        <property name="label" translatable="yes">Summary</property>
-                        <signal handler="on_Summary__activate" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;F8</property>
-                    </widget>
-                </child>
-                <child>
                     <widget class="GtkAction" id="TillClose">
                         <property name="name">TillClose</property>
                         <property name="label" translatable="yes">Close Till...</property>
@@ -228,9 +213,27 @@
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui>
-<menubar action="menubar" name="menubar">
-<menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/><menuitem
-action="Summary" name="Summary"/><menuitem action="Memory" name="Memory"/><separator/><menuitem action="AddCash" name="AddCash"/><menuitem action="RemoveCash" name="RemoveCash"/><separator name="sep"/><menuitem action="quit_action" name="quit_action"/></menu><menu action="Actions" name="Actions"><menuitem action="ClientSearch" name="ClientSearch"/><menuitem action="SaleSearch" name="SaleSearch"/><separator name="sep2"/><menuitem action="TillHistory" name="TillHistory"/><menuitem action="FiscalTillOperations" name="FiscalTillOperations"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
+	  <menubar action="menubar" name="menubar">
+	    <menu action="TillMenu" name="TillMenu">
+	      <menuitem action="TillOpen" name="TillOpen"/>
+	      <menuitem action="TillClose" name="TillClose"/>
+	      <separator/>
+	      <menuitem action="AddCash" name="AddCash"/>
+	      <menuitem action="RemoveCash" name="RemoveCash"/>
+	      <separator name="sep"/>
+	      <menuitem action="quit_action" name="quit_action"/>
+	    </menu>
+	      <menu action="Actions" name="Actions">
+	      <menuitem action="ClientSearch" name="ClientSearch"/>
+	      <menuitem action="SaleSearch" name="SaleSearch"/>
+	      <separator name="sep2"/>
+	      <menuitem action="TillHistory" name="TillHistory"/>
+	      <menuitem action="FiscalTillOperations" name="FiscalTillOperations"/>
+	    </menu>
+	      <menu action="help_menu" name="help_menu">
+	      <menuitem action="about_menu" name="about_menu"/>
+	    </menu>
+	  </menubar>
 </ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="till">
