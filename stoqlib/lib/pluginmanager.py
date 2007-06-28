@@ -139,14 +139,15 @@ class PluginManager(object):
         """
         plugin = self._get_plugin(plugin_name)
 
+        migration = plugin.get_migration()
+        migration.apply_all_patches()
+
         trans = new_transaction()
         InstalledPlugin(connection=trans,
                         plugin_name=plugin_name,
                         plugin_version=1)
         trans.commit(close=True)
 
-        migration = plugin.get_migration()
-        migration.apply_all_patches()
 
     def get_active_plugins(self):
         """
