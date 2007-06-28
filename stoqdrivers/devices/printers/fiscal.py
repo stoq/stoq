@@ -262,6 +262,10 @@ class FiscalPrinter(BasePrinter):
 
         return self._driver.query_status()
 
+    def status_reply_complete(self, reply):
+        log.info('status_reply_complete(%s)' % (reply,))
+        return self._driver.status_reply_complete(reply)
+
     def get_tax_constants(self):
         log.info('get_tax_constants()')
 
