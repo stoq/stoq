@@ -22,34 +22,36 @@
 ## Author(s):   Johan Dahlin            <jdahlin@async.com.br>
 ##
 
+import gobject
 import gtk
-
-from stoqdrivers.exceptions import (CouponOpenError, DriverError,
+from kiwi.argcheck import argcheck
+from kiwi.utils import gsignal
+from stoqdrivers.exceptions import (DriverError, CouponOpenError,
                                     OutofPaperError, PrinterOfflineError)
+from zope.interface import implements
 
-from stoqlib.database.runtime import (new_transaction, get_current_station,
-                                      finish_transaction)
+from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.domain.giftcertificate import GiftCertificateItem
+from stoqlib.domain.interfaces import IContainer
+from stoqlib.domain.sellable import ASellableItem
 from stoqlib.domain.till import Till
-from stoqlib.drivers.fiscalprinter import (
-    CouponPrinter, FiscalCoupon, get_fiscal_printer_settings_by_station)
 from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.tilleditor import TillOpeningEditor, TillClosingEditor
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-class FiscalPrinterHelper(CouponPrinter):
+
+class FiscalPrinterHelper:
     def __init__(self, conn, parent):
         """
         @param conn:
         @param parent: a gtk.Window subclass or None
         """
         self.conn = conn
-        self.parent = parent
-        station = get_current_station(conn)
-        settings = get_fiscal_printer_settings_by_station(conn, station)
-        CouponPrinter.__init__(self, settings.get_interface(), settings)
+        self._parent = parent
 
     def open_till(self):
         """
@@ -60,40 +62,14 @@ class FiscalPrinterHelper(CouponPrinter):
                     "Close the current Till and open another one.")
             return False
 
-        from stoqlib.gui.editors.tilleditor import TillOpeningEditor
-
         trans = new_transaction()
         try:
-            model = run_dialog(TillOpeningEditor, self.parent, trans)
+            model = run_dialog(TillOpeningEditor, self._parent, trans)
         except TillError, e:
             warning(e)
             model = None
 
-        value = 0
-        if model and model.value > 0:
-            value = model.value
-
-        retval = True
-        while True:
-            try:
-                CouponPrinter.open_till(self, value)
-            except CouponOpenError:
-                self.cancel()
-                retval = False
-            except DriverError:
-                response = warning(
-                    _(u"It's not possible to emit a read X for the "
-                          "configured printer.\nWould you like to ignore "
-                          "this error and continue?"),
-                    buttons=((_(u"Cancel"), gtk.RESPONSE_CANCEL),
-                             (_(u"Ignore"), gtk.RESPONSE_YES),
-                             (_(u"Try Again"), gtk.RESPONSE_NONE)))
-                if response == gtk.RESPONSE_NONE:
-                    continue
-                elif response == gtk.RESPONSE_CANCEL:
-                    retval = False
-
-            break
+        retval = bool(model)
 
         if retval:
             if not finish_transaction(trans, model):
@@ -113,40 +89,15 @@ class FiscalPrinterHelper(CouponPrinter):
         till = Till.get_last_opened(self.conn)
         assert till
 
-        from stoqlib.gui.editors.tilleditor import TillClosingEditor
         trans = new_transaction()
-        model = run_dialog(TillClosingEditor, self.parent, trans,
+        model = run_dialog(TillClosingEditor, self._parent, trans,
                            can_remove_cash=can_remove_cash)
 
         if not model:
             finish_transaction(trans, model)
             return
 
-        value = 0
-        if model and model.value > 0:
-            value = model.value
-
-        retval = True
-        while True:
-            try:
-                CouponPrinter.close_till(self, value)
-            except CouponOpenError:
-                self.cancel()
-                retval = False
-            except DriverError:
-                response = warning(
-                    short=_(u"It's not possible to emit a reduce Z for the "
-                            "configured printer.\nWould you like to ignore "
-                            "this error and continue?"),
-                    buttons=((_(u"Cancel"), gtk.RESPONSE_CANCEL),
-                             (_(u"Ignore"), gtk.RESPONSE_YES),
-                             (_(u"Try Again"), gtk.RESPONSE_NONE)))
-                if response == gtk.RESPONSE_NONE:
-                    continue
-                elif response == gtk.RESPONSE_CANCEL:
-                    retval = False
-
-            break
+        retval = bool(model)
 
         if retval:
             # TillClosingEditor closes the till
@@ -179,26 +130,100 @@ class FiscalPrinterHelper(CouponPrinter):
         @param sale: a L{stoqlib.domain.sale.Sale}
         @returns: a new coupon
         """
-        return FiscalCouponHelper(self._driver, self._settings, sale)
+        return FiscalCoupon(self._parent, sale)
 
-class FiscalCouponHelper(FiscalCoupon):
+
+class FiscalCoupon(gobject.GObject):
+    """ This class is used just to allow us cancel an item with base in a
+    ASellable object. Currently, services can't be added, and they
+    are just ignored -- be aware, if a coupon with only services is
+    emitted, it will not be opened in fact, but just ignored.
+    """
+    implements(IContainer)
+
+    gsignal('open')
+    gsignal('identify-customer', object)
+    gsignal('add-item', object, retval=int)
+    gsignal('remove-item', object)
+    gsignal('add-payments', object)
+    gsignal('totalize', object)
+    gsignal('close', retval=int)
+
+    def __init__(self, parent, sale):
+        gobject.GObject.__init__(self)
+
+        self._parent = parent
+        self._sale = sale
+        self._item_ids = {}
+
+    #
+    # IContainer implementation
+    #
+
+    @argcheck(ASellableItem)
+    def add_item(self, item):
+        """
+        @param item: A L{ASellableItem} subclass
+        @returns: id of the item.:
+          0 >= if it was added successfully
+          -1 if an error happend
+          0 if added but not printed (gift certificates, free deliveries)
+        """
+        # GiftCertificates are not printed on the fiscal printer
+        # See #2985 for more information.
+        if isinstance(item, GiftCertificateItem):
+            return 0
+
+        if item.price <= 0:
+            return 0
+        item_id = self.emit('add-item', item)
+        ids = self._item_ids.setdefault(item, [])
+        ids.append(item_id)
+        return item_id
+
+    def get_items(self):
+        return self._item_ids.keys()
+
+    @argcheck(ASellableItem)
+    def remove_item(self, item):
+        if isinstance(item, GiftCertificateItem):
+            return
+        if item.price <= 0:
+            return
+
+        for item_id in self._item_ids.pop(item):
+            try:
+                self.emit('remove-item', item_id)
+            except DriverError:
+                return False
+        return True
+
+    #
+    # Fiscal coupon related functions
+    #
+
+    def identify_customer(self, person):
+        self.emit('identify-customer', person)
 
     def open(self):
         while True:
             try:
-                super(FiscalCouponHelper, self).open()
+                self.emit('open')
                 break
+            except CouponOpenError:
+                if not self.cancel():
+                    return False
             except OutofPaperError:
                 if not yesno(
-                    _(u"The printer %s has run out of paper.\nAdd more paper "
-                      "before continuing.") % self._driver.get_printer_name(),
+                    _(u"The fiscal printer has run out of paper.\nAdd more paper "
+                      "before continuing."),
                     gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
                     return False
                 return self.open()
             except PrinterOfflineError:
                 if not yesno(
-                    (_(u"The printer %s is offline, turn it on and try"
-                       "again") % self._driver.get_model_name()),
+                    (_(u"The fiscal printer is offline, turn it on and try "
+                       "again")),
                     gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
                     return False
                 return self.open()
@@ -208,9 +233,49 @@ class FiscalCouponHelper(FiscalCoupon):
                 return False
         return True
 
-    def setup_payments(self):
+    def totalize(self):
+        # XXX: Remove this when bug #2827 is fixed.
+        if not self._item_ids:
+            return True
+
         try:
-            return super(FiscalCouponHelper, self).setup_payments()
+            self.emit('totalize', self._sale)
+        except DriverError, details:
+            warning(_(u"It is not possible to totalize the coupon"),
+                    str(details))
+            return False
+        return True
+
+    def cancel(self):
+        try:
+            self.emit('cancel')
+        except DriverError:
+            return False
+        return True
+
+    # FIXME: Rename to add_payment_group(group)
+    def setup_payments(self):
+        """ Add the payments defined in the sale to the coupon. Note that this
+        function must be called after all the payments has been created.
+        """
+        # XXX: Remove this when bug #2827 is fixed.
+        if not self._item_ids:
+            return True
+
+        try:
+            return self.emit('add-payments', self._sale)
         except DeviceError, e:
             warning(_(u"It is not possible to add payments to the coupon"),
                     str(e))
+
+    def close(self):
+        # XXX: Remove this when bug #2827 is fixed.
+        if not self._item_ids:
+            return True
+        try:
+            coupon_id = self.emit('close')
+        except DriverError, details:
+            warning(_("It's not possible to close the coupon"), str(details))
+            return False
+        self._sale.coupon_id = coupon_id
+        return True

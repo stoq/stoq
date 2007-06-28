@@ -85,12 +85,6 @@ def create_parameter_data(trans):
 def create_service_sellable_item(trans):
     return ExampleCreator.create(trans, 'ServiceSellableItem')
 
-def create_device_settings(trans):
-    return ExampleCreator.create(trans, 'DeviceSettings')
-
-def create_device_constant(trans):
-    return ExampleCreator.create(trans, 'DeviceConstant')
-
 def create_company(trans):
     return ExampleCreator.create(trans, 'ICompany')
 
@@ -127,9 +121,6 @@ class ExampleCreator(object):
             'Bank': self.create_bank,
             'CityLocation': self.get_location,
             'CfopData': self.create_cfop_data,
-            'CouponPrinter': self.create_coupon_printer,
-            'DeviceConstant': self.create_device_constant,
-            'DeviceSettings': self.create_device_settings,
             'EmployeeRole': self.create_employee_role,
             'IcmsIpiBookEntry': self.create_icms_ipi_book_entry,
             'IssBookEntry': self.create_iss_book_entry,
@@ -308,24 +299,6 @@ class ExampleCreator(object):
             quantity=1, price=10,
             sale=sale, connection=self.trans)
 
-    def create_device_constant(self):
-        from stoqlib.domain.devices import DeviceConstant
-        settings = self.create_device_settings()
-        return DeviceConstant(constant_name="Fake Tax Constant",
-                              constant_type=DeviceConstant.TYPE_TAX,
-                              constant_enum=int(TaxType.CUSTOM),
-                              constant_value=99,
-                              device_value="XX",
-                              device_settings=settings,
-                              connection=self.trans)
-
-    def create_device_settings(self):
-        from stoqlib.drivers.fiscalprinter import (
-                get_fiscal_printer_settings_by_station)
-
-        station = get_current_station(self.trans)
-        return get_fiscal_printer_settings_by_station(self.trans, station)
-
     def create_company(self):
         from stoqlib.domain.person import Person
         person = Person(name='Dummy', connection=self.trans)
@@ -422,18 +395,6 @@ class ExampleCreator(object):
                                        branch=branch, drawee=drawee,
                                        payment_group=payment_group,
                                        connection=self.trans)
-
-    def create_coupon_printer(self):
-        from stoqlib.domain.devices import DeviceSettings
-        from stoqlib.drivers.fiscalprinter import CouponPrinter
-        settings = DeviceSettings(station=get_current_station(self.trans),
-                                  device=DeviceSettings.DEVICE_SERIAL1,
-                                  brand='virtual',
-                                  model='Simple',
-                                  type=DeviceSettings.FISCAL_PRINTER_DEVICE,
-                                  connection=self.trans)
-        settings.create_fiscal_printer_constants()
-        return CouponPrinter(settings.get_interface(), settings)
 
     def create_service(self):
         from stoqlib.domain.sellable import SellableTaxConstant

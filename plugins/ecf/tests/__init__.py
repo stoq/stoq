@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,17 +19,6 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s): Henrique Romano <henrique@async.com.br>
+## Author(s): Johan Dahlin    <jdahlin@async.com.br>
 ##
-"""Create a DeviceSettings object that use a VirtualPrinter by default"""
-
-from stoqlib.domain.examples import log
-from stoqlib.drivers.fiscalprinter import (
-    create_virtual_printer_for_current_station)
-
-def create_device_settings():
-    log.info("Creating default device settings")
-    create_virtual_printer_for_current_station()
-
-if __name__ == "__main__":
-    create_device_settings()
+##

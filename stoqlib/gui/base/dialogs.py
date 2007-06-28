@@ -217,7 +217,6 @@ class BasicDialog(AbstractDialog):
     def action_area(self):
         return self.get_toplevel().action_area
 
-
     #
     # Kiwi handlers
     #
@@ -416,6 +415,8 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     add_current_toplevel(toplevel)
 
     if parent:
+        if isinstance(parent, gtk.Window):
+            toplevel.set_transient_for(parent)
         toplevel.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
 
     log.info("%s: Opening" % dialog_name)

@@ -36,6 +36,7 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.interfaces import ICompany
+from stoqlib.domain.sale import Sale
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.sintegra import SintegraFile
@@ -72,7 +73,7 @@ class SintegraDialog(SearchDialog):
     #
 
     def get_columns(self, *args):
-        return [Column('device.station.name', _('Station'), data_type=str,
+        return [Column('station.name', _('Station'), data_type=str,
                        width=120,  sorted=True),
                 Column('emission_date', _('Date'),
                        data_type=datetime.date, width=110),
@@ -126,8 +127,8 @@ class SintegraDialog(SearchDialog):
         #   ...
         #   'September 2008'
 
-        first_emission_date = FiscalDayHistory.select(
-            connection=self.conn).min('emission_date')
+        first_emission_date = Sale.select(
+            connection=self.conn).min('confirm_date')
 
         if not first_emission_date:
             return

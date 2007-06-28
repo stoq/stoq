@@ -1,0 +1,164 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="FiscalPrinterDialog">
+        <property name="border_width">6</property>
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkTable" id="table1">
+                <property name="column_spacing">6</property>
+                <property name="n_columns">2</property>
+                <property name="n_rows">5</property>
+                <property name="row_spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkLabel" id="label1">
+                        <property name="label" context="yes" translatable="yes">Printer:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="x_options">fill</property>
+                        <property name="y_options"></property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label2">
+                        <property name="label" context="yes" translatable="yes">Port:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options"></property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="device_serial_label">
+                        <property name="label" context="yes" translatable="yes">Serial:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options"></property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label4">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="top_attach">3</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options"></property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label3">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">5</property>
+                        <property name="top_attach">4</property>
+                        <property name="x_options"></property>
+                        <property name="y_options"></property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyComboEntry" id="printer">
+                        <property name="data_type">object</property>
+                        <property name="model_attribute">printer</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options"></property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyComboEntry" id="device_name">
+                        <property name="data_type">str</property>
+                        <property name="model_attribute">device_name</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options"></property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyLabel" id="device_serial">
+                        <property name="data_type">str</property>
+                        <property name="model_attribute">device_serial</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">2</property>
+                        <property name="y_options"></property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHButtonBox" id="hbuttonbox1">
+                        <property name="layout_style">start</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkButton" id="edit_constants">
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes">Edit Constants ...</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">3</property>
+                        <property name="y_options"></property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyCheckButton" id="is_active">
+                        <property name="data_type">bool</property>
+                        <property name="is_focus">True</property>
+                        <property name="label" context="yes" translatable="yes">Active</property>
+                        <property name="model_attribute">is_active</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">5</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">4</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options"></property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>
