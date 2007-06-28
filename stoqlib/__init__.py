@@ -44,7 +44,8 @@ if library.uninstalled:
                                  glade='data/glade',
                                  fonts='data/fonts',
                                  csv='data/csv',
-                                 template='data/template')
+                                 template='data/template',)
+    library.add_resource('plugin', 'plugins')
     externals = os.path.join(library.get_root(), 'external')
 else:
     # root = $prefix/lib/pythonX.Y/site-packages
