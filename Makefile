@@ -86,4 +86,7 @@ clean:
 	rm -f MANIFEST
 	rm -fr stoqdrivers.pickle
 
+tests:
+	tools/runtests
+
 .PHONY: sdist deb upload tags TAGS nightly clean stoqlib.pickle
