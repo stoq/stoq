@@ -39,7 +39,7 @@ from stoqdrivers.devices.serialbase import SerialPort
 
 _ = lambda msg: stoqdrivers_gettext(msg)
 
-log = Logger('stoqdrivers.basedevice')
+log = Logger('stoqdrivers.basedev')
 
 class BaseDevice:
     """ Base class for all device interfaces, responsible for instantiate
