@@ -93,6 +93,9 @@ class SerialBase:
     def get_port(self):
         return self._port
 
+    def fileno(self):
+        return self._port.fileno()
+
     def writeline(self, data):
         self.write(self.CMD_PREFIX + data + self.CMD_SUFFIX)
         return self.readline()
