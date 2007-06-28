@@ -54,7 +54,7 @@ class ECFAsyncPrinterStatus(gobject.GObject):
 
         if printer_class:
             port = self._create_port()
-            printer = printer_class(self._port)
+            printer = printer_class(port)
         else:
             port = printer.get_port()
         self.printer = printer
