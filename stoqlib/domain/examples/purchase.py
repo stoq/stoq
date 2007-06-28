@@ -31,7 +31,7 @@ from stoqlib.database.runtime import (new_transaction, get_current_branch,
 from stoqlib.domain.examples import log
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
-from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.interfaces import (ISupplier, IPaymentGroup,
                                        ITransporter)
 from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
@@ -73,6 +73,15 @@ def create_purchases():
                    interval_type=INTERVALTYPE_MONTH,
                    connection=trans)
 
+    for sellable in sellables:
+        if not isinstance(sellable.get_adapted(), Product):
+            continue
+        purchase_item = PurchaseItem(connection=trans,
+                                      quantity=5,
+                                      base_cost=sellable.cost,
+                                      sellable=sellable,
+                                      order=order)
+
     receiving_order = ReceivingOrder(purchase=order,
                                      responsible=user,
                                      supplier=suppliers[0],
@@ -81,20 +90,16 @@ def create_purchases():
                                      branch=branch,
                                      connection=trans)
 
-    for sellable in sellables:
-        if not isinstance(sellable.get_adapted(), Product):
-            continue
-        purchase_item = order.add_item(sellable, 5)
-
-        ReceivingOrderItem(connection=trans,
-                           cost=sellable.cost / 2,
-                           sellable=sellable,
-                           quantity=5,
-                           purchase_item=purchase_item,
-                           receiving_order=receiving_order)
-    order.confirm()
+    for purchase_item in order.get_items():
+        receicing_item = ReceivingOrderItem(connection=trans,
+                                            cost=purchase_item.sellable.cost,
+                                            sellable=purchase_item.sellable,
+                                            quantity=5,
+                                            purchase_item=purchase_item,
+                                            receiving_order=receiving_order)
 
     receiving_order.set_valid()
+    order.confirm()
     receiving_order.confirm()
 
     trans.commit()

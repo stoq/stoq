@@ -268,6 +268,7 @@ class ExampleCreator(object):
         base_sellable_info = self.create_base_sellable_info()
         on_sale_info = self.create_on_sale_info()
         return product.addFacet(ISellable,
+                                cost=125,
                                 tax_constant=tax_constant,
                                 base_sellable_info=base_sellable_info,
                                 on_sale_info=on_sale_info,
