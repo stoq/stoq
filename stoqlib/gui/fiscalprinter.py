@@ -39,6 +39,7 @@ from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.tilleditor import TillOpeningEditor, TillClosingEditor
+from stoqlib.gui.events import CouponCreatedEvent
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -148,6 +149,7 @@ class FiscalCoupon(gobject.GObject):
         gobject.GObject.__init__(self)
 
         log.info("Creating a new FiscalCoupon for sale %r" % (sale,))
+        CouponCreatedEvent.emit(self)
 
         self._parent = parent
         self._sale = sale

@@ -32,7 +32,7 @@ from stoqlib.domain.events import (SaleConfirmEvent, TillAddCashEvent,
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.events import StartApplicationEvent
+from stoqlib.gui.events import StartApplicationEvent, CouponCreatedEvent
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.parameters import sysparam
@@ -54,12 +54,13 @@ class ECFUI(object):
         self._printer_verified = False
         self._printer = self._create_printer()
 
-        StartApplicationEvent.connect(self._on_StartApplicationEvent)
         SaleConfirmEvent.connect(self._on_SaleConfirm)
         TillOpenEvent.connect(self._on_TillOpen)
         TillCloseEvent.connect(self._on_TillClose)
         TillAddCashEvent.connect(self._on_TillAddCash)
         TillRemoveCashEvent.connect(self._on_TillRemoveCash)
+        StartApplicationEvent.connect(self._on_StartApplicationEvent)
+        CouponCreatedEvent.connect(self._on_CouponCreatedEvent)
 
         self._till_open_action = gtk.Action(
             'TillOpen', _('Open Till...'), None, None)
@@ -97,10 +98,10 @@ class ECFUI(object):
 
         domain = self._printer.get_printer()
         driver = self._printer.get_driver()
-        print driver
         self._status = ECFAsyncPrinterStatus(domain.device_name, printer=driver)
 
         if not self._printer.check_serial():
+            warning(_("Fiscalprinters serial number is different!"))
             return False
 
         self._printer_verified = True
@@ -204,7 +205,7 @@ class ECFUI(object):
         log.info('ECFCouponPrinter.open_till(%r)' % (till,))
 
         if not self._validate_printer():
-            return
+            return False
 
         retval = True
         while True:
@@ -234,7 +235,7 @@ class ECFUI(object):
         log.info('ECFCouponPrinter.close_till(%r)' % (till,))
 
         if not self._validate_printer():
-            return
+            return False
 
         retval = True
         while True:
