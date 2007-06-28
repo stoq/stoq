@@ -49,7 +49,6 @@ class BaseDriverConstants:
 
     # Must be defined on subclasses
     _constants = None
-    _tax_constants = None
 
     @classmethod
     def get_items(cls):
@@ -64,15 +63,6 @@ class BaseDriverConstants:
                 return default
             raise ValueError("The constant identifier %r "
                              "isn't valid", identifier)
-    @classmethod
-    def get_tax_constants(cls):
-        return cls._tax_constants or []
-
-    @classmethod
-    def get_tax_constant(cls, item):
-        for constant in cls._tax_constants:
-            if constant[0] == item:
-                return constant[1]
 
 class BasePrinter(BaseDevice):
     device_dirname = "printers"

@@ -29,6 +29,7 @@ Bematech MP25 driver
 """
 
 from decimal import Decimal
+import struct
 
 from kiwi.log import Logger
 from zope.interface import implements
@@ -66,6 +67,11 @@ CMD_ADD_PAYMENT = 72
 CMD_REDUCE_Z = 5
 CMD_GET_VARIABLES = 35
 CMD_GET_COUPON_NUMBER = 30
+CMD_READ_TAXCODES = 26
+CMD_READ_TOTALIZERS = 27
+CMD_READ_REGISTER = 35
+REGISTER_TOTALIZERS = 29
+REGISTER_SERIAL = 40
 VAR_LAST_ITEM_ID = 12
 VAR_PAID_VALUE = 22
 NAK = 21
@@ -82,13 +88,6 @@ class MP25Constants(BaseDriverConstants):
         PaymentMethodType.CHECK:        '01'
         }
 
-    _tax_constants = [
-        # FIXME: when we have the printer working, use FF & NN
-        (TaxType.SUBSTITUTION, 'II', None),
-        (TaxType.EXEMPTION,    'II', None),
-        (TaxType.NONE,         'II', None),
-        ]
-
 
 #
 # Helper functions
@@ -96,6 +95,23 @@ class MP25Constants(BaseDriverConstants):
 
 def bcd2dec(data):
     return int(''.join(['%02x' % ord(i) for i in data]))
+
+def dec2bcd(dec):
+    return chr(dec % 10 + (dec / 10) * 16)
+
+def dec2bin(n, trim=-1):
+    a = ""
+    while n > 0:
+        if n % 2 == 0:
+            a = "0" + a
+        else:
+            a = "1" + a
+        n /= 2
+
+    if trim != -1:
+        if len(a) < trim:
+            a = ("0" * (trim-len(a))) + a
+    return a
 
 #
 # Driver implementation
@@ -109,55 +125,55 @@ class MP25(SerialBase):
     coupon_printer_charset = "cp850"
 
     st1_codes = {
-        128: (OutofPaperError, _("Printer is out of paper")),
-        64: (AlmostOutofPaper, _("Printer almost out of paper")),
-        32: (PrinterError, _("Printer clock error")),
-        16: (PrinterError, _("Printer in error state")),
-        8: (CommandError, _("First data value in CMD is not ESC (1BH)")),
-        4: (CommandError, _("Nonexistent command")),
-        2: (CouponOpenError, _("Printer has a coupon currently open")),
-        1: (CommandError, _("Invalid number of parameters"))}
+        128: (OutofPaperError(_("Printer is out of paper"))),
+        64: (AlmostOutofPaper(_("Printer almost out of paper"))),
+        32: (PrinterError(_("Printer clock error"))),
+        16: (PrinterError(_("Printer in error state"))),
+        8: (CommandError(_("First data value in CMD is not ESC (1BH)"))),
+        4: (CommandError(_("Nonexistent command"))),
+        2: (CouponOpenError(_("Printer has a coupon currently open"))),
+        1: (CommandError(_("Invalid number of parameters")))}
 
     st2_codes = {
-        128: (CommandError, _("Invalid CMD parameter")),
-        64: (HardwareFailure, _("Fiscal memory is full")),
-        32: (HardwareFailure, _("Error in CMOS memory")),
-        16: (PrinterError, _("Given tax is not programmed on the printer")),
-        8: (DriverError, _("No available tax slot")),
-        4: (CancelItemError, _("The item wasn't added in the coupon or can't "
-                               "be cancelled")),
-        2: (PrinterError, _("Owner data (CGC/IE) not programmed on the printer")),
-        1: (CommandError, _("Command not executed"))}
+        128: (CommandError(_("Invalid CMD parameter"))),
+        64: (HardwareFailure(_("Fiscal memory is full"))),
+        32: (HardwareFailure(_("Error in CMOS memory"))),
+        16: (PrinterError(_("Given tax is not programmed on the printer"))),
+        8: (DriverError(_("No available tax slot"))),
+        4: (CancelItemError(_("The item wasn't added in the coupon or can't"
+                              "be cancelled"))),
+        2: (PrinterError(_("Owner data (CGC/IE) not programmed on the printer"))),
+        1: (CommandError(_("Command not executed")))}
 
     st3_codes = {
-        7: (CouponOpenError, _("Coupon already Open")),
-        8: (CouponNotOpenError, _("Coupon is closed")),
-        13: (PrinterOfflineError, _("Printer is offline")),
-        16: (DriverError, _("Surcharge or discount greater than coupon total "
-                            "value")),
-        17: (DriverError, _("Coupon with no items")),
-        20: (PaymentAdditionError, _("Payment method not recognized")),
-        22: (PaymentAdditionError, _("Isn't possible add more payments since "
+        7: (CouponOpenError(_("Coupon already Open"))),
+        8: (CouponNotOpenError(_("Coupon is closed"))),
+        13: (PrinterOfflineError(_("Printer is offline"))),
+        16: (DriverError(_("Surcharge or discount greater than coupon total"
+                           "value"))),
+        17: (DriverError(_("Coupon with no items"))),
+        20: (PaymentAdditionError(_("Payment method not recognized"))),
+        22: (PaymentAdditionError(_("Isn't possible add more payments since"
                                      "the coupon total value already was "
-                                     "reached")),
-        23: (DriverError, _("Coupon isn't totalized yet")),
-        43: (PrinterError, _("Printer not initialized")),
-        45: (PrinterError, _("Printer without serial number")),
-        52: (DriverError, _("Invalid start date")),
-        53: (DriverError, _("Invalid final date")),
-        85: (DriverError, _("Sale with null value")),
-        91: (ItemAdditionError, _("Surcharge or discount greater than item "
-                                  "value")),
-        100: (DriverError, _("Invalid date")),
-        115: (CancelItemError, _("Item doesn't exists or already was cancelled")),
-        118: (DriverError, _("Surcharge greater than item value")),
-        119: (DriverError, _("Discount greater than item value")),
-        129: (DriverError, _("Invalid month")),
-        169: (CouponTotalizeError, _("Coupon already totalized")),
-        170: (PaymentAdditionError, _("Coupon not totalized yet")),
-        171: (DriverError, _("Surcharge on subtotal already effected")),
-        172: (DriverError, _("Discount on subtotal already effected")),
-        176: (DriverError, _("Invalid date"))}
+                                    "reached"))),
+        23: (DriverError(_("Coupon isn't totalized yet"))),
+        43: (PrinterError(_("Printer not initialized"))),
+        45: (PrinterError(_("Printer without serial number"))),
+        52: (DriverError(_("Invalid start date"))),
+        53: (DriverError(_("Invalid final date"))),
+        85: (DriverError(_("Sale with null value"))),
+        91: (ItemAdditionError(_("Surcharge or discount greater than item"
+                                 "value"))),
+        100: (DriverError(_("Invalid date"))),
+        115: (CancelItemError(_("Item doesn't exists or already was cancelled"))),
+        118: (DriverError(_("Surcharge greater than item value"))),
+        119: (DriverError(_("Discount greater than item value"))),
+        129: (DriverError(_("Invalid month"))),
+        169: (CouponTotalizeError(_("Coupon already totalized"))),
+        170: (PaymentAdditionError(_("Coupon not totalized yet"))),
+        171: (DriverError(_("Surcharge on subtotal already effected"))),
+        172: (DriverError(_("Discount on subtotal already effected"))),
+        176: (DriverError(_("Invalid date")))}
 
     def __init__(self, port, consts=None):
         self._consts = consts or MP25Constants
@@ -209,8 +225,7 @@ class MP25(SerialBase):
         def check_dict(d, value):
             for key in d.keys():
                 if key & value:
-                    exc, arg = d[key]
-                    raise exc(arg)
+                    raise d[key]
         # If st1 is just a warning "printer ALMOST out of paper", we don't
         # can consider raising a exception here.
         if st1 and not (st1 & 64):
@@ -229,7 +244,7 @@ class MP25(SerialBase):
                 pass
         check_dict(MP25.st2_codes, st2)
 
-    def _make_package(self, raw_data):
+    def _make_package(self, raw_data, format=None):
         """ Receive a 'pre-package' (command + params, basically) and involves
         it around STX, NBL, NBH, CSL and CSH:
 
@@ -245,7 +260,9 @@ class MP25(SerialBase):
         CSL: LSB of checksum for raw_data
         CSH: MSB of checksum for raw_data
         """
-        raw_data = chr(MP25.CMD_PROTO) + raw_data
+        if not format:
+            format = MP25.CMD_PROTO
+        raw_data = chr(format) + raw_data
         cs = sum([ord(i) for i in raw_data])
         csl = chr(cs & 0xFF)
         csh = chr(cs >> 8 & 0xFF)
@@ -255,11 +272,11 @@ class MP25(SerialBase):
         return (chr(STX) + nbl + nbh + raw_data +
                 csl + csh)
 
-    def _send_packed(self, command):
+    def _send_packed(self, command, format=None):
         """ Receive a command (and its parameter), pack it and send to the
         printer.
         """
-        self.write(self._make_package(command))
+        self.write(self._make_package(command, format=format))
 
     def _get_reply(self, extrabytes_num=0):
         if MP25.CMD_PROTO == 0x1B:
@@ -268,12 +285,42 @@ class MP25(SerialBase):
             data = self.read_insist(5 + extrabytes_num)
         else:
             raise TypeError("Invalid protocol used, got %r" % MP25.CMD_PROTO)
-        log.debug("<<< %r (%dbytes)" % (data, len(data or '')))
+        log.debug("<<< %r (%d bytes)" % (data, len(data)))
         return data
 
     def _send_command(self, command):
         self._send_packed(command)
         return self._handle_error(self._get_reply())
+
+    def _send_command2(self, num, fmt, *args):
+        cmd = chr(num)
+        for arg in args:
+            if isinstance(arg, int):
+                cmd += chr(arg)
+            else:
+                raise NotImplementedError(type(arg))
+        self._send_packed(cmd, format=0x1b)
+        format = '<b%sH' % (fmt,)
+        size = struct.calcsize(format)
+        data = self.read(size)
+        log.debug("<<< %r (%d bytes)" % (data, len(data)))
+        retval = struct.unpack(format, data)
+        if retval[0] == NAK:
+            raise DriverError
+        response = retval[1:-1]
+        if len(response) == 1:
+            response = response[0]
+        return response
+
+    def _read_register(self, reg):
+        if reg == REGISTER_TOTALIZERS:
+            fmt = '2s'
+        elif reg == REGISTER_SERIAL:
+            fmt = '20s'
+        else:
+            raise NotImplementedError(reg)
+
+        return self._send_command2(CMD_READ_REGISTER, fmt, reg)
 
     #
     # Helper methods
@@ -478,7 +525,40 @@ class MP25(SerialBase):
     def get_constants(self):
         return self._consts
 
-    #
-    # Here ends the implementation of the ICouponPrinter Driver Interface
-    #
+    def query_status(self):
+        return '\x02\x05\x00\x1b#(f\x00'
 
+    def status_reply_complete(self, reply):
+        return len(reply) == 23
+
+    def get_serial(self):
+        return self._read_register(REGISTER_SERIAL)
+
+    def get_tax_constants(self):
+        status = self._read_register(REGISTER_TOTALIZERS)
+        status = struct.unpack('>H', status)[0]
+
+        length, data = self._send_command2(CMD_READ_TAXCODES, 'b32s')
+
+        service = False
+        constants = []
+        for i in range(16):
+            value = bcd2dec(data[i*2:i*2+2])
+            if not value:
+                continue
+
+            if 1 << 15-i & status == 0:
+                tax = TaxType.CUSTOM
+            else:
+                tax = TaxType.SERVICE
+            constants.append((tax,
+                              '%02d' % i,
+                              Decimal(value) / 100))
+
+        constants.extend([
+            (TaxType.SUBSTITUTION, 'FF', None),
+            (TaxType.EXEMPTION,    'II', None),
+            (TaxType.NONE,         'NN', None),
+            ])
+
+        return constants

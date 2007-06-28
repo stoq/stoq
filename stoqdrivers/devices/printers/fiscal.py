@@ -251,3 +251,14 @@ class FiscalPrinter(BasePrinter):
             start, end))
 
         self._driver.till_read_memory_by_reductions(start, end)
+
+    def get_serial(self):
+        log.info('get_serial()')
+
+        return self._driver.get_serial()
+
+    def query_status(self):
+        log.info('query_status()')
+
+        return self._driver.query_status()
+

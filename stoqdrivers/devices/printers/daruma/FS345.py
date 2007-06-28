@@ -84,7 +84,7 @@ CMD_ADD_ITEM_3L13D = 216
 CMD_OPEN_VOUCHER = 217
 CMD_DESCRIBE_MESSAGES = 218
 # [ESC] 219 Abertura de Comprovante Não Fiscal Vinculado
-# [ESC] 220 Carga de alíquota de imposto
+CMD_CONFIGURE_TAXES = 220
 CMD_LAST_RECORD = 221
 # [ESC] 223 Descrição de produto em 3 linhas com código de 13 dígitos
 #           (Formato fixo p/ Quantidade 5,3)
@@ -136,18 +136,6 @@ class FS345Constants(BaseDriverConstants):
         PaymentMethodType.MONEY:         'A',
         PaymentMethodType.CHECK:        'B'
         }
-
-    _tax_constants = [
-        # These definitions can be found on Page 60
-        (TaxType.SUBSTITUTION,   'Fb', None),
-        (TaxType.EXEMPTION,      'Ib', None),
-        (TaxType.NONE,           'Nb', None),
-
-        # Reducao Z output
-        (TaxType.CUSTOM,         'Ta', Decimal(18)),
-        (TaxType.CUSTOM,         'Tb', Decimal(12)),
-        (TaxType.CUSTOM,         'Tc', Decimal(5)),
-        ]
 
 class FS345(SerialBase):
     log_domain = 'fs345'
@@ -345,8 +333,10 @@ class FS345(SerialBase):
                                    int(float(value) * 1e2))
         self.send_command(CMD_OPEN_VOUCHER, data)
 
-    def _get_taxes(self):
+    def _generate_sintegra(self):
+        registries = self._get_registers()
         fiscal_registries = self._get_fiscal_registers()
+
         tax_codes = self.send_command(CMD_GET_TAX_CODES)[1:]
 
         taxes = []
@@ -366,13 +356,7 @@ class FS345(SerialBase):
         taxes.append(('I', Decimal(fiscal_registries[47:60]) / 100))
         taxes.append(('N', Decimal(fiscal_registries[61:74]) / 100))
         taxes.append(('F', Decimal(fiscal_registries[75:88]) / 100))
-        return taxes
 
-    def _generate_sintegra(self):
-        registries = self._get_registers()
-        fiscal_registries = self._get_fiscal_registers()
-
-        taxes = self._get_taxes()
         total_sold = sum(value for _, value in taxes)
 
         old_total = Decimal(fiscal_registries[:18]) / 100
@@ -398,6 +382,27 @@ class FS345(SerialBase):
              period_total=period_total,
              total=period_total + old_total,
              taxes=taxes)
+
+    def _configure_taxes(self):
+        self.send_command(CMD_CONFIGURE_TAXES, '1800')
+        self.send_command(CMD_CONFIGURE_TAXES, '1500')
+        self.send_command(CMD_CONFIGURE_TAXES, '2500')
+        self.send_command(CMD_CONFIGURE_TAXES, '0800')
+        self.send_command(CMD_CONFIGURE_TAXES, '0500')
+        self.send_command(CMD_CONFIGURE_TAXES, '0327')
+        self.send_command(CMD_CONFIGURE_TAXES, '0592')
+        self.send_command(CMD_CONFIGURE_TAXES, 'S0200')
+        self.send_command(CMD_CONFIGURE_TAXES, 'S0300')
+        self.send_command(CMD_CONFIGURE_TAXES, 'S0400')
+
+    def _configure_payment_methods(self):
+        #self.send_command(CMD_DESCRIBE_MESSAGES, 'PGDinheiro')
+        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGXCHEQUE            ')
+        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGXBOLETO            ')
+        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGVCARTAO CREDITO    ')
+        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGVCARTAO DEBITO     ')
+        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGVFINANCEIRA        ')
+        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGVOUTROS            ')
 
     #
     # API implementation
@@ -554,3 +559,42 @@ class FS345(SerialBase):
     def get_constants(self):
         return self._consts
 
+    def query_status(self):
+        return CMD_STATUS
+
+    def status_reply_complete(self, reply):
+        return '\r' in reply
+
+    def get_serial(self):
+        identifier = self.send_command(CMD_GET_IDENTIFIER)
+        return identifier[1:9]
+
+    def get_tax_constants(self):
+        fiscal_registries = self._get_fiscal_registers()
+
+        tax_codes = self.send_command(CMD_GET_TAX_CODES)[1:]
+
+        constants = []
+        for i in range(14):
+            reg = tax_codes[i*5]
+            if reg in 'ABCDEFGHIJKLMNOP':
+                tax_type = TaxType.CUSTOM
+            elif reg in 'abcdefghijklmnop':
+                tax_type = TaxType.SERVICE
+            else:
+                raise AssertionError(reg)
+            value = tax_codes[i*5+1:i*5+5]
+            if value == '////':
+                continue
+            constants.append((tax_type,
+                              'T' + reg.lower(),
+                              Decimal(value.replace('.', '')) / 100))
+
+        # These definitions can be found on Page 60
+        constants.extend([
+            (TaxType.SUBSTITUTION,   'Fb', None),
+            (TaxType.EXEMPTION,      'Ib', None),
+            (TaxType.NONE,           'Nb', None),
+            ])
+
+        return constants

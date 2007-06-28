@@ -106,15 +106,6 @@ class Pay2023Constants(BaseDriverConstants):
 #         PaymentMethodType.GIFT_CERTIFICATE: '5,
         }
 
-    _tax_constants = [
-        # These are signed integers, we're storing them
-        # as strings and then subtract by 127
-        # Page 10
-        (TaxType.SUBSTITUTION, '\x7e', None), # -2
-        (TaxType.EXEMPTION,    '\x7d', None), # -3
-        (TaxType.NONE,         '\x7c', None), # -4
-        ]
-
 _RETVAL_TOKEN_RE = re.compile(r"^\s*([^=\s;]+)")
 _RETVAL_QUOTED_VALUE_RE = re.compile(r"^\s*=\s*\"([^\"\\]*(?:\\.[^\"\\]*)*)\"")
 _RETVAL_VALUE_RE = re.compile(r"^\s*=\s*([^\s;]*)")
@@ -612,7 +603,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
                                DataInicial=start,
                                DataFinal=end)
         except DriverError, e:
-            if e == 8089:
+            if e.code == 8089:
                 return
 
     def till_read_memory_by_reductions(self, start=None, end=None):
@@ -668,3 +659,48 @@ class Pay2023(SerialBase, BaseChequePrinter):
 
     def get_constants(self):
         return self._consts
+
+    def query_status(self):
+        return '{0;LeInteiro;NomeInteiro="Indicadores";}'
+
+    def status_reply_complete(self, reply):
+        return '}' in reply
+
+    def get_serial(self):
+        return self._read_register('NumeroSerieECF', str)
+
+    def get_tax_constants(self):
+        constants = []
+
+        for reg in range(16):
+            try:
+                retdict = self._send_command(
+                    'LeAliquota', CodAliquotaProgramavel=reg)
+            except DriverError, e:
+                if e.code == 8005: # Aliquota nao carregada
+                    continue
+                raise
+            print retdict
+            # The service taxes are already added in the 'ISS' tax
+            # Skip non-ICMS taxes here.
+            if retdict['AliquotaICMS'] == 'Y':
+                tax_type = TaxType.CUSTOM
+            else:
+                tax_type = TaxType.SERVICE
+
+            value = Decimal(retdict['PercentualAliquota'].replace(',', '.'))
+            device_value = int(retdict['CodAliquotaProgramavel'])
+            constants.append((tax_type,
+                              chr(128 + device_value),
+                              value))
+
+        # These are signed integers, we're storing them
+        # as strings and then subtract by 127
+        # Page 10
+        constants.extend([
+            (TaxType.SUBSTITUTION, '\x7e', None), # -2
+            (TaxType.EXEMPTION,    '\x7d', None), # -3
+            (TaxType.NONE,         '\x7c', None), # -4
+            ])
+
+        return constants
