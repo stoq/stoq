@@ -101,3 +101,17 @@ class ISystemNotifier(Interface):
 
     def yesno(text, default, *verbs):
         pass
+
+class IPluginManager(Interface):
+    """
+    """
+
+
+class IPlugin(Interface):
+    def install():
+        pass
+
+    def activate(context):
+        pass
+
+
