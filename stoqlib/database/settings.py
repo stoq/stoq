@@ -45,7 +45,7 @@ DEFAULT_RDBMS = 'postgres'
 
 _ = stoqlib_gettext
 
-log = Logger('stoqlib.database.settings')
+log = Logger('stoqlib.db.settings')
 
 class DatabaseSettings(object):
     """

@@ -25,6 +25,7 @@
 import gobject
 import gtk
 from kiwi.argcheck import argcheck
+from kiwi.log import Logger
 from kiwi.utils import gsignal
 from stoqdrivers.exceptions import (DriverError, CouponOpenError,
                                     OutofPaperError, PrinterOfflineError)
@@ -43,6 +44,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
+log = Logger('stoqlib.fiscalprinter')
 
 class FiscalPrinterHelper:
     def __init__(self, conn, parent):
@@ -69,11 +72,7 @@ class FiscalPrinterHelper:
             warning(e)
             model = None
 
-        retval = bool(model)
-
-        if retval:
-            if not finish_transaction(trans, model):
-                retval = False
+        retval = finish_transaction(trans, model)
 
         trans.close()
 
@@ -97,12 +96,8 @@ class FiscalPrinterHelper:
             finish_transaction(trans, model)
             return
 
-        retval = bool(model)
-
-        if retval:
-            # TillClosingEditor closes the till
-            if not finish_transaction(trans, model):
-                retval = False
+        # TillClosingEditor closes the till
+        retval = finish_transaction(trans, model)
 
         trans.close()
 
@@ -152,6 +147,8 @@ class FiscalCoupon(gobject.GObject):
     def __init__(self, parent, sale):
         gobject.GObject.__init__(self)
 
+        log.info("Creating a new FiscalCoupon for sale %r" % (sale,))
+
         self._parent = parent
         self._sale = sale
         self._item_ids = {}
@@ -176,6 +173,8 @@ class FiscalCoupon(gobject.GObject):
 
         if item.price <= 0:
             return 0
+
+        log.info("adding item %r to coupon" % (item,))
         item_id = self.emit('add-item', item)
         ids = self._item_ids.setdefault(item, [])
         ids.append(item_id)
@@ -192,6 +191,7 @@ class FiscalCoupon(gobject.GObject):
             return
 
         for item_id in self._item_ids.pop(item):
+            log.info("removing item %r from coupon" % (item,))
             try:
                 self.emit('remove-item', item_id)
             except DriverError:
@@ -207,6 +207,7 @@ class FiscalCoupon(gobject.GObject):
 
     def open(self):
         while True:
+            log.info("opening coupon")
             try:
                 self.emit('open')
                 break

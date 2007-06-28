@@ -23,11 +23,14 @@
 ##
 
 from pydispatch.dispatcher import connect, send
+from kiwi.log import Logger
 
+log = Logger('stoqlib.events')
 
 class Event(object):
     @classmethod
     def emit(cls, *args, **kwargs):
+        log.info('emitting event %r %r' % (args, kwargs))
         rv = send(cls, cls, *args, **kwargs)
         # Pick the last return value which is not None
         for func, retval in reversed(rv):
