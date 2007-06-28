@@ -45,8 +45,7 @@ from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.editors.tilleditor import (CashInEditor, CashOutEditor,
-                                            FiscalMemoryEditor)
+from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import SaleSearch
@@ -72,7 +71,6 @@ class TillApp(SearchableAppWindow):
         SearchableAppWindow.__init__(self, app)
         self._printer = FiscalPrinterHelper(
             self.conn, parent=self.get_toplevel())
-        self._check_till()
         self._setup_widgets()
         self.refresh()
         self._update_widgets()
@@ -134,13 +132,6 @@ class TillApp(SearchableAppWindow):
         if retval:
             self._update_widgets()
         return retval
-
-    def _check_till(self):
-        if self._printer.needs_closing():
-            if not self._close_till(can_remove_cash=False):
-                return False
-
-        return True
 
     #
     # Private
@@ -220,7 +211,6 @@ class TillApp(SearchableAppWindow):
         self.AddCash.set_sensitive(has_till)
         self.RemoveCash.set_sensitive(has_till)
         self.TillHistory.set_sensitive(has_till)
-        self.Summary.set_sensitive(has_till)
 
         if not till:
             text = _(u"Till Closed")
@@ -285,13 +275,6 @@ class TillApp(SearchableAppWindow):
     def on_RemoveCash__activate(self, action):
         model = run_dialog(CashOutEditor, self, self.conn)
         finish_transaction(self.conn, model)
-
-    def on_Summary__activate(self, button):
-        self._summary()
-
-    def on_Memory__activate(self, action):
-        dialog = FiscalMemoryEditor(self.conn)
-        self.run_dialog(dialog, self.conn)
 
     #
     # Callbacks

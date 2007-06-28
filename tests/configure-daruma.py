@@ -41,12 +41,6 @@ DeviceConstant(constant_type=DeviceConstant.TYPE_TAX,
                device_settings=settings,
                connection=trans)
 
-# Check if we have a virtual printer, if so we must remove it
-settings = DeviceSettings.get_virtual_printer_settings(
-    trans, station)
-if settings:
-    DeviceSettings.delete(settings.id, connection=trans)
-
 trans.commit()
 
 

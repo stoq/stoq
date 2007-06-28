@@ -171,19 +171,6 @@ def _setup_ui_dialogs():
     from stoqlib.lib.message import ISystemNotifier
     provide_utility(ISystemNotifier, DialogSystemNotifier(), replace=True)
 
-def _setup_printers():
-    log.debug('setting up printers')
-    from stoqlib.database.runtime import get_connection, get_current_station
-    from stoqlib.drivers.fiscalprinter import (
-        get_fiscal_printer_settings_by_station,
-        create_virtual_printer_for_current_station)
-
-    conn = get_connection()
-
-    if not get_fiscal_printer_settings_by_station(conn,
-                                                  get_current_station(conn)):
-        create_virtual_printer_for_current_station()
-
 def _setup_cookiefile(config_dir):
     log.debug('setting up cookie file')
     from stoqlib.lib.cookie import Base64CookieFile
@@ -272,8 +259,6 @@ def _run_app(options, appname):
             return
 
     runner.run(app)
-
-    _setup_printers()
 
     import gtk
     log.debug("Entering main loop")
