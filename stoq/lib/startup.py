@@ -34,7 +34,7 @@ from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from sqlobject import sqlhub
 from stoqlib.database.admin import ensure_admin_user, initialize_system
-from stoqlib.database.migration import SchemaMigration
+from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.runtime import get_connection, set_current_branch_station, new_transaction
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.profile import ProfileSettings
@@ -47,7 +47,19 @@ from stoq.lib.options import get_option_parser
 
 _ = gettext.gettext
 
-def setup(config=None, options=None, register_station=True, check_schema=True):
+def _check_tables():
+    from stoqlib.database.runtime import get_connection
+
+    # Check so SystemTable is present
+    conn = get_connection()
+    if not conn.tableExists('system_table'):
+        error(
+            _("Database schema error"),
+            _("Table `system_table' does not exist.\n"
+              "Consult your database administrator to solve this problem."))
+
+def setup(config=None, options=None, register_station=True, check_schema=True,
+          load_plugins=True):
     """
     Loads the configuration from arguments and configuration file.
 
@@ -55,6 +67,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True):
     @param options: a Optionparser instance
     @param register_station: if we should register the branch station.
     @param check_schema: if we should check the schema
+    @param load_plugins: if we should load plugins for the system
     """
 
     # NOTE: No GUI calls are allowed in here
@@ -91,12 +104,30 @@ def setup(config=None, options=None, register_station=True, check_schema=True):
 
     if register_station:
         set_current_branch_station(conn, socket.gethostname())
+
+    migration = StoqlibSchemaMigration()
+
     if check_schema:
-        if not SchemaMigration().check_uptodate():
+        _check_tables()
+
+        if not migration.check_uptodate():
             error(_("Database schema error"),
                   _("The database schema has changed, but the database has "
                     "not been updated. Run 'stoqdbadmin updateschema` to"
                     "update the schema  to the latest available version."))
+
+    if load_plugins:
+        from stoqlib.lib.pluginmanager import provide_plugin_manager
+        manager = provide_plugin_manager()
+        manager.activate_plugins()
+
+        if check_schema:
+            if not migration.check_plugins():
+                error(_("Database schema error"),
+                      _("The database schema has changed, but the database has "
+                        "not been updated. Run 'stoqdbadmin updateschema` to"
+                        "update the schema  to the latest available version."))
+
 
     if options:
         if options.debug:

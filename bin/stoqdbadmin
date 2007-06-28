@@ -35,7 +35,7 @@ class StoqCommandHandler:
         self.prog_name = prog_name
 
     def _read_config(self, options, create=False, register_station=True,
-                     check_schema=True):
+                     check_schema=True, load_plugins=True):
         from stoq.lib.configparser import StoqConfig
         from stoq.lib.startup import setup
         config = StoqConfig()
@@ -43,7 +43,7 @@ class StoqCommandHandler:
         if create:
             config.create()
         setup(config, options, register_station=register_station,
-              check_schema=check_schema)
+              check_schema=check_schema, load_plugins=load_plugins)
         return config
 
     def add_options(self, parser, cmd):
@@ -95,7 +95,8 @@ class StoqCommandHandler:
         from stoq.lib.startup import clean_database
 
         config = self._read_config(options, register_station=False,
-                                   check_schema=False)
+                                   check_schema=False,
+                                   load_plugins=False)
         clean_database(config, options)
 
         # Register the current computer as a branch station
@@ -135,8 +136,6 @@ class StoqCommandHandler:
         from stoqlib.domain.person import Person
         from stoqlib.domain.station import BranchStation
         from stoqlib.exceptions import StoqlibError
-        from stoqlib.drivers.fiscalprinter import (
-            create_virtual_printer)
         trans = new_transaction()
 
         branches = Person.iselect(IBranch, connection=trans)
@@ -151,18 +150,17 @@ class StoqCommandHandler:
                                            name=socket.gethostname())
         except StoqlibError, e:
             raise SystemExit("ERROR: %s" % e)
-        create_virtual_printer(trans, station)
 
         trans.commit()
         if verbose:
             print 'Registered a new station: %s' % station.name
 
     def cmd_updateschema(self, options):
-        from stoqlib.database.migration import SchemaMigration
+        from stoqlib.database.migration import StoqlibSchemaMigration
 
         self._read_config(options, check_schema=False)
 
-        migration = SchemaMigration()
+        migration = StoqlibSchemaMigration()
         migration.update()
 
     def cmd_serve(self, options):
@@ -226,6 +224,16 @@ class StoqCommandHandler:
         self._read_config(options, register_station=False,
                           check_schema=False)
         execute_sql(schema)
+
+    def cmd_enable_plugin(self, options, plugin):
+        from stoqlib.lib.pluginmanager import provide_plugin_manager
+
+        self._read_config(options, register_station=False,
+                          check_schema=False,
+                          load_plugins=False)
+
+        manager = provide_plugin_manager()
+        manager.enable_plugin(plugin)
 
 
 def main(args):
