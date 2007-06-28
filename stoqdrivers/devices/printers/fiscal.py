@@ -262,3 +262,7 @@ class FiscalPrinter(BasePrinter):
 
         return self._driver.query_status()
 
+    def get_tax_constants(self):
+        log.info('get_tax_constants()')
+
+        return self._driver.get_tax_constants()

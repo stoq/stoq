@@ -29,7 +29,7 @@ from decimal import Decimal
 
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
-from stoqdrivers.exceptions import (CouponOpenError, PendingReduceZ,
+from stoqdrivers.exceptions import (CouponOpenError, 
                                     PendingReadX, PaymentAdditionError,
                                     AlreadyTotalized, CancelItemError,
                                     InvalidValue, CloseCouponError,
@@ -52,8 +52,6 @@ class TestCoupon(object):
                 break
             except CouponOpenError:
                 self._device.cancel()
-            except PendingReduceZ:
-                self._device.close_till()
             except PendingReadX:
                 self._device.summarize()
 
@@ -244,15 +242,15 @@ class BematechMP25FI(TestCoupon, BaseTest):
     brand = 'bematech'
     model = 'MP25'
 
-class DataregisEP375(TestCoupon, BaseTest):
-    brand = "dataregis"
-    model = "EP375"
+# class DataregisEP375(TestCoupon, BaseTest):
+#     brand = "dataregis"
+#     model = "EP375"
 
-class SwedaIFS9000I(TestCoupon, BaseTest):
-    brand = "sweda"
-    model = "IFS9000I"
+# class SwedaIFS9000I(TestCoupon, BaseTest):
+#     brand = "sweda"
+#     model = "IFS9000I"
 
-class PertoPay2023(TestCoupon, BaseTest):
-    brand = "perto"
-    model = "Pay2023"
+# class PertoPay2023(TestCoupon, BaseTest):
+#     brand = "perto"
+#     model = "Pay2023"
 

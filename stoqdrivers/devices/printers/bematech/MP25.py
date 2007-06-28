@@ -157,7 +157,7 @@ class MP25(SerialBase):
                                      "the coupon total value already was "
                                     "reached"))),
         23: (DriverError(_("Coupon isn't totalized yet"))),
-        43: (PrinterError(_("Printer not initialized"))),
+        43: (CouponNotOpenError(_("Printer not initialized"))),
         45: (PrinterError(_("Printer without serial number"))),
         52: (DriverError(_("Invalid start date"))),
         53: (DriverError(_("Invalid final date"))),
@@ -168,7 +168,7 @@ class MP25(SerialBase):
         115: (CancelItemError(_("Item doesn't exists or already was cancelled"))),
         118: (DriverError(_("Surcharge greater than item value"))),
         119: (DriverError(_("Discount greater than item value"))),
-        129: (DriverError(_("Invalid month"))),
+        129: (CouponOpenError(_("Invalid month"))),
         169: (CouponTotalizeError(_("Coupon already totalized"))),
         170: (PaymentAdditionError(_("Coupon not totalized yet"))),
         171: (DriverError(_("Surcharge on subtotal already effected"))),
@@ -238,8 +238,7 @@ class MP25(SerialBase):
         if st2 == 1 and MP25.CMD_PROTO == 0x1C:
             st3 = ord(reply[4]) | ord(reply[3])
             try:
-                exc, arg = MP25.st3_codes[st3]
-                raise exc(arg)
+                check_dict(MP25.st3_codes, st3)
             except KeyError:
                 pass
         check_dict(MP25.st2_codes, st2)
@@ -413,8 +412,9 @@ class MP25(SerialBase):
     def coupon_open(self):
         """ This needs to be called before anything else """
         data = chr(CMD_COUPON_OPEN)
-        if (self._customer_name or self._customer_address
-            or self._customer_document):
+        if (self._customer_name or
+            self._customer_address or
+            self._customer_document):
             data += ("%-29s%-30s%-80s" % (self._customer_document,
                                           self._customer_name,
                                           self._customer_address))

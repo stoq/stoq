@@ -74,7 +74,9 @@ def main(args):
     print items
     retval = cb(*items)
     if retval is not None:
-        print '%s returned: %r' % (command, retval)
+        print '%s returned:' % (command,)
+        import pprint
+        pprint.pprint(retval)
     return 0
 
 if __name__  == '__main__':

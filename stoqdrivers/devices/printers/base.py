@@ -64,6 +64,7 @@ class BaseDriverConstants:
             raise ValueError("The constant identifier %r "
                              "isn't valid", identifier)
 
+
 class BasePrinter(BaseDevice):
     device_dirname = "printers"
     device_type = DeviceType.PRINTER
@@ -77,6 +78,12 @@ class BasePrinter(BaseDevice):
 
     def get_constants(self):
         return self._driver.get_constants()
+
+    def get_tax_constant(self, item):
+        for enum, constant, value in self.get_tax_constants():
+            if enum == item:
+                return constant
+
 
 def get_virtual_printer():
     from stoqdrivers.devices.printers.fiscal import FiscalPrinter

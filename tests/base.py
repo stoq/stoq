@@ -171,8 +171,7 @@ class BaseTest(unittest.TestCase):
             self._device = self.device_class(brand=self.brand,
                                              model=self.model,
                                              port=self._port)
-        constant = self._device.get_constants()
-        self._taxnone = constant.get_tax_constant(TaxType.NONE)
+        self._taxnone = self._device.get_tax_constant(TaxType.NONE)
 
     def _get_recorder_filename(self):
         testdir = os.path.join(os.path.dirname(stoqdrivers.__file__),
