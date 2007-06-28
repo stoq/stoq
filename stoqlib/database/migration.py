@@ -245,9 +245,13 @@ class StoqlibSchemaMigration(SchemaMigration):
 
         return retval
 
-    def update(self):
+    def update(self, plugins=True):
         super(StoqlibSchemaMigration, self).update()
 
+        if plugins:
+            self.update_plugins()
+
+    def update_plugins(self):
         for plugin in get_utility(IPluginManager).get_active_plugins():
             migration = plugin.get_migration()
             migration.update()
