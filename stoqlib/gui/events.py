@@ -35,3 +35,11 @@ from stoqlib.lib.event import Event
 
 class StartApplicationEvent(Event):
     pass
+
+
+#
+# CouponCreatedEvent
+#
+
+class CouponCreatedEvent(Event):
+    pass
