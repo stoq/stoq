@@ -37,7 +37,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-log = Logger('stoqlib.database')
+log = Logger('stoqlib.db.database')
 
 def clean_database(dbname):
     """
