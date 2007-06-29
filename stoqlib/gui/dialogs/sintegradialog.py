@@ -27,17 +27,15 @@ import datetime
 
 from dateutil.relativedelta import relativedelta
 import gtk
-from kiwi.datatypes import currency
-from kiwi.enums import SearchFilterPosition
+from kiwi.db.sqlobj import SQLObjectQueryExecuter
 from kiwi.ui.dialogs import save
 from kiwi.ui.search import DateSearchFilter
-from kiwi.ui.widgets.list import Column
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.interfaces import ICompany
-from stoqlib.domain.sale import Sale
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.domain.system import SystemTable
+from stoqlib.gui.base.dialogs import ConfirmDialog
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.sintegra import SintegraFile
 
@@ -61,27 +59,14 @@ month_names = {
 }
 
 
-class SintegraDialog(SearchDialog):
+class SintegraDialog(ConfirmDialog):
     size = (780, -1)
-    table = FiscalDayHistory
-    selection_mode = gtk.SELECTION_MULTIPLE
-    searchbar_labels = _('matching:')
     title = _('Fiscal Printer History')
 
-    #
-    # SearchDialog
-    #
-
-    def get_columns(self, *args):
-        return [Column('station.name', _('Station'), data_type=str,
-                       width=120,  sorted=True),
-                Column('emission_date', _('Date'),
-                       data_type=datetime.date, width=110),
-                Column('period_total', _('Total Sold'), data_type=currency,
-                       width=140)]
-
-    def create_filters(self):
-        self.disable_search_entry()
+    def __init__(self, conn):
+        ConfirmDialog.__init__(self)
+        self.conn = conn
+        self.ok_button.set_label(_("Generate"))
 
         self.date_filter = DateSearchFilter(_('Month:'))
         self.date_filter.set_use_date_entries(False)
@@ -89,8 +74,8 @@ class SintegraDialog(SearchDialog):
         self._populate_date_filter(self.date_filter)
         self.date_filter.select()
 
-        self.add_filter(self.date_filter, columns=['emission_date'],
-                        position=SearchFilterPosition.TOP)
+        self.add(self.date_filter)
+        self.date_filter.show()
 
     def setup_widgets(self):
         self.results.set_visible_rows(10)
@@ -103,18 +88,16 @@ class SintegraDialog(SearchDialog):
         has_start_date = bool(self.date_filter.get_start_date())
         b.set_sensitive(has_start_date)
 
-    #
-    # Callbacks
-    #
-
-    def _on_generate__clicked(self, button):
-        date = self.date_filter.get_start_date()
+    def confirm(self):
+        start = self.date_filter.get_start_date()
+        end = self.date_filter.get_end_date()
         filename = save(_("Save Sintegra file"),
                         self.get_toplevel(),
-                        "sintegra-%s.txt" % (date.strftime('%Y-%m'),))
-        if filename is not None:
-            sfile = self._generate_sintegra()
+                        "sintegra-%s.txt" % (start.strftime('%Y-%m'),))
+        if filename:
+            sfile = self._generate_sintegra(start, end)
             sfile.write(filename)
+            self.close()
 
     #
     # Private
@@ -127,16 +110,13 @@ class SintegraDialog(SearchDialog):
         #   ...
         #   'September 2008'
 
-        first_emission_date = Sale.select(
-            connection=self.conn).min('confirm_date')
+        initial_date = SystemTable.select(
+            connection=self.conn).min('updated').date()
 
-        if not first_emission_date:
-            return
-
-        # Start is the first day of the month when the first coupon was emitted
-        # End is the last day of the previous month
-        start = first_emission_date + relativedelta(day=1)
-        end = datetime.date.today() - relativedelta(day=31, months=1)
+        # Start is the first day of the month
+        # End is the last day of the month
+        start = initial_date + relativedelta(day=1)
+        end = datetime.date.today() + relativedelta(day=31)
         intervals = []
         while start < end:
             intervals.append((start, start + relativedelta(day=31)))
@@ -151,7 +131,13 @@ class SintegraDialog(SearchDialog):
             date_filter.add_option_fixed_interval(
                 name, start, end, position=0)
 
-    def _generate_sintegra(self):
+    def _date_filter_query(self, search_table, column):
+        executer = SQLObjectQueryExecuter(self.conn)
+        executer.set_filter_columns(self.date_filter, [column])
+        executer.set_table(search_table)
+        return executer.search([self.date_filter.get_state()])
+
+    def _generate_sintegra(self, start, end):
         branch = get_current_branch(self.conn)
         company = ICompany(branch.person)
         address = branch.person.get_main_address()
@@ -163,8 +149,7 @@ class SintegraDialog(SearchDialog):
                      address.get_city(),
                      address.get_state(),
                      branch.person.get_fax_number_number(),
-                     self.date_filter.get_start_date(),
-                     self.date_filter.get_end_date())
+                     start, end)
         s.add_complement_header(address.street, address.number,
                                 address.complement,
                                 address.district,
@@ -172,14 +157,18 @@ class SintegraDialog(SearchDialog):
                                 company.fancy_name,
                                 branch.person.get_phone_number_number())
 
-        for item in self.results:
-            s.add_fiscal_coupon(
+        self._add_fiscal_coupons(s, start, end)
+        s.close()
+
+        return s
+
+    def _add_fiscal_coupons(self, sintegra, start, end):
+        for item in self._date_filter_query(FiscalDayHistory, 'emission_date'):
+            sintegra.add_fiscal_coupon(
                 item.emission_date, item.serial, item.serial_id,
                 item.coupon_start, item.coupon_end,
                 item.cro, item.crz, item.period_total, item.total)
             for tax in item.taxes:
-                s.add_fiscal_tax(item.emission_date, item.serial,
-                                 tax.code, tax.value)
-        s.close()
+                sintegra.add_fiscal_tax(item.emission_date, item.serial,
+                                        tax.code, tax.value)
 
-        return s
