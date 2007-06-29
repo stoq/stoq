@@ -296,6 +296,7 @@ class ECFUI(object):
             ('add-payments', self._on_coupon__add_payments),
             ('totalize', self._on_coupon__totalize),
             ('close', self._on_coupon__close),
+            ('cancel', self._on_coupon__cancel)
             ]:
             fiscalcoupon.connect_object(signal, callback, coupon)
         return coupon
@@ -386,6 +387,9 @@ class ECFUI(object):
     def _on_coupon__close(self, coupon):
         return coupon.close()
 
+    def _on_coupon__cancel(self, action):
+        self._cancel_last_document()
+
     def _on_TillOpen__activate(self, action):
         self._show_open_till_dialog()
 
@@ -397,9 +401,6 @@ class ECFUI(object):
 
     def _on_ReadMemory__activate(self, action):
         run_dialog(FiscalMemoryDialog, None, self.conn)
-
-    def _on_CancelLastDocument__activate(self, action):
-        self._cancel_last_document()
 
     def _on_ConfigurePrinter__activate(self, action):
         run_dialog(ECFListDialog, None)
