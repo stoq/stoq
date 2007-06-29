@@ -144,6 +144,7 @@ class FiscalCoupon(gobject.GObject):
     gsignal('add-payments', object)
     gsignal('totalize', object)
     gsignal('close', retval=int)
+    gsignal('cancel')
 
     def __init__(self, parent, sale):
         gobject.GObject.__init__(self)
