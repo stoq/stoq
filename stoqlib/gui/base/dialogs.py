@@ -213,6 +213,11 @@ class BasicDialog(AbstractDialog):
                 dialog, widget))
         widget.connect('activate', self.cancel)
 
+    def add(self, widget):
+        for child in self.main.get_children():
+            self.main.remove(child)
+        self.main.add(widget)
+
     @property
     def action_area(self):
         return self.get_toplevel().action_area
@@ -321,11 +326,11 @@ class ConfirmDialog(BasicDialog):
     """
 
     title = _('Confirmation')
-    def __init__(self, text, title=None, size=None, ok_label=None):
+    def __init__(self, text='', title=None, size=None, ok_label=None):
         BasicDialog.__init__(self)
         self.justify_label(gtk.JUSTIFY_CENTER)
-        title = title or self.title
-        BasicDialog._initialize(self, text, title=title, size=size)
+        BasicDialog._initialize(self, text,
+                                title=title or self.title, size=size)
         if ok_label:
             self.set_ok_label(ok_label)
 
