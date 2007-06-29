@@ -24,7 +24,7 @@
 ##
 
 from sqlobject.viewable import Viewable
-from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn
+from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn, OR
 
 from stoqlib.domain.product import (Product, ProductAdaptToSellable,
                                     ProductAdaptToStorable,
@@ -192,7 +192,9 @@ class SellableFullStockView(Viewable):
     @classmethod
     def select_by_branch(cls, query, branch, connection=None):
         if branch:
-            branch_query = ProductStockItem.q.branchID == branch.id
+            # We need the OR part to be able to list services and gift certificates
+            branch_query = OR(ProductStockItem.q.branchID == branch.id,
+                              ProductStockItem.q.branchID == None)
             if query:
                 query = AND(query, branch_query)
             else:
