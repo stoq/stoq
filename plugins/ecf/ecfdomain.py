@@ -26,8 +26,8 @@ from sqlobject.col import (BoolCol, StringCol, ForeignKey, IntCol,
                            UnicodeCol, BLOBCol)
 from sqlobject.joins import MultipleJoin
 from stoqdrivers.constants import describe_constant
-from stoqdrivers.devices.printers.fiscal import FiscalPrinter
-from stoqdrivers.devices.serialbase import SerialPort
+from stoqdrivers.printers.fiscal import FiscalPrinter
+from stoqdrivers.serialbase import SerialPort
 from stoqdrivers.enum import PaymentMethodType, UnitType, TaxType
 from zope.interface import implements
 

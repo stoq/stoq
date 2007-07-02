@@ -25,8 +25,8 @@
 
 from kiwi.enums import ListType
 from kiwi.ui.widgets.list import Column
-from stoqdrivers.devices.interfaces import ICouponPrinter
-from stoqdrivers.devices.printers.base import get_supported_printers_by_iface
+from stoqdrivers.interfaces import ICouponPrinter
+from stoqdrivers.printers.base import get_supported_printers_by_iface
 from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_current_station

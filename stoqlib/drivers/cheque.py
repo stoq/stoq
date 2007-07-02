@@ -23,7 +23,7 @@
 ##              Johan Dahlin            <jdahlin@async.com.br>
 ##
 
-from stoqdrivers.devices.printers.cheque import ChequePrinter
+from stoqdrivers.printers.cheque import ChequePrinter
 
 from stoqlib.database.runtime import get_current_station, get_current_branch
 from stoqlib.domain.devices import DeviceSettings

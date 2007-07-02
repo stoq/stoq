@@ -24,7 +24,7 @@
 
 import gtk
 
-from stoqdrivers.devices.scales.scales import Scale
+from stoqdrivers.scales.scales import Scale
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.devices import DeviceSettings

@@ -25,10 +25,10 @@
 ##
 """ Editors implementation for Stoq devices configuration"""
 
-from stoqdrivers.devices.interfaces import IChequePrinter
-from stoqdrivers.devices.printers.base import (get_supported_printers,
-                                               get_supported_printers_by_iface)
-from stoqdrivers.devices.scales.base import get_supported_scales
+from stoqdrivers.interfaces import IChequePrinter
+from stoqdrivers.printers.base import (get_supported_printers,
+                                       get_supported_printers_by_iface)
+from stoqdrivers.scales.base import get_supported_scales
 
 from stoqlib.database.runtime import get_connection, get_current_station
 from stoqlib.domain.devices import DeviceSettings

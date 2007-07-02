@@ -31,9 +31,9 @@ from sqlobject.col import (UnicodeCol, IntCol, ForeignKey, BoolCol,
 from sqlobject.joins import MultipleJoin
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
-from stoqdrivers.devices.printers.cheque import ChequePrinter
-from stoqdrivers.devices.scales.scales import Scale
-from stoqdrivers.devices.serialbase import SerialPort
+from stoqdrivers.printers.cheque import ChequePrinter
+from stoqdrivers.scales.scales import Scale
+from stoqdrivers.serialbase import SerialPort
 
 from stoqlib.database.columns import DecimalCol
 from stoqlib.database.runtime import get_current_station
