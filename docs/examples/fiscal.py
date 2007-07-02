@@ -28,7 +28,7 @@
 
 from decimal import Decimal
 
-from stoqdrivers.devices.printers.fiscal import FiscalPrinter
+from stoqdrivers.printers.fiscal import FiscalPrinter
 from stoqdrivers.exceptions import (PendingReduceZ,
                                     PendingReadX,
                                     CouponOpenError,)

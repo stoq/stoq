@@ -28,7 +28,7 @@ import sys
 
 from kiwi.python import namedAny
 
-from stoqdrivers.devices.serialbase import SerialPort
+from stoqdrivers.serialbase import SerialPort
 
 def main(args):
     usage = "usage: %prog [options] command [args]"
@@ -56,7 +56,7 @@ def main(args):
     if len(args) < 2:
         raise SystemExit("Need a command")
 
-    driver = namedAny('stoqdrivers.devices.%s.%s.%s.%s' % (
+    driver = namedAny('stoqdrivers.%s.%s.%s.%s' % (
         options.type, options.brand, options.model, options.model))
 
     device = driver(port=SerialPort(options.port))

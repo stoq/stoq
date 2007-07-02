@@ -35,7 +35,7 @@ import unittest
 from zope.interface import implements
 
 import stoqdrivers
-from stoqdrivers.devices.interfaces import ISerialPort
+from stoqdrivers.interfaces import ISerialPort
 from stoqdrivers.enum import TaxType
 
 # The directory where tests data will be stored

@@ -27,7 +27,7 @@
 
 from decimal import Decimal
 
-from stoqdrivers.devices.printers.fiscal import FiscalPrinter
+from stoqdrivers.printers.fiscal import FiscalPrinter
 from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
 from stoqdrivers.exceptions import (CouponOpenError, 
                                     PendingReadX, PaymentAdditionError,

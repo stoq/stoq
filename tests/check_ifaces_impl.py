@@ -29,11 +29,11 @@ its interfaces. """
 from zope.interface.verify import verifyClass
 from zope.interface.exceptions import Invalid
 
-from stoqdrivers.devices.interfaces import (ICouponPrinter,
-                                            IChequePrinter,
-                                            IScale)
-from stoqdrivers.devices.printers.base import get_supported_printers_by_iface
-from stoqdrivers.devices.scales.base import get_supported_scales
+from stoqdrivers.interfaces import (ICouponPrinter,
+                                    IChequePrinter,
+                                    IScale)
+from stoqdrivers.printers.base import get_supported_printers_by_iface
+from stoqdrivers.scales.base import get_supported_scales
 
 def _check_drivers(iface, brand, drivers):
     print "\t- Checking %s devices:" % brand
