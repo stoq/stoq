@@ -30,7 +30,7 @@ fcntl.O_NONBLOCK = os.O_NONBLOCK
 
 import gobject
 from kiwi.utils import gsignal
-from stoqdrivers.devices.serialbase import SerialPort
+from stoqdrivers.serialbase import SerialPort
 
 class ECFAsyncPrinterStatus(gobject.GObject):
     """
