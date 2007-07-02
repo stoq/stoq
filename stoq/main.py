@@ -39,7 +39,7 @@ from stoqlib.lib.message import error
 from stoq.lib.applist import get_application_names
 from stoq.lib.options import get_option_parser
 
-PYGTK_REQUIRED = (2, 10, 0)
+PYGTK_REQUIRED = (2, 8, 1)
 KIWI_REQUIRED = (1, 9, 15)
 GAZPACHO_REQUIRED = (0, 6, 6)
 REPORTLAB_REQUIRED = (1, 20)
