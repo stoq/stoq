@@ -39,6 +39,11 @@ from stoqlib.lib.message import error
 from stoq.lib.applist import get_application_names
 from stoq.lib.options import get_option_parser
 
+PYGTK_REQUIRED = (2, 10, 0)
+KIWI_REQUIRED = (1, 9, 15)
+GAZPACHO_REQUIRED = (0, 6, 6)
+REPORTLAB_REQUIRED = (1, 20)
+
 _ = gettext.gettext
 _stream = None
 
@@ -77,11 +82,6 @@ def _debug_hook(exctype, value, tb):
     print
     import pdb
     pdb.pm()
-
-PYGTK_REQUIRED = (2, 10, 0)
-KIWI_REQUIRED = (1, 9, 15)
-GAZPACHO_REQUIRED = (0, 6, 6)
-REPORTLAB_REQUIRED = (1, 20)
 
 def _check_dependencies():
     log.debug('checking dependencies')
