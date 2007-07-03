@@ -38,7 +38,7 @@ from zope.interface import implements
 from stoqdrivers.serialbase import SerialBase
 from stoqdrivers.exceptions import (DriverError, OutofPaperError, PrinterError,
                                     CommandError, CouponOpenError,
-                                    HardwareFailure, 
+                                    HardwareFailure,
                                     PrinterOfflineError, PaymentAdditionError,
                                     ItemAdditionError, CancelItemError,
                                     CouponTotalizeError, CouponNotOpenError)
