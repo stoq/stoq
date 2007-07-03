@@ -3,7 +3,7 @@
 
 ##
 ## Stoqdrivers
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 ##
 ## Author(s):   Cleber Rodrigues      <cleber@globalred.com.br>
 ##              Henrique Romano       <henrique@async.com.br>
+##              Johan Dahlin          <jdahlin@async.com.br>
 ##
 """
 Bematech MP25 driver
@@ -37,7 +38,7 @@ from zope.interface import implements
 from stoqdrivers.serialbase import SerialBase
 from stoqdrivers.exceptions import (DriverError, OutofPaperError, PrinterError,
                                     CommandError, CouponOpenError,
-                                    HardwareFailure, AlmostOutofPaper,
+                                    HardwareFailure, 
                                     PrinterOfflineError, PaymentAdditionError,
                                     ItemAdditionError, CancelItemError,
                                     CouponTotalizeError, CouponNotOpenError)
@@ -53,27 +54,28 @@ log = Logger('stoqdrivers.bematech')
 
 CASH_IN_TYPE = "SU"
 CASH_OUT_TYPE = "SA"
+CMD_COUPON_OPEN = 0
+CMD_CLOSE_TILL = 5
+CMD_REDUCE_Z = 5
 CMD_READ_X = 6
 CMD_COUPON_CANCEL = 14
-CMD_CLOSE_TILL = 5
+CMD_STATUS = 19
 CMD_ADD_VOUCHER = 25
-CMD_ADD_ITEM = 63
-CMD_COUPON_GET_SUBTOTAL = 29
-CMD_COUPON_OPEN = 0
+CMD_READ_TAXCODES = 26
+CMD_READ_TOTALIZERS = 27
+CMD_GET_COUPON_SUBTOTAL = 29
+CMD_GET_COUPON_NUMBER = 30
 CMD_CANCEL_ITEM = 31
 CMD_COUPON_TOTALIZE = 32
 CMD_COUPON_CLOSE = 34
-CMD_ADD_PAYMENT = 72
-CMD_REDUCE_Z = 5
-CMD_GET_VARIABLES = 35
-CMD_GET_COUPON_NUMBER = 30
-CMD_READ_TAXCODES = 26
-CMD_READ_TOTALIZERS = 27
 CMD_READ_REGISTER = 35
+CMD_ADD_ITEM = 63
+CMD_ADD_PAYMENT = 72
+
+# Page 51
+REGISTER_LAST_ITEM_ID = 12
 REGISTER_TOTALIZERS = 29
 REGISTER_SERIAL = 40
-VAR_LAST_ITEM_ID = 12
-VAR_PAID_VALUE = 22
 NAK = 21
 ACK = 6
 STX = 2
@@ -87,6 +89,15 @@ class MP25Constants(BaseDriverConstants):
         PaymentMethodType.MONEY:         '01',
         PaymentMethodType.CHECK:        '01'
         }
+
+
+class Status(object):
+    def __init__(self, reply):
+        self.st1, self.st2, self.st3 = reply[-3:]
+
+    @property
+    def open(self):
+        return self.st1 & 2
 
 
 #
@@ -126,12 +137,12 @@ class MP25(SerialBase):
 
     st1_codes = {
         128: (OutofPaperError(_("Printer is out of paper"))),
-        64: (AlmostOutofPaper(_("Printer almost out of paper"))),
+        # 64: (AlmostOutofPaper(_("Printer almost out of paper"))),
         32: (PrinterError(_("Printer clock error"))),
         16: (PrinterError(_("Printer in error state"))),
         8: (CommandError(_("First data value in CMD is not ESC (1BH)"))),
         4: (CommandError(_("Nonexistent command"))),
-        2: (CouponOpenError(_("Printer has a coupon currently open"))),
+        # 2: (CouponOpenError(_("Printer has a coupon currently open"))),
         1: (CommandError(_("Invalid number of parameters")))}
 
     st2_codes = {
@@ -140,14 +151,16 @@ class MP25(SerialBase):
         32: (HardwareFailure(_("Error in CMOS memory"))),
         16: (PrinterError(_("Given tax is not programmed on the printer"))),
         8: (DriverError(_("No available tax slot"))),
-        4: (CancelItemError(_("The item wasn't added in the coupon or can't"
+        4: (CancelItemError(_("The item wasn't added in the coupon or can't "
                               "be cancelled"))),
-        2: (PrinterError(_("Owner data (CGC/IE) not programmed on the printer"))),
-        1: (CommandError(_("Command not executed")))}
+
+        # 2: (PrinterError(_("Owner data (CGC/IE) not programmed on the printer"))),
+        # 1: (CommandError(_("Command not executed")))
+        }
 
     st3_codes = {
-        7: (CouponOpenError(_("Coupon already Open"))),
-        8: (CouponNotOpenError(_("Coupon is closed"))),
+        # 7: (CouponOpenError(_("Coupon already Open"))),
+        # 8: (CouponNotOpenError(_("Coupon is closed"))),
         13: (PrinterOfflineError(_("Printer is offline"))),
         16: (DriverError(_("Surcharge or discount greater than coupon total"
                            "value"))),
@@ -177,7 +190,7 @@ class MP25(SerialBase):
 
     def __init__(self, port, consts=None):
         self._consts = consts or MP25Constants
-        port.set_options(read_timeout=5, write_timeout=5)
+        port.set_options(read_timeout=2, write_timeout=5)
         SerialBase.__init__(self, port)
         # XXX: Seems that Bematech doesn't contains any variable with the
         # coupon remainder value, so I need to manage it by myself.
@@ -185,197 +198,153 @@ class MP25(SerialBase):
         self._reset()
 
     def _reset(self):
-        self._customer_name = None
-        self._customer_document = None
-        self._customer_address = None
+        self._customer_name = ''
+        self._customer_document = ''
+        self._customer_address = ''
 
-    def _handle_error(self, reply):
-        """ Here are some notes about the return codes:
-
-        When using the first/simple protocol, the return code is composed of:
-
-        ACK/NAK + ST1 + ST2
-
-        If set, ST1 contains errors description related to the printer status
-        and some basic command errors, like 'package doesn't starts with 0x1B'.
-        ST2 contains more descriptive errors, but not enough for us
-        (eg: 'cancellation not allowed'). Also ST2 can contains a value that
-        represents 'command not executed' and is in this part that ST3 comes.
-
-        With the second protocol, we have:
-
-        ACK/NAK + ST1 + ST2 + STL + STH
-
-        Where STL and STH are used to compose ST3. ST3 has more detailed
-        errors and is used when ST2 is set to 1, representing 'command not
-        executed'.  In this case we get the value stored on ST3 and search
-        for a more descriptive error that will say why the command wasn't
-        executed.
+    def _send_packed(self, command):
         """
-        if not reply:
-            raise DriverError
-        # NAK mens that the request was packaged erroneously or there was
-        # a timeout error while sending the data.
-        elif reply[0] == NAK:
-            raise DriverError
-        st1 = ord(reply[1])
-        st2 = ord(reply[2])
-        nbytes = MP25.CMD_PROTO == 0x1C and 5 or 3
-
-        def check_dict(d, value):
-            for key in d.keys():
-                if key & value:
-                    raise d[key]
-        # If st1 is just a warning "printer ALMOST out of paper", we don't
-        # can consider raising a exception here.
-        if st1 and not (st1 & 64):
-            check_dict(MP25.st1_codes, st1)
-        elif not st2:
-            return reply[nbytes:]
-        # If st2 == 1, it means "Command not executed" -- if so, then I
-        # will try get a more descriptive error from st3, if the extended
-        # protocol is being used.
-        if st2 == 1 and MP25.CMD_PROTO == 0x1C:
-            st3 = ord(reply[4]) | ord(reply[3])
-            try:
-                check_dict(MP25.st3_codes, st3)
-            except KeyError:
-                pass
-        check_dict(MP25.st2_codes, st2)
-
-    def _make_package(self, raw_data, format=None):
-        """ Receive a 'pre-package' (command + params, basically) and involves
-        it around STX, NBL, NBH, CSL and CSH:
-
-        +-----+-----+-----+-----------------+-----+-----+
-        | STX | NBL | NBH | 0x1C + raw_data | CSL | CSH |
-        +-----+-----+-----+-----------------+-----+-----+
+        Create a 'pre-package' (command + params, basically) and involves
+        it around STX, NB and CS:
+           1     2           n           2
+        +-----+------+-----------------+----+
+        | STX |  NB  | 0x1C + command  | CS |
+        +-----+------+-----------------+----+
 
         Where:
 
         STX: 'Transmission Start' indicator byte
-        NBL: LSB of checksum for raw_data+CSL+CSH
-        NBH: MSB of checksum for raw_data+CSL+CSH
-        CSL: LSB of checksum for raw_data
-        CSH: MSB of checksum for raw_data
+         NB: 2 bytes, big endian length of command + CS (2 bytes)
+         CS: 2 bytes, big endian checksum for command
         """
-        if not format:
-            format = MP25.CMD_PROTO
-        raw_data = chr(format) + raw_data
-        cs = sum([ord(i) for i in raw_data])
-        csl = chr(cs & 0xFF)
-        csh = chr(cs >> 8 & 0xFF)
-        nb = len(raw_data+csl+csh)
-        nbl = chr(nb & 0xFF)
-        nbh = chr(nb >> 8 & 0xFF)
-        return (chr(STX) + nbl + nbh + raw_data +
-                csl + csh)
 
-    def _send_packed(self, command, format=None):
-        """ Receive a command (and its parameter), pack it and send to the
-        printer.
-        """
-        self.write(self._make_package(command, format=format))
+        command = chr(MP25.CMD_PROTO) + command
+        data = struct.pack('<bH%dsH' % len(command),
+                           STX,
+                           len(command) + 2,
+                           command,
+                           sum([ord(i) for i in command]))
+        self.write(data)
 
-    def _get_reply(self, extrabytes_num=0):
-        if MP25.CMD_PROTO == 0x1B:
-            data = self.read_insist(3 + extrabytes_num)
-        elif MP25.CMD_PROTO == 0x1C:
-            data = self.read_insist(5 + extrabytes_num)
-        else:
-            raise TypeError("Invalid protocol used, got %r" % MP25.CMD_PROTO)
-        log.debug("<<< %r (%d bytes)" % (data, len(data)))
-        return data
+    def _write_data(self, cmd, format):
+        size = struct.calcsize(format)
+        self._send_packed(cmd)
 
-    def _send_command(self, command):
-        self._send_packed(command)
-        return self._handle_error(self._get_reply())
+        a = 0
+        data = ''
+        while True:
+            if a > 10:
+                raise DriverError("Timeout")
 
-    def _send_command2(self, num, fmt, *args):
-        cmd = chr(num)
+            a += 1
+            reply = self.read(size)
+            if reply is None:
+                continue
+
+            data += reply
+            if len(data) < size:
+                continue
+
+            log.debug("<<< %r (%d bytes)" % (data, len(data)))
+            return struct.unpack(format, data)
+
+    def _check_error(self, retval):
+        st1, st2, st3 = retval[-3:]
+        def _check_error_in_dict(error_codes, value):
+            for key in error_codes:
+                if key & value:
+                    raise error_codes[key]
+
+        if st1 != 0:
+            _check_error_in_dict(MP25.st1_codes, st1)
+
+        if st2 != 0:
+            _check_error_in_dict(MP25.st2_codes, st2)
+            # first bit means not executed, look in st3 for more
+            if st2 & 1:
+                if st3 in MP25.st3_codes:
+                    raise MP25.st3_codes[st3]
+
+    def _send_command(self, command, *args, **kwargs):
+        fmt = ''
+        if 'response' in kwargs:
+            fmt = kwargs.pop('response')
+
+        raw = False
+        if 'raw' in kwargs:
+            raw = kwargs.pop('raw')
+
+        if kwargs:
+            raise TypeError("Invalid kwargs: %r" % (kwargs,))
+
+        cmd = chr(command)
         for arg in args:
             if isinstance(arg, int):
                 cmd += chr(arg)
+            elif isinstance(arg, str):
+                cmd += arg
             else:
                 raise NotImplementedError(type(arg))
-        self._send_packed(cmd, format=0x1b)
-        format = '<b%sH' % (fmt,)
-        size = struct.calcsize(format)
-        data = self.read(size)
-        log.debug("<<< %r (%d bytes)" % (data, len(data)))
-        retval = struct.unpack(format, data)
-        if retval[0] == NAK:
-            raise DriverError
-        response = retval[1:-1]
+
+        retval = self._write_data(cmd, '<b%sbbH' % (fmt,))
+
+        if raw:
+            return retval
+
+        self._check_error(retval)
+
+        response = retval[1:-3]
         if len(response) == 1:
             response = response[0]
         return response
 
     def _read_register(self, reg):
+        # Page 51
+        bcd = False
         if reg == REGISTER_TOTALIZERS:
             fmt = '2s'
         elif reg == REGISTER_SERIAL:
             fmt = '20s'
+        elif reg == REGISTER_LAST_ITEM_ID:
+            fmt = '2s'
+            bcd = True
         else:
             raise NotImplementedError(reg)
 
-        return self._send_command2(CMD_READ_REGISTER, fmt, reg)
+        value = self._send_command(CMD_READ_REGISTER, reg, response=fmt)
+        if bcd:
+            value = bcd2dec(value)
+        return value
 
     #
     # Helper methods
     #
 
-    def read_insist(self, n_bytes):
-        """ This is a more insistent read, that will try to read that many
-        bytes a determined number of times.
-        """
-        number_of_tries = 12
-        data = ""
-        while True:
-            data_left = n_bytes - len(data)
-            if (data_left > 0) and (number_of_tries > 0):
-                data += self.read(data_left)
-                data_left = n_bytes - len(data)
-                number_of_tries -= 1
-            else:
-                break
-        return data
-
-    def get_coupon_subtotal(self):
-        # Return value:
-        # ACK/NAK + 7 Bytes (Subtotal in BCD format) + 3/2 Bytes (Status)
-        # Where status is composed of ST1 + ST2 + ST3 if the second protocol
-        # is used, or ST1 + ST2 if the first one is used instead.
-        # See man page #49
-        self._send_packed(chr(CMD_COUPON_GET_SUBTOTAL))
-        reply = self._get_reply(extrabytes_num=7)
-        self._handle_error(reply[0] + reply[8:])
-        subtotal = reply[1:8]
+    def _get_coupon_subtotal(self):
+        subtotal = self._send_command(CMD_GET_COUPON_SUBTOTAL, response='7s')
         if subtotal:
             return Decimal(bcd2dec(subtotal)) / Decimal("1e2")
         # Busted subtotal
         return Decimal("0.0")
 
-    def get_last_item_id(self):
-        self._send_packed("%c%c" % (CMD_GET_VARIABLES, VAR_LAST_ITEM_ID))
-        reply = self._get_reply(extrabytes_num=2)
-        self._handle_error(reply[0] + reply[3:])
-        # two bytes, 4 digits BCD
-        return bcd2dec(reply[1:3])
+    def _get_last_item_id(self):
+        return self._read_register(REGISTER_LAST_ITEM_ID)
 
     def _get_coupon_number(self):
-        self._send_packed(chr(CMD_GET_COUPON_NUMBER))
-        reply = self._get_reply(extrabytes_num=3)
-        self._handle_error(reply[0] + reply[4:])
-        coupon_number = reply[1:4]
-        if coupon_number:
-            return bcd2dec(coupon_number)
-        raise ValueError("Inconsistent package received from the printer")
+        coupon_number = self._send_command(CMD_GET_COUPON_NUMBER, response='3s')
+        return bcd2dec(coupon_number)
 
+    def _get_status(self):
+        return Status(self._send_command(CMD_STATUS, raw=True))
 
     def _add_voucher(self, type, value):
-        value = "%014d" % int(float(value) * 1e2)
-        self._send_command(chr(CMD_ADD_VOUCHER) + type + value)
+        assert len(type) == 2
+
+        status = self._get_status()
+        if status.open:
+            self._send_command(CMD_COUPON_CANCEL)
+
+        self._send_command(CMD_ADD_VOUCHER, type, "%014d" % int(value * Decimal('1e2')))
 
     #
     # This implements the ICouponPrinter Interface
@@ -383,13 +352,13 @@ class MP25(SerialBase):
 
     def summarize(self):
         """ Prints a summary of all sales of the day """
-        self._send_command(chr(CMD_READ_X))
+        self._send_command(CMD_READ_X)
 
     def close_till(self):
         """ Close the till for the day, no other actions can be done after this
         is called.
         """
-        self._send_command(chr(CMD_REDUCE_Z))
+        self._send_command(CMD_REDUCE_Z)
 
     def till_add_cash(self, value):
         self._add_voucher(CASH_IN_TYPE, value)
@@ -403,7 +372,6 @@ class MP25(SerialBase):
     def till_read_memory_by_reductions(self, start, end):
         raise NotImplementedError
 
-
     def coupon_identify_customer(self, customer, address, document):
         self._customer_name = customer
         self._customer_document = document
@@ -411,27 +379,23 @@ class MP25(SerialBase):
 
     def coupon_open(self):
         """ This needs to be called before anything else """
-        data = chr(CMD_COUPON_OPEN)
-        if (self._customer_name or
-            self._customer_address or
-            self._customer_document):
-            data += ("%-29s%-30s%-80s" % (self._customer_document,
-                                          self._customer_name,
-                                          self._customer_address))
-        self._send_command(data)
+        self._send_command(CMD_COUPON_OPEN,
+                            "%-29s%-30s%-80s" % (self._customer_document,
+                                                 self._customer_name,
+                                                 self._customer_address))
 
     def coupon_cancel(self):
         """ Can only be called when a coupon is opened. It needs to be possible
         to open new coupons after this is called.
         """
-        self._send_command(chr(CMD_COUPON_CANCEL))
+        self._send_command(CMD_COUPON_CANCEL)
 
     def coupon_close(self, message=""):
         """  This can only be called when the coupon is open, has items added,
         payments added and totalized is called. It needs to be possible to open
         new coupons after this is called.
         """
-        self._send_command(chr(CMD_COUPON_CLOSE))
+        self._send_command(CMD_COUPON_CLOSE)
         self._reset()
         return self._get_coupon_number()
 
@@ -443,8 +407,7 @@ class MP25(SerialBase):
             unit = unit_desc
         else:
             unit = self._consts.get_value(unit)
-        data = ("%c"       # command
-                "%02s"     # taxcode
+        data = ("%02s"     # taxcode
                 "%09d"     # value
                 "%07d"     # quantity
                 "%010d"    # discount
@@ -453,24 +416,25 @@ class MP25(SerialBase):
                 "%2s"      # unit
                 "%-48s\0"  # code
                 "%-200s\0" # description
-                % (CMD_ADD_ITEM, taxcode,
-                   price * Decimal("1e3"), quantity * Decimal("1e3"),
-                   (discount and (discount * Decimal("1e2")) or 0),
-                   (markup and (markup * Decimal("1e2")) or 0), 0,
-                   unit, code, description))
-        self._send_command(data)
-        return self.get_last_item_id()
+                % (taxcode,
+                   price * Decimal("1e3"),
+                   quantity * Decimal("1e3"),
+                   discount * Decimal("1e2"),
+                   markup * Decimal("1e2"),
+                   0, unit, code, description))
+        self._send_command(CMD_ADD_ITEM, data)
+        return self._get_last_item_id()
 
     def coupon_cancel_item(self, item_id=None):
         """ Cancel an item added to coupon; if no item id is specified,
         cancel the last item added. """
-        last_item = self.get_last_item_id()
+        last_item = self._get_last_item_id()
         if item_id is None:
             item_id = last_item
         elif item_id not in xrange(1, last_item+2):
             raise CancelItemError("There is no such item with ID %r"
                                   % item_id)
-        self._send_command("%c%04d" % (CMD_CANCEL_ITEM, item_id))
+        self._send_command(CMD_CANCEL_ITEM, "%04d" % (item_id,))
 
     def coupon_add_payment(self, payment_method, value, description=u"",
                            custom_pm=''):
@@ -478,10 +442,9 @@ class MP25(SerialBase):
             pm = self._consts.get_value(payment_method)
         else:
             pm = custom_pm
-        description = description and description[:80] or ""
-        val = "%014d" % int(float(value) * 1e2)
-        data = "%c%s%s%s" % (CMD_ADD_PAYMENT, pm, val, description)
-        self._send_command(data)
+        self._send_command(CMD_ADD_PAYMENT,
+                           "%s%014d%s" % (pm, int(value * Decimal('1e2')),
+                                          description[:80]))
         self.remainder_value -= value
         if self.remainder_value < 0.0:
             self.remainder_value = Decimal("0.0")
@@ -489,19 +452,23 @@ class MP25(SerialBase):
 
     def coupon_totalize(self, discount=Decimal("0.0"), markup=Decimal("0.0"),
                         taxcode=TaxType.NONE):
+
         if discount:
             type = 'D'
-            val = '%04d' % int(float(discount) * 1e2)
+            value = discount
         elif markup:
             type = 'A'
-            val = '%04d' % int(float(markup) * 1e2)
+            value = markup
         else:
             # Just to use the StartClosingCoupon in case of no discount/markup
             # be specified.
             type = 'A'
-            val = '%04d' % 0
-        self._send_command(chr(CMD_COUPON_TOTALIZE) + type + val)
-        totalized_value = self.get_coupon_subtotal()
+            value = 0
+
+        self._send_command(CMD_COUPON_TOTALIZE, '%c%04d' % (
+            type, int(value * Decimal('1e2'))))
+
+        totalized_value = self._get_coupon_subtotal()
         self.remainder_value = totalized_value
         return totalized_value
 
@@ -538,7 +505,7 @@ class MP25(SerialBase):
         status = self._read_register(REGISTER_TOTALIZERS)
         status = struct.unpack('>H', status)[0]
 
-        length, data = self._send_command2(CMD_READ_TAXCODES, 'b32s')
+        length, data = self._send_command(CMD_READ_TAXCODES, response='b32s')
 
         service = False
         constants = []
