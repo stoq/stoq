@@ -33,7 +33,6 @@ from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
 
 from stoqlib.database.runtime import get_current_station
-from stoqlib.domain.events import TillAddCashEvent, TillRemoveCashEvent
 from stoqlib.domain.interfaces import IEmployee
 from stoqlib.domain.person import Person
 from stoqlib.domain.till import Till, TillEntry
@@ -309,7 +308,6 @@ class CashAdvanceEditor(BaseEditor):
             self.payment.value = self.payment.value
             self.model.value = abs(self.payment.value)
 
-            TillRemoveCashEvent.emit(abs(self.cash_slave.model.value))
             return self.model
 
         return valid
@@ -373,7 +371,6 @@ class CashOutEditor(BaseEditor):
                 payment_description = _(u'Cash out')
             self.model.description = payment_description
 
-        TillRemoveCashEvent.emit(abs(self.cash_slave.model.value))
         return valid
 
     #
@@ -431,7 +428,6 @@ class CashInEditor(BaseEditor):
                 payment_description = _(u'Cash in')
             self.model.description = payment_description
 
-        TillAddCashEvent.emit(self.cash_slave.model.value)
         return valid
 
 
