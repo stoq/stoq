@@ -106,9 +106,9 @@ class PlaybackPort:
         n_bytes = len(bytes)
         data = "".join([self._input.pop(0) for i in xrange(n_bytes)])
         if bytes != data:
-            msg = ("Written data differs from the expected:\n"
-                   "WROTE: %r\nEXPECTED: %r\n" % (data, bytes))
-            raise ValueError(msg)
+            raise ValueError("Written data differs from the expected:\n"
+                             "WROTE:    %r\n"
+                             "RECORDED: %r\n" % (data, bytes))
 
     def read(self, n_bytes=1):
         data = self._output[:n_bytes]
@@ -121,6 +121,7 @@ class PlaybackPort:
         data = data.replace('\\n', '\n')
         data = data.replace('\\r', '\r')
         data = data.replace('\\t', '\t')
+        data = data.replace('\\\\', '\\')
         data = data.split('\\x')
         if len(data) == 1:
             data = data[0]
