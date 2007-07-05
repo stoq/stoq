@@ -36,13 +36,11 @@ from kiwi.datatypes import currency
 from kiwi.log import Logger
 
 from stoqlib.database.columns import PriceCol
-from stoqlib.database.runtime import (get_current_branch,
-                                      get_current_station)
+from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
                                    TillAddCashEvent, TillRemoveCashEvent)
 from stoqlib.domain.interfaces import IOutPayment, IInPayment
-from stoqlib.domain.station import BranchStation
 from stoqlib.exceptions import TillError
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -107,18 +105,16 @@ class Till(Domain):
     @classmethod
     def get_current(cls, conn):
         """
-        Fetches the Till for the current branch.
+        Fetches the Till for the current station.
         @param conn: a database connection
         @returns: a Till instance or None
         """
-        branch = get_current_branch(conn)
-        assert branch is not None
+        station = get_current_station(conn)
+        assert station is not None
 
-        till = cls.selectOne(AND(cls.q.status == Till.STATUS_OPEN,
-                                 cls.q.stationID == BranchStation.q.id,
-                                 BranchStation.q.branchID == branch.id),
-                             connection=conn)
-
+        till = cls.selectOneBy(status=Till.STATUS_OPEN,
+                               station=station,
+                               connection=conn)
         if till and till.needs_closing():
             raise TillError(
                 _("You need to close the till opened at %s before "

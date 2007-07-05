@@ -34,7 +34,6 @@ from stoqlib.exceptions import TillError
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.payment.methods import APaymentMethod
-from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -71,23 +70,6 @@ class TestTill(DomainTest):
         self.assertEqual(till.status, Till.STATUS_OPEN)
 
         self.assertRaises(TillError, till.open_till)
-
-    def testGetCurrentOtherStation(self):
-        # Test bug #2734
-        self.assertEqual(Till.get_current(self.trans), None)
-
-        # Create a new station in the same branch as the current one
-        station = get_current_station(self.trans)
-        newstation = BranchStation.create(
-            self.trans, branch=station.branch, name='teststation')
-
-        # Create a Till for the new station and open it
-        till = Till(connection=self.trans, station=newstation)
-        till.open_till()
-
-        # Verify that it's set for "us" as well since
-        # Till.get_current calls get_current_branch()
-        self.assertEqual(Till.get_current(self.trans), till)
 
     def testGetCurrentTillClose(self):
         station = get_current_station(self.trans)
