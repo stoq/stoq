@@ -495,7 +495,8 @@ class MP25(SerialBase):
         return self._consts
 
     def query_status(self):
-        return self._create_packet(chr(CMD_STATUS))
+        return '\x02\x05\x00\x1b#(f\x00'
+        #return self._create_packet(chr(CMD_STATUS))
 
     def status_reply_complete(self, reply):
         return len(reply) == 23
