@@ -225,6 +225,26 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="TillClose">
+                        <property name="name">TillClose</property>
+                        <property name="label" translatable="yes">Close Till...</property>
+                        <property name="accelerator">&lt;Control&gt;F7</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="TillMenu">
+                        <property name="name">TillMenu</property>
+                        <property name="label" translatable="yes">_Till</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="TillOpen">
+                        <property name="name">TillOpen</property>
+                        <property name="label" translatable="yes">Open Till...</property>
+                        <property name="accelerator">&lt;Control&gt;F6</property>
+                    </widget>
+               </child>
+               <child>
                     <widget class="GtkAction" id="help_menu">
                         <property name="name">help_menu</property>
                         <property name="label" translatable="yes">_Help</property>
@@ -240,8 +260,38 @@
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui>
-<menubar action="menubar" name="menubar"><menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder" name="ResetOrder"/><menuitem action="CancelOrder" name="CancelOrder"/><menuitem action="EditClient" name="EditClient"/><menuitem action="ClientDetails" name="ClientDetails"/><separator name="sep"/><menuitem action="NewDelivery" name="NewDelivery"/><menuitem action="OrderCheckout" name="OrderCheckout"/><separator name="sep10"/><menuitem action="PrintOrder" name="PrintOrder"/><separator name="sep2"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sales" name="Sales"/><menuitem action="Clients" name="Clients"/><menuitem action="ProductSearch" name="ProductSearch"/><menuitem action="ServiceSearch" name="ServiceSearch"/><menuitem action="GiftCertificateSearch" name="GiftCertificateSearch"/></menu><menu action="help_menu" name="help_menu"><menuitem action="About" name="About"/></menu></menubar>
-</ui>]]></ui>
+            <menubar action="menubar" name="menubar">
+              <menu action="SalesMenu" name="SalesMenu">
+                <menuitem action="ResetOrder" name="ResetOrder"/>
+                <menuitem action="CancelOrder" name="CancelOrder"/>
+                <menuitem action="EditClient" name="EditClient"/>
+                <menuitem action="ClientDetails" name="ClientDetails"/>
+                <separator name="sep"/>
+                <menuitem action="NewDelivery" name="NewDelivery"/>
+                <menuitem action="OrderCheckout" name="OrderCheckout"/>
+                <separator name="sep10"/>
+                <menuitem action="PrintOrder" name="PrintOrder"/>
+                <separator name="sep2"/>
+                <menuitem action="Quit" name="Quit"/>
+              </menu>
+              <menu action="SearchMenu" name="SearchMenu">
+                <menuitem action="Sales" name="Sales"/>
+                <menuitem action="Clients" name="Clients"/>
+                <menuitem action="ProductSearch" name="ProductSearch"/>
+                <menuitem action="ServiceSearch" name="ServiceSearch"/>
+                <menuitem action="GiftCertificateSearch" name="GiftCertificateSearch"/>
+              </menu>
+              <menu action="TillMenu" name="TillMenu">
+                <menuitem action="TillOpen" name="TillOpen"/>
+                <menuitem action="TillClose" name="TillClose"/>
+              </menu>
+            <placeholder name="PluginMenus"/>
+              <menu action="help_menu" name="help_menu">
+                <menuitem action="About" name="About"/>
+              </menu>
+            </menubar>
+          </ui>]]>
+        </ui>
     </widget>
     <widget class="GtkWindow" id="pos">
         <property name="destroy_with_parent">True</property>
