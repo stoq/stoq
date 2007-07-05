@@ -153,13 +153,19 @@ class SellableSearch(SearchEditor):
     #
 
     def _executer_query(self, query, conn):
+        queries = []
         if self._delivery_service:
-            query =  AND(
+            queries.append(AND(
                 SellableFullStockView.q.status == ASellable.STATUS_AVAILABLE,
-                SellableFullStockView.q.id != self._delivery_service.id)
+                SellableFullStockView.q.id != self._delivery_service.id))
+        # If we select a quantity which is not an integer, filter out
+        # sellables without a unit set
+        if self.quantity is not None and (self.quantity % 1) != 0:
+            queries.append(ASellable.q.unitID != None)
         branch = self.branch_filter.get_state().value
         if branch is not None:
             branch = PersonAdaptToBranch.get(branch, connection=conn)
+        query = AND(*queries)
         return SellableFullStockView.select_by_branch(query, branch,
                                                       connection=conn)
 
