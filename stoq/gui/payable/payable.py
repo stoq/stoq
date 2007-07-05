@@ -55,7 +55,7 @@ _ = gettext.gettext
 
 class PayableApp(SearchableAppWindow):
 
-    app_name = _('Payable')
+    app_name = _('Accounts Payable')
     app_icon_name = 'stoq-payable-app'
     gladefile = 'payable'
     search_table = OutPaymentView

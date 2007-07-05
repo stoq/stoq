@@ -27,7 +27,7 @@ import gettext
 
 _ = gettext.gettext
 
-application = _('Payable')
-description = _("""Payable application.""")
+application = _('Accounts Payable')
+description = _("""Accounts Payable application.""")
 
 icon_name = 'stoq-payable-app'
