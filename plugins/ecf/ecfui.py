@@ -189,6 +189,10 @@ class ECFUI(object):
         if not self._validate_printer():
             return False
 
+        # Don't do anything on till_open, eg the driver is responsible
+        # for sending the LeituraX if needed
+        return True
+
         retval = True
         while True:
             try:
