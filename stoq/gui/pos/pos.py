@@ -424,12 +424,14 @@ class POSApp(AppWindow):
         self._coupon.remove_item(sellable_item)
 
     def _finish_coupon(self):
-        if not self._coupon:
-            return True
-        totalize = self._coupon.totalize()
-        has_payments = self._coupon.setup_payments()
-        close = self._coupon.close()
-        return totalize and has_payments and close
+        if self._coupon:
+            if not self._coupon.totalize():
+                return False
+            if not self._coupon.setup_payments():
+                return False
+            if not self._coupon.close():
+                return False
+        return True
 
     #
     # AppWindow Hooks

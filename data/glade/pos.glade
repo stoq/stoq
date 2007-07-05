@@ -451,7 +451,7 @@
                                                 </child>
                                                 <child>
                                                     <widget class="ProxySpinButton" id="quantity">
-                                                        <property name="adjustment">1 1 9999 1 10 0</property>
+                                                        <property name="adjustment">1 0.01 9999 1 10 0</property>
                                                         <property name="data_type">Decimal</property>
                                                         <property name="digits">2</property>
                                                         <property name="is_focus">True</property>
