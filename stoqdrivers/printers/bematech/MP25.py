@@ -202,7 +202,7 @@ class MP25(SerialBase):
         self._customer_document = ''
         self._customer_address = ''
 
-    def _send_packed(self, command):
+    def _create_packet(self, command):
         """
         Create a 'pre-package' (command + params, basically) and involves
         it around STX, NB and CS:
@@ -219,16 +219,13 @@ class MP25(SerialBase):
         """
 
         command = chr(MP25.CMD_PROTO) + command
-        data = struct.pack('<bH%dsH' % len(command),
+        return struct.pack('<bH%dsH' % len(command),
                            STX,
                            len(command) + 2,
                            command,
                            sum([ord(i) for i in command]))
-        self.write(data)
 
-    def _write_data(self, cmd, format):
-        size = struct.calcsize(format)
-        self._send_packed(cmd)
+    def _read_reply(self, size):
 
         a = 0
         data = ''
@@ -246,7 +243,7 @@ class MP25(SerialBase):
                 continue
 
             log.debug("<<< %r (%d bytes)" % (data, len(data)))
-            return struct.unpack(format, data)
+            return data
 
     def _check_error(self, retval):
         st1, st2, st3 = retval[-3:]
@@ -286,7 +283,12 @@ class MP25(SerialBase):
             else:
                 raise NotImplementedError(type(arg))
 
-        retval = self._write_data(cmd, '<b%sbbH' % (fmt,))
+        data = self._create_packet(cmd)
+        self.write(data)
+
+        format = '<b%sbbH' % (fmt,)
+        reply = self._read_reply(struct.calcsize(format))
+        retval = struct.unpack(format, reply)
 
         if raw:
             return retval
@@ -473,27 +475,27 @@ class MP25(SerialBase):
         return totalized_value
 
     def get_capabilities(self):
-        return {
-            'item_code': Capability(max_len=13),
-            'item_id': Capability(digits=4),
-            'items_quantity': Capability(min_size=1, digits=4, decimals=3),
-            'item_price': Capability(digits=6, decimals=2),
-            'item_description': Capability(max_len=29),
-            'payment_value': Capability(digits=12, decimals=2),
-            'promotional_message': Capability(max_len=320),
-            'payment_description': Capability(max_len=48),
-            'customer_name': Capability(max_len=30),
-            'customer_id': Capability(max_len=28),
-            'customer_address': Capability(max_len=80),
-            'add_cash_value': Capability(min_size=0.1, digits=12, decimals=2),
-            'remove_cash_value': Capability(min_size=0.1, digits=12, decimals=2),
-            }
+        return dict(
+            item_code=Capability(max_len=13),
+            item_id=Capability(digits=4),
+            items_quantity=Capability(min_size=1, digits=4, decimals=3),
+            item_price=Capability(digits=6, decimals=2),
+            item_description=Capability(max_len=29),
+            payment_value=Capability(digits=12, decimals=2),
+            promotional_message=Capability(max_len=320),
+            payment_description=Capability(max_len=48),
+            customer_name=Capability(max_len=30),
+            customer_id=Capability(max_len=28),
+            customer_address=Capability(max_len=80),
+            add_cash_value=Capability(min_size=0.1, digits=12, decimals=2),
+            remove_cash_value=Capability(min_size=0.1, digits=12, decimals=2),
+            )
 
     def get_constants(self):
         return self._consts
 
     def query_status(self):
-        return '\x02\x05\x00\x1b#(f\x00'
+        return self._create_packet(chr(CMD_STATUS))
 
     def status_reply_complete(self, reply):
         return len(reply) == 23
