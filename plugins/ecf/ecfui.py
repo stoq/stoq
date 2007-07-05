@@ -31,9 +31,8 @@ from stoqlib.domain.events import (SaleConfirmEvent, TillAddCashEvent,
                                    TillCloseEvent)
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
-from stoqlib.gui.base.dialogs import run_dialog, get_current_toplevel
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.events import StartApplicationEvent, CouponCreatedEvent
-from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -61,16 +60,6 @@ class ECFUI(object):
         TillRemoveCashEvent.connect(self._on_TillRemoveCash)
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         CouponCreatedEvent.connect(self._on_CouponCreatedEvent)
-
-        self._till_open_action = gtk.Action(
-            'TillOpen', _('Open Till...'), None, None)
-        self._till_open_action.connect(
-            'activate', self._on_TillOpen__activate)
-
-        self._till_close_action = gtk.Action(
-            'TillClose', _('Close Till...'), None, None)
-        self._till_close_action.connect(
-            'activate', self._on_TillClose__activate)
 
         self._till_summarize_action = gtk.Action(
             'Summary', _('Summary'), None, None)
@@ -143,13 +132,13 @@ class ECFUI(object):
 
         ui_string = """<ui>
           <menubar name="menubar">
-            <menu action="ECFMenu">
-              <menuitem action="TillOpen" name="TillOpen"/>
-              <menuitem action="TillClose" name="TillClose"/>
-              <menuitem action="CancelLastDocument" name="CancelLastDocument"/>
-              <menuitem action="Summary" name="Summary"/>
-              <menuitem action="ReadMemory" name="ReadMemory"/>
-            </menu>
+            <placeholder name="PluginMenus">
+              <menu action="ECFMenu">
+                <menuitem action="CancelLastDocument" name="CancelLastDocument"/>
+                <menuitem action="Summary" name="Summary"/>
+                <menuitem action="ReadMemory" name="ReadMemory"/>
+              </menu>
+            </placeholder>
           </menubar>
         </ui>"""
 
@@ -161,8 +150,6 @@ class ECFUI(object):
             ('CancelLastDocument', None, _('Cancel Last Document'),
              None, None, self._on_CancelLastDocument__activate),
             ])
-        ag.add_action_with_accel(self._till_open_action, '<Control>F6')
-        ag.add_action_with_accel(self._till_close_action, '<Control>F7')
         ag.add_action_with_accel(self._till_summarize_action, '<Control>F11')
 
         uimanager.insert_action_group(ag, 0)
@@ -190,17 +177,10 @@ class ECFUI(object):
     def _update_ui_actions(self):
         try:
             has_till = Till.get_current(self.conn) is not None
-            till_close = has_till
-            till_open = not has_till
             till_summarize = has_till
         except TillError:
-            has_till = False
-            till_close = True
-            till_open = False
             till_summarize = False
 
-        self._till_open_action.set_sensitive(till_open)
-        self._till_close_action.set_sensitive(till_close)
         self._till_summarize_action.set_sensitive(till_summarize)
 
     def _open_till(self, till):
@@ -324,20 +304,6 @@ class ECFUI(object):
 
         self._printer.summarize()
 
-    def _show_open_till_dialog(self):
-        parent = get_current_toplevel()
-        helper = FiscalPrinterHelper(self.conn, parent)
-        helper.open_till()
-        self._update_ui_actions()
-
-    def _show_close_till_dialog(self):
-        if not yesno(_(u"You can only close the till once per day. "
-                       "\n\nClose the till?"),
-                    gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
-            helper = FiscalPrinterHelper(self.conn)
-            helper.close_till()
-        self._update_ui_actions()
-
     #
     # Events
     #
@@ -391,12 +357,6 @@ class ECFUI(object):
 
     def _on_coupon__cancel(self, action):
         self._cancel_last_document()
-
-    def _on_TillOpen__activate(self, action):
-        self._show_open_till_dialog()
-
-    def _on_TillClose__activate(self, action):
-        self._show_close_till_dialog()
 
     def _on_TillSummary__activate(self, action):
         self._till_summarize()
