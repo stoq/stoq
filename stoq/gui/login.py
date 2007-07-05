@@ -50,7 +50,7 @@ log = Logger('stoq.config')
 class SelectApplicationsDialog(GladeSlaveDelegate):
     gladefile = "SelectApplicationsSlave"
     title = _('Choose application')
-    size = (520, 340)
+    size = (-1, 350)
 
     def __init__(self, appname=None, applications=None):
         """
@@ -84,7 +84,7 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
     def _setup_applist(self):
         self.klist.get_treeview().set_headers_visible(False)
         self.klist.set_columns(self._get_columns())
-
+        self.klist.set_size_request(200, -1)
         self.klist.extend(self.applications)
 
         if not len(self.klist):

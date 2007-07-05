@@ -3,8 +3,6 @@
 <glade-interface domain="stoq">
     <widget class="GtkWindow" id="SelectApplicationsSlave">
         <property name="border_width">6</property>
-        <property name="default_height">250</property>
-        <property name="default_width">440</property>
         <child>
             <widget class="GtkHBox" id="hbox1">
                 <property name="visible">True</property>
@@ -31,6 +29,8 @@
                             </widget>
                             <packing>
                                 <property name="position">1</property>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
                             </packing>
                         </child>
                     </widget>
