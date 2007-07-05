@@ -36,7 +36,6 @@ from kiwi.log import Logger
 from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
 from stoqdrivers.enum import UnitType
-from stoqlib.exceptions import StoqlibError
 from stoqlib.database.runtime import (new_transaction, get_current_user,
                                       rollback_and_begin, finish_transaction)
 from stoqlib.domain.interfaces import IDelivery, ISalesPerson
@@ -45,7 +44,9 @@ from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.service import ServiceSellableItem, Service
+from stoqlib.domain.till import Till
 from stoqlib.drivers.scale import read_scale_info
+from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
@@ -92,6 +93,7 @@ class POSApp(AppWindow):
         self._printer = FiscalPrinterHelper(
             self.conn, parent=self.get_toplevel())
         self._scale_settings = DeviceSettings.get_scale_settings(self.conn)
+        self._check_till()
         self._setup_widgets()
         self._setup_proxies()
         self._clear_order()
@@ -116,6 +118,9 @@ class POSApp(AppWindow):
             self.delivery_button.hide()
         if self.param.POS_FULL_SCREEN:
             self.get_toplevel().fullscreen()
+        if self.param.POS_SEPARATE_CASHIER:
+            for proxy in self.TillMenu.get_proxies():
+                proxy.hide()
         if self.param.CONFIRM_SALES_ON_TILL:
             button_set_image_with_label(self.checkout_button,
                                         'confirm24px.png', _('Close'))
@@ -186,6 +191,20 @@ class POSApp(AppWindow):
             self.sellables.select(self.sellables[0])
 
     def _update_widgets(self):
+        try:
+            has_till = Till.get_current(self.conn) is not None
+            till_close = has_till
+            till_open = not has_till
+            till_summarize = has_till and self._coupon is None
+        except TillError:
+            has_till = False
+            till_close = True
+            till_open = False
+            till_summarize = False
+
+        self.TillOpen.set_sensitive(till_open and self.sale is None)
+        self.TillClose.set_sensitive(till_close and self.sale is None)
+
         has_sellables = len(self.sellables) >= 1
         self.set_sensitive((self.checkout_button, self.remove_item_button,
                             self.PrintOrder, self.NewDelivery,
@@ -303,6 +322,15 @@ class POSApp(AppWindow):
             self.sellables.update(item)
 
     def _new_order(self):
+        try:
+            till = Till.get_current(self.conn)
+            if till is None:
+                warning(_(u"You need open the till before start doing sales."))
+                return
+        except TillError:
+            if self._check_till():
+                return
+
         if not ISalesPerson(get_current_user(self.conn).person, None):
             warning(_(u"You can't start a new sale, since you are not a "
                       "salesperson."))
@@ -378,6 +406,22 @@ class POSApp(AppWindow):
         self.conn.commit()
         service = type(service).get(service.id, connection=self.conn)
         self._update_added_item(service)
+
+    def _check_till(self):
+        if self._printer.needs_closing():
+            if not self._close_till(can_remove_cash=False):
+                return False
+        return True
+
+    def _open_till(self):
+         if self._printer.open_till():
+             self._update_widgets()
+
+    def _close_till(self, can_remove_cash=True):
+        retval = self._printer.close_till(can_remove_cash)
+        if retval:
+            self._update_widgets()
+        return retval
 
     def _checkout(self):
         if self.param.CONFIRM_SALES_ON_TILL:
@@ -527,6 +571,15 @@ class POSApp(AppWindow):
 
     def on_NewDelivery__activate(self, action):
         self._add_delivery()
+
+    def on_TillClose__activate(self, action):
+        if not yesno(_(u"You can only close the till once per day. "
+                       "\n\nClose the till?"),
+                     gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
+            self._close_till()
+
+    def on_TillOpen__activate(self, action):
+         self._open_till()
 
     #
     # Other callbacks
