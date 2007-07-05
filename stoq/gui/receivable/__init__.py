@@ -26,8 +26,8 @@ import gettext
 
 _ = gettext.gettext
 
-application = _('Receivable')
-description = _("""Receivable application.""")
+application = _('Accounts Receivable')
+description = _("""Accounts Receivable application.""")
 
 icon_name = 'stoq-bills'
 

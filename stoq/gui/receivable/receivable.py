@@ -74,7 +74,7 @@ class NextMonthOption(DateSearchOption):
 
 class ReceivableApp(SearchableAppWindow):
 
-    app_name = _('Receivable')
+    app_name = _('Accounts Receivable')
     app_icon_name = 'stoq-bills'
     gladefile = 'receivable'
 
