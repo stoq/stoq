@@ -158,6 +158,8 @@ class ECFUI(object):
             ('ECFMenu', None, _('ECF')),
             ('ReadMemory', None, _('Read Memory'),
              '<Control>F9', None, self._on_ReadMemory__activate),
+            ('CancelLastDocument', None, _('Cancel Last Document'),
+             None, None, self._on_CancelLastDocument__activate),
             ])
         ag.add_action_with_accel(self._till_open_action, '<Control>F6')
         ag.add_action_with_accel(self._till_close_action, '<Control>F7')
@@ -401,6 +403,9 @@ class ECFUI(object):
 
     def _on_ReadMemory__activate(self, action):
         run_dialog(FiscalMemoryDialog, None, self.conn)
+
+    def _on_CancelLastDocument__activate(self, action):
+        self._cancel_last_document()
 
     def _on_ConfigurePrinter__activate(self, action):
         run_dialog(ECFListDialog, None)
