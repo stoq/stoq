@@ -22,6 +22,8 @@
 ## Author(s):   Johan Dahlin            <jdahlin@async.com.br>
 ##
 
+import sys
+
 import gobject
 import gtk
 from kiwi.argcheck import argcheck
@@ -156,6 +158,12 @@ class FiscalCoupon(gobject.GObject):
         self._sale = sale
         self._item_ids = {}
 
+    def emit(self, signal, *args):
+        sys.last_value = None
+        gobject.GObject.emit(self, signal, *args)
+        if sys.last_value is not None:
+            raise sys.last_value
+
     #
     # IContainer implementation
     #
@@ -267,10 +275,12 @@ class FiscalCoupon(gobject.GObject):
             return True
 
         try:
-            return self.emit('add-payments', self._sale)
+            self.emit('add-payments', self._sale)
         except DeviceError, e:
             warning(_(u"It is not possible to add payments to the coupon"),
                     str(e))
+
+        return True
 
     def close(self):
         # XXX: Remove this when bug #2827 is fixed.
