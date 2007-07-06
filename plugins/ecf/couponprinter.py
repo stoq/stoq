@@ -252,7 +252,7 @@ class Coupon(object):
                                      item.quantity, unit,
                                      unit_desc=unit_desc)
 
-    @argcheck(ASellableItem)
+    @argcheck(int)
     def remove_item(self, item_id):
         self._driver.cancel_item(item_id)
 
