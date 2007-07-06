@@ -33,11 +33,15 @@ from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
 
 from stoqlib.database.runtime import get_current_station
+from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
+                                   TillAddCashEvent, TillRemoveCashEvent)
 from stoqlib.domain.interfaces import IEmployee
 from stoqlib.domain.person import Person
-from stoqlib.domain.till import Till, TillEntry
+from stoqlib.domain.till import Till
+from stoqlib.exceptions import TillError
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.message import warning
 
 _ = stoqlib_gettext
 
@@ -49,6 +53,7 @@ class _TillOpeningModel(object):
 
     def get_balance(self):
         return currency(self.till.get_balance() + self.value)
+
 
 class _TillClosingModel(object):
     def __init__(self, till, value):
@@ -64,24 +69,21 @@ class _TillClosingModel(object):
     def get_total_balance(self):
         return self.till.get_balance()
 
-class CashAdvanceInfo(Settable):
-    employee = None
-    payment = None
-    open_date = None
 
 class _BaseCashModel(object):
-    def __init__(self, entry):
-        self.entry = entry
+    def __init__(self, model):
+        self.model = model
 
     def get_balance(self):
-        return currency(self.entry.till.get_balance() - self.value)
+        return currency(self.model.till.get_balance() - self.value)
 
     def _get_value(self):
-        return self.entry.value
+        return self.model.value
 
     def _set_value(self, value):
-        self.entry.value = value
+        self.model.value = value
     value = property(_get_value, _set_value)
+
 
 class TillOpeningEditor(BaseEditor):
     """
@@ -118,8 +120,15 @@ class TillOpeningEditor(BaseEditor):
     def on_confirm(self):
         till = self.model.till
 
+        try:
+            TillOpenEvent.emit(till=till)
+        except TillError, e:
+            warning(str(e))
+            return None
+
         value = self.proxy.model.value
         if value:
+            TillAddCashEvent.emit(till=till, value=value)
             till.add_credit_entry(value,
                             (_(u'Initial Cash amount of %s')
                              % till.opening_date.strftime('%x')))
@@ -139,6 +148,7 @@ class TillOpeningEditor(BaseEditor):
 
     def after_value__content_changed(self, entry):
         self.proxy.update('balance')
+
 
 class TillClosingEditor(BaseEditor):
     title = _(u'Closing Opened Till')
@@ -169,19 +179,25 @@ class TillClosingEditor(BaseEditor):
     def create_model(self, trans):
         return _TillClosingModel(till=self.till, value=currency(0))
 
-    def on_confirm(self):
-        self.till.close_till(self.model.value)
-
-        # The callsite is responsible for interacting with
-        # the fiscal printer
-        return self.model
-
     def setup_proxies(self):
         if not self.till.get_balance():
             self.value.set_sensitive(False)
         self.proxy = self.add_proxy(self.model,
                                     TillClosingEditor.proxy_widgets)
 
+    def on_confirm(self):
+        till = self.model.till
+        try:
+            TillCloseEvent.emit(till=till)
+        except TillError, e:
+            warning(str(e))
+            return None
+
+        till.close_till(self.model.value)
+
+        # The callsite is responsible for interacting with
+        # the fiscal printer
+        return self.model
 
     #
     # Kiwi handlers
@@ -253,6 +269,7 @@ class RemoveCashSlave(BaseCashSlave):
             return ValidationError(
                 _("Value cannot be more than the total Till balance"))
 
+
 class CashAdvanceEditor(BaseEditor):
     """
     An editor which extends BashCashSlave to include.
@@ -260,7 +277,7 @@ class CashAdvanceEditor(BaseEditor):
     """
 
     model_name = _(u'Cash Advance')
-    model_type = CashAdvanceInfo
+    model_type = Settable
     gladefile = 'CashAdvanceEditor'
 
     def _get_employee(self):
@@ -281,15 +298,15 @@ class CashAdvanceEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        till = Till.get_current(conn)
-        assert till
-        self.payment = till.add_debit_entry(currency(0))
-
-        return CashAdvanceInfo(payment=self.payment)
+        return Settable(employee=None,
+                        payment=None,
+                        open_date=None,
+                        till=Till.get_current(self.conn),
+                        value=currency(0))
 
     def setup_slaves(self):
         self.cash_slave = RemoveCashSlave(self.conn,
-                                          _BaseCashModel(self.payment))
+                                          _BaseCashModel(self.model))
         self.cash_slave.value.connect('content-changed',
                                       self._on_cash_slave__value_changed)
         self.attach_slave("base_cash_holder", self.cash_slave)
@@ -301,12 +318,13 @@ class CashAdvanceEditor(BaseEditor):
     def on_confirm(self):
         valid = self.cash_slave.on_confirm()
         if valid:
-            self.model.description = (_(u'Cash advance paid to employee: %s')
-                                     % self._get_employee_name())
-            self.payment.description = self.model.description
-            self.model.employee = self._get_employee()
-            self.payment.value = self.payment.value
-            self.model.value = abs(self.payment.value)
+            till = self.model.till
+            value = abs(self.model.value)
+            assert till
+            TillRemoveCashEvent.emit(till=till, value=value)
+            till.add_debit_entry(value,
+                                 (_(u'Cash advance paid to employee: %s')
+                                  % self._get_employee_name()))
 
             return self.model
 
@@ -327,7 +345,7 @@ class CashOutEditor(BaseEditor):
     """
 
     model_name = _(u'Cash Out')
-    model_type = TillEntry
+    model_type = Settable
     gladefile = 'CashOutEditor'
     title = _(u'Reverse Payment')
 
@@ -341,14 +359,9 @@ class CashOutEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        till = Till.get_current(conn)
-        assert till
-
-        # FIXME: Implement and use IDescribable on PersonAdaptToBranch
-        description = (_(u'Cash out for station "%s" of branch "%s"')
-                       % (till.station.name,
-                          till.station.branch.person.name))
-        return till.add_debit_entry(currency(0), description)
+        return Settable(value=currency(0),
+                        reason='',
+                        till=Till.get_current(conn))
 
     def setup_slaves(self):
         self.cash_slave = RemoveCashSlave(
@@ -363,22 +376,18 @@ class CashOutEditor(BaseEditor):
     def on_confirm(self):
         valid = self.cash_slave.on_confirm()
         if valid:
-            reason = self.reason.get_text()
-            if reason:
-                # %s is the description used when removing money
-                payment_description = _(u'Cash out: %s') % reason
-            else:
-                payment_description = _(u'Cash out')
-            self.model.description = payment_description
+            value = abs(self.model.value)
+            till = self.model.till
+            assert till
+            TillRemoveCashEvent.emit(till=till, value=value)
+            return till.add_debit_entry(
+                value, (_(u'Cash out: %s') % (self.reason.get_text(),)))
 
         return valid
 
-    #
-    # Callbacks
-    #
-
     def _on_cash_slave__value_changed(self, entry):
         self.cash_slave.model.value = -abs(self.cash_slave.model.value)
+
 
 class CashInEditor(BaseEditor):
     """
@@ -387,7 +396,7 @@ class CashInEditor(BaseEditor):
     """
 
     model_name = _(u'Cash In')
-    model_type = TillEntry
+    model_type = Settable
     gladefile = 'CashOutEditor'
 
     def __init__(self, conn):
@@ -400,14 +409,9 @@ class CashInEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        till = Till.get_current(conn)
-        assert till
-
-        # FIXME: Implement and use IDescribable on PersonAdaptToBranch
-        description = (_(u'Cash in for station "%s" of branch "%s"')
-                       % (till.station.name,
-                          till.station.branch.person.name))
-        return till.add_credit_entry(currency(0), description)
+        return Settable(value=currency(0),
+                        reason='',
+                        till=Till.get_current(conn))
 
     def setup_slaves(self):
         self.cash_slave = BaseCashSlave(
@@ -420,13 +424,13 @@ class CashInEditor(BaseEditor):
     def on_confirm(self):
         valid = self.cash_slave.on_confirm()
         if valid:
-            reason = self.reason.get_text()
-            if reason:
-                # %s is the description used when removing money
-                payment_description = _(u'Cash in: %s') % reason
-            else:
-                payment_description = _(u'Cash in')
-            self.model.description = payment_description
+            till = self.model.till
+            assert till
+            TillAddCashEvent.emit(till=till,
+                                  value=self.model.value)
+            return till.add_credit_entry(
+                self.model.value,
+                (_(u'Cash in: %s') % (self.reason.get_text(),)))
 
         return valid
 
