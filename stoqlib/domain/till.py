@@ -38,8 +38,6 @@ from kiwi.log import Logger
 from stoqlib.database.columns import PriceCol
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
-from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
-                                   TillAddCashEvent, TillRemoveCashEvent)
 from stoqlib.domain.interfaces import IOutPayment, IInPayment
 from stoqlib.exceptions import TillError
 from stoqlib.lib.translation import stoqlib_gettext
@@ -173,8 +171,6 @@ class Till(Domain):
 
         self.initial_cash_amount = initial_cash_amount
 
-        value = TillOpenEvent.emit(till=self)
-
         self.opening_date = datetime.datetime.now()
         self.status = Till.STATUS_OPEN
 
@@ -201,8 +197,6 @@ class Till(Domain):
 
         self.final_cash_amount = self.get_balance()
 
-        TillCloseEvent.emit(till=self)
-
         self.closing_date = datetime.datetime.now()
         self.status = Till.STATUS_CLOSED
 
@@ -213,9 +207,9 @@ class Till(Domain):
         @rtype: L{TillEntry}
         """
         if IInPayment(payment, None):
-            value = abs(payment.value)
+            value = payment.value
         elif IOutPayment(payment, None):
-            value = -abs(payment.value)
+            value = -payment.value
         else:
             raise AssertionError(payment)
 
@@ -229,11 +223,9 @@ class Till(Domain):
         @returns: till entry representing the added debit
         @rtype: L{TillEntry}
         """
-        value = -abs(value)
-        if value:
-            TillRemoveCashEvent.emit(till=self, value=value)
+        assert value >= 0
 
-        return self._add_till_entry(value, reason)
+        return self._add_till_entry(-value, reason)
 
     def add_credit_entry(self, value, reason=u""):
         """
@@ -243,9 +235,7 @@ class Till(Domain):
         @returns: till entry representing the added credit
         @rtype: L{TillEntry}
         """
-        value = abs(value)
-        if value:
-            TillAddCashEvent.emit(till=self, value=value)
+        assert value >= 0
 
         return self._add_till_entry(value, reason)
 
@@ -324,6 +314,7 @@ class Till(Domain):
             return results[-1]
 
     def _add_till_entry(self, value, description, payment=None):
+        assert value != 0
         return TillEntry(value=value,
                          description=description,
                          payment=payment,
