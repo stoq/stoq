@@ -23,6 +23,7 @@
 ##
 
 import sys
+import traceback
 
 import gobject
 import gtk
@@ -160,9 +161,12 @@ class FiscalCoupon(gobject.GObject):
 
     def emit(self, signal, *args):
         sys.last_value = None
-        gobject.GObject.emit(self, signal, *args)
+        retval = gobject.GObject.emit(self, signal, *args)
         if sys.last_value is not None:
+            traceback.print_exception(sys.last_type, sys.last_value,
+                                      sys.last_traceback)
             raise sys.last_value
+        return retval
 
     #
     # IContainer implementation
@@ -187,6 +191,7 @@ class FiscalCoupon(gobject.GObject):
 
         log.info("adding item %r to coupon" % (item,))
         item_id = self.emit('add-item', item)
+
         ids = self._item_ids.setdefault(item, [])
         ids.append(item_id)
         return item_id

@@ -274,6 +274,7 @@ class ECFUI(object):
             return
 
         coupon = self._printer.create_coupon(fiscalcoupon)
+        assert coupon
         for signal, callback in [
             ('open', self._on_coupon__open),
             ('identify-customer', self._on_coupon__identify_customer),
@@ -347,8 +348,8 @@ class ECFUI(object):
     def _on_coupon__add_item(self, coupon, item):
         return coupon.add_item(item)
 
-    def _on_coupon__remove_item(self, coupon, item):
-        coupon.remove_item(item)
+    def _on_coupon__remove_item(self, coupon, item_id):
+        coupon.remove_item(item_id)
 
     def _on_coupon__add_payments(self, coupon, sale):
         coupon.add_payments(sale)
