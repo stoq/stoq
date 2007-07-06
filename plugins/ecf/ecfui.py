@@ -367,7 +367,7 @@ class ECFUI(object):
         self._till_summarize()
 
     def _on_ReadMemory__activate(self, action):
-        run_dialog(FiscalMemoryDialog, None, self.conn)
+        run_dialog(FiscalMemoryDialog, None, self.conn, self._printer)
 
     def _on_CancelLastDocument__activate(self, action):
         self._cancel_last_document()
