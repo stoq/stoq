@@ -31,14 +31,14 @@ from kiwi.argcheck import argcheck
 from kiwi.log import Logger
 from zope.interface import implements
 from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
-from stoqdrivers.exceptions import DriverError, CouponNotOpenError
+from stoqdrivers.exceptions import (DriverError, CouponNotOpenError,
+                                    CancelItemError)
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        IContainer)
 from stoqlib.domain.payment.methods import CheckPM, MoneyPM
-from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import ASellableItem
 from stoqlib.exceptions import DeviceError
 from stoqlib.lib.defaults import get_all_methods_dict, get_method_names
@@ -96,15 +96,8 @@ class CouponPrinter(object):
             self._driver.cancel()
         except CouponNotOpenError:
             return False
-
-        trans = new_transaction()
-
-        sale = Sale.get_last_confirmed(trans)
-        if not sale:
+        except CancelItemError:
             return False
-        sale.return_(sale.create_sale_return_adapter())
-
-        trans.commit(close=True)
 
         return True
 
