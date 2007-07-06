@@ -28,7 +28,6 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -43,8 +42,9 @@ class FiscalMemoryDialog(BaseEditor):
                      'start_reductions_number',
                      'end_reductions_number')
 
-    def __init__(self, conn, model=None):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, conn, printer):
+        self._printer = printer
+        BaseEditor.__init__(self, conn, model=None)
         self._toggle_sensitivity(True)
 
     def _toggle_sensitivity(self, date):
@@ -63,13 +63,14 @@ class FiscalMemoryDialog(BaseEditor):
                                     FiscalMemoryDialog.proxy_widgets)
 
     def on_confirm(self):
-        printer = FiscalPrinterHelper(self.conn, parent=self.get_toplevel())
         if self.date_radio_button.get_active():
-            printer.memory_by_date(self.model.start_date,
-                                   self.model.end_date)
+            self._printer.memory_by_date(
+                self.model.start_date,
+                self.model.end_date)
         else:
-            printer.memory_by_reductions(self.model.start_reductions_number,
-                                         self.model.end_reductions_number)
+            self._printer.memory_by_reductions(
+                self.model.start_reductions_number,
+                self.model.end_reductions_number)
 
     def create_model(self, conn):
         return Settable(start_date=datetime.date.today(),
