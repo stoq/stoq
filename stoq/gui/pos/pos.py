@@ -38,13 +38,14 @@ from kiwi.python import Settable
 from stoqdrivers.enum import UnitType
 from stoqlib.database.runtime import (new_transaction, get_current_user,
                                       rollback_and_begin, finish_transaction)
-from stoqlib.domain.interfaces import IDelivery, ISalesPerson
+from stoqlib.domain.interfaces import IDelivery, ISalesPerson, IPaymentGroup
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.service import ServiceSellableItem, Service
 from stoqlib.domain.till import Till
+from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.lib.message import info, warning, yesno
@@ -195,12 +196,10 @@ class POSApp(AppWindow):
             has_till = Till.get_current(self.conn) is not None
             till_close = has_till
             till_open = not has_till
-            till_summarize = has_till and self._coupon is None
         except TillError:
             has_till = False
             till_close = True
             till_open = False
-            till_summarize = False
 
         self.TillOpen.set_sensitive(till_open and self.sale is None)
         self.TillClose.set_sensitive(till_close and self.sale is None)
@@ -430,6 +429,15 @@ class POSApp(AppWindow):
             if self.run_dialog(ConfirmSaleWizard, self.conn, self.sale):
                 if not self._finish_coupon():
                     return
+
+                self.sale.confirm()
+
+                if self.sale.paid_with_money():
+                    self.sale.set_paid()
+
+                print_cheques_for_payment_group(self.conn,
+                                                IPaymentGroup(self.sale))
+
             else:
                 rollback_and_begin(self.conn)
                 return
