@@ -45,7 +45,7 @@ from stoqdrivers.exceptions import (DriverError, OutofPaperError, PrinterError,
 from stoqdrivers.interfaces import ICouponPrinter
 from stoqdrivers.printers.capabilities import Capability
 from stoqdrivers.printers.base import BaseDriverConstants
-from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
+from stoqdrivers.enum import TaxType, UnitType
 from stoqdrivers.translation import stoqdrivers_gettext
 
 _ = lambda msg: stoqdrivers_gettext(msg)
@@ -75,7 +75,9 @@ CMD_ADD_PAYMENT = 72
 # Page 51
 REGISTER_LAST_ITEM_ID = 12
 REGISTER_TOTALIZERS = 29
+REGISTER_PAYMENT_METHODS = 32
 REGISTER_SERIAL = 40
+
 NAK = 21
 ACK = 6
 STX = 2
@@ -86,8 +88,6 @@ class MP25Constants(BaseDriverConstants):
         UnitType.METERS:      'm ',
         UnitType.LITERS:      'Lt',
         UnitType.EMPTY:       '  ',
-        PaymentMethodType.MONEY:         '01',
-        PaymentMethodType.CHECK:        '01'
         }
 
 
@@ -310,6 +310,8 @@ class MP25(SerialBase):
         elif reg == REGISTER_LAST_ITEM_ID:
             fmt = '2s'
             bcd = True
+        elif reg == REGISTER_PAYMENT_METHODS:
+            fmt = 'b340s'
         else:
             raise NotImplementedError(reg)
 
@@ -532,3 +534,12 @@ class MP25(SerialBase):
             ])
 
         return constants
+
+    def get_payment_constants(self):
+        unused, status = self._read_register(REGISTER_PAYMENT_METHODS)
+        methods = []
+        for i in range(20):
+            method = status[i*16:i*16+16]
+            if method != '\x00' * 16:
+                methods.append(('%02d' % (i+1), method.strip()))
+        return methods

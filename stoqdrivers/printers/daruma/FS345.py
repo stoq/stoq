@@ -99,7 +99,7 @@ CMD_GET_TAX_CODES = 231
 # [ESC] 232 Leitura do clichê do proprietário
 # [ESC] 234 Retransmissão de mensagens da IF
 CMD_GET_IDENTIFIER = 236
-# [ESC] 238 Leitura das mensagens personalizadas
+CMD_GET_PERSONAL_MESSAGES = 238
 CMD_GET_DOCUMENT_STATUS = 239
 CMD_GET_FISCAL_REGISTRIES = 240
 CMD_TOTALIZE_COUPON = 241
@@ -133,8 +133,6 @@ class FS345Constants(BaseDriverConstants):
         UnitType.METERS:      'm ',
         UnitType.LITERS:      'Lt',
         UnitType.EMPTY:       '  ',
-        PaymentMethodType.MONEY:         'A',
-        PaymentMethodType.CHECK:        'B'
         }
 
 class FS345(SerialBase):
@@ -611,3 +609,16 @@ class FS345(SerialBase):
             ])
 
         return constants
+
+    def get_payment_constants(self):
+        # Page 48
+        messages = self.send_command(CMD_GET_PERSONAL_MESSAGES)
+
+        raw = messages[708:]
+        methods = []
+        method_letter = 'ABCDEFGHIJKLMNOP'
+        for i in range(16):
+            method = raw[i*18:i*18+18]
+            if method[0] == 'V':
+                methods.append((method_letter[i], method[1:].strip()))
+        return methods

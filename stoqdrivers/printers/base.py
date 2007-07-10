@@ -33,8 +33,8 @@ from kiwi.python import namedAny
 
 from stoqdrivers import printers
 from stoqdrivers.interfaces import (ICouponPrinter,
-                                            IDriverConstants,
-                                            IChequePrinter)
+                                    IDriverConstants,
+                                    IChequePrinter)
 from stoqdrivers.base import BaseDevice
 from stoqdrivers.enum import DeviceType
 from stoqdrivers.utils import get_module_list
