@@ -336,6 +336,9 @@ class FS345(SerialBase):
         rv = self.send_command(CMD_DESCRIBE_PAYMENT_FORM,
                                '%c%012d%s\xff' % (pm, int(float(value) * 1e2),
                                                   description[:48]))
+        # FIXME: Why and when does this happen?
+        if rv[0] == 'N':
+            rv = rv[8:]
         return float(rv) / 1e2
 
     def _add_voucher(self, type, value):
