@@ -100,7 +100,7 @@ class _DeviceConstantEditor(BaseEditor):
                               constant_type=self.constant_type,
                               constant_value=None,
                               constant_name="Unnamed",
-                              constant_enum=TaxType.CUSTOM,
+                              constant_enum=int(TaxType.CUSTOM),
                               device_value=None)
 
     def on_confirm(self):
