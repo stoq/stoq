@@ -157,9 +157,18 @@ class FS345(SerialBase):
 
     def send_command(self, command, extra=''):
         raw = chr(command) + extra
-        retval = self.writeline(raw)
-        if retval.startswith(':E'):
-            self.handle_error(retval, raw)
+        while True:
+            retval = self.writeline(raw)
+            if retval.startswith(':E'):
+                try:
+                    self.handle_error(retval, raw)
+                except DriverError, e:
+                    if e.code == 42:
+                        self.send_command(CMD_GET_X)
+                        continue
+                    raise
+            break
+
         return retval[1:]
 
     # Status
@@ -229,33 +238,34 @@ class FS345(SerialBase):
         error = int(error_value[2:])
         # Page 61-62
         if error == 39:
-            raise DriverError('Bad parameters: %r'  % raw)
+            raise DriverError('Bad parameters: %r'  % raw, error)
         elif error == 10:
-            raise CouponOpenError(_("Document is already open"))
+            raise CouponOpenError(_("Document is already open"), error)
         elif error == 11:
-            raise CouponNotOpenError(_("Coupon is not open"))
+            raise CouponNotOpenError(_("Coupon is not open"), error)
         elif error == 12:
-            raise CouponNotOpenError(_("There's no open document to cancel"))
+            raise CouponNotOpenError(_("There's no open document to cancel"),
+                                     error)
         elif error == 15:
             raise CancelItemError(_("There is no such item in "
-                                    "the coupon"))
+                                    "the coupon"), error)
         elif error == 16:
-            raise DriverError("Bad discount/markup parameter")
+            raise DriverError("Bad discount/markup parameter", error)
         elif error == 21:
-            log.warning(_('No paper'))
+            log.warning(_('No paper'), error)
         elif error == 22:
             raise DriverError(
-                "Reduce Z was already sent today, try again tomorrow")
+                "Reduce Z was already sent today, try again tomorrow", error)
         elif error == 23:
-            raise DriverError("Bad description: %r" % raw)
+            raise DriverError("Bad description: %r" % raw, error)
         elif error == 24:
-            raise DriverError("Bad unit specified: %r" % raw)
+            raise DriverError("Bad unit specified: %r" % raw, error)
         elif error == 42:
-            raise DriverError("Read X has not been sent yet")
+            raise DriverError("Read X has not been sent yet", error)
         elif error == 45:
-            raise DriverError("Bad numeric string")
+            raise DriverError("Bad numeric string", error)
         else:
-            raise DriverError("Unhandled error: %d" % error)
+            raise DriverError("Unhandled error: %d" % error, error)
 
     # Information / debugging
 
