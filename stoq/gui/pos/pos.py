@@ -290,6 +290,7 @@ class POSApp(AppWindow):
                        self.CancelOrder):
             widget.set_sensitive(False)
         self.sale = None
+        self._coupon = None
         self.order_proxy.set_model(None, relax_type=True)
         self._reset_quantity_proxy()
         self.barcode.set_text('')
@@ -426,26 +427,33 @@ class POSApp(AppWindow):
         if self.param.CONFIRM_SALES_ON_TILL:
             self.sale.order()
         else:
-            if self.run_dialog(ConfirmSaleWizard, self.conn, self.sale):
-                if not self._finish_coupon():
-                    return
-
-                self.sale.confirm()
-
-                if self.sale.paid_with_money():
-                    self.sale.set_paid()
-
-                print_cheques_for_payment_group(self.conn,
-                                                IPaymentGroup(self.sale))
-
-            else:
+            if not self._confirm_order():
                 rollback_and_begin(self.conn)
+                self._clear_order()
                 return
 
         log.info("Checking out")
-        self._coupon = self.sale = None
         self.conn.commit()
         self._clear_order()
+
+
+    def _confirm_order(self):
+        retval = self.run_dialog(ConfirmSaleWizard, self.conn, self.sale)
+        if not retval:
+            return False
+
+        if not self._finish_coupon():
+            return False
+
+        self.sale.confirm()
+
+        if self.sale.paid_with_money():
+            self.sale.set_paid()
+
+        print_cheques_for_payment_group(self.conn,
+                                        IPaymentGroup(self.sale))
+
+        return True
 
     #
     # Coupon related
