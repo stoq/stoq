@@ -36,7 +36,6 @@ from kiwi.python import Settable
 from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.database.runtime import StoqlibTransaction
-from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
@@ -778,12 +777,6 @@ class ConfirmSaleWizard(_AbstractSaleWizard):
                 self.model.order()
 
     def finish(self):
-        self.model.confirm()
-
-        if self.model.paid_with_money():
-            self.model.set_paid()
-
-        print_cheques_for_payment_group(self.conn, self.payment_group)
         self.retval = True
         self.close()
 
