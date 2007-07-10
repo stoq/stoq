@@ -27,7 +27,7 @@ from kiwi.enums import ListType
 from kiwi.ui.widgets.list import Column
 from stoqdrivers.interfaces import ICouponPrinter
 from stoqdrivers.printers.base import get_supported_printers_by_iface
-from stoqdrivers.enum import TaxType
+from stoqdrivers.enum import PaymentMethodType, TaxType
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.sellable import SellableTaxConstant
@@ -202,6 +202,33 @@ class ECFEditor(BaseEditor):
                            device_value=device_value,
                            printer=model,
                            connection=self.conn)
+
+        # This is going to be ugly, most printers don't support
+        # a real constant for the payment methods, so we have to look
+        # at the description and guess
+        payment_enums = { 'dinheiro': PaymentMethodType.MONEY,
+                          'cheque': PaymentMethodType.CHECK,
+                          'boleto' : PaymentMethodType.BILL,
+                          'cartao credito' : PaymentMethodType.CREDIT_CARD,
+                          'cartao debito' : PaymentMethodType.CREDIT_CARD,
+                          'financeira' : PaymentMethodType.FINANCIAL,
+                          'vale compra' : PaymentMethodType.GIFT_CERTIFICATE
+                          }
+
+        for device_value, constant_name in driver.get_payment_constants():
+            lower = constant_name.lower()
+            payment_enum = payment_enums.get(lower)
+            if payment_enum is None:
+                continue
+
+            DeviceConstant(constant_enum=int(payment_enum),
+                           constant_name=constant_name,
+                           constant_type=DeviceConstant.TYPE_PAYMENT,
+                           constant_value=value,
+                           device_value=device_value,
+                           printer=model,
+                           connection=self.conn)
+
 
 class ECFListDialog(ModelListDialog):
     title = _('Fiscal Printers')
