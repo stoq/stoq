@@ -770,7 +770,12 @@ class ConfirmSaleWizard(_AbstractSaleWizard):
         _AbstractSaleWizard.__init__(self, conn, model)
 
         if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
-            self.model.order()
+            # This was added to allow us to work even if an error
+            # happened while adding a payment, where we already order
+            # but cannot confirm and are thrown back to the main
+            # POS interface
+            if self.model.can_order():
+                self.model.order()
 
     def finish(self):
         self.model.confirm()
