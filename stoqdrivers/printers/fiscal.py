@@ -170,8 +170,11 @@ class FiscalPrinter(BasePrinter):
 
     def cancel(self):
         log.info('coupon_cancel()')
-
-        return self._driver.coupon_cancel()
+        retval = self._driver.coupon_cancel()
+        self._has_been_totalized = False
+        self.payments_total_value = Decimal("0.0")
+        self.totalized_value = Decimal("0.0")
+        return retval
 
     @capcheck(int)
     def cancel_item(self, item_id):
@@ -199,6 +202,8 @@ class FiscalPrinter(BasePrinter):
         res = self._driver.coupon_close(
             self._format_text(promotional_message))
         self._has_been_totalized = False
+        self.payments_total_value = Decimal("0.0")
+        self.totalized_value = Decimal("0.0")
         return res
 
     def summarize(self):
