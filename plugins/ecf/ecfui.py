@@ -289,12 +289,12 @@ class ECFUI(object):
         return coupon
 
     def _cancel_last_document(self):
+        if not self._validate_printer():
+            return
+
         if yesno(
             _(u"Do you really want to cancel the last document?"),
             gtk.RESPONSE_NO, _(u"Not now"), _("Cancel Last Document")):
-            return
-
-        if not self._validate_printer():
             return
 
         cancelled = self._printer.cancel()
@@ -360,8 +360,8 @@ class ECFUI(object):
     def _on_coupon__close(self, coupon):
         return coupon.close()
 
-    def _on_coupon__cancel(self, action):
-        self._cancel_last_document()
+    def _on_coupon__cancel(self, coupon):
+        coupon.cancel()
 
     def _on_TillSummary__activate(self, action):
         self._till_summarize()
