@@ -226,7 +226,7 @@ class SellableEditor(BaseEditor):
 
     def ensure_sellable_unit(self):
         unit = self._sellable.unit
-        if unit.unit_index == -1:
+        if unit.unit_index == None:
             self._sellable.unit = None
         else:
             if unit.unit_index == UnitType.CUSTOM:
@@ -270,7 +270,7 @@ class SellableEditor(BaseEditor):
         primitive_units = SellableUnit.select(
             SellableUnit.q.unit_index != int(UnitType.CUSTOM),
             connection=self.conn)
-        items = [(_("No unit"), -1)]
+        items = [(_("No unit"), None)]
         items.extend([(obj.description, obj.unit_index)
                           for obj in primitive_units])
         items.append((_("Specify:"), int(UnitType.CUSTOM)))
