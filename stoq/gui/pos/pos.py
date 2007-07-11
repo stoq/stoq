@@ -285,24 +285,25 @@ class POSApp(AppWindow):
         self.barcode.grab_focus()
 
     def _clear_order(self):
-        log.info("Cancelling order")
+        log.info("Clearing order")
         self.sellables.clear()
         for widget in (self.search_box, self.list_vbox,
                        self.CancelOrder):
             widget.set_sensitive(False)
         self.sale = None
 
-        log.info("Cancelling coupon")
-        if not self.param.CONFIRM_SALES_ON_TILL:
-            if self._coupon:
-                self._coupon.cancel()
-        self._coupon = None
-
         self.order_proxy.set_model(None, relax_type=True)
         self._reset_quantity_proxy()
         self.barcode.set_text('')
         self.new_order_button.grab_focus()
         self._update_widgets()
+
+    def _cancel_coupon(self):
+        log.info("Cancelling coupon")
+        if not self.param.CONFIRM_SALES_ON_TILL:
+            if self._coupon:
+                self._coupon.cancel()
+        self._coupon = None
 
     def _delete_sellable_item(self, item):
         delivery = IDelivery(item, None)
@@ -374,6 +375,7 @@ class POSApp(AppWindow):
                          gtk.RESPONSE_NO,_(u"Go Back"), _(u"Cancel Order")):
                 return False
 
+        self._cancel_coupon()
         self._clear_order()
 
         return True
@@ -433,13 +435,13 @@ class POSApp(AppWindow):
         else:
             if not self._confirm_order():
                 rollback_and_begin(self.conn)
+                self._cancel_coupon()
                 self._clear_order()
                 return
 
         log.info("Checking out")
         self.conn.commit()
         self._clear_order()
-
 
     def _confirm_order(self):
         retval = self.run_dialog(ConfirmSaleWizard, self.conn, self.sale)
