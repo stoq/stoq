@@ -335,6 +335,7 @@ class POSApp(AppWindow):
             warning(_(u"You can't start a new sale, since you are not a "
                       "salesperson."))
             return
+
         if self._coupon is not None:
             if not self._cancel_order():
                 return
@@ -365,12 +366,13 @@ class POSApp(AppWindow):
             if yesno(_(u'The current order will be canceled, Confirm?'),
                          gtk.RESPONSE_NO,_(u"Go Back"), _(u"Cancel Order")):
                 return False
+
         log.info("Cancelling order")
-        self._clear_order()
         if not self.param.CONFIRM_SALES_ON_TILL:
             if self._coupon:
                 self._coupon.cancel()
-                self._coupon = None
+
+        self._clear_order()
 
         return True
 
@@ -442,8 +444,13 @@ class POSApp(AppWindow):
         if not retval:
             return False
 
-        if not self._finish_coupon():
-            return False
+        if self._coupon:
+            if not self._coupon.totalize():
+                return False
+            if not self._coupon.setup_payments():
+                return False
+            if not self._coupon.close():
+                return False
 
         self.sale.confirm()
 
@@ -482,16 +489,6 @@ class POSApp(AppWindow):
             return
 
         self._coupon.remove_item(sellable_item)
-
-    def _finish_coupon(self):
-        if self._coupon:
-            if not self._coupon.totalize():
-                return False
-            if not self._coupon.setup_payments():
-                return False
-            if not self._coupon.close():
-                return False
-        return True
 
     #
     # AppWindow Hooks
