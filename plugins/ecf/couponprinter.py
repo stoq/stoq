@@ -30,7 +30,7 @@ from decimal import Decimal
 from kiwi.argcheck import argcheck
 from kiwi.log import Logger
 from zope.interface import implements
-from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
+from stoqdrivers.enum import TaxType, UnitType
 from stoqdrivers.exceptions import (DriverError, CouponNotOpenError,
                                     CancelItemError)
 
@@ -38,7 +38,6 @@ from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        IContainer)
-from stoqlib.domain.payment.methods import CheckPM, MoneyPM
 from stoqlib.domain.sellable import ASellableItem
 from stoqlib.exceptions import DeviceError
 from stoqlib.lib.defaults import get_all_methods_dict, get_method_names
@@ -296,34 +295,16 @@ class Coupon(object):
         log.info("setting up payments for %r" % (sale,))
 
         group = IPaymentGroup(sale)
-        if group.default_method == PaymentMethodType.GIFT_CERTIFICATE:
-            self._driver.add_payment(PaymentMethodType.MONEY,
-                                     sale.get_total_sale_amount())
-            return True
 
         log.info("we have %d payments" % (group.get_items().count()),)
         all_methods = get_all_methods_dict().items()
         method_id = None
         for payment in group.get_items():
-            method = payment.method
-            if isinstance(method, (CheckPM, MoneyPM)):
-                if isinstance(method, CheckPM):
-                    method_id = PaymentMethodType.CHECK
-                else:
-                    method_id = PaymentMethodType.MONEY
-                self._driver.add_payment(method_id, payment.base_value)
-                continue
-            method_type = type(method)
-            method_id = None
-            for identifier, mtype in all_methods:
-                if method_type == mtype:
-                    if method_id is not None:
-                        raise TypeError(
-                            "There is the same identifier for two "
-                            "different payment method interfaces. "
-                            "The identifier is %d" % method_id)
-                    method_id = identifier
-            if method_id is None:
+            method_type = type(payment.method)
+            for method_id, mtype in all_methods:
+                if mtype == method_type:
+                    break
+            else:
                 raise ValueError(
                     "Can't find a valid identifier for the payment "
                     "method type: %s. It is not possible add "
@@ -337,9 +318,8 @@ class Coupon(object):
                     _(u"The payment method used in this sale (%s) is not "
                       "configured in the fiscal printer." % method_name))
 
-            self._driver.add_payment(PaymentMethodType.CUSTOM,
-                                     payment.base_value,
-                                     custom_pm=constant.device_value)
+            self._driver.add_payment(constant.device_value,
+                                     payment.base_value)
 
         return True
 

@@ -156,6 +156,19 @@ class PluginManager(object):
         for p in InstalledPlugin.select(connection=get_connection()):
             yield self._get_plugin(p.plugin_name)
 
+    def has_plugin(self, plugin_name):
+        """
+        @param plugin_name: name of plugin
+        @returns: True if there is plugin available, otherwise False
+        """
+        return plugin_name in self._plugin_descriptions
+
+    def get_plugin_names(self):
+        """
+        @returns: list of plugin names of available plugins
+        """
+        return self._plugin_descriptions.keys()
+
 
 def register_plugin(plugin_class):
     """
