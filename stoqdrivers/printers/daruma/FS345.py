@@ -335,6 +335,7 @@ class FS345(SerialBase):
                                '%c%012d%s\xff' % (pm, int(float(value) * 1e2),
                                                   description[:48]))
         # FIXME: Why and when does this happen?
+        #        Avoids/Fixes bug 3467 at least
         if rv[0] == 'N':
             rv = rv[8:]
         return float(rv) / 1e2
@@ -621,4 +622,5 @@ class FS345(SerialBase):
             method = raw[i*18:i*18+18]
             if method[0] == 'V':
                 methods.append((method_letter[i], method[1:].strip()))
+
         return methods
