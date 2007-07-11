@@ -270,6 +270,7 @@ class AdditionListSlave(GladeSlaveDelegate):
                 item_idx = self.klist.index(model)
                 self.klist[item_idx] = clone
                 self.delete_model(model)
+                self.emit('on-edit-item', result)
                 return
         else:
             if edit_mode:
