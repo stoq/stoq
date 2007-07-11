@@ -285,7 +285,7 @@ class FiscalCoupon(gobject.GObject):
             warning(_(u"It is not possible to add payments to the coupon"),
                     str(e))
             return False
-        
+
         return True
 
     def close(self):
