@@ -190,7 +190,16 @@ class ECFEditor(BaseEditor):
                 # Do not import constants which are not defined by the system
                 if not constant:
                     continue
-
+            elif tax_enum == TaxType.SERVICE:
+                constant = DeviceConstant.selectOneBy(
+                    constant_enum=int(tax_enum),
+                    printer=model,
+                    connection=self.conn)
+                # Skip, If we have a service tax defined for this printer
+                # This needs to be improved when we support more than one
+                # service tax
+                if constant is not None:
+                    continue
             if value:
                 constant_name = '%d %%' % (value,)
             else:
