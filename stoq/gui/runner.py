@@ -29,11 +29,11 @@ import gtk
 from kiwi.log import Logger
 from stoqlib.exceptions import LoginError
 from stoqlib.gui.events import StartApplicationEvent
+from stoqlib.gui.login import LoginHelper
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.message import error, info
 from kiwi.component import get_utility
 
-from stoq.gui.login import LoginHelper
 
 log = Logger('stoq.runner')
 _ = gettext.gettext
