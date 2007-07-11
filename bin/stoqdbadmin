@@ -230,7 +230,7 @@ class StoqCommandHandler:
                           check_schema=False)
         execute_sql(schema)
 
-    def cmd_enable_plugin(self, options, plugin):
+    def cmd_enable_plugin(self, options, plugin_name):
         from stoqlib.lib.pluginmanager import provide_plugin_manager
 
         self._read_config(options, register_station=False,
@@ -238,7 +238,13 @@ class StoqCommandHandler:
                           load_plugins=False)
 
         manager = provide_plugin_manager()
-        manager.enable_plugin(plugin)
+        if manager.has_plugin(plugin_name):
+            manager.enable_plugin(plugin_name)
+        else:
+            print 'No plugin called: %s' % (plugin_name,)
+            print 'Available plugins are:'
+            for plugin_name in manager.get_plugin_names():
+                print '  ', plugin_name
 
 
 def main(args):
