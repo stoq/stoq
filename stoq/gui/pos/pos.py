@@ -291,6 +291,7 @@ class POSApp(AppWindow):
                        self.CancelOrder):
             widget.set_sensitive(False)
         self.sale = None
+        self._coupon = None
 
         self.order_proxy.set_model(None, relax_type=True)
         self._reset_quantity_proxy()
