@@ -23,7 +23,6 @@
 ##
 
 import sys
-import traceback
 
 import gobject
 import gtk
@@ -161,10 +160,19 @@ class FiscalCoupon(gobject.GObject):
 
     def emit(self, signal, *args):
         sys.last_value = None
+
+        # This is evil, set/restore the excepthook
+        oldhook = sys.excepthook
+        sys.excepthook = lambda *x: None
         retval = gobject.GObject.emit(self, signal, *args)
+        sys.excepthook = oldhook
+
         if sys.last_value is not None:
-            traceback.print_exception(sys.last_type, sys.last_value,
-                                      sys.last_traceback)
+            #import traceback
+            #print 'Exception caught in signal emission for %s::%s:' % (
+            #    gobject.type_name(self), signal)
+            #traceback.print_exception(sys.last_type, sys.last_value,
+            #                          sys.last_traceback)
             raise sys.last_value
         return retval
 
