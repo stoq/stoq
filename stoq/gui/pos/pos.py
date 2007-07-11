@@ -285,12 +285,19 @@ class POSApp(AppWindow):
         self.barcode.grab_focus()
 
     def _clear_order(self):
+        log.info("Cancelling order")
         self.sellables.clear()
         for widget in (self.search_box, self.list_vbox,
                        self.CancelOrder):
             widget.set_sensitive(False)
         self.sale = None
+
+        log.info("Cancelling coupon")
+        if not self.param.CONFIRM_SALES_ON_TILL:
+            if self._coupon:
+                self._coupon.cancel()
         self._coupon = None
+
         self.order_proxy.set_model(None, relax_type=True)
         self._reset_quantity_proxy()
         self.barcode.set_text('')
@@ -366,11 +373,6 @@ class POSApp(AppWindow):
             if yesno(_(u'The current order will be canceled, Confirm?'),
                          gtk.RESPONSE_NO,_(u"Go Back"), _(u"Cancel Order")):
                 return False
-
-        log.info("Cancelling order")
-        if not self.param.CONFIRM_SALES_ON_TILL:
-            if self._coupon:
-                self._coupon.cancel()
 
         self._clear_order()
 
