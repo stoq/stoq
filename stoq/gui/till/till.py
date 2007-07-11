@@ -38,7 +38,7 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       rollback_and_begin, finish_transaction)
-from stoqlib.domain.interface import IPaymentGroup
+from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
