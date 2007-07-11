@@ -154,27 +154,17 @@ class FiscalPrinter(BasePrinter):
         self.totalized_value = result
         return result
 
-    @capcheck(payment_method, Decimal, basestring, basestring)
-    def add_payment(self, payment_method, payment_value,
-                    payment_description='', custom_pm=''):
-        log.info("add_payment(method=%r, value=%r, description=%r, "
-                 "custom_pm=%r)" % (payment_method, payment_value,
-                                    payment_description, custom_pm))
+    @capcheck(basestring, Decimal, basestring)
+    def add_payment(self, payment_method, payment_value, description=''):
+        log.info("add_payment(method=%r, value=%r, description=%r)" % (
+            payment_method, payment_value, description))
 
         if not self._has_been_totalized:
             raise PaymentAdditionError(_("You must totalize the coupon "
                                          "before add payments."))
-        if custom_pm and payment_method != PaymentMethodType.CUSTOM:
-            raise ValueError("You can't specify a custom payment method "
-                             "string if you aren't using this payment "
-                             "method type")
-        elif not custom_pm and payment_method == PaymentMethodType.CUSTOM:
-            raise ValueError("You must specify the payment method string "
-                             "when using PaymentMethodType.CUSTOM")
         result = self._driver.coupon_add_payment(
             payment_method, payment_value,
-            self._format_text(payment_description),
-            custom_pm=custom_pm)
+            self._format_text(description))
         self.payments_total_value += payment_value
         return result
 

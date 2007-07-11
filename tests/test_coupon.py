@@ -26,15 +26,176 @@
 ##
 
 from decimal import Decimal
+import os
+import unittest
 
-from stoqdrivers.printers.fiscal import FiscalPrinter
-from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
-from stoqdrivers.exceptions import (CouponOpenError, 
+from zope.interface import implements
+
+
+import stoqdrivers
+from stoqdrivers.enum import TaxType, UnitType
+from stoqdrivers.exceptions import (CouponOpenError,
                                     PendingReadX, PaymentAdditionError,
                                     AlreadyTotalized, CancelItemError,
                                     InvalidValue, CloseCouponError,
                                     CouponNotOpenError)
-from tests.base import BaseTest
+from stoqdrivers.interfaces import ISerialPort
+from stoqdrivers.printers.fiscal import FiscalPrinter
+
+
+# The directory where tests data will be stored
+RECORDER_DATA_DIR = "data"
+
+class LogSerialPort:
+    """ A decorator for the SerialPort object expected by the driver to test,
+    responsible for log all the bytes read/written.
+    """
+    implements(ISerialPort)
+
+    def __init__(self, port):
+        self._port = port
+        self._bytes = []
+        self._last = None
+        self._buffer = ''
+
+    def setDTR(self):
+        return self._port.setDTR()
+
+    def getDSR(self):
+        return self._port.getDSR()
+
+    def set_options(self, *args, **kwargs):
+        self._port.set_options(*args, **kwargs)
+
+    def read(self, n_bytes=1):
+        data = self._port.read(n_bytes)
+        self._buffer += data
+        self._last = 'R'
+        return data
+
+    def write(self, bytes):
+        if self._last == 'R':
+            self._bytes.append(('R', self._buffer))
+            self._buffer = ''
+
+        self._bytes.append(('W', bytes))
+        self._port.write(bytes)
+        self._last = 'W'
+
+    def save(self, filename):
+        if self._buffer:
+            self._bytes.append(('R', self._buffer))
+        fd = open(filename, "w")
+        for type, line in self._bytes:
+            fd.write("%s %s\n" % (type, repr(line)[1:-1]))
+        fd.close()
+
+class PlaybackPort:
+    implements(ISerialPort)
+
+    def __init__(self, datafile):
+        self._input = []
+        self._output = ''
+        self._load_data(datafile)
+
+    def set_options(self, *args, **kwargs):
+        pass
+
+    def setDTR(self):
+        pass
+
+    def getDSR(self):
+        return True
+
+    def write(self, bytes):
+        n_bytes = len(bytes)
+        data = "".join([self._input.pop(0) for i in xrange(n_bytes)])
+        if bytes != data:
+            raise ValueError("Written data differs from the expected:\n"
+                             "WROTE:    %r\n"
+                             "RECORDED: %r\n" % (data, bytes))
+
+    def read(self, n_bytes=1):
+        data = self._output[:n_bytes]
+        if not data:
+            return None
+        self._output = self._output[n_bytes:]
+        return data
+
+    def _convert_data(self, data):
+        data = data.replace('\\n', '\n')
+        data = data.replace('\\r', '\r')
+        data = data.replace('\\t', '\t')
+        data = data.replace('\\\\', '\\')
+        data = data.split('\\x')
+        if len(data) == 1:
+            data = data[0]
+        else:
+            n = ''
+            for p in data:
+                if len(p) <= 1:
+                    n += p
+                else:
+                    try:
+                        data = p[:2].decode('hex')
+                    except:
+                        data = p[:2]
+                    n += data + p[2:]
+            data = n
+        return data
+
+    def _load_data(self, datafile):
+        fd = open(datafile, "r")
+        for n, line in enumerate(fd.readlines()):
+            data = self._convert_data(line[2:-1])
+
+            if line.startswith("W"):
+                self._input.extend(data)
+            elif line.startswith("R"):
+                self._output += data
+            else:
+                raise TypeError("Unrecognized entry type at %s:%d: %r"
+                                % (datafile, n + 1, line[0]))
+        fd.close()
+
+class BaseTest(unittest.TestCase):
+    def __init__(self, test_name):
+        self._test_name = test_name
+        unittest.TestCase.__init__(self, test_name)
+
+    def tearDown(self):
+        filename = self._get_recorder_filename()
+        if not os.path.exists(filename):
+            self._port.save(filename)
+
+    def setUp(self):
+        filename = self._get_recorder_filename()
+        if not os.path.exists(filename):
+            self._device = self.device_class(brand=self.brand,
+                                             model=self.model)
+            # Decorate the port used by device
+            self._port = LogSerialPort(self._device.get_port())
+            self._device.set_port(self._port)
+        else:
+            self._port = PlaybackPort(filename)
+            self._device = self.device_class(brand=self.brand,
+                                             model=self.model,
+                                             port=self._port)
+        payments = self._device.get_payment_constants()
+        assert len(payments) >= 1
+        self._payment_method = payments[0][0]
+        self._taxnone = self._device.get_tax_constant(TaxType.NONE)
+
+    def _get_recorder_filename(self):
+        testdir = os.path.join(os.path.dirname(stoqdrivers.__file__),
+                               "..", "tests")
+        test_name = self._test_name
+        if test_name.startswith('test_'):
+            test_name = test_name[5:]
+        test_name = test_name.replace('_', '-')
+
+        filename = "%s-%s-%s.txt" % (self.brand, self.model, test_name)
+        return os.path.join(testdir, RECORDER_DATA_DIR, filename)
 
 class TestCoupon(object):
     """ Test a coupon creation """
@@ -113,7 +274,7 @@ class TestCoupon(object):
             self._device.add_item, u"123456", u"Monitor LG Flatron T910B",
             Decimal("10"), self._taxnone)
 
-        self._device.add_payment(PaymentMethodType.MONEY, Decimal("100"))
+        self._device.add_payment(self._payment_method, Decimal("100"))
         self._device.close()
 
         # 8. Add item without coupon
@@ -138,7 +299,7 @@ class TestCoupon(object):
                                         Decimal("10"), self._taxnone,
                                         items_quantity=Decimal("1"))
         self._device.totalize()
-        self._device.add_payment(PaymentMethodType.MONEY, Decimal("100"))
+        self._device.add_payment(self._payment_method, Decimal("100"))
         self._device.close()
 
     def test_totalize(self):
@@ -154,45 +315,24 @@ class TestCoupon(object):
                               surcharge=Decimal("1"), taxcode=TaxType.NONE)
 
         # 3. surcharge with taxcode equals to TaxType.ICMS
-        # (daruma FS345 specific)
         coupon_total = self._device.totalize(surcharge=Decimal("1"),
                                              taxcode=TaxType.ICMS)
-        self.failUnless(coupon_total == Decimal("10.10"),
-                        "The coupon total value should be 10.10, not %r"
-                        % coupon_total)
-        self._device.add_payment(PaymentMethodType.MONEY, Decimal("12"))
+        self.assertEquals(coupon_total, Decimal("10.10"))
+        self._device.add_payment(self._payment_method, Decimal("12"))
         self._device.close()
 
     def test_add_payment(self):
         self._open_coupon()
         self._device.add_item(u"987654", u"Monitor LG 775N", Decimal("10"),
                               self._taxnone)
-        # 1. Add payment without totalize the coupon
+        # Add payment without totalize the coupon
         self.failUnlessRaises(PaymentAdditionError,
                               self._device.add_payment,
-                              PaymentMethodType.MONEY,
+                              self._payment_method,
                               Decimal("100"))
         self._device.totalize()
 
-        # 2. Add payment with customized type without describe it
-        self.failUnlessRaises(ValueError,
-                              self._device.add_payment,
-                              PaymentMethodType.CUSTOM,
-                              Decimal("100"))
-
-        # 3. Describe the payment type not using CUSTOM_PM
-        self.failUnlessRaises(ValueError,
-                              self._device.add_payment,
-                              PaymentMethodType.MONEY,
-                              Decimal("100"), custom_pm="02")
-
-        # 4. Add payment with customized type.
-        # XXX: Not trivial to do, since customized types depends directly
-        # of the device configuration; as this test must execute with all
-        # the coupon printers, we can't just assume a "always existent"
-        # payment type.
-
-        self._device.add_payment(PaymentMethodType.MONEY, Decimal("100"))
+        self._device.add_payment(self._payment_method, Decimal("100"))
         self._device.close()
 
     def test_close_coupon(self):
@@ -207,10 +347,10 @@ class TestCoupon(object):
         self.failUnlessRaises(CloseCouponError, self._device.close)
 
         # 3. Close with the payments total value lesser than the totalized
-        self._device.add_payment(PaymentMethodType.MONEY, Decimal("5"))
+        self._device.add_payment(self._payment_method, Decimal("5"))
         self.failUnlessRaises(CloseCouponError, self._device.close)
 
-        self._device.add_payment(PaymentMethodType.MONEY, Decimal("100"))
+        self._device.add_payment(self._payment_method, Decimal("100"))
         # 4. Close the coupon with a BIG message
         self._device.close(u"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
                            "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

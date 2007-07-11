@@ -40,7 +40,7 @@ from stoqdrivers.serialbase import SerialBase
 from stoqdrivers.interfaces import ICouponPrinter
 from stoqdrivers.printers.capabilities import Capability
 from stoqdrivers.printers.base import BaseDriverConstants
-from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
+from stoqdrivers.enum import TaxType, UnitType
 from stoqdrivers.exceptions import (DriverError, PendingReduceZ,
                                     HardwareFailure, ReduceZError,
                                     AuthenticationFailure, CommError,
@@ -325,14 +325,10 @@ class FS345(SerialBase):
     def _get_coupon_number(self):
         return int(self._get_totalizers()[8:14])
 
-    def _add_payment(self, payment_method, value, description='',
-                     custom_pm=''):
-        if not custom_pm:
-            pm = self._consts.get_value(payment_method)
-        else:
-            pm = custom_pm
+    def _add_payment(self, payment_method, value, description=''):
         rv = self.send_command(CMD_DESCRIBE_PAYMENT_FORM,
-                               '%c%012d%s\xff' % (pm, int(float(value) * 1e2),
+                               '%c%012d%s\xff' % (payment_method,
+                                                  int(float(value) * 1e2),
                                                   description[:48]))
         # FIXME: Why and when does this happen?
         #        Avoids/Fixes bug 3467 at least
@@ -457,12 +453,10 @@ class FS345(SerialBase):
     def coupon_cancel_item(self, item_id):
         self.send_command(CMD_CANCEL_ITEM, "%03d" % item_id)
 
-    def coupon_add_payment(self, payment_method, value, description='',
-                           custom_pm=''):
+    def coupon_add_payment(self, payment_method, value, description=''):
         self._check_status()
         self._verify_coupon_open()
-        return self._add_payment(payment_method, value, description,
-                                 custom_pm)
+        return self._add_payment(payment_method, value, description)
 
     def coupon_cancel(self):
         # If we need reduce Z don't verify that the coupon is open, instead
@@ -537,7 +531,7 @@ class FS345(SerialBase):
 
     def till_add_cash(self, value):
         self._add_voucher(CASH_IN_TYPE, value)
-        self._add_payment(PaymentMethodType.MONEY, value, '')
+        self._add_payment('A', value, '')
 
     def till_remove_cash(self, value):
         self._add_voucher(CASH_OUT_TYPE, value)

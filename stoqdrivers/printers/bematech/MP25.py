@@ -289,7 +289,6 @@ class MP25(SerialBase):
         format = '<b%sbbH' % (fmt,)
         reply = self._read_reply(struct.calcsize(format))
         retval = struct.unpack(format, reply)
-
         if raw:
             return retval
 
@@ -311,7 +310,9 @@ class MP25(SerialBase):
             fmt = '2s'
             bcd = True
         elif reg == REGISTER_PAYMENT_METHODS:
-            fmt = 'b340s'
+            #  1 + (52 * 16) + (52 * 10) + (52 * 10) + (52 * 1)
+            #  1 + 832 + 520 + 520 + 52 = 1925
+            fmt = 'b832s520s520s52s'
         else:
             raise NotImplementedError(reg)
 
@@ -440,14 +441,10 @@ class MP25(SerialBase):
                                   % item_id)
         self._send_command(CMD_CANCEL_ITEM, "%04d" % (item_id,))
 
-    def coupon_add_payment(self, payment_method, value, description=u"",
-                           custom_pm=''):
-        if not custom_pm:
-            pm = self._consts.get_value(payment_method)
-        else:
-            pm = custom_pm
+    def coupon_add_payment(self, payment_method, value, description=u""):
         self._send_command(CMD_ADD_PAYMENT,
-                           "%s%014d%s" % (pm, int(value * Decimal('1e2')),
+                           "%s%014d%s" % (payment_method[:2],
+                                          int(value * Decimal('1e2')),
                                           description[:80]))
         self.remainder_value -= value
         if self.remainder_value < 0.0:
@@ -536,7 +533,7 @@ class MP25(SerialBase):
         return constants
 
     def get_payment_constants(self):
-        unused, status = self._read_register(REGISTER_PAYMENT_METHODS)
+        status = self._read_register(REGISTER_PAYMENT_METHODS)[1]
         methods = []
         for i in range(20):
             method = status[i*16:i*16+16]

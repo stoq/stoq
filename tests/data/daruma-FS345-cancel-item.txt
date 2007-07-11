@@ -1,13 +1,15 @@
+W \x1b\xee
+R :                    -SANGRIA              +SUPRIMENTO           -\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xffDinheiro             \xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xffVDinheiro         NPagamento Tipo B NPagamento Tipo C NPagamento Tipo D NPagamento Tipo E NPagamento Tipo F NPagamento Tipo G NPagamento Tipo H NPagamento Tipo I NPagamento Tipo J NPagamento Tipo K NPagamento Tipo L NPagamento Tipo M NPagamento Tipo N NPagamento Tipo O NPagamento Tipo P \r
 W \x1b\xf0
-R :\x1b\xf000000000007154035700000000000000000000000010000000000000000000000000006010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\r
+R :\x1b\xf000000000007624177700000000000000000000000060100000000000000000000000007020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\r
 W \x1b\xe7
 R :%A0018B0012C0005d0500E1800F1500G2500H0800I0500J0327K0592l0200m0300n0400O////P////\r
 W \x1d\xff
-R :A4C20C000000\r
+R :A5C20C000000\r
 W \x1d\xff
-R :A4C20C000000\r
+R :A5C20C000000\r
 W \x1b\xc8
-R :A001655\r
+R :A001808\r
 W \x1b\xdfNb       98765400000000001000000001000  Monitor LG 775N\xff
 R :+001 N 0000000001000\r
 W \x1b\xcd010
@@ -19,30 +21,30 @@ R :E15\r
 W \x1b\xdfNb       98765400000000001000000001000  Monitor LG 775N\xff
 R :+002 N 0000000001000\r
 W \x1d\xff
-R :A4C60C010000\r
+R :A5C60C010000\r
 W \x1d\xff
-R :A4C60C010000\r
+R :A5C60C010000\r
 W \x1d\xff
-R :A4C60C010000\r
+R :A5C60C010000\r
 W \x1b\xf10000000000000
 R :000000001000\r
 W \x1d\xff
-R :A4C60C000000\r
+R :A5C60C000000\r
 W \x1d\xff
-R :A4C60C000000\r
+R :A5C60C000000\r
 W \x1d\xff
-R :A4C60C000000\r
+R :A5C60C000000\r
 W \x1b\xf2A000000010000\xff
 R :000000000000\r
 W \x1d\xff
-R :A4C60C010000\r
+R :A5C60C010000\r
 W \x1d\xff
-R :A4C60C010000\r
+R :A5C60C010000\r
 W \x1d\xff
-R :A4C60C010000\r
+R :A5C60C010000\r
 W \x1b\xc9                           Henrique Romano                                                                               Async                                                                          1234567890                                          
 R :\r
 W \x1b\xf3\xff
 R :F000000001000\r
 W \x1b\xf4
-R :\x1b\xf4001651001655000107057000020257000000010098490100000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000229900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000673950001011883\r
+R :\x1b\xf4001802001808000126059400020294000000010105489400000000031200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000231800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000411000100000744810001134170\r

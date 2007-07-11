@@ -1,13 +1,15 @@
+W \x1b\xee
+R :                    -SANGRIA              +SUPRIMENTO           -\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff-\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xffDinheiro             \xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xffVDinheiro         NPagamento Tipo B NPagamento Tipo C NPagamento Tipo D NPagamento Tipo E NPagamento Tipo F NPagamento Tipo G NPagamento Tipo H NPagamento Tipo I NPagamento Tipo J NPagamento Tipo K NPagamento Tipo L NPagamento Tipo M NPagamento Tipo N NPagamento Tipo O NPagamento Tipo P \r
 W \x1b\xf0
-R :\x1b\xf000000000007154035700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\r
+R :\x1b\xf000000000007624177700000000000000000000000070100000000000000000000000009020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\r
 W \x1b\xe7
 R :%A0018B0012C0005d0500E1800F1500G2500H0800I0500J0327K0592l0200m0300n0400O////P////\r
 W \x1d\xff
-R :A4C20C020000\r
+R :A5C20C000000\r
 W \x1d\xff
-R :A4C20C000000\r
+R :A5C20C000000\r
 W \x1b\xc8
-R :A001652\r
+R :A001813\r
 W \x1b\xdfNb       ABCDEF00000000001000000002000  Monitor LG 775N\xff
 R :+001 N 0000000002000\r
 W \x1b\xdfNb       98765400000000001000000001000  Monitor LG 775N\xff
@@ -17,32 +19,32 @@ R :+003 N 0000000001000\r
 W \x1b\xdfNb       12345610100000001000000001000  Monitor LG 775N\xff
 R :+004 N 0001000001010\r
 W \x1d\xff
-R :A4C60C010000\r
+R :A5C60C010000\r
 W \x1d\xff
-R :A4C60C010000\r
+R :A5C60C010000\r
 W \x1d\xff
-R :A4C60C010000\r
+R :A5C60C010000\r
 W \x1b\xf10000000000000
 R :000000005010\r
 W \x1d\xff
-R :A4C60C000000\r
+R :A5C60C000000\r
 W \x1d\xff
-R :A4C60C000000\r
+R :A5C60C000000\r
 W \x1d\xff
-R :A4C60C000000\r
+R :A5C60C000000\r
 W \x1b\xf2A000000010000\xff
 R :000000000000\r
 W \x1d\xff
-R :A4C60C010000\r
+R :A5C60C010000\r
 W \x1d\xff
-R :A4C60C010000\r
+R :A5C60C010000\r
 W \x1d\xff
-R :A4C60C010000\r
+R :A5C60C010000\r
 W \x1b\xc9                           Henrique Romano                                                                               Async                                                                          1234567890                                          
 R :\r
 W \x1b\xf3\xff
 R :F000000005010\r
 W \x1b\xf4
-R :\x1b\xf4001651001652000107056900020257000000010098490100000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000049900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000673080001010576\r
+R :\x1b\xf4001802001813000128059500020294000000010105489400000000052700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000376700000000000100000010000000000100000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000412000100000746140001136162\r
 W \x1b\xdfNb       12345600100000050000000001000  Monitor LG Flatron T910B\xff
 R :E11\r

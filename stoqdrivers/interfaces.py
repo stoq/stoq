@@ -197,11 +197,10 @@ class ICouponPrinter(IDevice):
         @returns          the coupon total value
         """
 
-    def coupon_add_payment(payment_method, value, description=u"", custom_pm=''):
+    def coupon_add_payment(payment_method, value, description=u""):
         """
         @param payment_method: The payment method.
-        @type payment_method:  A constant (defined in the constants.py module)
-                               representing the payment method.
+        @type payment_method:  a device specific value representing the payment value
 
         @param value:     The payment value
         @type value:      Decimal
@@ -209,10 +208,6 @@ class ICouponPrinter(IDevice):
         @param description: A simple description of the payment method to be
                             appended to the coupon.
         @type value:      unicode
-
-        @param custom_pm: When using CUSTOM_PM as argument for 'payment_method',
-                          you must specify its value with this parameter.
-        @type custom_pm:  str
 
         @rtype:           Decimal
         @returns:         the total remaining amount
