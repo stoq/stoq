@@ -38,7 +38,7 @@ from stoqlib.database.interfaces import (
     IDatabaseSettings, IConnection, ITransaction, ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
 from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.message import error
+from stoqlib.lib.message import error, yesno, info
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -184,6 +184,43 @@ def finish_transaction(trans, commit):
 #
 # User methods
 #
+def _register_branch(station_name):
+    import gtk
+    settings = get_utility(IDatabaseSettings)
+    if yesno(_("The computer <u>%s</u> is not registered to the Stoq "
+               "server at %s.\n\n"
+               "Do you want to register it "
+               "(requires administrator access) ?") %
+             (station_name, settings.address),
+             gtk.RESPONSE_NO, _(u"Quit"), _(u"Register Computer")):
+        raise SystemExit
+
+    from stoqlib.gui.login import LoginHelper
+    h = LoginHelper(username="admin")
+    user = h.validate_user()
+    if not user:
+        error(_("Must login as 'admin'"))
+
+    from stoqlib.domain.interfaces import IBranch
+    from stoqlib.domain.person import Person
+    from stoqlib.domain.station import BranchStation
+
+    trans = new_transaction()
+    branches = Person.iselect(IBranch, connection=trans)
+    if not branches:
+        error(_("Schema error, no branches found"))
+    elif branches.count() != 1:
+        error(_("More than one branch detected"))
+    branch = branches[0]
+
+    try:
+        station = BranchStation.create(trans,
+                                       branch=branch,
+                                       name=station_name)
+    except StoqlibError, e:
+        error(_("ERROR: %s" % e))
+
+    trans.commit(close=True)
 
 def set_current_branch_station(conn, station_name):
     """
@@ -195,10 +232,9 @@ def set_current_branch_station(conn, station_name):
     from stoqlib.domain.station import BranchStation
     station = BranchStation.selectOneBy(name=station_name, connection=conn)
     if station is None:
-        error(_("The computer <u>%s</u> is not registered in Stoq") %
-              station_name,
-              _("To solve this, open the administrator application "
-                "and register this computer."))
+        _register_branch(station_name)
+        info(_("%s was registered in Stoq.\n\nPlease restart." % (station_name,)))
+        raise SystemExit
 
     if not station.is_active:
         error(_("The computer <u>%s</u> is not active in Stoq") %
