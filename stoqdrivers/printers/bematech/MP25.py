@@ -132,6 +132,7 @@ class MP25(SerialBase):
     implements(ICouponPrinter)
     CMD_PROTO = 0x1C
 
+    supported = True
     model_name = "Bematech MP25 FI"
     coupon_printer_charset = "cp850"
 
@@ -359,11 +360,12 @@ class MP25(SerialBase):
         """ Prints a summary of all sales of the day """
         self._send_command(CMD_READ_X)
 
-    def close_till(self):
+    def close_till(self, previous_day=False):
         """ Close the till for the day, no other actions can be done after this
         is called.
         """
-        self._send_command(CMD_REDUCE_Z)
+        if not previous_day:
+            self._send_command(CMD_REDUCE_Z)
 
     def till_add_cash(self, value):
         self._add_voucher(CASH_IN_TYPE, value)

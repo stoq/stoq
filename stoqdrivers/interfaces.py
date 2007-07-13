@@ -233,10 +233,11 @@ class ICouponPrinter(IDevice):
         'read X' operation.
         """
 
-    def close_till():
+    def close_till(previous_day=False):
         """ Close the till for the day, no other actions can be done after
         this is called. In Brazil this is 'reduce Z' operation
 
+        @param previous_day: if this is to close a till opened previously
         @returns: an object implementing ISintegraData or None
         """
 

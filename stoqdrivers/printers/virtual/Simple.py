@@ -227,7 +227,7 @@ class Simple:
     def summarize(self):
         return
 
-    def close_till(self):
+    def close_till(self, previous_day=False):
         if self._till_closed:
             raise DriverError(
                 "Reduce Z was already sent today, try again tomorrow")

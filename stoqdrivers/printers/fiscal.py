@@ -211,10 +211,10 @@ class FiscalPrinter(BasePrinter):
 
         return self._driver.summarize()
 
-    def close_till(self):
-        log.info('close_till')
+    def close_till(self, previous_day=False):
+        log.info('close_till(previous_day=%r)' % (previous_day,))
 
-        return self._driver.close_till()
+        return self._driver.close_till(previous_day)
 
     @capcheck(Decimal)
     def till_add_cash(self, add_cash_value):

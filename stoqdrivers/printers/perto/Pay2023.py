@@ -555,7 +555,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
     def summarize(self):
         self._send_command('EmiteLeituraX')
 
-    def close_till(self):
+    def close_till(self, previous_day=False):
         status = self._get_status()
         if status & FLAG_DOCUMENTO_ABERTO:
             self.coupon_cancel()

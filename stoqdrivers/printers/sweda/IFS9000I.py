@@ -566,7 +566,7 @@ class IFS9000I(SerialBase):
         self._customer_document = None
         return self._get_coupon_number()
 
-    def close_till(self):
+    def close_till(self, previous_day=False):
         # TODO Add a date optional argument here
         """This is 'reduce Z' in Brazil"""
         t = datetime.datetime.now()

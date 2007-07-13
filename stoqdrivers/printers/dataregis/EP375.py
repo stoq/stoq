@@ -590,7 +590,7 @@ class EP375(SerialBase, BaseChequePrinter):
         self._is_coupon_open = False
         return self._get_coupon_number()
 
-    def close_till(self):
+    def close_till(self, previous_day=False):
         if not self._get_status().needs_reduce_Z():
             raise ReduceZError(_('Reduce Z already done'))
         else:

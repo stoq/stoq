@@ -140,6 +140,7 @@ class FS345(SerialBase):
 
     implements(ICouponPrinter)
 
+    supported = True
     model_name = "Daruma FS 345"
     coupon_printer_charset = "abicomp"
 
@@ -517,7 +518,7 @@ class FS345(SerialBase):
     def summarize(self):
         self.send_command(CMD_GET_X)
 
-    def close_till(self):
+    def close_till(self, previous_day=False):
         status = self._get_status()
         if self._is_open(status):
             self.send_command(CMD_CANCEL_COUPON)
