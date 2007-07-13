@@ -107,6 +107,8 @@ def get_supported_printers():
             except AttributeError:
                 raise ImportError("Can't find class %s for module %s"
                                   % (module_name, module_name))
+            if not hasattr(obj, 'supported'):
+                continue
             result[brand].append(obj)
     return result
 
