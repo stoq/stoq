@@ -246,6 +246,20 @@ class StoqCommandHandler:
             for plugin_name in manager.get_plugin_names():
                 print '  ', plugin_name
 
+    def cmd_generate_sintegra(self, options, filename, month):
+        import datetime
+        self._read_config(options)
+
+        year, month = map(int, month.split('-'))
+        start = datetime.date(year, month, 1)
+        for day in [31, 30, 29, 28]:
+            try:
+                end = datetime.date(year, month, day)
+                break
+            except ValueError:
+                pass
+        from stoqlib.lib.sintegragenerator import generate
+        generate(filename, start, end)
 
 def main(args):
     pname = args[0]
