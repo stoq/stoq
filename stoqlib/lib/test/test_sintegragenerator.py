@@ -10,7 +10,7 @@ from stoqlib.lib.test.test_sintegra import compare_sintegra_file
 class TestSintegraGenerator(DomainTest):
 
     def testRecevingOrder(self):
-        sellable = self.create_sellable(id=9999)
+        sellable = self.create_sellable()
         sellable.tax_constant = SellableTaxConstant(
             description="18",
             tax_type=int(TaxType.CUSTOM),
