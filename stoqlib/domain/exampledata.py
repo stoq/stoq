@@ -252,7 +252,7 @@ class ExampleCreator(object):
                                 description="Description",
                                 price=10)
 
-    def create_sellable(self, id=None):
+    def create_sellable(self):
         from stoqlib.domain.product import Product
         product = Product(connection=self.trans)
         tax_constant = sysparam(self.trans).DEFAULT_PRODUCT_TAX_CONSTANT
