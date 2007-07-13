@@ -58,6 +58,7 @@ CMD_COUPON_OPEN = 0
 CMD_CLOSE_TILL = 5
 CMD_REDUCE_Z = 5
 CMD_READ_X = 6
+CMD_READ_MEMORY = 8
 CMD_COUPON_CANCEL = 14
 CMD_STATUS = 19
 CMD_ADD_VOUCHER = 25
@@ -374,10 +375,13 @@ class MP25(SerialBase):
         self._add_voucher(CASH_OUT_TYPE,value)
 
     def till_read_memory(self, start, end):
-        raise NotImplementedError
+        self._send_command(CMD_READ_MEMORY,
+                           '%s%sI' % (start.strftime('%d%m%y'),
+                                      end.strftime('%d%m%y')))
 
     def till_read_memory_by_reductions(self, start, end):
-        raise NotImplementedError
+        self._send_command(CMD_READ_MEMORY,
+                           '%06d%06dI' % (start, end))
 
     def coupon_identify_customer(self, customer, address, document):
         self._customer_name = customer
