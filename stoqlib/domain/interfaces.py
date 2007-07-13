@@ -270,6 +270,12 @@ class IIndividual(IPersonFacet):
     def get_marital_statuses():
         """FIXME"""
 
+    def get_cpf_number():
+        """
+        Returns the cpf number without any non-numeric characters
+        @returns: the cpf number as a number
+        @rtype: integer
+        """
 
 class ICompany(IPersonFacet):
     """An institution created to conduct business"""
@@ -285,6 +291,7 @@ class ICompany(IPersonFacet):
         @returns: the cnpj number as a number
         @rtype: integer
         """
+
     def get_state_registry_number():
         """
         Returns the state registry number without any non-numeric characters
