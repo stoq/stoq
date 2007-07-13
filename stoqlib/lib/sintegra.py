@@ -20,6 +20,7 @@
 ##
 ##
 ## Author(s): Johan Dahlin <jdahlin@async.com.br>
+##            Fabio Morbec <fabio@async.com.br>
 ##
 
 import datetime
@@ -88,7 +89,8 @@ class SintegraFile(object):
             int(end.strftime('%Y%m%d')),
             '331'))
 
-    def add_complement_header(self, address, number, complement, district, postal, name, phone):
+    def add_complement_header(self, address, number, complement, district,
+                              postal, name, phone):
         """
         @param address:
         @param number:
@@ -111,7 +113,8 @@ class SintegraFile(object):
             postal, name, phone))
 
     def add_fiscal_coupon(self, date, printerserial, printerid,
-                          coupon_start, coupon_end, crz, cro, period_total, total):
+                          coupon_start, coupon_end, crz, cro, period_total,
+                          total):
         """
         @param date:
         @type date: datetime.date
@@ -145,6 +148,62 @@ class SintegraFile(object):
             'A', int(date.strftime('%Y%m%d')), printerserial,
             code,
             value * 100))
+
+    def add_receiving_order(self, cnpj, state_registry, receival_date,
+                            state, modelo, serial, numero, cfop, emitente,
+                            total, icms_base, icms_total, isenta, outras,
+                            aliquota_icms, situacao):
+        cfop_code = cfop.replace(".", "")
+        date = int(receival_date.strftime("%Y%m%d"))
+        self.add(SintegraRegister50(cnpj, str(state_registry),
+                                    date,
+                                    str(state), modelo, serial, numero,
+                                    int(cfop_code),
+                                    emitente,
+                                    total * 100,
+                                    icms_base * 100,
+                                    icms_total * 100,
+                                    isenta * 100,
+                                    outras * 100,
+                                    aliquota_icms * 100,
+                                    situacao))
+
+    def add_receiving_order_item(self, cnpj, modelo, serial, numero, cfop, cst,
+                                 numero_item, product_code, product_quantity,
+                                 valor_bruto_produto, desconto, icms_base,
+                                 icms_subst_trib, ipi, icms_aliquota):
+        cfop_code = cfop.replace(".", "")
+        cfop_int = int(cfop_code)
+        if product_code is None:
+            product_code = " " * 14
+        else:
+            product_code = '%014d' % (product_code,)
+        if cst is None:
+            cst = ' ' * 3
+        self.add(SintegraRegister54(cnpj, modelo, serial, numero, cfop_int,
+                                    cst, numero_item, product_code,
+                                    product_quantity * 1000,
+                                    valor_bruto_produto * 100,
+                                    desconto * 100,
+                                    icms_base * 100,
+                                    icms_subst_trib * 100,
+                                    ipi * 100,
+                                    icms_aliquota * 100))
+
+    def add_product(self, start, end, product_code, ncm, desc,
+                              unit, aliquota_ipi, aliquota_icms,
+                              reducao_icms, base_icms):
+        start = int(start.strftime("%Y%m%d"))
+        end = int(end.strftime("%Y%m%d"))
+        product_code = '%0*d' % (14, int(product_code))
+        ncm = '%0*d' % (8, int(ncm))
+
+        if isinstance(desc, unicode):
+            desc = desc.encode('latin1')
+
+        self.add(SintegraRegister75(start, end, product_code, ncm, desc,
+                                    unit, aliquota_ipi, aliquota_icms,
+                                    reducao_icms, base_icms))
 
     def close(self):
         """
@@ -182,12 +241,15 @@ class SintegraFile(object):
         if fp is None:
             fp = open(filename, 'w')
 
+        for register in self.get_registers():
+            fp.write(register.get_string())
+
+    def get_registers(self):
         last_register = self._registers[-1]
         if (last_register.sintegra_number != 90 or
             last_register.type != 99):
             raise TypeError("You need to close the document before calling write()")
-        for register in self._registers:
-            fp.write(register.get_string())
+        return self._registers
 
 
 class SintegraRegister(object):
@@ -334,6 +396,62 @@ class SintegraRegister60A(SintegraRegister):
         ]
     sintegra_requires = 10, 11
 
+
+class SintegraRegister50(SintegraRegister):
+    sintegra_number = 50
+    sintegra_fields = [
+        ('cnpj', 14, number),
+        ('estadual', 14, str),
+        ('date', 8, number),
+        ('state', 2, str),
+        ('modelo', 2, number),
+        ('serial', 3, str),
+        ('numero', 6, number),
+        ('cfop', 4, number),
+        ('emitente', 1, str),
+        ('total', 13, number),
+        ('icms_base', 13, number),
+        ('icms_total', 13, number),
+        ('isenta', 13, number),
+        ('outras', 13, number),
+        ('aliquota_icms', 4, number),
+        ('situacao', 1, str),
+        ]
+
+class SintegraRegister54(SintegraRegister):
+    sintegra_number = 54
+    sintegra_fields = [
+        ('cnpj', 14, number),
+        ('modelo', 2, number),
+        ('serial', 3, str),
+        ('numero', 6, number),
+        ('cfop', 4, number),
+        ('cst', 3, str),
+        ('numero_item', 3, number),
+        ('product_code', 14, str),
+        ('product_quantity', 11, number),
+        ('valor_bruto_produto', 12, number),
+        ('desconto', 12, number),
+        ('icms_base', 12, number),
+        ('icms_subst_trib', 12, number),
+        ('ipi', 12, number),
+        ('icms_aliquota', 4, number),
+        ]
+
+class SintegraRegister75(SintegraRegister):
+    sintegra_number = 75
+    sintegra_fields = [
+        ('start_date', 8, number),
+        ('end_date', 8, number),
+        ('product_code', 14, str),
+        ('ncm', 8, str),
+        ('descricao', 53, str),
+        ('unit', 6, str),
+        ('aliquota_ipi', 5, number),
+        ('aliquota_icms', 4, number),
+        ('reducao_icms', 5, number),
+        ('base_icms', 13, number),
+        ]
 
 class SintegraRegister90(SintegraRegister):
     sintegra_number = 90

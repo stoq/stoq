@@ -192,6 +192,8 @@ class ReceivingOrder(Domain):
     # Accessors
     #
 
+    def get_cfop_code(self):
+        return self.cfop.code.encode()
 
     def get_transporter_name(self):
         if not self.transporter:
@@ -309,8 +311,6 @@ class ReceivingOrder(Domain):
 
     surcharge_percentage = property(_get_surcharge_by_percentage,
                                  _set_surcharge_by_percentage)
-
-
 
 @argcheck(PurchaseOrder, ReceivingOrder)
 def get_receiving_items_by_purchase_order(purchase_order, receiving_order):

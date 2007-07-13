@@ -35,6 +35,19 @@ from stoqlib.lib.sintegra import SintegraFile
 from stoqlib.lib.diffutils import diff_files
 from stoqlib.lib import test
 
+
+def compare_sintegra_file(sfile, basename):
+    expected = basename + '-expected.txt'
+    output = basename + '-output.txt'
+
+    fp = StringIO()
+    sfile.write(output)
+    expected = os.path.join(test.__path__[0], expected)
+    retval = diff_files(output, expected)
+    os.unlink(output)
+    if retval:
+        raise AssertionError("Files differ, check output above")
+
 class SintegraTest(DomainTest):
     def testComplete(self):
         station = self.create_station()
@@ -87,10 +100,4 @@ class SintegraTest(DomainTest):
                                  tax.code, tax.value)
         s.close()
 
-        fp = StringIO()
-        s.write('sintegra-output.txt')
-        expected = os.path.join(test.__path__[0], 'sintegra-expected.txt')
-        retval = diff_files('sintegra-output.txt', expected)
-        os.unlink('sintegra-output.txt')
-        if retval:
-            raise AssertionError("Files differ, check output above")
+        compare_sintegra_file(s, 'sintegra')

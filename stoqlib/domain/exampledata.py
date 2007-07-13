@@ -252,7 +252,7 @@ class ExampleCreator(object):
                                 description="Description",
                                 price=10)
 
-    def create_sellable(self):
+    def create_sellable(self, id=None):
         from stoqlib.domain.product import Product
         product = Product(connection=self.trans)
         tax_constant = sysparam(self.trans).DEFAULT_PRODUCT_TAX_CONSTANT
@@ -338,21 +338,24 @@ class ExampleCreator(object):
     def create_receiving_order(self):
         from stoqlib.domain.receiving import ReceivingOrder
         purchase = self.create_purchase_order()
+        cfop = self.create_cfop_data()
+        cfop.code = '1.102'
         return ReceivingOrder(connection=self.trans,
                               invoice_number=222,
                               supplier=purchase.supplier,
                               responsible=self.create_user(),
                               purchase=purchase,
                               branch=self.create_branch(),
-                              cfop=self.create_cfop_data())
+                              cfop=cfop)
 
-    def create_receiving_order_item(self, receiving_order=None):
+    def create_receiving_order_item(self, receiving_order=None, sellable=None):
         from stoqlib.domain.receiving import ReceivingOrderItem
         if receiving_order is None:
             receiving_order = self.create_receiving_order()
-        sellable = self.create_sellable()
-        product = sellable.get_adapted()
-        product.addFacet(IStorable, connection=self.trans)
+        if sellable is None:
+            sellable = self.create_sellable()
+            product = sellable.get_adapted()
+            product.addFacet(IStorable, connection=self.trans)
         purchase_item = receiving_order.purchase.add_item(sellable, 8)
         return ReceivingOrderItem(connection=self.trans,
                                   quantity=8, cost=125,
