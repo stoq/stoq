@@ -81,10 +81,11 @@ class FiscalPrinterHelper:
 
         return retval
 
-    def close_till(self, can_remove_cash):
+    def close_till(self, can_remove_cash, previous_day=False):
         """
         Closes the till
         @param can_remove_cash: If True allow the user to remove cash.
+        @param previous_day: if the till wasn't closed a previous day
         @returns: True if the till was closed, otherwise False
         """
 
@@ -93,7 +94,8 @@ class FiscalPrinterHelper:
 
         trans = new_transaction()
         model = run_dialog(TillClosingEditor, self._parent, trans,
-                           can_remove_cash=can_remove_cash)
+                           can_remove_cash=can_remove_cash,
+                           previous_day=previous_day)
 
         if not model:
             finish_transaction(trans, model)

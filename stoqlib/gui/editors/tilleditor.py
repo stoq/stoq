@@ -159,11 +159,13 @@ class TillClosingEditor(BaseEditor):
                      'total_balance',
                      'opening_date')
 
-    def __init__(self, conn, model=None, can_remove_cash=True):
+    def __init__(self, conn, model=None, can_remove_cash=True, previous_day=False):
         """
         @param can_remove_cash: If True, allow the user to remove cash
                                 from the till before closing it.
+        @param previous_day: If the till wasn't closed previously
         """
+        self._previous_day = previous_day
         self.till = Till.get_last_opened(conn)
         assert self.till
         BaseEditor.__init__(self, conn, model)
@@ -188,7 +190,8 @@ class TillClosingEditor(BaseEditor):
     def on_confirm(self):
         till = self.model.till
         try:
-            TillCloseEvent.emit(till=till)
+            TillCloseEvent.emit(till=till,
+                                previous_day=self._previous_day)
         except TillError, e:
             warning(str(e))
             return None

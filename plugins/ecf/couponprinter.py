@@ -70,7 +70,7 @@ class CouponPrinter(object):
 
         self._driver.summarize()
 
-    def close_till(self):
+    def close_till(self, previous_day=False):
         """
         Closes the till
         @param value: optional, how much to remove from the till
@@ -78,7 +78,7 @@ class CouponPrinter(object):
         """
         log.info("Closing till")
 
-        data = self._driver.close_till()
+        data = self._driver.close_till(previous_day=previous_day)
         self._update_sintegra_data(data)
 
     def cancel(self):
