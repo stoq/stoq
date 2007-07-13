@@ -416,7 +416,7 @@ class POSApp(AppWindow):
 
     def _check_till(self):
         if self._printer.needs_closing():
-            if not self._close_till(can_remove_cash=False):
+            if not self._close_till(can_remove_cash=False, previous_day=True):
                 return False
         return True
 
@@ -424,8 +424,8 @@ class POSApp(AppWindow):
          if self._printer.open_till():
              self._update_widgets()
 
-    def _close_till(self, can_remove_cash=True):
-        retval = self._printer.close_till(can_remove_cash)
+    def _close_till(self, can_remove_cash=True, previous_day=False):
+        retval = self._printer.close_till(can_remove_cash, previous_day)
         if retval:
             self._update_widgets()
         return retval
