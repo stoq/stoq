@@ -427,6 +427,14 @@ class PersonAdaptToIndividual(PersonAdapter):
         return [(self.marital_statuses[i], i)
                 for i in self.marital_statuses.keys()]
 
+    def get_cpf_number(self):
+        """
+        Returns the cpf number without any non-numeric characters
+        @returns: the cpf number as a number
+        @rtype: integer
+        """
+        return int(''.join([c for c in self.cpf if c in '1234567890']))
+
 Person.registerFacet(PersonAdaptToIndividual, IIndividual)
 
 class _PersonAdaptToCompany(PersonAdapter):
@@ -455,8 +463,10 @@ class _PersonAdaptToCompany(PersonAdapter):
         @returns: the cnpj number as a number
         @rtype: integer
         """
-        return int(''.join([c for c in self.cnpj
-                                  if c in '1234567890']))
+        num = ''.join([c for c in self.cnpj if c in '1234567890'])
+        if num:
+            return int(num)
+        return 0
 
     def get_state_registry_number(self):
         """

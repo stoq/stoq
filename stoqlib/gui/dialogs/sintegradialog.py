@@ -20,24 +20,21 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):       Johan Dahlin            <jdahlin@async.com.br>
+##                  Fabio Morbec            <fabio@async.com.br>
 ##
-""" Fiscal Printer History dialog """
+""" Sintegra generator dialog """
 
 import datetime
 
 from dateutil.relativedelta import relativedelta
-import gtk
 from kiwi.db.sqlobj import SQLObjectQueryExecuter
 from kiwi.ui.dialogs import save
 from kiwi.ui.search import DateSearchFilter
 
-from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.devices import FiscalDayHistory
-from stoqlib.domain.interfaces import ICompany
-from stoqlib.domain.system import SystemTable
 from stoqlib.gui.base.dialogs import ConfirmDialog
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.sintegra import SintegraFile
+from stoqlib.domain.system import SystemTable
+from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
 
 _ = stoqlib_gettext
 
@@ -59,6 +56,7 @@ month_names = {
 }
 
 
+
 class SintegraDialog(ConfirmDialog):
     size = (780, -1)
     title = _('Fiscal Printer History')
@@ -77,17 +75,6 @@ class SintegraDialog(ConfirmDialog):
         self.add(self.date_filter)
         self.date_filter.show()
 
-    def setup_widgets(self):
-        self.results.set_visible_rows(10)
-        b = gtk.Button(_('_Generate archive'))
-        b.connect('clicked', self._on_generate__clicked)
-        b.set_use_underline(True)
-        self.action_area.set_layout(gtk.BUTTONBOX_START)
-        self.action_area.pack_start(b, False, False, 6)
-        b.show()
-        has_start_date = bool(self.date_filter.get_start_date())
-        b.set_sensitive(has_start_date)
-
     def confirm(self):
         start = self.date_filter.get_start_date()
         end = self.date_filter.get_end_date()
@@ -95,8 +82,8 @@ class SintegraDialog(ConfirmDialog):
                         self.get_toplevel(),
                         "sintegra-%s.txt" % (start.strftime('%Y-%m'),))
         if filename:
-            sfile = self._generate_sintegra(start, end)
-            sfile.write(filename)
+            generator = StoqlibSintegraGenerator(self.conn, start, end)
+            generator.write(filename)
             self.close()
 
     #
@@ -136,39 +123,3 @@ class SintegraDialog(ConfirmDialog):
         executer.set_filter_columns(self.date_filter, [column])
         executer.set_table(search_table)
         return executer.search([self.date_filter.get_state()])
-
-    def _generate_sintegra(self, start, end):
-        branch = get_current_branch(self.conn)
-        company = ICompany(branch.person)
-        address = branch.person.get_main_address()
-
-        s = SintegraFile()
-        s.add_header(company.get_cnpj_number(),
-                     str(company.get_state_registry_number()) or 'ISENTO',
-                     company.fancy_name,
-                     address.get_city(),
-                     address.get_state(),
-                     branch.person.get_fax_number_number(),
-                     start, end)
-        s.add_complement_header(address.street, address.number,
-                                address.complement,
-                                address.district,
-                                address.get_postal_code_number(),
-                                company.fancy_name,
-                                branch.person.get_phone_number_number())
-
-        self._add_fiscal_coupons(s, start, end)
-        s.close()
-
-        return s
-
-    def _add_fiscal_coupons(self, sintegra, start, end):
-        for item in self._date_filter_query(FiscalDayHistory, 'emission_date'):
-            sintegra.add_fiscal_coupon(
-                item.emission_date, item.serial, item.serial_id,
-                item.coupon_start, item.coupon_end,
-                item.cro, item.crz, item.period_total, item.total)
-            for tax in item.taxes:
-                sintegra.add_fiscal_tax(item.emission_date, item.serial,
-                                        tax.code, tax.value)
-
