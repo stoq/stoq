@@ -217,8 +217,8 @@ class ECFUI(object):
 
         return retval
 
-    def _close_till(self, till):
-        log.info('ECFCouponPrinter.close_till(%r)' % (till,))
+    def _close_till(self, till, previous_day):
+        log.info('ECFCouponPrinter.close_till(%r, %r)' % (till, previous_day))
 
         if not self._validate_printer():
             return False
@@ -226,7 +226,7 @@ class ECFUI(object):
         retval = True
         while True:
             try:
-                self._printer.close_till()
+                self._printer.close_till(previous_day=previous_day)
             except CouponOpenError:
                 self._printer.cancel()
                 retval = False
@@ -322,8 +322,8 @@ class ECFUI(object):
     def _on_TillOpen(self, till):
         return self._open_till(till)
 
-    def _on_TillClose(self, till):
-        return self._close_till(till)
+    def _on_TillClose(self, till, previous_day):
+        return self._close_till(till, previous_day)
 
     def _on_TillAddCash(self, till, value):
         self._add_cash(till, value)

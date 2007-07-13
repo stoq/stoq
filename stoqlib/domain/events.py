@@ -56,6 +56,7 @@ class TillCloseEvent(Event):
     """
     This event is emitted when a till is closed
     @param till: the closed till
+    @param previous_day: if the till wasn't closed previously
     """
 
 
