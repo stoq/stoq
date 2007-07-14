@@ -5337,7 +5337,7 @@ msgstr "Número da venda:"
 
 #: ../data/glade/InstallmentConfirmation.glade.h:6
 msgid "Paid date:"
-msgstr "Data do Pagamento"
+msgstr "Data do Pagamento:"
 
 #: ../data/glade/InstallmentConfirmation.glade.h:7
 msgid "Pay interest"
