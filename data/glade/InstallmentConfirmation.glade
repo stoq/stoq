@@ -29,7 +29,8 @@
                                 </child>
                                 <child>
                                     <widget class="ProxyLabel" id="label4">
-                                        <property name="label" context="yes" translatable="yes">Installment value ($CURRENCY):</property>
+                                        <property name="label" context="yes" translatable="yes">Installment value:</property>
+                                        <property name="model_attribute">label4</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -41,6 +42,7 @@
                                 <child>
                                     <widget class="ProxyLabel" id="label3">
                                         <property name="label" context="yes" translatable="yes">Penalty ($CURRENCY):</property>
+                                        <property name="model_attribute"></property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -52,6 +54,7 @@
                                 <child>
                                     <widget class="ProxyLabel" id="label2">
                                         <property name="label" context="yes" translatable="yes">Interest ($CURRENCY):</property>
+                                        <property name="model_attribute"></property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -63,6 +66,7 @@
                                 <child>
                                     <widget class="ProxyLabel" id="discount_label">
                                         <property name="label" context="yes" translatable="yes">Discount ($CURRENCY):</property>
+                                        <property name="model_attribute"></property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -97,9 +101,8 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="ProxyEntry" id="installment_value">
+                                    <widget class="ProxyLabel" id="installment_value">
                                         <property name="data_type">currency</property>
-                                        <property name="is_focus">True</property>
                                         <property name="model_attribute">installment_value</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
@@ -109,7 +112,6 @@
                                         <property name="left_attach">1</property>
                                         <property name="right_attach">2</property>
                                         <property name="top_attach">1</property>
-                                        <property name="x_options"></property>
                                     </packing>
                                 </child>
                                 <child>
@@ -173,9 +175,13 @@
                                     </packing>
                                 </child>
                             </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                            </packing>
                         </child>
                         <child>
-                            <widget class="GtkVBox" id="vbox2">
+                            <widget class="GtkVBox" id="details_box">
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkTable" id="table2">
