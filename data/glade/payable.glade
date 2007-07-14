@@ -161,11 +161,16 @@
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui>
-<menubar action="menubar" name="menubar">
-
-
-<menu action="TillMenu" name="TillMenu"><menuitem action="Receipt" name="Receipt"/><menuitem action="quit_action" name="quit_action"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
-</ui>]]></ui>
+	  <menubar action="menubar" name="menubar">
+	    <menu action="TillMenu" name="TillMenu">
+	      <menuitem action="Receipt" name="Receipt"/>
+	      <menuitem action="quit_action" name="quit_action"/>
+	    </menu>
+	    <menu action="help_menu" name="help_menu">
+	      <menuitem action="about_menu" name="about_menu"/>
+	    </menu>
+	  </menubar>
+	</ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="payable">
         <property name="height_request">570</property>
