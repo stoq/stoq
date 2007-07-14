@@ -57,6 +57,8 @@ class TestReport(DomainTest):
                 os.system(cmd)
             self._comparePDF(original_filename, filename)
 
+        if filename.endswith('.tmp'):
+            os.unlink(filename)
 
     def _comparePDF(self, original_filename, filename):
         original_filename_html = "%s.html" % (original_filename,)
@@ -82,6 +84,10 @@ class TestReport(DomainTest):
                      output_tmp):
             file.close()
         retval = diff_files(out_original_filename, out_tmp)
+        os.unlink(tmp_html)
+        os.unlink(out_tmp)
+        os.unlink(out_original_filename)
+        os.unlink(original_filename_html)
         if retval:
             raise AssertionError("Files differ, check output above")
 
