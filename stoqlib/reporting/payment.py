@@ -87,8 +87,8 @@ class PayablePaymentReport(_BasePaymentReport):
     """
 
     def get_columns(self):
-        return [OTC(_("Number"),
-                    lambda obj: obj.id, width=60),
+        return [OTC(_("#"),
+                    lambda obj: obj.id, width=40, align=RIGHT),
                 OTC(_("Description"),
                     lambda obj: obj.description, width=150),
                 OTC(_("Supplier"),
