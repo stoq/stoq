@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-16 13:12-0300\n"
+"POT-Creation-Date: 2007-07-16 16:40-0300\n"
 "PO-Revision-Date: 2007-04-09 10:04-0300\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -175,7 +175,7 @@ msgstr "Quantidade"
 msgid "Purchase Ordered Items"
 msgstr "Items do Pedido de Compra"
 
-#: ../stoqlib/reporting/purchase.py:157 ../stoqlib/reporting/purchase.py:199
+#: ../stoqlib/reporting/purchase.py:157 ../stoqlib/reporting/purchase.py:202
 #: ../stoqlib/domain/sale.py:388
 msgid "Not Specified"
 msgstr "Não especificado"
@@ -194,16 +194,16 @@ msgstr "Transportadora:"
 msgid "Freight:"
 msgstr "Frete:"
 
-#: ../stoqlib/reporting/purchase.py:171
+#: ../stoqlib/reporting/purchase.py:174
 msgid "Paid in cash"
 msgstr "Pago em dinheiro"
 
-#: ../stoqlib/reporting/purchase.py:175 ../stoqlib/reporting/purchase.py:178
+#: ../stoqlib/reporting/purchase.py:178 ../stoqlib/reporting/purchase.py:181
 #, python-format
 msgid "Paid with %s in %d installments"
 msgstr "Pago com %s em %d parcelas"
 
-#: ../stoqlib/reporting/purchase.py:187
+#: ../stoqlib/reporting/purchase.py:190
 #: ../data/glade/SaleDetailsDialog.glade.h:6
 #: ../data/glade/TillClosing.glade.h:5
 #: ../data/glade/StartPurchaseStep.glade.h:10
@@ -211,21 +211,21 @@ msgstr "Pago com %s em %d parcelas"
 msgid "Open Date:"
 msgstr "Data de Abertura:"
 
-#: ../stoqlib/reporting/purchase.py:188
+#: ../stoqlib/reporting/purchase.py:191
 #: ../data/glade/ClientDetailsDialog.glade.h:8
 #: ../data/glade/SaleDetailsDialog.glade.h:10
 #: ../data/glade/UserStatusSlave.glade.h:4
 msgid "Status:"
 msgstr "Situação:"
 
-#: ../stoqlib/reporting/purchase.py:189
+#: ../stoqlib/reporting/purchase.py:192
 #: ../data/glade/StartPurchaseStep.glade.h:12
 #: ../data/glade/PurchaseDetailsDialog.glade.h:20
 #: ../data/glade/ReceivingInvoiceSlave.glade.h:14
 msgid "Supplier:"
 msgstr "Fornecedor:"
 
-#: ../stoqlib/reporting/purchase.py:190
+#: ../stoqlib/reporting/purchase.py:193
 #: ../data/glade/StartPurchaseStep.glade.h:5
 #: ../data/glade/PurchaseDetailsDialog.glade.h:4
 #: ../data/glade/ReceivingInvoiceSlave.glade.h:2
@@ -233,12 +233,12 @@ msgstr "Fornecedor:"
 msgid "Branch:"
 msgstr "Unidade:"
 
-#: ../stoqlib/reporting/purchase.py:200
+#: ../stoqlib/reporting/purchase.py:203
 #, python-format
 msgid "Expected Receival Date: %s"
 msgstr "Data esperada para recebimento: %s"
 
-#: ../stoqlib/reporting/purchase.py:217
+#: ../stoqlib/reporting/purchase.py:220
 #, python-format
 msgid "Purchase Order #%s"
 msgstr "Pedido de Compra %s"
@@ -324,8 +324,8 @@ msgstr "Código"
 #: ../stoqlib/reporting/payment.py:65 ../stoqlib/reporting/payment.py:92
 #: ../stoqlib/gui/slaves/devicesslave.py:56
 #: ../stoqlib/gui/slaves/installmentslave.py:185
-#: ../stoqlib/gui/editors/deliveryeditor.py:183
 #: ../stoqlib/gui/editors/sellableeditor.py:99
+#: ../stoqlib/gui/editors/deliveryeditor.py:183
 #: ../stoqlib/gui/search/giftcertificatesearch.py:77
 #: ../stoqlib/gui/search/sellablesearch.py:127
 #: ../stoqlib/gui/search/tillsearch.py:117
@@ -460,7 +460,7 @@ msgid "Received Date"
 msgstr "Data de Recebimento"
 
 #: ../stoqlib/reporting/purchase_receival.py:52
-#: ../stoqlib/gui/base/search.py:256
+#: ../stoqlib/gui/base/search.py:260
 #: ../stoqlib/gui/editors/personeditor.py:355
 #: ../stoqlib/gui/search/receivingsearch.py:84
 #: ../stoqlib/gui/search/stationsearch.py:62
@@ -804,27 +804,6 @@ msgstr "venda %s"
 msgid "%s Money Returned for Sale %d"
 msgstr "%s Dinheiro Devolvido para a Venda %d"
 
-#: ../stoqlib/domain/payment/payment.py:74
-#: ../stoqlib/domain/payment/group.py:67
-msgid "Preview"
-msgstr "Avaliação"
-
-#: ../stoqlib/domain/payment/payment.py:75
-msgid "To Pay"
-msgstr "A pagar"
-
-#: ../stoqlib/domain/payment/payment.py:77
-msgid "Reviewing"
-msgstr "Revisão"
-
-#: ../stoqlib/domain/payment/payment.py:248
-msgid "Anonymous"
-msgstr "Anônimo"
-
-#: ../stoqlib/domain/payment/payment.py:283
-msgid "NOT PAID"
-msgstr "A PAGAR"
-
 #: ../stoqlib/domain/payment/methods.py:326
 #, python-format
 msgid "%s/%s %s for %s"
@@ -880,6 +859,27 @@ msgstr "Parcelado lojista"
 #: ../stoqlib/domain/payment/methods.py:792
 msgid "Installments Provider"
 msgstr "Parcelado administradora"
+
+#: ../stoqlib/domain/payment/payment.py:74
+#: ../stoqlib/domain/payment/group.py:67
+msgid "Preview"
+msgstr "Avaliação"
+
+#: ../stoqlib/domain/payment/payment.py:75
+msgid "To Pay"
+msgstr "A pagar"
+
+#: ../stoqlib/domain/payment/payment.py:77
+msgid "Reviewing"
+msgstr "Revisão"
+
+#: ../stoqlib/domain/payment/payment.py:248
+msgid "Anonymous"
+msgstr "Anônimo"
+
+#: ../stoqlib/domain/payment/payment.py:283
+msgid "NOT PAID"
+msgstr "A PAGAR"
 
 #: ../stoqlib/domain/payment/group.py:68
 msgid "Open"
@@ -2754,7 +2754,7 @@ msgstr "S_elecione Itens"
 #. if not items:
 #. raise ValueError('You should have at least one branch at '
 #. 'this point')
-#: ../stoqlib/gui/base/search.py:253
+#: ../stoqlib/gui/base/search.py:257
 #: ../stoqlib/gui/search/giftcertificatesearch.py:64
 #: ../stoqlib/gui/search/giftcertificatesearch.py:122
 #: ../stoqlib/gui/search/salesearch.py:66
@@ -2768,37 +2768,56 @@ msgstr "S_elecione Itens"
 msgid "Any"
 msgstr "Qualquer"
 
-#: ../stoqlib/gui/editors/deliveryeditor.py:52
-msgid "New Delivery"
-msgstr "Nova Entrega"
+#: ../stoqlib/gui/editors/sellableeditor.py:63
+msgid "SellableTax constant"
+msgstr "Constante de Imposto"
 
-#: ../stoqlib/gui/editors/deliveryeditor.py:124
-#: ../stoqlib/gui/editors/addresseditor.py:152
-#: ../stoqlib/gui/editors/addresseditor.py:203
-msgid "Address"
-msgstr "Endereço"
+#: ../stoqlib/gui/editors/sellableeditor.py:95
+msgid "Tax constants"
+msgstr "Constantes de Imposto"
 
-#: ../stoqlib/gui/editors/deliveryeditor.py:126
-#: ../stoqlib/gui/editors/addresseditor.py:205
-msgid "City"
-msgstr "Cidade"
+#: ../stoqlib/gui/editors/sellableeditor.py:135
+msgid "Price settings"
+msgstr "Ajustes de preço"
 
-#: ../stoqlib/gui/editors/deliveryeditor.py:127
-#: ../stoqlib/gui/editors/addresseditor.py:207
-msgid "State"
-msgstr "Estado"
+#: ../stoqlib/gui/editors/sellableeditor.py:198
+msgid "This unit type requires weighing"
+msgstr "Este tipo de unidade requer pesagem"
 
-#: ../stoqlib/gui/editors/deliveryeditor.py:131
-msgid "Client Addresses"
-msgstr "Endereços do Cliente"
+#: ../stoqlib/gui/editors/sellableeditor.py:273
+msgid "No unit"
+msgstr "Sem unidade"
 
-#: ../stoqlib/gui/editors/deliveryeditor.py:141
-msgid "Delivery Instructions"
-msgstr "Instruções da Entrega"
+#: ../stoqlib/gui/editors/sellableeditor.py:276
+msgid "Specify:"
+msgstr "Especifique:"
 
-#: ../stoqlib/gui/editors/deliveryeditor.py:146
-msgid "Expected delivery date must be set to a future date"
-msgstr "A data prevista para entrega deve ser uma data futura"
+#: ../stoqlib/gui/editors/sellableeditor.py:323
+#: ../stoqlib/gui/editors/giftcertificateeditor.py:136
+#: ../stoqlib/gui/wizards/salewizard.py:317
+#, python-format
+msgid "The barcode %s already exists"
+msgstr "O código de barras %s já existe!"
+
+#: ../stoqlib/gui/editors/sellableeditor.py:332
+msgid "Price cannot be zero or negative"
+msgstr "Preço não pode ser zero ou negativo."
+
+#: ../stoqlib/gui/editors/sellableeditor.py:336
+msgid "Cost cannot be zero or negative"
+msgstr "Custo não pode ser zero ou negativo."
+
+#: ../stoqlib/gui/editors/sellableeditor.py:343
+msgid "Product Item"
+msgstr "Item do Produto"
+
+#: ../stoqlib/gui/editors/sellableeditor.py:344
+msgid "Receiving Item"
+msgstr "Itens Recebidos"
+
+#: ../stoqlib/gui/editors/sellableeditor.py:346
+msgid "Delivery Item"
+msgstr "Item de Entrega"
 
 #: ../stoqlib/gui/editors/stationeditor.py:36
 msgid "BranchStation"
@@ -2848,56 +2867,37 @@ msgstr "O valor do vale compra deve ser maior que zero"
 msgid "Add Gift Certificates"
 msgstr "Adicionar Vale Compra"
 
-#: ../stoqlib/gui/editors/giftcertificateeditor.py:136
-#: ../stoqlib/gui/editors/sellableeditor.py:323
-#: ../stoqlib/gui/wizards/salewizard.py:317
-#, python-format
-msgid "The barcode %s already exists"
-msgstr "O código de barras %s já existe!"
+#: ../stoqlib/gui/editors/deliveryeditor.py:52
+msgid "New Delivery"
+msgstr "Nova Entrega"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:63
-msgid "SellableTax constant"
-msgstr "Constante de Imposto"
+#: ../stoqlib/gui/editors/deliveryeditor.py:124
+#: ../stoqlib/gui/editors/addresseditor.py:152
+#: ../stoqlib/gui/editors/addresseditor.py:203
+msgid "Address"
+msgstr "Endereço"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:95
-msgid "Tax constants"
-msgstr "Constantes de Imposto"
+#: ../stoqlib/gui/editors/deliveryeditor.py:126
+#: ../stoqlib/gui/editors/addresseditor.py:205
+msgid "City"
+msgstr "Cidade"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:135
-msgid "Price settings"
-msgstr "Ajustes de preço"
+#: ../stoqlib/gui/editors/deliveryeditor.py:127
+#: ../stoqlib/gui/editors/addresseditor.py:207
+msgid "State"
+msgstr "Estado"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:198
-msgid "This unit type requires weighing"
-msgstr "Este tipo de unidade requer pesagem"
+#: ../stoqlib/gui/editors/deliveryeditor.py:131
+msgid "Client Addresses"
+msgstr "Endereços do Cliente"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:273
-msgid "No unit"
-msgstr "Sem unidade"
+#: ../stoqlib/gui/editors/deliveryeditor.py:141
+msgid "Delivery Instructions"
+msgstr "Instruções da Entrega"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:276
-msgid "Specify:"
-msgstr "Especifique:"
-
-#: ../stoqlib/gui/editors/sellableeditor.py:332
-msgid "Price cannot be zero or negative"
-msgstr "Preço não pode ser zero ou negativo."
-
-#: ../stoqlib/gui/editors/sellableeditor.py:336
-msgid "Cost cannot be zero or negative"
-msgstr "Custo não pode ser zero ou negativo."
-
-#: ../stoqlib/gui/editors/sellableeditor.py:343
-msgid "Product Item"
-msgstr "Item do Produto"
-
-#: ../stoqlib/gui/editors/sellableeditor.py:344
-msgid "Receiving Item"
-msgstr "Itens Recebidos"
-
-#: ../stoqlib/gui/editors/sellableeditor.py:346
-msgid "Delivery Item"
-msgstr "Item de Entrega"
+#: ../stoqlib/gui/editors/deliveryeditor.py:146
+msgid "Expected delivery date must be set to a future date"
+msgstr "A data prevista para entrega deve ser uma data futura"
 
 #: ../stoqlib/gui/editors/addresseditor.py:148
 msgid "Number cannot be zero or less than zero"
@@ -2920,10 +2920,6 @@ msgstr "Editar Detalhes de Nota Fiscal"
 msgid "Edit '%s' Parameter"
 msgstr "Alterar Parâmetro '%s'"
 
-#: ../stoqlib/gui/editors/profileeditor.py:43
-msgid "User Profile"
-msgstr "Perfil de Usuário"
-
 #: ../stoqlib/gui/editors/serviceeditor.py:46
 #: ../data/glade/SellableTypeStep.glade.h:3
 msgid "Service"
@@ -2937,6 +2933,10 @@ msgstr "A data prevista para recebimento deve ser uma data futura"
 #: ../stoqlib/gui/editors/serviceeditor.py:82
 msgid "Service details"
 msgstr "Detalhes do Serviço"
+
+#: ../stoqlib/gui/editors/profileeditor.py:43
+msgid "User Profile"
+msgstr "Perfil de Usuário"
 
 #: ../stoqlib/gui/editors/fiscaleditor.py:37
 #: ../stoqlib/gui/search/fiscalsearch.py:51
@@ -3112,21 +3112,6 @@ msgstr "Nova Transportadora"
 msgid "New Branch"
 msgstr "Nova Unidade"
 
-#: ../stoqlib/gui/editors/baseeditor.py:199
-#, python-format
-msgid "Details of %s"
-msgstr "Detalhes de %s"
-
-#: ../stoqlib/gui/editors/baseeditor.py:201
-#, python-format
-msgid "Edit Details of \"%s\""
-msgstr "Editar Detalhes de \"%s\""
-
-#: ../stoqlib/gui/editors/baseeditor.py:202
-#, python-format
-msgid "Add %s"
-msgstr "Adicionar %s"
-
 #: ../stoqlib/gui/editors/paymentmethodeditor.py:39
 #: ../stoqlib/gui/dialogs/paymentmethod.py:83
 msgid "Payment Method"
@@ -3156,6 +3141,21 @@ msgstr "Produto"
 #: ../stoqlib/gui/editors/producteditor.py:225
 msgid "Product details"
 msgstr "Detalhes do Produto"
+
+#: ../stoqlib/gui/editors/baseeditor.py:199
+#, python-format
+msgid "Details of %s"
+msgstr "Detalhes de %s"
+
+#: ../stoqlib/gui/editors/baseeditor.py:201
+#, python-format
+msgid "Edit Details of \"%s\""
+msgstr "Editar Detalhes de \"%s\""
+
+#: ../stoqlib/gui/editors/baseeditor.py:202
+#, python-format
+msgid "Add %s"
+msgstr "Adicionar %s"
 
 #: ../stoqlib/gui/search/giftcertificatesearch.py:47
 msgid "Gift Certificate Type Search"
@@ -4025,39 +4025,33 @@ msgstr ""
 "computador."
 
 #: ../plugins/ecf/ecfui.py:63
-#, fuzzy
 msgid "Summary"
-msgstr "Salário"
+msgstr "Sumário"
 
 #: ../plugins/ecf/ecfui.py:80
-#, fuzzy
 msgid "This operation requires a connected fiscal printer"
-msgstr "Não há impressora fiscal configurada"
+msgstr "Esta operação requer uma impressora fiscal conectada"
 
 #: ../plugins/ecf/ecfui.py:91
 msgid "Fiscalprinters serial number is different!"
-msgstr ""
+msgstr "O número serial da impressora fiscal é diferente"
 
 #: ../plugins/ecf/ecfui.py:119 ../plugins/ecf/ecfui.py:144
 #: ../plugins/ecf/ecfui.py:166
-#, fuzzy
 msgid "ECF"
-msgstr "CIF"
+msgstr "ECF"
 
 #: ../plugins/ecf/ecfui.py:120
-#, fuzzy
 msgid "Configure fiscal printer..."
-msgstr "Não há impressora fiscal configurada"
+msgstr "Configuração impressora fiscal"
 
 #: ../plugins/ecf/ecfui.py:145 ../plugins/ecf/ecfui.py:167
-#, fuzzy
 msgid "Read Memory"
 msgstr "Memória Fiscal"
 
 #: ../plugins/ecf/ecfui.py:147 ../plugins/ecf/ecfui.py:285
-#, fuzzy
 msgid "Cancel Last Document"
-msgstr "Data de Cancelamento:"
+msgstr "Cancelar Último Documento"
 
 #: ../plugins/ecf/ecfui.py:193
 msgid ""
@@ -4085,19 +4079,19 @@ msgstr ""
 
 #: ../plugins/ecf/ecfui.py:284
 msgid "Do you really want to cancel the last document?"
-msgstr ""
+msgstr "Você deseja realmente cancelar o último documento?"
 
 #: ../plugins/ecf/ecfui.py:290
 msgid "Cancelling sale failed, nothing to cancel"
-msgstr ""
+msgstr "Cancelamento de vendas falhou, nada foi cancelado"
 
 #: ../plugins/ecf/ecfui.py:292
 msgid "Document was cancelled"
-msgstr ""
+msgstr "Documento está cancelado"
 
 #: ../plugins/ecf/deviceconstanteditor.py:63
 msgid "Device constant"
-msgstr "Dispositivos"
+msgstr "Constante de Dispositivo"
 
 #: ../plugins/ecf/deviceconstanteditor.py:203
 msgid "Units"
@@ -4122,31 +4116,28 @@ msgstr "Impressora Fiscal"
 #: ../plugins/ecf/ecfprinterdialog.py:114
 #, python-format
 msgid "Probing for a %s printer on %s"
-msgstr ""
+msgstr "Procurando por uma %s impressora em %s"
 
 #: ../plugins/ecf/ecfprinterdialog.py:151
 #, python-format
 msgid "Could not find a %s printer connected to %s"
-msgstr ""
+msgstr "Não foi possível encontrar uma %s impressora conectada em %s"
 
 #: ../plugins/ecf/ecfprinterdialog.py:178
 msgid "This printer is already known to the system"
-msgstr ""
+msgstr "Esta impressora já está instalada no sistema"
 
 #: ../plugins/ecf/ecfprinterdialog.py:243
-#, fuzzy
 msgid "Fiscal Printers"
-msgstr "Impressora Fiscal"
+msgstr "Impressoras Fiscais"
 
 #: ../plugins/ecf/ecfprinterdialog.py:248
-#, fuzzy
 msgid "Model"
 msgstr "Modelo:"
 
 #: ../plugins/ecf/ecfprinterdialog.py:249
-#, fuzzy
 msgid "Serial"
-msgstr "Síria"
+msgstr "Serial"
 
 #: ../plugins/ecf/ecfdomain.py:98
 #, python-format
@@ -4154,15 +4145,16 @@ msgid "%d %%"
 msgstr "%d %%"
 
 #: ../plugins/ecf/ecfdomain.py:153
-#, fuzzy, python-format
+#, python-format
 msgid "fiscal printer is missing a constant for the custom tax constant '%s'"
 msgstr ""
-"A impressora fiscal não encontrou a constante para taxa contante padrão %r"
+"A impressora fiscal não encontrou a constante para imposto contante padrão %r"
 
 #: ../plugins/ecf/ecfdomain.py:160
-#, fuzzy, python-format
+#, python-format
 msgid "fiscal printer is missing a constant for tax constant '%s'"
-msgstr "A impressora fiscal não encontrou a constante para a taxa constante %r"
+msgstr ""
+"A impressora fiscal não encontrou a constante para a imposto constante %r"
 
 #: ../plugins/ecf/ecfmemorydialog.py:37
 msgid "Print Fiscal Memory"
@@ -4187,7 +4179,7 @@ msgstr "Não é possível imprimir o Sumário"
 #: ../plugins/ecf/couponprinter.py:160
 #, python-format
 msgid "Invalid serial number for fiscal printer connected to %s"
-msgstr ""
+msgstr "Número serial inválido para impressora fiscal conectado em %s"
 
 #: ../plugins/ecf/couponprinter.py:247
 msgid "Could not print item"
@@ -4199,6 +4191,8 @@ msgid ""
 "Can't find a valid identifier for the payment method type: %s. It is not "
 "possible add the payment on the coupon"
 msgstr ""
+"Não possível identicar o método de pagamento na impressora fiscal tipo: %s. "
+"Portanto não é possível adicionar o pagamento ao cupom"
 
 #: ../plugins/ecf/couponprinter.py:318
 #, python-format
@@ -4290,38 +4284,6 @@ msgstr "Dia de Fechamento:"
 msgid "Payment Day:"
 msgstr "Dia de Pagamento:"
 
-#: ../data/glade/FiscalMemoryEditor.glade.h:1
-#: ../data/glade/PurchasePaymentSlave.glade.h:2
-msgid "1"
-msgstr "1"
-
-#: ../data/glade/FiscalMemoryEditor.glade.h:3
-msgid "End Date:"
-msgstr "Data Final:"
-
-#: ../data/glade/FiscalMemoryEditor.glade.h:4
-msgid "Fiscal Memory"
-msgstr "Memória Fiscal"
-
-#: ../data/glade/FiscalMemoryEditor.glade.h:5
-#: ../data/glade/DateSearchSlave.glade.h:3
-#: ../data/glade/OnSaleInfoSlave.glade.h:2
-msgid "From:"
-msgstr "De:"
-
-#: ../data/glade/FiscalMemoryEditor.glade.h:6
-msgid "Reductions"
-msgstr "Reduções"
-
-#: ../data/glade/FiscalMemoryEditor.glade.h:7
-msgid "Start Date:"
-msgstr "Data Inicial:"
-
-#: ../data/glade/FiscalMemoryEditor.glade.h:8
-#: ../data/glade/OnSaleInfoSlave.glade.h:4
-msgid "To:"
-msgstr "Até:"
-
 #: ../data/glade/BillDataSlave.glade.h:1
 msgid "Duedate:"
 msgstr "Vencimento:"
@@ -4410,12 +4372,6 @@ msgstr "Fornecedor Padrão:"
 msgid "Supplier Cost:"
 msgstr "Custo do Fornecedor:"
 
-#: ../data/glade/CashInEditor.glade.h:1 ../data/glade/CashOutEditor.glade.h:1
-#: ../data/glade/SaleReturnSlave.glade.h:7
-#: ../data/glade/ProductRetentionDialog.glade.h:6
-msgid "Reason:"
-msgstr "Razão:"
-
 #: ../data/glade/UserStatusSlave.glade.h:2
 msgid "False"
 msgstr "Falso"
@@ -4423,6 +4379,47 @@ msgstr "Falso"
 #: ../data/glade/UserStatusSlave.glade.h:5
 msgid "True"
 msgstr "Verdadeiro"
+
+#: ../data/glade/AddressSlave.glade.h:1
+msgid "     -   "
+msgstr "     -    "
+
+#: ../data/glade/AddressSlave.glade.h:2
+msgid "00000-000"
+msgstr "00000-000"
+
+#: ../data/glade/AddressSlave.glade.h:3
+msgid "City:"
+msgstr "Cidade:"
+
+#: ../data/glade/AddressSlave.glade.h:4
+msgid "Complement:"
+msgstr "Complemento:"
+
+#: ../data/glade/AddressSlave.glade.h:5
+msgid "Country:"
+msgstr "País:"
+
+#: ../data/glade/AddressSlave.glade.h:6
+msgid "District:"
+msgstr "Bairro:"
+
+#: ../data/glade/AddressSlave.glade.h:7
+#: ../data/glade/EmployeeDetailsSlave.glade.h:12
+msgid "Number:"
+msgstr "Número:"
+
+#: ../data/glade/AddressSlave.glade.h:8
+msgid "Postal Code:"
+msgstr "CEP:"
+
+#: ../data/glade/AddressSlave.glade.h:9
+msgid "State:"
+msgstr "Estado:"
+
+#: ../data/glade/AddressSlave.glade.h:10
+msgid "Street:"
+msgstr "Endereço:"
 
 #: ../data/glade/EmployeeDetailsSlave.glade.h:1
 msgid "Account:"
@@ -4466,11 +4463,6 @@ msgstr ""
 "Educação \n"
 "Escolaridade:"
 
-#: ../data/glade/EmployeeDetailsSlave.glade.h:12
-#: ../data/glade/AddressSlave.glade.h:7
-msgid "Number:"
-msgstr "Número:"
-
 #: ../data/glade/EmployeeDetailsSlave.glade.h:13
 msgid "PIS"
 msgstr "PIS"
@@ -4494,42 +4486,6 @@ msgstr "Férias:"
 #: ../data/glade/EmployeeDetailsSlave.glade.h:18
 msgid "Work Permit"
 msgstr "Permissão de Trabalho"
-
-#: ../data/glade/AddressSlave.glade.h:1
-msgid "     -   "
-msgstr "     -    "
-
-#: ../data/glade/AddressSlave.glade.h:2
-msgid "00000-000"
-msgstr "00000-000"
-
-#: ../data/glade/AddressSlave.glade.h:3
-msgid "City:"
-msgstr "Cidade:"
-
-#: ../data/glade/AddressSlave.glade.h:4
-msgid "Complement:"
-msgstr "Complemento:"
-
-#: ../data/glade/AddressSlave.glade.h:5
-msgid "Country:"
-msgstr "País:"
-
-#: ../data/glade/AddressSlave.glade.h:6
-msgid "District:"
-msgstr "Bairro:"
-
-#: ../data/glade/AddressSlave.glade.h:8
-msgid "Postal Code:"
-msgstr "CEP:"
-
-#: ../data/glade/AddressSlave.glade.h:9
-msgid "State:"
-msgstr "Estado:"
-
-#: ../data/glade/AddressSlave.glade.h:10
-msgid "Street:"
-msgstr "Endereço:"
 
 #: ../data/glade/TillClosing.glade.h:1
 msgid "<b>Cash Amounts:</b>"
@@ -4698,6 +4654,12 @@ msgstr "  -  -    "
 msgid "At any date"
 msgstr "Em qualquer data"
 
+#: ../data/glade/DateSearchSlave.glade.h:3
+#: ../data/glade/OnSaleInfoSlave.glade.h:2
+#: ../data/glade/FiscalMemoryEditor.glade.h:5
+msgid "From:"
+msgstr "De:"
+
 #: ../data/glade/DateSearchSlave.glade.h:4
 msgid "Placed:"
 msgstr "Localizado:"
@@ -4713,6 +4675,11 @@ msgstr "até"
 #: ../data/glade/ProductSupplierSlave.glade.h:2
 msgid "Supplied by: "
 msgstr "Fornecido por:"
+
+#: ../data/glade/PurchasePaymentSlave.glade.h:2
+#: ../data/glade/FiscalMemoryEditor.glade.h:1
+msgid "1"
+msgstr "1"
 
 #: ../data/glade/PurchasePaymentSlave.glade.h:3
 #: ../data/glade/BillCheckMethodSlave.glade.h:2
@@ -4836,25 +4803,16 @@ msgstr "Editar..."
 msgid "_New..."
 msgstr "Novo ..."
 
+#: ../data/glade/CashOutEditor.glade.h:1
+#: ../data/glade/SaleReturnSlave.glade.h:7
+#: ../data/glade/ProductRetentionDialog.glade.h:6
+#: ../data/glade/CashInEditor.glade.h:1
+msgid "Reason:"
+msgstr "Razão:"
+
 #: ../data/glade/EmployeeStatusSlave.glade.h:1
 msgid "Employee Status:"
 msgstr "Situação do Funcionário:"
-
-#: ../data/glade/CompanyDocumentsSlave.glade.h:1
-msgid "00.000.000/0000-00"
-msgstr "00.000.000/0000-00"
-
-#: ../data/glade/CompanyDocumentsSlave.glade.h:2
-msgid "CNPJ:"
-msgstr "CNPJ:"
-
-#: ../data/glade/CompanyDocumentsSlave.glade.h:3
-msgid "Fancy Name:"
-msgstr "Nome Fantasia:"
-
-#: ../data/glade/CompanyDocumentsSlave.glade.h:4
-msgid "State Registry:"
-msgstr "Registro do Estado:"
 
 #: ../data/glade/AbstractItemStep.glade.h:1
 #: ../data/glade/AbstractProductStep.glade.h:1
@@ -4879,6 +4837,22 @@ msgstr "Item:"
 #: ../data/glade/AbstractProductStep.glade.h:7
 msgid "_Search..."
 msgstr "Pe_squisar"
+
+#: ../data/glade/CompanyDocumentsSlave.glade.h:1
+msgid "00.000.000/0000-00"
+msgstr "00.000.000/0000-00"
+
+#: ../data/glade/CompanyDocumentsSlave.glade.h:2
+msgid "CNPJ:"
+msgstr "CNPJ:"
+
+#: ../data/glade/CompanyDocumentsSlave.glade.h:3
+msgid "Fancy Name:"
+msgstr "Nome Fantasia:"
+
+#: ../data/glade/CompanyDocumentsSlave.glade.h:4
+msgid "State Registry:"
+msgstr "Registro do Estado:"
 
 #: ../data/glade/SaleReturnSlave.glade.h:1
 msgid "<b>Cancellation Details:</b>"
@@ -5019,10 +4993,10 @@ msgid "Tax:"
 msgstr "Imposto"
 
 #: ../data/glade/ContactEditor.glade.h:1
-#: ../data/glade/DeviceConstantEditor.glade.h:3
-#: ../data/glade/SellableTaxConstantEditor.glade.h:1
 #: ../data/glade/PersonEditorTemplate.glade.h:14
 #: ../data/glade/StationEditor.glade.h:3
+#: ../data/glade/DeviceConstantEditor.glade.h:3
+#: ../data/glade/SellableTaxConstantEditor.glade.h:1
 msgid "Name:"
 msgstr "Nome:"
 
@@ -5156,24 +5130,6 @@ msgstr "Perfil:"
 msgid "Username:"
 msgstr "Usuário:"
 
-#: ../data/glade/DeviceConstantEditor.glade.h:1
-msgid "ASCII value:"
-msgstr "Valor ASCII:"
-
-#: ../data/glade/DeviceConstantEditor.glade.h:2
-msgid "HEX value:"
-msgstr "HEX Valor:"
-
-#: ../data/glade/DeviceConstantEditor.glade.h:4
-#: ../data/glade/PaymentAdditionDialog.glade.h:4
-msgid "Type:"
-msgstr "Tipo:"
-
-#: ../data/glade/DeviceConstantEditor.glade.h:5
-#: ../data/glade/SellableTaxConstantEditor.glade.h:2
-msgid "Value:"
-msgstr "Valor:"
-
 #: ../data/glade/TributarySituationSlave.glade.h:3
 msgid "Tributary Situation:"
 msgstr "Situação Tributária:"
@@ -5241,6 +5197,11 @@ msgstr "Porta:"
 #: ../data/glade/OnSaleInfoSlave.glade.h:1
 msgid "<u>Currently on Sale:</u>"
 msgstr "<u>Preço de Promoção:</u>"
+
+#: ../data/glade/OnSaleInfoSlave.glade.h:4
+#: ../data/glade/FiscalMemoryEditor.glade.h:8
+msgid "To:"
+msgstr "Até:"
 
 #: ../data/glade/CredProviderDetailsSlave.glade.h:2
 msgid "Provider Id:"
@@ -5510,6 +5471,30 @@ msgstr "Situação da Unidade:"
 msgid "Manager:"
 msgstr "Gerente:"
 
+#: ../data/glade/FiscalMemoryEditor.glade.h:3
+msgid "End Date:"
+msgstr "Data Final:"
+
+#: ../data/glade/FiscalMemoryEditor.glade.h:4
+msgid "Fiscal Memory"
+msgstr "Memória Fiscal"
+
+#: ../data/glade/FiscalMemoryEditor.glade.h:6
+msgid "Reductions"
+msgstr "Reduções"
+
+#: ../data/glade/FiscalMemoryEditor.glade.h:7
+msgid "Start Date:"
+msgstr "Data Inicial:"
+
+#: ../data/glade/SaleListToolbar.glade.h:1
+msgid "Ed_it"
+msgstr "Ed_itar"
+
+#: ../data/glade/SaleListToolbar.glade.h:3
+msgid "_Return"
+msgstr "De_volução"
+
 #: ../data/glade/InstallmentConfirmation.glade.h:2
 msgid "Discount ($CURRENCY):"
 msgstr "Desconto ($CURRENCY):"
@@ -5546,13 +5531,23 @@ msgstr "Juros ($CURRENCY):"
 msgid "Total value:"
 msgstr "Valor total:"
 
-#: ../data/glade/SaleListToolbar.glade.h:1
-msgid "Ed_it"
-msgstr "Ed_itar"
+#: ../data/glade/DeviceConstantEditor.glade.h:1
+msgid "ASCII value:"
+msgstr "Valor ASCII:"
 
-#: ../data/glade/SaleListToolbar.glade.h:3
-msgid "_Return"
-msgstr "De_volução"
+#: ../data/glade/DeviceConstantEditor.glade.h:2
+msgid "HEX value:"
+msgstr "HEX Valor:"
+
+#: ../data/glade/DeviceConstantEditor.glade.h:4
+#: ../data/glade/PaymentAdditionDialog.glade.h:4
+msgid "Type:"
+msgstr "Tipo:"
+
+#: ../data/glade/DeviceConstantEditor.glade.h:5
+#: ../data/glade/SellableTaxConstantEditor.glade.h:2
+msgid "Value:"
+msgstr "Valor:"
 
 #: ../data/glade/ProgressDialog.glade.h:1
 msgid "Probing device..."
