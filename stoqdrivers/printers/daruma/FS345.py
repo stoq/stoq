@@ -492,13 +492,16 @@ class FS345(SerialBase):
         self._check_status()
         self._verify_coupon_open()
 
-        customer_name = self._customer_name or _("No client")
-        customer_document = self._customer_document or _("No document")
-        customer_address = self._customer_address or _("No address")
-        self.send_command(CMD_IDENTIFY_CUSTOMER,
-                          "%- 84s%- 84s%- 84s" % (customer_name,
-                                                  customer_address,
-                                                  customer_document))
+        if (self._customer_name or
+            self._customer_address or
+            self._customer_document):
+            customer_name = self._customer_name or _("No client")
+            customer_document = self._customer_document or _("No document")
+            customer_address = self._customer_address or _("No address")
+            self.send_command(CMD_IDENTIFY_CUSTOMER,
+                              "%- 84s%- 84s%- 84s" % (customer_name,
+                                                      customer_address,
+                                                      customer_document))
         LINE_LEN = 48
         msg_len = len(message)
         if msg_len > LINE_LEN:
