@@ -29,8 +29,6 @@ from stoqlib.database.runtime import get_current_station, get_connection
 from stoqlib.domain.events import (SaleConfirmEvent, TillAddCashEvent,
                                    TillRemoveCashEvent, TillOpenEvent,
                                    TillCloseEvent)
-from stoqlib.domain.till import Till
-from stoqlib.exceptions import TillError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.events import StartApplicationEvent, CouponCreatedEvent
 from stoqlib.lib.message import info, warning, yesno
@@ -104,7 +102,6 @@ class ECFUI(object):
             self._add_till_menus(uimanager)
         elif appname == 'admin':
             self._add_admin_menus(uimanager)
-        self._update_ui_actions()
 
     def _add_admin_menus(self, uimanager):
         ui_string = """<ui>
@@ -173,15 +170,6 @@ class ECFUI(object):
         ag.add_action_with_accel(self._till_summarize_action, '<Control>F11')
         uimanager.insert_action_group(ag, 0)
         uimanager.add_ui_from_string(ui_string)
-
-    def _update_ui_actions(self):
-        try:
-            has_till = Till.get_current(self.conn) is not None
-            till_summarize = has_till
-        except TillError:
-            till_summarize = False
-
-        self._till_summarize_action.set_sensitive(till_summarize)
 
     def _open_till(self, till):
         log.info('ECFCouponPrinter.open_till(%r)' % (till,))
