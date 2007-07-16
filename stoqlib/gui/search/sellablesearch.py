@@ -86,7 +86,7 @@ class SellableSearch(SearchEditor):
         self.product_table = Product.getAdapterClass(ISellable)
         if search_str:
             self.set_searchbar_search_string(search_str)
-            self.perform_search()
+            self.search.refresh()
 
         # FIXME: This dictionary should be used to deduct from the
         #        current stock (in the current branch) and not others
