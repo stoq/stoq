@@ -496,9 +496,9 @@ class FS345(SerialBase):
         customer_document = self._customer_document or _("No document")
         customer_address = self._customer_address or _("No address")
         self.send_command(CMD_IDENTIFY_CUSTOMER,
-                          "% 84s% 84s% 84s" % (customer_name,
-                                               customer_address,
-                                               customer_document))
+                          "%- 84s%- 84s%- 84s" % (customer_name,
+                                                  customer_address,
+                                                  customer_document))
         LINE_LEN = 48
         msg_len = len(message)
         if msg_len > LINE_LEN:
