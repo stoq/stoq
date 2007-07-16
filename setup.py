@@ -29,8 +29,8 @@
 
 
 PSYCOPG_REQUIRED = [2, 0, 5]
-KIWI_REQUIRED = (1, 9, 15)
-STOQDRIVERS_REQUIRED = (0, 7, 0)
+KIWI_REQUIRED = (1, 9, 16)
+STOQDRIVERS_REQUIRED = (0, 8, 0)
 
 def psycopg_check(mod):
     version = mod.__version__.split(' ', 1)[0]
@@ -103,6 +103,17 @@ def listexternal():
                       listfiles(directory, '*.py')))
     return files
 
+def listplugins():
+    dirs = []
+    for package in listpackages('plugins'):
+        # strip plugins
+        dirs.append(package.replace('.', '/'))
+    files = []
+    for directory in dirs:
+        files.append(('lib/stoqlib/plugins/',
+                      listfiles(directory, '*.py')))
+    return files
+
 data_files = [
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.png')),
     ('$datadir/sql', listfiles('data', 'sql', '*.sql')),
@@ -121,7 +132,17 @@ global_resources = dict(
     glade='$datadir/glade',
     fonts='$datadir/fonts',
     csv='$datadir/csv',
-    template='$datadir/template')
+    template='$datadir/template',
+    plugin='$prefix/lib/stoqlib/plugins',
+    )
+
+# ECFPlugin
+data_files += listplugins()
+global_resources['ecfsql'] = '$datadir/sql/ecf'
+data_files += [
+    ('$datadir/glade', listfiles('plugins', 'ecf', 'glade', '*.glade')),
+    ('$datadir/sql/ecf', listfiles('plugins', 'ecf', 'sql', '*.sql')),
+    ]
 
 setup(name='stoqlib',
       version=version,
@@ -129,9 +150,10 @@ setup(name='stoqlib',
       author_email="stoq-devel@async.com.br",
       description="A powerful retail system library",
       long_description="""
-      Stoqlib offers many special tools for retail system applications
-      such reports infrastructure, basic dialogs, search windows and
-      domain data in a persistent level.
+      Stoqlib offers infrastructure used by Stoq.
+      Database schema & importing, domain classes with business logic,
+      dialogs, editors and search infrastructure, report generation,
+      plugins, testsuites and API documentation.
       """,
       url=website,
       license="GNU LGPL 2.1 (see COPYING)",
