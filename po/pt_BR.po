@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-16 11:45-0300\n"
+"POT-Creation-Date: 2007-07-16 12:56-0300\n"
 "PO-Revision-Date: 2007-04-09 10:04-0300\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -5260,7 +5260,7 @@ msgstr "Cônjuge:"
 
 #: ../data/glade/DeliveryEditor.glade.h:1
 msgid " Delivery _Tax ($CURRENCY):"
-msgstr "Taxa de Entrega (SCURRENCY):"
+msgstr "Taxa de Entrega ($CURRENCY):"
 
 #: ../data/glade/DeliveryEditor.glade.h:2
 msgid "<b>Delivery Address:</b>"
