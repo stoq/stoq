@@ -121,7 +121,7 @@ class StoqCommandHandler:
             print 'address missing'
             return 1
         config = self._read_config(options, create=True, register_station=False,
-                                   check_schema=False)
+                                   check_schema=False, load_plugins=False)
         config.flush()
 
     def cmd_register(self, options):
