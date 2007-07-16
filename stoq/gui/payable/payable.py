@@ -41,6 +41,7 @@ from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.paymentadditiondialog import PaymentAdditionDialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.printing import print_report
@@ -157,6 +158,9 @@ class PayableApp(SearchableAppWindow):
         if not payable_views:
             return False
 
+        if len(payable_views) == 1:
+            return payable_views[0].status == Payment.STATUS_PENDING
+
         purchase = payable_views[0].purchase
         if purchase is None:
             return False
@@ -244,3 +248,9 @@ class PayableApp(SearchableAppWindow):
         payments = [v.payment for v in payment_views]
         print_report(PaymentReceipt, payments=payments,
                      purchase=payment_views[0].purchase)
+
+    def on_AddPayment__activate(self, action):
+        trans = new_transaction()
+        retval = self.run_dialog(PaymentAdditionDialog, trans)
+        if finish_transaction(trans, retval):
+            self.results.refresh()
