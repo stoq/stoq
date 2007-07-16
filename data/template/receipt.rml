@@ -45,7 +45,7 @@
     </blockTable>
     <spacer length="0.5cm"/>
 % if payer:
-    <blockTable style="2cols_tableStyle" colWidths="6cm, 13.6cm">
+    <blockTable style="2cols_tableStyle" colWidths="7cm, 12.6cm">
       <tr>
         <_td>I/WE RECEIVED FROM</_td>
         <td>${payer.name}</td>
