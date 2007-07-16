@@ -353,7 +353,7 @@ class SellableItemEditor(BaseEditor):
         BaseEditor.__init__(self, conn, model)
         if restrict_increase_qty:
             if isinstance(self.model, ReceivingOrderItem):
-                quantity = self.model.purchase_item.quantity
+                quantity = self.model.get_remaining_quantity()
             else:
                 quantity = self.model.quantity
             self.quantity.set_range(1, quantity)
