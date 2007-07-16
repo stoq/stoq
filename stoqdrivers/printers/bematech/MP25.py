@@ -527,7 +527,7 @@ class MP25(SerialBase):
             else:
                 tax = TaxType.SERVICE
             constants.append((tax,
-                              '%02d' % i+1,
+                              '%02d' % (i+1,),
                               Decimal(value) / 100))
 
         constants.extend([
