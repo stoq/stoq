@@ -124,6 +124,27 @@ class _PurchaseConfirmationModel(_ConfirmationModel):
         return currency(0)
 
 
+class _LonelyConfirmationModel(_ConfirmationModel):
+    def __init__(self, payments):
+        _ConfirmationModel.__init__(self, payments)
+        self.open_date = payments[0].open_date.date()
+
+    def get_order_number(self):
+        return -1
+
+    def get_person_name(self):
+        return u"None"
+
+    def get_penalty(self):
+        return currency(0)
+
+    def get_interest(self):
+        return currency(0)
+
+    def get_payment_total_value(self, payment):
+        return currency(0)
+
+
 class _InstallmentConfirmationSlave(BaseEditor):
     """
     This slave is responsible for confirming a list of payments and
@@ -220,7 +241,7 @@ class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         self._proxy.update('interest')
 
 class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
-    model_type = _PurchaseConfirmationModel
+    model_type = _ConfirmationModel
 
     def _setup_widgets(self):
         _InstallmentConfirmationSlave._setup_widgets(self)
@@ -232,6 +253,9 @@ class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         self.penalty_value = currency(0)
         self.interest_value = currency(0)
         self.installments_number = len(self._payments)
+
+        if isinstance(self.model, _LonelyConfirmationModel):
+            self.details_box.hide()
 
     def _calculate_payment(self):
         total = self.penalty_value - self.discount_value + self.interest_value
@@ -275,5 +299,9 @@ class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
             return ValidationError(_("Penalty can not be less than zero"))
 
     def create_model(self, conn):
-        return _PurchaseConfirmationModel(self._payments,
-                                          self._payments[0].group.get_adapted())
+        if self._payments[0].group:
+            model = _PurchaseConfirmationModel(
+                self._payments, self._payments[0].group.get_adapted())
+        else:
+            model = _LonelyConfirmationModel(self._payments)
+        return model
