@@ -1,3 +1,12 @@
+Release 0.8.0 - 16/07/2007:
+
+    * Use kiwi.enum for constants/enums
+    * Restructured directory tree
+    * Support for fetching taxes and payment constants from the device
+    * Much improved Bematech MP25 support
+      Many Daruma FS345 improvements
+    * Updated translations
+
 Release 0.7.0 - 23/05/2007:
 
     * Updated packages

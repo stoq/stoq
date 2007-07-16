@@ -56,6 +56,9 @@ TAGS:
 nightly:
 	/mondo/local/bin/build-svn-deb
 
+release-deb:
+	debchange -v 1:$(VERSION)-1 "New release"
+
 clean:
 	debclean
 	rm -fr $(BUILDDIR)
