@@ -29,10 +29,12 @@
 Bematech MP25 driver
 """
 
+import datetime
 from decimal import Decimal
 import struct
 
 from kiwi.log import Logger
+from kiwi.python import Settable
 from zope.interface import implements
 
 from stoqdrivers.serialbase import SerialBase
@@ -72,12 +74,20 @@ CMD_COUPON_CLOSE = 34
 CMD_READ_REGISTER = 35
 CMD_ADD_ITEM = 63
 CMD_ADD_PAYMENT = 72
+CMD_GET_REGISTERS = 88
 
 # Page 51
 REGISTER_LAST_ITEM_ID = 12
 REGISTER_TOTALIZERS = 29
 REGISTER_PAYMENT_METHODS = 32
 REGISTER_SERIAL = 40
+REGISTER_NUMBER_TILL = 14
+REGISTER_EMISSION_DATE = 23
+REGISTER_NUMBER_REDUCTIONS_Z = 9
+REGISTER_TOTAL_CANCELATIONS = 4
+REGISTER_TOTAL_DISCOUNT = 5
+REGISTER_CRO = 10
+REGISTER_TOTAL = 3
 
 NAK = 21
 ACK = 6
@@ -107,6 +117,9 @@ class Status(object):
 
 def bcd2dec(data):
     return int(''.join(['%02x' % ord(i) for i in data]))
+
+def bcd2hex(data):
+    return ''.join(['%02x' % ord(i) for i in data])
 
 def dec2bcd(dec):
     return chr(dec % 10 + (dec / 10) * 16)
@@ -311,6 +324,26 @@ class MP25(SerialBase):
         elif reg == REGISTER_LAST_ITEM_ID:
             fmt = '2s'
             bcd = True
+        elif reg == REGISTER_NUMBER_TILL:
+            fmt = '2s'
+            bcd = True
+        elif reg == REGISTER_EMISSION_DATE:
+            fmt = '6s'
+        elif reg == REGISTER_NUMBER_REDUCTIONS_Z:
+            fmt = '2s'
+            bcd = True
+        elif reg == REGISTER_TOTAL_CANCELATIONS:
+            fmt = '7s'
+            bcd = True
+        elif reg == REGISTER_TOTAL_DISCOUNT:
+            fmt = '7s'
+            bcd = True
+        elif reg == REGISTER_CRO:
+            fmt = '2s'
+            bcd = True
+        elif reg == REGISTER_TOTAL:
+            fmt = '9s'
+            bcd = True
         elif reg == REGISTER_PAYMENT_METHODS:
             #  1 + (52 * 16) + (52 * 10) + (52 * 10) + (52 * 1)
             #  1 + 832 + 520 + 520 + 52 = 1925
@@ -353,6 +386,54 @@ class MP25(SerialBase):
 
         self._send_command(CMD_ADD_VOUCHER, type, "%014d" % int(value * Decimal('1e2')))
 
+    def _generate_sintegra(self):
+        opening_date = self._read_register(REGISTER_EMISSION_DATE)
+        cro = self._read_register(REGISTER_CRO)
+        crz = self._read_register(REGISTER_NUMBER_REDUCTIONS_Z)
+        total_cancelations = self._read_register(REGISTER_TOTAL_CANCELATIONS)
+        total_discount = self._read_register(REGISTER_TOTAL_DISCOUNT)
+
+        # Avbr function TACBrECFBematech.GetVendaBruta
+        registers = self._send_command(62 , 55, response='308s')
+        coupon_end = int(bcd2hex(registers)[568:568+6])
+
+        grande_total = self._read_register(REGISTER_TOTAL)
+        grande_total = grande_total/Decimal(100)
+        total_bruto = bcd2dec(registers[1:10])/Decimal(100)
+
+        length, names = self._send_command(CMD_READ_TAXCODES, response='b32s')
+        status = self._read_register(REGISTER_TOTALIZERS)
+        status = struct.unpack('>H', status)[0]
+        values = self._send_command(CMD_READ_TOTALIZERS, response='219s')
+        taxes = []
+        for i in range(length):
+            # Skip service taxes
+            if 1 << 15-i & status != 0:
+                continue
+            name = bcd2hex(names[i*2:i*2+2])
+            value = bcd2dec(values[i*7:i*7+7])
+            taxes.append((name, value/Decimal(100)))
+        taxes.append(('CANC', total_cancelations/Decimal(100)))
+        taxes.append(('DESC', total_discount/Decimal(100)))
+        taxes.append(('I', bcd2dec(values[112:119])/Decimal(100)))
+        taxes.append(('N', bcd2dec(values[119:126])/Decimal(100)))
+        taxes.append(('F', bcd2dec(values[126:133])/Decimal(100)))
+        date = bcd2hex(opening_date[:6])
+
+        return Settable(
+             opening_date=datetime.date(year=2000+int(date[4:6]),
+                                        month=int(date[2:4]),
+                                        day=int(date[:2])),
+             serial=self.get_serial(),
+             serial_id='%03d' % self._read_register(REGISTER_NUMBER_TILL),
+             coupon_start=0,
+             coupon_end=coupon_end,
+             cro=cro,
+             crz=crz,
+             period_total=grande_total - total_bruto,
+             total=grande_total,
+             taxes=taxes)
+
     #
     # This implements the ICouponPrinter Interface
     #
@@ -365,8 +446,13 @@ class MP25(SerialBase):
         """ Close the till for the day, no other actions can be done after this
         is called.
         """
+
+        sintegra = self._generate_sintegra()
+
         if not previous_day:
             self._send_command(CMD_REDUCE_Z)
+
+        return sintegra
 
     def till_add_cash(self, value):
         self._add_voucher(CASH_IN_TYPE, value)
