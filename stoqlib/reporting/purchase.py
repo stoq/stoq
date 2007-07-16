@@ -159,8 +159,11 @@ class PurchaseOrderReport(BaseStoqReport):
         if self._order.freight_type == PurchaseOrder.FREIGHT_FOB:
             freight_line.append("FOB (%.2f %%)" % self._order.freight)
         else:
-            freight_line.append("CIF (%.2f %%)" % (
-                                self._order.transporter.freight_percentage,))
+            # transporter may be None
+            freight_percentage = 0
+            if self._order.transporter:
+                freight_percentage = self._order.transporter.freight_percentage
+            freight_line.append("CIF (%.2f %%)" % (freight_percentage,))
         return freight_line
 
     def _setup_payment_group_data(self):
