@@ -306,16 +306,16 @@ class Coupon(object):
                     break
             else:
                 raise ValueError(
-                    "Can't find a valid identifier for the payment "
-                    "method type: %s. It is not possible add "
-                    "the payment on the coupon" %
+                    _("Can't find a valid identifier for the payment "
+                      "method type: %s. It is not possible add "
+                        "the payment on the coupon") %
                     method_type.__name__)
 
             constant = self._printer.get_payment_constant(method_id)
             if not constant:
                 method_name = get_method_names()[method_id]
                 raise DeviceError(
-                    _(u"The payment method used in this sale (%s) is not "
+                    _("The payment method used in this sale (%s) is not "
                       "configured in the fiscal printer." % method_name))
 
             self._driver.add_payment(constant.device_value,
