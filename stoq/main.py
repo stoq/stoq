@@ -25,29 +25,26 @@
 ##
 """ Stoq startup routines"""
 
-
 import gettext
+import logging
 import optparse
 import os
 import sys
-
-from kiwi.component import provide_utility
-from kiwi.log import Logger, set_log_file
-from stoqlib.exceptions import LoginError, StoqlibError
-from stoqlib.lib.message import error
 
 from stoq.lib.applist import get_application_names
 from stoq.lib.options import get_option_parser
 
 PYGTK_REQUIRED = (2, 8, 1)
-KIWI_REQUIRED = (1, 9, 15)
+KIWI_REQUIRED = (1, 9, 16)
+STOQLIB_REQUIRED = (0, 9, 1)
 GAZPACHO_REQUIRED = (0, 6, 6)
 REPORTLAB_REQUIRED = (1, 20)
 
 _ = gettext.gettext
 _stream = None
 
-log = Logger('stoq.main')
+# To avoid kiwi dependency at startup
+log = logging.getLogger('stoq.main')
 
 def _write_exception_hook(exctype, value, tb):
     global _stream
@@ -84,6 +81,7 @@ def _debug_hook(exctype, value, tb):
     pdb.pm()
 
 def _check_dependencies():
+    from stoqlib.lib.message import error
     log.debug('checking dependencies')
 
     def _missing_module_error(module, fancy=None):
@@ -129,6 +127,20 @@ def _check_dependencies():
             '.'.join(map(str, kiwi_version))))
     log.debug('kiwi %s found, okay' % ('.'.join(map(str, kiwi_version))))
 
+    # Stoqlib
+    try:
+        import stoqlib
+    except ImportError:
+        _missing_module_error("stoqlib")
+
+    stoqlib_version = tuple(stoqlib.version.split('.'))
+    if stoqlib_version < STOQLIB_REQUIRED:
+        error(_("Stoqlib too old"),
+              _("stoqlib version too old, needs %s but found %s") % (
+            '.'.join(map(str, STOQLIB_REQUIRED)),
+            '.'.join(map(str, stoqlib_version))))
+    log.debug('stoqlib %s found, okay' % ('.'.join(map(str, stoqlib_version))))
+
     # Gazpacho
     try:
         import gazpacho
@@ -169,10 +181,13 @@ def _setup_ui_dialogs():
     log.debug('providing graphical notification dialogs')
     from stoqlib.gui.base.dialogs import DialogSystemNotifier
     from stoqlib.lib.message import ISystemNotifier
+    from kiwi.component import provide_utility
+
     provide_utility(ISystemNotifier, DialogSystemNotifier(), replace=True)
 
 def _setup_cookiefile(config_dir):
     log.debug('setting up cookie file')
+    from kiwi.component import provide_utility
     from stoqlib.lib.cookie import Base64CookieFile
     from stoqlib.lib.interfaces import ICookieFile
     cookiefile = os.path.join(config_dir, "cookie")
@@ -180,12 +195,15 @@ def _setup_cookiefile(config_dir):
 
 def _initialize(options):
     global _stream
+
     # Do this as early as possible to get as much as possible into the
     # log file itself, which means we cannot depend on the config or
     # anything else
     stoqdir = os.path.join(os.environ['HOME'], '.stoq')
     if not os.path.exists(stoqdir):
         os.mkdir(stoqdir)
+
+    from kiwi.log import set_log_file
     _stream = set_log_file(os.path.join(stoqdir, 'stoq.log'), 'stoq*')
     if options.debug:
         hook = _debug_hook
@@ -193,8 +211,7 @@ def _initialize(options):
         hook = _write_exception_hook
     sys.excepthook = hook
 
-    _check_dependencies()
-
+    from stoqlib.lib.message import error
     from stoq.lib.configparser import StoqConfig
     log.debug('reading configuration')
     config = StoqConfig()
@@ -224,8 +241,9 @@ def _initialize(options):
               _("Invalid config file settings, got error '%s', "
                 "of type '%s'" % (value, type)))
 
-    from stoq.lib.startup import setup
+    from stoqlib.exceptions import StoqlibError
     from stoqlib.database.exceptions import PostgreSQLError
+    from stoq.lib.startup import setup
     log.debug('calling setup()')
     # XXX: progress dialog for connecting (if it takes more than
     # 2 seconds) or creating the database
@@ -238,6 +256,8 @@ def _initialize(options):
 
 def _run_app(options, appname):
     from stoqlib.gui.base.gtkadds import register_iconsets
+    from stoqlib.exceptions import LoginError
+    from stoqlib.lib.message import error
 
     log.debug('register stock icons')
     register_iconsets()
@@ -267,6 +287,7 @@ def _run_app(options, appname):
     log.info("Shutting down %s application" % appname)
 
 def _parse_command_line(args):
+
     log.info('parsing command line arguments: %s ' % (args,))
     parser = get_option_parser()
 
@@ -296,6 +317,10 @@ def _parse_command_line(args):
 
 def main(args):
     options, appname = _parse_command_line(args)
+
+    # Do this as soon as possible, before we attempt to use the
+    # external libraries/resources
+    _check_dependencies()
 
     _initialize(options)
     _run_app(options, appname)
