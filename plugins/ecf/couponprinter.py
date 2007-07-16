@@ -173,7 +173,8 @@ class CouponPrinter(object):
                                emission_date=data.opening_date,
                                station=self._printer.station,
                                serial=data.serial,
-                               serial_id=data.serial_id,
+                               # 1 -> 001, FIXME: should fix stoqdrivers
+                               serial_id=int(data.serial_id),
                                coupon_start=data.coupon_start,
                                coupon_end=data.coupon_end,
                                crz=data.crz,
