@@ -191,6 +191,8 @@ class SaleInvoice(ClassInittableObject):
     MAX_PRODUCT_QTY = 18
     # default filename for the invoice
     default_filename = _(u"invoice") + ".txt"
+    title = _(u"Printing Invoice")
+    preview_label = _(u"Preview Model")
 
     @argcheck(basestring, Sale, datetime.datetime, InvoiceType)
     def __init__(self, filename, sale, date=datetime.datetime.now(),
@@ -271,13 +273,13 @@ class SaleInvoice(ClassInittableObject):
     @argcheck(PersonAdaptToClient)
     def _identify_client(self, client):
         self.client_name = client.get_name()
-        client_role = self._sale.get_sale_client_role()
-        if IIndividual.providedBy(client_role):
-            self.client_document = client_role.cpf
-        elif ICompany.providedBy(client_role):
-            self.client_state_registry = client_role.state_registry
-            self.client_document = client_role.cnpj
+        if IIndividual(client.person, None):
+            self.client_document = IIndividual(client.person).cpf
+        elif ICompany(client.person, None):
+            self.client_state_registry = ICompany(client.person).state_registry
+            self.client_document = ICompany(client.person).cnpj
         else:
+            return
             raise TypeError("The client role for sale %r must be a "
                             "Invidual or a Company" % self._sale)
         address = client.person.get_main_address()
@@ -323,14 +325,15 @@ class SaleInvoice(ClassInittableObject):
             self._insert_data_on_coordinate("%5.2f" % total_value,
                                             "PRODUCT_TOTAL_VALUE",
                                             increment=(i,0))
-            if item.sellable.tax_type == TaxType.SUBSTITUTION:
+            if item.sellable.tax_constant.tax_type == TaxType.SUBSTITUTION:
                 value = "%3d" % subst_tax
                 subst_total += total_value
-            elif item.sellable.tax_type == TaxType.CUSTOM:
+            elif item.sellable.tax_constant.tax_type == TaxType.CUSTOM:
                 raise NotImplementedError
             else:
                 raise TypeError("Invalid tax type for product %r, got %r"
-                                % (item.sellable, item.sellable.tax_type))
+                                % (item.sellable,
+                                   item.sellable.tax_constant.tax_type))
             prod_total += total_value
             self._insert_data_on_coordinate(value, "PRODUCT_ICMS_PERCENT",
                                             max_len=3, increment=(i,0))
@@ -352,7 +355,8 @@ class SaleInvoice(ClassInittableObject):
         elif self._type == INVOICE_TYPE_OUT:
             self._insert_string_on_coordinate(ENABLED, "INVOICE_TYPE_OUT")
         self.operation_type = self._type_desc
-        self.creation_date = self._sale.model_created
+        self.creation_date = self._sale.te_created.te_time
+
         self.expedition_date = self._date.date()
         self.expedition_time = self._date.time()
         self._identify_client(self._sale.client)
