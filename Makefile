@@ -70,6 +70,12 @@ release: clean sdist
 release-tag:
 	svn cp -m "Tag $(VERSION)" . svn+ssh://async.com.br/pub/stoqdrivers/tags/stoqdrivers-$(VERSION)
 
+ubuntu-package:
+	make deb
+	pbuilder-edgy build dist/$(PACKAGE)_$(DEBVERSION).dsc
+	cp /mondo/pbuilder/edgy/result/$(PACKAGE)_$(DEBVERSION)_all.deb $(DLDIR)
+	update-apt-directory $(DLDIR)
+
 test-upload:
 	cp dist/$(PACKAGE)*_$(DEBVERSION)*.deb $(TESTDLDIR)/ubuntu
 	cp dist/$(PACKAGE)-$(VERSION)*.rpm $(TESTDLDIR)/fedora

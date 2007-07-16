@@ -1,3 +1,9 @@
+stoqdrivers (1:0.8.0-2) dapper; urgency=low
+
+  * Include MP25 sintegra
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Mon, 16 Jul 2007 17:53:09 -0300
+
 stoqdrivers (1:0.8.0-1) dapper; urgency=low
 
   * New release
