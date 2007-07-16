@@ -29,7 +29,6 @@ import gtk
 from kiwi.log import Logger
 from stoqlib.exceptions import LoginError
 from stoqlib.gui.events import StartApplicationEvent
-from stoqlib.gui.login import LoginHelper
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.message import error, info
 from kiwi.component import get_utility
@@ -56,6 +55,7 @@ class ApplicationRunner(object):
         self._options = options
         self._appname = None
         self._application_cache = {}
+        from stoqlib.gui.login import LoginHelper
         self._login = LoginHelper()
         self._user = None
 
@@ -135,7 +135,7 @@ class ApplicationRunner(object):
             return available_applications[0].name
 
         from stoqlib.gui.base.dialogs import run_dialog
-        from stoq.gui.login import SelectApplicationsDialog
+        from stoqlib.gui.login import SelectApplicationsDialog
 
         return run_dialog(SelectApplicationsDialog(self._appname,
                                                    available_applications))
