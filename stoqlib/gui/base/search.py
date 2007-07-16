@@ -216,6 +216,10 @@ class SearchDialog(BasicDialog):
         search_filter = self.search.get_primary_filter()
         search_filter.set_label(args[0])
 
+    def set_searchbar_search_string(self, string):
+        search_filter = self.search.get_primary_filter()
+        search_filter.entry.set_text(string)
+
     def set_result_strings(self, *args):
         pass
 
