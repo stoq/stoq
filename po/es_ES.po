@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoqdrivers 0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-12 10:09-0300\n"
+"POT-Creation-Date: 2007-07-16 12:50-0300\n"
 "PO-Revision-Date: 2007-01-26 12:57-0200\n"
 "Last-Translator: Lincol Molica <lincoln@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -125,137 +125,154 @@ msgstr ""
 msgid "Coupon already opened."
 msgstr "Comprobante ya abierto"
 
-#: ../stoqdrivers/printers/daruma/FS345.py:193
+#: ../stoqdrivers/printers/daruma/FS345.py:194
 #: ../stoqdrivers/printers/dataregis/EP375.py:135
 #: ../stoqdrivers/printers/dataregis/EP375.py:478
 msgid "Pending Reduce Z"
 msgstr "Reducción Z pendiente"
 
-#: ../stoqdrivers/printers/daruma/FS345.py:195
+#: ../stoqdrivers/printers/daruma/FS345.py:196
 msgid "Mechanical failure"
 msgstr "Error Mecánico"
 
-#: ../stoqdrivers/printers/daruma/FS345.py:197
+#: ../stoqdrivers/printers/daruma/FS345.py:198
 msgid "Not properly authenticated"
 msgstr "Autentificación incorrectamente"
 
-#: ../stoqdrivers/printers/daruma/FS345.py:199
-#: ../stoqdrivers/printers/daruma/FS345.py:253
+#: ../stoqdrivers/printers/daruma/FS345.py:200
+#: ../stoqdrivers/printers/daruma/FS345.py:254
 msgid "No paper"
 msgstr "Sin papel"
 
-#: ../stoqdrivers/printers/daruma/FS345.py:201
+#: ../stoqdrivers/printers/daruma/FS345.py:202
 msgid "Offline"
 msgstr "Desconectado"
 
-#: ../stoqdrivers/printers/daruma/FS345.py:203
+#: ../stoqdrivers/printers/daruma/FS345.py:204
 msgid "Peripheral is not connected to AUX"
 msgstr "El periférico no está conectado al puerto"
 
-#: ../stoqdrivers/printers/daruma/FS345.py:215
+#: ../stoqdrivers/printers/daruma/FS345.py:216
 msgid "readZ is already emitted"
 msgstr "La lectura Z ya ha sido emitida"
 
-#: ../stoqdrivers/printers/daruma/FS345.py:218
+#: ../stoqdrivers/printers/daruma/FS345.py:219
 msgid "readX is not emitted yet"
 msgstr "La lectura X aún no ha sido emitida"
 
-#: ../stoqdrivers/printers/daruma/FS345.py:241
+#: ../stoqdrivers/printers/daruma/FS345.py:242
 msgid "Document is already open"
 msgstr "Documento ya abierto"
 
-#: ../stoqdrivers/printers/daruma/FS345.py:243
-#: ../stoqdrivers/printers/daruma/FS345.py:315
+#: ../stoqdrivers/printers/daruma/FS345.py:244
+#: ../stoqdrivers/printers/daruma/FS345.py:316
 msgid "Coupon is not open"
 msgstr "El comprobante no está abierto"
 
-#: ../stoqdrivers/printers/daruma/FS345.py:245
+#: ../stoqdrivers/printers/daruma/FS345.py:246
 #: ../stoqdrivers/printers/sweda/IFS9000I.py:197
 msgid "There's no open document to cancel"
 msgstr "No existe un documento abierto que cancelar"
 
-#: ../stoqdrivers/printers/daruma/FS345.py:248
+#: ../stoqdrivers/printers/daruma/FS345.py:249
 msgid "There is no such item in the coupon"
 msgstr "No existe dicho artículo en el comprobante"
 
-#: ../stoqdrivers/printers/daruma/FS345.py:427
+#: ../stoqdrivers/printers/daruma/FS345.py:265
+msgid "Required field is blank"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:428
 msgid "Coupon already open"
 msgstr "Documento ya abierto"
 
-#: ../stoqdrivers/printers/daruma/FS345.py:512
+#: ../stoqdrivers/printers/daruma/FS345.py:498
+#, fuzzy
+msgid "No client"
+msgstr "Sin cliche"
+
+#: ../stoqdrivers/printers/daruma/FS345.py:499
+msgid "No document"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:500
+msgid "No address"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:515
 msgid "It is not possible to close the coupon"
 msgstr "No es posible cerrar el comprobante"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:139
+#: ../stoqdrivers/printers/bematech/MP25.py:141
 msgid "Printer is out of paper"
 msgstr "Impresora sin papel"
 
 #. 64: (AlmostOutofPaper(_("Printer almost out of paper"))),
-#: ../stoqdrivers/printers/bematech/MP25.py:141
+#: ../stoqdrivers/printers/bematech/MP25.py:143
 msgid "Printer clock error"
 msgstr "Error en el reloj de la impresora"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:142
+#: ../stoqdrivers/printers/bematech/MP25.py:144
 msgid "Printer in error state"
 msgstr "Impresora en estado de error"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:143
+#: ../stoqdrivers/printers/bematech/MP25.py:145
 msgid "First data value in CMD is not ESC (1BH)"
 msgstr "El primer valor en CMD no es ESC (1BH)"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:144
+#: ../stoqdrivers/printers/bematech/MP25.py:146
 msgid "Nonexistent command"
 msgstr "Comando Inexistente"
 
 #. 2: (CouponOpenError(_("Printer has a coupon currently open"))),
-#: ../stoqdrivers/printers/bematech/MP25.py:146
+#: ../stoqdrivers/printers/bematech/MP25.py:148
 msgid "Invalid number of parameters"
 msgstr "Número incorrecto de parámetros"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:149
+#: ../stoqdrivers/printers/bematech/MP25.py:151
 msgid "Invalid CMD parameter"
 msgstr "Parámetro CMD incorrecto"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:150
+#: ../stoqdrivers/printers/bematech/MP25.py:152
 msgid "Fiscal memory is full"
 msgstr "Memoria contable llena"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:151
+#: ../stoqdrivers/printers/bematech/MP25.py:153
 msgid "Error in CMOS memory"
 msgstr "Error en la memoria CMOS"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:152
+#: ../stoqdrivers/printers/bematech/MP25.py:154
 msgid "Given tax is not programmed on the printer"
 msgstr "El impuesto proporcionado no está programada en la impresora"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:153
+#: ../stoqdrivers/printers/bematech/MP25.py:155
 msgid "No available tax slot"
 msgstr "No hay espacio para el impuesto"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:154
+#: ../stoqdrivers/printers/bematech/MP25.py:156
 msgid "The item wasn't added in the coupon or can't be cancelled"
 msgstr "El artículo no se añadió al comprobante o no se puede cancelar"
 
 #. 7: (CouponOpenError(_("Coupon already Open"))),
 #. 8: (CouponNotOpenError(_("Coupon is closed"))),
-#: ../stoqdrivers/printers/bematech/MP25.py:164
+#: ../stoqdrivers/printers/bematech/MP25.py:166
 msgid "Printer is offline"
 msgstr "Impresora desconectada"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:165
+#: ../stoqdrivers/printers/bematech/MP25.py:167
 #, fuzzy
 msgid "Surcharge or discount greater than coupon totalvalue"
 msgstr "Recargo o descuento mayor que el valor total del comprobante"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:167
+#: ../stoqdrivers/printers/bematech/MP25.py:169
 msgid "Coupon with no items"
 msgstr "Comprobante sin artículos"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:168
+#: ../stoqdrivers/printers/bematech/MP25.py:170
 msgid "Payment method not recognized"
 msgstr "Método de pago no reconocido"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:169
+#: ../stoqdrivers/printers/bematech/MP25.py:171
 #, fuzzy
 msgid ""
 "Isn't possible add more payments sincethe coupon total value already was "
@@ -264,69 +281,69 @@ msgstr ""
 "No es posible añadir más pagos puesto que ya se alcanzó el valor total del "
 "comprobante"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:172
+#: ../stoqdrivers/printers/bematech/MP25.py:174
 msgid "Coupon isn't totalized yet"
 msgstr "El comprobante todavía no se ha totalizado"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:173
+#: ../stoqdrivers/printers/bematech/MP25.py:175
 msgid "Printer not initialized"
 msgstr "Impresora no inicializada"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:174
+#: ../stoqdrivers/printers/bematech/MP25.py:176
 msgid "Printer without serial number"
 msgstr "Impresora sin número de serie"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:175
+#: ../stoqdrivers/printers/bematech/MP25.py:177
 msgid "Invalid start date"
 msgstr "Fecha de inicio incorrecta"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:176
+#: ../stoqdrivers/printers/bematech/MP25.py:178
 msgid "Invalid final date"
 msgstr "Fecha de término incorrecta"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:177
+#: ../stoqdrivers/printers/bematech/MP25.py:179
 msgid "Sale with null value"
 msgstr "Venta con valor nulo"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:178
+#: ../stoqdrivers/printers/bematech/MP25.py:180
 #, fuzzy
 msgid "Surcharge or discount greater than itemvalue"
 msgstr "Recargo o descuento mayor que el valor del artículo"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:180
-#: ../stoqdrivers/printers/bematech/MP25.py:189
+#: ../stoqdrivers/printers/bematech/MP25.py:182
+#: ../stoqdrivers/printers/bematech/MP25.py:191
 msgid "Invalid date"
 msgstr "Fecha Incorrecta"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:181
+#: ../stoqdrivers/printers/bematech/MP25.py:183
 msgid "Item doesn't exists or already was cancelled"
 msgstr "Artículo inexistente o ya cancelado"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:182
+#: ../stoqdrivers/printers/bematech/MP25.py:184
 msgid "Surcharge greater than item value"
 msgstr "Recargo mayor que el valor del artículo"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:183
+#: ../stoqdrivers/printers/bematech/MP25.py:185
 msgid "Discount greater than item value"
 msgstr "Descuento mayor que el valor del artículo"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:184
+#: ../stoqdrivers/printers/bematech/MP25.py:186
 msgid "Invalid month"
 msgstr "Mes incorrecto"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:185
+#: ../stoqdrivers/printers/bematech/MP25.py:187
 msgid "Coupon already totalized"
 msgstr "Comprobante ya totalizado"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:186
+#: ../stoqdrivers/printers/bematech/MP25.py:188
 msgid "Coupon not totalized yet"
 msgstr "Comprobante no totalizado todavía"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:187
+#: ../stoqdrivers/printers/bematech/MP25.py:189
 msgid "Surcharge on subtotal already effected"
 msgstr "Recargo al subtotal ya efectuado"
 
-#: ../stoqdrivers/printers/bematech/MP25.py:188
+#: ../stoqdrivers/printers/bematech/MP25.py:190
 msgid "Discount on subtotal already effected"
 msgstr "Descuento al subtotal ya efectuado"
 
