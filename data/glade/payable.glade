@@ -5,6 +5,13 @@
         <child>
             <widget class="GtkActionGroup" id="DefaultActions">
                 <child>
+                    <widget class="GtkAction" id="AddPayment">
+                        <property name="name">AddPayment</property>
+                        <property name="label" translatable="yes">Add payment...</property>
+                        <property name="stock_id">gtk-add</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Bill">
                         <property name="name">Bill</property>
                         <property name="label" translatable="yes">Bills</property>
@@ -163,6 +170,7 @@
         <ui id="initial-state"><![CDATA[<ui>
 	  <menubar action="menubar" name="menubar">
 	    <menu action="TillMenu" name="TillMenu">
+	      <menuitem action="AddPayment" name="AddPayment"/>
 	      <menuitem action="Receipt" name="Receipt"/>
 	      <menuitem action="quit_action" name="quit_action"/>
 	    </menu>
