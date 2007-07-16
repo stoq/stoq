@@ -352,7 +352,11 @@ class SellableItemEditor(BaseEditor):
         self.model_type = model_type
         BaseEditor.__init__(self, conn, model)
         if restrict_increase_qty:
-            self.quantity.set_range(1, self.model.quantity - 1)
+            if isinstance(self.model, ReceivingOrderItem):
+                quantity = self.model.purchase_item.quantity
+            else:
+                quantity = self.model.quantity
+            self.quantity.set_range(1, quantity)
         self.set_description(
             self.model.sellable.base_sellable_info.description)
 
