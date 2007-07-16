@@ -154,7 +154,10 @@ class SellableSearch(SearchEditor):
 
     def _executer_query(self, query, conn):
         queries = []
-        if self._delivery_service:
+        if query is not None:
+            queries.append(query)
+
+        if self._delivery_service :
             queries.append(AND(
                 SellableFullStockView.q.status == ASellable.STATUS_AVAILABLE,
                 SellableFullStockView.q.id != self._delivery_service.id))
