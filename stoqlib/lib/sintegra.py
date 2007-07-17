@@ -324,11 +324,20 @@ class SintegraRegister(object):
 
     def _arg_to_string(self, value, length, argtype):
         if argtype == number:
+            # If a value is higher the the maximum allowed,
+            # set it to the maximum allowed value instead.
+            max_value = (10 ** length) - 1
+            if value > max_value:
+                value = max_value
             arg = '%0*d' % (length, value)
         elif argtype == str:
             arg = '%-*s' % (length, value)
-        if len(arg) > length:
-            arg = arg[:length]
+            # Chop strings which are too long
+            if len(arg) > length:
+                arg = arg[:length]
+        else:
+            raise AssertionError
+        assert len(arg) <= length
         return arg
 
 
