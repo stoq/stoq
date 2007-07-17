@@ -1,3 +1,15 @@
+stoq (0.9.1-1ubuntu1) feisty; urgency=low
+
+  * Set release date
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 17 Jul 2007 11:48:32 -0300
+
+stoq (0.9.1-1) dapper; urgency=low
+
+  * New release
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Mon, 16 Jul 2007 19:37:47 -0300
+
 stoq (0.9.0-6) dapper; urgency=low
 
   * Bump requirements, fix release date and update translations
