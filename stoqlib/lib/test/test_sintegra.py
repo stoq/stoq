@@ -43,7 +43,7 @@ def compare_sintegra_file(sfile, basename):
     fp = StringIO()
     sfile.write(output)
     expected = os.path.join(test.__path__[0], expected)
-    retval = diff_files(output, expected)
+    retval = diff_files(expected, output)
     os.unlink(output)
     if retval:
         raise AssertionError("Files differ, check output above")
