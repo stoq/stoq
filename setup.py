@@ -25,6 +25,8 @@
 ##
 """Setup file for Stoq package"""
 
+import sys
+
 #
 # Dependency checking
 #
@@ -39,24 +41,26 @@ dependencies = [('kiwi', 'kiwi', KIWI_REQUIRED,
                 ('Stoqlib', 'stoqlib', STOQLIB_REQUIRED,
                  'http://www.stoq.com.br', lambda x: x.version)]
 
-for (package_name, module_name, required_version, url,
-     get_version) in dependencies:
-    try:
-        module = __import__(module_name, {}, {}, [])
-    except ImportError:
-        raise SystemExit("The '%s' module could not be found\n"
-                         "Please install %s which can be found at %s"
-                         % (module_name, package_name, url))
+if ('build' in sys.argv or
+    'install' in sys.argv):
+    for (package_name, module_name, required_version, url,
+         get_version) in dependencies:
+        try:
+            module = __import__(module_name, {}, {}, [])
+        except ImportError:
+            raise SystemExit("The '%s' module could not be found\n"
+                             "Please install %s which can be found at %s"
+                             % (module_name, package_name, url))
 
-    if not get_version:
-        continue
+        if not get_version:
+            continue
 
-    if required_version > get_version(module):
-        raise SystemExit("The '%s' module was found but it was not "
-                         "recent enough\nPlease install at least "
-                         "version %s of %s. Visit %s."
-                         % (module_name, required_version, package_name,
-                            url))
+        if required_version > get_version(module):
+            raise SystemExit("The '%s' module was found but it was not "
+                             "recent enough\nPlease install at least "
+                             "version %s of %s. Visit %s."
+                             % (module_name, required_version, package_name,
+                                url))
 
 
 #
