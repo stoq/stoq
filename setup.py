@@ -28,13 +28,15 @@
 #
 # Dependency checking
 #
+KIWI_REQUIRED = (1, 9, 16)
+STOQLIB_REQUIRED = '0.9.1'
 
 # kiwi is only here because we need to use it in setup.py itself,
 # the rest of the dependency checks should be done in stoqlib.
-dependencies = [('kiwi', 'kiwi', (1, 9, 14),
+dependencies = [('kiwi', 'kiwi', KIWI_REQUIRED,
                  'http://www.async.com.br/projects/kiwi/',
                  lambda x: x.kiwi_version),
-                ('Stoqlib', 'stoqlib', '0.8.10',
+                ('Stoqlib', 'stoqlib', STOQLIB_REQUIRED,
                  'http://www.stoq.com.br', lambda x: x.version)]
 
 for (package_name, module_name, required_version, url,
