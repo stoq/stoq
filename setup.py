@@ -125,7 +125,9 @@ data_files = [
      ('AUTHORS', 'CONTRIBUTORS', 'README'))]
 data_files += listexternal()
 resources = dict(
-    locale='$prefix/share/locale')
+    locale='$prefix/share/locale',
+    plugin='$prefix/lib/stoqlib/plugins',
+    )
 global_resources = dict(
     pixmaps='$datadir/pixmaps',
     sql='$datadir/sql',
@@ -133,7 +135,6 @@ global_resources = dict(
     fonts='$datadir/fonts',
     csv='$datadir/csv',
     template='$datadir/template',
-    plugin='$prefix/lib/stoqlib/plugins',
     )
 
 # ECFPlugin
