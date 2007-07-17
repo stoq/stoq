@@ -1,5 +1,4 @@
 import datetime
-from decimal import Decimal
 
 from stoqdrivers.enum import TaxType
 
@@ -34,9 +33,9 @@ class TestSintegraGenerator(DomainTest):
 
         sellable2 = self.create_sellable()
         sellable2.tax_constant = SellableTaxConstant(
-            description="06",
+            description="6",
             tax_type=int(TaxType.CUSTOM),
-            tax_value=Decimal("0.6"),
+            tax_value=6,
             connection=self.trans)
         self.create_receiving_order_item(order, sellable=sellable2)
 
