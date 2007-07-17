@@ -64,10 +64,13 @@ class Base64CookieFile(object):
             log.info("Could not remove file %s: %r" % (self._filename, e))
 
     def store(self, username, password):
+        if not username:
+            raise CookieError("a username is required")
+
         try:
             fd = open(self._filename, "w")
         except IOError, e:
-            raise CookieError("Could not remove file %s: %r" % (
+            raise CookieError("Could open file %s: %r" % (
                 self._filename, e))
 
         # obfuscate password to avoid it being easily identified when
