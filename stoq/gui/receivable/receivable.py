@@ -122,8 +122,8 @@ class ReceivableApp(SearchableAppWindow):
             SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [Column('id', title=_('Number'), width=80,
-                       data_type=str, sorted=True, format='%03d'),
+        return [Column('id', title=_('#'), width=46,
+                       data_type=int, sorted=True, format='%04d'),
                 Column('description', title=_('Description'), width=190,
                        data_type=str, expand=True),
                 Column('drawee', title=_('Drawee'), data_type=str,
