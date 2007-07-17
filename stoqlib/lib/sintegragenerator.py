@@ -222,7 +222,7 @@ class StoqlibSintegraGenerator(object):
                 base_total,
                 0,
                 receiving_order.ipi_total / no_items,
-                tax_value * 100)
+                tax_value)
             sellables.add(item.sellable)
 
     def _add_receiving_order_item_special(self, receiving_order, code, value):
