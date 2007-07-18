@@ -59,7 +59,7 @@ class SellableSearch(SearchEditor):
 
     def __init__(self, conn, hide_footer=False, hide_toolbar=True,
                  selection_mode=gtk.SELECTION_MULTIPLE, search_str=None,
-                 order=None, quantity=None):
+                 order=None, quantity=None, double_click_confirm=False):
         """
         @param conn: a sqlobject Transaction instance
         @param hide_footer: do I have to hide the dialog footer?
@@ -70,6 +70,8 @@ class SellableSearch(SearchEditor):
                       stock values
         @param quantity: the quantity of stock to add to the order,
                       is necessary to supply if you supply an order.
+        @param double_click_confirm: If double click a item in the list should
+          automatically confirm
         """
         self.quantity = quantity
         self.has_stock_mode = sysparam(conn).HAS_STOCK_MODE
@@ -79,7 +81,8 @@ class SellableSearch(SearchEditor):
                               editor_class=self.editor_class,
                               hide_footer=hide_footer,
                               hide_toolbar=hide_toolbar,
-                              selection_mode=selection_mode)
+                              selection_mode=selection_mode,
+                              double_click_confirm=double_click_confirm)
         self.set_searchbar_labels(_('matching:'))
         self.set_result_strings(*self.searchbar_result_strings)
         self.set_ok_label(self.footer_ok_label)
