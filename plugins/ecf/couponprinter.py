@@ -76,10 +76,11 @@ class CouponPrinter(object):
         @param value: optional, how much to remove from the till
           before closing it
         """
-        log.info("Closing till")
+        log.info("Updating sintegra data")
+        self._update_sintegra_data()
 
-        data = self._driver.close_till(previous_day=previous_day)
-        self._update_sintegra_data(data)
+        log.info("Closing till")
+        self._driver.close_till(previous_day=previous_day)
 
     def cancel(self):
         """
@@ -164,7 +165,8 @@ class CouponPrinter(object):
         return True
 
     # Private
-    def _update_sintegra_data(self, data):
+    def _update_sintegra_data(self):
+        data = self._driver.get_sintegra()
         if data is None:
             return
 
