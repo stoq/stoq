@@ -35,7 +35,10 @@ from stoqlib.domain.interfaces import ICompany
 from stoqlib.domain.person import (_PersonAdaptToCompany,
                                    PersonAdaptToIndividual)
 from stoqlib.domain.receiving import ReceivingOrder
-from stoqlib.lib.sintegra import SintegraFile
+from stoqlib.lib.sintegra import SintegraFile, SintegraError
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
 
 
 class StoqlibSintegraGenerator(object):
@@ -105,6 +108,10 @@ class StoqlibSintegraGenerator(object):
         person = receiving_order.supplier.person
         company = person.has_individual_or_company_facets()
         if isinstance(company, _PersonAdaptToCompany):
+            if not company.cnpj:
+                raise SintegraError(
+                    _("You need to have a CNPJ number set on Company %s" % (
+                    company.person.name)))
             cnpj = company.get_cnpj_number()
         elif isinstance(company, PersonAdaptToIndividual):
             cnpj = company.get_cpf_number()
@@ -135,7 +142,7 @@ class StoqlibSintegraGenerator(object):
         cnpj = self._get_cnpj_or_cpf(receiving_order)
 
         # Sintegra register 50 requires us to separate the receiving orders per
-        # class of sales tax (aliquota), so first we have to check all the 
+        # class of sales tax (aliquota), so first we have to check all the
         # items in our order and split them out per tax code
         sellable_per_constant = {}
         for item in receiving_order.get_items():

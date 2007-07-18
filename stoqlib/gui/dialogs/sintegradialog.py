@@ -34,6 +34,8 @@ from kiwi.ui.search import DateSearchFilter
 from stoqlib.gui.base.dialogs import ConfirmDialog
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.system import SystemTable
+from stoqlib.lib.message import warning
+from stoqlib.lib.sintegra import SintegraError
 from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
 
 _ = stoqlib_gettext
@@ -81,10 +83,17 @@ class SintegraDialog(ConfirmDialog):
         filename = save(_("Save Sintegra file"),
                         self.get_toplevel(),
                         "sintegra-%s.txt" % (start.strftime('%Y-%m'),))
-        if filename:
+        if not filename:
+            return
+
+        try:
             generator = StoqlibSintegraGenerator(self.conn, start, end)
             generator.write(filename)
-            self.close()
+        except SintegraError, e:
+            warning(str(e))
+            return
+
+        self.close()
 
     #
     # Private
