@@ -48,25 +48,7 @@ class MP25(SerialBase):
     # This implements the ICouponPrinter Interface
     #
 
-    def summarize(self):
-        # Leitura X 
-        pass
-
-    def close_till(self, previous_day):
-        # Redução Z
-        pass
-
-    def till_add_cash(self, value):
-        pass
-
-    def till_remove_cash(self, value):
-        pass
-
-    def till_read_memory(self, start, end):
-        pass
-
-    def till_read_memory_by_reductions(self, start, end):
-        pass
+    # Coupon methods
 
     def coupon_identify_customer(self, customer, address, document):
         pass
@@ -95,6 +77,34 @@ class MP25(SerialBase):
     def coupon_totalize(self, discount, markup, taxcode):
         return Decimal("123")
 
+    # Till / Daily flow
+
+    def summarize(self):
+        # Leitura X 
+        pass
+
+    def close_till(self, previous_day):
+        # Redução Z
+        pass
+
+    def till_add_cash(self, value):
+        # Suprimento
+        pass
+
+    def till_remove_cash(self, value):
+        # Sangria
+        pass
+
+    def till_read_memory(self, start, end):
+        # Leitura Memory Fiscal data
+        pass
+
+    def till_read_memory_by_reductions(self, start, end):
+        # Leitura Memory Fiscal reduções
+        pass
+
+    # Introspection
+
     def get_capabilities(self):
         return dict(
             item_code=Capability(max_len=13),
@@ -114,15 +124,6 @@ class MP25(SerialBase):
 
     def get_constants(self):
         return self._consts
-
-    def query_status(self):
-        return 'XXX'
-
-    def status_reply_complete(self, reply):
-        return len(reply) == 23
-
-    def _get_serial(self):
-        return 'ABC12345678'
 
     def get_tax_constants(self):
         constants = []
@@ -168,4 +169,15 @@ class MP25(SerialBase):
              period_total=Decimal("1123"),
              total=Decimal("2311123"),
              taxes=taxes)
+
+    # Device detection, asynchronous
+
+    def query_status(self):
+        return 'XXX'
+
+    def status_reply_complete(self, reply):
+        return len(reply) == 23
+
+    def get_serial(self):
+        return 'ABC12345678'
 
