@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-07-16 11:11-0300\n"
-"PO-Revision-Date: 2006-08-25 16:15-0300\n"
+"PO-Revision-Date: 2007-07-18 11:50-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 #: ../stoq/main.py:91
 #, python-format
 msgid "%s not found"
-msgstr ""
+msgstr "kunde inte hitta %s"
 
 #: ../stoq/main.py:92
 #, python-format
@@ -27,39 +27,39 @@ msgstr ""
 
 #: ../stoq/main.py:112
 msgid "PyGTK too old"
-msgstr ""
+msgstr "PyGTK för gammal"
 
 #: ../stoq/main.py:113
 #, python-format
 msgid "PyGTK version too old, needs %s but found %s"
-msgstr ""
+msgstr "PyGTK-version för gammal, behöver %s men hittade %s"
 
 #: ../stoq/main.py:126
 msgid "Kiwi too old"
-msgstr ""
+msgstr "Kiwi för gammal"
 
 #: ../stoq/main.py:127
 #, python-format
 msgid "kiwi version too old, needs %s but found %s"
-msgstr ""
+msgstr "kiwiversionen är för gammal, behöver %s men hittade %s"
 
 #: ../stoq/main.py:139
 msgid "Gazpacho too old"
-msgstr ""
+msgstr "Gazpacho för gammal"
 
 #: ../stoq/main.py:140
 #, python-format
 msgid "Gazpacho %s is required but %s found"
-msgstr ""
+msgstr "Gazpacho %s krävs men hittade %s"
 
 #: ../stoq/main.py:152
 msgid "Reportlab too old"
-msgstr ""
+msgstr "Report för gammal"
 
 #: ../stoq/main.py:153
 #, python-format
 msgid "reportlab %s is required but %s found"
-msgstr ""
+msgstr "reportlab %s behövs men hittade %s"
 
 #: ../stoq/main.py:223
 msgid "Could not open database config file"
@@ -68,7 +68,7 @@ msgstr "Kunda inte öppna databasekonfigureringsfilen"
 #: ../stoq/main.py:224
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
-msgstr ""
+msgstr "Ogiltlig konfigurationsinställning, fick felet '%s', av typ '%s'"
 
 #: ../stoq/main.py:235
 msgid "Could not connect to database"
@@ -80,12 +80,11 @@ msgid "Database schema error"
 msgstr "Databasschemafel"
 
 #: ../stoq/lib/startup.py:58
-#, fuzzy
 msgid ""
 "Table `system_table' does not exist.\n"
 "Consult your database administrator to solve this problem."
 msgstr ""
-"Tabellen `%s' existerar inte.\n"
+"Tabellen 'sytem_table' existerar inte.\n"
 "Rådfråga din databasadministratör för att lösa detta problemet."
 
 #: ../stoq/lib/startup.py:115 ../stoq/lib/startup.py:127
@@ -121,19 +120,19 @@ msgstr "Byt användare"
 
 #: ../stoq/gui/application.py:178
 msgid "Change Application"
-msgstr ""
+msgstr "Byt program"
 
 #: ../stoq/gui/application.py:179
 msgid "Change application"
-msgstr ""
+msgstr "Ändra program"
 
 #: ../stoq/gui/application.py:201
 msgid "Debug"
-msgstr ""
+msgstr "Debug"
 
 #: ../stoq/gui/application.py:202
 msgid "Introspect slaves"
-msgstr ""
+msgstr "Introspekta slav"
 
 #. This method must be redefined in child when it's needed
 #: ../stoq/gui/application.py:227
@@ -142,9 +141,8 @@ msgid "Stoq - %s"
 msgstr "Stoq - %s"
 
 #: ../stoq/gui/application.py:264
-#, fuzzy
 msgid "Search:"
-msgstr "_Sök"
+msgstr "Sök:"
 
 #: ../stoq/gui/config.py:94
 msgid "Trust"
@@ -168,17 +166,16 @@ msgstr ""
 
 #: ../stoq/gui/config.py:131
 msgid "Don't create"
-msgstr ""
+msgstr "Skapa inte"
 
 #: ../stoq/gui/config.py:131
-#, fuzzy
 msgid "Create"
-msgstr "Kod"
+msgstr "Skapa"
 
 #: ../stoq/gui/config.py:137
 #, python-format
 msgid "User <u>%s</u> has insufficient permissions"
-msgstr ""
+msgstr "Användaren <u>%s</u> har otillräckliga rättigheter "
 
 #: ../stoq/gui/config.py:138
 #, python-format
@@ -198,11 +195,11 @@ msgstr ""
 
 #: ../stoq/gui/config.py:174 ../stoq/gui/config.py:175
 msgid "Invalid database address"
-msgstr ""
+msgstr "Ogiltlig databasadress"
 
 #: ../stoq/gui/config.py:296 ../data/glade/AdminPasswordStep.glade.h:1
 msgid "<b>Administrator Account Creation</b>"
-msgstr ""
+msgstr "<b>Skapande av Administrationskonto</b>"
 
 #: ../stoq/gui/config.py:299
 #, python-format
@@ -271,7 +268,7 @@ msgstr "Ingen produkt vald"
 #: ../stoq/gui/sales/sales.py:90 ../stoq/gui/till/till.py:110
 #: ../stoq/gui/receivable/receivable.py:125
 msgid "Number"
-msgstr ""
+msgstr "Nummer"
 
 #: ../stoq/gui/payable/payable.py:94 ../stoq/gui/warehouse/warehouse.py:82
 #: ../stoq/gui/receivable/receivable.py:127 ../stoq/gui/pos/pos.py:531
@@ -280,31 +277,30 @@ msgstr "Beskrivning"
 
 #: ../stoq/gui/payable/payable.py:96 ../stoq/gui/purchase/purchase.py:87
 msgid "Supplier"
-msgstr ""
+msgstr "Leverantör"
 
 #: ../stoq/gui/payable/payable.py:98 ../stoq/gui/receivable/receivable.py:131
 msgid "Due Date"
 msgstr ""
 
 #: ../stoq/gui/payable/payable.py:100 ../stoq/gui/receivable/receivable.py:133
-#, fuzzy
 msgid "Paid Date"
 msgstr "_Nollställ order"
 
 #: ../stoq/gui/payable/payable.py:102 ../stoq/gui/admin/admin.py:90
 #: ../stoq/gui/receivable/receivable.py:135
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: ../stoq/gui/payable/payable.py:104 ../stoq/gui/receivable/receivable.py:137
 msgid "Value"
-msgstr ""
+msgstr "Värde"
 
 #: ../stoq/gui/payable/payable.py:222 ../stoq/gui/purchase/purchase.py:214
 #: ../stoq/gui/admin/admin.py:98 ../stoq/gui/sales/sales.py:168
 #: ../stoq/gui/till/till.py:144 ../stoq/gui/receivable/receivable.py:106
 msgid "Any"
-msgstr ""
+msgstr "Alla"
 
 #: ../stoq/gui/payable/__init__.py:31
 msgid "Accounts Payable application."
@@ -670,12 +666,12 @@ msgstr ""
 
 #: ../data/glade/sales_app.glade.h:4
 msgid "Clients"
-msgstr ""
+msgstr "Klienter"
 
 #: ../data/glade/sales_app.glade.h:5 ../data/glade/till.glade.h:5
 #: ../data/glade/pos.glade.h:12
 msgid "Clients..."
-msgstr ""
+msgstr "Klienter..."
 
 #: ../data/glade/sales_app.glade.h:6 ../data/glade/till.glade.h:7
 #: ../data/glade/admin.glade.h:9 ../data/glade/purchase.glade.h:9
@@ -689,7 +685,7 @@ msgstr ""
 #: ../data/glade/pos.glade.h:15 ../data/glade/receivable.glade.h:6
 #: ../data/glade/warehouse.glade.h:6 ../data/glade/payable.glade.h:7
 msgid "Create a new file"
-msgstr ""
+msgstr "Skapa en ny fil"
 
 #: ../data/glade/sales_app.glade.h:8 ../data/glade/till.glade.h:10
 #: ../data/glade/admin.glade.h:12 ../data/glade/purchase.glade.h:11
@@ -700,14 +696,14 @@ msgstr ""
 
 #: ../data/glade/sales_app.glade.h:9 ../data/glade/pos.glade.h:20
 msgid "Gift Certificates..."
-msgstr ""
+msgstr "Presentkort..."
 
 #: ../data/glade/sales_app.glade.h:10 ../data/glade/till.glade.h:13
 #: ../data/glade/admin.glade.h:19 ../data/glade/purchase.glade.h:13
 #: ../data/glade/pos.glade.h:23 ../data/glade/receivable.glade.h:8
 #: ../data/glade/warehouse.glade.h:9 ../data/glade/payable.glade.h:9
 msgid "Open a file"
-msgstr ""
+msgstr "Öppna en fil"
 
 #: ../data/glade/sales_app.glade.h:11 ../data/glade/till.glade.h:14
 #: ../data/glade/admin.glade.h:20 ../data/glade/purchase.glade.h:14
@@ -718,30 +714,28 @@ msgstr ""
 
 #: ../data/glade/sales_app.glade.h:12 ../data/glade/purchase.glade.h:15
 msgid "Products"
-msgstr ""
+msgstr "Varor"
 
 #: ../data/glade/sales_app.glade.h:13 ../data/glade/purchase.glade.h:16
 #: ../data/glade/pos.glade.h:29
 msgid "Products..."
-msgstr ""
+msgstr "Varor..."
 
 #: ../data/glade/sales_app.glade.h:14 ../data/glade/till.glade.h:15
 #: ../data/glade/admin.glade.h:22 ../data/glade/purchase.glade.h:17
 #: ../data/glade/pos.glade.h:31 ../data/glade/receivable.glade.h:10
 #: ../data/glade/warehouse.glade.h:13 ../data/glade/payable.glade.h:12
-#, fuzzy
 msgid "Quit"
-msgstr "_Avsluta"
+msgstr "Avsluta"
 
 #: ../data/glade/sales_app.glade.h:15 ../data/glade/till.glade.h:16
 #: ../data/glade/admin.glade.h:23 ../data/glade/purchase.glade.h:18
 #: ../data/glade/pos.glade.h:32 ../data/glade/receivable.glade.h:11
 #: ../data/glade/warehouse.glade.h:14 ../data/glade/payable.glade.h:13
 msgid "Quit the program"
-msgstr ""
+msgstr "Avsluta programmet"
 
 #: ../data/glade/sales_app.glade.h:16 ../data/glade/pos.glade.h:36
-#, fuzzy
 msgid "Sal_es"
 msgstr "_Försäljning"
 
@@ -750,7 +744,7 @@ msgstr "_Försäljning"
 #: ../data/glade/pos.glade.h:40 ../data/glade/receivable.glade.h:14
 #: ../data/glade/warehouse.glade.h:18 ../data/glade/payable.glade.h:14
 msgid "Save a file"
-msgstr ""
+msgstr "Spara en fil"
 
 #: ../data/glade/sales_app.glade.h:18 ../data/glade/till.glade.h:21
 #: ../data/glade/receivable.glade.h:15 ../data/glade/payable.glade.h:15
@@ -758,34 +752,32 @@ msgid "Save with a different name"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:19
-#, fuzzy
 msgid "Services"
-msgstr "Pris"
+msgstr "Tjänster"
 
 #: ../data/glade/sales_app.glade.h:20 ../data/glade/purchase.glade.h:24
 #: ../data/glade/pos.glade.h:42
-#, fuzzy
 msgid "Services..."
-msgstr "Pris"
+msgstr "Tjänster..."
 
 #: ../data/glade/sales_app.glade.h:21 ../data/glade/till.glade.h:22
 #: ../data/glade/receivable.glade.h:16 ../data/glade/payable.glade.h:16
 msgid "Store Cookie"
-msgstr ""
+msgstr "Lagra cookie"
 
 #: ../data/glade/sales_app.glade.h:22 ../data/glade/till.glade.h:27
 #: ../data/glade/admin.glade.h:34 ../data/glade/purchase.glade.h:30
 #: ../data/glade/pos.glade.h:47 ../data/glade/receivable.glade.h:19
 #: ../data/glade/warehouse.glade.h:22 ../data/glade/payable.glade.h:19
 msgid "_Edit"
-msgstr ""
+msgstr "_Redigera"
 
 #: ../data/glade/sales_app.glade.h:23 ../data/glade/till.glade.h:28
 #: ../data/glade/purchase.glade.h:31 ../data/glade/pos.glade.h:48
 #: ../data/glade/receivable.glade.h:20 ../data/glade/warehouse.glade.h:23
 #: ../data/glade/payable.glade.h:20
 msgid "_File"
-msgstr ""
+msgstr "_Arkiv"
 
 #: ../data/glade/sales_app.glade.h:24 ../data/glade/till.glade.h:29
 #: ../data/glade/admin.glade.h:35 ../data/glade/purchase.glade.h:32
@@ -796,12 +788,11 @@ msgstr "_Hjälp"
 
 #: ../data/glade/sales_app.glade.h:25
 msgid "_Print Invoice"
-msgstr ""
+msgstr "_Skriv ut faktura"
 
 #: ../data/glade/sales_app.glade.h:26 ../data/glade/till.glade.h:31
 #: ../data/glade/admin.glade.h:39 ../data/glade/purchase.glade.h:35
 #: ../data/glade/pos.glade.h:53 ../data/glade/warehouse.glade.h:27
-#, fuzzy
 msgid "_Search"
 msgstr "_Sök"
 
@@ -813,43 +804,40 @@ msgid "_User"
 msgstr "_Användare"
 
 #: ../data/glade/sales_app.glade.h:28
-#, fuzzy
 msgid "sales"
-msgstr "_Försäljning"
+msgstr "_försäljning"
 
 #: ../data/glade/till.glade.h:2
 msgid "Add cash..."
-msgstr ""
+msgstr "Lägg till pengar..."
 
 #: ../data/glade/till.glade.h:6 ../data/glade/pos.glade.h:13
 msgid "Close Till..."
-msgstr ""
+msgstr "Stäng kassa..."
 
 #: ../data/glade/till.glade.h:9
 msgid "Current Till"
-msgstr ""
+msgstr "Nuvarande kassa"
 
 #: ../data/glade/till.glade.h:11
 msgid "Fiscal Till Operations..."
-msgstr ""
+msgstr "Kassaoperationer"
 
 #: ../data/glade/till.glade.h:12 ../data/glade/pos.glade.h:22
 msgid "Open Till..."
-msgstr ""
+msgstr "Öppna kassa..."
 
 #: ../data/glade/till.glade.h:17
-#, fuzzy
 msgid "Remove cash..."
-msgstr "Ta bort"
+msgstr "Ta bort pengar..."
 
 #: ../data/glade/till.glade.h:18
 msgid "STOQ - Till Application"
-msgstr ""
+msgstr "STOQ - Kassaprogram"
 
 #: ../data/glade/till.glade.h:19 ../data/glade/pos.glade.h:37
-#, fuzzy
 msgid "Sales..."
-msgstr "_Försäljning"
+msgstr "Försäljningningar..."
 
 #: ../data/glade/till.glade.h:23
 msgid "Till Opened Since 01/01/2006"
@@ -857,16 +845,16 @@ msgstr ""
 
 #: ../data/glade/till.glade.h:24
 msgid "Till history..."
-msgstr ""
+msgstr "Kassahistorik..."
 
 #: ../data/glade/till.glade.h:25
 msgid "_Confirm..."
-msgstr ""
+msgstr "_Bekräfta..."
 
 #: ../data/glade/till.glade.h:26 ../data/glade/purchase.glade.h:29
 #: ../data/glade/receivable.glade.h:18 ../data/glade/payable.glade.h:18
 msgid "_Details"
-msgstr ""
+msgstr "_Detaljer"
 
 #: ../data/glade/till.glade.h:30
 #, fuzzy
@@ -875,7 +863,7 @@ msgstr "_Sök"
 
 #: ../data/glade/till.glade.h:32 ../data/glade/pos.glade.h:54
 msgid "_Till"
-msgstr ""
+msgstr "_Kassa"
 
 #: ../data/glade/ExampleDatabaseStep.glade.h:1
 msgid "<b>Database initialization</b>"
@@ -883,11 +871,11 @@ msgstr ""
 
 #: ../data/glade/ExampleDatabaseStep.glade.h:2
 msgid "Create an empty database"
-msgstr ""
+msgstr "Skapa en tom databas"
 
 #: ../data/glade/ExampleDatabaseStep.glade.h:3
 msgid "Create an example database"
-msgstr ""
+msgstr "Skapa en exempeldatabas"
 
 #: ../data/glade/ExampleDatabaseStep.glade.h:4
 msgid ""
@@ -907,7 +895,7 @@ msgstr ""
 
 #: ../data/glade/admin.glade.h:1
 msgid "A_dmin"
-msgstr ""
+msgstr "A_dmin"
 
 #: ../data/glade/admin.glade.h:3 ../data/glade/pos.glade.h:4
 msgid "Arquivo"
@@ -930,11 +918,11 @@ msgstr ""
 #: ../data/glade/admin.glade.h:7 ../data/glade/purchase.glade.h:7
 #: ../data/glade/warehouse.glade.h:3
 msgid "Change User..."
-msgstr ""
+msgstr "Byt användare..."
 
 #: ../data/glade/admin.glade.h:10
 msgid "Create Sintegra Archive..."
-msgstr ""
+msgstr "Skapa sintegraarkiv..."
 
 #: ../data/glade/admin.glade.h:13
 #, fuzzy
@@ -956,7 +944,7 @@ msgstr ""
 
 #: ../data/glade/admin.glade.h:17
 msgid "Employees..."
-msgstr ""
+msgstr "Anställda..."
 
 #: ../data/glade/admin.glade.h:18
 msgid "Fiscal Book..."
@@ -972,14 +960,13 @@ msgid "Recortar"
 msgstr ""
 
 #: ../data/glade/admin.glade.h:25
-#, fuzzy
 msgid "S_ettings"
-msgstr "Pris"
+msgstr "Inställningar"
 
 #: ../data/glade/admin.glade.h:26 ../data/glade/purchase.glade.h:19
 #: ../data/glade/pos.glade.h:39 ../data/glade/warehouse.glade.h:17
 msgid "Save _as"
-msgstr ""
+msgstr "Spara _som"
 
 #: ../data/glade/admin.glade.h:28 ../data/glade/purchase.glade.h:21
 #: ../data/glade/pos.glade.h:41 ../data/glade/warehouse.glade.h:19
@@ -1000,12 +987,12 @@ msgstr ""
 
 #: ../data/glade/admin.glade.h:32
 msgid "Tax Constants"
-msgstr ""
+msgstr "Skattekonstanter"
 
 #: ../data/glade/admin.glade.h:33
 #, fuzzy
 msgid "User Profiles..."
-msgstr "Pris"
+msgstr "Användarprofiler..."
 
 #: ../data/glade/admin.glade.h:36
 #, fuzzy
@@ -1013,9 +1000,8 @@ msgid "_New User..."
 msgstr "_Nollställ order"
 
 #: ../data/glade/admin.glade.h:37 ../data/glade/pos.glade.h:51
-#, fuzzy
 msgid "_New..."
-msgstr "_Försäljning"
+msgstr "_Ny..."
 
 #: ../data/glade/admin.glade.h:38 ../data/glade/purchase.glade.h:34
 msgid "_Receive"
@@ -1041,11 +1027,11 @@ msgstr ""
 
 #: ../data/glade/BranchSettingsStep.glade.h:4
 msgid "Company Name:"
-msgstr ""
+msgstr "Företagsnamn:"
 
 #: ../data/glade/BranchSettingsStep.glade.h:5
 msgid "Fax:"
-msgstr ""
+msgstr "Fax:"
 
 #: ../data/glade/BranchSettingsStep.glade.h:6
 #, fuzzy
@@ -1058,11 +1044,11 @@ msgstr ""
 
 #: ../data/glade/BranchSettingsStep.glade.h:8
 msgid "Main Address"
-msgstr ""
+msgstr "Huvudaddress"
 
 #: ../data/glade/BranchSettingsStep.glade.h:9
 msgid "Phone Number:"
-msgstr ""
+msgstr "Telefonnummer:"
 
 #: ../data/glade/BranchSettingsStep.glade.h:10
 msgid "Substitution ICMS:"
@@ -1083,24 +1069,23 @@ msgstr ""
 #: ../data/glade/purchase.glade.h:5 ../data/glade/pos.glade.h:7
 #: ../data/glade/warehouse.glade.h:2
 msgid "C_ut"
-msgstr ""
+msgstr "Klipp ut..."
 
 #: ../data/glade/purchase.glade.h:6
-#, fuzzy
 msgid "Categories..."
-msgstr "Pris"
+msgstr "Kategorier..."
 
 #: ../data/glade/purchase.glade.h:22
 msgid "Send"
-msgstr ""
+msgstr "Skicka"
 
 #: ../data/glade/purchase.glade.h:23
 msgid "Send to Supplier..."
-msgstr ""
+msgstr "Skicka till Leverantör..."
 
 #: ../data/glade/purchase.glade.h:25
 msgid "Suppliers"
-msgstr ""
+msgstr "Leverantörer"
 
 #: ../data/glade/purchase.glade.h:26
 msgid "Suppliers..."
@@ -1140,11 +1125,11 @@ msgstr ""
 
 #: ../data/glade/NewOrderEditor.glade.h:3 ../data/glade/pos.glade.h:11
 msgid "Client:"
-msgstr ""
+msgstr "Klient:"
 
 #: ../data/glade/NewOrderEditor.glade.h:4
 msgid "Company"
-msgstr ""
+msgstr "Företag"
 
 #: ../data/glade/NewOrderEditor.glade.h:5
 msgid "Details"
@@ -1152,7 +1137,7 @@ msgstr ""
 
 #: ../data/glade/NewOrderEditor.glade.h:6
 msgid "Individual"
-msgstr ""
+msgstr "Individ"
 
 #: ../data/glade/NewOrderEditor.glade.h:7
 msgid "Not Specified"
@@ -1171,17 +1156,16 @@ msgid "Select the client role:"
 msgstr ""
 
 #: ../data/glade/NewOrderEditor.glade.h:11
-#, fuzzy
 msgid "Select:"
-msgstr "Välj"
+msgstr "Välj:"
 
 #: ../data/glade/SelectApplicationsSlave.glade.h:1
 msgid "Select an Application:"
-msgstr ""
+msgstr "Välj ett program:"
 
 #: ../data/glade/DatabaseSettingsStep.glade.h:1
 msgid "Address:"
-msgstr ""
+msgstr "Adress:"
 
 #: ../data/glade/DatabaseSettingsStep.glade.h:2
 msgid "Authentication Type:"
@@ -1189,11 +1173,11 @@ msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.glade.h:3
 msgid "Database Name:"
-msgstr ""
+msgstr "Databasnamn:"
 
 #: ../data/glade/DatabaseSettingsStep.glade.h:4
 msgid "Password:"
-msgstr ""
+msgstr "Lösenord"
 
 #: ../data/glade/DatabaseSettingsStep.glade.h:5
 msgid ""
@@ -1202,32 +1186,31 @@ msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.glade.h:6
 msgid "Port:"
-msgstr ""
+msgstr "Port:"
 
 #: ../data/glade/DatabaseSettingsStep.glade.h:7
 msgid "PostgreSQL Database Settings"
 msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.glade.h:8
-#, fuzzy
 msgid "Username:"
-msgstr "_Användare"
+msgstr "Användare:"
 
 #: ../data/glade/DatabaseSettingsStep.glade.h:9
 msgid "Welcome to Stoq"
-msgstr ""
+msgstr "Välkommen till Stoq"
 
 #: ../data/glade/pos.glade.h:1
 msgid "1,00"
-msgstr ""
+msgstr "1,00"
 
 #: ../data/glade/pos.glade.h:3
 msgid "Add"
-msgstr ""
+msgstr "Lägg till"
 
 #: ../data/glade/pos.glade.h:5
 msgid "Barcode:"
-msgstr ""
+msgstr "Streckkod:"
 
 #: ../data/glade/pos.glade.h:6
 #, fuzzy
@@ -1241,7 +1224,7 @@ msgstr "_Nollställ order"
 
 #: ../data/glade/pos.glade.h:10
 msgid "Cl_ear Cookie"
-msgstr ""
+msgstr "Rensa cookie"
 
 #: ../data/glade/pos.glade.h:16
 msgid "Current Client Details..."
@@ -1249,7 +1232,7 @@ msgstr ""
 
 #: ../data/glade/pos.glade.h:18
 msgid "Ed_it"
-msgstr ""
+msgstr "_Redigera"
 
 #: ../data/glade/pos.glade.h:19
 msgid "Edit Current Client..."
@@ -1342,7 +1325,7 @@ msgstr ""
 
 #: ../data/glade/warehouse.glade.h:8
 msgid "H_istory"
-msgstr ""
+msgstr "_Historik"
 
 #: ../data/glade/warehouse.glade.h:11
 msgid "Product history..."
@@ -1379,7 +1362,7 @@ msgstr ""
 
 #: ../data/glade/warehouse.glade.h:30
 msgid "_Warehouse"
-msgstr ""
+msgstr "_Varuhus"
 
 #: ../data/glade/payable.glade.h:2
 msgid "Add payment..."
@@ -1414,11 +1397,11 @@ msgstr ""
 
 #: ../data/glade/ECFPluginStep.glade.h:6
 msgid "No"
-msgstr ""
+msgstr "nej"
 
 #: ../data/glade/ECFPluginStep.glade.h:7
 msgid "Yes"
-msgstr ""
+msgstr "Ja"
 
 #~ msgid "This user is inactive"
 #~ msgstr "Den här användaren är inaktiv"
