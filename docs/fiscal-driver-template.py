@@ -34,7 +34,7 @@ from stoqdrivers.translation import stoqdrivers_gettext
 _ = stoqdrivers_gettext
 
 
-class MP25(SerialBase):
+class TemplateDriver(SerialBase):
     implements(ICouponPrinter)
 
     supported = True
