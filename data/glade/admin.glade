@@ -240,10 +240,10 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="tax_constants">
-                        <property name="name">tax_constants</property>
-                        <property name="label" translatable="yes">Sellable Tax Constants...</property>
-                        <property name="short_label" translatable="yes">Tax Constants</property>
+                    <widget class="GtkAction" id="taxes">
+                        <property name="name">taxes</property>
+                        <property name="label" translatable="yes">Configure Taxes...</property>
+                        <property name="short_label" translatable="yes">Taxes</property>
                         <property name="accelerator">&lt;Control&gt;l</property>
                     </widget>
                 </child>
@@ -274,7 +274,7 @@
             <menu action="settings_menu" name="settings_menu">
               <menuitem action="devices_setup" name="devices_setup"/>
               <menuitem action="PaymentMethod" name="PaymentMethod"/>
-              <menuitem action="tax_constants" name="tax_constants"/>
+              <menuitem action="taxes" name="taxes"/>
               <menuitem action="sintegra" name="sintegra"/>
               <menuitem action="system_parameters" name="system_parameters"/>
               <separator name="plugin_settings_separator"/>
