@@ -99,9 +99,9 @@ class SearchDialog(BasicDialog):
     selection_mode = gtk.SELECTION_BROWSE
     size = ()
 
-    @argcheck(object, object, object, bool, basestring, int)
+    @argcheck(object, object, object, bool, basestring, int, bool)
     def __init__(self, conn, table=None, search_table=None, hide_footer=True,
-                 title='', selection_mode=None):
+                 title='', selection_mode=None, double_click_confirm=False):
         """
         @param conn:
         @param table:
@@ -110,12 +110,15 @@ class SearchDialog(BasicDialog):
         @param hide_footer:
         @param title:
         @param selection_mode:
+        @param double_click_confirm: If double click a item in the list should
+          automatically confirm
         """
 
         self.conn = conn
         self.search_table = self._setup_search_table(table, search_table)
         self.selection_mode = self._setup_selection_mode(selection_mode)
         self.summary_label = None
+        self.double_click_confirm = double_click_confirm
 
         BasicDialog.__init__(self)
         BasicDialog._initialize(self, hide_footer=hide_footer,
@@ -164,6 +167,7 @@ class SearchDialog(BasicDialog):
         self.results.connect('cell-edited', self._on_results__cell_edited)
         self.results.connect('selection-changed',
                              self._on_results__selection_changed)
+        self.results.connect('double_click', self._on_results__double_click)
 
     def _setup_details_slave(self):
         # FIXME: Gross hack
@@ -242,6 +246,15 @@ class SearchDialog(BasicDialog):
         """
         self.search.add_filter(search_filter, position, columns, callback)
 
+    def row_activate(self, obj):
+        """
+        This is called when an item in the results list is double clicked.
+
+        @param obj: the item that was double clicked.
+        """
+        if self.double_click_confirm:
+            self.confirm()
+
     #
     # Filters
     #
@@ -276,6 +289,10 @@ class SearchDialog(BasicDialog):
 
     def _on_results__selection_changed(self, results, selected):
         self.update_widgets()
+
+    def _on_results__double_click(self, results, obj):
+        self.row_activate(obj)
+
 
     #
     # Hooks
@@ -368,7 +385,7 @@ class SearchEditor(SearchDialog):
     def __init__(self, conn, table=None, editor_class=None, interface=None,
                  search_table=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
-                 hide_toolbar=False):
+                 hide_toolbar=False, double_click_confirm=False):
         """
         @param conn:
         @param table:
@@ -380,13 +397,16 @@ class SearchEditor(SearchDialog):
         @param title:
         @param selection_mode:
         @param hide_toolbar:
+        @param double_click_confirm: If double click a item in the list should
+          automatically confirm
         """
 
         self.interface = interface
 
         SearchDialog.__init__(self, conn, table, search_table,
                               hide_footer=hide_footer, title=title,
-                              selection_mode=selection_mode)
+                              selection_mode=selection_mode,
+                              double_click_confirm=double_click_confirm)
 
         self._setup_slaves()
         if hide_toolbar:
@@ -402,6 +422,9 @@ class SearchEditor(SearchDialog):
                 raise ValueError('An editor_class argument is required')
             if not issubclass(editor_class, BaseEditor):
                 raise TypeError("editor_class must be a BaseEditor subclass")
+            if editor_class and self.double_click_confirm:
+                raise ValueError('Cannot use editor_class and double_click_confirm'
+                                 ' at the same time')
             self.editor_class = editor_class
 
             self.accept_edit_data = self.has_edit_button
@@ -410,7 +433,6 @@ class SearchEditor(SearchDialog):
             if not self.has_edit_button:
                 self.hide_edit_button()
         self._selected = None
-        self.results.connect('double_click', self._on_results__double_click)
         self.update_widgets()
 
 
@@ -487,12 +509,19 @@ class SearchEditor(SearchDialog):
         trans.close()
         return retval
 
+    def row_activate(self, obj):
+        """
+        See L{SearchDialog.row_activate}
+        """
+        if self.accept_edit_data:
+            self._edit(obj)
+        elif self.double_click_confirm:
+            SearchDialog.row_activate(self, obj)
+
+
     # Private
 
     def _edit(self, obj):
-        if not self.accept_edit_data:
-            return
-
         if obj is None:
             if self.results.get_selection_mode() == gtk.SELECTION_MULTIPLE:
                 obj = self.results.get_selected_rows()
@@ -516,9 +545,6 @@ class SearchEditor(SearchDialog):
 
     def _on_toolbar__new(self, toolbar):
         self.run()
-
-    def _on_results__double_click(self, results, obj):
-        self._edit(obj)
 
     #
     # Hooks
