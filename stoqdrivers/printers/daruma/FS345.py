@@ -342,56 +342,6 @@ class FS345(SerialBase):
                                    int(float(value) * 1e2))
         self.send_command(CMD_OPEN_VOUCHER, data)
 
-    def _generate_sintegra(self):
-        registries = self._get_registers()
-        fiscal_registries = self._get_fiscal_registers()
-
-        tax_codes = self.send_command(CMD_GET_TAX_CODES)[1:]
-
-        taxes = []
-        for i in range(14):
-            if tax_codes[i*5] in 'ABCDEFGHIJKLMNOP':
-                reg = tax_codes[i*5+1:i*5+5]
-                if reg == '////':
-                    continue
-                reg = reg.replace('.', '')
-            else:
-                reg = 'ISS'
-            sold = fiscal_registries[87+(i*14):101+(i*14)]
-            taxes.append((reg, Decimal(sold)/100))
-
-        taxes.append(('DESC', Decimal(fiscal_registries[19:32]) / 100))
-        taxes.append(('CANC', Decimal(fiscal_registries[33:46]) / 100))
-        taxes.append(('I', Decimal(fiscal_registries[47:60]) / 100))
-        taxes.append(('N', Decimal(fiscal_registries[61:74]) / 100))
-        taxes.append(('F', Decimal(fiscal_registries[75:88]) / 100))
-
-        total_sold = sum(value for _, value in taxes)
-
-        old_total = Decimal(fiscal_registries[:18]) / 100
-        cancelled = Decimal(fiscal_registries[33:46]) / 100
-        period_total = total_sold + cancelled
-
-        dates = self.send_command(CMD_GET_DATES)
-        if dates[:6] == '000000':
-            opening_date = datetime.date.today()
-        else:
-            d, m, y = map(int, [dates[:2], dates[2:4], dates[4:6]])
-            opening_date = datetime.date(2000+y, m, d)
-
-        identifier = self.send_command(CMD_GET_IDENTIFIER)
-        return Settable(
-             opening_date=opening_date,
-             serial=identifier[1:9],
-             serial_id=int(identifier[13:17]),
-             coupon_start=int(registries[:6]),
-             coupon_end=int(registries[7:12]),
-             cro=int(registries[35:38]),
-             crz=int(registries[39:42]),
-             period_total=period_total,
-             total=period_total + old_total,
-             taxes=taxes)
-
     def _configure_taxes(self):
         self.send_command(CMD_CONFIGURE_TAXES, '1800')
         self.send_command(CMD_CONFIGURE_TAXES, '1500')
@@ -525,12 +475,8 @@ class FS345(SerialBase):
         if self._is_open(status):
             self.send_command(CMD_CANCEL_COUPON)
 
-        data = self._generate_sintegra()
-
         date = time.strftime('%d%m%y%H%M%S', time.localtime())
         self.send_command(CMD_REDUCE_Z, date)
-
-        return data
 
     def till_add_cash(self, value):
         self._add_voucher(CASH_IN_TYPE, value)
@@ -621,3 +567,54 @@ class FS345(SerialBase):
                 methods.append((method_letter[i], method[1:].strip()))
 
         return methods
+
+    def get_sintegra(self):
+        registries = self._get_registers()
+        fiscal_registries = self._get_fiscal_registers()
+
+        tax_codes = self.send_command(CMD_GET_TAX_CODES)[1:]
+
+        taxes = []
+        for i in range(14):
+            if tax_codes[i*5] in 'ABCDEFGHIJKLMNOP':
+                reg = tax_codes[i*5+1:i*5+5]
+                if reg == '////':
+                    continue
+                reg = reg.replace('.', '')
+            else:
+                reg = 'ISS'
+            sold = fiscal_registries[87+(i*14):101+(i*14)]
+            taxes.append((reg, Decimal(sold)/100))
+
+        taxes.append(('DESC', Decimal(fiscal_registries[19:32]) / 100))
+        taxes.append(('CANC', Decimal(fiscal_registries[33:46]) / 100))
+        taxes.append(('I', Decimal(fiscal_registries[47:60]) / 100))
+        taxes.append(('N', Decimal(fiscal_registries[61:74]) / 100))
+        taxes.append(('F', Decimal(fiscal_registries[75:88]) / 100))
+
+        total_sold = sum(value for _, value in taxes)
+
+        old_total = Decimal(fiscal_registries[:18]) / 100
+        cancelled = Decimal(fiscal_registries[33:46]) / 100
+        period_total = total_sold + cancelled
+
+        dates = self.send_command(CMD_GET_DATES)
+        if dates[:6] == '000000':
+            opening_date = datetime.date.today()
+        else:
+            d, m, y = map(int, [dates[:2], dates[2:4], dates[4:6]])
+            opening_date = datetime.date(2000+y, m, d)
+
+        identifier = self.send_command(CMD_GET_IDENTIFIER)
+        return Settable(
+             opening_date=opening_date,
+             serial=identifier[1:9],
+             serial_id=int(identifier[13:17]),
+             coupon_start=int(registries[:6]),
+             coupon_end=int(registries[7:12]),
+             cro=int(registries[35:38]),
+             crz=int(registries[39:42]),
+             period_total=period_total,
+             total=period_total + old_total,
+             taxes=taxes)
+

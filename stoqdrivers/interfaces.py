@@ -238,7 +238,6 @@ class ICouponPrinter(IDevice):
         this is called. In Brazil this is 'reduce Z' operation
 
         @param previous_day: if this is to close a till opened previously
-        @returns: an object implementing ISintegraData or None
         """
 
     def till_add_cash(value):
@@ -303,6 +302,11 @@ class ICouponPrinter(IDevice):
     def get_constants():
         """ Returns the object that implements IDriverConstants where the printer
         is going to get constant values from.
+        """
+
+    def get_sintegra(self):
+        """
+        @returns: an object implementing ISintegraData or None
         """
 
 class IChequePrinter(IDevice):

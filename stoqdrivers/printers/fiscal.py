@@ -270,3 +270,8 @@ class FiscalPrinter(BasePrinter):
         log.info('get_payment_constants()')
 
         return self._driver.get_payment_constants()
+
+    def get_sintegra(self):
+        log.info('get_sintegra()')
+
+        return self._driver.get_sintegra()

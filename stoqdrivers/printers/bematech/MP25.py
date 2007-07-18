@@ -386,54 +386,6 @@ class MP25(SerialBase):
 
         self._send_command(CMD_ADD_VOUCHER, type, "%014d" % int(value * Decimal('1e2')))
 
-    def _generate_sintegra(self):
-        opening_date = self._read_register(REGISTER_EMISSION_DATE)
-        cro = self._read_register(REGISTER_CRO)
-        crz = self._read_register(REGISTER_NUMBER_REDUCTIONS_Z)
-        total_cancelations = self._read_register(REGISTER_TOTAL_CANCELATIONS)
-        total_discount = self._read_register(REGISTER_TOTAL_DISCOUNT)
-
-        # Avbr function TACBrECFBematech.GetVendaBruta
-        registers = self._send_command(62 , 55, response='308s')
-        coupon_end = int(bcd2hex(registers)[568:568+6])
-
-        grande_total = self._read_register(REGISTER_TOTAL)
-        grande_total = grande_total/Decimal(100)
-        total_bruto = bcd2dec(registers[1:10])/Decimal(100)
-
-        length, names = self._send_command(CMD_READ_TAXCODES, response='b32s')
-        status = self._read_register(REGISTER_TOTALIZERS)
-        status = struct.unpack('>H', status)[0]
-        values = self._send_command(CMD_READ_TOTALIZERS, response='219s')
-        taxes = []
-        for i in range(length):
-            # Skip service taxes
-            if 1 << 15-i & status != 0:
-                continue
-            name = bcd2hex(names[i*2:i*2+2])
-            value = bcd2dec(values[i*7:i*7+7])
-            taxes.append((name, value/Decimal(100)))
-        taxes.append(('CANC', total_cancelations/Decimal(100)))
-        taxes.append(('DESC', total_discount/Decimal(100)))
-        taxes.append(('I', bcd2dec(values[112:119])/Decimal(100)))
-        taxes.append(('N', bcd2dec(values[119:126])/Decimal(100)))
-        taxes.append(('F', bcd2dec(values[126:133])/Decimal(100)))
-        date = bcd2hex(opening_date[:6])
-
-        return Settable(
-             opening_date=datetime.date(year=2000+int(date[4:6]),
-                                        month=int(date[2:4]),
-                                        day=int(date[:2])),
-             serial=self.get_serial(),
-             serial_id='%03d' % self._read_register(REGISTER_NUMBER_TILL),
-             coupon_start=0,
-             coupon_end=coupon_end,
-             cro=cro,
-             crz=crz,
-             period_total=grande_total - total_bruto,
-             total=grande_total,
-             taxes=taxes)
-
     #
     # This implements the ICouponPrinter Interface
     #
@@ -447,12 +399,8 @@ class MP25(SerialBase):
         is called.
         """
 
-        sintegra = self._generate_sintegra()
-
         if not previous_day:
             self._send_command(CMD_REDUCE_Z)
-
-        return sintegra
 
     def till_add_cash(self, value):
         self._add_voucher(CASH_IN_TYPE, value)
@@ -632,3 +580,52 @@ class MP25(SerialBase):
             if method != '\x00' * 16:
                 methods.append(('%02d' % (i+1), method.strip()))
         return methods
+
+    def get_sintegra(self):
+        opening_date = self._read_register(REGISTER_EMISSION_DATE)
+        cro = self._read_register(REGISTER_CRO)
+        crz = self._read_register(REGISTER_NUMBER_REDUCTIONS_Z)
+        total_cancelations = self._read_register(REGISTER_TOTAL_CANCELATIONS)
+        total_discount = self._read_register(REGISTER_TOTAL_DISCOUNT)
+
+        # Avbr function TACBrECFBematech.GetVendaBruta
+        registers = self._send_command(62 , 55, response='308s')
+        coupon_end = int(bcd2hex(registers)[568:568+6])
+
+        grande_total = self._read_register(REGISTER_TOTAL)
+        grande_total = grande_total/Decimal(100)
+        total_bruto = bcd2dec(registers[1:10])/Decimal(100)
+
+        length, names = self._send_command(CMD_READ_TAXCODES, response='b32s')
+        status = self._read_register(REGISTER_TOTALIZERS)
+        status = struct.unpack('>H', status)[0]
+        values = self._send_command(CMD_READ_TOTALIZERS, response='219s')
+        taxes = []
+        for i in range(length):
+            # Skip service taxes
+            if 1 << 15-i & status != 0:
+                continue
+            name = bcd2hex(names[i*2:i*2+2])
+            value = bcd2dec(values[i*7:i*7+7])
+            taxes.append((name, value/Decimal(100)))
+        taxes.append(('CANC', total_cancelations/Decimal(100)))
+        taxes.append(('DESC', total_discount/Decimal(100)))
+        taxes.append(('I', bcd2dec(values[112:119])/Decimal(100)))
+        taxes.append(('N', bcd2dec(values[119:126])/Decimal(100)))
+        taxes.append(('F', bcd2dec(values[126:133])/Decimal(100)))
+        date = bcd2hex(opening_date[:6])
+
+        return Settable(
+             opening_date=datetime.date(year=2000+int(date[4:6]),
+                                        month=int(date[2:4]),
+                                        day=int(date[:2])),
+             serial=self.get_serial(),
+             serial_id='%03d' % self._read_register(REGISTER_NUMBER_TILL),
+             coupon_start=0,
+             coupon_end=coupon_end,
+             cro=cro,
+             crz=crz,
+             period_total=grande_total - total_bruto,
+             total=grande_total,
+             taxes=taxes)
+
