@@ -178,7 +178,7 @@ class PostgresConnection(DBAPI):
         self.query('DROP SEQUENCE "%s"' % sequence)
 
     def bumpSequence(self, sequence, start, minvalue, maxvalue):
-        self.query("ALTER SEQUENCE %s START %d MINVALUE %d MAXVALUE %d" % (
+        self.query('ALTER SEQUENCE "%s" START %d MINVALUE %d MAXVALUE %d' % (
             sequence, start, minvalue, maxvalue))
 
     # Johan 2006-10-27: Add Database methods
@@ -191,7 +191,7 @@ class PostgresConnection(DBAPI):
         conn = self.getConnection()
         cur = conn.cursor()
         cur.execute('COMMIT')
-        cur.execute('CREATE DATABASE %s' % name)
+        cur.execute('CREATE DATABASE "%s"' % name)
         cur.close()
 
         return True
@@ -205,7 +205,7 @@ class PostgresConnection(DBAPI):
         conn = self.getConnection()
         cur = conn.cursor()
         cur.execute('COMMIT')
-        cur.execute('DROP DATABASE %s' % name)
+        cur.execute('DROP DATABASE "%s"' % name)
         cur.close()
 
         return True
