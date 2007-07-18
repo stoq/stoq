@@ -60,7 +60,7 @@ _ = stoqlib_gettext
 class SellableTaxConstantEditor(BaseEditor):
     gladefile = 'SellableTaxConstantEditor'
     model_type = SellableTaxConstant
-    model_name = _('SellableTax constant')
+    model_name = _('Taxes and Tax rates')
     proxy_widgets = ('description',
                      'tax_value')
 
@@ -86,19 +86,20 @@ class SellableTaxConstantEditor(BaseEditor):
         self.proxy = self.add_proxy(self.model,
                                     SellableTaxConstantEditor.proxy_widgets)
 
+
 class SellableTaxConstantsDialog(ModelListDialog):
 
     # ModelListDialog
     model_type = SellableTaxConstant
     editor_class = SellableTaxConstantEditor
     size = (500, 300)
-    title = _("Tax constants")
+    title = _("Taxes")
 
     # ListDialog
     columns = [
         Column('description', _('Description'), data_type=str,
                width=200),
-        Column('value', _('Value'), data_type=str),
+        Column('value', _('Tax rate'), data_type=str),
     ]
 
     def selection_changed(self, constant):
