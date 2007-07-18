@@ -246,7 +246,8 @@ class POSApp(AppWindow):
         sellable_view_item = self.run_dialog(SellableSearch, self.conn,
                                 selection_mode=gtk.SELECTION_BROWSE,
                                 search_str=search_str, order=self.sale,
-                                quantity=self.sellableitem_proxy.model.quantity)
+                                quantity=self.sellableitem_proxy.model.quantity,
+                                double_click_confirm=True)
         if not sellable_view_item:
             return
 
