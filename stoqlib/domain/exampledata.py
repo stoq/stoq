@@ -185,6 +185,7 @@ class ExampleCreator(object):
         from stoqlib.domain.person import Person
         person = Person(name='Supplier', connection=self.trans)
         person.addFacet(ICompany, fancy_name='Company Name',
+                        cnpj='90.117.749/7654-80',
                         connection=self.trans)
         return person.addFacet(ISupplier, connection=self.trans)
 
