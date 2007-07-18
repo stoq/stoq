@@ -181,7 +181,7 @@ class AdminApp(SearchableAppWindow):
     def on_devices_setup_activate(self, button):
         self.run_dialog(DeviceSettingsDialog, self.conn)
 
-    def on_tax_constants__activate(self, action):
+    def on_taxes__activate(self, action):
         self.run_dialog(SellableTaxConstantsDialog, self.conn)
 
     def on_sintegra__activate(self, action):
