@@ -32,8 +32,7 @@ from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.parameter import ParameterData
-from stoqlib.domain.interfaces import (ISupplier, IBranch, ICompany,
-                                       ISellable)
+from stoqlib.domain.interfaces import IBranch, ICompany, ISellable
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -359,8 +358,11 @@ class ParameterAccess(ClassInittableObject):
     @classmethod
     def __class_init__(cls, namespace):
         for obj in cls.constants:
-            prop = property(lambda self, n=obj.key, v=obj.type:
-                            self.get_parameter_by_field(n, v))
+            getter = lambda self, n=obj.key, v=obj.type: (
+                self.get_parameter_by_field(n, v))
+            setter = lambda self, value, n=obj.key: (
+                self._set_schema(n, value))
+            prop = property(getter, setter)
             setattr(cls, obj.key, prop)
 
     def __init__(self, conn):
@@ -377,8 +379,18 @@ class ParameterAccess(ClassInittableObject):
                 ParameterData.delete(param.id, connection=self.conn)
 
     def _set_schema(self, field_name, field_value, is_editable=True):
-        ParameterData(connection=self.conn, field_name=field_name,
-                      field_value=unicode(field_value), is_editable=is_editable)
+        if field_value is not None:
+            field_value = unicode(field_value)
+
+        data = ParameterData.selectOneBy(connection=self.conn,
+                                         field_name=field_name)
+        if data is None:
+            ParameterData(connection=self.conn,
+                          field_name=field_name,
+                          field_value=field_value,
+                          is_editable=is_editable)
+        else:
+            data.field_value = field_value
 
     #
     # Public API
@@ -431,7 +443,7 @@ class ParameterAccess(ClassInittableObject):
         if value is None:
             return
         if issubclass(field_type, AbstractModel):
-            if value.field_value == '':
+            if value.field_value == '' or value.field_value is None:
                 return
             param = field_type.get(value.field_value, connection=self.conn)
         else:
@@ -480,16 +492,7 @@ class ParameterAccess(ClassInittableObject):
     #
 
     def ensure_suggested_supplier(self):
-        from stoqlib.domain.person import Person
-        key = "SUGGESTED_SUPPLIER"
-        table = Person.getAdapterClass(ISupplier)
-        if self.get_parameter_by_field(key, table):
-            return
-        person_obj = Person(name=key, connection=self.conn)
-        person_obj.addFacet(ICompany, cnpj='supplier suggested',
-                            connection=self.conn)
-        supplier = person_obj.addFacet(ISupplier, connection=self.conn)
-        self._set_schema(key, supplier.id)
+        self._set_schema("SUGGESTED_SUPPLIER", None)
 
     def ensure_default_base_category(self):
         from stoqlib.domain.sellable import SellableCategory

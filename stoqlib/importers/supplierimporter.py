@@ -27,6 +27,7 @@ from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.interfaces import IIndividual, ISupplier
 from stoqlib.domain.person import Person
 from stoqlib.importers.csvimporter import CSVImporter
+from stoqlib.lib.parameters import sysparam
 
 class SupplierImporter(CSVImporter):
     fields = ['name',
@@ -66,3 +67,14 @@ class SupplierImporter(CSVImporter):
                           district=data.district)
 
         person.addFacet(ISupplier, connection=trans)
+
+    def when_done(self, trans):
+        sparam = sysparam(trans)
+        if sparam.SUGGESTED_SUPPLIER:
+            return
+
+        supplier = Person.iselect(ISupplier, limit=2,
+                                  connection=trans).orderBy('id')
+        if not supplier.count():
+            return
+        sparam.SUGGESTED_SUPPLIER = supplier[0].id

@@ -143,6 +143,9 @@ class CSVImporter(object):
                     trans = new_transaction()
 
             lineno += 1
+
+        self.when_done(trans)
+
         if not self.dry:
             trans.commit(close=True)
 
@@ -208,3 +211,9 @@ class CSVImporter(object):
         @returns: a sequence of parsed items
         """
         return csv.reader(iterable, dialect=self.dialect)
+
+    def when_done(self, trans):
+        """
+        This is called after all the lines are parsed but
+        before committing.
+        """

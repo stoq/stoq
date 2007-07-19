@@ -64,7 +64,7 @@ def create_purchases():
 
     order = PurchaseOrder(connection=trans,
                           status=PurchaseOrder.ORDER_PENDING,
-                          supplier=suppliers[1],
+                          supplier=suppliers[0],
                           branch=branch)
     order.set_valid()
     order.addFacet(IPaymentGroup,
