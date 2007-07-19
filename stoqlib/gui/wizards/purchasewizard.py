@@ -31,7 +31,8 @@ from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
 from stoqdrivers.enum import PaymentMethodType
 
-from stoqlib.database.runtime import get_current_branch
+from stoqlib.database.runtime import (get_current_branch, new_transaction,
+                                      finish_transaction)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 from stoqlib.lib.parameters import sysparam
@@ -340,10 +341,15 @@ class FinishPurchaseStep(WizardEditorStep):
             return ValidationError(_("Expected receival date must be set to a future date"))
 
     def on_transporter_button__clicked(self, button):
-        if run_person_role_dialog(TransporterEditor, self, self.conn,
-                                  self.model.transporter):
-            self.conn.commit()
+        trans = new_transaction()
+        transporter = trans.get(self.model.transporter)
+        model =  run_person_role_dialog(TransporterEditor, self, trans,
+                                        transporter)
+        rv = finish_transaction(trans, model)
+        trans.close()
+        if rv:
             self._setup_transporter_entry()
+            self.transporter.select(model)
 
     def on_print_button__clicked(self, button):
         print_report(PurchaseOrderReport, self.model)
