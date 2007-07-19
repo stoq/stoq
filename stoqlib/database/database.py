@@ -28,6 +28,7 @@
 # FIXME: Refactor this to other files
 
 import subprocess
+import time
 
 from kiwi.component import get_utility
 from kiwi.log import Logger
@@ -47,7 +48,16 @@ def clean_database(dbname):
     settings = get_utility(IDatabaseSettings)
     conn = settings.get_default_connection()
     try:
-        conn.dropDatabase(dbname, ifExists=True)
+        # Postgres is lovely, try again a few times
+        # before showing an error
+        for i in range(3):
+            try:
+                conn.dropDatabase(dbname, ifExists=True)
+                break
+            except Exception, e:
+                time.sleep(1)
+        else:
+            raise e
         conn.createDatabase(dbname)
     finally:
         conn.close()
