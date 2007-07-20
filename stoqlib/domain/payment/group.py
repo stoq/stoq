@@ -123,6 +123,9 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     def confirm(self):
         """This can be implemented in a subclass, but it's not required"""
 
+    def pay(self, payment):
+        pass
+
     #
     # IContainer implementation
     #

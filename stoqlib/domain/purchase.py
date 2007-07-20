@@ -450,6 +450,9 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
 #         order = self.get_adapted()
 #         order.supplier = supplier
 
+    def pay(self, payment):
+        pass
+
     def get_thirdparty(self):
         order = self.get_adapted()
         if not order.supplier:
