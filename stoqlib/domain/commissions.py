@@ -34,8 +34,16 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
 class CommissionSource(Domain):
     """Commission Source object implementation
+
+    A CommissionSource is tied to a Category or ASellable,
+    it's used to determine the value of a commission for a certain
+    item which is sold.
+    There are two different commission values defined here, one
+    which is used when the item is sold directly, eg one installment
+    and another one which is used when the item is sold in installments.
 
     @cvar direct_value: the commission value to be used in
       one-installment sales
@@ -53,8 +61,13 @@ class CommissionSource(Domain):
     category = ForeignKey('SellableCategory', default=None)
     asellable = ForeignKey('ASellable', default=None)
 
+
 class Commission(Domain):
     """Commission object implementation
+
+    A Commission is the commission received by a SalesPerson
+    for a specific payment made by a Sale.
+    One instance of this is created for each payment for each sale.
 
     @cvar DIRECT: use direct commission to calculate the commission
         amount
@@ -63,7 +76,7 @@ class Commission(Domain):
     @cvar value: The commission amount
     @ivar salesperson: who sold the sale
     @ivar sale: the sale
-    @ivar payment
+    @ivar payment:
     """
 
     (DIRECT,
@@ -83,20 +96,27 @@ class Commission(Domain):
         """Calculates the commission amount to be paid"""
 
         relative_percentage = self._get_payment_percentage()
+
+        # The commission is calculated for all sellable items
+        # in sale; a relative percentage is given for each payment
+        # of the sale.
+        # Eg:
+        #   If a customer decides to pay a sale in two installments,
+        #   Let's say divided in 20%, and 80% of the total value of the items
+        #   which was bought in the sale. Then the commission received by the
+        #   sales person is also going to be 20% and 80% of the complete
+        #   commission amount for the sale when that specific payment is payed.
         value = 0
-        for item in self.sale.get_items():
-            commission = self._get_commission(item.sellable)
-            if commission:
-                item_commission = commission * item.get_total()
-                value += relative_percentage * item_commission
+        for sellable_item in self.sale.get_items():
+            value += (self._get_commission(sellable_item.sellable) *
+                      sellable_item.get_total() *
+                      relative_percentage)
 
         self.value = value
 
     def _get_payment_percentage(self):
         """Return the payment percentage of sale"""
-
-        total = self.sale.get_total_sale_amount()
-        return self.payment.value / total
+        return self.payment.value / self.sale.get_total_sale_amount()
 
     def _get_commission(self, asellable):
         """Return the properly commission percentage to be used to
@@ -109,18 +129,21 @@ class Commission(Domain):
         if not source and asellable.category:
            source = self._get_category_commission(asellable.category)
 
-        if source == None:
-            return
+        value = 0
+        if source:
+            if self.commission_type == self.DIRECT:
+                value = source.direct_value
+            else:
+                value = source.installments_value
+            value /= Decimal(100)
 
-        if self.commission_type == self.DIRECT:
-            return source.direct_value / Decimal(100)
-        else:
-            return source.installments_value / Decimal(100)
+        return value
 
     def _get_category_commission(self, category):
         if category:
-            source =  CommissionSource.selectOneBy(category=category,
-                                    connection=self.get_connection())
+            source =  CommissionSource.selectOneBy(
+                category=category,
+                connection=self.get_connection())
             if not source:
                 return self._get_category_commission(category.category)
             return source
