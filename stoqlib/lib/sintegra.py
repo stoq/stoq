@@ -26,6 +26,9 @@
 import datetime
 from decimal import Decimal
 
+from stoqlib.lib import latscii
+latscii.register_codec()
+
 number = (int, long, Decimal)
 
 def argtype_name(argtype):
@@ -77,11 +80,11 @@ class SintegraFile(object):
         @type end: datetime.date
         """
         if isinstance(company, unicode):
-            company = company.encode('latin1')
+            company = company.encode('utf-8')
         if isinstance(city, unicode):
-            city = city.encode('latin1')
+            city = city.encode('utf-8')
         if isinstance(state, unicode):
-            state = state.encode('latin1')
+            state = state.encode('utf-8')
         self.add(SintegraRegister10(
             cgc, estadual, company,
             city, state, fax,
@@ -100,14 +103,6 @@ class SintegraFile(object):
         @param name:
         @param phone:
         """
-        if isinstance(address, unicode):
-            address = address.encode('latin1')
-        if isinstance(complement, unicode):
-            complement = complement.encode('latin1')
-        if isinstance(district, unicode):
-            district = district.encode('latin1')
-        if isinstance(name, unicode):
-            name = name.encode('latin1')
         self.add(SintegraRegister11(
             address, number, complement, district,
             postal, name, phone))
@@ -191,15 +186,12 @@ class SintegraFile(object):
                                     icms_aliquota * 100))
 
     def add_product(self, start, end, product_code, ncm, desc,
-                              unit, aliquota_ipi, aliquota_icms,
-                              reducao_icms, base_icms):
+                    unit, aliquota_ipi, aliquota_icms,
+                    reducao_icms, base_icms):
         start = int(start.strftime("%Y%m%d"))
         end = int(end.strftime("%Y%m%d"))
         product_code = '%0*d' % (14, int(product_code))
         ncm = '%0*d' % (8, int(ncm))
-
-        if isinstance(desc, unicode):
-            desc = desc.encode('latin1')
 
         self.add(SintegraRegister75(start, end, product_code, ncm, desc,
                                     unit, aliquota_ipi, aliquota_icms,
@@ -250,7 +242,6 @@ class SintegraFile(object):
             last_register.type != 99):
             raise TypeError("You need to close the document before calling write()")
         return self._registers
-
 
 class SintegraRegister(object):
     """
@@ -314,7 +305,9 @@ class SintegraRegister(object):
         """
         @returns:
         """
-        values = [self._values[name] for (name, _, _) in self.sintegra_fields]
+        values = []
+        for (name, _, _) in self.sintegra_fields:
+            values.append(self._values[name])
         if self.padding:
             values.append(' '  * self.padding)
         return '%02d%s\r\n'% (self.sintegra_number,
@@ -330,7 +323,14 @@ class SintegraRegister(object):
             if value > max_value:
                 value = max_value
             arg = '%0*d' % (length, value)
-        elif argtype == str:
+        elif argtype == basestring:
+            # Accept normal strings, which are assumed to be UTF-8
+            if type(value) == str:
+                value = unicode(value, 'utf-8')
+
+            # Convert to latscii
+            value = value.encode('ascii', 'replacelatscii')
+
             arg = '%-*s' % (length, value)
             # Chop strings which are too long
             if len(arg) > length:
@@ -345,14 +345,14 @@ class SintegraRegister10(SintegraRegister):
     sintegra_number = 10
     sintegra_fields = [
         ('cgc', 14, number),
-        ('estadual', 14, str),
-        ('company', 35, str),
-        ('city', 30, str),
-        ('state', 2, str),
+        ('estadual', 14, basestring),
+        ('company', 35, basestring),
+        ('city', 30, basestring),
+        ('state', 2, basestring),
         ('fax', 10, number),
         ('start_date', 8, number),
         ('end_date', 8, number),
-        ('codes', 3, str),
+        ('codes', 3, basestring),
         # 1: 1..3
         # 2: 1..3
         # 3: 1..3,5
@@ -363,12 +363,12 @@ class SintegraRegister10(SintegraRegister):
 class SintegraRegister11(SintegraRegister):
     sintegra_number = 11
     sintegra_fields = [
-        ('place', 34, str),
+        ('place', 34, basestring),
         ('number', 5, number),
-        ('complement', 22, str),
-        ('district', 15, str),
+        ('complement', 22, basestring),
+        ('dibasestringict', 15, basestring),
         ('postal', 8, number),
-        ('name', 28, str),
+        ('name', 28, basestring),
         ('phone', 12, number),
         ]
 
@@ -379,11 +379,11 @@ class SintegraRegister11(SintegraRegister):
 class SintegraRegister60M(SintegraRegister):
     sintegra_number = 60
     sintegra_fields = [
-        ('type', 1, str),
+        ('type', 1, basestring),
         ('date', 8, number),
-        ('printerserial', 20, str),
+        ('printerserial', 20, basestring),
         ('printerid', 3, number),
-        ('model', 2, str),
+        ('model', 2, basestring),
         ('start_coo', 6, number),
         ('end_coo', 6, number),
         ('crz', 6, number),
@@ -397,10 +397,10 @@ class SintegraRegister60M(SintegraRegister):
 class SintegraRegister60A(SintegraRegister):
     sintegra_number = 60
     sintegra_fields = [
-        ('type', 1, str),
+        ('type', 1, basestring),
         ('date', 8, number),
-        ('printerserial', 20, str),
-        ('tax', 4, str),
+        ('printerserial', 20, basestring),
+        ('tax', 4, basestring),
         ('total', 12, number),
         ]
     sintegra_requires = 10, 11
@@ -410,21 +410,21 @@ class SintegraRegister50(SintegraRegister):
     sintegra_number = 50
     sintegra_fields = [
         ('cnpj', 14, number),
-        ('estadual', 14, str),
+        ('estadual', 14, basestring),
         ('date', 8, number),
-        ('state', 2, str),
+        ('state', 2, basestring),
         ('modelo', 2, number),
-        ('serial', 3, str),
+        ('serial', 3, basestring),
         ('numero', 6, number),
         ('cfop', 4, number),
-        ('emitente', 1, str),
+        ('emitente', 1, basestring),
         ('total', 13, number),
         ('icms_base', 13, number),
         ('icms_total', 13, number),
         ('isenta', 13, number),
         ('outras', 13, number),
         ('aliquota_icms', 4, number),
-        ('situacao', 1, str),
+        ('situacao', 1, basestring),
         ]
 
 class SintegraRegister54(SintegraRegister):
@@ -432,12 +432,12 @@ class SintegraRegister54(SintegraRegister):
     sintegra_fields = [
         ('cnpj', 14, number),
         ('modelo', 2, number),
-        ('serial', 3, str),
+        ('serial', 3, basestring),
         ('numero', 6, number),
         ('cfop', 4, number),
-        ('cst', 3, str),
+        ('cst', 3, basestring),
         ('numero_item', 3, number),
-        ('product_code', 14, str),
+        ('product_code', 14, basestring),
         ('product_quantity', 11, number),
         ('valor_bruto_produto', 12, number),
         ('desconto', 12, number),
@@ -452,10 +452,10 @@ class SintegraRegister75(SintegraRegister):
     sintegra_fields = [
         ('start_date', 8, number),
         ('end_date', 8, number),
-        ('product_code', 14, str),
-        ('ncm', 8, str),
-        ('descricao', 53, str),
-        ('unit', 6, str),
+        ('product_code', 14, basestring),
+        ('ncm', 8, basestring),
+        ('descricao', 53, basestring),
+        ('unit', 6, basestring),
         ('aliquota_ipi', 5, number),
         ('aliquota_icms', 4, number),
         ('reducao_icms', 5, number),
@@ -466,10 +466,10 @@ class SintegraRegister90(SintegraRegister):
     sintegra_number = 90
     sintegra_fields = [
         ('cgc', 14, number),
-        ('estadual', 14, str),
+        ('estadual', 14, basestring),
         ('type', 2, number),
         ('registers', 8, number),
-        ('blank', 85, str),
+        ('blank', 85, basestring),
         ('number', 1, number),
         ]
     sintegra_requires = 10, 11
