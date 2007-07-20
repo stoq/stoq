@@ -32,7 +32,7 @@ from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.parameter import ParameterData
-from stoqlib.domain.interfaces import IBranch, ICompany, ISellable
+from stoqlib.domain.interfaces import ISupplier, IBranch, ISellable
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -492,7 +492,11 @@ class ParameterAccess(ClassInittableObject):
     #
 
     def ensure_suggested_supplier(self):
-        self._set_schema("SUGGESTED_SUPPLIER", None)
+        key = "SUGGESTED_SUPPLIER"
+        from stoqlib.domain.person import Person
+        if self.get_parameter_by_field(key, Person.getAdapterClass(ISupplier)):
+            return
+        self._set_schema(key, None)
 
     def ensure_default_base_category(self):
         from stoqlib.domain.sellable import SellableCategory
@@ -513,23 +517,11 @@ class ParameterAccess(ClassInittableObject):
         self._set_schema(key, role.id, is_editable=False)
 
     def ensure_main_company(self):
-        from stoqlib.domain.address import Address, CityLocation
         from stoqlib.domain.person import Person
         key = "MAIN_COMPANY"
-        table = Person.getAdapterClass(IBranch)
-        if self.get_parameter_by_field(key, table):
+        if self.get_parameter_by_field(key, Person.getAdapterClass(IBranch)):
             return
-
-        person_obj = Person(name=None, connection=self.conn)
-        city_location = CityLocation(country=u"Brazil", connection=self.conn)
-        Address(is_main_address=True,
-                person=person_obj, city_location=city_location,
-                connection=self.conn)
-        person_obj.addFacet(ICompany, cnpj=None, fancy_name=None,
-                            connection=self.conn)
-        branch = person_obj.addFacet(IBranch, connection=self.conn)
-        branch.manager = Person(connection=self.conn, name=u"Manager")
-        self._set_schema(key, branch.id)
+        self._set_schema(key, None)
 
     def ensure_payment_destination(self):
         # Note that this method must always be called after

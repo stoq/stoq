@@ -163,33 +163,6 @@ def create_people():
                 max_installments_number=MAX_INSTALLMENTS_NUMBER,
                 **general_args)
 
-    # Setting up the current branch
-    branch = sysparam(trans).MAIN_COMPANY
-    # Set the manager to the last created person
-    branch.manager = person_obj
-    #provide_utility(ICurrentBranch, branch)
-
-    person = branch.person
-    person.name = u"Async Open Source"
-    person.phone_number = u"33760125"
-    person.fax_number = u"35015394"
-
-    address = person.get_main_address()
-    city_loc = address.city_location
-    city_loc.city = u"Sao Carlos"
-    city_loc.state = u"SP"
-    city_loc.country = u"Brazil"
-
-    address.street = u"Orlando Damiano"
-    address.number = 2212
-    address.district = u"Jd Macarengo"
-    address.postal_code = u"13560-450"
-
-    company = ICompany(person)
-    company.cnpj = '03.852.995/0001-07'
-    company.fancy_name = u"Async Open Source"
-    company.state_registry = '110042490114'
-
     trans.commit()
 
 def set_person_utilities():

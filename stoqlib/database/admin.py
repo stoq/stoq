@@ -41,11 +41,12 @@ from stoqdrivers.enum import TaxType, UnitType
 from stoqdrivers.constants import describe_constant
 
 from stoqlib.database.database import execute_sql, clean_database
-from stoqlib.database.interfaces import ICurrentUser, IDatabaseSettings
+from stoqlib.database.interfaces import (ICurrentBranch, ICurrentUser,
+                                         IDatabaseSettings)
 from stoqlib.database.migration import StoqlibSchemaMigration
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import get_connection, new_transaction
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
-                                       ISalesPerson)
+                                       ISalesPerson, ICompany, IBranch)
 from stoqlib.domain.person import EmployeeRole, Person
 from stoqlib.domain.person import EmployeeRoleHistory
 from stoqlib.domain.profile import UserProfile
@@ -62,46 +63,64 @@ USER_ADMIN_DEFAULT_NAME = 'admin'
 
 def ensure_admin_user(administrator_password):
     log.info("Creating administrator user")
-    trans = new_transaction()
 
-    # XXX Person for administrator user is the same of Current Branch. I'm not
-    # sure if it's the best approach but for sure it's better than
-    # create another one just for this user.
-    company = sysparam(trans).MAIN_COMPANY
-    person_obj = company.person
-    assert person_obj
+    conn = get_connection()
+    user = get_admin_user(conn)
+    if user is None:
+        trans = new_transaction()
+        person = Person(name='Administrator', connection=trans)
 
-    # Dependencies to create an user.
-    role = EmployeeRole(name=_('System Administrator'), connection=trans)
-    user = person_obj.addFacet(IIndividual, connection=trans)
-    user = person_obj.addFacet(IEmployee, role=role,
-                               connection=trans)
-    EmployeeRoleHistory(connection=trans,
-                        role=role,
-                        employee=user,
-                        is_active=True,
-                        salary=currency(800))
+        # Dependencies to create an user.
+        role = EmployeeRole(name=_('System Administrator'), connection=trans)
+        person.addFacet(IIndividual, connection=trans)
+        employee = person.addFacet(IEmployee, role=role, connection=trans)
+        EmployeeRoleHistory(connection=trans,
+                            role=role,
+                            employee=employee,
+                            is_active=True,
+                            salary=currency(800))
 
-    # This is usefull when testing a initial database. Admin user actually
-    # must have all the facets.
-    person_obj.addFacet(ISalesPerson, connection=trans)
+        # This is usefull when testing a initial database. Admin user actually
+        # must have all the facets.
+        person.addFacet(ISalesPerson, connection=trans)
 
-    profile = UserProfile.selectOneBy(name='Administrator', connection=trans)
+        profile = UserProfile.selectOneBy(name='Administrator', connection=trans)
 
-    username = USER_ADMIN_DEFAULT_NAME
-    log.info("Attaching IUser facet (%s)" % (username,))
-    user = person_obj.addFacet(IUser, username=username,
-                               password=administrator_password,
-                               profile=profile, connection=trans)
+        log.info("Attaching IUser facet (%s)" % (USER_ADMIN_DEFAULT_NAME,))
+        person.addFacet(IUser, username=USER_ADMIN_DEFAULT_NAME,
+                        password=administrator_password,
+                        profile=profile, connection=trans)
 
-    user = get_admin_user(trans)
-    assert user.password == administrator_password
+        trans.commit(close=True)
+
+    # Fetch the user again, this time from the right connection
+    user = get_admin_user(conn)
+    assert user
+
+    user.password = administrator_password
 
     # We can't provide the utility until it's actually in the database
     log.info('providing utility ICurrentUser')
     provide_utility(ICurrentUser, user)
 
-    trans.commit(close=True)
+
+def create_main_branch(trans, name):
+    """
+    Creates a new branch and sets it as the main branch for the system
+    @param trans: a database transaction
+    @param name: name of the new branch
+    """
+    person = Person(name=name, connection=trans)
+    person.addFacet(ICompany, connection=trans)
+    branch = person.addFacet(IBranch, connection=trans)
+    trans.commit()
+
+    sysparam(trans).MAIN_COMPANY = branch.person.id
+
+    provide_utility(ICurrentBranch, branch)
+
+    return branch
+
 
 def ensure_payment_methods():
     log.info("Creating payment methods")
@@ -121,16 +140,12 @@ def ensure_payment_methods():
 
 def get_admin_user(conn):
     """
-    Retrieves the current administrator user for the
-    system
+    Retrieves the current administrator user for the system
     @param conn: a database connection
     @returns: the admin user for the system
     """
-    user = Person.iselectOneBy(IUser, username=USER_ADMIN_DEFAULT_NAME,
+    return Person.iselectOneBy(IUser, username=USER_ADMIN_DEFAULT_NAME,
                             connection=conn)
-    if user is None:
-        raise AssertionError
-    return user
 
 def ensure_sellable_constants():
     """ Create native sellable constants. """
