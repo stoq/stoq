@@ -504,6 +504,13 @@ class IPaymentGroup(Interface):
     def can_cancel():
         pass
 
+    def pay(payment):
+        """
+        This is an optional hook on the PaymentGroup which is called
+        when you pay a payment.
+        @param payment: the payment which was paid
+        """
+
 class IDelivery(Interface):
     """ Specification of a Delivery interface for a sellable. """
 

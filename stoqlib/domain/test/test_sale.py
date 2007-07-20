@@ -31,6 +31,7 @@ from sqlobject.sqlbuilder import AND
 from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_current_branch
+from stoqlib.domain.commissions import CommissionSource, Commission
 from stoqlib.domain.fiscal import CfopData, IcmsIpiBookEntry
 from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IClient,
@@ -60,8 +61,8 @@ class TestSale(DomainTest):
         payment = method.create_inpayment(group,
                                           sale.get_sale_subtotal())
 
-    def _add_product(self, sale):
-        product = self.create_product()
+    def _add_product(self, sale, price=None):
+        product = self.create_product(price=price)
         sellable = ISellable(product)
         sellable.tax_constant = SellableTaxConstant(
             description="18",
@@ -71,6 +72,7 @@ class TestSale(DomainTest):
         sellable.add_sellable_item(sale, quantity=1)
         storable = product.addFacet(IStorable, connection=self.trans)
         storable.increase_stock(100, get_current_branch(self.trans))
+        return sellable
 
     def _add_delivery(self, sale):
         sellable = sysparam(self.trans).DELIVERY_SERVICE
@@ -383,3 +385,44 @@ class TestSale(DomainTest):
 
         self._add_payments(sale)
         sale.confirm()
+
+    def testCommissionAmount(self):
+        sale = self.create_sale()
+        sellable = self._add_product(sale, price=200)
+        source = CommissionSource(asellable=sellable,
+                                  direct_value=10,
+                                  installments_value=5,
+                                  connection=self.trans)
+        sale.order()
+        # payment method: money
+        # installments number: 1
+        self._add_payments(sale)
+        self.failIf(Commission.selectBy(connection=self.trans))
+        sale.confirm()
+        commissions = Commission.selectBy(sale=sale,
+                                          connection=self.trans)
+        self.assertEquals(commissions.count(), 1)
+        self.assertEquals(commissions[0].value ,Decimal('20.00'))
+
+    def testCommissionAmountMultiple(self):
+        sale = self.create_sale()
+        sellable = self._add_product(sale, price=200)
+        source = CommissionSource(asellable=sellable,
+                                  direct_value=10,
+                                  installments_value=5,
+                                  connection=self.trans)
+        sellable = self._add_product(sale, price=300)
+        source = CommissionSource(asellable=sellable,
+                                  direct_value=12,
+                                  installments_value=5,
+                                  connection=self.trans)
+        sale.order()
+        # payment method: money
+        # installments number: 1
+        self._add_payments(sale)
+        self.failIf(Commission.selectBy(connection=self.trans))
+        sale.confirm()
+        commissions = Commission.selectBy(sale=sale,
+                                          connection=self.trans)
+        self.assertEquals(commissions.count(), 1)
+        self.assertEquals(commissions[0].value, Decimal('56.00'))

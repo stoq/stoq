@@ -229,9 +229,9 @@ class ExampleCreator(object):
         product = Product(connection=self.trans)
         return product.addFacet(IStorable, connection=self.trans)
 
-    def create_product(self):
+    def create_product(self, price=None):
         from stoqlib.domain.product import ProductSupplierInfo
-        sellable = self.create_sellable()
+        sellable = self.create_sellable(price=price)
         product = sellable.get_adapted()
         ProductSupplierInfo(connection=self.trans,
                             supplier=self.create_supplier(),
@@ -247,17 +247,19 @@ class ExampleCreator(object):
             quantity=1, price=10,
             sale=sale, connection=self.trans)
 
-    def create_base_sellable_info(self):
+    def create_base_sellable_info(self, price=None):
         from stoqlib.domain.sellable import BaseSellableInfo
+        if price is None:
+            price = 10
         return BaseSellableInfo(connection=self.trans,
                                 description="Description",
-                                price=10)
+                                price=price)
 
-    def create_sellable(self):
+    def create_sellable(self, price=None):
         from stoqlib.domain.product import Product
         product = Product(connection=self.trans)
         tax_constant = sysparam(self.trans).DEFAULT_PRODUCT_TAX_CONSTANT
-        base_sellable_info = self.create_base_sellable_info()
+        base_sellable_info = self.create_base_sellable_info(price=price)
         on_sale_info = self.create_on_sale_info()
         return product.addFacet(ISellable,
                                 cost=125,
@@ -265,6 +267,7 @@ class ExampleCreator(object):
                                 base_sellable_info=base_sellable_info,
                                 on_sale_info=on_sale_info,
                                 connection=self.trans)
+
     def create_sale(self):
         from stoqlib.domain.sale import Sale
         from stoqlib.domain.till import Till

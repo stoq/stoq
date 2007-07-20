@@ -26,6 +26,7 @@
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.slaves.commissionslave import CategoryCommissionSlave
 
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.sellable import SellableCategory, SellableTaxConstant
@@ -38,9 +39,8 @@ class BaseSellableCategoryEditor(BaseEditor):
     model_name = _('Base Category')
     proxy_widgets = ('description',
                      'markup',
-                     'commission',
                      'tax_constant')
-    size = (400, -1)
+    size = (300, -1)
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
@@ -60,14 +60,22 @@ class BaseSellableCategoryEditor(BaseEditor):
         self.add_proxy(model=self.model,
                        widgets=BaseSellableCategoryEditor.proxy_widgets)
 
+    def setup_slaves(self):
+        slave = CategoryCommissionSlave(self.conn, self.model)
+        self.attach_slave('on_commission_data_holder', slave)
+
+    def on_confirm(self):
+        slave = self.get_slave('on_commission_data_holder')
+        slave.confirm()
+        return self.model
+
 class SellableCategoryEditor(BaseEditor):
     gladefile = 'SellableCategoryDataSlave'
     model_type = SellableCategory
     model_name = _('Category')
     proxy_widgets = ('description',
                      'suggested_markup',
-                     'category',
-                     'commission')
+                     'category')
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
@@ -85,10 +93,12 @@ class SellableCategoryEditor(BaseEditor):
         self.category.prefill(
             [(c.description, c)
                   for c in self.get_combo_entries()])
-        self.tax_constant.prefill(
-            [(_('(unset)'), None)] +
-            [(c.description, c)
-                  for c in SellableTaxConstant.select(connection=self.conn)])
+
+    def setup_slaves(self):
+        commission_slave = CategoryCommissionSlave(self.conn, self.model)
+        self.attach_slave('on_commission_data_holder', commission_slave)
+        cat = self.category.get_selected_label()
+        commission_slave.change_label('Calculate Commission From: %s' % cat)
 
     def setup_proxies(self):
         # We need to prefill combobox before to set a proxy, since we want
@@ -96,3 +106,13 @@ class SellableCategoryEditor(BaseEditor):
         self.setup_combo()
         self.add_proxy(model=self.model,
                        widgets=SellableCategoryEditor.proxy_widgets)
+
+    def on_category__content_changed(self, widget):
+        slave = self.get_slave('on_commission_data_holder')
+        cat = self.category.get_selected_label()
+        slave.change_label(_('Calculate Commission From: %s' % cat))
+
+    def on_confirm(self):
+        slave = self.get_slave('on_commission_data_holder')
+        slave.confirm()
+        return self.model

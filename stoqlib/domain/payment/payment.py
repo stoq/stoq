@@ -146,6 +146,8 @@ class Payment(Domain):
         self.paid_value = paid_value
         self.paid_date = paid_date or datetime.datetime.now()
         self.status = self.STATUS_PAID
+        if self.group:
+            self.group.pay(self)
 
     def submit(self, submit_date=None):
         """The first stage of payment acquittance is submiting and mark a

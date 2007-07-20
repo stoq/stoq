@@ -128,8 +128,6 @@ class EmployeeRoleSlave(BaseEditorSlave):
         self.role.prefill(items)
 
     def _setup_widgets(self):
-        if self.salesperson:
-            self.comission.update(self.salesperson.comission)
         self._setup_entry_completion()
 
     def _get_active_role_history(self):
@@ -153,7 +151,6 @@ class EmployeeRoleSlave(BaseEditorSlave):
                 conn = self.conn
                 self.salesperson = self.person.addFacet(ISalesPerson,
                                                         connection=conn)
-            self.salesperson.comission = self.comission.get_value()
         elif self.salesperson:
             if self.salesperson.is_active:
                 self.salesperson.inactivate()
@@ -221,7 +218,6 @@ class EmployeeRoleSlave(BaseEditorSlave):
         else:
             self.model.role = None
         self.role_editor_button.set_sensitive(editor)
-        self.comission.set_sensitive(settings)
 
 
 class EmployeeRoleHistorySlave(GladeSlaveDelegate):

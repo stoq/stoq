@@ -40,6 +40,7 @@ from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.domain.base import Domain, BaseSQLView
+from stoqlib.domain.commissions import Commission
 from stoqlib.domain.events import SaleConfirmEvent
 from stoqlib.domain.fiscal import (IssBookEntry, IcmsIpiBookEntry,
                                    AbstractFiscalBookEntry)
@@ -580,6 +581,32 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     def confirm(self):
         self.add_inpayments()
         self._create_fiscal_entries()
+
+        if self._pay_commission_at_confirm():
+            conn = self.get_connection()
+            type = self._get_commission_type()
+            for item in self.get_items():
+                Commission(commission_type=type,
+                           sale=self.sale, payment=item,
+                           salesperson=self.sale.salesperson,
+                           connection=conn)
+
+    def _pay_commission_at_confirm(self):
+        conn = self.get_connection()
+        return sysparam(conn).SALE_PAY_COMMISSION_WHEN_CONFIRMED
+
+    def _get_commission_type(self):
+        items = self.get_items()
+        if items.count() == 1:
+            return Commission.DIRECT
+        return Commission.INSTALLMENTS
+
+    def pay(self, payment):
+        if not self._pay_commission_at_confirm():
+            Commission(commission_type=self._get_commission_type(),
+                       sale=self.sale, payment=payment,
+                       salesperson=self.sale.salesperson,
+                       connection=self.get_connection())
 
     def cancel(self, renegotiation):
         assert self.can_cancel()

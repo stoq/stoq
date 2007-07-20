@@ -213,6 +213,14 @@ _parameter_info = dict(
     _(u'Max discount for sales'),
     _(u'The max discount for salesperson in a sale')),
 
+    SALE_PAY_COMMISSION_WHEN_CONFIRMED=ParameterDetails(
+    _(u'Sales'),
+    _(u'Commission Payment At Sale Confirmation'),
+    _(u'Define whether the commission is paid when a sale is confirmed. '
+       'If True pay the commission when a sale is confirmed, '
+       'if False, pay a relative commission for each commission when '
+       'the sales payment is paid.')),
+
     # XXX: USE_SCALES_PRICE
     USE_SCALE_PRICE=ParameterDetails(
     _(u'Sales'),
@@ -330,6 +338,8 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('SUBSTITUTION_TAX', int, initial=18),
         ParameterAttr('POS_SEPARATE_CASHIER', bool, initial=False),
         ParameterAttr('DEFAULT_AREA_CODE', int, initial=16),
+        ParameterAttr('SALE_PAY_COMMISSION_WHEN_CONFIRMED', bool,
+                       initial=False),
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
         ParameterAttr('DEFAULT_SALES_CFOP', u'fiscal.CfopData'),

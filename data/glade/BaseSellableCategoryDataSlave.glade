@@ -11,9 +11,10 @@
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkLabel" id="label3">
+                        <property name="justify">right</property>
                         <property name="label" context="yes" translatable="yes">Description:</property>
                         <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
+                        <property name="xalign">0.0</property>
                     </widget>
                     <packing>
                         <property name="x_options">fill</property>
@@ -21,14 +22,15 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="label5">
-                        <property name="justify">right</property>
-                        <property name="label" context="yes" translatable="yes">Salesperson Commission:</property>
+                    <widget class="GtkEventBox" id="on_commission_data_holder">
                         <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
+                        <child>
+                            <placeholder/>
+                        </child>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
+                        <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
                         <property name="x_options">fill</property>
                         <property name="y_options">fill</property>
@@ -39,7 +41,7 @@
                         <property name="justify">right</property>
                         <property name="label" context="yes" translatable="yes">Suggested Markup:</property>
                         <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
+                        <property name="xalign">0.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">3</property>
@@ -50,13 +52,15 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label6">
+                        <property name="justify">right</property>
                         <property name="label" context="yes" translatable="yes">Tax:</property>
                         <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
+                        <property name="xalign">0.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">4</property>
                         <property name="top_attach">3</property>
+                        <property name="x_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -70,43 +74,7 @@
                     <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="y_options">fill</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="GtkHBox" id="hbox2">
-                        <property name="spacing">5</property>
-                        <property name="visible">True</property>
-                        <child>
-                            <widget class="ProxySpinButton" id="commission">
-                                <property name="adjustment">0 0 100 1 10 0</property>
-                                <property name="data_type">Decimal</property>
-                                <property name="digits">2</property>
-                                <property name="model_attribute">salesperson_commission</property>
-                                <property name="text" context="yes" translatable="yes">0,00</property>
-                                <property name="visible">True</property>
-                                <property name="width_chars">7</property>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="GtkLabel" id="label1">
-                                <property name="label" context="yes" translatable="yes">%</property>
-                                <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
-                            </widget>
-                            <packing>
-                                <property name="position">1</property>
-                            </packing>
-                        </child>
-                    </widget>
-                    <packing>
-                        <property name="bottom_attach">2</property>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">1</property>
+                        <property name="x_options">fill</property>
                         <property name="y_options">fill</property>
                     </packing>
                 </child>
@@ -158,6 +126,7 @@
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">3</property>
+                        <property name="x_options">fill</property>
                     </packing>
                 </child>
             </widget>

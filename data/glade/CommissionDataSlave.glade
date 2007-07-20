@@ -1,0 +1,153 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="CommissionDataSlave">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkVBox" id="vbox1">
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkVBox" id="vbox2">
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="ProxyCheckButton" id="commission_check_btn">
+                                <property name="active">True</property>
+                                <property name="border_width">1</property>
+                                <property name="data_type">bool</property>
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes"> No Commission</property>
+                                <property name="model_attribute">commission_check_btn</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="padding">5</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkHBox" id="hbox1">
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="GtkHBox" id="hbox3">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <widget class="GtkLabel" id="label1">
+                                                <property name="label" context="yes" translatable="yes">Direct Sale:      </property>
+                                                <property name="visible">True</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="expand">False</property>
+                                                <property name="padding">6</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <widget class="ProxySpinButton" id="commission_spin">
+                                                <property name="adjustment">0 0 100 1 10 0</property>
+                                                <property name="data_type">Decimal</property>
+                                                <property name="digits">2</property>
+                                                <property name="is_focus">True</property>
+                                                <property name="model_attribute">commission_spin</property>
+                                                <property name="sensitive">False</property>
+                                                <property name="text" context="yes" translatable="yes">0,00</property>
+                                                <property name="visible">True</property>
+                                                <property name="width_chars">7</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="position">1</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <widget class="GtkLabel" id="label3">
+                                                <property name="label" context="yes" translatable="yes">%</property>
+                                                <property name="visible">True</property>
+                                                <property name="xalign">0.0</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="padding">6</property>
+                                                <property name="position">2</property>
+                                            </packing>
+                                        </child>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="padding">17</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="padding">3</property>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHBox" id="hbox2">
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkHBox" id="hbox4">
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="GtkLabel" id="label2">
+                                        <property name="label" context="yes" translatable="yes">In Installments:</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="padding">6</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="ProxySpinButton" id="commission_inst_spin">
+                                        <property name="adjustment">0 0 100 1 10 0</property>
+                                        <property name="data_type">Decimal</property>
+                                        <property name="digits">2</property>
+                                        <property name="model_attribute">commission_inst_spin</property>
+                                        <property name="sensitive">False</property>
+                                        <property name="text" context="yes" translatable="yes">0,00</property>
+                                        <property name="visible">True</property>
+                                        <property name="width_chars">7</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="label4">
+                                        <property name="label" context="yes" translatable="yes">%</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="padding">6</property>
+                                        <property name="position">2</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="padding">17</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="padding">3</property>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>
