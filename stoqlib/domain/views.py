@@ -26,11 +26,13 @@
 from sqlobject.viewable import Viewable
 from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn, OR
 
+from stoqlib.domain.commissions import CommissionSource
 from stoqlib.domain.product import (Product, ProductAdaptToSellable,
                                     ProductAdaptToStorable,
                                     ProductStockItem,
                                     ProductHistory)
-from stoqlib.domain.sellable import ASellable, SellableUnit, BaseSellableInfo
+from stoqlib.domain.sellable import (ASellable, SellableUnit,
+                                     BaseSellableInfo, SellableCategory)
 
 class ProductFullStockView(Viewable):
     """
@@ -201,3 +203,54 @@ class SellableFullStockView(Viewable):
                 query = branch_query
 
         return cls.select(query, connection=connection)
+
+class SellableCategoryView(Viewable):
+    """Stores information about categories.
+       This view is used to query the category with the related
+        commission source.
+    """
+
+    columns = dict(
+        id=SellableCategory.q.id,
+        commission=CommissionSource.q.direct_value,
+        installments_commission=CommissionSource.q.installments_value,
+        category_id=SellableCategory.q.id,
+        description=SellableCategory.q.description,
+        suggested_markup=SellableCategory.q.suggested_markup,
+    )
+
+    joins = [
+        # commission source
+        LEFTJOINOn(None, CommissionSource,
+                   CommissionSource.q.categoryID ==
+                   SellableCategory.q.id),
+       ]
+
+    @property
+    def category(self):
+        return SellableCategory.get(self.category_id,
+                                    connection=self.get_connection())
+
+    def get_commission(self):
+        if self.commission:
+            return self.commission
+
+        source = self._get_base_source_commission()
+        if source:
+            return source.direct_value
+
+    def get_installments_commission(self):
+        if self.commission:
+            return self.installments_commission
+
+        source = self._get_base_source_commission()
+        if source:
+            return source.installments_value
+
+    def _get_base_source_commission(self):
+        base_category = self.category.category
+        if not base_category:
+            return
+
+        return CommissionSource.selectOneBy(category=base_category,
+                                            connection=self.get_connection())

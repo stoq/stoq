@@ -24,6 +24,7 @@
 ##
 
 from stoqlib.database.runtime import get_connection
+from stoqlib.domain.commissions import CommissionSource
 from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
@@ -86,10 +87,16 @@ class ProductImporter(CSVImporter):
             category=None,
             description=data.base_category)
 
+        # create a commission source
+        self._get_or_create(
+            CommissionSource, trans,
+            direct_value=data.commission,
+            installments_value=data.commission2,
+            category=base_category)
+
         category = self._get_or_create(
             SellableCategory, trans,
             description=data.category,
-            salesperson_commission=data.commission2,
             suggested_markup=data.markup2,
             category=base_category)
 

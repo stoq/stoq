@@ -34,6 +34,7 @@ from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.editors.categoryeditor import (BaseSellableCategoryEditor,
                                                 SellableCategoryEditor)
 from stoqlib.domain.sellable import SellableCategory
+from stoqlib.domain.views import SellableCategoryView
 
 _ = stoqlib_gettext
 
@@ -43,6 +44,7 @@ class SellableCategorySearch(SearchEditor):
 
     searchbar_label = _('Categories Matching:')
     result_strings = _('category'), _('categories')
+    table = search_table = SellableCategoryView
     editor = SellableCategoryEditor
 
     def __init__(self, conn):
@@ -59,11 +61,18 @@ class SellableCategorySearch(SearchEditor):
             Column("description", _("Description"), data_type=str,
                    sorted=True, expand=True),
             Column("suggested_markup", _("Suggested Markup (%)"),
-                   data_type=str, width=170),
-            Column("salesperson_commission",
-                   _("Suggested Commission (%)"), data_type=str,
-                   width=190),
+                   data_type=str, width=180),
+            Column("commission",
+                   _("Commission (%)"), data_type=str,
+                   width=140),
+            Column("installments_commission",
+                   _("Installments Commission (%)"),
+                   data_type=str, width=220),
             ]
+
+    def get_editor_model(self, commission_source_category_view):
+        """Search Editor hook"""
+        return commission_source_category_view.category
 
     #
     # Private
@@ -73,7 +82,6 @@ class SellableCategorySearch(SearchEditor):
         return SellableCategory.q.categoryID != None
 
 class BaseSellableCatSearch(SellableCategorySearch):
-    size = (700, 500)
     title = _('Base Sellable Category Search')
     searchbar_label = _('Base Categories Matching:')
     result_strings = _('base category'), _('base categories')
@@ -82,16 +90,6 @@ class BaseSellableCatSearch(SellableCategorySearch):
     def create_filters(self):
         self.set_text_field_columns(['description'])
         self.executer.add_query_callback(self._get_query)
-
-    def get_columns(self):
-        columns = SellableCategorySearch.get_columns(self)
-        del columns[-1]
-        columns.append(
-            Column("salesperson_commission",
-                   _("Salesperson Commission (%)"), data_type=float,
-                   width=200),
-            )
-        return columns
 
     #
     # Private

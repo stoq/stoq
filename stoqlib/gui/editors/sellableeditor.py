@@ -47,6 +47,7 @@ from stoqlib.domain.sellable import (SellableCategory, ASellable,
                                      SellableUnit,
                                      SellableTaxConstant)
 from stoqlib.gui.base.lists import ModelListDialog
+from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
 from stoqlib.gui.slaves.imageslaveslave import ImageSlave
 from stoqlib.lib.validators import get_price_format_str
@@ -117,14 +118,12 @@ class SellablePriceEditor(BaseEditor):
     proxy_widgets = ('cost',
                      'markup',
                      'max_discount',
-                     'commission',
                      'price')
 
     general_widgets = ('base_markup',)
 
     def set_widget_formats(self):
-        widgets = (self.markup, self.base_markup, self.max_discount,
-                   self.commission)
+        widgets = (self.markup, self.base_markup, self.max_discount)
         for widget in widgets:
             widget.set_data_format(get_price_format_str())
 
@@ -149,6 +148,13 @@ class SellablePriceEditor(BaseEditor):
         slave = OnSaleInfoSlave(self.conn, self.model.on_sale_info)
         self.attach_slave('on_sale_holder', slave)
 
+        commission_slave = CommissionSlave(self.conn, self.model)
+        self.attach_slave('on_commission_data_holder', commission_slave)
+        if self.model.category:
+            desc = self.model.category.description
+            label = 'Calculate Commission From: %s' % desc
+            commission_slave.change_label(label)
+
     #
     # Kiwi handlers
     #
@@ -163,6 +169,10 @@ class SellablePriceEditor(BaseEditor):
         self.main_proxy.update("price")
         self.handler_unblock(self.price, 'changed')
 
+    def on_confirm(self):
+        slave = self.get_slave('on_commission_data_holder')
+        slave.confirm()
+        return self.model
 
 #
 # Editors
@@ -335,6 +345,12 @@ class SellableEditor(BaseEditor):
     def on_cost__validate(self, entry, value):
         if value <= 0:
            return ValidationError(_("Cost cannot be zero or negative"))
+
+    def on_category_combo__content_changed(self, widget):
+        category_cb = self.category_combo.get_text()
+        category = SellableCategory.selectOneBy(description=category_cb,
+                                                connection=self.conn)
+        self.model.category = category
 
 class SellableItemEditor(BaseEditor):
     gladefile = 'SellableItemEditor'
