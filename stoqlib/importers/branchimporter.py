@@ -42,7 +42,7 @@ class BranchImporter(CSVImporter):
               'street',
               'street_number',
               'district',
-              'postal',
+              'postal_code',
               ]
 
     def process_one(self, data, fields, trans):
@@ -65,7 +65,8 @@ class BranchImporter(CSVImporter):
                           connection=trans,
                           street=data.street,
                           number=int(data.street_number),
-                          district=data.district)
+                          district=data.district,
+                          postal_code=data.postal_code)
 
         person.addFacet(IBranch, connection=trans)
 
