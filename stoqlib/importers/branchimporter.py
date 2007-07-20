@@ -53,6 +53,7 @@ class BranchImporter(CSVImporter):
             fax_number=data.fax_number)
 
         person.addFacet(ICompany, cnpj=data.cnpj,
+                        state_registry=data.state_registry,
                         fancy_name=data.fancy_name,
                         connection=trans)
 
