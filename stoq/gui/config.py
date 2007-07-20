@@ -47,17 +47,20 @@ import os
 import socket
 
 import gtk
+from kiwi.component import provide_utility
 from kiwi.python import Settable
 from kiwi.ui.dialogs import info
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
-from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME, user_has_usesuper
+from stoqlib.database.admin import (USER_ADMIN_DEFAULT_NAME, user_has_usesuper,
+                                    create_main_branch)
+from stoqlib.database.interfaces import ICurrentBranchStation
 from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
-                                      set_current_branch_station)
+                                      get_current_branch)
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.person import Person
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.examples import createall as examples
-from stoqlib.domain.interfaces import IUser
+from stoqlib.domain.interfaces import IBranch, IUser
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
@@ -147,12 +150,6 @@ class DatabaseSettingsStep(WizardEditorStep):
         conn.createDatabase(dbname, ifNotExists=True)
         conn.close()
         return True
-
-    def _create_station(self, conn, branch, station_name):
-        station = BranchStation.get_station(conn, branch, station_name)
-        if not station:
-            station = BranchStation.create(conn, branch, station_name)
-        return station
 
     #
     # WizardStep hooks
@@ -245,23 +242,17 @@ class DatabaseSettingsStep(WizardEditorStep):
         existing_conn = self.wizard.get_connection()
         if existing_conn:
             rollback_and_begin(existing_conn)
+            existing_conn.close()
             conn = existing_conn
         else:
             conn = new_transaction()
         self.wizard.set_connection(conn)
 
-        station_name = socket.gethostname()
-        model = sysparam(conn).MAIN_COMPANY
-        if not self.wizard.station:
-            self.wizard.station = self._create_station(conn, model,
-                                                       station_name)
-        set_current_branch_station(conn, station_name)
-
-        model = model.person
+        dummy = object()
         if self.has_installed_db:
-            return ExistingAdminPasswordStep(conn, self.wizard, self, model)
+            return ExistingAdminPasswordStep(conn, self.wizard, self, dummy)
         else:
-            return AdminPasswordStep(conn, self.wizard, self, model)
+            return AdminPasswordStep(conn, self.wizard, self, dummy)
 
     def setup_proxies(self):
         items = [(value, key)
@@ -358,7 +349,7 @@ class ExistingAdminPasswordStep(AdminPasswordStep):
     def _setup_widgets(self):
         msg = (_(u"This machine which has the name <b>%s</b> will be "
                  "registered so it can be used to access the system.")
-               % self.wizard.station.name)
+               % socket.gethostname())
         label = gtk.Label()
         label.set_use_markup(True)
         label.set_markup(msg)
@@ -409,14 +400,16 @@ class ExampleDatabaseStep(WizardEditorStep):
     model_type = object
 
     def next_step(self):
+        self.conn.commit()
         if self.empty_database_radio.get_active():
             return BranchSettingsStep(self.conn, self.wizard,
-                                      self.model, self)
+                                      None, self)
         else:
-            self.conn.commit()
-            examples.create()
+            examples.create(utilities=True)
             self.wizard.installed_examples = True
-            return ECFPluginStep(self.conn, self.wizard, self.model)
+            branch = get_current_branch(self.conn)
+            return ECFPluginStep(self.conn, self.wizard,
+                                 branch.person)
 
 
 class BranchSettingsStep(WizardEditorStep):
@@ -428,11 +421,12 @@ class BranchSettingsStep(WizardEditorStep):
                    'iss',
                    'substitution_icms')
     proxy_widgets = person_widgets + tax_widgets
-
+    model_type = Person
 
     def __init__(self, conn, wizard, model, previous):
+        model = create_main_branch("", conn).person
+
         self.param = sysparam(conn)
-        self.model_type = Person
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
         self._setup_widgets()
 
@@ -440,7 +434,7 @@ class BranchSettingsStep(WizardEditorStep):
         self.title_label.set_size('large')
         self.title_label.set_bold(True)
 
-    def _update_system_parameters(self, company):
+    def _update_system_parameters(self, person):
         icms = self.tax_proxy.model.icms
         self.param.update_parameter('ICMS_TAX', unicode(icms))
 
@@ -451,7 +445,7 @@ class BranchSettingsStep(WizardEditorStep):
         self.param.update_parameter('SUBSTITUTION_TAX',
                                     unicode(substitution))
 
-        address = company.person.get_main_address()
+        address = person.get_main_address()
         if not address:
             raise StoqlibError("You should have an address defined at "
                                "this point")
@@ -475,8 +469,8 @@ class BranchSettingsStep(WizardEditorStep):
         self.name.grab_focus()
 
     def next_step(self):
-        branch = self.param.MAIN_COMPANY
-        self._update_system_parameters(branch)
+        self._update_system_parameters(self.model)
+        self.wizard.branch = IBranch(self.model)
         conn = self.wizard.get_connection()
         return ECFPluginStep(conn, self.wizard, self.model)
 
@@ -525,8 +519,8 @@ class FirstTimeConfigWizard(BaseWizard):
         self.config = StoqConfig()
         self.options = options
         self._conn = None
+        self.branch = None
         self.installed_examples = False
-        self.station = None
         self.device_slave = None
         self.enable_ecf = False
         self.model = Settable(db_settings=None, stoq_user_data=None)
@@ -542,13 +536,25 @@ class FirstTimeConfigWizard(BaseWizard):
     def get_connection(self):
         return self._conn
 
+    def _create_station(self, conn, branch, station_name):
+        station = BranchStation.get_station(conn, branch, station_name)
+        if not station:
+            station = BranchStation.create(conn, branch, station_name)
+        return station
+
     #
     # WizardStep hooks
     #
 
     def finish(self):
         # Commit data created during the wizard, such as stations
-        self._conn.commit(close=True)
+        self._conn.commit()
+
+        if self.branch:
+            station_name = socket.gethostname()
+            station = self._create_station(self._conn, self.branch,
+                                           station_name)
+            provide_utility(ICurrentBranchStation, station)
 
         # We need to provide the plugin manager at some point since
         # we're skipping it above
@@ -559,6 +565,8 @@ class FirstTimeConfigWizard(BaseWizard):
 
         # Okay, all plugins enabled go on and activate them
         manager.activate_plugins()
+
+        self._conn.close()
 
         # Write configuration to disk
         self.config.flush()
