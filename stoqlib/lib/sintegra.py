@@ -79,12 +79,6 @@ class SintegraFile(object):
         @param end:
         @type end: datetime.date
         """
-        if isinstance(company, unicode):
-            company = company.encode('utf-8')
-        if isinstance(city, unicode):
-            city = city.encode('utf-8')
-        if isinstance(state, unicode):
-            state = state.encode('utf-8')
         self.add(SintegraRegister10(
             cgc, estadual, company,
             city, state, fax,
