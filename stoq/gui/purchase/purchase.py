@@ -35,7 +35,8 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
 from kiwi.ui.widgets.list import Column
-from stoqlib.database.runtime import new_transaction, rollback_and_begin
+from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
+                                      finish_transaction)
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
@@ -136,12 +137,14 @@ class PurchaseApp(SearchableAppWindow):
         self.details_button.set_sensitive(one_selected)
 
     def _open_order(self, order=None, edit_mode=False):
-        order = self.run_dialog(PurchaseWizard, self.conn, order,
+        trans = new_transaction()
+        order = trans.get(order)
+        model = self.run_dialog(PurchaseWizard, trans, order,
                                 edit_mode)
-        if not order:
-            return
-        self.conn.commit()
-        return order
+        rv = finish_transaction(trans, model)
+        trans.close()
+
+        return model
 
     def _edit_order(self):
         selected = self.results.get_selected_rows()
@@ -149,7 +152,7 @@ class PurchaseApp(SearchableAppWindow):
         if qty != 1:
             raise ValueError('You should have only one order selected, '
                              'got %d instead' % qty )
-        self._open_order(selected[0].purchase, edit_mode=True)
+        self._open_order(selected[0].purchase, edit_mode=False)
         self.refresh()
 
     def _run_details_dialog(self):
