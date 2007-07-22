@@ -117,6 +117,7 @@ def listplugins():
 data_files = [
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.png')),
     ('$datadir/sql', listfiles('data', 'sql', '*.sql')),
+    ('$datadir/sql', listfiles('data', 'sql', '*.py')),
     ('$datadir/glade', listfiles('data', 'glade', '*.glade')),
     ('$datadir/fonts', listfiles('data', 'fonts', '*.ttf')),
     ('$datadir/csv', listfiles('data', 'csv', '*.csv')),

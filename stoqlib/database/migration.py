@@ -65,7 +65,12 @@ class Patch(object):
         @param migration
         """
         self.filename = filename
-        self.level = int(os.path.basename(filename)[:-4].split('-', 1)[1])
+
+        # Base is the part of the filename minus the extension
+        base = os.path.basename(filename).split('.')[0]
+
+        # "patch-20" -> 20
+        self.level = int(base.split('-', 1)[1])
         self._migration = migration
 
     def __cmp__(self, other):
@@ -78,17 +83,24 @@ class Patch(object):
         """
         log.info('Applying: %s' % (self.filename,))
 
-        temporary = tempfile.mktemp(prefix="patch-%d-" % self.level)
-        shutil.copy(self.filename, temporary)
-        sql = self._migration.generate_sql_for_patch(self.level)
-        open(temporary, 'a').write(sql)
-        retcode = execute_sql(temporary)
-        if retcode != 0:
-            error('Failed to apply %s, psql returned error code: %d' % (
-                os.path.basename(self.filename), retcode))
+        if self.filename.endswith('.sql'):
+            temporary = tempfile.mktemp(prefix="patch-%d-" % self.level)
+            shutil.copy(self.filename, temporary)
+            sql = self._migration.generate_sql_for_patch(self.level)
+            open(temporary, 'a').write(sql)
+            retcode = execute_sql(temporary)
+            if retcode != 0:
+                error('Failed to apply %s, psql returned error code: %d' % (
+                    os.path.basename(self.filename), retcode))
 
-        os.unlink(temporary)
-
+            os.unlink(temporary)
+        elif self.filename.endswith('.py'):
+            ns = {}
+            execfile(self.filename, ns, ns)
+            function = ns['apply_patch']
+            function(conn)
+        else:
+            raise AssertionError("Unknown filename: %s" % (self.filename,))
 
 class SchemaMigration(object):
     """
@@ -117,9 +129,9 @@ class SchemaMigration(object):
     def _get_patches(self):
         patches = []
         for directory in environ.get_resource_paths(self.patch_resource):
-            for filename in glob.glob(os.path.join(directory,
-                                                   self.patch_pattern)):
-                patches.append(Patch(filename, self))
+            for pattern in self.patch_patterns:
+                for filename in glob.glob(os.path.join(directory, pattern)):
+                    patches.append(Patch(filename, self))
         return sorted(patches)
 
     def _update_schema(self):
@@ -235,7 +247,7 @@ class StoqlibSchemaMigration(SchemaMigration):
     and all its plugins
     """
     patch_resource = 'sql'
-    patch_pattern = 'patch-*.sql'
+    patch_patterns = ['patch-*.sql', 'patch-*.py']
 
     def check_uptodate(self):
         retval = super(StoqlibSchemaMigration, self).check_uptodate()
@@ -302,15 +314,15 @@ class PluginSchemaMigration(SchemaMigration):
     This is a SchemaMigration class which is suitable for use within
     a plugin
     """
-    def __init__(self, plugin_name, resource, pattern):
+    def __init__(self, plugin_name, resource, patterns):
         """
         @param plugin_name: name of the plugin
         @param resource: resource to load sql patches from
-        @param pattern: sql patch pattern
+        @param patterns: sql patch pattern
         """
         self.plugin_name = plugin_name
         self.patch_resource = resource
-        self.patch_pattern = pattern
+        self.patch_patterns = patterns
         SchemaMigration.__init__(self)
 
         self._plugin = InstalledPlugin.selectOneBy(
