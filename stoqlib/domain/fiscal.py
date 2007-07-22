@@ -30,13 +30,11 @@ Note that this whole module is Brazil-specific.
 
 import datetime
 
-from sqlobject.sqlbuilder import AND
 from sqlobject import (UnicodeCol, DateTimeCol, ForeignKey, IntCol,
                        SQLObject, BoolCol)
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol
-from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.base import Domain, BaseSQLView, InheritableModel
 from stoqlib.domain.interfaces import IDescribable, IReversal
@@ -67,40 +65,22 @@ class AbstractFiscalBookEntry(InheritableModel):
     payment_group = ForeignKey("AbstractPaymentGroup")
 
     def reverse_entry(self, invoice_number):
-        raise NotImplementedError("This method must be overwrited on child")
+        raise NotImplementedError(
+            "This method must be implemented in a subclass")
 
     #
     # Classmethods
     #
 
     @classmethod
-    def _get_entries_by_payment_group(cls, conn, payment_group):
-        q1 = AbstractFiscalBookEntry.q.payment_groupID == payment_group.id
-        q2 = AbstractFiscalBookEntry.q.is_reversal == False
-        query = AND(q1, q2)
-        results = cls.select(query, connection=conn)
-        if results.count() > 1:
-            raise DatabaseInconsistency("You should have only one fiscal "
-                                        "entry for payment group %s"
-                                        % payment_group)
-        return results
-
-    @classmethod
     def has_entry_by_payment_group(cls, conn, payment_group):
-        entries = cls._get_entries_by_payment_group(conn, payment_group)
-        if entries:
-            return True
-        return False
+        return bool(cls.get_entry_by_payment_group(conn, payment_group))
 
     @classmethod
     def get_entry_by_payment_group(cls, conn, payment_group):
-        entries = cls._get_entries_by_payment_group(conn, payment_group)
-        if not entries:
-            raise StoqlibError("You should have at least one fiscal "
-                               "entry for payment group %s"
-                               % payment_group)
-        return entries[0]
-
+        return cls.selectOneBy(payment_group=payment_group, 
+                               is_reversal=False,
+                               connection=conn)
 
 class IcmsIpiBookEntry(AbstractFiscalBookEntry):
 
