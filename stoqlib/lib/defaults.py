@@ -30,7 +30,6 @@ from decimal import Decimal
 
 from stoqdrivers.enum import PaymentMethodType
 
-from stoqlib.enums import FiscalBookEntry
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -129,10 +128,6 @@ def payment_value_colorize(column_data):
     colors for negative values
     """
     return column_data < 0
-
-fiscal_book_entries = {FiscalBookEntry.ICMS: _("ICMS"),
-                       FiscalBookEntry.IPI: _("IPI"),
-                       FiscalBookEntry.ISS: _("ISS")}
 
 
 #
