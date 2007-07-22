@@ -83,24 +83,28 @@ class Patch(object):
         """
         log.info('Applying: %s' % (self.filename,))
 
-        if self.filename.endswith('.sql'):
-            temporary = tempfile.mktemp(prefix="patch-%d-" % self.level)
-            shutil.copy(self.filename, temporary)
-            sql = self._migration.generate_sql_for_patch(self.level)
-            open(temporary, 'a').write(sql)
-            retcode = execute_sql(temporary)
-            if retcode != 0:
-                error('Failed to apply %s, psql returned error code: %d' % (
-                    os.path.basename(self.filename), retcode))
+        temporary = tempfile.mktemp(prefix="patch-%d-" % self.level)
 
-            os.unlink(temporary)
+        if self.filename.endswith('.sql'):
+            shutil.copy(self.filename, temporary)
         elif self.filename.endswith('.py'):
             ns = {}
             execfile(self.filename, ns, ns)
             function = ns['apply_patch']
-            function(conn)
+            trans = new_transaction()
+            function(trans)
+            trans.commit(close=True)
         else:
             raise AssertionError("Unknown filename: %s" % (self.filename,))
+
+        sql = self._migration.generate_sql_for_patch(self.level)
+        open(temporary, 'a').write(sql)
+        retcode = execute_sql(temporary)
+        if retcode != 0:
+            error('Failed to apply %s, psql returned error code: %d' % (
+                os.path.basename(self.filename), retcode))
+
+        os.unlink(temporary)
 
 class SchemaMigration(object):
     """

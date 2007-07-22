@@ -1,9 +1,9 @@
 # #3289: Remove is_valid_model from domain classes where it's unused
 
-def apply_patch(conn):
+def apply_patch(trans):
     for view_name in ['client_view', 'service_view']:
-        if conn.tableExists(view_name):
-            conn.dropTable(view_name)
+        if trans.viewExists(view_name):
+            trans.dropView(view_name)
 
     for table_name in ['address',
                        'bank',
@@ -74,7 +74,8 @@ def apply_patch(conn):
                        'voter_data',
                        'work_permit_data',
                        ]:
-        if not conn.tableHasColumn(table_name, 'is_valid_model'):
+        if not trans.tableHasColumn(table_name, 'is_valid_model'):
             continue
-        conn.query('ALTER TABLE %s DROP COLUMN is_valid_model' % (
+        trans.query('ALTER TABLE %s DROP COLUMN is_valid_model' % (
             table_name,))
+    trans.commit()
