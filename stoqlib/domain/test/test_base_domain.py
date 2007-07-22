@@ -27,17 +27,17 @@ from sqlobject.col import IntCol
 from zope.interface import implements, Interface
 
 from stoqlib.database.runtime import new_transaction
-from stoqlib.domain.base import ValidatableDomain, ModelAdapter
+from stoqlib.domain.base import Domain, ModelAdapter
 
 from stoqlib.domain.test.domaintest import DomainTest
 
 class IDong(Interface):
     pass
 
-class Ding(ValidatableDomain):
+class Ding(Domain):
     field = IntCol(default=0)
     def __init__(self, connection, field=None):
-        ValidatableDomain.__init__(self, connection=connection, field=field)
+        Domain.__init__(self, connection=connection, field=field)
         self.called = False
 
     def facet_IDong_add(self, **kwargs):
@@ -103,11 +103,6 @@ class TestSelect(DomainTest):
         self.assertRaises(SQLObjectMoreThanOneResultError,
                           Ding.selectOne, connection=self.trans)
 
-    def testSelectOneWithInvalid(self):
-        obj = Ding(connection=self.trans)
-        obj._is_valid_model = False
-        self.testSelectOne()
-
     def testSelectOneBy(self):
         Ding(connection=self.trans)
 
@@ -121,22 +116,11 @@ class TestSelect(DomainTest):
             SQLObjectMoreThanOneResultError,
             Ding.selectOneBy, field=1, connection=self.trans)
 
-    def testSelectOneByWithInvalid(self):
-        obj = Ding(connection=self.trans, field=1)
-        obj._is_valid_model = False
-        self.testSelectOneBy()
-
     def testISelect(self):
         self.assertEqual(Ding.iselect(IDong, connection=self.trans).count(), 0)
         ding = Ding(connection=self.trans)
         ding.addFacet(IDong, connection=self.trans)
         self.assertEqual(Ding.iselect(IDong, connection=self.trans).count(), 1)
-
-    def testISelectWithInvalid(self):
-        ding = Ding(connection=self.trans)
-        dong = ding.addFacet(IDong, connection=self.trans)
-        dong._is_valid_model = False
-        self.testISelect()
 
     def testISelectOne(self):
         self.assertEqual(Ding.iselectOne(IDong, connection=self.trans), None)
@@ -152,12 +136,6 @@ class TestSelect(DomainTest):
             SQLObjectMoreThanOneResultError,
             Ding.iselectOne, IDong, connection=self.trans)
 
-    def testISelectOneWithInvalid(self):
-        ding = Ding(connection=self.trans)
-        dong = ding.addFacet(IDong, connection=self.trans)
-        dong._is_valid_model = False
-        self.testISelectOne()
-
     def testISelectBy(self):
         ding = Ding(connection=self.trans)
         ding.addFacet(IDong, connection=self.trans)
@@ -170,12 +148,6 @@ class TestSelect(DomainTest):
 
         results = Ding.iselectBy(IDong, facetfield=1, connection=self.trans)
         self.assertEquals(results.count(), 1)
-
-    def testISelectByWithInvalid(self):
-        ding = Ding(connection=self.trans)
-        dong = ding.addFacet(IDong, facetfield=1, connection=self.trans)
-        dong._is_valid_model = False
-        self.testISelectBy()
 
     def testISelectOneBy(self):
         ding = Ding(connection=self.trans)
@@ -194,9 +166,3 @@ class TestSelect(DomainTest):
         self.assertRaises(
             SQLObjectMoreThanOneResultError,
             Ding.iselectOneBy, IDong, facetfield=1, connection=self.trans)
-
-    def testISelectOneByWithInvalid(self):
-        ding = Ding(connection=self.trans)
-        dong = ding.addFacet(IDong, facetfield=1, connection=self.trans)
-        dong._is_valid_model = False
-        self.testISelectOneBy()
