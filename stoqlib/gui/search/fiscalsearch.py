@@ -29,18 +29,27 @@ import datetime
 import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
+from kiwi.python import enum
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.domain.fiscal import CfopData, IcmsIpiView, IssView
-from stoqlib.enums import FiscalBookEntry
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.editors.fiscaleditor import (CfopEditor,
                                               FiscalBookEntryEditor)
-from stoqlib.lib.defaults import fiscal_book_entries
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
+class FiscalBookEntryType(enum):
+    (ICMS,
+     IPI,
+     ISS) = range(3)
+
+fiscal_book_entries = {FiscalBookEntryType.ICMS: _("ICMS"),
+                       FiscalBookEntryType.IPI: _("IPI"),
+                       FiscalBookEntryType.ISS: _("ISS")}
+
 
 
 class CfopSearch(SearchEditor):
@@ -122,11 +131,11 @@ class FiscalBookEntrySearch(SearchEditor):
 
     def _get_entry_type_query(self, state):
         entry_type = state.value
-        if entry_type == FiscalBookEntry.ICMS:
+        if entry_type == FiscalBookEntryType.ICMS:
             self._setup_icms_columns()
-        elif entry_type == FiscalBookEntry.ISS:
+        elif entry_type == FiscalBookEntryType.ISS:
             self._setup_iss_columns()
-        elif entry_type == FiscalBookEntry.IPI:
+        elif entry_type == FiscalBookEntryType.IPI:
             self._setup_ipi_columns()
         else:
             raise ValueError("Invalid fical book entry type, got %s"
