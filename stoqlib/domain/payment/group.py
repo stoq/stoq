@@ -33,7 +33,6 @@ differently
 """
 
 import datetime
-from decimal import Decimal
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
@@ -45,7 +44,7 @@ from zope.interface import implements
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import InheritableModelAdapter
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.domain.fiscal import IssBookEntry, IcmsIpiBookEntry
+from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import (IContainer, IPaymentGroup,
                                        IInPayment)
 from stoqlib.domain.payment.payment import Payment
@@ -146,22 +145,31 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     # Fiscal methods
     #
 
-    def _create_fiscal_entry(self, table, cfop, invoice_number, **kwargs):
+    def _create_fiscal_entry(self, entry_type, cfop, invoice_number,
+                             iss_value=0, icms_value=0, ipi_value=0):
         conn = self.get_connection()
-        drawee = self.get_thirdparty()
-        branch = get_current_branch(conn)
-        return table(connection=conn, invoice_number=invoice_number,
-                     cfop=cfop, drawee=drawee, branch=branch,
-                     date=datetime.datetime.now(),
-                     payment_group=self, **kwargs)
+        return FiscalBookEntry(
+            entry_type=entry_type,
+            iss_value=iss_value,
+            ipi_value=ipi_value,
+            icms_value=icms_value,
+            invoice_number=invoice_number,
+            cfop=cfop,
+            drawee=self.get_thirdparty(),
+            branch=get_current_branch(conn),
+            date=datetime.datetime.now(),
+            payment_group=self,
+            connection=conn)
 
     def create_icmsipi_book_entry(self, cfop, invoice_number, icms_value,
-                                  ipi_value=Decimal(0)):
-        self._create_fiscal_entry(IcmsIpiBookEntry, cfop, invoice_number,
+                                  ipi_value=0):
+        self._create_fiscal_entry(FiscalBookEntry.TYPE_PRODUCT, cfop,
+                                  invoice_number,
                                   icms_value=icms_value, ipi_value=ipi_value)
 
     def create_iss_book_entry(self, cfop, invoice_number, iss_value):
-        self._create_fiscal_entry(IssBookEntry, cfop, invoice_number,
+        self._create_fiscal_entry(FiscalBookEntry.TYPE_SERVICE, cfop,
+                                  invoice_number,
                                   iss_value=iss_value)
 
     def _get_paid_payments(self):

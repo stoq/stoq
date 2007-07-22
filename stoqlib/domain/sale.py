@@ -42,8 +42,7 @@ from stoqlib.database.runtime import (get_current_user,
 from stoqlib.domain.base import Domain, ValidatableDomain, BaseSQLView
 from stoqlib.domain.commissions import Commission
 from stoqlib.domain.events import SaleConfirmEvent
-from stoqlib.domain.fiscal import (IssBookEntry, IcmsIpiBookEntry,
-                                   AbstractFiscalBookEntry)
+from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IContainer, IClient,
                                        IPaymentGroup, ISellable,
@@ -645,15 +644,11 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         till.add_entry(payment)
 
     def _revert_fiscal_entry(self, invoice_number):
-        conn = self.get_connection()
-        entries = AbstractFiscalBookEntry.selectBy(payment_groupID=self.id,
-                                                   connection=conn)
-        if entries.count() > 1:
-            raise DatabaseInconsistency("You should have only one fiscal "
-                                        "entry per payment group")
-        if not entries:
-            return
-        entries[0].reverse_entry(invoice_number)
+        entry = FiscalBookEntry.selectOneBy(
+            payment_group=self,
+            connection=self.get_connection())
+        if entry is not None:
+            entry.reverse_entry(invoice_number)
 
     def _get_pm_commission_total(self):
         """Return the payment method commission total. Usually credit
@@ -700,12 +695,16 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         return iss_total
 
     def _has_iss_entry(self):
-        return IssBookEntry.has_entry_by_payment_group(
-            self.get_connection(), self)
+        return FiscalBookEntry.has_entry_by_payment_group(
+            self.get_connection(),
+            self,
+            type=FiscalBookEntry.TYPE_SERVCE)
 
     def _has_icms_entry(self):
-        return IcmsIpiBookEntry.has_entry_by_payment_group(
-            self.get_connection(), self)
+        return FiscalBookEntry.has_entry_by_payment_group(
+            self.get_connection(),
+            self,
+            type=FiscalBookEntry.TYPE_PRODUCT)
 
     def _get_average_difference(self):
         sale = self.sale
@@ -726,8 +725,9 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         return (total - subtotal) / total_quantity
 
     def _get_iss_entry(self):
-        return IssBookEntry.get_entry_by_payment_group(
-                                        self.get_connection(), self)
+        return FiscalBookEntry.get_entry_by_payment_group(
+            self.get_connection(), self,
+            FiscalBookEntry.TYPE_SERVCE)
 
     def _create_fiscal_entries(self):
         """A Brazil-specific method

@@ -114,7 +114,6 @@ class ExampleCreator(object):
         known_types = {
             'APaymentMethod': self.create_payment_method,
             'ASellable': self.create_sellable,
-            'AbstractFiscalBookEntry' : self.create_abstract_fiscal_book_entry,
             'AbstractPaymentGroup' : self.create_payment_group,
             'BaseSellableInfo': self.create_base_sellable_info,
             'BranchStation': self.get_station,
@@ -122,8 +121,7 @@ class ExampleCreator(object):
             'CityLocation': self.get_location,
             'CfopData': self.create_cfop_data,
             'EmployeeRole': self.create_employee_role,
-            'IcmsIpiBookEntry': self.create_icms_ipi_book_entry,
-            'IssBookEntry': self.create_iss_book_entry,
+            'FiscalBookEntry' : self.create_fiscal_book_entry,
             'IClient': self.create_client,
             'IBranch': self.create_branch,
             'IEmployee': self.create_employee,
@@ -367,41 +365,33 @@ class ExampleCreator(object):
                                   sellable=sellable,
                                   receiving_order=receiving_order)
 
-    def create_icms_ipi_book_entry(self):
-        from stoqlib.domain.fiscal import IcmsIpiBookEntry
+    def create_fiscal_book_entry(self, entry_type, icms_value=0, iss_value=0,
+                                 ipi_value=0, invoice_number=None):
         from stoqlib.domain.payment.group import AbstractPaymentGroup
+        from stoqlib.domain.fiscal import FiscalBookEntry
         payment_group = AbstractPaymentGroup(connection=self.trans)
-        return IcmsIpiBookEntry(connection=self.trans,
-                                cfop=self.create_cfop_data(),
-                                branch=self.create_branch(),
-                                drawee=self.create_person(),
-                                payment_group=payment_group,
-                                icms_value=10, ipi_value=10,
-                                invoice_number=200)
+        return FiscalBookEntry(invoice_number=invoice_number,
+                               icms_value=icms_value,
+                               iss_value=iss_value,
+                               ipi_value=ipi_value,
+                               entry_type=entry_type,
+                               cfop=self.create_cfop_data(),
+                               branch=self.create_branch(),
+                               drawee=self.create_person(),
+                               payment_group=payment_group,
+                               connection=self.trans)
+
+    def create_icms_ipi_book_entry(self):
+        from stoqlib.domain.fiscal import FiscalBookEntry
+        return self.create_fiscal_book_entry(FiscalBookEntry.TYPE_PRODUCT,
+                                             icms_value=10, ipi_value=10,
+                                             invoice_number=200)
 
     def create_iss_book_entry(self):
-        from stoqlib.domain.payment.group import AbstractPaymentGroup
-        from stoqlib.domain.fiscal import IssBookEntry
-        cfop = self.create_cfop_data()
-        branch = self.create_branch()
-        drawee = self.create_person()
-        payment_group = AbstractPaymentGroup(connection=self.trans)
-        return IssBookEntry(connection=self.trans, cfop=cfop,
-                            branch=branch,drawee=drawee,
-                            payment_group=payment_group,
-                            iss_value=10, invoice_number=201)
-
-    def create_abstract_fiscal_book_entry(self):
-        from stoqlib.domain.payment.group import AbstractPaymentGroup
-        from stoqlib.domain.fiscal import AbstractFiscalBookEntry
-        cfop = self.create_cfop_data()
-        branch = self.create_branch()
-        drawee = self.create_person()
-        payment_group = AbstractPaymentGroup(connection=self.trans)
-        return AbstractFiscalBookEntry(invoice_number=2, cfop=cfop,
-                                       branch=branch, drawee=drawee,
-                                       payment_group=payment_group,
-                                       connection=self.trans)
+        from stoqlib.domain.fiscal import FiscalBookEntry
+        return self.create_fiscal_book_entry(FiscalBookEntry.TYPE_SERVICE,
+                                             iss_value=10,
+                                             invoice_number=201)
 
     def create_service(self):
         from stoqlib.domain.sellable import SellableTaxConstant
