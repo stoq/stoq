@@ -143,20 +143,10 @@ class Product(Domain):
         @rtype: ProductSupplierInfo or None if a product lacks
            a main suppliers
         """
-
-        if not self.suppliers:
-            return
-
-        main_suppliers = [supplier for supplier in self.suppliers
-                                       if supplier.is_main_supplier]
-        # A Product can only have one main supplier.
-        # FIXME: Investigate why we can have 0
-        if len(main_suppliers) > 1:
-            raise DatabaseInconsistency(
-                "A Product should have one main supplier, "
-                "but %d suppliers were found: %r" % (len(main_suppliers),
-                                                     main_suppliers))
-        return main_suppliers[0]
+        return ProductSupplierInfo.selectOneBy(
+            product=self,
+            is_main_supplier=True,
+            connection=self.get_connection())
 
 
 class ProductHistory(Domain):
