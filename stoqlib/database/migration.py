@@ -113,16 +113,16 @@ class SchemaMigration(object):
     """
 
     patch_resource = None
-    patch_pattern = None
+    patch_patterns = None
 
     def __init__(self):
         if self.patch_resource is None:
             raise ValueError(
                 "%s needs to have the patch_resource class variable set" % (
                 self.__class__.__name__))
-        if self.patch_pattern is None:
+        if self.patch_patterns is None:
             raise ValueError(
-                "%s needs to have the patch_pattern class variable set" % (
+                "%s needs to have the patch_patterns class variable set" % (
                 self.__class__.__name__))
         self.conn = get_connection()
 
