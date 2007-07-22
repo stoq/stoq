@@ -44,7 +44,6 @@ class ProductFullStockView(Viewable):
     @cvar status: the sellable status
     @cvar cost: the sellable cost
     @cvar price: the sellable price
-    @cvar is_valid_model: the sellable is_valid_model system attribute
     @cvar description: the sellable description
     @cvar unit: the unit of the product
     @cvar product_id: the id of the product table
@@ -58,7 +57,6 @@ class ProductFullStockView(Viewable):
         status=ASellable.q.status,
         cost=ASellable.q.cost,
         price=BaseSellableInfo.q.price,
-        is_valid_model=BaseSellableInfo.q._is_valid_model,
         description=BaseSellableInfo.q.description,
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
@@ -85,7 +83,6 @@ class ProductFullStockView(Viewable):
 
     clause = AND(
         BaseSellableInfo.q.id == ASellable.q.base_sellable_infoID,
-        BaseSellableInfo.q._is_valid_model == True,
         )
 
     @classmethod
@@ -147,7 +144,6 @@ class SellableFullStockView(Viewable):
     @cvar status: the sellable status
     @cvar cost: the sellable cost
     @cvar price: the sellable price
-    @cvar is_valid_model: the sellable is_valid_model system attribute
     @cvar description: the sellable description
     @cvar unit: the unit of the product or None
     @cvar product_id: the id of the product table or None
@@ -161,7 +157,6 @@ class SellableFullStockView(Viewable):
         status=ASellable.q.status,
         cost=ASellable.q.cost,
         price=BaseSellableInfo.q.price,
-        is_valid_model=BaseSellableInfo.q._is_valid_model,
         description=BaseSellableInfo.q.description,
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
@@ -188,7 +183,6 @@ class SellableFullStockView(Viewable):
 
     clause = AND(
         BaseSellableInfo.q.id == ASellable.q.base_sellable_infoID,
-        BaseSellableInfo.q._is_valid_model == True,
         )
 
     @classmethod
