@@ -159,6 +159,9 @@ class PostgresConnection(DBAPI):
         self.query("DROP TABLE %s %s" % (tableName,
                                          cascade and 'CASCADE' or ''))
 
+    def dropView(self, tableName):
+        self.query("DROP VIEW %s" % tableName)
+
     def joinSQLType(self, join):
         return 'INT NOT NULL'
 
@@ -166,6 +169,8 @@ class PostgresConnection(DBAPI):
         result = self.queryOne("SELECT COUNT(relname) FROM pg_class WHERE relname = %s"
                                % self.sqlrepr(tableName))
         return result[0]
+
+    viewExists = tableExists
 
     # Johan 2006-09-24: Add Sequence methods
     def sequenceExists(self, sequence):
