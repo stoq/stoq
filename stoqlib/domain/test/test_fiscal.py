@@ -24,7 +24,6 @@
 ##
 """ This module tests all fiscal data"""
 
-from stoqlib.exceptions import StoqlibError
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import AbstractPaymentGroup
 
@@ -60,8 +59,8 @@ class TestAbstractFiscalBookEntry(DomainTest):
 
         entry = self.create_abstract_fiscal_book_entry()
 
-        self.assertRaises(StoqlibError, entry.get_entry_by_payment_group,
-                          self.trans, new_payment_group)
+        self.failIf(entry.get_entry_by_payment_group(
+                        self.trans, new_payment_group))
 
 
 class TestIcmsIpiBookEntry(DomainTest):
