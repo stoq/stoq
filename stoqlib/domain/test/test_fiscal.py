@@ -25,7 +25,6 @@
 """ This module tests all fiscal data"""
 
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.payment.group import AbstractPaymentGroup
 
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -37,42 +36,47 @@ class TestCfopData(DomainTest):
         self.assertEqual(full_desc, u"%s %s" % (u"2365", u"blabla"))
 
 
-class TestAbstractFiscalBookEntry(DomainTest):
+class TestFiscalBookEntry:
 
-    def testReverseEntry(self):
-        entry = self.create_abstract_fiscal_book_entry()
-        self.assertRaises(NotImplementedError, entry.reverse_entry, 0xdeadbeef)
+    def create_book_entry(self):
+        raise NotImplementedError
 
     def testHasEntryByPaymentGroup(self):
-        new_payment_group = AbstractPaymentGroup.select(
-            connection=self.trans)[0]
+        payment_group = self.create_payment_group()
+        entry = self.create_book_entry()
 
-        entry = self.create_abstract_fiscal_book_entry()
         self.failUnless(entry.has_entry_by_payment_group(
-            self.trans, entry.payment_group))
+            self.trans, entry.payment_group, entry.entry_type))
         self.failIf(entry.has_entry_by_payment_group(
-            self.trans, new_payment_group))
+            self.trans, payment_group, entry.entry_type))
 
-    def test_get_entry_by_payment_group(self):
-        new_payment_group = AbstractPaymentGroup.select(
-            connection=self.trans)[0]
-
-        entry = self.create_abstract_fiscal_book_entry()
+    def testGetEntryByPaymentGroup(self):
+        payment_group = self.create_payment_group()
+        entry = self.create_book_entry()
 
         self.failIf(entry.get_entry_by_payment_group(
-                        self.trans, new_payment_group))
+            self.trans, payment_group,
+            entry.entry_type))
 
 
-class TestIcmsIpiBookEntry(DomainTest):
+class TestIcmsIpiBookEntry(TestFiscalBookEntry, DomainTest):
+
+    def create_book_entry(self):
+        return self.create_icms_ipi_book_entry()
+
     def testReverseEntry(self):
-       icmsipibookentry = self.create_icms_ipi_book_entry()
+       icmsipibookentry = self.create_book_entry()
        reversal = icmsipibookentry.reverse_entry(100)
        self.assertEquals(reversal.icms_value, 10)
        self.assertEquals(reversal.ipi_value, 10)
 
 
-class TestIssBookEntry(DomainTest):
+class TestIssBookEntry(TestFiscalBookEntry, DomainTest):
+
+    def create_book_entry(self):
+        return self.create_iss_book_entry()
+
     def testReverseEntry(self):
-       issbookentry = self.create_iss_book_entry()
-       reversal = issbookentry.reverse_entry(201)
-       self.assertEquals(reversal.iss_value, 10)
+        issbookentry = self.create_book_entry()
+        reversal = issbookentry.reverse_entry(201)
+        self.assertEquals(reversal.iss_value, 10)
