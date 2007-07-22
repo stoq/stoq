@@ -118,9 +118,6 @@ adapter_hooks.append(_adaptable_sqlobject_adapter_hook)
 class AbstractModel(object):
     """Generic methods for any domain classes."""
 
-    # For pylint
-    _is_valid_model = False
-
     def __ne__(self, other):
         return not self.__eq__(other)
 
@@ -165,12 +162,6 @@ class AbstractModel(object):
         cls._check_connection(connection)
         if clause and not isinstance(clause, SQLExpression):
             raise TypeError("Stoqlib doesn't support non sqlbuilder queries")
-        query = cls.q._is_valid_model == True
-        if clause:
-            # This make queries in stoqlib applications consistent
-            clause = AND(query, clause)
-        else:
-            clause = query
         clause_repr = sqlrepr(clause, get_utility(IDatabaseSettings).rdbms)
         if isinstance(clause_repr, unicode):
             clause = clause_repr.encode(DATABASE_ENCODING)
@@ -180,8 +171,6 @@ class AbstractModel(object):
 
     @classmethod
     def selectBy(cls, connection=None, **kw):
-        # This make queries in stoqlib applications consistent
-        kw['_is_valid_model'] = True
         cls._check_connection(connection)
         for field_name, search_str in kw.items():
             if not isinstance(search_str, unicode):
@@ -196,12 +185,6 @@ class AbstractModel(object):
         cls._check_connection(connection)
         if clause and not isinstance(clause, SQLExpression):
             raise TypeError("Stoqlib doesn't support non sqlbuilder queries")
-        query = cls.q._is_valid_model == True
-        if clause:
-            # This make queries in stoqlib applications consistent
-            clause = AND(query, clause)
-        else:
-            clause = query
         clause_repr = sqlrepr(clause, get_utility(IDatabaseSettings).rdbms)
         if isinstance(clause_repr, unicode):
             clause = clause_repr.encode(DATABASE_ENCODING)
@@ -213,7 +196,6 @@ class AbstractModel(object):
 
     @classmethod
     def selectOneBy(cls, clause=None, connection=None, **kw):
-        kw['_is_valid_model'] = True
         cls._check_connection(connection)
         for field_name, search_str in kw.items():
             if not isinstance(search_str, unicode):
@@ -241,24 +223,6 @@ class AbstractModel(object):
             raise TypeError("The argument connection must be of type "
                             "Transaction, or DBAPI got %r instead"
                             % connection)
-
-    #
-    # Useful methods to deal with transaction isolation problems. See
-    # domain/base docstring for further informations
-    #
-
-    def set_valid(self):
-        if self._is_valid_model:
-            raise ValueError('This model is already valid.')
-        self._is_valid_model = True
-
-    def set_invalid(self):
-        if not self._is_valid_model:
-            raise ValueError('This model is already invalid.')
-        self._is_valid_model = False
-
-    def get_valid(self):
-        return self._is_valid_model
 
     #
     # General methods
@@ -371,6 +335,72 @@ class Domain(BaseDomain, AdaptableSQLObject):
         return adapter.get(object_id, **kwargs)
 
 
+class ValidatableDomain(Domain):
+
+    _is_valid_model = BoolCol(default=False, forceDBName=True)
+
+    #
+    # Useful methods to deal with transaction isolation problems. See
+    # domain/base docstring for further informations
+    #
+
+    def set_valid(self):
+        if self._is_valid_model:
+            raise ValueError('This model is already valid.')
+        self._is_valid_model = True
+
+    def set_invalid(self):
+        if not self._is_valid_model:
+            raise ValueError('This model is already invalid.')
+        self._is_valid_model = False
+
+    def get_valid(self):
+        return self._is_valid_model
+
+    @classmethod
+    def select(cls, clause=None, connection=None, **kwargs):
+        # This make queries in stoqlib applications consistent
+        query = cls.q._is_valid_model == True
+        if clause:
+            clause = AND(query, clause)
+        else:
+            clause = query
+        return super(AbstractModel, cls).select(clause=clause,
+                                                connection=connection,
+                                                **kwargs)
+
+    @classmethod
+    def selectBy(cls, connection=None, **kw):
+        # This make queries in stoqlib applications consistent
+        kw['_is_valid_model'] = True
+        return super(ValidatableDomain, cls).selectBy(
+            connection=connection, **kw)
+
+    @classmethod
+    def selectOne(cls, clause=None, clauseTables=None, lazyColumns=False,
+                  connection=None):
+        if clause and not isinstance(clause, SQLExpression):
+            raise TypeError("Stoqlib doesn't support non sqlbuilder queries")
+        # This make queries in stoqlib applications consistent
+        query = cls.q._is_valid_model == True
+        if clause:
+            clause = AND(query, clause)
+        else:
+            clause = query
+        return super(ValidatableDomain, cls).selectOne(
+            clause=clause,
+            clauseTables=clauseTables,
+            lazyColumns=lazyColumns,
+            connection=connection)
+
+    @classmethod
+    def selectOneBy(cls, clause=None, connection=None, **kw):
+        kw['_is_valid_model'] = True
+        return super(ValidatableDomain, cls).selectOneBy(
+            connection=connection, **kw)
+
+
+
 class InheritableModel(AbstractModel, InheritableSQLObject, AdaptableSQLObject):
     """Subclasses of InheritableModel are able to be base classes of other
     classes in a database level. Adapters are also allowed for these classes
@@ -404,13 +434,12 @@ class InheritableModelAdapter(AbstractModel, InheritableSQLObject, SQLObjectAdap
         SQLObjectAdapter.__init__(self, _original, kwargs) # Modifies kwargs
         InheritableSQLObject.__init__(self, *args, **kwargs)
 
-for klass in (InheritableModel, Domain, ModelAdapter, InheritableModelAdapter):
+for klass in (InheritableModel, ValidatableDomain, Domain, ModelAdapter,
+              InheritableModelAdapter):
     sqlmeta = klass.sqlmeta
     sqlmeta.cacheValues = False
     sqlmeta.addColumn(ForeignKey('TransactionEntry', name='te_created',
                                  default=None))
     sqlmeta.addColumn(ForeignKey('TransactionEntry', name='te_modified',
                                  default=None))
-    sqlmeta.addColumn(BoolCol(name='_is_valid_model', default=True,
-                              forceDBName=True))
 

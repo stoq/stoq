@@ -27,17 +27,17 @@ from sqlobject.col import IntCol
 from zope.interface import implements, Interface
 
 from stoqlib.database.runtime import new_transaction
-from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.base import ValidatableDomain, ModelAdapter
 
 from stoqlib.domain.test.domaintest import DomainTest
 
 class IDong(Interface):
     pass
 
-class Ding(Domain):
+class Ding(ValidatableDomain):
     field = IntCol(default=0)
     def __init__(self, connection, field=None):
-        Domain.__init__(self, connection=connection, field=field)
+        ValidatableDomain.__init__(self, connection=connection, field=field)
         self.called = False
 
     def facet_IDong_add(self, **kwargs):

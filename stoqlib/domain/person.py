@@ -73,7 +73,7 @@ See L{stoqlib.lib.component} for more information on adapters.
 import datetime
 
 from sqlobject import (DateTimeCol, UnicodeCol, IntCol,
-                       ForeignKey, MultipleJoin, BoolCol, SQLObject)
+                       ForeignKey, MultipleJoin, BoolCol)
 from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn
 from sqlobject.viewable import Viewable
 
@@ -83,7 +83,7 @@ from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import raw_phone_number, format_phone_number
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.domain.base import Domain, ModelAdapter, BaseSQLView
+from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.address import Address
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IClient, ISupplier, IUser, IBranch,
@@ -846,18 +846,40 @@ class EmployeeRoleHistory(Domain):
 # Views
 #
 
-class ClientView(SQLObject, BaseSQLView):
-    name = UnicodeCol()
-    status = IntCol()
-    client_id = IntCol()
-    cpf = UnicodeCol()
-    rg_number = UnicodeCol()
-    phone_number = UnicodeCol()
+class ClientView(Viewable):
+    """
+    Stores information about clients.
+    Available fields are:
+       id                  - the id of the person table
+       name                - the client name
+       status              - the client financial status
+       cpf                 - the brazil-specific cpf attribute
+       rg_number           - the brazil-specific rg_number attribute
+       phone_number        - the client phone_number
+    """
+
+    columns = dict(
+        id=Person.q.id,
+        client_id=PersonAdaptToClient.q.id,
+        name=Person.q.name,
+        phone_number=Person.q.phone_number,
+        status=PersonAdaptToClient.q.status,
+        cpf=PersonAdaptToIndividual.q.cpf,
+        rg_number=PersonAdaptToIndividual.q.rg_number,
+        )
+
+    joins = [
+        INNERJOINOn(None, PersonAdaptToClient,
+                   Person.q.id == PersonAdaptToClient.q._originalID),
+        LEFTJOINOn(None, PersonAdaptToIndividual,
+                   Person.q.id == PersonAdaptToIndividual.q._originalID),
+        ]
 
     @property
     def client(self):
         return PersonAdaptToClient.get(self.client_id,
                                        connection=self._connection)
+
 
 class EmployeeView(Viewable):
     columns = dict(

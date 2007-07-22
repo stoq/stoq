@@ -39,7 +39,7 @@ from zope.interface import implements
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
-from stoqlib.domain.base import Domain, BaseSQLView
+from stoqlib.domain.base import Domain, ValidatableDomain, BaseSQLView
 from stoqlib.domain.commissions import Commission
 from stoqlib.domain.events import SaleConfirmEvent
 from stoqlib.domain.fiscal import (IssBookEntry, IcmsIpiBookEntry,
@@ -71,7 +71,7 @@ _ = stoqlib_gettext
 #
 
 
-class Sale(Domain):
+class Sale(ValidatableDomain):
     """
     Sale object implementation.
 
@@ -158,8 +158,6 @@ class Sale(Domain):
     #
 
     def _create(self, id, **kw):
-        # Sales objects must be set as valid explicitly
-        kw['_is_valid_model'] = False
         conn = self.get_connection()
         if not 'cfop' in kw:
             kw['cfop'] = sysparam(conn).DEFAULT_SALES_CFOP
@@ -466,6 +464,7 @@ class Sale(Domain):
         total = sum([item.get_total() for item in self.get_items()],
                    currency(0))
         return currency(total)
+
     #
     # Properties
     #

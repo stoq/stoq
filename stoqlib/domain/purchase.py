@@ -36,7 +36,7 @@ from sqlobject import (ForeignKey, IntCol, DateTimeCol, UnicodeCol,
 
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-from stoqlib.domain.base import Domain, BaseSQLView
+from stoqlib.domain.base import ValidatableDomain, Domain, BaseSQLView
 from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.interfaces import IPaymentGroup, IContainer
@@ -107,7 +107,7 @@ class PurchaseItem(Domain):
         return "%s %s" % (format_quantity(self.quantity_received),
                           unit and unit.description or u"")
 
-class PurchaseOrder(Domain):
+class PurchaseOrder(ValidatableDomain):
     """Purchase and order definition."""
 
     implements(IContainer)
@@ -167,16 +167,6 @@ class PurchaseOrder(Domain):
         conn = self.get_connection()
         return PurchaseItem(connection=conn, order=self,
                             sellable=sellable, quantity=quantity)
-
-    #
-    # SQLObject hooks
-    #
-
-    def _create(self, id, **kw):
-        # Purchase objects must be set as valid explicitly
-        kw['_is_valid_model'] = False
-        Domain._create(self, id, **kw)
-
 
     #
     # Properties

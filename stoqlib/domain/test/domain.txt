@@ -33,30 +33,6 @@ Create a new instance of Product class:
 
     >>> test_product = Product(connection=trans)
 
-All domain classes has an protected attribute to lead with objects that are
-created inside a transaction: _is_valid_model.
-We have three methods do set valid, set invalid and get this state.
-
-    >>> test_product.get_valid()
-    True
-    >>> test_product.set_invalid()
-    >>> test_product.get_valid()
-    False
-
-Now we can set this model valid, verify that that get_valid return true
-again.
-
-    >>> test_product.set_valid()
-    >>> test_product.get_valid()
-    True
-
-If I call set_valid method on a model wich _is_valid_model is True, it
-should raise an exception,
-
-    >>> test_product.set_valid()
-    Traceback (most recent call last):
-    ValueError: This model is already valid.
-
 To clone a domain class instance, you need to use the clone method.
 
     >>> test_product_clone = test_product.clone()

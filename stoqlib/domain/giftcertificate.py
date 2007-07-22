@@ -29,7 +29,7 @@ from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.domain.base import Domain, BaseSQLView
+from stoqlib.domain.base import ValidatableDomain, Domain, BaseSQLView
 from stoqlib.domain.interfaces import (ISellable, IDescribable, IActive)
 from stoqlib.domain.sellable import (ASellable, ASellableItem,
                                      OnSaleInfo)
@@ -125,7 +125,8 @@ class GiftCertificateItem(ASellableItem):
     """
     _inheritable = False
 
-class GiftCertificate(Domain):
+# Not really using ValidatableDomain outside of GiftCertificateView
+class GiftCertificate(ValidatableDomain):
     """This is the base class for gift certificates representation. A gift
     certificate is a paper which will be used in the future as a payment
     method in a certain sale.

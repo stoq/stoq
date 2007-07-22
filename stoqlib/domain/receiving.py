@@ -33,7 +33,7 @@ from kiwi.datatypes import currency
 from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 
 from stoqlib.database.columns import PriceCol, DecimalCol
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, ValidatableDomain
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.purchase import PurchaseOrder
@@ -88,7 +88,7 @@ class ReceivingOrderItem(Domain):
         return "%s" % (unit and unit.description or "")
 
 
-class ReceivingOrder(Domain):
+class ReceivingOrder(ValidatableDomain):
     """Receiving order definition.
 
     @cvar STATUS_PENDING: Products in the order was not received
@@ -134,8 +134,6 @@ class ReceivingOrder(Domain):
     transporter = ForeignKey('PersonAdaptToTransporter', default=None)
 
     def _create(self, id, **kw):
-        # ReceiveOrder objects must be set as valid explicitly
-        kw['_is_valid_model'] = False
         conn = self.get_connection()
         if not 'cfop' in kw:
             kw['cfop'] = sysparam(conn).DEFAULT_RECEIVING_CFOP

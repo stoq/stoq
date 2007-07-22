@@ -27,17 +27,19 @@
 
 import datetime
 
-from sqlobject import (UnicodeCol, DateTimeCol, ForeignKey, SQLObject,
-                       IntCol, BLOBCol)
+from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, BLOBCol
+from sqlobject.sqlbuilder import INNERJOINOn, LEFTJOINOn
+from sqlobject.viewable import Viewable
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from zope.interface import implements
 
-from stoqlib.database.columns import DecimalCol, PriceCol
+from stoqlib.database.columns import DecimalCol
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import SellError, DatabaseInconsistency
-from stoqlib.domain.base import Domain, ModelAdapter, BaseSQLView
-from stoqlib.domain.sellable import ASellable, ASellableItem
+from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.sellable import (ASellable, ASellableItem,
+                                     BaseSellableInfo, SellableUnit)
 from stoqlib.domain.interfaces import ISellable, IDelivery, IContainer
 from stoqlib.domain.product import ProductSellableItem
 
@@ -172,15 +174,42 @@ Service.registerFacet(ServiceAdaptToSellable, ISellable)
 #
 
 
-class ServiceView(SQLObject, BaseSQLView):
-    """Stores service informations """
-    barcode = UnicodeCol()
-    status = IntCol()
-    cost = PriceCol()
-    price = PriceCol()
-    description = UnicodeCol()
-    unit = UnicodeCol()
-    service_id = IntCol()
+class ServiceView(Viewable):
+    """
+    Stores information about services
+    Available fields are:
+        id                 - the id of the asellable table
+        barcode            - the sellable barcode
+        status             - the sellable status
+        cost               - the sellable cost
+        price              - the sellable price
+        description        - the sellable description
+        unit               - the unit in case the sellable is not a gift
+                             certificate
+        service_id         - the id of the service table
+    """
+
+    columns = dict(
+        id=ASellable.q.id,
+        barcode=ASellable.q.barcode,
+        status=ASellable.q.status,
+        cost=ASellable.q.cost,
+        price=BaseSellableInfo.q.price,
+        description=BaseSellableInfo.q.description,
+        unit=SellableUnit.q.description,
+        service_id=Service.q.id
+        )
+
+    joins = [
+        INNERJOINOn(None, ServiceAdaptToSellable,
+                    ServiceAdaptToSellable.q._originalID == Service.q.id),
+        INNERJOINOn(None, ASellable,
+                    ServiceAdaptToSellable.q.id == ASellable.q.id),
+        INNERJOINOn(None, BaseSellableInfo,
+                    ASellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
+        LEFTJOINOn(None, SellableUnit,
+                   ASellable.q.unitID == SellableUnit.q.id),
+        ]
 
     def get_unit(self):
         return self.unit or u""
