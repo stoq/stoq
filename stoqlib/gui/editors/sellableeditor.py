@@ -37,12 +37,10 @@ from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.domain.giftcertificate import GiftCertificateItem
 from stoqlib.domain.interfaces import ISellable, IStorable
-from stoqlib.domain.product import ProductSellableItem
 from stoqlib.domain.purchase import PurchaseItem
 from stoqlib.domain.receiving import ReceivingOrderItem
-from stoqlib.domain.service import DeliveryItem
+from stoqlib.domain.sale import SaleItem, DeliveryItem
 from stoqlib.domain.sellable import (SellableCategory, ASellable,
                                      SellableUnit,
                                      SellableTaxConstant)
@@ -357,9 +355,8 @@ class SellableItemEditor(BaseEditor):
     proxy_widgets = ('quantity',
                      'price',
                      'total')
-    model_names = {ProductSellableItem: _('Product Item'),
-                   ReceivingOrderItem: _('Receiving Item'),
-                   GiftCertificateItem: _('Gift Certificate'),
+    model_names = {ReceivingOrderItem: _('Receiving Item'),
+                   SaleItem: _('Sale Item'),
                    DeliveryItem: _('Delivery Item'),
                    PurchaseItem: _('Gift Certificate')}
 

@@ -67,7 +67,7 @@ class TestFiscalCoupon(DomainTest):
     def testAddItemProduct(self):
         product = self.create_product()
         sellable = ISellable(product)
-        item = sellable.add_sellable_item(self.sale)
+        item = self.sale.add_sellable(sellable)
 
         self.assertRaises(CouponOpenError, self.coupon.add_item, item)
 
@@ -77,7 +77,7 @@ class TestFiscalCoupon(DomainTest):
     def testAddItemService(self):
         service = self.create_service()
         sellable = ISellable(service)
-        item = sellable.add_sellable_item(self.sale)
+        item = self.sale.add_sellable(sellable)
 
         self.coupon.open()
         self.coupon.add_item(item)
@@ -91,7 +91,7 @@ class _TestFiscalCouponPayments:
 
     def _open_and_add(self, product):
         sellable = ISellable(product)
-        item = sellable.add_sellable_item(self.sale)
+        item = self.sale.add_sellable(sellable)
 
         self.coupon.open()
         self.coupon.add_item(item)

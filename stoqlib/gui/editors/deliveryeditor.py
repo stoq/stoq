@@ -37,8 +37,8 @@ from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.sellable import ASellable
-from stoqlib.domain.service import ServiceSellableItem, DeliveryItem
-from stoqlib.domain.sale import Sale
+from stoqlib.domain.service import Service
+from stoqlib.domain.sale import DeliveryItem, Sale, SaleItem
 from stoqlib.domain.interfaces import IDelivery
 from stoqlib.gui.editors.sellableeditor import SellableItemEditor
 
@@ -47,7 +47,7 @@ _ = stoqlib_gettext
 
 class DeliveryEditor(BaseEditor):
     model_name = _('Delivery')
-    model_type = ServiceSellableItem
+    model_type = SaleItem
     gladefile = 'DeliveryEditor'
     title = _('New Delivery')
     size = (600, 500)
@@ -56,11 +56,13 @@ class DeliveryEditor(BaseEditor):
     sellableitem_widgets = ('price',
                             'delivery_date')
 
-    def __init__(self, conn, model=None, sale=None, products=None):
-        # FIXME: rename product to sellable_items
-        self.products = products
+    def __init__(self, conn, model=None, sale=None, sale_items=None):
+        self.sale_items = sale_items
         self.sale = sale
         if model is not None:
+            if not isinstance(model.sellable.get_adapted(), Service):
+                raise TypeError(
+                    "This editor requires a SaleItem which is a Service")
             self.delivery = IDelivery(model)
         else:
             self.delivery = None
@@ -82,10 +84,10 @@ class DeliveryEditor(BaseEditor):
         else:
             self.additional_info_label.hide()
 
-    def _check_products(self):
-        if not self.products:
+    def _check_sale_items(self):
+        if not self.sale_items:
             raise TypeError("This editor (%r) requires a list of "
-                            "ProductAdaptToSellableItem objects, "
+                            "SaleItem objects, "
                             "since you don't have a model defined"
                             % self)
 
@@ -102,10 +104,10 @@ class DeliveryEditor(BaseEditor):
 
     def _create_delivery_items(self):
         delivery_items = []
-        for product in self.products:
-            if product.has_been_totally_delivered():
+        for sale_item in self.sale_items:
+            if sale_item.has_been_totally_delivered():
                 continue
-            item = DeliveryItem.create_from_sellable_item(product)
+            item = DeliveryItem.create_from_sellable_item(sale_item)
             self.delivery.add_item(item)
             delivery_items.append(item)
         self.delivery_items = delivery_items
@@ -151,13 +153,13 @@ class DeliveryEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        self._check_products()
+        self._check_sale_items()
         self._check_sale()
         self._check_client_addresses()
 
         sale = Sale.get(self.sale.id, connection=conn)
         service = sysparam(conn).DELIVERY_SERVICE
-        model = service.add_sellable_item(sale)
+        model = sale.add_sellable(service)
         self.delivery = model.addFacet(IDelivery, connection=conn)
         self._create_delivery_items()
 

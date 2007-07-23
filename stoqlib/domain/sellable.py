@@ -38,8 +38,7 @@ from zope.interface import implements
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.interfaces import ISellable, IContainer, IDescribable
-from stoqlib.domain.base import (Domain, InheritableModelAdapter,
-                                 InheritableModel)
+from stoqlib.domain.base import Domain, InheritableModelAdapter
 from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
                                 BarcodeDoesNotExists)
 from stoqlib.lib.parameters import sysparam
@@ -183,39 +182,6 @@ class SellableCategory(Domain):
         """
         return cls.select(cls.q.categoryID == None, connection=conn)
 
-class ASellableItem(InheritableModel):
-    """Abstract representation of a concrete sellable."""
-
-    quantity = DecimalCol()
-    base_price = PriceCol()
-    price = PriceCol()
-    sale = ForeignKey('Sale')
-    sellable = ForeignKey('ASellable')
-
-    def _create(self, id, **kw):
-        if not 'kw' in kw:
-            if not 'sellable' in kw:
-                raise TypeError('You must provide a sellable argument')
-            base_price = kw['sellable'].price
-            kw['base_price'] = base_price
-        InheritableModel._create(self, id, **kw)
-
-    def sell(self, branch):
-        self.sellable.sell()
-
-    def cancel(self, branch):
-        self.sellable.can_sell()
-
-    #
-    # Accessors
-    #
-
-    def get_total(self):
-        return currency(self.price * self.quantity)
-
-    def get_quantity_unit_string(self):
-        return "%s %s" % (self.quantity, self.sellable.get_unit_description())
-
 
 class OnSaleInfo(Domain):
     on_sale_price = PriceCol(default=0)
@@ -248,7 +214,6 @@ class ASellable(InheritableModelAdapter):
 
     implements(ISellable, IContainer, IDescribable)
 
-    sellableitem_table = None
     (STATUS_AVAILABLE,
      STATUS_SOLD,
      STATUS_CLOSED,
@@ -357,33 +322,6 @@ class ASellable(InheritableModelAdapter):
     def code(self):
         return self.id
 
-
-    #
-    # IContainer methods
-    #
-
-    def add_item(self, item):
-        raise NotImplementedError(
-            "You should call add_sellable_item instead")
-
-    def get_items(self):
-        if not self.sellableitem_table:
-            raise TypeError("Subclasses must provide a sellableitem_table"
-                            " attribute")
-
-        return self.sellableitem_table.selectBy(
-            sellable=self, connection=self.get_connection())
-
-    def remove_item(self, item):
-        if not self.sellableitem_table:
-            raise TypeError("Subclasses must provide a sellableitem_table"
-                            " attribute")
-        conn = self.get_connection()
-        if not isinstance(item, self.sellableitem_table):
-            raise TypeError("Item should be of type %s, got "
-                            % (self.sellableitem_table, type(item)))
-        self.sellableitem_table.delete(item.id, connection=conn)
-
     #
     # ISellable methods
     #
@@ -409,18 +347,6 @@ class ASellable(InheritableModelAdapter):
         # use case, so we keep another method
         self.status = self.STATUS_AVAILABLE
 
-    def add_sellable_item(self, sale, quantity=1, price=None, **kwargs):
-        """Add a new sellable item instance tied to the current
-        sellable object
-        """
-        if not self.sellableitem_table:
-            raise ValueError('Child classes must define a sellableitem_table '
-                             'attribute')
-        price = price or self.price
-        conn = self.get_connection()
-        return self.sellableitem_table(connection=conn, quantity=quantity,
-                                       sale=sale, sellable=self,
-                                       price=price, **kwargs)
     def get_code_str(self):
         return u"%05d" % self.id
 

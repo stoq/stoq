@@ -34,9 +34,9 @@ from stoqdrivers.exceptions import (DriverError, CouponOpenError,
 from zope.interface import implements
 
 from stoqlib.database.runtime import new_transaction, finish_transaction
-from stoqlib.domain.giftcertificate import GiftCertificateItem
 from stoqlib.domain.interfaces import IContainer
-from stoqlib.domain.sellable import ASellableItem
+from stoqlib.domain.sale import SaleItem
+from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.base.dialogs import run_dialog
@@ -182,42 +182,42 @@ class FiscalCoupon(gobject.GObject):
     # IContainer implementation
     #
 
-    @argcheck(ASellableItem)
-    def add_item(self, item):
+    @argcheck(SaleItem)
+    def add_item(self, sale_item):
         """
-        @param item: A L{ASellableItem} subclass
-        @returns: id of the item.:
+        @param sale_item: A L{SaleItem}
+        @returns: id of the sale_item.:
           0 >= if it was added successfully
           -1 if an error happend
           0 if added but not printed (gift certificates, free deliveries)
         """
         # GiftCertificates are not printed on the fiscal printer
         # See #2985 for more information.
-        if isinstance(item, GiftCertificateItem):
+        if isinstance(sale_item.sellable.get_adapted(), GiftCertificate):
             return 0
 
-        if item.price <= 0:
+        if sale_item.price <= 0:
             return 0
 
-        log.info("adding item %r to coupon" % (item,))
-        item_id = self.emit('add-item', item)
+        log.info("adding sale item %r to coupon" % (sale_item,))
+        item_id = self.emit('add-item', sale_item)
 
-        ids = self._item_ids.setdefault(item, [])
+        ids = self._item_ids.setdefault(sale_item, [])
         ids.append(item_id)
         return item_id
 
     def get_items(self):
         return self._item_ids.keys()
 
-    @argcheck(ASellableItem)
-    def remove_item(self, item):
-        if isinstance(item, GiftCertificateItem):
-            return
-        if item.price <= 0:
+    @argcheck(SaleItem)
+    def remove_item(self, sale_item):
+        if isinstance(sale_item.sellable.get_adapted(), GiftCertificate):
+            return 0
+        if sale_item.price <= 0:
             return
 
-        for item_id in self._item_ids.pop(item):
-            log.info("removing item %r from coupon" % (item,))
+        for item_id in self._item_ids.pop(sale_item):
+            log.info("removing sale item %r from coupon" % (sale_item,))
             try:
                 self.emit('remove-item', item_id)
             except DriverError:

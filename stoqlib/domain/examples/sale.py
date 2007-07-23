@@ -89,7 +89,7 @@ def _create_sale(trans, open_date, status, branch, salesperson, client,
                 cfop=sysparam(trans).DEFAULT_SALES_CFOP,
                 connection=trans)
     sellable_facet = ISellable(product)
-    sellable_facet.add_sellable_item(sale=sale)
+    sale.add_sellable(sellable_facet)
     sale_total = sellable_facet.base_sellable_info.price
     # Sale's payments
     group = sale.addFacet(IPaymentGroup, connection=trans,
