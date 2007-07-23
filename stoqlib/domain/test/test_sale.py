@@ -197,8 +197,10 @@ class TestSale(DomainTest):
 
         self._add_payments(sale, method_type=MoneyPM)
         group = IPaymentGroup(sale)
-        self.failIf(FiscalBookEntry.selectOneBy(payment_group=group,
-                                                connection=self.trans))
+        self.failIf(FiscalBookEntry.selectOneBy(
+            entry_type=FiscalBookEntry.TYPE_PRODUCT,
+            payment_group=group,
+            connection=self.trans))
         self.failUnless(sale.can_confirm())
         sale.confirm()
         self.failIf(sale.can_confirm())
@@ -206,7 +208,9 @@ class TestSale(DomainTest):
         self.assertEqual(sale.confirm_date.date(), datetime.date.today())
 
         book_entry = FiscalBookEntry.selectOneBy(
-            payment_group=group, connection=self.trans)
+            entry_type=FiscalBookEntry.TYPE_PRODUCT,
+            payment_group=group,
+            connection=self.trans)
         self.failUnless(book_entry)
         self.assertEqual(book_entry.cfop.code, '5.102')
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
@@ -223,8 +227,10 @@ class TestSale(DomainTest):
 
         self._add_payments(sale, method_type=CheckPM)
         group = IPaymentGroup(sale)
-        self.failIf(FiscalBookEntry.selectOneBy(payment_group=group,
-                                                connection=self.trans))
+        self.failIf(FiscalBookEntry.selectOneBy(
+            entry_type=FiscalBookEntry.TYPE_PRODUCT,
+            payment_group=group,
+            connection=self.trans))
         self.failUnless(sale.can_confirm())
         sale.confirm()
         self.failIf(sale.can_confirm())
@@ -232,7 +238,9 @@ class TestSale(DomainTest):
         self.assertEqual(sale.confirm_date.date(), datetime.date.today())
 
         book_entry = FiscalBookEntry.selectOneBy(
-            payment_group=group, connection=self.trans)
+            entry_type=FiscalBookEntry.TYPE_PRODUCT,
+            payment_group=group,
+            connection=self.trans)
         self.failUnless(book_entry)
         self.assertEqual(book_entry.cfop.code, '5.102')
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
@@ -311,7 +319,10 @@ class TestSale(DomainTest):
 
         cfop = CfopData.selectOneBy(code='5.202', connection=self.trans)
         book_entry = FiscalBookEntry.selectOneBy(
-            payment_group=group, cfop=cfop, connection=self.trans)
+            entry_type=FiscalBookEntry.TYPE_PRODUCT,
+            payment_group=group,
+            cfop=cfop,
+            connection=self.trans)
         self.failUnless(book_entry)
         self.assertEqual(book_entry.icms_value,
                          Decimal("0.18") * paid_payment.value)
