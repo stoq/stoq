@@ -69,19 +69,19 @@ class TestSale(DomainTest):
             tax_type=int(TaxType.CUSTOM),
             tax_value=18,
             connection=self.trans)
-        sellable.add_sellable_item(sale, quantity=1)
+        sale.add_sellable(sellable, quantity=1)
         storable = product.addFacet(IStorable, connection=self.trans)
         storable.increase_stock(100, get_current_branch(self.trans))
         return sellable
 
     def _add_delivery(self, sale):
         sellable = sysparam(self.trans).DELIVERY_SERVICE
-        sellable.add_sellable_item(sale, quantity=1)
+        sale.add_sellable(sellable, quantity=1)
 
     def testGetPercentageValue(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
-        sellable.add_sellable_item(sale, quantity=5)
+        sale.add_sellable(sellable, quantity=5)
 
         self.assertEqual(sale._get_percentage_value(0), currency(0))
         self.assertEqual(sale._get_percentage_value(10), currency(5))
@@ -89,7 +89,7 @@ class TestSale(DomainTest):
     def testSetDiscountByPercentage(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
-        sellable.add_sellable_item(sale, quantity=5)
+        sale.add_sellable(sellable, quantity=5)
 
         sale._set_discount_by_percentage(10)
         self.assertEqual(sale.discount_value, currency(5))
@@ -97,7 +97,7 @@ class TestSale(DomainTest):
     def testGetDiscountByPercentage(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
-        sellable.add_sellable_item(sale, quantity=5)
+        sale.add_sellable(sellable, quantity=5)
 
         self.assertEqual(sale._get_discount_by_percentage(), Decimal('0.0'))
         sale._set_discount_by_percentage(10)
@@ -106,7 +106,7 @@ class TestSale(DomainTest):
     def testSetSurchargeByPercentage(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
-        sellable.add_sellable_item(sale, quantity=5)
+        sale.add_sellable(sellable, quantity=5)
 
         sale._set_surcharge_by_percentage(10)
         self.assertEqual(sale.surcharge_value, currency(5))
@@ -114,7 +114,7 @@ class TestSale(DomainTest):
     def testGetSurchargeByPercentage(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
-        sellable.add_sellable_item(sale, quantity=5)
+        sale.add_sellable(sellable, quantity=5)
 
         self.assertEqual(sale._get_surcharge_by_percentage(), currency(0))
         sale._set_surcharge_by_percentage(15)
@@ -123,7 +123,7 @@ class TestSale(DomainTest):
     def testGetItems(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
-        sellable.add_sellable_item(sale, quantity=5)
+        sale.add_sellable(sellable, quantity=5)
 
         items =  sale.get_items()
         self.assertEqual(items.count(), 1)
@@ -132,7 +132,7 @@ class TestSale(DomainTest):
     def testRemoveItem(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
-        sellable.add_sellable_item(sale, quantity=5)
+        sale.add_sellable(sellable, quantity=5)
 
         item = 'test purpose'
         self.failUnlessRaises(TypeError, sale.remove_item, item)
@@ -184,7 +184,7 @@ class TestSale(DomainTest):
     def testOrder(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
-        sellable.add_sellable_item(sale, quantity=5)
+        sale.add_sellable(sellable, quantity=5)
 
         self.failUnless(sale.can_order())
         sale.order()
@@ -359,13 +359,13 @@ class TestSale(DomainTest):
 
         service = self.create_service()
         sellable = ISellable(service)
-        sellable.add_sellable_item(sale, quantity=1)
+        sale.add_sellable(sellable, quantity=1)
 
         self.failIf(sale.products)
 
         product = self.create_product()
         sellable = ISellable(product)
-        sellable.add_sellable_item(sale, quantity=1)
+        sale.add_sellable(sellable, quantity=1)
 
         self.failUnless(sale.products)
 
@@ -375,13 +375,13 @@ class TestSale(DomainTest):
 
         product = self.create_product()
         sellable = ISellable(product)
-        sellable.add_sellable_item(sale, quantity=1)
+        sale.add_sellable(sellable, quantity=1)
 
         self.failIf(sale.services)
 
         service = self.create_service()
         sellable = ISellable(service)
-        sellable.add_sellable_item(sale, quantity=1)
+        sale.add_sellable(sellable, quantity=1)
 
         self.failUnless(sale.services)
 

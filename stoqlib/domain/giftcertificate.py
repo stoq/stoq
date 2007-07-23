@@ -30,9 +30,8 @@ from zope.interface import implements
 from stoqlib.database.columns import PriceCol
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import ValidatableDomain, Domain, BaseSQLView
-from stoqlib.domain.interfaces import (ISellable, IDescribable, IActive)
-from stoqlib.domain.sellable import (ASellable, ASellableItem,
-                                     OnSaleInfo)
+from stoqlib.domain.interfaces import ISellable, IDescribable, IActive
+from stoqlib.domain.sellable import ASellable, OnSaleInfo
 from stoqlib.exceptions import InvalidStatus
 
 _ = stoqlib_gettext
@@ -119,12 +118,6 @@ class GiftCertificateType(Domain):
     max_discount = property(_get_max_discount, _set_max_discount)
 
 
-class GiftCertificateItem(ASellableItem):
-    """A gift certificate item represent a sale item with a special
-    property: it can be used as a payment method for another sale.
-    """
-    _inheritable = False
-
 # Not really using ValidatableDomain outside of GiftCertificateView
 class GiftCertificate(ValidatableDomain):
     """This is the base class for gift certificates representation. A gift
@@ -140,7 +133,6 @@ class GiftCertificateAdaptToSellable(ASellable):
     """A gift certificate can also be used as a sellable that can be sold
     normally through POS application
     """
-    sellableitem_table = GiftCertificateItem
 
     _inheritable = False
     # This is used by the payment group to find the gift certificates

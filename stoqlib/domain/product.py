@@ -31,18 +31,15 @@ from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
 from sqlobject import (UnicodeCol, ForeignKey, MultipleJoin, DateTimeCol,
                        BoolCol, BLOBCol)
-from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (ISellable, IStorable, IContainer,
-                                       IDelivery, IBranch)
-from stoqlib.domain.sellable import ASellable, ASellableItem
-from stoqlib.exceptions import (StockError, SellError, DatabaseInconsistency,
-                                StoqlibError)
+                                       IBranch)
+from stoqlib.domain.sellable import ASellable
+from stoqlib.exceptions import StockError, DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 
@@ -194,133 +191,6 @@ class ProductHistory(Domain):
             connection=conn)
 
 
-class ProductStockReference(Domain):
-    """Stock informations for products.
-
-    B{Important attributes}:
-        - I{logic_quantity}: Represents the current quantity of a product
-                             in the warehouse reserved for this store.
-                             For example: you can have decentralized
-                             servers, in this case the quantity of the
-                             product in the stock will be shared between the
-                             stores, or a centralized server wich contains
-                             all the product.
-    """
-
-    quantity = DecimalCol(default=0)
-    logic_quantity = DecimalCol(default=0)
-    branch =  ForeignKey('PersonAdaptToBranch')
-    product_item =  ForeignKey('ProductSellableItem')
-
-
-class ProductSellableItem(ASellableItem):
-    """Class responsible to store basic products informations."""
-
-    implements(IContainer)
-
-    _inheritable = False
-
-    #
-    # IContainer implementation
-    #
-
-    def add_item(self, item):
-        raise NotImplementedError('This method should be replaced by '
-                                  'add_stock_reference')
-
-    def get_items(self):
-        conn = self.get_connection()
-        return ProductStockReference.selectBy(connection=conn,
-                                              product_item=self)
-
-    def remove_item(self, item):
-        conn = self.get_connection()
-        if not isinstance(item, ProductStockReference):
-            raise TypeError("Item should be of type ProductStockReference,"
-                            " got %r" % type(item))
-        ProductStockReference.delete(item.id, connection=conn)
-
-    #
-    # Basic methods
-    #
-
-    def sell(self, branch, order_product=False):
-        conn = self.get_connection()
-        sparam = sysparam(conn)
-        if not (branch and
-                branch.id == get_current_branch(conn).id):
-            raise SellError("Stock still doesn't support sales for "
-                            "branch companies different than the "
-                            "current one")
-
-        if order_product and not sparam.ACCEPT_ORDER_PRODUCTS:
-            raise SellError(
-                _("This company doesn't allow order products"))
-
-        if not self.sellable.can_be_sold():
-            raise SellError('%r is already sold' % self.sellable)
-
-        if order_product:
-            # TODO waiting for bug 2469
-            raise StoqlibError("Order products is not a valid feature yet")
-
-        # FIXME: Don't use sellable.get_adapted()
-        adapted = self.sellable.get_adapted()
-        storable = IStorable(adapted)
-        # Update the stock
-        storable.decrease_stock(self.quantity, branch)
-
-        # The function get_full_balance returns the current amount of items
-        # in the stock. If get_full_balance == 0 we have no more stock for
-        # this product and we need to set it as sold.
-        logic_qty = storable.get_logic_balance()
-        balance = storable.get_full_balance() - logic_qty
-        if not balance:
-            self.sellable.sell()
-
-    def cancel(self, branch):
-        # FIXME: Don't use sellable.get_adapted()
-        adapted = self.sellable.get_adapted()
-        storable = IStorable(adapted)
-        # Update the stock
-        storable.increase_stock(self.quantity, branch)
-
-    #
-    # General methods
-    #
-
-    def get_quantity_delivered(self):
-        # Avoiding circular imports here
-        from stoqlib.domain.service import ServiceSellableItem
-        services = ASellableItem.select(
-            AND(ASellableItem.q.saleID == self.sale.id,
-                ASellableItem.q.id == ServiceSellableItem.q.id),
-            connection=self.get_connection())
-        if not services:
-            return Decimal(0)
-        delivered_qty = Decimal(0)
-        for service in services:
-            delivery = IDelivery(service, None)
-            if not delivery:
-                continue
-            item = delivery.get_item_by_sellable(self.sellable)
-            if not item:
-                continue
-            delivered_qty += item.quantity
-        return delivered_qty
-
-    def has_been_totally_delivered(self):
-        return self.get_quantity_delivered() == self.quantity
-
-
-    def add_stock_reference(self, branch, quantity=0,
-                            logic_quantity=0):
-        conn = self.get_connection()
-        return ProductStockReference(connection=conn, quantity=quantity,
-                                     logic_quantity=logic_quantity,
-                                     branch=branch, product_item=self)
-
-
 class ProductStockItem(Domain):
     """Class that makes a reference to the product stock of a
     certain branch company."""
@@ -341,8 +211,6 @@ class ProductAdaptToSellable(ASellable):
     """A product implementation as a sellable facet."""
 
     _inheritable = False
-
-    sellableitem_table = ProductSellableItem
 
 Product.registerFacet(ProductAdaptToSellable, ISellable)
 

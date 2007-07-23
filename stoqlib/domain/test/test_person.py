@@ -347,7 +347,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         assert products
         product = products[0]
         sellable_product = ISellable(product)
-        sellable_product.add_sellable_item(sale=new_sale)
+        new_sale.add_sellable(sellable_product)
         one_more_sale = client.get_client_sales().count()
         self.assertEquals(count_sales + 1, one_more_sale)
         last_purchase_date = client.get_last_purchase_date()

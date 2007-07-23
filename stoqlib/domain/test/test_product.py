@@ -32,7 +32,6 @@ from stoqlib.domain.sellable import BaseSellableInfo, ASellable
 from stoqlib.domain.payment.methods import MoneyPM
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
-                                    ProductSellableItem,
                                     ProductHistory)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.interfaces import (IStorable, IBranch, ISellable,
@@ -77,11 +76,7 @@ class TestProductSellableItem(DomainTest):
         sellable = product.addFacet(ISellable, barcode='xyz',
                                     base_sellable_info=base_sellable_info,
                                     connection=self.trans)
-        product_sellable_item = ProductSellableItem(connection=self.trans,
-                                                    sellable=sellable,
-                                                    quantity=1,
-                                                    price=1,
-                                                    sale=sale)
+        sale_item = sale.add_sellable(product)
         storable = product.addFacet(IStorable, connection=self.trans)
 
         branch = get_current_branch(self.trans)
@@ -96,8 +91,8 @@ class TestProductSellableItem(DomainTest):
         assert storable.get_stock_item(branch) is not None
         assert storable.get_stock_item(branch).quantity == sold_qty
         # now setting the proper sold quantity in the sellable item
-        product_sellable_item.quantity = sold_qty
-        product_sellable_item.sell(branch)
+        sale_item.quantity = sold_qty
+        sale_item.sell(branch)
         assert not storable.get_stock_item(branch).quantity
 
 class TestProductHistory(DomainTest):
@@ -125,7 +120,7 @@ class TestProductHistory(DomainTest):
         product = sellable.get_adapted()
         storable = product.addFacet(IStorable, connection=self.trans)
         storable.increase_stock(100, get_current_branch(self.trans))
-        sellable.add_sellable_item(sale, quantity=5)
+        sale_item = sale.add_sellable(sellable, quantity=5)
 
         method = MoneyPM.selectOne(connection=self.trans)
         method.create_inpayment(IPaymentGroup(sale),
@@ -138,7 +133,6 @@ class TestProductHistory(DomainTest):
         prod_hist = ProductHistory.selectOneBy(connection=self.trans,
                                                sellable=sellable)
         self.failUnless(prod_hist)
-        product_sellable_item = sellable.get_items()[0]
         self.assertEqual(prod_hist.quantity_sold, 5)
         self.assertEqual(prod_hist.quantity_sold,
-                         product_sellable_item.quantity)
+                         sale_item.quantity)

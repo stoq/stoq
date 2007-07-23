@@ -39,21 +39,24 @@ from zope.interface import implements
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
-from stoqlib.domain.base import Domain, ValidatableDomain, BaseSQLView
+from stoqlib.domain.base import (Domain, ValidatableDomain, BaseSQLView,
+                                 ModelAdapter)
 from stoqlib.domain.commissions import Commission
 from stoqlib.domain.events import SaleConfirmEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IContainer, IClient,
                                        IPaymentGroup, ISellable,
-                                       IIndividual, ICompany)
+                                       IIndividual, ICompany,
+                                       IDelivery, IStorable)
 from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.payment.methods import MoneyPM
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.product import ProductSellableItem, ProductHistory
+from stoqlib.domain.product import (Product, ProductAdaptToSellable,
+                                    ProductHistory)
 from stoqlib.domain.renegotiation import RenegotiationData
-from stoqlib.domain.sellable import ASellableItem
-from stoqlib.domain.service import ServiceSellableItem
+from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.service import Service, ServiceAdaptToSellable
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
                                 StoqlibError)
@@ -68,6 +71,170 @@ _ = stoqlib_gettext
 #
 # Base Domain Classes
 #
+
+class SaleItem(Domain):
+    """
+    An item in a sale.
+
+    @param sellable: the kind of item
+    @param sale: the same
+    @param quantity: the quantity of the of sold item in this sale
+    @param price: the price of each individual item
+    @param base_price:
+    @param notes:
+    @param estimated_fix_date:
+    @param completion_date:
+    """
+    quantity = DecimalCol()
+    base_price = PriceCol()
+    price = PriceCol()
+    sale = ForeignKey('Sale')
+    sellable = ForeignKey('ASellable')
+
+    # This is currently only used by services
+    notes = UnicodeCol(default=None)
+    estimated_fix_date = DateTimeCol(default=datetime.datetime.now)
+    completion_date = DateTimeCol(default=None)
+
+    def _create(self, id, **kw):
+        if not 'kw' in kw:
+            if not 'sellable' in kw:
+                raise TypeError('You must provide a sellable argument')
+            base_price = kw['sellable'].price
+            kw['base_price'] = base_price
+        Domain._create(self, id, **kw)
+
+    def sell(self, branch):
+        conn = self.get_connection()
+        sparam = sysparam(conn)
+        if not (branch and
+                branch.id == get_current_branch(conn).id):
+            raise SellError("Stock still doesn't support sales for "
+                            "branch companies different than the "
+                            "current one")
+
+        if not self.sellable.can_be_sold():
+            raise SellError('%r is already sold' % self.sellable)
+
+        # FIXME: Don't use sellable.get_adapted()
+        adapted = self.sellable.get_adapted()
+        storable = IStorable(adapted, None)
+        if storable:
+            # Update the stock
+            storable.decrease_stock(self.quantity, branch)
+
+            # The function get_full_balance returns the current amount of items
+            # in the stock. If get_full_balance == 0 we have no more stock for
+            # this product and we need to set it as sold.
+            logic_qty = storable.get_logic_balance()
+            balance = storable.get_full_balance() - logic_qty
+            if balance:
+                return
+                #raise SellError("Not enough stock")
+
+        self.sellable.sell()
+
+    def cancel(self, branch):
+        # FIXME: Don't use sellable.get_adapted()
+        adapted = self.sellable.get_adapted()
+        storable = IStorable(adapted)
+        if storable:
+            storable.increase_stock(self.quantity, branch)
+
+    #
+    # Accessors
+    #
+
+    def get_total(self):
+        return currency(self.price * self.quantity)
+
+    def get_quantity_unit_string(self):
+        return "%s %s" % (self.quantity, self.sellable.get_unit_description())
+
+    def get_quantity_delivered(self):
+        delivered = Decimal(0)
+        for service in self.sale.services:
+            delivery = IDelivery(service, None)
+            if not delivery:
+                continue
+            item = delivery.get_item_by_sellable(self.sellable)
+            if not item:
+                continue
+            delivered += item.quantity
+
+        return delivered
+
+    def has_been_totally_delivered(self):
+        return self.get_quantity_delivered() == self.quantity
+
+
+
+class DeliveryItem(Domain):
+    """Class responsible to store all the products for a certain delivery"""
+
+    quantity = DecimalCol()
+    sellable = ForeignKey('ASellable')
+    delivery = ForeignKey('SaleItem', default=None)
+
+    #
+    # Accessors
+    #
+
+    def get_price(self):
+        return self.sellable.price
+
+    def get_total(self):
+        return currency(self.get_price() * self.quantity)
+
+    @classmethod
+    def create_from_sellable_item(cls, sale_item):
+        if not isinstance(sale_item.sellable.get_adapted(), Product):
+            raise SellError(
+                "It's only possible to deliver products, not %r" % (
+                type(sale_item),))
+
+        quantity = sale_item.quantity - sale_item.get_quantity_delivered()
+        return cls(connection=sale_item.get_connection(),
+                   sellable=sale_item.sellable,
+                   quantity=quantity)
+
+
+class SaleItemAdaptToDelivery(ModelAdapter):
+    """A service implementation as a delivery facet."""
+
+    implements(IDelivery, IContainer)
+
+    address = UnicodeCol(default='')
+
+    #
+    # IContainer implementation
+    #
+
+    @argcheck(DeliveryItem)
+    def add_item(self, item):
+        item.delivery = self
+
+    def get_items(self):
+        return DeliveryItem.selectBy(connection=self.get_connection(),
+                                     delivery=self)
+
+    @argcheck(DeliveryItem)
+    def remove_item(self, item):
+        DeliveryItem.delete(item.id, connection=item.get_connection())
+
+
+    #
+    # General methods
+    #
+
+    @argcheck(ASellable)
+    def get_item_by_sellable(self, sellable):
+        return DeliveryItem.selectOneBy(connection=self.get_connection(),
+                                        delivery=self,
+                                        sellable=sellable)
+
+SaleItem.registerFacet(SaleItemAdaptToDelivery, IDelivery)
+
 
 
 class Sale(ValidatableDomain):
@@ -189,21 +356,17 @@ class Sale(ValidatableDomain):
     # IContainer implementation
     #
 
-    # FIXME: Should only accept ASellableItem
-    #@argcheck(ASellable)
-    def add_item(self, item):
-        #item.add_sellable_item(sale=self)
-        raise NotImplementedError
+    @argcheck(SaleItem)
+    def add_item(self, sale_item):
+        assert not sale_item.sale
+        sale_item.sale = self
 
     def get_items(self):
-        conn = self.get_connection()
-        return ASellableItem.selectBy(connection=conn, saleID=self.id)
+        return SaleItem.selectBy(sale=self, connection=self.get_connection())
 
-    @argcheck(ASellableItem)
-    def remove_item(self, item):
-        conn = self.get_connection()
-        table = type(item)
-        table.delete(item.id, connection=conn)
+    @argcheck(SaleItem)
+    def remove_item(self, sale_item):
+        SaleItem.delete(sale_item.id, connection=self.get_connection())
 
     # New API
 
@@ -260,7 +423,7 @@ class Sale(ValidatableDomain):
         # FIXME: We should use self.branch, but it's not supported yet
         branch = get_current_branch(conn)
         for item in self.get_items():
-            if isinstance(item, ProductSellableItem):
+            if isinstance(item.sellable.get_adapted(), Product):
                 ProductHistory.add_sold_item(conn, branch, item)
             item.sell(branch)
 
@@ -320,6 +483,23 @@ class Sale(ValidatableDomain):
                 return False
         return True
 
+    def add_sellable(self, obj, quantity=1, price=None):
+        """
+        Adds a new sellable item to a sale
+        @param obj: the sellable
+        @param quantity: quantity to add, defaults to 1
+        @param price: optional, the price, it not set the price
+          from the sellable will be used
+        """
+        sellable = ISellable(obj)
+        price = price or sellable.price
+        return SaleItem(connection=self.get_connection(),
+                        quantity=quantity,
+                        sale=self,
+                        sellable=sellable,
+                        price=price)
+
+
     def get_items_total_quantity(self):
         return self.get_items().sum('quantity') or Decimal(0)
 
@@ -362,7 +542,7 @@ class Sale(ValidatableDomain):
                                              sellable_info)
         # The new gift certificate which has been created is actually an
         # item of our sale order
-        sellable_cert.add_sellable_item(self)
+        self.add_sellable(sellable_cert)
         return sellable_cert
 
     def get_clone(self):
@@ -474,13 +654,19 @@ class Sale(ValidatableDomain):
 
     @property
     def products(self):
-        return ProductSellableItem.selectBy(
-            sale=self, connection=self.get_connection())
+        return SaleItem.select(
+            AND(SaleItem.q.saleID == self.id,
+                SaleItem.q.sellableID == ProductAdaptToSellable.q.id,
+                ProductAdaptToSellable.q._originalID == Product.q.id),
+            connection=self.get_connection())
 
     @property
     def services(self):
-        return ServiceSellableItem.selectBy(
-            sale=self, connection=self.get_connection())
+        return SaleItem.select(
+            AND(SaleItem.q.saleID == self.id,
+                SaleItem.q.sellableID == ServiceAdaptToSellable.q.id,
+                ServiceAdaptToSellable.q._originalID == Service.q.id),
+            connection=self.get_connection())
 
     def _get_discount_by_percentage(self):
         discount_value = self.discount_value

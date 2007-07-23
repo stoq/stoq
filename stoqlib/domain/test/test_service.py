@@ -24,25 +24,24 @@
 """ This module test all class in stoq/domain/station.py """
 
 from stoqlib.domain.interfaces import IDelivery
-from stoqlib.domain.product import ProductSellableItem
-from stoqlib.domain.service import DeliveryItem, ServiceSellableItem
+from stoqlib.domain.sale import DeliveryItem
+from stoqlib.exceptions import SellError
 
 from stoqlib.domain.test.domaintest import DomainTest
 
 class TestServiceSellableItem(DomainTest):
     def test_addItem(self):
         sale = self.create_sale()
-        sellable = self.create_sellable()
-        product_item = ProductSellableItem(
-            sellable=sellable,
-            quantity=1, price=10,
-            sale=sale, connection=self.trans)
 
-        service_item = ServiceSellableItem(
-            sellable=sellable,
-            quantity=1, price=10,
-            sale=sale, connection=self.trans)
+        service = self.create_service()
+        service_item = sale.add_sellable(service, quantity=1, price=10)
+        self.assertRaises(SellError,
+                          DeliveryItem.create_from_sellable_item, service_item)
+
+        product = self.create_product()
+        product_item = sale.add_sellable(product, quantity=1, price=10)
         delivery_item = DeliveryItem.create_from_sellable_item(product_item)
+
 
         delivery = service_item.addFacet(IDelivery, connection=self.trans)
         self.assertEquals(list(delivery.get_items()), [])

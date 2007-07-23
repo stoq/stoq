@@ -42,7 +42,7 @@ class TestTill(DomainTest):
     def _create_inpayment(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
-        sellable.add_sellable_item(sale, price=10)
+        sale.add_sellable(sellable, price=10)
         group = sale.addFacet(IPaymentGroup, connection=self.trans)
         method = APaymentMethod.get_by_enum(self.trans, PaymentMethodType.BILL)
         payment = method.create_inpayment(group, Decimal(10))

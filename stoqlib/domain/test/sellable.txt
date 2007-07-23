@@ -5,7 +5,7 @@ Doctest for domain/sellable.txt
 Imports that will be used in this doctest:
 
     >>> from stoqlib.database.runtime import new_transaction
-    >>> from stoqlib.domain.product import Product, ProductSellableItem
+    >>> from stoqlib.domain.product import Product
     >>> from stoqlib.domain.interfaces import ISellable
     >>> from stoqlib.domain.sellable import ASellable
     >>> from stoqlib.domain.sellable import BaseSellableInfo
@@ -94,43 +94,6 @@ It can be modified:
 
     >>> sellable.commission
     Decimal("10.00")
-
-IContainer
-==========
-
-add_item is yet not implemented
-
-    >>> sellable.add_item(None)
-    Traceback (most recent call last):
-        ...
-    NotImplementedError: ...
-
-
-get_items, returns all the SellableItems for our table, which initially
-returns an empty list:
-
-    >>> list(sellable.get_items())
-    []
-
-If we add an item:
-
-    >>> item = ProductSellableItem(sellable=sellable, quantity=1,
-    ...                            price=5, sale=None, connection=trans)
-
-
-We'll get it when we call get_items() again:
-
-    >>> list(sellable.get_items())
-    [<ProductSellableItem ...price=<currency ...5...>...>]
-
-We can remove it using remove_item():
-
-    >>> sellable.remove_item(item)
-
-And it will also be gone in get_items():
-
-    >>> list(sellable.get_items())
-    []
 
 Querying sellable status
 ========================
@@ -235,7 +198,7 @@ And for sold sellables using a specific barcode:
     BarcodeDoesNotExists: The sellable with barcode '1138' doesn't exists or is not available to be sold
 
     
-SellableItem
+SaleItem
 ============
 
 .. TODO:

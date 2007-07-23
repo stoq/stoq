@@ -38,7 +38,7 @@ class TestPaymentGroup(DomainTest):
         # Actually it tests SaleAdaptToPaymentGroup.confirm
         sale = self.create_sale()
         sellable = self.create_sellable()
-        item = sellable.add_sellable_item(sale, price=150)
+        item = sale.add_sellable(sellable, price=150)
         group = sale.addFacet(IPaymentGroup, connection=self.trans)
 
         method = APaymentMethod.get_by_enum(self.trans, PaymentMethodType.BILL)
@@ -56,8 +56,8 @@ class TestPaymentGroup(DomainTest):
                                   direct_value=12,
                                   installments_value=5,
                                   connection=self.trans)
-        
-        item = sellable.add_sellable_item(sale, price=300)
+
+        item = sale.add_sellable(sellable, price=300)
         sale.order()
         group = sale.addFacet(IPaymentGroup, connection=self.trans)
 
@@ -93,8 +93,8 @@ class TestPaymentGroup(DomainTest):
                                   direct_value=12,
                                   installments_value=5,
                                   connection=self.trans)
-        
-        item = sellable.add_sellable_item(sale, quantity=3, price=300)
+
+        item = sale.add_sellable(sellable, quantity=3, price=300)
         sale.order()
         group = sale.addFacet(IPaymentGroup, connection=self.trans)
 

@@ -35,11 +35,10 @@ from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.domain.product import (ProductAdaptToSellable,
-                                    ProductSellableItem)
+from stoqlib.domain.product import ProductAdaptToSellable
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.receiving import ReceivingOrderItem
-from stoqlib.domain.sellable import ASellableItem
+from stoqlib.domain.sale import SaleItem
 
 _ = stoqlib_gettext
 
@@ -68,8 +67,7 @@ class ProductStockHistoryDialog(BaseEditor):
                                             connection=self.conn)
         self.receiving_list.add_list(list(items))
 
-        query = ASellableItem.q.sellableID == self.model.id
-        items = ProductSellableItem.select(query, connection=self.conn)
+        items = SaleItem.selectBy(sellable=self.mode, connection=self.conn)
         self.sales_list.add_list(list(items))
 
         value_format = '<b>%s</b>'

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -35,7 +35,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.domain.interfaces import ISellable
-from stoqlib.domain.service import ServiceSellableItem, Service
+from stoqlib.domain.sale import SaleItem
+from stoqlib.domain.service import Service
 from stoqlib.domain.sellable import (BaseSellableInfo,
                                      SellableTaxConstant)
 
@@ -44,7 +45,7 @@ _ = stoqlib_gettext
 
 class ServiceItemEditor(BaseEditor):
     model_name = _('Service')
-    model_type = ServiceSellableItem
+    model_type = SaleItem
     gladefile = 'ServiceItemEditor'
     proxy_widgets = ('service_name_label',
                      'price',

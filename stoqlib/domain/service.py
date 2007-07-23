@@ -25,23 +25,17 @@
 ##
 """ Base classes to manage services informations """
 
-import datetime
 
-from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, BLOBCol
+from sqlobject import BLOBCol
 from sqlobject.sqlbuilder import INNERJOINOn, LEFTJOINOn
 from sqlobject.viewable import Viewable
-from kiwi.argcheck import argcheck
-from kiwi.datatypes import currency
-from zope.interface import implements
 
-from stoqlib.database.columns import DecimalCol
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.exceptions import SellError
-from stoqlib.domain.base import Domain, ModelAdapter
-from stoqlib.domain.sellable import (ASellable, ASellableItem,
+from stoqlib.domain.base import Domain
+from stoqlib.domain.sellable import (ASellable,
                                      BaseSellableInfo, SellableUnit)
-from stoqlib.domain.interfaces import ISellable, IDelivery, IContainer
-from stoqlib.domain.product import ProductSellableItem
+from stoqlib.domain.interfaces import ISellable
+
 
 _ = stoqlib_gettext
 
@@ -56,100 +50,8 @@ class Service(Domain):
     image = BLOBCol(default='')
 
 
-class ServiceSellableItem(ASellableItem):
-    """A service implementation as a sellable item."""
-
-    _inheritable = False
-    notes = UnicodeCol(default=None)
-    estimated_fix_date = DateTimeCol(default=datetime.datetime.now)
-    completion_date = DateTimeCol(default=None)
-
-
-    #
-    # Auxiliary methods
-    #
-
-    def sell(self, branch):
-        if not self.sellable.can_be_sold():
-            msg = '%s is already sold' % self.get_adapted()
-            raise SellError(msg)
-
-class DeliveryItem(Domain):
-    """Class responsible to store all the products for a certain delivery"""
-
-    quantity = DecimalCol()
-    sellable = ForeignKey('ASellable')
-    delivery = ForeignKey('ServiceSellableItemAdaptToDelivery', default=None)
-
-    #
-    # Accessors
-    #
-
-    def get_price(self):
-        return self.sellable.price
-
-    def get_total(self):
-        return currency(self.get_price() * self.quantity)
-
-    @classmethod
-    def create_from_sellable_item(cls, item):
-        if not isinstance(item, ProductSellableItem):
-            raise TypeError(
-                "It's only possible to deliver products, not %r" % (
-                type(item),))
-
-        quantity = item.quantity - item.get_quantity_delivered()
-        return cls(connection=item.get_connection(),
-                   sellable=item.sellable,
-                   quantity=quantity)
-
-#
-# Adapters
-#
-
-
-class ServiceSellableItemAdaptToDelivery(ModelAdapter):
-    """A service implementation as a delivery facet."""
-
-    implements(IDelivery, IContainer)
-
-    address = UnicodeCol(default='')
-
-    #
-    # IContainer implementation
-    #
-
-    @argcheck(DeliveryItem)
-    def add_item(self, item):
-        item.delivery = self
-
-    def get_items(self):
-        return DeliveryItem.selectBy(connection=self.get_connection(),
-                                     deliveryID=self.id)
-
-    @argcheck(DeliveryItem)
-    def remove_item(self, item):
-        DeliveryItem.delete(item.id, connection=item.get_connection())
-
-
-    #
-    # General methods
-    #
-
-    @argcheck(ASellable)
-    def get_item_by_sellable(self, sellable):
-        return DeliveryItem.selectBy(connection=self.get_connection(),
-                                     delivery=self,
-                                     sellable=sellable)
-
-ServiceSellableItem.registerFacet(ServiceSellableItemAdaptToDelivery,
-                                  IDelivery)
-
-
 class ServiceAdaptToSellable(ASellable):
     """A service implementation as a sellable facet."""
-
-    sellableitem_table = ServiceSellableItem
 
     _inheritable = False
 
@@ -159,6 +61,7 @@ class ServiceAdaptToSellable(ASellable):
         ASellable._create(self, id, **kw)
 
 Service.registerFacet(ServiceAdaptToSellable, ISellable)
+
 
 
 #

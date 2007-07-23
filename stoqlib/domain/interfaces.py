@@ -122,9 +122,6 @@ class ISellable(Interface):
     def can_sell():
         """Make the object sellable"""
 
-    def add_sellable_item(sale, quantity, price):
-        """Adds a new SellableItem instance for this sellable object"""
-
     def get_code_str():
         """
         Fetches the current code represented as a string.

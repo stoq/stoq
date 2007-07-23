@@ -38,7 +38,7 @@ from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        IContainer)
-from stoqlib.domain.sellable import ASellableItem
+from stoqlib.domain.sale import SaleItem
 from stoqlib.exceptions import DeviceError
 from stoqlib.lib.defaults import get_all_methods_dict, get_method_names
 from stoqlib.lib.message import warning
@@ -222,7 +222,7 @@ class Coupon(object):
     # IContainer implementation
     #
 
-    @argcheck(ASellableItem)
+    @argcheck(SaleItem)
     def add_item(self, item):
         """
         @param item: A L{ASellableItem} subclass
