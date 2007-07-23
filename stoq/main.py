@@ -104,6 +104,12 @@ def _check_dependencies():
         except ImportError:
             _missing_module_error("gtk", "PyGTK")
 
+    gtk.rc_parse_string("""style "tree-style" {
+        GtkTreeView::vertical-separator = 0
+        GtkTreeView::horizontal-separator = 0
+        GtkTreeView::grid-line-width = 0
+    }
+    class "GtkTreeView" style "tree-style" """)
     _setup_ui_dialogs()
 
     if gtk.pygtk_version < PYGTK_REQUIRED:
