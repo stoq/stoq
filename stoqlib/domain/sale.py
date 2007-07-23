@@ -129,10 +129,9 @@ class SaleItem(Domain):
             logic_qty = storable.get_logic_balance()
             balance = storable.get_full_balance() - logic_qty
             if balance:
-                return
-                #raise SellError("Not enough stock")
-
-        self.sellable.sell()
+                # This marks the sellable as not available, eg out of stock
+                # FIXME: rename
+                self.sellable.sell()
 
     def cancel(self, branch):
         # FIXME: Don't use sellable.get_adapted()
