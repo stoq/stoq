@@ -698,7 +698,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         return FiscalBookEntry.has_entry_by_payment_group(
             self.get_connection(),
             self,
-            type=FiscalBookEntry.TYPE_SERVCE)
+            type=FiscalBookEntry.TYPE_SERVICE)
 
     def _has_icms_entry(self):
         return FiscalBookEntry.has_entry_by_payment_group(
@@ -727,7 +727,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     def _get_iss_entry(self):
         return FiscalBookEntry.get_entry_by_payment_group(
             self.get_connection(), self,
-            FiscalBookEntry.TYPE_SERVCE)
+            FiscalBookEntry.TYPE_SERVICE)
 
     def _create_fiscal_entries(self):
         """A Brazil-specific method
