@@ -82,9 +82,6 @@ def create_city_location(trans):
 def create_parameter_data(trans):
     return ExampleCreator.create(trans, 'ParameterData')
 
-def create_service_sellable_item(trans):
-    return ExampleCreator.create(trans, 'ServiceSellableItem')
-
 def create_company(trans):
     return ExampleCreator.create(trans, 'ICompany')
 
@@ -149,7 +146,6 @@ class ExampleCreator(object):
             'Product': self.create_product,
             'ProductAdaptToSellable' : self.create_sellable,
             'ProductAdaptToStorable' : self.create_storable,
-            'ProductSellableItem': self.create_product_sellable_item,
             'PurchaseOrder' : self.create_purchase_order,
             'PurchaseItem' : self.create_purchase_order_item,
             'ReceivingOrder' : self.create_receiving_order,
@@ -157,7 +153,6 @@ class ExampleCreator(object):
             'RenegotiationData' : self.create_renegotiation_data,
             'Sale': self.create_sale,
             'Service': self.create_service,
-            'ServiceSellableItem': self.create_service_sellable_item,
             'Till': self.create_till,
             'UserProfile': self.create_user_profile,
             }
@@ -236,15 +231,6 @@ class ExampleCreator(object):
                             product=product, is_main_supplier=True)
         return product
 
-    def create_product_sellable_item(self):
-        from stoqlib.domain.service import ProductSellableItem
-        sale = self.create_sale()
-        sellable = self.create_sellable()
-        return ProductSellableItem(
-            sellable=sellable,
-            quantity=1, price=10,
-            sale=sale, connection=self.trans)
-
     def create_base_sellable_info(self, price=None):
         from stoqlib.domain.sellable import BaseSellableInfo
         if price is None:
@@ -291,15 +277,6 @@ class ExampleCreator(object):
     def create_parameter_data(self):
         from stoqlib.domain.parameter import ParameterData
         return ParameterData.select(connection=self.trans)[0]
-
-    def create_service_sellable_item(self):
-        from stoqlib.domain.service import ServiceSellableItem
-        sale = self.create_sale()
-        sellable = self.create_sellable()
-        return ServiceSellableItem(
-            sellable=sellable,
-            quantity=1, price=10,
-            sale=sale, connection=self.trans)
 
     def create_company(self):
         from stoqlib.domain.person import Person
