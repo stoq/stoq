@@ -40,10 +40,10 @@ from stoqlib.database.runtime import (new_transaction, get_current_user,
                                       rollback_and_begin, finish_transaction)
 from stoqlib.domain.interfaces import IDelivery, ISalesPerson, IPaymentGroup
 from stoqlib.domain.devices import DeviceSettings
-from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable
+from stoqlib.domain.product import Product, ProductAdaptToSellable
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.sellable import ASellable
-from stoqlib.domain.service import ServiceSellableItem, Service
+from stoqlib.domain.service import Service
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.drivers.scale import read_scale_info
@@ -137,17 +137,17 @@ class POSApp(AppWindow):
         text = _(u"Total: %s") % converter.as_string(currency, subtotal)
         self.order_total_label.set_text(text)
 
-    def _update_added_item(self, sellable_item, new_item=True):
+    def _update_added_item(self, sale_item, new_item=True):
         """Insert or update a klist item according with the new_item
         argument
         """
         if new_item:
-            if self._coupon_add_item(sellable_item) == -1:
+            if self._coupon_add_item(sale_item) == -1:
                 return
-            self.sellables.append(sellable_item)
+            self.sellables.append(sale_item)
         else:
-            self.sellables.update(sellable_item)
-        self.sellables.select(sellable_item)
+            self.sellables.update(sale_item)
+        self.sellables.select(sale_item)
         self.barcode.set_text('')
         self.barcode.grab_focus()
         self._reset_quantity_proxy()
@@ -167,14 +167,14 @@ class POSApp(AppWindow):
             info(_(u"Only one service was added since its not possible to"
                    "add more than one service to an order at a time."))
 
-        sellable_item = sellable.add_sellable_item(self.sale,
-                                                   quantity=quantity,
-                                                   price=price)
-        if (isinstance(sellable_item, ServiceSellableItem)
+        sale_item = self.sale.add_sellable(sellable,
+                                           quantity=quantity,
+                                           price=price)
+        if (isinstance(sale_item.sellable.get_adapted(), Service)
             and not self.run_dialog(ServiceItemEditor, self.conn,
-                                    sellable_item)):
+                                    sale_item)):
             return
-        self._update_added_item(sellable_item)
+        self._update_added_item(sale_item)
 
     def _get_sellable(self):
         barcode = self.barcode.get_text()
@@ -213,9 +213,10 @@ class POSApp(AppWindow):
         self.ClientDetails.set_sensitive(has_client)
         self.delivery_button.set_sensitive(has_client and has_sellables)
         self.NewDelivery.set_sensitive(has_client and has_sellables)
-        model = self.sellables.get_selected()
+        sale_item = self.sellables.get_selected()
         self.edit_item_button.set_sensitive(
-            model is not None and isinstance(model, ServiceSellableItem))
+            sale_item is not None and
+            isinstance(sale_item.sellable.get_adapted(), Service))
         self._update_totals()
         self._update_add_button()
 
@@ -264,7 +265,7 @@ class POSApp(AppWindow):
     # Sale Order operations
     #
 
-    def _add_sellable_item(self, search_str=None):
+    def _add_sale_item(self, search_str=None):
         if not self.add_button.get_property('sensitive'):
             return
         sellable = self._get_sellable()
@@ -307,7 +308,7 @@ class POSApp(AppWindow):
                 self._coupon.cancel()
         self._coupon = None
 
-    def _delete_sellable_item(self, item):
+    def _delete_sale_item(self, item):
         delivery = IDelivery(item, None)
         if delivery:
             for delivery_item in delivery.get_items():
@@ -318,18 +319,18 @@ class POSApp(AppWindow):
         table.delete(item.id, connection=self.conn)
         self.sellables.remove(item)
 
-    def _edit_sellable_item(self, item):
-        if not isinstance(item, ServiceSellableItem):
+    def _edit_sale_item(self, sale_item):
+        if not isinstance(sale_item.sellable.get_adapted(), Service):
             # Do not raise any exception here, since this method can be called
             # when the user activate a row with product in the sellables list.
             return
-        if IDelivery(item, None):
+        if IDelivery(sale_item, None):
             editor = DeliveryEditor
         else:
             editor = ServiceItemEditor
-        model = self.run_dialog(editor, self.conn, item)
+        model = self.run_dialog(editor, self.conn, sale_item)
         if model:
-            self.sellables.update(item)
+            self.sellables.update(sale_item)
 
     def _new_order(self):
         try:
@@ -387,11 +388,15 @@ class POSApp(AppWindow):
             warning(_("You don't have products to delivery."))
             return
 
-        # FIXME: Use an SQL query
-        products = [obj for obj in self.sellables
-                        if isinstance(obj, ProductSellableItem)
-                           and not obj.has_been_totally_delivered()]
-        if not products:
+        # FIXME: Move to Sale
+        sale_items = []
+        for sale_item in self.sellables:
+            sellable = sale_item.sellable
+            if isinstance(sellable.get_adapted(), Product):
+                if not sale_item.has_been_totally_delivered():
+                    sale_items.append(sale_item)
+
+        if not sale_items:
             warning(_("All the products already have delivery "
                       "instructions"))
             return
@@ -402,9 +407,11 @@ class POSApp(AppWindow):
 
         trans = new_transaction()
         sale = trans.get(self.sale)
-        products = (trans.get(product) for product in products)
+        sale_items = (trans.get(sale_item)
+                          for sale_item in sale_items)
         service = self.run_dialog(DeliveryEditor, trans,
-                                  sale=sale, products=products)
+                                  sale=sale,
+                                  sale_items=sale_items)
         rv = finish_transaction(trans, service)
         trans.close()
         if not rv:
@@ -483,18 +490,18 @@ class POSApp(AppWindow):
                 self.app.shutdown()
                 break
 
-    def _coupon_add_item(self, sellable_item):
+    def _coupon_add_item(self, sale_item):
         if self.param.CONFIRM_SALES_ON_TILL:
             return
         if self._coupon is None:
             self._open_coupon()
-        return self._coupon.add_item(sellable_item)
+        return self._coupon.add_item(sale_item)
 
-    def _coupon_remove_item(self, sellable_item):
+    def _coupon_remove_item(self, sale_item):
         if self.param.CONFIRM_SALES_ON_TILL:
             return
 
-        self._coupon.remove_item(sellable_item)
+        self._coupon.remove_item(sale_item)
 
     #
     # AppWindow Hooks
@@ -608,19 +615,19 @@ class POSApp(AppWindow):
         self._run_advanced_search()
 
     def on_add_button__clicked(self, button):
-        self._add_sellable_item()
+        self._add_sale_item()
 
     def on_barcode__activate(self, entry):
         if not self._has_barcode_str():
             return
         search_str = self.barcode.get_text()
-        self._add_sellable_item(search_str)
+        self._add_sale_item(search_str)
 
     def after_barcode__changed(self, editable):
         self._update_add_button()
 
     def on_quantity__activate(self, entry):
-        self._add_sellable_item()
+        self._add_sale_item()
 
     def on_sellables__selection_changed(self, sellables, selected):
         self._update_widgets()
@@ -628,7 +635,7 @@ class POSApp(AppWindow):
     def on_remove_item_button__clicked(self, button):
         sellable = self.sellables.get_selected()
         self._coupon_remove_item(sellable)
-        self._delete_sellable_item(sellable)
+        self._delete_sale_item(sellable)
         self._select_first_item()
         self._update_widgets()
 
@@ -646,8 +653,8 @@ class POSApp(AppWindow):
         if item is None:
             raise StoqlibError("You should have a item selected "
                                "at this point")
-        self._edit_sellable_item(item)
+        self._edit_sale_item(item)
 
     def on_sellables__row_activated(self, sellables, sellable):
-        self._edit_sellable_item(sellable)
+        self._edit_sale_item(sellable)
 
