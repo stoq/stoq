@@ -37,7 +37,7 @@ from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import get_connection
-from stoqlib.domain.interfaces import ISellable, IContainer, IDescribable
+from stoqlib.domain.interfaces import ISellable, IDescribable
 from stoqlib.domain.base import Domain, InheritableModelAdapter
 from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
                                 BarcodeDoesNotExists)
@@ -212,7 +212,7 @@ class BaseSellableInfo(Domain):
 class ASellable(InheritableModelAdapter):
     """A sellable (a product or a service, for instance)."""
 
-    implements(ISellable, IContainer, IDescribable)
+    implements(ISellable, IDescribable)
 
     (STATUS_AVAILABLE,
      STATUS_SOLD,
