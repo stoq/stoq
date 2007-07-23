@@ -36,7 +36,7 @@ from zope.interface import implements
 
 from stoqlib.database.columns import DecimalCol
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.exceptions import SellError, DatabaseInconsistency
+from stoqlib.exceptions import SellError
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.sellable import (ASellable, ASellableItem,
                                      BaseSellableInfo, SellableUnit)
@@ -138,17 +138,9 @@ class ServiceSellableItemAdaptToDelivery(ModelAdapter):
 
     @argcheck(ASellable)
     def get_item_by_sellable(self, sellable):
-        # FIXME: Use SQL query
-        items = [item for item in self.get_items()
-                           if item.sellable.id == sellable.id]
-        qty = len(items)
-        if not qty:
-            return
-        if qty > 1:
-            raise DatabaseInconsistency('You should have only one item for '
-                                        'this sellable, fot %d instead'
-                                        % qty)
-        return items[0]
+        return DeliveryItem.selectBy(connection=self.get_connection(),
+                                     delivery=self,
+                                     sellable=sellable)
 
 ServiceSellableItem.registerFacet(ServiceSellableItemAdaptToDelivery,
                                   IDelivery)
