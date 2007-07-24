@@ -583,7 +583,7 @@ class FS345(SerialBase):
                 reg = reg.replace('.', '')
             else:
                 reg = 'ISS'
-            sold = fiscal_registries[87+(i*14):101+(i*14)]
+            sold = fiscal_registries[88+(i*14):102+(i*14)]
             taxes.append((reg, Decimal(sold)/100))
 
         taxes.append(('DESC', Decimal(fiscal_registries[19:32]) / 100))
@@ -596,7 +596,7 @@ class FS345(SerialBase):
 
         old_total = Decimal(fiscal_registries[:18]) / 100
         cancelled = Decimal(fiscal_registries[33:46]) / 100
-        period_total = total_sold + cancelled
+        period_total = total_sold
 
         dates = self.send_command(CMD_GET_DATES)
         if dates[:6] == '000000':
