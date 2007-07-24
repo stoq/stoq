@@ -8,7 +8,6 @@
                     <widget class="GtkAction" id="BranchSearch">
                         <property name="name">BranchSearch</property>
                         <property name="label" translatable="yes">Branches...</property>
-                        <signal handler="_on_branch_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;b</property>
                     </widget>
                 </child>
@@ -16,7 +15,6 @@
                     <widget class="GtkAction" id="BranchStationSearch">
                         <property name="name">BranchStationSearch</property>
                         <property name="label" translatable="yes">Branch Station...</property>
-                        <signal handler="_on_branchstation_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;h</property>
                     </widget>
                 </child>
@@ -24,7 +22,6 @@
                     <widget class="GtkAction" id="CfopSearch">
                         <property name="name">CfopSearch</property>
                         <property name="label" translatable="yes">CFOP...</property>
-                        <signal handler="_on_cfop_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;o</property>
                     </widget>
                 </child>
@@ -70,7 +67,6 @@
                     <widget class="GtkAction" id="EmployeeRole">
                         <property name="name">EmployeeRole</property>
                         <property name="label" translatable="yes">Employee Roles...</property>
-                        <signal handler="_on_employee_role__action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;r</property>
                     </widget>
                 </child>
@@ -129,7 +125,6 @@
                     <widget class="GtkAction" id="PaymentMethod">
                         <property name="name">PaymentMethod</property>
                         <property name="label" translatable="yes">Payment Method Settings...</property>
-                        <signal handler="on_payment_methods_activate" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;m</property>
                     </widget>
                 </child>
@@ -182,7 +177,6 @@
                     <widget class="GtkAction" id="UserProfile">
                         <property name="name">UserProfile</property>
                         <property name="label" translatable="yes">User Profiles...</property>
-                        <signal handler="_on_user_profiles_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;u</property>
                     </widget>
                 </child>
@@ -191,7 +185,6 @@
                         <property name="name">about_menu</property>
                         <property name="label" translatable="yes">About</property>
                         <property name="stock_id">gtk-about</property>
-                        <signal handler="_run_about" name="activate"/>
                     </widget>
                 </child>
                 <child>
@@ -199,7 +192,6 @@
                         <property name="name">devices_setup</property>
                         <property name="label" translatable="yes">Devices _Settings...</property>
                         <property name="short_label" translatable="yes">Devices _Settings</property>
-                        <signal handler="on_devices_setup_activate" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;d</property>
                     </widget>
                 </child>
@@ -235,7 +227,6 @@
                         <property name="name">system_parameters</property>
                         <property name="label" translatable="yes">System _Parameters...</property>
                         <property name="short_label" translatable="yes">System _Parameters</property>
-                        <signal handler="on_system_parameters_activate" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;y</property>
                     </widget>
                 </child>

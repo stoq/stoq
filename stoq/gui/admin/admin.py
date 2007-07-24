@@ -32,8 +32,7 @@ from kiwi.ui.widgets.list import Column
 from kiwi.ui.search import ComboSearchFilter
 from sqlobject.sqlbuilder import AND
 
-from stoqlib.database.runtime import (get_connection,
-                                      finish_transaction)
+from stoqlib.database.runtime import finish_transaction
 from stoqlib.domain.person import Person, PersonAdaptToUser
 from stoqlib.domain.profile import UserProfile
 from stoqlib.gui.base.columns import ForeignKeyColumn
@@ -144,45 +143,45 @@ class AdminApp(SearchableAppWindow):
     def on_results__selection_changed(self, results, user):
         self._update_view()
 
-    def _on_cfop_action_clicked(self, button):
-        self.run_dialog(CfopSearch, self.conn, hide_footer=True)
-
-    def _on_employees_action_clicked(self, button):
-        conn = get_connection()
-        self.run_dialog(EmployeeSearch, conn, hide_footer=True)
-
-    def _on_user_profiles_action_clicked(self, button):
-        self.run_dialog(UserProfileSearch, self.conn)
-
-    def _on_employee_role__action_clicked(self, button):
-        self.run_dialog(EmployeeRoleSearch, self.conn)
-
-    def _on_branch_action_clicked(self, button):
-        self.run_dialog(BranchSearch, self.conn, hide_footer=True)
-
-    def _on_branchstation_action_clicked(self, button):
-        self.run_dialog(StationSearch, self.conn, hide_footer=True)
-
     def on_add_button__clicked(self, button):
         self._add_user()
 
     def on_edit_button__clicked(self, button):
         self._edit_user()
 
-    def on_devices_setup_activate(self, button):
-        self.run_dialog(DeviceSettingsDialog, self.conn)
-
-    def on_system_parameters_activate(self, button):
-        self.run_dialog(ParametersListingDialog, self.conn)
-
-    def on_payment_methods_activate(self, button):
-        self.run_dialog(PaymentMethodsDialog, self.conn)
-
-    def on_devices_setup_activate(self, button):
-        self.run_dialog(DeviceSettingsDialog, self.conn)
-
     def on_taxes__activate(self, action):
         self.run_dialog(SellableTaxConstantsDialog, self.conn)
 
     def on_sintegra__activate(self, action):
         self.run_dialog(SintegraDialog, self.conn)
+
+    def on_BranchSearch__activate(self, action):
+        self.run_dialog(BranchSearch, self.conn, hide_footer=True)
+
+    def on_BranchStationSearch__activate(self, action):
+        self.run_dialog(StationSearch, self.conn, hide_footer=True)
+
+    def on_CfopSearch__activate(self, action):
+        self.run_dialog(CfopSearch, self.conn, hide_footer=True)
+
+    def on_EmployeeSearch__activate(self, action):
+        self.run_dialog(EmployeeSearch, self.conn, hide_footer=True)
+
+    def on_EmployeeRole__activate(self, action):
+        self.run_dialog(EmployeeRoleSearch, self.conn)
+
+    def on_UserProfile__activate(self, action):
+        self.run_dialog(UserProfileSearch, self.conn)
+
+    def on_about_menu__activate(self, action):
+        self._run_about()
+
+    def on_devices_setup__activate(self, action):
+        self.run_dialog(DeviceSettingsDialog, self.conn)
+
+    def on_system_parameters__activate(self, action):
+        self.run_dialog(ParametersListingDialog, self.conn)
+
+    def on_PaymentMethod__activate(self, action):
+        self.run_dialog(PaymentMethodsDialog, self.conn)
+
