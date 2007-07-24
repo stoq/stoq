@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-23 11:30-0300\n"
+"POT-Creation-Date: 2007-07-24 18:38-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -256,7 +256,7 @@ msgid "Accounts Payable"
 msgstr ""
 
 #: ../stoq/gui/payable/payable.py:63 ../stoq/gui/purchase/purchase.py:61
-#: ../stoq/gui/admin/admin.py:66 ../stoq/gui/sales/sales.py:59
+#: ../stoq/gui/admin/admin.py:65 ../stoq/gui/sales/sales.py:59
 #: ../stoq/gui/till/till.py:70 ../stoq/gui/receivable/receivable.py:82
 msgid "matching:"
 msgstr ""
@@ -291,7 +291,7 @@ msgstr ""
 msgid "Paid Date"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:102 ../stoq/gui/admin/admin.py:90
+#: ../stoq/gui/payable/payable.py:102 ../stoq/gui/admin/admin.py:89
 #: ../stoq/gui/receivable/receivable.py:135
 msgid "Status"
 msgstr ""
@@ -301,7 +301,7 @@ msgid "Value"
 msgstr ""
 
 #: ../stoq/gui/payable/payable.py:222 ../stoq/gui/purchase/purchase.py:217
-#: ../stoq/gui/admin/admin.py:98 ../stoq/gui/sales/sales.py:168
+#: ../stoq/gui/admin/admin.py:97 ../stoq/gui/sales/sales.py:168
 #: ../stoq/gui/till/till.py:144 ../stoq/gui/receivable/receivable.py:106
 msgid "Any"
 msgstr ""
@@ -327,21 +327,25 @@ msgstr ""
 msgid "Number"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:86 ../stoq/gui/sales/sales.py:61
-#: ../stoq/gui/till/till.py:112
-msgid "Date Started"
+#: ../stoq/gui/purchase/purchase.py:86
+msgid "Opened"
 msgstr ""
 
 #: ../stoq/gui/purchase/purchase.py:91
-msgid "Qty Ordered"
+msgid "Ordered"
 msgstr ""
 
 #: ../stoq/gui/purchase/purchase.py:94
-msgid "Qty Received"
+msgid "Received"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:97
-msgid "Order Total"
+#: ../stoq/gui/purchase/purchase.py:97 ../stoq/gui/sales/sales.py:99
+#: ../stoq/gui/till/till.py:121 ../stoq/gui/pos/pos.py:548
+msgid "Total"
+msgstr ""
+
+#: ../stoq/gui/purchase/purchase.py:106
+msgid "<b>Orders Total:</b>"
 msgstr ""
 
 #: ../stoq/gui/purchase/purchase.py:176
@@ -381,7 +385,7 @@ msgstr ""
 msgid "Purchase application."
 msgstr ""
 
-#: ../stoq/gui/admin/__init__.py:29 ../stoq/gui/admin/admin.py:62
+#: ../stoq/gui/admin/__init__.py:29 ../stoq/gui/admin/admin.py:61
 msgid "Administrative"
 msgstr ""
 
@@ -389,19 +393,19 @@ msgstr ""
 msgid "Administrative application."
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:75
+#: ../stoq/gui/admin/admin.py:74
 msgid "Show users with status"
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:82
+#: ../stoq/gui/admin/admin.py:81
 msgid "Login Name"
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:84
+#: ../stoq/gui/admin/admin.py:83
 msgid "Profile"
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:87
+#: ../stoq/gui/admin/admin.py:86
 msgid "Name"
 msgstr ""
 
@@ -411,6 +415,10 @@ msgstr ""
 
 #: ../stoq/gui/sales/__init__.py:30
 msgid "Sales application."
+msgstr ""
+
+#: ../stoq/gui/sales/sales.py:61 ../stoq/gui/till/till.py:112
+msgid "Date Started"
 msgstr ""
 
 #: ../stoq/gui/sales/sales.py:62
@@ -439,11 +447,6 @@ msgstr ""
 
 #: ../stoq/gui/sales/sales.py:96
 msgid "Items Quantity"
-msgstr ""
-
-#: ../stoq/gui/sales/sales.py:99 ../stoq/gui/till/till.py:121
-#: ../stoq/gui/pos/pos.py:548
-msgid "Total"
 msgstr ""
 
 #: ../stoq/gui/sales/sales.py:142

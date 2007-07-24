@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-23 11:30-0300\n"
+"POT-Creation-Date: 2007-07-24 18:38-0300\n"
 "PO-Revision-Date: 2007-07-18 11:50-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -258,7 +258,7 @@ msgid "Accounts Payable"
 msgstr ""
 
 #: ../stoq/gui/payable/payable.py:63 ../stoq/gui/purchase/purchase.py:61
-#: ../stoq/gui/admin/admin.py:66 ../stoq/gui/sales/sales.py:59
+#: ../stoq/gui/admin/admin.py:65 ../stoq/gui/sales/sales.py:59
 #: ../stoq/gui/till/till.py:70 ../stoq/gui/receivable/receivable.py:82
 msgid "matching:"
 msgstr ""
@@ -295,7 +295,7 @@ msgstr ""
 msgid "Paid Date"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/payable/payable.py:102 ../stoq/gui/admin/admin.py:90
+#: ../stoq/gui/payable/payable.py:102 ../stoq/gui/admin/admin.py:89
 #: ../stoq/gui/receivable/receivable.py:135
 msgid "Status"
 msgstr "Status"
@@ -305,7 +305,7 @@ msgid "Value"
 msgstr "Värde"
 
 #: ../stoq/gui/payable/payable.py:222 ../stoq/gui/purchase/purchase.py:217
-#: ../stoq/gui/admin/admin.py:98 ../stoq/gui/sales/sales.py:168
+#: ../stoq/gui/admin/admin.py:97 ../stoq/gui/sales/sales.py:168
 #: ../stoq/gui/till/till.py:144 ../stoq/gui/receivable/receivable.py:106
 msgid "Any"
 msgstr "Alla"
@@ -332,24 +332,29 @@ msgstr "Ingen produkt vald"
 msgid "Number"
 msgstr "Nummer"
 
-#: ../stoq/gui/purchase/purchase.py:86 ../stoq/gui/sales/sales.py:61
-#: ../stoq/gui/till/till.py:112
-msgid "Date Started"
-msgstr ""
+#: ../stoq/gui/purchase/purchase.py:86
+#, fuzzy
+msgid "Opened"
+msgstr "_Nollställ order"
 
 #: ../stoq/gui/purchase/purchase.py:91
 #, fuzzy
-msgid "Qty Ordered"
+msgid "Ordered"
 msgstr "_Nollställ order"
 
 #: ../stoq/gui/purchase/purchase.py:94
 #, fuzzy
-msgid "Qty Received"
-msgstr "Antal"
+msgid "Received"
+msgstr "Ta bort"
 
-#: ../stoq/gui/purchase/purchase.py:97
+#: ../stoq/gui/purchase/purchase.py:97 ../stoq/gui/sales/sales.py:99
+#: ../stoq/gui/till/till.py:121 ../stoq/gui/pos/pos.py:548
+msgid "Total"
+msgstr "Totalt"
+
+#: ../stoq/gui/purchase/purchase.py:106
 #, fuzzy
-msgid "Order Total"
+msgid "<b>Orders Total:</b>"
 msgstr "Totalt"
 
 #: ../stoq/gui/purchase/purchase.py:176
@@ -391,7 +396,7 @@ msgstr "_Nollställ order"
 msgid "Purchase application."
 msgstr ""
 
-#: ../stoq/gui/admin/__init__.py:29 ../stoq/gui/admin/admin.py:62
+#: ../stoq/gui/admin/__init__.py:29 ../stoq/gui/admin/admin.py:61
 msgid "Administrative"
 msgstr ""
 
@@ -399,21 +404,21 @@ msgstr ""
 msgid "Administrative application."
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:75
+#: ../stoq/gui/admin/admin.py:74
 #, fuzzy
 msgid "Show users with status"
 msgstr "Ingen produkt vald"
 
-#: ../stoq/gui/admin/admin.py:82
+#: ../stoq/gui/admin/admin.py:81
 msgid "Login Name"
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:84
+#: ../stoq/gui/admin/admin.py:83
 #, fuzzy
 msgid "Profile"
 msgstr "Pris"
 
-#: ../stoq/gui/admin/admin.py:87
+#: ../stoq/gui/admin/admin.py:86
 msgid "Name"
 msgstr ""
 
@@ -424,6 +429,10 @@ msgstr "_Försäljning"
 
 #: ../stoq/gui/sales/__init__.py:30
 msgid "Sales application."
+msgstr ""
+
+#: ../stoq/gui/sales/sales.py:61 ../stoq/gui/till/till.py:112
+msgid "Date Started"
 msgstr ""
 
 #: ../stoq/gui/sales/sales.py:62
@@ -457,11 +466,6 @@ msgstr ""
 #, fuzzy
 msgid "Items Quantity"
 msgstr "Antal"
-
-#: ../stoq/gui/sales/sales.py:99 ../stoq/gui/till/till.py:121
-#: ../stoq/gui/pos/pos.py:548
-msgid "Total"
-msgstr "Totalt"
 
 #: ../stoq/gui/sales/sales.py:142
 msgid "Printing Invoice"
@@ -1418,6 +1422,14 @@ msgstr "nej"
 msgid "Yes"
 msgstr "Ja"
 
+#, fuzzy
+#~ msgid "Order Total"
+#~ msgstr "Totalt"
+
+#, fuzzy
+#~ msgid "Qty Received"
+#~ msgstr "Antal"
+
 #~ msgid "Tax Constants"
 #~ msgstr "Skattekonstanter"
 
@@ -1684,10 +1696,6 @@ msgstr "Ja"
 #, fuzzy
 #~ msgid "Receiving Order"
 #~ msgstr "_Nollställ order"
-
-#, fuzzy
-#~ msgid "<b>Total:</b>"
-#~ msgstr "Totalt"
 
 #, fuzzy
 #~ msgid "Sale Checkout"

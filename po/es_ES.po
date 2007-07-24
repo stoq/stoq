@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-23 11:30-0300\n"
+"POT-Creation-Date: 2007-07-24 18:38-0300\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Rafael Villar Burke <pachi@rvburke.com>\n"
 "Language-Team: Spanish <es_ES@li.org>\n"
@@ -297,7 +297,7 @@ msgid "Accounts Payable"
 msgstr "Cuentas a Pagar"
 
 #: ../stoq/gui/payable/payable.py:63 ../stoq/gui/purchase/purchase.py:61
-#: ../stoq/gui/admin/admin.py:66 ../stoq/gui/sales/sales.py:59
+#: ../stoq/gui/admin/admin.py:65 ../stoq/gui/sales/sales.py:59
 #: ../stoq/gui/till/till.py:70 ../stoq/gui/receivable/receivable.py:82
 msgid "matching:"
 msgstr "incluyendo:"
@@ -332,7 +332,7 @@ msgstr "Fecha de vencimiento"
 msgid "Paid Date"
 msgstr "Fecha de pago"
 
-#: ../stoq/gui/payable/payable.py:102 ../stoq/gui/admin/admin.py:90
+#: ../stoq/gui/payable/payable.py:102 ../stoq/gui/admin/admin.py:89
 #: ../stoq/gui/receivable/receivable.py:135
 msgid "Status"
 msgstr "Situación"
@@ -342,7 +342,7 @@ msgid "Value"
 msgstr "Valor"
 
 #: ../stoq/gui/payable/payable.py:222 ../stoq/gui/purchase/purchase.py:217
-#: ../stoq/gui/admin/admin.py:98 ../stoq/gui/sales/sales.py:168
+#: ../stoq/gui/admin/admin.py:97 ../stoq/gui/sales/sales.py:168
 #: ../stoq/gui/till/till.py:144 ../stoq/gui/receivable/receivable.py:106
 msgid "Any"
 msgstr "Cualquiera"
@@ -371,22 +371,30 @@ msgstr "Mostrar pedidos en situación"
 msgid "Number"
 msgstr "Número"
 
-#: ../stoq/gui/purchase/purchase.py:86 ../stoq/gui/sales/sales.py:61
-#: ../stoq/gui/till/till.py:112
-msgid "Date Started"
-msgstr "Fecha de inicio"
+#: ../stoq/gui/purchase/purchase.py:86
+#, fuzzy
+msgid "Opened"
+msgstr "Cantidad solicitada"
 
 #: ../stoq/gui/purchase/purchase.py:91
-msgid "Qty Ordered"
+#, fuzzy
+msgid "Ordered"
 msgstr "Cantidad solicitada"
 
 #: ../stoq/gui/purchase/purchase.py:94
-msgid "Qty Received"
-msgstr "Cantidad recibida"
+#, fuzzy
+msgid "Received"
+msgstr "Recibir"
 
-#: ../stoq/gui/purchase/purchase.py:97
-msgid "Order Total"
-msgstr "Total del Pedido"
+#: ../stoq/gui/purchase/purchase.py:97 ../stoq/gui/sales/sales.py:99
+#: ../stoq/gui/till/till.py:121 ../stoq/gui/pos/pos.py:548
+msgid "Total"
+msgstr "Total"
+
+#: ../stoq/gui/purchase/purchase.py:106
+#, fuzzy
+msgid "<b>Orders Total:</b>"
+msgstr "<b>Stock Total</b>"
 
 #: ../stoq/gui/purchase/purchase.py:176
 msgid "There are no orders with status pending in the selection"
@@ -427,7 +435,7 @@ msgstr ""
 "Aplicación para la ejecución de pedidos\n"
 "de compras y registro de productos."
 
-#: ../stoq/gui/admin/__init__.py:29 ../stoq/gui/admin/admin.py:62
+#: ../stoq/gui/admin/__init__.py:29 ../stoq/gui/admin/admin.py:61
 msgid "Administrative"
 msgstr "Administrativo"
 
@@ -437,19 +445,19 @@ msgstr ""
 "Aplicación para la administración\n"
 "y parametrización del sistema."
 
-#: ../stoq/gui/admin/admin.py:75
+#: ../stoq/gui/admin/admin.py:74
 msgid "Show users with status"
 msgstr "Mostrar usuarios en situación"
 
-#: ../stoq/gui/admin/admin.py:82
+#: ../stoq/gui/admin/admin.py:81
 msgid "Login Name"
 msgstr "Usuario"
 
-#: ../stoq/gui/admin/admin.py:84
+#: ../stoq/gui/admin/admin.py:83
 msgid "Profile"
 msgstr "Perfil"
 
-#: ../stoq/gui/admin/admin.py:87
+#: ../stoq/gui/admin/admin.py:86
 msgid "Name"
 msgstr "Nombre"
 
@@ -462,6 +470,10 @@ msgid "Sales application."
 msgstr ""
 "Aplicación para la gestión y registro de\n"
 "comprobantes e impresión de facturas."
+
+#: ../stoq/gui/sales/sales.py:61 ../stoq/gui/till/till.py:112
+msgid "Date Started"
+msgstr "Fecha de inicio"
 
 #: ../stoq/gui/sales/sales.py:62
 msgid "Confirm Date"
@@ -490,11 +502,6 @@ msgstr "Vendedor"
 #: ../stoq/gui/sales/sales.py:96
 msgid "Items Quantity"
 msgstr "Número de artículos"
-
-#: ../stoq/gui/sales/sales.py:99 ../stoq/gui/till/till.py:121
-#: ../stoq/gui/pos/pos.py:548
-msgid "Total"
-msgstr "Total"
 
 #: ../stoq/gui/sales/sales.py:142
 msgid "Printing Invoice"
@@ -1464,6 +1471,12 @@ msgstr ""
 #: ../data/glade/ECFPluginStep.glade.h:7
 msgid "Yes"
 msgstr ""
+
+#~ msgid "Order Total"
+#~ msgstr "Total del Pedido"
+
+#~ msgid "Qty Received"
+#~ msgstr "Cantidad recibida"
 
 #~ msgid "Sellable Tax Constants..."
 #~ msgstr "Configuración de Constantes de Impuestos"
