@@ -248,31 +248,31 @@
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui>
-          <menubar action="menubar" name="menubar">
-            <menu action="SalesMenu" name="SalesMenu">
-	      <menuitem action="NewUser" name="NewUser"/>
-              <menuitem action="Quit" name="Quit"/>
+          <menubar action="menubar">
+            <menu action="SalesMenu">
+	      <menuitem action="NewUser"/>
+              <menuitem action="Quit"/>
             </menu>
-            <menu action="SearchMenu" name="SearchMenu">
-              <menuitem action="EmployeeRole" name="EmployeeRole"/>
-              <menuitem action="EmployeeSearch" name="EmployeeSearch"/>
-              <menuitem action="CfopSearch" name="CfopSearch"/>
-              <menuitem action="FiscalBook" name="FiscalBook"/>
-              <menuitem action="UserProfile" name="UserProfile"/>
-              <menuitem action="BranchSearch" name="BranchSearch"/>
-              <menuitem action="BranchStationSearch" name="BranchStationSearch"/>
+            <menu action="SearchMenu">
+              <menuitem action="EmployeeRole"/>
+              <menuitem action="EmployeeSearch"/>
+              <menuitem action="CfopSearch"/>
+              <menuitem action="FiscalBook"/>
+              <menuitem action="UserProfile"/>
+              <menuitem action="BranchSearch"/>
+              <menuitem action="BranchStationSearch"/>
             </menu>
-            <menu action="settings_menu" name="settings_menu">
-              <menuitem action="devices_setup" name="devices_setup"/>
-              <menuitem action="PaymentMethod" name="PaymentMethod"/>
-              <menuitem action="taxes" name="taxes"/>
-              <menuitem action="sintegra" name="sintegra"/>
-              <menuitem action="system_parameters" name="system_parameters"/>
+            <menu action="settings_menu">
+              <menuitem action="devices_setup"/>
+              <menuitem action="PaymentMethod"/>
+              <menuitem action="taxes"/>
+              <menuitem action="sintegra"/>
+              <menuitem action="system_parameters"/>
               <separator name="plugin_settings_separator"/>
               <placeholder name="PluginSettings"/>
             </menu>
-            <menu action="help_menu" name="help_menu">
-              <menuitem action="about_menu" name="about_menu"/>
+            <menu action="help_menu">
+              <menuitem action="about_menu"/>
             </menu>
           </menubar>
         </ui>]]></ui>

@@ -214,19 +214,28 @@
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui>
-<menubar action="menubar" name="menubar">
-
-
-<menu action="TillMenu" name="TillMenu"><menuitem action="print_invoice" name="print_invoice"/><separator/><menuitem action="quit_action" name="quit_action"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="ProductSearch" name="ProductSearch"/><menuitem action="ServiceSearch" name="ServiceSearch"/><menuitem action="ClientSearch" name="ClientSearch"/><menuitem action="GiftCertificate" name="GiftCertificate"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
-
-
-
-
-
-
-
-<toolitem action="Clients" name="Clients"/><toolitem action="Products" name="Products"/><toolitem action="Services" name="Services"/></toolbar>
-</ui>]]></ui>
+	  <menubar action="menubar">
+	    <menu action="TillMenu">
+	      <menuitem action="print_invoice"/>
+	      <separator/>
+	      <menuitem action="quit_action"/>
+	    </menu>
+	    <menu action="SearchMenu">
+	      <menuitem action="ProductSearch"/>
+	      <menuitem action="ServiceSearch"/>
+	      <menuitem action="ClientSearch"/>
+	      <menuitem action="GiftCertificate"/>
+	    </menu>
+	    <menu action="help_menu">
+	      <menuitem action="about_menu"/>
+	    </menu>
+	  </menubar>
+	  <toolbar action="toolbar1">
+	    <toolitem action="Clients"/>
+	    <toolitem action="Products"/>
+	    <toolitem action="Services"/>
+          </toolbar>
+	</ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="sales_app">
         <property name="height_request">570</property>

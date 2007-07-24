@@ -260,34 +260,34 @@
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui>
-            <menubar action="menubar" name="menubar">
-              <menu action="SalesMenu" name="SalesMenu">
-                <menuitem action="ResetOrder" name="ResetOrder"/>
-                <menuitem action="CancelOrder" name="CancelOrder"/>
-                <menuitem action="EditClient" name="EditClient"/>
-                <menuitem action="ClientDetails" name="ClientDetails"/>
+            <menubar action="menubar">
+              <menu action="SalesMenu">
+                <menuitem action="ResetOrder"/>
+                <menuitem action="CancelOrder"/>
+                <menuitem action="EditClient"/>
+                <menuitem action="ClientDetails"/>
                 <separator name="sep"/>
-                <menuitem action="NewDelivery" name="NewDelivery"/>
-                <menuitem action="OrderCheckout" name="OrderCheckout"/>
+                <menuitem action="NewDelivery"/>
+                <menuitem action="OrderCheckout"/>
                 <separator name="sep10"/>
-                <menuitem action="PrintOrder" name="PrintOrder"/>
+                <menuitem action="PrintOrder"/>
                 <separator name="sep2"/>
-                <menuitem action="Quit" name="Quit"/>
+                <menuitem action="Quit"/>
               </menu>
-              <menu action="SearchMenu" name="SearchMenu">
-                <menuitem action="Sales" name="Sales"/>
-                <menuitem action="Clients" name="Clients"/>
-                <menuitem action="ProductSearch" name="ProductSearch"/>
-                <menuitem action="ServiceSearch" name="ServiceSearch"/>
-                <menuitem action="GiftCertificateSearch" name="GiftCertificateSearch"/>
+              <menu action="SearchMenu">
+                <menuitem action="Sales"/>
+                <menuitem action="Clients"/>
+                <menuitem action="ProductSearch"/>
+                <menuitem action="ServiceSearch"/>
+                <menuitem action="GiftCertificateSearch"/>
               </menu>
-              <menu action="TillMenu" name="TillMenu">
-                <menuitem action="TillOpen" name="TillOpen"/>
-                <menuitem action="TillClose" name="TillClose"/>
+              <menu action="TillMenu">
+                <menuitem action="TillOpen"/>
+                <menuitem action="TillClose"/>
               </menu>
             <placeholder name="PluginMenus"/>
-              <menu action="help_menu" name="help_menu">
-                <menuitem action="About" name="About"/>
+              <menu action="help_menu">
+                <menuitem action="About"/>
               </menu>
             </menubar>
           </ui>]]>

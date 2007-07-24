@@ -213,25 +213,25 @@
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui>
-	  <menubar action="menubar" name="menubar">
-	    <menu action="TillMenu" name="TillMenu">
-	      <menuitem action="TillOpen" name="TillOpen"/>
-	      <menuitem action="TillClose" name="TillClose"/>
+	  <menubar action="menubar">
+	    <menu action="TillMenu">
+	      <menuitem action="TillOpen"/>
+	      <menuitem action="TillClose"/>
 	      <separator/>
-	      <menuitem action="AddCash" name="AddCash"/>
-	      <menuitem action="RemoveCash" name="RemoveCash"/>
+	      <menuitem action="AddCash"/>
+	      <menuitem action="RemoveCash"/>
 	      <separator name="sep"/>
-	      <menuitem action="quit_action" name="quit_action"/>
+	      <menuitem action="quit_action"/>
 	    </menu>
-	      <menu action="Actions" name="Actions">
-	      <menuitem action="ClientSearch" name="ClientSearch"/>
-	      <menuitem action="SaleSearch" name="SaleSearch"/>
+	      <menu action="Actions">
+	      <menuitem action="ClientSearch"/>
+	      <menuitem action="SaleSearch"/>
 	      <separator name="sep2"/>
-	      <menuitem action="TillHistory" name="TillHistory"/>
-	      <menuitem action="FiscalTillOperations" name="FiscalTillOperations"/>
+	      <menuitem action="TillHistory"/>
+	      <menuitem action="FiscalTillOperations"/>
 	    </menu>
-	      <menu action="help_menu" name="help_menu">
-	      <menuitem action="about_menu" name="about_menu"/>
+	      <menu action="help_menu">
+	      <menuitem action="about_menu"/>
 	    </menu>
 	  </menubar>
 </ui>]]></ui>

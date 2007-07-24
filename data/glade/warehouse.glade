@@ -185,18 +185,26 @@
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui>
-<menubar action="menubar" name="menubar">
-
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="receive_action" name="receive_action"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="TransferSearch" name="TransferSearch"/><menuitem action="PurchaseReceiving" name="PurchaseReceiving"/> <menuitem action="ProductHistory" name="ProductHistory"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
-  
-  
-  
-  
-  
-  
-  
-<toolitem action="receive_action" name="receive_action"/><toolitem action="transfer_action" name="transfer_action"/></toolbar>
-</ui>]]></ui>
+	  <menubar action="menubar">
+	    <menu action="SalesMenu">
+	      <menuitem action="receive_action"/>
+	      <separator name="sep"/>
+	      <menuitem action="Quit"/>
+	    </menu>
+	    <menu action="SearchMenu">
+	      <menuitem action="TransferSearch"/>
+	      <menuitem action="PurchaseReceiving"/>
+	      <menuitem action="ProductHistory"/>
+	    </menu>
+	    <menu action="help_menu">
+	      <menuitem action="about_menu"/>
+	    </menu>
+	  </menubar>
+	  <toolbar action="toolbar1">
+	    <toolitem action="receive_action"/>
+	    <toolitem action="transfer_action"/>
+	  </toolbar>
+	</ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="warehouse">
         <property name="destroy_with_parent">True</property>
