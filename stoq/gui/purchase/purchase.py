@@ -103,7 +103,7 @@ class PurchaseApp(SearchableAppWindow):
 
     def _setup_widgets(self):
         self.search.set_summary_label(column='total',
-                                      label='<b>Orders Total:</b>',
+                                      label=_('<b>Orders Total:</b>'),
                                       format='<b>%s</b>')
         self.SendToSupplier.set_sensitive(False)
 
