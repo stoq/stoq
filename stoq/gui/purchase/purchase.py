@@ -27,8 +27,8 @@
 
 import gettext
 import datetime
-from decimal import Decimal
 
+import pango
 import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
@@ -87,14 +87,14 @@ class PurchaseApp(SearchableAppWindow):
                        data_type=datetime.date),
                 Column('supplier_name', title=_('Supplier'),
                        data_type=str, searchable=True, width=200,
-                       expand=True),
+                       expand=True, ellipsize=pango.ELLIPSIZE_END),
                 Column('ordered_quantity', title=_('Ordered'),
-                       data_type=Decimal, width=120,
+                       data_type=str, width=80, justify=gtk.JUSTIFY_RIGHT,
                        format_func=format_quantity),
                 Column('received_quantity', title=_('Received'),
-                       data_type=Decimal, width=120,
+                       data_type=str, width=80, justify=gtk.JUSTIFY_RIGHT,
                        format_func=format_quantity),
-                Column('total', title=_('Order Total'),
+                Column('total', title=_('Total'),
                        data_type=currency, width=110)]
 
     #
@@ -103,7 +103,7 @@ class PurchaseApp(SearchableAppWindow):
 
     def _setup_widgets(self):
         self.search.set_summary_label(column='total',
-                                      label='<b>Total:</b>',
+                                      label='<b>Orders Total:</b>',
                                       format='<b>%s</b>')
         self.SendToSupplier.set_sensitive(False)
 
