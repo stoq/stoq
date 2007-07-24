@@ -234,18 +234,32 @@
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui>
-<menubar action="menubar" name="menubar">
-
- <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem action="AddOrder" name="AddOrder"/><menuitem action="SendToSupplier" name="SendToSupplier"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu><menu action="SearchMenu"><menuitem action="BaseCategories" name="BaseCategories"/><menuitem action="Categories" name="Categories"/><menuitem action="Products" name="Products"/><menuitem action="Services" name="Services"/><menuitem action="Suppliers" name="Suppliers"/><menuitem action="Transporter" name="Transporter"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
-  
-  
-  
-  
-  
-  
-  
-<toolitem action="Purchase" name="Purchase"/><toolitem action="ProductButton" name="ProductButton"/><toolitem action="SuppliersButton" name="SuppliersButton"/><toolitem action="SendToSupplier" name="SendToSupplier"/></toolbar>
-</ui>]]></ui>
+	<menubar action="menubar">
+          <menu action="PurchaseMenu">
+	    <menuitem action="AddOrder"/>
+	    <menuitem action="SendToSupplier"/>
+	    <separator name="sep"/>
+	    <menuitem action="Quit"/>
+	  </menu>
+          <menu action="SearchMenu">
+	    <menuitem action="BaseCategories"/>
+	    <menuitem action="Categories"/>
+	    <menuitem action="Products"/>
+	    <menuitem action="Services"/>
+	    <menuitem action="Suppliers"/>
+	    <menuitem action="Transporter"/>
+	  </menu>
+          <menu action="help_menu">
+	    <menuitem action="about_menu"/>
+	  </menu>
+	  </menubar>
+	  <toolbar action="toolbar1">
+	    <toolitem action="Purchase"/>
+	    <toolitem action="ProductButton"/>
+	    <toolitem action="SuppliersButton"/>
+	    <toolitem action="SendToSupplier"/>
+	  </toolbar>
+	</ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="purchase">
         <property name="destroy_with_parent">True</property>
