@@ -33,6 +33,8 @@ from zope.interface import implements
 from stoqdrivers.enum import PaymentMethodType
 from sqlobject import (ForeignKey, IntCol, DateTimeCol, UnicodeCol,
                        SQLObject)
+from sqlobject.sqlbuilder import AND, INNERJOINOn, LEFTJOINOn
+from sqlobject.viewable import Viewable
 
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
@@ -40,10 +42,12 @@ from stoqlib.domain.base import ValidatableDomain, Domain, BaseSQLView
 from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.interfaces import IPaymentGroup, IContainer
+from stoqlib.domain.sellable import ASellable, BaseSellableInfo, SellableUnit
 from stoqlib.lib.defaults import calculate_interval, quantize
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
+
 
 _ = stoqlib_gettext
 
@@ -381,8 +385,12 @@ class PurchaseOrder(ValidatableDomain):
         return u'%05d' % self.id
 
     def get_purchase_subtotal(self):
-        total = sum([i.get_total() for i in self.get_items()], currency(0))
-        return currency(total)
+        """
+        Get the subtotal of the purchase.
+        The sum of all the items cost * items quantity
+        """
+        return currency(self.get_items().sum(PurchaseItem.q.cost *
+                                             PurchaseItem.q.quantity))
 
     def get_purchase_total(self):
         subtotal = self.get_purchase_subtotal()
@@ -392,20 +400,32 @@ class PurchaseOrder(ValidatableDomain):
         return currency(total)
 
     def get_received_total(self):
-        total = sum([item.cost * item.quantity_received
-                        for item in self.get_items()], currency(0))
-        return currency(total)
+        """
+        Like {get_purchase_subtotal} but only takes into account the
+        received items
+        """
+        return currency(self.get_items().sum(PurchaseItem.q.cost *
+                                             PurchaseItem.q.quantity_received))
 
     def get_remaining_total(self):
+        """
+        The total value to be paid for the items not received yet
+        """
         return self.get_purchase_total() - self.get_received_total()
 
     def get_pending_items(self):
-        return [item for item in self.get_items()
-                        if not item.has_been_received()]
+        """
+        @returns: a sequence of all items which we haven't received yet
+        """
+        return self.get_items().filter(
+            PurchaseItem.q.quantity_received < PurchaseItem.q.quantity)
 
     def get_partially_received_items(self):
-        return [item for item in self.get_items()
-                        if item.has_partial_received()]
+        """
+        @returns: a sequence of all items which are partially received
+        """
+        return self.get_items().filter(
+            PurchaseItem.q.quantity_received > 0)
 
     def get_open_date_as_string(self):
         return self.open_date and self.open_date.strftime("%x") or ""
@@ -454,6 +474,63 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
         return _(u'order %s') % order.id
 
 PurchaseOrder.registerFacet(PurchaseOrderAdaptToPaymentGroup, IPaymentGroup)
+
+
+class PurchaseItemView(Viewable):
+    """
+    This is a view which you can use to fetch purchase items within
+    a specific purchase. It's used by the PurchaseDetails dialog
+    to display all the purchase items within a purchase
+
+    @param id: id of the purchase item
+    @param purchase_id: id of the purchase order the item belongs to
+    @param sellable: sellable of the item
+    @param cost: cost of the item
+    @param quantity: quantity ordered
+    @param quantity_received: quantity received
+    @param total: total value of the items purchased
+    @param total_received: total value of the items received
+    @param description: description of the sellable
+    @param unit: unit as a string or None if the product has no unit
+    """
+    columns = dict(
+        id=PurchaseItem.q.id,
+        purchase_id=PurchaseOrder.q.id,
+        sellable=ASellable.q.id,
+        cost=PurchaseItem.q.cost,
+        quantity=PurchaseItem.q.quantity,
+        quantity_received=PurchaseItem.q.quantity_received,
+        total=PurchaseItem.q.cost * PurchaseItem.q.quantity,
+        total_received=PurchaseItem.q.cost * PurchaseItem.q.quantity_received,
+        description=BaseSellableInfo.q.description,
+        unit=SellableUnit.q.description,
+        )
+
+    clause = AND(
+        PurchaseOrder.q.id == PurchaseItem.q.orderID,
+        BaseSellableInfo.q.id == ASellable.q.base_sellable_infoID,
+        )
+
+    joins = [
+        INNERJOINOn(None, ASellable,
+                    ASellable.q.id == PurchaseItem.q.sellableID),
+        LEFTJOINOn(None, SellableUnit,
+                   SellableUnit.q.id == ASellable.q.unitID),
+        ]
+
+    def get_quantity_as_string(self):
+        return "%s %s" % (format_quantity(self.quantity),
+                          self.unit or u"")
+
+
+    def get_quantity_received_as_string(self):
+        return "%s %s" % (format_quantity(self.quantity_received),
+                          self.unit or u"")
+
+    @classmethod
+    def select_by_purchase(cls, purchase, connection):
+        return PurchaseItemView.select(PurchaseOrder.q.id == purchase.id,
+                                       connection=connection)
 
 
 #
