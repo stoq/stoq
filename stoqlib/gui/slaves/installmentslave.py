@@ -41,45 +41,31 @@ _ = stoqlib_gettext
 class _ConfirmationModel(object):
     def __init__(self, payments):
         self.payments = payments
-        self.pay_penalty = True
-        self.pay_interest = True
+        self.penalty = currency(0)
+        self.interest = currency(0)
+        self.discount = currency(0)
         self.close_date = datetime.date.today()
+
+    def get_interest(self):
+        return self.interest
+
+    def get_penalty(self):
+        return self.penalty
+
+    def get_calculated_interest(self):
+        return currency(0)
+
+    def get_calculated_penalty(self):
+        return currency(0)
 
     def get_installment_value(self):
         return currency(sum(p.value for p in self.payments))
 
-    def get_discount(self):
-        return currency(0)
-
-    def get_interest(self):
-        if not self.pay_interest:
-            return currency(0)
-        return currency(sum(p.get_interest(self.close_date)
-                            for p in self.payments))
-
-    def get_penalty(self):
-        if not self.pay_penalty:
-            return currency(0)
-        return currency(sum(p.get_penalty(self.close_date)
-                            for p in self.payments))
-
     def get_total_value(self):
         return currency(self.get_installment_value() +
                         self.get_penalty() +
-                        self.get_interest())
-
-    def get_payment_total_value(self, payment):
-        value = payment.value
-        if self.pay_penalty:
-            value += payment.get_penalty(self.close_date)
-        if self.pay_interest:
-            value += payment.get_interest(self.close_date)
-        return value
-
-    def calculate_paid_value(self, payments):
-        installments_number = len(payments)
-        for payment in payments:
-            payment.paid_value = self.get_payment_total_value(payment)
+                        self.get_interest() -
+                        self.discount)
 
 
 class _SaleConfirmationModel(_ConfirmationModel):
@@ -87,9 +73,30 @@ class _SaleConfirmationModel(_ConfirmationModel):
         if not isinstance(sale, Sale):
             raise TypeError("sale must be a Sale")
         _ConfirmationModel.__init__(self, payments)
-        self.calculate_paid_value(payments)
+        self.pay_penalty = True
+        self.pay_interest = True
         self._sale = sale
         self.open_date = self._sale.open_date.date()
+
+    def get_calculated_interest(self):
+        return currency(sum(p.get_interest(self.close_date)
+                            for p in self.payments))
+
+    def get_calculated_penalty(self):
+        return currency(sum(p.get_penalty(self.close_date)
+                            for p in self.payments))
+
+    def get_interest(self):
+        if not self.pay_interest:
+            return currency(0)
+
+        return self.interest
+
+    def get_penalty(self):
+        if not self.pay_penalty:
+            return currency(0)
+
+        return self.penalty
 
     def get_order_number(self):
         return self._sale.id
@@ -115,13 +122,10 @@ class _PurchaseConfirmationModel(_ConfirmationModel):
             return self._purchase.supplier.person.name
 
     def get_penalty(self):
-        return currency(0)
+        return self.penalty
 
     def get_interest(self):
-        return currency(0)
-
-    def get_payment_total_value(self, payment):
-        return currency(0)
+        return self.interest
 
 
 class _LonelyConfirmationModel(_ConfirmationModel):
@@ -141,9 +145,6 @@ class _LonelyConfirmationModel(_ConfirmationModel):
     def get_interest(self):
         return currency(0)
 
-    def get_payment_total_value(self, payment):
-        return currency(0)
-
 
 class _InstallmentConfirmationSlave(BaseEditor):
     """
@@ -155,17 +156,6 @@ class _InstallmentConfirmationSlave(BaseEditor):
     model_type = _ConfirmationModel
     size = (640, 420)
     title = _("Confirm payment")
-
-    def __init__(self, conn, payments):
-        """
-        @param conn: a database connection
-        @param payments: a list of payments
-        """
-        self._payments = payments
-        self._proxy = None
-        BaseEditor.__init__(self, conn)
-        self._setup_widgets()
-
     proxy_widgets = ('order_number',
                      'installment_value',
                      'interest',
@@ -176,6 +166,24 @@ class _InstallmentConfirmationSlave(BaseEditor):
                      'pay_penalty',
                      'pay_interest',
                      'close_date')
+
+    def __init__(self, conn, payments):
+        """
+        @param conn: a database connection
+        @param payments: a list of payments
+        """
+        self._payments = payments
+        self._proxy = None
+
+        # We're about to pay a payment, fill in all paid_values
+        # with the base value which is the initial value to be paid,
+        # it'll be updated later on based on penalty, interest and discount
+        # payment.paid_value will be updated *again* when we call
+        # payment.pay with the calculated value
+        for payment in self._payments:
+            payment.paid_value = payment.value
+        BaseEditor.__init__(self, conn)
+        self._setup_widgets()
 
     # Private
 
@@ -191,14 +199,38 @@ class _InstallmentConfirmationSlave(BaseEditor):
     def _setup_widgets(self):
         self.installments.set_columns(self._get_columns())
         self.installments.extend(self._payments)
+        self.installments_number = len(self._payments)
+        self._update_interest(pay_interest=True)
+        self._update_penalty(pay_penalty=True)
+        self._update_total_value()
+
+    def _update_interest(self, pay_interest):
+        self.interest.set_sensitive(pay_interest)
+        if pay_interest:
+            self.model.interest = self.model.get_calculated_interest()
+        else:
+            self.model.interest = currency(0)
+        self._proxy.update('interest')
+
+    def _update_penalty(self, pay_penalty):
+        self.penalty.set_sensitive(pay_penalty)
+        if pay_penalty:
+            self.model.penalty = self.model.get_calculated_penalty()
+        else:
+            self.model.penalty = currency(0)
+        self._proxy.update('penalty')
+
+    def _update_total_value(self):
+        total = self.model.penalty + self.model.interest - self.model.discount
+        value = total/self.installments_number
+        for payment in self._payments:
+            payment.paid_value = payment.value + value
+            self.installments.update(payment)
+        self._proxy.update('total_value')
 
     #
     # BaseEditorSlave hooks
     #
-
-    def create_model(self, conn):
-        return _SaleConfirmationModel(self._payments,
-                                      self._payments[0].group.get_adapted())
 
     def setup_proxies(self):
         self._proxy = self.add_proxy(
@@ -207,8 +239,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
     def on_confirm(self):
         pay_date = self.close_date.get_date()
         for payment in self._payments:
-            payment.pay(pay_date,
-                        self.model.get_payment_total_value(payment))
+            payment.pay(pay_date, payment.paid_value)
         return True
 
     #
@@ -220,25 +251,57 @@ class _InstallmentConfirmationSlave(BaseEditor):
             return ValidationError(_("Paid date must be between "
                                      "%s and today") % (self.model.open_date,))
 
+    def after_penalty__content_changed(self, proxy_entry):
+        if proxy_entry.read() == ValueUnset:
+            self.model.penalty = currency(0)
+        self._update_total_value()
+
+    def after_penalty__validate(self, entry, value):
+        if value < 0:
+            return ValidationError(_("Penalty can not be less than zero"))
+
+    def after_interest__content_changed(self, proxy_entry):
+        if proxy_entry.read() == ValueUnset:
+            self.model.interest = currency(0)
+        self._update_total_value()
+
+    def after_interest__validate(self, entry, value):
+        if value < 0:
+            return ValidationError(_("Interest can not be less than zero"))
+
+    def after_discount__content_changed(self, proxy_entry):
+        if proxy_entry.read() == ValueUnset:
+            self.model.discount = currency(0)
+        self._update_total_value()
+
+    def after_discount__validate(self, entry, value):
+        if value > self.model.get_total_value() - value:
+            return ValidationError(_("Discount can not be greater than "
+                                     "%.2f" % (self.model.get_total_value())))
+        if value < 0:
+            return ValidationError(_("Discount can not be less than zero"))
+
     def on_pay_penalty__toggled(self, toggle):
-        self.penalty.set_sensitive(toggle.get_active())
-        self.model.calculate_paid_value(self._payments)
-        self.installments.refresh()
-        self._proxy.update('total_value')
+        self._update_penalty(pay_penalty=toggle.get_active())
+        self._update_total_value()
 
     def on_pay_interest__toggled(self, toggle):
-        self.interest.set_sensitive(toggle.get_active())
-        self.model.calculate_paid_value(self._payments)
-        self.installments.refresh()
-        self._proxy.update('total_value')
+        self._update_interest(pay_interest=toggle.get_active())
+        self._update_total_value()
+
 
 class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
     model_type = _SaleConfirmationModel
 
+    def create_model(self, conn):
+        return _SaleConfirmationModel(self._payments,
+                                      self._payments[0].group.get_adapted())
+
     def on_close_date__changed(self, proxy_date_entry):
-        self._proxy.update('total_value')
         self._proxy.update('penalty')
         self._proxy.update('interest')
+        self._proxy.update('total_value')
+
 
 class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
     model_type = _ConfirmationModel
@@ -249,54 +312,9 @@ class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         self.discount.show()
         self.person_label.set_text(_("Supplier: "))
         self.expander.hide()
-        self.discount_value = currency(0)
-        self.penalty_value = currency(0)
-        self.interest_value = currency(0)
-        self.installments_number = len(self._payments)
 
         if isinstance(self.model, _LonelyConfirmationModel):
             self.details_box.hide()
-
-    def _calculate_payment(self):
-        total = self.penalty_value - self.discount_value + self.interest_value
-        value = total/self.installments_number
-        for payment in self._payments:
-            payment.value = payment.base_value + value
-            self.installments.update(payment)
-        self._proxy.update('total_value')
-
-    def _read_widget_value(self, proxy_entry):
-        try:
-            value = proxy_entry.read()
-        except ValidationError:
-            value = currency(0)
-        if value == ValueUnset:
-            value = currency(0)
-        return value
-
-    def after_discount__content_changed(self, proxy_entry):
-        self.discount_value = self._read_widget_value(proxy_entry)
-        self._calculate_payment()
-
-    def on_discount__validate(self, entry, value):
-        if value >= self._payments[0].base_value:
-            return ValidationError(_("Discount can not be greater than value"))
-
-    def after_penalty__content_changed(self, proxy_entry):
-        self.penalty_value = self._read_widget_value(proxy_entry)
-        self._calculate_payment()
-
-    def on_penalty__validate(self, entry, value):
-        if value < 0:
-            return ValidationError(_("Penalty can not be less than zero"))
-
-    def after_interest__content_changed(self, proxy_entry):
-        self.interest_value = self._read_widget_value(proxy_entry)
-        self._calculate_payment()
-
-    def on_interest__validate(self, entry, value):
-        if value < 0:
-            return ValidationError(_("Penalty can not be less than zero"))
 
     def create_model(self, conn):
         if self._payments[0].group:
