@@ -27,6 +27,7 @@
 
 import gettext
 
+import pango
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.widgets.list import Column
 from kiwi.ui.search import ComboSearchFilter
@@ -82,7 +83,8 @@ class AdminApp(SearchableAppWindow):
                        data_type=str, width=150, searchable=True),
                 ForeignKeyColumn(UserProfile, 'name', title=_('Profile'),
                                  obj_field='profile', data_type=str,
-                                 width=150, expand=True),
+                                 width=150, expand=True,
+                                 ellipsize=pango.ELLIPSIZE_END),
                 ForeignKeyColumn(Person, 'name', title=_('Name'),
                                  data_type=str, adapted=True,
                                  width=300),

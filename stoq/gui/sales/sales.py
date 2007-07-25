@@ -27,6 +27,7 @@ import gettext
 import decimal
 from datetime import date
 
+import pango
 import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
@@ -90,9 +91,11 @@ class SalesApp(SearchableAppWindow):
         return [Column('id', title=_('Number'), width=80,
                        format='%05d', data_type=int, sorted=True),
                 Column('client_name', title=_('Client'),
-                       data_type=str, width=140, expand=True),
+                       data_type=str, width=140, expand=True,
+                       ellipsize=pango.ELLIPSIZE_END),
                 Column('salesperson_name', title=_('Salesperson'),
-                       data_type=str, width=130),
+                       data_type=str, width=130,
+                       ellipsize=pango.ELLIPSIZE_END),
                 Column('total_quantity', title=_('Items Quantity'),
                        data_type=decimal.Decimal, width=140,
                        format_func=format_quantity),

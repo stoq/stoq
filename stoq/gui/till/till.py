@@ -29,6 +29,7 @@ import gettext
 import decimal
 from datetime import date
 
+import pango
 import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.log import Logger
@@ -112,9 +113,11 @@ class TillApp(SearchableAppWindow):
                 Column('open_date', title=_('Date Started'), width=120,
                        data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 Column('client_name', title=_('Client'),
-                       data_type=str, width=160, expand=True),
+                       data_type=str, width=160, expand=True,
+                       ellipsize=pango.ELLIPSIZE_END),
                 Column('salesperson_name', title=_('Salesperson'),
-                       data_type=str, width=160),
+                       data_type=str, width=160,
+                       ellipsize=pango.ELLIPSIZE_END),
                 Column('total_quantity', title=_('Quantity'),
                        data_type=decimal.Decimal, width=100,
                        format_func=format_quantity),
