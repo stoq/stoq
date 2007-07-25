@@ -389,8 +389,8 @@ class PurchaseOrder(ValidatableDomain):
         Get the subtotal of the purchase.
         The sum of all the items cost * items quantity
         """
-        return currency(self.get_items().sum(PurchaseItem.q.cost *
-                                             PurchaseItem.q.quantity))
+        return currency(self.get_items().sum(
+            PurchaseItem.q.cost *PurchaseItem.q.quantity) or 0)
 
     def get_purchase_total(self):
         subtotal = self.get_purchase_subtotal()
@@ -404,8 +404,9 @@ class PurchaseOrder(ValidatableDomain):
         Like {get_purchase_subtotal} but only takes into account the
         received items
         """
-        return currency(self.get_items().sum(PurchaseItem.q.cost *
-                                             PurchaseItem.q.quantity_received))
+        return currency(self.get_items().sum(
+            PurchaseItem.q.cost *
+            PurchaseItem.q.quantity_received) or 0)
 
     def get_remaining_total(self):
         """
