@@ -87,6 +87,27 @@ class ReceivingOrderItem(Domain):
         unit = self.sellable.unit
         return "%s" % (unit and unit.description or "")
 
+    def add_stock_items(self):
+        """
+        This is normally called from ReceivingOrder when
+        a the receving order is confirmed.
+        """
+        conn = self.get_connection()
+        if self.quantity > self.get_remaining_quantity():
+            raise ValueError(
+                "Quantity received (%d) is greater than "
+                "quantity ordered (%d)" % (
+                self.quantity,
+                self.get_remaining_quantity()))
+
+        branch = self.receiving_order.branch
+        storable = IStorable(self.sellable.get_adapted(), None)
+        if not storable is None:
+            storable.increase_stock(self.quantity, branch)
+        purchase = self.purchase_item.order
+        purchase.increase_quantity_received(self.sellable, self.quantity)
+        ProductHistory.add_received_item(conn, branch, self)
+
 
 class ReceivingOrder(ValidatableDomain):
     """Receiving order definition.
@@ -140,21 +161,8 @@ class ReceivingOrder(ValidatableDomain):
         Domain._create(self, id, **kw)
 
     def confirm(self):
-        conn = self.get_connection()
-        # Stock management
         for item in self.get_items():
-            if item.quantity > item.get_remaining_quantity():
-                raise ValueError(
-                    "Quantity received (%d) is greater than "
-                    "quantity ordered (%d)" % (
-                        item.quantity,
-                        item.get_remaining_quantity()))
-            storable = IStorable(item.sellable.get_adapted(), None)
-            if not storable is None:
-                storable.increase_stock(item.quantity, self.branch)
-            self.purchase.increase_quantity_received(item.sellable,
-                                                     item.quantity)
-            ProductHistory.add_received_item(conn, self.branch, item)
+            item.add_stock_items()
 
         group = IPaymentGroup(self.purchase)
         group.create_icmsipi_book_entry(self.cfop, self.invoice_number,
@@ -308,7 +316,7 @@ class ReceivingOrder(ValidatableDomain):
         return quantize(percentage)
 
     surcharge_percentage = property(_get_surcharge_by_percentage,
-                                 _set_surcharge_by_percentage)
+                                    _set_surcharge_by_percentage)
 
 @argcheck(PurchaseOrder, ReceivingOrder)
 def get_receiving_items_by_purchase_order(purchase_order, receiving_order):
