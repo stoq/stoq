@@ -26,6 +26,7 @@
 
 import datetime
 
+import pango
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
@@ -34,7 +35,7 @@ from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.printing import print_report
-from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.reporting.purchase import PurchaseOrderReport
 
@@ -76,7 +77,7 @@ class PurchaseDetailsDialog(BaseEditor):
 
         received_label = '<b>%s</b>' % _('Total Received:')
         received_summary_label = SummaryLabel(klist=self.received_items,
-                                              column='received_total',
+                                              column='total_received',
                                               label=received_label,
                                               value_format=value_format)
         received_summary_label.show()
@@ -86,19 +87,21 @@ class PurchaseDetailsDialog(BaseEditor):
         self.ordered_items.set_columns(self._get_ordered_columns())
         self.received_items.set_columns(self._get_received_columns())
 
-        self.ordered_items.add_list(self.model.get_items())
-        self.received_items.add_list(self.model.get_partially_received_items())
+        purchase_items = PurchaseItemView.select_by_purchase(
+            self.model, self.conn)
+        self.ordered_items.add_list(purchase_items)
+        self.received_items.add_list(purchase_items)
 
         self.payments_list.set_columns(self._get_payments_columns())
         group = IPaymentGroup(self.model)
         self.payments_list.add_list(group.get_items())
-
         self._setup_summary_labels()
 
     def _get_ordered_columns(self):
-        return [Column('sellable.base_sellable_info.description',
+        return [Column('description',
                        title=_('Description'),
-                       data_type=str, expand=True, searchable=True),
+                       data_type=str, expand=True, searchable=True,
+                       ellipsize=pango.ELLIPSIZE_END),
                 Column('quantity_as_string', title=_('Quantity'),
                        data_type=str, width=90, editable=True,
                        justify=gtk.JUSTIFY_RIGHT),
@@ -108,25 +111,25 @@ class PurchaseDetailsDialog(BaseEditor):
                        width=100)]
 
     def _get_received_columns(self):
-        return [Column('sellable.base_sellable_info.description',
+        return [Column('description',
                        title=_('Description'),
-                       data_type=str, expand=True, searchable=True),
+                       data_type=str, expand=True, searchable=True,
+                       ellipsize=pango.ELLIPSIZE_END),
                 Column('quantity_received_as_string',
                        title=_('Quantity Received'),
                        data_type=str, width=150, editable=True,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('cost', title=_('Cost'), data_type=currency,
                        editable=True, width=90),
-                Column('received_total', title=_('Total'),
+                Column('total_received', title=_('Total'),
                        data_type=currency, width=100)]
 
     def _get_payments_columns(self):
         return [Column('id', "#", data_type=int, width=50,
                        format='%04d', justify=gtk.JUSTIFY_RIGHT),
-                Column('method.description', _("Type"),
-                       data_type=str, width=60),
                 Column('description', _("Description"), data_type=str,
-                       width=150, expand=True),
+                       width=150, expand=True,
+                       ellipsize=pango.ELLIPSIZE_END),
                 Column('due_date', _("Due Date"), sorted=True,
                        data_type=datetime.date, width=90,
                        justify=gtk.JUSTIFY_RIGHT),
