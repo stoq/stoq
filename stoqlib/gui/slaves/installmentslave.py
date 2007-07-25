@@ -256,7 +256,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
             self.model.penalty = currency(0)
         self._update_total_value()
 
-    def after_penalty__validate(self, entry, value):
+    def on_penalty__validate(self, entry, value):
         if value < 0:
             return ValidationError(_("Penalty can not be less than zero"))
 
@@ -265,7 +265,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
             self.model.interest = currency(0)
         self._update_total_value()
 
-    def after_interest__validate(self, entry, value):
+    def on_interest__validate(self, entry, value):
         if value < 0:
             return ValidationError(_("Interest can not be less than zero"))
 
@@ -274,10 +274,11 @@ class _InstallmentConfirmationSlave(BaseEditor):
             self.model.discount = currency(0)
         self._update_total_value()
 
-    def after_discount__validate(self, entry, value):
-        if value > self.model.get_total_value() - value:
-            return ValidationError(_("Discount can not be greater than "
-                                     "%.2f" % (self.model.get_total_value())))
+    def on_discount__validate(self, entry, value):
+        total = self.model.get_installment_value()
+        if value >= total:
+            return ValidationError(_("Discount can not be greater or "
+                                     "equal than %.2f" % (total,)))
         if value < 0:
             return ValidationError(_("Discount can not be less than zero"))
 
