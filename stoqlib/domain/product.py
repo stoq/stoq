@@ -314,6 +314,12 @@ class ProductAdaptToStorable(ModelAdapter):
             raise ValueError("quantity must be a positive number")
 
         stock_item = self.get_stock_item(branch)
+        if stock_item is None:
+            # FIXME: set stock_cost/logic_quantity
+            stock_item = ProductStockItem(
+                storable=self,
+                branch=branch,
+                connection=self.get_connection())
         stock_item.quantity += quantity
 
         # FIXME: We should only need to mark the sellable facet as sellable when
