@@ -48,7 +48,6 @@ class StationEditor(BaseEditor):
         if model and get_current_station(conn) == model:
             self.name.set_sensitive(False)
             self.is_active.set_sensitive(False)
-            self.branch.set_sensitive(False)
 
         self.set_description(self.model.name)
 
@@ -62,7 +61,7 @@ class StationEditor(BaseEditor):
         # FIXME: Implement and use IDescribable on PersonAdaptToBranch
         for branch in Person.iselect(IBranch, connection=self.conn):
             statuses.append((branch.person.name, branch))
-        self.branch.prefill(statuses)
+        self.branch.prefill(sorted(statuses))
 
         self.add_proxy(self.model, StationEditor.proxy_widgets)
         if not self.edit_mode:
