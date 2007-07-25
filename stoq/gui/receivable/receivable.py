@@ -31,6 +31,7 @@ stoq/gui/receivable/receivable.py:
 import datetime
 import gettext
 
+import pango
 import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
@@ -125,9 +126,10 @@ class ReceivableApp(SearchableAppWindow):
         return [Column('id', title=_('#'), width=46,
                        data_type=int, sorted=True, format='%04d'),
                 Column('description', title=_('Description'), width=190,
-                       data_type=str, expand=True),
+                       data_type=str, expand=True,
+                       ellipsize=pango.ELLIPSIZE_END),
                 Column('drawee', title=_('Drawee'), data_type=str,
-                       width=170),
+                       width=170, ellipsize=pango.ELLIPSIZE_END),
                 Column('due_date', title=_('Due Date'),
                        data_type=datetime.date, width=90),
                 Column('paid_date', title=_('Paid Date'),

@@ -29,6 +29,7 @@
 import gettext
 from decimal import Decimal
 
+import pango
 import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.argcheck import argcheck
@@ -99,6 +100,56 @@ class POSApp(AppWindow):
         self._setup_proxies()
         self._clear_order()
         self._update_widgets()
+
+    #
+    # AppWindow Hooks
+    #
+
+    def setup_focus(self):
+        # Setting up the widget groups
+        self.main_vbox.set_focus_chain([self.order_details_hbox,
+                                        self.pos_vbox])
+
+        self.pos_vbox.set_focus_chain([self.list_header_hbox, self.list_vbox])
+        self.list_vbox.set_focus_chain([self.footer_hbox])
+        self.footer_hbox.set_focus_chain([self.toolbar_vbox])
+
+        # Setting up the toolbar area
+        self.toolbar_vbox.set_focus_chain([self.toolbar_button_box])
+        self.toolbar_button_box.set_focus_chain([self.remove_item_button,
+                                                 self.delivery_button,
+                                                 self.checkout_button])
+
+        # Setting up the barcode area
+        self.list_header_hbox.set_focus_chain([self.search_box,
+                                               self.stoq_logo])
+        self.item_hbox.set_focus_chain([self.barcode, self.quantity,
+                                        self.item_button_box])
+        self.item_button_box.set_focus_chain([self.barcode, self.quantity,
+                                              self.add_button,
+                                              self.advanced_search])
+
+    def get_columns(self):
+        return [Column('sellable.code', title=_('Reference'), sorted=True,
+                       data_type=int, width=95, justify=gtk.JUSTIFY_RIGHT,
+                       format='%05d'),
+                Column('sellable.base_sellable_info.description',
+                       title=_('Description'), data_type=str, expand=True,
+                       searchable=True, ellipsize=pango.ELLIPSIZE_END),
+                Column('price', title=_('Price'), data_type=currency,
+                       width=110, justify=gtk.JUSTIFY_RIGHT),
+                Column('quantity', title=_('Quantity'), data_type=Decimal,
+                       width=110, format_func=format_quantity,
+                       justify=gtk.JUSTIFY_RIGHT),
+                Column('sellable.unit_description', title=_('Unit'),
+                       data_type=str, width=70,
+                       ellipsize=pango.ELLIPSIZE_END),
+                Column('total', title=_('Total'), data_type=currency,
+                       justify=gtk.JUSTIFY_RIGHT, width=100)]
+
+    #
+    # Private
+    #
 
     def _set_product_on_sale(self):
         sellable = self._get_sellable()
@@ -502,51 +553,6 @@ class POSApp(AppWindow):
             return
 
         self._coupon.remove_item(sale_item)
-
-    #
-    # AppWindow Hooks
-    #
-
-    def setup_focus(self):
-        # Setting up the widget groups
-        self.main_vbox.set_focus_chain([self.order_details_hbox,
-                                        self.pos_vbox])
-
-        self.pos_vbox.set_focus_chain([self.list_header_hbox, self.list_vbox])
-        self.list_vbox.set_focus_chain([self.footer_hbox])
-        self.footer_hbox.set_focus_chain([self.toolbar_vbox])
-
-        # Setting up the toolbar area
-        self.toolbar_vbox.set_focus_chain([self.toolbar_button_box])
-        self.toolbar_button_box.set_focus_chain([self.remove_item_button,
-                                                 self.delivery_button,
-                                                 self.checkout_button])
-
-        # Setting up the barcode area
-        self.list_header_hbox.set_focus_chain([self.search_box,
-                                               self.stoq_logo])
-        self.item_hbox.set_focus_chain([self.barcode, self.quantity,
-                                        self.item_button_box])
-        self.item_button_box.set_focus_chain([self.barcode, self.quantity,
-                                              self.add_button,
-                                              self.advanced_search])
-
-    def get_columns(self):
-        return [Column('sellable.code', title=_('Reference'), sorted=True,
-                       data_type=int, width=95, justify=gtk.JUSTIFY_RIGHT,
-                       format='%05d'),
-                Column('sellable.base_sellable_info.description',
-                       title=_('Description'), data_type=str, expand=True,
-                       searchable=True),
-                Column('price', title=_('Price'), data_type=currency,
-                       width=110, justify=gtk.JUSTIFY_RIGHT),
-                Column('quantity', title=_('Quantity'), data_type=Decimal,
-                       width=110, format_func=format_quantity,
-                       justify=gtk.JUSTIFY_RIGHT),
-                Column('sellable.unit_description', title=_('Unit'),
-                       data_type=str, width=70),
-                Column('total', title=_('Total'), data_type=currency,
-                       justify=gtk.JUSTIFY_RIGHT, width=100)]
 
     #
     # Actions
