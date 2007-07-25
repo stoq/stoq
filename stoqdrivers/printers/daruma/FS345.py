@@ -256,7 +256,7 @@ class FS345(SerialBase):
             raise DriverError(
                 "Reduce Z was already sent today, try again tomorrow", error)
         elif error == 23:
-            raise DriverError("Bad description: %r" % raw, error)
+            raise PendingReduceZ
         elif error == 24:
             raise DriverError("Bad unit specified: %r" % raw, error)
         elif error == 42:
