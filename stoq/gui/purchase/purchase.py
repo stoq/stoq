@@ -27,6 +27,7 @@
 
 import gettext
 import datetime
+from decimal import Decimal
 
 import pango
 import gtk
@@ -89,10 +90,10 @@ class PurchaseApp(SearchableAppWindow):
                        data_type=str, searchable=True, width=200,
                        expand=True, ellipsize=pango.ELLIPSIZE_END),
                 Column('ordered_quantity', title=_('Ordered'),
-                       data_type=str, width=80, justify=gtk.JUSTIFY_RIGHT,
+                       data_type=Decimal, width=80,
                        format_func=format_quantity),
                 Column('received_quantity', title=_('Received'),
-                       data_type=str, width=80, justify=gtk.JUSTIFY_RIGHT,
+                       data_type=Decimal, width=80,
                        format_func=format_quantity),
                 Column('total', title=_('Total'),
                        data_type=currency, width=110)]
