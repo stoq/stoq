@@ -860,9 +860,9 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         for item in self.sale.products:
             price = item.price + av_difference
             sellable = item.sellable
-            if sellable.tax_constant.tax_type != TaxType.CUSTOM:
-                continue
             tax_constant = sellable.get_tax_constant()
+            if tax_constant is None or tax_constant.tax_type != TaxType.CUSTOM:
+                continue
             icms_tax = tax_constant.tax_value / Decimal(100)
             icms_total += icms_tax * (price * item.quantity)
 
