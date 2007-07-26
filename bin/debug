@@ -30,6 +30,11 @@ import datetime
 import socket
 import sys
 
+try:
+    import pkg_resources
+except ImportError:
+    pass
+
 from kiwi.component import provide_utility, get_utility
 from stoqlib.database.admin import get_admin_user
 from stoqlib.database.interfaces import ICurrentUser, IDatabaseSettings

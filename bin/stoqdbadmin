@@ -27,6 +27,11 @@
 import optparse
 import sys
 
+try:
+    import pkg_resources
+except ImportError:
+    pass
+
 import stoqlib
 stoqlib # pyflakes
 

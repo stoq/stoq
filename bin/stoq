@@ -64,6 +64,11 @@ else:
 
 sys.path.insert(0, pythondir)
 
+try:
+    import pkg_resources
+except ImportError:
+    pass
+
 import stoqlib
 from stoq import main
 
