@@ -1,7 +1,7 @@
 -- #3071: Implementar Interface para consulta de comissões.
 
 -- Add column total_amount in sale table
-ALTER TABLE sale ADD COLUMN total_amount numeric(10, 2) NOT NULL
+ALTER TABLE sale ADD COLUMN total_amount numeric(10, 2)
     CONSTRAINT positive_total_amount CHECK (total_amount >= 0);
 
 UPDATE sale
