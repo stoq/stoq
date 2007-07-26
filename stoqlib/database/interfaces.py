@@ -75,10 +75,10 @@ class ITransaction(IConnection):
         @returns: a reference to the same object within the transaction
         """
 
-    def add_object(object):
+    def add_modified_object(object):
         """
-        Adds an object to the transaction.
-        It's used by TransactionEntry to keep a log of all modified object
+        Adds a modified object to the transaction.
+        It's used to update TransactionEntry to keep a log of all modified object
         @param object: A SQLObject subclass which should be marked as modified
         """
 

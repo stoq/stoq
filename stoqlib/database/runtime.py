@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source
+## Copyright (C) 2005-2007 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -24,7 +24,6 @@
 ##
 """ Runtime routines for applications"""
 
-import datetime
 import sys
 
 from kiwi.component import get_utility, provide_utility, implements
@@ -32,7 +31,7 @@ from kiwi.log import Logger
 from sqlobject.dbconnection import Transaction
 from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.main import SQLObject
-from sqlobject.sqlbuilder import sqlIdentifier
+from sqlobject.sqlbuilder import sqlIdentifier, const, Update, IN
 
 from stoqlib.database.interfaces import (
     IDatabaseSettings, IConnection, ITransaction, ICurrentBranch,
@@ -52,32 +51,43 @@ class StoqlibTransaction(Transaction):
     implements(ITransaction)
 
     def __init__(self, *args, **kwargs):
-        self._modified_object_sets = [set()]
+        self._modified_object_sets = [dict()]
         self._savepoints = []
         Transaction.__init__(self, *args, **kwargs)
 
-    def add_object(self, obj):
-        objset = self._modified_object_sets[-1]
-        objset.add(obj)
+    def _reset_modified(self):
+        self._modified_object_sets = [dict()]
+
+    def _update_transaction_entry(self):
+        fields = dict(te_time=const.NOW())
+        user = get_current_user(self)
+        if user:
+            fields['user_id'] = user.id
+
+        station = get_current_station(self)
+        if station is not None:
+            fields['station_id'] = station.id
+
+        for objdicts in self._modified_object_sets:
+            for table, modified_te_objs in objdicts.iteritems():
+                modified_obj_ids = [m.id for m in modified_te_objs]
+                sql = Update('transaction_entry', fields,
+                             where=IN(const.id, modified_obj_ids))
+                self.query(self.sqlrepr(sql))
+
+                # We changed the object behind SQLObjects back, sync them
+                for modified_te in modified_te_objs:
+                    modified_te.sync()
+
+    def add_modified_object(self, obj):
+        objdict = self._modified_object_sets[-1]
+        objset = objdict.setdefault(type(obj), set())
+        objset.add(obj.te_modified)
 
     def commit(self, close=False):
-        user = get_current_user(self)
-        station = get_current_station(self)
-
-        for objset in self._modified_object_sets:
-            for obj in objset:
-                # FIXME: Figure out when this is needed
-                if obj.sqlmeta._obsolete:
-                    continue
-
-                obj.te_modified.te_time = datetime.datetime.now()
-                if user is not None:
-                    obj.te_modified.user_id = user.id
-                if station is not None:
-                    obj.te_modified.station_id = station.id
-        self._modified_object_sets = [set()]
-
+        self._update_transaction_entry()
         Transaction.commit(self, close=close)
+        self._reset_modified()
 
     def rollback(self, name=None):
         if name:
@@ -86,7 +96,7 @@ class StoqlibTransaction(Transaction):
             # FIXME: SQLObject is busted, this is called from __del__
             if Transaction is not None:
                 Transaction.rollback(self)
-            self._modified_object_sets = [set()]
+            self._reset_modified()
 
     def close(self):
         self._connection.close()
@@ -106,7 +116,7 @@ class StoqlibTransaction(Transaction):
         if not sqlIdentifier(name):
             raise ValueError("Invalid savepoint name: %r" % name)
         self.query('SAVEPOINT %s' % name)
-        self._modified_object_sets.append(set())
+        self._modified_object_sets.append(dict())
         if not name in self._savepoints:
             self._savepoints.append(name)
 

@@ -43,10 +43,10 @@ class TestTransaction(DomainTest):
         person = Person(name='dummy', connection=self.trans)
         created = datetime.datetime.now()
 
+        self.trans.commit()
         self.assertEqual(person.te_created.te_time,
                          person.te_modified.te_time)
 
-        self.trans.commit()
         person.name = NAME
         self.trans.commit()
 
