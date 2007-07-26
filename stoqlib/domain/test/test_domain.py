@@ -109,6 +109,8 @@ def _create_domain_test():
         'ProductAdaptToSellable' : '',
         'ServiceAdaptToSellable' : '',
         'PurchaseOrderAdaptToPaymentGroup': '',
+        'CommissionSource': '',
+        'Commission': '',
         }
 
     namespace = dict(_test_domain=_test_domain)
