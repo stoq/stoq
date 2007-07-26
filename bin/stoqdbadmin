@@ -104,8 +104,8 @@ class StoqCommandHandler:
             create(utilities=True)
         else:
             # If we don't create examples, create a Test Branch
-
             from stoqlib.database.admin import create_main_branch
+            from stoqlib.database.runtime import new_transaction
             trans = new_transaction()
             create_main_branch(trans, "Main Branch")
             trans.close()
