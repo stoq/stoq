@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -24,15 +24,13 @@
 ##
 """ Base routines for domain modules """
 
-import datetime
-
 from kiwi.component import get_utility
 from sqlobject import SQLObject
 from sqlobject import ForeignKey, BoolCol
 from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.dbconnection import DBAPI, Transaction
 from sqlobject.converters import sqlrepr
-from sqlobject.sqlbuilder import SQLExpression, AND
+from sqlobject.sqlbuilder import SQLExpression, AND, const
 from zope.interface.interface import adapter_hooks
 
 from stoqlib.database.interfaces import IDatabaseSettings
@@ -135,7 +133,7 @@ class AbstractModel(object):
         user = get_current_user(conn)
         station = get_current_station(conn)
 
-        timestamp = datetime.datetime.now()
+        timestamp = const.NOW()
         for entry, entry_type in [('te_created', TransactionEntry.CREATED),
                                   ('te_modified', TransactionEntry.MODIFIED)]:
             kwargs[entry] = TransactionEntry(
@@ -145,17 +143,6 @@ class AbstractModel(object):
                 type=entry_type,
                 connection=conn)
         super(AbstractModel, self)._create(*args, **kwargs)
-
-    def _init(self, *args, **kwargs):
-        # _init is called when an object is created OR fetched from the
-        # database.
-        # We're overriding here because we want to keep track of all objects
-        # inside a transaction
-        super(AbstractModel, self)._init(*args, **kwargs)
-
-        conn = self.get_connection()
-        if isinstance(conn, StoqlibTransaction):
-            conn.add_object(self)
 
     @classmethod
     def select(cls, clause=None, connection=None, **kwargs):
@@ -204,6 +191,13 @@ class AbstractModel(object):
         return super(AbstractModel, cls).selectOneBy(connection=connection,
                                                      **kw)
 
+    def _SO_setValue(self, name, value, from_, to):
+        super(AbstractModel, self)._SO_setValue(name, value, from_, to)
+
+        if not self.sqlmeta._creating:
+            connection = self._connection
+            if isinstance(connection, StoqlibTransaction):
+                connection.add_modified_object(self)
 
     #
     # Classmethods
@@ -256,7 +250,6 @@ class AbstractModel(object):
 
 class BaseDomain(AbstractModel, SQLObject):
     """An abstract mixin class for domain classes"""
-
 
 
 #
