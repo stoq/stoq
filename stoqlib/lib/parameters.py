@@ -439,6 +439,18 @@ class ParameterAccess(ClassInittableObject):
         log.info("Clearing cache")
         ParameterAccess._cache = {}
 
+    def get_parameter_type(self, field_name):
+        for constant in ParameterAccess.constants:
+            if constant.key == field_name:
+                break
+        else:
+            raise KeyError("No such a parameter: %s" % (field_name,))
+
+        if isinstance(constant.type, basestring):
+            return namedAny('stoqlib.domain.' + constant.type)
+        else:
+            return constant.type
+
     def get_parameter_by_field(self, field_name, field_type):
         from stoqlib.domain.base import AbstractModel
         if isinstance(field_type, unicode):
