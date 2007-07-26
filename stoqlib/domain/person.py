@@ -880,6 +880,14 @@ class ClientView(Viewable):
         return PersonAdaptToClient.get(self.client_id,
                                        connection=self._connection)
 
+    @classmethod
+    def get_active_clients(cls, conn):
+        """Return a list of active clients.
+        An active client is a person who are authorized to make new sales
+        """
+        return cls.select(cls.q.status == PersonAdaptToClient.STATUS_SOLVENT,
+                          connection=conn)
+
 
 class EmployeeView(Viewable):
     columns = dict(
@@ -905,6 +913,7 @@ class EmployeeView(Viewable):
     def employee(self):
         return PersonAdaptToEmployee.get(self.employee_id,
                                          connection=self.get_connection())
+
 
 class SupplierView(Viewable):
     columns = dict(
