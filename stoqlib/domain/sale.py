@@ -128,7 +128,7 @@ class SaleItem(Domain):
             # this product and we need to set it as sold.
             logic_qty = storable.get_logic_balance()
             balance = storable.get_full_balance() - logic_qty
-            if balance:
+            if not balance:
                 # This marks the sellable as not available, eg. out of stock
                 # FIXME: rename sell() to something more useful which is not
                 #        confusing a sale and a sellable
