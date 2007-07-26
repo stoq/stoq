@@ -30,9 +30,8 @@ from stoqlib.database.runtime import (get_current_user,
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import (IClient, ISalesPerson, IIndividual,
-                                       ICompany)
+from stoqlib.domain.person import  ClientView
+from stoqlib.domain.interfaces import ISalesPerson, IIndividual, ICompany
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -54,11 +53,10 @@ class NewOrderEditor(BaseEditor):
                      'individual_role_button')
 
     def _setup_client_entry(self):
-        client_table = Person.getAdapterClass(IClient)
-        clients = client_table.get_active_clients(self.conn)
+        clients = ClientView.get_active_clients(self.conn)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         clients = clients[:max_results]
-        items = [(c.person.name, c) for c in clients]
+        items = [(c.name, c.client) for c in clients]
         self.client.prefill(items)
 
     def _setup_widgets(self):
