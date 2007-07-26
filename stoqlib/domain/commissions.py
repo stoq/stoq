@@ -88,8 +88,8 @@ class Commission(Domain):
     sale = ForeignKey('Sale')
     payment = ForeignKey('Payment')
 
-    def __init__(self, *args, **kwargs):
-        Domain.__init__(self, *args, **kwargs)
+    def _init(self, *args, **kwargs):
+        Domain._init(self, *args, **kwargs)
         self._calculate_value()
 
     def _calculate_value(self):

@@ -271,6 +271,7 @@ class Sale(ValidatableDomain):
     @ivar return_date: the date sale was returned
     @ivar discount_value:
     @ivar surcharge_value:
+    @ivar total_amount: the total sale amount
     @ivar notes: Some optional additional information related to this sale.
     @ivar client_role: This field indicates what client role is tied with
        the sale order. This is important since a client can have two roles
@@ -318,6 +319,7 @@ class Sale(ValidatableDomain):
     service_invoice_number = IntCol(default=None)
     client_role = IntCol(default=None)
     cfop = ForeignKey("CfopData")
+    total_amount = PriceCol(default=0)
 
     #
     # SQLObject hooks
@@ -419,6 +421,8 @@ class Sale(ValidatableDomain):
         assert self.branch
 
         conn = self.get_connection()
+
+        self.total_amount = self.get_total_sale_amount()
 
         # FIXME: We should use self.branch, but it's not supported yet
         branch = get_current_branch(conn)
