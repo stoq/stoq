@@ -1246,6 +1246,7 @@ class SQLObject(object):
 
         # Then we finalize the process:
         self._SO_finishCreate(id)
+        self.sqlmeta._creating = False
 
     def _SO_finishCreate(self, id=None):
         # Here's where an INSERT is finalized.
