@@ -162,7 +162,6 @@ class SellableSearch(SearchEditor):
 
         if self._delivery_service :
             queries.append(AND(
-                SellableFullStockView.q.status == ASellable.STATUS_AVAILABLE,
                 SellableFullStockView.q.id != self._delivery_service.id))
         # If we select a quantity which is not an integer, filter out
         # sellables without a unit set
