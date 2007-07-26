@@ -38,10 +38,11 @@ from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
 from stoqdrivers.enum import UnitType
 from stoqlib.database.runtime import (new_transaction, get_current_user,
-                                      rollback_and_begin, finish_transaction)
+                                      rollback_and_begin, finish_transaction,
+                                      get_current_branch)
 from stoqlib.domain.interfaces import IDelivery, ISalesPerson, IPaymentGroup
 from stoqlib.domain.devices import DeviceSettings
-from stoqlib.domain.product import Product, ProductAdaptToSellable
+from stoqlib.domain.product import Product, ProductAdaptToSellable, IStorable
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.service import Service
@@ -325,8 +326,8 @@ class POSApp(AppWindow):
             self._run_advanced_search(search_str)
             return
 
+        adapted = sellable.get_adapted()
         if isinstance(sellable, self._product_table):
-            adapted = sellable.get_adapted()
             # If the sellable has a weight unit specified and we have a scale
             # configured for this station, go and check what the scale says.
             if (sellable and sellable.unit and
@@ -334,8 +335,25 @@ class POSApp(AppWindow):
                 self._scale_settings):
                 self._read_scale(sellable)
 
+        storable = IStorable(adapted, None)
+        if storable:
+            if not self._check_available_stock(storable, sellable):
+                info(_("You cannot sell more items of product %s, "
+                       "it's out of stock." % (sellable.get_description())))
+                self.barcode.set_text('')
+                self.barcode.grab_focus()
+                return
+
         self._update_list(sellable, notify_on_entry=True)
         self.barcode.grab_focus()
+
+    def _check_available_stock(self, storable, sellable):
+        branch = get_current_branch(self.conn)
+        available = storable.get_full_balance(branch)
+        added = len([sale_item
+                     for sale_item in self.sellables
+                         if sale_item.sellable == sellable])
+        return available - added > 0
 
     def _clear_order(self):
         log.info("Clearing order")
