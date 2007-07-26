@@ -35,6 +35,7 @@ from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.domain.sale import Sale, SaleView
+from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
@@ -189,6 +190,9 @@ class SalesApp(SearchableAppWindow):
     def _on_products_action__clicked(self, button):
         self.run_dialog(ProductSearch, self.conn, hide_footer=True,
                         hide_toolbar=True)
+
+    def _on_commission_action__clicked(self, button):
+        self.run_dialog(CommissionSearch, self.conn)
 
     def _on_gift_certificates_action_clicked(self, button):
         self.run_dialog(GiftCertificateSearch, self.conn)
