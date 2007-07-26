@@ -116,7 +116,7 @@ class SystemParameterEditor(BaseEditor):
     def setup_slaves(self):
         self._slave = None
         data = getattr(sysparam(self.conn), self.model.field_name)
-        if isinstance(data, AbstractModel):
+        if isinstance(data, AbstractModel) or data is None:
             self._setup_comboboxentry_slave()
         elif isinstance(data, bool):
             self._setup_radio_slave()
@@ -124,8 +124,6 @@ class SystemParameterEditor(BaseEditor):
             self._setup_entry_slave()
         elif isinstance(data, unicode):
             self._setup_entry_slave()
-        elif data is None:
-            pass
         else:
             raise TypeError("ParameterData for `%s' has an invalid "
                             "type: %r" % (self.model.field_name, data))
