@@ -104,7 +104,9 @@ class SellableSearch(SearchEditor):
                                 "when supplying an order")
             for item in order.get_items():
                 if IStorable(item.sellable.get_adapted(), None):
-                    self.current_sale_stock[item.sellable.id] = item.quantity
+                    quantity = self.current_sale_stock.get(item.sellable.id, 0)
+                    quantity += item.quantity
+                    self.current_sale_stock[item.sellable.id] = quantity
 
     #
     # Hooks
