@@ -551,8 +551,18 @@ class Update(SQLExpression):
                 else:
                     update += ","
                 update += " %s=%s" % (key, sqlrepr(value, db))
+
+        tables = {}
         if self.whereClause is not NoDefault:
+            if isinstance(self.whereClause, SQLExpression):
+                tables.update(tablesUsedDict(self.whereClause))
+
+            tables = tables.keys()
+            if tables:
+                update += " FROM %s" % ", ".join(tables)
+
             update += " WHERE %s" % sqlrepr(self.whereClause, db)
+
         return update
     def sqlName(self):
         return "UPDATE"
