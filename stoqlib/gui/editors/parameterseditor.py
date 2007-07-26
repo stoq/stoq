@@ -68,8 +68,8 @@ class SystemParameterEditor(BaseEditor):
         widget = ProxyComboEntry()
         widget.model_attribute = "field_value"
         widget.data_type = unicode
-        table = type(getattr(sysparam(self.conn), self.model.field_name))
-        result = table.select(connection=self.conn)
+        field_type = sysparam(self.conn).get_parameter_type(self.model.field_name)
+        result = field_type.select(connection=self.conn)
         data = [(res.get_description(), str(res.id)) for res in result]
         widget.prefill(data)
         self.proxy.add_widget("field_value", widget)
@@ -115,15 +115,16 @@ class SystemParameterEditor(BaseEditor):
 
     def setup_slaves(self):
         self._slave = None
-        data = getattr(sysparam(self.conn), self.model.field_name)
-        if isinstance(data, AbstractModel) or data is None:
+        field_type = sysparam(self.conn).get_parameter_type(self.model.field_name)
+        if issubclass(field_type, AbstractModel):
             self._setup_comboboxentry_slave()
-        elif isinstance(data, bool):
+        elif issubclass(field_type, bool):
             self._setup_radio_slave()
-        elif isinstance(data, (int, float)):
+        elif issubclass(field_type, (int, float)):
             self._setup_entry_slave()
-        elif isinstance(data, unicode):
+        elif issubclass(field_type, unicode):
             self._setup_entry_slave()
         else:
             raise TypeError("ParameterData for `%s' has an invalid "
-                            "type: %r" % (self.model.field_name, data))
+                            "type: %r" % (self.model.field_name,
+                                          field_type))
