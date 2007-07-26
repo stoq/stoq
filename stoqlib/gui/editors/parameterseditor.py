@@ -124,6 +124,8 @@ class SystemParameterEditor(BaseEditor):
             self._setup_entry_slave()
         elif isinstance(data, unicode):
             self._setup_entry_slave()
+        elif data is None:
+            pass
         else:
             raise TypeError("ParameterData for `%s' has an invalid "
                             "type: %r" % (self.model.field_name, data))
