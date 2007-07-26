@@ -274,7 +274,9 @@ class SintegraRegister(object):
         total = 0
         self._values = {}
         for (name, length, argtype), arg in zip(self.sintegra_fields, args):
-            if not isinstance(arg, argtype):
+            if arg is None:
+                pass
+            elif not isinstance(arg, argtype):
                 raise TypeError(
                     "argument %s should be of type %s but got %s" % (
                     name, argtype_name(argtype), type(arg).__name__))
@@ -310,6 +312,9 @@ class SintegraRegister(object):
     # Private
 
     def _arg_to_string(self, value, length, argtype):
+        if value is None:
+            return ' '  * length
+
         if argtype == number:
             # If a value is higher the the maximum allowed,
             # set it to the maximum allowed value instead.
