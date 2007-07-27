@@ -31,7 +31,7 @@ from sqlobject.sqlbuilder import AND
 from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.commissions import CommissionSource, Commission
+from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IClient,

@@ -130,6 +130,7 @@ _tables = [
      ('devices', ["DeviceSettings",
                   "FiscalDayHistory",
                   "FiscalDayTax"]),
+     ('commission', ["CommissionSource", "Commission"]),
 
 ]
 

@@ -27,9 +27,15 @@ Commission management
 
 from decimal import Decimal
 from sqlobject import ForeignKey, IntCol
+from sqlobject.sqlbuilder import INNERJOINOn
+from sqlobject.viewable import Viewable
 
 from stoqlib.database.columns import DecimalCol
 from stoqlib.domain.base import Domain
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.person import Person, PersonAdaptToSalesPerson
+from stoqlib.domain.sale import Sale
+
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -116,7 +122,7 @@ class Commission(Domain):
 
     def _get_payment_percentage(self):
         """Return the payment percentage of sale"""
-        return self.payment.value / self.sale.get_total_sale_amount()
+        return self.payment.value / self.sale.get_sale_subtotal()
 
     def _get_commission(self, asellable):
         """Return the properly commission percentage to be used to
@@ -147,3 +153,39 @@ class Commission(Domain):
             if not source:
                 return self._get_category_commission(category.category)
             return source
+
+#
+# Views
+#
+
+class CommissionView(Viewable):
+    """ Stores information about commissions and it's related
+            sale and payment.
+    """
+
+    columns = dict(
+        id=Sale.q.id,
+        commission_value=Commission.q.value,
+        commission_percentage=Commission.q.value/Sale.q.total_amount*100,
+        salesperson_name=Person.q.name,
+        payment_amount=Payment.q.value,
+        total_amount=Sale.q.total_amount,
+        open_date=Sale.q.open_date,
+       )
+
+    joins = [
+        # commission
+        INNERJOINOn(None, Commission,
+            Commission.q.saleID == Sale.q.id),
+
+        # person
+        INNERJOINOn(None, PersonAdaptToSalesPerson,
+            PersonAdaptToSalesPerson.q.id == Commission.q.salespersonID),
+
+        INNERJOINOn(None, Person,
+            Person.q.id == PersonAdaptToSalesPerson.q._originalID),
+
+        # payment
+        INNERJOINOn(None, Payment,
+            Payment.q.id == Commission.q.paymentID),
+       ]

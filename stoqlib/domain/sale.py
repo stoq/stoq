@@ -41,7 +41,6 @@ from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.domain.base import (Domain, ValidatableDomain, BaseSQLView,
                                  ModelAdapter)
-from stoqlib.domain.commissions import Commission
 from stoqlib.domain.events import SaleConfirmEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.giftcertificate import GiftCertificate
@@ -422,7 +421,7 @@ class Sale(ValidatableDomain):
 
         conn = self.get_connection()
 
-        self.total_amount = self.get_total_sale_amount()
+        self.total_amount = self.get_sale_subtotal()
 
         # FIXME: We should use self.branch, but it's not supported yet
         branch = get_current_branch(conn)
@@ -761,6 +760,8 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         return self.default_method
 
     def confirm(self):
+        from stoqlib.domain.commission import Commission
+
         self.add_inpayments()
         self._create_fiscal_entries()
 
@@ -778,12 +779,16 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         return sysparam(conn).SALE_PAY_COMMISSION_WHEN_CONFIRMED
 
     def _get_commission_type(self):
+        from stoqlib.domain.commission import Commission
+
         items = self.get_items()
         if items.count() == 1:
             return Commission.DIRECT
         return Commission.INSTALLMENTS
 
     def pay(self, payment):
+        from stoqlib.domain.commission import Commission
+
         if not self._pay_commission_at_confirm():
             Commission(commission_type=self._get_commission_type(),
                        sale=self.sale, payment=payment,

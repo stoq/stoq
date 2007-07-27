@@ -30,12 +30,11 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.domain.views import CommissionView
+from stoqlib.domain.commission import CommissionView
 from stoqlib.domain.interfaces import ISalesPerson
 from stoqlib.domain.person import Person
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_quantity
 
 _ = stoqlib_gettext
 
@@ -66,16 +65,15 @@ class CommissionSearch(SearchDialog):
         self.add_filter(date_filter, SearchFilterPosition.BOTTOM, ['open_date'])
 
     def get_columns(self):
-        return [Column('id', title=_('Sale Number'), width=120,
+        return [Column('id', title=_('Sale'),
                         data_type=int, sorted=True),
                 Column('salesperson_name', title=_('Salesperson'),
-                        data_type=str, width=150, expand=True),
-                Column('commission_value', title=_('Commission'),
-                        data_type=currency, width=120),
+                        data_type=str, expand=True),
                 Column('commission_percentage', title=_('Commission (%)'),
-                        data_type=Decimal, width=120, format="%.2f"),
-               Column('total_quantity', title=_('Quantity'),
-                        data_type=Decimal, width=100,
-                        format_func=format_quantity),
+                        data_type=Decimal, format="%.2f"),
+                Column('commission_value', title=_('Commission'),
+                        data_type=currency),
+                Column('payment_amount', title=_('Payment Value'),
+                        data_type=currency),
                 Column('total_amount', title=_('Sale Total'),
-                        data_type=currency, width=110)]
+                        data_type=currency)]
