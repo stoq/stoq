@@ -24,7 +24,7 @@
 """ Slaves for commissions  """
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.domain.commissions import CommissionSource
+from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.sellable import ASellable, SellableCategory
 
 class CommissionSlave(BaseEditorSlave):

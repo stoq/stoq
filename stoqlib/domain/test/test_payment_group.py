@@ -26,7 +26,7 @@ from decimal import Decimal
 
 from stoqdrivers.enum import PaymentMethodType
 
-from stoqlib.domain.commissions import CommissionSource, Commission
+from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.payment import Payment

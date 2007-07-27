@@ -26,13 +26,11 @@
 from sqlobject.viewable import Viewable
 from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn, OR
 
-from stoqlib.domain.commissions import Commission, CommissionSource
-from stoqlib.domain.person import Person, PersonAdaptToSalesPerson
+from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.product import (Product, ProductAdaptToSellable,
                                     ProductAdaptToStorable,
                                     ProductStockItem,
                                     ProductHistory)
-from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.sellable import (ASellable, SellableUnit,
                                      BaseSellableInfo, SellableCategory)
 
@@ -250,32 +248,3 @@ class SellableCategoryView(Viewable):
 
         return CommissionSource.selectOneBy(category=base_category,
                                             connection=self.get_connection())
-
-class CommissionView(Viewable):
-
-    columns = dict(
-        id=Sale.q.id,
-        commission_value=Commission.q.value,
-        commission_percentage=Commission.q.value/Sale.q.total_amount*100,
-        salesperson_name=Person.q.name,
-        total_quantity= func.SUM(SaleItem.q.quantity),
-        total_amount=Sale.q.total_amount,
-        open_date=Sale.q.open_date,
-       )
-
-    joins = [
-        # commission
-        INNERJOINOn(None, Commission,
-            Commission.q.saleID == Sale.q.id),
-
-        # person
-        INNERJOINOn(None, PersonAdaptToSalesPerson,
-            PersonAdaptToSalesPerson.q.id == Commission.q.salespersonID),
-
-        INNERJOINOn(None, Person,
-            Person.q.id == PersonAdaptToSalesPerson.q._originalID),
-
-        # sale item
-        LEFTJOINOn(None, SaleItem,
-            SaleItem.q.saleID == Commission.q.saleID),
-        ]

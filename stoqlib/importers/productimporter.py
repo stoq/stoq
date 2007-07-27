@@ -24,7 +24,7 @@
 ##
 
 from stoqlib.database.runtime import get_connection
-from stoqlib.domain.commissions import CommissionSource
+from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
