@@ -76,14 +76,14 @@ class StartPurchaseStep(WizardEditorStep):
         table = Person.getAdapterClass(ISupplier)
         suppliers = table.get_active_suppliers(self.conn)
         items = [(s.person.name, s) for s in suppliers]
-        self.supplier.prefill(items)
+        self.supplier.prefill(sorted(items))
 
     def _fill_branch_combo(self):
         # FIXME: Implement and use IDescribable on PersonAdaptToBranch
         table = Person.getAdapterClass(IBranch)
         branches = table.get_active_branches(self.conn)
         items = [(s.person.name, s) for s in branches]
-        self.branch.prefill(items)
+        self.branch.prefill(sorted(items))
 
     def _setup_widgets(self):
         self._fill_supplier_combo()
