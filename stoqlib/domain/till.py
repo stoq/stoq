@@ -30,8 +30,7 @@ Implementation of classes related to Fiscal operations.
 import datetime
 
 from sqlobject import IntCol, DateTimeCol, ForeignKey, UnicodeCol
-
-from sqlobject.sqlbuilder import AND
+from sqlobject.sqlbuilder import AND, const
 from kiwi.datatypes import currency
 from kiwi.log import Logger
 
@@ -171,7 +170,7 @@ class Till(Domain):
 
         self.initial_cash_amount = initial_cash_amount
 
-        self.opening_date = datetime.datetime.now()
+        self.opening_date = const.NOW()
         self.status = Till.STATUS_OPEN
 
     def close_till(self, removed=0):
@@ -197,7 +196,7 @@ class Till(Domain):
 
         self.final_cash_amount = self.get_balance()
 
-        self.closing_date = datetime.datetime.now()
+        self.closing_date = const.NOW()
         self.status = Till.STATUS_CLOSED
 
     def add_entry(self, payment):

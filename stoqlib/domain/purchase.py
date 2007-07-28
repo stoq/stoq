@@ -33,7 +33,7 @@ from zope.interface import implements
 from stoqdrivers.enum import PaymentMethodType
 from sqlobject import (ForeignKey, IntCol, DateTimeCol, UnicodeCol,
                        SQLObject)
-from sqlobject.sqlbuilder import AND, INNERJOINOn, LEFTJOINOn
+from sqlobject.sqlbuilder import AND, INNERJOINOn, LEFTJOINOn, const
 from sqlobject.viewable import Viewable
 
 from stoqlib.database.columns import PriceCol, DecimalCol
@@ -260,7 +260,7 @@ class PurchaseOrder(ValidatableDomain):
         @param confirm_data: optional, datetime
         """
         if confirm_date is None:
-            confirm_date = datetime.datetime.now()
+            confirm_date = const.NOW()
 
         if self.status != self.ORDER_PENDING:
             raise ValueError('Invalid order status, it should be '

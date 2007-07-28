@@ -32,7 +32,7 @@ from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from sqlobject.col import ForeignKey, UnicodeCol, DateTimeCol, IntCol
 from sqlobject.main import SQLObject
-from sqlobject.sqlbuilder import AND
+from sqlobject.sqlbuilder import AND, const
 from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
@@ -421,7 +421,7 @@ class Sale(ValidatableDomain):
 
         conn = self.get_connection()
 
-        self.total_amount = self.get_sale_subtotal()
+        self.total_amount = self.get_total_sale_amount()
 
         # FIXME: We should use self.branch, but it's not supported yet
         branch = get_current_branch(conn)
@@ -434,7 +434,7 @@ class Sale(ValidatableDomain):
         group.confirm()
 
         SaleConfirmEvent.emit(self)
-        self.confirm_date = datetime.datetime.now()
+        self.confirm_date = const.NOW()
         self.status = Sale.STATUS_CONFIRMED
 
     def set_paid(self):
@@ -446,7 +446,7 @@ class Sale(ValidatableDomain):
                 raise StoqlibError(
                     "You cannot close a sale without paying all the payment")
 
-        self.close_date = datetime.datetime.now()
+        self.close_date = const.NOW()
         self.status = Sale.STATUS_PAID
 
     def cancel(self):
@@ -458,7 +458,7 @@ class Sale(ValidatableDomain):
         for item in self.get_items():
             item.cancel(branch)
 
-        self.cancel_date = datetime.datetime.now()
+        self.cancel_date = const.NOW()
         self.status = Sale.STATUS_CANCELLED
 
     @argcheck(RenegotiationData)
@@ -474,7 +474,7 @@ class Sale(ValidatableDomain):
         group = IPaymentGroup(self)
         group.cancel(renegotiation)
 
-        self.return_date = datetime.datetime.now()
+        self.return_date = const.NOW()
         self.status = Sale.STATUS_RETURNED
 
     def paid_with_money(self):
@@ -636,10 +636,16 @@ class Sale(ValidatableDomain):
         return get_formatted_price(self.get_total_sale_amount())
 
     def get_sale_subtotal(self):
-        return currency(self.get_items().sum(
-            SaleItem.q.price * SaleItem.q.quantity) or 0)
+        # FIXME: Use SQL
+        subtotal = sum([item.get_total() for item in self.get_items()],
+                       currency(0))
+        return currency(subtotal)
 
-    get_items_total_value = get_sale_subtotal
+    def get_items_total_value(self):
+        # FIXME: Use SQL
+        total = sum([item.get_total() for item in self.get_items()],
+                   currency(0))
+        return currency(total)
 
     #
     # Properties

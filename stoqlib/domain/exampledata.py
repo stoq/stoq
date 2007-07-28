@@ -27,6 +27,7 @@ import datetime
 from decimal import Decimal
 
 from stoqdrivers.enum import TaxType
+from sqlobject.sqlbuilder import const
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
@@ -262,7 +263,7 @@ class ExampleCreator(object):
         salesperson = self.create_sales_person()
         branch = self.create_branch()
         return Sale(coupon_id=0,
-                    open_date=datetime.datetime.now(),
+                    open_date=const.NOW(),
                     salesperson=salesperson, branch=branch,
                     cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,
                     connection=self.trans)
