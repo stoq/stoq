@@ -195,7 +195,7 @@ class SaleInvoice(ClassInittableObject):
     preview_label = _(u"Preview Model")
 
     @argcheck(basestring, Sale, datetime.datetime, InvoiceType)
-    def __init__(self, filename, sale, date=datetime.datetime.now(),
+    def __init__(self, filename, sale, date=None,
                  invoice_type=INVOICE_TYPE_OUT):
         """
         @param filename:  The filename where the invoice will be saved in.
@@ -220,6 +220,8 @@ class SaleInvoice(ClassInittableObject):
         if sale.client is None:
             raise ValueError("It is not possible to emit an invoice for a "
                              "sale without client")
+        if date is None:
+            date = datetime.datetime.now()
         self._syscoord = SysCoordinate(SaleInvoice.ROWS_QTY,
                                        SaleInvoice.COLS_QTY)
         self.branch_cfop = sale.cfop.code
