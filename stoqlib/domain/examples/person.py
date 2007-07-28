@@ -29,6 +29,7 @@ import datetime
 import gettext
 
 from kiwi.component import provide_utility
+from sqlobject.sqlbuilder import const
 
 from stoqlib.database.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.database.runtime import new_transaction
@@ -95,7 +96,7 @@ def create_people():
                          fancy_name='Pizzaria Donnatello',
                          state_registry='3421')]
 
-    now = datetime.datetime.now()
+    now = const.NOW()
 
     cityloc_data = [dict(city='Sao Paulo', country='Brazil', state='SP'),
                     dict(city='Curitiba', country='Brazil', state='PR'),

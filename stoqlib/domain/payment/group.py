@@ -37,7 +37,7 @@ import datetime
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from sqlobject.col import IntCol, DateTimeCol
-from sqlobject.sqlbuilder import AND, IN
+from sqlobject.sqlbuilder import AND, IN, const
 from stoqdrivers.enum import PaymentMethodType
 from zope.interface import implements
 
@@ -110,7 +110,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     def add_payment(self, value, description, method, destination=None,
                     due_date=None):
         if due_date is None:
-            due_date = datetime.datetime.now()
+            due_date = const.NOW()
         """Create a new payment and add it to the group"""
         conn = self.get_connection()
         destination = destination or sysparam(conn).DEFAULT_PAYMENT_DESTINATION
@@ -157,7 +157,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
             cfop=cfop,
             drawee=self.get_thirdparty(),
             branch=get_current_branch(conn),
-            date=datetime.datetime.now(),
+            date=const.NOW(),
             payment_group=self,
             connection=conn)
 
@@ -201,7 +201,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         """
         assert self.can_cancel()
         self.status = AbstractPaymentGroup.STATUS_CANCELLED
-        self.cancel_date = datetime.datetime.now()
+        self.cancel_date = const.NOW()
 
     def get_total_paid(self):
         return currency(self._get_paid_payments().sum('value') or 0)

@@ -29,6 +29,7 @@ import datetime
 
 from kiwi.datatypes import currency
 from sqlobject.col import IntCol, DateTimeCol, UnicodeCol, ForeignKey
+from sqlobject.sqlbuilder import const
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol
@@ -144,7 +145,7 @@ class Payment(Domain):
         paid_value = paid_value or (self.value - self.discount +
                                     self.interest)
         self.paid_value = paid_value
-        self.paid_date = paid_date or datetime.datetime.now()
+        self.paid_date = paid_date or const.NOW()
         self.status = self.STATUS_PAID
         if self.group:
             self.group.pay(self)
@@ -178,7 +179,7 @@ class Payment(Domain):
             raise StoqlibError("Invalid status for cancel operation, "
                                 "got %s" % self.get_status_str())
         self.status = self.STATUS_CANCELLED
-        self.cancel_date = datetime.datetime.now()
+        self.cancel_date = const.NOW()
 
     def get_payable_value(self):
         """ Returns the calculated payment value with the daily penalty.

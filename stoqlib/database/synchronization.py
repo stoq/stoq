@@ -26,16 +26,15 @@
 Synchronization, Distributed database replication.
 """
 
-import datetime
 import sets
 import socket
 import subprocess
 
+from dateutil.parser import parse
 from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
-
-from dateutil.parser import parse
 from sqlobject import SQLObjectNotFound
+from sqlobject.sqlbuilder import const
 
 from stoqlib.database.admin import create_base_schema
 from stoqlib.database.database import dump_table
@@ -540,7 +539,7 @@ class SynchronizationClient(object):
         """
         policy = self._get_policy('shop')
         trans = new_transaction()
-        timestamp = datetime.datetime.now()
+        timestamp = const.NOW()
         station = self._get_station(trans, station_name)
         last_sync = self._get_last_timestamp(trans, station_name)
         # We're synchronizing in two steps;
@@ -606,7 +605,7 @@ class SynchronizationClient(object):
             trans = new_transaction()
         else:
             trans = transaction
-        timestamp = datetime.datetime.now()
+        timestamp = const.NOW()
         station = self._get_station(trans, station_name)
         tables = get_tables(policy, pfilter=(SyncPolicy.FROM_TARGET,))
         self._sql_send(self._dump_tables(tables))

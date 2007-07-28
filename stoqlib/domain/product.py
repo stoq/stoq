@@ -31,6 +31,7 @@ from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
 from sqlobject import (UnicodeCol, ForeignKey, MultipleJoin, DateTimeCol,
                        BoolCol, BLOBCol)
+from sqlobject.sqlbuilder import const
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol
@@ -172,7 +173,7 @@ class ProductHistory(Domain):
         cls(branch=branch,
             sellable=product_sellable_item.sellable,
             quantity_sold=product_sellable_item.quantity,
-            sold_date=datetime.datetime.now(),
+            sold_date=const.NOW(),
             connection=conn)
 
     @classmethod
