@@ -160,3 +160,19 @@ class TestPayment(DomainTest):
         self.assertEqual(payment.get_open_date_string(), "")
         payment.open_date = datetime.datetime.now()
         self.assertNotEqual(payment.get_open_date_string(), "")
+
+    def testGetDaysLate(self):
+        method = CheckPM.selectOne(connection=self.trans)
+        open_date = due_date = self._get_relative_day(-4)
+        payment = Payment(value=currency(100),
+                          due_date=due_date,
+                          open_date=open_date,
+                          method=method,
+                          group=None,
+                          till=None,
+                          destination=None,
+                          connection=self.trans)
+        payment.set_pending()
+        self.assertEqual(payment.get_days_late(), 4)
+        payment.pay()
+        self.assertEqual(payment.get_days_late(), 0)
