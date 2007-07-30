@@ -34,29 +34,28 @@ import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.argcheck import argcheck
 from kiwi.log import Logger
-from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
+from kiwi.ui.widgets.list import Column
 from stoqdrivers.enum import UnitType
-from stoqlib.database.runtime import (new_transaction, get_current_user,
-                                      rollback_and_begin, finish_transaction,
+from stoqlib.database.runtime import (new_transaction,
+                                      finish_transaction,
+                                      get_current_user,
                                       get_current_branch)
-from stoqlib.domain.interfaces import IDelivery, ISalesPerson, IPaymentGroup
+from stoqlib.domain.interfaces import IDelivery, IPaymentGroup, ISalesPerson
 from stoqlib.domain.devices import DeviceSettings
-from stoqlib.domain.product import Product, ProductAdaptToSellable, IStorable
+from stoqlib.domain.product import ProductAdaptToSellable, IStorable
 from stoqlib.domain.person import PersonAdaptToClient
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.service import Service
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TillError
-from stoqlib.lib.message import info, warning, yesno
+from stoqlib.lib.message import info, yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
-from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.gui.editors.personeditor import ClientEditor
-from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
@@ -66,28 +65,47 @@ from stoqlib.gui.search.salesearch import SaleSearch
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
-from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.reporting.sale import SaleOrderReport
 
 from stoq.gui.application import AppWindow
-from stoq.gui.pos.neworder import NewOrderEditor
+from stoq.gui.pos.deliveryeditor import DeliveryEditor
 
 _ = gettext.gettext
 log = Logger('stoq.pos')
+
+class _SaleItem(object):
+    def __init__(self, sellable, quantity, price=None):
+        self.sellable = sellable
+        self.description = sellable.base_sellable_info.description
+        self.unit = sellable.get_unit_description()
+        self.code = sellable.code
+        self.quantity = quantity
+        if not price:
+            price = sellable.price
+        self.price = price
+        self.deliver = False
+        self.estimated_fix_date = None
+        self.notes = None
+
+    @property
+    def total(self):
+        # Delivery has no has no
+        if self.quantity is None:
+            return self.price
+
+        return self.price * self.quantity
+
 
 class POSApp(AppWindow):
 
     app_name = _('Point of Sales')
     app_icon_name = 'stoq-pos-app'
     gladefile = "pos"
-    order_widgets =  ('client',
-                      'order_number',
-                      'salesperson')
-    klist_name = 'sellables'
+    klist_name = 'sale_items'
 
     def __init__(self, app):
         AppWindow.__init__(self, app)
         self.sale = None
+        self._delivery = None
         self.param = sysparam(self.conn)
         self.max_results = self.param.MAX_SEARCH_RESULTS
         self.client_table = PersonAdaptToClient
@@ -108,8 +126,7 @@ class POSApp(AppWindow):
 
     def setup_focus(self):
         # Setting up the widget groups
-        self.main_vbox.set_focus_chain([self.order_details_hbox,
-                                        self.pos_vbox])
+        self.main_vbox.set_focus_chain([self.pos_vbox])
 
         self.pos_vbox.set_focus_chain([self.list_header_hbox, self.list_vbox])
         self.list_vbox.set_focus_chain([self.footer_hbox])
@@ -131,10 +148,10 @@ class POSApp(AppWindow):
                                               self.advanced_search])
 
     def get_columns(self):
-        return [Column('sellable.code', title=_('Reference'), sorted=True,
+        return [Column('code', title=_('Reference'), sorted=True,
                        data_type=int, width=95, justify=gtk.JUSTIFY_RIGHT,
                        format='%05d'),
-                Column('sellable.base_sellable_info.description',
+                Column('description',
                        title=_('Description'), data_type=str, expand=True,
                        searchable=True, ellipsize=pango.ELLIPSIZE_END),
                 Column('price', title=_('Price'), data_type=currency,
@@ -142,7 +159,7 @@ class POSApp(AppWindow):
                 Column('quantity', title=_('Quantity'), data_type=Decimal,
                        width=110, format_func=format_quantity,
                        justify=gtk.JUSTIFY_RIGHT),
-                Column('sellable.unit_description', title=_('Unit'),
+                Column('unit', title=_('Unit'),
                        data_type=str, width=70,
                        ellipsize=pango.ELLIPSIZE_END),
                 Column('total', title=_('Total'), data_type=currency,
@@ -162,9 +179,8 @@ class POSApp(AppWindow):
             self._read_scale()
 
     def _setup_proxies(self):
-        self.order_proxy = self.add_proxy(widgets=POSApp.order_widgets)
-        model = Settable(quantity=Decimal(1), price=currency(0))
-        self.sellableitem_proxy = self.add_proxy(model, ('quantity',))
+        self.sellableitem_proxy = self.add_proxy(
+            Settable(quantity=Decimal(1)), ['quantity'])
 
     def _setup_widgets(self):
         if not self.param.HAS_DELIVERY_MODE:
@@ -196,10 +212,10 @@ class POSApp(AppWindow):
         if new_item:
             if self._coupon_add_item(sale_item) == -1:
                 return
-            self.sellables.append(sale_item)
+            self.sale_items.append(sale_item)
         else:
-            self.sellables.update(sale_item)
-        self.sellables.select(sale_item)
+            self.sale_items.update(sale_item)
+        self.sale_items.select(sale_item)
         self.barcode.set_text('')
         self.barcode.grab_focus()
         self._reset_quantity_proxy()
@@ -209,23 +225,21 @@ class POSApp(AppWindow):
     def _update_list(self, sellable, notify_on_entry=False):
         quantity = self.sellableitem_proxy.model.quantity
 
-        registered_price = self.sellableitem_proxy.model.price
-        price = registered_price or sellable.price
-
-        if isinstance(sellable.get_adapted(), Service) and quantity > 1:
+        adapted = sellable.get_adapted()
+        is_service = isinstance(adapted, Service)
+        if is_service and quantity > 1:
             # It's not a common operation to add more than one item at
             # a time, it's also problematic since you'd have to show
             # one dialog per service item. See #3092
             info(_(u"Only one service was added since its not possible to"
                    "add more than one service to an order at a time."))
 
-        sale_item = self.sale.add_sellable(sellable,
-                                           quantity=quantity,
-                                           price=price)
-        if (isinstance(sale_item.sellable.get_adapted(), Service)
-            and not self.run_dialog(ServiceItemEditor, self.conn,
-                                    sale_item)):
-            return
+        sale_item = _SaleItem(sellable=sellable,
+                              quantity=quantity)
+        if is_service:
+            rv = self.run_dialog(ServiceItemEditor, self.conn, sale_item)
+            if not rv:
+                return
         self._update_added_item(sale_item)
 
     def _get_sellable(self):
@@ -238,10 +252,10 @@ class POSApp(AppWindow):
                                      connection=self.conn)
 
     def _select_first_item(self):
-        if len(self.sellables):
+        if len(self.sale_items):
             # XXX Probably kiwi should handle this for us. Waiting for
             # support
-            self.sellables.select(self.sellables[0])
+            self.sale_items.select(self.sale_items[0])
 
     def _update_widgets(self):
         try:
@@ -252,20 +266,20 @@ class POSApp(AppWindow):
             has_till = False
             till_close = True
             till_open = False
+        self.TillOpen.set_sensitive(till_open)
+        self.TillClose.set_sensitive(till_close)
+        self.barcode.set_sensitive(not till_open)
+        self.quantity.set_sensitive(not till_open)
+        self.sale_items.set_sensitive(not till_open)
+        self.advanced_search.set_sensitive(not till_open)
 
-        self.TillOpen.set_sensitive(till_open and self.sale is None)
-        self.TillClose.set_sensitive(till_close and self.sale is None)
-
-        has_sellables = len(self.sellables) >= 1
+        has_sale_items = len(self.sale_items) >= 1
         self.set_sensitive((self.checkout_button, self.remove_item_button,
                             self.PrintOrder, self.NewDelivery,
-                            self.OrderCheckout), has_sellables)
-        has_client = self.sale is not None and self.sale.client is not None
-        self.EditClient.set_sensitive(has_client)
-        self.ClientDetails.set_sensitive(has_client)
-        self.delivery_button.set_sensitive(has_client and has_sellables)
-        self.NewDelivery.set_sensitive(has_client and has_sellables)
-        sale_item = self.sellables.get_selected()
+                            self.OrderCheckout), has_sale_items)
+        self.delivery_button.set_sensitive(has_sale_items)
+        self.NewDelivery.set_sensitive(has_sale_items)
+        sale_item = self.sale_items.get_selected()
         self.edit_item_button.set_sensitive(
             sale_item is not None and
             isinstance(sale_item.sellable.get_adapted(), Service))
@@ -285,22 +299,15 @@ class POSApp(AppWindow):
         if self.param.USE_SCALE_PRICE:
             self.sellableitem_proxy.model.price = data.price_per_kg
 
-    def _run_search_dialog(self, dialog_type, **kwargs):
-        # Save the current state of order before calling a search dialog
-        self.conn.commit()
-        self.run_dialog(dialog_type, self.conn, **kwargs)
-
     def _run_advanced_search(self, search_str=None):
-        # Ouch!, commit now ? yes, because SearchDialog synchronizes self.conn
-        # internally. Actually this is not a problem since our sale object
-        # is not valid (_is_valid_model defaults to False) until we finish the
-        # whole process trough SaleWizard.
-        self.conn.commit()
-        sellable_view_item = self.run_dialog(SellableSearch, self.conn,
-                                selection_mode=gtk.SELECTION_BROWSE,
-                                search_str=search_str, order=self.sale,
-                                quantity=self.sellableitem_proxy.model.quantity,
-                                double_click_confirm=True)
+        sellable_view_item = self.run_dialog(
+            SellableSearch,
+            self.conn,
+            selection_mode=gtk.SELECTION_BROWSE,
+            search_str=search_str,
+            sale_items=self.sale_items,
+            quantity=self.sellableitem_proxy.model.quantity,
+            double_click_confirm=True)
         if not sellable_view_item:
             return
 
@@ -351,23 +358,20 @@ class POSApp(AppWindow):
         branch = get_current_branch(self.conn)
         available = storable.get_full_balance(branch)
         added = len([sale_item
-                     for sale_item in self.sellables
+                     for sale_item in self.sale_items
                          if sale_item.sellable == sellable])
         return available - added > 0
 
     def _clear_order(self):
         log.info("Clearing order")
-        self.sellables.clear()
+        self.sale_items.clear()
         for widget in (self.search_box, self.list_vbox,
                        self.CancelOrder):
-            widget.set_sensitive(False)
-        self.sale = None
+            widget.set_sensitive(True)
         self._coupon = None
 
-        self.order_proxy.set_model(None, relax_type=True)
         self._reset_quantity_proxy()
         self.barcode.set_text('')
-        self.new_order_button.grab_focus()
         self._update_widgets()
 
     def _cancel_coupon(self):
@@ -377,64 +381,16 @@ class POSApp(AppWindow):
                 self._coupon.cancel()
         self._coupon = None
 
-    def _delete_sale_item(self, item):
-        delivery = IDelivery(item, None)
-        if delivery:
-            for delivery_item in delivery.get_items():
-                delivery.remove_item(delivery_item)
-            table = type(delivery)
-            table.delete(delivery.id, connection=self.conn)
-        table = type(item)
-        table.delete(item.id, connection=self.conn)
-        self.sellables.remove(item)
-
     def _edit_sale_item(self, sale_item):
-        if not isinstance(sale_item.sellable.get_adapted(), Service):
+        if sale_item.sellable == sysparam(self.conn).DELIVERY_SERVICE:
+            self._add_delivery()
+        elif isinstance(sale_item.sellable.get_adapted(), Service):
+            model = self.run_dialog(ServiceItemEditor, self.conn, sale_item)
+            if model:
+                self.sale_items.update(sale_item)
+        else:
             # Do not raise any exception here, since this method can be called
             # when the user activate a row with product in the sellables list.
-            return
-        if IDelivery(sale_item, None):
-            editor = DeliveryEditor
-        else:
-            editor = ServiceItemEditor
-        model = self.run_dialog(editor, self.conn, sale_item)
-        if model:
-            self.sellables.update(sale_item)
-
-    def _new_order(self):
-        try:
-            till = Till.get_current(self.conn)
-            if till is None:
-                warning(_(u"You need open the till before start doing sales."))
-                return
-        except TillError:
-            if self._check_till():
-                return
-
-        if not ISalesPerson(get_current_user(self.conn).person, None):
-            warning(_(u"You can't start a new sale, since you are not a "
-                      "salesperson."))
-            return
-
-        if self._coupon is not None:
-            if not self._cancel_order():
-                return
-
-        rollback_and_begin(self.conn)
-        sale = self.run_dialog(NewOrderEditor, self.conn)
-        if sale:
-            log.info("Creating a new order")
-            self.sellables.clear()
-            self.order_proxy.set_model(sale)
-            self.sale = sale
-            self._update_widgets()
-            self._update_totals()
-            self.set_sensitive((self.search_box, self.footer_hbox,
-                                self.list_vbox, self.CancelOrder),
-                               True)
-            self.barcode.grab_focus()
-        else:
-            rollback_and_begin(self.conn)
             return
 
     def _cancel_order(self):
@@ -442,7 +398,7 @@ class POSApp(AppWindow):
         Cancels the currently opened order.
         @returns: True if the order was canceled, otherwise false
         """
-        if self.sale is not None:
+        if len(self.sale_items):
             if yesno(_(u'The current order will be canceled, Confirm?'),
                          gtk.RESPONSE_NO,_(u"Go Back"), _(u"Cancel Order")):
                 return False
@@ -453,43 +409,41 @@ class POSApp(AppWindow):
         return True
 
     def _add_delivery(self):
-        if not self.sellables:
-            warning(_("You don't have products to delivery."))
-            return
+        assert len(self.sale_items)
 
-        # FIXME: Move to Sale
+        delivery_service = sysparam(self.conn).DELIVERY_SERVICE
         sale_items = []
-        for sale_item in self.sellables:
-            sellable = sale_item.sellable
-            if isinstance(sellable.get_adapted(), Product):
-                if not sale_item.has_been_totally_delivered():
-                    sale_items.append(sale_item)
+        delivery = None
+        for sale_item in self.sale_items:
+            if sale_item.sellable == delivery_service:
+                delivery = self._delivery
+            elif isinstance(sale_item.sellable.get_adapted(), Service):
+                continue
+            else:
+                sale_items.append(sale_item)
 
-        if not sale_items:
-            warning(_("All the products already have delivery "
-                      "instructions"))
-            return
+        delivery = self.run_dialog(DeliveryEditor, self.conn,
+                                   delivery,
+                                   sale_items=sale_items)
+        if delivery:
+            self._add_delivery_item(delivery, delivery_service)
+            self._delivery = delivery
 
-        # We must commit now since we would like to have some of the
-        # instances created in self.conn in a new transaction
-        self.conn.commit()
+    def _add_delivery_item(self, delivery, delivery_service):
+        for sale_item in self.sale_items:
+            if sale_item.sellable == delivery_service:
+                sale_item.price = delivery.price
+                delivery_item = sale_item
+                new_item = False
+                break
+        else:
+            delivery_item = _SaleItem(sellable=delivery_service,
+                                      quantity=None,
+                                      price=delivery.price)
+            new_item = True
 
-        trans = new_transaction()
-        sale = trans.get(self.sale)
-        sale_items = (trans.get(sale_item)
-                          for sale_item in sale_items)
-        service = self.run_dialog(DeliveryEditor, trans,
-                                  sale=sale,
-                                  sale_items=sale_items)
-        rv = finish_transaction(trans, service)
-        trans.close()
-        if not rv:
-            return
-
-        # Synchronize self.conn and bring the new delivery instances to it
-        self.conn.commit()
-        service = type(service).get(service.id, connection=self.conn)
-        self._update_added_item(service)
+        self._update_added_item(delivery_item,
+                                new_item=new_item)
 
     def _check_till(self):
         if self._printer.needs_closing():
@@ -507,40 +461,75 @@ class POSApp(AppWindow):
             self._update_widgets()
         return retval
 
+    def _create_sale(self, trans):
+        user = get_current_user(trans)
+        branch = get_current_branch(trans)
+        salesperson = ISalesPerson(user.person)
+        cfop = sysparam(trans).DEFAULT_SALES_CFOP
+        sale = Sale(connection=trans,
+                    branch=branch,
+                    salesperson=salesperson,
+                    cfop=cfop,
+                    coupon_id=None)
+
+        if self._delivery:
+            address_string = self._delivery.address.get_address_string()
+            sale.client = self._delivery.client
+
+        for fake_sale_item in self.sale_items:
+            sale_item = sale.add_sellable(fake_sale_item.sellable,
+                                          price=fake_sale_item.price,
+                                          quantity=fake_sale_item.quantity)
+            sale_item.notes = fake_sale_item.notes
+            sale_item.estimated_fix_date = fake_sale_item.estimated_fix_date
+
+            if fake_sale_item.deliver:
+                assert self._delivery
+                item = sale_item.addFacet(IDelivery,
+                                          connection=sale.get_connection())
+                item.address = address_string
+
+        return sale
+
     def _checkout(self):
+        assert len(self.sale_items) >= 1
+
+        trans = new_transaction()
+        sale = self._create_sale(trans)
         if self.param.CONFIRM_SALES_ON_TILL:
-            self.sale.order()
+            sale.order()
+            trans.commit(close=True)
         else:
-            if not self._confirm_order():
-                rollback_and_begin(self.conn)
-                self._cancel_coupon()
-                self._clear_order()
+            ordered = self._confirm_order(trans, sale)
+            if not finish_transaction(trans, ordered):
+                trans.close()
                 return
 
-        log.info("Checking out")
-        self.conn.commit()
+            log.info("Checking out")
+            self._cancel_coupon()
+            trans.close()
+
         self._clear_order()
 
-    def _confirm_order(self):
-        retval = self.run_dialog(ConfirmSaleWizard, self.conn, self.sale)
-        if not retval:
+    def _confirm_order(self, trans, sale):
+        model = self.run_dialog(ConfirmSaleWizard, trans, sale)
+        if not model:
             return False
+        if sale.client:
+            self._coupon.identify_customer(sale.client.person)
 
-        if self._coupon:
-            if not self._coupon.totalize():
-                return False
-            if not self._coupon.setup_payments():
-                return False
-            if not self._coupon.close():
-                return False
+        if not self._coupon.totalize(sale):
+            return False
+        if not self._coupon.setup_payments(sale):
+            return False
+        if not self._coupon.close(sale):
+            return False
+        sale.confirm()
 
-        self.sale.confirm()
+        if sale.paid_with_money():
+            sale.set_paid()
 
-        if self.sale.paid_with_money():
-            self.sale.set_paid()
-
-        print_cheques_for_payment_group(self.conn,
-                                        IPaymentGroup(self.sale))
+        print_cheques_for_payment_group(trans, IPaymentGroup(sale))
 
         return True
 
@@ -549,9 +538,7 @@ class POSApp(AppWindow):
     #
 
     def _open_coupon(self):
-        self._coupon = self._printer.create_coupon(self.sale)
-        if self.sale.client:
-            self._coupon.identify_customer(self.sale.client.person)
+        self._coupon = self._printer.create_coupon()
         while not self._coupon.open():
             if not yesno(_(u"It is not possible to start a new sale if the "
                            "fiscal coupon cannot be opened."),
@@ -576,19 +563,6 @@ class POSApp(AppWindow):
     # Actions
     #
 
-    def on_EditClient__activate(self, action):
-        if not (self.sale and self.sale.client):
-            raise ValueError('You must have a client defined at this point')
-        log.info("Editing client")
-        if run_person_role_dialog(ClientEditor, self, self.conn,
-                                  self.sale.client):
-            self.conn.commit()
-
-    def on_ClientDetails__activate(self, action):
-        if not (self.sale and self.sale.client):
-            raise ValueError("You should have a client defined at this point")
-        self.run_dialog(ClientDetailsDialog, self.conn, self.sale.client)
-
     def on_CancelOrder__activate(self, action):
         self._cancel_order()
 
@@ -596,25 +570,22 @@ class POSApp(AppWindow):
         self._new_order()
 
     def on_Clients__activate(self, action):
-        self._run_search_dialog(ClientSearch, hide_footer=True)
+        self.run_dialog(ClientSearch, self.conn, hide_footer=True)
 
     def on_Sales__activate(self, action):
-        self._run_search_dialog(SaleSearch)
+        self.run_dialog(SaleSearch, self.conn)
 
     def on_ProductSearch__activate(self, action):
-        self._run_search_dialog(ProductSearch, hide_footer=True,
-                                hide_toolbar=True, hide_cost_column=True)
+        self.run_dialog(ProductSearch, self.conn, hide_footer=True,
+                        hide_toolbar=True, hide_cost_column=True)
 
     def on_ServiceSearch__activate(self, action):
-        self._run_search_dialog(ServiceSearch, hide_toolbar=True,
-                                hide_cost_column=True)
+        self.run_dialog(ServiceSearch, self.conn, hide_toolbar=True,
+                        hide_cost_column=True)
 
     def on_GiftCertificateSearch__activate(self, action):
-        self._run_search_dialog(GiftCertificateSearch, hide_footer=True,
-                                hide_toolbar=True)
-
-    def on_PrintOrder__activate(self, action):
-        self.print_report(SaleOrderReport, self.sale)
+        self.run_dialog(GiftCertificateSearch, self.conn, hide_footer=True,
+                        hide_toolbar=True)
 
     def on_OrderCheckout__activate(self, action):
         self._checkout()
@@ -653,13 +624,13 @@ class POSApp(AppWindow):
     def on_quantity__activate(self, entry):
         self._add_sale_item()
 
-    def on_sellables__selection_changed(self, sellables, selected):
+    def on_sale_items__selection_changed(self, sale_items, sale_item):
         self._update_widgets()
 
     def on_remove_item_button__clicked(self, button):
-        sellable = self.sellables.get_selected()
-        self._coupon_remove_item(sellable)
-        self._delete_sale_item(sellable)
+        sale_item = self.sale_items.get_selected()
+        self._coupon_remove_item(sale_item)
+        self.sale_items.remove(sale_item)
         self._select_first_item()
         self._update_widgets()
 
@@ -669,16 +640,13 @@ class POSApp(AppWindow):
     def on_checkout_button__clicked(self, button):
         self._checkout()
 
-    def on_new_order_button__clicked(self, button):
-        self._new_order()
-
     def on_edit_item_button__clicked(self, button):
-        item = self.sellables.get_selected()
+        item = self.sale_items.get_selected()
         if item is None:
             raise StoqlibError("You should have a item selected "
                                "at this point")
         self._edit_sale_item(item)
 
-    def on_sellables__row_activated(self, sellables, sellable):
-        self._edit_sale_item(sellable)
+    def on_sale_items__row_activated(self, sale_items, sale_item):
+        self._edit_sale_item(sale_item)
 
