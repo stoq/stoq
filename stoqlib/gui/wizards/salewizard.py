@@ -52,7 +52,7 @@ from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave, BillMethodSlave,
                                              CardMethodSlave,
                                              FinanceMethodSlave)
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, ClientView
 from stoqlib.domain.payment.methods import (APaymentMethod,
                                             MoneyPM, BillPM, CheckPM,
                                             CardPM, FinancePM,
@@ -534,7 +534,8 @@ class _AbstractSalesPersonStep(WizardEditorStep):
     model_type = Sale
     proxy_widgets = ('total_lbl',
                      'subtotal_lbl',
-                     'salesperson_combo')
+                     'salesperson_combo',
+                     'client')
 
     @argcheck(BaseWizard, StoqlibTransaction, Sale, AbstractPaymentGroup)
     def __init__(self, wizard, conn, model, payment_group):
@@ -554,6 +555,13 @@ class _AbstractSalesPersonStep(WizardEditorStep):
             self.salesperson_combo.set_sensitive(False)
         else:
             self.salesperson_combo.grab_focus()
+
+        clients = ClientView.get_active_clients(self.conn)
+        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
+        clients = clients[:max_results]
+        items = [(c.name, c.client) for c in clients]
+        self.client.prefill(sorted(items))
+
 
     def _get_selected_payment_method(self):
         return self.pm_slave.get_selected_method()

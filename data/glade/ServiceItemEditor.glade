@@ -11,7 +11,7 @@
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="service_name_label">
                         <property name="data_type">unicode</property>
-                        <property name="model_attribute">sellable.base_sellable_info.description</property>
+                        <property name="model_attribute">description</property>
                         <property name="visible">True</property>
                         <property name="xalign">0.0</property>
                     </widget>

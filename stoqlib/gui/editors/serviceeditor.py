@@ -35,7 +35,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.domain.interfaces import ISellable
-from stoqlib.domain.sale import SaleItem
 from stoqlib.domain.service import Service
 from stoqlib.domain.sellable import (BaseSellableInfo,
                                      SellableTaxConstant)
@@ -45,7 +44,10 @@ _ = stoqlib_gettext
 
 class ServiceItemEditor(BaseEditor):
     model_name = _('Service')
-    model_type = SaleItem
+    # SaleItem really, but we send in 'fake' items
+    # through the pos interface, isinstance() doesn't
+    # work well with duck typing.
+    model_type = object
     gladefile = 'ServiceItemEditor'
     proxy_widgets = ('service_name_label',
                      'price',
@@ -56,7 +58,7 @@ class ServiceItemEditor(BaseEditor):
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
         self.service_name_label.set_bold(True)
-        self.set_description(model.sellable.base_sellable_info.description)
+        self.set_description(model.description)
         self.price.set_sensitive(False)
 
     #

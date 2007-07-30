@@ -26,6 +26,7 @@
 ##
 """ Person address editor implementation"""
 
+import gtk
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import ValidationError
 from kiwi.python import AttributeForwarder
@@ -221,6 +222,49 @@ class AddressAdditionDialog(ModelListDialog):
             person=self.person,
             is_main_address=False,
             connection=self.trans)
+
+    def run_editor(self, trans, model):
+        return self.run_dialog(AddressEditor,
+            conn=trans, person=self.person, address=model)
+
+class AddressSelectionDialog(ModelListDialog):
+    title = _('Select an address')
+    size = (600, 250)
+
+    columns =  [
+        Column('address_string', title=_('Address'),
+               data_type=str, width=250, expand=True),
+        Column('city', title=_('City'), width=100,
+               data_type=str),
+        Column('state', title=_('State'), data_type=str),
+        ]
+
+    model_type = Address
+
+    def __init__(self, conn, person):
+        self.person = person
+        self.conn = conn
+        ModelListDialog.__init__(self)
+
+        # Remove the close button, we'll add it back shortly
+        self.action_area.remove(self.action_area.get_children()[0])
+        self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
+        self.add_button(gtk.STOCK_APPLY, gtk.RESPONSE_CLOSE)
+        self.listcontainer.list.connect('row-activated',
+                                        self._on_listcontainer_row_activated)
+        self.connect('response', self._on_dialog__response)
+
+    def _on_dialog__response(self, dialog, response):
+        if response == gtk.RESPONSE_CLOSE:
+            self.retval = self.listcontainer.list.get_selected()
+
+    def _on_listcontainer_row_activated(self, addresses, address):
+        self.response(gtk.RESPONSE_CLOSE)
+
+    def populate(self):
+        return Address.selectBy(
+            person=self.person,
+            connection=self.conn)
 
     def run_editor(self, trans, model):
         return self.run_dialog(AddressEditor,

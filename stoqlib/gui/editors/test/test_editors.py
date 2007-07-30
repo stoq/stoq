@@ -118,7 +118,6 @@ def _create_slave_test():
         'CashOutEditor': ' ',
         'CashInEditor': ' ',
         'CashAdvanceEditor': '.glade warnings',
-        'DeliveryEditor': ' ',
         'ProductStockHistoryDialog': ' ',
         'ProductSupplierEditor' : ' ',
         'EmployeeRoleSlave': 'duplicated role histories',
