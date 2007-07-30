@@ -29,6 +29,7 @@
 import datetime
 from decimal import Decimal
 
+import pango
 import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
@@ -70,18 +71,19 @@ class SaleSearch(SearchDialog):
 
     def get_columns(self):
         return [Column('id', title=_('Number'), width=70,
-                       data_type=int, sorted=True),
-                Column('open_date', title=_('Date Started'), width=120,
+                       data_type=int, sorted=True, order=gtk.SORT_DESCENDING),
+                Column('open_date', title=_('Date Started'), width=80,
                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 Column('client_name', title=_('Client'),
-                       data_type=str, width=140),
+                       data_type=str, width=200,
+                       ellipsize=pango.ELLIPSIZE_END),
                 Column('salesperson_name', title=_('Salesperson'),
-                       data_type=str, width=170, expand=True),
-                Column('total_quantity', title=_('Items Quantity'),
-                       data_type=Decimal, width=120,
+                       data_type=str, width=200, expand=True),
+                Column('total_quantity', title=_('Items'),
+                       data_type=Decimal, width=50,
                        format_func=format_quantity),
                 Column('total', title=_('Total'), data_type=currency,
-                       width=80)]
+                       width=100)]
 
     #
     # Private
