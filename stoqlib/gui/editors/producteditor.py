@@ -123,7 +123,7 @@ class ProductSupplierEditor(BaseEditor):
         # Don't update the model if the proxy is not created,
         # since content-changed is potentially called very early
         if not self.prod_supplier_proxy:
-            return;
+            return
         selected_supplier = self.supplier_combo.get_selected_data()
 
         # Kiwi proxy already sets the supplier attribute to new selected
