@@ -90,9 +90,9 @@ class _SaleItem(object):
     def total(self):
         # Delivery has no has no
         if self.quantity is None:
-            return self.price
+            return currency(self.price)
 
-        return self.price * self.quantity
+        return currency(self.price * self.quantity)
 
 
 class POSApp(AppWindow):
@@ -104,7 +104,6 @@ class POSApp(AppWindow):
 
     def __init__(self, app):
         AppWindow.__init__(self, app)
-        self.sale = None
         self._delivery = None
         self.param = sysparam(self.conn)
         self.max_results = self.param.MAX_SEARCH_RESULTS
@@ -198,10 +197,7 @@ class POSApp(AppWindow):
         self.order_total_label.set_bold(True)
 
     def _update_totals(self):
-        if self.sale:
-            subtotal = self.sale.get_sale_subtotal()
-        else:
-            subtotal = currency(0)
+        subtotal = currency(sum([item.total for item in self.sale_items]))
         text = _(u"Total: %s") % converter.as_string(currency, subtotal)
         self.order_total_label.set_text(text)
 
