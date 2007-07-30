@@ -154,14 +154,6 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="ResetOrder">
-                        <property name="name">ResetOrder</property>
-                        <property name="label" translatable="yes">_New Order...</property>
-                        <property name="tooltip" translatable="yes">Reset the order</property>
-                        <property name="accelerator">&lt;Control&gt;F3</property>
-                    </widget>
-                </child>
-                <child>
                     <widget class="GtkAction" id="Sales">
                         <property name="name">Sales</property>
                         <property name="label" translatable="yes">Sales...</property>
@@ -248,7 +240,6 @@
         <ui id="initial-state"><![CDATA[<ui>
             <menubar action="menubar">
               <menu action="SalesMenu">
-                <menuitem action="ResetOrder"/>
                 <menuitem action="CancelOrder"/>
                 <separator name="sep"/>
                 <menuitem action="NewDelivery"/>

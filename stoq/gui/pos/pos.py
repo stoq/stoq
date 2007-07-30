@@ -273,6 +273,7 @@ class POSApp(AppWindow):
         self.set_sensitive((self.checkout_button, self.remove_item_button,
                             self.PrintOrder, self.NewDelivery,
                             self.OrderCheckout), has_sale_items)
+        self.CancelOrder.set_sensitive(has_sale_items)
         self.delivery_button.set_sensitive(has_sale_items)
         self.NewDelivery.set_sensitive(has_sale_items)
         sale_item = self.sale_items.get_selected()
@@ -561,9 +562,6 @@ class POSApp(AppWindow):
 
     def on_CancelOrder__activate(self, action):
         self._cancel_order()
-
-    def on_ResetOrder__activate(self, action):
-        self._new_order()
 
     def on_Clients__activate(self, action):
         self.run_dialog(ClientSearch, self.conn, hide_footer=True)
