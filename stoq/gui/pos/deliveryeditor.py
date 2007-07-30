@@ -28,7 +28,7 @@
 import datetime
 from decimal import Decimal
 
-from kiwi.datatypes import ValidationError, currency
+from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column, ObjectList
 
 from stoqlib.domain.person import ClientView
@@ -158,9 +158,10 @@ class DeliveryEditor(BaseEditor):
         self.client.prefill(sorted(items))
 
         self.proxy = self.add_proxy(self.model, DeliveryEditor.proxy_widgets)
+        if not self.model.client:
+            self.change_address_button.set_sensitive(False)
 
     def setup_slaves(self):
-        self.change_address_button.set_sensitive(False)
 
         self.items = ObjectList(columns=self._get_sale_items_columns(),
                                 objects=self.sale_items)
