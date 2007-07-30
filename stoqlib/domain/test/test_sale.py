@@ -437,3 +437,24 @@ class TestSale(DomainTest):
                                           connection=self.trans)
         self.assertEquals(commissions.count(), 1)
         self.assertEquals(commissions[0].value, Decimal('56.00'))
+
+class TestSaleItem(DomainTest):
+    def testGetTotal(self):
+        sale = self.create_sale()
+        product = self.create_product(price=10)
+        sale_item = sale.add_sellable(product, quantity=None)
+
+        self.assertEqual(sale_item.get_total(), 10)
+
+        sale = self.create_sale()
+        product = self.create_product(price=10)
+        sale_item = sale.add_sellable(product, quantity=5)
+
+        self.assertEqual(sale_item.get_total(), 50)
+
+
+    def testGetDescription(self):
+        sale = self.create_sale()
+        product = self.create_product()
+        sale_item = sale.add_sellable(product)
+        self.assertEqual(sale_item.get_description(), 'Description')

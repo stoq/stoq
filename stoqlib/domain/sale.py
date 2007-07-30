@@ -145,7 +145,8 @@ class SaleItem(Domain):
     #
 
     def get_total(self):
-        return currency(self.price * self.quantity)
+        quantity = self.quantity or 1
+        return currency(self.price * quantity)
 
     def get_quantity_unit_string(self):
         return "%s %s" % (self.quantity, self.sellable.get_unit_description())
@@ -166,6 +167,8 @@ class SaleItem(Domain):
     def has_been_totally_delivered(self):
         return self.get_quantity_delivered() == self.quantity
 
+    def get_description(self):
+        return self.sellable.base_sellable_info.get_description()
 
 
 class DeliveryItem(Domain):
