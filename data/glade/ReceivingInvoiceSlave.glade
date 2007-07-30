@@ -331,7 +331,7 @@
                         <child>
                             <widget class="ProxyLabel" id="discount_label">
                                 <property name="data_type">currency</property>
-                                <property name="label" context="yes" translatable="yes">&lt;span color="red"&gt;Discount ($CURRENCY):&lt;/span&gt;</property>
+                                <property name="label" context="yes" translatable="yes">Discount ($CURRENCY):</property>
                                 <property name="model_attribute">discount_label</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
