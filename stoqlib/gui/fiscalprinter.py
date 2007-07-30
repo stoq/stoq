@@ -26,7 +26,6 @@ import sys
 
 import gobject
 import gtk
-from kiwi.argcheck import argcheck
 from kiwi.log import Logger
 from kiwi.utils import gsignal
 from stoqdrivers.exceptions import (DriverError, CouponOpenError,
@@ -35,7 +34,6 @@ from zope.interface import implements
 
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.interfaces import IContainer
-from stoqlib.domain.sale import SaleItem
 from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError, TillError
@@ -125,12 +123,11 @@ class FiscalPrinterHelper:
 
         return False
 
-    def create_coupon(self, sale):
+    def create_coupon(self):
         """
-        @param sale: a L{stoqlib.domain.sale.Sale}
         @returns: a new coupon
         """
-        return FiscalCoupon(self._parent, sale)
+        return FiscalCoupon(self._parent)
 
 
 class FiscalCoupon(gobject.GObject):
@@ -150,14 +147,12 @@ class FiscalCoupon(gobject.GObject):
     gsignal('close', retval=int)
     gsignal('cancel')
 
-    def __init__(self, parent, sale):
+    def __init__(self, parent):
         gobject.GObject.__init__(self)
 
-        log.info("Creating a new FiscalCoupon for sale %r" % (sale,))
         CouponCreatedEvent.emit(self)
 
         self._parent = parent
-        self._sale = sale
         self._item_ids = {}
 
     def emit(self, signal, *args):
@@ -182,10 +177,9 @@ class FiscalCoupon(gobject.GObject):
     # IContainer implementation
     #
 
-    @argcheck(SaleItem)
     def add_item(self, sale_item):
         """
-        @param sale_item: A L{SaleItem}
+        @param sale_item: a sale item
         @returns: id of the sale_item.:
           0 >= if it was added successfully
           -1 if an error happend
@@ -209,7 +203,6 @@ class FiscalCoupon(gobject.GObject):
     def get_items(self):
         return self._item_ids.keys()
 
-    @argcheck(SaleItem)
     def remove_item(self, sale_item):
         if isinstance(sale_item.sellable.get_adapted(), GiftCertificate):
             return 0
@@ -260,13 +253,13 @@ class FiscalCoupon(gobject.GObject):
                 return False
         return True
 
-    def totalize(self):
+    def totalize(self, sale):
         # XXX: Remove this when bug #2827 is fixed.
         if not self._item_ids:
             return True
 
         try:
-            self.emit('totalize', self._sale)
+            self.emit('totalize', sale)
         except DriverError, details:
             warning(_(u"It is not possible to totalize the coupon"),
                     str(details))
@@ -281,7 +274,7 @@ class FiscalCoupon(gobject.GObject):
         return True
 
     # FIXME: Rename to add_payment_group(group)
-    def setup_payments(self):
+    def setup_payments(self, sale):
         """ Add the payments defined in the sale to the coupon. Note that this
         function must be called after all the payments has been created.
         """
@@ -290,7 +283,7 @@ class FiscalCoupon(gobject.GObject):
             return True
 
         try:
-            self.emit('add-payments', self._sale)
+            self.emit('add-payments', sale)
         except DeviceError, e:
             warning(_(u"It is not possible to add payments to the coupon"),
                     str(e))
@@ -298,14 +291,15 @@ class FiscalCoupon(gobject.GObject):
 
         return True
 
-    def close(self):
+    def close(self, sale):
         # XXX: Remove this when bug #2827 is fixed.
         if not self._item_ids:
             return True
         try:
             coupon_id = self.emit('close')
+            return True
         except DriverError, details:
             warning(_("It's not possible to close the coupon"), str(details))
-            return False
-        self._sale.coupon_id = coupon_id
-        return True
+
+        sale.coupon_id = coupon_id
+        return False
