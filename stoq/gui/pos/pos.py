@@ -88,10 +88,6 @@ class _SaleItem(object):
 
     @property
     def total(self):
-        # Delivery has no has no
-        if self.quantity is None:
-            return currency(self.price)
-
         return currency(self.price * self.quantity)
 
 
@@ -435,7 +431,7 @@ class POSApp(AppWindow):
                 break
         else:
             delivery_item = _SaleItem(sellable=delivery_service,
-                                      quantity=None,
+                                      quantity=1,
                                       price=delivery.price)
             new_item = True
 
