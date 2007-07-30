@@ -29,6 +29,7 @@ import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import ValidationError
+from kiwi.python import any
 from kiwi.ui.widgets.list import Column, ObjectList
 
 from stoqlib.domain.person import ClientView
@@ -80,10 +81,7 @@ class DeliveryEditor(BaseEditor):
 
     def _validate_widgets(self, validation_value):
         if validation_value:
-            for item in self.items:
-                if not item.deliver:
-                    validation_value = False
-                    break
+            validation_value = any(item.deliver for item in self.items)
         self.refresh_ok(validation_value)
 
     def _update_widgets(self):

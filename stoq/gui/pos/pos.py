@@ -282,7 +282,8 @@ class POSApp(AppWindow):
         sale_item = self.sale_items.get_selected()
         self.edit_item_button.set_sensitive(
             sale_item is not None and
-            isinstance(sale_item.sellable.get_adapted(), Service))
+            isinstance(sale_item.sellable.get_adapted(), Service) and
+            sale_item.sellable != sysparam(self.conn).DELIVERY_SERVICE)
         self._update_totals()
         self._update_add_button()
 
@@ -383,9 +384,7 @@ class POSApp(AppWindow):
         self._coupon = None
 
     def _edit_sale_item(self, sale_item):
-        if sale_item.sellable == sysparam(self.conn).DELIVERY_SERVICE:
-            self._add_delivery()
-        elif isinstance(sale_item.sellable.get_adapted(), Service):
+        if isinstance(sale_item.sellable.get_adapted(), Service):
             model = self.run_dialog(ServiceItemEditor, self.conn, sale_item)
             if model:
                 self.sale_items.update(sale_item)
