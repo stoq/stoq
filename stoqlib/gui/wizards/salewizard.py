@@ -634,6 +634,8 @@ class _AbstractSalesPersonStep(WizardEditorStep):
         self.setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     _AbstractSalesPersonStep.proxy_widgets)
+        if self.model.client:
+            self.client.set_sensitive(False)
 
     #
     # Callbacks
