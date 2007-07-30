@@ -234,10 +234,16 @@ class TestPerson(DomainTest):
         person.phone_number = '0321-12345'
         self.assertEquals(person.get_phone_number_number(), 32112345)
 
+        person.phone_number = None
+        self.assertEquals(person.get_phone_number_number(), 0)
+
     def testGetFaxNumberNumber(self):
         person = self.create_person()
         person.fax_number = '0321-12345'
         self.assertEquals(person.get_fax_number_number(), 32112345)
+
+        person.fax_number = None
+        self.assertEquals(person.get_fax_number_number(), 0)
 
     def testGetFormattedPhoneNumber(self):
         person = self.create_person()

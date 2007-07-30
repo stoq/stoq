@@ -256,6 +256,8 @@ class Person(Domain):
         @returns: the phone number as a number
         @rtype: integer
         """
+        if not self.phone_number:
+            return 0
         return int(''.join([c for c in self.phone_number
                                   if c in '1234567890']))
     def get_fax_number_number(self):
@@ -264,6 +266,8 @@ class Person(Domain):
         @returns: the fax number as a number
         @rtype: integer
         """
+        if not self.fax_number:
+            return 0
         return int(''.join([c for c in self.fax_number
                                   if c in '1234567890']))
 
