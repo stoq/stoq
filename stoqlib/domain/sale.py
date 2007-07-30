@@ -145,8 +145,7 @@ class SaleItem(Domain):
     #
 
     def get_total(self):
-        quantity = self.quantity or 1
-        return currency(self.price * quantity)
+        return currency(self.price * self.quantity)
 
     def get_quantity_unit_string(self):
         return "%s %s" % (self.quantity, self.sellable.get_unit_description())
