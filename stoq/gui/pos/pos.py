@@ -369,6 +369,7 @@ class POSApp(AppWindow):
                        self.CancelOrder):
             widget.set_sensitive(True)
         self._coupon = None
+        self._delivery = None
 
         self._reset_quantity_proxy()
         self.barcode.set_text('')
