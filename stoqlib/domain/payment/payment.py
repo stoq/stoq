@@ -125,11 +125,14 @@ class Payment(Domain):
         return self.statuses[self.status]
 
     def get_days_late(self):
-        days_late = datetime.datetime.today() - self.due_date
+        if self.status == Payment.STATUS_PAID:
+            return 0
+
+        days_late = datetime.date.today() - self.due_date.date()
         if days_late.days < 0:
             return 0
-        else:
-            return days_late.days
+
+        return days_late.days
 
     def set_pending(self):
         """Set a STATUS_PREVIEW payment as STATUS_PENDING. This also means
