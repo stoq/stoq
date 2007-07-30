@@ -253,7 +253,9 @@ class SearchDialog(BasicDialog):
         @param obj: the item that was double clicked.
         """
         if self.double_click_confirm:
-            self.confirm()
+            # But only if its also confirmable with ok_button
+            if self.ok_button.props.sensitive:
+                self.confirm()
 
     #
     # Filters
