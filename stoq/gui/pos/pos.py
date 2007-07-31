@@ -499,7 +499,6 @@ class POSApp(AppWindow):
                 return
 
             log.info("Checking out")
-            self._cancel_coupon()
             trans.close()
 
         self._clear_order()
