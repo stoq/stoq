@@ -501,6 +501,9 @@ class POSApp(AppWindow):
             log.info("Checking out")
             trans.close()
 
+            # self.conn is infact a transaction, do a commit to bring
+            # the objects from trans into self.conn
+            self.conn.commit()
         self._clear_order()
 
     def _confirm_order(self, trans, sale):
