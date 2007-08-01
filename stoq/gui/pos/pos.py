@@ -143,7 +143,7 @@ class POSApp(AppWindow):
                                               self.advanced_search])
 
     def get_columns(self):
-        return [Column('code', title=_('Reference'), sorted=True,
+        return [Column('code', title=_('Reference'), 
                        data_type=int, width=95, justify=gtk.JUSTIFY_RIGHT,
                        format='%05d'),
                 Column('description',
