@@ -130,9 +130,9 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
     if not dbname:
         dbname = username + '_test'
     if not address:
-        address = "localhost"
+        address = os.environ.get('PGHOST', 'localhost')
     if not port:
-        port = "5432"
+        port = os.environ.get('PGPORT', '5432')
     if not password:
         password = ""
 
