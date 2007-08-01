@@ -67,7 +67,7 @@ class ProductStockHistoryDialog(BaseEditor):
                                             connection=self.conn)
         self.receiving_list.add_list(list(items))
 
-        items = SaleItem.selectBy(sellable=self.mode, connection=self.conn)
+        items = SaleItem.selectBy(sellable=self.model, connection=self.conn)
         self.sales_list.add_list(list(items))
 
         value_format = '<b>%s</b>'
