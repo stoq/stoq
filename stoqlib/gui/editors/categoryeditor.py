@@ -26,6 +26,7 @@
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.slaves.categoryslave import CategoryTributarySituationSlave
 from stoqlib.gui.slaves.commissionslave import CategoryCommissionSlave
 
 from stoqlib.lib.parameters import sysparam
@@ -51,7 +52,6 @@ class BaseSellableCategoryEditor(BaseEditor):
 
     def setup_combo(self):
         self.tax_constant.prefill(
-            [(_('(unset)'), None)] +
             [(c.description, c)
                   for c in SellableTaxConstant.select(connection=self.conn)])
 
@@ -99,6 +99,10 @@ class SellableCategoryEditor(BaseEditor):
         self.attach_slave('on_commission_data_holder', commission_slave)
         cat = self.category.get_selected_label()
         commission_slave.change_label('Calculate Commission From: %s' % cat)
+
+        tax_slave = CategoryTributarySituationSlave(self.conn,
+                                                    self.model)
+        self.attach_slave("on_tax_holder", tax_slave)
 
     def setup_proxies(self):
         # We need to prefill combobox before to set a proxy, since we want

@@ -34,6 +34,7 @@ from stoqdrivers.enum import TaxType
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.sellableeditor import SellableEditor
+from stoqlib.gui.slaves.serviceslave import ServiceTributarySituationSlave
 from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.service import Service
 from stoqlib.domain.sellable import (BaseSellableInfo,
@@ -80,6 +81,11 @@ class ServiceItemEditor(BaseEditor):
 class ServiceEditor(SellableEditor):
     model_name = 'Service'
     model_type = Service
+
+    def setup_slaves(self):
+        tax_slave = ServiceTributarySituationSlave(self.conn,
+                                                   ISellable(self.model))
+        self.attach_slave("tax_holder", tax_slave)
 
     def setup_widgets(self):
         self.notes_lbl.set_text(_('Service details'))
