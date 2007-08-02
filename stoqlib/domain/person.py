@@ -670,7 +670,7 @@ class PersonAdaptToBranch(PersonAdapter):
     statuses = {STATUS_ACTIVE:      _(u'Active'),
                 STATUS_INACTIVE:    _(u'Inactive')}
 
-    manager = ForeignKey('Person', default=None)
+    manager = ForeignKey('PersonAdaptToEmployee', default=None)
     is_active = BoolCol(default=True)
 
     #
@@ -900,6 +900,7 @@ class EmployeeView(Viewable):
         name=Person.q.name,
         role=EmployeeRole.q.name,
         status=PersonAdaptToEmployee.q.status,
+        is_active=PersonAdaptToEmployee.q.is_active,
         registry_number=PersonAdaptToEmployee.q.registry_number,
         )
 
@@ -917,6 +918,14 @@ class EmployeeView(Viewable):
     def employee(self):
         return PersonAdaptToEmployee.get(self.employee_id,
                                          connection=self.get_connection())
+
+    @classmethod
+    def get_active_employees(cls, conn):
+        """Return a list of active employees."""
+        return cls.select(
+            AND(cls.q.status == PersonAdaptToEmployee.STATUS_NORMAL,
+                cls.q.is_active == True),
+                connection=conn)
 
 
 class SupplierView(Viewable):

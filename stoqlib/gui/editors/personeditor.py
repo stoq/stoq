@@ -367,7 +367,6 @@ class BranchEditor(BasePersonRoleEditor):
         if branch is None:
             branch = person.addFacet(IBranch, connection=conn)
 
-        branch.manager = Person(connection=self.conn, name="")
         return branch
 
     def setup_slaves(self):

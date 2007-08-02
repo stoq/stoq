@@ -69,6 +69,9 @@ class SintegraTest(DomainTest):
                          connection=self.trans)
 
         branch = get_current_branch(self.trans)
+        user = self.create_employee()
+        branch.manager = user
+        manager = branch.manager.get_adapted()
         company = ICompany(branch.person)
         address = branch.person.get_main_address()
 
@@ -87,7 +90,7 @@ class SintegraTest(DomainTest):
                                 address.complement,
                                 address.district,
                                 address.get_postal_code_number(),
-                                company.fancy_name,
+                                manager.name,
                                 branch.person.get_phone_number_number())
 
         for item in FiscalDayHistory.select(connection=self.trans):

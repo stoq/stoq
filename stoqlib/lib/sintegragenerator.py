@@ -70,6 +70,7 @@ class StoqlibSintegraGenerator(object):
 
     def _add_header(self):
         branch = get_current_branch(self.conn)
+        manager = branch.manager.get_adapted()
         company = ICompany(branch.person)
         address = branch.person.get_main_address()
 
@@ -88,7 +89,7 @@ class StoqlibSintegraGenerator(object):
                                             address.complement,
                                             address.district,
                                             address.get_postal_code_number(),
-                                            company.fancy_name,
+                                            manager.name,
                                             branch.person.get_phone_number_number())
 
         self._add_fiscal_coupons()

@@ -438,7 +438,6 @@ class TestUser(_PersonFacetTest, DomainTest):
         string = user.get_status_string()
         self.assertEquals(string, _(u'Inactive'))
 
-
 class TestBranch(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToBranch
 
@@ -454,8 +453,9 @@ class TestBranch(_PersonFacetTest, DomainTest):
         person = self.create_person()
         person.addFacet(ICompany, connection=self.trans)
         count = PersonAdaptToBranch.get_active_branches(self.trans).count()
+        manager = self.create_employee()
         branch = person.addFacet(IBranch, connection=self.trans,
-                                 manager=person, is_active=True)
+                                 manager=manager, is_active=True)
         assert branch.get_active_branches(self.trans).count() == count + 1
 
 
