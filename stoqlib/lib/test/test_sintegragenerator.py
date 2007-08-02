@@ -2,6 +2,8 @@ import datetime
 
 from stoqdrivers.enum import TaxType
 
+from stoqlib.database.runtime import get_current_branch
+
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
@@ -20,6 +22,9 @@ class TestSintegraGenerator(DomainTest):
         order.freight_total = 6
         order.secure_value = 6
         order.expense_value = 12
+        employee = self.create_employee()
+        branch = get_current_branch(self.trans)
+        branch.manager = employee
 
         order.purchase.status = order.purchase.ORDER_PENDING
 
