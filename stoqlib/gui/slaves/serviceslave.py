@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,22 +19,26 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Henrique Romano      <henrique@async.com.br>
-##              Lincoln Molica       <lincoln@async.com.br>
-##              Johan Dahlin         <jdahlin@async.com.br>
+## Author(s):   George Kussumoto    <george@async.com.br>
 ##
-""" Slaves for products """
+""" Slaves for services """
 
 from stoqdrivers.enum import TaxType
 
 from stoqlib.gui.slaves.sellableslave import TributarySituationSlave
-from stoqlib.domain.product import ProductAdaptToSellable
 from stoqlib.domain.sellable import SellableTaxConstant
+from stoqlib.domain.service import ServiceAdaptToSellable
+from stoqlib.lib.translation import stoqlib_gettext
 
-class ProductTributarySituationSlave(TributarySituationSlave):
-    model_type = ProductAdaptToSellable
+_ = stoqlib_gettext
+
+
+class ServiceTributarySituationSlave(TributarySituationSlave):
+    model_type = ServiceAdaptToSellable
 
     def setup_combos(self):
-        constants = SellableTaxConstant.select(connection=self.trans)
-        self.tax_constant.prefill([(c.description, c) for c in constants
-                                    if c.tax_type != TaxType.SERVICE])
+        service_tax = SellableTaxConstant.get_by_type(TaxType.SERVICE,
+                                                      self.conn)
+        taxes = [(_('No tax'), None),
+                 (service_tax.description, service_tax)]
+        self.tax_constant.prefill(taxes)

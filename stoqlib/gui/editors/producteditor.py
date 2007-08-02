@@ -40,7 +40,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.gui.editors.sellableeditor import SellableEditor
-from stoqlib.gui.slaves.productslave import TributarySituationSlave
+from stoqlib.gui.slaves.productslave import ProductTributarySituationSlave
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -214,11 +214,12 @@ class ProductEditor(SellableEditor):
 
     def setup_slaves(self):
         supplier_slave = ProductSupplierSlave(self.conn, self.model)
-        tax_slave = TributarySituationSlave(self.conn, ISellable(self.model))
         supplier_slave.connect("cost-changed",
                                self._on_supplier_slave__cost_changed)
         self.attach_slave('product_supplier_holder', supplier_slave)
         # XXX: tax_holder is a Brazil-specifc area
+        tax_slave = ProductTributarySituationSlave(self.conn,
+                                                   ISellable(self.model))
         self.attach_slave("tax_holder", tax_slave)
 
     def setup_widgets(self):
