@@ -23,10 +23,9 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyEntry" id="manager">
-                        <property name="data_type">unicode</property>
-                        <property name="is_focus">True</property>
-                        <property name="model_attribute">manager.name</property>
+                    <widget class="ProxyComboEntry" id="manager">
+                        <property name="data_type">object</property>
+                        <property name="model_attribute">manager</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>

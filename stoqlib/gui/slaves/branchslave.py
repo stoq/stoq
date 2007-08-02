@@ -20,12 +20,15 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s): Bruno Rafael Garcia         <brg@async.com.br>
+##            Fabio Morbec                <fabio@async.com.br>
 ##
 ##
 """ General slaves for branch management"""
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.domain.interfaces import IBranch
+from stoqlib.domain.person import EmployeeView
+from stoqlib.lib.parameters import sysparam
 
 
 class BranchDetailsSlave(BaseEditorSlave):
@@ -34,6 +37,15 @@ class BranchDetailsSlave(BaseEditorSlave):
     proxy_widgets = ('active_check',
                      'manager')
 
+    def _setup_manager_entry(self):
+        employees = EmployeeView.get_active_employees(self.conn)
+        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
+        employees = employees[:max_results]
+        items = [(e.name, e.employee) for e in employees]
+        self.manager.prefill(sorted(items))
+
     def setup_proxies(self):
+        self._setup_manager_entry()
         self.proxy = self.add_proxy(self.model,
                                     BranchDetailsSlave.proxy_widgets)
+
