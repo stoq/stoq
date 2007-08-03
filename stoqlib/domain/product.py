@@ -118,11 +118,12 @@ class Product(Domain):
     # General Methods
     #
 
-    def block(self, conn, quantity, branch, reason, product):
+    def block(self, quantity, branch, reason, product):
         storable = IStorable(self)
         storable.decrease_stock(quantity, branch)
         return ProductRetentionHistory(quantity=quantity, product=product,
-                                       reason=reason, connection=conn)
+                                       reason=reason,
+                                       connection=self.get_connection())
 
     #
     # Acessors

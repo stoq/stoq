@@ -87,6 +87,6 @@ class ProductRetentionDialog(BaseEditor):
 
     def on_confirm(self):
         return self.product.block(quantity=self.model.quantity,
-                                  conn=self.conn, branch=self.branch,
+                                  branch=self.branch,
                                   reason=self.model.reason,
                                   product=self.product)
