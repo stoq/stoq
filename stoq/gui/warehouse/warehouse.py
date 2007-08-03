@@ -123,6 +123,24 @@ class WarehouseApp(SearchableAppWindow):
     def _update_filter_slave(self, slave):
         self.refresh()
 
+    def _retend_stock(self, sellable_view):
+        storable = IStorable(sellable_view.product, None)
+        warehouse_branch = get_current_branch(self.conn)
+        if (not storable
+            or not storable.get_full_balance(warehouse_branch)):
+            warning(_(u"You must have at least one item "
+                      "in stock to perfom this action."))
+            return
+        trans = new_transaction()
+        product = trans.get(sellable_view.product)
+        model = self.run_dialog(ProductRetentionDialog, trans,
+                                product)
+        if not finish_transaction(trans, model):
+            return
+        self.conn.commit()
+        sellable_view.sync()
+        self.results.update(sellable_view)
+
     #
     # Callbacks
     #
@@ -142,19 +160,7 @@ class WarehouseApp(SearchableAppWindow):
 
     def on_retention_button__clicked(self, button):
         sellable_view = self.results.get_selected_rows()[0]
-        storable = IStorable(sellable_view.product, None)
-        warehouse_branch = get_current_branch(self.conn)
-        if (not storable
-            or not storable.get_full_balance(warehouse_branch)):
-            warning(_(u"You must have at least one item "
-                      "in stock to perfom this action."))
-            return
-        model = self.run_dialog(ProductRetentionDialog, self.conn,
-                                sellable_view.product)
-        if not finish_transaction(self.conn, model):
-            return
-        sellable_view.sync()
-        self.results.update(sellable_view)
+        self._retend_stock(sellable_view)
 
     def on_ProductHistory__activate(self, action):
         self.run_dialog(ProductSearchQuantity, self.conn)
