@@ -43,7 +43,7 @@ from stoqlib.database.runtime import (new_transaction,
                                       get_current_branch)
 from stoqlib.domain.interfaces import IDelivery, IPaymentGroup, ISalesPerson
 from stoqlib.domain.devices import DeviceSettings
-from stoqlib.domain.product import ProductAdaptToSellable, IStorable
+from stoqlib.domain.product import ProductAdaptToSellable, IStorable, Product
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import ASellable
@@ -270,7 +270,13 @@ class POSApp(AppWindow):
                             self.PrintOrder, self.NewDelivery,
                             self.OrderCheckout), has_sale_items)
         self.CancelOrder.set_sensitive(has_sale_items)
-        self.delivery_button.set_sensitive(has_sale_items)
+        has_products = False
+        for sale_item in self.sale_items:
+            if sale_item and isinstance(sale_item.sellable.get_adapted(),
+                                        Product):
+                has_products = True
+                break
+        self.delivery_button.set_sensitive(has_products)
         self.NewDelivery.set_sensitive(has_sale_items)
         sale_item = self.sale_items.get_selected()
         self.edit_item_button.set_sensitive(
