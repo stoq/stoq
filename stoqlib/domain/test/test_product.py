@@ -30,12 +30,10 @@
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.sellable import BaseSellableInfo, ASellable
 from stoqlib.domain.payment.methods import MoneyPM
-from stoqlib.domain.person import Person
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductHistory)
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.interfaces import (IStorable, IBranch, ISellable,
-                                       IPaymentGroup)
+from stoqlib.domain.interfaces import IStorable, ISellable, IPaymentGroup
 
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -53,12 +51,6 @@ class TestProduct(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
         self.product = Product(connection=self.trans)
-
-    def test_facet_IStorable_add(self):
-        self.failIf(IStorable(self.product, None))
-        storable = self.product.addFacet(IStorable, connection=self.trans)
-        branches_count = Person.iselect(IBranch, connection=self.trans).count()
-        self.assertEqual(storable.get_stock_items().count(), branches_count)
 
     def test_get_main_supplier_info(self):
         self.failIf(self.product.get_main_supplier_info())
@@ -80,11 +72,12 @@ class TestProductSellableItem(DomainTest):
         storable = product.addFacet(IStorable, connection=self.trans)
 
         branch = get_current_branch(self.trans)
+        storable.increase_stock(2, branch)
         stock_item = storable.get_stock_item(branch)
         assert stock_item is not None
         current_stock = stock_item.quantity
         if current_stock:
-            storable.decrease_stock(branch, current_stock)
+            storable.decrease_stock(current_stock, branch)
         assert not storable.get_stock_item(branch).quantity
         sold_qty = 2
         storable.increase_stock(sold_qty, branch)
