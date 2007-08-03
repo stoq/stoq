@@ -224,18 +224,9 @@ class ProductAdaptToStorable(ModelAdapter):
 
     retention = MultipleJoin('ProductRetentionHistory')
 
-    def _create(self, id, **kwargs):
-        super(ProductAdaptToStorable, self)._create(id, **kwargs)
-        self._fill_stocks()
-
     #
     # Private
     #
-
-    def _fill_stocks(self):
-        for branch in Person.iselect(IBranch,
-                                     connection=self.get_connection()):
-            self._add_stock_item(branch)
 
     def _check_logic_quantity(self):
         if sysparam(self.get_connection()).USE_LOGIC_QUANTITY:
@@ -263,14 +254,6 @@ class ProductAdaptToStorable(ModelAdapter):
             raise StockError('Quantity to sell is greater than the available '
                              'stock.')
         return qty_ok
-
-    def _add_stock_item(self, branch, stock_cost=0.0, quantity=0.0,
-                        logic_quantity=0.0):
-        conn = self.get_connection()
-        return ProductStockItem(connection=conn, branch=branch,
-                                stock_cost=stock_cost, quantity=quantity,
-                                logic_quantity=logic_quantity,
-                                storable=self)
 
     @argcheck(Person.getAdapterClass(IBranch))
     def _get_stocks(self, branch=None):
@@ -317,7 +300,7 @@ class ProductAdaptToStorable(ModelAdapter):
 
         stock_item = self.get_stock_item(branch)
         if stock_item is None:
-            # FIXME: set stock_cost/logic_quantity
+            # If the stock_item is missing create a new one
             stock_item = ProductStockItem(
                 storable=self,
                 branch=branch,
