@@ -327,13 +327,9 @@ class Person(Domain):
         return adapter_klass(self, **kwargs)
 
     def facet_IBranch_add(self, **kwargs):
-        from stoqlib.domain.product import storables_set_branch
         ICompany(self)
         adapter_klass = self.getAdapterClass(IBranch)
         branch = adapter_klass(self, **kwargs)
-        # XXX I'm not sure yet if this is the right place to update stocks
-        # probably a hook called inside commit could be better...
-        storables_set_branch(self._connection, branch)
         return branch
 
     def facet_ISalesPerson_add(self, **kwargs):
