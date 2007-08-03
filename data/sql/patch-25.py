@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #2300: Implementar esqueleto inicial da aplicação de inventário.
 # copy warehouse's profile to the inventory app
 from stoqlib.domain.profile import ProfileSettings
