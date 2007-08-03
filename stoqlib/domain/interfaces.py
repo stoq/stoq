@@ -330,6 +330,13 @@ class ISupplier(IPersonFacet):
                              'this supplier produces')
     status = Attribute('active, inactive, blocked')
 
+    def get_supplier_purchases():
+        """
+        @returns: a list of PurchaseOrderViews representing all purchases
+          done from this supplier.
+        """
+
+
 class IEmployee(IPersonFacet):
     """An individual who performs work for an employer under a verbal
     or written understanding where the employer gives direction as to

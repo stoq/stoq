@@ -588,10 +588,6 @@ class PersonAdaptToSupplier(PersonAdapter):
         return cls.select(query, connection=conn)
 
     def get_supplier_purchases(self):
-        """
-        @returns: a list of PurchaseOrderViews representing all purchases
-          done from this supplier.
-        """
         from stoqlib.domain.purchase import PurchaseOrderView
         return PurchaseOrderView.select(
             # FIXME: should of course use id, fix this
