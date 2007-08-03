@@ -47,6 +47,7 @@ def register_iconsets():
                  ("stoq-pos-app", "pos_24.png"),
                  ("stoq-till-app", "till_24.png"),
                  ("stoq-warehouse-app", "warehouse_24.png"),
+                 ("stoq-inventory-app", "inventory_24.png"),
                  ("stoq-purchase-app", "gnome-gnomine48px.png"),
                  ("stoq-sales-app", "gnome-log48px.png"),
                  ("stoq-payable-app", "gnome-money-red48px.png")]
