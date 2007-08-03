@@ -415,15 +415,3 @@ class ProductAdaptToStorable(ModelAdapter):
                                             connection=self.get_connection())
 
 Product.registerFacet(ProductAdaptToStorable, IStorable)
-
-#
-# Auxiliary functions
-#
-
-
-def storables_set_branch(conn, branch):
-    """A method that must be called always when a new branch company is
-    created. It creates a new stock reference for all the products.
-    """
-    for storable in ProductAdaptToStorable.select(connection=conn):
-        storable._add_stock_item(branch)
