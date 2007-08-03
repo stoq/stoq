@@ -132,6 +132,9 @@ class DeliveryEditor(BaseEditor):
         if price == 0:
             return ValidationError(
                 _("The Delivery cost must be more than 0."))
+        if price < 0:
+            return ValidationError(
+                _("The Delivery cost must be a positive value."))
 
     def on_client__content_changed(self, combo):
         client = combo.get_selected_data()
