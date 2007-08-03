@@ -571,3 +571,6 @@ class PurchaseOrderView(SQLObject, BaseSQLView):
     @property
     def purchase(self):
         return PurchaseOrder.get(self.id)
+
+    def get_status_name(self):
+        return self.purchase.translate_status(self.status)

@@ -587,6 +587,19 @@ class PersonAdaptToSupplier(PersonAdapter):
         query = cls.q.status == cls.STATUS_ACTIVE
         return cls.select(query, connection=conn)
 
+    def get_supplier_purchases(self):
+        """
+        @returns: a list of PurchaseOrderViews representing all purchases
+          done from this supplier.
+        """
+        from stoqlib.domain.purchase import PurchaseOrderView
+        return PurchaseOrderView.select(
+            # FIXME: should of course use id, fix this
+            #        when migrating PurchaseOrderView from views.sql
+            PurchaseOrderView.q.supplier_name == self.person.name,
+            connection=self.get_connection(),
+            orderBy=PurchaseOrderView.q.open_date)
+
 Person.registerFacet(PersonAdaptToSupplier, ISupplier)
 
 class PersonAdaptToEmployee(PersonAdapter):
