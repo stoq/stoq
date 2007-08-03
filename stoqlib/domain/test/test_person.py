@@ -55,6 +55,7 @@ from stoqlib.domain.person import (Person,
                                    PersonAdaptToTransporter)
 from stoqlib.domain.product import Product
 from stoqlib.domain.profile import UserProfile
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.translation import stoqlib_gettext
@@ -64,20 +65,22 @@ _ = stoqlib_gettext
 
 
 class TestEmployeeRoleHistory(DomainTest):
-     def testCreate(self):
-          EmployeeRole(connection=self.trans, name='ajudante')
+    def testCreate(self):
+         EmployeeRole(connection=self.trans, name='ajudante')
 
-     def testHasRole(self):
-          role = EmployeeRole(connection=self.trans, name='role')
-          self.failIf(role.has_other_role('Role'))
-          role = EmployeeRole(connection=self.trans, name='Role')
-          self.failUnless(role.has_other_role('role'))
+    def testHasRole(self):
+         role = EmployeeRole(connection=self.trans, name='role')
+         self.failIf(role.has_other_role('Role'))
+         role = EmployeeRole(connection=self.trans, name='Role')
+         self.failUnless(role.has_other_role('role'))
+
 
 class TestEmployeeRole(DomainTest):
     def test_get_description(self):
         role = self.create_employee_role()
         role.name =  'manager'
         self.assertEquals(role.name, role.get_description())
+
 
 class TestPerson(DomainTest):
 
@@ -365,9 +368,9 @@ class TestSupplier(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToSupplier
 
     def testGetActiveSuppliers(self):
-        for supplier in PersonAdaptToSupplier.get_active_suppliers(self.trans):
-            self.assertEquals(supplier.status,
-                              PersonAdaptToSupplier.STATUS_ACTIVE)
+         for supplier in PersonAdaptToSupplier.get_active_suppliers(self.trans):
+              self.assertEquals(supplier.status,
+                                PersonAdaptToSupplier.STATUS_ACTIVE)
 
     def testGetAllSuppliers(self):
         query = AND(Person.q.name ==  "test",
@@ -381,6 +384,23 @@ class TestSupplier(_PersonFacetTest, DomainTest):
 
         suppliers = Person.select(query, connection=self.trans)
         self.assertEqual(suppliers.count(), 1)
+
+    def testGetSupplierPurchase(self):
+        supplier = self.create_supplier()
+
+        self.failIf(supplier.get_supplier_purchases())
+
+        order = self.create_receiving_order()
+        order.purchase.supplier = supplier
+        order_item = self.create_receiving_order_item(order)
+        order.purchase.status = PurchaseOrder.ORDER_PENDING
+        order.purchase.confirm()
+        order.confirm()
+        order.set_valid()
+        order.purchase.set_valid()
+
+        self.failUnless(supplier.get_supplier_purchases())
+
 
 class TestEmployee(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToEmployee

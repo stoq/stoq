@@ -42,6 +42,7 @@ from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
 from stoqlib.domain.person import (EmployeeRole,
                                    PersonAdaptToBranch, BranchView,
                                    PersonAdaptToClient, ClientView,
@@ -132,6 +133,15 @@ class SupplierSearch(BasePersonSearch):
                 Column('fancy_name', _('Fancy Name'), str,
                        width=180),
                 Column('cnpj', _('CNPJ'), str, width=140)]
+
+    def on_details_button_clicked(self, *args):
+        selected = self.results.get_selected()
+        run_dialog(SupplierDetailsDialog, self, self.conn, selected.supplier)
+
+    def update_widgets(self, *args):
+        supplier_view = self.results.get_selected()
+        self.set_details_button_sensitive(supplier_view is not None)
+        self.set_edit_button_sensitive(supplier_view is not None)
 
     def get_editor_model(self, supplier_view):
         return supplier_view.supplier
