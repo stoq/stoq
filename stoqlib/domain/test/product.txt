@@ -22,6 +22,10 @@ Create a new Product and attach a storable facet.
     >>> product = Product(connection=trans)
     >>> storable = product.addFacet(IStorable, connection=trans)
 
+The storable needs to have it's stock created, let's do so
+
+    >>> storable.increase_stock(10, branch)
+
 A stock item should now be available for the storable:
 
     >>> stock_item = storable.get_stock_item(branch)
@@ -43,11 +47,5 @@ stock_items are unique:
     >>> stock_item2 = storable.get_stock_item(current_branch)
     >>> stock_item != stock_item2
     True
-
-    >>> list(storable.get_stock_items())
-    [<ProductStockItem ...>, <ProductStockItem ...>]
-
-
-    >>> storable.increase_stock(10, branch)
 
     >>> trans.close()
