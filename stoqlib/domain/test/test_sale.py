@@ -33,13 +33,13 @@ from stoqdrivers.enum import TaxType
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
-from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IClient,
                                        IIndividual,
                                        IPaymentGroup,
                                        ISellable,
                                        IStorable,
-                                       IOutPayment)
+                                       IOutPayment,
+                                       IGiftCertificate)
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.payment.methods import CheckPM, MoneyPM
@@ -147,8 +147,8 @@ class TestSale(DomainTest):
 
     def test_add_custom_gift_certificate(self):
         sale = self.create_sale()
-        assert isinstance(sale.add_custom_gift_certificate(Decimal(230),
-                          u'11').get_adapted(), GiftCertificate)
+        self.failUnless(IGiftCertificate(
+            sale.add_custom_gift_certificate(Decimal(230), u'11'), None))
 
     def test_get_clone(self):
         sale = self.create_sale()

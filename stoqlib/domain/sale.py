@@ -47,7 +47,7 @@ from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IContainer, IClient,
                                        IPaymentGroup, ISellable,
                                        IIndividual, ICompany,
-                                       IDelivery, IStorable)
+                                       IDelivery, IStorable, IProduct)
 from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.payment.methods import MoneyPM
 from stoqlib.domain.payment.payment import Payment
@@ -115,9 +115,7 @@ class SaleItem(Domain):
         if not self.sellable.can_be_sold():
             raise SellError('%r is already sold' % self.sellable)
 
-        # FIXME: Don't use sellable.get_adapted()
-        adapted = self.sellable.get_adapted()
-        storable = IStorable(adapted, None)
+        storable = IStorable(self.sellable, None)
         if storable:
             # Update the stock
             storable.decrease_stock(self.quantity, branch)
@@ -134,9 +132,7 @@ class SaleItem(Domain):
                 self.sellable.sell()
 
     def cancel(self, branch):
-        # FIXME: Don't use sellable.get_adapted()
-        adapted = self.sellable.get_adapted()
-        storable = IStorable(adapted)
+        storable = IStorable(self.sellable)
         if storable:
             storable.increase_stock(self.quantity, branch)
 
@@ -189,7 +185,7 @@ class DeliveryItem(Domain):
 
     @classmethod
     def create_from_sellable_item(cls, sale_item):
-        if not isinstance(sale_item.sellable.get_adapted(), Product):
+        if not IProduct(sale_item.sellable, None):
             raise SellError(
                 "It's only possible to deliver products, not %r" % (
                 type(sale_item),))
@@ -428,7 +424,7 @@ class Sale(ValidatableDomain):
         # FIXME: We should use self.branch, but it's not supported yet
         branch = get_current_branch(conn)
         for item in self.get_items():
-            if isinstance(item.sellable.get_adapted(), Product):
+            if IProduct(item.sellable, None):
                 ProductHistory.add_sold_item(conn, branch, item)
             item.sell(branch)
 

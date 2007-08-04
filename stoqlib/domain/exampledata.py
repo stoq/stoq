@@ -36,7 +36,7 @@ from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
                                        IClient, IUser, ITransporter,
                                        IBankBranch,
                                        ICreditProvider,
-                                       IPaymentGroup)
+                                       IPaymentGroup, IProduct)
 from stoqlib.lib.parameters import sysparam
 
 # Do not remove, these are used by doctests
@@ -226,10 +226,11 @@ class ExampleCreator(object):
     def create_product(self, price=None):
         from stoqlib.domain.product import ProductSupplierInfo
         sellable = self.create_sellable(price=price)
-        product = sellable.get_adapted()
+        product = IProduct(sellable)
         ProductSupplierInfo(connection=self.trans,
                             supplier=self.create_supplier(),
-                            product=product, is_main_supplier=True)
+                            product=product,
+                            is_main_supplier=True)
         return product
 
     def create_base_sellable_info(self, price=None):
@@ -334,7 +335,7 @@ class ExampleCreator(object):
             receiving_order = self.create_receiving_order()
         if sellable is None:
             sellable = self.create_sellable()
-            product = sellable.get_adapted()
+            product = IProduct(sellable)
             product.addFacet(IStorable, connection=self.trans)
         purchase_item = receiving_order.purchase.add_item(sellable, 8)
         return ReceivingOrderItem(connection=self.trans,

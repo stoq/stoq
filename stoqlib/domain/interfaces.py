@@ -154,6 +154,25 @@ class ISellable(Interface):
         @returns: the tax constant or None if unset
         """
 
+
+class IProduct(Interface):
+    """
+    A Product, this is mainly used as a marker.
+    """
+
+
+class IService(Interface):
+    """
+    A Service, this is mainly used as a marker.
+    """
+
+
+class IGiftCertificate(Interface):
+    """
+    A GiftCertificate, this is mainly used as a marker.
+    """
+
+
 class IStorable(Interface):
     """Storable documentation for a certain product or a sellable item.
     Each storable can have references to many concrete items which will

@@ -30,10 +30,9 @@ from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       get_current_user)
 from stoqlib.domain.examples import log
 from stoqlib.domain.person import Person
-from stoqlib.domain.product import Product
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.interfaces import (ISupplier, IPaymentGroup,
-                                       ITransporter)
+                                       ITransporter, IProduct)
 from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
 from stoqlib.domain.sellable import ASellable
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
@@ -74,7 +73,7 @@ def create_purchases():
                    connection=trans)
 
     for sellable in sellables:
-        if not isinstance(sellable.get_adapted(), Product):
+        if not IProduct(sellable, None):
             continue
         purchase_item = PurchaseItem(connection=trans,
                                       quantity=5,
