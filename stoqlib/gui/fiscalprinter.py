@@ -33,8 +33,7 @@ from stoqdrivers.exceptions import (DriverError, CouponOpenError,
 from zope.interface import implements
 
 from stoqlib.database.runtime import new_transaction, finish_transaction
-from stoqlib.domain.interfaces import IContainer
-from stoqlib.domain.giftcertificate import GiftCertificate
+from stoqlib.domain.interfaces import IContainer, IGiftCertificate
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.base.dialogs import run_dialog
@@ -187,7 +186,7 @@ class FiscalCoupon(gobject.GObject):
         """
         # GiftCertificates are not printed on the fiscal printer
         # See #2985 for more information.
-        if isinstance(sale_item.sellable.get_adapted(), GiftCertificate):
+        if IGiftCertificate(sale_item.sellable, None):
             return 0
 
         if sale_item.price <= 0:
@@ -204,7 +203,7 @@ class FiscalCoupon(gobject.GObject):
         return self._item_ids.keys()
 
     def remove_item(self, sale_item):
-        if isinstance(sale_item.sellable.get_adapted(), GiftCertificate):
+        if IGiftCertificate(sale_item.sellable, None):
             return 0
         if sale_item.price <= 0:
             return

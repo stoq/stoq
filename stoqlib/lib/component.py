@@ -155,6 +155,9 @@ class Adapter(object):
             return False
         return self._adaptable.id == other._adaptable.id
 
+    def __conform__(self, iface):
+        return iface(self.get_adapted(), None)
+
     def get_adapted(self):
         """
         Get the adapted object

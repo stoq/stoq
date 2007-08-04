@@ -29,12 +29,13 @@
 from sqlobject import BLOBCol
 from sqlobject.sqlbuilder import INNERJOINOn, LEFTJOINOn
 from sqlobject.viewable import Viewable
+from zope.interface import implements
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain
 from stoqlib.domain.sellable import (ASellable,
                                      BaseSellableInfo, SellableUnit)
-from stoqlib.domain.interfaces import ISellable
+from stoqlib.domain.interfaces import ISellable, IService
 
 
 _ = stoqlib_gettext
@@ -48,6 +49,7 @@ class Service(Domain):
     """Class responsible to store basic service informations."""
 
     image = BLOBCol(default='')
+    implements(IService)
 
 
 class ServiceAdaptToSellable(ASellable):

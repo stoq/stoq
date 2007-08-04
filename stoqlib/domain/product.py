@@ -38,7 +38,7 @@ from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (ISellable, IStorable, IContainer,
-                                       IBranch)
+                                       IBranch, IProduct)
 from stoqlib.domain.sellable import ASellable
 from stoqlib.exceptions import StockError, DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
@@ -106,6 +106,8 @@ class Product(Domain):
 
     suppliers = MultipleJoin('ProductSupplierInfo')
     image = BLOBCol(default='')
+
+    implements(IProduct)
 
     #
     # Facet hooks

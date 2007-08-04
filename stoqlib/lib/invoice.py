@@ -35,10 +35,10 @@ from stoqdrivers.enum import TaxType
 from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.domain.interfaces import IIndividual, ICompany
+from stoqlib.domain.interfaces import IIndividual, ICompany, IService
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.person import PersonAdaptToClient
-from stoqlib.domain.service import Service
+
 
 ENABLED = "X"
 INVOICE_TYPE_IN  = 1
@@ -306,7 +306,7 @@ class SaleInvoice(ClassInittableObject):
         for i, item in enumerate(products):
             if i == SaleInvoice.MAX_PRODUCT_QTY:
                 break
-            elif isinstance(item.sellable.get_adapted(), Service):
+            elif IService(item.sellable, None):
                 continue
             self._insert_data_on_coordinate(item.sellable.get_code_str(),
                                             "PRODUCT_CODE",

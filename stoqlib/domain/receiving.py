@@ -101,7 +101,7 @@ class ReceivingOrderItem(Domain):
                 self.get_remaining_quantity()))
 
         branch = self.receiving_order.branch
-        storable = IStorable(self.sellable.get_adapted(), None)
+        storable = IStorable(self.sellable, None)
         if not storable is None:
             storable.increase_stock(self.quantity, branch)
         purchase = self.purchase_item.order
