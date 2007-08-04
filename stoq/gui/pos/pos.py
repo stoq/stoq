@@ -41,13 +41,13 @@ from stoqlib.database.runtime import (new_transaction,
                                       finish_transaction,
                                       get_current_user,
                                       get_current_branch)
-from stoqlib.domain.interfaces import IDelivery, IPaymentGroup, ISalesPerson
+from stoqlib.domain.interfaces import (IDelivery, IPaymentGroup, ISalesPerson,
+                                       IProduct, IService)
 from stoqlib.domain.devices import DeviceSettings
-from stoqlib.domain.product import ProductAdaptToSellable, IStorable, Product
+from stoqlib.domain.product import ProductAdaptToSellable, IStorable
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import ASellable
-from stoqlib.domain.service import Service
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.drivers.scale import read_scale_info
@@ -217,8 +217,7 @@ class POSApp(AppWindow):
     def _update_list(self, sellable, notify_on_entry=False):
         quantity = self.sellableitem_proxy.model.quantity
 
-        adapted = sellable.get_adapted()
-        is_service = isinstance(adapted, Service)
+        is_service = IService(sellable, None)
         if is_service and quantity > 1:
             # It's not a common operation to add more than one item at
             # a time, it's also problematic since you'd have to show
@@ -272,17 +271,17 @@ class POSApp(AppWindow):
         self.CancelOrder.set_sensitive(has_sale_items)
         has_products = False
         for sale_item in self.sale_items:
-            if sale_item and isinstance(sale_item.sellable.get_adapted(),
-                                        Product):
+            if sale_item and IProduct(sale_item.sellable, None):
                 has_products = True
                 break
         self.delivery_button.set_sensitive(has_products)
         self.NewDelivery.set_sensitive(has_sale_items)
         sale_item = self.sale_items.get_selected()
-        self.edit_item_button.set_sensitive(
+        can_edit = bool(
             sale_item is not None and
-            isinstance(sale_item.sellable.get_adapted(), Service) and
+            IService(sale_item.sellable, None) and
             sale_item.sellable != sysparam(self.conn).DELIVERY_SERVICE)
+        self.edit_item_button.set_sensitive(can_edit)
         self._update_totals()
         self._update_add_button()
 
@@ -333,8 +332,7 @@ class POSApp(AppWindow):
             self._run_advanced_search(search_str)
             return
 
-        adapted = sellable.get_adapted()
-        if isinstance(sellable, self._product_table):
+        if IProduct(sellable, None):
             # If the sellable has a weight unit specified and we have a scale
             # configured for this station, go and check what the scale says.
             if (sellable and sellable.unit and
@@ -342,7 +340,7 @@ class POSApp(AppWindow):
                 self._scale_settings):
                 self._read_scale(sellable)
 
-        storable = IStorable(adapted, None)
+        storable = IStorable(sellable, None)
         if storable:
             if not self._check_available_stock(storable, sellable):
                 info(_("You cannot sell more items of product %s, "
@@ -383,7 +381,7 @@ class POSApp(AppWindow):
         self._coupon = None
 
     def _edit_sale_item(self, sale_item):
-        if isinstance(sale_item.sellable.get_adapted(), Service):
+        if IService(sale_item.sellable, None):
             model = self.run_dialog(ServiceItemEditor, self.conn, sale_item)
             if model:
                 self.sale_items.update(sale_item)
@@ -416,7 +414,7 @@ class POSApp(AppWindow):
         for sale_item in self.sale_items:
             if sale_item.sellable == delivery_service:
                 delivery = self._delivery
-            elif isinstance(sale_item.sellable.get_adapted(), Service):
+            elif IService(sale_item.sellable, None):
                 continue
             else:
                 sale_items.append(sale_item)
