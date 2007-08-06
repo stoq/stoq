@@ -247,6 +247,7 @@ def initialize_system(delete_only=False, verbose=False):
     every purpose: production usage, testing or demonstration
     """
 
+    log.info("Initialize_system(%r, %r)" % (delete_only, verbose))
     settings = get_utility(IDatabaseSettings)
     clean_database(settings.dbname)
     create_base_schema()
