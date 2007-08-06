@@ -23,10 +23,7 @@
 ##
 """ Base module to be used by all domain test modules"""
 
-from kiwi.log import Logger
-
 from stoqlib.database.runtime import new_transaction
-from stoqlib.database.testsuite import bootstrap
 from stoqlib.domain.exampledata import ExampleCreator
 
 try:
@@ -46,5 +43,7 @@ class DomainTest(unittest.TestCase, ExampleCreator):
 
 # Ensure that the database settings and etc are available for all
 # the domain tests
-Logger('stoqlib.domaintest').info('bootstrapping testsuite database')
-bootstrap()
+import tests.base
+tests.base # pyflakes
+
+

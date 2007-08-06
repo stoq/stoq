@@ -20,10 +20,10 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 
-from stoqlib.domain.test import domaintest
 from stoqlib.lib.doctestloader import create_doctest
 
 # So we can use database connections in doctests.
-domaintest # pyflakes
+import tests.base
+tests.base # pyflakes
 
 doctest = create_doctest('*.txt')
