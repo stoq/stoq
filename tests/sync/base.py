@@ -38,13 +38,11 @@ from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.synchronization import SynchronizationClient
 from stoqlib.database.testsuite import (provide_database_settings,
-                                        provide_utilities, bootstrap_testsuite)
+                                        provide_utilities, bootstrap_testsuite,
+                                        bootstrap)
 from stoqlib.domain.interfaces import ICompany, IBranch
 from stoqlib.domain.person import Person
 from stoqlib.domain.station import BranchStation
-
-from tests import base
-base #pyflakes
 
 log = Logger('tests.sync.base')
 
@@ -157,7 +155,7 @@ def _initialize_server():
     SyncTestData.server_proc = subprocess.Popen(cmd, shell=True)
     atexit.register(terminate_server, SyncTestData.server_proc)
 
-def bootstrap():
+def bootstrap_sync_tests():
     settings = get_utility(IDatabaseSettings)
     conn = settings.get_connection()
 
@@ -184,8 +182,10 @@ def bootstrap():
 
     _provide_original_settings()
 
+
 try:
     bootstrap()
+    bootstrap_sync_tests()
 except Exception, e:
     # Work around trial
     import traceback
