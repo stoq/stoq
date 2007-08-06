@@ -45,6 +45,7 @@ def clean_database(dbname):
     Cleans a database
     @param dbname: name of the database
     """
+    log.info("Cleaning database %s" % (dbname,))
     settings = get_utility(IDatabaseSettings)
     conn = settings.get_default_connection()
     try:
