@@ -24,6 +24,7 @@
 """ Base module to be used by all domain test modules"""
 
 from stoqlib.database.runtime import new_transaction
+from stoqlib.database.testsuite import bootstrap
 from stoqlib.domain.exampledata import ExampleCreator
 
 try:
@@ -43,7 +44,4 @@ class DomainTest(unittest.TestCase, ExampleCreator):
 
 # Ensure that the database settings and etc are available for all
 # the domain tests
-import tests.base
-tests.base # pyflakes
-
-
+bootstrap()

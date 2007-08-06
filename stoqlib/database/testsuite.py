@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -163,6 +163,26 @@ def provide_utilities(station_name, branch_name=None):
     """
     _provide_current_user()
     _provide_current_station(station_name, branch_name)
+
+
+def bootstrap():
+    hostname = os.environ.get('STOQLIB_TEST_HOSTNAME')
+    dbname =  os.environ.get('STOQLIB_TEST_DBNAME')
+    username = os.environ.get('STOQLIB_TEST_USERNAME')
+    password = os.environ.get('STOQLIB_TEST_PASSWORD')
+    port = int(os.environ.get('STOQLIB_TEST_PORT') or 0)
+    quick = os.environ.get('STOQLIB_TEST_QUICK', None) is not None
+
+    config = os.path.join(os.path.dirname(__file__), 'config.py')
+    if os.path.exists(config):
+        execfile(config, globals(), locals())
+
+    bootstrap_testsuite(address=hostname,
+                        dbname=dbname,
+                        port=port,
+                        username=username,
+                        password=password,
+                        quick=quick)
 
 def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
                         password="", station_name=None, quick=False):
