@@ -159,10 +159,8 @@ class TillClosingEditor(BaseEditor):
                      'total_balance',
                      'opening_date')
 
-    def __init__(self, conn, model=None, can_remove_cash=True, previous_day=False):
+    def __init__(self, conn, model=None, previous_day=False):
         """
-        @param can_remove_cash: If True, allow the user to remove cash
-                                from the till before closing it.
         @param previous_day: If the till wasn't closed previously
         """
         self._previous_day = previous_day
@@ -172,7 +170,7 @@ class TillClosingEditor(BaseEditor):
 
         self.main_dialog.set_confirm_widget(self.value)
 
-        self.value.set_sensitive(can_remove_cash)
+        self.value.set_sensitive(previous_day)
 
     #
     # BaseEditorSlave
