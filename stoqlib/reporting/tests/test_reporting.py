@@ -50,12 +50,16 @@ class TestReport(DomainTest):
 
         if exists_pdf:
             path = os.path.split(filename)[0]
+            olddir = os.getcwd()
             os.chdir(path)
 
             for name in (original_filename, filename):
                 cmd = 'pdftohtml -noframes -i -q %s %s.html' % (name, name)
                 os.system(cmd)
-            self._comparePDF(original_filename, filename)
+            try:
+                self._comparePDF(original_filename, filename)
+            finally:
+                os.chdir(olddir)
 
         if filename.endswith('.tmp'):
             os.unlink(filename)
