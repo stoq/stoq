@@ -38,10 +38,18 @@ NAME = 'dummy transaction test'
 
 class TestTransaction(DomainTest):
     def testTimestamp(self):
+        # The sleeps are here because the client and server
+        # might be out of sync, datetime.dateime.now() is client side
+        # while te_time is set on the server side, we should ideally move
+        # everything to the server side
         before = datetime.datetime.now()
-        time.sleep(1)
+        time.sleep(.1)
+
         person = Person(name='dummy', connection=self.trans)
+        time.sleep(.1)
+
         created = datetime.datetime.now()
+        time.sleep(.1)
 
         self.trans.commit()
         self.assertEqual(person.te_created.te_time,
@@ -53,6 +61,7 @@ class TestTransaction(DomainTest):
         self.assertNotEqual(person.te_created.te_time,
                             person.te_modified.te_time)
 
+        time.sleep(.1)
         updated = datetime.datetime.now()
 
         dates = [(before, 'before create'),
