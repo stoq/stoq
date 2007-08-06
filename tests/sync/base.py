@@ -159,6 +159,7 @@ def _initialize_server():
     atexit.register(terminate_server, SyncTestData.server_proc)
 
 def bootstrap_sync_tests():
+    log.info('Bootstrapping synchronization')
     settings = get_utility(IDatabaseSettings)
     conn = settings.get_connection()
 
@@ -193,3 +194,4 @@ except Exception, e:
     import traceback
     traceback.print_exc()
     os._exit(1)
+log.info('Synchronization bootstrap done')
