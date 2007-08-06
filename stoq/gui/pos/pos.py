@@ -26,6 +26,7 @@
 ##
 """ Main interface definition for pos application.  """
 
+import datetime
 import gettext
 from decimal import Decimal
 
@@ -442,9 +443,16 @@ class POSApp(AppWindow):
         self._update_added_item(delivery_item,
                                 new_item=new_item)
 
+    def _till_opened_previously(self):
+        till = Till.get_last_opened(self.conn)
+        if till:
+            return till.opening_date.date() == datetime.date.today()
+        else:
+            return False
+
     def _check_till(self):
         if self._printer.needs_closing():
-            if not self._close_till(can_remove_cash=False, previous_day=True):
+            if not self._close_till(self._till_opened_previously()):
                 return False
         return True
 
@@ -452,8 +460,8 @@ class POSApp(AppWindow):
          if self._printer.open_till():
              self._update_widgets()
 
-    def _close_till(self, can_remove_cash=True, previous_day=False):
-        retval = self._printer.close_till(can_remove_cash, previous_day)
+    def _close_till(self, previous_day=False):
+        retval = self._printer.close_till(previous_day)
         if retval:
             self._update_widgets()
         return retval
@@ -593,7 +601,7 @@ class POSApp(AppWindow):
         if not yesno(_(u"You can only close the till once per day. "
                        "\n\nClose the till?"),
                      gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
-            self._close_till()
+            self._close_till(self._till_opened_previously())
 
     def on_TillOpen__activate(self, action):
          self._open_till()

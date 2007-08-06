@@ -132,8 +132,13 @@ class TillApp(SearchableAppWindow):
         if self._printer.open_till():
             self._update_widgets()
 
-    def _close_till(self, can_remove_cash=True):
-        retval = self._printer.close_till(can_remove_cash)
+    def _close_till(self):
+        till = Till.get_last_opened(self.conn)
+        if till:
+            previous_day = till.opening_date.date() == date.today()
+        else:
+            previous_day = False
+        retval = self._printer.close_till(previous_day)
         if retval:
             self._update_widgets()
         return retval
