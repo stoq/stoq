@@ -128,3 +128,8 @@ class SystemParameterEditor(BaseEditor):
             raise TypeError("ParameterData for `%s' has an invalid "
                             "type: %r" % (self.model.field_name,
                                           field_type))
+
+    def on_confirm(self):
+        if not self.model.field_value:
+            return False
+        return self.model
