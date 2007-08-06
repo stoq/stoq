@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-31 17:03-0300\n"
+"POT-Creation-Date: 2007-08-06 12:11-0300\n"
 "PO-Revision-Date: 2007-07-18 11:50-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -253,6 +253,62 @@ msgid ""
 "for application %s"
 msgstr ""
 
+#: ../stoq/gui/inventory/inventory.py:49
+msgid "inventory"
+msgstr ""
+
+#: ../stoq/gui/inventory/inventory.py:53 ../stoq/gui/warehouse/warehouse.py:60
+msgid "Matching:"
+msgstr ""
+
+#: ../stoq/gui/inventory/inventory.py:69 ../stoq/gui/warehouse/warehouse.py:76
+#, fuzzy
+msgid "Show products at:"
+msgstr "Ingen produkt vald"
+
+#: ../stoq/gui/inventory/inventory.py:74 ../stoq/gui/warehouse/warehouse.py:81
+#: ../stoq/gui/pos/deliveryeditor.py:94
+msgid "Code"
+msgstr "Kod"
+
+#: ../stoq/gui/inventory/inventory.py:76 ../stoq/gui/payable/payable.py:95
+#: ../stoq/gui/warehouse/warehouse.py:83
+#: ../stoq/gui/receivable/receivable.py:128 ../stoq/gui/pos/pos.py:150
+#: ../stoq/gui/pos/deliveryeditor.py:96
+msgid "Description"
+msgstr "Beskrivning"
+
+#: ../stoq/gui/inventory/inventory.py:79 ../stoq/gui/till/till.py:121
+#: ../stoq/gui/warehouse/warehouse.py:86 ../stoq/gui/pos/pos.py:154
+#: ../stoq/gui/pos/deliveryeditor.py:98
+msgid "Quantity"
+msgstr "Antal"
+
+#: ../stoq/gui/inventory/inventory.py:81 ../stoq/gui/warehouse/warehouse.py:88
+#: ../stoq/gui/pos/pos.py:157
+msgid "Unit"
+msgstr ""
+
+#: ../stoq/gui/inventory/inventory.py:94
+#: ../stoq/gui/warehouse/warehouse.py:102
+msgid "<b>Stock Total:</b>"
+msgstr ""
+
+#: ../stoq/gui/inventory/inventory.py:104
+#: ../stoq/gui/warehouse/warehouse.py:112
+#, fuzzy
+msgid "All branches"
+msgstr "Pris"
+
+#: ../stoq/gui/inventory/__init__.py:29
+msgid "Inventory"
+msgstr ""
+
+#: ../stoq/gui/inventory/__init__.py:30
+#, fuzzy
+msgid "Inventory application."
+msgstr "Ändra program"
+
 #: ../stoq/gui/payable/payable.py:60 ../stoq/gui/payable/__init__.py:30
 msgid "Accounts Payable"
 msgstr ""
@@ -277,12 +333,6 @@ msgstr "Ingen produkt vald"
 #: ../stoq/gui/payable/payable.py:93 ../stoq/gui/receivable/receivable.py:126
 msgid "#"
 msgstr ""
-
-#: ../stoq/gui/payable/payable.py:95 ../stoq/gui/warehouse/warehouse.py:83
-#: ../stoq/gui/receivable/receivable.py:128 ../stoq/gui/pos/pos.py:150
-#: ../stoq/gui/pos/deliveryeditor.py:96
-msgid "Description"
-msgstr "Beskrivning"
 
 #: ../stoq/gui/payable/payable.py:98 ../stoq/gui/purchase/purchase.py:89
 msgid "Supplier"
@@ -490,11 +540,6 @@ msgstr ""
 msgid "Stoq - Till for Branch %03d"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:121 ../stoq/gui/warehouse/warehouse.py:86
-#: ../stoq/gui/pos/pos.py:154 ../stoq/gui/pos/deliveryeditor.py:98
-msgid "Quantity"
-msgstr "Antal"
-
 #: ../stoq/gui/till/till.py:154
 msgid "Confirm Sale"
 msgstr ""
@@ -514,18 +559,18 @@ msgstr "Kod"
 msgid "Till Opened on %s"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:261 ../stoq/gui/pos/pos.py:586
+#: ../stoq/gui/till/till.py:261 ../stoq/gui/pos/pos.py:593
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
 "Close the till?"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:263 ../stoq/gui/pos/pos.py:588
+#: ../stoq/gui/till/till.py:263 ../stoq/gui/pos/pos.py:595
 msgid "Not now"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:263 ../stoq/gui/pos/pos.py:588
+#: ../stoq/gui/till/till.py:263 ../stoq/gui/pos/pos.py:595
 #, fuzzy
 msgid "Close Till"
 msgstr "Kod"
@@ -538,33 +583,7 @@ msgstr ""
 msgid "Warehouse application."
 msgstr ""
 
-#: ../stoq/gui/warehouse/warehouse.py:60
-msgid "Matching:"
-msgstr ""
-
-#: ../stoq/gui/warehouse/warehouse.py:76
-#, fuzzy
-msgid "Show products at:"
-msgstr "Ingen produkt vald"
-
-#: ../stoq/gui/warehouse/warehouse.py:81 ../stoq/gui/pos/deliveryeditor.py:94
-msgid "Code"
-msgstr "Kod"
-
-#: ../stoq/gui/warehouse/warehouse.py:88 ../stoq/gui/pos/pos.py:157
-msgid "Unit"
-msgstr ""
-
-#: ../stoq/gui/warehouse/warehouse.py:102
-msgid "<b>Stock Total:</b>"
-msgstr ""
-
-#: ../stoq/gui/warehouse/warehouse.py:112
-#, fuzzy
-msgid "All branches"
-msgstr "Pris"
-
-#: ../stoq/gui/warehouse/warehouse.py:149
+#: ../stoq/gui/warehouse/warehouse.py:131
 msgid "You must have at least one item in stock to perfom this action."
 msgstr ""
 
@@ -609,40 +628,40 @@ msgstr "Kod"
 #. It's not a common operation to add more than one item at
 #. a time, it's also problematic since you'd have to show
 #. one dialog per service item. See #3092
-#: ../stoq/gui/pos/pos.py:226
+#: ../stoq/gui/pos/pos.py:225
 msgid ""
 "Only one service was added since its not possible toadd more than one "
 "service to an order at a time."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:342
+#: ../stoq/gui/pos/pos.py:346
 #, python-format
 msgid "You cannot sell more items of product %s, it's out of stock."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:395
+#: ../stoq/gui/pos/pos.py:399
 msgid "The current order will be canceled, Confirm?"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:396
+#: ../stoq/gui/pos/pos.py:400
 msgid "Go Back"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:396 ../data/glade/pos.glade.h:9
+#: ../stoq/gui/pos/pos.py:400 ../data/glade/pos.glade.h:9
 #, fuzzy
 msgid "Cancel Order"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/pos/pos.py:535
+#: ../stoq/gui/pos/pos.py:542
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:537
+#: ../stoq/gui/pos/pos.py:544
 msgid "Try Again"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:537
+#: ../stoq/gui/pos/pos.py:544
 #, fuzzy
 msgid "Cancel"
 msgstr "_Nollställ order"
@@ -680,10 +699,15 @@ msgstr ""
 msgid "The Delivery cost must be more than 0."
 msgstr ""
 
+#: ../stoq/gui/pos/deliveryeditor.py:137
+msgid "The Delivery cost must be a positive value."
+msgstr ""
+
 #: ../data/glade/sales_app.glade.h:1 ../data/glade/till.glade.h:1
 #: ../data/glade/admin.glade.h:2 ../data/glade/purchase.glade.h:1
 #: ../data/glade/pos.glade.h:2 ../data/glade/receivable.glade.h:1
 #: ../data/glade/warehouse.glade.h:1 ../data/glade/payable.glade.h:1
+#: ../data/glade/inventory.glade.h:1
 msgid "About"
 msgstr ""
 
@@ -695,7 +719,7 @@ msgstr ""
 #: ../data/glade/sales_app.glade.h:3 ../data/glade/till.glade.h:4
 #: ../data/glade/admin.glade.h:8 ../data/glade/purchase.glade.h:8
 #: ../data/glade/receivable.glade.h:4 ../data/glade/warehouse.glade.h:4
-#: ../data/glade/payable.glade.h:5
+#: ../data/glade/payable.glade.h:5 ../data/glade/inventory.glade.h:3
 msgid "Clear Cookie"
 msgstr ""
 
@@ -764,6 +788,7 @@ msgstr "Varor..."
 #: ../data/glade/admin.glade.h:23 ../data/glade/purchase.glade.h:17
 #: ../data/glade/pos.glade.h:27 ../data/glade/receivable.glade.h:10
 #: ../data/glade/warehouse.glade.h:13 ../data/glade/payable.glade.h:12
+#: ../data/glade/inventory.glade.h:4
 msgid "Quit"
 msgstr "Avsluta"
 
@@ -771,6 +796,7 @@ msgstr "Avsluta"
 #: ../data/glade/admin.glade.h:24 ../data/glade/purchase.glade.h:18
 #: ../data/glade/pos.glade.h:28 ../data/glade/receivable.glade.h:11
 #: ../data/glade/warehouse.glade.h:14 ../data/glade/payable.glade.h:13
+#: ../data/glade/inventory.glade.h:5
 msgid "Quit the program"
 msgstr "Avsluta programmet"
 
@@ -822,6 +848,7 @@ msgstr "_Arkiv"
 #: ../data/glade/admin.glade.h:35 ../data/glade/purchase.glade.h:32
 #: ../data/glade/pos.glade.h:43 ../data/glade/receivable.glade.h:21
 #: ../data/glade/warehouse.glade.h:24 ../data/glade/payable.glade.h:21
+#: ../data/glade/inventory.glade.h:9
 msgid "_Help"
 msgstr "_Hjälp"
 
@@ -832,6 +859,7 @@ msgstr "_Skriv ut faktura"
 #: ../data/glade/sales_app.glade.h:27 ../data/glade/till.glade.h:31
 #: ../data/glade/admin.glade.h:39 ../data/glade/purchase.glade.h:35
 #: ../data/glade/pos.glade.h:45 ../data/glade/warehouse.glade.h:27
+#: ../data/glade/inventory.glade.h:11
 msgid "_Search"
 msgstr "_Sök"
 
@@ -955,7 +983,7 @@ msgid "CFOP..."
 msgstr ""
 
 #: ../data/glade/admin.glade.h:7 ../data/glade/purchase.glade.h:7
-#: ../data/glade/warehouse.glade.h:3
+#: ../data/glade/warehouse.glade.h:3 ../data/glade/inventory.glade.h:2
 msgid "Change User..."
 msgstr "Byt användare..."
 
@@ -1049,7 +1077,7 @@ msgid "_Receive"
 msgstr ""
 
 #: ../data/glade/admin.glade.h:40 ../data/glade/purchase.glade.h:36
-#: ../data/glade/warehouse.glade.h:28
+#: ../data/glade/warehouse.glade.h:28 ../data/glade/inventory.glade.h:12
 msgid "_Store Cookie"
 msgstr ""
 
@@ -1408,6 +1436,23 @@ msgstr "Ta bort"
 
 #: ../data/glade/payable.glade.h:25
 msgid "payable"
+msgstr ""
+
+#: ../data/glade/inventory.glade.h:6
+#, fuzzy
+msgid "STOQ - Inventory Application"
+msgstr "STOQ - Kassaprogram"
+
+#: ../data/glade/inventory.glade.h:7
+msgid "_Adjust"
+msgstr ""
+
+#: ../data/glade/inventory.glade.h:8
+msgid "_Adjust..."
+msgstr ""
+
+#: ../data/glade/inventory.glade.h:10
+msgid "_Inventory"
 msgstr ""
 
 #: ../data/glade/ECFPluginStep.glade.h:1

@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-31 17:03-0300\n"
+"POT-Creation-Date: 2007-08-06 12:11-0300\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Rafael Villar Burke <pachi@rvburke.com>\n"
 "Language-Team: Spanish <es_ES@li.org>\n"
@@ -291,6 +291,60 @@ msgstr ""
 "Este usuario no está acreditado \n"
 "en la aplicación %s"
 
+#: ../stoq/gui/inventory/inventory.py:49
+msgid "inventory"
+msgstr ""
+
+#: ../stoq/gui/inventory/inventory.py:53 ../stoq/gui/warehouse/warehouse.py:60
+msgid "Matching:"
+msgstr "incluyendo:"
+
+#: ../stoq/gui/inventory/inventory.py:69 ../stoq/gui/warehouse/warehouse.py:76
+msgid "Show products at:"
+msgstr "Mostrar productos en"
+
+#: ../stoq/gui/inventory/inventory.py:74 ../stoq/gui/warehouse/warehouse.py:81
+#: ../stoq/gui/pos/deliveryeditor.py:94
+msgid "Code"
+msgstr "Código"
+
+#: ../stoq/gui/inventory/inventory.py:76 ../stoq/gui/payable/payable.py:95
+#: ../stoq/gui/warehouse/warehouse.py:83
+#: ../stoq/gui/receivable/receivable.py:128 ../stoq/gui/pos/pos.py:150
+#: ../stoq/gui/pos/deliveryeditor.py:96
+msgid "Description"
+msgstr "Descripción"
+
+#: ../stoq/gui/inventory/inventory.py:79 ../stoq/gui/till/till.py:121
+#: ../stoq/gui/warehouse/warehouse.py:86 ../stoq/gui/pos/pos.py:154
+#: ../stoq/gui/pos/deliveryeditor.py:98
+msgid "Quantity"
+msgstr "Cantidad"
+
+#: ../stoq/gui/inventory/inventory.py:81 ../stoq/gui/warehouse/warehouse.py:88
+#: ../stoq/gui/pos/pos.py:157
+msgid "Unit"
+msgstr "Unidad"
+
+#: ../stoq/gui/inventory/inventory.py:94
+#: ../stoq/gui/warehouse/warehouse.py:102
+msgid "<b>Stock Total:</b>"
+msgstr "<b>Stock Total</b>"
+
+#: ../stoq/gui/inventory/inventory.py:104
+#: ../stoq/gui/warehouse/warehouse.py:112
+msgid "All branches"
+msgstr "Todas las unidades"
+
+#: ../stoq/gui/inventory/__init__.py:29
+msgid "Inventory"
+msgstr ""
+
+#: ../stoq/gui/inventory/__init__.py:30
+#, fuzzy
+msgid "Inventory application."
+msgstr "Cambiar aplicación"
+
 #: ../stoq/gui/payable/payable.py:60 ../stoq/gui/payable/__init__.py:30
 #, fuzzy
 msgid "Accounts Payable"
@@ -314,12 +368,6 @@ msgstr "Mostrar pagos en situación"
 #: ../stoq/gui/payable/payable.py:93 ../stoq/gui/receivable/receivable.py:126
 msgid "#"
 msgstr ""
-
-#: ../stoq/gui/payable/payable.py:95 ../stoq/gui/warehouse/warehouse.py:83
-#: ../stoq/gui/receivable/receivable.py:128 ../stoq/gui/pos/pos.py:150
-#: ../stoq/gui/pos/deliveryeditor.py:96
-msgid "Description"
-msgstr "Descripción"
 
 #: ../stoq/gui/payable/payable.py:98 ../stoq/gui/purchase/purchase.py:89
 msgid "Supplier"
@@ -527,11 +575,6 @@ msgstr ""
 msgid "Stoq - Till for Branch %03d"
 msgstr "Stoq - Caja de Unidad %03d"
 
-#: ../stoq/gui/till/till.py:121 ../stoq/gui/warehouse/warehouse.py:86
-#: ../stoq/gui/pos/pos.py:154 ../stoq/gui/pos/deliveryeditor.py:98
-msgid "Quantity"
-msgstr "Cantidad"
-
 #: ../stoq/gui/till/till.py:154
 msgid "Confirm Sale"
 msgstr "Confirmar la Venta"
@@ -550,7 +593,7 @@ msgstr "Caja cerrada"
 msgid "Till Opened on %s"
 msgstr "Caja abierta el %s"
 
-#: ../stoq/gui/till/till.py:261 ../stoq/gui/pos/pos.py:586
+#: ../stoq/gui/till/till.py:261 ../stoq/gui/pos/pos.py:593
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
@@ -560,11 +603,11 @@ msgstr ""
 "\n"
 "¿Cerrar la caja?"
 
-#: ../stoq/gui/till/till.py:263 ../stoq/gui/pos/pos.py:588
+#: ../stoq/gui/till/till.py:263 ../stoq/gui/pos/pos.py:595
 msgid "Not now"
 msgstr "Ahora no"
 
-#: ../stoq/gui/till/till.py:263 ../stoq/gui/pos/pos.py:588
+#: ../stoq/gui/till/till.py:263 ../stoq/gui/pos/pos.py:595
 msgid "Close Till"
 msgstr "Cerrar la caja..."
 
@@ -578,31 +621,7 @@ msgstr ""
 "Aplicación para recepción de compra y\n"
 "transferencia de stock."
 
-#: ../stoq/gui/warehouse/warehouse.py:60
-msgid "Matching:"
-msgstr "incluyendo:"
-
-#: ../stoq/gui/warehouse/warehouse.py:76
-msgid "Show products at:"
-msgstr "Mostrar productos en"
-
-#: ../stoq/gui/warehouse/warehouse.py:81 ../stoq/gui/pos/deliveryeditor.py:94
-msgid "Code"
-msgstr "Código"
-
-#: ../stoq/gui/warehouse/warehouse.py:88 ../stoq/gui/pos/pos.py:157
-msgid "Unit"
-msgstr "Unidad"
-
-#: ../stoq/gui/warehouse/warehouse.py:102
-msgid "<b>Stock Total:</b>"
-msgstr "<b>Stock Total</b>"
-
-#: ../stoq/gui/warehouse/warehouse.py:112
-msgid "All branches"
-msgstr "Todas las unidades"
-
-#: ../stoq/gui/warehouse/warehouse.py:149
+#: ../stoq/gui/warehouse/warehouse.py:131
 msgid "You must have at least one item in stock to perfom this action."
 msgstr ""
 "Es necesaria la existencia de al menos un artículo en stock para realizar "
@@ -654,7 +673,7 @@ msgstr "Cerrar"
 #. It's not a common operation to add more than one item at
 #. a time, it's also problematic since you'd have to show
 #. one dialog per service item. See #3092
-#: ../stoq/gui/pos/pos.py:226
+#: ../stoq/gui/pos/pos.py:225
 msgid ""
 "Only one service was added since its not possible toadd more than one "
 "service to an order at a time."
@@ -662,33 +681,33 @@ msgstr ""
 "Únicamente se agregó un servicio, ya que no es posible añadir más de un "
 "servicio a una orden de cada vez."
 
-#: ../stoq/gui/pos/pos.py:342
+#: ../stoq/gui/pos/pos.py:346
 #, python-format
 msgid "You cannot sell more items of product %s, it's out of stock."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:395
+#: ../stoq/gui/pos/pos.py:399
 msgid "The current order will be canceled, Confirm?"
 msgstr "El pedido actual será cancelado, ¿confirmar?"
 
-#: ../stoq/gui/pos/pos.py:396
+#: ../stoq/gui/pos/pos.py:400
 msgid "Go Back"
 msgstr "Volver"
 
-#: ../stoq/gui/pos/pos.py:396 ../data/glade/pos.glade.h:9
+#: ../stoq/gui/pos/pos.py:400 ../data/glade/pos.glade.h:9
 msgid "Cancel Order"
 msgstr "Cancelar Pedido"
 
-#: ../stoq/gui/pos/pos.py:535
+#: ../stoq/gui/pos/pos.py:542
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr "No es posible iniciar una nueva venta si no se puede abrir factura."
 
-#: ../stoq/gui/pos/pos.py:537
+#: ../stoq/gui/pos/pos.py:544
 msgid "Try Again"
 msgstr "Intente de nuevo"
 
-#: ../stoq/gui/pos/pos.py:537
+#: ../stoq/gui/pos/pos.py:544
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -723,10 +742,15 @@ msgstr ""
 msgid "The Delivery cost must be more than 0."
 msgstr ""
 
+#: ../stoq/gui/pos/deliveryeditor.py:137
+msgid "The Delivery cost must be a positive value."
+msgstr ""
+
 #: ../data/glade/sales_app.glade.h:1 ../data/glade/till.glade.h:1
 #: ../data/glade/admin.glade.h:2 ../data/glade/purchase.glade.h:1
 #: ../data/glade/pos.glade.h:2 ../data/glade/receivable.glade.h:1
 #: ../data/glade/warehouse.glade.h:1 ../data/glade/payable.glade.h:1
+#: ../data/glade/inventory.glade.h:1
 msgid "About"
 msgstr "Sobre"
 
@@ -738,7 +762,7 @@ msgstr "Cambiar de Usuario"
 #: ../data/glade/sales_app.glade.h:3 ../data/glade/till.glade.h:4
 #: ../data/glade/admin.glade.h:8 ../data/glade/purchase.glade.h:8
 #: ../data/glade/receivable.glade.h:4 ../data/glade/warehouse.glade.h:4
-#: ../data/glade/payable.glade.h:5
+#: ../data/glade/payable.glade.h:5 ../data/glade/inventory.glade.h:3
 msgid "Clear Cookie"
 msgstr "Borrar Cookie"
 
@@ -807,6 +831,7 @@ msgstr "Productos..."
 #: ../data/glade/admin.glade.h:23 ../data/glade/purchase.glade.h:17
 #: ../data/glade/pos.glade.h:27 ../data/glade/receivable.glade.h:10
 #: ../data/glade/warehouse.glade.h:13 ../data/glade/payable.glade.h:12
+#: ../data/glade/inventory.glade.h:4
 msgid "Quit"
 msgstr "Salir"
 
@@ -814,6 +839,7 @@ msgstr "Salir"
 #: ../data/glade/admin.glade.h:24 ../data/glade/purchase.glade.h:18
 #: ../data/glade/pos.glade.h:28 ../data/glade/receivable.glade.h:11
 #: ../data/glade/warehouse.glade.h:14 ../data/glade/payable.glade.h:13
+#: ../data/glade/inventory.glade.h:5
 msgid "Quit the program"
 msgstr "Salir del programa"
 
@@ -865,6 +891,7 @@ msgstr "_Archivo"
 #: ../data/glade/admin.glade.h:35 ../data/glade/purchase.glade.h:32
 #: ../data/glade/pos.glade.h:43 ../data/glade/receivable.glade.h:21
 #: ../data/glade/warehouse.glade.h:24 ../data/glade/payable.glade.h:21
+#: ../data/glade/inventory.glade.h:9
 msgid "_Help"
 msgstr "_Ayuda"
 
@@ -875,6 +902,7 @@ msgstr "Im_primir Factura"
 #: ../data/glade/sales_app.glade.h:27 ../data/glade/till.glade.h:31
 #: ../data/glade/admin.glade.h:39 ../data/glade/purchase.glade.h:35
 #: ../data/glade/pos.glade.h:45 ../data/glade/warehouse.glade.h:27
+#: ../data/glade/inventory.glade.h:11
 msgid "_Search"
 msgstr "Buscar"
 
@@ -1008,7 +1036,7 @@ msgid "CFOP..."
 msgstr "Código de operación contable..."
 
 #: ../data/glade/admin.glade.h:7 ../data/glade/purchase.glade.h:7
-#: ../data/glade/warehouse.glade.h:3
+#: ../data/glade/warehouse.glade.h:3 ../data/glade/inventory.glade.h:2
 msgid "Change User..."
 msgstr "Cambiar de Usuario..."
 
@@ -1101,7 +1129,7 @@ msgid "_Receive"
 msgstr "Recibir"
 
 #: ../data/glade/admin.glade.h:40 ../data/glade/purchase.glade.h:36
-#: ../data/glade/warehouse.glade.h:28
+#: ../data/glade/warehouse.glade.h:28 ../data/glade/inventory.glade.h:12
 msgid "_Store Cookie"
 msgstr "Guardar Cookie"
 
@@ -1459,6 +1487,23 @@ msgstr "_Recibo"
 #: ../data/glade/payable.glade.h:25
 msgid "payable"
 msgstr "Cuentas por Pagar"
+
+#: ../data/glade/inventory.glade.h:6
+#, fuzzy
+msgid "STOQ - Inventory Application"
+msgstr "STOQ - Aplicación de PDV"
+
+#: ../data/glade/inventory.glade.h:7
+msgid "_Adjust"
+msgstr ""
+
+#: ../data/glade/inventory.glade.h:8
+msgid "_Adjust..."
+msgstr ""
+
+#: ../data/glade/inventory.glade.h:10
+msgid "_Inventory"
+msgstr ""
 
 #: ../data/glade/ECFPluginStep.glade.h:1
 msgid ""
