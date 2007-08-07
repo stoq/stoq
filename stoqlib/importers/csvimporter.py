@@ -150,7 +150,7 @@ class CSVImporter(object):
             trans.commit(close=True)
 
     def parse_date(self, data):
-        return datetime.date(*map(int, data.split('-')))
+        return datetime.datetime(*map(int, data.split('-')))
 
     def set_lines_per_commit(self, lines):
         """
