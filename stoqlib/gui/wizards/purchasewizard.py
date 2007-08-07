@@ -136,10 +136,21 @@ class StartPurchaseStep(WizardEditorStep):
         self._update_widgets()
 
     def on_supplier_button__clicked(self, *args):
-        if run_person_role_dialog(SupplierEditor, self, self.conn,
-                                  self.model.supplier):
-            self.conn.commit()
-            self._setup_supplier_entry()
+        trans = new_transaction()
+        supplier = trans.get(self.model.supplier)
+
+        # Since self.model.supplier always will exist here, we can't use
+        # it to determine when add a new supplier or edit a selected
+        # one. So, we check the supplier combo entry to determine that.
+        if not self.supplier.get_text():
+            supplier = None
+
+        model = run_person_role_dialog(SupplierEditor, self, trans,
+                                       supplier)
+        retval = finish_transaction(trans, model)
+        if retval:
+            self._fill_supplier_combo()
+            self.supplier.select(model)
 
     def on_open_date__validate(self, widget, date):
         if date < datetime.date.today():
