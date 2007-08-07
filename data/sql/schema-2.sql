@@ -476,7 +476,8 @@ CREATE TABLE sale_item_adapt_to_delivery (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    address text
+    address text,
+    original_id bigint UNIQUE REFERENCES sale_item(id)
 );
 
 CREATE TABLE product_stock_item (
@@ -1043,3 +1044,5 @@ CREATE TABLE system_table (
     patchlevel integer CONSTRAINT positive_patchlevel CHECK (patchlevel >= 0),
     generation integer CONSTRAINT positive_generation CHECK (generation >= 0)
 );
+
+INSERT INTO system_table (updated, patchlevel, generation) VALUES (CURRENT_TIME, 25, 0);
