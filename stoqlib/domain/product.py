@@ -90,7 +90,8 @@ class ProductSupplierInfo(Domain):
     #
 
     def get_name(self):
-        return self.supplier.get_description()
+        if self.supplier:
+            return self.supplier.get_description()
 
 
 class ProductRetentionHistory(Domain):

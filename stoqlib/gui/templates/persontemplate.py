@@ -39,6 +39,7 @@ from stoqlib.gui.slaves.liaisonslave import LiaisonListDialog
 from stoqlib.gui.templates.companytemplate import CompanyEditorTemplate
 from stoqlib.gui.templates.individualtemplate import IndividualEditorTemplate
 from stoqlib.lib.message import warning
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -253,6 +254,8 @@ class BasePersonRoleEditor(BaseEditor):
             self.individual_slave.on_confirm()
         else:
             self.company_slave.on_confirm()
+        if not sysparam(self.conn).SUGGESTED_SUPPLIER:
+            sysparam(self.conn).SUGGESTED_SUPPLIER = self.model.id
         return self.model
 
     #

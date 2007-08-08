@@ -34,13 +34,14 @@ from kiwi.utils import gsignal
 
 from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
 from stoqlib.domain.sellable import BaseSellableInfo
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.domain.product import ProductSupplierInfo, Product
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.gui.slaves.productslave import ProductTributarySituationSlave
+from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -65,12 +66,17 @@ class ProductSupplierSlave(BaseEditorSlave):
         self.edit_supplier()
 
     def edit_supplier(self):
+        suppliers = PersonAdaptToSupplier.select(connection=self.conn)
+        if not suppliers:
+            warning(_(u"There is no supplier registered in system"))
+            return
         main_supplier = self.model.get_main_supplier_info()
         if not main_supplier:
             current_cost = currency(0)
         else:
             current_cost =  main_supplier.base_cost
-        result = run_dialog(ProductSupplierEditor, self, self.conn, self.model)
+        result = run_dialog(ProductSupplierEditor, self, self.conn,
+                            self.model)
         if not result:
             return
         if result.base_cost != current_cost:
@@ -109,7 +115,7 @@ class ProductSupplierEditor(BaseEditor):
 
         assert items, ("There is no suppliers in database!")
 
-        self.supplier_combo.prefill(items)
+        self.supplier_combo.prefill(sorted(items))
 
     def list_suppliers(self):
         cols = [Column('name', title=_('Supplier name'),
