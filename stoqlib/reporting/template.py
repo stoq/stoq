@@ -40,7 +40,6 @@ from stoqlib.reporting.base.printing import ReportTemplate
 _ = stoqlib_gettext
 
 
-# FIXME: We must consider using TTF fonts here (UTF-8 issues)
 FANCYNAME_FONT = ("Vera-B", 14)
 SMALL_FONT = ("Vera", 12)
 TEXT_HEIGHT = 13
