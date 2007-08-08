@@ -82,6 +82,8 @@ def _collect_table(tables, table):
     tables.append(table)
 
     if issubclass(table, AdaptableSQLObject):
+        # FIXME: Remove this and put the adapter tables in
+        #        the policy list directly instead
         for facet_type in table.getFacetTypes():
             _collect_table(tables, facet_type)
 
