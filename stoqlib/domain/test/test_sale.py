@@ -150,12 +150,6 @@ class TestSale(DomainTest):
         self.failUnless(IGiftCertificate(
             sale.add_custom_gift_certificate(Decimal(230), u'11'), None))
 
-    def test_get_clone(self):
-        sale = self.create_sale()
-        clone = sale.get_clone()
-        self.assertEqual(clone.client, sale.client)
-        self.assertEqual(clone.salesperson, sale.salesperson)
-
     def testCheckPaymentGroup(self):
         sale_no_payment = self.create_sale()
 
