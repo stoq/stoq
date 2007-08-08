@@ -30,11 +30,10 @@ from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import currency
-from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import Column
 from sqlobject.sqlbuilder import AND
 
-from stoqlib.domain.person import PersonAdaptToBranch
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.product import Product
 from stoqlib.domain.interfaces import ISellable, IStorable
 from stoqlib.domain.sellable import ASellable
@@ -118,10 +117,6 @@ class SellableSearch(SearchEditor):
         self.set_text_field_columns(['description'])
         self.executer.set_query(self._executer_query)
 
-        self.branch_filter = self.create_branch_filter(
-            _('Show sale items at'))
-        self.search.add_filter(self.branch_filter, SearchFilterPosition.TOP)
-
     def get_columns(self):
         """Hook called by SearchEditor"""
         columns = [Column('id', title=_('Code'), data_type=int,
@@ -144,6 +139,7 @@ class SellableSearch(SearchEditor):
 
     def update_widgets(self):
         sellable_view = self.results.get_selected()
+        self.set_edit_button_sensitive(bool(sellable_view))
         if not sellable_view:
             return
         sellable = ASellable.get(sellable_view.id, self.conn)
@@ -170,9 +166,7 @@ class SellableSearch(SearchEditor):
         # sellables without a unit set
         if self.quantity is not None and (self.quantity % 1) != 0:
             queries.append(ASellable.q.unitID != None)
-        branch = self.branch_filter.get_state().value
-        if branch is not None:
-            branch = PersonAdaptToBranch.get(branch, connection=conn)
+        branch = get_current_branch(conn)
         query = AND(*queries)
         return SellableFullStockView.select_by_branch(query, branch,
                                                       connection=conn)
