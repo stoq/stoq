@@ -627,16 +627,14 @@ class Sale(ValidatableDomain):
         return get_formatted_price(self.get_total_sale_amount())
 
     def get_sale_subtotal(self):
-        # FIXME: Use SQL
-        subtotal = sum([item.get_total() for item in self.get_items()],
-                       currency(0))
-        return currency(subtotal)
+        return currency(self.get_items().sum(
+            SaleItem.q.price *
+            SaleItem.q.quantity) or 0)
 
     def get_items_total_value(self):
-        # FIXME: Use SQL
-        total = sum([item.get_total() for item in self.get_items()],
-                   currency(0))
-        return currency(total)
+        return currency(self.get_items().sum(
+            SaleItem.q.price *
+            SaleItem.q.quantity) or 0)
 
     #
     # Properties
