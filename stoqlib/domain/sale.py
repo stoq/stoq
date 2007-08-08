@@ -268,7 +268,7 @@ class Sale(ValidatableDomain):
     @ivar return_date: the date sale was returned
     @ivar discount_value:
     @ivar surcharge_value:
-    @ivar total_amount: the total sale amount
+    @ivar total_amount: the total value of all the items in the same
     @ivar notes: Some optional additional information related to this sale.
     @ivar client_role: This field indicates what client role is tied with
        the sale order. This is important since a client can have two roles
@@ -278,7 +278,6 @@ class Sale(ValidatableDomain):
     @ivar coupon_id:
     @ivar service_invoice_number:
     @ivar cfop:
-    @ivar renegotiation_data:
     """
 
     implements(IContainer)
@@ -545,12 +544,6 @@ class Sale(ValidatableDomain):
         # item of our sale order
         self.add_sellable(sellable_cert)
         return sellable_cert
-
-    def get_clone(self):
-        conn = self.get_connection()
-        return Sale(client_role=self.client_role, client=self.client,
-                    cfop=self.cfop, coupon_id=None, branch=self.branch,
-                    salesperson=self.salesperson, connection=conn)
 
     #
     # Accessors
