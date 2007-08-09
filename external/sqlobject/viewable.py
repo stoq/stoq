@@ -1,3 +1,28 @@
+# -*- coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2007 Async Open Source
+##
+## This program is free software; you can redistribute it and/or
+## modify it under the terms of the GNU Lesser General Public License
+## as published by the Free Software Foundation; either version 2
+## of the License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+##
+## Author(s):       Johan Dahlin                <jdahlin@async.com.br>
+##
+##
+
 import copy
 
 from sqlobject.dbconnection import Iteration
@@ -45,7 +70,64 @@ class SQLObjectView(object):
 
 class Viewable(object):
     """
-    @cvar columns:
+    Viewable is a class which allows you to break out of the normal SQLObject
+    hierarchy and create a new object representing a query which joins a number
+    of tables. It was designed to allow you to use expression columns
+    and LEFT JOINS.
+
+    A typical query which a viewable can create looks like this::
+
+          SELECT DISTINCT
+            sale_id AS id,
+            person.name AS salesperson_name,
+            sum(quantity * price) AS subtotal,
+            sum(quantity) AS total_quantity
+
+          FROM sale_item, person_adapt_to_sales_person, person, sale
+
+            LEFT JOIN person_adapt_to_client
+            ON (sale.client_id = person_adapt_to_client.id)
+
+            LEFT JOIN person AS client_person
+            ON (person_adapt_to_client.original_id = client_person.id)
+
+          WHERE sale_item.sale_id = sale_id
+
+          GROUP BY sale_item.sale_id, sale.id,
+                   client_person.name,
+                   person.name;
+
+    Which can also be expressed in following way by subclassing Viewable:;
+
+        class SaleViewable(Viewable):
+            columns = dict(
+                id=Sale.q.id,
+                name=Person.q.name,
+                subtotal=func.SUM(SaleItem.q.quantity * SaleItem.q.price)
+                total_quantity=func.SUM(SaleItem.q.quantity)
+                )
+
+            joins = [
+                LEFTJOINOn(None, PersonAdaptToClient,
+                           PersonAdaptToClient.q.id == Sale.q.clientID),
+                LEFTJOINOn(None, Person,
+                           Person.q.id == PersonAdaptToClient.q._originalID),
+                ]
+
+            clause = AND(
+                SaleItem.q.saleID == Sale.q.id,
+                )
+
+    You don't need to explicitly set the GROUP BY columns, Viewable is smart
+    enough to figure out the columns which needs to be grouped.
+
+    @cvar columns: a dictionary with column name mapping to an
+       SQLObject expression, functions can be used here
+    @cvar joins: a list of XXXJOINOn objects, the first argument should always
+       be None, the second should be the table joining in and the third the
+       expression to join in the other table
+    @cvar clause: optional WHERE clause of the table, can be used instead of a
+       INNERJOINOn object in the joins list
     @cvar hidden_columns: a string list of columns which means that the
       column will not included in the SELECT part, but you will still be able
       to query for it using the Viewable.q.column magic
