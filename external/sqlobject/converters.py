@@ -189,7 +189,14 @@ if hasattr(time, 'struct_time'):
 
 if datetime:
     def DateTimeConverter(value, db):
-        return "'%s'" % value.isoformat('T')
+        if db ==  "sqlite":
+            return "'%4d-%02d-%02d'" % (
+                value.year, value.month, value.day)
+            return "'%4d-%02d-%02d %02d:%02d:%02d'" % (
+                value.year, value.month, value.day,
+                value.hour, value.minute, value.second)
+        else:
+            return "'%s'" % value.isoformat('T')
 
     registerConverter(datetime.datetime, DateTimeConverter)
 

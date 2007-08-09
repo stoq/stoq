@@ -956,7 +956,10 @@ if datetime_available:
             try:
                 stime = time.strptime(value, self.format)
             except:
-                raise validators.Invalid("expected an date/time string of the '%s' format in the DateTimeCol '%s', got %s %r instead" % \
+                try:
+                    stime = time.strptime(value, '%Y-%m-%d')
+                except:
+                    raise validators.Invalid("expected an date/time string of the '%s' format in the DateTimeCol '%s', got %s %r instead" % \
                     (self.format, self.name, type(value), value), value, state)
             return datetime.datetime(*stime[:7])
 
