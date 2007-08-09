@@ -82,7 +82,7 @@ class SellableSearch(SearchEditor):
                               hide_toolbar=hide_toolbar,
                               selection_mode=selection_mode,
                               double_click_confirm=double_click_confirm)
-        self.set_searchbar_labels(_('matching:'))
+        self.set_searchbar_labels(_('Show items matching:'))
         self.set_result_strings(*self.searchbar_result_strings)
         self.set_ok_label(self.footer_ok_label)
         self.product_table = Product.getAdapterClass(ISellable)
