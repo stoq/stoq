@@ -105,8 +105,6 @@ class ServiceSearch(SellableSearch):
             columns.append(Column('price', title=_('Price'),
                                   data_type=currency, width=80))
 
-        columns.append(Column('unit', title=_('Unit'),
-                              data_type=str, width=80))
         return columns
 
     def _get_query(self, states):
