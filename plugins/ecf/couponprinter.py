@@ -171,6 +171,7 @@ class CouponPrinter(object):
 
         trans = new_transaction()
         coupon_start = data.coupon_start
+        coupon_end = data.coupon_end
         # 0 means that the opening date isn't known, fetch
         # the end date in the database and add 1
         if coupon_start == 0:
@@ -182,6 +183,11 @@ class CouponPrinter(object):
             else:
                 coupon_start = 1
 
+        # Something went wrong or no coupons opened during the day
+        if coupon_end <= coupon_start:
+            trans.commit(close=True)
+            return
+
         day = FiscalDayHistory(connection=trans,
                                emission_date=data.opening_date,
                                station=self._printer.station,
@@ -189,7 +195,7 @@ class CouponPrinter(object):
                                # 1 -> 001, FIXME: should fix stoqdrivers
                                serial_id=int(data.serial_id),
                                coupon_start=coupon_start,
-                               coupon_end=data.coupon_end,
+                               coupon_end=coupon_end,
                                crz=data.crz,
                                cro=data.cro,
                                period_total=data.period_total,
