@@ -129,9 +129,6 @@ class DeliveryEditor(BaseEditor):
                  "be set to a future date"))
 
     def on_price__validate(self, widget, price):
-        if price == 0:
-            return ValidationError(
-                _("The Delivery cost must be more than 0."))
         if price < 0:
             return ValidationError(
                 _("The Delivery cost must be a positive value."))
