@@ -112,6 +112,8 @@ def listplugins():
     for directory in dirs:
         files.append(('lib/stoqlib/plugins/',
                       listfiles(directory, '*.py')))
+        files.append(('lib/stoqlib/plugins/',
+                      listfiles(directory, '*.plugin')))
     return files
 
 data_files = [
