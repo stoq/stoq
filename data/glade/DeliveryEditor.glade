@@ -89,7 +89,7 @@
                             <widget class="ProxyEntry" id="price">
                                 <property name="data_type">currency</property>
                                 <property name="is_focus">True</property>
-                                <property name="mandatory">True</property>
+                                <property name="mandatory">False</property>
                                 <property name="model_attribute">price</property>
                                 <property name="visible">True</property>
                                 <property name="width_chars">11</property>
