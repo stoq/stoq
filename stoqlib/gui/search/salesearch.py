@@ -51,11 +51,6 @@ class SaleSearch(SearchDialog):
     search_table = SaleView
     searching_by_date = True
 
-    def __init__(self, conn):
-        SearchDialog.__init__(self, conn, self.search_table,
-                              title=self.title)
-        self._setup_slaves()
-
     #
     # SearchDialog Hooks
     #
@@ -85,11 +80,7 @@ class SaleSearch(SearchDialog):
                 Column('total', title=_('Total'), data_type=currency,
                        width=100)]
 
-    #
-    # Private
-    #
-
-    def _setup_slaves(self):
+    def setup_widgets(self):
         slave = SaleListToolbar(self.conn, self.results, self)
         slave.disable_editing()
         self.attach_slave("extra_holder", slave)
