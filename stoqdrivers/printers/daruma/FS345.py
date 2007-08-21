@@ -44,7 +44,7 @@ from stoqdrivers.enum import TaxType, UnitType
 from stoqdrivers.exceptions import (DriverError, PendingReduceZ,
                                     HardwareFailure, ReduceZError,
                                     AuthenticationFailure, CommError,
-                                    PendingReadX, CouponNotOpenError,
+                                    CouponNotOpenError,
                                     OutofPaperError, PrinterOfflineError,
                                     CouponOpenError, CancelItemError,
                                     CloseCouponError)
@@ -216,7 +216,7 @@ class FS345(SerialBase):
             raise ReduceZError(_("readZ is already emitted"))
 
         if self.needs_read_x(status):
-            raise PendingReadX(_("readX is not emitted yet"))
+            self.send_command(CMD_GET_X)
 
         return status
 
