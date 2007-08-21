@@ -117,19 +117,7 @@ class SaleItem(Domain):
 
         storable = IStorable(self.sellable, None)
         if storable:
-            # Update the stock
             storable.decrease_stock(self.quantity, branch)
-
-            # The function get_full_balance returns the current amount of items
-            # in the stock. If get_full_balance == 0 we have no more stock for
-            # this product and we need to set it as sold.
-            logic_qty = storable.get_logic_balance()
-            balance = storable.get_full_balance() - logic_qty
-            if not balance:
-                # This marks the sellable as not available, eg. out of stock
-                # FIXME: rename sell() to something more useful which is not
-                #        confusing a sale and a sellable
-                self.sellable.sell()
 
     def cancel(self, branch):
         storable = IStorable(self.sellable)
