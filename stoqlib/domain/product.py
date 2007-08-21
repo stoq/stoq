@@ -308,16 +308,20 @@ class ProductAdaptToStorable(ModelAdapter):
                 storable=self,
                 branch=branch,
                 connection=self.get_connection())
+
+        # If previously lacked quantity change the status of the sellable
+        if not stock_item.quantity:
+            sellable = ISellable(self.product, None)
+            if sellable:
+                # Rename see bug 2669
+                sellable.can_sell()
         stock_item.quantity += quantity
 
-        # FIXME: We should only need to mark the sellable facet as sellable when
-        #        going from 0 -> n, but for some reasons this is not enough,
-        #        perhaps when the storable is initialized with a non-zero quantity
-        sellable = ISellable(self.product, None)
-        if sellable:
-            sellable.can_sell()
-
     def decrease_stock(self, quantity, branch):
+        # The function get_full_balance returns the current amount of items
+        # in the stock. If get_full_balance == 0 we have no more stock for
+        # this product and we need to set it as sold.
+
         if not self._has_qty_available(quantity, branch):
             # Of course that here we must use the logic quantity balance
             # as an addition to our main stock
@@ -331,6 +335,16 @@ class ProductAdaptToStorable(ModelAdapter):
         self._check_rejected_stocks([stock_item], quantity)
 
         stock_item.quantity -= quantity
+        if stock_item.quantity < 0:
+            raise ValueError("Quantity cannot be negative")
+
+        # If we emptied the entire stock change the status of the sellable
+        if not stock_item.quantity:
+            sellable = ISellable(self.product, None)
+            if sellable:
+                # FIXME: rename sell() to something more useful which is not
+                #        confusing a sale and a sellable, Bug 2669
+                sellable.sell()
 
     def increase_logic_stock(self, quantity, branch=None):
         self._check_logic_quantity()
