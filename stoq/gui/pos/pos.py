@@ -59,7 +59,6 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
-from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
@@ -67,7 +66,6 @@ from stoqlib.gui.search.salesearch import SaleSearch
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
-from stoqlib.reporting.sale import SaleOrderReport
 
 from stoq.gui.application import AppWindow
 from stoq.gui.pos.deliveryeditor import DeliveryEditor
@@ -269,7 +267,7 @@ class POSApp(AppWindow):
 
         has_sale_items = len(self.sale_items) >= 1
         self.set_sensitive((self.checkout_button, self.remove_item_button,
-                            self.PrintOrder, self.NewDelivery,
+                            self.NewDelivery,
                             self.OrderCheckout), has_sale_items)
         self.CancelOrder.set_sensitive(has_sale_items)
         has_products = False
@@ -599,10 +597,6 @@ class POSApp(AppWindow):
 
     def on_OrderCheckout__activate(self, action):
         self._checkout()
-
-    def on_PrintOrder__activate(self, action):
-        sale = self._create_sale(self.conn)
-        print_report(SaleOrderReport, sale)
 
     def on_NewDelivery__activate(self, action):
         self._add_delivery()
