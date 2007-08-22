@@ -129,15 +129,6 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="PrintOrder">
-                        <property name="name">PrintOrder</property>
-                        <property name="label" translatable="yes">Print Order...</property>
-                        <property name="tooltip" translatable="yes">Print the current sale order</property>
-                        <property name="stock_id">gtk-print</property>
-                        <property name="accelerator">&lt;Control&gt;p</property>
-                    </widget>
-                </child>
-                <child>
                     <widget class="GtkAction" id="ProductSearch">
                         <property name="name">ProductSearch</property>
                         <property name="label" translatable="yes">Products...</property>
@@ -244,8 +235,6 @@
                 <separator name="sep"/>
                 <menuitem action="NewDelivery"/>
                 <menuitem action="OrderCheckout"/>
-                <separator name="sep10"/>
-                <menuitem action="PrintOrder"/>
                 <separator name="sep2"/>
                 <menuitem action="Quit"/>
               </menu>
