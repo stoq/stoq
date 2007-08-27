@@ -165,6 +165,7 @@ class CommissionView(Viewable):
 
     columns = dict(
         id=Sale.q.id,
+        code=Commission.q.id,
         commission_value=Commission.q.value,
         commission_percentage=Commission.q.value/Sale.q.total_amount*100,
         salesperson_name=Person.q.name,

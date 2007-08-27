@@ -432,6 +432,29 @@ class TestSale(DomainTest):
         self.assertEquals(commissions.count(), 1)
         self.assertEquals(commissions[0].value, Decimal('56.00'))
 
+    def testCommissionAmountWhenSaleReturn(self):
+        sale = self.create_sale()
+        sellable = self._add_product(sale, price=200)
+        source = CommissionSource(asellable=sellable,
+                                  direct_value=10,
+                                  installments_value=5,
+                                  connection=self.trans)
+        sale.order()
+        # payment method: money
+        # installments number: 1
+        self._add_payments(sale)
+        self.failIf(Commission.selectBy(connection=self.trans))
+        sale.confirm()
+        sale.return_(sale.create_sale_return_adapter())
+        self.assertEqual(sale.status, Sale.STATUS_RETURNED)
+
+        commissions = Commission.selectBy(sale=sale,
+                                          connection=self.trans)
+        value = sum([c.value for c in commissions])
+        self.assertEqual(value, Decimal(0))
+        self.assertEqual(commissions.count(), 2)
+        self.failIf(commissions[-1].value >= 0)
+
 class TestSaleItem(DomainTest):
     def testGetTotal(self):
         sale = self.create_sale()

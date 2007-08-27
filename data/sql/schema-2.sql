@@ -1021,7 +1021,7 @@ CREATE TABLE commission (
     te_created_id bigint REFERENCES transaction_entry(id),
     te_modified_id bigint REFERENCES transaction_entry(id),
 
-    value numeric(10, 2) NOT NULL CONSTRAINT positive_value CHECK (value >= 0),
+    value numeric(10, 2) NOT NULL,
     commission_type integer NOT NULL,
     salesperson_id bigint NOT NULL REFERENCES person_adapt_to_sales_person(id),
     sale_id bigint NOT NULL REFERENCES sale(id),

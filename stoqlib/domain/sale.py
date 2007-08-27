@@ -44,7 +44,7 @@ from stoqlib.domain.base import (Domain, ValidatableDomain, BaseSQLView,
 from stoqlib.domain.events import SaleConfirmEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.giftcertificate import GiftCertificate
-from stoqlib.domain.interfaces import (IContainer, IClient,
+from stoqlib.domain.interfaces import (IContainer, IClient, IOutPayment,
                                        IPaymentGroup, ISellable,
                                        IIndividual, ICompany,
                                        IDelivery, IStorable, IProduct)
@@ -764,8 +764,12 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     def _get_commission_type(self):
         from stoqlib.domain.commission import Commission
 
-        items = self.get_items()
-        if items.count() == 1:
+        nitems = 0
+        for item in self.get_items():
+            if IOutPayment(item, None) is None:
+                nitems += 1
+
+        if nitems <= 1:
             return Commission.DIRECT
         return Commission.INSTALLMENTS
 
@@ -773,10 +777,12 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         from stoqlib.domain.commission import Commission
 
         if not self._pay_commission_at_confirm():
-            Commission(commission_type=self._get_commission_type(),
-                       sale=self.sale, payment=payment,
-                       salesperson=self.sale.salesperson,
-                       connection=self.get_connection())
+            commission = Commission(commission_type=self._get_commission_type(),
+                                     sale=self.sale, payment=payment,
+                                     salesperson=self.sale.salesperson,
+                                     connection=self.get_connection())
+            if IOutPayment(payment, None) is not None:
+                commission.value = -commission.value
 
     def cancel(self, renegotiation):
         assert self.can_cancel()

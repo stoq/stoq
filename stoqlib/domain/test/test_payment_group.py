@@ -30,6 +30,7 @@ from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.parameters import sysparam
 
@@ -126,3 +127,44 @@ class TestPaymentGroup(DomainTest):
         # the third payment represent 1/6 of the total amount
         # 45 / 6 => 7.50
         self.assertEquals(commissions[2].value, Decimal("7.50"))
+
+    def testInstallmentsCommissionAmountWhenSaleReturn(self):
+        from stoqlib.database.runtime import get_current_branch
+        from stoqlib.domain.interfaces import IStorable
+        sysparam(self.trans).SALE_PAY_COMMISSION_WHEN_CONFIRMED = True
+        sale = self.create_sale()
+        sellable = self.create_sellable()
+        source = CommissionSource(asellable=sellable,
+                                  direct_value=12,
+                                  installments_value=5,
+                                  connection=self.trans)
+
+        item = sale.add_sellable(sellable, quantity=3, price=300)
+        product = sellable.get_adapted()
+        product.addFacet(IStorable, connection=self.trans)
+        storable = IStorable(sellable)
+        storable.increase_stock(100, get_current_branch(self.trans))
+
+        sale.order()
+        group = sale.addFacet(IPaymentGroup, connection=self.trans)
+        method = APaymentMethod.get_by_enum(self.trans,
+                                            PaymentMethodType.CHECK)
+        payment1 = method.create_inpayment(group, Decimal(300))
+        payment2 = method.create_inpayment(group, Decimal(450))
+        payment3 = method.create_inpayment(group, Decimal(150))
+        sale.confirm()
+
+        # the commissions are created after the payment
+        payment1.get_adapted().pay()
+        payment2.get_adapted().pay()
+        payment3.get_adapted().pay()
+
+        sale.return_(sale.create_sale_return_adapter())
+        self.assertEqual(sale.status, Sale.STATUS_RETURNED)
+
+        commissions = Commission.selectBy(sale=sale,
+                                          connection=self.trans)
+        value = sum([c.value for c in commissions])
+        self.assertEqual(value, Decimal(0))
+        self.assertEqual(commissions.count(), 4)
+        self.failIf(commissions[-1].value >= 0)

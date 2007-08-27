@@ -28,7 +28,7 @@ from decimal import Decimal
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.widgets.list import Column, ColoredColumn
 
 from stoqlib.domain.commission import CommissionView
 from stoqlib.domain.interfaces import ISalesPerson
@@ -71,8 +71,10 @@ class CommissionSearch(SearchDialog):
                         data_type=str, expand=True),
                 Column('commission_percentage', title=_('Commission (%)'),
                         data_type=Decimal, format="%.2f"),
-                Column('commission_value', title=_('Commission'),
-                        data_type=currency),
+                # negative commissions are shown in red color
+                ColoredColumn('commission_value', title=_('Commission'),
+                               color='red', data_func=lambda x: x < 0,
+                               data_type=currency),
                 Column('payment_amount', title=_('Payment Value'),
                         data_type=currency),
                 Column('total_amount', title=_('Sale Total'),
