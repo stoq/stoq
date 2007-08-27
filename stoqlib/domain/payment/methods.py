@@ -730,6 +730,14 @@ class PaymentMethodDetails(InheritableModel):
                             '%s' % method_type)
         return method
 
+    @classmethod
+    def get_active_method_details(cls, provider, conn):
+        """Returns all active methods for an specific provider."""
+        return PaymentMethodDetails.selectBy(
+            is_active=True, provider=provider,
+            connection=conn)
+
+
 class DebitCardDetails(PaymentMethodDetails):
     """Debit card payment method definition."""
 

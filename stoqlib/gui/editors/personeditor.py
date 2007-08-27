@@ -190,6 +190,7 @@ class CardProviderEditor(CreditProviderEditor):
         addlist.klist.connect('cell-edited', self.on_cell_edited)
         slave = self.main_slave.get_person_slave()
         slave.attach_custom_slave(addlist, _("Payment Types"))
+
     #
     # Callbacks
     #

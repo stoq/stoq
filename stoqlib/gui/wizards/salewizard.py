@@ -52,10 +52,12 @@ from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave, BillMethodSlave,
                                              CardMethodSlave,
                                              FinanceMethodSlave)
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
-from stoqlib.domain.person import Person, ClientView
+from stoqlib.domain.person import (Person, ClientView,
+                                   PersonAdaptToCreditProvider)
 from stoqlib.domain.payment.methods import (APaymentMethod,
                                             MoneyPM, BillPM, CheckPM,
                                             CardPM, FinancePM,
+                                            PaymentMethodDetails,
                                             GiftCertificatePM)
 from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.sale import Sale
@@ -161,9 +163,28 @@ class PaymentMethodStep(WizardEditorStep):
             elif method_type == BillPM:
                 slave_class = BillMethodSlave
             elif method_type == CardPM:
-                slave_class = CardMethodSlave
+                providers = method.get_credit_card_providers()
+                if not providers:
+                    continue
+                for provider in providers:
+                    payment_details = \
+                        PaymentMethodDetails.get_active_method_details(
+                            provider=provider, conn=self.conn)
+                    if (provider.provider_type ==
+                            PersonAdaptToCreditProvider.PROVIDER_CARD and
+                            payment_details):
+                        slave_class = CardMethodSlave
+                    else:
+                        provider.is_active = False
+                        self.conn.savepoint('payment')
             elif method_type == FinancePM:
-                slave_class = FinanceMethodSlave
+                companies = method.get_finance_companies()
+                if not companies:
+                    continue
+                for company in companies:
+                    if (company.provider_type ==
+                            PersonAdaptToCreditProvider.PROVIDER_FINANCE):
+                        slave_class = FinanceMethodSlave
             else:
                 continue
             if method.is_active:
@@ -185,6 +206,7 @@ class PaymentMethodStep(WizardEditorStep):
 
     def post_init(self):
         self.method_combo.grab_focus()
+        self._setup_combo()
         if self.method_slave:
             self.method_slave.update_view()
 

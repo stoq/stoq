@@ -31,6 +31,7 @@ from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.payment.methods import (APaymentMethod,
                                             BillPM, CheckPM, FinancePM,
+                                            PaymentMethodDetails,
                                             MoneyPM, GiftCertificatePM)
 from stoqlib.domain.payment.payment import (Payment,
                                             PaymentAdaptToInPayment,
@@ -217,3 +218,19 @@ class TestFinancePM(DomainTest, _TestPaymentMethodsBase):
 class TestGiftCertificatePM(DomainTest, _TestPaymentMethodsBase):
     method_type = GiftCertificatePM
     enum = PaymentMethodType.GIFT_CERTIFICATE
+
+class TestPaymentMethodDetails(DomainTest):
+
+    def testGetActiveMethodDetails(self):
+        provider = self.create_credit_provider()
+        method_details = PaymentMethodDetails.get_active_method_details(
+            provider=provider, conn=self.trans)
+        self.failIf(method_details)
+        payment_method_details = self.create_payment_method_details(provider)
+        method_details = PaymentMethodDetails.get_active_method_details(
+            provider=provider, conn=self.trans)
+        self.failUnless(method_details)
+        payment_method_details.is_active = False
+        method_details = PaymentMethodDetails.get_active_method_details(
+            provider=provider, conn=self.trans)
+        self.failIf(method_details)
