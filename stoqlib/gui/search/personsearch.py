@@ -31,6 +31,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_phone_number
 from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
@@ -46,7 +47,8 @@ from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
 from stoqlib.domain.person import (EmployeeRole,
                                    PersonAdaptToBranch, BranchView,
                                    PersonAdaptToClient, ClientView,
-                                   PersonAdaptToCreditProvider, CreditProviderView,
+                                   PersonAdaptToCreditProvider,
+                                   CreditProviderView,
                                    PersonAdaptToEmployee, EmployeeView,
                                    TransporterView,
                                    SupplierView)
@@ -157,6 +159,7 @@ class AbstractCreditProviderSearch(BasePersonSearch):
     def __init__(self, conn, title='', hide_footer=True):
         self.provider_table = PersonAdaptToCreditProvider
         BasePersonSearch.__init__(self, conn, title, hide_footer)
+        self.results.connect('cell-edited', self._on_results__cell_edited)
 
     def create_filters(self):
         self.set_text_field_columns(['name', 'phone_number', 'short_name'])
@@ -169,7 +172,8 @@ class AbstractCreditProviderSearch(BasePersonSearch):
                        format_func=format_phone_number, width=130),
                 Column('short_name', _('Short Name'), str,
                        width=150),
-                Column('is_active', _('Active'), bool)]
+                Column('is_active', _('Active'), data_type=bool,
+                       editable=True)]
 
     def get_provider_type(self):
         raise NotImplementedError("This method must be defined on child")
@@ -179,6 +183,13 @@ class AbstractCreditProviderSearch(BasePersonSearch):
 
     def _get_query(self, states):
         return self.provider_table.q.provider_type == self.get_provider_type()
+
+    def _on_results__cell_edited(self, results, obj, attr):
+        trans = new_transaction()
+        cards = trans.get(obj.provider)
+        cards.is_active = obj.is_active
+        trans.commit(close=True)
+
 
 class CardProviderSearch(AbstractCreditProviderSearch):
     title = _('Card Provider Search')

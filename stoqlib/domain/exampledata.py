@@ -422,6 +422,14 @@ class ExampleCreator(object):
         from stoqlib.domain.payment.methods import APaymentMethod
         return APaymentMethod.get_by_enum(self.trans, PaymentMethodType.MONEY)
 
+    def create_payment_method_details(self, provider=None):
+        from stoqlib.domain.payment.methods import PaymentMethodDetails
+        if not provider:
+            provider = self.create_credit_provider()
+        return PaymentMethodDetails(True, provider=provider,
+                                    destination=None,
+                                    connection=self.trans)
+
     def create_payment(self):
         from stoqlib.domain.payment.payment import Payment
         return Payment(group=None,
