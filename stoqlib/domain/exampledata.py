@@ -426,7 +426,7 @@ class ExampleCreator(object):
         from stoqlib.domain.payment.methods import PaymentMethodDetails
         if not provider:
             provider = self.create_credit_provider()
-        return PaymentMethodDetails(True, provider=provider,
+        return PaymentMethodDetails(is_active=True, provider=provider,
                                     destination=None,
                                     connection=self.trans)
 
