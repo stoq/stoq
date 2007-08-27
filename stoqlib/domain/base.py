@@ -266,6 +266,15 @@ class Domain(BaseDomain, AdaptableSQLObject):
         BaseDomain.__init__(self, *args, **kwargs)
         AdaptableSQLObject.__init__(self)
 
+    def _create(self, id, **kw):
+        if not isinstance(self._connection, StoqlibTransaction):
+            raise TypeError(
+                "creating a %s instance needs a StoqlibTransaction, not %s"
+                % (self.__class__.__name__,
+                   self._connection.__class__.__name__))
+        BaseDomain._create(self, id, **kw)
+
+
     @classmethod
     def iselect(cls, iface, *args, **kwargs):
         """
