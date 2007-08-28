@@ -39,8 +39,7 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.views import ProductFullStockView, ProductQuantityView
 from stoqlib.gui.editors.producteditor import ProductEditor
-from stoqlib.gui.search.sellablesearch import SellableSearch
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.base.search import SearchDialog, SearchEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
@@ -49,7 +48,7 @@ from stoqlib.reporting.product import ProductReport, ProductQuantityReport
 _ = stoqlib_gettext
 
 
-class ProductSearch(SellableSearch):
+class ProductSearch(SearchEditor):
     title = _('Product Search')
     table = Product
     size = (775, 450)
@@ -76,9 +75,10 @@ class ProductSearch(SellableSearch):
                                   column 'price'
         """
         self.use_product_statuses = use_product_statuses
-        SellableSearch.__init__(self, conn, hide_footer=hide_footer,
-                                hide_toolbar=hide_toolbar,
-                                selection_mode=selection_mode)
+        SearchEditor.__init__(self, conn, hide_footer=hide_footer,
+                              hide_toolbar=hide_toolbar,
+                              selection_mode=selection_mode)
+        self.set_searchbar_labels(_('matching'))
         if hide_cost_column:
             self._hide_column('cost')
         if hide_price_column:
@@ -115,11 +115,6 @@ class ProductSearch(SellableSearch):
         status_filter.select(None)
         self.add_filter(status_filter, columns=['status'],
                         position=SearchFilterPosition.TOP)
-
-    def get_branch(self):
-        # We have not a filter for branches in this dialog and in this case
-        # there is no filter for branches when getting the stocks
-        return
 
     #
     # SearchEditor Hooks
