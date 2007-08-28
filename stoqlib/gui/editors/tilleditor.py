@@ -38,7 +38,7 @@ from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
 from stoqlib.domain.interfaces import IEmployee
 from stoqlib.domain.person import Person
 from stoqlib.domain.till import Till
-from stoqlib.exceptions import TillError
+from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning
@@ -122,7 +122,7 @@ class TillOpeningEditor(BaseEditor):
 
         try:
             TillOpenEvent.emit(till=till)
-        except TillError, e:
+        except (TillError, DeviceError), e:
             warning(str(e))
             return None
 
@@ -190,7 +190,7 @@ class TillClosingEditor(BaseEditor):
         try:
             TillCloseEvent.emit(till=till,
                                 previous_day=self._previous_day)
-        except TillError, e:
+        except (TillError, DeviceError), e:
             warning(str(e))
             return None
 
@@ -322,7 +322,11 @@ class CashAdvanceEditor(BaseEditor):
             till = self.model.till
             value = abs(self.model.value)
             assert till
-            TillRemoveCashEvent.emit(till=till, value=value)
+            try:
+                TillRemoveCashEvent.emit(till=till, value=value)
+            except (TillError, DeviceError), e:
+                warning(str(e))
+                return None
             till.add_debit_entry(value,
                                  (_(u'Cash advance paid to employee: %s')
                                   % self._get_employee_name()))
@@ -380,7 +384,13 @@ class CashOutEditor(BaseEditor):
             value = abs(self.model.value)
             till = self.model.till
             assert till
-            TillRemoveCashEvent.emit(till=till, value=value)
+            assert till
+            try:
+                TillRemoveCashEvent.emit(till=till, value=value)
+            except (TillError, DeviceError), e:
+                warning(str(e))
+                return None
+
             return till.add_debit_entry(
                 value, (_(u'Cash out: %s') % (self.reason.get_text(),)))
 
@@ -427,8 +437,13 @@ class CashInEditor(BaseEditor):
         if valid:
             till = self.model.till
             assert till
-            TillAddCashEvent.emit(till=till,
-                                  value=self.model.value)
+            try:
+                TillAddCashEvent.emit(till=till,
+                                      value=self.model.value)
+            except (TillError, DeviceError), e:
+                warning(str(e))
+                return None
+
             return till.add_credit_entry(
                 self.model.value,
                 (_(u'Cash in: %s') % (self.reason.get_text(),)))
