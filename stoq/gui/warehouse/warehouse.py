@@ -41,6 +41,7 @@ from stoqlib.domain.product import ProductAdaptToSellable
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.message import warning
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
+from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.search.productsearch import ProductSearchQuantity
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
@@ -113,12 +114,20 @@ class WarehouseApp(SearchableAppWindow):
         return items
 
     def _update_widgets(self):
+        is_main_branch = (self.branch_filter.get_state().value is
+                          get_current_branch(self.conn))
         has_stock = len(self.results) > 0
-        self.retention_button.set_sensitive(has_stock)
         one_selected = len(self.results.get_selected_rows()) == 1
-        self.history_button.set_sensitive(one_selected)
-        self.retention_button.set_sensitive(one_selected)
+        self.history_button.set_sensitive(one_selected and is_main_branch)
+        self.ProductHistory.set_sensitive(one_selected and is_main_branch)
+        self.retention_button.set_sensitive(one_selected and is_main_branch)
         self.print_button.set_sensitive(has_stock)
+        # We need more than one branch to be able to do transfers
+        # Note that 'all branches' is not a real branch
+        has_branches = len(self.branch_filter.combo) > 2
+
+        self.transfer_action.set_sensitive(has_branches)
+        self.TransferSearch.set_sensitive(False)
 
     def _update_filter_slave(self, slave):
         self.refresh()
@@ -157,6 +166,12 @@ class WarehouseApp(SearchableAppWindow):
     def on_stock_transfer_action_clicked(self, button):
         # TODO To be implemented
         pass
+
+    def on_transfer_action__activate(self, action):
+        trans = new_transaction()
+        model = self.run_dialog(StockTransferWizard, trans)
+        finish_transaction(trans, model)
+        trans.close()
 
     def on_retention_button__clicked(self, button):
         sellable_view = self.results.get_selected_rows()[0]
