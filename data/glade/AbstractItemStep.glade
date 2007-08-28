@@ -19,6 +19,7 @@
                                 <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>
                                 <property name="label" context="yes" translatable="yes">Item:</property>
+                                <property name="model_attribute">kiwilabel1</property>
                                 <property name="selectable">True</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -28,19 +29,19 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyComboEntry" id="item">
+                            <widget class="ProxyComboEntry" id="sellable">
                                 <property name="data_type">object</property>
-                                <property name="model_attribute">item</property>
+                                <property name="model_attribute">sellable</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
-                                <property name="expand">True</property>
                                 <property name="position">1</property>
                             </packing>
                         </child>
                         <child>
                             <widget class="ProxyLabel" id="kiwilabel2">
                                 <property name="label" context="yes" translatable="yes">Quantity:</property>
+                                <property name="model_attribute"></property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -93,6 +94,7 @@
                         <child>
                             <widget class="ProxyLabel" id="kiwilabel4">
                                 <property name="label" context="yes" translatable="yes">Cost:</property>
+                                <property name="model_attribute"></property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -104,8 +106,8 @@
                         <child>
                             <widget class="ProxyEntry" id="cost">
                                 <property name="data_type">Decimal</property>
-                                <property name="is_focus">True</property>
                                 <property name="editable">False</property>
+                                <property name="is_focus">True</property>
                                 <property name="model_attribute">cost</property>
                                 <property name="visible">True</property>
                                 <property name="width_chars">7</property>
@@ -121,7 +123,7 @@
                                 <property name="spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="GtkButton" id="add_item_button">
+                                    <widget class="GtkButton" id="add_sellable_button">
                                         <property name="is_focus">True</property>
                                         <property name="visible">True</property>
                                         <child>
