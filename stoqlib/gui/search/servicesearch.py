@@ -35,13 +35,13 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.service import Service, ServiceView
 from stoqlib.gui.base.columns import Column
+from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
-from stoqlib.gui.search.sellablesearch import SellableSearch
 
 _ = stoqlib_gettext
 
 
-class ServiceSearch(SellableSearch):
+class ServiceSearch(SearchEditor):
     title = _('Service Search')
     table = Service
     search_table = ServiceView
@@ -58,9 +58,10 @@ class ServiceSearch(SellableSearch):
         self.hide_cost_column = hide_cost_column
         self.hide_price_column = hide_price_column
         self.use_product_statuses = use_product_statuses
-        SellableSearch.__init__(self, conn, hide_footer=hide_footer,
-                                hide_toolbar=hide_toolbar,
-                                selection_mode=selection_mode)
+        SearchEditor.__init__(self, conn, hide_footer=hide_footer,
+                              hide_toolbar=hide_toolbar,
+                              selection_mode=selection_mode)
+        self.set_searchbar_labels(_('matching'))
 
     #
     # SearchDialog Hooks
@@ -75,11 +76,6 @@ class ServiceSearch(SellableSearch):
         service_filter.select(None)
         self.executer.add_query_callback(self._get_query)
         self.add_filter(service_filter, SearchFilterPosition.TOP, ['status'])
-
-    def get_branch(self):
-        # We have not a filter for branches in this dialog and in this case
-        # there is no filter for branches when getting the stocks
-        return
 
     #
     # SearchEditor Hooks
