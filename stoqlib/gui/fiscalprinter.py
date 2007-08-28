@@ -124,7 +124,16 @@ class FiscalPrinterHelper:
         """
         @returns: a new coupon
         """
-        return FiscalCoupon(self._parent)
+
+        coupon = FiscalCoupon(self._parent)
+
+        try:
+            CouponCreatedEvent.emit(coupon)
+        except DeviceError, e:
+            warning(e)
+            coupon = None
+
+        return coupon
 
 
 class FiscalCoupon(gobject.GObject):
@@ -146,8 +155,6 @@ class FiscalCoupon(gobject.GObject):
 
     def __init__(self, parent):
         gobject.GObject.__init__(self)
-
-        CouponCreatedEvent.emit(self)
 
         self._parent = parent
         self._item_ids = {}
@@ -244,7 +251,7 @@ class FiscalCoupon(gobject.GObject):
                     gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
                     return False
                 return self.open()
-            except DriverError, e:
+            except (DriverError, DeviceError), e:
                 warning(_(u"It is not possible to emit the coupon"),
                         str(e))
                 return False
@@ -257,7 +264,7 @@ class FiscalCoupon(gobject.GObject):
 
         try:
             self.emit('totalize', sale)
-        except DriverError, details:
+        except (DriverError, DeviceError), details:
             warning(_(u"It is not possible to totalize the coupon"),
                     str(details))
             return False
@@ -295,7 +302,7 @@ class FiscalCoupon(gobject.GObject):
         try:
             coupon_id = self.emit('close')
             return True
-        except DriverError, details:
+        except (DeviceError, DriverError), details:
             warning(_("It's not possible to close the coupon"), str(details))
 
         sale.coupon_id = coupon_id
