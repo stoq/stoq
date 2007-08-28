@@ -73,7 +73,7 @@ class SellableItemStep(WizardEditorStep):
     """
     # FIXME: Rename to SellableItemStep
     gladefile = 'AbstractItemStep'
-    item_widgets = ('item',)
+    sellable_widgets = ('sellable',)
     proxy_widgets = ('quantity',
                      'unit_label',
                      'cost')
@@ -108,11 +108,11 @@ class SellableItemStep(WizardEditorStep):
     # Hooks
     #
 
-    def setup_item_entry(self):
+    def setup_sellable_entry(self):
         result = ASellable.get_unblocked_sellables(self.conn)
-        self.item.prefill([(item.get_description(), item)
-                               for item in result
-                                   if not isinstance(item.get_adapted(),
+        self.sellable.prefill([(sellable.get_description(), sellable)
+                               for sellable in result
+                                   if not isinstance(sellable.get_adapted(),
                                                      GiftCertificate)])
 
     def get_order_item(self):
@@ -127,6 +127,11 @@ class SellableItemStep(WizardEditorStep):
     def on_product_button__clicked(self, button):
         raise NotImplementedError('This method must be defined on child')
 
+    def validate(self, sellable, cost, quantity):
+        # A subclass must redefine this method to perform some
+        # validation before the sellable be added/updated in the list
+        return True
+
     #
     # WizardStep hooks
     #
@@ -135,21 +140,21 @@ class SellableItemStep(WizardEditorStep):
         raise NotImplementedError('This method must be defined on child')
 
     def post_init(self):
-        self.item.grab_focus()
-        self.item_hbox.set_focus_chain([self.item,
+        self.sellable.grab_focus()
+        self.sellable_hbox.set_focus_chain([self.sellable,
                                         self.quantity, self.cost,
-                                        self.add_item_button,
+                                        self.add_sellable_button,
                                         self.product_button])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
     def setup_proxies(self):
-        self.setup_item_entry()
+        self.setup_sellable_entry()
         self.proxy = self.add_proxy(None, SellableItemStep.proxy_widgets)
         model = Settable(quantity=Decimal(1), price=currency(0),
-                         item=None)
-        self.item_proxy = self.add_proxy(model,
-                                         SellableItemStep.item_widgets)
+                         sellable=None)
+        self.sellable_proxy = self.add_proxy(model,
+                                             SellableItemStep.sellable_widgets)
 
     def setup_slaves(self):
         self.slave = self.list_slave_class(
@@ -162,7 +167,9 @@ class SellableItemStep(WizardEditorStep):
         self.slave.connect('on-edit-item', self._on_list_slave__edit_item)
         self.slave.connect('on-add-item', self._on_list_slave__add_item)
         self.attach_slave('list_holder', self.slave)
+        self._setup_summary()
 
+    def _setup_summary(self):
         # FIXME: Move this into AdditionListSlave
         self.summary = SummaryLabel(klist=self.slave.klist, column='total',
                                     label=self.summary_label_text,
@@ -175,64 +182,69 @@ class SellableItemStep(WizardEditorStep):
 
     def _get_sellable(self):
         if self.proxy.model:
-            sellable = self.item_proxy.model.item
+            sellable = self.sellable_proxy.model.sellable
         else:
             sellable = None
         if not sellable:
-            barcode = self.item.get_text()
+            barcode = self.sellable.get_text()
             try:
                 sellable = ASellable.get_availables_and_sold_by_barcode(
                     self.conn, barcode)
             except BarcodeDoesNotExists, e:
-                self.item.set_invalid(str(e))
+                self.sellable.set_invalid(str(e))
                 sellable = None
 
             if sellable:
                 # Waiting for a select method on kiwi entry using entry
                 # completions
-                self.item.set_text(sellable.get_short_description())
-        self.add_item_button.set_sensitive(sellable is not None)
+                self.sellable.set_text(sellable.get_short_description())
+        self.add_sellable_button.set_sensitive(sellable is not None)
         return sellable
 
-    def _add_item(self):
-        if not self.add_item_button.get_property('sensitive'):
+    def _add_sellable(self):
+        if not self.add_sellable_button.get_property('sensitive'):
             return
-        self.add_item_button.set_sensitive(False)
-        item = self._get_sellable()
-        if not item:
+        self.add_sellable_button.set_sensitive(False)
+        sellable = self._get_sellable()
+        if not sellable:
             return
-        self._update_list(item)
+        self._update_list(sellable)
 
-    def _update_list(self, item):
-        if self.item_proxy.model.item is item:
+    def _update_list(self, sellable):
+        if self.sellable_proxy.model.sellable is sellable:
             cost = self.proxy.model.cost
         else:
-            cost = item.cost
+            cost = sellable.cost
         quantity = self.get_quantity()
 
-        # For items already present in the list, increase the quantity of the
-        # existing item. If the item is not in the list, just add it.
-        items = [s.sellable for s in self.slave.klist]
-        if item in items:
-            object_item = self.slave.klist[items.index(item)]
-            object_item.quantity += quantity
-            self.slave.klist.update(object_item)
+        # For sellables already present in the list, increase the quantity of the
+        # existing sellable. If the sellable is not in the list, just add it.
+        sellables = [s.sellable for s in self.slave.klist]
+        if sellable in sellables:
+            item = self.slave.klist[sellables.index(sellable)]
+            if not self.validate(item, cost, quantity):
+                return
+            item.quantity += quantity
+            self.slave.klist.update(item)
         else:
-            order_item = self.get_order_item(item, cost, quantity)
-            self.slave.klist.append(order_item)
+            item = self.get_order_item(sellable, cost, quantity)
+            if not self.validate(item, cost, quantity):
+                return
+            self.slave.klist.append(item)
         self._update_total()
         self.proxy.set_model(None, relax_type=True)
-        self.item.set_text('')
-        self.item.grab_focus()
+        self.sellable.set_text('')
+        self.sellable.grab_focus()
 
     def _update_total(self):
-        self.summary.update_total()
+        if self.summary:
+            self.summary.update_total()
         self._refresh_next()
         self.force_validation()
 
     def _update_widgets(self):
-        has_item_str = self.item.get_text() != ''
-        self.add_item_button.set_sensitive(has_item_str)
+        has_sellable_str = self.sellable.get_text() != ''
+        self.add_sellable_button.set_sensitive(has_sellable_str)
 
     #
     # callbacks
@@ -252,27 +264,27 @@ class SellableItemStep(WizardEditorStep):
     def _on_list_slave__edit_item(self, slave, item):
         self._update_total()
 
-    def on_add_item_button__clicked(self, button):
-        self._add_item()
+    def on_add_sellable_button__clicked(self, button):
+        self._add_sellable()
         self.quantity.update(self.get_quantity())
 
-    def on_item__activate(self, combo):
+    def on_sellable__activate(self, combo):
         self._get_sellable()
         self.quantity.grab_focus()
 
-    def after_item__content_changed(self, combo):
-        self.item.set_valid()
+    def after_sellable__content_changed(self, combo):
+        self.sellable.set_valid()
         self._update_widgets()
-        item = self.item_proxy.model.item
-        if not (item and self.item.get_text()):
+        sellable = self.sellable_proxy.model.sellable
+        if not (sellable and self.sellable.get_text()):
             self.proxy.set_model(None, relax_type=True)
             return
-        model = Settable(quantity=self.quantity.read(), cost=item.cost,
-                         item=item)
+        model = Settable(quantity=self.quantity.read(), cost=sellable.cost,
+                         sellable=sellable)
         self.proxy.set_model(model)
 
     def on_quantity__activate(self, entry):
-        self._add_item()
+        self._add_sellable()
 
     def on_cost__activate(self, entry):
-        self._add_item()
+        self._add_sellable()
