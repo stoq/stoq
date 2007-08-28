@@ -424,7 +424,7 @@ class BranchSettingsStep(WizardEditorStep):
     model_type = Person
 
     def __init__(self, conn, wizard, model, previous):
-        model = create_main_branch("", conn).person
+        model = create_main_branch(name="", trans=conn).person
 
         self.param = sysparam(conn)
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
