@@ -80,7 +80,7 @@ class TransferOrder(Domain):
         return TransferOrderItem.selectBy(transfer_order=self,
                                           connection=self.get_connection())
 
-    def add_item(self):
+    def add_item(self, item):
         pass
 
     @argcheck(TransferOrderItem)
