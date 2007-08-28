@@ -238,6 +238,7 @@ class ECFUI(object):
     def _add_cash(self, till, value):
         log.info('ECFCouponPrinter.add_cash(%r, %r)' % (till, value,))
 
+        # Callsite catches DeviceError
         self._validate_printer()
 
         self._printer.add_cash(value)
@@ -245,6 +246,7 @@ class ECFUI(object):
     def _remove_cash(self, till, value):
         log.info('ECFCouponPrinter.remove_cash(%r, %r)' % (till, value,))
 
+        # Callsite catches DeviceError
         self._validate_printer()
 
         self._printer.remove_cash(value)
@@ -255,6 +257,8 @@ class ECFUI(object):
         self._validate_printer()
 
     def _coupon_create(self, fiscalcoupon):
+
+        # Callsite catches DeviceError
         self._validate_printer()
 
         coupon = self._printer.create_coupon(fiscalcoupon)
@@ -298,6 +302,14 @@ class ECFUI(object):
             return
 
         self._printer.summarize()
+
+    def _fiscal_memory_dialog(self):
+        try:
+            self._validate_printer()
+        except DeviceError, e:
+            warning(e)
+            return
+        run_dialog(FiscalMemoryDialog, None, self.conn, self._printer)
 
     #
     # Events
@@ -359,7 +371,7 @@ class ECFUI(object):
         self._till_summarize()
 
     def _on_ReadMemory__activate(self, action):
-        run_dialog(FiscalMemoryDialog, None, self.conn, self._printer)
+        self._fiscal_memory_dialog()
 
     def _on_CancelLastDocument__activate(self, action):
         self._cancel_last_document()
