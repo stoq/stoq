@@ -523,6 +523,7 @@ class POSApp(AppWindow):
         self._clear_order()
 
     def _confirm_order(self, trans, sale):
+        assert self._coupon
         model = self.run_dialog(ConfirmSaleWizard, trans, sale)
         if not model:
             return False
@@ -549,25 +550,35 @@ class POSApp(AppWindow):
     #
 
     def _open_coupon(self):
-        self._coupon = self._printer.create_coupon()
-        while not self._coupon.open():
-            if not yesno(_(u"It is not possible to start a new sale if the "
-                           "fiscal coupon cannot be opened."),
-                         gtk.RESPONSE_YES, _(u"Try Again"), _(u"Cancel")):
-                self.app.shutdown()
-                break
+        coupon = self._printer.create_coupon()
+
+        if coupon:
+            while not coupon.open():
+                if not yesno(
+                    _(u"It is not possible to start a new sale if the "
+                      "fiscal coupon cannot be opened."),
+                    gtk.RESPONSE_YES, _(u"Try Again"), _(u"Cancel")):
+                    self.app.shutdown()
+                    break
+
+        return coupon
 
     def _coupon_add_item(self, sale_item):
         if self.param.CONFIRM_SALES_ON_TILL:
-            return
+            return -1
         if self._coupon is None:
-            self._open_coupon()
+            coupon = self._open_coupon()
+            if not coupon:
+                return -1
+            self._coupon = coupon
+
         return self._coupon.add_item(sale_item)
 
     def _coupon_remove_item(self, sale_item):
         if self.param.CONFIRM_SALES_ON_TILL:
             return
 
+        assert self._coupon
         self._coupon.remove_item(sale_item)
 
     #
