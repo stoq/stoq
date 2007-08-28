@@ -29,6 +29,7 @@ from stoqlib.database.runtime import get_current_station, get_connection
 from stoqlib.domain.events import (SaleConfirmEvent, TillAddCashEvent,
                                    TillRemoveCashEvent, TillOpenEvent,
                                    TillCloseEvent)
+from stoqlib.exceptions import DeviceError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.events import StartApplicationEvent, CouponCreatedEvent
 from stoqlib.lib.message import info, warning, yesno
@@ -77,23 +78,20 @@ class ECFUI(object):
 
     def _validate_printer(self):
         if self._printer is None:
-            warning(_("This operation requires a connected fiscal printer"))
-            return False
+            raise DeviceError(
+                _("This operation requires a connected fiscal printer"))
 
-        if self._printer_verified:
-            return True
+        if not self._printer_verified:
+            domain = self._printer.get_printer()
+            driver = self._printer.get_driver()
+            self._status = ECFAsyncPrinterStatus(domain.device_name,
+                                                 printer=driver)
 
-        domain = self._printer.get_printer()
-        driver = self._printer.get_driver()
-        self._status = ECFAsyncPrinterStatus(domain.device_name, printer=driver)
+            if not self._printer.check_serial():
+                raise DeviceError(
+                    _("Fiscalprinters serial number is different!"))
 
-        if not self._printer.check_serial():
-            warning(_("Fiscalprinters serial number is different!"))
-            return False
-
-        self._printer_verified = True
-
-        return True
+            self._printer_verified = True
 
     def _add_ui_menus(self, appname, uimanager):
         if appname == 'pos':
@@ -174,8 +172,7 @@ class ECFUI(object):
     def _open_till(self, till):
         log.info('ECFCouponPrinter.open_till(%r)' % (till,))
 
-        if not self._validate_printer():
-            return False
+        self._validate_printer()
 
         # Don't do anything on till_open, eg the driver is responsible
         # for sending the LeituraX if needed
@@ -208,8 +205,11 @@ class ECFUI(object):
     def _close_till(self, till, previous_day):
         log.info('ECFCouponPrinter.close_till(%r, %r)' % (till, previous_day))
 
-        if not self._validate_printer():
-            return False
+        try:
+            self._validate_printer()
+        except DeviceError, e:
+            warning(e)
+            return
 
         retval = True
         while True:
@@ -238,28 +238,24 @@ class ECFUI(object):
     def _add_cash(self, till, value):
         log.info('ECFCouponPrinter.add_cash(%r, %r)' % (till, value,))
 
-        if not self._validate_printer():
-            return
+        self._validate_printer()
 
         self._printer.add_cash(value)
 
     def _remove_cash(self, till, value):
         log.info('ECFCouponPrinter.remove_cash(%r, %r)' % (till, value,))
 
-        if not self._validate_printer():
-            return
+        self._validate_printer()
 
         self._printer.remove_cash(value)
 
     def _confirm_sale(self, sale):
         log.info('ECFCouponPrinter.confirm_sale(%r)' % (sale,))
 
-        if not self._validate_printer():
-            return
+        self._validate_printer()
 
     def _coupon_create(self, fiscalcoupon):
-        if not self._validate_printer():
-            return
+        self._validate_printer()
 
         coupon = self._printer.create_coupon(fiscalcoupon)
         assert coupon
@@ -277,7 +273,10 @@ class ECFUI(object):
         return coupon
 
     def _cancel_last_document(self):
-        if not self._validate_printer():
+        try:
+            self._validate_printer()
+        except DeviceError, e:
+            warning(e)
             return
 
         if yesno(
@@ -292,7 +291,10 @@ class ECFUI(object):
             info(_("Document was cancelled"))
 
     def _till_summarize(self):
-        if not self._validate_printer():
+        try:
+            self._validate_printer()
+        except DeviceError, e:
+            warning(e)
             return
 
         self._printer.summarize()
@@ -328,12 +330,14 @@ class ECFUI(object):
 
 
     def _on_coupon__open(self, coupon):
+        self._validate_printer()
         coupon.open()
 
     def _on_coupon__identify_customer(self, coupon, person):
         coupon.identify_customer(person)
 
     def _on_coupon__add_item(self, coupon, item):
+        self._validate_printer()
         return coupon.add_item(item)
 
     def _on_coupon__remove_item(self, coupon, item_id):
