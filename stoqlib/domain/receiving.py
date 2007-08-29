@@ -184,6 +184,9 @@ class ReceivingOrder(ValidatableDomain):
         for item in self.get_items():
             item.receiving_order = None
 
+    def remove_item(self, item):
+        assert item.receiving_order == self
+        type(item).delete(item.id, connection=self.get_connection())
 
     #
     # Properties
