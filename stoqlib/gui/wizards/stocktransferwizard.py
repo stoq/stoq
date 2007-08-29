@@ -126,17 +126,6 @@ class StockTransferProductStep(SellableItemStep):
     def _setup_summary(self):
         self.summary = None
 
-    def _refresh_next(self):
-        can_transfer = False
-        for item in self.model.get_items():
-            storable = IStorable(item.sellable)
-            if item.quantity > storable.get_full_balance():
-                break
-            elif item:
-                can_transfer = True
-
-        self.wizard.refresh_next(can_transfer)
-
     def sellable_selected(self, sellable):
         SellableItemStep.sellable_selected(self, sellable)
 
@@ -144,7 +133,7 @@ class StockTransferProductStep(SellableItemStep):
             return
 
         storable = IStorable(sellable)
-        quantity = storable.get_full_balance()
+        quantity = storable.get_full_balance(self.branch)
         for item in self.slave.klist:
             if item.sellable == sellable:
                 quantity -= item.quantity
