@@ -188,11 +188,11 @@
 	  <menubar action="menubar">
 	    <menu action="SalesMenu">
 	      <menuitem action="receive_action"/>
+             <menuitem action="TransferSearch"/>
 	      <separator name="sep"/>
 	      <menuitem action="Quit"/>
 	    </menu>
 	    <menu action="SearchMenu">
-	      <menuitem action="TransferSearch"/>
 	      <menuitem action="PurchaseReceiving"/>
 	      <menuitem action="ProductHistory"/>
 	    </menu>
