@@ -64,6 +64,9 @@ class TemporaryTransferOrder(object):
     def get_items(self):
         return self.items
 
+    def remove_item(self, item):
+        self.items.remove(item)
+
 
 class TemporaryTransferOrderItem(Settable):
     pass
@@ -133,6 +136,27 @@ class StockTransferProductStep(SellableItemStep):
                 can_transfer = True
 
         self.wizard.refresh_next(can_transfer)
+
+    def sellable_selected(self, sellable):
+        SellableItemStep.sellable_selected(self, sellable)
+
+        if sellable is None:
+            return
+
+        storable = IStorable(sellable)
+        quantity = storable.get_full_balance()
+        for item in self.slave.klist:
+            if item.sellable == sellable:
+                quantity -= item.quantity
+                break
+
+        has_quantity = quantity > 0
+        self.quantity.set_sensitive(has_quantity)
+        self.cost.set_sensitive(has_quantity)
+        self.add_sellable_button.set_sensitive(has_quantity)
+
+        if has_quantity:
+            self.quantity.set_range(1, quantity)
 
     #
     # WizardStep hooks

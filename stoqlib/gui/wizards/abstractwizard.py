@@ -33,10 +33,8 @@ instead signals and interfaces for that.
 from decimal import Decimal
 
 from kiwi.ui.widgets.list import SummaryLabel
-from kiwi.datatypes import currency
 from kiwi.python import Settable
 
-from stoqlib.exceptions import BarcodeDoesNotExists
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep
 from stoqlib.gui.base.lists import AdditionListSlave
@@ -85,8 +83,8 @@ class SellableItemStep(WizardEditorStep):
 
     def __init__(self, wizard, previous, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
-        self._update_widgets()
         self.unit_label.set_bold(True)
+        self._reset_sellable()
 
     # Public API
 
@@ -127,10 +125,30 @@ class SellableItemStep(WizardEditorStep):
     def on_product_button__clicked(self, button):
         raise NotImplementedError('This method must be defined on child')
 
-    def validate(self, sellable, cost, quantity):
-        # A subclass must redefine this method to perform some
-        # validation before the sellable be added/updated in the list
-        return True
+    def sellable_selected(self, sellable):
+        """
+        This will be called when a sellable is selected in the combo.
+        It can be overriden in a subclass if they wish to do additional
+        logic at that point
+        @param sellable: the selected sellable
+        """
+        if sellable:
+            cost = sellable.cost
+            quantity = Decimal(1)
+        else:
+            cost = None
+            quantity = None
+
+        model = Settable(quantity=quantity,
+                         cost=cost,
+                         sellable=sellable)
+
+        self.proxy.set_model(model)
+
+        has_sellable = bool(sellable)
+        self.add_sellable_button.set_sensitive(has_sellable)
+        self.quantity.set_sensitive(has_sellable)
+        self.cost.set_sensitive(has_sellable)
 
     #
     # WizardStep hooks
@@ -151,7 +169,8 @@ class SellableItemStep(WizardEditorStep):
     def setup_proxies(self):
         self.setup_sellable_entry()
         self.proxy = self.add_proxy(None, SellableItemStep.proxy_widgets)
-        model = Settable(quantity=Decimal(1), price=currency(0),
+        model = Settable(quantity=Decimal(1),
+                         cost=None,
                          sellable=None)
         self.sellable_proxy = self.add_proxy(model,
                                              SellableItemStep.sellable_widgets)
@@ -180,61 +199,36 @@ class SellableItemStep(WizardEditorStep):
     def _refresh_next(self):
         self.wizard.refresh_next(len(self.slave.klist))
 
-    def _get_sellable(self):
-        if self.proxy.model:
-            sellable = self.sellable_proxy.model.sellable
-        else:
-            sellable = None
-        if not sellable:
-            barcode = self.sellable.get_text()
-            try:
-                sellable = ASellable.get_availables_and_sold_by_barcode(
-                    self.conn, barcode)
-            except BarcodeDoesNotExists, e:
-                self.sellable.set_invalid(str(e))
-                sellable = None
-
-            if sellable:
-                # Waiting for a select method on kiwi entry using entry
-                # completions
-                self.sellable.set_text(sellable.get_short_description())
-        self.add_sellable_button.set_sensitive(sellable is not None)
-        return sellable
-
     def _add_sellable(self):
-        if not self.add_sellable_button.get_property('sensitive'):
-            return
-        self.add_sellable_button.set_sensitive(False)
-        sellable = self._get_sellable()
-        if not sellable:
-            return
+        sellable = self.sellable.get_selected_data()
         self._update_list(sellable)
+        self.proxy.set_model(None)
 
     def _update_list(self, sellable):
-        if self.sellable_proxy.model.sellable is sellable:
-            cost = self.proxy.model.cost
-        else:
-            cost = sellable.cost
         quantity = self.get_quantity()
+        cost = sellable.cost
 
-        # For sellables already present in the list, increase the quantity of the
-        # existing sellable. If the sellable is not in the list, just add it.
-        sellables = [s.sellable for s in self.slave.klist]
-        if sellable in sellables:
-            item = self.slave.klist[sellables.index(sellable)]
-            if not self.validate(item, cost, quantity):
-                return
-            item.quantity += quantity
-            self.slave.klist.update(item)
+        for item in self.slave.klist:
+            if item.sellable == sellable:
+                item.quantity += quantity
+                update = True
+                break
         else:
             item = self.get_order_item(sellable, cost, quantity)
-            if not self.validate(item, cost, quantity):
-                return
+            update = False
+
+        if update:
+            self.slave.klist.update(item)
+        else:
             self.slave.klist.append(item)
+
         self._update_total()
-        self.proxy.set_model(None, relax_type=True)
+        self._reset_sellable()
+
+    def _reset_sellable(self):
+        self.proxy.set_model(None)
         self.sellable.set_text('')
-        self.sellable.grab_focus()
+        self.sellable_selected(None)
 
     def _update_total(self):
         if self.summary:
@@ -242,17 +236,13 @@ class SellableItemStep(WizardEditorStep):
         self._refresh_next()
         self.force_validation()
 
-    def _update_widgets(self):
-        has_sellable_str = self.sellable.get_text() != ''
-        self.add_sellable_button.set_sensitive(has_sellable_str)
-
     #
     # callbacks
     #
 
     def _on_list_slave__before_delete_items(self, slave, items):
         for item in items:
-            self.item_table.delete(item.id, connection=self.conn)
+            self.model.remove_item(item)
         self._refresh_next()
 
     def _on_list_slave__after_delete_items(self, slave):
@@ -266,22 +256,13 @@ class SellableItemStep(WizardEditorStep):
 
     def on_add_sellable_button__clicked(self, button):
         self._add_sellable()
-        self.quantity.update(self.get_quantity())
 
     def on_sellable__activate(self, combo):
-        self._get_sellable()
         self.quantity.grab_focus()
 
-    def after_sellable__content_changed(self, combo):
-        self.sellable.set_valid()
-        self._update_widgets()
-        sellable = self.sellable_proxy.model.sellable
-        if not (sellable and self.sellable.get_text()):
-            self.proxy.set_model(None, relax_type=True)
-            return
-        model = Settable(quantity=self.quantity.read(), cost=sellable.cost,
-                         sellable=sellable)
-        self.proxy.set_model(model)
+    def on_sellable__content_changed(self, combo):
+        sellable = self.sellable.get_selected_data()
+        self.sellable_selected(sellable)
 
     def on_quantity__activate(self, entry):
         self._add_sellable()
