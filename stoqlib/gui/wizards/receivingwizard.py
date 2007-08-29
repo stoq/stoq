@@ -214,13 +214,13 @@ class ReceivingOrderProductStep(SellableItemStep):
     # SellableItemStep overrides
     #
 
-    def setup_item_entry(self):
+    def setup_sellable_entry(self):
         purchase = self.model.purchase
         if purchase:
             sellables = [i.sellable for i in purchase.get_pending_items()]
         else:
             sellables = ASellable.get_unblocked_sellables(self.conn)
-        self.item.prefill([(sellable.get_description(), sellable)
+        self.sellable.prefill([(sellable.get_description(), sellable)
                                  for sellable in sellables])
 
     #
