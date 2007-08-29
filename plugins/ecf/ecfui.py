@@ -172,6 +172,7 @@ class ECFUI(object):
     def _open_till(self, till):
         log.info('ECFCouponPrinter.open_till(%r)' % (till,))
 
+        # Callsite catches DeviceError
         self._validate_printer()
 
         # Don't do anything on till_open, eg the driver is responsible
@@ -205,11 +206,8 @@ class ECFUI(object):
     def _close_till(self, till, previous_day):
         log.info('ECFCouponPrinter.close_till(%r, %r)' % (till, previous_day))
 
-        try:
-            self._validate_printer()
-        except DeviceError, e:
-            warning(e)
-            return
+        # Callsite catches DeviceError
+        self._validate_printer()
 
         retval = True
         while True:
