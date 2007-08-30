@@ -74,7 +74,7 @@ Service.registerFacet(ServiceAdaptToSellable, ISellable)
 class ServiceView(Viewable):
     """
     Stores information about services
-    Available fields are:
+    Available fields are::
         id                 - the id of the asellable table
         barcode            - the sellable barcode
         status             - the sellable status

@@ -858,7 +858,7 @@ class EmployeeRoleHistory(Domain):
 class ClientView(Viewable):
     """
     Stores information about clients.
-    Available fields are:
+    Available fields are::
        id                  - the id of the person table
        name                - the client name
        status              - the client financial status

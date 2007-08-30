@@ -59,7 +59,7 @@ class CommissionSource(Domain):
     @ivar asellable: the sellable
 
     The category and the sellable should not exist when asellable exists
-      and the opposite is true.
+    and the opposite is true.
     """
 
     direct_value = DecimalCol()
@@ -126,7 +126,7 @@ class Commission(Domain):
 
     def _get_commission(self, asellable):
         """Return the properly commission percentage to be used to
-            calculate the commission amount, for a given sellable.
+        calculate the commission amount, for a given sellable.
         """
 
         conn = self.get_connection()
@@ -160,7 +160,7 @@ class Commission(Domain):
 
 class CommissionView(Viewable):
     """ Stores information about commissions and it's related
-            sale and payment.
+        sale and payment.
     """
 
     columns = dict(
