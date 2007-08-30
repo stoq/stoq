@@ -63,7 +63,7 @@ class OnSaleInfoSlave(BaseEditorSlave):
 class TributarySituationSlave(BaseEditorSlave):
     """
     This is base slave for tributary taxes applied to product, service
-        and it's category if any.
+    and it's category if any.
     """
     gladefile = "TributarySituationSlave"
     proxy_widgets = ("tax_constant", "tax_value")

@@ -37,9 +37,6 @@ class ForeignKeyColumn(Column):
         """
         Need an obj_field or adapted argument.
         See L{kiwi.ui.widgets.list.Column} for other arguments
-        @keyword obj_field: attribute name or None
-        @keyword adapted: if the attribute should be adapted or not, in
-          practice this means the original object will be fetched.
         """
         if not 'obj_field' in kwargs and not 'adapted' in kwargs:
             raise TypeError(

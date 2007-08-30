@@ -201,7 +201,7 @@ class SellableFullStockView(Viewable):
 class SellableCategoryView(Viewable):
     """Stores information about categories.
        This view is used to query the category with the related
-        commission source.
+       commission source.
     """
 
     columns = dict(
