@@ -1,3 +1,15 @@
+stoqlib (0.9.2-2) feisty; urgency=low
+
+  * Fix plugin
+
+ -- Fabio Morbec <fabio@async.com.br>  Thu, 30 Aug 2007 06:20:34 -0300
+
+stoqlib (0.9.2-1) feisty; urgency=low
+
+  * New release
+
+ -- Fabio Morbec <fabio@async.com.br>  Thu, 30 Aug 2007 06:20:34 -0300
+
 stoqlib (0.9.1-4) feisty; urgency=low
 
   * Fix database patch 

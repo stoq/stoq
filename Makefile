@@ -1,5 +1,6 @@
 VERSION=$(shell egrep ^version stoqlib/__init__.py|cut -d\" -f2)
 PACKAGE=stoqlib
+DEBPACKAGE=python-kiwi
 WEBDOC_DIR=/mondo/htdocs/stoq.com.br/doc/devel
 SCHEMADIR=/mondo/htdocs/stoq.com.br/devel/schema/
 
