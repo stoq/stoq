@@ -142,7 +142,8 @@ global_resources = dict(
 # ECFPlugin
 data_files += listplugins()
 data_files += [
-    ('$datadir/glade', listfiles('plugins', 'ecf', 'glade', '*.glade')),
+    ('$prefix/lib/stoqlib/plugins/ecf/glade',
+     listfiles('plugins', 'ecf', 'glade', '*.glade')),
     ('$prefix/lib/stoqlib/plugins/ecf/sql',
      listfiles('plugins', 'ecf', 'sql', '*.sql')),
     ]
