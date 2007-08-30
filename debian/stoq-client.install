@@ -1,5 +1,0 @@
-debian/tmp/usr/bin/stoq
-debian/tmp/var/lib/python?.?/site-packages/stoq
-debian/tmp/usr/share/applications/stoq.desktop
-debian/tmp/usr/share/locale
-debian/tmp/usr/share/stoq
