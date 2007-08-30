@@ -8,7 +8,7 @@ Standards-Version: 3.6.2
 
 Package: stoq
 Architecture: all
-Depends: stoqlib (>= 0.9.2-3), postgresql-client-common
+Depends: stoqlib (>= 0.9.2-5), postgresql-client-common
 Replaces: stoq
 Conflicts: stoq
 Description: Stoq Server and Administration tools

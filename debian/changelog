@@ -1,3 +1,9 @@
+stoq (0.9.2-2) feisty; urgency=low
+
+  * Fix
+
+ -- Fabio Morbec <fabio@async.com.br>  Thu, 30 Aug 2007 20:34:55 -0300
+
 stoq (0.9.2-1ubuntu2) feisty; urgency=low
 
   * Update dependence of postgres, changing client for common
