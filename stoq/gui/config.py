@@ -555,6 +555,7 @@ class FirstTimeConfigWizard(BaseWizard):
             station = self._create_station(self._conn, self.branch,
                                            station_name)
             provide_utility(ICurrentBranchStation, station)
+            self._conn.commit()
 
         # We need to provide the plugin manager at some point since
         # we're skipping it above
