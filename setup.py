@@ -141,10 +141,10 @@ global_resources = dict(
 
 # ECFPlugin
 data_files += listplugins()
-global_resources['ecfsql'] = '$datadir/sql/ecf'
 data_files += [
     ('$datadir/glade', listfiles('plugins', 'ecf', 'glade', '*.glade')),
-    ('$datadir/sql/ecf', listfiles('plugins', 'ecf', 'sql', '*.sql')),
+    ('$prefix/lib/stoqlib/plugins/ecf/sql',
+     listfiles('plugins', 'ecf', 'sql', '*.sql')),
     ]
 
 setup(name='stoqlib',
