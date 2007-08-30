@@ -1,3 +1,8 @@
+Release 0.9.0 - 30/08/2007:
+
+    * Updated translations
+    * Added template and example
+
 Release 0.8.0 - 16/07/2007:
 
     * Use kiwi.enum for constants/enums

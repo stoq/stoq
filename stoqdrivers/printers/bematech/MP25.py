@@ -220,7 +220,7 @@ class MP25(SerialBase):
     def _create_packet(self, command):
         """
         Create a 'pre-package' (command + params, basically) and involves
-        it around STX, NB and CS:
+        it around STX, NB and CS::
            1     2           n           2
         +-----+------+-----------------+----+
         | STX |  NB  | 0x1C + command  | CS |
@@ -229,8 +229,8 @@ class MP25(SerialBase):
         Where:
 
         STX: 'Transmission Start' indicator byte
-         NB: 2 bytes, big endian length of command + CS (2 bytes)
-         CS: 2 bytes, big endian checksum for command
+        NB: 2 bytes, big endian length of command + CS (2 bytes)
+        CS: 2 bytes, big endian checksum for command
         """
 
         command = chr(MP25.CMD_PROTO) + command
