@@ -67,7 +67,7 @@ class ProductReport(SearchResultsReport):
             ]
 
     def _setup_items_table(self):
-        total_qty = sum([item.stock for item in self._products],
+        total_qty = sum([item.stock or 0 for item in self._products],
                         Decimal(0))
         summary_row = ["", "", _("Total:"), format_quantity(total_qty), ""]
         self.add_object_table(self._products, self._get_columns(),
