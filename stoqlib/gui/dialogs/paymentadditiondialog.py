@@ -70,8 +70,17 @@ class PaymentAdditionDialog(BaseEditor):
         payment.addFacet(IOutPayment, connection=trans)
         return payment
 
+    def on_due_date__activate(self, date):
+        self.main_dialog.confirm()
+
     def setup_proxies(self):
         self.add_proxy(self.model, PaymentAdditionDialog.proxy_widgets)
+
+    def validate_confirm(self):
+        # FIXME: the kiwi view should export it's state and it shoul
+        #        be used by default
+        return bool(self.model.description and self.model.due_date and
+                    self.model.value)
 
     def on_confirm(self):
         self.model.set_pending()
