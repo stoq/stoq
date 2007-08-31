@@ -34,6 +34,11 @@ class SVNProject(Project):
         cmd = 'svn co -q %s/trunk %s' % (self.repo, self.name)
         os.system(cmd)
 
+        cmd = ('cd %s/common && '
+               'svn switch --relocate svn://svn.async.com.br/common '
+               'svn+ssh://svn.async.com.br/common') % (self.name)
+        os.system(cmd)
+
     def update(self):
         cmd = 'svn update'
         os.system(cmd)
@@ -42,24 +47,24 @@ class Stoq(SVNProject):
     name = 'stoq'
     env = {'PYTHONPATH': '$tree',
            'PATH': '$tree/bin'}
-    repo = 'svn+ssh://async.com.br/pub/stoq'
+    repo = 'svn+ssh://svn.async.com.br/pub/stoq'
 
 class Stoqlib(SVNProject):
     name = 'stoqlib'
     env = {'PYTHONPATH': '$tree'}
-    repo = 'svn+ssh://async.com.br/pub/stoqlib'
+    repo = 'svn+ssh://svn.async.com.br/pub/stoqlib'
 
 class Stoqdrivers(SVNProject):
     name = 'stoqdrivers'
     env = {'PYTHONPATH': '$tree'}
-    repo = 'svn+ssh://async.com.br/pub/stoqdrivers'
+    repo = 'svn+ssh://svn.async.com.br/pub/stoqdrivers'
 
 class Kiwi(SVNProject):
     name = 'kiwi'
     env = {'PYTHONPATH': '$tree',
            'GAZPACHO_PATH': '$tree/gazpacho-plugin',
            'PATH': '$tree/bin'}
-    repo = 'svn+ssh://async.com.br/pub/kiwi'
+    repo = 'svn+ssh://svn.async.com.br/pub/kiwi'
 
 PROJECTS = {
     'stoqlib': Stoqlib(),
