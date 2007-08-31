@@ -156,9 +156,9 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         sale.addFacet(IPaymentGroup, connection=self.trans)
 
-        group = sale.check_payment_group()
+        group = IPaymentGroup(sale, None)
         assert isinstance(group, Sale.getAdapterClass(IPaymentGroup))
-        self.failIf(sale_no_payment.check_payment_group())
+        self.failIf(IPaymentGroup(sale_no_payment, None))
 
     def test_update_client(self):
         person = Person(name='Eliosvaldo', connection=self.trans)
