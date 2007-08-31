@@ -43,6 +43,6 @@ like fiscal printers which makes it easy to embed in many applications.
 %{_datadir}/stoqdrivers/conf/*.ini
 
 %changelog
-* Thu Ago 30 2007 Fabio Morbec <fabio@async.com.br> 0.9.0
+* Thu Aug 30 2007 Fabio Morbec <fabio@async.com.br> 0.9.0
 - Initial RPM release.
 
