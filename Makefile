@@ -22,10 +22,10 @@ schemadocs:
 	schemaspy -t pgsql -host anthem -db $(USER) -u $(USER) -s public -o $(SCHEMADIR)
 
 web: apidocs
-	cp -r apidocs $(WEBDOC_DIR)/stoqlib-tmp
-	rm -fr $(WEBDOC_DIR)/stoqlib
-	mv $(WEBDOC_DIR)/stoqlib-tmp $(WEBDOC_DIR)/stoqlib
-	cp stoqlib.pickle $(WEBDOC_DIR)/stoqlib
+	scp -r apidocs async.com.br:$(WEBDOC_DIR)/stoqlib-tmp
+	ssh async.com.br rm -fr $(WEBDOC_DIR)/stoqlib
+	ssh mv $(WEBDOC_DIR)/stoqlib-tmp $(WEBDOC_DIR)/stoqlib
+	scp stoqlib.pickle async.com.br:$(WEBDOC_DIR)/stoqlib
 
 clean:
 	rm -fr $(BUILDDIR)
