@@ -60,7 +60,8 @@ class ProductReport(SearchResultsReport):
             OTC(_("Code"), lambda obj: '%03d' % obj.id, width=120,
                 truncate=True),
             OTC(_("Description"), lambda obj: obj.description, truncate=True),
-            OTC(_("Quantity"), lambda obj: format_quantity(obj.stock), width=80,
+            OTC(_("Quantity"),
+                lambda obj: format_quantity(obj.stock or 0), width=80,
                 align=RIGHT, truncate=True),
             # FIXME: This column should be virtual, waiting for bug #2764
             OTC(_("Unit"), lambda obj: obj.unit, width=60, virtual=False),
