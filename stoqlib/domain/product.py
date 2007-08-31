@@ -397,7 +397,9 @@ class ProductAdaptToStorable(ModelAdapter):
     def has_stock_by_branch(self, branch):
         stock = self._get_stocks(branch)
         qty = stock.count()
-        if not qty == 1:
+        if not qty:
+            return False
+        elif qty > 1:
             raise DatabaseInconsistency("You should have only one stock "
                                         "item for this branch, got %d"
                                         % qty)
