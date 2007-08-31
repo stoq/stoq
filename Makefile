@@ -24,7 +24,7 @@ schemadocs:
 web: apidocs
 	scp -r apidocs async.com.br:$(WEBDOC_DIR)/stoqlib-tmp
 	ssh async.com.br rm -fr $(WEBDOC_DIR)/stoqlib
-	ssh mv $(WEBDOC_DIR)/stoqlib-tmp $(WEBDOC_DIR)/stoqlib
+	ssh async.com.br mv $(WEBDOC_DIR)/stoqlib-tmp $(WEBDOC_DIR)/stoqlib
 	scp stoqlib.pickle async.com.br:$(WEBDOC_DIR)/stoqlib
 
 clean:
