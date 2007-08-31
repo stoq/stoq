@@ -594,9 +594,6 @@ class Sale(ValidatableDomain):
     # Re-evaluate
     #
 
-    def check_payment_group(self):
-        return IPaymentGroup(self, None)
-
     def update_client(self, person):
         # Do not change the name of this method to set_client: this is a
         # callback in SQLObject
