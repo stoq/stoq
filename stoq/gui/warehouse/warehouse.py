@@ -127,7 +127,7 @@ class WarehouseApp(SearchableAppWindow):
         has_branches = len(self.branch_filter.combo) > 2
 
         self.transfer_action.set_sensitive(has_branches)
-        self.TransferSearch.set_sensitive(False)
+        self.TransferSearch.set_sensitive(has_branches)
 
     def _update_filter_slave(self, slave):
         self.refresh()
@@ -150,6 +150,12 @@ class WarehouseApp(SearchableAppWindow):
         sellable_view.sync()
         self.results.update(sellable_view)
 
+    def _transfer_stock(self):
+        trans = new_transaction()
+        model = self.run_dialog(StockTransferWizard, trans)
+        finish_transaction(trans, model)
+        trans.close()
+
     #
     # Callbacks
     #
@@ -164,14 +170,10 @@ class WarehouseApp(SearchableAppWindow):
         trans.close()
 
     def on_stock_transfer_action_clicked(self, button):
-        # TODO To be implemented
-        pass
+        self._transfer_stock()
 
     def on_transfer_action__activate(self, action):
-        trans = new_transaction()
-        model = self.run_dialog(StockTransferWizard, trans)
-        finish_transaction(trans, model)
-        trans.close()
+        self._transfer_stock()
 
     def on_retention_button__clicked(self, button):
         sellable_view = self.results.get_selected_rows()[0]
