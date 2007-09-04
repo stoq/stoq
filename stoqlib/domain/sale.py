@@ -358,30 +358,35 @@ class Sale(ValidatableDomain):
 
     def can_order(self):
         """
+        Only newly created sales can be ordered
         @returns: True if the sale can be ordered, otherwise False
         """
         return self.status == Sale.STATUS_INITIAL
 
     def can_confirm(self):
         """
+        Only ordered sales can be confirmed
         @returns: True if the sale can be confirmed, otherwise False
         """
         return self.status == Sale.STATUS_ORDERED
 
     def can_set_paid(self):
         """
+        Only confirmed sales can be paid
         @returns: True if the sale can be set as paid, otherwise False
         """
         return self.status == Sale.STATUS_CONFIRMED
 
     def can_cancel(self):
         """
+        Only ordered sales can be cancelled
         @returns: True if the sale can be cancelled, otherwise False
         """
         return self.status == Sale.STATUS_ORDERED
 
     def can_return(self):
         """
+        Only confirmed or paid sales can be returned
         @returns: True if the sale can be returned, otherwise False
         """
         return (self.status == Sale.STATUS_CONFIRMED or
