@@ -590,14 +590,12 @@ class Sale(ValidatableDomain):
         total_amount = subtotal + surcharge_value - discount_value
         return currency(total_amount)
 
-    #
-    # Re-evaluate
-    #
-
-    def get_total_amount_as_string(self):
-        return get_formatted_price(self.get_total_sale_amount())
-
     def get_sale_subtotal(self):
+        """
+        Fetch the subtotal for the sale, eg the sum of the
+        prices for of all items
+        @returns: subtotal
+        """
         return currency(self.get_items().sum(
             SaleItem.q.price *
             SaleItem.q.quantity) or 0)
