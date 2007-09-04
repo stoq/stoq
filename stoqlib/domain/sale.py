@@ -594,11 +594,6 @@ class Sale(ValidatableDomain):
     # Re-evaluate
     #
 
-    def update_client(self, person):
-        # Do not change the name of this method to set_client: this is a
-        # callback in SQLObject
-        self.client = IClient(person)
-
     def get_total_interest(self):
         raise NotImplementedError
 
