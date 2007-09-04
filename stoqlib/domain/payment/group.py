@@ -228,23 +228,6 @@ class AbstractPaymentGroup(InheritableModelAdapter):
             if isinstance(payment.method, MoneyPM):
                 payment.pay()
 
-    def check_close(self):
-        """Verifies if the payment group can be closed and close it.
-
-        @returns: the close status, True if it has been closed or
-                 False if not.
-        """
-        if not self.status == AbstractPaymentGroup.STATUS_OPEN:
-            raise ValueError("The status for this payment group should be "
-                             "opened, got %s" % self.get_status_string())
-        payments = self.get_items()
-        statuses = [Payment.STATUS_CONFIRMED, Payment.STATUS_CANCELLED]
-        for payment in payments:
-            if payment.status not in statuses:
-                return False
-        self.status = AbstractPaymentGroup.STATUS_CLOSED
-        return True
-
     def clear_preview_payments(self, ignore_method=None):
         """Delete payments of preview status associated to the current
         payment_group. It can happen if user open and cancel this wizard.
