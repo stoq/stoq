@@ -80,7 +80,7 @@ class SaleOrderReport(BaseStoqReport):
     def _setup_items_table(self):
         # XXX Bug #2430 will improve this part
         items_qty = self.sale.get_items_total_quantity()
-        total_value = get_formatted_price(self.sale.get_items_total_value())
+        total_value = get_formatted_price(self.sale.get_sale_subtotal())
         if items_qty > 1:
             items_text = _("%s items") % format_quantity(items_qty)
         else:
