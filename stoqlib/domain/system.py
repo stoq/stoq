@@ -43,8 +43,7 @@ class SystemTable(SQLObject, AbstractModel):
 
     @classmethod
     def is_available(cls, conn):
-        """
-        Checks if Stoqlib database is properly installed
+        """Checks if Stoqlib database is properly installed
         @param conn: a database connection
         """
         table_name = cls.sqlmeta.table

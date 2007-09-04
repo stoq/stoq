@@ -26,8 +26,7 @@
 #  Focus could be improved, arrows shouldn't focus other widgets
 #  Column/List field
 
-"""
-Widget containing a Grid of fields
+"""Widget containing a Grid of fields
 """
 
 import pickle
@@ -89,8 +88,7 @@ class FieldInfo(object):
 
 
 class FieldGrid(gtk.Layout):
-    """
-    FieldGrid is a Grid like widget which you can add fields to
+    """FieldGrid is a Grid like widget which you can add fields to
     """
 
     # bindings
@@ -217,8 +215,7 @@ class FieldGrid(gtk.Layout):
         self._moving_field = None
 
     def _get_coords(self, x, y):
-        """
-        Returns the grid coordinates given absolute coordinates
+        """Returns the grid coordinates given absolute coordinates
         @param x: absolute x
         @param y: absoluyte y
         @returns: (gridx, gridy)
@@ -409,8 +406,7 @@ class FieldGrid(gtk.Layout):
     #
 
     def add_field(self, text, x, y):
-        """
-        Adds a new field to the grid
+        """Adds a new field to the grid
 
         @param text: text of the field
         @param x: x position of the field
@@ -419,8 +415,7 @@ class FieldGrid(gtk.Layout):
         return self._add_field(text, x, y)
 
     def select_field(self, field):
-        """
-        Selects a field
+        """Selects a field
         @param field: the field to select, must be FieldInfo or None
         """
         if field == self._selected_field:
@@ -436,8 +431,7 @@ class FieldGrid(gtk.Layout):
         return self._fields
 
     def objectlist_dnd_handler(self, item, x, y):
-        """
-        A subclass can implement this to support dnd from
+        """A subclass can implement this to support dnd from
         an ObjectList.
         @param item: the row dragged from the objectlist
         @param x: the x position it was dragged to

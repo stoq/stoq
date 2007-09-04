@@ -35,8 +35,7 @@ from stoqlib.domain.sellable import (ASellable, SellableUnit,
                                      BaseSellableInfo, SellableCategory)
 
 class ProductFullStockView(Viewable):
-    """
-    Stores information about products.
+    """Stores information about products.
     This view is used to query stock information on a certain branch.
 
     @cvar id: the id of the asellable table
@@ -102,8 +101,7 @@ class ProductFullStockView(Viewable):
 
 
 class ProductQuantityView(Viewable):
-    """
-    Stores information about products solded and received.
+    """Stores information about products solded and received.
 
     @cvar id: the id of the sellable_id of products_quantity table
     @cvar description: the product description
@@ -135,8 +133,7 @@ class ProductQuantityView(Viewable):
     ]
 
 class SellableFullStockView(Viewable):
-    """
-    Stores information about products.
+    """Stores information about products.
     This view is used to query stock information on a certain branch.
 
     @cvar id: the id of the asellable table

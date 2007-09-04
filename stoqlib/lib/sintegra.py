@@ -47,8 +47,7 @@ class SintegraFile(object):
         self._registers = []
 
     def add(self, register):
-        """
-        Adds a register to the file
+        """Adds a register to the file
         @param register: a register
         @type register: L{SintegraRegister}
         """
@@ -192,8 +191,7 @@ class SintegraFile(object):
                                     reducao_icms, base_icms))
 
     def close(self):
-        """
-        Closes the file.
+        """Closes the file.
         This will add a couple of registers of type 90.
         """
         sums = {}
@@ -214,8 +212,7 @@ class SintegraFile(object):
                                  len(self._registers)+1, '', totalizers))
 
     def write(self, filename=None, fp=None):
-        """
-        Writes out of the content of the file to a filename or fp
+        """Writes out of the content of the file to a filename or fp
 
         @param filename: filename
         @param fp: file object, anything implementing write(data)
@@ -251,8 +248,7 @@ class SintegraRegister(object):
     sintegra_requires = None
 
     def __init__(self, *args, **kwargs):
-        """
-        Creates a new SintegraRegister.
+        """Creates a new SintegraRegister.
         Note that this is an abstract class, you have to subclass this.
         The arguments depends on what is defined in the class variable
         sintegra_fields

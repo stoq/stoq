@@ -50,8 +50,7 @@ class DatabaseInconsistency(Exception):
 
 
 class DatabaseError(Exception):
-    """
-    General database errors
+    """General database errors
 
     There are two ways of raising this exception:
 

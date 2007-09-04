@@ -22,8 +22,7 @@
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##
 
-"""
-Events used in the domain code
+"""Events used in the domain code
 """
 
 from stoqlib.lib.event import Event

@@ -22,8 +22,7 @@
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##
 
-"""
-Synchronization, Distributed database replication.
+"""Synchronization, Distributed database replication.
 """
 
 import sets
@@ -88,8 +87,7 @@ def _collect_table(tables, table):
             _collect_table(tables, facet_type)
 
 def get_tables(policy, pfilter=None):
-    """
-    Fetches a list of tables given a specific policy.
+    """Fetches a list of tables given a specific policy.
     A pfilter can optionally be specified to filter out tables
     which does not match a specific state.
 
@@ -204,8 +202,7 @@ class SynchronizationService(XMLRPCService):
     #
 
     def clean(self):
-        """
-        Cleans the database
+        """Cleans the database
         """
         log.info('service.clean()')
         create_base_schema()
@@ -596,8 +593,7 @@ class SynchronizationClient(object):
             trans.commit()
 
     def clone(self, station_name, transaction=None):
-        """
-        Clones the database of the current machine and sends over the complete
+        """Clones the database of the current machine and sends over the complete
         state to the client as raw SQL commands.
 
         @param station_name:
@@ -628,7 +624,6 @@ class SynchronizationClient(object):
         self.proxy.quit()
 
     def disable_commit(self):
-        """
-        Disables committing and sending data to the server
+        """Disables committing and sending data to the server
         """
         self._commit = False

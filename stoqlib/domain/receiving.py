@@ -88,8 +88,7 @@ class ReceivingOrderItem(Domain):
         return "%s" % (unit and unit.description or "")
 
     def add_stock_items(self):
-        """
-        This is normally called from ReceivingOrder when
+        """This is normally called from ReceivingOrder when
         a the receving order is confirmed.
         """
         conn = self.get_connection()
@@ -235,8 +234,7 @@ class ReceivingOrder(ValidatableDomain):
         return self.receival_date.strftime("%x")
 
     def get_total(self):
-        """
-        Fetch the total, including discount and surcharge for both the
+        """Fetch the total, including discount and surcharge for both the
         purchase order and the receiving order.
         """
 

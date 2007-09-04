@@ -228,27 +228,23 @@ class SearchDialog(BasicDialog):
         pass
 
     def set_text_field_columns(self, columns):
-        """
-        See L{SearchSlaveDelegate.set_text_field_columns}
+        """See L{SearchSlaveDelegate.set_text_field_columns}
         """
         self.search.set_text_field_columns(columns)
 
     def disable_search_entry(self):
-        """
-        See L{SearchSlaveDelegate.disable_search_entry}
+        """See L{SearchSlaveDelegate.disable_search_entry}
         """
         self.search.disable_search_entry()
 
     def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
                    columns=None, callback=None):
-        """
-        See L{SearchSlaveDelegate.add_filter}
+        """See L{SearchSlaveDelegate.add_filter}
         """
         self.search.add_filter(search_filter, position, columns, callback)
 
     def row_activate(self, obj):
-        """
-        This is called when an item in the results list is double clicked.
+        """This is called when an item in the results list is double clicked.
 
         @param obj: the item that was double clicked.
         """
@@ -312,8 +308,7 @@ class SearchDialog(BasicDialog):
             "get_columns() must be implemented in %r" % self)
 
     def update_widgets(self):
-        """
-        Subclass can have an 'update_widgets', and this method will be
+        """Subclass can have an 'update_widgets', and this method will be
         called when a signal is emitted by 'Filter' or 'Clear' buttons and
         also when a list item is selected. """
 
@@ -512,8 +507,7 @@ class SearchEditor(SearchDialog):
         return retval
 
     def row_activate(self, obj):
-        """
-        See L{SearchDialog.row_activate}
+        """See L{SearchDialog.row_activate}
         """
         if self.accept_edit_data:
             self._edit(obj)

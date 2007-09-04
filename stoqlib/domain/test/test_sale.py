@@ -33,14 +33,11 @@ from stoqdrivers.enum import TaxType
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
-from stoqlib.domain.interfaces import (IClient,
-                                       IIndividual,
-                                       IPaymentGroup,
+from stoqlib.domain.interfaces import (IPaymentGroup,
                                        ISellable,
                                        IStorable,
                                        IOutPayment,
                                        IGiftCertificate)
-from stoqlib.domain.person import Person
 from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.payment.methods import CheckPM, MoneyPM
 from stoqlib.domain.payment.payment import Payment, PaymentAdaptToOutPayment

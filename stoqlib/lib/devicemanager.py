@@ -22,8 +22,7 @@
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##
 
-"""
-Device handling, probing hardware
+"""Device handling, probing hardware
 """
 
 import operator
@@ -58,8 +57,7 @@ if dbus:
 
 
 class SerialDevice(object):
-    """
-    An object representing a serial device
+    """An object representing a serial device
     @ivar device_name: the device name, /dev/ttyXXX
     """
     def __init__(self, device_name):
@@ -69,8 +67,7 @@ class SerialDevice(object):
         self.device_name = device_name
 
 class DeviceManager(object):
-    """
-    DeviceManager is responsible for interacting with hardware devices.
+    """DeviceManager is responsible for interacting with hardware devices.
     It optionally uses HAL to probe the system
 
     """
@@ -80,8 +77,7 @@ class DeviceManager(object):
             self._hal_manager = _HALManager()
 
     def get_serial_devices(self):
-        """
-        Get a list of serial devices available on the system
+        """Get a list of serial devices available on the system
         @returns: a list of L{SerialDevice}
         """
         devices = []

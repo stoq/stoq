@@ -131,8 +131,7 @@ class StoqlibTransaction(Transaction):
         self._savepoints.remove(name)
 
 def get_connection():
-    """
-    This function returns a connection to the current database.
+    """This function returns a connection to the current database.
     Notice that connections are considered read-only inside Stoqlib
     applications. Only transactions can modify objects and should be
     created using new_transaction().
@@ -176,8 +175,7 @@ def rollback_and_begin(trans):
     trans.begin()
 
 def finish_transaction(trans, commit):
-    """
-    Encapsulated method for committing/aborting changes in models.
+    """Encapsulated method for committing/aborting changes in models.
     @param trans: a transaction
     @param commit: True for commit, False for rollback_and_begin
     """
@@ -233,8 +231,7 @@ def _register_branch(station_name):
     trans.commit(close=True)
 
 def set_current_branch_station(conn, station_name):
-    """
-    Registers the current station and the branch of the station
+    """Registers the current station and the branch of the station
     as the current branch for the system
     @param conn: a database connection
     @param station_name: name of the station to register
@@ -256,8 +253,7 @@ def set_current_branch_station(conn, station_name):
     provide_utility(ICurrentBranch, station.branch)
 
 def get_current_user(conn):
-    """
-    Fetch the user which is currently logged into the system or None
+    """Fetch the user which is currently logged into the system or None
     None means that there are no utilities available which in turn
     should only happens during startup, for example when creating
     a new database or running the migration script,
@@ -271,8 +267,7 @@ def get_current_user(conn):
         return user.get(user.id, connection=conn)
 
 def get_current_branch(conn):
-    """
-    Fetches the current branch company.
+    """Fetches the current branch company.
 
     @returns: the current branch
     @rtype: an object implementing IBranch
@@ -283,8 +278,7 @@ def get_current_branch(conn):
         return branch.get(branch.id, connection=conn)
 
 def get_current_station(conn):
-    """
-    Fetches the current station (computer) which we are running on
+    """Fetches the current station (computer) which we are running on
     @param: current station
     @rtype: BranchStation
     """

@@ -22,8 +22,7 @@
 ## Author(s):       Johan Dahlin                <jdahlin@async.com.br>
 ##
 
-"""
-Component infrastructure for Stoqlib
+"""Component infrastructure for Stoqlib
 
 Stoqlib uses the adapter pattern U{http://en.wikipedia.org/wiki/Adapter_pattern}
 to solve a specific set of problems, most noticeable roles for Persons.
@@ -137,12 +136,10 @@ from stoqlib.exceptions import AdapterError
 #
 
 class Adapter(object):
-    """
-    Adapter base class, all adapters must subclass this.
+    """Adapter base class, all adapters must subclass this.
     """
     def __init__(self, adaptable):
-        """
-        Creates a new Adapted for I{adaptable}
+        """Creates a new Adapted for I{adaptable}
         @param adaptable: the adapted object
         """
         self._adaptable = adaptable
@@ -159,15 +156,13 @@ class Adapter(object):
         return iface(self.get_adapted(), None)
 
     def get_adapted(self):
-        """
-        Get the adapted object
+        """Get the adapted object
         @returns: the adapted object
         """
         return self._adaptable
 
 class Adaptable(object):
-    """
-    Adapter base class, everything you want to adapt must subclass this.
+    """Adapter base class, everything you want to adapt must subclass this.
     """
 
     def __init__(self):
@@ -179,8 +174,7 @@ class Adaptable(object):
 
     @classmethod
     def getFacetType(cls, iface):
-        """
-        Fetches a facet type associated with an interface, or raise
+        """Fetches a facet type associated with an interface, or raise
         LookupError if the facet type cannot be found.
 
         @param iface: interface name for the facet to grab
@@ -202,8 +196,7 @@ class Adaptable(object):
 
     @classmethod
     def getFacetTypes(cls):
-        """
-        Returns facet classes for this object
+        """Returns facet classes for this object
         @returns: a list of facet classes
         """
 
@@ -213,8 +206,7 @@ class Adaptable(object):
 
     @classmethod
     def registerFacet(cls, facet, *ifaces):
-        """
-        Registers a facet for class cls.
+        """Registers a facet for class cls.
 
         The 'facet' argument is an adapter class which will be registered
         using its interfaces specified in __implements__ argument.
@@ -247,8 +239,7 @@ class Adaptable(object):
     #
 
     def addFacet(self, iface, *args, **kwargs):
-        """
-        Adds a facet implementing iface for the current object
+        """Adds a facet implementing iface for the current object
         @param iface: interface of the facet to add
         @returns: the facet
         """
@@ -284,8 +275,7 @@ class Adaptable(object):
         return adapter
 
     def removeFacet(self, iface, *args, **kwargs):
-        """
-        Removes a facet from the current object
+        """Removes a facet from the current object
 
         @param iface: interface of the facet to remove
         """
@@ -308,8 +298,7 @@ class Adaptable(object):
             del self._adapterCache[k]
 
     def getFacets(self):
-        """
-        Gets a list of facets assoicated with the current object.
+        """Gets a list of facets assoicated with the current object.
         @returns: a list of facets
         """
         facet_types = getattr(self, '_facets', [])

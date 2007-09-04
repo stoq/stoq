@@ -100,15 +100,13 @@ class ISellable(Interface):
     on_sale_end_date = Attribute('datetime')
 
     def can_be_sold():
-        """
-        Whether the sellable is available and can be sold.
+        """Whether the sellable is available and can be sold.
         @returns: if the item can be sold
         @rtype: boolean
         """
 
     def is_sold():
-        """
-        Whether the sellable is sold.
+        """Whether the sellable is sold.
         @returns: if the item is sold
         @rtype: boolean
         """
@@ -123,22 +121,19 @@ class ISellable(Interface):
         """Make the object sellable"""
 
     def get_code_str():
-        """
-        Fetches the current code represented as a string.
+        """Fetches the current code represented as a string.
         @returns: code
         @rtype: string
         """
 
     def get_short_description():
-        """
-        Returns a short description of the current sale
+        """Returns a short description of the current sale
         @returns: description
         @rtype: string
         """
 
     def get_suggested_markup():
-        """
-        Returns the suggested markup for the sellable
+        """Returns the suggested markup for the sellable
         @returns: suggested markup
         @rtype: decimal
         """
@@ -148,28 +143,24 @@ class ISellable(Interface):
         """Undocumented"""
 
     def get_tax_constant():
-        """
-        Returns the tax constant for this sellable.
+        """Returns the tax constant for this sellable.
         If it's unset, return the constant from the category, if any
         @returns: the tax constant or None if unset
         """
 
 
 class IProduct(Interface):
-    """
-    A Product, this is mainly used as a marker.
+    """A Product, this is mainly used as a marker.
     """
 
 
 class IService(Interface):
-    """
-    A Service, this is mainly used as a marker.
+    """A Service, this is mainly used as a marker.
     """
 
 
 class IGiftCertificate(Interface):
-    """
-    A GiftCertificate, this is mainly used as a marker.
+    """A GiftCertificate, this is mainly used as a marker.
     """
 
 
@@ -179,16 +170,14 @@ class IStorable(Interface):
     be defined by IContainer routines."""
 
     def increase_stock(quantity, branch):
-        """
-        When receiving a product, update the stock reference for this new
+        """When receiving a product, update the stock reference for this new
         item on a specific branch company.
         @param quantity: amount to increase
         @param branch: an object implement IBranch
         """
 
     def decrease_stock(quantity, branch):
-        """
-        When receiving a product, update the stock reference for the sold item
+        """When receiving a product, update the stock reference for the sold item
         this on a specific branch company.
         @param quantity: amount to decrease
         @param branch: an object implement IBranch
@@ -221,14 +210,12 @@ class IStorable(Interface):
         """
 
     def get_stock_item(branch):
-        """
-        Fetch a stock item for a specific branch
+        """Fetch a stock item for a specific branch
         @returns: a stock item
         """
 
     def get_stock_items():
-        """
-        Fetches the stock items available for all branches.
+        """Fetches the stock items available for all branches.
         @returns: a sequence of stock items
         """
 
@@ -239,15 +226,13 @@ class IStorable(Interface):
         """
 
 class IPersonFacet(Interface):
-    """
-    A facet on a Person, the only thing it has is a named reference
+    """A facet on a Person, the only thing it has is a named reference
     back to the person itself.
     """
     person = Attribute("a Person")
 
 class IPaymentFacet(Interface):
-    """
-    A facet on a Payment, the only thing it has is a named reference
+    """A facet on a Payment, the only thing it has is a named reference
     back to the payment itself.
     """
     payment = Attribute("a Payment")
@@ -287,8 +272,7 @@ class IIndividual(IPersonFacet):
         """FIXME"""
 
     def get_cpf_number():
-        """
-        Returns the cpf number without any non-numeric characters
+        """Returns the cpf number without any non-numeric characters
         @returns: the cpf number as a number
         @rtype: integer
         """
@@ -302,15 +286,13 @@ class ICompany(IPersonFacet):
                                'a certain state')
 
     def get_cnpj_number():
-        """
-        Returns the cnpj number without any non-numeric characters
+        """Returns the cnpj number without any non-numeric characters
         @returns: the cnpj number as a number
         @rtype: integer
         """
 
     def get_state_registry_number():
-        """
-        Returns the state registry number without any non-numeric characters
+        """Returns the state registry number without any non-numeric characters
         @returns: the state registry number as a number
         @rtype: integer
         """
@@ -323,8 +305,7 @@ class IClient(IPersonFacet):
     days_late = Attribute('How many days is this client indebted')
 
     def get_last_purchase_date():
-        """
-        Fetch the date of the last purchased item by this client.
+        """Fetch the date of the last purchased item by this client.
         None is returned if there are no sales yet made by the client
 
         @returns: the date of the last purchased item
@@ -337,8 +318,7 @@ class IClient(IPersonFacet):
         """
 
     def get_name():
-        """
-        Name of the client
+        """Name of the client
         """
 
 class ISupplier(IPersonFacet):
@@ -411,8 +391,7 @@ class IBranch(IPersonFacet):
         """FIXME"""
 
     def fetchTIDs(table, timestamp, te_type, trans):
-        """
-        Fetches the transaction entries (TIDs) for a specific table which
+        """Fetches the transaction entries (TIDs) for a specific table which
         were created using this station.
 
         @param table: table to get objects in
@@ -422,8 +401,7 @@ class IBranch(IPersonFacet):
         """
 
     def fetchTIDsForOtherStations(table, timestamp, te_type, trans):
-        """
-        Fetches the transaction entries (TIDs) for a specific table which
+        """Fetches the transaction entries (TIDs) for a specific table which
         were created using any station except the specified one.
 
         @param table: table to get objects in
@@ -528,8 +506,7 @@ class IPaymentGroup(Interface):
         pass
 
     def pay(payment):
-        """
-        This is an optional hook on the PaymentGroup which is called
+        """This is an optional hook on the PaymentGroup which is called
         when you pay a payment.
         @param payment: the payment which was paid
         """
@@ -540,8 +517,7 @@ class IDelivery(Interface):
     address = Attribute('The delivery address.')
 
     def get_item_by_sellable(sellable):
-        """
-        Gets all delivery items for a sellable
+        """Gets all delivery items for a sellable
 
         @param sellable: a sellable
         @type sellable: ASellable

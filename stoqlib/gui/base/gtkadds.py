@@ -82,8 +82,7 @@ def change_button_appearance(button, icon=None, text=None):
         label.set_text_with_mnemonic(text)
 
 def button_set_image_with_label(button, filename, text):
-    """
-    Sets an image above the text
+    """Sets an image above the text
     @param button:
     @param filename:
     @param text:

@@ -30,8 +30,7 @@ from stoqlib.domain.profile import update_profile_applications
 from stoqlib.domain.test.domaintest import DomainTest
 
 class TestUserProfile(DomainTest):
-    """
-    C{UserProfile} TestCase
+    """C{UserProfile} TestCase
     """
     def test_add_application_reference(self):
         profile = UserProfile(connection=self.trans, name="foo")
@@ -48,8 +47,7 @@ class TestUserProfile(DomainTest):
 
 
 class TestProfileSettings(DomainTest):
-    """
-    C{ProfileSettings} TestCase
+    """{ProfileSettings} TestCase
     """
     def get_foreign_key_data(self):
         return [UserProfile(connection=self.trans, name='Manager')]

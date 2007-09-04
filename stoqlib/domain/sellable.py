@@ -68,8 +68,7 @@ class SellableUnit(Domain):
     unit_index = IntCol()
 
 class SellableTaxConstant(Domain):
-    """
-    A tax constant tied to a sellable
+    """A tax constant tied to a sellable
     """
     implements(IDescribable)
 
@@ -91,8 +90,7 @@ class SellableTaxConstant(Domain):
 
     @classmethod
     def get_by_type(cls, tax_type, conn):
-        """
-        Fetch the tax constant for tax_type
+        """Fetch the tax constant for tax_type
         @param tax_type: the tax constant to fetch
         @param conn: a database connection
         @returns: a L{SellableTaxConstant} or None if none is found
@@ -129,8 +127,7 @@ class SellableCategory(Domain):
     implements(IDescribable)
 
     def get_commission(self):
-        """
-        Returns the commission for this category.
+        """Returns the commission for this category.
         If it's unset, return the value of the base category, if any
         @returns: the commission
         """
@@ -140,8 +137,7 @@ class SellableCategory(Domain):
         return self.salesperson_commission
 
     def get_markup(self):
-        """
-        Returns the markup for this category.
+        """Returns the markup for this category.
         If it's unset, return the value of the base category, if any
         @returns: the markup
         """
@@ -150,8 +146,7 @@ class SellableCategory(Domain):
         return self.suggested_markup
 
     def get_tax_constant(self):
-        """
-        Returns the tax constant for this category.
+        """Returns the tax constant for this category.
         If it's unset, return the value of the base category, if any
         @returns: the tax constant
         """
@@ -175,8 +170,7 @@ class SellableCategory(Domain):
 
     @classmethod
     def get_base_categories(cls, conn):
-        """
-        Returns all available base categories
+        """Returns all available base categories
         @param conn: a database connection
         @returns: categories
         """

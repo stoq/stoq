@@ -23,6 +23,7 @@
 ##  Author(s):  George Y. Kussumoto         <george@async.com.br>
 ##
 ##
+
 """ A payment receipt implementation """
 
 from stoqlib.domain.interfaces import ICompany, IIndividual

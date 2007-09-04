@@ -47,8 +47,7 @@ def _diff(orig, new, short, verbose):
     return diff
 
 def diff_files(orig, new, verbose=False):
-    """
-    Diff two files.
+    """Diff two files.
 
     @return: True i the files differ otherwise False
     @rtype: bool
@@ -59,8 +58,7 @@ def diff_files(orig, new, verbose=False):
                  verbose=verbose)
 
 def diff_strings(orig, new, verbose=False):
-    """
-    Diff two strings.
+    """Diff two strings.
 
     @return: True i the files differ otherwise False
     @rtype: bool

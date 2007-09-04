@@ -116,8 +116,7 @@ class DeviceSettings(Domain):
 
     @classmethod
     def get_by_station_and_type(cls, conn, station, type):
-        """
-        Fetch all settings for a specific station and type.
+        """Fetch all settings for a specific station and type.
 
         @param conn: a database connection
         @param station: a BranchStation instance
@@ -158,8 +157,7 @@ class DeviceSettings(Domain):
 
 
 class FiscalDayTax(Domain):
-    """
-    This represents the information that needs to be used to
+    """This represents the information that needs to be used to
     generate a Sintegra file of type 60M.
     @cvar code: four bytes, either the percental of the tax, 1800 for 18%
     or one of::
@@ -176,8 +174,7 @@ class FiscalDayTax(Domain):
 
 
 class FiscalDayHistory(Domain):
-    """
-    This represents the information that needs to be used to
+    """This represents the information that needs to be used to
     generate a Sintegra file of type 60A.
     """
     emission_date = DateTimeCol()

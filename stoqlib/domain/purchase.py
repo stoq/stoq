@@ -254,8 +254,7 @@ class PurchaseOrder(ValidatableDomain):
     #
 
     def confirm(self, confirm_date=None):
-        """
-        Confirms the purchase order
+        """Confirms the purchase order
 
         @param confirm_data: optional, datetime
         """
@@ -278,8 +277,7 @@ class PurchaseOrder(ValidatableDomain):
         self.confirm_date = confirm_date
 
     def close(self):
-        """
-        Closes the purchase order
+        """Closes the purchase order
         """
         if not self.status == self.ORDER_CONFIRMED:
             raise ValueError('Invalid status, it should be confirmed '
@@ -290,8 +288,7 @@ class PurchaseOrder(ValidatableDomain):
         self.status = self.ORDER_CLOSED
 
     def cancel(self):
-        """
-        Cancels the purchase order
+        """Cancels the purchase order
         """
         assert self.can_cancel()
         self.status = self.ORDER_CANCELLED
@@ -309,8 +306,7 @@ class PurchaseOrder(ValidatableDomain):
                                         quantity_to_receive)
 
     def can_cancel(self):
-        """
-        Find out if it's possible to cancel the order
+        """Find out if it's possible to cancel the order
         @returns: True if it's possible to cancel the order, otherwise False
         """
         # FIXME: Canceling partial orders disabled until we fix bug 3282
@@ -322,8 +318,7 @@ class PurchaseOrder(ValidatableDomain):
                                self.ORDER_CONFIRMED]
 
     def can_close(self):
-        """
-        Find out if it's possible to close the order
+        """Find out if it's possible to close the order
         @returns: True if it's possible to close the order, otherwise False
         """
         for item in self.get_items():
@@ -382,8 +377,7 @@ class PurchaseOrder(ValidatableDomain):
         return u'%05d' % self.id
 
     def get_purchase_subtotal(self):
-        """
-        Get the subtotal of the purchase.
+        """Get the subtotal of the purchase.
         The sum of all the items cost * items quantity
         """
         return currency(self.get_items().sum(
@@ -397,8 +391,7 @@ class PurchaseOrder(ValidatableDomain):
         return currency(total)
 
     def get_received_total(self):
-        """
-        Like {get_purchase_subtotal} but only takes into account the
+        """Like {get_purchase_subtotal} but only takes into account the
         received items
         """
         return currency(self.get_items().sum(
@@ -406,8 +399,7 @@ class PurchaseOrder(ValidatableDomain):
             PurchaseItem.q.quantity_received) or 0)
 
     def get_remaining_total(self):
-        """
-        The total value to be paid for the items not received yet
+        """The total value to be paid for the items not received yet
         """
         return self.get_purchase_total() - self.get_received_total()
 
@@ -475,8 +467,7 @@ PurchaseOrder.registerFacet(PurchaseOrderAdaptToPaymentGroup, IPaymentGroup)
 
 
 class PurchaseItemView(Viewable):
-    """
-    This is a view which you can use to fetch purchase items within
+    """This is a view which you can use to fetch purchase items within
     a specific purchase. It's used by the PurchaseDetails dialog
     to display all the purchase items within a purchase
 

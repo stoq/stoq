@@ -149,8 +149,7 @@ def _import():
             _table_list.append(klass)
 
 def get_table_type_by_name(table_name):
-    """
-    Gets a table by name.
+    """Gets a table by name.
 
     @param table_name: name of the table
     """

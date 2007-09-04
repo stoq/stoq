@@ -20,8 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 
-"""
-Graphical User Interface: Dialogs, Editors, Search, Slaves, Wizards etc
+"""Graphical User Interface: Dialogs, Editors, Search, Slaves, Wizards etc
 """
 
 from kiwi.ui.widgets.label import ProxyLabel

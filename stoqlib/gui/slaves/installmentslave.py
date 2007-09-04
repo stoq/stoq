@@ -147,8 +147,7 @@ class _LonelyConfirmationModel(_ConfirmationModel):
 
 
 class _InstallmentConfirmationSlave(BaseEditor):
-    """
-    This slave is responsible for confirming a list of payments and
+    """This slave is responsible for confirming a list of payments and
     applying the necessary interests and fines.
 
     """

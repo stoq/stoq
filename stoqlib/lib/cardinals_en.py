@@ -50,8 +50,7 @@ def to_words(num, unit_names=None):
     return cardinal(num)
 
 def to_words_as_money(num, currency_names):
-    """
-    Returns a amount as a cardinal number
+    """Returns a amount as a cardinal number
     @param num: the amount
     @type: int or float
     @param currency_names: a list of currency names
@@ -133,8 +132,7 @@ MAX_POWER = 63
 #
 
 def cardinal(n):
-    """
-    Returns the cardinal number of input n
+    """Returns the cardinal number of input n
     """
 
     if n == 0:

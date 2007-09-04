@@ -191,8 +191,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         return self.status != AbstractPaymentGroup.STATUS_CANCELLED
 
     def cancel(self, renegotiation):
-        """
-        Cancels the payment group.
+        """Cancels the payment group.
         This method does very little, it just changes the status and
         marks the payment group as cancelled. It's up to the subclasses
         to decide how to treat cancellation of all the contained payments

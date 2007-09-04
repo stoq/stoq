@@ -22,8 +22,7 @@
 ## Author(s):    Ariqueli Tejada Fonseca     <aritf@async.com.br>
 ##               Evandro Vale Miquelito      <evandro@async.com.br>
 ##
-"""
-Credit Provider editor
+"""Credit Provider editor
 """
 
 

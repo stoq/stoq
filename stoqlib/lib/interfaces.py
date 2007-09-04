@@ -31,24 +31,21 @@ class CookieError(Exception):
 
 class ICookieFile(Interface):
     def get():
-        """
-        Fetch the cookie or raise CookieError if a problem occurred
+        """Fetch the cookie or raise CookieError if a problem occurred
 
         @returns: (username, password)
         @rtype: tuple
         """
 
     def store(username, password):
-        """
-        Stores a username and password
+        """Stores a username and password
 
         @param username: username
         @param password: password
         """
 
     def clear():
-        """
-        Resets the cookie
+        """Resets the cookie
         """
 
 class IApplicationDescriptions(Interface):
@@ -76,15 +73,13 @@ class IXMLRPCService(Interface):
         """
 
     def serve():
-        """
-        Starts the XMLRPC service so it's ready
+        """Starts the XMLRPC service so it's ready
         to accept clients.
         This call will block until stop() is called
         """
 
     def stop():
-        """
-        Stops the service, eg break out of serve
+        """Stops the service, eg break out of serve
         """
 
 class ISystemNotifier(Interface):

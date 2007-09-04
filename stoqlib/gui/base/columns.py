@@ -29,13 +29,11 @@ from kiwi.ui.widgets.list import Column
 
 
 class ForeignKeyColumn(Column):
-    """
-    ForeignKeyColumn is a special column which is normally used together
+    """ForeignKeyColumn is a special column which is normally used together
     with a foreign key, for an sqlobject table.
     """
     def __init__(self, table, *args, **kwargs):
-        """
-        Need an obj_field or adapted argument.
+        """Need an obj_field or adapted argument.
         See L{kiwi.ui.widgets.list.Column} for other arguments
         """
         if not 'obj_field' in kwargs and not 'adapted' in kwargs:

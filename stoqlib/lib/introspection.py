@@ -22,8 +22,7 @@
 ## Author(s):   Johan Dahlin  <jdahlin@async.com.br>
 ##
 
-"""
-Introspection helpers for fetching classes, interfaces and adapters
+"""Introspection helpers for fetching classes, interfaces and adapters
 """
 
 import glob

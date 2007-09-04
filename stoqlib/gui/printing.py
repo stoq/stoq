@@ -215,8 +215,7 @@ class PrintDialog(BasicDialog):
 
 
 class GtkPrintDialog(object):
-    """
-    A dialog to print PDFs using the printer dialog in Gtk+ 2.10+
+    """A dialog to print PDFs using the printer dialog in Gtk+ 2.10+
     """
     def __init__(self, report):
         self._report = report

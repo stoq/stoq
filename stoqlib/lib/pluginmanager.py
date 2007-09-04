@@ -111,8 +111,7 @@ class PluginManager(object):
     #
 
     def register_plugin(self, plugin):
-        """
-        Registers a plugin, this is normally called in the plugin itself
+        """Registers a plugin, this is normally called in the plugin itself
         @param plugin: the plugin
         @param type: an object implementing L{IPlugin}
         """
@@ -121,8 +120,7 @@ class PluginManager(object):
         self._plugins[plugin.name] = plugin
 
     def activate_plugins(self):
-        """
-        Activates all enabled plugins
+        """Activates all enabled plugins
         """
         log.info("Activating plugins")
         installed_plugins = InstalledPlugin.select(connection=get_connection())
@@ -131,8 +129,7 @@ class PluginManager(object):
             plugin.activate()
 
     def enable_plugin(self, plugin_name):
-        """
-        Enables a plugin.
+        """Enables a plugin.
         This makes sure that the plugin is inserted into the database
         and that it always will be loaded on startup
         @param plugin_name: The name of the plugin
@@ -149,8 +146,7 @@ class PluginManager(object):
         migration.apply_all_patches()
 
     def get_active_plugins(self):
-        """
-        Gets a list of all active/enabled plugins
+        """Gets a list of all active/enabled plugins
         @returns: a sequence of plugins
         """
         for p in InstalledPlugin.select(connection=get_connection()):
@@ -171,8 +167,7 @@ class PluginManager(object):
 
 
 def register_plugin(plugin_class):
-    """
-    Registers a plugin, a convenience function
+    """Registers a plugin, a convenience function
     for getting the plugin manager and calling regiser_plugin
     @param plugin_class: class to register, must implement L{IPlugin}
     """
@@ -180,8 +175,7 @@ def register_plugin(plugin_class):
     manager.register_plugin(plugin_class())
 
 def provide_plugin_manager():
-    """
-    Provides the plugin manager, this can only be called once
+    """Provides the plugin manager, this can only be called once
     """
     manager = PluginManager()
     provide_utility(IPluginManager, manager)

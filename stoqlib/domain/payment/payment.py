@@ -198,8 +198,7 @@ class Payment(Domain):
         return self.value + self.get_penalty()
 
     def get_penalty(self, date=None):
-        """
-        Calculate the penalty in an absolute value
+        """Calculate the penalty in an absolute value
         @param date: date of payment
         @returns: penalty
         @rtype: currency
@@ -221,8 +220,7 @@ class Payment(Domain):
         return currency(days * self.method.daily_penalty / 100 * self.value)
 
     def get_interest(self, date=None):
-        """
-        Calculate the interest in an absolute value
+        """Calculate the interest in an absolute value
         @param date: date of payment
         @returns: interest
         @rtype: currency
@@ -254,23 +252,20 @@ class Payment(Domain):
         return _(u'Anonymous')
 
     def is_paid(self):
-        """
-        Check if the payment is paid.
+        """Check if the payment is paid.
         @returns: True if the payment is paid, otherwise False
         """
         return self.status == Payment.STATUS_PAID
 
     def is_preview(self):
-        """
-        Check if the payment is in preview state
+        """Check if the payment is in preview state
         @returns: True if the payment is paid, otherwise False
         """
         return self.status == Payment.STATUS_PREVIEW
 
     @property
     def bank(self):
-        """
-        Get a BankAccount instance
+        """Get a BankAccount instance
         @returns: a BankAccount instance, if the payment method does not
         provide a bank account.
         """
@@ -279,8 +274,7 @@ class Payment(Domain):
             return data.bank_data
 
     def get_paid_date_string(self):
-        """
-        Get a paid date string
+        """Get a paid date string
         @returns: the paid date string or PAID DATE if the payment isn't
         paid
         """
@@ -289,8 +283,7 @@ class Payment(Domain):
         return _('NOT PAID')
 
     def get_open_date_string(self):
-        """
-        Get a open date string
+        """Get a open date string
         @returns: the open date string or empty string
         """
         if self.open_date:

@@ -86,8 +86,7 @@ class _BaseCashModel(object):
 
 
 class TillOpeningEditor(BaseEditor):
-    """
-    An editor to open a till.
+    """An editor to open a till.
     You can add cash to the till in the editor and it also shows
     the balance of the till, after the cash has been added.
 
@@ -219,8 +218,7 @@ class TillClosingEditor(BaseEditor):
 
 
 class BaseCashSlave(BaseEditorSlave):
-    """
-    A slave representing two fields, which is used by Cash editors:
+    """A slave representing two fields, which is used by Cash editors:
 
     Date:        YYYY-MM-DD
     Cash Amount: [        ]
@@ -272,8 +270,7 @@ class RemoveCashSlave(BaseCashSlave):
 
 
 class CashAdvanceEditor(BaseEditor):
-    """
-    An editor which extends BashCashSlave to include.
+    """An editor which extends BashCashSlave to include.
     It extends BashCashSlave to include an employee combobox
     """
 
@@ -344,8 +341,7 @@ class CashAdvanceEditor(BaseEditor):
 
 
 class CashOutEditor(BaseEditor):
-    """
-    An editor to Remove cash from the Till
+    """An editor to Remove cash from the Till
     It extends BashCashSlave to include a reason entry.
     """
 
@@ -401,8 +397,7 @@ class CashOutEditor(BaseEditor):
 
 
 class CashInEditor(BaseEditor):
-    """
-    An editor to Add cash to the Till
+    """An editor to Add cash to the Till
     It uses BashCashSlave without any extensions
     """
 
