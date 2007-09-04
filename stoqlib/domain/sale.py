@@ -354,7 +354,7 @@ class Sale(ValidatableDomain):
     def remove_item(self, sale_item):
         SaleItem.delete(sale_item.id, connection=self.get_connection())
 
-    # New API
+    # Status
 
     def can_order(self):
         """
@@ -388,6 +388,13 @@ class Sale(ValidatableDomain):
                 self.status == Sale.STATUS_PAID)
 
     def order(self):
+        """Orders the sale
+        Ordering a sale is the first step done after creating it.
+        The state of the sale will change to Sale.STATUS_ORDERED.
+        To order a sale you need to add sale items to it.
+        A client might also be set for the sale, but it is not necessary.
+        """
+
         assert self.can_order()
 
         if not self.get_items():
@@ -401,6 +408,11 @@ class Sale(ValidatableDomain):
         self.status = Sale.STATUS_ORDERED
 
     def confirm(self):
+        """Confirms the sale
+        Confirming a sale means that the customer has confirmed the sale.
+        Sale items containing products are physically received and
+        the payments are agreed upon but not necessarily received.
+        """
         assert self.can_confirm()
         assert self.branch
 
@@ -423,6 +435,9 @@ class Sale(ValidatableDomain):
         self.status = Sale.STATUS_CONFIRMED
 
     def set_paid(self):
+        """Mark the sale as paid
+        Marking a sale as paid means that all the payments have been received.
+        """
         assert self.can_set_paid()
 
         group = IPaymentGroup(self)
@@ -435,6 +450,10 @@ class Sale(ValidatableDomain):
         self.status = Sale.STATUS_PAID
 
     def cancel(self):
+        """Cancel the sale
+        You can only cancel an ordered sale, it'll un-reserve all sale items.
+        and mark the sale as cancelled.
+        """
         assert self.can_cancel()
 
         conn = self.get_connection()
@@ -448,9 +467,11 @@ class Sale(ValidatableDomain):
 
     @argcheck(RenegotiationData)
     def return_(self, renegotiation):
-        """
-        Return an sold item, needs to supply a renegotiation object which
+        """Returns a sale
+        Returning a sale means that all the items are returned to the item.
+        A renegotiation object needs to be uspplied which
         contains the invoice number and the eventual penalty
+
         @param renegotiation: renegotiation information
         @type renegotiation: L{RenegotiationData}
         """
@@ -462,80 +483,42 @@ class Sale(ValidatableDomain):
         self.return_date = const.NOW()
         self.status = Sale.STATUS_RETURNED
 
-    def paid_with_money(self):
-        from stoqlib.domain.payment.methods import MoneyPM
-        group = IPaymentGroup(self, None)
-        assert group
-        for payment in group.get_items():
-            if not isinstance(payment.method, MoneyPM):
-                return False
-        return True
-
-    def add_sellable(self, obj, quantity=1, price=None):
-        """
-        Adds a new sellable item to a sale
-        @param obj: the sellable
-        @param quantity: quantity to add, defaults to 1
-        @param price: optional, the price, it not set the price
-          from the sellable will be used
-        """
-        sellable = ISellable(obj)
-        price = price or sellable.price
-        return SaleItem(connection=self.get_connection(),
-                        quantity=quantity,
-                        sale=self,
-                        sellable=sellable,
-                        price=price)
-
-
-    def get_items_total_quantity(self):
-        return self.get_items().sum('quantity') or Decimal(0)
-
-    def create_sale_return_adapter(self):
-        conn = self.get_connection()
-        current_user = get_current_user(conn)
-        assert current_user
-        group = IPaymentGroup(self)
-        paid_total = group.get_total_paid()
-        return RenegotiationData(connection=conn,
-                                 paid_total=paid_total,
-                                 invoice_number=None,
-                                 responsible=current_user.person,
-                                 sale=self)
-
-    #
-    # MOVE away!
-    #
-
-
-    @argcheck(Decimal, unicode)
-    def add_custom_gift_certificate(self, certificate_value,
-                                    certificate_number):
-        """This method adds a new custom gift certificate to the current
-        sale order.
-
-        @returns: a GiftCertificateAdaptToSellable instance
-        """
-        conn = self.get_connection()
-        cert_type = sysparam(conn).DEFAULT_GIFT_CERTIFICATE_TYPE
-        sellable_info = cert_type.base_sellable_info.clone()
-        if not sellable_info:
-            raise ValueError('A valid gift certificate type must be '
-                             'provided at this point')
-        sellable_info.price = certificate_value
-        certificate = GiftCertificate(connection=conn)
-        sellable_cert = certificate.addFacet(ISellable, connection=conn,
-                                             barcode=certificate_number,
-                                             base_sellable_info=
-                                             sellable_info)
-        # The new gift certificate which has been created is actually an
-        # item of our sale order
-        self.add_sellable(sellable_cert)
-        return sellable_cert
-
     #
     # Accessors
     #
+
+    def get_total_sale_amount(self):
+        """
+        Fetches the total value  paid by the client.
+        It can be calculated as::
+
+            Sale total = Sum(product and service prices) + surcharge +
+                             interest - discount
+
+        @returns: the total value
+        """
+        surcharge_value = self.surcharge_value or Decimal(0)
+        discount_value = self.discount_value or Decimal(0)
+        subtotal = self.get_sale_subtotal()
+        total_amount = subtotal + surcharge_value - discount_value
+        return currency(total_amount)
+
+    def get_sale_subtotal(self):
+        """
+        Fetch the subtotal for the sale, eg the sum of the
+        prices for of all items
+        @returns: subtotal
+        """
+        return currency(self.get_items().sum(
+            SaleItem.q.price *
+            SaleItem.q.quantity) or 0)
+
+    def get_items_total_quantity(self):
+        """
+        Fetches the total number of items in the sale
+        @returns: number of items
+        """
+        return self.get_items().sum('quantity') or Decimal(0)
 
     def get_order_number_str(self):
         return u'%05d' % self.id
@@ -574,31 +557,74 @@ class Sale(ValidatableDomain):
 #         self._SO_set_client_role(value)
 
 
-    def get_total_sale_amount(self):
-        """
-        Fetches the total value  paid by the client.
-        It can be calculated as::
+    # Other methods
 
-            Sale total = Sum(product and service prices) + surcharge +
-                             interest - discount
+    def paid_with_money(self):
+        from stoqlib.domain.payment.methods import MoneyPM
+        group = IPaymentGroup(self, None)
+        assert group
+        for payment in group.get_items():
+            if not isinstance(payment.method, MoneyPM):
+                return False
+        return True
 
-        @returns: the total value
+    def add_sellable(self, obj, quantity=1, price=None):
         """
-        surcharge_value = self.surcharge_value or Decimal(0)
-        discount_value = self.discount_value or Decimal(0)
-        subtotal = self.get_sale_subtotal()
-        total_amount = subtotal + surcharge_value - discount_value
-        return currency(total_amount)
+        Adds a new sellable item to a sale
+        @param obj: the sellable
+        @param quantity: quantity to add, defaults to 1
+        @param price: optional, the price, it not set the price
+          from the sellable will be used
+        """
+        sellable = ISellable(obj)
+        price = price or sellable.price
+        return SaleItem(connection=self.get_connection(),
+                        quantity=quantity,
+                        sale=self,
+                        sellable=sellable,
+                        price=price)
 
-    def get_sale_subtotal(self):
+
+    def create_sale_return_adapter(self):
+        conn = self.get_connection()
+        current_user = get_current_user(conn)
+        assert current_user
+        group = IPaymentGroup(self)
+        paid_total = group.get_total_paid()
+        return RenegotiationData(connection=conn,
+                                 paid_total=paid_total,
+                                 invoice_number=None,
+                                 responsible=current_user.person,
+                                 sale=self)
+
+    #
+    # MOVE away!
+    #
+
+    @argcheck(Decimal, unicode)
+    def add_custom_gift_certificate(self, certificate_value,
+                                    certificate_number):
+        """This method adds a new custom gift certificate to the current
+        sale order.
+
+        @returns: a GiftCertificateAdaptToSellable instance
         """
-        Fetch the subtotal for the sale, eg the sum of the
-        prices for of all items
-        @returns: subtotal
-        """
-        return currency(self.get_items().sum(
-            SaleItem.q.price *
-            SaleItem.q.quantity) or 0)
+        conn = self.get_connection()
+        cert_type = sysparam(conn).DEFAULT_GIFT_CERTIFICATE_TYPE
+        sellable_info = cert_type.base_sellable_info.clone()
+        if not sellable_info:
+            raise ValueError('A valid gift certificate type must be '
+                             'provided at this point')
+        sellable_info.price = certificate_value
+        certificate = GiftCertificate(connection=conn)
+        sellable_cert = certificate.addFacet(ISellable, connection=conn,
+                                             barcode=certificate_number,
+                                             base_sellable_info=
+                                             sellable_info)
+        # The new gift certificate which has been created is actually an
+        # item of our sale order
+        self.add_sellable(sellable_cert)
+        return sellable_cert
 
     #
     # Properties
