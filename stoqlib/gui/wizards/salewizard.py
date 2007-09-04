@@ -695,7 +695,8 @@ class SalesPersonStep(_AbstractSalesPersonStep):
         # discount and surcharge if they are already set (this is the
         # case when CONFIRM_SALES_ON_TILL parameter is enabled).
         if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
-            self.model.reset_discount_and_surcharge()
+            self.model.discount_value = currency(0)
+            self.model.surcharge_value = currency(0)
 
     def on_payment_method_changed(self, slave, method_name):
         self._update_next_step(method_name)

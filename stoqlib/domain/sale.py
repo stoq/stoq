@@ -599,9 +599,6 @@ class Sale(ValidatableDomain):
         # callback in SQLObject
         self.client = IClient(person)
 
-    def reset_discount_and_surcharge(self):
-        self.discount_value = self.surcharge_value = currency(0)
-
     def get_total_interest(self):
         raise NotImplementedError
 
