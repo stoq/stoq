@@ -160,15 +160,6 @@ class TestSale(DomainTest):
         assert isinstance(group, Sale.getAdapterClass(IPaymentGroup))
         self.failIf(IPaymentGroup(sale_no_payment, None))
 
-    def test_update_client(self):
-        person = Person(name='Eliosvaldo', connection=self.trans)
-        sale = self.create_sale()
-        self.failUnlessRaises(TypeError, sale.update_client, person)
-        individual = person.addFacet(IIndividual, connection=self.trans)
-        client = person.addFacet(IClient, connection=self.trans)
-        sale.update_client(person)
-        self.assertEqual(sale.client, client)
-
     def testOrder(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
