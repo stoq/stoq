@@ -48,8 +48,7 @@ from stoqlib.domain.till import Till
 _ = stoqlib_gettext
 
 class TillFiscalOperationsView(Viewable):
-    """
-    Stores informations about till payment tables
+    """Stores informations about till payment tables
 
     @ivar date:         the date when the entry was created
     @ivar description:  the entry description

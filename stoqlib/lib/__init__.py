@@ -20,6 +20,5 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 
-"""
-Generic class/method library
+"""Generic class/method library
 """

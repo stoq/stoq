@@ -29,8 +29,7 @@ from kiwi.ui.delegates import GladeDelegate
 from kiwi.utils import gsignal
 
 class ProgressDialog(GladeDelegate):
-    """
-    This is a dialog you use to show the progress of a certain task.
+    """This is a dialog you use to show the progress of a certain task.
     It's just a label, progress bar and button.
     it'll always be displayed in the center of a screen.
     The progress is pulsating and updated every 100 ms.
@@ -57,8 +56,7 @@ class ProgressDialog(GladeDelegate):
         self.toplevel.set_position(gtk.WIN_POS_CENTER)
 
     def start(self, wait=50):
-        """
-        Start the task, it'll pulsate the progress bar until stop() is called
+        """Start the task, it'll pulsate the progress bar until stop() is called
         @param wait: how many ms to wait before showing the dialog, defaults
           to 50
         """
@@ -66,8 +64,7 @@ class ProgressDialog(GladeDelegate):
         self._start_id = gobject.timeout_add(wait, self._real_start)
 
     def stop(self):
-        """
-        Stops pulsating and hides the dialog
+        """Stops pulsating and hides the dialog
         """
         self.hide()
         if self._timeout_id != -1:
@@ -78,8 +75,7 @@ class ProgressDialog(GladeDelegate):
             self._start_id = -1
 
     def set_label(self, label):
-        """
-        Update the label of the dialog
+        """Update the label of the dialog
         @param label: the new content of the label
         """
         self.label.set_label(label)

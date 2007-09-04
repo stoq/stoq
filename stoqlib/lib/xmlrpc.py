@@ -75,8 +75,7 @@ class XMLRPCWebService(SimpleXMLRPCServer.SimpleXMLRPCServer):
     allow_reuse_address = True
 
 class XMLRPCService(object):
-    """
-    An XMLRPCService using SimpleXMLRPCServer from the standard library
+    """An XMLRPCService using SimpleXMLRPCServer from the standard library
     """
     implements(IXMLRPCService)
     def __init__(self, hostname, port):
@@ -103,8 +102,7 @@ except ImportError:
 
 if has_twisted:
     class XMLRPCService(xmlrpc.XMLRPC):
-        """
-        An XMLRPCService using Twisted
+        """An XMLRPCService using Twisted
         """
         implements(IXMLRPCService)
         def __init__(self, hostname, port):

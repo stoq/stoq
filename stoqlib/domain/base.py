@@ -74,8 +74,7 @@ class AdaptableSQLObject(Adaptable):
 
 
 def _adaptable_sqlobject_adapter_hook(iface, obj):
-    """
-    A zope.interface hook used to fetch an adapter when calling
+    """A zope.interface hook used to fetch an adapter when calling
     iface(adaptable).
     It fetches the facet type and does a select in the database to
     see if the object is present.
@@ -277,8 +276,7 @@ class Domain(BaseDomain, AdaptableSQLObject):
 
     @classmethod
     def iselect(cls, iface, *args, **kwargs):
-        """
-        Like select, but search on the adapter implementing the interface iface
+        """Like select, but search on the adapter implementing the interface iface
         associated with the domain class cls.
 
         @param iface: interface
@@ -289,8 +287,7 @@ class Domain(BaseDomain, AdaptableSQLObject):
 
     @classmethod
     def iselectBy(cls, iface, *args, **kwargs):
-        """
-        Like selectBy, but search on the adapter implementing the interface iface
+        """Like selectBy, but search on the adapter implementing the interface iface
         associated with the domain class cls.
 
         @param iface: interface
@@ -301,8 +298,7 @@ class Domain(BaseDomain, AdaptableSQLObject):
 
     @classmethod
     def iselectOne(cls, iface, *args, **kwargs):
-        """
-        Like selectOne, but search on the adapter implementing the interface iface
+        """Like selectOne, but search on the adapter implementing the interface iface
         associated with the domain class cls.
 
         @param iface: interface
@@ -313,8 +309,7 @@ class Domain(BaseDomain, AdaptableSQLObject):
 
     @classmethod
     def iselectOneBy(cls, iface, *args, **kwargs):
-        """
-        Like selectOneBy, but search on the adapter implementing the interface iface
+        """Like selectOneBy, but search on the adapter implementing the interface iface
         associated with the domain class cls.
 
         @param iface: interface
@@ -325,8 +320,7 @@ class Domain(BaseDomain, AdaptableSQLObject):
 
     @classmethod
     def iget(cls, iface, object_id, **kwargs):
-        """
-        Like get, but gets on the adapter implementing the interface iface
+        """Like get, but gets on the adapter implementing the interface iface
         associated with the domain class cls.
 
         @param iface: interface

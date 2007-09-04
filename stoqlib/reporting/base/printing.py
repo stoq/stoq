@@ -19,8 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-"""
-Implements the ReportTemplate class, an BaseReportTemplate extension
+"""Implements the ReportTemplate class, an BaseReportTemplate extension
 that allows footer and header drawing.
 """
 import datetime

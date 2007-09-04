@@ -24,8 +24,7 @@
 ##
 ##
 
-"""
-Settings required to access the database, hostname, username etc
+"""Settings required to access the database, hostname, username etc
 """
 import os
 import pwd
@@ -48,8 +47,7 @@ _ = stoqlib_gettext
 log = Logger('stoqlib.db.settings')
 
 class DatabaseSettings(object):
-    """
-    DatabaseSettings contains all the information required to connect to
+    """DatabaseSettings contains all the information required to connect to
     a database, such as hostname, username and password.
 
     It also provides helpers on top of SQLObject to return a database
@@ -130,23 +128,20 @@ class DatabaseSettings(object):
     # Public API
 
     def get_connection_uri(self):
-        """
-        Returns a uri representing the current database settings.
+        """Returns a uri representing the current database settings.
         It's used by SQLObject to connect to a database.
         @returns: a string like postgresql://username@localhost/dbname
         """
         return self._build_uri(self.dbname)
 
     def get_connection(self):
-        """
-        Returns a connection to the configured database
+        """Returns a connection to the configured database
         @returns: a database connection
         """
         return self._get_connection_internal(self.dbname)
 
     def get_default_connection(self):
-        """
-        Returns a connection to the default database, note that this
+        """Returns a connection to the default database, note that this
         different from the configred.
         This method is mainly here to able to create other databases,
         which will need a connection, Be careful when using this method.
@@ -163,8 +158,7 @@ class DatabaseSettings(object):
         return True
 
     def has_database(self):
-        """
-        Checks if the database specified in the settings exists
+        """Checks if the database specified in the settings exists
         @return: if the database exists
         """
         try:

@@ -20,6 +20,5 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 
-"""
-Domain classes, the business logic in Stoq
+"""Domain classes, the business logic in Stoq
 """

@@ -61,8 +61,7 @@ class OnSaleInfoSlave(BaseEditorSlave):
            return ValidationError(_("Sale price can not be 0"))
 
 class TributarySituationSlave(BaseEditorSlave):
-    """
-    This is base slave for tributary taxes applied to product, service
+    """This is base slave for tributary taxes applied to product, service
     and it's category if any.
     """
     gladefile = "TributarySituationSlave"
@@ -75,8 +74,7 @@ class TributarySituationSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn, model)
 
     def setup_combos(self):
-        """
-        The child class must fill the combo
+        """The child class must fill the combo
         """
 
     def _update_tax_value(self):

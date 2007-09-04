@@ -113,8 +113,7 @@ class BaseEditorSlave(GladeSlaveDelegate):
         self.update_visual_mode()
 
     def create_model(self, trans):
-        """
-        Creates a new model for the editor.
+        """Creates a new model for the editor.
         After this method is called, the model can be accessed as self.model.
         The default behavior is to raise a TypeError, which can
         be overridden in a subclass.
@@ -124,13 +123,11 @@ class BaseEditorSlave(GladeSlaveDelegate):
                         "implement create_model?" % self)
 
     def setup_proxies(self):
-        """
-        A subclass can override this
+        """A subclass can override this
         """
 
     def setup_slaves(self):
-        """
-        A subclass can override this
+        """A subclass can override this
         """
 
     #
@@ -217,8 +214,7 @@ class BaseEditor(BaseEditorSlave):
         return title_format % model_name
 
     def set_description(self, description):
-        """
-        Sets the description of the model object which is used by the editor
+        """Sets the description of the model object which is used by the editor
         @param description:
         """
         format = self._get_title_format()

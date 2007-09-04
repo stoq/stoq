@@ -22,16 +22,14 @@
 ## Author(s):   Johan Dahlin   <jdahlin@async.com.br>
 ##
 
-"""
-Database Interfaces: Connection, Settings etc
+"""Database Interfaces: Connection, Settings etc
 """
 
 from zope.interface import Attribute
 from zope.interface.interface import Interface
 
 class IDatabaseSettings(Interface):
-    """
-    This is an interface to describe all important database settings
+    """This is an interface to describe all important database settings
     """
 
     rdbms = Attribute('name identifying the database type')
@@ -43,22 +41,19 @@ class IDatabaseSettings(Interface):
         """@returns: a SQLObject connection URI"""
 
 class IConnection(Interface):
-    """
-    This is an interface that describes a database connection
+    """This is an interface that describes a database connection
     """
 
     def close():
         """Drops the connection to the database"""
 
 class ITransaction(IConnection):
-    """
-    This is an interface that describes a database transaction.
+    """This is an interface that describes a database transaction.
     It extends the IConnection interface.
     """
 
     def commit(close=False):
-        """
-        Commits the objects to the database.
+        """Commits the objects to the database.
         Sends all the modifications of the current objects to the database,
         @param close: Optional, if True also closes the database
         """
@@ -69,47 +64,40 @@ class ITransaction(IConnection):
         """
 
     def get(object):
-        """
-        Fetches an object within the transaction
+        """Fetches an object within the transaction
         @param obj: a SQLObject
         @returns: a reference to the same object within the transaction
         """
 
     def add_modified_object(object):
-        """
-        Adds a modified object to the transaction.
+        """Adds a modified object to the transaction.
         It's used to update TransactionEntry to keep a log of all modified object
         @param object: A SQLObject subclass which should be marked as modified
         """
 
     def savepoint(name):
-        """
-        Creates a new savepoint
+        """Creates a new savepoint
         @param name: name of savepoint
         """
 
     def rollback_to_savepoint(name):
-        """
-        Rollback to a savepoint
+        """Rollback to a savepoint
         @param name: name of the savepoint
         """
 
 class ICurrentBranch(Interface):
-    """
-    This is a mainly a marker for the current branch which is expected
+    """This is a mainly a marker for the current branch which is expected
     to implement L{stoqlib.domain.interfaces.IBranch}
     It's mainly used by get_current_branch()
     """
 
 class ICurrentBranchStation(Interface):
-    """
-    This is a mainly a marker for the current branch station.
+    """This is a mainly a marker for the current branch station.
     It's mainly used by get_current_station()
     """
 
 class ICurrentUser(Interface):
-    """
-    This is a mainly a marker for the current user.
+    """This is a mainly a marker for the current user.
     It's mainly used by get_current_user()
     """
 

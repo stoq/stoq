@@ -81,8 +81,7 @@ class UserProfile(Domain):
                         has_permission=has_permission, user_profile=self)
 
     def check_app_permission(self, app_name):
-        """
-        Check if the user has permission to use an application
+        """Check if the user has permission to use an application
         @param app_name: name of application to check
         """
         return bool(ProfileSettings.selectOneBy(

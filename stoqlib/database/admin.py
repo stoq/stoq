@@ -24,8 +24,7 @@
 ##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 
-"""
-Administration
+"""Administration
 
 Helper functions related to administration of the database, creating
 tables, removing tables and configuring administration user.
@@ -105,8 +104,7 @@ def ensure_admin_user(administrator_password):
 
 
 def create_main_branch(trans, name):
-    """
-    Creates a new branch and sets it as the main branch for the system
+    """Creates a new branch and sets it as the main branch for the system
     @param trans: a database transaction
     @param name: name of the new branch
     """
@@ -139,8 +137,7 @@ def ensure_payment_methods():
     trans.commit(close=True)
 
 def get_admin_user(conn):
-    """
-    Retrieves the current administrator user for the system
+    """Retrieves the current administrator user for the system
     @param conn: a database connection
     @returns: the admin user for the system
     """
@@ -173,8 +170,7 @@ def ensure_sellable_constants():
     trans.commit(close=True)
 
 def user_has_usesuper(trans):
-    """
-    This method checks if the currently logged in postgres user has
+    """This method checks if the currently logged in postgres user has
     `usesuper' access which is necessary for certain operations
 
     @param trans: a database connection

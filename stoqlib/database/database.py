@@ -41,8 +41,7 @@ _ = stoqlib_gettext
 log = Logger('stoqlib.db.database')
 
 def clean_database(dbname):
-    """
-    Cleans a database
+    """Cleans a database
     @param dbname: name of the database
     """
     log.info("Cleaning database %s" % (dbname,))
@@ -69,8 +68,7 @@ def clean_database(dbname):
 
 
 def execute_sql(filename):
-    """
-    Inserts Raw SQL commands into the database read from a file.
+    """Inserts Raw SQL commands into the database read from a file.
     @param filename: filename with SQL commands
     @returns: return code, 0 if succeeded, positive integer for failure
     @rtype: int
@@ -116,8 +114,7 @@ def execute_sql(filename):
         raise NotImplementedError(settings.rdbms)
 
 def dump_database(filename):
-    """
-    Dump the contents of the current database
+    """Dump the contents of the current database
     @param filename: filename to write the database dump to
     """
     settings = get_utility(IDatabaseSettings)
@@ -142,8 +139,7 @@ def dump_database(filename):
         raise NotImplementedError(settings.rdbms)
 
 def dump_table(table):
-    """
-    Dump the contents of a table.
+    """Dump the contents of a table.
     Note this does not include the schema itself, just the data.
     To get the data call stdout.read() on the returned object.
     @param table: table to write

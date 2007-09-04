@@ -23,6 +23,5 @@
 ##
 ##
 
-"""
-Stoqdrivers integration
+"""Stoqdrivers integration
 """

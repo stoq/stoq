@@ -48,8 +48,7 @@ class BranchStation(Domain):
 
     @classmethod
     def get_active_stations(cls, conn):
-        """
-        Returns the currently active branch stations.
+        """Returns the currently active branch stations.
         @param conn: a database connection
         @returns: a sequence of currently active stations
         """
@@ -57,8 +56,7 @@ class BranchStation(Domain):
 
     @classmethod
     def create(cls, conn, branch, name):
-        """
-        Create a new station id for the current machine.
+        """Create a new station id for the current machine.
         Optionally a branch can be specified which will be set as the branch
         for created station.
 
@@ -76,8 +74,7 @@ class BranchStation(Domain):
 
     @classmethod
     def get_station(cls, conn, branch, name):
-        """
-        Fetches a station from a branch
+        """Fetches a station from a branch
 
         @param conn: a database connection
         @param branch: the branch
@@ -110,7 +107,6 @@ class BranchStation(Domain):
     #
 
     def get_branch_name(self):
-        """
-        Returns the branch name
+        """Returns the branch name
         """
         return self.branch.get_description()

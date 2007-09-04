@@ -23,8 +23,7 @@
 ##               Evandro Vale Miquelito <evandro@async.com.br>
 ##               Johan Dahlin           <jdahlin@async.com.br>
 ##
-"""
-Implementation of classes related to Fiscal operations.
+"""Implementation of classes related to Fiscal operations.
 """
 
 import datetime
@@ -50,8 +49,7 @@ log = Logger('stoqlib.till')
 #
 
 class Till(Domain):
-    """
-    The Till describes the financial operations of a specific day.
+    """The Till describes the financial operations of a specific day.
 
     The operations that are recorded in a Till:
       - Sales
@@ -101,8 +99,7 @@ class Till(Domain):
 
     @classmethod
     def get_current(cls, conn):
-        """
-        Fetches the Till for the current station.
+        """Fetches the Till for the current station.
         @param conn: a database connection
         @returns: a Till instance or None
         """
@@ -122,8 +119,7 @@ class Till(Domain):
 
     @classmethod
     def get_last_opened(cls, conn):
-        """
-        Fetches the last Till which was opened.
+        """Fetches the last Till which was opened.
         If in doubt, use Till.get_current instead. This method is a special case
         which is used to be able to close a till without calling get_current()
         @param conn: a database connection
@@ -140,8 +136,7 @@ class Till(Domain):
     #
 
     def open_till(self):
-        """
-        Open the till.
+        """Open the till.
 
         It can only be done once per day.
         The final cash amount of the previous till will be used
@@ -174,8 +169,7 @@ class Till(Domain):
         self.status = Till.STATUS_OPEN
 
     def close_till(self, removed=0):
-        """
-        This method close the current till operation with the confirmed
+        """This method close the current till operation with the confirmed
         sales associated. If there is a sale with a differente status than
         SALE_CONFIRMED, a new 'pending' till operation is created and
         these sales are associated with the current one.
@@ -215,8 +209,7 @@ class Till(Domain):
         return self._add_till_entry(value, payment.description, payment)
 
     def add_debit_entry(self, value, reason=u""):
-        """
-        Add debit to the till
+        """Add debit to the till
         @param value: amount to add
         @param reason: description of payment
         @returns: till entry representing the added debit
@@ -227,8 +220,7 @@ class Till(Domain):
         return self._add_till_entry(-value, reason)
 
     def add_credit_entry(self, value, reason=u""):
-        """
-        Add credit to the till
+        """Add credit to the till
         @param value: amount to add
         @param reason: description of payment
         @returns: till entry representing the added credit
@@ -239,8 +231,7 @@ class Till(Domain):
         return self._add_till_entry(value, reason)
 
     def needs_closing(self):
-        """
-        Checks if there's an open till that needs to be closed before
+        """Checks if there's an open till that needs to be closed before
         we can do any further fiscal operations.
         @returns: True if it needs to be closed, otherwise false
         """
@@ -254,8 +245,7 @@ class Till(Domain):
         return True
 
     def get_balance(self):
-        """
-        Gets the total of all "extra" payments (like cash
+        """Gets the total of all "extra" payments (like cash
         advance, till complement, ...) associated to this till
         operation *plus* all the payments, which payment method is
         money, of all the sales associated with this operation
@@ -268,8 +258,7 @@ class Till(Domain):
         return currency(self.initial_cash_amount + (results.sum('value') or 0))
 
     def get_entries(self):
-        """
-        Fetches all the entries related to this till
+        """Fetches all the entries related to this till
         @returns: all entries
         @rtype: sequence of L{TillEntry}
         """
@@ -277,8 +266,7 @@ class Till(Domain):
             till=self, connection=self.get_connection())
 
     def get_credits_total(self):
-        """
-        Calculates the total credit for all entries in this till
+        """Calculates the total credit for all entries in this till
         @returns: total credit
         @rtype: currency
         """
@@ -288,8 +276,7 @@ class Till(Domain):
         return currency(results.sum('value') or 0)
 
     def get_debits_total(self):
-        """
-        Calculates the total debit for all entries in this till
+        """Calculates the total debit for all entries in this till
         @returns: total debit
         @rtype: currency
         """
@@ -322,8 +309,7 @@ class Till(Domain):
 
 
 class TillEntry(Domain):
-    """
-    A TillEntry is a representing cash added or removed in a L{Till}.
+    """A TillEntry is a representing cash added or removed in a L{Till}.
     A positive value represents addition
     A negative value represents removal
 

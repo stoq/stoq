@@ -51,8 +51,7 @@ _ = stoqlib_gettext
 
 
 class SellableItemStep(WizardEditorStep):
-    """
-    A wizard item step for sellable orders.
+    """A wizard item step for sellable orders.
 
     It defines the following:
 
@@ -89,15 +88,13 @@ class SellableItemStep(WizardEditorStep):
     # Public API
 
     def hide_add_and_edit_buttons(self):
-        """
-        Hides the add and edit buttons
+        """Hides the add and edit buttons
         """
         self.slave.hide_add_button()
         self.slave.hide_edit_button()
 
     def get_quantity(self):
-        """
-        Returns the quantity of the current model or 1 if there is no model
+        """Returns the quantity of the current model or 1 if there is no model
         @returns: the quantity
         """
         return self.proxy.model and self.proxy.model.quantity or Decimal(1)
@@ -126,8 +123,7 @@ class SellableItemStep(WizardEditorStep):
         raise NotImplementedError('This method must be defined on child')
 
     def sellable_selected(self, sellable):
-        """
-        This will be called when a sellable is selected in the combo.
+        """This will be called when a sellable is selected in the combo.
         It can be overriden in a subclass if they wish to do additional
         logic at that point
         @param sellable: the selected sellable

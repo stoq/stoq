@@ -44,8 +44,7 @@ from stoqlib.lib.message import yesno
 _ = stoqlib_gettext
 
 class ModelListDialog(ListDialog):
-    """
-    A dialog which displays all items in a table and allows you to
+    """A dialog which displays all items in a table and allows you to
     add and remove items from it
 
     @cvar model_type: an SQLObject for the table we want to modify, must
@@ -154,8 +153,7 @@ class ModelListDialog(ListDialog):
         self._reuse_transaction = trans
 
     def run_dialog(self, dialog_class, *args, **kwargs):
-        """
-        A special variant of run_dialog which deletes objects
+        """A special variant of run_dialog which deletes objects
         when a transaction is reused, it's safe to use when it's disabled,
         so always use this in your run_editor hook
         """
@@ -174,8 +172,7 @@ class ModelListDialog(ListDialog):
     #
 
     def run_editor(self, trans, model):
-        """
-        This can be override by a subclass who wants to send in
+        """This can be override by a subclass who wants to send in
         custom arguments to the editor.
         """
         if self.editor_class is None:
@@ -188,8 +185,7 @@ class ModelListDialog(ListDialog):
 
 
 class AdditionListSlave(GladeSlaveDelegate):
-    """
-    A slave that offers a simple list and its management.
+    """A slave that offers a simple list and its management.
     """
 
     toplevel_name = gladefile = 'AdditionListSlave'
@@ -337,8 +333,7 @@ class AdditionListSlave(GladeSlaveDelegate):
                                   "subclasses")
 
     def run_editor(self, model):
-        """
-        This can be overriden to provide a custom run_dialog line,
+        """This can be overriden to provide a custom run_dialog line,
         or a conversion function for the model
         """
         if self._editor_class is None:
@@ -350,8 +345,7 @@ class AdditionListSlave(GladeSlaveDelegate):
                           model=model, **self._editor_kwargs)
 
     def delete_model(self, model):
-        """
-        Deletes a model, can be overridden in subclass
+        """Deletes a model, can be overridden in subclass
         @param model: model to delete
         """
         model.__class__.delete(model.id, connection=self.conn)

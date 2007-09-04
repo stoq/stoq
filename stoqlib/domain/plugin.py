@@ -27,8 +27,7 @@ from sqlobject.col import StringCol, IntCol
 from stoqlib.domain.base import Domain
 
 class InstalledPlugin(Domain):
-    """
-    This object represent an installed and activated plugin.
+    """This object represent an installed and activated plugin.
 
     @cvar plugin_name: name of the plugin
     @cvar plugin_version: version of the plugin

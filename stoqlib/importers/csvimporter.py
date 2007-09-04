@@ -36,8 +36,7 @@ from kiwi.python import namedAny
 from stoqlib.database.runtime import new_transaction
 
 class CSVRow(object):
-    """
-    A row in a CSV file
+    """A row in a CSV file
     """
     def __init__(self, item, field_names):
         self.fields = []
@@ -50,8 +49,7 @@ class CSVRow(object):
             ['%s=%r' % (f, getattr(self, f)) for f in self.fields])
 
 class CSVImporter(object):
-    """
-    Class to assist the process of importing csv files.
+    """Class to assist the process of importing csv files.
 
     @cvar fields: field names, a list of strings
     @cvar optional_fields: optional field names, a list of strings
@@ -84,16 +82,14 @@ class CSVImporter(object):
     #
 
     def feed_file(self, filename, skip=0):
-        """
-        Feeds csv data from filename to the importer
+        """Feeds csv data from filename to the importer
         @param filename: filename
         @param skip: optional, number of rows to initially skip
         """
         self.feed(open(filename), filename, skip=skip)
 
     def feed(self, iterable, filename='<stdin>', skip=0):
-        """
-        Feeds csv data from an iterable
+        """Feeds csv data from an iterable
         @param iterable: an iterable
         @param filename: optinal, name of input file
         @param skip: optional, number of rows to initially skip
@@ -153,8 +149,7 @@ class CSVImporter(object):
         return datetime.datetime(*map(int, data.split('-')))
 
     def set_lines_per_commit(self, lines):
-        """
-        Sets the number of lines which should be parsed between commits.
+        """Sets the number of lines which should be parsed between commits.
         Defaults to 500. -1 means that the whole file should be parsed
         before committing
         @param lines: number of lines or
@@ -162,8 +157,7 @@ class CSVImporter(object):
         self.lines = lines
 
     def set_dry(self, dry):
-        """
-        Tells the CSVImporter to run in dry mode, eg without committing
+        """Tells the CSVImporter to run in dry mode, eg without committing
         anything.
         @param dry: dry mode
         """
@@ -175,8 +169,7 @@ class CSVImporter(object):
 
     @classmethod
     def get_by_type(cls, importer_type):
-        """
-        Gets an importers class, instantiates it returns it
+        """Gets an importers class, instantiates it returns it
         @param importer_type: an importer
         @type importer_type: string
         @returns: an importer instance
@@ -194,8 +187,7 @@ class CSVImporter(object):
     #
 
     def process_one(self, row, fields, trans):
-        """
-        Processes one line in a csv file, you can access the columns
+        """Processes one line in a csv file, you can access the columns
         using attributes on the data object.
         @param row: object representing a row in the input
         @param fields: a list of fields set in data
@@ -204,8 +196,7 @@ class CSVImporter(object):
         raise NotImplementedError
 
     def read(self, iterable):
-        """
-        This can be overridden by as subclass which wishes to specialize
+        """This can be overridden by as subclass which wishes to specialize
         the CSV reader.
         @param iterable: a sequence of lines which are going to be read
         @returns: a sequence of parsed items
@@ -213,7 +204,6 @@ class CSVImporter(object):
         return csv.reader(iterable, dialect=self.dialect)
 
     def when_done(self, trans):
-        """
-        This is called after all the lines are parsed but
+        """This is called after all the lines are parsed but
         before committing.
         """

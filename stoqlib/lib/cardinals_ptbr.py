@@ -24,8 +24,7 @@
 ##
 
 def to_words(num, feminine=False, unit_names=None):
-    """
-    Retorna uma string representando o valor inteiro passado, por extenso
+    """Retorna uma string representando o valor inteiro passado, por extenso
     @param num: um inteiro
     @type: int
     @param feminine: indica se devemos usar o gênero feminino do

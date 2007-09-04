@@ -26,8 +26,7 @@
 ##              Ariqueli Tejada Fonseca     <aritf@async.com.br>
 ##              Bruno Rafael Garcia         <brg@async.com.br>
 ##
-"""
-Person domain classes
+"""Person domain classes
 
 The Person domain classes in Stoqlib are special since the normal Person
 class is very small and additional functionality is provided through
@@ -120,8 +119,7 @@ class EmployeeRole(Domain):
     #
 
     def has_other_role(self, name):
-        """
-        Check if there is another role with the same name
+        """Check if there is another role with the same name
         @param name: name of the role to check
         @returns: True if it exists, otherwise False
         """
@@ -251,8 +249,7 @@ class Person(Domain):
         return address.get_address_string()
 
     def get_phone_number_number(self):
-        """
-        Returns the phone number without any non-numeric characters
+        """Returns the phone number without any non-numeric characters
         @returns: the phone number as a number
         @rtype: integer
         """
@@ -261,8 +258,7 @@ class Person(Domain):
         return int(''.join([c for c in self.phone_number
                                   if c in '1234567890']))
     def get_fax_number_number(self):
-        """
-        Returns the fax number without any non-numeric characters
+        """Returns the fax number without any non-numeric characters
         @returns: the fax number as a number
         @rtype: integer
         """
@@ -428,8 +424,7 @@ class PersonAdaptToIndividual(PersonAdapter):
                 for i in self.marital_statuses.keys()]
 
     def get_cpf_number(self):
-        """
-        Returns the cpf number without any non-numeric characters
+        """Returns the cpf number without any non-numeric characters
         @returns: the cpf number as a number
         @rtype: integer
         """
@@ -458,8 +453,7 @@ class _PersonAdaptToCompany(PersonAdapter):
     is_active = BoolCol(default=True)
 
     def get_cnpj_number(self):
-        """
-        Returns the cnpj number without any non-numeric characters
+        """Returns the cnpj number without any non-numeric characters
         @returns: the cnpj number as a number
         @rtype: integer
         """
@@ -469,8 +463,7 @@ class _PersonAdaptToCompany(PersonAdapter):
         return 0
 
     def get_state_registry_number(self):
-        """
-        Returns the state registry number without any non-numeric characters
+        """Returns the state registry number without any non-numeric characters
         @returns: the state registry number as a number
         @rtype: integer
         """
@@ -856,8 +849,7 @@ class EmployeeRoleHistory(Domain):
 #
 
 class ClientView(Viewable):
-    """
-    Stores information about clients.
+    """Stores information about clients.
     Available fields are::
        id                  - the id of the person table
        name                - the client name

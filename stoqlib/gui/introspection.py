@@ -31,8 +31,7 @@ def _foreach_child(widget, cb, lvl=0):
             _foreach_child(child, cb, lvl+1)
 
 def introspect_slaves(window):
-    """
-    Traverses all the children of window and prints out all the
+    """Traverses all the children of window and prints out all the
     kiwi slaves.
     @param window: a gtk.Window subclass
     """

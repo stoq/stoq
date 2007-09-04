@@ -23,8 +23,7 @@
 ##                  Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
-"""
-Schema migration
+"""Schema migration
 """
 
 import glob
@@ -53,8 +52,7 @@ log = Logger('stoqlib.database.migration')
 
 
 class Patch(object):
-    """
-    A Database Patch
+    """A Database Patch
 
     @ivar filename: patch filename
     @ivar level: database level
@@ -77,8 +75,7 @@ class Patch(object):
         return cmp(self.level, other.level)
 
     def apply(self, conn):
-        """
-        Apply the patch
+        """Apply the patch
         @param conn: A database connection
         """
         log.info('Applying: %s' % (self.filename,))
@@ -107,8 +104,7 @@ class Patch(object):
         os.unlink(temporary)
 
 class SchemaMigration(object):
-    """
-    Schema migration management
+    """Schema migration management
 
     Is currently doing the following things:
       - Applies database patches
@@ -139,8 +135,7 @@ class SchemaMigration(object):
         return sorted(patches)
 
     def _update_schema(self):
-        """
-        Check the current version of database and update the schema if
+        """Check the current version of database and update the schema if
         it's needed
         """
         log.info("Updating schema")
@@ -193,16 +188,14 @@ class SchemaMigration(object):
         return False
 
     def apply_all_patches(self):
-        """
-        Apply all available patches
+        """Apply all available patches
         """
         log.info("Applying all patches")
         for patch in self._get_patches():
             patch.apply(self.conn)
 
     def update(self):
-        """
-        Updates the database schema
+        """Updates the database schema
         """
         if self.check_uptodate():
             print 'Database is already at revision %d' % (
@@ -216,8 +209,7 @@ class SchemaMigration(object):
 
 
     def get_current_version(self):
-        """
-        This method is revision for returning the database schema version
+        """This method is revision for returning the database schema version
         for a migration subclass
 
         This must be implemented in a subclass
@@ -226,8 +218,7 @@ class SchemaMigration(object):
         raise NotImplementedError
 
     def generate_sql_for_patch(self, level):
-        """
-        This method is responsible for creating an SQL
+        """This method is responsible for creating an SQL
         statement which is used to update the migration versioning
         information
 
@@ -238,15 +229,13 @@ class SchemaMigration(object):
         raise NotImplementedError
 
     def after_update(self):
-        """
-        This can be implemented in a subclass, but it is not mandatory.
+        """This can be implemented in a subclass, but it is not mandatory.
         It'll be called after applying all patches
         """
 
 
 class StoqlibSchemaMigration(SchemaMigration):
-    """
-    This is a SchemaMigration subclass used by Stoqlib.
+    """This is a SchemaMigration subclass used by Stoqlib.
     It's responsible for migrating the data for stoqlib itself
     and all its plugins
     """
@@ -314,8 +303,7 @@ class StoqlibSchemaMigration(SchemaMigration):
 
 
 class PluginSchemaMigration(SchemaMigration):
-    """
-    This is a SchemaMigration class which is suitable for use within
+    """This is a SchemaMigration class which is suitable for use within
     a plugin
     """
     def __init__(self, plugin_name, resource, patterns):

@@ -57,8 +57,7 @@ class FiscalPrinterHelper:
         self._parent = parent
 
     def open_till(self):
-        """
-        Opens the till
+        """Opens the till
         """
         if Till.get_current(self.conn) is not None:
             warning("You already have a till operation opened. "
@@ -79,8 +78,7 @@ class FiscalPrinterHelper:
         return retval
 
     def close_till(self, previous_day=False):
-        """
-        Closes the till
+        """Closes the till
         @param previous_day: if the till wasn't closed a previous day
         @returns: True if the till was closed, otherwise False
         """
@@ -104,8 +102,7 @@ class FiscalPrinterHelper:
         return retval
 
     def needs_closing(self):
-        """
-        Checks if the last opened till was closed and asks the
+        """Checks if the last opened till was closed and asks the
         user if he wants to close it
         @returns: True if the till was open and the user wants to
           close it, otherwise False

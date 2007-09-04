@@ -331,8 +331,7 @@ class APaymentMethod(InheritableModel):
     def create_inpayment(self, payment_group, value, due_date=None,
                          details=None, description=None,
                          base_value=None, till=None):
-        """
-        Creates a new inpayment
+        """Creates a new inpayment
         @param payment_group: a L{APaymentGroup} subclass
         @param value: value of payment
         @param due_date: optional, due date of payment
@@ -352,8 +351,7 @@ class APaymentMethod(InheritableModel):
     def create_outpayment(self, payment_group, value, due_date=None,
                           details=None, description=None,
                           base_value=None, till=None):
-        """
-        Creates a new outpayment
+        """Creates a new outpayment
         @param payment_group: a L{APaymentGroup} subclass
         @param value: value of payment
         @param due_date: optional, due date of payment
@@ -370,8 +368,7 @@ class APaymentMethod(InheritableModel):
 
     @argcheck(AbstractPaymentGroup, Decimal, object)
     def create_inpayments(self, payment_group, value, due_dates):
-        """
-        Creates a list of new inpayments, the values of the individual
+        """Creates a list of new inpayments, the values of the individual
         payments are calculated by taking the value and dividing it by
         the number of payments.
         The number of payments is determined by the length of the due_dates
@@ -387,8 +384,7 @@ class APaymentMethod(InheritableModel):
 
     @argcheck(AbstractPaymentGroup, Decimal, object)
     def create_outpayments(self, payment_group, value, due_dates):
-        """
-        Creates a list of new outpayments, the values of the individual
+        """Creates a list of new outpayments, the values of the individual
         payments are calculated by taking the value and dividing it by
         the number of payments.
         The number of payments is determined by the length of the due_dates
@@ -429,8 +425,7 @@ class APaymentMethod(InheritableModel):
 
     @classmethod
     def get_by_enum(cls, conn, enum):
-        """
-        Returns the Payment method associated with a enum
+        """Returns the Payment method associated with a enum
 
         @param enum: a PaymentMethodType enum
         @returns: the payment method class
@@ -465,8 +460,7 @@ class APaymentMethod(InheritableModel):
 
     @argcheck(PaymentAdaptToInPayment)
     def delete_inpayment(self, inpayment):
-        """
-        Deletes the inpayment and its associated payment.
+        """Deletes the inpayment and its associated payment.
         Missing a cascade argument in SQLObject ?
         @param inpayment:
         """
@@ -490,8 +484,7 @@ class APaymentMethod(InheritableModel):
         raise NotImplementedError('This method must be implemented on child')
 
     def after_payment_created(self, payment):
-        """
-        This will be called after a payment has been created, it can be
+        """This will be called after a payment has been created, it can be
         used by a subclass to create additional persistent objects
         @param payment: A L{PaymentAdaptToInPayment} or L{PaymentAdaptToOutPayment}
         """
@@ -569,8 +562,7 @@ class CheckPM(_AbstractCheckBillMethodMixin, APaymentMethod):
 
     @argcheck(PaymentAdaptToInPayment)
     def delete_inpayment(self, inpayment):
-        """
-        Deletes the inpayment, its associated payment and also the
+        """Deletes the inpayment, its associated payment and also the
         check_data object. Missing a cascade argument in SQLObject ?
         """
         conn = self.get_connection()

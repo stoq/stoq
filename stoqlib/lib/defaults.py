@@ -72,8 +72,7 @@ interval_values = {INTERVALTYPE_DAY:        1,
                    INTERVALTYPE_YEAR:       365}
 
 def calculate_interval(interval_type, intervals):
-    """
-    Get the interval type value for a certain INTERVALTYPE_* constant.
+    """Get the interval type value for a certain INTERVALTYPE_* constant.
     Intervals are useful modes to calculate payment duedates.
 
     @param interval_type:
@@ -159,8 +158,7 @@ DECIMAL_SIZE = 10
 _format = Decimal('10e-%d' % DECIMAL_PRECISION)
 
 def quantize(dec):
-    """
-    Quantities a decimal according to the current settings.
+    """Quantities a decimal according to the current settings.
     if DECIMAL_PRECISION is set to two then everything but
     the last two decimals will be removed
 

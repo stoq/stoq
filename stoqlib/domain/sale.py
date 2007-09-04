@@ -44,7 +44,7 @@ from stoqlib.domain.base import (Domain, ValidatableDomain, BaseSQLView,
 from stoqlib.domain.events import SaleConfirmEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.giftcertificate import GiftCertificate
-from stoqlib.domain.interfaces import (IContainer, IClient, IOutPayment,
+from stoqlib.domain.interfaces import (IContainer, IOutPayment,
                                        IPaymentGroup, ISellable,
                                        IIndividual, ICompany,
                                        IDelivery, IStorable, IProduct)
@@ -60,7 +60,6 @@ from stoqlib.domain.till import Till
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
                                 StoqlibError)
 from stoqlib.lib.defaults import quantize
-from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 
@@ -72,8 +71,7 @@ _ = stoqlib_gettext
 #
 
 class SaleItem(Domain):
-    """
-    An item in a sale.
+    """An item in a sale.
 
     @param sellable: the kind of item
     @param sale: the same
@@ -223,8 +221,7 @@ SaleItem.registerFacet(SaleItemAdaptToDelivery, IDelivery)
 
 
 class Sale(ValidatableDomain):
-    """
-    Sale object implementation.
+    """Sale object implementation.
 
     @cvar STATUS_INITIAL: The sale is opened, products or other sellable items
       might have been added.
@@ -327,8 +324,7 @@ class Sale(ValidatableDomain):
 
     @classmethod
     def get_last_confirmed(cls, conn):
-        """
-        Fetch the last confirmed sale
+        """Fetch the last confirmed sale
         @param conn: a database connection
         """
         results = cls.select(AND(cls.q.status == cls.STATUS_CONFIRMED,
@@ -357,36 +353,31 @@ class Sale(ValidatableDomain):
     # Status
 
     def can_order(self):
-        """
-        Only newly created sales can be ordered
+        """Only newly created sales can be ordered
         @returns: True if the sale can be ordered, otherwise False
         """
         return self.status == Sale.STATUS_INITIAL
 
     def can_confirm(self):
-        """
-        Only ordered sales can be confirmed
+        """Only ordered sales can be confirmed
         @returns: True if the sale can be confirmed, otherwise False
         """
         return self.status == Sale.STATUS_ORDERED
 
     def can_set_paid(self):
-        """
-        Only confirmed sales can be paid
+        """Only confirmed sales can be paid
         @returns: True if the sale can be set as paid, otherwise False
         """
         return self.status == Sale.STATUS_CONFIRMED
 
     def can_cancel(self):
-        """
-        Only ordered sales can be cancelled
+        """Only ordered sales can be cancelled
         @returns: True if the sale can be cancelled, otherwise False
         """
         return self.status == Sale.STATUS_ORDERED
 
     def can_return(self):
-        """
-        Only confirmed or paid sales can be returned
+        """Only confirmed or paid sales can be returned
         @returns: True if the sale can be returned, otherwise False
         """
         return (self.status == Sale.STATUS_CONFIRMED or
@@ -508,8 +499,7 @@ class Sale(ValidatableDomain):
         return currency(total_amount)
 
     def get_sale_subtotal(self):
-        """
-        Fetch the subtotal for the sale, eg the sum of the
+        """Fetch the subtotal for the sale, eg the sum of the
         prices for of all items
         @returns: subtotal
         """
@@ -518,8 +508,7 @@ class Sale(ValidatableDomain):
             SaleItem.q.quantity) or 0)
 
     def get_items_total_quantity(self):
-        """
-        Fetches the total number of items in the sale
+        """Fetches the total number of items in the sale
         @returns: number of items
         """
         return self.get_items().sum('quantity') or Decimal(0)
@@ -573,8 +562,7 @@ class Sale(ValidatableDomain):
         return True
 
     def add_sellable(self, obj, quantity=1, price=None):
-        """
-        Adds a new sellable item to a sale
+        """Adds a new sellable item to a sale
         @param obj: the sellable
         @param quantity: quantity to add, defaults to 1
         @param price: optional, the price, it not set the price

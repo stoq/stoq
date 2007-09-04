@@ -99,8 +99,7 @@ class DiscountSurchargeSlave(BaseEditorSlave):
                                     % type_text)
 
     def set_max_discount(self, discount):
-        """
-        Set the maximum percentage value for a discount.
+        """Set the maximum percentage value for a discount.
         @param discount: the value for a discount.
         @type discount: L{int} in absolute value like 3
         """
@@ -195,8 +194,7 @@ class SaleListToolbar(GladeSlaveDelegate):
     #
 
     def disable_editing(self):
-        """
-        Disables editing of the sales
+        """Disables editing of the sales
         """
         sale_view = self.sales.get_selected()
         self.details_button.set_sensitive(bool(sale_view))

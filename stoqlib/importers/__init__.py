@@ -22,6 +22,5 @@
 ## Author(s):       Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
-"""
-Database import
+"""Database import
 """

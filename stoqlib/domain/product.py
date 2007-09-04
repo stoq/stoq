@@ -57,8 +57,7 @@ Person
 
 
 class ProductSupplierInfo(Domain):
-    """
-    Supplier information for a Product
+    """Supplier information for a Product
 
     Each product can has more than one supplier.
 
@@ -137,8 +136,7 @@ class Product(Domain):
         return supplier_info.get_name()
 
     def get_main_supplier_info(self):
-        """
-        Gets a list of main suppliers for a Product, the main supplier
+        """Gets a list of main suppliers for a Product, the main supplier
         is the most recently selected supplier.
 
         @returns: main supplier info
@@ -166,8 +164,7 @@ class ProductHistory(Domain):
 
     @classmethod
     def add_sold_item(cls, conn, branch, product_sellable_item):
-        """
-        Adds a sold item, populates the ProductHistory table using a
+        """Adds a sold item, populates the ProductHistory table using a
         product_sellable_item created during a sale.
 
         @param conn: a database connection

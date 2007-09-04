@@ -20,6 +20,5 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 
-"""
-Database abstraction layer
+"""Database abstraction layer
 """

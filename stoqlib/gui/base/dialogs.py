@@ -190,8 +190,7 @@ class BasicDialog(AbstractDialog):
         self.main_label.set_justify(just)
 
     def set_confirm_widget(self, widget):
-        """
-        Enables widget as a confirm widget, the dialog will be closed as
+        """Enables widget as a confirm widget, the dialog will be closed as
         confirmed if the widget is activated.
         @param widget: a widget
         """
@@ -202,8 +201,7 @@ class BasicDialog(AbstractDialog):
         widget.connect('activate', self.confirm)
 
     def set_cancel_widget(self, widget):
-        """
-        Enables widget as a cancel widget, the dialog will be closed as
+        """Enables widget as a cancel widget, the dialog will be closed as
         canceled if the widget is activated.
         @param widget: a widget
         """
@@ -392,8 +390,7 @@ def get_dialog(parent, dialog, *args, **kwargs):
     return dialog
 
 def run_dialog(dialog, parent=None, *args, **kwargs):
-    """
-    Runs a dialog and return the return value of it.
+    """Runs a dialog and return the return value of it.
     If dialog is a class it will be instantiated before running the dialog.
 
     @param dialog: the dialog, could be a class or instance

@@ -165,8 +165,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
 
 
 class BasePersonRoleEditor(BaseEditor):
-    """
-    A base class for person role editors. This class can not be
+    """A base class for person role editors. This class can not be
     instantiated directly.
 
     @ivar main_slave:

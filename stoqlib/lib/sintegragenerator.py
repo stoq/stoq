@@ -42,8 +42,7 @@ _ = stoqlib_gettext
 
 
 class StoqlibSintegraGenerator(object):
-    """
-    This class is responsible for generating a sintegra file
+    """This class is responsible for generating a sintegra file
     from the Stoq domain classes.
     """
     def __init__(self, conn, start, end):
@@ -260,8 +259,7 @@ class StoqlibSintegraGenerator(object):
 
 
 def generate(filename, start, end):
-    """
-    Generate a sintegra file for all changes in the system
+    """Generate a sintegra file for all changes in the system
     between start and end dates. Start and end are normally
     the first and last day of a month
 

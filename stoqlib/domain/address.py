@@ -121,8 +121,7 @@ class Address(Domain):
         return self.city_location.state
 
     def get_postal_code_number(self):
-        """
-        Returns the postal code without any non-numeric characters
+        """Returns the postal code without any non-numeric characters
         @returns: the postal code as a number
         @rtype: integer
         """
