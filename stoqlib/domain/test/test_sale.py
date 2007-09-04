@@ -169,12 +169,6 @@ class TestSale(DomainTest):
         sale.update_client(person)
         self.assertEqual(sale.client, client)
 
-    def test_reset_discount_and_surcharge(self):
-        sale = self.create_sale()
-        sale.reset_discount_and_surcharge()
-        self.assertEqual(sale.discount_value, currency(0))
-        self.assertEqual(sale.surcharge_value, currency(0))
-
     def testOrder(self):
         sale = self.create_sale()
         sellable = self.create_sellable()

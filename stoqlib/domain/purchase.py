@@ -331,9 +331,6 @@ class PurchaseOrder(ValidatableDomain):
                 return False
         return True
 
-    def reset_discount_and_surcharge(self):
-        self.discount_value = self.surcharge_value = currency(0)
-
     def increase_quantity_received(self, sellable, quantity_received):
         items = [item for item in self.get_items()
                     if item.sellable.id == sellable.id]

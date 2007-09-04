@@ -289,7 +289,8 @@ class PurchasePaymentStep(WizardEditorStep):
         if self.get_slave(slave_holder):
             return
         if not self.wizard.edit_mode:
-            self.order.reset_discount_and_surcharge()
+            self.order.discount_value = currency(0)
+            self.order.surcharge_value = currency(0)
         self.discount_surcharge_slave = DiscountSurchargeSlave(self.conn,
                                                                self.order,
                                                                PurchaseOrder)
