@@ -498,10 +498,10 @@ class Sale(ValidatableDomain):
         group = IPaymentGroup(self)
         paid_total = group.get_total_paid()
         return RenegotiationData(connection=conn,
-                                     paid_total=paid_total,
-                                     invoice_number=None,
-                                     responsible=current_user.person,
-                                     sale=self)
+                                 paid_total=paid_total,
+                                 invoice_number=None,
+                                 responsible=current_user.person,
+                                 sale=self)
 
     #
     # MOVE away!
