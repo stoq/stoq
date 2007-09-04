@@ -608,11 +608,6 @@ class Sale(ValidatableDomain):
             SaleItem.q.price *
             SaleItem.q.quantity) or 0)
 
-    def get_items_total_value(self):
-        return currency(self.get_items().sum(
-            SaleItem.q.price *
-            SaleItem.q.quantity) or 0)
-
     #
     # Properties
     #
