@@ -399,7 +399,6 @@ class Sale(ValidatableDomain):
         To order a sale you need to add sale items to it.
         A client might also be set for the sale, but it is not necessary.
         """
-
         assert self.can_order()
 
         if not self.get_items():
@@ -421,21 +420,21 @@ class Sale(ValidatableDomain):
         assert self.can_confirm()
         assert self.branch
 
-        conn = self.get_connection()
-
-        self.total_amount = self.get_total_sale_amount()
-
         # FIXME: We should use self.branch, but it's not supported yet
+        conn = self.get_connection()
         branch = get_current_branch(conn)
         for item in self.get_items():
             if IProduct(item.sellable, None):
                 ProductHistory.add_sold_item(conn, branch, item)
             item.sell(branch)
 
+        self.total_amount = self.get_total_sale_amount()
+
         group = IPaymentGroup(self)
         group.confirm()
 
         SaleConfirmEvent.emit(self)
+
         self.confirm_date = const.NOW()
         self.status = Sale.STATUS_CONFIRMED
 
