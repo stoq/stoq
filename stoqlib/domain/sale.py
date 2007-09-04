@@ -597,9 +597,6 @@ class Sale(ValidatableDomain):
     def get_total_interest(self):
         raise NotImplementedError
 
-    def has_items(self):
-        return self.get_items().count() > 0
-
     def get_total_amount_as_string(self):
         return get_formatted_price(self.get_total_sale_amount())
 
