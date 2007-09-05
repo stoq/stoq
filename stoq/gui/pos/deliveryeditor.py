@@ -70,6 +70,7 @@ class DeliveryEditor(BaseEditor):
 
     def __init__(self, conn, model=None, sale_items=None):
         self.sale_items = sale_items
+        can_edit_price = model is None
         for sale_item in sale_items:
             sale_item.deliver = True
         BaseEditor.__init__(self, conn, model)
@@ -77,7 +78,11 @@ class DeliveryEditor(BaseEditor):
         self.additional_info_label.set_color('Red')
         self.register_validate_function(self._validate_widgets)
         self._update_widgets()
+        self._disable_price(can_edit_price)
         self.set_description(self.model_name)
+
+    def _disable_price(self, can_edit_price):
+        self.price.set_sensitive(can_edit_price)
 
     def _validate_widgets(self, validation_value):
         if validation_value:

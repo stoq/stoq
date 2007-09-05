@@ -324,6 +324,11 @@ class POSApp(AppWindow):
         self.sellableitem_proxy.update('quantity')
         self.sellableitem_proxy.model.price = None
 
+    def _get_deliverable_items(self):
+        """Returns a list of sale items which can be delivered"""
+        return [item for item in self.sale_items
+                        if IProduct(item.sellable, None) is not None]
+
     #
     # Sale Order operations
     #
@@ -387,6 +392,10 @@ class POSApp(AppWindow):
 
     def _edit_sale_item(self, sale_item):
         if IService(sale_item.sellable, None):
+            delivery_service = self.param.DELIVERY_SERVICE
+            if sale_item.sellable == delivery_service:
+                self._edit_delivery()
+                return
             model = self.run_dialog(ServiceItemEditor, self.conn, sale_item)
             if model:
                 self.sale_items.update(sale_item)
@@ -410,26 +419,25 @@ class POSApp(AppWindow):
 
         return True
 
-    def _add_delivery(self):
-        assert len(self.sale_items)
 
-        delivery_service = sysparam(self.conn).DELIVERY_SERVICE
-        sale_items = []
-        delivery = None
-        for sale_item in self.sale_items:
-            if sale_item.sellable == delivery_service:
-                delivery = self._delivery
-            elif IService(sale_item.sellable, None):
-                continue
-            else:
-                sale_items.append(sale_item)
+    def _create_delivery(self):
+        delivery_service = self.param.DELIVERY_SERVICE
+        if delivery_service in self.sale_items:
+            self._delivery = delivery_service
 
-        delivery = self.run_dialog(DeliveryEditor, self.conn,
-                                   delivery,
-                                   sale_items=sale_items)
+        delivery = self._edit_delivery()
         if delivery:
             self._add_delivery_item(delivery, delivery_service)
             self._delivery = delivery
+
+    def _edit_delivery(self):
+        """Edits a delivery, but do not allow the price to be changed.
+        If there's no delivery, create one.
+        @returns: The delivery
+        """
+        return self.run_dialog(DeliveryEditor, self.conn,
+                               self._delivery,
+                               sale_items=self._get_deliverable_items())
 
     def _add_delivery_item(self, delivery, delivery_service):
         for sale_item in self.sale_items:
@@ -610,7 +618,7 @@ class POSApp(AppWindow):
         self._checkout()
 
     def on_NewDelivery__activate(self, action):
-        self._add_delivery()
+        self._create_delivery()
 
     def on_TillClose__activate(self, action):
         if not yesno(_(u"You can only close the till once per day. "
@@ -654,7 +662,7 @@ class POSApp(AppWindow):
         self._update_widgets()
 
     def on_delivery_button__clicked(self, button):
-        self._add_delivery()
+        self._create_delivery()
 
     def on_checkout_button__clicked(self, button):
         self._checkout()
