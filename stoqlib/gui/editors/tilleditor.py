@@ -270,8 +270,8 @@ class RemoveCashSlave(BaseCashSlave):
 
 
 class CashAdvanceEditor(BaseEditor):
-    """An editor which extends BashCashSlave to include.
-    It extends BashCashSlave to include an employee combobox
+    """An editor which extends BaseCashSlave to include.
+    It extends BaseCashSlave to include an employee combobox
     """
 
     model_name = _(u'Cash Advance')
@@ -342,7 +342,7 @@ class CashAdvanceEditor(BaseEditor):
 
 class CashOutEditor(BaseEditor):
     """An editor to Remove cash from the Till
-    It extends BashCashSlave to include a reason entry.
+    It extends BaseCashSlave to include a reason entry.
     """
 
     model_name = _(u'Cash Out')
@@ -397,7 +397,7 @@ class CashOutEditor(BaseEditor):
 
 class CashInEditor(BaseEditor):
     """An editor to Add cash to the Till
-    It uses BashCashSlave without any extensions
+    It uses BaseCashSlave without any extensions
     """
 
     model_name = _(u'Cash In')
