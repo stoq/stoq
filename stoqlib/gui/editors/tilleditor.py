@@ -380,7 +380,6 @@ class CashOutEditor(BaseEditor):
             value = abs(self.model.value)
             till = self.model.till
             assert till
-            assert till
             try:
                 TillRemoveCashEvent.emit(till=till, value=value)
             except (TillError, DeviceError), e:
