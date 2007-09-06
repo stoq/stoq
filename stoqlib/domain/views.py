@@ -33,6 +33,7 @@ from stoqlib.domain.product import (Product, ProductAdaptToSellable,
                                     ProductHistory)
 from stoqlib.domain.sellable import (ASellable, SellableUnit,
                                      BaseSellableInfo, SellableCategory)
+from stoqlib.domain.transfer import TransferOrderItem
 
 class ProductFullStockView(Viewable):
     """Stores information about products.
@@ -107,6 +108,7 @@ class ProductQuantityView(Viewable):
     @cvar description: the product description
     @cvar branch_id: the id of person_adapt_to_branch table
     @cvar quantity_sold: the quantity solded of product
+    @cvar quantity_transfered: the quantity transfered of product
     @cvar quantity_received: the quantity received of product
     @cvar branch: the id of the branch_id of producst_quantity table
     @cvar date_sale: the date of product's sale
@@ -121,6 +123,7 @@ class ProductQuantityView(Viewable):
         received_date=ProductHistory.q.received_date,
         quantity_sold=func.SUM(ProductHistory.q.quantity_sold),
         quantity_received=func.SUM(ProductHistory.q.quantity_received),
+        _transfered=TransferOrderItem.q.quantity,
         )
 
     hidden_columns = ['sold_date', 'received_date']
@@ -129,8 +132,14 @@ class ProductQuantityView(Viewable):
         INNERJOINOn(None, ASellable,
                     ProductHistory.q.sellableID == ASellable.q.id),
         INNERJOINOn(None, BaseSellableInfo,
-                    ASellable.q.base_sellable_infoID == BaseSellableInfo.q.id)
+                    ASellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
+        LEFTJOINOn(None, TransferOrderItem,
+                    TransferOrderItem.q.sellableID == ASellable.q.id)
     ]
+
+    @property
+    def quantity_transfered(self):
+        return self._transfered or 0
 
 class SellableFullStockView(Viewable):
     """Stores information about products.
