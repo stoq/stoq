@@ -119,7 +119,6 @@ class WarehouseApp(SearchableAppWindow):
         has_stock = len(self.results) > 0
         one_selected = len(self.results.get_selected_rows()) == 1
         self.history_button.set_sensitive(one_selected and is_main_branch)
-        self.ProductHistory.set_sensitive(one_selected and is_main_branch)
         self.retention_button.set_sensitive(one_selected and is_main_branch)
         self.print_button.set_sensitive(has_stock)
         # We need more than one branch to be able to do transfers

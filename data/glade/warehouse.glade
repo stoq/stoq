@@ -133,6 +133,7 @@
                     <widget class="GtkAction" id="TransferSearch">
                         <property name="name">TransferSearch</property>
                         <property name="label" translatable="yes">Stock Transfer...</property>
+                        <property name="stock_id">stoq-transfer</property>
                         <signal handler="on_stock_transfer_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;k</property>
                     </widget>
