@@ -329,6 +329,12 @@ class POSApp(AppWindow):
         return [item for item in self.sale_items
                         if IProduct(item.sellable, None) is not None]
 
+    def _check_delivery_removed(self, sale_item):
+        # If a delivery was removed, we need to remove all
+        # the references to it eg self._delivery
+        if self.param.DELIVERY_SERVICE == sale_item.sellable:
+            self._delivery = None
+
     #
     # Sale Order operations
     #
@@ -658,6 +664,7 @@ class POSApp(AppWindow):
         sale_item = self.sale_items.get_selected()
         self._coupon_remove_item(sale_item)
         self.sale_items.remove(sale_item)
+        self._check_delivery_removed(sale_item)
         self._select_first_item()
         self._update_widgets()
 
