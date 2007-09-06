@@ -158,7 +158,7 @@ def format_data(data):
 
 
 class ProductSearchQuantity(SearchDialog):
-    title = _('Product Search')
+    title = _('Product History Search')
     size = (775, 450)
     table = search_table = ProductQuantityView
 
@@ -171,13 +171,6 @@ class ProductSearchQuantity(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
-
-        # Branch
-        branch_filter = self.create_branch_filter(_('In branch:'))
-        branch_filter.select(None)
-        self.add_filter(branch_filter, SearchFilterPosition.TOP,
-                        columns=['branch'])
-        self.branch_filter = branch_filter
 
         # Date
         date_filter = DateSearchFilter(_('Date:'))
@@ -195,7 +188,9 @@ class ProductSearchQuantity(SearchDialog):
                        expand=True),
                 Column('quantity_sold', title=_('Quantity Sold'),
                        format_func=format_data,
-                       data_type=Decimal, width=150),
+                       data_type=Decimal, width=100),
+                Column('quantity_transfered', title=_('Quantity Transfered'),
+                       format_func=format_data, data_type=Decimal),
                 Column('quantity_received', title=_('Quantity Received'),
                        format_func=format_data,
                        data_type=Decimal, width=150)]

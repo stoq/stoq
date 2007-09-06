@@ -90,3 +90,17 @@ class TransferOrder(Domain):
                              'transfer order')
         TransferOrderItem.delete(item.id,
                                  connection=self.get_connection())
+
+    #
+    # Public API
+    #
+
+    def get_destination_branch_name(self):
+        """Returns the destination branch name"""
+        return self.destination_branch.person.name
+
+    def get_source_responsible_name(self):
+        """Returns the name of the employee responsible for the transfer
+           at source branch
+        """
+        return self.source_responsible.person.name

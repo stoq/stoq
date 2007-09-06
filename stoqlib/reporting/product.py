@@ -108,17 +108,23 @@ class ProductQuantityReport(SearchResultsReport):
             OTC(_("Quantity Sold"), lambda obj:
                 format_data(obj.quantity_sold), width=110,
                 align=RIGHT, truncate=True),
+            OTC(_("Quantity Transfered"), lambda obj:
+                format_data(obj.quantity_transfered), width=110,
+                align=RIGHT, truncate=True),
             OTC(_("Quantity Received"), lambda obj:
                 format_data(obj.quantity_received), width=120,
                 align=RIGHT, truncate=True)
             ]
 
     def _setup_items_table(self):
-        qty_sold = sum([item.quantity_sold for item in self._products
-                           if item.quantity_sold is not None], Decimal(0))
-        qty_received = sum([item.quantity_received for item in self._products
-                           if item.quantity_received is not None], Decimal(0))
+        qty_sold = qty_received = qty_transfered = 0
+        for item in self._products:
+            qty_sold += item.quantity_sold or Decimal(0)
+            qty_received += item.quantity_received or Decimal(0)
+            qty_transfered += item.quantity_transfered or Decimal(0)
+
         summary_row = ["", _("Total:"), format_data(qty_sold),
+                       format_data(qty_transfered),
                        format_data(qty_received)]
         self.add_object_table(self._products, self._get_columns(),
                               summary_row=summary_row)

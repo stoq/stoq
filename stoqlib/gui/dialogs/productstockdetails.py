@@ -39,6 +39,7 @@ from stoqlib.domain.product import ProductAdaptToSellable
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.receiving import ReceivingOrderItem
 from stoqlib.domain.sale import SaleItem
+from stoqlib.domain.transfer import TransferOrderItem
 
 _ = stoqlib_gettext
 
@@ -49,7 +50,7 @@ class ProductStockHistoryDialog(BaseEditor):
     -history of sales about a determined product
     """
 
-    title = _("Product Stock History")
+    title = _("Product History")
     hide_footer = True
     size = (700, 400)
     model_type = ProductAdaptToSellable
@@ -62,6 +63,7 @@ class ProductStockHistoryDialog(BaseEditor):
     def _setup_widgets(self):
         self.receiving_list.set_columns(self._get_receiving_columns())
         self.sales_list.set_columns(self._get_sale_columns())
+        self.transfer_list.set_columns(self._get_transfer_columns())
 
         items = ReceivingOrderItem.selectBy(sellableID=self.model.id,
                                             connection=self.conn)
@@ -69,6 +71,10 @@ class ProductStockHistoryDialog(BaseEditor):
 
         items = SaleItem.selectBy(sellable=self.model, connection=self.conn)
         self.sales_list.add_list(list(items))
+
+        items = TransferOrderItem.selectBy(sellableID=self.model.id,
+                                            connection=self.conn)
+        self.transfer_list.add_list(items)
 
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % _("Total:")
@@ -89,43 +95,57 @@ class ProductStockHistoryDialog(BaseEditor):
     def _get_receiving_columns(self):
         return [Column("receiving_order.id",
                        title=_("#"), data_type=int, sorted=True,
-                       justify=gtk.JUSTIFY_RIGHT, width=45),
+                       justify=gtk.JUSTIFY_RIGHT),
                 Column("receiving_order.receival_date", title=_("Date"),
-                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT,
-                       width=80),
+                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 Column("receiving_order.id",
                        title=_("Purchase Order"), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT, width=140),
+                       justify=gtk.JUSTIFY_RIGHT),
                 Column("receiving_order.supplier_name",
                        title=_("Supplier"), expand=True, data_type=str),
                 Column("receiving_order.invoice_number", title=_("Invoice"),
-                       width=80, data_type=str),
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column("quantity", title=_("Quantity"),
-                       data_type=Decimal, width=90,
+                       data_type=Decimal,
                        justify=gtk.JUSTIFY_RIGHT),
-                Column("unit_description", title=_("Unit"), data_type=str,
-                       width=70)]
+                Column("unit_description", title=_("Unit"), data_type=str)]
 
     def _get_sale_columns(self):
         return [Column("sale.id", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
-                       width=45, sorted=True),
+                       sorted=True),
                 Column("sale.open_date",
                        title=_("Date Started"), data_type=datetime.date,
-                       justify=gtk.JUSTIFY_RIGHT, width=130),
+                       justify=gtk.JUSTIFY_RIGHT),
                 Column("sale.client_name",
                        title=_("Client"), expand=True, data_type=str),
                 Column("quantity", title=_("Quantity"),
-                       width=90, data_type=int),
+                       data_type=int),
                 Column("sellable.unit_description",
-                       title=_("Unit"), width=70, data_type=str)]
+                       title=_("Unit"), data_type=str)]
+
+    def _get_transfer_columns(self):
+        return [Column("transfer_order.id", title=_("#"),
+                       data_type=int, justify=gtk.JUSTIFY_RIGHT,
+                       sorted=True),
+                Column("transfer_order.open_date",
+                       title=_("Date Created"), data_type=datetime.date,
+                       justify=gtk.JUSTIFY_RIGHT),
+                Column("transfer_order.destination_branch_name",
+                       title=_("Destination"), expand=True,
+                       data_type=str),
+                Column("transfer_order.source_responsible_name",
+                       title=_("Responsible"), expand=True,
+                       data_type=str),
+                Column("quantity", title=_("Quantity Transfered"),
+                       data_type=Decimal)]
 
     #
     # BaseEditor Hooks
     #
 
     def setup_proxies(self):
-        self.add_proxy(self.model, ['product'])
+        self.add_proxy(self.model, ['description'])
 
         storable = IStorable(self.model)
         self.add_proxy(storable, ['full_balance'])

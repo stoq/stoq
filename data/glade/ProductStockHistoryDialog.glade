@@ -36,9 +36,9 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyLabel" id="product">
+                            <widget class="ProxyLabel" id="description">
                                 <property name="data_type">unicode</property>
-                                <property name="model_attribute">short_description</property>
+                                <property name="model_attribute">description</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
                             </widget>
@@ -49,8 +49,8 @@
                         </child>
                         <child>
                             <widget class="ProxyLabel" id="full_balance">
-                                <property name="data_type">unicode</property>
-                                <property name="model_attribute">full_balance_string</property>
+                                <property name="data_type">Decimal</property>
+                                <property name="model_attribute">full_balance</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
                             </widget>
@@ -90,6 +90,7 @@
                 </child>
                 <child>
                     <widget class="GtkNotebook" id="notebook1">
+                        <property name="border_width">6</property>
                         <property name="is_focus">True</property>
                         <property name="visible">True</property>
                         <child>
@@ -129,6 +130,26 @@
                             <packing>
                                 <property name="position">1</property>
                                 <property name="tab_label" context="yes" translatable="yes">Sales</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkVBox" id="transfer_vbox">
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="ObjectList" id="transfer_list">
+                                        <property name="visible">True</property>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="position">2</property>
+                                <property name="tab_label" context="yes" translatable="yes">Transfer</property>
                             </packing>
                         </child>
                     </widget>
