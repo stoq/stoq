@@ -32,11 +32,14 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import any
 from kiwi.ui.widgets.list import Column, ObjectList
 
+from stoqlib.database.runtime import finish_transaction, new_transaction
 from stoqlib.domain.person import ClientView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.addresseditor import AddressSelectionDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
+from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
@@ -116,6 +119,15 @@ class DeliveryEditor(BaseEditor):
         self.delivery_address.set_text(text)
         self.model.address = address
 
+    def _create_client(self):
+        trans = new_transaction()
+        client = run_person_role_dialog(ClientEditor, self, trans, None)
+        finish_transaction(trans, client)
+
+        if client is not None:
+            self.client.append_item(str(client.person.name), client)
+            self.client.select(client)
+
     #
     # Callbacks
     #
@@ -142,6 +154,9 @@ class DeliveryEditor(BaseEditor):
         client = combo.get_selected_data()
         self._update_address(client.person.get_main_address())
         self.change_address_button.set_sensitive(True)
+
+    def on_create_client__clicked(self, button):
+        self._create_client()
 
     def _on_items__cell_edited(self, items, item, attribute):
         self.force_validation()
