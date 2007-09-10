@@ -72,6 +72,23 @@
                                 <property name="position">1</property>
                             </packing>
                         </child>
+                        <child>
+                            <widget class="GtkHButtonBox" id="hbuttonbox2">
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="GtkButton" id="create_client">
+                                        <property name="is_focus">True</property>
+                                        <property name="label" context="yes" translatable="yes">Create...</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">2</property>
+                            </packing>
+                        </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>

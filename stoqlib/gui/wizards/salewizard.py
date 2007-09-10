@@ -35,7 +35,8 @@ from kiwi.argcheck import argcheck
 from kiwi.python import Settable
 from stoqdrivers.enum import PaymentMethodType
 
-from stoqlib.database.runtime import StoqlibTransaction
+from stoqlib.database.runtime import (StoqlibTransaction, finish_transaction,
+                                      new_transaction)
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
@@ -46,12 +47,14 @@ from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
+from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.slaves.paymentmethodslave import (SelectPaymentMethodSlave,
                                                    PmSlaveType)
 from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave, BillMethodSlave,
                                              CardMethodSlave,
                                              FinanceMethodSlave)
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
+from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.domain.person import (Person, ClientView,
                                    PersonAdaptToCreditProvider)
 from stoqlib.domain.payment.methods import (APaymentMethod,
@@ -584,6 +587,14 @@ class _AbstractSalesPersonStep(WizardEditorStep):
         items = [(c.name, c.client) for c in clients]
         self.client.prefill(sorted(items))
 
+    def _create_client(self):
+        trans = new_transaction()
+        client = run_person_role_dialog(ClientEditor, self, trans, None)
+        finish_transaction(trans, client)
+
+        if client is not None:
+            self.client.append_item(str(client.person.name), client)
+            self.client.select(client)
 
     def _get_selected_payment_method(self):
         return self.pm_slave.get_selected_method()
@@ -658,10 +669,14 @@ class _AbstractSalesPersonStep(WizardEditorStep):
                                     _AbstractSalesPersonStep.proxy_widgets)
         if self.model.client:
             self.client.set_sensitive(False)
+            self.create_client.set_sensitive(False)
 
     #
     # Callbacks
     #
+
+    def on_create_client__clicked(self, button):
+        self._create_client()
 
     def on_discsurcharge_slave_changed(self, slave):
         self._update_totals()
