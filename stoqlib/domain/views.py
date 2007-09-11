@@ -32,7 +32,8 @@ from stoqlib.domain.product import (Product, ProductAdaptToSellable,
                                     ProductStockItem,
                                     ProductHistory)
 from stoqlib.domain.sellable import (ASellable, SellableUnit,
-                                     BaseSellableInfo, SellableCategory)
+                                     BaseSellableInfo, SellableCategory,
+                                     SellableTaxConstant)
 from stoqlib.domain.transfer import TransferOrderItem
 
 class ProductFullStockView(Viewable):
@@ -60,6 +61,7 @@ class ProductFullStockView(Viewable):
         description=BaseSellableInfo.q.description,
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
+        tax_description=SellableTaxConstant.q.description,
         stock=func.SUM(ProductStockItem.q.quantity +
                        ProductStockItem.q.logic_quantity),
         )
@@ -68,6 +70,9 @@ class ProductFullStockView(Viewable):
         # Sellable unit
         LEFTJOINOn(None, SellableUnit,
                    SellableUnit.q.id == ASellable.q.unitID),
+        # Tax Constant
+        LEFTJOINOn(None, SellableTaxConstant,
+                   SellableTaxConstant.q.id == ASellable.q.tax_constantID),
         # Product
         INNERJOINOn(None, ProductAdaptToSellable,
                     ProductAdaptToSellable.q.id == ASellable.q.id),
