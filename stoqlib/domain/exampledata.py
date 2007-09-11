@@ -276,6 +276,18 @@ class ExampleCreator(object):
                             state='Wisconsin',
                             connection=self.trans)
 
+    def create_address(self):
+        from stoqlib.domain.address import Address
+        return Address(street='Mainstreet',
+                       number=138,
+                       district='Cidade Araci',
+                       postal_code='12345-678',
+                       complement='Compl',
+                       is_main_address=True,
+                       person=None,
+                       city_location=self.create_city_location(),
+                       connection=self.trans)
+
     def create_parameter_data(self):
         from stoqlib.domain.parameter import ParameterData
         return ParameterData.select(connection=self.trans)[0]
