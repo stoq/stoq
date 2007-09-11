@@ -428,6 +428,8 @@ class PersonAdaptToIndividual(PersonAdapter):
         @returns: the cpf number as a number
         @rtype: integer
         """
+        if not self.cpf:
+            return 0
         return int(''.join([c for c in self.cpf if c in '1234567890']))
 
 Person.registerFacet(PersonAdaptToIndividual, IIndividual)
