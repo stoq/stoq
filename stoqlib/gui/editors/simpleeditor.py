@@ -37,7 +37,7 @@ class SimpleEntryEditor(BaseEditor):
         self.name_entry_label.set_text(name_entry_label)
 
     def on_name_entry__activate(self, entry):
-        self.main_dialog.confirm()
+        self.confirm()
 
     def setup_proxies(self):
         assert self.model

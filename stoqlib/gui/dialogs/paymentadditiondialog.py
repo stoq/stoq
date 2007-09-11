@@ -71,7 +71,7 @@ class PaymentAdditionDialog(BaseEditor):
         return payment
 
     def on_due_date__activate(self, date):
-        self.main_dialog.confirm()
+        self.confirm()
 
     def setup_proxies(self):
         self.add_proxy(self.model, PaymentAdditionDialog.proxy_widgets)

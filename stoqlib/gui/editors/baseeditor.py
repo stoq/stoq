@@ -25,6 +25,8 @@
 ##
 """ Base classes for editors """
 
+import gtk
+from gtk import gdk
 from kiwi.log import Logger
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.label import ProxyLabel
@@ -224,3 +226,52 @@ class BaseEditor(BaseEditorSlave):
         """ Refreshes ok button sensitivity according to widget validators
         status """
         self.main_dialog.ok_button.set_sensitive(validation_value)
+
+    def add_button(self, label=None, stock=None):
+        """
+        Adds a button to editor. The added button is returned which you
+        can use to connect signals on.
+        @param label: label of the button
+        @param stock: stock label of the button
+        @param returns: the button added
+        @rtype: gtk.Button
+        """
+
+        if label is None and stock is None:
+            raise TypeError("You need to provide a label or a stock argument")
+
+        button = gtk.Button(label=label, stock=stock)
+        self.main_dialog.action_area.pack_start(button, False, False)
+        self.main_dialog.action_area.reorder_child(button, 0)
+        button.show()
+        return button
+
+    def confirm(self):
+        """
+        Confirm the dialog.
+        """
+        self.main_dialog.confirm()
+
+    def enable_ok(self):
+        """
+        Enable the ok button of the dialog, eg makes it possible
+        to close/confirm the dialog.
+        """
+        self.main_dialog.enable_ok()
+
+    def enable_normal_window(self):
+        """
+        Enable the dialog as a normal window.
+        This tells the window manager that the window
+        should behave as a normal window instead of a dialog.
+        """
+        toplevel = self.main_dialog.get_toplevel()
+        toplevel.set_type_hint(gdk.WINDOW_TYPE_HINT_NORMAL)
+
+    def set_confirm_widget(self, widget_name):
+        """
+        Make a widget confirmable, eg activating that widget would
+        close the dialog.
+        @param widget_name: name of the widget to be confirmable
+        """
+        self.main_dialog.set_confirm_widget(widget_name)
