@@ -304,6 +304,14 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.assertEqual(type(statuses[0][0]), unicode)
         self.assertEqual(type(statuses[0][1]), int)
 
+    def testGetCPFNumber(self):
+        individual = self.create_individual()
+        individual.cpf = ''
+        self.assertEquals(individual.get_cpf_number(), 0)
+        individual.cpf = '123.456.789-203'
+        self.assertEquals(individual.get_cpf_number(), 123456789203)
+
+
 class TestCompany(_PersonFacetTest, DomainTest):
     facet = Person.getAdapterClass(ICompany)
 
