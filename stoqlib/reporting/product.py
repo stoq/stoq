@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 ##  Author(s):  Henrique Romano         <henrique@async.com.br>
 ##              Evandro Miquelito       <evandro@async.com.br>
 ##              Fabio Morbec            <fabio@async.com.br>
+##              George Kussumoto        <george@async.com.br>
 ##
 ##
 """ Products report implementation """
@@ -34,7 +35,7 @@ from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.domain.product import ProductHistory
-from stoqlib.domain.views import SellableFullStockView
+from stoqlib.domain.views import SellableFullStockView, ProductFullStockView
 
 class ProductReport(SearchResultsReport):
     """ This report show a list of all products returned by a SearchBar,
@@ -60,9 +61,8 @@ class ProductReport(SearchResultsReport):
             OTC(_("Code"), lambda obj: '%03d' % obj.id, width=120,
                 truncate=True),
             OTC(_("Description"), lambda obj: obj.description, truncate=True),
-            OTC(_("Quantity"),
-                lambda obj: format_quantity(obj.stock or 0), width=80,
-                align=RIGHT, truncate=True),
+            OTC(_("Quantity"), lambda obj: format_data(obj.stock),
+                width=80, align=RIGHT, truncate=True),
             # FIXME: This column should be virtual, waiting for bug #2764
             OTC(_("Unit"), lambda obj: obj.unit, width=60, virtual=False),
             ]
@@ -73,13 +73,6 @@ class ProductReport(SearchResultsReport):
         summary_row = ["", "", _("Total:"), format_quantity(total_qty), ""]
         self.add_object_table(self._products, self._get_columns(),
                               summary_row=summary_row)
-
-
-def format_data(data):
-    # must return zero or relatory show None instead of 0
-    if data is None:
-        return 0
-    return format_quantity(data)
 
 
 class ProductQuantityReport(SearchResultsReport):
@@ -128,3 +121,42 @@ class ProductQuantityReport(SearchResultsReport):
                        format_data(qty_received)]
         self.add_object_table(self._products, self._get_columns(),
                               summary_row=summary_row)
+
+
+class ProductCountingReport(SearchResultsReport):
+    """This report shows a list of all products returned by a Searchbar
+    and it leaves several fields in blank, like quantity, partial value
+    and total value. These fields must be filled out in the counting
+    process, manually.
+    """
+    obj_type = ProductFullStockView
+    report_name = _("Product Counting")
+
+    def __init__(self, filename, products, *args, **kwargs):
+        self._products = products
+        SearchResultsReport.__init__(self, filename, products,
+                                     ProductCountingReport.report_name,
+                                     *args, **kwargs)
+        self._setup_items_table()
+
+    def _get_columns(self):
+        return [
+            OTC(_("Code"), lambda obj: '%03d' % obj.id, width=60,
+                truncate=True),
+            OTC(_("Description"), lambda obj: obj.description, truncate=True),
+            OTC(_("Fiscal Class"), lambda obj: obj.tax_description,
+                width=80, truncate=True),
+            OTC(_("Quantity"), None, width=80, truncate=True),
+            # FIXME: This column should be virtual, waiting for bug #2764
+            OTC(_("Unit"), lambda obj: obj.unit, width=60, truncate=True),
+            ]
+
+    def _setup_items_table(self):
+        self.add_object_table(self._products, self._get_columns())
+
+
+def format_data(data):
+    # must return zero or relatory show None instead of 0
+    if data is None:
+        return 0
+    return format_quantity(data)
