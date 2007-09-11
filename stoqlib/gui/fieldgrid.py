@@ -49,6 +49,15 @@ from kiwi.utils import gsignal
  FIELD_MOVEMENT_VERTICAL,
  FIELD_DELETION) = range(3)
 
+#_CURSOR_LEFT_SIDE = gdk.Cursor(gdk.LEFT_SIDE)
+_CURSOR_RIGHT_SIDE = gdk.Cursor(gdk.RIGHT_SIDE)
+#_CURSOR_TOP_SIDE = gdk.Cursor(gdk.TOP_SIDE)
+_CURSOR_BOTTOM_SIDE = gdk.Cursor(gdk.BOTTOM_SIDE)
+#_CURSOR_BOTTOM_LEFT = gdk.Cursor(gdk.BOTTOM_LEFT_CORNER)
+_CURSOR_BOTTOM_RIGHT = gdk.Cursor(gdk.BOTTOM_RIGHT_CORNER)
+#_CURSOR_TOP_LEFT = gdk.Cursor(gdk.TOP_LEFT_CORNER)
+#_CURSOR_TOP_RIGHT = gdk.Cursor(gdk.TOP_RIGHT_CORNER)
+
 
 class Range(object):
     def __init__(self, start, end):
@@ -56,24 +65,27 @@ class Range(object):
         self.end = end
 
     def __contains__(self, x):
-        return self.start < x < self.end
+        return self.start <= x <= self.end
 
 
 class FieldInfo(object):
-    def __init__(self, text, field, x, y):
+    def __init__(self, grid, text, field, x, y, width=-1, height=1):
+        if width == -1:
+            width = len(text)
+        self.grid = grid
         self.text = text
         self.widget = field
         self.x = x
         self.y = y
-        self.length = -1
+        self.width = width
+        self.height = height
 
     def allocate(self, width, height):
         req_width, req_height = self.widget.size_request()
-        self.widget.size_allocate((2 + self.x * width,
-                                   2 + self.y * height,
-                                   req_width,
-                                   req_height))
-        self.length = req_width / width
+        self.widget.size_allocate(((self.x * width) - 1,
+                                   (self.y * height) - 1,
+                                   (self.width * width) + 2,
+                                   (self.height * height) + 3))
 
     def find_at(self, x, y):
         wx, wy, ww, wh = self.widget.allocation
@@ -83,12 +95,51 @@ class FieldInfo(object):
     def show(self):
         self.widget.show()
 
-    def window_point_resize(self, x, y):
-        return False
+    def get_cursor(self, x, y):
+        a = self.widget.allocation
+        cx = a.x + 1
+        cy = a.y + 1
+        cw = a.width
+        ch = a.height
+        intop = y in Range(cy-1, cy+1)
+        inbottom = y in Range(cy+ch-3, cy+ch)
+
+        if x in Range(cx-1, cx+1):
+            if intop:
+                return #_CURSOR_TOP_LEFT
+            elif inbottom:
+                return #_CURSOR_BOTTOM_LEFT
+            else:
+                return #_CURSOR_LEFT_SIDE
+        elif x in Range(cx+cw-2, cx+cw+1):
+            if intop:
+                return # _CURSOR_TOP_RIGHT
+            elif inbottom:
+                return _CURSOR_BOTTOM_RIGHT
+            else:
+                return _CURSOR_RIGHT_SIDE
+        elif intop:
+            return #_CURSOR_TOP_SIDE
+        elif inbottom:
+            return _CURSOR_BOTTOM_SIDE
+
 
 
 class FieldGrid(gtk.Layout):
     """FieldGrid is a Grid like widget which you can add fields to
+
+    Signals
+    =======
+      - B{field-added} (object):
+        - Emitted when a field is added to the grid
+      - B{field-removed} (object):
+        - Emitted when a field is removed from the grid
+      - B{move-field} (int, int):
+        - Emitted when a field is moved by the user.
+      - B{remove-field} ():
+        - Emitted when a field is removed by the user.
+      - B{selection-changed} (object):
+        - Emitted when a field is selected or deselected by the user.
     """
 
     # bindings
@@ -96,6 +147,10 @@ class FieldGrid(gtk.Layout):
             flags=gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION)
     gsignal('remove-field',
             flags=gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION)
+    gsignal('selection-changed', object,
+            flags=gobject.SIGNAL_RUN_LAST | gobject.SIGNAL_ACTION)
+    gsignal('field-added', object)
+    gsignal('field-removed', object)
 
     def __init__(self, font, width, height):
         gtk.Layout.__init__(self)
@@ -142,24 +197,27 @@ class FieldGrid(gtk.Layout):
         self.remove(field.widget)
         if field == self._selected_field:
             self.select_field(None)
+        self.emit('field-removed', field)
 
-    def _add_field(self, text, x, y):
+    def _add_field(self, text, x, y, width=-1, height=1):
         label = gtk.Label()
+        label.set_alignment(0, 0)
+        label.set_padding(2, 4)
         label.set_markup(
             '<span letter_spacing="3072">%s</span>' % (text,))
         label.modify_font(self.font)
-        field = FieldInfo(text, label, x, y)
+        field = FieldInfo(self, text, label, x, y, width, height)
         self._fields.append(field)
 
         label.connect('size-allocate',
                       self._on_field__size_allocate, field)
         self.put(label, -1, -1)
-
+        self.emit('field-added', field)
         return field
 
     def _set_field_position(self, field, x, y):
-        x = clamp(x, 0, self.width - field.length - 1)
-        y = clamp(y, 0, self.height - 1)
+        x = clamp(x, 0, self.width - field.width - 1)
+        y = clamp(y, 0, self.height - field.height - 1)
         if field.x == x and field.y == y:
             return
 
@@ -167,6 +225,19 @@ class FieldGrid(gtk.Layout):
 
         if field.widget.flags() & gtk.VISIBLE:
             self.queue_resize()
+        self.emit('selection-changed', field)
+
+    def _resize_field(self, field, width, height):
+        width = clamp(width, 1, self.width - field.x - 1)
+        height = clamp(height, 1, self.height - field.y - 1)
+        if field.width == width and field.height == height:
+            return
+
+        field.width, field.height = width, height
+
+        if field.widget.flags() & gtk.VISIBLE:
+            self.queue_resize()
+        self.emit('selection-changed', field)
 
     def _get_field_from_widget(self, widget):
         for field in self._fields:
@@ -191,6 +262,8 @@ class FieldGrid(gtk.Layout):
         self._moving_start_y_pointer = y
         self._moving_start_x_position = field.x
         self._moving_start_y_position = field.y
+        self._moving_start_width = field.width
+        self._moving_start_height = field.height
         w, h = field.widget.get_size_request()
         self._moving_start_w, self._moving_start_h = w, h
 
@@ -206,6 +279,13 @@ class FieldGrid(gtk.Layout):
             self._set_field_position(field,
                                      self._moving_start_x_position + dx,
                                      self._moving_start_y_position + dy)
+        elif self._action_type == FIELD_RESIZE:
+            dx, dy = self._get_coords(
+                x - self._moving_start_x_pointer,
+                y - self._moving_start_y_pointer)
+            self._resize_field(field,
+                               self._moving_start_width + dx,
+                               self._moving_start_height + dy)
 
     def _end_move_field(self, time):
         if not self._moving_field:
@@ -250,6 +330,8 @@ class FieldGrid(gtk.Layout):
                          gdk.ENTER_NOTIFY_MASK |
                          gdk.LEAVE_NOTIFY_MASK)))
         input_window.set_user_data(self)
+        self.window.set_events(self.window.get_events() |
+                               gdk.POINTER_MOTION_MASK)
 
         self.modify_bg(gtk.STATE_NORMAL, gdk.color_parse('white'))
         gc = gdk.GC(self.window,
@@ -265,6 +347,10 @@ class FieldGrid(gtk.Layout):
         gc = gdk.GC(self.window)
         gc.set_rgb_fg_color(gdk.color_parse('black'))
         self._border_gc = gc
+
+        gc = gdk.GC(self.window)
+        gc.set_rgb_fg_color(gdk.color_parse('grey40'))
+        self._field_border_gc = gc
 
     def do_size_request(self, req):
         border_width = 1
@@ -302,12 +388,21 @@ class FieldGrid(gtk.Layout):
                                   0, y * fh,
                                   width, y * fh)
 
+        fields = self._fields[:]
         if self._selected_field:
             gc = self._selection_gc
-            c = self._selected_field
-            cx, cy, cw, ch = c.widget.allocation
+            field = self._selected_field
+            cx, cy, cw, ch = field.widget.allocation
             window.draw_rectangle(gc, False,
-                                  cx - 1, cy - 1, cw + 2, ch + 2)
+                                  cx + 1, cy + 1, cw - 2, ch - 2)
+
+            fields.remove(field)
+
+        gc = self._field_border_gc
+        for field in fields:
+            cx, cy, cw, ch = field.widget.allocation
+            window.draw_rectangle(gc, False,
+                                  cx + 1, cy + 1, cw - 2, ch - 3)
 
     def do_button_press_event(self, event):
         x, y = int(event.x), int(event.y)
@@ -321,7 +416,7 @@ class FieldGrid(gtk.Layout):
             return
 
         if not self._moving_field:
-            if field.window_point_resize(x, y):
+            if field.get_cursor(x, y):
                 self._action_type = FIELD_RESIZE
             else:
                 self._action_type = FIELD_MOVE
@@ -339,6 +434,12 @@ class FieldGrid(gtk.Layout):
     def do_motion_notify_event(self, event):
         if self._moving_field != None:
             self._update_move_field(int(event.x), int(event.y))
+        else:
+            field = self._pick_field(event.x, event.y)
+            cursor = None
+            if field:
+                cursor = field.get_cursor(event.x, event.y)
+            self.window.set_cursor(cursor)
 
     def do_key_press_event(self, event):
         if self._moving_field:
@@ -405,14 +506,14 @@ class FieldGrid(gtk.Layout):
     # Public API
     #
 
-    def add_field(self, text, x, y):
+    def add_field(self, text, x, y, width=-1, height=1):
         """Adds a new field to the grid
 
         @param text: text of the field
         @param x: x position of the field
         @param y: y position of the field
         """
-        return self._add_field(text, x, y)
+        return self._add_field(text, x, y, width, height)
 
     def select_field(self, field):
         """Selects a field
@@ -423,6 +524,14 @@ class FieldGrid(gtk.Layout):
         self._selected_field = field
         self.queue_resize()
         self.grab_focus()
+        self.emit('selection-changed', field)
+
+    def get_selected_field(self):
+        """
+        @returns: the currently selected field
+        @rtype: FieldInfo
+        """
+        return self._selected_field
 
     def get_fields(self):
         """
@@ -438,6 +547,16 @@ class FieldGrid(gtk.Layout):
         @param y: the y position it was dragged to
         """
         return False
+
+    def resize(self, width, height):
+        """
+        Resize the grid.
+        @param width: the new width
+        @param height: the new height
+        """
+        self.width = width
+        self.height = height
+        self.queue_resize()
 
 gobject.type_register(FieldGrid)
 gtk.binding_entry_add_signal(FieldGrid, keysyms.Up, 0, "move_field",
