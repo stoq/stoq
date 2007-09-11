@@ -39,6 +39,7 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.person import Person
 from stoqlib.domain.views import ProductFullStockView
+from stoqlib.reporting.product import ProductCountingReport
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -46,7 +47,7 @@ _ = gettext.gettext
 
 
 class InventoryApp(SearchableAppWindow):
-    app_name = _('inventory')
+    app_name = _('Inventory')
     app_icon_name = 'stoq-inventory-app'
     gladefile = "inventory"
     search_table = ProductFullStockView
@@ -73,6 +74,7 @@ class InventoryApp(SearchableAppWindow):
     def get_columns(self):
         return [Column('id', title=_('Code'), sorted=True,
                        data_type=int, format='%03d'),
+                Column('barcode', title=_("Barcode"), data_type=str),
                 Column('description', title=_("Description"),
                        data_type=str, expand=True,
                        ellipsize=pango.ELLIPSIZE_END),
@@ -105,7 +107,8 @@ class InventoryApp(SearchableAppWindow):
         return items
 
     def _update_widgets(self):
-        self.print_button.set_sensitive(False)
+        has_items = len(self.results) > 0
+        self.print_button.set_sensitive(has_items)
         self.adjust_button.set_sensitive(False)
 
     def _update_filter_slave(self, slave):
@@ -123,5 +126,5 @@ class InventoryApp(SearchableAppWindow):
         self._update_widgets()
 
     def on_print_button__clicked(self, button):
-        # To be implemented
-        pass
+        results = self.results.get_selected_rows() or self.results
+        self.print_report(ProductCountingReport, results)
