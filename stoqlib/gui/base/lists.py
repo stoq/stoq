@@ -84,7 +84,7 @@ class ModelListDialog(ListDialog):
             self.set_title(self.title)
 
     def _delete_with_transaction(self, model, trans):
-        self.model_type.delete(model.id, connection=trans)
+        self.delete_model(model, trans)
 
     def _delete_model(self, model):
         if self._reuse_transaction:
@@ -182,6 +182,16 @@ class ModelListDialog(ListDialog):
         return self.run_dialog(
             self.editor_class,
             conn=trans, model=model)
+
+    def delete_model(self, model, trans):
+        """
+        Deletes the model in a transaction.
+        This can be overriden by a subclass which is useful when
+        you have foreign keys which depends on this class.
+        @param model: model to delete
+        @param trans: the transaction to delete the model within
+        """
+        self.model_type.delete(model.id, connection=trans)
 
 
 class AdditionListSlave(GladeSlaveDelegate):
