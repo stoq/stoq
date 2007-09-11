@@ -101,7 +101,7 @@ class TillOpeningEditor(BaseEditor):
 
     def __init__(self, conn, model=None, visual_mode=False):
         BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
-        self.main_dialog.set_confirm_widget(self.value)
+        self.set_confirm_widget(self.value)
 
     #
     # BaseEditorSlave
@@ -167,7 +167,7 @@ class TillClosingEditor(BaseEditor):
         assert self.till
         BaseEditor.__init__(self, conn, model)
 
-        self.main_dialog.set_confirm_widget(self.value)
+        self.set_confirm_widget(self.value)
 
         self.value.set_sensitive(previous_day)
 
@@ -352,8 +352,8 @@ class CashOutEditor(BaseEditor):
 
     def __init__(self, conn):
         BaseEditor.__init__(self, conn)
-        self.main_dialog.set_confirm_widget(self.reason)
-        self.main_dialog.set_confirm_widget(self.cash_slave.value)
+        self.set_confirm_widget(self.reason)
+        self.set_confirm_widget(self.cash_slave.value)
 
     #
     # BaseEditorSlave
@@ -406,8 +406,8 @@ class CashInEditor(BaseEditor):
 
     def __init__(self, conn):
         BaseEditor.__init__(self, conn)
-        self.main_dialog.set_confirm_widget(self.reason)
-        self.main_dialog.set_confirm_widget(self.cash_slave.value)
+        self.set_confirm_widget(self.reason)
+        self.set_confirm_widget(self.cash_slave.value)
 
     #
     # BaseEditorSlave

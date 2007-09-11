@@ -138,7 +138,7 @@ class GiftCertificateEditor(BaseEditor):
             barcode = self.model.number
             if ASellable.check_barcode_exists(barcode):
                 self.number.set_invalid(msg % barcode)
-                self.main_dialog.enable_ok()
+                self.enable_ok()
                 return False
         else:
             for number in range(self.model.first_number,
@@ -146,7 +146,7 @@ class GiftCertificateEditor(BaseEditor):
                 barcode = unicode(number)
                 if ASellable.check_barcode_exists(barcode):
                     self.first_number.set_invalid(msg % barcode)
-                    self.main_dialog.enable_ok()
+                    self.enable_ok()
                     return False
         return True
 
