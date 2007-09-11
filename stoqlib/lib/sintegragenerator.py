@@ -84,12 +84,13 @@ class StoqlibSintegraGenerator(object):
                                  branch.person.get_fax_number_number(),
                                  self.start,
                                  self.end)
-        self.sintegra.add_complement_header(address.street, address.number,
-                                            address.complement,
-                                            address.district,
-                                            address.get_postal_code_number(),
-                                            manager.name,
-                                            branch.person.get_phone_number_number())
+        self.sintegra.add_complement_header(
+            address.street, address.number,
+            address.complement,
+            address.district,
+            address.get_postal_code_number(),
+            manager.name,
+            branch.person.get_phone_number_number())
 
         self._add_fiscal_coupons()
         self._add_receiving_orders(state_registry, state)
@@ -130,9 +131,12 @@ class StoqlibSintegraGenerator(object):
         sellables = set()
         for receiving_order in receiving_orders:
             self._add_receiving_order_items(receiving_order, sellables)
-            self._add_receiving_order_item_special(receiving_order, 991, receiving_order.freight_total)
-            self._add_receiving_order_item_special(receiving_order, 992, receiving_order.secure_value)
-            self._add_receiving_order_item_special(receiving_order, 999, receiving_order.expense_value)
+            self._add_receiving_order_item_special(
+                receiving_order, 991, receiving_order.freight_total)
+            self._add_receiving_order_item_special(
+                receiving_order, 992, receiving_order.secure_value)
+            self._add_receiving_order_item_special(
+                receiving_order, 999, receiving_order.expense_value)
 
         # 2) Add sellables (registry 75)
         for sellable in sellables:
@@ -239,7 +243,7 @@ class StoqlibSintegraGenerator(object):
         self.sintegra.add_receiving_order_item(cnpj, 1, '1  ',
                                                receiving_order.invoice_number,
                                                receiving_order.get_cfop_code(),
-                                               None, 
+                                               None,
                                                code,
                                                None,
                                                0,
