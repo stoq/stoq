@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-29 15:25-0300\n"
+"POT-Creation-Date: 2007-09-12 12:50-0300\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -292,57 +292,57 @@ msgstr ""
 "Este usuário não tem credencial \n"
 "para a aplicação %s"
 
-#: ../stoq/gui/inventory/inventory.py:49
-msgid "inventory"
+#: ../stoq/gui/inventory/inventory.py:50 ../stoq/gui/inventory/__init__.py:29
+msgid "Inventory"
 msgstr "Inventário"
 
-#: ../stoq/gui/inventory/inventory.py:53 ../stoq/gui/warehouse/warehouse.py:61
+#: ../stoq/gui/inventory/inventory.py:54 ../stoq/gui/warehouse/warehouse.py:61
 msgid "Matching:"
 msgstr "contendo:"
 
-#: ../stoq/gui/inventory/inventory.py:69 ../stoq/gui/warehouse/warehouse.py:77
+#: ../stoq/gui/inventory/inventory.py:70 ../stoq/gui/warehouse/warehouse.py:77
 msgid "Show products at:"
 msgstr "Exibir produtos em:"
 
-#: ../stoq/gui/inventory/inventory.py:74 ../stoq/gui/warehouse/warehouse.py:82
-#: ../stoq/gui/pos/deliveryeditor.py:94
+#: ../stoq/gui/inventory/inventory.py:75 ../stoq/gui/warehouse/warehouse.py:82
+#: ../stoq/gui/pos/deliveryeditor.py:102
 msgid "Code"
 msgstr "Código"
 
-#: ../stoq/gui/inventory/inventory.py:76 ../stoq/gui/payable/payable.py:95
+#: ../stoq/gui/inventory/inventory.py:77
+msgid "Barcode"
+msgstr "Código de Barras:"
+
+#: ../stoq/gui/inventory/inventory.py:78 ../stoq/gui/payable/payable.py:95
 #: ../stoq/gui/warehouse/warehouse.py:84
 #: ../stoq/gui/receivable/receivable.py:128 ../stoq/gui/pos/pos.py:151
-#: ../stoq/gui/pos/deliveryeditor.py:96
+#: ../stoq/gui/pos/deliveryeditor.py:104
 msgid "Description"
 msgstr "Descrição"
 
-#: ../stoq/gui/inventory/inventory.py:79 ../stoq/gui/till/till.py:121
+#: ../stoq/gui/inventory/inventory.py:81 ../stoq/gui/till/till.py:121
 #: ../stoq/gui/warehouse/warehouse.py:87 ../stoq/gui/pos/pos.py:155
-#: ../stoq/gui/pos/deliveryeditor.py:98
+#: ../stoq/gui/pos/deliveryeditor.py:106
 msgid "Quantity"
 msgstr "Quantidade"
 
-#: ../stoq/gui/inventory/inventory.py:81
+#: ../stoq/gui/inventory/inventory.py:83
 msgid "Counting"
 msgstr "Contagem"
 
-#: ../stoq/gui/inventory/inventory.py:83
+#: ../stoq/gui/inventory/inventory.py:85
 msgid "Adjust"
 msgstr "Ajuste"
 
-#: ../stoq/gui/inventory/inventory.py:97
+#: ../stoq/gui/inventory/inventory.py:99
 #: ../stoq/gui/warehouse/warehouse.py:103
 msgid "<b>Stock Total:</b>"
 msgstr "<b>Estoque Total:</b>"
 
-#: ../stoq/gui/inventory/inventory.py:107
+#: ../stoq/gui/inventory/inventory.py:109
 #: ../stoq/gui/warehouse/warehouse.py:113
 msgid "All branches"
 msgstr "Todas as Unidades"
-
-#: ../stoq/gui/inventory/__init__.py:29
-msgid "Inventory"
-msgstr "Inventário"
 
 #: ../stoq/gui/inventory/__init__.py:30
 msgid "Inventory application."
@@ -590,7 +590,7 @@ msgstr "Caixa Fechado"
 msgid "Till Opened on %s"
 msgstr "Caixa Aberto em %s"
 
-#: ../stoq/gui/till/till.py:266 ../stoq/gui/pos/pos.py:616
+#: ../stoq/gui/till/till.py:266 ../stoq/gui/pos/pos.py:630
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
@@ -600,11 +600,11 @@ msgstr ""
 "\n"
 "Fechar o caixa?"
 
-#: ../stoq/gui/till/till.py:268 ../stoq/gui/pos/pos.py:618
+#: ../stoq/gui/till/till.py:268 ../stoq/gui/pos/pos.py:632
 msgid "Not now"
 msgstr "Não agora"
 
-#: ../stoq/gui/till/till.py:268 ../stoq/gui/pos/pos.py:618
+#: ../stoq/gui/till/till.py:268 ../stoq/gui/pos/pos.py:632
 msgid "Close Till"
 msgstr "Fechar o caixa"
 
@@ -622,7 +622,7 @@ msgstr ""
 msgid "Unit"
 msgstr "Unidade"
 
-#: ../stoq/gui/warehouse/warehouse.py:140
+#: ../stoq/gui/warehouse/warehouse.py:139
 msgid "You must have at least one item in stock to perfom this action."
 msgstr "É necessário ao menos um item em estoque para realizar esta ação."
 
@@ -678,35 +678,35 @@ msgstr ""
 "Apenas um serviço deve ser adicionado pois não é possivel adicionar mas que "
 "um serviço por ordem ao mesmo tempo."
 
-#: ../stoq/gui/pos/pos.py:351
+#: ../stoq/gui/pos/pos.py:362
 #, python-format
 msgid "You cannot sell more items of product %s, it's out of stock."
 msgstr "Você não pode vender mais itens do produto %s, pois não há no estoque."
 
-#: ../stoq/gui/pos/pos.py:404
+#: ../stoq/gui/pos/pos.py:419
 msgid "The current order will be canceled, Confirm?"
 msgstr "O pedido atual será cancelado, confirmar?"
 
-#: ../stoq/gui/pos/pos.py:405
+#: ../stoq/gui/pos/pos.py:420
 msgid "Go Back"
 msgstr "Voltar"
 
-#: ../stoq/gui/pos/pos.py:405 ../data/glade/pos.glade.h:9
+#: ../stoq/gui/pos/pos.py:420 ../data/glade/pos.glade.h:9
 msgid "Cancel Order"
 msgstr "Cancelar Pedido"
 
-#: ../stoq/gui/pos/pos.py:558
+#: ../stoq/gui/pos/pos.py:572
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 "Não é possível iniciar uma nova venda se o coupon fiscal não puder ser "
 "aberto."
 
-#: ../stoq/gui/pos/pos.py:560
+#: ../stoq/gui/pos/pos.py:574
 msgid "Try Again"
 msgstr "Tente Novamente"
 
-#: ../stoq/gui/pos/pos.py:560
+#: ../stoq/gui/pos/pos.py:574
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -714,27 +714,27 @@ msgstr "Cancelar"
 msgid "New Order"
 msgstr "Novo Pedido"
 
-#: ../stoq/gui/pos/deliveryeditor.py:54 ../stoq/gui/pos/deliveryeditor.py:58
+#: ../stoq/gui/pos/deliveryeditor.py:57 ../stoq/gui/pos/deliveryeditor.py:61
 msgid "Delivery"
 msgstr "Entrega"
 
-#: ../stoq/gui/pos/deliveryeditor.py:61
+#: ../stoq/gui/pos/deliveryeditor.py:64
 msgid "New Delivery"
 msgstr "Nova Entrega"
 
-#: ../stoq/gui/pos/deliveryeditor.py:100
+#: ../stoq/gui/pos/deliveryeditor.py:108
 msgid "Deliver"
 msgstr "Entregar"
 
-#: ../stoq/gui/pos/deliveryeditor.py:123
+#: ../stoq/gui/pos/deliveryeditor.py:140
 msgid "Delivery Instructions"
 msgstr "Instruções da Entrega"
 
-#: ../stoq/gui/pos/deliveryeditor.py:128
+#: ../stoq/gui/pos/deliveryeditor.py:145
 msgid "Expected delivery date must be set to a future date"
 msgstr "A data de entrega prevista deve ser uma data futura"
 
-#: ../stoq/gui/pos/deliveryeditor.py:134
+#: ../stoq/gui/pos/deliveryeditor.py:151
 msgid "The Delivery cost must be a positive value."
 msgstr "O custo da entrega deve ter um valor positivo."
 
@@ -1489,6 +1489,9 @@ msgstr "Não"
 #: ../data/glade/ECFPluginStep.glade.h:7
 msgid "Yes"
 msgstr "Sim"
+
+#~ msgid "inventory"
+#~ msgstr "Inventário"
 
 #~ msgid "The Delivery cost must be more than 0."
 #~ msgstr "O custo da entrega deve ser maior que 0"
