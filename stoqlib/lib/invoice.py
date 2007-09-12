@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,350 +20,633 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s):   Henrique Romano             <henrique@async.com.br>
-##              Evandro Vale Miquelito      <evandro@async.com.br>
+## Author(s):   Johan Dahlin             <jdahlin@async.com.br>
 ##
-""" Sales invoice implementation. All this module is brazil-specific """
+"""Invoice generation"""
 
+import array
 import datetime
 from decimal import Decimal
 
-from kiwi.argcheck import argcheck, number
-from kiwi.python import ClassInittableObject
 from stoqdrivers.enum import TaxType
+from stoqdrivers.escp import EscPPrinter
 
-from stoqlib.database.runtime import new_transaction
+from stoqlib.domain.interfaces import ICompany, IIndividual, IPaymentGroup
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.domain.interfaces import IIndividual, ICompany, IService
-from stoqlib.domain.sale import Sale
-from stoqlib.domain.person import PersonAdaptToClient
 
 
 ENABLED = "X"
 INVOICE_TYPE_IN  = 1
 INVOICE_TYPE_OUT = 2
 
-class InvoiceType(number):
-    @classmethod
-    def value_check(mcs, name, value):
-        if not value in (INVOICE_TYPE_IN, INVOICE_TYPE_OUT):
-            raise ValueError("%s must be one of INVOICE_TYPE_* "
-                             "constants" % name)
-
-class SysCoordinate:
-    """ A simple class to allow us define a simple matrix and put data on
-    it easily, e.g:
-
-    >>> syscoord = SysCoordinate(80, 25)
-    >>> syscoord.insert_string(10, 20, 'A string')
-
-    If you insert a string which has a column or line value which is out of
-    range, a ValueError will be raised
-
-    >>> syscoord.insert_string(81, 20, 'Foo')
-    Traceback (most recent call last):
-    ValueError: ...
-
-    >>> syscoord.insert_string(78, 20, 'Bar')
-    >>> raw_data = syscoord.get_data()
-    ...
-
-    To return the matrix properly formatted, call:
-    >>> syscoord.get_data_as_string()
-    ...
-
-    """
-
-    def __init__(self, lines, cols):
-        self._lines = lines
-        self._cols = cols
-        self._data = [[' ' for _ in range(cols)] for _ in range(lines)]
-
-    def get_data(self):
-        return self._data
-
-    def get_data_as_string(self):
-        res = []
-        for row in self.get_data():
-            res.append("".join(row))
-        return "\n".join(res)
-
-    @argcheck(int, int, basestring)
-    def insert_string(self, line, col, data):
-        if line > self._lines:
-            raise ValueError("line can't be greater than %d (given %d)"
-                             % (self._lines, line))
-        elif line < 0:
-            raise ValueError("line can't be less than 0")
-        elif col > self._cols:
-            raise ValueError("col can't be greater than %d (given %d)"
-                             % (self._cols, col))
-        elif col < 0:
-            raise ValueError("col can't be less than 0")
-
-        for idx, d in enumerate(data[:self._cols - col]):
-            self._data[line][col+idx] = d
-
-class SaleInvoice(ClassInittableObject):
-    """ This class implements the Stoq's invoice. """
-    # (line, column)
-    coords = {
-        "INVOICE_TYPE_IN": (6, 53),
-        "INVOICE_TYPE_OUT": (6, 60),
-        # XXX The Branch Document is already typed in the fiscal note,
-        # so there is no use for this field here.
-        "BRANCH_DOCUMENT": (9, 52),
-        "OPERATION_TYPE": (12, 0),
-        "BRANCH_CFOP": (12, 25),
-        "STATE_REGISTRY_SUBST_TRIB": (12, 31),
-        # XXX The State Registry is already typed in the fiscal note,
-        # so there is no use for this field here also.
-        "STATE_REGISTRY": (12, 52),
-        "CLIENT_NAME": (15, 0),
-        "CLIENT_DOCUMENT": (15, 49),
-        "CREATION_DATE": (15, 70),
-        "CLIENT_ADDRESS": (17, 0),
-        "CLIENT_DISTRICT": (17, 39),
-        "CLIENT_POSTAL_CODE": (17, 59),
-        "EXPEDITION_DATE": (17, 70),
-        "CLIENT_CITY": (19, 0),
-        "CLIENT_PHONE": (19, 29),
-        "CLIENT_STATE": (19, 45),
-        "CLIENT_STATE_REGISTRY": (19, 49),
-        "EXPEDITION_TIME": (19, 70),
-        # These coordinates are referred to the fist row of the
-        # products table.
-        "PRODUCT_CODE": (28, 0),
-        "PRODUCT_DESCRIPTION": (28, 5),
-        "PRODUCT_CST": (28, 34),
-        "PRODUCT_UNITY": (28, 38),
-        "PRODUCT_QUANTITY": (28, 41),
-        "PRODUCT_UNIT_VALUE": (28, 47),
-        "PRODUCT_TOTAL_VALUE": (28, 56),
-        "PRODUCT_ICMS_PERCENT": (28, 65),
-        "PRODUCT_IPI_PERCENT": (28, 68),
-        "PRODUCT_IPI_VALUE": (28, 71),
-        # These coordinates are related to the "tax table"
-        "ICMS_CALC_BASE": (49, 0),
-        "ICMS_VALUE": (49, 15),
-        "SUBST_ICMS_CALC_BASE": (49, 30),
-        "SUBST_ICMS_VALUE": (49, 45),
-        "TOTAL_PRODUCTS_VALUE": (49, 63),
-        "FREIGHT_VALUE": (51 , 0),
-        "INSURANCE_VALUE": (51, 15),
-        "TOTAL_IPI_VALUE": (51, 45),
-        "INVOICE_TOTAL_VALUE": (51, 63),
-        }
-
-    # "setter_name" : (max_size, coord_name)
-    setters = {
-        "operation_type" : (24, "OPERATION_TYPE"),
-        "branch_document": (17, "BRANCH_DOCUMENT"),
-        "branch_cfop": (5, "BRANCH_CFOP"),
-        "state_registry_subst_trib": (21, "STATE_REGISTRY_SUBST_TRIB"),
-        "state_registry": (17, "STATE_REGISTRY"),
-        "client_name": (48, "CLIENT_NAME"),
-        "client_document": (19, "CLIENT_DOCUMENT"),
-        "creation_date": (None, "CREATION_DATE"),
-        "client_address": (38, "CLIENT_ADDRESS"),
-        "client_district": (19, "CLIENT_DISTRICT"),
-        "client_postal_code": (9, "CLIENT_POSTAL_CODE"),
-        "expedition_date": (None, "EXPEDITION_DATE"),
-        "client_city": (28, "CLIENT_CITY"),
-        "client_phone": (15, "CLIENT_PHONE"),
-        "client_state": (2, "CLIENT_STATE"),
-        "client_state_registry": (19, "CLIENT_STATE_REGISTRY"),
-        "expedition_time": (None, "EXPEDITION_TIME"),
-        "icms_calc_base": (14, "ICMS_CALC_BASE"),
-        "icms_value": (14, "ICMS_VALUE"),
-        "subst_icms_calc_base": (14, "SUBST_ICMS_CALC_BASE"),
-        "subst_icms_value": (17, "SUBST_ICMS_VALUE"),
-        "total_products_value": (16, "TOTAL_PRODUCTS_VALUE"),
-        "freight_value": (14, "FREIGHT_VALUE"),
-        "insurance_value": (14, "INSURANCE_VALUE"),
-        "total_ipi_value": (17, "TOTAL_IPI_VALUE"),
-        "invoice_total_value": (16, "INVOICE_TOTAL_VALUE"),
-        }
-
-    ROWS_QTY = 60
-    COLS_QTY = 80
-    MAX_PRODUCT_QTY = 18
-    # default filename for the invoice
-    default_filename = _(u"invoice") + ".txt"
-    title = _(u"Printing Invoice")
-    preview_label = _(u"Preview Model")
-
-    @argcheck(basestring, Sale, datetime.datetime, InvoiceType)
-    def __init__(self, filename, sale, date=None,
-                 invoice_type=INVOICE_TYPE_OUT):
+class SaleInvoice(object):
+    def __init__(self, sale, layout):
+        """Creates a new sale invoice
+        @param sale: sale to print an invoice for
+        @param layout: the invoice layout to use
         """
-        @param filename:  The filename where the invoice will be saved in.
-        @type filename:   basestring
+        self.sale = sale
+        self.layout = layout
+        self.type = _('Sale')
+        self.today = datetime.datetime.today()
 
-        @param sale:      The Sale object where this class will get data
-                          from.
-        @type sale:       Sale
-
-        @param date:      The invoice expedition date
-        @type date:       datetime
-
-        @param invoice_type: The invoice type (one of INVOICE_TYPE_*
-                          constants).
-        @type invoice_type: InvoiceType
-
-        @param type_desc: The invoice description (this is the 'Natureza
-                          'da operacao' field on invoice).
-        @type type_desc:  basestring
+    def generate(self):
+        """Formats the data from the sale according to the fields specified
+        in the layout
+        @returns: lines printed
+        @rtype: a list of array
         """
-        ClassInittableObject.__init__(self)
-        if sale.client is None:
-            raise ValueError("It is not possible to emit an invoice for a "
-                             "sale without client")
-        if date is None:
-            date = datetime.datetime.now()
-        self._syscoord = SysCoordinate(SaleInvoice.ROWS_QTY,
-                                       SaleInvoice.COLS_QTY)
-        self.branch_cfop = sale.cfop.code
-        self._type_desc = sale.cfop.description
-        self._sale = sale
-        self._products_qty = 0
-        self._date = date
-        self._type = invoice_type
-        self._filename = filename
+        printerdata = []
+        for lines in range(self.layout.height):
+            printerdata.append(
+                array.array('c', (' ' * self.layout.width) + '\n'))
 
-    @classmethod
-    def __class_init__(cls, namespace):
-        for setter_name, (maxlen, cname) in cls.setters.items():
-            p = property(
-                fset=lambda self, data, max_len=maxlen, coord_name=cname:\
-                        self._insert_data_on_coordinate(data, coord_name,
-                                                        max_len=max_len))
-            setattr(cls, setter_name, p)
-
-    def _get_coordinates_for(self, coord_name):
-        try:
-            return SaleInvoice.coords[coord_name]
-        except KeyError:
-            raise TypeError("coordinates for `%s' doesn't exists" % coord_name)
-
-    def _insert_string_on_coordinate(self, text, coord_name, max_len=None,
-                                     increment=None):
-        if max_len is not None:
-            text = text[:max_len]
-        if (increment is not None and isinstance(increment, (list, tuple))
-            and len(increment) == 2):
-            y, x = increment
-        else:
-            y = x = 0
-        coords = self._get_coordinates_for(coord_name)
-        self._syscoord.insert_string(coords[0]+y, coords[1]+x, text)
-
-    def _insert_data_on_coordinate(self, data, coord_name, max_len=None,
-                                   increment=None):
-        if isinstance(data, datetime.date):
-            data = data.strftime("%d/%m/%y")
-        elif isinstance(data, datetime.time):
-            data = data.strftime("%X")
-        elif isinstance(data, unicode):
-            data = data.encode("cp850")
-        elif not isinstance(data, basestring):
-            raise TypeError("The datatype %r isn't supported" % type(data))
-        return self._insert_string_on_coordinate(data, coord_name, max_len,
-                                                 increment=increment)
-
-    @argcheck(PersonAdaptToClient)
-    def _identify_client(self, client):
-        self.client_name = client.get_name()
-        if IIndividual(client.person, None):
-            self.client_document = IIndividual(client.person).cpf
-        elif ICompany(client.person, None):
-            self.client_state_registry = ICompany(client.person).state_registry
-            self.client_document = ICompany(client.person).cnpj
-        else:
-            return
-            raise TypeError("The client role for sale %r must be a "
-                            "Invidual or a Company" % self._sale)
-        address = client.person.get_main_address()
-        self.client_address = "%s, %s" % (address.street, address.number)
-        self.client_district = address.district
-        self.client_postal_code = address.postal_code
-        self.client_city = address.city_location.city
-        self.client_state = address.city_location.state
-        self.client_phone = client.person.phone_number
-
-    def get_document_as_string(self):
-        return self._syscoord.get_data_as_string()
-
-    def _setup_products(self, products):
-        trans = new_transaction()
-        icms_total = Decimal(0)
-        subst_total = Decimal(0)
-        prod_total = Decimal(0)
-        icms_tax = sysparam(trans).ICMS_TAX
-        subst_tax = sysparam(trans).SUBSTITUTION_TAX
-
-        for i, item in enumerate(products):
-            if i == SaleInvoice.MAX_PRODUCT_QTY:
-                break
-            elif IService(item.sellable, None):
+        for field in self.layout.fields:
+            invoice_field_class = get_invoice_field_by_name(field.field_name)
+            if invoice_field_class is None:
+                print 'WARNING: Could not find field %s' % (field.field_name,)
                 continue
-            self._insert_data_on_coordinate(item.sellable.get_code_str(),
-                                            "PRODUCT_CODE",
-                                            max_len=4, increment=(i,0))
-            self._insert_data_on_coordinate(item.sellable.get_description(),
-                                            "PRODUCT_DESCRIPTION",
-                                            max_len=26, increment=(i,0))
-            if item.sellable.unit:
-                self._insert_data_on_coordinate(
-                    item.sellable.get_unit_description(), "PRODUCT_UNITY",
-                    max_len=2, increment=(i,0))
-            self._insert_data_on_coordinate("%2.2f" % item.quantity,
-                                            "PRODUCT_QUANTITY", increment=(i,0))
-            self._insert_data_on_coordinate("%5.2f" % item.price,
-                                            "PRODUCT_UNIT_VALUE",
-                                            increment=(i,0))
-            total_value = item.price * item.quantity
-            self._insert_data_on_coordinate("%5.2f" % total_value,
-                                            "PRODUCT_TOTAL_VALUE",
-                                            increment=(i,0))
-            if item.sellable.tax_constant.tax_type == TaxType.SUBSTITUTION:
-                value = "%3d" % subst_tax
-                subst_total += total_value
-            elif item.sellable.tax_constant.tax_type == TaxType.CUSTOM:
-                raise NotImplementedError
+            invoice_field = invoice_field_class(self)
+
+            right = field.x + field.width
+
+            data = invoice_field.fetch()
+            if invoice_field.field_type == bool:
+                assert field.height == 1
+                if data:
+                    data = 'X'
+                else:
+                    data = ' '
+                printerdata[field.y][field.x:right] = array.array(
+                    'c', data.upper())
+            elif invoice_field.field_type == str:
+                if data is None:
+                    data = 'X' * field.width
+                data = str(data)
+                data = '%-*s' % (int(field.width),
+                                 data[:field.width])
+                output = array.array('c', data.upper())
+                printerdata[field.y][field.x:right] = output
+            elif invoice_field.field_type == iter:
+                for y, line in enumerate(data):
+                    if line is None:
+                        line = 'X' * field.width
+                    line = str(line)
+                    line = '%-*s' % (int(field.width), line[:field.width])
+
+                    output = array.array('c', line.upper())
+                    printerdata[field.y+y][field.x:right] = output
             else:
-                raise TypeError("Invalid tax type for product %r, got %r"
-                                % (item.sellable,
-                                   item.sellable.tax_constant.tax_type))
-            prod_total += total_value
-            self._insert_data_on_coordinate(value, "PRODUCT_ICMS_PERCENT",
-                                            max_len=3, increment=(i,0))
+                raise AssertionError(
+                    "unsupported field type: %s" % (
+                    invoice_field.field_type,))
+        return printerdata
 
-        self.icms_calc_base = "%.2f" % icms_total
-        self.subst_icms_calc_base = "%.2f" % subst_total
-        self.total_products_value = "%.2f" % prod_total
-        self.invoice_total_value = "%.2f" % prod_total
-        self.subst_icms_value = "%.2f" % ((Decimal(str(subst_tax))
-                                           / Decimal(100))
-                                          * subst_total)
-        self.icms_value = "%.2f" % ((Decimal(str(icms_tax))
-                                     / Decimal(100))
-                                    * icms_total)
+    def send_to_printer(self, device):
+        printer = EscPPrinter(device)
+        for line in self.generate():
+            printer.send(line.tostring())
+        printer.form_feed()
+        printer.done()
 
-    def build(self):
-        if self._type == INVOICE_TYPE_IN:
-            self._insert_string_on_coordinate(ENABLED, "INVOICE_TYPE_IN")
-        elif self._type == INVOICE_TYPE_OUT:
-            self._insert_string_on_coordinate(ENABLED, "INVOICE_TYPE_OUT")
-        self.operation_type = self._type_desc
-        self.creation_date = self._sale.te_created.te_time
 
-        self.expedition_date = self._date.date()
-        self.expedition_time = self._date.time()
-        self._identify_client(self._sale.client)
-        self._setup_products(self._sale.get_items())
 
-    def save(self):
-        self.build()
-        open(self._filename, "w").write(self.get_document_as_string())
+class PurchaseInvoice(object):
+    def __init__(self, purchase):
+        self.purchase = purchase
+        self.type = _('Purchase')
+
+
+class InvoiceFieldDescription(object):
+    field_type = str
+    height = 1
+    description = ''
+    name = None
+    length = -1
+
+    def __init__(self, invoice):
+        self.invoice = invoice
+        self.sale = invoice.sale
+        self.conn = self.sale.get_connection()
+
+    @classmethod
+    def get_description(self):
+        return self.description or self.name
+
+invoice_fields = {}
+
+def _add_invoice_field(field):
+    global invoice_fields
+    invoice_fields[field.name] = field
+
+def get_invoice_field_by_name(field_name):
+    global invoice_fields
+    return invoice_fields.get(field_name)
+
+def get_invoice_fields():
+    global invoice_fields
+    return invoice_fields.values()
+
+
+class F(InvoiceFieldDescription):
+    name = "COMPANY_DOCUMENT"
+    description = _("Company document number")
+    length =  4
+    def fetch(self):
+        return ICompany(self.sale.branch).cnpj
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    field_type = bool
+    name = "OUTGOING_INVOICE"
+    description = _("Outgoing invoice")
+    length =  1
+    def fetch(self):
+        return isinstance(self.sale, SaleInvoice)
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    field_type = bool
+    name = "INCOMING_INVOICE"
+    description = _("Incoming invoice")
+    length =  1
+    def fetch(self):
+        return isinstance(self.sale, PurchaseInvoice)
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "CLIENT_NAME"
+    description = _('Client name')
+    length =  35
+    def fetch(self):
+        return self.sale.client.person.name
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "CLIENT_ADDRESS"
+    description = _('Client Address')
+    length =  34
+    def fetch(self):
+        return self.sale.client.person.address.get_address_string()
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "CLIENT_DOCUMENT"
+    description = _("Client's document number")
+    length =  14
+    def fetch(self):
+        individual = IIndividual(self.sale.client, None)
+        if individual is not None:
+            return individual.cpf
+
+        company = ICompany(self.sale.client, None)
+        if company is not None:
+            return company.cnpj
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "CLIENT_DISTRICT"
+    description = _('District')
+    length =  15
+    def fetch(self):
+        return self.sale.client.person.address.district
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "CLIENT_POSTAL_CODE"
+    description = _("Client's postal code")
+    length =  8
+    def fetch(self):
+        return self.sale.client.person.address.postal_code
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "CLIENT_CITY"
+    description = _("Client's City")
+    length =  34
+    def fetch(self):
+        return self.sale.client.person.address.get_city()
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "CLIENT_PHONE"
+    description = _('Client Phone number')
+    length =  12
+    def fetch(self):
+        return self.sale.client.person.phone_number
+
+_add_invoice_field(F)
+
+class F(InvoiceFieldDescription):
+    name = "CLIENT_FAX"
+    description = _('Client Fax number')
+    length =  12
+    def fetch(self):
+        return self.sale.client.person.fax_number
+
+_add_invoice_field(F)
+
+class F(InvoiceFieldDescription):
+    name = "CLIENT_PHONE_FAX"
+    description = _('Client Phone/Fax number')
+    length =  12
+    def fetch(self):
+        return '%s / %s' % (
+            self.sale.client.person.phone_number,
+            self.sale.client.person.fax_number)
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "CLIENT_STATE"
+    description = _('Client state abbreviation')
+    length =  2
+    def fetch(self):
+        return self.sale.client.person.address.get_state()
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "CLIENT_STATE_REGISTRY_DOCUMENT"
+    description = _('Clients state registry number or document number')
+    length =  14
+    def fetch(self):
+        company = ICompany(self.sale.client, None)
+        if company is None:
+            return ''
+
+        return company.state_registry
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "ORDER_EMISSION_DATE"
+    description = _('Emission date')
+    length =  10
+    def fetch(self):
+        return str(self.invoice.today.date())
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "ORDER_CREATION_DATE"
+    description = _('Creation date')
+    length =  10
+    def fetch(self):
+        return str(self.invoice.today.date())
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "ORDER_CREATION_TIME"
+    description = _('Creation time')
+    length =  8
+    def fetch(self):
+        return str(self.invoice.today.strftime('%H:%S:%M'))
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "PAYMENT_NUMBERS"
+    description = _('Number of payments')
+    length =  4
+    def fetch(self):
+        group = IPaymentGroup(self.sale)
+        return str(group.get_items().count())
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "PAYMENT_DUE_DATES"
+    description = _('Payment due dates')
+    length =  1
+    def fetch(self):
+        group = IPaymentGroup(self.sale)
+        dates = [str(p.due_date.date()) for p in group.get_items()]
+        return ', '.join(dates)
+
+_add_invoice_field(F)
+
+class F(InvoiceFieldDescription):
+    name = "PAYMENT_VALUES"
+    description = _('Payment values')
+    length =  1
+    def fetch(self):
+        group = IPaymentGroup(self.sale)
+        dates = [str(p.value) for p in group.get_items()]
+        return ', '.join(dates)
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "BASE_DE_CALCULO_ICMS"
+    length =  1
+    def fetch(self):
+        total = Decimal(0)
+        for sale_item in self.sale.products:
+            tax = sale_item.sellable.get_tax_constant()
+            if not tax or not tax.tax_value:
+                continue
+            total += sale_item.get_total()
+        return total
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "VALOR_ICMS"
+    length =  1
+    def fetch(self):
+        total = Decimal(0)
+        for sale_item in self.sale.products:
+            tax = sale_item.sellable.get_tax_constant()
+            if tax and tax.tax_value:
+                total += sale_item.get_total() * (tax.tax_value / 100)
+        return total
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "BASE_DE_CALCULO_ICMS_SUBST"
+    length =  1
+    def fetch(self):
+        total = Decimal(0)
+        for sale_item in self.sale.products:
+            tax = sale_item.sellable.get_tax_constant()
+            if tax.tax_type == TaxType.SUBSTITUTION:
+                total += sale_item.get_total()
+        return total
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "VALOR_ICMS_SUBST"
+    length =  1
+    def fetch(self):
+        total = Decimal(0)
+        tax_value = sysparam(self.conn).SUBSTITUTION_TAX
+        for sale_item in self.sale.products:
+            tax = sale_item.sellable.get_tax_constant()
+            if tax.tax_type == TaxType.SUBSTITUTION:
+                total += sale_item.get_total() * (Decimal(tax_value) / 100)
+        return total
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "VALOR_TOTAL_PRODUTOS"
+    length =  1
+    def fetch(self):
+        return self.sale.get_sale_subtotal()
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "VALOR_FRETE"
+    length =  1
+    def fetch(self):
+        return 0
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "VALOR_SEGURO"
+    length =  1
+    def fetch(self):
+        return 0
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "VALOR_DESPESAS"
+    length =  1
+    def fetch(self):
+        return 0
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "VALOR_IPI"
+    length =  1
+    def fetch(self):
+        return 0
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "VALOR_TOTAL_NOTA"
+    length =  1
+    def fetch(self):
+        return self.sale.get_sale_subtotal()
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "ADDITIONAL_SALE_NOTES"
+    lenght = 1
+    def fetch(self):
+        return
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "SALE_NUMBER"
+    length =  1
+    def fetch(self):
+        return self.sale.get_order_number_str()
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "SALESPERSON_NAME"
+    length =  1
+    def fetch(self):
+        return self.sale.get_salesperson_name()
+
+_add_invoice_field(F)
+
+class F(InvoiceFieldDescription):
+    name = "PRODUCT_ITEM_COUNTER"
+    description = _('Product item counter')
+    length =  3
+    field_type = iter
+    def fetch(self):
+        for i in range(self.sale.products.count()):
+            yield '%03d' % (i+1,)
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "PRODUCT_ITEM_CODE_DESCRIPTION"
+    description = _('Product item code / description')
+    length =  35
+    field_type = iter
+
+    def fetch(self):
+        for sale_item in self.sale.products:
+            yield '%014d / %s' % (
+                sale_item.sellable.id,
+                sale_item.get_description())
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "PRODUCT_ITEM_CODE_SITUATION"
+    description = _('Product item situation')
+    length =  1
+    field_type = iter
+
+    def fetch(self):
+        for sale_item in self.sale.products:
+            yield 'N'
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "PRODUCT_ITEM_CODE_UNIT"
+    description = _('Product item unit')
+    length =  2
+    field_type = iter
+
+    def fetch(self):
+        for sale_item in self.sale.products:
+            yield sale_item.sellable.get_unit_description()
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "PRODUCT_ITEM_QUANTITY"
+    description = _('Product item quantity')
+    length =  5
+    field_type = iter
+
+    def fetch(self):
+        for sale_item in self.sale.products:
+            yield sale_item.quantity
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "PRODUCT_ITEM_PRICE"
+    description = _('Product item price')
+    length =  5
+    field_type = iter
+
+    def fetch(self):
+        for sale_item in self.sale.products:
+            yield sale_item.price
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "PRODUCT_ITEM_TOTAL"
+    description = _('Product item total (price * quantity)')
+    length =  7
+    field_type = iter
+
+    def fetch(self):
+        for sale_item in self.sale.products:
+            yield sale_item.get_total()
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "PRODUCT_ITEM_TAX"
+    description = _('Product item tax')
+    length =  2
+    field_type = iter
+
+    def fetch(self):
+        for sale_item in self.sale.products:
+            tax = sale_item.sellable.get_tax_constant()
+            if tax and tax.tax_value:
+                value = '%02d' % (int(tax.tax_value),)
+            else:
+                value = ''
+            yield value
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "INVOICE_TYPE"
+    description = _("Invoice Type")
+    length = 10
+
+    def fetch(self):
+        return self.invoice.type
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "CFOP"
+    length = 4
+    def fetch(self):
+        if self.sale.cfop:
+            return self.sale.cfop.code
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "STATE_REGISTRY"
+    description = _("State registry number")
+    length = 14
+    def fetch(self):
+        return ICompany(self.sale.branch).state_registry
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "INSCR_ESTADUAL_SUBSTITUTO_TRIB"
+    length = 4
+    def fetch(self):
+        return
+_add_invoice_field(F)
