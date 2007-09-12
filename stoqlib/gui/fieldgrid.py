@@ -193,10 +193,11 @@ class FieldGrid(gtk.Layout):
         return None
 
     def _remove_field(self, field):
-        self._fields.remove(field)
-        self.remove(field.widget)
         if field == self._selected_field:
             self.select_field(None)
+
+        self._fields.remove(field)
+        self.remove(field.widget)
         self.emit('field-removed', field)
 
     def _add_field(self, text, x, y, width=-1, height=1):
@@ -208,11 +209,11 @@ class FieldGrid(gtk.Layout):
         label.modify_font(self.font)
         field = FieldInfo(self, text, label, x, y, width, height)
         self._fields.append(field)
+        self.emit('field-added', field)
 
         label.connect('size-allocate',
                       self._on_field__size_allocate, field)
         self.put(label, -1, -1)
-        self.emit('field-added', field)
         return field
 
     def _set_field_position(self, field, x, y):
