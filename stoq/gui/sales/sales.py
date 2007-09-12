@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
+##                  Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Implementation of sales application.  """
 
@@ -34,6 +35,8 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.database.runtime import get_current_station
+from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -41,10 +44,9 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
-from stoqlib.gui.editors.invoiceeditor import InvoiceDetailsEditor
 from stoqlib.lib.invoice import SaleInvoice
 from stoqlib.lib.validators import format_quantity
-from stoqlib.gui.printing import print_report
+from stoqlib.lib.message import info
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -130,21 +132,18 @@ class SalesApp(SearchableAppWindow):
         can_return = bool(sale_view and sale_view.sale.can_return())
         self.sale_toolbar.return_sale_button.set_sensitive(can_return)
 
-    def _preview_invoice_as_pdf(self, fiscal_note, sale, *args, **kwargs):
-        raise NotImplementedError("not implemented yet :)")
-
     def _print_invoice(self):
-        assert self._klist.get_selected()
-        invoice_data = self.run_dialog(InvoiceDetailsEditor, self.conn)
-        if not invoice_data:
-            return
         sale_view = self._klist.get_selected()
+        assert sale_view
         sale = Sale.get(sale_view.id, connection=self.conn)
-        print_report(SaleInvoice, sale, date=invoice_data,
-                     default_filename=SaleInvoice.default_filename,
-                     preview_callback=self._preview_invoice_as_pdf,
-                     title=_(u"Printing Invoice"),
-                     preview_label=_(u"Preview Model"))
+        station = get_current_station(self.conn)
+        printer = InvoicePrinter.get_by_station(station, self.conn)
+        if printer is None:
+            info(_("There are no invoice printer configured for this station"))
+            return
+        assert printer.layout
+        invoice = SaleInvoice(sale, printer.layout)
+        invoice.send_to_printer(printer.device_name)
 
     def _setup_columns(self, sale_status=Sale.STATUS_CONFIRMED):
         if sale_status is None:

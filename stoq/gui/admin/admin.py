@@ -36,10 +36,13 @@ from sqlobject.sqlbuilder import AND
 from stoqlib.database.runtime import finish_transaction
 from stoqlib.domain.person import Person, PersonAdaptToUser
 from stoqlib.domain.profile import UserProfile
+from stoqlib.domain.invoice import InvoiceLayout
 from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
 from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
+from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog,
+                                               InvoicePrinterDialog)
 from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
 from stoqlib.gui.parameters import ParametersListingDialog
@@ -51,6 +54,7 @@ from stoqlib.gui.search.profilesearch import UserProfileSearch
 from stoqlib.gui.search.stationsearch import StationSearch
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
+from stoqlib.lib.message import info
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -129,6 +133,14 @@ class AdminApp(SearchableAppWindow):
             if model in self.results:
                 self.results.select(model)
 
+    def _run_invoice_printer_dialog(self):
+        if not InvoiceLayout.select(connection=self.conn):
+            info(_(
+                "You must create at least one invoice layout before adding an"
+                "invoice printer"))
+            return
+
+        self.run_dialog(InvoicePrinterDialog, self.conn)
     #
     # Callbacks
     #
@@ -183,6 +195,12 @@ class AdminApp(SearchableAppWindow):
 
     def on_system_parameters__activate(self, action):
         self.run_dialog(ParametersListingDialog, self.conn)
+
+    def on_invoice_printers__activate(self, action):
+        self._run_invoice_printer_dialog()
+
+    def on_invoices__activate(self, action):
+        self.run_dialog(InvoiceLayoutDialog, self.conn)
 
     def on_PaymentMethod__activate(self, action):
         self.run_dialog(PaymentMethodsDialog, self.conn)
