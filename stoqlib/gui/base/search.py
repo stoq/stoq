@@ -167,7 +167,7 @@ class SearchDialog(BasicDialog):
         self.results.connect('cell-edited', self._on_results__cell_edited)
         self.results.connect('selection-changed',
                              self._on_results__selection_changed)
-        self.results.connect('double_click', self._on_results__double_click)
+        self.results.connect('row-activated', self._on_results__row_activated)
 
     def _setup_details_slave(self):
         # FIXME: Gross hack
@@ -288,7 +288,7 @@ class SearchDialog(BasicDialog):
     def _on_results__selection_changed(self, results, selected):
         self.update_widgets()
 
-    def _on_results__double_click(self, results, obj):
+    def _on_results__row_activated(self, results, obj):
         self.row_activate(obj)
 
 

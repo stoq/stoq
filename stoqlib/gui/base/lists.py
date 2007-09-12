@@ -397,7 +397,7 @@ class AdditionListSlave(GladeSlaveDelegate):
     # Signal handlers
     #
 
-    def on_klist__double_click(self, *args):
+    def on_klist__row_activated(self, *args):
         self._edit()
 
     def on_klist__selection_changed(self, *args):
