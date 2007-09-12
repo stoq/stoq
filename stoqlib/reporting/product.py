@@ -35,7 +35,7 @@ from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.domain.product import ProductHistory
-from stoqlib.domain.views import SellableFullStockView, ProductFullStockView
+from stoqlib.domain.views import ProductFullStockView
 
 class ProductReport(SearchResultsReport):
     """ This report show a list of all products returned by a SearchBar,
@@ -43,7 +43,7 @@ class ProductReport(SearchResultsReport):
     """
     # This should be properly verified on SearchResultsReport. Waiting for
     # bug 2517
-    obj_type = SellableFullStockView
+    obj_type = ProductFullStockView
     report_name = _("Product Listing")
     main_object_name = _("products")
     filter_format_string = _("on branch <u>%s</u>")
@@ -64,7 +64,8 @@ class ProductReport(SearchResultsReport):
             OTC(_("Quantity"), lambda obj: format_data(obj.stock),
                 width=80, align=RIGHT, truncate=True),
             # FIXME: This column should be virtual, waiting for bug #2764
-            OTC(_("Unit"), lambda obj: obj.unit, width=60, virtual=False),
+            OTC(_("Unit"), lambda obj: obj.get_unit_description(),
+                width=60, virtual=False),
             ]
 
     def _setup_items_table(self):
