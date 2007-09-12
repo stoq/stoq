@@ -37,6 +37,7 @@
                             <widget class="ProxyEntry" id="code">
                                 <property name="data_type">unicode</property>
                                 <property name="mandatory">True</property>
+                                <property name="mask" context="yes" translatable="yes">0.000</property>
                                 <property name="model_attribute">code</property>
                                 <property name="visible">True</property>
                             </widget>
