@@ -183,6 +183,7 @@ class SellableItemStep(WizardEditorStep):
         self.slave.connect('on-add-item', self._on_list_slave__add_item)
         self.attach_slave('list_holder', self.slave)
         self._setup_summary()
+        self.sellable.grab_focus()
 
     def _setup_summary(self):
         # FIXME: Move this into AdditionListSlave
@@ -197,8 +198,10 @@ class SellableItemStep(WizardEditorStep):
 
     def _add_sellable(self):
         sellable = self.sellable.get_selected_data()
+        assert sellable
         self._update_list(sellable)
         self.proxy.set_model(None)
+        self.sellable.grab_focus()
 
     def _update_list(self, sellable):
         quantity = self.get_quantity()
