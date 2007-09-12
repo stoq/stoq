@@ -27,6 +27,7 @@ from sqlobject.viewable import Viewable
 from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn, OR
 
 from stoqlib.domain.commission import CommissionSource
+from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.product import (Product, ProductAdaptToSellable,
                                     ProductAdaptToStorable,
                                     ProductStockItem,
@@ -59,7 +60,6 @@ class ProductFullStockView(Viewable):
         cost=ASellable.q.cost,
         price=BaseSellableInfo.q.price,
         description=BaseSellableInfo.q.description,
-        unit=SellableUnit.q.description,
         product_id=Product.q.id,
         tax_description=SellableTaxConstant.q.description,
         stock=func.SUM(ProductStockItem.q.quantity +
@@ -67,9 +67,6 @@ class ProductFullStockView(Viewable):
         )
 
     joins = [
-        # Sellable unit
-        LEFTJOINOn(None, SellableUnit,
-                   SellableUnit.q.id == ASellable.q.unitID),
         # Tax Constant
         LEFTJOINOn(None, SellableTaxConstant,
                    SellableTaxConstant.q.id == ASellable.q.tax_constantID),
@@ -100,6 +97,12 @@ class ProductFullStockView(Viewable):
                 query = branch_query
 
         return cls.select(query, connection=connection)
+
+    def get_unit_description(self):
+        unit = ISellable(self.product).get_unit_description()
+        if unit == u"":
+            return u"un"
+        return unit
 
     @property
     def product(self):

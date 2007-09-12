@@ -148,7 +148,8 @@ class ProductCountingReport(SearchResultsReport):
                 width=80, truncate=True),
             OTC(_("Quantity"), None, width=80, truncate=True),
             # FIXME: This column should be virtual, waiting for bug #2764
-            OTC(_("Unit"), lambda obj: obj.unit, width=60, truncate=True),
+            OTC(_("Unit"), lambda obj: obj.get_unit_description(),
+                width=60, truncate=True),
             ]
 
     def _setup_items_table(self):
