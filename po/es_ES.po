@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-29 15:25-0300\n"
+"POT-Creation-Date: 2007-09-12 12:50-0300\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Rafael Villar Burke <pachi@rvburke.com>\n"
 "Language-Team: Spanish <es_ES@li.org>\n"
@@ -291,57 +291,58 @@ msgstr ""
 "Este usuario no está acreditado \n"
 "en la aplicación %s"
 
-#: ../stoq/gui/inventory/inventory.py:49
-msgid "inventory"
+#: ../stoq/gui/inventory/inventory.py:50 ../stoq/gui/inventory/__init__.py:29
+msgid "Inventory"
 msgstr ""
 
-#: ../stoq/gui/inventory/inventory.py:53 ../stoq/gui/warehouse/warehouse.py:61
+#: ../stoq/gui/inventory/inventory.py:54 ../stoq/gui/warehouse/warehouse.py:61
 msgid "Matching:"
 msgstr "incluyendo:"
 
-#: ../stoq/gui/inventory/inventory.py:69 ../stoq/gui/warehouse/warehouse.py:77
+#: ../stoq/gui/inventory/inventory.py:70 ../stoq/gui/warehouse/warehouse.py:77
 msgid "Show products at:"
 msgstr "Mostrar productos en"
 
-#: ../stoq/gui/inventory/inventory.py:74 ../stoq/gui/warehouse/warehouse.py:82
-#: ../stoq/gui/pos/deliveryeditor.py:94
+#: ../stoq/gui/inventory/inventory.py:75 ../stoq/gui/warehouse/warehouse.py:82
+#: ../stoq/gui/pos/deliveryeditor.py:102
 msgid "Code"
 msgstr "Código"
 
-#: ../stoq/gui/inventory/inventory.py:76 ../stoq/gui/payable/payable.py:95
+#: ../stoq/gui/inventory/inventory.py:77
+#, fuzzy
+msgid "Barcode"
+msgstr "Código de Barras:"
+
+#: ../stoq/gui/inventory/inventory.py:78 ../stoq/gui/payable/payable.py:95
 #: ../stoq/gui/warehouse/warehouse.py:84
 #: ../stoq/gui/receivable/receivable.py:128 ../stoq/gui/pos/pos.py:151
-#: ../stoq/gui/pos/deliveryeditor.py:96
+#: ../stoq/gui/pos/deliveryeditor.py:104
 msgid "Description"
 msgstr "Descripción"
 
-#: ../stoq/gui/inventory/inventory.py:79 ../stoq/gui/till/till.py:121
+#: ../stoq/gui/inventory/inventory.py:81 ../stoq/gui/till/till.py:121
 #: ../stoq/gui/warehouse/warehouse.py:87 ../stoq/gui/pos/pos.py:155
-#: ../stoq/gui/pos/deliveryeditor.py:98
+#: ../stoq/gui/pos/deliveryeditor.py:106
 msgid "Quantity"
 msgstr "Cantidad"
 
-#: ../stoq/gui/inventory/inventory.py:81
+#: ../stoq/gui/inventory/inventory.py:83
 msgid "Counting"
 msgstr ""
 
-#: ../stoq/gui/inventory/inventory.py:83
+#: ../stoq/gui/inventory/inventory.py:85
 msgid "Adjust"
 msgstr ""
 
-#: ../stoq/gui/inventory/inventory.py:97
+#: ../stoq/gui/inventory/inventory.py:99
 #: ../stoq/gui/warehouse/warehouse.py:103
 msgid "<b>Stock Total:</b>"
 msgstr "<b>Stock Total</b>"
 
-#: ../stoq/gui/inventory/inventory.py:107
+#: ../stoq/gui/inventory/inventory.py:109
 #: ../stoq/gui/warehouse/warehouse.py:113
 msgid "All branches"
 msgstr "Todas las unidades"
-
-#: ../stoq/gui/inventory/__init__.py:29
-msgid "Inventory"
-msgstr ""
 
 #: ../stoq/gui/inventory/__init__.py:30
 #, fuzzy
@@ -596,7 +597,7 @@ msgstr "Caja cerrada"
 msgid "Till Opened on %s"
 msgstr "Caja abierta el %s"
 
-#: ../stoq/gui/till/till.py:266 ../stoq/gui/pos/pos.py:616
+#: ../stoq/gui/till/till.py:266 ../stoq/gui/pos/pos.py:630
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
@@ -606,11 +607,11 @@ msgstr ""
 "\n"
 "¿Cerrar la caja?"
 
-#: ../stoq/gui/till/till.py:268 ../stoq/gui/pos/pos.py:618
+#: ../stoq/gui/till/till.py:268 ../stoq/gui/pos/pos.py:632
 msgid "Not now"
 msgstr "Ahora no"
 
-#: ../stoq/gui/till/till.py:268 ../stoq/gui/pos/pos.py:618
+#: ../stoq/gui/till/till.py:268 ../stoq/gui/pos/pos.py:632
 msgid "Close Till"
 msgstr "Cerrar la caja..."
 
@@ -628,7 +629,7 @@ msgstr ""
 msgid "Unit"
 msgstr "Unidad"
 
-#: ../stoq/gui/warehouse/warehouse.py:140
+#: ../stoq/gui/warehouse/warehouse.py:139
 msgid "You must have at least one item in stock to perfom this action."
 msgstr ""
 "Es necesaria la existencia de al menos un artículo en stock para realizar "
@@ -688,33 +689,33 @@ msgstr ""
 "Únicamente se agregó un servicio, ya que no es posible añadir más de un "
 "servicio a una orden de cada vez."
 
-#: ../stoq/gui/pos/pos.py:351
+#: ../stoq/gui/pos/pos.py:362
 #, python-format
 msgid "You cannot sell more items of product %s, it's out of stock."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:404
+#: ../stoq/gui/pos/pos.py:419
 msgid "The current order will be canceled, Confirm?"
 msgstr "El pedido actual será cancelado, ¿confirmar?"
 
-#: ../stoq/gui/pos/pos.py:405
+#: ../stoq/gui/pos/pos.py:420
 msgid "Go Back"
 msgstr "Volver"
 
-#: ../stoq/gui/pos/pos.py:405 ../data/glade/pos.glade.h:9
+#: ../stoq/gui/pos/pos.py:420 ../data/glade/pos.glade.h:9
 msgid "Cancel Order"
 msgstr "Cancelar Pedido"
 
-#: ../stoq/gui/pos/pos.py:558
+#: ../stoq/gui/pos/pos.py:572
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr "No es posible iniciar una nueva venta si no se puede abrir factura."
 
-#: ../stoq/gui/pos/pos.py:560
+#: ../stoq/gui/pos/pos.py:574
 msgid "Try Again"
 msgstr "Intente de nuevo"
 
-#: ../stoq/gui/pos/pos.py:560
+#: ../stoq/gui/pos/pos.py:574
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -722,30 +723,30 @@ msgstr "Cancelar"
 msgid "New Order"
 msgstr "Nuevo Pedido"
 
-#: ../stoq/gui/pos/deliveryeditor.py:54 ../stoq/gui/pos/deliveryeditor.py:58
+#: ../stoq/gui/pos/deliveryeditor.py:57 ../stoq/gui/pos/deliveryeditor.py:61
 #, fuzzy
 msgid "Delivery"
 msgstr "Entrega"
 
-#: ../stoq/gui/pos/deliveryeditor.py:61
+#: ../stoq/gui/pos/deliveryeditor.py:64
 #, fuzzy
 msgid "New Delivery"
 msgstr "Nueva Entrega..."
 
-#: ../stoq/gui/pos/deliveryeditor.py:100
+#: ../stoq/gui/pos/deliveryeditor.py:108
 #, fuzzy
 msgid "Deliver"
 msgstr "Entrega"
 
-#: ../stoq/gui/pos/deliveryeditor.py:123
+#: ../stoq/gui/pos/deliveryeditor.py:140
 msgid "Delivery Instructions"
 msgstr ""
 
-#: ../stoq/gui/pos/deliveryeditor.py:128
+#: ../stoq/gui/pos/deliveryeditor.py:145
 msgid "Expected delivery date must be set to a future date"
 msgstr ""
 
-#: ../stoq/gui/pos/deliveryeditor.py:134
+#: ../stoq/gui/pos/deliveryeditor.py:151
 msgid "The Delivery cost must be a positive value."
 msgstr ""
 
