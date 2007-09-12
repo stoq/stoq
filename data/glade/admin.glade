@@ -93,6 +93,18 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="invoice_printers">
+                        <property name="name">invoice_printers</property>
+                        <property name="label" translatable="yes">Invoice Printers...</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="invoices">
+                        <property name="name">invoices</property>
+                        <property name="label" translatable="yes">Invoices...</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="New">
                         <property name="name">New</property>
                         <property name="tooltip" translatable="yes">Create a new file</property>
@@ -268,6 +280,8 @@
               <menuitem action="taxes"/>
               <menuitem action="sintegra"/>
               <menuitem action="system_parameters"/>
+              <menuitem action="invoices"/>
+              <menuitem action="invoice_printers"/>
               <separator name="plugin_settings_separator"/>
               <placeholder name="PluginSettings"/>
             </menu>
