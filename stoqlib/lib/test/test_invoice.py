@@ -44,7 +44,7 @@ def compare_invoice_file(invoice, basename):
 
     fp = open(output, 'w')
     for line in invoice.generate():
-        fp.write(line.tostring() + '\n')
+        fp.write(line.tostring())
     fp.close()
     expected = os.path.join(test.__path__[0], expected)
     retval = diff_files(expected, output)
@@ -86,9 +86,8 @@ class InvoiceTest(DomainTest):
         address = self.create_address()
         address.person = sale.client.person
 
-
         layout = InvoiceLayout(width=100,
-                               height=100,
+                               height=50,
                                description='Test invoice',
                                connection=self.trans)
         for i, invoice_field in enumerate(get_invoice_fields()):
