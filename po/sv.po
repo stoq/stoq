@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-09-12 12:45-0300\n"
+"POT-Creation-Date: 2007-09-13 18:04-0300\n"
 "PO-Revision-Date: 2007-07-18 11:35-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -148,7 +148,7 @@ msgid "Cost"
 msgstr "Kostnad"
 
 #: ../stoqlib/reporting/purchase.py:123 ../stoqlib/reporting/product.py:64
-#: ../stoqlib/reporting/product.py:149 ../stoqlib/reporting/sale.py:72
+#: ../stoqlib/reporting/product.py:150 ../stoqlib/reporting/sale.py:72
 #: ../stoqlib/gui/wizards/purchasewizard.py:198
 #: ../stoqlib/gui/wizards/receivingwizard.py:245
 #: ../stoqlib/gui/dialogs/productstockdetails.py:108
@@ -282,11 +282,11 @@ msgstr "till och med %s"
 msgid "Untitled"
 msgstr "Namnlös"
 
-#: ../stoqlib/reporting/product.py:47 ../stoqlib/reporting/product.py:85
+#: ../stoqlib/reporting/product.py:47 ../stoqlib/reporting/product.py:86
 msgid "Product Listing"
 msgstr "Varulistning"
 
-#: ../stoqlib/reporting/product.py:48 ../stoqlib/reporting/product.py:86
+#: ../stoqlib/reporting/product.py:48 ../stoqlib/reporting/product.py:87
 #: ../stoqlib/gui/search/productsearch.py:58
 msgid "products"
 msgstr "varor"
@@ -297,8 +297,8 @@ msgid "on branch <u>%s</u>"
 msgstr ""
 
 #. XXX Bug #2430 will improve this part
-#: ../stoqlib/reporting/product.py:61 ../stoqlib/reporting/product.py:98
-#: ../stoqlib/reporting/product.py:144 ../stoqlib/reporting/sale.py:67
+#: ../stoqlib/reporting/product.py:61 ../stoqlib/reporting/product.py:99
+#: ../stoqlib/reporting/product.py:145 ../stoqlib/reporting/sale.py:67
 #: ../stoqlib/gui/search/sellablesearch.py:122
 #: ../stoqlib/gui/search/productsearch.py:127
 #: ../stoqlib/gui/search/productsearch.py:185
@@ -311,11 +311,13 @@ msgstr ""
 msgid "Code"
 msgstr "Kod"
 
-#: ../stoqlib/reporting/product.py:63 ../stoqlib/reporting/product.py:100
-#: ../stoqlib/reporting/product.py:146 ../stoqlib/reporting/payment.py:65
+#: ../stoqlib/reporting/product.py:63 ../stoqlib/reporting/product.py:101
+#: ../stoqlib/reporting/product.py:147 ../stoqlib/reporting/payment.py:65
 #: ../stoqlib/reporting/payment.py:92 ../stoqlib/gui/slaves/devicesslave.py:56
 #: ../stoqlib/gui/slaves/installmentslave.py:192
 #: ../stoqlib/gui/editors/sellableeditor.py:99
+#: ../stoqlib/gui/editors/invoiceeditor.py:212
+#: ../stoqlib/gui/editors/invoiceeditor.py:270
 #: ../stoqlib/gui/search/giftcertificatesearch.py:77
 #: ../stoqlib/gui/search/sellablesearch.py:127
 #: ../stoqlib/gui/search/tillsearch.py:116
@@ -344,7 +346,7 @@ msgid "Description"
 msgstr "Beskrivning"
 
 #. FIXME: This column should be virtual, waiting for bug #2764
-#: ../stoqlib/reporting/product.py:67 ../stoqlib/reporting/product.py:151
+#: ../stoqlib/reporting/product.py:67 ../stoqlib/reporting/product.py:152
 #: ../stoqlib/gui/wizards/purchasewizard.py:200
 #: ../stoqlib/gui/wizards/receivingwizard.py:249
 #: ../stoqlib/gui/dialogs/productstockdetails.py:111
@@ -353,7 +355,7 @@ msgstr "Beskrivning"
 msgid "Unit"
 msgstr "Enhet"
 
-#: ../stoqlib/reporting/product.py:73 ../stoqlib/reporting/product.py:119
+#: ../stoqlib/reporting/product.py:74 ../stoqlib/reporting/product.py:120
 #: ../stoqlib/reporting/purchase_receival.py:63
 #: ../stoqlib/reporting/payment.py:50
 #: ../stoqlib/gui/dialogs/productstockdetails.py:80
@@ -370,31 +372,31 @@ msgstr "Enhet"
 msgid "Total:"
 msgstr "Totalt:"
 
-#: ../stoqlib/reporting/product.py:101
+#: ../stoqlib/reporting/product.py:102
 #: ../stoqlib/gui/search/productsearch.py:189
 #, fuzzy
 msgid "Quantity Sold"
 msgstr "Antal"
 
-#: ../stoqlib/reporting/product.py:104
+#: ../stoqlib/reporting/product.py:105
 #: ../stoqlib/gui/search/productsearch.py:192
 #: ../stoqlib/gui/dialogs/productstockdetails.py:140
 #, fuzzy
 msgid "Quantity Transfered"
 msgstr "Välj föremål"
 
-#: ../stoqlib/reporting/product.py:107
+#: ../stoqlib/reporting/product.py:108
 #: ../stoqlib/gui/search/productsearch.py:194
 #: ../stoqlib/gui/dialogs/purchasedetails.py:119
 msgid "Quantity Received"
 msgstr ""
 
-#: ../stoqlib/reporting/product.py:133
+#: ../stoqlib/reporting/product.py:134
 #, fuzzy
 msgid "Product Counting"
 msgstr "Varulistning"
 
-#: ../stoqlib/reporting/product.py:147
+#: ../stoqlib/reporting/product.py:148
 msgid "Fiscal Class"
 msgstr ""
 
@@ -900,18 +902,155 @@ msgstr "Öppen"
 msgid "%s %s, %s"
 msgstr ""
 
-#. default filename for the invoice
-#: ../stoqlib/lib/invoice.py:193
-msgid "invoice"
-msgstr "faktura"
-
-#: ../stoqlib/lib/invoice.py:194
+#: ../stoqlib/lib/invoice.py:51 ../stoqlib/gui/search/commissionsearch.py:68
 #, fuzzy
-msgid "Printing Invoice"
+msgid "Sale"
+msgstr "Våg"
+
+#: ../stoqlib/lib/invoice.py:118 ../stoqlib/lib/parameters.py:63
+#: ../stoqlib/lib/parameters.py:69 ../stoqlib/lib/parameters.py:185
+#: ../stoqlib/lib/parameters.py:200 ../stoqlib/lib/parameters.py:251
+msgid "Purchase"
+msgstr ""
+
+#: ../stoqlib/lib/invoice.py:154
+msgid "Company document number"
+msgstr ""
+
+#: ../stoqlib/lib/invoice.py:165
+#, fuzzy
+msgid "Outgoing invoice"
 msgstr "faktura"
 
-#: ../stoqlib/lib/invoice.py:195
-msgid "Preview Model"
+#: ../stoqlib/lib/invoice.py:176
+#, fuzzy
+msgid "Incoming invoice"
+msgstr "faktura"
+
+#: ../stoqlib/lib/invoice.py:186
+#, fuzzy
+msgid "Client name"
+msgstr "Klient"
+
+#: ../stoqlib/lib/invoice.py:196
+#, fuzzy
+msgid "Client Address"
+msgstr "Huvudaddress"
+
+#: ../stoqlib/lib/invoice.py:206
+msgid "Client's document number"
+msgstr ""
+
+#: ../stoqlib/lib/invoice.py:222
+#, fuzzy
+msgid "District"
+msgstr "Distrikt:"
+
+#: ../stoqlib/lib/invoice.py:232
+msgid "Client's postal code"
+msgstr ""
+
+#: ../stoqlib/lib/invoice.py:242
+#, fuzzy
+msgid "Client's City"
+msgstr "Klient"
+
+#: ../stoqlib/lib/invoice.py:252
+#, fuzzy
+msgid "Client Phone number"
+msgstr "Telefonnummer"
+
+#: ../stoqlib/lib/invoice.py:261
+#, fuzzy
+msgid "Client Fax number"
+msgstr "Sök"
+
+#: ../stoqlib/lib/invoice.py:270
+#, fuzzy
+msgid "Client Phone/Fax number"
+msgstr "Telefonnummer"
+
+#: ../stoqlib/lib/invoice.py:282
+msgid "Client state abbreviation"
+msgstr ""
+
+#: ../stoqlib/lib/invoice.py:292
+msgid "Clients state registry number or document number"
+msgstr ""
+
+#: ../stoqlib/lib/invoice.py:306
+msgid "Emission date"
+msgstr ""
+
+#: ../stoqlib/lib/invoice.py:316
+#, fuzzy
+msgid "Creation date"
+msgstr "Betalad"
+
+#: ../stoqlib/lib/invoice.py:326
+msgid "Creation time"
+msgstr ""
+
+#: ../stoqlib/lib/invoice.py:336
+#, fuzzy
+msgid "Number of payments"
+msgstr "Antal delbetalningar:"
+
+#: ../stoqlib/lib/invoice.py:347
+#, fuzzy
+msgid "Payment due dates"
+msgstr "Betalningstyp"
+
+#: ../stoqlib/lib/invoice.py:358
+#, fuzzy
+msgid "Payment values"
+msgstr "Betalningstyp"
+
+#: ../stoqlib/lib/invoice.py:508
+#, fuzzy
+msgid "Product item counter"
+msgstr "Produktföremål"
+
+#: ../stoqlib/lib/invoice.py:520
+msgid "Product item code / description"
+msgstr ""
+
+#: ../stoqlib/lib/invoice.py:535
+#, fuzzy
+msgid "Product item situation"
+msgstr "Varulistning"
+
+#: ../stoqlib/lib/invoice.py:548
+#, fuzzy
+msgid "Product item unit"
+msgstr "Produktföremål"
+
+#: ../stoqlib/lib/invoice.py:561
+#, fuzzy
+msgid "Product item quantity"
+msgstr "Produktföremål"
+
+#: ../stoqlib/lib/invoice.py:574
+#, fuzzy
+msgid "Product item price"
+msgstr "Produktföremål"
+
+#: ../stoqlib/lib/invoice.py:587
+msgid "Product item total (price * quantity)"
+msgstr ""
+
+#: ../stoqlib/lib/invoice.py:600
+#, fuzzy
+msgid "Product item tax"
+msgstr "Produktföremål"
+
+#: ../stoqlib/lib/invoice.py:618
+#, fuzzy
+msgid "Invoice Type"
+msgstr "Enhetsttyp"
+
+#: ../stoqlib/lib/invoice.py:639
+msgid "State registry number"
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:52 ../stoqlib/lib/parameters.py:129
@@ -954,12 +1093,6 @@ msgstr ""
 msgid ""
 "Defines which of the employee roles existent in the system is the "
 "salesperson role"
-msgstr ""
-
-#: ../stoqlib/lib/parameters.py:63 ../stoqlib/lib/parameters.py:69
-#: ../stoqlib/lib/parameters.py:185 ../stoqlib/lib/parameters.py:200
-#: ../stoqlib/lib/parameters.py:251
-msgid "Purchase"
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:64
@@ -2605,6 +2738,7 @@ msgid "Device Type"
 msgstr "Enhetsttyp"
 
 #: ../stoqlib/gui/slaves/devicesslave.py:60
+#: ../stoqlib/gui/editors/invoiceeditor.py:273
 #: ../stoqlib/gui/search/tillsearch.py:118
 #: ../stoqlib/gui/search/stationsearch.py:42
 #: ../plugins/ecf/ecfprinterdialog.py:250
@@ -2882,10 +3016,39 @@ msgstr "Huvudadress"
 msgid "Liaison"
 msgstr ""
 
-#: ../stoqlib/gui/editors/invoiceeditor.py:46
+#: ../stoqlib/gui/editors/invoiceeditor.py:194
+msgid "You need at least one sale to be able to preview invoice layouts"
+msgstr ""
+
+#: ../stoqlib/gui/editors/invoiceeditor.py:208
 #, fuzzy
-msgid "Edit Invoice Details"
-msgstr "Sök"
+msgid "Invoice Layouts"
+msgstr "Faktura #"
+
+#: ../stoqlib/gui/editors/invoiceeditor.py:214
+#, fuzzy
+msgid "Size"
+msgstr "Single"
+
+#: ../stoqlib/gui/editors/invoiceeditor.py:235
+#, fuzzy
+msgid "Untitled Printer"
+msgstr "Namnlös"
+
+#: ../stoqlib/gui/editors/invoiceeditor.py:266
+#, fuzzy
+msgid "Invoice Printers"
+msgstr "Skatteskrivare"
+
+#: ../stoqlib/gui/editors/invoiceeditor.py:272
+#, fuzzy
+msgid "Device name"
+msgstr "Enhetsttyp"
+
+#: ../stoqlib/gui/editors/invoiceeditor.py:274
+#, fuzzy
+msgid "Layout"
+msgstr "Mayotte"
 
 #: ../stoqlib/gui/editors/parameterseditor.py:109
 #, python-format
@@ -3667,11 +3830,6 @@ msgstr "Såld"
 msgid "Open date is:"
 msgstr "Öppningsdatum:"
 
-#: ../stoqlib/gui/search/commissionsearch.py:68
-#, fuzzy
-msgid "Sale"
-msgstr "Våg"
-
 #: ../stoqlib/gui/search/commissionsearch.py:78
 #, fuzzy
 msgid "Payment Value"
@@ -4339,6 +4497,8 @@ msgstr ""
 #: ../data/glade/BaseSellableCategoryDataSlave.glade.h:4
 #: ../data/glade/SellableCategoryDataSlave.glade.h:5
 #: ../data/glade/PaymentAdditionDialog.glade.h:1
+#: ../data/glade/InvoicePrinterEditor.glade.h:1
+#: ../data/glade/InvoiceLayoutEditor.glade.h:2
 msgid "Description:"
 msgstr "Beskrivning:"
 
@@ -4723,6 +4883,7 @@ msgstr "Lön ($CURRENCY):"
 #: ../data/glade/CreditProviderMethodSlave.glade.h:1
 #: ../data/glade/DebitCardDetailsStep.glade.h:1
 #: ../data/glade/ProductRetentionDialog.glade.h:1
+#: ../data/glade/InvoiceLayoutEditor.glade.h:1
 msgid "0"
 msgstr "0"
 
@@ -5105,6 +5266,7 @@ msgstr "Skatte:"
 #: ../data/glade/StationEditor.glade.h:3
 #: ../data/glade/DeviceConstantEditor.glade.h:3
 #: ../data/glade/SellableTaxConstantEditor.glade.h:1
+#: ../data/glade/InvoiceLayoutEditor.glade.h:5
 msgid "Name:"
 msgstr "Namn:"
 
@@ -5727,6 +5889,44 @@ msgstr "Kön:"
 msgid "Sending branch:"
 msgstr "på avdelning"
 
+#: ../data/glade/InvoicePrinterEditor.glade.h:2
+#, fuzzy
+msgid "Device name:"
+msgstr "Enhetstyp:"
+
+#: ../data/glade/InvoicePrinterEditor.glade.h:3
+msgid "Layout:"
+msgstr ""
+
+#: ../data/glade/InvoicePrinterEditor.glade.h:4
+#, fuzzy
+msgid "Station:"
+msgstr "Dator"
+
+#: ../data/glade/InvoiceLayoutEditor.glade.h:3
+#, fuzzy
+msgid "Field:"
+msgstr "Finland"
+
+#: ../data/glade/InvoiceLayoutEditor.glade.h:4
+#, fuzzy
+msgid "Height:"
+msgstr "Frakt:"
+
+#: ../data/glade/InvoiceLayoutEditor.glade.h:6
+#, fuzzy
+msgid "Position:"
+msgstr "Beskrivning:"
+
+#: ../data/glade/InvoiceLayoutEditor.glade.h:7
+#, fuzzy
+msgid "Size:"
+msgstr "Tid:"
+
+#: ../data/glade/InvoiceLayoutEditor.glade.h:8
+msgid "Width:"
+msgstr ""
+
 #: ../data/template/receipt.rml.extracted.h:1
 msgid "ADDRESS:"
 msgstr ""
@@ -5783,15 +5983,19 @@ msgstr ""
 msgid "VALUE:"
 msgstr "VÄRDE"
 
+#~ msgid "invoice"
+#~ msgstr "faktura"
+
+#, fuzzy
+#~ msgid "Edit Invoice Details"
+#~ msgstr "Sök"
+
 #~ msgid "This company doesn't allow order products"
 #~ msgstr "Detta företaget tillåter inte varuorder"
 
 #, fuzzy
 #~ msgid "Tax constants"
 #~ msgstr "Enheter"
-
-#~ msgid "Product Item"
-#~ msgstr "Produktföremål"
 
 #, fuzzy
 #~ msgid "Cash in"
