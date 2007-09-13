@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-09-12 12:45-0300\n"
+"POT-Creation-Date: 2007-09-13 18:04-0300\n"
 "PO-Revision-Date: 2007-08-28 13:34-0300\n"
 "Last-Translator: Silvio Rangel <silvio@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -102,12 +102,12 @@ msgstr "Fornecedor"
 #: ../stoqlib/reporting/purchase.py:71
 #: ../stoqlib/gui/wizards/receivingwizard.py:111
 msgid "Qty Ordered"
-msgstr "Qtde Pedida"
+msgstr "Pedido"
 
 #: ../stoqlib/reporting/purchase.py:74 ../stoqlib/reporting/purchase.py:128
 #: ../stoqlib/gui/wizards/receivingwizard.py:114
 msgid "Qty Received"
-msgstr "Qtde Recebida"
+msgstr "Recebido"
 
 #: ../stoqlib/reporting/purchase.py:77 ../stoqlib/reporting/purchase.py:125
 #: ../stoqlib/reporting/purchase.py:130 ../stoqlib/reporting/sale.py:76
@@ -165,7 +165,7 @@ msgid "Cost"
 msgstr "Custo"
 
 #: ../stoqlib/reporting/purchase.py:123 ../stoqlib/reporting/product.py:64
-#: ../stoqlib/reporting/product.py:149 ../stoqlib/reporting/sale.py:72
+#: ../stoqlib/reporting/product.py:150 ../stoqlib/reporting/sale.py:72
 #: ../stoqlib/gui/wizards/purchasewizard.py:198
 #: ../stoqlib/gui/wizards/receivingwizard.py:245
 #: ../stoqlib/gui/dialogs/productstockdetails.py:108
@@ -298,11 +298,11 @@ msgstr "até %s"
 msgid "Untitled"
 msgstr "Sem Título"
 
-#: ../stoqlib/reporting/product.py:47 ../stoqlib/reporting/product.py:85
+#: ../stoqlib/reporting/product.py:47 ../stoqlib/reporting/product.py:86
 msgid "Product Listing"
 msgstr "Listando Produtos"
 
-#: ../stoqlib/reporting/product.py:48 ../stoqlib/reporting/product.py:86
+#: ../stoqlib/reporting/product.py:48 ../stoqlib/reporting/product.py:87
 #: ../stoqlib/gui/search/productsearch.py:58
 msgid "products"
 msgstr "produtos"
@@ -313,8 +313,8 @@ msgid "on branch <u>%s</u>"
 msgstr "na unidade <u>%s</u>"
 
 #. XXX Bug #2430 will improve this part
-#: ../stoqlib/reporting/product.py:61 ../stoqlib/reporting/product.py:98
-#: ../stoqlib/reporting/product.py:144 ../stoqlib/reporting/sale.py:67
+#: ../stoqlib/reporting/product.py:61 ../stoqlib/reporting/product.py:99
+#: ../stoqlib/reporting/product.py:145 ../stoqlib/reporting/sale.py:67
 #: ../stoqlib/gui/search/sellablesearch.py:122
 #: ../stoqlib/gui/search/productsearch.py:127
 #: ../stoqlib/gui/search/productsearch.py:185
@@ -327,11 +327,13 @@ msgstr "na unidade <u>%s</u>"
 msgid "Code"
 msgstr "Código"
 
-#: ../stoqlib/reporting/product.py:63 ../stoqlib/reporting/product.py:100
-#: ../stoqlib/reporting/product.py:146 ../stoqlib/reporting/payment.py:65
+#: ../stoqlib/reporting/product.py:63 ../stoqlib/reporting/product.py:101
+#: ../stoqlib/reporting/product.py:147 ../stoqlib/reporting/payment.py:65
 #: ../stoqlib/reporting/payment.py:92 ../stoqlib/gui/slaves/devicesslave.py:56
 #: ../stoqlib/gui/slaves/installmentslave.py:192
 #: ../stoqlib/gui/editors/sellableeditor.py:99
+#: ../stoqlib/gui/editors/invoiceeditor.py:212
+#: ../stoqlib/gui/editors/invoiceeditor.py:270
 #: ../stoqlib/gui/search/giftcertificatesearch.py:77
 #: ../stoqlib/gui/search/sellablesearch.py:127
 #: ../stoqlib/gui/search/tillsearch.py:116
@@ -360,7 +362,7 @@ msgid "Description"
 msgstr "Descrição"
 
 #. FIXME: This column should be virtual, waiting for bug #2764
-#: ../stoqlib/reporting/product.py:67 ../stoqlib/reporting/product.py:151
+#: ../stoqlib/reporting/product.py:67 ../stoqlib/reporting/product.py:152
 #: ../stoqlib/gui/wizards/purchasewizard.py:200
 #: ../stoqlib/gui/wizards/receivingwizard.py:249
 #: ../stoqlib/gui/dialogs/productstockdetails.py:111
@@ -369,7 +371,7 @@ msgstr "Descrição"
 msgid "Unit"
 msgstr "Unidade"
 
-#: ../stoqlib/reporting/product.py:73 ../stoqlib/reporting/product.py:119
+#: ../stoqlib/reporting/product.py:74 ../stoqlib/reporting/product.py:120
 #: ../stoqlib/reporting/purchase_receival.py:63
 #: ../stoqlib/reporting/payment.py:50
 #: ../stoqlib/gui/dialogs/productstockdetails.py:80
@@ -386,28 +388,28 @@ msgstr "Unidade"
 msgid "Total:"
 msgstr "Total:"
 
-#: ../stoqlib/reporting/product.py:101
+#: ../stoqlib/reporting/product.py:102
 #: ../stoqlib/gui/search/productsearch.py:189
 msgid "Quantity Sold"
 msgstr "Vendido"
 
-#: ../stoqlib/reporting/product.py:104
+#: ../stoqlib/reporting/product.py:105
 #: ../stoqlib/gui/search/productsearch.py:192
 #: ../stoqlib/gui/dialogs/productstockdetails.py:140
 msgid "Quantity Transfered"
 msgstr "Transferido"
 
-#: ../stoqlib/reporting/product.py:107
+#: ../stoqlib/reporting/product.py:108
 #: ../stoqlib/gui/search/productsearch.py:194
 #: ../stoqlib/gui/dialogs/purchasedetails.py:119
 msgid "Quantity Received"
 msgstr "Recebido"
 
-#: ../stoqlib/reporting/product.py:133
+#: ../stoqlib/reporting/product.py:134
 msgid "Product Counting"
 msgstr "Contagem de Produtos"
 
-#: ../stoqlib/reporting/product.py:147
+#: ../stoqlib/reporting/product.py:148
 msgid "Fiscal Class"
 msgstr "Classificação Fiscal"
 
@@ -912,18 +914,135 @@ msgstr "Aberto"
 msgid "%s %s, %s"
 msgstr "%s %s, %s"
 
-#. default filename for the invoice
-#: ../stoqlib/lib/invoice.py:193
-msgid "invoice"
-msgstr "nota fiscal"
+#: ../stoqlib/lib/invoice.py:51 ../stoqlib/gui/search/commissionsearch.py:68
+msgid "Sale"
+msgstr "Venda"
 
-#: ../stoqlib/lib/invoice.py:194
-msgid "Printing Invoice"
-msgstr "Imprimir nota fiscal"
+#: ../stoqlib/lib/invoice.py:118 ../stoqlib/lib/parameters.py:63
+#: ../stoqlib/lib/parameters.py:69 ../stoqlib/lib/parameters.py:185
+#: ../stoqlib/lib/parameters.py:200 ../stoqlib/lib/parameters.py:251
+msgid "Purchase"
+msgstr "Compras"
 
-#: ../stoqlib/lib/invoice.py:195
-msgid "Preview Model"
-msgstr "Pré-Visualização"
+#: ../stoqlib/lib/invoice.py:154
+msgid "Company document number"
+msgstr "CNPJ"
+
+#: ../stoqlib/lib/invoice.py:165
+msgid "Outgoing invoice"
+msgstr "Nota Fiscal de Saída"
+
+#: ../stoqlib/lib/invoice.py:176
+msgid "Incoming invoice"
+msgstr "Nota Fiscal de Entrada"
+
+#: ../stoqlib/lib/invoice.py:186
+msgid "Client name"
+msgstr "Nome do Cliente"
+
+#: ../stoqlib/lib/invoice.py:196
+msgid "Client Address"
+msgstr "Endereço do Cliente"
+
+#: ../stoqlib/lib/invoice.py:206
+msgid "Client's document number"
+msgstr "CPF do Cliente"
+
+#: ../stoqlib/lib/invoice.py:222
+msgid "District"
+msgstr "Bairro"
+
+#: ../stoqlib/lib/invoice.py:232
+msgid "Client's postal code"
+msgstr "CEP do Cliente"
+
+#: ../stoqlib/lib/invoice.py:242
+msgid "Client's City"
+msgstr "Cidade do Cliente"
+
+#: ../stoqlib/lib/invoice.py:252
+msgid "Client Phone number"
+msgstr "Telefone do Cliente"
+
+#: ../stoqlib/lib/invoice.py:261
+msgid "Client Fax number"
+msgstr "Número do Fax do Cliente"
+
+#: ../stoqlib/lib/invoice.py:270
+msgid "Client Phone/Fax number"
+msgstr "Número Telefone/Fax do Cliente"
+
+#: ../stoqlib/lib/invoice.py:282
+msgid "Client state abbreviation"
+msgstr "Estado do Cliente"
+
+#: ../stoqlib/lib/invoice.py:292
+msgid "Clients state registry number or document number"
+msgstr "Inscrição Estadual do Cliente"
+
+#: ../stoqlib/lib/invoice.py:306
+msgid "Emission date"
+msgstr "Data de Emissão"
+
+#: ../stoqlib/lib/invoice.py:316
+msgid "Creation date"
+msgstr "Data de Criação"
+
+#: ../stoqlib/lib/invoice.py:326
+msgid "Creation time"
+msgstr "Hora de Criação"
+
+#: ../stoqlib/lib/invoice.py:336
+msgid "Number of payments"
+msgstr "Número de Parcelas"
+
+#: ../stoqlib/lib/invoice.py:347
+msgid "Payment due dates"
+msgstr "Vencimentos dos Pagamentos"
+
+#: ../stoqlib/lib/invoice.py:358
+msgid "Payment values"
+msgstr "Valor dos Pagamentos"
+
+#: ../stoqlib/lib/invoice.py:508
+msgid "Product item counter"
+msgstr "Contador de Produtos"
+
+#: ../stoqlib/lib/invoice.py:520
+msgid "Product item code / description"
+msgstr "Código de Produto / Descrição"
+
+#: ../stoqlib/lib/invoice.py:535
+msgid "Product item situation"
+msgstr "Situação do Produto"
+
+#: ../stoqlib/lib/invoice.py:548
+msgid "Product item unit"
+msgstr "Unidade do Produto"
+
+#: ../stoqlib/lib/invoice.py:561
+msgid "Product item quantity"
+msgstr "Quantidade de Produto"
+
+#: ../stoqlib/lib/invoice.py:574
+msgid "Product item price"
+msgstr "Preço do Produto"
+
+#: ../stoqlib/lib/invoice.py:587
+msgid "Product item total (price * quantity)"
+msgstr "Total Produto (preço * quantidade)"
+
+#: ../stoqlib/lib/invoice.py:600
+msgid "Product item tax"
+msgstr "icms do Produto"
+
+#: ../stoqlib/lib/invoice.py:618
+msgid "Invoice Type"
+msgstr "Tipo de Nota"
+
+#: ../stoqlib/lib/invoice.py:639
+msgid "State registry number"
+msgstr "Inscrição Estadual"
 
 #: ../stoqlib/lib/parameters.py:52 ../stoqlib/lib/parameters.py:129
 #: ../stoqlib/lib/parameters.py:135 ../stoqlib/lib/parameters.py:141
@@ -966,12 +1085,6 @@ msgid ""
 "Defines which of the employee roles existent in the system is the "
 "salesperson role"
 msgstr "Define qual cargo de funcionário é equivalente ao cargo de vendedor"
-
-#: ../stoqlib/lib/parameters.py:63 ../stoqlib/lib/parameters.py:69
-#: ../stoqlib/lib/parameters.py:185 ../stoqlib/lib/parameters.py:200
-#: ../stoqlib/lib/parameters.py:251
-msgid "Purchase"
-msgstr "Compras"
 
 #: ../stoqlib/lib/parameters.py:64
 msgid "Suggested Supplier"
@@ -2688,6 +2801,7 @@ msgid "Device Type"
 msgstr "Tipo de Dispositivo"
 
 #: ../stoqlib/gui/slaves/devicesslave.py:60
+#: ../stoqlib/gui/editors/invoiceeditor.py:273
 #: ../stoqlib/gui/search/tillsearch.py:118
 #: ../stoqlib/gui/search/stationsearch.py:42
 #: ../plugins/ecf/ecfprinterdialog.py:250
@@ -2955,9 +3069,33 @@ msgstr "Selecione um endereço"
 msgid "Liaison"
 msgstr "Contato"
 
-#: ../stoqlib/gui/editors/invoiceeditor.py:46
-msgid "Edit Invoice Details"
-msgstr "Editar Detalhes de Nota Fiscal"
+#: ../stoqlib/gui/editors/invoiceeditor.py:194
+msgid "You need at least one sale to be able to preview invoice layouts"
+msgstr "Você necessita de uma venda para editar o layout de notas fiscais"
+
+#: ../stoqlib/gui/editors/invoiceeditor.py:208
+msgid "Invoice Layouts"
+msgstr "Layouts Nota Fiscal"
+
+#: ../stoqlib/gui/editors/invoiceeditor.py:214
+msgid "Size"
+msgstr "Tamanho"
+
+#: ../stoqlib/gui/editors/invoiceeditor.py:235
+msgid "Untitled Printer"
+msgstr "Impressora Sem Título"
+
+#: ../stoqlib/gui/editors/invoiceeditor.py:266
+msgid "Invoice Printers"
+msgstr "Impressoras Fiscais"
+
+#: ../stoqlib/gui/editors/invoiceeditor.py:272
+msgid "Device name"
+msgstr "Tipo de Dispositivo"
+
+#: ../stoqlib/gui/editors/invoiceeditor.py:274
+msgid "Layout"
+msgstr "Layout"
 
 #: ../stoqlib/gui/editors/parameterseditor.py:109
 #, python-format
@@ -3715,10 +3853,6 @@ msgstr "Vendido por:"
 msgid "Open date is:"
 msgstr "Data de Abertura é:"
 
-#: ../stoqlib/gui/search/commissionsearch.py:68
-msgid "Sale"
-msgstr "Venda"
-
 #: ../stoqlib/gui/search/commissionsearch.py:78
 msgid "Payment Value"
 msgstr "Parcela"
@@ -3753,7 +3887,7 @@ msgstr "Editar o Pedido"
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:117
 msgid "Order Total"
-msgstr "Total do Pedido"
+msgstr "Total"
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:211
 #: ../stoqlib/gui/dialogs/purchasedetails.py:78
@@ -4372,6 +4506,8 @@ msgstr "Comissão:"
 #: ../data/glade/BaseSellableCategoryDataSlave.glade.h:4
 #: ../data/glade/SellableCategoryDataSlave.glade.h:5
 #: ../data/glade/PaymentAdditionDialog.glade.h:1
+#: ../data/glade/InvoicePrinterEditor.glade.h:1
+#: ../data/glade/InvoiceLayoutEditor.glade.h:2
 msgid "Description:"
 msgstr "Descrição:"
 
@@ -4752,6 +4888,7 @@ msgstr "Salário ($CURRENCY):"
 #: ../data/glade/CreditProviderMethodSlave.glade.h:1
 #: ../data/glade/DebitCardDetailsStep.glade.h:1
 #: ../data/glade/ProductRetentionDialog.glade.h:1
+#: ../data/glade/InvoiceLayoutEditor.glade.h:1
 msgid "0"
 msgstr "0"
 
@@ -5129,6 +5266,7 @@ msgstr "Imposto:"
 #: ../data/glade/StationEditor.glade.h:3
 #: ../data/glade/DeviceConstantEditor.glade.h:3
 #: ../data/glade/SellableTaxConstantEditor.glade.h:1
+#: ../data/glade/InvoiceLayoutEditor.glade.h:5
 msgid "Name:"
 msgstr "Nome:"
 
@@ -5726,6 +5864,38 @@ msgstr "Enviado:"
 msgid "Sending branch:"
 msgstr "Enviando unidade"
 
+#: ../data/glade/InvoicePrinterEditor.glade.h:2
+msgid "Device name:"
+msgstr "Nome do Dispositivo:"
+
+#: ../data/glade/InvoicePrinterEditor.glade.h:3
+msgid "Layout:"
+msgstr "Layout:"
+
+#: ../data/glade/InvoicePrinterEditor.glade.h:4
+msgid "Station:"
+msgstr "Estação:"
+
+#: ../data/glade/InvoiceLayoutEditor.glade.h:3
+msgid "Field:"
+msgstr "Campo:"
+
+#: ../data/glade/InvoiceLayoutEditor.glade.h:4
+msgid "Height:"
+msgstr "Altura:"
+
+#: ../data/glade/InvoiceLayoutEditor.glade.h:6
+msgid "Position:"
+msgstr "Posição:"
+
+#: ../data/glade/InvoiceLayoutEditor.glade.h:7
+msgid "Size:"
+msgstr "Tamanho:"
+
+#: ../data/glade/InvoiceLayoutEditor.glade.h:8
+msgid "Width:"
+msgstr "Largura:"
+
 #: ../data/template/receipt.rml.extracted.h:1
 msgid "ADDRESS:"
 msgstr "ENDEREÇO:"
@@ -5782,6 +5952,15 @@ msgstr "A IMPORTÂNCIA DE:"
 msgid "VALUE:"
 msgstr "VALOR:"
 
+#~ msgid "invoice"
+#~ msgstr "nota fiscal"
+
+#~ msgid "Preview Model"
+#~ msgstr "Pré-Visualização"
+
+#~ msgid "Edit Invoice Details"
+#~ msgstr "Editar Detalhes de Nota Fiscal"
+
 #~ msgid "Show sale items at"
 #~ msgstr "Itens à venda em"
 
@@ -5793,9 +5972,6 @@ msgstr "VALOR:"
 
 #~ msgid "New Delivery"
 #~ msgstr "Nova Entrega"
-
-#~ msgid "Client Addresses"
-#~ msgstr "Endereços do Cliente"
 
 #~ msgid "Delivery Instructions"
 #~ msgstr "Instruções da Entrega"
@@ -5817,9 +5993,6 @@ msgstr "VALOR:"
 
 #~ msgid "Tax constants"
 #~ msgstr "Constantes de Imposto"
-
-#~ msgid "Product Item"
-#~ msgstr "Item do Produto"
 
 #~ msgid "Comission:"
 #~ msgstr "Comissão:"
@@ -6096,9 +6269,6 @@ msgstr "VALOR:"
 
 #~ msgid "Clear Cookie"
 #~ msgstr "Limpar Cookie"
-
-#~ msgid "Create a new file"
-#~ msgstr "Novo"
 
 #~ msgid "History"
 #~ msgstr "Histórico"
@@ -6688,9 +6858,6 @@ msgstr "VALOR:"
 
 #~ msgid "Change User"
 #~ msgstr "Trocar de Usuário"
-
-#~ msgid "Clients"
-#~ msgstr "Clientes"
 
 #~ msgid "Credit Providers..."
 #~ msgstr "Fornecedores de Crédito..."
