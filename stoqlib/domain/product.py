@@ -24,7 +24,6 @@
 
 """ Base classes to manage product's informations """
 
-import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import currency
@@ -155,10 +154,10 @@ class ProductHistory(Domain):
     # We keep a reference to ASellable instead of Product because we want to
     # display the sellable id in the interface instead of the product id for
     # consistency with interfaces that display both
-    quantity_sold = DecimalCol(default=0)
-    quantity_received = DecimalCol(default=0)
-    sold_date = DateTimeCol(default=datetime.datetime.now)
-    received_date = DateTimeCol(default=datetime.datetime.now)
+    quantity_sold = DecimalCol(default=None)
+    quantity_received = DecimalCol(default=None)
+    sold_date = DateTimeCol(default=None)
+    received_date = DateTimeCol(default=None)
     branch = ForeignKey("PersonAdaptToBranch")
     sellable = ForeignKey("ASellable")
 
