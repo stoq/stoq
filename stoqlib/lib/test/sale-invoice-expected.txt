@@ -12,7 +12,7 @@
  1                                                                                                  
  CIDADE ARACI                                                                                       
  10.0000                                                                                            
- VENDA                                                                                              
+ SALE                                                                                               
  10.0000                                                                                            
  CLIENT                                                                                             
  5.10                                                                                               
