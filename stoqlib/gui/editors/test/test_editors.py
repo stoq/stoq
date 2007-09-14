@@ -127,6 +127,7 @@ def _create_slave_test():
         'CreditProviderEditor': ' ',
         'UserEditor': ' ',
         'TillClosingEditor': 'requires an open till',
+        'InvoicePrinterEditor' : '',
         }
     namespace = dict(_test_slave=_test_slave)
 
