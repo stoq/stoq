@@ -186,11 +186,11 @@ class ProductSearchQuantity(SearchDialog):
                        sorted=True, format='%03d', width=70),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
-                Column('quantity_sold', title=_('Quantity Sold'),
+                Column('quantity_sold', title=_('Sold'),
                        format_func=format_data,
-                       data_type=Decimal, width=100),
-                Column('quantity_transfered', title=_('Quantity Transfered'),
+                       data_type=Decimal),
+                Column('quantity_transfered', title=_('Transfered'),
                        format_func=format_data, data_type=Decimal),
-                Column('quantity_received', title=_('Quantity Received'),
+                Column('quantity_received', title=_('Received'),
                        format_func=format_data,
-                       data_type=Decimal, width=150)]
+                       data_type=Decimal)]
