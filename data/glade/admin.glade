@@ -96,12 +96,14 @@
                     <widget class="GtkAction" id="invoice_printers">
                         <property name="name">invoice_printers</property>
                         <property name="label" translatable="yes">Invoice Printers...</property>
-                    </widget>
+                        <property name="accelerator">&lt;Control&gt;f</property>
+                   </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="invoices">
                         <property name="name">invoices</property>
                         <property name="label" translatable="yes">Invoices...</property>
+                        <property name="accelerator">&lt;Control&gt;n</property>
                     </widget>
                 </child>
                 <child>
