@@ -151,8 +151,6 @@ class StoqCommandHandler:
         branches = Person.iselect(IBranch, connection=trans)
         if not branches:
             raise StoqlibError("Schema error, no branches found")
-        elif branches.count() != 1:
-            raise StoqlibError("More than one branch detected")
         branch = branches[0]
 
         try:
