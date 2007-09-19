@@ -33,7 +33,7 @@ from kiwi.ui.widgets.list import Column
 from kiwi.ui.search import ComboSearchFilter
 from sqlobject.sqlbuilder import AND
 
-from stoqlib.database.runtime import finish_transaction
+from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.person import Person, PersonAdaptToUser
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.invoice import InvoiceLayout
@@ -118,20 +118,18 @@ class AdminApp(SearchableAppWindow):
         self.edit_button.set_sensitive(has_selected)
 
     def _edit_user(self):
-        user = self.results.get_selected()
-        model =  run_person_role_dialog(UserEditor, self, self.conn, user)
-        if finish_transaction(self.conn, model):
-            self.results.update(model)
+        trans = new_transaction()
+        user = trans.get(self.results.get_selected())
+        model =  run_person_role_dialog(UserEditor, self, trans, user)
+        finish_transaction(trans, model)
+        trans.close()
 
     def _add_user(self):
-        model = run_person_role_dialog(UserEditor, self, self.conn)
-        if finish_transaction(self.conn, model):
+        trans = new_transaction()
+        model = run_person_role_dialog(UserEditor, self, trans)
+        if finish_transaction(trans, model):
             self.refresh()
-            model = self.search_table.get(model.id, connection=self.conn)
-            # This is wrong, a workaround for a bug I don't know where it is
-            # Johan 2007-05-17
-            if model in self.results:
-                self.results.select(model)
+        trans.close()
 
     def _run_invoice_printer_dialog(self):
         if not InvoiceLayout.select(connection=self.conn):
