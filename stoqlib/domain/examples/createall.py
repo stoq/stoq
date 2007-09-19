@@ -34,6 +34,7 @@ from stoqlib.importers.transporterimporter import TransporterImporter
 from stoqlib.domain.examples.sale import create_sales
 from stoqlib.domain.examples.purchase import create_purchases
 from stoqlib.domain.examples.giftcertificate import create_giftcertificates
+from stoqlib.domain.examples.transfer import create_transfer
 
 def _import_one(klass, filename):
     imp = klass()
@@ -54,3 +55,4 @@ def create(utilities=False):
     create_sales()
     create_purchases()
     create_giftcertificates()
+    create_transfer()

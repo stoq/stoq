@@ -1,0 +1,143 @@
+<% # -*- mode: xml -*-
+##
+## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+##
+## Author(s):       George Y. Kussumoto      <george@async.com.br>
+##
+%>
+<%page args="title, order, items"
+/>
+<%include file="header.rml"/>
+<%include file="style.rml"/>
+<%
+    source_branch = order.get_source_branch_name()
+    source_responsible = order.get_source_responsible_name()
+    destination_branch = order.get_destination_branch_name()
+    destination_responsible = order.get_destination_responsible_name()
+    total_items = sum([item.quantity for item in items])
+    open_date = order.open_date.strftime('%x')
+    receival_date = order.receival_date.strftime('%x')
+%>
+<story>
+    <blockTable style="4cols_tableStyle"
+                colWidths="12.3cm, 3.4cm, 2.7cm, 1.3cm">
+      <tr>
+        <_td>TRANSFER RECEIPT</_td>
+        <td></td>
+        <_td>NUMBER:</_td>
+        <td>${order.id}</td>
+      </tr>
+    </blockTable>
+    <spacer length="0.5cm"/>
+% if source_branch:
+    <blockTable style="2cols_tableStyle" colWidths="4.5cm, 15.1cm">
+      <tr>
+        <_td>SOURCE</_td>
+        <td>${source_branch}</td>
+      </tr>
+    </blockTable>
+% endif
+% if source_responsible:
+    <blockTable style="2cols_tableStyle" colWidths="4.5cm, 15.1cm">
+      <tr>
+        <_td>RESPONSIBLE</_td>
+        <td>${source_responsible}</td>
+      </tr>
+    </blockTable>
+% endif
+% if destination_branch:
+    <blockTable style="2cols_tableStyle" colWidths="4.5cm, 15.1cm">
+      <tr>
+        <_td>DESTINATION</_td>
+        <td>${destination_branch}</td>
+      </tr>
+    </blockTable>
+% endif
+% if destination_responsible:
+    <blockTable style="2cols_tableStyle" colWidths="4.5cm, 15.1cm">
+      <tr>
+        <_td>RESPONSIBLE</_td>
+        <td>${destination_responsible}</td>
+      </tr>
+    </blockTable>
+% endif
+    <spacer length="0.5cm"/>
+    <blockTable style="2cols_tableStyle" colWidths="19.6cm, 0cm">
+      <tr>
+        <_td>TRANSFER PRODUCTS</_td>
+        <td></td>
+      </tr>
+    </blockTable>
+    <blockTable style="6cols_grid_bold_tableStyle"
+                colWidths="4.5cm, 0cm, 12cm, 0cm, 0cm, 3.1cm">
+      <tr>
+        <_td>CODE</_td>
+        <td></td>
+        <_td>DESCRIPTION</_td>
+        <td></td>
+        <_td>QUANTITY</_td>
+        <td></td>
+      </tr>
+    </blockTable>
+% for item in items:
+    <blockTable style="6cols_grid_tableStyle"
+                colWidths="4.5cm, 0cm, 12cm, 0cm, 0cm, 3.1cm">
+      <tr>
+        <td>${item.id}</td>
+        <td></td>
+        <td><para style="para_style">${item.sellable.get_description()}</para></td>
+        <td></td>
+        <td>${item.quantity}</td>
+        <td></td>
+      </tr>
+    </blockTable>
+1;3A
+% endfor
+    <blockTable style="6cols_noborder_tableStyle"
+                colWidths="4.5cm, 0cm, 12cm, 0cm, 0cm, 3.1cm">
+      <tr>
+        <td></td>
+        <td></td>
+        <_td>TOTAL:</_td>
+        <td></td>
+        <td></td>
+        <td>${total_items}</td>
+      </tr>
+    </blockTable>
+   <spacer length="0.5cm"/>
+   <blockTable style="4cols_tableStyle"
+                colWidths="4.5cm, 5.5cm, 2cm, 7.6cm">
+      <tr>
+        <_td>OPEN:</_td>
+        <td>${open_date}</td>
+        <_td>SIGNATURE:</_td>
+        <td></td>
+      </tr>
+    </blockTable>
+    <blockTable style="4cols_tableStyle"
+                colWidths="4.5cm, 5.5cm, 2cm, 7.6cm">
+      <tr>
+        <_td>RECEIVAL:</_td>
+        <td>${receival_date}</td>
+        <_td>SIGNATURE:</_td>
+        <td></td>
+      </tr>
+    </blockTable>
+</story>
+<%include file="footer.rml"/>

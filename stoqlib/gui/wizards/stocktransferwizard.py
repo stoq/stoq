@@ -25,6 +25,8 @@
 
 import datetime
 from decimal import Decimal
+
+import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
@@ -36,9 +38,12 @@ from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
+from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
+from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
+from stoqlib.reporting.transfer_receipt import TransferOrderReceipt
 
 _ = stoqlib_gettext
 
@@ -259,6 +264,14 @@ class StockTransferWizard(BaseWizard):
         BaseWizard.__init__(self, conn, first_step, self.model)
         self.next_button.set_sensitive(False)
 
+    def _receipt_dialog(self, order):
+        msg = _(u'Would you like to print a receipt for this transfer?')
+        if yesno(msg, gtk.RESPONSE_YES, _(u'Yes'), _('No')):
+           items = TransferOrderItem.selectBy(transfer_order=order,
+                                              connection=self.conn)
+           print_report(TransferOrderReceipt, order, items)
+        return
+
     def finish(self):
         order = TransferOrder(
             open_date=self.model.open_date,
@@ -275,3 +288,4 @@ class StockTransferWizard(BaseWizard):
                               quantity=item.quantity)
         self.retval = self.model
         self.close()
+        self._receipt_dialog(order)

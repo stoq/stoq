@@ -106,3 +106,12 @@ class TestReport(DomainTest):
         for item in in_payments:
             item.due_date = datetime.date(2007, 1, 1)
         self.checkPDF(ReceivablePaymentReport, in_payments, date=datetime.date(2007, 1, 1))
+
+    def testTransferOrderReceipt(self):
+        from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
+        from stoqlib.reporting.transfer_receipt import TransferOrderReceipt
+        orders = list(TransferOrder.select(connection=self.trans))
+        items = TransferOrderItem.selectBy(transfer_order=orders[0],
+                                           connection=self.trans)
+        self.checkPDF(TransferOrderReceipt, orders[0], items)
+
