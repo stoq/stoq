@@ -22,9 +22,9 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="active_check">
+                    <widget class="ProxyRadioButton" id="active_check">
                         <property name="data_type">bool</property>
-                        <property name="data_value" context="yes" translatable="yes">True</property>
+                        <property name="data_value">True</property>
                         <property name="is_focus">True</property>
                         <property name="label" context="yes" translatable="yes">Active</property>
                         <property name="model_attribute">is_active</property>
@@ -38,13 +38,13 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="inactive_check">
+                    <widget class="ProxyRadioButton" id="inactive_check">
                         <property name="active">False</property>
                         <property name="data_type">bool</property>
-                        <property name="data_value" context="yes" translatable="yes">False</property>
+                        <property name="data_value">False</property>
                         <property name="group">active_check</property>
                         <property name="label" context="yes" translatable="yes">Inactive</property>
-                        <property name="model_attribute">is_active</property>
+                        <property name="model_attribute">inactive_check</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>

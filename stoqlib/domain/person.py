@@ -658,6 +658,13 @@ class PersonAdaptToUser(PersonAdapter):
             return True
         return user.password == password
 
+    @classmethod
+    def get_status_str(self):
+        """Returns the status description of a user"""
+        if self.is_active:
+            return self.statuses[self.STATUS_ACTIVE]
+        return self.statuses[self.STATUS_INACTIVE]
+
 Person.registerFacet(PersonAdaptToUser, IUser)
 
 class PersonAdaptToBranch(PersonAdapter):

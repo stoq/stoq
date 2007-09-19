@@ -60,6 +60,7 @@ class _IndividualDetailsModel(AttributeForwarder):
         'marital_status',
         'get_marital_statuses',
         'birth_location',
+        'gender'
         ]
 
     @argcheck(PersonAdaptToIndividual, StoqlibTransaction)
