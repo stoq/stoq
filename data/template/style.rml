@@ -58,6 +58,47 @@
         <blockBottomPadding length="0.3cm"/>
         <blockTopPadding length="0.3cm"/>
     </blockTableStyle>
+    <blockTableStyle id="6cols_grid_tableStyle">
+        <lineStyle kind="GRID" colorName="black"/>
+        <blockFont name="Helvetica" size="14"/>
+        <blockFont name="Helvetica" size="14"
+                   start="0,0" stop="0,0"/>
+        <blockFont name="Helvetica" size="14"
+                   start="2,0" stop="2,0"/>
+        <blockFont name="Helvetica" size="14"
+                   start="4,0" stop="4,0"/>
+        <blockAlignment value="LEFT"/>
+        <blockValign value="MIDDLE"/>
+        <blockBottomPadding length="0.3cm"/>
+        <blockTopPadding length="0.3cm"/>
+    </blockTableStyle>
+    <blockTableStyle id="6cols_grid_bold_tableStyle">
+        <lineStyle kind="GRID" colorName="black"/>
+        <blockFont name="Helvetica-Bold" size="14"/>
+        <blockFont name="Helvetica-Bold" size="14"
+                   start="0,0" stop="0,0"/>
+        <blockFont name="Helvetica-Bold" size="14"
+                   start="2,0" stop="2,0"/>
+        <blockFont name="Helvetica-Bold" size="14"
+                   start="4,0" stop="4,0"/>
+        <blockAlignment value="LEFT"/>
+        <blockValign value="MIDDLE"/>
+        <blockBottomPadding length="0.3cm"/>
+        <blockTopPadding length="0.3cm"/>
+    </blockTableStyle>
+    <blockTableStyle id="6cols_noborder_tableStyle">
+        <blockFont name="Helvetica" size="14"/>
+        <blockFont name="Helvetica" size="14"
+                   start="0,0" stop="0,0"/>
+        <blockFont name="Helvetica" size="14"
+                   start="2,0" stop="2,0"/>
+        <blockFont name="Helvetica" size="14"
+                   start="4,0" stop="4,0"/>
+        <blockAlignment value="LEFT"/>
+        <blockValign value="MIDDLE"/>
+        <blockBottomPadding length="0.3cm"/>
+        <blockTopPadding length="0.3cm"/>
+    </blockTableStyle>
     <blockTableStyle id="separator">
         <lineStyle kind="LINEABOVE" colorName="black"/>
         <blockFont name="Helvetica" size="8"/>

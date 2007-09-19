@@ -50,6 +50,14 @@ class TransferOrderItem(Domain):
     transfer_order = ForeignKey('TransferOrder')
     quantity = DecimalCol()
 
+    #
+    # Public API
+    #
+
+    def get_total(self):
+        """Returns the total cost of a transfer item eg quantity * cost"""
+        return self.quantity * self.sellable.cost
+
 
 class TransferOrder(Domain):
     """ Transfer Order class
@@ -95,6 +103,10 @@ class TransferOrder(Domain):
     # Public API
     #
 
+    def get_source_branch_name(self):
+        """Returns the source branch name"""
+        return self.source_branch.person.name
+
     def get_destination_branch_name(self):
         """Returns the destination branch name"""
         return self.destination_branch.person.name
@@ -104,3 +116,17 @@ class TransferOrder(Domain):
            at source branch
         """
         return self.source_responsible.person.name
+
+    def get_destination_responsible_name(self):
+        """Returns the name of the employee responsible for the transfer
+           at destination branch
+        """
+        return self.destination_responsible.person.name
+
+    def get_total_items_transfer(self):
+        """Retuns the transfer items quantity or zero if there is no
+           item in transfer
+        """
+        items = TransferOrderItem.selectBy(transfer_order=self,
+                                           connection=self.get_connection())
+        return sum([i.quantity for i in items], 0)

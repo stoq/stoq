@@ -30,7 +30,7 @@
                                         for payment in payments])
   payment_description += " made in " + payment.get_open_date_string()
 %>
-<%include file="receipt-style.rml"/>
+<%include file="style.rml"/>
 <story>
     <blockTable style="6cols_tableStyle"
                 colWidths="7.3cm, 0cm, 3cm, 3.3cm, 2.5cm, 3.5cm">
