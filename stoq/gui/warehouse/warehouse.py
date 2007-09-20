@@ -186,7 +186,8 @@ class WarehouseApp(SearchableAppWindow):
 
     def on_print_button__clicked(self, button):
         results = self.results.get_selected_rows() or self.results
-        self.print_report(ProductReport, results)
+        branch = self.branch_filter.combo.get_active_text()
+        self.print_report(ProductReport, results, branch=branch)
 
     def on_history_button__clicked(self, button):
         selected = self._klist.get_selected_rows()
