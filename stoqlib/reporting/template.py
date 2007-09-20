@@ -157,8 +157,7 @@ class SearchResultsReport(BaseStoqReport):
         """
         title = self.report_name.capitalize()
         title += " - %s " % _("Listing")
-        main_object_name = (self.main_object_name
-                            and self.main_object_name.lower() or "")
+        main_object_name = (self.main_object_name or "")
         if self._blocked_records > 0:
             rows_qty = len(self._data)
             title += (_("%d of a total of %d %s")
