@@ -45,11 +45,12 @@ class ProductReport(SearchResultsReport):
     # bug 2517
     obj_type = ProductFullStockView
     report_name = _("Product Listing")
-    main_object_name = _("products")
     filter_format_string = _("on branch <u>%s</u>")
 
     def __init__(self, filename, products, *args, **kwargs):
         self._products = products
+        ProductReport.main_object_name = _("products from branch %s") % \
+            (kwargs['branch'],)
         SearchResultsReport.__init__(self, filename, products,
                                      ProductReport.report_name,
                                      landscape=True,
@@ -61,6 +62,10 @@ class ProductReport(SearchResultsReport):
             OTC(_("Code"), lambda obj: '%03d' % obj.id, width=60,
                 truncate=True),
             OTC(_("Description"), lambda obj: obj.description, truncate=True),
+            OTC(_("Cost"), lambda obj: obj.cost, width=60, truncate=True),
+            OTC(_("Price"), lambda obj: obj.price, width=60, truncate=True),
+            OTC(_("C.M."), lambda obj: obj.price - obj.cost, width=60,
+                truncate=True),
             OTC(_("Quantity"), lambda obj: format_data(obj.stock),
                 width=80, align=RIGHT, truncate=True),
             # FIXME: This column should be virtual, waiting for bug #2764
@@ -69,9 +74,16 @@ class ProductReport(SearchResultsReport):
             ]
 
     def _setup_items_table(self):
-        total_qty = sum([item.stock or 0 for item in self._products],
-                        Decimal(0))
-        summary_row = ["", "", _("Total:"), format_quantity(total_qty), ""]
+        total_cost = total_price = total_cm = total_qty = 0
+        for item in self._products:
+            total_cost += item.cost or Decimal(0)
+            total_price += item.price or Decimal(0)
+            total_cm += item.price - item.cost or Decimal(0)
+            total_qty += item.stock or Decimal(0)
+        summary_row = ["",  _("Total:"), format_quantity(total_cost),
+                       format_quantity(total_price),
+                       format_quantity(total_cm),
+                       format_quantity(total_qty), ""]
         self.add_object_table(self._products, self._get_columns(),
                               summary_row=summary_row)
 

@@ -92,7 +92,8 @@ class ProductSearch(SearchEditor):
         self.results.set_column_visibility(col_index, False)
 
     def on_print_button_clicked(self, button):
-        print_report(ProductReport, list(self.results))
+        print_report(ProductReport, list(self.results),
+                     branch=self.branch_filter.combo.get_active_text())
 
     #
     # SearchDialog Hooks

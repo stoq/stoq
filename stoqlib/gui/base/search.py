@@ -185,6 +185,8 @@ class SearchDialog(BasicDialog):
             self._details_slave.details_button.hide()
         if has_print_btn:
             self._details_slave.connect("print", self.on_print_button_clicked)
+            self.set_print_button_sensitive(False)
+            self.results.connect('has-rows', self._has_rows)
         else:
             self._details_slave.print_button.hide()
 
@@ -195,6 +197,10 @@ class SearchDialog(BasicDialog):
     @argcheck(bool)
     def set_details_button_sensitive(self, value):
         self._details_slave.details_button.set_sensitive(value)
+
+    @argcheck(bool)
+    def set_print_button_sensitive(self, value):
+        self._details_slave.print_button.set_sensitive(value)
 
     def get_selection(self):
         mode = self.results.get_selection_mode()
@@ -291,6 +297,8 @@ class SearchDialog(BasicDialog):
     def _on_results__row_activated(self, results, obj):
         self.row_activate(obj)
 
+    def _has_rows(self, results, obj):
+        self.set_print_button_sensitive(obj)
 
     #
     # Hooks

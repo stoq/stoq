@@ -30,8 +30,10 @@ import stoqlib
 
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.domain.views import ProductFullStockView
 from stoqlib.reporting.payment import (ReceivablePaymentReport,
                                        PayablePaymentReport)
+from stoqlib.reporting.product import ProductReport
 from stoqlib.lib.diffutils import diff_files
 
 class TestReport(DomainTest):
@@ -115,3 +117,9 @@ class TestReport(DomainTest):
                                            connection=self.trans)
         self.checkPDF(TransferOrderReceipt, orders[0], items)
 
+    def testProductReport(self):
+        products = list(ProductFullStockView.select(connection=self.trans))
+        branch = self.create_branch()
+        self.checkPDF(ProductReport, products,
+                      branch=branch,
+                      date=datetime.date(2007, 1, 1))
