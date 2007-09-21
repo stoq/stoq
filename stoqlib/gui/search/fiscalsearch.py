@@ -158,3 +158,6 @@ class FiscalBookEntrySearch(SearchEditor):
         self.add_filter(entry_type, callback=self._get_entry_type_query,
                         position=SearchFilterPosition.TOP)
 
+    def get_editor_model(self, view_object):
+        return view_object.book_entry
+

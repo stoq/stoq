@@ -356,8 +356,8 @@ class ExampleCreator(object):
                                   sellable=sellable,
                                   receiving_order=receiving_order)
 
-    def create_fiscal_book_entry(self, entry_type, icms_value=0, iss_value=0,
-                                 ipi_value=0, invoice_number=None):
+    def create_fiscal_book_entry(self, entry_type=None, icms_value=0,
+                                 iss_value=0, ipi_value=0, invoice_number=None):
         from stoqlib.domain.payment.group import AbstractPaymentGroup
         from stoqlib.domain.fiscal import FiscalBookEntry
         payment_group = AbstractPaymentGroup(connection=self.trans)
