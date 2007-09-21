@@ -133,6 +133,13 @@ class _FiscalBookEntryView(object):
         return FiscalBookEntry.get(self.id,
                                    connection=self.get_connection())
 
+    @property
+    def drawee_name(self):
+        drawee = Person.get(self.drawee_id,
+                            connection=self.get_connection())
+        if drawee:
+            return drawee.name
+        return u""
 
 class IcmsIpiView(_FiscalBookEntryView, Viewable):
     """

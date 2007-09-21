@@ -27,7 +27,7 @@
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.domain.fiscal import CfopData
+from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 
 _ = stoqlib_gettext
 
@@ -54,7 +54,7 @@ class CfopEditor(BaseEditor):
 
 
 class FiscalBookEntryEditor(BaseEditor):
-    model_type = object
+    model_type = FiscalBookEntry
     gladefile = 'FiscalBookEntryEditor'
     proxy_widgets = ('cfop',
                      'date',
@@ -74,5 +74,5 @@ class FiscalBookEntryEditor(BaseEditor):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.add_proxy(self.model.book_entry,
+        self.add_proxy(self.model,
                        FiscalBookEntryEditor.proxy_widgets)
