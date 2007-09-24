@@ -95,6 +95,8 @@ class TestReport(DomainTest):
         os.unlink(out_original_filename)
         os.unlink(original_filename_html)
         if retval:
+            if filename.endswith('.tmp'):
+                os.unlink(filename)
             raise AssertionError("Files differ, check output above")
 
     def testPayablePaymentReport(self):
