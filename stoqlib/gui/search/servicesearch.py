@@ -34,9 +34,11 @@ from kiwi.ui.search import ComboSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.service import Service, ServiceView
+from stoqlib.reporting.service import ServiceReport
 from stoqlib.gui.base.columns import Column
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
+from stoqlib.gui.printing import print_report
 
 _ = stoqlib_gettext
 
@@ -105,3 +107,6 @@ class ServiceSearch(SearchEditor):
 
     def _get_query(self, states):
         return ServiceView.q.service_id != None
+
+    def on_print_button_clicked(self, button):
+        print_report(ServiceReport, list(self.results))
