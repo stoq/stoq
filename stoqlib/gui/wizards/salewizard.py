@@ -580,7 +580,9 @@ class _AbstractSalesPersonStep(WizardEditorStep):
             self.salesperson_combo.set_sensitive(False)
         else:
             self.salesperson_combo.grab_focus()
+        self._fill_clients_combo()
 
+    def _fill_clients_combo(self):
         clients = ClientView.get_active_clients(self.conn)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         clients = clients[:max_results]
@@ -591,10 +593,11 @@ class _AbstractSalesPersonStep(WizardEditorStep):
         trans = new_transaction()
         client = run_person_role_dialog(ClientEditor, self, trans, None)
         finish_transaction(trans, client)
-
-        if client is not None:
-            self.client.append_item(str(client.person.name), client)
-            self.client.select(client)
+        if len(self.client) == 0:
+            self._fill_clients_combo()
+        else:
+            self.client.append_item(client.person.name, client)
+        self.client.select(client)
 
     def _get_selected_payment_method(self):
         return self.pm_slave.get_selected_method()
