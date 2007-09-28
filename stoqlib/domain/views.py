@@ -109,6 +109,31 @@ class ProductFullStockView(Viewable):
         return Product.get(self.product_id, connection=self.get_connection())
 
 
+class ProductWithStockView(ProductFullStockView):
+    """Stores information about products, since product has a purchase or sale.
+    This view is used to query stock information on a certain branch.
+
+    @cvar id: the id of the asellable table
+    @cvar barcode: the sellable barcode
+    @cvar status: the sellable status
+    @cvar cost: the sellable cost
+    @cvar price: the sellable price
+    @cvar description: the sellable description
+    @cvar unit: the unit of the product
+    @cvar product_id: the id of the product table
+    @cvar branch_id: the id of person_adapt_to_branch table
+    @cvar stock: the stock of the product
+     """
+
+    columns = ProductFullStockView.columns
+    clause = AND(
+        ProductFullStockView.clause,
+        ProductStockItem.q.quantity >= 0,
+        ProductStockItem.q.logic_quantity >= 0,
+        )
+    ProductFullStockView.joins
+
+
 class ProductQuantityView(Viewable):
     """Stores information about products solded and received.
 
