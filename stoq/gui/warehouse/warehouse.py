@@ -38,7 +38,7 @@ from stoqlib.database.runtime import (new_transaction, get_current_branch,
 from stoqlib.domain.interfaces import IBranch, IStorable
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import ProductAdaptToSellable
-from stoqlib.domain.views import ProductFullStockView
+from stoqlib.domain.views import ProductWithStockView
 from stoqlib.lib.message import warning
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
@@ -57,7 +57,7 @@ class WarehouseApp(SearchableAppWindow):
     app_name = _('Warehouse')
     app_icon_name = 'stoq-warehouse-app'
     gladefile = "warehouse"
-    search_table = ProductFullStockView
+    search_table = ProductWithStockView
     search_labels = _('Matching:')
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
