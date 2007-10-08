@@ -32,6 +32,7 @@ from stoqdrivers.enum import TaxType
 from stoqdrivers.escp import EscPPrinter
 
 from stoqlib.domain.interfaces import ICompany, IIndividual, IPaymentGroup
+from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -104,7 +105,11 @@ class SaleInvoice(object):
         return printerdata
 
     def send_to_printer(self, device):
-        printer = EscPPrinter(device)
+        try:
+            printer = EscPPrinter(device)
+        except IOError, e:
+            warning(str(e))
+            return
         for line in self.generate():
             printer.send(line.tostring())
         printer.form_feed()
