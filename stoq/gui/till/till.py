@@ -176,13 +176,21 @@ class TillApp(SearchableAppWindow):
         self._printer.summarize()
 
     def _update_total(self):
-        if len(self.results):
-            totals = [sale.total for sale in self.results]
-            subtotal = currency(sum(totals, currency(0)))
-        else:
-            subtotal = currency(0)
-        text = _(u"Total: %s") % converter.as_string(currency, subtotal)
+        balance = currency(self._get_till_balance())
+        text = _(u"Total: %s") % converter.as_string(currency, balance)
         self.total_label.set_text(text)
+
+    def _get_till_balance(self):
+        """Returns the balance of till operations"""
+        try:
+            till = Till.get_current(self.conn)
+        except TillError:
+            till = None
+
+        if till is None:
+            return currency(0)
+
+        return till.get_balance()
 
     def _setup_widgets(self):
         self.total_label.set_size('xx-large')
@@ -287,11 +295,13 @@ class TillApp(SearchableAppWindow):
 
     def on_AddCash__activate(self, action):
         model = run_dialog(CashInEditor, self, self.conn)
-        finish_transaction(self.conn, model)
+        if finish_transaction(self.conn, model):
+            self._update_total()
 
     def on_RemoveCash__activate(self, action):
         model = run_dialog(CashOutEditor, self, self.conn)
-        finish_transaction(self.conn, model)
+        if finish_transaction(self.conn, model):
+            self._update_total()
 
     #
     # Callbacks
@@ -308,6 +318,7 @@ class TillApp(SearchableAppWindow):
 
     def on_confirm_order_button__clicked(self, button):
         self._confirm_order()
+        self._update_total()
 
     def on_results__double_click(self, results, sale):
         self._run_details_dialog()
@@ -315,10 +326,14 @@ class TillApp(SearchableAppWindow):
     def on_results__selection_changed(self, results, sale):
         self._update_toolbar_buttons()
 
+    def on_results__has_rows(self, results, has_rows):
+        self._update_total()
+
     def on_details_button__clicked(self, button):
         self._run_details_dialog()
 
     def on_return_button__clicked(self, button):
         sale_view = self._check_selected()
         retval = run_dialog(SaleReturnWizard, self, self.conn, sale_view)
-        finish_transaction(self.conn, retval)
+        if finish_transaction(self.conn, retval):
+            self._update_total()
