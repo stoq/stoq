@@ -28,7 +28,7 @@ from decimal import Decimal
 
 from kiwi.datatypes import currency
 from sqlobject.sqlbuilder import AND
-from stoqdrivers.enum import TaxType
+from stoqdrivers.enum import TaxType, PaymentMethodType
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
@@ -39,7 +39,7 @@ from stoqlib.domain.interfaces import (IPaymentGroup,
                                        IOutPayment,
                                        IGiftCertificate)
 from stoqlib.domain.payment.group import AbstractPaymentGroup
-from stoqlib.domain.payment.methods import CheckPM, MoneyPM
+from stoqlib.domain.payment.methods import APaymentMethod, CheckPM, MoneyPM
 from stoqlib.domain.payment.payment import Payment, PaymentAdaptToOutPayment
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import SellableTaxConstant
@@ -302,6 +302,187 @@ class TestSale(DomainTest):
         self.failUnless(book_entry)
         self.assertEqual(book_entry.icms_value,
                          Decimal("0.18") * paid_payment.value)
+
+    def testReturnPaidWithPenalty(self):
+        sale = self.create_sale()
+        self.failIf(sale.can_return())
+
+        self._add_product(sale, price=300)
+        sale.order()
+        self.failIf(sale.can_return())
+
+        till = Till.get_current(self.trans)
+        balance_initial = till.get_balance()
+
+        self._add_payments(sale)
+        sale.confirm()
+        self.failUnless(sale.can_return())
+
+        balance_before_return = till.get_balance()
+        self.failIf(balance_before_return <= balance_initial)
+
+        sale.set_paid()
+        self.failUnless(sale.can_return())
+
+        renegotiation = sale.create_sale_return_adapter()
+        renegotiation.penalty_value = currency(50)
+        sale.return_(renegotiation)
+        self.failIf(sale.can_return())
+        self.assertEqual(sale.status, Sale.STATUS_RETURNED)
+        self.assertEqual(sale.return_date.date(), datetime.date.today())
+
+        group = IPaymentGroup(sale)
+        self.assertEqual(group.cancel_date.date(), datetime.date.today())
+        self.assertEqual(group.status, AbstractPaymentGroup.STATUS_CANCELLED)
+        paid_payment = group.get_items()[0]
+        payment = Payment.selectOne(
+            AND(Payment.q.groupID == group.id,
+                Payment.q.tillID == till.id,
+                Payment.q.id == PaymentAdaptToOutPayment.q._originalID),
+            connection=self.trans)
+        self.failUnless(payment)
+        self.failUnless(IOutPayment(payment, None))
+        out_payment_plus_penalty = payment.value + renegotiation.penalty_value
+        self.assertEqual(out_payment_plus_penalty, paid_payment.value)
+        self.assertEqual(payment.status, Payment.STATUS_PAID)
+        self.failUnless(isinstance(payment.method, MoneyPM))
+
+        cfop = CfopData.selectOneBy(code='5.202', connection=self.trans)
+        book_entry = FiscalBookEntry.selectOneBy(
+            entry_type=FiscalBookEntry.TYPE_PRODUCT,
+            payment_group=group,
+            cfop=cfop,
+            connection=self.trans)
+        self.failUnless(book_entry)
+        self.assertEqual(book_entry.icms_value,
+                         Decimal("0.18") * paid_payment.value)
+
+        balance_final = till.get_balance()
+        self.failIf(balance_initial >= balance_final)
+
+    def testReturnNotPaid(self):
+        sale = self.create_sale()
+        self.failIf(sale.can_return())
+
+        product = self._add_product(sale, price=300)
+        sale.order()
+        self.failIf(sale.can_return())
+
+        till = Till.get_current(self.trans)
+        balance_initial = till.get_balance()
+
+        group = sale.addFacet(IPaymentGroup, connection=self.trans)
+        method = APaymentMethod.get_by_enum(self.trans,
+                                            PaymentMethodType.CHECK)
+        payment = method.create_inpayment(group, Decimal(300))
+        sale.confirm()
+        self.failUnless(sale.can_return())
+
+        balance_before_return = till.get_balance()
+        self.failIf(balance_before_return <= balance_initial)
+
+        sale.return_(sale.create_sale_return_adapter())
+        self.failIf(sale.can_return())
+        self.assertEqual(sale.status, Sale.STATUS_RETURNED)
+        self.assertEqual(sale.return_date.date(), datetime.date.today())
+
+        self.assertEqual(group.cancel_date.date(), datetime.date.today())
+        self.assertEqual(group.status, AbstractPaymentGroup.STATUS_CANCELLED)
+        returned_amount = 0
+        for item in group.get_items():
+            if IOutPayment(item, None) is not None:
+                returned_amount += item.value
+        self.assertEqual(returned_amount, currency(0))
+
+        balance_final = till.get_balance()
+        self.assertEqual(balance_initial, balance_final)
+
+    def testReturnNotEntirelyPaid(self):
+        sale = self.create_sale()
+        self.failIf(sale.can_return())
+
+        self._add_product(sale, price=300)
+        sale.order()
+        self.failIf(sale.can_return())
+
+        till = Till.get_current(self.trans)
+        balance_initial = till.get_balance()
+
+        group = sale.addFacet(IPaymentGroup, connection=self.trans)
+        method = APaymentMethod.get_by_enum(self.trans,
+                                            PaymentMethodType.CHECK)
+        payment1 = method.create_inpayment(group, Decimal(100))
+        payment2 = method.create_inpayment(group, Decimal(100))
+        payment3 = method.create_inpayment(group, Decimal(100))
+        sale.confirm()
+        payment = payment1.get_adapted()
+        payment.pay()
+        self.failUnless(sale.can_return())
+
+        balance_before_return = till.get_balance()
+        self.failIf(balance_before_return <= balance_initial)
+
+        self.failUnless(sale.can_return())
+        sale.return_(sale.create_sale_return_adapter())
+        self.failIf(sale.can_return())
+        self.assertEqual(sale.status, Sale.STATUS_RETURNED)
+        self.assertEqual(sale.return_date.date(), datetime.date.today())
+
+        self.assertEqual(group.cancel_date.date(), datetime.date.today())
+        self.assertEqual(group.status, AbstractPaymentGroup.STATUS_CANCELLED)
+        returned_amount = 0
+        for item in group.get_items():
+            if IOutPayment(item, None) is not None:
+                returned_amount += item.value
+        self.assertEqual(payment.value, returned_amount)
+
+        balance_final = till.get_balance()
+        self.assertEqual(balance_initial, balance_final)
+
+    def testReturnNotEntirelyPaidWithPenalty(self):
+        sale = self.create_sale()
+        self.failIf(sale.can_return())
+
+        self._add_product(sale, price=300)
+        sale.order()
+        self.failIf(sale.can_return())
+
+        till = Till.get_current(self.trans)
+        balance_initial = till.get_balance()
+
+        group = sale.addFacet(IPaymentGroup, connection=self.trans)
+        method = APaymentMethod.get_by_enum(self.trans,
+                                            PaymentMethodType.CHECK)
+        payment1 = method.create_inpayment(group, Decimal(100))
+        payment2 = method.create_inpayment(group, Decimal(100))
+        payment3 = method.create_inpayment(group, Decimal(100))
+        sale.confirm()
+        payment = payment1.get_adapted()
+        payment.pay()
+        self.failUnless(sale.can_return())
+
+        balance_before_return = till.get_balance()
+        self.failIf(balance_before_return <= balance_initial)
+
+        self.failUnless(sale.can_return())
+        renegotiation = sale.create_sale_return_adapter()
+        renegotiation.penalty_value = currency(50)
+        sale.return_(renegotiation)
+        self.failIf(sale.can_return())
+        self.assertEqual(sale.status, Sale.STATUS_RETURNED)
+        self.assertEqual(sale.return_date.date(), datetime.date.today())
+
+        self.assertEqual(group.cancel_date.date(), datetime.date.today())
+        self.assertEqual(group.status, AbstractPaymentGroup.STATUS_CANCELLED)
+        returned_amount = 0
+        for item in group.get_items():
+            if IOutPayment(item, None) is not None:
+                returned_amount += item.value
+        paid_value = payment.value - renegotiation.penalty_value
+        self.assertEqual(paid_value, returned_amount)
+
+        balance_final = till.get_balance()
+        self.failIf(balance_initial >= balance_final)
 
     def testCanCancel(self):
         sale = self.create_sale()

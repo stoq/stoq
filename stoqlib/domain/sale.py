@@ -464,7 +464,7 @@ class Sale(ValidatableDomain):
     def return_(self, renegotiation):
         """Returns a sale
         Returning a sale means that all the items are returned to the item.
-        A renegotiation object needs to be uspplied which
+        A renegotiation object needs to be supplied which
         contains the invoice number and the eventual penalty
 
         @param renegotiation: renegotiation information
@@ -782,7 +782,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         assert self.can_cancel()
 
         self._cancel_pending_payments()
-        self._payback_paid_payments()
+        self._payback_paid_payments(renegotiation.penalty_value)
         self._revert_fiscal_entry(renegotiation.invoice_number)
 
         AbstractPaymentGroup.cancel(self, renegotiation)
@@ -797,13 +797,22 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
                                         connection=self.get_connection()):
             payment.cancel()
 
-    def _payback_paid_payments(self):
+    def _payback_paid_payments(self, penalty_value):
+        conn = self.get_connection()
+        till = Till.get_current(conn)
         paid_value = self.get_total_paid()
+        till_difference = self.sale.get_total_sale_amount() - paid_value
+
+        if till_difference > 0:
+            # The sale was not entirely paid, so we have to payback the
+            # till, because the sale amount have already been added in there
+            desc = _(u'Debit on Till: Sale %d Returned') % self.sale.id
+            till.add_debit_entry(till_difference, desc)
+        # Update paid value now, penalty stays on till
+        paid_value -= penalty_value
         if not paid_value:
             return
 
-        conn = self.get_connection()
-        till = Till.get_current(conn)
         money = MoneyPM.selectOne(connection=conn)
         out_payment = money.create_outpayment(
             self, paid_value,
