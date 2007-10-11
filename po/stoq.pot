@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-03 15:46-0300\n"
+"POT-Creation-Date: 2007-10-11 15:16-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -255,15 +255,15 @@ msgstr ""
 msgid "Inventory"
 msgstr ""
 
-#: ../stoq/gui/inventory/inventory.py:54 ../stoq/gui/warehouse/warehouse.py:62
+#: ../stoq/gui/inventory/inventory.py:54 ../stoq/gui/warehouse/warehouse.py:61
 msgid "Matching:"
 msgstr ""
 
-#: ../stoq/gui/inventory/inventory.py:70 ../stoq/gui/warehouse/warehouse.py:78
+#: ../stoq/gui/inventory/inventory.py:70 ../stoq/gui/warehouse/warehouse.py:77
 msgid "Show products at:"
 msgstr ""
 
-#: ../stoq/gui/inventory/inventory.py:75 ../stoq/gui/warehouse/warehouse.py:83
+#: ../stoq/gui/inventory/inventory.py:75 ../stoq/gui/warehouse/warehouse.py:82
 #: ../stoq/gui/pos/deliveryeditor.py:102
 msgid "Code"
 msgstr ""
@@ -273,33 +273,30 @@ msgid "Barcode"
 msgstr ""
 
 #: ../stoq/gui/inventory/inventory.py:78 ../stoq/gui/payable/payable.py:95
-#: ../stoq/gui/warehouse/warehouse.py:85
+#: ../stoq/gui/warehouse/warehouse.py:84
 #: ../stoq/gui/receivable/receivable.py:128 ../stoq/gui/pos/pos.py:151
 #: ../stoq/gui/pos/deliveryeditor.py:104
 msgid "Description"
 msgstr ""
 
 #: ../stoq/gui/inventory/inventory.py:81 ../stoq/gui/till/till.py:121
-#: ../stoq/gui/warehouse/warehouse.py:88 ../stoq/gui/pos/pos.py:155
+#: ../stoq/gui/warehouse/warehouse.py:87 ../stoq/gui/pos/pos.py:155
 #: ../stoq/gui/pos/deliveryeditor.py:106
 msgid "Quantity"
 msgstr ""
 
-#: ../stoq/gui/inventory/inventory.py:83
-msgid "Counting"
+#: ../stoq/gui/inventory/inventory.py:83 ../stoq/gui/warehouse/warehouse.py:89
+#: ../stoq/gui/pos/pos.py:158
+msgid "Unit"
 msgstr ""
 
-#: ../stoq/gui/inventory/inventory.py:85
-msgid "Adjust"
-msgstr ""
-
-#: ../stoq/gui/inventory/inventory.py:99
-#: ../stoq/gui/warehouse/warehouse.py:104
+#: ../stoq/gui/inventory/inventory.py:96
+#: ../stoq/gui/warehouse/warehouse.py:103
 msgid "<b>Stock Total:</b>"
 msgstr ""
 
-#: ../stoq/gui/inventory/inventory.py:109
-#: ../stoq/gui/warehouse/warehouse.py:114
+#: ../stoq/gui/inventory/inventory.py:106
+#: ../stoq/gui/warehouse/warehouse.py:113
 msgid "All branches"
 msgstr ""
 
@@ -526,36 +523,36 @@ msgstr ""
 msgid "Confirm Sale"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:184 ../stoq/gui/pos/pos.py:198
+#: ../stoq/gui/till/till.py:180 ../stoq/gui/pos/pos.py:198
 #, python-format
 msgid "Total: %s"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:233
+#: ../stoq/gui/till/till.py:241
 msgid "Till Closed"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:237
+#: ../stoq/gui/till/till.py:245
 #, python-format
 msgid "Till Opened on %s"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:266 ../stoq/gui/pos/pos.py:630
+#: ../stoq/gui/till/till.py:274 ../stoq/gui/pos/pos.py:630
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
 "Close the till?"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:268 ../stoq/gui/pos/pos.py:632
+#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:632
 msgid "Not now"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:268 ../stoq/gui/pos/pos.py:632
+#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:632
 msgid "Close Till"
 msgstr ""
 
-#: ../stoq/gui/warehouse/__init__.py:29 ../stoq/gui/warehouse/warehouse.py:58
+#: ../stoq/gui/warehouse/__init__.py:29 ../stoq/gui/warehouse/warehouse.py:57
 msgid "Warehouse"
 msgstr ""
 
@@ -563,11 +560,7 @@ msgstr ""
 msgid "Warehouse application."
 msgstr ""
 
-#: ../stoq/gui/warehouse/warehouse.py:90 ../stoq/gui/pos/pos.py:158
-msgid "Unit"
-msgstr ""
-
-#: ../stoq/gui/warehouse/warehouse.py:140
+#: ../stoq/gui/warehouse/warehouse.py:139
 msgid "You must have at least one item in stock to perfom this action."
 msgstr ""
 
@@ -1415,26 +1408,6 @@ msgstr ""
 
 #: ../data/glade/ECFPluginStep.glade.h:7
 msgid "Yes"
-msgstr ""
-
-#: ../data/glade/TransferOrderDetails.glade.h:1
-msgid "Destination:"
-msgstr ""
-
-#: ../data/glade/TransferOrderDetails.glade.h:2
-msgid "Open date:"
-msgstr ""
-
-#: ../data/glade/TransferOrderDetails.glade.h:3
-msgid "Receival date:"
-msgstr ""
-
-#: ../data/glade/TransferOrderDetails.glade.h:4
-msgid "Responsible:"
-msgstr ""
-
-#: ../data/glade/TransferOrderDetails.glade.h:5
-msgid "Source:"
 msgstr ""
 
 #: ../data/template/transfer.rml.extracted.h:1
