@@ -145,9 +145,7 @@ class WarehouseApp(SearchableAppWindow):
                                 product)
         if not finish_transaction(trans, model):
             return
-        self.conn.commit()
-        sellable_view.sync()
-        self.results.update(sellable_view)
+        self.refresh()
 
     def _transfer_stock(self):
         trans = new_transaction()
