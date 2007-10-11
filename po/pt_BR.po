@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-03 15:46-0300\n"
+"POT-Creation-Date: 2007-10-11 15:16-0300\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -296,15 +296,15 @@ msgstr ""
 msgid "Inventory"
 msgstr "Inventário"
 
-#: ../stoq/gui/inventory/inventory.py:54 ../stoq/gui/warehouse/warehouse.py:62
+#: ../stoq/gui/inventory/inventory.py:54 ../stoq/gui/warehouse/warehouse.py:61
 msgid "Matching:"
 msgstr "contendo:"
 
-#: ../stoq/gui/inventory/inventory.py:70 ../stoq/gui/warehouse/warehouse.py:78
+#: ../stoq/gui/inventory/inventory.py:70 ../stoq/gui/warehouse/warehouse.py:77
 msgid "Show products at:"
 msgstr "Exibir produtos em:"
 
-#: ../stoq/gui/inventory/inventory.py:75 ../stoq/gui/warehouse/warehouse.py:83
+#: ../stoq/gui/inventory/inventory.py:75 ../stoq/gui/warehouse/warehouse.py:82
 #: ../stoq/gui/pos/deliveryeditor.py:102
 msgid "Code"
 msgstr "Código"
@@ -314,33 +314,30 @@ msgid "Barcode"
 msgstr "Código de Barras:"
 
 #: ../stoq/gui/inventory/inventory.py:78 ../stoq/gui/payable/payable.py:95
-#: ../stoq/gui/warehouse/warehouse.py:85
+#: ../stoq/gui/warehouse/warehouse.py:84
 #: ../stoq/gui/receivable/receivable.py:128 ../stoq/gui/pos/pos.py:151
 #: ../stoq/gui/pos/deliveryeditor.py:104
 msgid "Description"
 msgstr "Descrição"
 
 #: ../stoq/gui/inventory/inventory.py:81 ../stoq/gui/till/till.py:121
-#: ../stoq/gui/warehouse/warehouse.py:88 ../stoq/gui/pos/pos.py:155
+#: ../stoq/gui/warehouse/warehouse.py:87 ../stoq/gui/pos/pos.py:155
 #: ../stoq/gui/pos/deliveryeditor.py:106
 msgid "Quantity"
 msgstr "Quantidade"
 
-#: ../stoq/gui/inventory/inventory.py:83
-msgid "Counting"
-msgstr "Contagem"
+#: ../stoq/gui/inventory/inventory.py:83 ../stoq/gui/warehouse/warehouse.py:89
+#: ../stoq/gui/pos/pos.py:158
+msgid "Unit"
+msgstr "Unidade"
 
-#: ../stoq/gui/inventory/inventory.py:85
-msgid "Adjust"
-msgstr "Ajuste"
-
-#: ../stoq/gui/inventory/inventory.py:99
-#: ../stoq/gui/warehouse/warehouse.py:104
+#: ../stoq/gui/inventory/inventory.py:96
+#: ../stoq/gui/warehouse/warehouse.py:103
 msgid "<b>Stock Total:</b>"
 msgstr "<b>Estoque Total:</b>"
 
-#: ../stoq/gui/inventory/inventory.py:109
-#: ../stoq/gui/warehouse/warehouse.py:114
+#: ../stoq/gui/inventory/inventory.py:106
+#: ../stoq/gui/warehouse/warehouse.py:113
 msgid "All branches"
 msgstr "Todas as Unidades"
 
@@ -579,21 +576,21 @@ msgstr "Stoq - Caixa para Unidade %03d"
 msgid "Confirm Sale"
 msgstr "Confirmar Venda"
 
-#: ../stoq/gui/till/till.py:184 ../stoq/gui/pos/pos.py:198
+#: ../stoq/gui/till/till.py:180 ../stoq/gui/pos/pos.py:198
 #, python-format
 msgid "Total: %s"
 msgstr "Total: %s"
 
-#: ../stoq/gui/till/till.py:233
+#: ../stoq/gui/till/till.py:241
 msgid "Till Closed"
 msgstr "Caixa Fechado"
 
-#: ../stoq/gui/till/till.py:237
+#: ../stoq/gui/till/till.py:245
 #, python-format
 msgid "Till Opened on %s"
 msgstr "Caixa Aberto em %s"
 
-#: ../stoq/gui/till/till.py:266 ../stoq/gui/pos/pos.py:630
+#: ../stoq/gui/till/till.py:274 ../stoq/gui/pos/pos.py:630
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
@@ -603,15 +600,15 @@ msgstr ""
 "\n"
 "Fechar o caixa?"
 
-#: ../stoq/gui/till/till.py:268 ../stoq/gui/pos/pos.py:632
+#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:632
 msgid "Not now"
 msgstr "Não agora"
 
-#: ../stoq/gui/till/till.py:268 ../stoq/gui/pos/pos.py:632
+#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:632
 msgid "Close Till"
 msgstr "Fechar o caixa"
 
-#: ../stoq/gui/warehouse/__init__.py:29 ../stoq/gui/warehouse/warehouse.py:58
+#: ../stoq/gui/warehouse/__init__.py:29 ../stoq/gui/warehouse/warehouse.py:57
 msgid "Warehouse"
 msgstr "Estoque"
 
@@ -621,11 +618,7 @@ msgstr ""
 "Aplicativo para recebimento de compra e\n"
 "transferência de estoque."
 
-#: ../stoq/gui/warehouse/warehouse.py:90 ../stoq/gui/pos/pos.py:158
-msgid "Unit"
-msgstr "Unidade"
-
-#: ../stoq/gui/warehouse/warehouse.py:140
+#: ../stoq/gui/warehouse/warehouse.py:139
 msgid "You must have at least one item in stock to perfom this action."
 msgstr "É necessário ao menos um item em estoque para realizar esta ação."
 
@@ -1501,83 +1494,83 @@ msgstr "Não"
 msgid "Yes"
 msgstr "Sim"
 
-#: ../data/glade/TransferOrderDetails.glade.h:1
-#, fuzzy
-msgid "Destination:"
-msgstr "Descrição:"
-
-#: ../data/glade/TransferOrderDetails.glade.h:2
-#, fuzzy
-msgid "Open date:"
-msgstr "Data de Abertura é:"
-
-#: ../data/glade/TransferOrderDetails.glade.h:3
-#, fuzzy
-msgid "Receival date:"
-msgstr "Contas a _Receber"
-
-#: ../data/glade/TransferOrderDetails.glade.h:4
-#, fuzzy
-msgid "Responsible:"
-msgstr "Razão:"
-
-#: ../data/glade/TransferOrderDetails.glade.h:5
-#, fuzzy
-msgid "Source:"
-msgstr "Cônjuge:"
-
 #: ../data/template/transfer.rml.extracted.h:1
 msgid "CODE"
-msgstr ""
+msgstr "CÓDIGO"
 
 #: ../data/template/transfer.rml.extracted.h:2
 msgid "DESCRIPTION"
-msgstr ""
+msgstr "DESCRIÇÃO"
 
 #: ../data/template/transfer.rml.extracted.h:3
 msgid "DESTINATION"
-msgstr ""
+msgstr "DESTINO"
 
 #: ../data/template/transfer.rml.extracted.h:4
 msgid "NUMBER:"
-msgstr ""
+msgstr "NÚMERO:"
 
 #: ../data/template/transfer.rml.extracted.h:5
-#, fuzzy
 msgid "OPEN:"
-msgstr "CFOP:"
+msgstr "ABERTO:"
 
 #: ../data/template/transfer.rml.extracted.h:6
 msgid "QUANTITY"
-msgstr ""
+msgstr "QUANTIDADE"
 
 #: ../data/template/transfer.rml.extracted.h:7
 msgid "RECEIVAL:"
-msgstr ""
+msgstr "RECEBIDO:"
 
 #: ../data/template/transfer.rml.extracted.h:8
 msgid "RESPONSIBLE"
-msgstr ""
+msgstr "RESPONSÁVEL"
 
 #: ../data/template/transfer.rml.extracted.h:9
 msgid "SIGNATURE:"
-msgstr ""
+msgstr "ASSINATURA"
 
 #: ../data/template/transfer.rml.extracted.h:10
 msgid "SOURCE"
-msgstr ""
+msgstr "ORIGEM"
 
 #: ../data/template/transfer.rml.extracted.h:11
 msgid "TOTAL:"
-msgstr ""
+msgstr "TOTAL:"
 
 #: ../data/template/transfer.rml.extracted.h:12
 msgid "TRANSFER PRODUCTS"
-msgstr ""
+msgstr "TRANSFERÊNCIA DE PRODUTOS"
 
 #: ../data/template/transfer.rml.extracted.h:13
 msgid "TRANSFER RECEIPT"
-msgstr ""
+msgstr "RECIBO DE TRANSFERÊNCIA"
+
+#~ msgid "Counting"
+#~ msgstr "Contagem"
+
+#~ msgid "Adjust"
+#~ msgstr "Ajuste"
+
+#, fuzzy
+#~ msgid "Destination:"
+#~ msgstr "Descrição:"
+
+#, fuzzy
+#~ msgid "Open date:"
+#~ msgstr "Data de Abertura é:"
+
+#, fuzzy
+#~ msgid "Receival date:"
+#~ msgstr "Contas a _Receber"
+
+#, fuzzy
+#~ msgid "Responsible:"
+#~ msgstr "Razão:"
+
+#, fuzzy
+#~ msgid "Source:"
+#~ msgstr "Cônjuge:"
 
 #~ msgid "Printing Invoice"
 #~ msgstr "Imprimindo Nota Fiscal"
