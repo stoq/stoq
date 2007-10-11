@@ -92,8 +92,7 @@ class StoqlibSintegraGenerator(object):
             manager.name,
             branch.person.get_phone_number_number())
 
-        self._add_fiscal_coupons()
-        self._add_receiving_orders(state_registry, state)
+        self._add_registers(state)
 
     def _add_fiscal_coupons(self):
         for item in self._date_query(FiscalDayHistory, 'emission_date'):
@@ -120,12 +119,25 @@ class StoqlibSintegraGenerator(object):
             raise AssertionError
         return cnpj
 
-    def _add_receiving_orders(self, state_registry, state):
+    def _get_state_registry(self, receiving_order):
+        company = receiving_order.supplier.person.has_individual_or_company_facets()
+        if isinstance(company, _PersonAdaptToCompany):
+            if not company.state_registry:
+                raise SintegraError(
+                    _("You need to have a State Registry set on Company %s" % (
+                    company.person.name)))
+            return company.get_state_registry_number()
+        elif isinstance(company, PersonAdaptToIndividual):
+            return "ISENTO"
+        else:
+            raise AssertionError
+
+    def _add_registers(self, state):
         receiving_orders = self._date_query(ReceivingOrder, 'receival_date')
 
         # 1) Add orders (registry 50)
         for receiving_order in receiving_orders:
-            self._add_receiving_order(state_registry, state, receiving_order)
+            self._add_receiving_order(state, receiving_order)
 
         # 2) Add order items (registry 54) and collect sellables
         sellables = set()
@@ -138,11 +150,14 @@ class StoqlibSintegraGenerator(object):
             self._add_receiving_order_item_special(
                 receiving_order, 999, receiving_order.expense_value)
 
-        # 2) Add sellables (registry 75)
+        # 3) Add fiscal coupons (registry 60)
+        self._add_fiscal_coupons()
+
+        # 4) Add sellables (registry 75)
         for sellable in sellables:
             self._add_sellable(sellable)
 
-    def _add_receiving_order(self, state_registry, state, receiving_order):
+    def _add_receiving_order(self, state, receiving_order):
         cnpj = self._get_cnpj_or_cpf(receiving_order)
 
         # Sintegra register 50 requires us to separate the receiving orders per
@@ -171,6 +186,7 @@ class StoqlibSintegraGenerator(object):
                                 receiving_order.secure_value +
                                 receiving_order.expense_value) / items_total)
 
+        state_registry = self._get_state_registry(receiving_order)
         for tax_value, items in sellable_per_constant.items():
             item_total = sum(item.get_total() for item in items)
             item_total *= extra_percental
@@ -256,7 +272,7 @@ class StoqlibSintegraGenerator(object):
         if sellable.unit:
             unit = str(sellable.unit.description or 'un')
         self.sintegra.add_product(self.start,
-                                  self.start, sellable.id,
+                                  self.end, sellable.id,
                                   0, sellable.get_description(),
                                   unit,
                                   0, 0, 0, 0)
