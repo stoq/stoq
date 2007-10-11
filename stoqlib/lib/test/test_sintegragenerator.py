@@ -22,6 +22,10 @@ class TestSintegraGenerator(DomainTest):
         order.freight_total = 6
         order.secure_value = 6
         order.expense_value = 12
+        supplier = self.create_supplier()
+        company = supplier.person.has_individual_or_company_facets()
+        company.state_registry = '103238426117'
+        order.supplier = supplier
         employee = self.create_employee()
         branch = get_current_branch(self.trans)
         branch.manager = employee
