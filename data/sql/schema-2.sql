@@ -223,7 +223,7 @@ CREATE TABLE person_adapt_to_transporter (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     is_active boolean,
     open_contract_date timestamp,
-    freight_percentage numeric(10,2),
+    freight_percentage numeric(10,2) NOT NULL CONSTRAINT positive_freight_percentage CHECK (freight_percentage >= 0),
     original_id bigint UNIQUE REFERENCES person(id)
 );
 

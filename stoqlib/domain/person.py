@@ -828,7 +828,7 @@ class PersonAdaptToTransporter(PersonAdapter):
 
     is_active = BoolCol(default=True)
     open_contract_date = DateTimeCol(default=datetime.datetime.now)
-    freight_percentage = DecimalCol(default=None)
+    freight_percentage = DecimalCol(default=0)
 
     #
     # Auxiliar methods
