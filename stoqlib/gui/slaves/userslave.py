@@ -31,8 +31,8 @@
 from sqlobject.sqlbuilder import func
 from kiwi.datatypes import ValidationError
 
+from stoqlib.lib.defaults import MINIMUM_PASSWORD_CHAR_LEN
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import validate_password
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.domain.profile import UserProfile
@@ -84,6 +84,11 @@ class PasswordEditorSlave(BaseEditorSlave):
     def invalidate_password(self, message):
         self.password.set_invalid(message)
 
+    def _check_passwords(self):
+        if self.password.get_text() == self.confirm_password.get_text():
+            self.password.set_valid()
+            self.confirm_password.set_valid()
+
     #
     # Hooks
     #
@@ -103,27 +108,28 @@ class PasswordEditorSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model,
                                     PasswordEditorSlave.proxy_widgets)
 
-    def validate_confirm(self):
-        # If we aren't confirming passwords, we don't need to validate
-        # it, i.e, when asking the password once, we just wants to
-        # compare it to the stored password and check if they matches,
-        # no need to check the text lenght, nor anything related to
-        # security.
-        if not self._confirm_password:
-            return True
-        callback = lambda msg: self.password.set_invalid(msg)
-        new_passwd = self.model.new_password
-        if not validate_password(new_passwd, callback):
-            return False
-        callback = lambda msg: self.confirm_password.set_invalid(msg)
-        confirm_passwd = self.model.confirm_password
-        if not validate_password(confirm_passwd, callback):
-            return False
-        if confirm_passwd != new_passwd:
-            msg = _(u"New password and confirm password don't match")
-            self.password.set_invalid(msg)
-            return False
-        return True
+    def on_password__validate(self, entry, password):
+        if len(password) < MINIMUM_PASSWORD_CHAR_LEN:
+            return ValidationError(_
+                (u"Passwords must have at least %d characters")
+                % MINIMUM_PASSWORD_CHAR_LEN)
+        if ((self.model.confirm_password and self._confirm_password) and
+               password != self.confirm_password.get_text()):
+            return ValidationError(_(u"Passwords don't matches"))
+
+    def on_password__content_changed(self, entry):
+        self._check_passwords()
+
+    def on_confirm_password__validate(self, entry, password):
+        if len(password) < MINIMUM_PASSWORD_CHAR_LEN:
+            return ValidationError(
+                _(u"Passwords must have at least %d characters")
+                 % MINIMUM_PASSWORD_CHAR_LEN)
+        if password != self.password.get_text():
+            return ValidationError(_(u"Passwords don't matches"))
+
+    def on_confirm_password__content_changed(self, entry):
+        self._check_passwords()
 
 
 class PasswordEditor(BaseEditor):
@@ -165,8 +171,6 @@ class PasswordEditor(BaseEditor):
         if self.model.current_password != self.old_password:
             msg = _(u"Password doesn't match with the stored one")
             self.current_password.set_invalid(msg)
-            return False
-        if not self.password_slave.validate_confirm():
             return False
         return True
 
@@ -210,11 +214,6 @@ class UserDetailsSlave(BaseEditorSlave):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     UserDetailsSlave.proxy_widgets)
-
-    def validate_confirm(self):
-        if self.show_password_fields:
-            return self.password_slave.validate_confirm()
-        return True
 
     def on_confirm(self):
         if self.show_password_fields:
