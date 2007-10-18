@@ -152,6 +152,26 @@
                                 <property name="tab_label" context="yes" translatable="yes">Transfer</property>
                             </packing>
                         </child>
+                        <child>
+                            <widget class="GtkVBox" id="retention_vbox">
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="ObjectList" id="retention_list">
+                                        <property name="visible">True</property>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="position">3</property>
+                                <property name="tab_label" context="yes" translatable="yes">Retention</property>
+                            </packing>
+                        </child>
                     </widget>
                     <packing>
                         <property name="position">1</property>

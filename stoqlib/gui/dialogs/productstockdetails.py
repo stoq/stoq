@@ -35,8 +35,9 @@ from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.domain.product import ProductAdaptToSellable
-from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.product import (ProductAdaptToSellable,
+                                    ProductRetentionHistory)
+from stoqlib.domain.interfaces import IStorable, IProduct
 from stoqlib.domain.receiving import ReceivingOrderItem
 from stoqlib.domain.sale import SaleItem
 from stoqlib.domain.transfer import TransferOrderItem
@@ -64,6 +65,7 @@ class ProductStockHistoryDialog(BaseEditor):
         self.receiving_list.set_columns(self._get_receiving_columns())
         self.sales_list.set_columns(self._get_sale_columns())
         self.transfer_list.set_columns(self._get_transfer_columns())
+        self.retention_list.set_columns(self._get_retention_columns())
 
         items = ReceivingOrderItem.selectBy(sellableID=self.model.id,
                                             connection=self.conn)
@@ -74,7 +76,12 @@ class ProductStockHistoryDialog(BaseEditor):
 
         items = TransferOrderItem.selectBy(sellableID=self.model.id,
                                             connection=self.conn)
-        self.transfer_list.add_list(items)
+        self.transfer_list.add_list(list(items))
+
+        product = IProduct(self.model)
+        items = ProductRetentionHistory.selectBy(product=product,
+                                                 connection=self.conn)
+        self.retention_list.add_list(list(items))
 
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % _("Total:")
@@ -91,6 +98,20 @@ class ProductStockHistoryDialog(BaseEditor):
                                            value_format=value_format)
         sales_summary_label.show()
         self.sales_vbox.pack_start(sales_summary_label, False)
+
+        transfer_summary_label = SummaryLabel(klist=self.transfer_list,
+                                              column='quantity',
+                                              label=total_label,
+                                              value_format=value_format)
+        transfer_summary_label.show()
+        self.transfer_vbox.pack_start(transfer_summary_label, False)
+
+        retention_summary_label = SummaryLabel(klist=self.retention_list,
+                                               column='quantity',
+                                               label=total_label,
+                                               value_format=value_format)
+        retention_summary_label.show()
+        self.retention_vbox.pack_start(retention_summary_label, False)
 
     def _get_receiving_columns(self):
         return [Column("receiving_order.id",
@@ -139,6 +160,14 @@ class ProductStockHistoryDialog(BaseEditor):
                        data_type=str),
                 Column("quantity", title=_("Quantity Transfered"),
                        data_type=Decimal)]
+
+    def _get_retention_columns(self):
+        return [Column("id", title=_("#"), data_type=int,
+                        justify=gtk.JUSTIFY_RIGHT, sorted=True),
+                Column("reason", title=_(u"Reason"), data_type=str,
+                        expand=True),
+                Column("quantity", title=_(u"Quantity Retended"),
+                        data_type=Decimal)]
 
     #
     # BaseEditor Hooks
