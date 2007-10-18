@@ -25,25 +25,14 @@ import datetime
 import re
 
 from kiwi.datatypes import format_price
-from kiwi.argcheck import argcheck
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import DECIMAL_PRECISION, MINIMUM_PASSWORD_CHAR_LEN
+from stoqlib.lib.defaults import DECIMAL_PRECISION
 
 _ = stoqlib_gettext
 
 POSTAL_CODE_CHAR_LEN = 8
 
-
-@argcheck(basestring, object)
-def validate_password(password, notify_callback=None):
-    if len(password) < MINIMUM_PASSWORD_CHAR_LEN:
-        if notify_callback:
-            msg = (_(u"Passwords must have at least %d characters")
-                    % MINIMUM_PASSWORD_CHAR_LEN)
-            notify_callback(msg)
-        return False
-    return True
 
 def is_date_in_interval(date, start_date, end_date):
     """Check if a certain date is in an interval. The function accepts
