@@ -18,7 +18,7 @@ class TestSintegraGenerator(DomainTest):
         #order.purchase.discount_value = 5
         #order.purchase.surcharge_value = 8
         #order.surcharge_value = 15
-        #order.ipi_total = 10
+        order.ipi_total = 10
         order.freight_total = 6
         order.secure_value = 6
         order.expense_value = 12
