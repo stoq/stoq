@@ -52,7 +52,7 @@ class InvoicePrinter(Domain):
 
     def get_description(self):
         """
-        @returns the description of the printer
+        @returns: the description of the printer
         """
         return self.description
 
@@ -106,7 +106,7 @@ class InvoiceLayout(Domain):
 
     def get_description(self):
         """
-        @returns the description of the field
+        @returns: the description of the field
         """
         return self.description
 
