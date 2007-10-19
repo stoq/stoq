@@ -191,6 +191,7 @@ class StoqlibSintegraGenerator(object):
             item_total = sum(item.get_total() for item in items)
             item_total *= extra_percental
             item_total *= discount_percental
+            total_ipi = sum(item.receiving_order.ipi_total for item in items)
             if tax_value:
                 base_total = item_total
             else:
@@ -208,7 +209,7 @@ class StoqlibSintegraGenerator(object):
                 receiving_order.invoice_number,
                 receiving_order.get_cfop_code(),
                 'T',
-                item_total,
+                item_total + total_ipi,
                 base_total,
                 item_total * tax_value,
                 0,
