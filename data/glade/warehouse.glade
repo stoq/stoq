@@ -133,9 +133,7 @@
                     <widget class="GtkAction" id="TransferSearch">
                         <property name="name">TransferSearch</property>
                         <property name="label" translatable="yes">Stock Transfer...</property>
-                        <property name="stock_id">stoq-transfer</property>
-                        <signal handler="on_stock_transfer_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;k</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;s</property>
                     </widget>
                 </child>
                 <child>
@@ -189,13 +187,14 @@
 	  <menubar action="menubar">
 	    <menu action="SalesMenu">
 	      <menuitem action="receive_action"/>
-             <menuitem action="TransferSearch"/>
+             <menuitem action="transfer_action"/>
 	      <separator name="sep"/>
 	      <menuitem action="Quit"/>
 	    </menu>
 	    <menu action="SearchMenu">
 	      <menuitem action="PurchaseReceiving"/>
 	      <menuitem action="ProductHistory"/>
+          <menuitem action="TransferSearch"/>
 	    </menu>
 	    <menu action="help_menu">
 	      <menuitem action="about_menu"/>
