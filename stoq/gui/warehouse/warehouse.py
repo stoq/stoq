@@ -44,6 +44,7 @@ from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.search.productsearch import ProductSearchQuantity
+from stoqlib.gui.search.transfersearch import TransferOrderSearch
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.productretention import ProductRetentionDialog
 from stoqlib.reporting.product import ProductReport
@@ -171,6 +172,9 @@ class WarehouseApp(SearchableAppWindow):
 
     def on_transfer_action__activate(self, action):
         self._transfer_stock()
+
+    def on_TransferSearch__activate(self, action):
+        self.run_dialog(TransferOrderSearch, self.conn)
 
     def on_retention_button__clicked(self, button):
         sellable_view = self.results.get_selected_rows()[0]
