@@ -1,0 +1,215 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="TransferOrderDetails">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkVBox" id="details_vbox">
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkTable" id="table1">
+                        <property name="border_width">6</property>
+                        <property name="column_spacing">6</property>
+                        <property name="n_columns">4</property>
+                        <property name="n_rows">3</property>
+                        <property name="row_spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel1">
+                                <property name="label" context="yes" translatable="yes">Open date:</property>
+                                <property name="model_attribute">kiwilabel1</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="x_options">fill</property>
+                                <property name="y_options">expand</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel3">
+                                <property name="label" context="yes" translatable="yes">Source:</property>
+                                <property name="model_attribute">kiwilabel3</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="top_attach">1</property>
+                                <property name="x_options">fill</property>
+                                <property name="y_options">expand</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel5">
+                                <property name="label" context="yes" translatable="yes">Responsible:</property>
+                                <property name="model_attribute">kiwilabel5</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="top_attach">2</property>
+                                <property name="x_options">fill</property>
+                                <property name="y_options">expand</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="open_date">
+                                <property name="data_type">date</property>
+                                <property name="model_attribute">open_date</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                                <property name="xpad">6</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="source_branch_name">
+                                <property name="data_type">unicode</property>
+                                <property name="model_attribute">source_branch_name</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                                <property name="xpad">6</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="source_responsible_name">
+                                <property name="data_type">unicode</property>
+                                <property name="model_attribute">source_responsible_name</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                                <property name="xpad">6</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel2">
+                                <property name="label" context="yes" translatable="yes">Receival date:</property>
+                                <property name="model_attribute">kiwilabel2</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="x_options">fill</property>
+                                <property name="y_options">expand</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel4">
+                                <property name="label" context="yes" translatable="yes">Destination:</property>
+                                <property name="model_attribute">kiwilabel4</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">1</property>
+                                <property name="x_options">fill</property>
+                                <property name="y_options">expand</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel6">
+                                <property name="label" context="yes" translatable="yes">Responsible:</property>
+                                <property name="model_attribute">kiwilabel6</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">2</property>
+                                <property name="x_options">fill</property>
+                                <property name="y_options">expand</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="receival_date">
+                                <property name="data_type">date</property>
+                                <property name="model_attribute">receival_date</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                                <property name="xpad">6</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="destination_branch_name">
+                                <property name="data_type">unicode</property>
+                                <property name="model_attribute">destination_branch_name</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                                <property name="xpad">6</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="destination_responsible_name">
+                                <property name="data_type">unicode</property>
+                                <property name="model_attribute">destination_responsible_name</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                                <property name="xpad">6</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                                <property name="top_attach">2</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="padding">6</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkVBox" id="products_vbox">
+                        <property name="border_width">6</property>
+                        <property name="spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="ObjectList" id="product_list">
+                                <property name="visible">True</property>
+                            </widget>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="padding">3</property>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>
