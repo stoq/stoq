@@ -51,6 +51,7 @@ from stoqlib.domain.person import EmployeeRoleHistory
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.sellable import SellableTaxConstant, SellableUnit
 from stoqlib.exceptions import StoqlibError
+from stoqlib.importers.invoiceimporter import InvoiceImporter
 from stoqlib.lib.message import error
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
 from stoqlib.lib.translation import stoqlib_gettext
@@ -237,6 +238,11 @@ def create_default_profiles():
 
     trans.commit(close=True)
 
+def _install_invoice_templates():
+    log.info("Installing invoice templates")
+    importer = InvoiceImporter()
+    importer.feed_file(environ.find_resource('csv', 'invoices.csv'))
+
 @argcheck(bool, bool)
 def initialize_system(delete_only=False, verbose=False):
     """Call all the necessary methods to startup Stoq applications for
@@ -251,3 +257,4 @@ def initialize_system(delete_only=False, verbose=False):
     ensure_sellable_constants()
     ensure_system_parameters()
     create_default_profiles()
+    _install_invoice_templates()
