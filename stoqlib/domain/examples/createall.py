@@ -31,6 +31,7 @@ from stoqlib.domain.examples.transfer import create_transfer
 from stoqlib.importers.branchimporter import BranchImporter
 from stoqlib.importers.clientimporter import ClientImporter
 from stoqlib.importers.employeeimporter import EmployeeImporter
+from stoqlib.importers.invoiceimporter import InvoiceImporter
 from stoqlib.importers.productimporter import ProductImporter
 from stoqlib.importers.serviceimporter import ServiceImporter
 from stoqlib.importers.supplierimporter import SupplierImporter
@@ -55,6 +56,7 @@ def create(utilities=False):
         set_person_utilities()
     _import_one(ProductImporter, 'products.csv')
     _import_one(ServiceImporter, 'services.csv')
+    _import_one(InvoiceImporter, 'invoices.csv')
     create_sales()
     create_purchases()
     create_giftcertificates()
