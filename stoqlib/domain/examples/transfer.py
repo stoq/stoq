@@ -27,8 +27,9 @@ import datetime
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.examples import log
-from stoqlib.domain.interfaces import IProduct, IStorable
+from stoqlib.domain.interfaces import IProduct
 from stoqlib.domain.person import PersonAdaptToUser, PersonAdaptToBranch
+from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 
@@ -70,10 +71,9 @@ def create_transfer():
                                           quantity=1,
                                           sellable=sellable,
                                           transfer_order=order)
-        storable = IStorable(sellable)
-        storable.decrease_stock(1, branches[0])
-        storable.increase_stock(1, branches[1])
-
+        ProductHistory.add_transfered_item(trans,
+                                           order.source_branch,
+                                           transfer_item)
     trans.commit()
 
 if __name__ == "__main__":

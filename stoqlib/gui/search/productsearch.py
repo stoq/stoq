@@ -178,6 +178,13 @@ class ProductSearchQuantity(SearchDialog):
         date_filter.select(Today)
         self.add_filter(date_filter, columns=['sold_date', 'received_date'])
 
+        # Branch
+        branch_filter = self.create_branch_filter(_('In branch:'))
+        self.add_filter(branch_filter, columns=['branch'],
+                        position=SearchFilterPosition.TOP)
+        # remove 'Any' option from branch_filter
+        branch_filter.combo.remove_text(0)
+
     #
     # SearchEditor Hooks
     #
@@ -191,6 +198,8 @@ class ProductSearchQuantity(SearchDialog):
                        format_func=format_data,
                        data_type=Decimal),
                 Column('quantity_transfered', title=_('Transfered'),
+                       format_func=format_data, data_type=Decimal),
+                Column('quantity_retended', title=_('Retended'),
                        format_func=format_data, data_type=Decimal),
                 Column('quantity_received', title=_('Received'),
                        format_func=format_data,

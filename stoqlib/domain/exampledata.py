@@ -168,10 +168,11 @@ class ExampleCreator(object):
         from stoqlib.domain.person import Person
         return Person(name='John', connection=self.trans)
 
-    def create_branch(self):
+    def create_branch(self, name='Dummy'):
         from stoqlib.domain.person import Person
-        person = Person(name='Dummy', connection=self.trans)
-        person.addFacet(ICompany, fancy_name='Dummy shop',
+        person = Person(name=name, connection=self.trans)
+        fancy_name = name + ' shop'
+        person.addFacet(ICompany, fancy_name=fancy_name,
                         connection=self.trans)
         return person.addFacet(IBranch, connection=self.trans)
 
@@ -187,9 +188,9 @@ class ExampleCreator(object):
         from stoqlib.domain.person import EmployeeRole
         return EmployeeRole(name='Role', connection=self.trans)
 
-    def create_employee(self):
+    def create_employee(self, name="SalesPerson"):
         from stoqlib.domain.person import Person
-        person = Person(name='SalesPerson', connection=self.trans)
+        person = Person(name=name, connection=self.trans)
         person.addFacet(IIndividual, connection=self.trans)
         return person.addFacet(IEmployee,
                                role=self.create_employee,
@@ -478,6 +479,40 @@ class ExampleCreator(object):
         return BranchStation(name="station",
                              branch=None,
                              connection=self.trans)
+
+    def create_transfer_order(self):
+        from stoqlib.domain.transfer import TransferOrder
+        source_branch= self.create_branch("Source")
+        dest_branch = self.create_branch("Dest")
+        source_resp = self.create_employee("Ipswich")
+        dest_resp = self.create_employee("Bolton")
+        return TransferOrder(source_branch=source_branch,
+                             destination_branch=dest_branch,
+                             source_responsible=source_resp,
+                             destination_responsible=dest_resp,
+                             connection=self.trans)
+
+    def create_transfer_order_item(self, order=None, quantity=5):
+        from stoqlib.domain.sellable import ASellable
+        from stoqlib.domain.transfer import TransferOrderItem
+        if not order:
+            order = self.create_transfer_order()
+        sellable = self.create_sellable()
+        sellable.status = ASellable.STATUS_AVAILABLE
+        product = sellable.get_adapted()
+        storable = product.addFacet(IStorable, connection=self.trans)
+        storable.increase_stock(quantity, order.source_branch)
+        return TransferOrderItem(sellable=sellable,
+                                 transfer_order=order,
+                                 quantity=quantity,
+                                 connection=self.trans)
+
+    def create_retended_product(self, product, quantity):
+        from stoqlib.database.runtime import get_current_branch
+        branch = get_current_branch(self.trans)
+        reason = "Test"
+        return product.block(quantity=quantity, branch=branch,
+                             reason=reason, product=product)
 
     def get_station(self):
         return get_current_station(self.trans)
