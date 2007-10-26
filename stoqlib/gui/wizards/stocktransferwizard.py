@@ -37,7 +37,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.gui.base.columns import AccessorColumn
-from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
+from stoqlib.gui.base.wizards import (BaseWizard, BaseWizardStep)
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.message import yesno
@@ -217,11 +217,6 @@ class StockTransferFinishStep(BaseWizardStep):
         dest_branch = self.proxy.model.destination_branch
         assert dest_branch is not None
 
-        for item in self.transfer_order.get_items():
-            storable = IStorable(item.sellable)
-            storable.decrease_stock(item.quantity, self.branch)
-            storable.increase_stock(item.quantity, dest_branch)
-
         self.transfer_order.source_branch = self.branch
         return True
 
@@ -282,10 +277,14 @@ class StockTransferWizard(BaseWizard):
             destination_responsible=self.model.destination_responsible,
             connection=self.conn)
         for item in self.model.get_items():
-            TransferOrderItem(connection=self.conn,
-                              transfer_order=order,
-                              sellable=item.sellable,
-                              quantity=item.quantity)
+            transfer_item = TransferOrderItem(connection=self.conn,
+                                              transfer_order=order,
+                                              sellable=item.sellable,
+                                              quantity=item.quantity)
+            order.send_item(transfer_item)
+        #XXX Waiting for transfer order receiving wizard implementation
+        order.receive()
+
         self.retval = self.model
         self.close()
         self._receipt_dialog(order)

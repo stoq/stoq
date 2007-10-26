@@ -35,7 +35,6 @@ from stoqlib.domain.product import (Product, ProductAdaptToSellable,
 from stoqlib.domain.sellable import (ASellable, SellableUnit,
                                      BaseSellableInfo, SellableCategory,
                                      SellableTaxConstant)
-from stoqlib.domain.transfer import TransferOrderItem
 
 class ProductFullStockView(Viewable):
     """Stores information about products.
@@ -156,7 +155,8 @@ class ProductQuantityView(Viewable):
         received_date=ProductHistory.q.received_date,
         quantity_sold=func.SUM(ProductHistory.q.quantity_sold),
         quantity_received=func.SUM(ProductHistory.q.quantity_received),
-        _transfered=TransferOrderItem.q.quantity,
+        quantity_transfered=func.SUM(ProductHistory.q.quantity_transfered),
+        quantity_retended=func.SUM(ProductHistory.q.quantity_retended),
         )
 
     hidden_columns = ['sold_date', 'received_date']
@@ -166,13 +166,8 @@ class ProductQuantityView(Viewable):
                     ProductHistory.q.sellableID == ASellable.q.id),
         INNERJOINOn(None, BaseSellableInfo,
                     ASellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
-        LEFTJOINOn(None, TransferOrderItem,
-                    TransferOrderItem.q.sellableID == ASellable.q.id)
     ]
 
-    @property
-    def quantity_transfered(self):
-        return self._transfered or 0
 
 class SellableFullStockView(Viewable):
     """Stores information about products.

@@ -108,28 +108,33 @@ class ProductQuantityReport(SearchResultsReport):
 
     def _get_columns(self):
         return [
-            OTC(_("Code"), lambda obj: '%03d' % obj.id, width=120,
+            OTC(_("Code"), lambda obj: '%03d' % obj.id, width=90,
                 truncate=True),
             OTC(_("Description"), lambda obj: obj.description, truncate=True),
             OTC(_("Quantity Sold"), lambda obj:
-                format_data(obj.quantity_sold), width=110,
+                format_data(obj.quantity_sold), width=100,
                 align=RIGHT, truncate=True),
             OTC(_("Quantity Transfered"), lambda obj:
-                format_data(obj.quantity_transfered), width=110,
+                format_data(obj.quantity_transfered), width=100,
+                align=RIGHT, truncate=True),
+            OTC(_("Quantity retended"), lambda obj:
+                format_data(obj.quantity_retended), width=100,
                 align=RIGHT, truncate=True),
             OTC(_("Quantity Received"), lambda obj:
-                format_data(obj.quantity_received), width=120,
+                format_data(obj.quantity_received), width=100,
                 align=RIGHT, truncate=True)
             ]
 
     def _setup_items_table(self):
-        qty_sold = qty_received = qty_transfered = 0
+        qty_sold = qty_received = qty_transfered = qty_retended = 0
         for item in self._products:
             qty_sold += item.quantity_sold or Decimal(0)
             qty_received += item.quantity_received or Decimal(0)
             qty_transfered += item.quantity_transfered or Decimal(0)
+            qty_retended += item.quantity_retended or Decimal(0)
 
         summary_row = ["", _("Total:"), format_data(qty_sold),
+                       format_data(qty_retended),
                        format_data(qty_transfered),
                        format_data(qty_received)]
         self.add_object_table(self._products, self._get_columns(),

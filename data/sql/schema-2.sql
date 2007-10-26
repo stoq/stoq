@@ -347,6 +347,8 @@ CREATE TABLE product_history (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     quantity_sold numeric(10, 2) CONSTRAINT positive_quantity_sold CHECK (quantity_sold >= 0),
     quantity_received numeric(10, 2) CONSTRAINT positive_quantity_received CHECK (quantity_received >= 0),
+    quantity_transfered numeric(10, 2) CONSTRAINT positive_quantity_transfered CHECK (quantity_transfered >= 0),
+    quantity_retended numeric(10, 2) CONSTRAINT positive_quantity_retended CHECK (quantity_retended >= 0),
     sold_date timestamp,
     received_date timestamp,
     branch_id bigint REFERENCES person_adapt_to_branch(id),
@@ -1036,6 +1038,7 @@ CREATE TABLE transfer_order (
     open_date timestamp NOT NULL,
     receival_date timestamp,
 
+    status integer CONSTRAINT valid_status CHECK (status >= 0 AND status < 2),
     source_branch_id bigint NOT NULL REFERENCES person_adapt_to_branch(id),
     destination_branch_id bigint NOT NULL REFERENCES person_adapt_to_branch(id),
     source_responsible_id bigint NOT NULL REFERENCES person_adapt_to_employee(id),

@@ -24,6 +24,7 @@
 
 """ Base classes to manage product's informations """
 
+import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import currency
@@ -122,9 +123,13 @@ class Product(Domain):
     def block(self, quantity, branch, reason, product):
         storable = IStorable(self)
         storable.decrease_stock(quantity, branch)
-        return ProductRetentionHistory(quantity=quantity, product=product,
-                                       reason=reason,
-                                       connection=self.get_connection())
+        conn = self.get_connection()
+        retended_item = ProductRetentionHistory(quantity=quantity,
+                                                product=product,
+                                                reason=reason,
+                                                connection=conn)
+        ProductHistory.add_retended_item(conn, branch, retended_item)
+        return retended_item
 
     #
     # Acessors
@@ -149,13 +154,16 @@ class Product(Domain):
 
 
 class ProductHistory(Domain):
-    """Stores product history, such as sold and received quantity.
+    """Stores product history, such as sold, received, transfered and
+    retended quantities.
     """
     # We keep a reference to ASellable instead of Product because we want to
     # display the sellable id in the interface instead of the product id for
     # consistency with interfaces that display both
     quantity_sold = DecimalCol(default=None)
     quantity_received = DecimalCol(default=None)
+    quantity_transfered = DecimalCol(default=None)
+    quantity_retended = DecimalCol(default=None)
     sold_date = DateTimeCol(default=None)
     received_date = DateTimeCol(default=None)
     branch = ForeignKey("PersonAdaptToBranch")
@@ -189,6 +197,37 @@ class ProductHistory(Domain):
         cls(branch=branch, sellable=receiving_order_item.sellable,
             quantity_received=receiving_order_item.quantity,
             received_date=receiving_order_item.receiving_order.receival_date,
+            connection=conn)
+
+
+    @classmethod
+    def add_transfered_item(cls, conn, branch, transfer_order_item):
+        """
+        Adds a transfered_item, populates the ProductHistory table using a
+        transfered_order_item created during a transfer order
+
+        @param conn: a database connection
+        @param branch: the source branch
+        @param transfer_order_item: the item transfered from source branch
+        """
+        cls(branch=branch, sellable=transfer_order_item.sellable,
+            quantity_transfered=transfer_order_item.quantity,
+            received_date=transfer_order_item.transfer_order.receival_date,
+            connection=conn)
+
+    @classmethod
+    def add_retended_item(cls, conn, branch, retended_item):
+        """
+        Adds a retended_item, populates the ProductHistory table using a
+        product_retention_history created during a product retention
+
+        @param conn: a database connection
+        @param branch: the source branch
+        @param retended_item: a ProductRetentionHistory instance
+        """
+        cls(branch=branch, sellable=ISellable(retended_item.product),
+            quantity_retended=retended_item.quantity,
+            received_date=datetime.date.today(),
             connection=conn)
 
 
