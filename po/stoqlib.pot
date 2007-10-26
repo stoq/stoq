@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-25 10:16-0200\n"
+"POT-Creation-Date: 2007-10-26 15:57-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -149,7 +149,7 @@ msgid "Cost"
 msgstr ""
 
 #: ../stoqlib/reporting/purchase.py:123 ../stoqlib/reporting/product.py:69
-#: ../stoqlib/reporting/product.py:162 ../stoqlib/reporting/sale.py:72
+#: ../stoqlib/reporting/product.py:167 ../stoqlib/reporting/sale.py:72
 #: ../stoqlib/gui/wizards/purchasewizard.py:198
 #: ../stoqlib/gui/wizards/receivingwizard.py:245
 #: ../stoqlib/gui/dialogs/productstockdetails.py:129
@@ -299,11 +299,11 @@ msgstr ""
 
 #. XXX Bug #2430 will improve this part
 #: ../stoqlib/reporting/product.py:62 ../stoqlib/reporting/product.py:111
-#: ../stoqlib/reporting/product.py:157 ../stoqlib/reporting/sale.py:67
+#: ../stoqlib/reporting/product.py:162 ../stoqlib/reporting/sale.py:67
 #: ../stoqlib/reporting/service.py:55
 #: ../stoqlib/gui/search/sellablesearch.py:122
 #: ../stoqlib/gui/search/productsearch.py:128
-#: ../stoqlib/gui/search/productsearch.py:186
+#: ../stoqlib/gui/search/productsearch.py:193
 #: ../stoqlib/gui/search/servicesearch.py:91
 #: ../stoqlib/gui/dialogs/receivingdialog.py:80
 #: ../stoqlib/gui/dialogs/saledetails.py:128
@@ -315,7 +315,7 @@ msgid "Code"
 msgstr ""
 
 #: ../stoqlib/reporting/product.py:64 ../stoqlib/reporting/product.py:113
-#: ../stoqlib/reporting/product.py:159 ../stoqlib/reporting/payment.py:65
+#: ../stoqlib/reporting/product.py:164 ../stoqlib/reporting/payment.py:65
 #: ../stoqlib/reporting/payment.py:92 ../stoqlib/reporting/service.py:57
 #: ../stoqlib/gui/slaves/devicesslave.py:56
 #: ../stoqlib/gui/slaves/installmentslave.py:192
@@ -327,7 +327,7 @@ msgstr ""
 #: ../stoqlib/gui/search/tillsearch.py:116
 #: ../stoqlib/gui/search/categorysearch.py:61
 #: ../stoqlib/gui/search/productsearch.py:132
-#: ../stoqlib/gui/search/productsearch.py:188
+#: ../stoqlib/gui/search/productsearch.py:195
 #: ../stoqlib/gui/search/servicesearch.py:95
 #: ../stoqlib/gui/search/fiscalsearch.py:72
 #: ../stoqlib/gui/wizards/purchasewizard.py:196
@@ -367,7 +367,7 @@ msgid "C.M."
 msgstr ""
 
 #. FIXME: This column should be virtual, waiting for bug #2764
-#: ../stoqlib/reporting/product.py:72 ../stoqlib/reporting/product.py:164
+#: ../stoqlib/reporting/product.py:72 ../stoqlib/reporting/product.py:169
 #: ../stoqlib/reporting/service.py:63
 #: ../stoqlib/gui/wizards/purchasewizard.py:200
 #: ../stoqlib/gui/wizards/receivingwizard.py:249
@@ -377,7 +377,7 @@ msgstr ""
 msgid "Unit"
 msgstr ""
 
-#: ../stoqlib/reporting/product.py:83 ../stoqlib/reporting/product.py:132
+#: ../stoqlib/reporting/product.py:83 ../stoqlib/reporting/product.py:136
 #: ../stoqlib/reporting/purchase_receival.py:63
 #: ../stoqlib/reporting/payment.py:50 ../stoqlib/reporting/service.py:73
 #: ../stoqlib/gui/dialogs/productstockdetails.py:87
@@ -411,15 +411,19 @@ msgid "Quantity Transfered"
 msgstr ""
 
 #: ../stoqlib/reporting/product.py:120
+msgid "Quantity retended"
+msgstr ""
+
+#: ../stoqlib/reporting/product.py:123
 #: ../stoqlib/gui/dialogs/purchasedetails.py:119
 msgid "Quantity Received"
 msgstr ""
 
-#: ../stoqlib/reporting/product.py:146
+#: ../stoqlib/reporting/product.py:151
 msgid "Product Counting"
 msgstr ""
 
-#: ../stoqlib/reporting/product.py:160
+#: ../stoqlib/reporting/product.py:165
 msgid "Fiscal Class"
 msgstr ""
 
@@ -613,6 +617,7 @@ msgid "Inactive"
 msgstr ""
 
 #: ../stoqlib/domain/till.py:85 ../stoqlib/domain/purchase.py:127
+#: ../stoqlib/domain/transfer.py:80
 msgid "Pending"
 msgstr ""
 
@@ -621,7 +626,8 @@ msgid "Opened"
 msgstr ""
 
 #: ../stoqlib/domain/till.py:87 ../stoqlib/domain/purchase.py:129
-#: ../stoqlib/domain/sellable.py:219 ../stoqlib/domain/payment/group.py:68
+#: ../stoqlib/domain/sellable.py:219 ../stoqlib/domain/transfer.py:81
+#: ../stoqlib/domain/payment/group.py:68
 msgid "Closed"
 msgstr ""
 
@@ -807,7 +813,7 @@ msgid "Available"
 msgstr ""
 
 #: ../stoqlib/domain/sellable.py:218
-#: ../stoqlib/gui/search/productsearch.py:190
+#: ../stoqlib/gui/search/productsearch.py:197
 msgid "Sold"
 msgstr ""
 
@@ -2524,14 +2530,14 @@ msgstr ""
 
 #: ../stoqlib/gui/parameters.py:99 ../stoqlib/gui/base/dialogs.py:460
 #: ../stoqlib/gui/editors/parameterseditor.py:94
-#: ../stoqlib/gui/wizards/stocktransferwizard.py:269
+#: ../stoqlib/gui/wizards/stocktransferwizard.py:264
 msgid "No"
 msgstr ""
 
 #: ../stoqlib/gui/parameters.py:99 ../stoqlib/gui/base/dialogs.py:460
 #: ../stoqlib/gui/editors/parameterseditor.py:88
 #: ../stoqlib/gui/wizards/personwizard.py:95
-#: ../stoqlib/gui/wizards/stocktransferwizard.py:269
+#: ../stoqlib/gui/wizards/stocktransferwizard.py:264
 msgid "Yes"
 msgstr ""
 
@@ -3668,6 +3674,7 @@ msgstr ""
 
 #. Branch
 #: ../stoqlib/gui/search/productsearch.py:107
+#: ../stoqlib/gui/search/productsearch.py:182
 #: ../stoqlib/gui/search/fiscalsearch.py:151
 msgid "In branch:"
 msgstr ""
@@ -3684,11 +3691,15 @@ msgstr ""
 msgid "Product History Search"
 msgstr ""
 
-#: ../stoqlib/gui/search/productsearch.py:193
+#: ../stoqlib/gui/search/productsearch.py:200
 msgid "Transfered"
 msgstr ""
 
-#: ../stoqlib/gui/search/productsearch.py:195
+#: ../stoqlib/gui/search/productsearch.py:202
+msgid "Retended"
+msgstr ""
+
+#: ../stoqlib/gui/search/productsearch.py:204
 #: ../data/glade/PurchaseDetailsDialog.glade.h:17
 msgid "Received"
 msgstr ""
@@ -3955,23 +3966,23 @@ msgstr ""
 msgid "Transfer"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/stocktransferwizard.py:234
+#: ../stoqlib/gui/wizards/stocktransferwizard.py:229
 msgid "The date must be set to today or a future date"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/stocktransferwizard.py:238
+#: ../stoqlib/gui/wizards/stocktransferwizard.py:233
 msgid "The open date must be set to before the receival date"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/stocktransferwizard.py:244
+#: ../stoqlib/gui/wizards/stocktransferwizard.py:239
 msgid "The receival date must be set to after the open date"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/stocktransferwizard.py:258
+#: ../stoqlib/gui/wizards/stocktransferwizard.py:253
 msgid "Stock Transfer"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/stocktransferwizard.py:268
+#: ../stoqlib/gui/wizards/stocktransferwizard.py:263
 msgid "Would you like to print a receipt for this transfer?"
 msgstr ""
 
@@ -4190,7 +4201,7 @@ msgid "Unsupported database version, you need to reinstall"
 msgstr ""
 
 #. Dependencies to create an user.
-#: ../stoqlib/database/admin.py:73
+#: ../stoqlib/database/admin.py:74
 msgid "System Administrator"
 msgstr ""
 
