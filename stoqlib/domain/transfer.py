@@ -27,12 +27,13 @@ import datetime
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
-from sqlobject import ForeignKey
+from sqlobject import ForeignKey, IntCol
 from sqlobject.col import DateTimeCol
 
 from stoqlib.database.columns import DecimalCol
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IContainer
+from stoqlib.domain.product import ProductHistory
+from stoqlib.domain.interfaces import IContainer, IStorable
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -73,6 +74,13 @@ class TransferOrder(Domain):
     """
     implements(IContainer)
 
+    (STATUS_PENDING,
+     STATUS_CLOSED) = range(2)
+
+    statuses = {STATUS_PENDING: _(u"Pending"),
+                STATUS_CLOSED:  _(u"Closed")}
+
+    status = IntCol(default=STATUS_PENDING)
     open_date = DateTimeCol(default=datetime.datetime.now)
     receival_date = DateTimeCol(default=datetime.datetime.now)
     source_branch = ForeignKey('PersonAdaptToBranch')
@@ -103,6 +111,37 @@ class TransferOrder(Domain):
     # Public API
     #
 
+    def can_close(self):
+        if self.status == TransferOrder.STATUS_PENDING:
+            return self.get_items().count() > 0
+        return False
+
+    @argcheck(TransferOrderItem)
+    def send_item(self, transfer_item):
+        """Sends a product of this order to it's destination branch"""
+        assert self.can_close()
+
+        storable = IStorable(transfer_item.sellable)
+        storable.decrease_stock(transfer_item.quantity, self.source_branch)
+        conn = self.get_connection()
+        ProductHistory.add_transfered_item(conn, self.source_branch,
+                                           transfer_item)
+
+    def receive(self, receival_date=None):
+        """Confirms the receiving of the transfer order"""
+        assert self.can_close()
+
+        if not receival_date:
+            receival_date = datetime.date.today()
+        self.receival_date = receival_date
+
+
+        for item in self.get_items():
+            storable = IStorable(item.sellable)
+            storable.increase_stock(item.quantity,
+                                    self.destination_branch)
+        self.status = TransferOrder.STATUS_CLOSED
+
     def get_source_branch_name(self):
         """Returns the source branch name"""
         return self.source_branch.person.name
@@ -127,6 +166,4 @@ class TransferOrder(Domain):
         """Retuns the transfer items quantity or zero if there is no
            item in transfer
         """
-        items = TransferOrderItem.selectBy(transfer_order=self,
-                                           connection=self.get_connection())
-        return sum([i.quantity for i in items], 0)
+        return sum([item.quantity for item in self.get_items()], 0)
