@@ -283,10 +283,9 @@ class POSApp(AppWindow):
             IService(sale_item.sellable, None) and
             sale_item.sellable != sysparam(self.conn).DELIVERY_SERVICE)
         self.edit_item_button.set_sensitive(can_edit)
-        if (len(self.sale_items) == 1 and
-            self.sale_items[0].sellable == sysparam(self.conn).DELIVERY_SERVICE):
-            self.set_sensitive((self.checkout_button,
-                                self.OrderCheckout), False)
+
+        self.set_sensitive((self.checkout_button,
+                            self.OrderCheckout), has_products)
         self._update_totals()
         self._update_add_button()
 
