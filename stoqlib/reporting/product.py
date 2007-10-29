@@ -134,8 +134,8 @@ class ProductQuantityReport(SearchResultsReport):
             qty_retended += item.quantity_retended or Decimal(0)
 
         summary_row = ["", _("Total:"), format_data(qty_sold),
-                       format_data(qty_retended),
                        format_data(qty_transfered),
+                       format_data(qty_retended),
                        format_data(qty_received)]
         self.add_object_table(self._products, self._get_columns(),
                               summary_row=summary_row)
