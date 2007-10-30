@@ -31,16 +31,17 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
-from kiwi.ui.widgets.list import Column, ColoredColumn
+from kiwi.ui.widgets.list import Column
 from sqlobject.viewable import Viewable
 from sqlobject.sqlbuilder import INNERJOINOn
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.gui.base.search import SearchDialog
+from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
 
@@ -61,6 +62,7 @@ class TillFiscalOperationsView(Viewable):
         date=Payment.q.open_date,
         description=Payment.q.description,
         value=Payment.q.value,
+        cfop=CfopData.q.code,
         station_name=BranchStation.q.name,
         branch_id=PersonAdaptToBranch.q.id,
         status=Till.q.status,
@@ -73,6 +75,12 @@ class TillFiscalOperationsView(Viewable):
                     BranchStation.q.id == Till.q.stationID),
         INNERJOINOn(None, PersonAdaptToBranch,
                     PersonAdaptToBranch.q.id == BranchStation.q.branchID),
+        INNERJOINOn(None, AbstractPaymentGroup,
+                    AbstractPaymentGroup.q.id == Payment.q.groupID),
+        INNERJOINOn(None, FiscalBookEntry,
+                    FiscalBookEntry.q.payment_groupID == AbstractPaymentGroup.q.id),
+        INNERJOINOn(None, CfopData,
+                    CfopData.q.id == FiscalBookEntry.q.cfopID),
         ]
 
 
@@ -117,8 +125,9 @@ class TillFiscalOperationsSearch(SearchDialog):
                        data_type=str, expand=True),
                 Column('station_name', title=_('Station'), data_type=str,
                        width=120),
-                ColoredColumn('value', _('Value'), data_type=currency,
-                       color='red', data_func=payment_value_colorize,
+                Column('cfop', title=_(u"Cfop"), data_type=str,
+                       width=100, justify=gtk.JUSTIFY_RIGHT),
+                Column('value', _('Value'), data_type=currency,
                        width=80)]
 
     #
