@@ -29,6 +29,7 @@ import datetime
 
 import gtk
 from kiwi.datatypes import currency
+from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import DateSearchFilter
 
 from stoqlib.domain.receiving import ReceivingOrder
@@ -64,9 +65,13 @@ class PurchaseReceivingSearch(SearchDialog):
     #
 
     def create_filters(self):
-        self.set_searchbar_labels(_('Receiving Orders Matching:'))
-        self.set_text_field_columns([])
+        self.set_searchbar_labels(_('matching:'))
+        self.set_text_field_columns(['id'])
 
+        # Branch
+        branch_filter = self.create_branch_filter(_(u"In branch"))
+        self.add_filter(branch_filter, columns=['branchID'],
+                        position=SearchFilterPosition.TOP)
         # Date
         date_filter = DateSearchFilter(_('Date:'))
         self.add_filter(
@@ -81,8 +86,6 @@ class PurchaseReceivingSearch(SearchDialog):
                        width=130),
                 Column('supplier_name', _('Supplier'), data_type=unicode,
                        expand=True),
-                Column('branch_name', _('Branch'), data_type=unicode,
-                       width=90, visible=False),
                 Column('invoice_number', _('Invoice #'), data_type=int,
                        width=80),
                 Column('invoice_total', _('Invoice Total'),
