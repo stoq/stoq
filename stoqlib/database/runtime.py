@@ -217,8 +217,11 @@ def _register_branch(station_name):
     branches = Person.iselect(IBranch, connection=trans)
     if not branches:
         error(_("Schema error, no branches found"))
-    elif branches.count() != 1:
-        error(_("More than one branch detected"))
+
+    # TODO
+    # Always select the first branch as the main branch, until we
+    # support multiple branches properly. And then, provide a way to the
+    # user choose which one will be the main branch.
     branch = branches[0]
 
     try:
