@@ -1,50 +1,124 @@
-                                                                                                    
- 10:30:20                                                                                           
-                                                                                                    
- 12345-678                                                                                          
- 1.800000                                                                                           
- 0                                                                                                  
- 0                                                                                                  
- 2000-01-01                                                                                         
- 0                                                                                                  
- WISCONSIN                                                                                          
-                                                                                     
- 1                                                                                                  
- CIDADE ARACI                                                                                       
- 10.0000                                                                                            
- SALE                                                                                               
- 10.0000                                                                                            
- CLIENT                                                                                             
- 5.10                                                                                               
- ACAPULCO                                                                                           
- 10.00                                                                                              
- N                                                                                                  
- XXXXXXXXXXXXXXXXXXXXX                                                                              
- MAINSTREET 138                                                                                     
- 001                                                                                                
- 0                                                                                                  
-  /                                                                                                 
- 10.00                                                                                              
- 2007-01-01                                                                                         
-                                                                                                    
- 10.0000                                                                                            
- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                                     
- 10.0000                                                                                            
- 18                                                                                                 
-                                                                                                    
-                                                                                                    
- 2007-01-01                                                                                         
-                                                                                                    
- SALESPERSON                                                                                        
- 0                                                                                                  
-                                                                                                    
- 1.00                                                                                               
-                                                                                                    
-                                                                                                    
- 0                                                                                                  
-                                                                                                    
-                                                                                     
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
+-- PAGE 0 - START ----
+                                                                                
+                                                                                
+                                                                                
+                                                  X                             
+                                                                                
+                                                                                
+                                                                                
+SALE                   5.102                                                    
+                                                                                
+                                                                                
+CLIENT                                                                2007-01-01
+                                                                                
+MAINSTREET 138, CIDADE ARACI        CIDADE ARACI          12345-678   2007-01-01
+                                                                                
+ACAPULCO                  /                    WI                      10:30    
+                                                                                
+                                                                                
+1          2000-01-01                                       545.00              
+                                                                                
+                                                                                
+                                                                                
+001  00000000001000 / DESCRIPTION      N          1.00 50.00    50.00 18        
+002  00000000001001 / DESCRIPTION      N          1.00 51.00    51.00 18        
+003  00000000001002 / DESCRIPTION      N          1.00 52.00    52.00 18        
+004  00000000001003 / DESCRIPTION      N          1.00 53.00    53.00 18        
+005  00000000001004 / DESCRIPTION      N          1.00 54.00    54.00 18        
+006  00000000001005 / DESCRIPTION      N          1.00 55.00    55.00 18        
+007  00000000001006 / DESCRIPTION      N          1.00 56.00    56.00 18        
+008  00000000001007 / DESCRIPTION      N          1.00 57.00    57.00 18        
+009  00000000001008 / DESCRIPTION      N          1.00 58.00    58.00 18        
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+-- PAGE 0 - END ----
+-- PAGE 1 - START ----
+                                                                                
+                                                                                
+                                                                                
+                                                  X                             
+                                                                                
+                                                                                
+                                                                                
+SALE                   5.102                                                    
+                                                                                
+                                                                                
+CLIENT                                                                2007-01-01
+                                                                                
+MAINSTREET 138, CIDADE ARACI        CIDADE ARACI          12345-678   2007-01-01
+                                                                                
+ACAPULCO                  /                    WI                      10:30    
+                                                                                
+                                                                                
+1          2000-01-01                                       545.00              
+                                                                                
+                                                                                
+                                                                                
+010  00000000001009 / DESCRIPTION      N          1.00 59.00    59.00 18        
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+        545.00            98.10            0.00           0.00           545.00 
+                                                                                
+                                                                         545.00 
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+-- PAGE 1 - END ----

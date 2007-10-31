@@ -29,12 +29,12 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import (IPaymentGroup,
                                        ISellable,
                                        IStorable)
-from stoqlib.domain.invoice import InvoiceLayout, InvoiceField
+from stoqlib.domain.invoice import InvoiceLayout
 from stoqlib.domain.payment.methods import MoneyPM
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.diffutils import diff_files
-from stoqlib.lib.invoice import get_invoice_fields, SaleInvoice
+from stoqlib.lib.invoice import SaleInvoice
 from stoqlib.lib import test
 
 
@@ -43,8 +43,11 @@ def compare_invoice_file(invoice, basename):
     output = basename + '-output.txt'
 
     fp = open(output, 'w')
-    for line in invoice.generate():
-        fp.write(line.tostring())
+    for n, page in enumerate(invoice.generate_pages()):
+        fp.write('-- PAGE %d - START ----\n' % (n,))
+        for line in page:
+            fp.write(line.tostring())
+        fp.write('-- PAGE %d - END ----\n' % (n,))
     fp.close()
     expected = os.path.join(test.__path__[0], expected)
     retval = diff_files(expected, output)
@@ -63,13 +66,13 @@ class InvoiceTest(DomainTest):
                                           sale.get_sale_subtotal())
         payment.get_adapted().due_date = datetime.datetime(2000, 1, 1)
 
-    def _add_product(self, sale, price=None):
+    def _add_product(self, sale, tax=None, price=None):
         product = self.create_product(price=price)
         sellable = ISellable(product)
         sellable.tax_constant = SellableTaxConstant(
-            description="18",
+            description=str(tax),
             tax_type=int(TaxType.CUSTOM),
-            tax_value=18,
+            tax_value=tax,
             connection=self.trans)
         sale.add_sellable(sellable, quantity=1)
         storable = product.addFacet(IStorable, connection=self.trans)
@@ -78,7 +81,9 @@ class InvoiceTest(DomainTest):
 
     def testSaleInvoice(self):
         sale = self.create_sale()
-        self._add_product(sale)
+        for i in range(10):
+            self._add_product(sale, tax=18, price=50+i)
+
         sale.order()
         self._add_payments(sale)
         sale.confirm()
@@ -86,23 +91,11 @@ class InvoiceTest(DomainTest):
         address = self.create_address()
         address.person = sale.client.person
 
-        layout = InvoiceLayout(width=100,
-                               height=50,
-                               description='Test invoice',
-                               connection=self.trans)
-        for i, invoice_field in enumerate(get_invoice_fields()):
-            # FIXME: Find a way to force the id to a specific number
-            if invoice_field.name in ['PRODUCT_ITEM_CODE_DESCRIPTION',
-                                      'SALE_NUMBER']:
-                continue
-            InvoiceField(layout=layout,
-                         field_name=invoice_field.name,
-                         x=1,
-                         y=i+1,
-                         width=len(invoice_field.name),
-                         height=1,
-                         connection=self.trans)
+        layout = InvoiceLayout.selectOne(connection=self.trans)
         invoice = SaleInvoice(sale, layout)
         invoice.today = datetime.datetime(2007, 1, 1, 10, 20, 30)
+
+        for n, sale_item in enumerate(sale.products):
+            sale_item.sellable.id = 1000 + n
 
         compare_invoice_file(invoice, 'sale-invoice')

@@ -196,8 +196,9 @@ class InvoiceLayoutEditor(BaseEditor):
             return
 
         invoice = SaleInvoice(sales[0], self.model)
-        for line in invoice.generate():
-            print repr(line.tostring())
+        for page in invoice.generate_pages():
+            for line in page:
+                print repr(line.tostring())
 
 class InvoiceLayoutDialog(ModelListDialog):
 
