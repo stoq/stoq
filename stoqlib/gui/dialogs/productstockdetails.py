@@ -140,7 +140,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        justify=gtk.JUSTIFY_RIGHT),
                 Column("sale.client_name",
                        title=_("Client"), expand=True, data_type=str),
-                Column("quantity", title=_("Quantity"),
+                Column("quantity", title=_("Sold"),
                        data_type=int),
                 Column("sellable.unit_description",
                        title=_("Unit"), data_type=str)]
@@ -158,7 +158,7 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column("transfer_order.source_responsible_name",
                        title=_("Responsible"), expand=True,
                        data_type=str),
-                Column("quantity", title=_("Quantity Transfered"),
+                Column("quantity", title=_("Transfered"),
                        data_type=Decimal)]
 
     def _get_retention_columns(self):
