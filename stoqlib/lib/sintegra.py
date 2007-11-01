@@ -137,6 +137,22 @@ class SintegraFile(object):
             code,
             value * 100))
 
+    def add_products_summarized(self, date, product_code,
+                                product_quantity,
+                                total_liquido_produto,
+                                total_icms_base,
+                                icms_aliquota):
+        product_code = "%014d" % (product_code)
+        icms_aliquota = '%04d' % (icms_aliquota)
+        if icms_aliquota == '0000':
+            icms_aliquota = "I"
+        self.add(SintegraRegister60R('R', date, product_code,
+                                     product_quantity,
+                                     total_liquido_produto,
+                                     total_icms_base,
+                                     icms_aliquota, ""))
+
+
     def add_receiving_order(self, cnpj, state_registry, receival_date,
                             state, modelo, serial, numero, cfop, emitente,
                             total, icms_base, icms_total, isenta, outras,
@@ -183,8 +199,8 @@ class SintegraFile(object):
                     reducao_icms, base_icms):
         start = int(start.strftime("%Y%m%d"))
         end = int(end.strftime("%Y%m%d"))
-        product_code = '%0*d' % (14, int(product_code))
-        ncm = '%0*d' % (8, int(ncm))
+        product_code = '%014d' % (int(product_code))
+        ncm = '%08d' % (int(ncm))
 
         self.add(SintegraRegister75(start, end, product_code, ncm, desc,
                                     unit, aliquota_ipi, aliquota_icms,
@@ -401,6 +417,20 @@ class SintegraRegister60A(SintegraRegister):
     sintegra_requires = 10, 11
 
 
+class SintegraRegister60R(SintegraRegister):
+    sintegra_number = 60
+    sintegra_fields = [
+        ('type', 1, basestring),
+        ('date', 6, number),
+        ('product_code', 14, basestring),
+        ('product_quantity', 13, number),
+        ('total_liquido_produto', 16, number),
+        ('total_icms_base', 16, number),
+        ('icms_aliquota', 4, basestring),
+        ('blank', 54, basestring),
+        ]
+
+
 class SintegraRegister50(SintegraRegister):
     sintegra_number = 50
     sintegra_fields = [
@@ -421,6 +451,7 @@ class SintegraRegister50(SintegraRegister):
         ('aliquota_icms', 4, number),
         ('situacao', 1, basestring),
         ]
+
 
 class SintegraRegister54(SintegraRegister):
     sintegra_number = 54

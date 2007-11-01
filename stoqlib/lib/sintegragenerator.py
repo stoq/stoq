@@ -35,6 +35,7 @@ from stoqlib.domain.interfaces import ICompany
 from stoqlib.domain.person import (_PersonAdaptToCompany,
                                    PersonAdaptToIndividual)
 from stoqlib.domain.receiving import ReceivingOrder
+from stoqlib.domain.sale import Sale
 from stoqlib.lib.sintegra import SintegraFile, SintegraError
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -101,6 +102,8 @@ class StoqlibSintegraGenerator(object):
                 item.coupon_start, item.coupon_end,
                 item.cro, item.crz, item.period_total, item.total)
             for tax in item.taxes:
+                if not tax.value:
+                    continue
                 self.sintegra.add_fiscal_tax(item.emission_date, item.serial,
                                              tax.code, tax.value)
 
@@ -153,7 +156,10 @@ class StoqlibSintegraGenerator(object):
         # 3) Add fiscal coupons (registry 60)
         self._add_fiscal_coupons()
 
-        # 4) Add sellables (registry 75)
+        # 4) Add sold products (registry 60R)
+        self._add_sold_products()
+
+        # 5) Add sellables (registry 75)
         for sellable in sellables:
             self._add_sellable(sellable)
 
@@ -218,6 +224,37 @@ class StoqlibSintegraGenerator(object):
                  receiving_order.secure_value),
                 tax_value * 100,
                 'N')
+
+    def _add_sold_products(self):
+        sales = self._date_query(Sale, 'confirm_date')
+
+        sellables = {}
+        for sale in sales:
+            if not sale.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID):
+                continue
+            for sale_item in sale.products:
+                discount = sale_item.sale.discount_value/sale_item.quantity
+                cost = (sale_item.sellable.base_sellable_info.price *
+                         sale_item.quantity - discount)
+                if not sale_item.sellable in sellables:
+                    sellables[sale_item.sellable] = 0, 0
+                old_quantity, old_cost = sellables[sale_item.sellable]
+                quantity = old_quantity + sale_item.quantity
+                cost += old_cost
+                sellables[sale_item.sellable] = quantity, cost
+
+        date = self.start.strftime("%m%Y")
+        for item in sorted(sellables.items(), key=lambda x: x[0].id):
+            sellable = item[0]
+            quantity, cost = sellables[sellable]
+            tax_value = sellable.tax_constant.tax_value or 0
+            self.sintegra.add_products_summarized(
+                date=int(date),
+                product_code=sellable.id,
+                product_quantity=quantity,
+                total_liquido_produto=cost,
+                total_icms_base=cost,
+                icms_aliquota=tax_value)
 
     def _add_receiving_order_items(self, receiving_order, sellables):
         cnpj = self._get_cnpj_or_cpf(receiving_order)
