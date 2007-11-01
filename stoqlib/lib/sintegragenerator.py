@@ -244,8 +244,7 @@ class StoqlibSintegraGenerator(object):
                 sellables[sale_item.sellable] = quantity, cost
 
         date = self.start.strftime("%m%Y")
-        for item in sorted(sellables.items(), key=lambda x: x[0].id):
-            sellable = item[0]
+        for sellable in sorted(sellables, key=lambda sellable: sellable.id):
             quantity, cost = sellables[sellable]
             tax_value = sellable.tax_constant.tax_value or 0
             self.sintegra.add_products_summarized(
