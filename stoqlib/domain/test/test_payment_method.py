@@ -28,7 +28,7 @@ from decimal import Decimal
 from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.database.runtime import get_current_station
-from stoqlib.domain.interfaces import IPaymentGroup
+from stoqlib.domain.interfaces import IPaymentGroup, IInPayment, IOutPayment
 from stoqlib.domain.payment.methods import (APaymentMethod,
                                             BillPM, CheckPM, FinancePM,
                                             PaymentMethodDetails,
@@ -79,6 +79,34 @@ class _TestPaymentMethod:
                                              [d] * no)
         return [p.get_adapted() for p in payments]
 
+    def createPayment(self, iface):
+        if iface is IOutPayment:
+            order = self.create_purchase_order()
+        elif iface is IInPayment:
+            order = self.create_sale()
+            order.addFacet(IPaymentGroup, connection=self.trans)
+        else:
+            order = None
+
+        group = IPaymentGroup(order)
+        value = Decimal(100)
+        method = self.method_type.selectOne(connection=self.trans)
+        return method.create_payment(iface, group, value)
+
+    def createPayments(self, iface, no=3):
+        if iface is IOutPayment:
+            order = self.create_purchase_order()
+        elif iface is IInPayment:
+            order = self.create_sale()
+            order.addFacet(IPaymentGroup, connection=self.trans)
+        else:
+            order = None
+
+        group = IPaymentGroup(order)
+        value = Decimal(100)
+        due_dates = [datetime.datetime.today()] * no
+        method = self.method_type.selectOne(connection=self.trans)
+        return method.create_payments(iface, group, value, due_dates)
 
 class _TestPaymentMethodsBase(_TestPaymentMethod):
     def testCreateInPayment(self):
@@ -115,6 +143,41 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         athird = quantize(Decimal(100) / Decimal(3))
         rest = quantize(Decimal(100) - (athird * 2))
         self.assertEqual(len(payments), 3)
+        self.assertEqual(payments[0].value, athird)
+        self.assertEqual(payments[1].value, athird)
+        self.assertEqual(payments[2].value, rest)
+
+    def testCreatePayment(self):
+        inpayment = self.createPayment(IInPayment)
+        self.failUnless(isinstance(inpayment, PaymentAdaptToInPayment))
+        payment = inpayment.get_adapted()
+        self.failUnless(isinstance(payment, Payment))
+        self.assertEqual(payment.value, Decimal(100))
+
+        outpayment = self.createPayment(IOutPayment)
+        self.failUnless(isinstance(outpayment, PaymentAdaptToOutPayment))
+        payment = outpayment.get_adapted()
+        self.failUnless(isinstance(payment, Payment))
+        self.assertEqual(payment.value, Decimal(100))
+
+    def testCreatePayments(self):
+        if self.method_type in (MoneyPM, GiftCertificatePM):
+            return
+
+        inpayments = self.createPayments(IInPayment)
+        self.assertEqual(len(inpayments), 3)
+        payments = [p.get_adapted() for p in inpayments]
+        athird = quantize(Decimal(100) / Decimal(3))
+        rest = quantize(Decimal(100) - (athird * 2))
+        self.assertEqual(payments[0].value, athird)
+        self.assertEqual(payments[1].value, athird)
+        self.assertEqual(payments[2].value, rest)
+
+        outpayments = self.createPayments(IOutPayment)
+        self.assertEqual(len(outpayments), 3)
+        payments = [p.get_adapted() for p in outpayments]
+        athird = quantize(Decimal(100) / Decimal(3))
+        rest = quantize(Decimal(100) - (athird * 2))
         self.assertEqual(payments[0].value, athird)
         self.assertEqual(payments[1].value, athird)
         self.assertEqual(payments[2].value, rest)
@@ -186,6 +249,23 @@ class TestAPaymentMethod(DomainTest, _TestPaymentMethod):
     def testCreateInPaymentsUnClosedTill(self):
         self._createUnclosedTill()
         self.assertRaises(TillError, self.createInPayments)
+
+    def testCreatePaymentUnClosedTill(self):
+        self._createUnclosedTill()
+        self.assertRaises(TillError, self.createPayment, IInPayment)
+
+        outpayment = self.createPayment(IOutPayment)
+        self.failUnless(isinstance(outpayment, PaymentAdaptToOutPayment))
+
+    def testCreatePaymentsUnClosedTill(self):
+        self._createUnclosedTill()
+        self.assertRaises(TillError, self.createPayments, IInPayment)
+
+        outpayments = self.createPayments(IOutPayment)
+        self.assertEqual(len(outpayments), 3)
+        for i in range(3):
+            self.failUnless(isinstance(outpayments[i],
+                                       PaymentAdaptToOutPayment))
 
 class TestMoneyPM(DomainTest, _TestPaymentMethodsBase):
     method_type = MoneyPM

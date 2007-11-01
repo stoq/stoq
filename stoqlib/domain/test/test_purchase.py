@@ -47,7 +47,9 @@ class TestPurchaseOrder(DomainTest):
         order.status = PurchaseOrder.ORDER_PENDING
         self.assertRaises(ValueError, order.confirm)
 
-        order.addFacet(IPaymentGroup, connection=self.trans)
+        group = order.addFacet(IPaymentGroup, connection=self.trans)
+        order.create_preview_outpayments(self.trans, group,
+                                          order.get_purchase_total())
         order.confirm()
 
     def testClose(self):
@@ -55,10 +57,12 @@ class TestPurchaseOrder(DomainTest):
         self.assertRaises(ValueError, order.close)
         order.status = PurchaseOrder.ORDER_PENDING
         self.assertRaises(ValueError, order.confirm)
-        order.addFacet(IPaymentGroup, connection=self.trans)
+        group = order.addFacet(IPaymentGroup, connection=self.trans)
+        order.create_preview_outpayments(self.trans, group,
+                                          order.get_purchase_total())
         order.confirm()
 
-        payments = list(IPaymentGroup(order).get_items())
+        payments = list(group.get_items())
         self.failUnless(len(payments) > 0)
 
         for payment in payments:
@@ -81,6 +85,8 @@ class TestPurchaseOrder(DomainTest):
         self.assertEqual(order.can_cancel(), True)
         order.cancel()
         self.assertEqual(order.can_cancel(), False)
+        sellable = self.create_sellable()
+        purchase_item = order.add_item(sellable, 2)
 
     def testGetFreight(self):
         order = self.create_purchase_order()

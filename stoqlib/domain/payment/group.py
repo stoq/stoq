@@ -228,23 +228,21 @@ class AbstractPaymentGroup(InheritableModelAdapter):
             if isinstance(payment.method, MoneyPM):
                 payment.pay()
 
-    def clear_preview_payments(self, ignore_method=None):
+    def clear_preview_payments(self, method_iface, ignore_method=None):
         """Delete payments of preview status associated to the current
         payment_group. It can happen if user open and cancel this wizard.
+        @param payment_iface: the payment method interface
         @param ignore_method: a payment method which will be ignored
                               in the search for payments
         """
         query = dict(status=Payment.STATUS_PREVIEW, group=self)
-
         conn = self.get_connection()
         if ignore_method:
             query['method'] = ignore_method.selectOne(connection=conn)
 
-        for payment in Payment.selectBy(connection=conn, **query):
-            inpayment = IInPayment(payment, None)
-            if not inpayment:
-                continue
-            payment.method.delete_inpayment(inpayment)
+        payments = Payment.selectBy(connection=conn, **query)
+        for payment in payments:
+            payment.method.delete_payment(method_iface, payment)
 
     #
     # Accessors

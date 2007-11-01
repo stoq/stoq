@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Fabio Morbec      <fabio@async.com.br>
+##              George Kussumoto  <george@async.com.br>
 ##
 
 from kiwi.datatypes import currency
@@ -91,12 +92,46 @@ class TestReceivingOrder(DomainTest):
         order.purchase.confirm()
         order.confirm()
         group = IPaymentGroup(order.purchase)
+        total = order.get_total()
+        order.purchase.create_preview_outpayments(self.trans, group, total)
         for pay in group.get_items():
             self.assertEqual(pay.value,
                 order.get_total()/group.installments_number)
-            self.assertEqual(pay.base_value,
+            self.assertEqual(pay.value,
                 order.get_total()/group.installments_number)
         self.assertEqual(order.invoice_total, order.get_total())
+
+    def testUpdatePaymentValues(self):
+        order = self.create_receiving_order()
+        order_item = self.create_receiving_order_item(order)
+        self.assertEqual(order.get_total(), currency(1000))
+
+        for item in order.purchase.get_items():
+            item.quantity_received = 0
+        order.purchase.status = order.purchase.ORDER_PENDING
+        order.purchase.confirm()
+        group = IPaymentGroup(order.purchase)
+        total = order.get_total()
+        order.purchase.create_preview_outpayments(self.trans, group, total)
+
+        payment_dict = {}
+        for pay in group.get_items():
+            self.assertEqual(pay.value,
+                order.get_total()/group.installments_number)
+            payment_dict[pay] = pay.value
+
+        order.discount_value = 20
+        order.surcharge_value = 100
+        order.freight_total = 10
+        order.secure_value = 15
+        order.expense_value = 5
+        order.confirm()
+
+        group = IPaymentGroup(order.purchase)
+        for pay in group.get_items():
+            self.assertEqual(pay.value,
+                order.get_total()/group.installments_number)
+            self.failIf(pay.value <= payment_dict[pay])
 
 
 class TestReceivingOrderItem(DomainTest):
@@ -121,7 +156,7 @@ class TestReceivingOrderItem(DomainTest):
 
     def testGetPrice(self):
         order_item = self.create_receiving_order_item()
-        order_item.sellable.cost = 100
+        order_item.purchase_item.cost = 100
         self.assertEqual(order_item.get_price(), currency(100))
         self.assertNotEqual(order_item.get_price(), currency(50))
         self.assertNotEqual(order_item.get_price(), currency(150))
