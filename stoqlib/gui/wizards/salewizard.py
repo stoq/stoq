@@ -55,6 +55,7 @@ from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave, BillMethodSlave,
                                              FinanceMethodSlave)
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.domain.interfaces import IInPayment
 from stoqlib.domain.person import (Person, ClientView,
                                    PersonAdaptToCreditProvider)
 from stoqlib.domain.payment.methods import (APaymentMethod,
@@ -259,7 +260,7 @@ class SaleRenegotiationOutstandingStep(WizardEditorStep):
                                  self.outstanding_value)
 
     def post_init(self):
-        self.wizard.payment_group.clear_preview_payments()
+        self.wizard.payment_group.clear_preview_payments(IInPayment)
         self.cash_check.grab_focus()
         self.wizard.enable_finish()
 
@@ -724,7 +725,7 @@ class SalesPersonStep(_AbstractSalesPersonStep):
     #
 
     def post_init(self):
-        self.wizard.payment_group.clear_preview_payments()
+        self.wizard.payment_group.clear_preview_payments(IInPayment)
         self.register_validate_function(self.wizard.refresh_next)
         self._update_next_step(self._get_selected_payment_method())
         self.force_validation()

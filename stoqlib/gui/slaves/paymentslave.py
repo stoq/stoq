@@ -21,6 +21,7 @@
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Johan Dahlin                <jdahlin@async.com.br>
+##              George Kussumoto            <george@async.com.br>
 ##
 ##
 """ Slaves for payment management """
@@ -33,7 +34,7 @@ from kiwi.utils import gsignal
 from kiwi.ui.views import SlaveView
 
 from stoqlib.domain.account import BankAccount
-from stoqlib.domain.interfaces import IInPayment
+from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
                                             CreditProviderGroupData,
                                             DebitCardDetails,
@@ -43,8 +44,9 @@ from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
                                             FinanceDetails,
                                             PaymentMethodDetails,
                                             APaymentMethod,
-                                            CheckPM, BillPM)
+                                            CheckPM, BillPM, MoneyPM)
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.sale import Sale
 from stoqlib.drivers.cheque import get_current_cheque_printer_settings
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.defaults import (interval_types, INTERVALTYPE_MONTH,
@@ -71,9 +73,9 @@ class PaymentListSlave(BaseEditorSlave):
     gsignal('add-slave')
     gsignal('remove-item', SlaveView)
 
-    def __init__(self, parent, conn, payment_method, sale_total):
+    def __init__(self, parent, conn, payment_method, total_amount):
         self.parent = parent
-        self.sale_total = sale_total
+        self.total_amount = total_amount
         self.max_installments_number = None
         # This dict stores a reference of each toplevel widget with its own
         # kiwi object, the slave.
@@ -110,9 +112,9 @@ class PaymentListSlave(BaseEditorSlave):
         total = sum(values, currency(0))
         slaves_total = Decimal(str(total))
         slaves_total -= self.parent.get_interest_total()
-        if slaves_total == self.sale_total:
+        if slaves_total == self.total_amount:
             return currency(0)
-        return currency(self.sale_total - slaves_total)
+        return currency(self.total_amount - slaves_total)
 
     def update_total_label(self):
         difference = self.get_total_difference()
@@ -219,10 +221,12 @@ class BillDataSlave(BaseEditorSlave):
                        'payment_number')
     gsignal('paymentvalue-changed')
 
-    def __init__(self, conn, payment_group, due_date, value, model=None):
+    def __init__(self, conn, payment_group, due_date, value,
+                 method_iface, model=None):
         self._payment_group = payment_group
         self._due_date = due_date
         self._value = value
+        self._method_iface = method_iface
         BaseEditorSlave.__init__(self, conn, model)
 
     def _setup_widgets(self):
@@ -241,9 +245,11 @@ class BillDataSlave(BaseEditorSlave):
 
     def create_model(self, conn):
         bill_method = BillPM.selectOne(connection=conn)
-        inpayment = bill_method.create_inpayment(self._payment_group,
-                                                 self._value, self._due_date)
-        return inpayment.get_adapted()
+        apayment = bill_method.create_payment(self._method_iface,
+                                              self._payment_group,
+                                              self._value,
+                                              self._due_date)
+        return apayment.get_adapted()
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -262,11 +268,11 @@ class CheckDataSlave(BillDataSlave):
     slave_holder = 'bank_data_slave'
     model_type = CheckData
 
-    def __init__(self, conn, payment_group, due_date, value, model=None,
-                 default_bank=None):
+    def __init__(self, conn, payment_group, due_date, value,
+                 is_sale_payment, model=None, default_bank=None):
         self._default_bank = default_bank
         BillDataSlave.__init__(self, conn, payment_group, due_date,
-                               value, model)
+                               value, is_sale_payment, model)
 
     #
     # BaseEditorSlave hooks
@@ -277,10 +283,10 @@ class CheckDataSlave(BillDataSlave):
 
     def create_model(self, conn):
         check_method = CheckPM.selectOne(connection=conn)
-        inpayment = check_method.create_inpayment(self._payment_group,
-                                                  self._value,
-                                                  self._due_date)
-        adapted = inpayment.get_adapted()
+        apayment = check_method.create_payment(self._method_iface,
+                                               self._payment_group,
+                                               self._value, self._due_date)
+        adapted = apayment.get_adapted()
         return check_method.get_check_data_by_payment(adapted)
 
     def setup_slaves(self):
@@ -309,19 +315,20 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     # value: CheckDataSlave, BillDataSlave
     _data_slave_class = None
 
-    def __init__(self, wizard, parent, conn, sale_obj, payment_method,
+    def __init__(self, wizard, parent, conn, order_obj, payment_method,
                  outstanding_value=currency(0)):
-        self.sale = sale_obj
+        # Note that 'order' may be a Sale or a PurchaseOrder object
+        self.order = order_obj
         self.wizard = wizard
         self.method = payment_method
+        self.method_iface = self._get_payment_method_iface()
         # This is very useful when calculating the total amount outstanding
         # or overpaid of the payments
         self.interest_total = currency(0)
         self.payment_group = self.wizard.payment_group
         self.payment_list = None
         self.reset_btn_validation_ok = True
-        self.total_value = (outstanding_value or
-                            self.sale.get_total_sale_amount())
+        self.total_value = outstanding_value or self._get_total_amount()
         BaseEditorSlave.__init__(self, conn)
         self.register_validate_function(self._refresh_next)
         self.parent = parent
@@ -345,6 +352,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     def _setup_widgets(self):
         max = self.method.get_max_installments_number()
         self.installments_number.set_range(1, max)
+        self.installments_number.set_value(1)
         items = [(label, constant) for constant, label
                                 in interval_types.items()]
         self.interval_type_combo.prefill(items)
@@ -361,23 +369,37 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             self.detach_slave(BasePaymentMethodSlave.slave_holder)
         self.attach_slave(BasePaymentMethodSlave.slave_holder,
                           self.payment_list)
-        created_inpayments = self.get_created_inpayments()
-        if created_inpayments:
-            self.fill_slave_list(created_inpayments)
+        created_adapted_payments = self.get_created_adapted_payments()
+        if created_adapted_payments:
+            self.fill_slave_list(created_adapted_payments)
         else:
             # Adding the first payment
             slave = self.get_payment_slave()
             self.payment_list.add_slave(slave)
 
-    def get_created_inpayments(self):
+    def get_created_adapted_payments(self):
         for payment in Payment.selectBy(group=self.wizard.payment_group,
                                         method=self.method,
                                         status=Payment.STATUS_PREVIEW,
                                         connection=self.conn):
-            inpayment = IInPayment(payment, None)
-            if inpayment:
-                yield inpayment
+            yield self.method_iface(payment, None)
 
+    def _is_sale(self):
+        """"Returns if our order object is a Sale instance"""
+        return isinstance(self.order, Sale)
+
+    def _get_total_amount(self):
+        """Returns the order total amount """
+        if self._is_sale():
+            return self.order.get_total_sale_amount()
+        # else self.order is purchase order object
+        return self.order.get_purchase_total()
+
+    def _get_payment_method_iface(self):
+        if self._is_sale():
+            return IInPayment
+        else:
+            return IOutPayment
 
     #
     # General methods
@@ -387,26 +409,29 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         due_dates = []
         interval = calculate_interval(self.model.interval_type,
                                       self.model.intervals)
-        for i in range(self.model.installments_number):
+        installments_number = self.model.installments_number
+        self.payment_group.installments_number = installments_number
+        for i in range(installments_number):
             due_dates.append(self.model.first_duedate +
                              datetime.timedelta(i * interval))
 
-        inpayments = self.method.create_inpayments(self.wizard.payment_group,
-                                                   self.total_value,
-                                                   due_dates)
+        payments = self.method.create_payments(self.method_iface,
+                                               self.wizard.payment_group,
+                                               self.total_value,
+                                               due_dates)
         interest = Decimal(0)
 
         # This is very useful when calculating the total amount outstanding
         # or overpaid of the payments
         self.interest_total = interest
-        self.fill_slave_list(inpayments)
+        self.fill_slave_list(payments)
 
-    def fill_slave_list(self, inpayments):
-        for inpayment in inpayments:
-            slave = self.get_slave_by_inpayment(inpayment)
+    def fill_slave_list(self, adapted_payments):
+        for adapted in adapted_payments:
+            slave = self.get_slave_by_adapted_payment(adapted)
             self.payment_list.add_slave(slave)
 
-    def get_slave_by_inpayment(self, inpayment):
+    def get_slave_by_adapted_payment(self, adapted_payment):
         raise NotImplementedError
 
     def get_interest_total(self):
@@ -433,8 +458,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             payment = slave.model.payment
         else:
             payment = slave.model
-        inpayment = IInPayment(payment)
-        self.method.delete_inpayment(inpayment)
+
+        self.method.delete_payment(self.method_iface, payment)
 
     #
     # PaymentListSlave hooks and callbacks
@@ -452,7 +477,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             total = currency(0)
         extra_params = self.get_extra_slave_args()
         slave = self._data_slave_class(self.conn, group, due_date, total,
-                                       model, *extra_params)
+                                       self.method_iface, model, *extra_params)
         slave.connect('paymentvalue-changed',
                       self._on_slave__paymentvalue_changed)
         return slave
@@ -548,9 +573,9 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 class CheckMethodSlave(BasePaymentMethodSlave):
     _data_slave_class = CheckDataSlave
 
-    def get_slave_by_inpayment(self, inpayment):
-        adapted = inpayment.get_adapted()
-        check_data = self.method.get_check_data_by_payment(adapted)
+    def get_slave_by_adapted_payment(self, adapted_payment):
+        payment = adapted_payment.get_adapted()
+        check_data = self.method.get_check_data_by_payment(payment)
         return self.get_payment_slave(check_data)
 
     def get_extra_slave_args(self):
@@ -586,9 +611,49 @@ class BillMethodSlave(BasePaymentMethodSlave):
         self.bank_label.hide()
         self.bank_combo.hide()
 
-    def get_slave_by_inpayment(self, inpayment):
-        adapted = inpayment.get_adapted()
-        return self.get_payment_slave(adapted)
+    def get_slave_by_adapted_payment(self, adapted_payment):
+        payment = adapted_payment.get_adapted()
+        return self.get_payment_slave(payment)
+
+
+class _MoneyData(BillDataSlave):
+
+    def create_model(self, conn):
+        money_method = MoneyPM.selectOne(connetion=conn)
+        apayment = money_method.create_payment(self._payment_group,
+                                               self._value,
+                                               self._due_date)
+        return apayment.get_adapted()
+
+
+class _TemporaryMoneyData:
+    installments_number = 1
+    intervals = 1
+
+    def __init__(self):
+        self.first_duedate = datetime.date.today()
+
+
+class MoneyMethodSlave(BasePaymentMethodSlave):
+    model_type = _TemporaryMoneyData
+    _data_slave_class = _MoneyData
+
+    def __init__(self, wizard, parent, conn, total_amount,
+                 payment_method, outstanding_value=currency(0)):
+        BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
+                                        total_amount, payment_method,
+                                        outstanding_value=outstanding_value)
+        self.bank_label.hide()
+        self.bank_combo.hide()
+        self.first_duedate_lbl.hide()
+        self.first_duedate.hide()
+
+    def get_slave_by_adapted_payment(self, adapted_payment):
+        return self.get_payment_slave(adapted_payment.get_adapted())
+
+    def create_model(self, conn):
+        return _TemporaryMoneyData()
+
 
 #
 # Classes related to "credit provider" payment method

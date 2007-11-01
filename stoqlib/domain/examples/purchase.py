@@ -66,7 +66,7 @@ def create_purchases():
                           supplier=suppliers[0],
                           branch=branch)
     order.set_valid()
-    order.addFacet(IPaymentGroup,
+    group = order.addFacet(IPaymentGroup,
                    default_method=int(PaymentMethodType.BILL),
                    intervals=1,
                    interval_type=INTERVALTYPE_MONTH,
@@ -80,6 +80,7 @@ def create_purchases():
                                       base_cost=sellable.cost,
                                       sellable=sellable,
                                       order=order)
+    order.create_preview_outpayments(trans, group, order.get_purchase_total())
 
     receiving_order = ReceivingOrder(purchase=order,
                                      responsible=user,

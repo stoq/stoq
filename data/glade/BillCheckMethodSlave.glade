@@ -22,7 +22,7 @@
                                     <widget class="ProxyLabel" id="kiwilabel1">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Number of installments:</property>
-                                        <property name="model_attribute"></property>
+                                        <property name="model_attribute">kiwilabel1</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -31,10 +31,10 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="ProxyLabel" id="kiwilabel4">
+                                    <widget class="ProxyLabel" id="first_duedate_lbl">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">First installment due:</property>
-                                        <property name="model_attribute"></property>
+                                        <property name="model_attribute">first_duedate_lbl</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -47,7 +47,7 @@
                                     <widget class="ProxyLabel" id="kiwilabel5">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Based on intervals of:</property>
-                                        <property name="model_attribute"></property>
+                                        <property name="model_attribute">kiwilabel5</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -118,7 +118,7 @@
                                         <property name="visible">True</property>
                                         <child>
                                             <widget class="ProxySpinButton" id="intervals">
-                                                <property name="adjustment">0 1 100 1 10 0</property>
+                                                <property name="adjustment">0 0 100 1 10 0</property>
                                                 <property name="data_type">int</property>
                                                 <property name="is_focus">True</property>
                                                 <property name="model_attribute">intervals</property>
@@ -225,7 +225,7 @@
                                     <widget class="GtkButton" id="reset_button">
                                         <property name="is_focus">True</property>
                                         <property name="label" context="yes" translatable="yes">_Reset List</property>
-                                        <property name="use-underline">True</property>
+                                        <property name="use_underline">True</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>

@@ -42,7 +42,7 @@ from stoqlib.domain.interfaces import (IInPayment, ICreditProvider,
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.domain.payment.group import AbstractPaymentGroup
-from stoqlib.domain.payment.payment import Payment, PaymentAdaptToInPayment
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import (PaymentError, DatabaseInconsistency,
                                 PaymentMethodError)
@@ -226,9 +226,27 @@ class APaymentMethod(InheritableModel):
         interest_rate = interest / 100 + 1
         return (total_value / installments_number) * interest_rate
 
-    def _create_payment(self, iface, payment_group, value, due_date=None,
-                        method_details=None, description=None, base_value=None,
-                        till=None):
+    #
+    # Public API
+    #
+
+    @argcheck(object, AbstractPaymentGroup, Decimal, datetime.datetime,
+              object, basestring, basestring, Till)
+    def create_payment(self, iface, payment_group, value, due_date=None,
+                       method_details=None, description=None,
+                       base_value=None, till=None):
+        """Creates a new payment according to a payment method interface
+        @param iface: a payment method interface eg L{IOutPayment} or
+        L{IInPayment}
+        @param payment_group: a L{APaymentGroup} subclass
+        @param value: value of payment
+        @param due_date: optional, due date of payment
+        @param details: optional
+        @param description: optional, description of the payment
+        @param base_value: optional
+        @param till: optional
+        @returns: a L{PaymentAdaptToOutPayment} or L{PaymentAdaptToInPayment}
+        """
         conn = self.get_connection()
         created_number = self.get_payment_number_by_group(payment_group)
 
@@ -277,7 +295,21 @@ class APaymentMethod(InheritableModel):
         self.after_payment_created(facet)
         return facet
 
-    def _create_payments(self, iface, group, value, due_dates):
+    @argcheck(object, AbstractPaymentGroup, Decimal, object)
+    def create_payments(self, iface, group, value, due_dates):
+        """Creates new payments according to a payment method interface.
+        The values of the individual payments are calculated by taking
+        the value and dividing it by the number of payments.
+        The number of payments is determined by the length of the due_dates
+        sequence.
+        @param iface: a payment method interface eg L{IOutPayment} or
+        L{IInPayment}
+        @param payment_group: a L{APaymentGroup} subclass
+        @param value: value of payment
+        @param due_dates: a list of datetime objects
+        @returns: a list of L{PaymentAdaptToOutPayment} or
+        L{PaymentAdaptToInPayment}
+        """
         installments = len(due_dates)
         interest = Decimal(0)
 
@@ -294,7 +326,7 @@ class APaymentMethod(InheritableModel):
         payments_total = Decimal(0)
         group_desc = group.get_group_description()
         for i, due_date in enumerate(due_dates):
-            payment = self._create_payment(iface,
+            payment = self.create_payment(iface,
                 group, normalized_value, due_date,
                 description=self.describe_payment(group, i+1, installments))
             payments.append(payment)
@@ -305,12 +337,7 @@ class APaymentMethod(InheritableModel):
         if difference:
             adapted = payment.get_adapted()
             adapted.value += difference
-            adapted.base_value += difference
         return payments
-
-    #
-    # Public API
-    #
 
     def describe_payment(self, payment_group, installment=1, installments=1):
         """
@@ -341,7 +368,7 @@ class APaymentMethod(InheritableModel):
         @param till: optional
         @returns: a L{PaymentAdaptToInPayment}
         """
-        return self._create_payment(IInPayment, payment_group,
+        return self.create_payment(IInPayment, payment_group,
                                     value, due_date,
                                     details, description,
                                     base_value, till)
@@ -361,7 +388,7 @@ class APaymentMethod(InheritableModel):
         @param till: optional
         @returns: a L{PaymentAdaptToOutPayment}
         """
-        return self._create_payment(IOutPayment, payment_group,
+        return self.create_payment(IOutPayment, payment_group,
                                     value, due_date,
                                     details, description,
                                     base_value, till)
@@ -378,7 +405,7 @@ class APaymentMethod(InheritableModel):
         @param due_dates: a list of datetime objects
         @returns: a list of L{PaymentAdaptToInPayment}
         """
-        return self._create_payments(IInPayment, payment_group,
+        return self.create_payments(IInPayment, payment_group,
                                      value, due_dates)
 
 
@@ -394,7 +421,7 @@ class APaymentMethod(InheritableModel):
         @param due_dates: a list of datetime objects
         @returns: a list of L{PaymentAdaptToOutPayment}
         """
-        return self._create_payments(IOutPayment, payment_group,
+        return self.create_payments(IOutPayment, payment_group,
                                      value, due_dates)
 
     def get_implemented_iface(self):
@@ -458,16 +485,12 @@ class APaymentMethod(InheritableModel):
             methodID=self.id,
             connection=self.get_connection()).count()
 
-    @argcheck(PaymentAdaptToInPayment)
-    def delete_inpayment(self, inpayment):
-        """Deletes the inpayment and its associated payment.
-        Missing a cascade argument in SQLObject ?
-        @param inpayment:
-        """
+    @argcheck(object, Payment)
+    def delete_payment(self, iface, payment):
         conn = self.get_connection()
-        payment = inpayment.get_adapted()
-        table = Payment.getAdapterClass(IInPayment)
-        table.delete(inpayment.id, connection=conn)
+        table = Payment.getAdapterClass(iface)
+        table_item = iface(payment)
+        table.delete(table_item.id, conn)
         Payment.delete(payment.id, connection=conn)
 
     @argcheck(AbstractPaymentGroup)
@@ -560,16 +583,14 @@ class CheckPM(_AbstractCheckBillMethodMixin, APaymentMethod):
         return CheckData.selectOneBy(payment=payment,
                                      connection=self.get_connection())
 
-    @argcheck(PaymentAdaptToInPayment)
-    def delete_inpayment(self, inpayment):
-        """Deletes the inpayment, its associated payment and also the
-        check_data object. Missing a cascade argument in SQLObject ?
-        """
+    @argcheck(object, Payment)
+    def delete_payment(self, method_iface, payment):
         conn = self.get_connection()
-        payment = inpayment.get_adapted()
         check_data = self.get_check_data_by_payment(payment)
         bank_data = check_data.bank_data
-        PaymentAdaptToInPayment.delete(inpayment.id, connection=conn)
+        table = Payment.getAdapterClass(method_iface)
+        table_item = method_iface(payment)
+        table.delete(table_item.id, connection=conn)
         CheckData.delete(check_data.id, connection=conn)
         BankAccount.delete(bank_data.id, connection=conn)
         Payment.delete(payment.id, connection=conn)

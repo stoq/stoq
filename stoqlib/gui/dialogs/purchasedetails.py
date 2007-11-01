@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito  <evandro@async.com.br>
+##              George Kussumoto        <george@async.com.br>
 ##
 ##
 """ Purchase details dialogs """
@@ -41,6 +42,30 @@ from stoqlib.reporting.purchase import PurchaseOrderReport
 
 _ = stoqlib_gettext
 
+
+class _TemporaryReceivingDetails:
+    """A workaround class, used to summarize a list of receiving order"""
+
+    total_discounts = currency(0)
+    total_surcharges = currency(0)
+    receiving_subtotal = currency(0)
+    receiving_total = currency(0)
+
+    def __init__(self, orders):
+        if not orders.count() == 0:
+            discount = surcharge = subtotal = total = 0
+            for order in orders:
+                discount += order._get_total_discounts()
+                surcharge += order._get_total_surcharges()
+                subtotal += order.get_products_total()
+                total += order.get_total()
+
+            self.total_discounts = currency(discount)
+            self.total_surcharges = currency(surcharge)
+            self.receiving_subtotal = currency(subtotal)
+            self.receiving_total = currency(total)
+
+
 class PurchaseDetailsDialog(BaseEditor):
     gladefile = "PurchaseDetailsDialog"
     model_type = PurchaseOrder
@@ -52,36 +77,35 @@ class PurchaseDetailsDialog(BaseEditor):
                      'supplier',
                      'open_date',
                      'status',
-                     'purchase_total',
-                     'purchase_subtotal',
-                     'surcharge_value',
                      'transporter',
                      'salesperson',
                      'receival_date',
                      'freight_type',
                      'freight',
-                     'notes',
-                     'discount_lbl')
+                     'notes')
     payment_proxy = ('payment_method',
                      'installments_number')
+    receiving_proxy = ('total_discounts',
+                       'total_surcharges',
+                       'receiving_subtotal',
+                       'receiving_total')
 
     def _setup_summary_labels(self):
         value_format = '<b>%s</b>'
 
         payment_summary_label = SummaryLabel(klist=self.payments_list,
-                                             column='base_value',
+                                             column='value',
                                              label='<b>%s</b>' % _(u"Total:"),
                                              value_format=value_format)
         payment_summary_label.show()
         self.payments_vbox.pack_start(payment_summary_label, False)
 
-        received_label = '<b>%s</b>' % _('Total Received:')
-        received_summary_label = SummaryLabel(klist=self.received_items,
-                                              column='total_received',
-                                              label=received_label,
+        order_summary_label = SummaryLabel(klist=self.ordered_items,
+                                              column='total',
+                                              label='<b>%s</b>' % _(u"Total"),
                                               value_format=value_format)
-        received_summary_label.show()
-        self.received_vbox.pack_start(received_summary_label, False)
+        order_summary_label.show()
+        self.ordered_vbox.pack_start(order_summary_label, False)
 
     def _setup_widgets(self):
         self.ordered_items.set_columns(self._get_ordered_columns())
@@ -93,8 +117,9 @@ class PurchaseDetailsDialog(BaseEditor):
         self.received_items.add_list(purchase_items)
 
         self.payments_list.set_columns(self._get_payments_columns())
-        group = IPaymentGroup(self.model)
-        self.payments_list.add_list(group.get_items())
+        group = IPaymentGroup(self.model, None)
+        if group is not None:
+            self.payments_list.add_list(group.get_items())
         self._setup_summary_labels()
 
     def _get_ordered_columns(self):
@@ -136,7 +161,7 @@ class PurchaseDetailsDialog(BaseEditor):
                 Column('paid_date', _("Paid Date"),
                       data_type=datetime.date, width=90),
                 Column('status_str', _("Status"), data_type=str, width=80),
-                ColoredColumn('base_value', _("Value"), data_type=currency,
+                ColoredColumn('value', _("Value"), data_type=currency,
                               width=90, color='red',
                               justify=gtk.JUSTIFY_RIGHT,
                               data_func=payment_value_colorize),
@@ -155,6 +180,10 @@ class PurchaseDetailsDialog(BaseEditor):
         payment_group = IPaymentGroup(self.model, None)
         if payment_group:
             self.add_proxy(payment_group, PurchaseDetailsDialog.payment_proxy)
+        receiving_orders = self.model.get_receiving_orders()
+        receiving_details = _TemporaryReceivingDetails(receiving_orders)
+        self.add_proxy(receiving_details,
+                       PurchaseDetailsDialog.receiving_proxy)
 
 
     #

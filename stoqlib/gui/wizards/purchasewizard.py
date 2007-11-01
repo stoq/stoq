@@ -21,6 +21,7 @@
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Johan Dahlin                <jdahlin@async.com.br>
+##              George Kussumoto            <george@async.com.br>
 ##
 ##
 """ Purchase wizard definition """
@@ -43,13 +44,14 @@ from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
-from stoqlib.gui.slaves.purchaseslave import PurchasePaymentSlave
-from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
+from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave,
+                                             BillMethodSlave, MoneyMethodSlave)
 from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
-                                       IPaymentGroup)
+                                       IPaymentGroup, IOutPayment)
 from stoqlib.reporting.purchase import PurchaseOrderReport
 
 _ = stoqlib_gettext
@@ -239,22 +241,54 @@ class PurchasePaymentStep(WizardEditorStep):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
 
     def _setup_widgets(self):
-        items = [(_('Bill'), int(PaymentMethodType.BILL)),
-                 (_('Check'), int(PaymentMethodType.CHECK)),
-                 (_('Money'), int(PaymentMethodType.MONEY))]
+        items = [(_('Bill'), PaymentMethodType.BILL),
+                 (_('Check'), PaymentMethodType.CHECK),
+                 (_('Money'), PaymentMethodType.MONEY)]
         self.method_combo.prefill(items)
+        self.method_combo.select(items[0][1])
+
+    def _get_slave_class(self, method_type):
+        """Returns the slave class corresponding to a payment method type
+        """
+        if method_type == PaymentMethodType.BILL:
+            return BillMethodSlave
+        if method_type == PaymentMethodType.CHECK:
+            return CheckMethodSlave
+        if method_type == PaymentMethodType.MONEY:
+            return MoneyMethodSlave
+
+    def _get_slave_args(self, method_type):
+        """Returns a tuple with a the slave arguments corresponding to
+            a a payment method type
+        """
+        # payment_group is used in slave class
+        self.wizard.payment_group = self.model
+        payment_method = APaymentMethod.get_by_enum(self.conn, method_type)
+        return (self.wizard, self, self.conn, self.order, payment_method)
+
+    def _set_method_slave(self):
+        """Sets the payment method slave"""
+        method = self.method_combo.get_selected_data()
+        if method is not None:
+            self.model.set_method(int(method))
+
+            slave_class = self._get_slave_class(method)
+            if slave_class:
+                slave_args = self._get_slave_args(method)
+                self.slave = slave_class(*slave_args)
+                self.attach_slave('method_slave_holder', self.slave)
 
     def _update_payment_method_slave(self):
+        """Updates the payment method slave """
         holder_name = 'method_slave_holder'
         if self.get_slave(holder_name):
-            self.detach_slave(holder_name)
-        if not self.slave:
-            self.slave = PurchasePaymentSlave(self.conn, self.model)
-        if self.model.default_method == PaymentMethodType.MONEY:
             self.slave.get_toplevel().hide()
-            return
-        self.slave.get_toplevel().show()
-        self.attach_slave('method_slave_holder', self.slave)
+            self.detach_slave(holder_name)
+            self.slave = None
+        # remove all payments created last time, if any
+        self.model.clear_preview_payments(IOutPayment)
+        if not self.slave:
+            self._set_method_slave()
 
     def _update_totals(self, *args):
         for field_name in ('purchase_subtotal', 'purchase_total'):
@@ -275,6 +309,8 @@ class PurchasePaymentStep(WizardEditorStep):
         self.payment_method_hbox.set_focus_chain([self.method_combo])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
+        # force the initial state of next_button
+        self.wizard.refresh_next(False)
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -282,23 +318,6 @@ class PurchasePaymentStep(WizardEditorStep):
                                           PurchasePaymentStep.order_widgets)
         self.proxy = self.add_proxy(self.model,
                                     PurchasePaymentStep.payment_widgets)
-
-    def setup_slaves(self):
-        self._update_payment_method_slave()
-        slave_holder = 'discount_surcharge_slave'
-        if self.get_slave(slave_holder):
-            return
-        if not self.wizard.edit_mode:
-            self.order.discount_value = currency(0)
-            self.order.surcharge_value = currency(0)
-        self.discount_surcharge_slave = DiscountSurchargeSlave(self.conn,
-                                                               self.order,
-                                                               PurchaseOrder)
-        self.attach_slave(slave_holder, self.discount_surcharge_slave)
-        self.discount_surcharge_slave.connect('discount-changed',
-                                           self._update_totals)
-        self.discount_surcharge_slave.set_max_discount(100)
-        self._update_totals()
 
     #
     # callbacks

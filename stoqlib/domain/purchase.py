@@ -138,7 +138,7 @@ class PurchaseOrder(ValidatableDomain):
     open_date = DateTimeCol(default=datetime.datetime.now)
     quote_deadline = DateTimeCol(default=None)
     expected_receival_date = DateTimeCol(default=datetime.datetime.now)
-    expected_pay_date = DateTimeCol(default=None)
+    expected_pay_date = DateTimeCol(default=datetime.datetime.now)
     receival_date = DateTimeCol(default=None)
     confirm_date = DateTimeCol(default=None)
     notes = UnicodeCol(default='')
@@ -227,21 +227,6 @@ class PurchaseOrder(ValidatableDomain):
     # Private
     #
 
-    def _create_preview_outpayments(self, conn, group, total):
-        method = APaymentMethod.get_by_enum(
-            conn, PaymentMethodType.get(group.default_method))
-        if group.interval_type:
-            interval = calculate_interval(group.interval_type, group.intervals)
-            due_dates = []
-            for i in range(group.installments_number):
-                due_dates.append(self.expected_receival_date +
-                                 datetime.timedelta(i * interval))
-
-            method.create_outpayments(group, total, due_dates)
-        else:
-            method.create_outpayment(group, total)
-
-
     def _get_percentage_value(self, percentage):
         if not percentage:
             return currency(0)
@@ -252,6 +237,20 @@ class PurchaseOrder(ValidatableDomain):
     #
     # Public API
     #
+
+    def create_preview_outpayments(self, conn, group, total):
+        method = APaymentMethod.get_by_enum(
+            conn, PaymentMethodType.get(group.default_method))
+        if group.interval_type:
+            interval = calculate_interval(group.interval_type, group.intervals)
+            due_dates = []
+            for i in range(group.installments_number):
+                due_dates.append(self.expected_pay_date +
+                                 datetime.timedelta(i * interval))
+
+            method.create_outpayments(group, total, due_dates)
+        else:
+            method.create_outpayment(group, total)
 
     def confirm(self, confirm_date=None):
         """Confirms the purchase order
@@ -271,8 +270,6 @@ class PurchaseOrder(ValidatableDomain):
             if not group:
                 raise ValueError('You must have a IPaymentGroup facet '
                                  'defined at this point')
-            self._create_preview_outpayments(conn, group,
-                                             self.get_purchase_total())
         self.status = self.ORDER_CONFIRMED
         self.confirm_date = confirm_date
 
@@ -291,6 +288,13 @@ class PurchaseOrder(ValidatableDomain):
         """Cancels the purchase order
         """
         assert self.can_cancel()
+
+        # we have to cancel the payments too
+        group = IPaymentGroup(self, None)
+        if group:
+            for item in group.get_items():
+                item.cancel()
+
         self.status = self.ORDER_CANCELLED
 
     def receive_item(self, item, quantity_to_receive):
@@ -419,6 +423,13 @@ class PurchaseOrder(ValidatableDomain):
 
     def get_open_date_as_string(self):
         return self.open_date and self.open_date.strftime("%x") or ""
+
+    def get_receiving_orders(self):
+        """Returns all ReceivingOrder related to this purchase order
+        """
+        from stoqlib.domain.receiving import ReceivingOrder
+        return ReceivingOrder.selectBy(purchase=self,
+                                       connection=self.get_connection())
 
     #
     # Classmethods

@@ -22,6 +22,7 @@
 ##  Author(s):  Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Fabio Morbec                <fabio@async.com.br>
 ##              Johan Dahlin                <jdahlin@async.com.br>
+##              George Kussumoto            <george@async.com.br>
 ##
 """ Receiving management """
 
@@ -35,6 +36,7 @@ from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain, ValidatableDomain
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.lib.defaults import quantize
@@ -73,7 +75,11 @@ class ReceivingOrderItem(Domain):
         """Get the price of this item. It's used by the SellableItemEditor.
         @returns: the price
         """
-        return self.sellable.cost
+        # In SellableItemEditor we have to show the item's price, but it
+        # does not make sense for a receiving item, then we return
+        # the item cost. This cost is related to the cost in the moment
+        # of purchase and may not bet current cost.
+        return self.purchase_item.cost
 
     def get_total(self):
         return currency(self.quantity * self.get_price())
@@ -166,13 +172,25 @@ class ReceivingOrder(ValidatableDomain):
         group = IPaymentGroup(self.purchase)
         group.create_icmsipi_book_entry(self.cfop, self.invoice_number,
                                         self.icms_total, self.ipi_total)
-
-        for payment in group.get_items():
-            payment.value = payment.base_value = (
-                self.get_total()/group.installments_number)
+        self._update_payment_values(group)
         self.invoice_total = self.get_total()
         if self.purchase.can_close():
             self.purchase.close()
+
+    def _update_payment_values(self, group):
+        """Updates the payment value of all payments realated to this
+        receiving.
+        """
+        difference = self.get_total() - self.get_products_total()
+        if difference != 0:
+            query = dict(group=group, status=Payment.STATUS_PREVIEW)
+            payments = Payment.selectBy(connection=self.get_connection(),
+                                        **query)
+            payments_number = payments.count()
+            if payments_number > 0:
+                per_installments_value = difference/payments_number
+                for payment in payments:
+                    payment.value += per_installments_value
 
     def get_items(self):
         conn = self.get_connection()
@@ -233,30 +251,45 @@ class ReceivingOrder(ValidatableDomain):
     def get_receival_date_str(self):
         return self.receival_date.strftime("%x")
 
+    def _get_total_surcharges(self):
+        """Returns the sum of all surcharges (purchase & receiving)"""
+        total_surcharge = 0
+        if self.surcharge_value:
+            total_surcharge += self.surcharge_value
+        if self.secure_value:
+            total_surcharge += self.secure_value
+        if self.expense_value:
+            total_surcharge += self.expense_value
+
+        if self.purchase.surcharge_value:
+            total_surcharge += self.purchase.surcharge_value
+
+        if self.ipi_total:
+            total_surcharge += self.ipi_total
+        if self.freight_total:
+            total_surcharge += self.freight_total
+
+        return currency(total_surcharge)
+
+    def _get_total_discounts(self):
+        """Returns the sum of all discounts (purchase & receiving)"""
+        total_discount = 0
+        if self.discount_value:
+            total_discount += self.discount_value
+
+        if self.purchase.discount_value:
+            total_discount += self.purchase.discount_value
+
+        return currency(total_discount)
+
     def get_total(self):
         """Fetch the total, including discount and surcharge for both the
         purchase order and the receiving order.
         """
 
         total = self.get_products_total()
-        if self.discount_value:
-            total -= self.discount_value
-        if self.surcharge_value:
-            total += self.surcharge_value
-        if self.secure_value:
-            total += self.secure_value
-        if self.expense_value:
-            total += self.expense_value
-
-        if self.purchase.discount_value:
-            total -= self.purchase.discount_value
-        if self.purchase.surcharge_value:
-            total += self.purchase.surcharge_value
-
-        if self.ipi_total:
-            total += self.ipi_total
-        if self.freight_total:
-            total += self.freight_total
+        total -= self._get_total_discounts()
+        total += self._get_total_surcharges()
 
         return currency(total)
 
