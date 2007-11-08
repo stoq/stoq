@@ -1,3 +1,9 @@
+stoq (0.9.3-1) gutsy; urgency=low
+
+  * New release
+
+ -- Fabio Morbec <fabio@async.com.br>  Thu, 08 Nov 2007 11:32:13 -0200
+
 stoq (0.9.2-2) feisty; urgency=low
 
   * Fix
