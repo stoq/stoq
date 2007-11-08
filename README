@@ -26,7 +26,7 @@ Psycopg 2.0.5 or higher
 zope.interface 3.0.0 or higher
 Kiwi 1.9.19
 Gazpacho 0.6.6
-Stoqdrivers 0.9.0
+Stoqdrivers 0.9.1
 Python Imaging Library (PIL) 1.1.5 or higher
 Reportlab 1.20
 

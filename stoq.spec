@@ -9,7 +9,7 @@ Group: System Environment/Libraries
 URL: http://www.stoq.com.br/
 Source: http://download.stoq.com.br/sources/0.9.1/stoq-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: python-kiwi >= 1.9.19, stoqlib >= 0.9.3
+Requires: python-kiwi >= 1.9.19, stoqlib >= 0.9.3-2
 Requires: python-abi = %(%{__python} -c "import sys; print sys.version[:3]")
 BuildRequires: python-kiwi >= 1.9.19, stoqlib >= 0.9.3
 BuildArch: noarch
