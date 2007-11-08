@@ -56,7 +56,7 @@ class _KeyboardHandler(object):
 _handler = _KeyboardHandler()
 
 def install_global_keyhandler(keyval, callback):
-    """
+    """ Installs a new key handler.
     @param keyval:
     @param callback:
     """

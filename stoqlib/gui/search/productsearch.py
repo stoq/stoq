@@ -62,6 +62,7 @@ class ProductSearch(SearchEditor):
                  hide_cost_column=False, use_product_statuses=None,
                  hide_price_column=False):
         """
+        Create a new ProductSearch object.
         @param conn: a sqlobject Transaction instance
         @param hide_footer: do I have to hide the dialog footer?
         @param hide_toolbar: do I have to hide the dialog toolbar?

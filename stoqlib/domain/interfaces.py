@@ -331,8 +331,9 @@ class ISupplier(IPersonFacet):
 
     def get_supplier_purchases():
         """
-        @returns: a list of PurchaseOrderViews representing all purchases
-          done from this supplier.
+        Gets a list of PurchaseOrderViews representing all purchases done from
+        this supplier.
+        @returns: a list of PurchaseOrderViews.
         """
 
 

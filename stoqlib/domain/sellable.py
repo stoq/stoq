@@ -402,6 +402,8 @@ class ASellable(InheritableModelAdapter):
     @classmethod
     def get_unblocked_sellables(cls, conn, storable=False):
         """
+        Returns unblocked sellable objects, which means the
+        available sellables plus the sold ones.
         @param conn: a database connection
         @param storable: if True, only return Storables
         """

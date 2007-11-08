@@ -67,15 +67,16 @@ class SintegraFile(object):
 
     def add_header(self, cgc, estadual, company, city, state, fax, start, end):
         """
-        @param cgc:
-        @param estadual:
-        @param company:
-        @param city:
-        @param state:
-        @param fax:
-        @param start:
+        Receive values to generate Sintegra Register type 10.
+        @param cgc: the branch CNPJ number.
+        @param estadual: the branch 'Inscrição estadual' number or ISENTO.
+        @param company: the company fancy name.
+        @param city: the branch city.
+        @param state: the branch city state.
+        @param fax: the branch fax number.
+        @param start: start's date period, generally, the 1th month day.
         @type start: datetime.date
-        @param end:
+        @param end: end's date periodo, generally, the last month day.
         @type end: datetime.date
         """
         self.add(SintegraRegister10(
@@ -88,13 +89,14 @@ class SintegraFile(object):
     def add_complement_header(self, address, number, complement, district,
                               postal, name, phone):
         """
-        @param address:
-        @param number:
-        @param complement:
-        @param district:
-        @param postal:
-        @param name:
-        @param phone:
+        Receive values to generate Sintegra Register type 11.
+        @param address: the branch address.
+        @param number: the number of the branch address.
+        @param complement: the complement of the branch address.
+        @param district: district of the branch address.
+        @param postal: postal code number of the branch address.
+        @param name: the branch manager name.
+        @param phone: the branch phone number.
         """
         self.add(SintegraRegister11(
             address, number, complement, district,
@@ -104,16 +106,19 @@ class SintegraFile(object):
                           coupon_start, coupon_end, crz, cro, period_total,
                           total):
         """
-        @param date:
+        Receive values for generate 60M Sintegra Register.
+        @param date: emission date of the fiscal coupon.
         @type date: datetime.date
-        @param printerserial:
-        @param printerid:
-        @param coupon_start:
-        @param coupon_end:
-        @param crz:
-        @param cro:
-        @param period_total:
-        @param total:
+        @param printerserial: serial number of the fiscal printer.
+        @param printerid: the refered number (id) for the fiscal printer
+            in a branch.
+        @param coupon_start: the number in which the coupon fiscal starts.
+        @param coupon_end: the number in which the fiscal coupon ends.
+        @param crz: counter the number of 'Zs reduction' made by fiscal printer.
+        @param cro: counter how many times the fiscal printer was restarted
+            their operations.
+        @param period_total: value total in a fiscal day.
+        @param total: total acumulated in fiscal printer.
         """
         if not isinstance(date, datetime.date):
             raise TypeError
@@ -126,11 +131,12 @@ class SintegraFile(object):
 
     def add_fiscal_tax(self, date, printerserial, code, value):
         """
-        @param date:
+        Receive values for generate 60A Sintegra Register.
+        @param date: emission date of the fiscal coupon.
         @type date: datetime.date
-        @param printerserial:
-        @param code:
-        @param value:
+        @param printerserial: serial number of the fiscal printer.
+        @param code: the tax code.
+        @param value: the tax value.
         """
         self.add(SintegraRegister60A(
             'A', int(date.strftime('%Y%m%d')), printerserial,
@@ -251,7 +257,10 @@ class SintegraFile(object):
         return self._registers
 
 class SintegraRegister(object):
-    """
+    """ This is an abstract class
+    The arguments depends on what is defined in the class variable
+    sintegra_fields
+
     @cvar sintegra_number:
     @cvar sintegra_fields:
     @cvar sintegra_unique:
@@ -264,11 +273,7 @@ class SintegraRegister(object):
     sintegra_requires = None
 
     def __init__(self, *args, **kwargs):
-        """Creates a new SintegraRegister.
-        Note that this is an abstract class, you have to subclass this.
-        The arguments depends on what is defined in the class variable
-        sintegra_fields
-        """
+        """ Creates a new SintegraRegister"""
         if not self.sintegra_fields:
             raise TypeError
         if not self.sintegra_number:
@@ -311,7 +316,8 @@ class SintegraRegister(object):
 
     def get_string(self):
         """
-        @returns:
+        Gets a string for all sintegra fields.
+        @returns: sintegra fields as string.
         """
         values = []
         for (name, _, _) in self.sintegra_fields:

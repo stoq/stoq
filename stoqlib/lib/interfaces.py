@@ -53,20 +53,26 @@ class IApplicationDescriptions(Interface):
     """
 
     def get_application_names():
-        """@returns: a list of application names"""
+        """
+        Gets a list of application names.
+        @returns: a list of application names.
+        """
 
     def get_descriptions():
-        """@returns: a list of tuples with some important Stoq application
-        informations. Each tuple has the following data:
+        """
+        Gets a list of tuples with some important Stoq application
+        informations. Each tuple jas the following data:
         * Application name
         * Application full name
         * Application icon name
         * Application description
+        @returns: a list of tuples with Stoq application informations.
         """
 
 class IXMLRPCService(Interface):
     def __init__(hostname, port):
         """
+        Create a new IXMLRPCService object.
         @param port: port to listen to
         @param hostname: hostname to bind to or an empty string
                          to bind to all addresses

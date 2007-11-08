@@ -63,6 +63,7 @@ class ModelListDialog(ListDialog):
 
     def __init__(self, conn=None):
         """
+        Create a new ModelListDialog object.
         @param conn: A database connection
         """
         if not conn:
@@ -148,6 +149,7 @@ class ModelListDialog(ListDialog):
 
     def set_reuse_transaction(self, trans):
         """
+        Reuse the transaction.
         @param reuse_transaction: a transaction
         """
         self._reuse_transaction = trans
@@ -211,7 +213,8 @@ class AdditionListSlave(GladeSlaveDelegate):
 
     def __init__(self, conn, columns=None, editor_class=None,
                  klist_objects=None, visual_mode=False):
-        """
+        """ Creates a new AdditionListSlave object
+
         @param conn:          a connection
         @param columns:       column definitions
         @type columns:        sequence of L{kiwi.ui.widgets.list.Columns}
@@ -473,6 +476,7 @@ class SimpleListDialog(BasicDialog):
     def __init__(self, columns, objects, hide_cancel_btn=True,
                  title='', multiple=True):
         """
+        Create a new SimpleListDialog.
         @param columns:
         @param objects:
         @param hide_cancel_btn:

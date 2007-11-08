@@ -65,7 +65,8 @@ class SaleDetailsDialog(BaseEditor):
                      'discount_lbl')
 
     def __init__(self, conn, model=None, visual_mode=False):
-        """
+        """ Creates a new SaleDetailsDialog object
+
         @param conn: a database connection
         @param model: a L{stoqlib.domain.sale.Sale} object
         """

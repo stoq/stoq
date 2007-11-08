@@ -197,7 +197,8 @@ class BaseRMLReport(object):
     title = _('Untitled')
 
     def __init__(self, filename, template_name=None):
-        """
+        """ Creates a new BaseRMLReport object
+
         @param filename: filename to save report as
         @param template_name: optional, name of the rml template to use
         """

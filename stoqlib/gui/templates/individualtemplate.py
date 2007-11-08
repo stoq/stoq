@@ -170,7 +170,8 @@ class IndividualEditorTemplate(BaseEditorSlave):
 
     def __init__(self, conn, model=None, person_slave=None,
                  visual_mode=False):
-        """
+        """ Creates a new IndividualEditorTemplate object
+
         @param conn: a database connnection
         @param model: model
         @param person_slave: the person slave

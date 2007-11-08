@@ -229,7 +229,9 @@ class BaseReportTemplate(BaseDocTemplate):
         self.add(flowables.Signature(labels, *args, **kwargs))
 
     def add_preformatted_text(self, text, style='Raw', *args, **kwargs):
-        """
+        """ Adds a given given text to the document, using a given
+        style. ('Raw' by default)
+
         @param text:   The text.
         @type text:    str
         @param style:  One of the paragraph style names defined in the
@@ -240,7 +242,9 @@ class BaseReportTemplate(BaseDocTemplate):
         self.add(Preformatted(text, style, *args, **kwargs))
 
     def add_paragraph(self, text, style="Normal", **kwargs):
-        """
+        """ Adds a paragraph to the document, using a given style.
+        ('Normal by default')
+
         @param text:   The paragraph text.
         @type text:    str
         @param style:  One of the paragraph style names defined in the

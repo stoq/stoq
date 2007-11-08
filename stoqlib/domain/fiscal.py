@@ -143,6 +143,10 @@ class _FiscalBookEntryView(object):
 
 class IcmsIpiView(_FiscalBookEntryView, Viewable):
     """
+    Stores information about the taxes (ICMS and IPI) related to a
+    certain product.
+    This view is used to query the product tax information.
+
     @param id: the id of the fiscal_book_entry
     @param icms_value: the total value of icms
     @param ipi_value: the total value of ipi
@@ -169,6 +173,9 @@ class IcmsIpiView(_FiscalBookEntryView, Viewable):
 
 class IssView(_FiscalBookEntryView, Viewable):
     """
+    Stores information related to a service tax (ISS).
+    This view is used to query the service tax information.
+
     @param id: the id of the fiscal_book_entry
     @param iss_value: the total value of ipi
     @param date: the date when the entry was created

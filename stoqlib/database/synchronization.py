@@ -202,7 +202,7 @@ class SynchronizationService(XMLRPCService):
     #
 
     def clean(self):
-        """Cleans the database
+        """Cleans the database.
         """
         log.info('service.clean()')
         create_base_schema()
@@ -220,12 +220,14 @@ class SynchronizationService(XMLRPCService):
 
     def get_station_name(self):
         """
-        @returns: the name of the station
+        Gets the name of the station.
+        @returns: the name of the station.
         """
         return socket.gethostname()
 
     def set_station_by_name(self, name):
         """
+        Set the currently station by given name.
         @param name: name of the station
         """
         station = BranchStation.selectOneBy(name=name, connection=self.conn)
@@ -245,6 +247,7 @@ class SynchronizationService(XMLRPCService):
 
     def sql_prepare(self):
         """
+        Gets an integer that represents the database insert.
         @returns: an integer representing the insert
         """
         log.info('service.sql_prepare()')
@@ -279,9 +282,11 @@ class SynchronizationService(XMLRPCService):
 
     def sql_insert(self, sid, data):
         """
+        Insert sid and date.
         @param sid:
         @param data:
         """
+        # XXX: rewrite the docstring
         # XMLRPC sends us unicode, postgres/subprocess expects utf-8
         data = data.encode('utf-8')
 
@@ -292,9 +297,11 @@ class SynchronizationService(XMLRPCService):
 
     def sql_finish(self, sid):
         """
+        Finish an sql process.
         @param sid:
         @returns: None if successful, otherwise a string
         """
+        # XXX: rewrite the docstring
         log.info('service.sql_finish(%d)' % (sid,))
 
         proc = self._processes.pop(sid)
@@ -534,8 +541,10 @@ class SynchronizationClient(object):
 
     def update(self, station_name):
         """
+        Update client.
         @param station_name:
         """
+        # XXX: Rewrite docstring
         policy = self._get_policy('shop')
         trans = new_transaction()
         timestamp = const.NOW()

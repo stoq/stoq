@@ -340,7 +340,10 @@ class APaymentMethod(InheritableModel):
         return payments
 
     def describe_payment(self, payment_group, installment=1, installments=1):
-        """
+        """ Returns a string describing payment, in the following
+        format: current_installment/total_of_installments payment_description
+        for payment_group_description
+
         @param payment_group: a L{APaymentGroup}
         @param installment: current installment
         @param installments: total installments
@@ -476,7 +479,8 @@ class APaymentMethod(InheritableModel):
         return method_type.selectOne(connection=conn)
 
     def get_payment_number_by_group(self, payment_group):
-        """
+        """ Returns the payment number of a given payment group
+
         @param payment_group: a L{APaymentGroup} subclass
         @returns:
         """
@@ -495,11 +499,11 @@ class APaymentMethod(InheritableModel):
 
     @argcheck(AbstractPaymentGroup)
     def get_thirdparty(self, payment_group):
-        """
-        @param payment_group: a L{APaymentGroup} subclass
-        @returns: the thirdparty associated with this payment method. If
+        """ Returns the thirdparty associated with this payment method. If
         the method doesn't have it's own thirdparty the payment_group
         thirdparty will be returned.
+
+        @param payment_group: a L{APaymentGroup} subclass
         """
         return payment_group.get_thirdparty()
 

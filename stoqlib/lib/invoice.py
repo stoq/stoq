@@ -47,6 +47,7 @@ class InvoicePage(object):
     """This represent a page part of an invoice"""
     def __init__(self, width, height):
         """
+        Create a new InvoicePage object.
         @param width: the width of the page
         @param height: the height of the page
         """

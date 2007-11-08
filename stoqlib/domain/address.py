@@ -68,6 +68,8 @@ class CityLocation(Domain):
     @argcheck(StoqlibTransaction, basestring, basestring, basestring)
     def get_or_create(cls, trans, city, state, country):
         """
+        Returns a CityLocation. If it does not exist, create a new
+        one and return it.
         @param trans: a database transaction
         @param city: city
         @param state: state

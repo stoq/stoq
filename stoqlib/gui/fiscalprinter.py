@@ -48,8 +48,9 @@ _ = stoqlib_gettext
 log = Logger('stoqlib.fiscalprinter')
 
 class FiscalPrinterHelper:
+
     def __init__(self, conn, parent):
-        """
+        """ Creates a new FiscalPrinterHelper object
         @param conn:
         @param parent: a gtk.Window subclass or None
         """
@@ -118,7 +119,7 @@ class FiscalPrinterHelper:
         return False
 
     def create_coupon(self):
-        """
+        """ Creates a new fiscal coupon
         @returns: a new coupon
         """
 
@@ -179,7 +180,8 @@ class FiscalCoupon(gobject.GObject):
     #
 
     def add_item(self, sale_item):
-        """
+        """ Adds an item to fiscal coupon
+
         @param sale_item: a sale item
         @returns: id of the sale_item.:
           0 >= if it was added successfully

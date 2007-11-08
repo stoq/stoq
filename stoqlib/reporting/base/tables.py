@@ -98,7 +98,8 @@ class Table(RTable):
 class AbstractTableBuilder:
     """ Abstract class for table creation """
     def __init__(self, data, style=None, extra_row=None):
-        """
+        """ Creates a new AbstractTableBuilder object
+
         @param data:   The table rows.
         @type:         list
 
@@ -235,7 +236,8 @@ class ColumnTableBuilder(ReportTableBuilder):
     def __init__(self, data, columns, style=None, progress_handler=None,
                  table_line=TABLE_LINE, do_header=True, extra_row=None,
                  summary_row=None, width=None):
-        """
+        """ Creates a new ColumnTableBuilder object
+
         @param data:   A list of lists, where each nested list represents a
                        row (naturally, each column of this nested list is a
                        table column).
@@ -346,7 +348,8 @@ class ObjectTableBuilder(ColumnTableBuilder):
     def __init__(self, objs, columns, style=None, width=None,
                  progress_handler=None, table_line=TABLE_LINE,
                  extra_row=None, summary_row=None):
-        """
+        """ Creates a new ObjectTableBuilder object
+
         @param objs: A instance list, where each instance is a table row.
         @type  objs: list.
         @param columns: A list of ObjectTableColumn, representing the
@@ -710,7 +713,8 @@ class ObjectTableColumn(TableColumn):
                  truncate=False, width=None, format_string=None,
                  format_func=None, expand=False, virtual=False, *args,
                  **kwargs):
-        """
+        """ Creates a new ObjectTableColumn object
+
         @param name:   The column name
         @type:         str
 

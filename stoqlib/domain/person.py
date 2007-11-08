@@ -962,12 +962,14 @@ class SupplierView(Viewable):
 
 class TransporterView(Viewable):
     """
-    @cvar id:
-    @cvar name:
-    @cvar phone_number:
-    @cvar transporter_id:
-    @cvar status:
-    @cvar freight_percentage:
+    Stores information about transporters
+
+    @cvar id: the id of person table
+    @cvar name: the transporter name
+    @cvar phone_number: the transporter phone number
+    @cvar transporter_id: the id of person_adapt_to_transporter table
+    @cvar status: the current status of the transporter
+    @cvar freight_percentage: the freight percentage charged
     """
     columns = dict(
         id=Person.q.id,

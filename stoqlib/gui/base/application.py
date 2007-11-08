@@ -41,6 +41,7 @@ class BaseApp:
     """ Base class for application control. """
     def __init__(self, main_window_class):
         """
+        Create a new object BaseApp.
         @param main_window_class: A BaseAppWindow subclass
         """
         if not issubclass(main_window_class, BaseAppWindow):

@@ -528,14 +528,14 @@ class FieldGrid(gtk.Layout):
         self.emit('selection-changed', field)
 
     def get_selected_field(self):
-        """
+        """ Returns the currently selected field
         @returns: the currently selected field
         @rtype: FieldInfo
         """
         return self._selected_field
 
     def get_fields(self):
-        """
+        """ Returns a list of fields in the grid
         @returns: a list of fields in the grid
         """
         return self._fields

@@ -68,7 +68,8 @@ class ReportLine(Flowable):
 
     def __init__(self, thickness=1, v_margins=5, h_margins=0,
                  dash_pattern=None):
-        """
+        """ Creates a new ReportLine object
+
         @param thickness: The line thickness
         @type:         int
 
@@ -122,7 +123,8 @@ class Signature(Flowable):
 
     def __init__(self, labels, align=RIGHT, line_width=75*mm, height=60,
                  text_align=CENTER, style_data=None):
-        """
+        """ Creates a new Signature object
+
         @param labels: A list of string, with each string representing
                        a signature.
         @type:         list
@@ -243,7 +245,8 @@ class Signature(Flowable):
 class Paragraph(RParagraph):
     def __init__(self, text, style=None, ellipsize=True, bulletText=None,
                  frags=None, caseSensitive=1, align=TA_LEFT):
-        """
+        """ Creates a new Paragraph object
+
         @param text:   The paragraph text. You can use the same features
                        available on reportlab's Paragraph.
         @type text:    basestring

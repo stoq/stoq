@@ -118,6 +118,7 @@ def _provide_current_station(station_name=None, branch_name=None):
 def provide_database_settings(dbname=None, address=None, port=None, username=None,
                               password=None, create=True):
     """
+    Provide database settings.
     @param dbname:
     @param address:
     @param port:
@@ -159,6 +160,7 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
 
 def provide_utilities(station_name, branch_name=None):
     """
+    Provide utilities like current user and current station.
     @param station_name:
     @param branch_name:
     """
@@ -169,6 +171,7 @@ def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
                         password="", station_name=None, quick=False):
 
     """
+    Test.
     @param address:
     @param dbname:
     @param port:
@@ -177,6 +180,7 @@ def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
     @param station_name:
     @param quick:
     """
+    # XXX: Rewrite docstring
     try:
         empty = provide_database_settings(
             dbname, address, port, username, password)

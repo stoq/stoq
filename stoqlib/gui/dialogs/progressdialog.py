@@ -47,6 +47,7 @@ class ProgressDialog(GladeDelegate):
 
     def __init__(self, label=''):
         """
+        Create a new ProgressDialog object.
         @param label: initial content of the label
         """
         GladeDelegate.__init__(self, gladefile=self.gladefile)

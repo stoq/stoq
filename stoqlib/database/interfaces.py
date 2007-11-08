@@ -38,7 +38,10 @@ class IDatabaseSettings(Interface):
     port = Attribute('database port')
 
     def get_connection_uri():
-        """@returns: a SQLObject connection URI"""
+        """
+        Gets a SQLObject connection URI.
+        @returns: a SQLObject connection URI.
+        """
 
 class IConnection(Interface):
     """This is an interface that describes a database connection
