@@ -1,3 +1,9 @@
+stoq (0.9.3-4) gutsy; urgency=low
+
+  * Fixing stoqlib dependency.
+
+ -- Fabio Morbec <fabio@async.com.br>  Thu, 08 Nov 2007 16:29:13 -0200
+
 stoq (0.9.3-3) gutsy; urgency=low
 
   * Fixing stoqlib dependency.
