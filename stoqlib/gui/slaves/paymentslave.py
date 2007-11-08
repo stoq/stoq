@@ -631,7 +631,7 @@ class _TemporaryMoneyData:
     intervals = 1
 
     def __init__(self):
-        self.first_duedate = datetime.date.today()
+        self.first_duedate = datetime.datetime.today()
 
 
 class MoneyMethodSlave(BasePaymentMethodSlave):
