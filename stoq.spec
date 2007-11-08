@@ -47,6 +47,9 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{python_sitelib}/stoq
 
 %changelog
+* Wed Nov 07 2007 Fabio Morbec <fabio@async.com.br> 0.9.3-4
+- New version.
+
 * Wed Nov 07 2007 Fabio Morbec <fabio@async.com.br> 0.9.3-1
 - New version.
 
