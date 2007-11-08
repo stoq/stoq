@@ -1,12 +1,18 @@
+stoqlib (0.9.3-2) feisty; urgency=low
+
+  *FIX stoqdrivers dependency.
+
+ -- Fabio Morbec <fabio@async.com.br>  Thu, 08 Nev 2007 12:53:35 -0300
+
 stoqlib (0.9.3-1) feisty; urgency=low
 
-  *FIX 
+  *FIX
 
  -- Fabio Morbec <fabio@async.com.br>  Thu, 30 Aug 2007 22:27:35 -0300
 
 stoqlib (0.9.2-8) feisty; urgency=low
 
-  *FIX 
+  *FIX
 
  -- Fabio Morbec <fabio@async.com.br>  Thu, 30 Aug 2007 22:27:35 -0300
 
@@ -18,7 +24,7 @@ stoqlib (0.9.2-7) feisty; urgency=low
 
 stoqlib (0.9.2-6) feisty; urgency=low
 
-  * 
+  *
 
  -- Fabio Morbec <fabio@async.com.br>  Thu, 30 Aug 2007 21:17:35 -0300
 
