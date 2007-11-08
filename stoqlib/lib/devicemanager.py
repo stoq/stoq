@@ -62,6 +62,7 @@ class SerialDevice(object):
     """
     def __init__(self, device_name):
         """
+        Create a new SerialDevice object.
         @param device_name: name of the device
         """
         self.device_name = device_name

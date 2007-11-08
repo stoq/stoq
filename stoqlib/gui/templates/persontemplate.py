@@ -175,7 +175,8 @@ class BasePersonRoleEditor(BaseEditor):
 
     def __init__(self, conn, model=None, role_type=None, person=None,
                  visual_mode=False):
-        """
+        """ Creates a new BasePersonRoleEditor object
+
         @param conn: a database connection
         @param model:
         @param none_type: None, ROLE_INDIVIDUAL or ROLE_COMPANY

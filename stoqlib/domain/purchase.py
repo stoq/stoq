@@ -355,8 +355,8 @@ class PurchaseOrder(ValidatableDomain):
 
     def get_freight(self):
         """
-        @returns: the percentage value of freight in agreement
-                  of freight's type.
+        Gets the percentage value of freight in agreement of freight's type.
+        @returns: the percentage value of freight.
         """
         type_freight = self.get_freight_type_name()
         if type_freight == "FOB":
@@ -409,14 +409,14 @@ class PurchaseOrder(ValidatableDomain):
 
     def get_pending_items(self):
         """
-        @returns: a sequence of all items which we haven't received yet
+        Returns a sequence of all items which we haven't received yet.
         """
         return self.get_items().filter(
             PurchaseItem.q.quantity_received < PurchaseItem.q.quantity)
 
     def get_partially_received_items(self):
         """
-        @returns: a sequence of all items which are partially received
+        Returns a sequence of all items which are partially received.
         """
         return self.get_items().filter(
             PurchaseItem.q.quantity_received > 0)

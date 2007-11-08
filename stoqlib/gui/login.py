@@ -134,7 +134,8 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
     size = (-1, 350)
 
     def __init__(self, appname=None, applications=None):
-        """
+        """ Creates a new SelectApplicationsDialog object
+
         @param appname: application name to select
         @param applications: applications to show
         @type applications: list of Application
@@ -242,7 +243,7 @@ class LoginHelper:
         return user
 
     def validate_user(self):
-        """
+        """ Checks if an user can log in or not.
         @returns: a user object
         """
         log.info("Showing login dialog")

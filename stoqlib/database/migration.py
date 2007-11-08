@@ -59,6 +59,7 @@ class Patch(object):
     """
     def __init__(self, filename, migration):
         """
+        Create a new Patch object.
         @param filename:
         @param migration
         """
@@ -170,7 +171,8 @@ class SchemaMigration(object):
 
     def check_uptodate(self):
         """
-        @returns: True if the schema is up to date, otherwise false
+        Verify if the schema is up to date.
+        @returns: True or False.
         """
         # Fetch the latest, eg the last in the list
         patches = self._get_patches()
@@ -308,6 +310,7 @@ class PluginSchemaMigration(SchemaMigration):
     """
     def __init__(self, plugin_name, resource, patterns):
         """
+        Create a new PluginSchemaMigration object.
         @param plugin_name: name of the plugin
         @param resource: resource to load sql patches from
         @param patterns: sql patch pattern

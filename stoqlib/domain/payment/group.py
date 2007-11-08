@@ -185,8 +185,8 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     #
 
     def can_cancel(self):
-        """
-        @returns: True if it's possible to cancel the payment, otherwise False
+        """ Returns True if it's possible to cancel the payment,
+        otherwise False.
         """
         return self.status != AbstractPaymentGroup.STATUS_CANCELLED
 

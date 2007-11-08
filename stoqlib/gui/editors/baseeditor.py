@@ -53,7 +53,8 @@ class BaseEditorSlave(GladeSlaveDelegate):
     proxy_widgets = ()
 
     def __init__(self, conn, model=None, visual_mode=False):
-        """
+        """ A base class for editor slaves inheritance
+
         @param conn: a connection
         @param model: the object model tied with the proxy widgets
         @param visual_mode: does this slave must be opened in visual mode?

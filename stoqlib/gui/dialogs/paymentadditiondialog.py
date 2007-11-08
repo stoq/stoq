@@ -46,7 +46,8 @@ class PaymentAdditionDialog(BaseEditor):
                      'due_date']
 
     def __init__(self, conn, model=None):
-        """
+        """ Creates a new PaymentAdditionDialog object
+
         @param conn: a database connection
         @param model: a L{stoqlib.domain.payment.payment.Payment} object or None
         """

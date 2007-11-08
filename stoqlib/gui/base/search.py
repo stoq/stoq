@@ -103,6 +103,8 @@ class SearchDialog(BasicDialog):
     def __init__(self, conn, table=None, search_table=None, hide_footer=True,
                  title='', selection_mode=None, double_click_confirm=False):
         """
+        A base class for search dialog inheritance
+
         @param conn:
         @param table:
         @param editor_class:
@@ -392,6 +394,7 @@ class SearchEditor(SearchDialog):
                  title='', selection_mode=gtk.SELECTION_BROWSE,
                  hide_toolbar=False, double_click_confirm=False):
         """
+        Create a new SearchEditor object.
         @param conn:
         @param table:
         @param editor_class:

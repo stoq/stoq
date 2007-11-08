@@ -54,10 +54,7 @@ class TransactionEntry(SQLObject):
 
     @property
     def user(self):
-        """
-        @returns: the user associated with the TransactionEntry
-        @rtype: an object implementing IUser
-        """
+        """Returns the user associated with the TransactionEntry"""
         if not self.user_id:
             return
         from stoqlib.domain.interfaces import IUser
@@ -66,10 +63,7 @@ class TransactionEntry(SQLObject):
 
     @property
     def station(self):
-        """
-        @returns: the station associated with the TransactionEntry
-        @rtype: a BranchStation instance
-        """
+        """Returns the station associated with the TransactionEntry"""
         if not self.station_id:
             return
         from stoqlib.domain.station import BranchStation

@@ -71,6 +71,7 @@ class CSVImporter(object):
 
     def __init__(self, lines=500, dry=False):
         """
+        Create a new CSVImporter object.
         @param lines: see L{set_lines_per_commit}
         @param dry: see L{set_dry}
         """

@@ -195,6 +195,7 @@ class Till(Domain):
 
     def add_entry(self, payment):
         """
+        Adds an entry to the till.
         @param payment:
         @returns: till entry representing the added debit
         @rtype: L{TillEntry}

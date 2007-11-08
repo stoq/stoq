@@ -153,15 +153,15 @@ class PluginManager(object):
             yield self._get_plugin(p.plugin_name)
 
     def has_plugin(self, plugin_name):
-        """
+        """Verify if the plugin is available or not.
         @param plugin_name: name of plugin
-        @returns: True if there is plugin available, otherwise False
+        @returns: True or False
         """
         return plugin_name in self._plugin_descriptions
 
     def get_plugin_names(self):
-        """
-        @returns: list of plugin names of available plugins
+        """Gets a list of plugin names of available plugins.
+        @returns: list of plugin names.
         """
         return self._plugin_descriptions.keys()
 

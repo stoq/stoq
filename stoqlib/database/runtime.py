@@ -159,6 +159,7 @@ def get_connection():
 
 def new_transaction():
     """
+    Create a new transaction.
     @returns: a transaction
     """
     log.debug('Creating a new transaction in %s()'
@@ -169,6 +170,7 @@ def new_transaction():
 
 def rollback_and_begin(trans):
     """
+    Abort changes in models and begins the transaction.
     @param trans: a transaction
     """
     trans.rollback()

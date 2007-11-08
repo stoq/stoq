@@ -160,6 +160,7 @@ class TillClosingEditor(BaseEditor):
 
     def __init__(self, conn, model=None, previous_day=False):
         """
+        Create a new TillClosingEditor object.
         @param previous_day: If the till wasn't closed previously
         """
         self._previous_day = previous_day
