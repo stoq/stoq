@@ -8,13 +8,33 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-30 14:50-0300\n"
+"POT-Creation-Date: 2007-11-08 12:17-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../stoqdrivers/base.py:78
+#, python-format
+msgid "There is no section named `%s'!"
+msgstr ""
+
+#: ../stoqdrivers/configparser.py:77
+#, python-format
+msgid "Config file not found in: `%s', `%s' and `%s'"
+msgstr ""
+
+#: ../stoqdrivers/configparser.py:88 ../stoqdrivers/configparser.py:96
+#, python-format
+msgid "Invalid section: %s"
+msgstr ""
+
+#: ../stoqdrivers/configparser.py:90
+#, python-format
+msgid "%s does not have option: %s"
+msgstr ""
 
 #: ../stoqdrivers/constants.py:39
 msgid "Weight unit"
@@ -80,26 +100,6 @@ msgstr ""
 msgid "Gift certificate Payment Method"
 msgstr ""
 
-#: ../stoqdrivers/base.py:78
-#, python-format
-msgid "There is no section named `%s'!"
-msgstr ""
-
-#: ../stoqdrivers/configparser.py:77
-#, python-format
-msgid "Config file not found in: `%s', `%s' and `%s'"
-msgstr ""
-
-#: ../stoqdrivers/configparser.py:88 ../stoqdrivers/configparser.py:96
-#, python-format
-msgid "Invalid section: %s"
-msgstr ""
-
-#: ../stoqdrivers/configparser.py:90
-#, python-format
-msgid "%s does not have option: %s"
-msgstr ""
-
 #: ../stoqdrivers/printers/fiscal.py:163
 msgid "You must totalize the coupon before add payments."
 msgstr ""
@@ -118,6 +118,10 @@ msgstr ""
 msgid ""
 "Isn't possible close the coupon since the payments total (%.2f) doesn't "
 "match the totalized value (%.2f)."
+msgstr ""
+
+#: ../stoqdrivers/printers/perto/Pay2023.py:487
+msgid "Coupon already opened."
 msgstr ""
 
 #: ../stoqdrivers/printers/dataregis/EP375.py:108
@@ -220,123 +224,6 @@ msgstr ""
 msgid "You have specified an invalid item id to cancel!"
 msgstr ""
 
-#: ../stoqdrivers/printers/virtual/Simple.py:111
-msgid "There is no coupon opened!"
-msgstr ""
-
-#: ../stoqdrivers/printers/virtual/Simple.py:115
-msgid "There is a coupon already open"
-msgstr ""
-
-#: ../stoqdrivers/printers/virtual/Simple.py:136
-msgid "The coupon is already totalized, you can't add items anymore."
-msgstr ""
-
-#: ../stoqdrivers/printers/virtual/Simple.py:146
-#, python-format
-msgid "There is no item with this ID (%d)"
-msgstr ""
-
-#: ../stoqdrivers/printers/virtual/Simple.py:149
-msgid "The coupon is already totalized, you can't cancel items anymore."
-msgstr ""
-
-#: ../stoqdrivers/printers/virtual/Simple.py:163
-msgid "The coupon can't be totalized, since there is no items added"
-msgstr ""
-
-#: ../stoqdrivers/printers/virtual/Simple.py:166
-#: ../stoqdrivers/printers/sweda/IFS9000I.py:191
-msgid "The coupon is already totalized"
-msgstr ""
-
-#: ../stoqdrivers/printers/virtual/Simple.py:178
-msgid "Coupon totalized must be greater than zero!"
-msgstr ""
-
-#: ../stoqdrivers/printers/virtual/Simple.py:187
-msgid "Isn't possible add payments to the coupon since it isn't totalized"
-msgstr ""
-
-#: ../stoqdrivers/printers/virtual/Simple.py:196
-msgid "Isn't possible close the coupon since it isn't totalized yet!"
-msgstr ""
-
-#: ../stoqdrivers/printers/virtual/Simple.py:199
-msgid "Isn't possible close the coupon since there is no payments added."
-msgstr ""
-
-#: ../stoqdrivers/printers/virtual/Simple.py:202
-msgid "The payments total value doesn't match the totalized value."
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:196
-msgid "Mechanical failure"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:198
-msgid "Not properly authenticated"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:200
-#: ../stoqdrivers/printers/daruma/FS345.py:254
-msgid "No paper"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:202
-msgid "Offline"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:204
-msgid "Peripheral is not connected to AUX"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:216
-msgid "readZ is already emitted"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:242
-msgid "Document is already open"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:244
-#: ../stoqdrivers/printers/daruma/FS345.py:316
-msgid "Coupon is not open"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:246
-#: ../stoqdrivers/printers/sweda/IFS9000I.py:197
-msgid "There's no open document to cancel"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:249
-msgid "There is no such item in the coupon"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:265
-msgid "Required field is blank"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:378
-msgid "Coupon already open"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:448
-msgid "No client"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:449
-msgid "No document"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:450
-msgid "No address"
-msgstr ""
-
-#: ../stoqdrivers/printers/daruma/FS345.py:465
-msgid "It is not possible to close the coupon"
-msgstr ""
-
 #: ../stoqdrivers/printers/sweda/IFS9000I.py:154
 msgid "A Read X is pending"
 msgstr ""
@@ -391,8 +278,18 @@ msgstr ""
 msgid "It is not possible cancel the item since it wasn't added yet"
 msgstr ""
 
+#: ../stoqdrivers/printers/sweda/IFS9000I.py:191
+#: ../stoqdrivers/printers/virtual/Simple.py:166
+msgid "The coupon is already totalized"
+msgstr ""
+
 #: ../stoqdrivers/printers/sweda/IFS9000I.py:194
 msgid "There is no such item to cancel in the coupon"
+msgstr ""
+
+#: ../stoqdrivers/printers/sweda/IFS9000I.py:197
+#: ../stoqdrivers/printers/daruma/FS345.py:246
+msgid "There's no open document to cancel"
 msgstr ""
 
 #. if we catch InvalidState here, probably the printer is with
@@ -401,8 +298,111 @@ msgstr ""
 msgid "A read X is pending."
 msgstr ""
 
-#: ../stoqdrivers/printers/perto/Pay2023.py:487
-msgid "Coupon already opened."
+#: ../stoqdrivers/printers/daruma/FS345.py:196
+msgid "Mechanical failure"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:198
+msgid "Not properly authenticated"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:200
+#: ../stoqdrivers/printers/daruma/FS345.py:254
+msgid "No paper"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:202
+msgid "Offline"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:204
+msgid "Peripheral is not connected to AUX"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:216
+msgid "readZ is already emitted"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:242
+msgid "Document is already open"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:244
+#: ../stoqdrivers/printers/daruma/FS345.py:316
+msgid "Coupon is not open"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:249
+msgid "There is no such item in the coupon"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:265
+msgid "Required field is blank"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:378
+msgid "Coupon already open"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:448
+msgid "No client"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:449
+msgid "No document"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:450
+msgid "No address"
+msgstr ""
+
+#: ../stoqdrivers/printers/daruma/FS345.py:465
+msgid "It is not possible to close the coupon"
+msgstr ""
+
+#: ../stoqdrivers/printers/virtual/Simple.py:111
+msgid "There is no coupon opened!"
+msgstr ""
+
+#: ../stoqdrivers/printers/virtual/Simple.py:115
+msgid "There is a coupon already open"
+msgstr ""
+
+#: ../stoqdrivers/printers/virtual/Simple.py:136
+msgid "The coupon is already totalized, you can't add items anymore."
+msgstr ""
+
+#: ../stoqdrivers/printers/virtual/Simple.py:146
+#, python-format
+msgid "There is no item with this ID (%d)"
+msgstr ""
+
+#: ../stoqdrivers/printers/virtual/Simple.py:149
+msgid "The coupon is already totalized, you can't cancel items anymore."
+msgstr ""
+
+#: ../stoqdrivers/printers/virtual/Simple.py:163
+msgid "The coupon can't be totalized, since there is no items added"
+msgstr ""
+
+#: ../stoqdrivers/printers/virtual/Simple.py:178
+msgid "Coupon totalized must be greater than zero!"
+msgstr ""
+
+#: ../stoqdrivers/printers/virtual/Simple.py:187
+msgid "Isn't possible add payments to the coupon since it isn't totalized"
+msgstr ""
+
+#: ../stoqdrivers/printers/virtual/Simple.py:196
+msgid "Isn't possible close the coupon since it isn't totalized yet!"
+msgstr ""
+
+#: ../stoqdrivers/printers/virtual/Simple.py:199
+msgid "Isn't possible close the coupon since there is no payments added."
+msgstr ""
+
+#: ../stoqdrivers/printers/virtual/Simple.py:202
+msgid "The payments total value doesn't match the totalized value."
 msgstr ""
 
 #: ../stoqdrivers/printers/bematech/MP25.py:154

@@ -199,6 +199,7 @@ class ICouponPrinter(IDevice):
 
     def coupon_add_payment(payment_method, value, description=u""):
         """
+        Add payment method to coupon.
         @param payment_method: The payment method.
         @type payment_method:  a device specific value representing the payment value
 
@@ -306,7 +307,7 @@ class ICouponPrinter(IDevice):
 
     def get_sintegra(self):
         """
-        @returns: an object implementing ISintegraData or None
+        Gets an object that implements ISintegraData or None.
         """
 
 class IChequePrinter(IDevice):

@@ -97,6 +97,7 @@ RTABLE = dict([(v, k) for k, v in TABLE.items()])
 
 def encode(input):
     """
+    Convert unicode to string.
     @param input: text to encode
     @type input: unicode
     @returns: encoded text
@@ -106,6 +107,7 @@ def encode(input):
 
 def decode(input):
     """
+    Convert string in unicode.
     @param input: text to decode
     @type input: str
     @returns: decoded text
