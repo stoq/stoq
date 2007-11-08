@@ -3,7 +3,7 @@
 Summary: A powerful retail system library
 Name: stoqlib
 Version: 0.9.3
-Release: 2
+Release: 3
 License: LGPL
 Group: System Environment/Libraries
 URL: http://www.stoq.com.br/
@@ -50,6 +50,9 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{_datadir}/stoqlib/template
 
 %changelog
+* Wed Nov 08 2007 Fabio Morbec <fabio@async.com.br> 0.9.3-3
+- Fix.
+
 * Wed Nov 08 2007 Fabio Morbec <fabio@async.com.br> 0.9.3-2
 - Fix stoqdrivers dependency.
 
