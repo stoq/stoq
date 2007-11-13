@@ -56,7 +56,7 @@ class StationSearch(SearchEditor):
         return [Column('name', _('Name'), data_type=str, sorted=True,
                        width=190, searchable=True),
                 Column('is_active', _('Active'), data_type=bool,
-                       sorted=False, searchable=False, width=50),
+                       sorted=False, searchable=False, width=80),
                 AccessorColumn("branch",
                                BranchStation.get_branch_name,
                                title=_('Branch'), data_type=str,

@@ -65,9 +65,9 @@ class SaleSearch(SearchDialog):
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [Column('id', title=_('Number'), width=70,
+        return [Column('id', title=_('Number'), width=80,
                        data_type=int, sorted=True, order=gtk.SORT_DESCENDING),
-                Column('open_date', title=_('Date Started'), width=80,
+                Column('open_date', title=_('Date Started'), width=90,
                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 Column('client_name', title=_('Client'),
                        data_type=str, width=200,
@@ -75,10 +75,10 @@ class SaleSearch(SearchDialog):
                 Column('salesperson_name', title=_('Salesperson'),
                        data_type=str, width=200, expand=True),
                 Column('total_quantity', title=_('Items'),
-                       data_type=Decimal, width=50,
+                       data_type=Decimal, width=60,
                        format_func=format_quantity),
                 Column('total', title=_('Total'), data_type=currency,
-                       width=100)]
+                       width=90)]
 
     def setup_widgets(self):
         slave = SaleListToolbar(self.conn, self.results, self)

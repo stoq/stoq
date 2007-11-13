@@ -85,15 +85,15 @@ class TransferOrderSearch(SearchDialog):
         self.add_filter(date_filter, columns=['open_date', 'receival_date'])
 
     def get_columns(self):
-        return [Column('id', _('#'), data_type=int),
+        return [Column('id', _('#'), data_type=int, width=50),
                 Column('open_date', _('Open Date'),
-                       data_type=datetime.date, sorted=True),
+                       data_type=datetime.date, sorted=True, width=100),
                 Column('source_branch_name', _('Source'),
                        data_type=unicode, expand=True),
                 Column('destination_branch_name', _('Destination'),
-                       data_type=unicode, expand=True),
+                       data_type=unicode, width=220),
                 Column('total_items_transfer',
-                       _('Number of items transferred'), data_type=Decimal)]
+                       _('Number of items transferred'), data_type=Decimal, width=110)]
 
     #
     # Callbacks

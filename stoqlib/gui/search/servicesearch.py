@@ -91,7 +91,7 @@ class ServiceSearch(SearchEditor):
         columns = [Column('id', title=_('Code'), data_type=int, sorted=True,
                           format="%03d", width=80),
                    Column('barcode', title=_('Barcode'), data_type=str,
-                          visible=True, width=120),
+                          visible=True, width=130),
                    Column('description', title=_('Description'), data_type=str,
                           expand=True)]
 
