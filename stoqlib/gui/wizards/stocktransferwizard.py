@@ -109,11 +109,11 @@ class StockTransferProductStep(SellableItemStep):
             Column('sellable.description', title=_(u'Description'),
                    data_type=str, expand=True, searchable=True),
             AccessorColumn('stock', title=_(u'Stock'), data_type=Decimal,
-                           accessor=self._get_stock_quantity),
+                           accessor=self._get_stock_quantity, width=80),
             Column('quantity', title=_(u'Transfer'), data_type=Decimal,
-                   format_func=format_quantity),
+                   format_func=format_quantity, width=80),
             AccessorColumn('total', title=_(u'Total'), data_type=Decimal,
-                            accessor=self._get_total_quantity),
+                            accessor=self._get_total_quantity, width=80),
             ]
 
     def _get_stock_quantity(self, item):
