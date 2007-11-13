@@ -111,7 +111,7 @@ class StockTransferProductStep(SellableItemStep):
             AccessorColumn('stock', title=_(u'Stock'), data_type=Decimal,
                            accessor=self._get_stock_quantity, width=80),
             Column('quantity', title=_(u'Transfer'), data_type=Decimal,
-                   format_func=format_quantity, width=80),
+                   format_func=format_quantity, width=100),
             AccessorColumn('total', title=_(u'Total'), data_type=Decimal,
                             accessor=self._get_total_quantity, width=80),
             ]
