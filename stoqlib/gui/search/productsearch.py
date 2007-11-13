@@ -129,7 +129,7 @@ class ProductSearch(SearchEditor):
         return [Column('id', title=_('Code'), data_type=int, sorted=True,
                        format='%03d', width=70),
                 Column('barcode', title=_('Barcode'), data_type=str,
-                       width=120),
+                       width=130),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
                 Column('cost', _('Cost'), data_type=currency,

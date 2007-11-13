@@ -200,7 +200,7 @@ class PurchaseItemStep(SellableItemStep):
             Column('quantity', title=_('Quantity'), data_type=float, width=90,
                    format_func=format_quantity),
             Column('sellable.unit_description',title=_('Unit'), data_type=str,
-                   width=50),
+                   width=70),
             Column('cost', title=_('Cost'), data_type=currency, width=90),
             Column('total', title=_('Total'), data_type=currency, width=100),
             ]
