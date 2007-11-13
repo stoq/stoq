@@ -86,9 +86,9 @@ class WarehouseApp(SearchableAppWindow):
                        data_type=str, expand=True,
                        ellipsize=pango.ELLIPSIZE_END),
                 Column('stock', title=_('Quantity'),
-                       data_type=decimal.Decimal, width=90),
+                       data_type=decimal.Decimal, width=100),
                 Column('unit', title=_("Unit"), data_type=str,
-                       width=70)]
+                       width=80)]
 
     def query(self, query, conn):
         branch = self.branch_filter.get_state().value
