@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-11 15:16-0300\n"
+"POT-Creation-Date: 2007-11-13 11:20-0200\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -296,15 +296,15 @@ msgstr ""
 msgid "Inventory"
 msgstr "Inventário"
 
-#: ../stoq/gui/inventory/inventory.py:54 ../stoq/gui/warehouse/warehouse.py:61
+#: ../stoq/gui/inventory/inventory.py:54 ../stoq/gui/warehouse/warehouse.py:62
 msgid "Matching:"
 msgstr "contendo:"
 
-#: ../stoq/gui/inventory/inventory.py:70 ../stoq/gui/warehouse/warehouse.py:77
+#: ../stoq/gui/inventory/inventory.py:70 ../stoq/gui/warehouse/warehouse.py:78
 msgid "Show products at:"
 msgstr "Exibir produtos em:"
 
-#: ../stoq/gui/inventory/inventory.py:75 ../stoq/gui/warehouse/warehouse.py:82
+#: ../stoq/gui/inventory/inventory.py:75 ../stoq/gui/warehouse/warehouse.py:83
 #: ../stoq/gui/pos/deliveryeditor.py:102
 msgid "Code"
 msgstr "Código"
@@ -314,30 +314,30 @@ msgid "Barcode"
 msgstr "Código de Barras:"
 
 #: ../stoq/gui/inventory/inventory.py:78 ../stoq/gui/payable/payable.py:95
-#: ../stoq/gui/warehouse/warehouse.py:84
+#: ../stoq/gui/warehouse/warehouse.py:85
 #: ../stoq/gui/receivable/receivable.py:128 ../stoq/gui/pos/pos.py:151
 #: ../stoq/gui/pos/deliveryeditor.py:104
 msgid "Description"
 msgstr "Descrição"
 
 #: ../stoq/gui/inventory/inventory.py:81 ../stoq/gui/till/till.py:121
-#: ../stoq/gui/warehouse/warehouse.py:87 ../stoq/gui/pos/pos.py:155
+#: ../stoq/gui/warehouse/warehouse.py:88 ../stoq/gui/pos/pos.py:155
 #: ../stoq/gui/pos/deliveryeditor.py:106
 msgid "Quantity"
 msgstr "Quantidade"
 
-#: ../stoq/gui/inventory/inventory.py:83 ../stoq/gui/warehouse/warehouse.py:89
+#: ../stoq/gui/inventory/inventory.py:83 ../stoq/gui/warehouse/warehouse.py:90
 #: ../stoq/gui/pos/pos.py:158
 msgid "Unit"
 msgstr "Unidade"
 
 #: ../stoq/gui/inventory/inventory.py:96
-#: ../stoq/gui/warehouse/warehouse.py:103
+#: ../stoq/gui/warehouse/warehouse.py:104
 msgid "<b>Stock Total:</b>"
 msgstr "<b>Estoque Total:</b>"
 
 #: ../stoq/gui/inventory/inventory.py:106
-#: ../stoq/gui/warehouse/warehouse.py:113
+#: ../stoq/gui/warehouse/warehouse.py:114
 msgid "All branches"
 msgstr "Todas as Unidades"
 
@@ -523,7 +523,7 @@ msgstr ""
 
 #: ../stoq/gui/sales/sales.py:65 ../stoq/gui/till/till.py:113
 msgid "Date Started"
-msgstr "Data de Abertura"
+msgstr "Abertura"
 
 #: ../stoq/gui/sales/sales.py:66
 msgid "Confirm Date"
@@ -590,7 +590,7 @@ msgstr "Caixa Fechado"
 msgid "Till Opened on %s"
 msgstr "Caixa Aberto em %s"
 
-#: ../stoq/gui/till/till.py:274 ../stoq/gui/pos/pos.py:630
+#: ../stoq/gui/till/till.py:274 ../stoq/gui/pos/pos.py:629
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
@@ -600,15 +600,15 @@ msgstr ""
 "\n"
 "Fechar o caixa?"
 
-#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:632
+#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:631
 msgid "Not now"
 msgstr "Não agora"
 
-#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:632
+#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:631
 msgid "Close Till"
 msgstr "Fechar o caixa"
 
-#: ../stoq/gui/warehouse/__init__.py:29 ../stoq/gui/warehouse/warehouse.py:57
+#: ../stoq/gui/warehouse/__init__.py:29 ../stoq/gui/warehouse/warehouse.py:58
 msgid "Warehouse"
 msgstr "Estoque"
 
@@ -618,7 +618,7 @@ msgstr ""
 "Aplicativo para recebimento de compra e\n"
 "transferência de estoque."
 
-#: ../stoq/gui/warehouse/warehouse.py:139
+#: ../stoq/gui/warehouse/warehouse.py:140
 msgid "You must have at least one item in stock to perfom this action."
 msgstr "É necessário ao menos um item em estoque para realizar esta ação."
 
@@ -674,35 +674,35 @@ msgstr ""
 "Apenas um serviço deve ser adicionado pois não é possivel adicionar mas que "
 "um serviço por ordem ao mesmo tempo."
 
-#: ../stoq/gui/pos/pos.py:362
+#: ../stoq/gui/pos/pos.py:361
 #, python-format
 msgid "You cannot sell more items of product %s, it's out of stock."
 msgstr "Você não pode vender mais itens do produto %s, pois não há no estoque."
 
-#: ../stoq/gui/pos/pos.py:419
+#: ../stoq/gui/pos/pos.py:418
 msgid "The current order will be canceled, Confirm?"
 msgstr "O pedido atual será cancelado, confirmar?"
 
-#: ../stoq/gui/pos/pos.py:420
+#: ../stoq/gui/pos/pos.py:419
 msgid "Go Back"
 msgstr "Voltar"
 
-#: ../stoq/gui/pos/pos.py:420 ../data/glade/pos.glade.h:9
+#: ../stoq/gui/pos/pos.py:419 ../data/glade/pos.glade.h:9
 msgid "Cancel Order"
 msgstr "Cancelar Pedido"
 
-#: ../stoq/gui/pos/pos.py:572
+#: ../stoq/gui/pos/pos.py:571
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 "Não é possível iniciar uma nova venda se o coupon fiscal não puder ser "
 "aberto."
 
-#: ../stoq/gui/pos/pos.py:574
+#: ../stoq/gui/pos/pos.py:573
 msgid "Try Again"
 msgstr "Tente Novamente"
 
-#: ../stoq/gui/pos/pos.py:574
+#: ../stoq/gui/pos/pos.py:573
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -1494,57 +1494,44 @@ msgstr "Não"
 msgid "Yes"
 msgstr "Sim"
 
-#: ../data/template/transfer.rml.extracted.h:1
-msgid "CODE"
-msgstr "CÓDIGO"
+#~ msgid "CODE"
+#~ msgstr "CÓDIGO"
 
-#: ../data/template/transfer.rml.extracted.h:2
-msgid "DESCRIPTION"
-msgstr "DESCRIÇÃO"
+#~ msgid "DESCRIPTION"
+#~ msgstr "DESCRIÇÃO"
 
-#: ../data/template/transfer.rml.extracted.h:3
-msgid "DESTINATION"
-msgstr "DESTINO"
+#~ msgid "DESTINATION"
+#~ msgstr "DESTINO"
 
-#: ../data/template/transfer.rml.extracted.h:4
-msgid "NUMBER:"
-msgstr "NÚMERO:"
+#~ msgid "NUMBER:"
+#~ msgstr "NÚMERO:"
 
-#: ../data/template/transfer.rml.extracted.h:5
-msgid "OPEN:"
-msgstr "ABERTO:"
+#~ msgid "OPEN:"
+#~ msgstr "ABERTO:"
 
-#: ../data/template/transfer.rml.extracted.h:6
-msgid "QUANTITY"
-msgstr "QUANTIDADE"
+#~ msgid "QUANTITY"
+#~ msgstr "QUANTIDADE"
 
-#: ../data/template/transfer.rml.extracted.h:7
-msgid "RECEIVAL:"
-msgstr "RECEBIDO:"
+#~ msgid "RECEIVAL:"
+#~ msgstr "RECEBIDO:"
 
-#: ../data/template/transfer.rml.extracted.h:8
-msgid "RESPONSIBLE"
-msgstr "RESPONSÁVEL"
+#~ msgid "RESPONSIBLE"
+#~ msgstr "RESPONSÁVEL"
 
-#: ../data/template/transfer.rml.extracted.h:9
-msgid "SIGNATURE:"
-msgstr "ASSINATURA"
+#~ msgid "SIGNATURE:"
+#~ msgstr "ASSINATURA"
 
-#: ../data/template/transfer.rml.extracted.h:10
-msgid "SOURCE"
-msgstr "ORIGEM"
+#~ msgid "SOURCE"
+#~ msgstr "ORIGEM"
 
-#: ../data/template/transfer.rml.extracted.h:11
-msgid "TOTAL:"
-msgstr "TOTAL:"
+#~ msgid "TOTAL:"
+#~ msgstr "TOTAL:"
 
-#: ../data/template/transfer.rml.extracted.h:12
-msgid "TRANSFER PRODUCTS"
-msgstr "TRANSFERÊNCIA DE PRODUTOS"
+#~ msgid "TRANSFER PRODUCTS"
+#~ msgstr "TRANSFERÊNCIA DE PRODUTOS"
 
-#: ../data/template/transfer.rml.extracted.h:13
-msgid "TRANSFER RECEIPT"
-msgstr "RECIBO DE TRANSFERÊNCIA"
+#~ msgid "TRANSFER RECEIPT"
+#~ msgstr "RECIBO DE TRANSFERÊNCIA"
 
 #~ msgid "Counting"
 #~ msgstr "Contagem"

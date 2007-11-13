@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-11 15:16-0300\n"
+"POT-Creation-Date: 2007-11-13 11:20-0200\n"
 "PO-Revision-Date: 2007-07-18 11:50-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -257,16 +257,16 @@ msgstr ""
 msgid "Inventory"
 msgstr ""
 
-#: ../stoq/gui/inventory/inventory.py:54 ../stoq/gui/warehouse/warehouse.py:61
+#: ../stoq/gui/inventory/inventory.py:54 ../stoq/gui/warehouse/warehouse.py:62
 msgid "Matching:"
 msgstr ""
 
-#: ../stoq/gui/inventory/inventory.py:70 ../stoq/gui/warehouse/warehouse.py:77
+#: ../stoq/gui/inventory/inventory.py:70 ../stoq/gui/warehouse/warehouse.py:78
 #, fuzzy
 msgid "Show products at:"
 msgstr "Ingen produkt vald"
 
-#: ../stoq/gui/inventory/inventory.py:75 ../stoq/gui/warehouse/warehouse.py:82
+#: ../stoq/gui/inventory/inventory.py:75 ../stoq/gui/warehouse/warehouse.py:83
 #: ../stoq/gui/pos/deliveryeditor.py:102
 msgid "Code"
 msgstr "Kod"
@@ -277,30 +277,30 @@ msgid "Barcode"
 msgstr "Streckkod:"
 
 #: ../stoq/gui/inventory/inventory.py:78 ../stoq/gui/payable/payable.py:95
-#: ../stoq/gui/warehouse/warehouse.py:84
+#: ../stoq/gui/warehouse/warehouse.py:85
 #: ../stoq/gui/receivable/receivable.py:128 ../stoq/gui/pos/pos.py:151
 #: ../stoq/gui/pos/deliveryeditor.py:104
 msgid "Description"
 msgstr "Beskrivning"
 
 #: ../stoq/gui/inventory/inventory.py:81 ../stoq/gui/till/till.py:121
-#: ../stoq/gui/warehouse/warehouse.py:87 ../stoq/gui/pos/pos.py:155
+#: ../stoq/gui/warehouse/warehouse.py:88 ../stoq/gui/pos/pos.py:155
 #: ../stoq/gui/pos/deliveryeditor.py:106
 msgid "Quantity"
 msgstr "Antal"
 
-#: ../stoq/gui/inventory/inventory.py:83 ../stoq/gui/warehouse/warehouse.py:89
+#: ../stoq/gui/inventory/inventory.py:83 ../stoq/gui/warehouse/warehouse.py:90
 #: ../stoq/gui/pos/pos.py:158
 msgid "Unit"
 msgstr ""
 
 #: ../stoq/gui/inventory/inventory.py:96
-#: ../stoq/gui/warehouse/warehouse.py:103
+#: ../stoq/gui/warehouse/warehouse.py:104
 msgid "<b>Stock Total:</b>"
 msgstr ""
 
 #: ../stoq/gui/inventory/inventory.py:106
-#: ../stoq/gui/warehouse/warehouse.py:113
+#: ../stoq/gui/warehouse/warehouse.py:114
 #, fuzzy
 msgid "All branches"
 msgstr "Pris"
@@ -560,23 +560,23 @@ msgstr "Kod"
 msgid "Till Opened on %s"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:274 ../stoq/gui/pos/pos.py:630
+#: ../stoq/gui/till/till.py:274 ../stoq/gui/pos/pos.py:629
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
 "Close the till?"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:632
+#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:631
 msgid "Not now"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:632
+#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:631
 #, fuzzy
 msgid "Close Till"
 msgstr "Kod"
 
-#: ../stoq/gui/warehouse/__init__.py:29 ../stoq/gui/warehouse/warehouse.py:57
+#: ../stoq/gui/warehouse/__init__.py:29 ../stoq/gui/warehouse/warehouse.py:58
 msgid "Warehouse"
 msgstr ""
 
@@ -584,7 +584,7 @@ msgstr ""
 msgid "Warehouse application."
 msgstr ""
 
-#: ../stoq/gui/warehouse/warehouse.py:139
+#: ../stoq/gui/warehouse/warehouse.py:140
 msgid "You must have at least one item in stock to perfom this action."
 msgstr ""
 
@@ -635,34 +635,34 @@ msgid ""
 "service to an order at a time."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:362
+#: ../stoq/gui/pos/pos.py:361
 #, python-format
 msgid "You cannot sell more items of product %s, it's out of stock."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:419
+#: ../stoq/gui/pos/pos.py:418
 msgid "The current order will be canceled, Confirm?"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:420
+#: ../stoq/gui/pos/pos.py:419
 msgid "Go Back"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:420 ../data/glade/pos.glade.h:9
+#: ../stoq/gui/pos/pos.py:419 ../data/glade/pos.glade.h:9
 #, fuzzy
 msgid "Cancel Order"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/pos/pos.py:572
+#: ../stoq/gui/pos/pos.py:571
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:574
+#: ../stoq/gui/pos/pos.py:573
 msgid "Try Again"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:574
+#: ../stoq/gui/pos/pos.py:573
 #, fuzzy
 msgid "Cancel"
 msgstr "_Nollställ order"
@@ -1469,58 +1469,6 @@ msgstr "nej"
 #: ../data/glade/ECFPluginStep.glade.h:7
 msgid "Yes"
 msgstr "Ja"
-
-#: ../data/template/transfer.rml.extracted.h:1
-msgid "CODE"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:2
-msgid "DESCRIPTION"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:3
-msgid "DESTINATION"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:4
-msgid "NUMBER:"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:5
-msgid "OPEN:"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:6
-msgid "QUANTITY"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:7
-msgid "RECEIVAL:"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:8
-msgid "RESPONSIBLE"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:9
-msgid "SIGNATURE:"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:10
-msgid "SOURCE"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:11
-msgid "TOTAL:"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:12
-msgid "TRANSFER PRODUCTS"
-msgstr ""
-
-#: ../data/template/transfer.rml.extracted.h:13
-msgid "TRANSFER RECEIPT"
-msgstr ""
 
 #, fuzzy
 #~ msgid "Destination:"
