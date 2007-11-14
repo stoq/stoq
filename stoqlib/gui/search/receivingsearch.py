@@ -78,12 +78,10 @@ class PurchaseReceivingSearch(SearchDialog):
             date_filter, columns=['receival_date'])
 
     def get_columns(self):
-        return [Column('receiving_number_str', _('#'), data_type=unicode,
-                       width=80,),
+        return [Column('purchase.id', _('Purchase Order #'),
+                       data_type=int, width=120),
                 Column('receival_date', _('Receival Date'),
                        data_type=datetime.date, sorted=True, width=110),
-                Column('purchase.id', _('Purchase Order #'),
-                       data_type=int, width=120),
                 Column('supplier_name', _('Supplier'), data_type=unicode,
                        expand=True),
                 Column('invoice_number', _('Invoice #'), data_type=int,
