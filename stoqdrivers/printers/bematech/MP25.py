@@ -398,9 +398,10 @@ class MP25(SerialBase):
         """ Close the till for the day, no other actions can be done after this
         is called.
         """
-
-        if not previous_day:
-            self._send_command(CMD_REDUCE_Z)
+        # a impressao da Leitura X precisa ser feita diariamente. Ao utilizar o
+        # parâmetro previous_day a Leitura X só será impressa quando o caixa
+        # não é fechado no mesmo dia
+        self._send_command(CMD_REDUCE_Z)
 
     def till_add_cash(self, value):
         self._add_voucher(CASH_IN_TYPE, value)
