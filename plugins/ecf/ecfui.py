@@ -175,10 +175,6 @@ class ECFUI(object):
         # Callsite catches DeviceError
         self._validate_printer()
 
-        # Don't do anything on till_open, eg the driver is responsible
-        # for sending the LeituraX if needed
-        return True
-
         retval = True
         while True:
             try:
