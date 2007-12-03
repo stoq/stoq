@@ -271,9 +271,13 @@ class POSApp(AppWindow):
                             self.OrderCheckout), has_sale_items)
         self.CancelOrder.set_sensitive(has_sale_items)
         has_products = False
+        has_services = False
         for sale_item in self.sale_items:
             if sale_item and IProduct(sale_item.sellable, None):
                 has_products = True
+            if sale_item and IService(sale_item.sellable, None):
+                has_services = True
+            if has_products and has_services:
                 break
         self.delivery_button.set_sensitive(has_products)
         self.NewDelivery.set_sensitive(has_sale_items)
@@ -285,7 +289,7 @@ class POSApp(AppWindow):
         self.edit_item_button.set_sensitive(can_edit)
 
         self.set_sensitive((self.checkout_button,
-                            self.OrderCheckout), has_products)
+                            self.OrderCheckout), has_products or has_services)
         self._update_totals()
         self._update_add_button()
 
