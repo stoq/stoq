@@ -144,6 +144,8 @@ class PaymentMethodStep(WizardEditorStep):
 
     def _update_payment_method_slave(self):
         selected = self.method_combo.get_selected_data()
+        if not selected:
+            return
         slave_args = (self.wizard, self, self.conn, self.model,
                       selected, self.outstanding_value)
         if not self.method_dict.has_key(selected):
