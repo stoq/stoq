@@ -595,7 +595,8 @@ class _AbstractSalesPersonStep(WizardEditorStep):
     def _create_client(self):
         trans = new_transaction()
         client = run_person_role_dialog(ClientEditor, self, trans, None)
-        finish_transaction(trans, client)
+        if not finish_transaction(trans, client):
+            return
         if len(self.client) == 0:
             self._fill_clients_combo()
         else:
