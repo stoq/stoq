@@ -135,11 +135,11 @@ class _FiscalBookEntryView(object):
 
     @property
     def drawee_name(self):
+        if not self.drawee_id:
+            return u""
         drawee = Person.get(self.drawee_id,
                             connection=self.get_connection())
-        if drawee:
-            return drawee.name
-        return u""
+        return drawee.name
 
 class IcmsIpiView(_FiscalBookEntryView, Viewable):
     """
