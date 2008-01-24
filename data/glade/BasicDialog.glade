@@ -68,6 +68,7 @@
                         <child>
                             <widget class="GtkHBox" id="hbox1">
                                 <property name="visible">True</property>
+                                <property name="width_request">9</property>
                                 <child>
                                     <widget class="GtkEventBox" id="extra_holder">
                                         <property name="visible">True</property>
@@ -77,7 +78,7 @@
                                     </widget>
                                 </child>
                                 <child>
-                                    <widget class="GtkEventBox" id="details_holder">
+                                    <widget class="GtkEventBox" id="print_holder">
                                         <property name="visible">True</property>
                                         <child>
                                             <placeholder/>
@@ -87,9 +88,23 @@
                                         <property name="position">1</property>
                                     </packing>
                                 </child>
+                                <child>
+                                    <widget class="GtkEventBox" id="details_holder">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <placeholder/>
+                                        </child>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="pack_type">end</property>
+                                        <property name="position">2</property>
+                                    </packing>
+                                </child>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
+                                <property name="fill">False</property>
                                 <property name="position">4</property>
                             </packing>
                         </child>
@@ -114,7 +129,7 @@
                     <widget class="GtkHButtonBox" id="BasicDialog-action_area">
                         <property name="border_width">5</property>
                         <property name="layout_style">end</property>
-                        <property name="spacing">10</property>
+                        <property name="spacing">6</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkButton" id="cancel_button">
@@ -128,7 +143,7 @@
                                 <property name="label">gtk-ok</property>
                                 <property name="use_stock">True</property>
                                 <property name="visible">True</property>
-                                <property name="xalign">0.490000009537</property>
+                                <property name="xalign">0.49000001</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>

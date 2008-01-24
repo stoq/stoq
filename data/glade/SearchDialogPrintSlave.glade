@@ -1,0 +1,41 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface domain="stoqlib">
+    <widget class="GtkWindow" id="SearchDialogPrintSlave">
+        <property name="allow_grow">False</property>
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <property name="gravity">east</property>
+        <property name="resizable">False</property>
+        <child>
+            <widget class="GtkHButtonBox" id="hbuttonbox1">
+                <property name="homogeneous">True</property>
+                <property name="layout_style">end</property>
+                <property name="visible">True</property>
+                <child>
+                    <placeholder/>
+                    <packing/>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkButton" id="print_price_button">
+                        <property name="is_focus">True</property>
+                        <property name="label">gtk-print</property>
+                        <property name="use_stock">True</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">2</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>
