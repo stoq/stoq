@@ -38,12 +38,15 @@ from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.views import ProductFullStockView, ProductQuantityView
+from stoqlib.gui.base.gtkadds import change_button_appearance
+from stoqlib.gui.base.search import (SearchDialog, SearchEditor,
+                                     SearchDialogPrintSlave)
 from stoqlib.gui.editors.producteditor import ProductEditor
-from stoqlib.gui.base.search import SearchDialog, SearchEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
-from stoqlib.reporting.product import ProductReport, ProductQuantityReport
+from stoqlib.reporting.product import (ProductReport, ProductQuantityReport,
+                                       ProductPriceReport)
 
 _ = stoqlib_gettext
 
@@ -86,6 +89,16 @@ class ProductSearch(SearchEditor):
             self._hide_column('price')
         self.set_edit_button_sensitive(False)
         self.results.connect('selection-changed', self.on_selection_changed)
+        self._setup_print_slave()
+
+    def _setup_print_slave(self):
+        self._print_slave = SearchDialogPrintSlave()
+        change_button_appearance(self._print_slave.print_price_button,
+                                 gtk.STOCK_PRINT, _("_Table of Price"))
+        self.attach_slave('print_holder', self._print_slave)
+        self._print_slave.connect('print', self.on_print_price_button_clicked)
+        self._print_slave.print_price_button.set_sensitive(False)
+        self.results.connect('has-rows', self._has_rows)
 
     def _hide_column(self, colname):
         column = self.results.get_column_by_name(colname)
@@ -95,6 +108,14 @@ class ProductSearch(SearchEditor):
     def on_print_button_clicked(self, button):
         print_report(ProductReport, list(self.results),
                      branch=self.branch_filter.combo.get_active_text())
+
+    def on_print_price_button_clicked(self, button):
+        print_report(ProductPriceReport, list(self.results),
+                     branch=self.branch_filter.combo.get_active_text())
+
+    def _has_rows(self, results, obj):
+        SearchEditor._has_rows(self, results, obj)
+        self._print_slave.print_price_button.set_sensitive(obj)
 
     #
     # SearchDialog Hooks
