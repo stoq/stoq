@@ -28,9 +28,11 @@ from decimal import Decimal
 import os
 import sys
 
-import stoqlib
 
 from stoqdrivers.enum import PaymentMethodType
+
+import stoqlib
+from stoqlib.database.runtime import get_current_station
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, CommissionView
@@ -38,13 +40,14 @@ from stoqlib.domain.interfaces import IPaymentGroup, ISellable, IStorable
 from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.views import ProductFullStockView
-from stoqlib.domain.till import Till
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.payment import (ReceivablePaymentReport,
                                        PayablePaymentReport)
 from stoqlib.reporting.product import ProductReport, ProductPriceReport
 from stoqlib.reporting.sale import SalesPersonReport
+from stoqlib.reporting.till import TillHistoryReport
 from stoqlib.lib.diffutils import diff_files
 
 class TestReport(DomainTest):
@@ -135,6 +138,27 @@ class TestReport(DomainTest):
         branch = self.create_branch()
         self.checkPDF(ProductReport, products,
                       branch=branch,
+                      date=datetime.date(2007, 1, 1))
+
+    def testTillHistoryReport(self):
+        till = Till(station=get_current_station(self.trans),
+                    connection=self.trans)
+        till.open_till()
+
+        sale = self.create_sale()
+        sellable = self.create_sellable()
+        sale.add_sellable(sellable, price=100)
+        group = sale.addFacet(IPaymentGroup, connection=self.trans)
+        method = APaymentMethod.get_by_enum(self.trans, PaymentMethodType.BILL)
+        payment = method.create_inpayment(group, Decimal(100))
+        inpayment = payment.get_adapted()
+
+        till.add_entry(inpayment)
+        till.add_credit_entry(25, "Cash In")
+        till.add_debit_entry(5, "Cash Out")
+
+        till_entry = list(TillEntry.select(connection=self.trans))
+        self.checkPDF(TillHistoryReport, till_entry,
                       date=datetime.date(2007, 1, 1))
 
     def testSalesPersonReport(self):
