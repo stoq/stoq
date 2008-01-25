@@ -28,6 +28,7 @@ import datetime
 
 import gtk
 from kiwi.datatypes import currency
+from kiwi.environ import environ
 from kiwi.ui.search import DateSearchFilter, Today
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
@@ -37,8 +38,10 @@ from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.tilleditor import (CashAdvanceEditor, CashInEditor,
                                             CashOutEditor)
+from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
+from stoqlib.reporting.till import TillHistoryReport
 
 _ = stoqlib_gettext
 
@@ -65,6 +68,7 @@ class TillHistoryDialog(SearchDialog):
                 ColoredColumn('value', _('Value'), data_type=currency,
                               color='red', data_func=payment_value_colorize,
                               width=140)]
+
     def create_filters(self):
         self.set_text_field_columns(['description'])
 
@@ -78,21 +82,41 @@ class TillHistoryDialog(SearchDialog):
 
     def setup_widgets(self):
         self.results.set_visible_rows(10)
-        self._add_editor_button(_('Cash _Advance...'), CashAdvanceEditor)
-        self._add_editor_button(_('Cash _In...'), CashInEditor)
-        self._add_editor_button(_('Cash _Out...'), CashOutEditor)
+        self.results.connect('has-rows', self._has_rows)
 
-    def _add_editor_button(self, name, editor_class):
-        b = gtk.Button(name)
-        b.connect('clicked', lambda b: self._run_editor(editor_class))
-        b.set_use_underline(True)
+        self._add_editor_button(_('Cash _Add...'), CashAdvanceEditor,
+                                'money24px.png')
+        self._add_editor_button(_('Cash _In...'), CashInEditor,
+                                'money_add24px.png')
+        self._add_editor_button(_('Cash _Out...'), CashOutEditor,
+                                'money_delete24px.png')
+
+        self.print_button = gtk.Button(None, gtk.STOCK_PRINT, True)
+        self.print_button.set_property("use-stock", True)
+        self.print_button.connect('clicked', self._print_button_clicked)
         self.action_area.set_layout(gtk.BUTTONBOX_START)
-        self.action_area.pack_start(b, False, False, 6)
-        b.show()
+        self.action_area.pack_end(self.print_button, False, False, 6)
+        self.print_button.show()
+        self.print_button.set_sensitive(False)
 
     #
     # Private API
     #
+
+    def _add_editor_button(self, name, editor_class, filename):
+        image = gtk.Image()
+        image.set_from_file(environ.find_resource('pixmaps', filename))
+        image.show()
+        b = gtk.Button(name)
+        b.connect('clicked', lambda b: self._run_editor(editor_class))
+        b.set_use_underline(True)
+        b.set_image(image)
+        self.action_area.set_layout(gtk.BUTTONBOX_START)
+        self.action_area.pack_start(b, False, False, 6)
+        b.show()
+
+    def _print_button_clicked(self, button):
+        print_report(TillHistoryReport, list(self.results))
 
     def _run_editor(self, editor_class):
         model = run_dialog(editor_class, self, self.conn)
@@ -102,3 +126,5 @@ class TillHistoryDialog(SearchDialog):
             if len(self.results):
                 self.results.select(self.results[-1])
 
+    def _has_rows(self, results, obj):
+        self.print_button.set_sensitive(obj)
