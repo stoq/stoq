@@ -180,6 +180,13 @@ class PaymentListSlave(BaseEditorSlave):
         widget = vbox_children[-1]
         self._remove_payment_slave(widget)
 
+    def is_all_due_dates_valid(self):
+        today = datetime.date.today()
+        for slave in self.payment_slaves.values():
+            if slave.due_date.read() < today:
+                return False
+        return True
+
     #
     # Kiwi callbacks
     #
@@ -220,6 +227,7 @@ class BillDataSlave(BaseEditorSlave):
                        'value',
                        'payment_number')
     gsignal('paymentvalue-changed')
+    gsignal('duedate-validate')
 
     def __init__(self, conn, payment_group, due_date, value,
                  method_iface, model=None):
@@ -262,6 +270,11 @@ class BillDataSlave(BaseEditorSlave):
     def after_value__changed(self, *args):
         self.emit('paymentvalue-changed')
 
+    def on_due_date__validate(self, widget, value):
+        self.emit('duedate-validate')
+        if value < datetime.date.today():
+            return ValidationError(_(u"Expected installment due date "
+                                      "must be set to a future date"))
 
 class CheckDataSlave(BillDataSlave):
     """A slave to set payment information of check payment method."""
@@ -339,7 +352,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     def _refresh_next(self, validation_ok=True):
         if validation_ok and self.payment_list:
             total_difference = self.payment_list.get_total_difference()
-            validation_ok = total_difference == currency(0)
+            validation_ok = (total_difference == currency(0) and
+                             self.payment_list.is_all_due_dates_valid())
         self.wizard.refresh_next(validation_ok)
 
     def update_view(self):
@@ -480,11 +494,16 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                        self.method_iface, model, *extra_params)
         slave.connect('paymentvalue-changed',
                       self._on_slave__paymentvalue_changed)
+        slave.connect('duedate-validate',
+                      self._on_slave__duedate_validate)
         return slave
 
     def _on_slave__paymentvalue_changed(self, slave):
         self.update_view()
         self.payment_list.update_total_label()
+
+    def _on_slave__duedate_validate(self, slave):
+        self.update_view()
 
     def update_installments_number(self, *args):
         inst_number = self.payment_list.get_children_number()
