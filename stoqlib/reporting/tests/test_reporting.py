@@ -153,16 +153,30 @@ class TestReport(DomainTest):
         payment = method.create_inpayment(group, Decimal(100))
         inpayment = payment.get_adapted()
 
-        till.add_entry(inpayment)
-        till.add_credit_entry(25, "Cash In")
-        till.add_debit_entry(5, "Cash Out")
+        TillEntry(value=25, id=20,
+                  description="Cash In",
+                  payment=None,
+                  till=till,
+                  date=datetime.date(2007, 1, 1),
+                  connection=self.trans)
+        TillEntry(value=-5, id=21,
+                  description="Cash Out",
+                  payment=None,
+                  till=till,
+                  date=datetime.date(2007, 1, 1),
+                  connection=self.trans)
+
+        TillEntry(value=100, id=22,
+                  description=sellable.get_description(),
+                  payment=inpayment,
+                  till=till,
+                  date=datetime.date(2007, 1, 1),
+                  connection=self.trans)
 
         till_entry = list(TillEntry.select(connection=self.trans))
         for item in till_entry:
             item.date = datetime.date(2007, 1, 1)
-        for item, num in zip(till_entry, range(2, 5)):
-            item.id = num
-        self.checkPDF(TillHistoryReport, till_entry,
+        self.checkPDF(TillHistoryReport, till_entries=till_entry,
                       date=datetime.date(2007, 1, 1))
 
     def testSalesPersonReport(self):
