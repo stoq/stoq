@@ -31,6 +31,7 @@ from sqlobject.sqlbuilder import INNERJOINOn
 from sqlobject.viewable import Viewable
 
 from stoqlib.database.columns import DecimalCol
+from stoqlib.database.runtime import get_connection
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Person, PersonAdaptToSalesPerson
@@ -190,3 +191,11 @@ class CommissionView(Viewable):
         INNERJOINOn(None, Payment,
             Payment.q.id == Commission.q.paymentID),
        ]
+
+    @property
+    def sale(self):
+        return Sale.get(self.id, connection=get_connection())
+
+    def quantity_sold(self):
+        sale = Sale.get(self.id, connection=get_connection())
+        return sale.get_items_total_quantity()

@@ -22,18 +22,29 @@
 ## Author(s):   Fabio Morbec      <fabio@async.com.br>
 ##
 """ This module test reporties """
+
 import datetime
+from decimal import Decimal
 import os
 import sys
 
 import stoqlib
 
+from stoqdrivers.enum import PaymentMethodType
+
+from stoqlib.database.runtime import get_current_branch
+from stoqlib.domain.commission import CommissionSource, CommissionView
+from stoqlib.domain.interfaces import IPaymentGroup, ISellable, IStorable
+from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import ProductFullStockView
+from stoqlib.domain.till import Till
+from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.payment import (ReceivablePaymentReport,
                                        PayablePaymentReport)
 from stoqlib.reporting.product import ProductReport, ProductPriceReport
+from stoqlib.reporting.sale import SalesPersonReport
 from stoqlib.lib.diffutils import diff_files
 
 class TestReport(DomainTest):
@@ -124,6 +135,43 @@ class TestReport(DomainTest):
         branch = self.create_branch()
         self.checkPDF(ProductReport, products,
                       branch=branch,
+                      date=datetime.date(2007, 1, 1))
+
+    def testSalesPersonReport(self):
+        sysparam(self.trans).SALE_PAY_COMMISSION_WHEN_CONFIRMED = 1
+        salesperson = self.create_sales_person()
+        product = self.create_product(price=100)
+        sellable = ISellable(product)
+
+        sale = self.create_sale()
+        sale.salesperson = salesperson
+        sale.add_sellable(sellable, quantity=1)
+
+        storable = product.addFacet(IStorable, connection=self.trans)
+        storable.increase_stock(100, get_current_branch(self.trans))
+
+        source = CommissionSource(asellable=sellable,
+                                  direct_value=Decimal(10),
+                                  installments_value=1,
+                                  connection=self.trans)
+
+        sale.order()
+
+        group = IPaymentGroup(sale, None)
+        if group is None:
+            group = sale.addFacet(IPaymentGroup, connection=self.trans)
+
+        method = APaymentMethod.get_by_enum(self.trans,
+                                           PaymentMethodType.MONEY)
+        till = Till.get_last_opened(self.trans)
+        payment = method.create_inpayment(group,
+                                          sale.get_sale_subtotal(),
+                                          till=till)
+        sale.confirm()
+        sale.set_paid()
+
+        commissions = CommissionView.select(connection=self.trans)
+        self.checkPDF(SalesPersonReport, list(commissions), salesperson,
                       date=datetime.date(2007, 1, 1))
 
     def testProductPriceReport(self):
