@@ -781,6 +781,8 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     def cancel(self, renegotiation):
         assert self.can_cancel()
 
+        for sale_item in self.sale.get_items():
+            sale_item.cancel(self.sale.branch)
         self._cancel_pending_payments()
         self._payback_paid_payments(renegotiation.penalty_value)
         self._revert_fiscal_entry(renegotiation.invoice_number)

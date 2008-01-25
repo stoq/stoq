@@ -246,7 +246,9 @@ class TestSale(DomainTest):
 
     def testReturn(self):
         sale = self.create_sale()
-        self._add_product(sale)
+        sellable = self._add_product(sale)
+        storable = IStorable(sellable)
+        balance_before_sale = storable.get_full_balance()
         sale.order()
         self._add_payments(sale)
         sale.confirm()
@@ -256,6 +258,9 @@ class TestSale(DomainTest):
         self.failIf(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
+
+        balance_after_sale = storable.get_full_balance()
+        self.assertEqual(balance_before_sale, balance_after_sale)
 
     def testReturnPaid(self):
         sale = self.create_sale()
