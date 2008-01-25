@@ -27,7 +27,8 @@
 
 from kiwi.datatypes import currency
 
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import get_connection, get_current_branch
+from stoqlib.domain.commission import CommissionView
 from stoqlib.domain.sale import SaleView
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.reporting.base.flowables import RIGHT
@@ -146,3 +147,66 @@ class SalesReport(SearchResultsReport):
             summary_row.insert(-1, "")
         self.add_object_table(self.sale_list, self._get_columns(),
                               summary_row=summary_row)
+
+
+class SalesPersonReport(SearchResultsReport):
+    # This should be properly verified on BaseStoqReport. Waiting for
+    # bug 2517
+    obj_type = CommissionView
+    report_name = _("Sales")
+
+    def __init__(self, filename, salesperson_list, salesperson,
+                 *args, **kwargs):
+        branch = get_current_branch(get_connection())
+        self.salesperson_list = salesperson_list
+        SalesPersonReport.main_object_name = _("sales on branch %s") % (
+            branch.get_description())
+        if salesperson is not None:
+            SalesPersonReport.main_object_name = _("sales from %s "
+                "on branch %s" % (salesperson, branch.get_description()))
+        SearchResultsReport.__init__(self, filename, salesperson_list,
+                                     SalesPersonReport.report_name,
+                                     landscape=(salesperson is None),
+                                     *args, **kwargs)
+        self._sales_person = salesperson
+        self._setup_sales_person_table()
+
+    def _get_columns(self):
+        columns = []
+        if self._sales_person is None:
+            columns.append(OTC(_("Name"), lambda obj: obj.salesperson_name,
+                           expand=True, truncate=True, width=245))
+        columns.extend([
+            OTC(_("Code"), lambda obj: obj.code, truncate=True,
+                width=60),
+            OTC(_("Value"), lambda obj: get_formatted_price(
+                obj.commission_value), truncate=True, width=80),
+            OTC(_("Percentage"), lambda obj: get_formatted_price(
+                obj.commission_percentage), truncate=True,
+                width=100),
+            OTC(_("P/A"), lambda obj: get_formatted_price(
+                obj.payment_amount), truncate=True, width=90),
+            OTC(_("Total Amount"), lambda obj: get_formatted_price(
+                obj.total_amount), truncate=True, width=105),
+            OTC(_("S/P"), lambda obj: format_quantity(obj.quantity_sold()),
+                width=45, truncate=True)])
+        return columns
+
+    def _setup_sales_person_table(self):
+        text = None
+        if self._sales_person is not None:
+            va = sum([i.total_amount for i in self.salesperson_list])
+            if va:
+                va = va/len(self.salesperson_list)
+            text = _("Sold value per sales %s") % (get_formatted_price(va,))
+            total_sellables = sum([item.sale.get_items_total_quantity()
+                for item in self.salesperson_list])
+        self.add_object_table(self.salesperson_list, self._get_columns())
+        self.add_preformatted_text(_("P/A: Payment Amount"))
+        self.add_preformatted_text(_("S/P: Sellables sold per sale"))
+        if text:
+            self.add_preformatted_text(text)
+            self.add_preformatted_text(_("Total of sales: %d") % (
+                len(self.salesperson_list),))
+            self.add_preformatted_text(_("Total of items sold: %d" % (
+                total_sellables,)))

@@ -33,7 +33,9 @@ from kiwi.ui.widgets.list import Column, ColoredColumn
 from stoqlib.domain.commission import CommissionView
 from stoqlib.domain.interfaces import ISalesPerson
 from stoqlib.domain.person import Person
+from stoqlib.reporting.sale import SalesPersonReport
 from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -60,6 +62,7 @@ class CommissionSearch(SearchDialog):
         salesperson_filter = ComboSearchFilter(_('Sold By:'), persons)
         self.add_filter(salesperson_filter, SearchFilterPosition.TOP,
                         ['salesperson_name'])
+        self._salesperson_filter = salesperson_filter
 
         date_filter = DateSearchFilter(_('Open date is:'))
         self.add_filter(date_filter, SearchFilterPosition.BOTTOM, ['open_date'])
@@ -79,3 +82,7 @@ class CommissionSearch(SearchDialog):
                         data_type=currency),
                 Column('total_amount', title=_('Sale Total'),
                         data_type=currency)]
+
+    def on_print_button_clicked(self, button):
+        print_report(SalesPersonReport, list(self.results),
+                     salesperson=self._salesperson_filter.combo.get_selected())
