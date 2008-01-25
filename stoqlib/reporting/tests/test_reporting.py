@@ -158,6 +158,10 @@ class TestReport(DomainTest):
         till.add_debit_entry(5, "Cash Out")
 
         till_entry = list(TillEntry.select(connection=self.trans))
+        for item in till_entry:
+            item.date = datetime.date(2007, 1, 1)
+        for item, num in zip(till_entry, range(2, 5)):
+            item.id = num
         self.checkPDF(TillHistoryReport, till_entry,
                       date=datetime.date(2007, 1, 1))
 
