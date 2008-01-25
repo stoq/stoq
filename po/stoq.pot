@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-13 11:20-0200\n"
+"POT-Creation-Date: 2008-01-25 10:08-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -152,40 +152,40 @@ msgstr ""
 msgid "Search:"
 msgstr ""
 
-#: ../stoq/gui/config.py:97
+#: ../stoq/gui/config.py:98
 msgid "Trust"
 msgstr ""
 
-#: ../stoq/gui/config.py:98
+#: ../stoq/gui/config.py:99
 msgid "Needs Password"
 msgstr ""
 
-#: ../stoq/gui/config.py:124
+#: ../stoq/gui/config.py:125
 #, python-format
 msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
 msgstr ""
 
-#: ../stoq/gui/config.py:131
+#: ../stoq/gui/config.py:132
 #, python-format
 msgid ""
 "The specifed database `%s' does not exist.\n"
 "Do you want to create it?"
 msgstr ""
 
-#: ../stoq/gui/config.py:134
+#: ../stoq/gui/config.py:135
 msgid "Don't create"
 msgstr ""
 
-#: ../stoq/gui/config.py:134
+#: ../stoq/gui/config.py:135
 msgid "Create"
 msgstr ""
 
-#: ../stoq/gui/config.py:140
+#: ../stoq/gui/config.py:141
 #, python-format
 msgid "User <u>%s</u> has insufficient permissions"
 msgstr ""
 
-#: ../stoq/gui/config.py:141
+#: ../stoq/gui/config.py:142
 #, python-format
 msgid ""
 "The specified user `%s' does not have the required permissions to install "
@@ -194,22 +194,22 @@ msgid ""
 "more information on how to solve this problem."
 msgstr ""
 
-#: ../stoq/gui/config.py:168
+#: ../stoq/gui/config.py:169
 #, python-format
 msgid ""
 "The database address '%s' is invalid. Please fix the address you have set "
 "and try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:171 ../stoq/gui/config.py:172
+#: ../stoq/gui/config.py:172 ../stoq/gui/config.py:173
 msgid "Invalid database address"
 msgstr ""
 
-#: ../stoq/gui/config.py:287 ../data/glade/AdminPasswordStep.glade.h:1
+#: ../stoq/gui/config.py:288 ../data/glade/AdminPasswordStep.glade.h:1
 msgid "<b>Administrator Account Creation</b>"
 msgstr ""
 
-#: ../stoq/gui/config.py:290
+#: ../stoq/gui/config.py:291
 #, python-format
 msgid ""
 "I'm adding a user called `%s' which will have administrator privilegies.\n"
@@ -218,29 +218,53 @@ msgid ""
 "admin application and create them."
 msgstr ""
 
-#: ../stoq/gui/config.py:350
+#: ../stoq/gui/config.py:351
 #, python-format
 msgid ""
 "This machine which has the name <b>%s</b> will be registered so it can be "
 "used to access the system."
 msgstr ""
 
-#: ../stoq/gui/config.py:371
+#: ../stoq/gui/config.py:372
 #, python-format
 msgid ""
 "There is already a database called <b>%s</b> on <b>%s</b>. You must enter "
 "the password for the user <b>%s</b> to continue the installation: "
 msgstr ""
 
-#: ../stoq/gui/config.py:378
+#: ../stoq/gui/config.py:379
 msgid "<b>Administrator Account</b>"
 msgstr ""
 
-#: ../stoq/gui/config.py:389
+#: ../stoq/gui/config.py:390
 msgid "The password supplied is not valid."
 msgstr ""
 
-#: ../stoq/gui/config.py:515
+#: ../stoq/gui/config.py:498
+msgid "ICMS can not be greather than 100"
+msgstr ""
+
+#: ../stoq/gui/config.py:500
+msgid "ICMS can not be less than 100"
+msgstr ""
+
+#: ../stoq/gui/config.py:504
+msgid "ISS can not be greather than 100"
+msgstr ""
+
+#: ../stoq/gui/config.py:506
+msgid "ISS can not be less than 100"
+msgstr ""
+
+#: ../stoq/gui/config.py:510
+msgid "ICMS Substitution can not be greather than 100"
+msgstr ""
+
+#: ../stoq/gui/config.py:512
+msgid "ICMS Substitution can not be less than 100"
+msgstr ""
+
+#: ../stoq/gui/config.py:534
 msgid "Setting up Stoq"
 msgstr ""
 
@@ -537,18 +561,18 @@ msgstr ""
 msgid "Till Opened on %s"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:274 ../stoq/gui/pos/pos.py:629
+#: ../stoq/gui/till/till.py:274 ../stoq/gui/pos/pos.py:633
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
 "Close the till?"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:631
+#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:635
 msgid "Not now"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:631
+#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:635
 msgid "Close Till"
 msgstr ""
 
@@ -610,33 +634,33 @@ msgid ""
 "service to an order at a time."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:361
+#: ../stoq/gui/pos/pos.py:365
 #, python-format
 msgid "You cannot sell more items of product %s, it's out of stock."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:418
+#: ../stoq/gui/pos/pos.py:422
 msgid "The current order will be canceled, Confirm?"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:419
+#: ../stoq/gui/pos/pos.py:423
 msgid "Go Back"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:419 ../data/glade/pos.glade.h:9
+#: ../stoq/gui/pos/pos.py:423 ../data/glade/pos.glade.h:9
 msgid "Cancel Order"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:571
+#: ../stoq/gui/pos/pos.py:575
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:573
+#: ../stoq/gui/pos/pos.py:577
 msgid "Try Again"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:573
+#: ../stoq/gui/pos/pos.py:577
 msgid "Cancel"
 msgstr ""
 

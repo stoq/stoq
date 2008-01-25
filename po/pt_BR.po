@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-13 11:20-0200\n"
+"POT-Creation-Date: 2008-01-25 10:08-0200\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -174,20 +174,20 @@ msgstr "Stoq - %s"
 msgid "Search:"
 msgstr "Pesquisar:"
 
-#: ../stoq/gui/config.py:97
+#: ../stoq/gui/config.py:98
 msgid "Trust"
 msgstr "Confiável"
 
-#: ../stoq/gui/config.py:98
+#: ../stoq/gui/config.py:99
 msgid "Needs Password"
 msgstr "Necessita de senha"
 
-#: ../stoq/gui/config.py:124
+#: ../stoq/gui/config.py:125
 #, python-format
 msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
 msgstr "Stoq requer PostgresSQL 8.1 ou posterior, mas %s encontrado"
 
-#: ../stoq/gui/config.py:131
+#: ../stoq/gui/config.py:132
 #, python-format
 msgid ""
 "The specifed database `%s' does not exist.\n"
@@ -196,20 +196,20 @@ msgstr ""
 "A base de dados especificada `%s' não existe.\n"
 "Você deseja cria-la?"
 
-#: ../stoq/gui/config.py:134
+#: ../stoq/gui/config.py:135
 msgid "Don't create"
 msgstr "Não criar"
 
-#: ../stoq/gui/config.py:134
+#: ../stoq/gui/config.py:135
 msgid "Create"
 msgstr "Criar"
 
-#: ../stoq/gui/config.py:140
+#: ../stoq/gui/config.py:141
 #, python-format
 msgid "User <u>%s</u> has insufficient permissions"
 msgstr "Usuário <u>%s</u> possui permissões insuficientes"
 
-#: ../stoq/gui/config.py:141
+#: ../stoq/gui/config.py:142
 #, python-format
 msgid ""
 "The specified user `%s' does not have the required permissions to install "
@@ -222,7 +222,7 @@ msgstr ""
 "O usuário PostgreSQL deve ser um super-usuário. Consulte a documentação do "
 "Stoq para maiores informações sobre como resolver esse problema."
 
-#: ../stoq/gui/config.py:168
+#: ../stoq/gui/config.py:169
 #, python-format
 msgid ""
 "The database address '%s' is invalid. Please fix the address you have set "
@@ -231,15 +231,15 @@ msgstr ""
 "O endereço da base de dados '%s' é inválido. Por favor corrija o endereço "
 "que você definiu:"
 
-#: ../stoq/gui/config.py:171 ../stoq/gui/config.py:172
+#: ../stoq/gui/config.py:172 ../stoq/gui/config.py:173
 msgid "Invalid database address"
 msgstr "Endereço do banco de dados inválido"
 
-#: ../stoq/gui/config.py:287 ../data/glade/AdminPasswordStep.glade.h:1
+#: ../stoq/gui/config.py:288 ../data/glade/AdminPasswordStep.glade.h:1
 msgid "<b>Administrator Account Creation</b>"
 msgstr "<b>Criação da Conta do Administrador</b>"
 
-#: ../stoq/gui/config.py:290
+#: ../stoq/gui/config.py:291
 #, python-format
 msgid ""
 "I'm adding a user called `%s' which will have administrator privilegies.\n"
@@ -253,7 +253,7 @@ msgstr ""
 "Para estar apto a criar outros usuários você precisa logar com este usuário "
 "na aplicação 'Administrativo' e cria-los"
 
-#: ../stoq/gui/config.py:350
+#: ../stoq/gui/config.py:351
 #, python-format
 msgid ""
 "This machine which has the name <b>%s</b> will be registered so it can be "
@@ -262,7 +262,7 @@ msgstr ""
 "Essa maquina que possui o nome <b>%s</b>, será registrada, logo, ela poderá "
 "ser utilizada para acessar o sistema."
 
-#: ../stoq/gui/config.py:371
+#: ../stoq/gui/config.py:372
 #, python-format
 msgid ""
 "There is already a database called <b>%s</b> on <b>%s</b>. You must enter "
@@ -271,15 +271,39 @@ msgstr ""
 "Já existe uma base de dados chamada <b>%s</b> em <b>%s</b>. Você deve entrar "
 "com o password para o usuário <b>%s</b> para continuar a instalação:"
 
-#: ../stoq/gui/config.py:378
+#: ../stoq/gui/config.py:379
 msgid "<b>Administrator Account</b>"
 msgstr "<b>Conta do Administrador</b>"
 
-#: ../stoq/gui/config.py:389
+#: ../stoq/gui/config.py:390
 msgid "The password supplied is not valid."
 msgstr "O password fornecido não é válido."
 
-#: ../stoq/gui/config.py:515
+#: ../stoq/gui/config.py:498
+msgid "ICMS can not be greather than 100"
+msgstr "ICMS não pode ser maior que 100"
+
+#: ../stoq/gui/config.py:500
+msgid "ICMS can not be less than 100"
+msgstr "ICMS não pode ser menor que 100"
+
+#: ../stoq/gui/config.py:504
+msgid "ISS can not be greather than 100"
+msgstr "ISS não pode ser maior que 100"
+
+#: ../stoq/gui/config.py:506
+msgid "ISS can not be less than 100"
+msgstr "ISS não pode ser menor que 100"
+
+#: ../stoq/gui/config.py:510
+msgid "ICMS Substitution can not be greather than 100"
+msgstr "ICMS Subtituto não pode ser maior que 100"
+
+#: ../stoq/gui/config.py:512
+msgid "ICMS Substitution can not be less than 100"
+msgstr "ICMS Substituto não pode ser menor que 100"
+
+#: ../stoq/gui/config.py:534
 msgid "Setting up Stoq"
 msgstr "Configurando o Stoq"
 
@@ -590,7 +614,7 @@ msgstr "Caixa Fechado"
 msgid "Till Opened on %s"
 msgstr "Caixa Aberto em %s"
 
-#: ../stoq/gui/till/till.py:274 ../stoq/gui/pos/pos.py:629
+#: ../stoq/gui/till/till.py:274 ../stoq/gui/pos/pos.py:633
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
@@ -600,11 +624,11 @@ msgstr ""
 "\n"
 "Fechar o caixa?"
 
-#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:631
+#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:635
 msgid "Not now"
 msgstr "Não agora"
 
-#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:631
+#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:635
 msgid "Close Till"
 msgstr "Fechar o caixa"
 
@@ -674,35 +698,35 @@ msgstr ""
 "Apenas um serviço deve ser adicionado pois não é possivel adicionar mas que "
 "um serviço por ordem ao mesmo tempo."
 
-#: ../stoq/gui/pos/pos.py:361
+#: ../stoq/gui/pos/pos.py:365
 #, python-format
 msgid "You cannot sell more items of product %s, it's out of stock."
 msgstr "Você não pode vender mais itens do produto %s, pois não há no estoque."
 
-#: ../stoq/gui/pos/pos.py:418
+#: ../stoq/gui/pos/pos.py:422
 msgid "The current order will be canceled, Confirm?"
 msgstr "O pedido atual será cancelado, confirmar?"
 
-#: ../stoq/gui/pos/pos.py:419
+#: ../stoq/gui/pos/pos.py:423
 msgid "Go Back"
 msgstr "Voltar"
 
-#: ../stoq/gui/pos/pos.py:419 ../data/glade/pos.glade.h:9
+#: ../stoq/gui/pos/pos.py:423 ../data/glade/pos.glade.h:9
 msgid "Cancel Order"
 msgstr "Cancelar Pedido"
 
-#: ../stoq/gui/pos/pos.py:571
+#: ../stoq/gui/pos/pos.py:575
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 "Não é possível iniciar uma nova venda se o coupon fiscal não puder ser "
 "aberto."
 
-#: ../stoq/gui/pos/pos.py:573
+#: ../stoq/gui/pos/pos.py:577
 msgid "Try Again"
 msgstr "Tente Novamente"
 
-#: ../stoq/gui/pos/pos.py:573
+#: ../stoq/gui/pos/pos.py:577
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -1494,6 +1518,33 @@ msgstr "Não"
 msgid "Yes"
 msgstr "Sim"
 
+#~ msgid "Show inventories at:"
+#~ msgstr "Exibir inventários em:"
+
+#~ msgid "status"
+#~ msgstr "Situação"
+
+#~ msgid "Branch"
+#~ msgstr "Unidade"
+
+#~ msgid "Closed"
+#~ msgstr "Fechamento"
+
+#~ msgid "Create new Inventory"
+#~ msgstr "Criar um novo Inventário"
+
+#~ msgid "Branch:"
+#~ msgstr "Unidade:"
+
+#~ msgid "Open Date:"
+#~ msgstr "Abertura:"
+
+#~ msgid "Time:"
+#~ msgstr "Hora:"
+
+#~ msgid "User:"
+#~ msgstr "Usuário:"
+
 #~ msgid "CODE"
 #~ msgstr "CÓDIGO"
 
@@ -1542,10 +1593,6 @@ msgstr "Sim"
 #, fuzzy
 #~ msgid "Destination:"
 #~ msgstr "Descrição:"
-
-#, fuzzy
-#~ msgid "Open date:"
-#~ msgstr "Data de Abertura é:"
 
 #, fuzzy
 #~ msgid "Receival date:"
@@ -1793,9 +1840,6 @@ msgstr "Sim"
 
 #~ msgid "Identify your Computer"
 #~ msgstr "Identifique seu Computador"
-
-#~ msgid "Name:"
-#~ msgstr "Nome:"
 
 #~ msgid "Select the Computer Location:"
 #~ msgstr "Selecione a localização do computador:"
@@ -2643,23 +2687,14 @@ msgstr "Sim"
 #~ msgid "Initial cash amount"
 #~ msgstr "Caixa inicial"
 
-#~ msgid "Initial cash amount cannot be lesser than zero"
-#~ msgstr "O caixa inicial não pode ser menor que zero"
-
 #~ msgid "Closing current till"
 #~ msgstr "Fechamento do caixa atual"
-
-#~ msgid "Value cannot be lesser that zero"
-#~ msgstr "O caixa não pode ser fechado com balanço negativo"
 
 #~ msgid ""
 #~ "You can not specifiy a final cash amount greater than the calculated "
 #~ "value."
 #~ msgstr ""
 #~ "Você não pode especificar um caixa final maior que o valor calculado"
-
-#~ msgid "Value Must be greater than zero"
-#~ msgstr "O valor deve ser maior que zero"
 
 #~ msgid "Cash Advance"
 #~ msgstr "Adiantamento de Salário"
@@ -2684,9 +2719,6 @@ msgstr "Sim"
 
 #~ msgid "Additional Addresses"
 #~ msgstr "Endereços Adicionais"
-
-#~ msgid "User"
-#~ msgstr "Usuário"
 
 #~ msgid "User Details"
 #~ msgstr "Detalhes do Usuário"
@@ -2720,9 +2752,6 @@ msgstr "Sim"
 
 #~ msgid "Transporter"
 #~ msgstr "Transportadora"
-
-#~ msgid "Branch"
-#~ msgstr "Unidade"
 
 #~ msgid "<i>Anonymous</i>"
 #~ msgstr "<i>Anônimo</i>"
@@ -2843,9 +2872,6 @@ msgstr "Sim"
 
 #~ msgid "sale item"
 #~ msgstr "item"
-
-#~ msgid "Show sale items at"
-#~ msgstr "Exibir itens à venda em"
 
 #~ msgid "Search for Sales"
 #~ msgstr "Pesquisa de Vendas"
