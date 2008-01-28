@@ -53,6 +53,9 @@ def format_quantity(quantity):
         return '%.0f' % quantity
     return '%.*f' % (DECIMAL_PRECISION, quantity)
 
+def get_formatted_percentage(value):
+    return "%.*f %%" % (DECIMAL_PRECISION, value)
+
 def get_price_format_str():
     return '%%.%sf' % DECIMAL_PRECISION
 

@@ -34,7 +34,8 @@ from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import (get_formatted_price, format_quantity,
-                                    format_phone_number)
+                                    format_phone_number,
+                                    get_formatted_percentage)
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.reporting.template import BaseStoqReport, SearchResultsReport
 from stoqlib.lib.translation import stoqlib_gettext
@@ -179,34 +180,53 @@ class SalesPersonReport(SearchResultsReport):
         columns.extend([
             OTC(_("Code"), lambda obj: obj.code, truncate=True,
                 width=60),
-            OTC(_("Value"), lambda obj: get_formatted_price(
-                obj.commission_value), truncate=True, width=80),
-            OTC(_("Percentage"), lambda obj: get_formatted_price(
-                obj.commission_percentage), truncate=True,
-                width=100),
-            OTC(_("P/A"), lambda obj: get_formatted_price(
-                obj.payment_amount), truncate=True, width=90),
             OTC(_("Total Amount"), lambda obj: get_formatted_price(
                 obj.total_amount), truncate=True, width=105),
+            OTC(_("P/A"), lambda obj: get_formatted_price(
+                obj.payment_amount), truncate=True, width=90),
+            OTC(_("Percentage"), lambda obj: get_formatted_percentage(
+                obj.commission_percentage), truncate=True,
+                width=100),
+            OTC(_("Value"), lambda obj: get_formatted_price(
+                obj.commission_value), truncate=True, width=80),
             OTC(_("S/P"), lambda obj: format_quantity(obj.quantity_sold()),
                 width=45, truncate=True)])
         return columns
 
     def _setup_sales_person_table(self):
+        total_amount = total_payment = total_percentage = total_value = \
+            total_sold = 0
+        for commission_view in self.salesperson_list:
+            total_amount += commission_view.total_amount
+            total_payment += commission_view.payment_amount
+            total_percentage += commission_view.commission_percentage
+            total_value += commission_view.commission_value
+            total_sold += commission_view.quantity_sold()
+        if total_percentage:
+            total_percentage = total_percentage/len(self.salesperson_list)
+
+        summary_row = ["", _("Total:"), get_formatted_price(total_amount),
+                       get_formatted_price(total_payment),
+                       get_formatted_percentage(total_percentage),
+                       get_formatted_price(total_value),
+                       format_quantity(total_sold)]
+
         text = None
         if self._sales_person is not None:
-            va = sum([i.total_amount for i in self.salesperson_list])
-            if va:
-                va = va/len(self.salesperson_list)
+            summary_row.pop(0)
+            va = 0
+            if total_amount:
+                va = total_amount/len(self.salesperson_list)
             text = _("Sold value per sales %s") % (get_formatted_price(va,))
             total_sellables = sum([item.sale.get_items_total_quantity()
                 for item in self.salesperson_list])
-        self.add_object_table(self.salesperson_list, self._get_columns())
+
+        self.add_object_table(self.salesperson_list, self._get_columns(),
+                              summary_row=summary_row)
+
         self.add_preformatted_text(_("P/A: Payment Amount"))
         self.add_preformatted_text(_("S/P: Sellables sold per sale"))
         if text:
             self.add_preformatted_text(text)
             self.add_preformatted_text(_("Total of sales: %d") % (
                 len(self.salesperson_list),))
-            self.add_preformatted_text(_("Total of items sold: %d" % (
-                total_sellables,)))
