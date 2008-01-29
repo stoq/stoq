@@ -27,6 +27,7 @@
 """ Individual edition template slaves implementation.  """
 
 from kiwi.argcheck import argcheck
+from kiwi.datatypes import ValidationError
 from kiwi.python import AttributeForwarder
 
 from stoqlib.database.runtime import StoqlibTransaction
@@ -35,6 +36,10 @@ from stoqlib.domain.interfaces import IIndividual
 from stoqlib.domain.person import PersonAdaptToIndividual
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.defaults import get_country_states
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import validate_cpf
+
+_ = stoqlib_gettext
 
 
 class _IndividualDocuments(BaseEditorSlave):
@@ -48,6 +53,10 @@ class _IndividualDocuments(BaseEditorSlave):
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
                                     _IndividualDocuments.proxy_widgets)
+
+    def on_cpf__validate(self, widget, value):
+        if not validate_cpf(value):
+            return ValidationError(_(u'The CPF is not valid.'))
 
 
 class _IndividualDetailsModel(AttributeForwarder):
