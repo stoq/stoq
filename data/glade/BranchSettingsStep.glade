@@ -16,6 +16,7 @@
                 <child>
                     <widget class="ProxyLabel" id="title_label">
                         <property name="label" context="yes" translatable="yes">Company Details</property>
+                        <property name="model_attribute"></property>
                         <property name="visible">True</property>
                         <property name="xalign">0.0</property>
                     </widget>
@@ -44,9 +45,9 @@
                             </widget>
                         </child>
                         <child>
-                            <widget class="GtkLabel" id="label9">
-                                <property name="label" context="yes" translatable="yes">Phone Number:</property>
-                                <property name="sizegroup">left_group</property>
+                            <widget class="ProxyLabel" id="kiwilabel1">
+                                <property name="label" context="yes" translatable="yes">CNPJ:</property>
+                                <property name="model_attribute">kiwilabel1</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -56,7 +57,8 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkLabel" id="label7">
+                            <widget class="GtkLabel" id="label9">
+                                <property name="label" context="yes" translatable="yes">Phone Number:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -101,27 +103,37 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyEntry" id="phone_number">
+                            <widget class="ProxyEntry" id="cnpj">
                                 <property name="data_type">unicode</property>
-                                <property name="model_attribute">phone_number</property>
+                                <property name="is_focus">True</property>
+                                <property name="mandatory">True</property>
+                                <property name="mask" context="yes" translatable="yes">00.000.000/0000-00</property>
+                                <property name="model_attribute">cnpj</property>
+                                <property name="text" context="yes" translatable="yes">  .   .   /    -  </property>
                                 <property name="visible">True</property>
-                                <property name="width_chars">6</property>
-                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">2</property>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">3</property>
                                 <property name="top_attach">1</property>
+                                <property name="y_options">fill</property>
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="ProxyEntry" id="phone_number">
+                                <property name="data_type">unicode</property>
+                                <property name="is_focus">True</property>
+                                <property name="model_attribute">phone_number</property>
+                                <property name="visible">True</property>
+                                <property name="width_chars">6</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
                             <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">2</property>
                                 <property name="bottom_attach">3</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">2</property>
                             </packing>
                         </child>
                         <child>
@@ -171,15 +183,6 @@
                             <packing>
                                 <property name="left_attach">2</property>
                                 <property name="right_attach">3</property>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
                                 <property name="top_attach">3</property>
                                 <property name="bottom_attach">4</property>
                             </packing>
@@ -194,8 +197,9 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkLabel" id="label10">
-                                <property name="label" context="yes" translatable="yes">Fax:</property>
+                            <widget class="ProxyLabel" id="kiwilabel2">
+                                <property name="label" context="yes" translatable="yes">State Registry:</property>
+                                <property name="model_attribute">kiwilabel2</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -207,12 +211,16 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="GtkLabel" id="label10">
+                                <property name="label" context="yes" translatable="yes">Fax:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
                             <packing>
+                                <property name="bottom_attach">3</property>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
                                 <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
                             </packing>
                         </child>
                         <child>
@@ -242,6 +250,22 @@
                             </packing>
                         </child>
                         <child>
+                            <widget class="ProxyEntry" id="state_registry">
+                                <property name="data_type">unicode</property>
+                                <property name="is_focus">True</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">state_registry</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">4</property>
+                                <property name="right_attach">5</property>
+                                <property name="top_attach">1</property>
+                                <property name="y_options">fill</property>
+                            </packing>
+                        </child>
+                        <child>
                             <widget class="ProxyEntry" id="fax_number">
                                 <property name="data_type">unicode</property>
                                 <property name="model_attribute">fax_number</property>
@@ -250,19 +274,10 @@
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">2</property>
-                                <property name="left_attach">4</property>
-                                <property name="right_attach">5</property>
-                                <property name="top_attach">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
+                                <property name="bottom_attach">3</property>
                                 <property name="left_attach">4</property>
                                 <property name="right_attach">5</property>
                                 <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
                             </packing>
                         </child>
                         <child>

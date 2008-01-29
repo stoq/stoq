@@ -48,6 +48,7 @@ import socket
 
 import gtk
 from kiwi.component import provide_utility
+from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.dialogs import info
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
@@ -60,7 +61,7 @@ from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.person import Person
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.examples import createall as examples
-from stoqlib.domain.interfaces import IBranch, IUser
+from stoqlib.domain.interfaces import IBranch, IUser, ICompany
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
@@ -69,6 +70,7 @@ from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import provide_plugin_manager
+from stoqlib.lib.validators import validate_cnpj
 
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.startup import clean_database, setup
@@ -420,7 +422,9 @@ class BranchSettingsStep(WizardEditorStep):
     tax_widgets = ('icms',
                    'iss',
                    'substitution_icms')
-    proxy_widgets = person_widgets + tax_widgets
+    company_widgets = ('cnpj',
+                       'state_registry')
+    proxy_widgets = person_widgets + tax_widgets + company_widgets
     model_type = Person
 
     def __init__(self, conn, wizard, model, previous):
@@ -459,6 +463,9 @@ class BranchSettingsStep(WizardEditorStep):
         state = address.city_location.state
         self.param.update_parameter('STATE_SUGGESTED', state)
 
+        # Update the fancy name
+        self.company_proxy.model.fancy_name = self.person_proxy.model.name
+
     #
     # WizardStep hooks
     #
@@ -486,11 +493,24 @@ class BranchSettingsStep(WizardEditorStep):
                          substitution_icms=substitution)
         self.tax_proxy = self.add_proxy(model, widgets)
 
+        widgets = BranchSettingsStep.company_widgets
+        model = ICompany(self.model, None)
+        if not model is None:
+            self.company_proxy = self.add_proxy(model, widgets)
+
     def setup_slaves(self):
         from stoqlib.gui.editors.addresseditor import AddressSlave
         address = self.model.get_main_address()
         slave = AddressSlave(self.conn, self.model, address)
         self.attach_slave("address_holder", slave)
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_cnpj__validate(self, widget, value):
+        if not validate_cnpj(value):
+            return ValidationError(_(u'The CNPJ is not valid.'))
 
 
 class ECFPluginStep(BaseWizardStep):
