@@ -110,3 +110,58 @@ def format_postal_code(postal_code):
     postal_code = raw_postal_code(postal_code)
     return "%s-%s" % (postal_code[:5],
                       postal_code[5:8])
+
+#
+# Document Validators
+#
+
+def validate_cpf(cpf):
+    cpf = ''.join(re.findall('\d', str(cpf)))
+
+    if not cpf or len(cpf) < 11:
+        return False
+
+    # With the first 9 digits, we calculate the last two digits (verifiers)
+    new = map(int, cpf)[:9]
+
+    while len(new) < 11:
+        s = sum([(len(new) + 1 - i) * v for i, v in enumerate(new)]) % 11
+
+        if s > 1:
+            verifier_digit = 11 - s
+        else:
+            verifier_digit = 0
+
+        if cpf[len(new)] != str(verifier_digit):
+            return False
+        else:
+            new.append(verifier_digit)
+
+    return True
+
+def validate_cnpj(cnpj):
+    cnpj = ''.join(re.findall('\d', str(cnpj)))
+
+    if not cnpj or len(cnpj) < 14:
+        return False
+
+    # With the first 12 digts, we calculate the last 2 digits (verifiers)
+    new = map(int, cnpj)[:12]
+
+    verification_base = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+
+    while len(new) < 14:
+        s = sum([x * y for (x, y) in zip(new, verification_base)]) % 11
+
+        if s > 1:
+            verifier_digit = 11 - s
+        else:
+            verifier_digit = 0
+
+        if cnpj[len(new)] != str(verifier_digit):
+            return False
+        else:
+            new.append(verifier_digit)
+            verification_base.insert(0, 6)
+
+    return True

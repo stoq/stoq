@@ -21,8 +21,14 @@
 ##
 """Company template editor"""
 
+from kiwi.datatypes import ValidationError
+
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.domain.interfaces import ICompany
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import validate_cnpj
+
+_ = stoqlib_gettext
 
 
 class CompanyDocumentsSlave(BaseEditorSlave):
@@ -35,6 +41,10 @@ class CompanyDocumentsSlave(BaseEditorSlave):
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
                                     CompanyDocumentsSlave.proxy_widgets)
+
+    def on_cnpj__validate(self, widget, value):
+        if not validate_cnpj(value):
+            return ValidationError(_(u'The CNPJ is not valid.'))
 
 
 class CompanyEditorTemplate(BaseEditorSlave):
