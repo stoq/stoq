@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-25 10:08-0200\n"
+"POT-Creation-Date: 2008-01-30 15:48-0200\n"
 "PO-Revision-Date: 2007-07-18 11:50-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -154,40 +154,40 @@ msgstr "Stoq - %s"
 msgid "Search:"
 msgstr "Sök:"
 
-#: ../stoq/gui/config.py:98
+#: ../stoq/gui/config.py:99
 msgid "Trust"
 msgstr "Lita"
 
-#: ../stoq/gui/config.py:99
+#: ../stoq/gui/config.py:100
 msgid "Needs Password"
 msgstr "Kräv lösenord"
 
-#: ../stoq/gui/config.py:125
+#: ../stoq/gui/config.py:126
 #, python-format
 msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
 msgstr ""
 
-#: ../stoq/gui/config.py:132
+#: ../stoq/gui/config.py:133
 #, python-format
 msgid ""
 "The specifed database `%s' does not exist.\n"
 "Do you want to create it?"
 msgstr ""
 
-#: ../stoq/gui/config.py:135
+#: ../stoq/gui/config.py:136
 msgid "Don't create"
 msgstr "Skapa inte"
 
-#: ../stoq/gui/config.py:135
+#: ../stoq/gui/config.py:136
 msgid "Create"
 msgstr "Skapa"
 
-#: ../stoq/gui/config.py:141
+#: ../stoq/gui/config.py:142
 #, python-format
 msgid "User <u>%s</u> has insufficient permissions"
 msgstr "Användaren <u>%s</u> har otillräckliga rättigheter "
 
-#: ../stoq/gui/config.py:142
+#: ../stoq/gui/config.py:143
 #, python-format
 msgid ""
 "The specified user `%s' does not have the required permissions to install "
@@ -196,22 +196,22 @@ msgid ""
 "more information on how to solve this problem."
 msgstr ""
 
-#: ../stoq/gui/config.py:169
+#: ../stoq/gui/config.py:170
 #, python-format
 msgid ""
 "The database address '%s' is invalid. Please fix the address you have set "
 "and try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:172 ../stoq/gui/config.py:173
+#: ../stoq/gui/config.py:173 ../stoq/gui/config.py:174
 msgid "Invalid database address"
 msgstr "Ogiltlig databasadress"
 
-#: ../stoq/gui/config.py:288 ../data/glade/AdminPasswordStep.glade.h:1
+#: ../stoq/gui/config.py:289 ../data/glade/AdminPasswordStep.glade.h:1
 msgid "<b>Administrator Account Creation</b>"
 msgstr "<b>Skapande av Administrationskonto</b>"
 
-#: ../stoq/gui/config.py:291
+#: ../stoq/gui/config.py:292
 #, python-format
 msgid ""
 "I'm adding a user called `%s' which will have administrator privilegies.\n"
@@ -220,53 +220,33 @@ msgid ""
 "admin application and create them."
 msgstr ""
 
-#: ../stoq/gui/config.py:351
+#: ../stoq/gui/config.py:352
 #, python-format
 msgid ""
 "This machine which has the name <b>%s</b> will be registered so it can be "
 "used to access the system."
 msgstr ""
 
-#: ../stoq/gui/config.py:372
+#: ../stoq/gui/config.py:373
 #, python-format
 msgid ""
 "There is already a database called <b>%s</b> on <b>%s</b>. You must enter "
 "the password for the user <b>%s</b> to continue the installation: "
 msgstr ""
 
-#: ../stoq/gui/config.py:379
+#: ../stoq/gui/config.py:380
 msgid "<b>Administrator Account</b>"
 msgstr ""
 
-#: ../stoq/gui/config.py:390
+#: ../stoq/gui/config.py:391
 msgid "The password supplied is not valid."
 msgstr ""
 
-#: ../stoq/gui/config.py:498
-msgid "ICMS can not be greather than 100"
+#: ../stoq/gui/config.py:513
+msgid "The CNPJ is not valid."
 msgstr ""
 
-#: ../stoq/gui/config.py:500
-msgid "ICMS can not be less than 100"
-msgstr ""
-
-#: ../stoq/gui/config.py:504
-msgid "ISS can not be greather than 100"
-msgstr ""
-
-#: ../stoq/gui/config.py:506
-msgid "ISS can not be less than 100"
-msgstr ""
-
-#: ../stoq/gui/config.py:510
-msgid "ICMS Substitution can not be greather than 100"
-msgstr ""
-
-#: ../stoq/gui/config.py:512
-msgid "ICMS Substitution can not be less than 100"
-msgstr ""
-
-#: ../stoq/gui/config.py:534
+#: ../stoq/gui/config.py:535
 msgid "Setting up Stoq"
 msgstr ""
 
@@ -1116,41 +1096,57 @@ msgstr ""
 msgid "admin"
 msgstr ""
 
-#: ../data/glade/BranchSettingsStep.glade.h:2
+#: ../data/glade/BranchSettingsStep.glade.h:1
+msgid "  .   .   /    -  "
+msgstr ""
+
+#: ../data/glade/BranchSettingsStep.glade.h:3
 #, no-c-format
 msgid "%"
 msgstr ""
 
-#: ../data/glade/BranchSettingsStep.glade.h:3
+#: ../data/glade/BranchSettingsStep.glade.h:4
+msgid "00.000.000/0000-00"
+msgstr ""
+
+#: ../data/glade/BranchSettingsStep.glade.h:5
+msgid "CNPJ:"
+msgstr ""
+
+#: ../data/glade/BranchSettingsStep.glade.h:6
 msgid "Company Details"
 msgstr ""
 
-#: ../data/glade/BranchSettingsStep.glade.h:4
+#: ../data/glade/BranchSettingsStep.glade.h:7
 msgid "Company Name:"
 msgstr "Företagsnamn:"
 
-#: ../data/glade/BranchSettingsStep.glade.h:5
+#: ../data/glade/BranchSettingsStep.glade.h:8
 msgid "Fax:"
 msgstr "Fax:"
 
-#: ../data/glade/BranchSettingsStep.glade.h:6
+#: ../data/glade/BranchSettingsStep.glade.h:9
 #, fuzzy
 msgid "ICMS:"
 msgstr "Totalt"
 
-#: ../data/glade/BranchSettingsStep.glade.h:7
+#: ../data/glade/BranchSettingsStep.glade.h:10
 msgid "ISS:"
 msgstr ""
 
-#: ../data/glade/BranchSettingsStep.glade.h:8
+#: ../data/glade/BranchSettingsStep.glade.h:11
 msgid "Main Address"
 msgstr "Huvudaddress"
 
-#: ../data/glade/BranchSettingsStep.glade.h:9
+#: ../data/glade/BranchSettingsStep.glade.h:12
 msgid "Phone Number:"
 msgstr "Telefonnummer:"
 
-#: ../data/glade/BranchSettingsStep.glade.h:10
+#: ../data/glade/BranchSettingsStep.glade.h:13
+msgid "State Registry:"
+msgstr ""
+
+#: ../data/glade/BranchSettingsStep.glade.h:14
 msgid "Substitution ICMS:"
 msgstr ""
 
