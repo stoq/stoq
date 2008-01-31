@@ -144,11 +144,12 @@ class FiscalCoupon(gobject.GObject):
 
     gsignal('open')
     gsignal('identify-customer', object)
+    gsignal('customer-identified', retval=bool)
     gsignal('add-item', object, retval=int)
     gsignal('remove-item', object)
     gsignal('add-payments', object)
     gsignal('totalize', object)
-    gsignal('close', retval=int)
+    gsignal('close', str, retval=int)
     gsignal('cancel')
 
     def __init__(self, parent):
@@ -227,6 +228,9 @@ class FiscalCoupon(gobject.GObject):
     def identify_customer(self, person):
         self.emit('identify-customer', person)
 
+    def is_customer_identified(self):
+        return self.emit('customer-identified')
+
     def open(self):
         while True:
             log.info("opening coupon")
@@ -294,12 +298,12 @@ class FiscalCoupon(gobject.GObject):
 
         return True
 
-    def close(self, sale):
+    def close(self, sale, promotional_message=''):
         # XXX: Remove this when bug #2827 is fixed.
         if not self._item_ids:
             return True
         try:
-            coupon_id = self.emit('close')
+            coupon_id = self.emit('close', promotional_message)
             return True
         except (DeviceError, DriverError), details:
             warning(_("It's not possible to close the coupon"), str(details))

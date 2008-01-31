@@ -125,6 +125,12 @@ _parameter_info = dict(
       'actually exist in the stock ? If this parameter is True we can order '
       'products.')),
 
+    ENABLE_PAULISTA_INVOICE=ParameterDetails(
+    _(u'Sales'),
+    _(u'Enable Paulista Invoice'),
+    _(u'Once this parameter is set, we will be able to join to the '
+      u'Sao Paulo state program of fiscal commitment.')),
+
     CITY_SUGGESTED=ParameterDetails(
     _(u'General'),
     _(u'City Suggested'),
@@ -318,6 +324,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('HAS_DELIVERY_MODE', bool, initial=True),
         ParameterAttr('ACCEPT_ORDER_PRODUCTS', bool, initial=False),
         ParameterAttr('ACCEPT_CHANGE_SALESPERSON', bool, initial=False),
+        ParameterAttr('ENABLE_PAULISTA_INVOICE', bool, initial=False),
         ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
         ParameterAttr('CITY_SUGGESTED', unicode, initial=u'Sao Carlos'),
         ParameterAttr('STATE_SUGGESTED', unicode, initial=u'SP'),

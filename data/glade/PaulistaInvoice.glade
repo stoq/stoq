@@ -1,0 +1,80 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="PaulistaInvoice">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkTable" id="table1">
+                <property name="border_width">6</property>
+                <property name="column_spacing">6</property>
+                <property name="n_columns">3</property>
+                <property name="n_rows">2</property>
+                <property name="row_spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="ProxyLabel" id="kiwilabel1">
+                        <property name="label" context="yes" translatable="yes">Document:</property>
+                        <property name="model_attribute">kiwilabel1</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="ProxyLabel" id="doc_label">
+                        <property name="label" context="yes" translatable="yes">CPF:</property>
+                        <property name="model_attribute">doc_label</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="top_attach">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyRadioButton" id="cpf">
+                        <property name="data_type">bool</property>
+                        <property name="is_focus">True</property>
+                        <property name="label" context="yes" translatable="yes">CPF</property>
+                        <property name="model_attribute"></property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyEntry" id="doc_entry">
+                        <property name="data_type">unicode</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">doc_entry</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyRadioButton" id="cnpj">
+                        <property name="active">False</property>
+                        <property name="data_type">bool</property>
+                        <property name="group">cpf</property>
+                        <property name="is_focus">True</property>
+                        <property name="label" context="yes" translatable="yes">CNPJ</property>
+                        <property name="model_attribute"></property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

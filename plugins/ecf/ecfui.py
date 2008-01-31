@@ -260,6 +260,7 @@ class ECFUI(object):
         for signal, callback in [
             ('open', self._on_coupon__open),
             ('identify-customer', self._on_coupon__identify_customer),
+            ('customer-identified', self._on_coupon__customer_identified),
             ('add-item', self._on_coupon__add_item),
             ('remove-item', self._on_coupon__remove_item),
             ('add-payments', self._on_coupon__add_payments),
@@ -342,6 +343,9 @@ class ECFUI(object):
     def _on_coupon__identify_customer(self, coupon, person):
         coupon.identify_customer(person)
 
+    def _on_coupon__customer_identified(self, coupon):
+        return coupon.is_customer_identified()
+
     def _on_coupon__add_item(self, coupon, item):
         self._validate_printer()
         return coupon.add_item(item)
@@ -355,8 +359,8 @@ class ECFUI(object):
     def _on_coupon__totalize(self, coupon, sale):
         coupon.totalize(sale)
 
-    def _on_coupon__close(self, coupon):
-        return coupon.close()
+    def _on_coupon__close(self, coupon, promotional_message):
+        return coupon.close(promotional_message)
 
     def _on_coupon__cancel(self, coupon):
         coupon.cancel()
