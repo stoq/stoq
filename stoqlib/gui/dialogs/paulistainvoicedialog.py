@@ -93,7 +93,6 @@ class PaulistaInvoiceDialog(BaseEditor):
 
         #XXX: Kiwi should auto connect the validate signal
         value = self.doc_entry.get_text()
-        print self.doc_entry.validate()
         if self.cpf.get_active() and not validate_cpf(value):
             self.doc_entry.set_invalid(u"The CPF is not valid.")
         elif self.cnpj.get_active() and not validate_cnpj(value):
