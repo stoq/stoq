@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-30 15:48-0200\n"
+"POT-Creation-Date: 2008-01-31 14:57-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -278,19 +278,19 @@ msgstr ""
 
 #: ../stoq/gui/inventory/inventory.py:78 ../stoq/gui/payable/payable.py:95
 #: ../stoq/gui/warehouse/warehouse.py:85
-#: ../stoq/gui/receivable/receivable.py:128 ../stoq/gui/pos/pos.py:151
+#: ../stoq/gui/receivable/receivable.py:128 ../stoq/gui/pos/pos.py:154
 #: ../stoq/gui/pos/deliveryeditor.py:104
 msgid "Description"
 msgstr ""
 
 #: ../stoq/gui/inventory/inventory.py:81 ../stoq/gui/till/till.py:121
-#: ../stoq/gui/warehouse/warehouse.py:88 ../stoq/gui/pos/pos.py:155
+#: ../stoq/gui/warehouse/warehouse.py:88 ../stoq/gui/pos/pos.py:158
 #: ../stoq/gui/pos/deliveryeditor.py:106
 msgid "Quantity"
 msgstr ""
 
 #: ../stoq/gui/inventory/inventory.py:83 ../stoq/gui/warehouse/warehouse.py:90
-#: ../stoq/gui/pos/pos.py:158
+#: ../stoq/gui/pos/pos.py:161
 msgid "Unit"
 msgstr ""
 
@@ -392,7 +392,7 @@ msgid "Received"
 msgstr ""
 
 #: ../stoq/gui/purchase/purchase.py:98 ../stoq/gui/sales/sales.py:105
-#: ../stoq/gui/till/till.py:124 ../stoq/gui/pos/pos.py:161
+#: ../stoq/gui/till/till.py:124 ../stoq/gui/pos/pos.py:164
 msgid "Total"
 msgstr ""
 
@@ -527,7 +527,7 @@ msgstr ""
 msgid "Confirm Sale"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:180 ../stoq/gui/pos/pos.py:198
+#: ../stoq/gui/till/till.py:180 ../stoq/gui/pos/pos.py:201
 #, python-format
 msgid "Total: %s"
 msgstr ""
@@ -541,18 +541,18 @@ msgstr ""
 msgid "Till Opened on %s"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:274 ../stoq/gui/pos/pos.py:633
+#: ../stoq/gui/till/till.py:274 ../stoq/gui/pos/pos.py:668
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
 "Close the till?"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:635
+#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:670
 msgid "Not now"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:635
+#: ../stoq/gui/till/till.py:276 ../stoq/gui/pos/pos.py:670
 msgid "Close Till"
 msgstr ""
 
@@ -585,7 +585,7 @@ msgstr ""
 msgid "Accounts Receivable application."
 msgstr ""
 
-#: ../stoq/gui/pos/__init__.py:29 ../stoq/gui/pos/pos.py:97
+#: ../stoq/gui/pos/__init__.py:29 ../stoq/gui/pos/pos.py:100
 msgid "Point of Sales"
 msgstr ""
 
@@ -593,55 +593,59 @@ msgstr ""
 msgid "Point Of Sale application."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:147
+#: ../stoq/gui/pos/pos.py:150
 msgid "Reference"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:153
+#: ../stoq/gui/pos/pos.py:156
 msgid "Price"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:191
+#: ../stoq/gui/pos/pos.py:194
 msgid "Close"
 msgstr ""
 
 #. It's not a common operation to add more than one item at
 #. a time, it's also problematic since you'd have to show
 #. one dialog per service item. See #3092
-#: ../stoq/gui/pos/pos.py:226
+#: ../stoq/gui/pos/pos.py:229
 msgid ""
 "Only one service was added since its not possible toadd more than one "
 "service to an order at a time."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:365
+#: ../stoq/gui/pos/pos.py:368
 #, python-format
 msgid "You cannot sell more items of product %s, it's out of stock."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:422
+#: ../stoq/gui/pos/pos.py:425
 msgid "The current order will be canceled, Confirm?"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:423
+#: ../stoq/gui/pos/pos.py:426
 msgid "Go Back"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:423 ../data/glade/pos.glade.h:9
+#: ../stoq/gui/pos/pos.py:426 ../data/glade/pos.glade.h:9
 msgid "Cancel Order"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:575
+#: ../stoq/gui/pos/pos.py:579
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:577
+#: ../stoq/gui/pos/pos.py:581
 msgid "Try Again"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:577
+#: ../stoq/gui/pos/pos.py:581
 msgid "Cancel"
+msgstr ""
+
+#: ../stoq/gui/pos/pos.py:632
+msgid "Customer CPF/CNPJ: "
 msgstr ""
 
 #: ../stoq/gui/pos/neworder.py:109
