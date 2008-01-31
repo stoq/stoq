@@ -3,12 +3,12 @@ Section: python
 Priority: optional
 Maintainer: Fabio Morbec <fabio@async.com.br>
 Build-Depends: debhelper (>= 4.2.28)
-Build-Depends-Indep: cdbs, python-dev (>= 2.4), python-zopeinterface (>= 3.2.1), python-kiwi (>= 1.9.19), gazpacho (>= 0.6.6), python-psycopg2 (>= 2.0.5), stoqdrivers (>= 0.9.1-2), python-imaging (>= 1.1.5), python-reportlab (>= 1.20)
+Build-Depends-Indep: cdbs, python-dev (>= 2.4), python-zopeinterface (>= 3.2.1), python-kiwi (>= 1.9.20), gazpacho (>= 0.6.6), python-psycopg2 (>= 2.0.5), stoqdrivers (>= 0.9.2-1), python-imaging (>= 1.1.5), python-reportlab (>= 1.20)
 Standards-Version: 3.6.2
 
 Package: stoqlib
 Architecture: all
-Depends: ${shlibs:Depends}, python-gtk2 (>= 2.8), python-zopeinterface (>= 3.2.1), python-kiwi (>= 1.9.19), gazpacho (>= 0.6.6), python-psycopg2 (>= 2.0.5), stoqdrivers (>= 0.9.1-2), python-imaging (>= 1.1.5), python-reportlab (>= 1.20)
+Depends: ${shlibs:Depends}, python-gtk2 (>= 2.8), python-zopeinterface (>= 3.2.1), python-kiwi (>= 1.9.20), gazpacho (>= 0.6.6), python-psycopg2 (>= 2.0.5), stoqdrivers (>= 0.9.2-1), python-imaging (>= 1.1.5), python-reportlab (>= 1.20)
 Description: A powerful retail system library
  Stoqlib offers many special tools for retail system applications
  such reports infrastructure, basic dialogs and searchbars and
