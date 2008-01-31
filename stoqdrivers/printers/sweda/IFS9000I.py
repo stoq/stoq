@@ -454,6 +454,9 @@ class IFS9000I(SerialBase):
         # compatibility, they are not supported by the printer.
         self._customer_document = document
 
+    def coupon_is_customer_identified(self):
+        return len(self._customer_document) > 0
+
     def coupon_open(self):
         if self._customer_document:
             customer = self._format_string(self._customer_document,

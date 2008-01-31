@@ -100,6 +100,9 @@ class FiscalPrinter(BasePrinter):
             self._format_text(customer_address),
             self._format_text(customer_id))
 
+    def coupon_is_customer_identified(self):
+        return self._driver.coupon_is_customer_identified()
+
     def open(self):
         log.info('coupon_open()')
 

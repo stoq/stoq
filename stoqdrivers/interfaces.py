@@ -119,6 +119,11 @@ class ICouponPrinter(IDevice):
         @type document:   str
         """
 
+    def coupon_is_customer_identified():
+        """ Returns True, if the customer have already been identified,
+        False otherwise.
+        """
+
     def coupon_open():
         """ This needs to be called before anything else (except
         identify_customer())

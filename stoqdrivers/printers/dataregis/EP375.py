@@ -465,6 +465,9 @@ class EP375(SerialBase, BaseChequePrinter):
         # identification
         return
 
+    def coupon_is_customer_identified(self):
+        return False
+
     def coupon_open(self):
         #
         # Dataregis 375-EP doesn't need a function to open a coupon - the

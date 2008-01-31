@@ -123,6 +123,9 @@ class Simple:
         self._customer_document = document
         self._customer_address = address
 
+    def coupon_is_customer_identified(self):
+        return len(self._customer_document) > 0
+
     def coupon_open(self):
         self._check_coupon_is_closed()
         self.is_coupon_opened = True

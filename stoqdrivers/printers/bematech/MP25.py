@@ -423,6 +423,9 @@ class MP25(SerialBase):
         self._customer_document = document
         self._customer_address = address
 
+    def coupon_is_customer_identified(self):
+        return len(self._customer_document) > 0
+
     def coupon_open(self):
         """ This needs to be called before anything else """
         self._send_command(CMD_COUPON_OPEN,
