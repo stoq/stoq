@@ -280,10 +280,10 @@ class Coupon(object):
 
     def identify_customer(self, person):
         max_len = self._get_capability("customer_id").max_len
-        if IIndividual(person):
+        if IIndividual(person, None):
             individual = IIndividual(person)
             document = individual.cpf[:max_len]
-        elif ICompany(person):
+        elif ICompany(person, None):
             company = ICompany(person)
             document = company.cnpj[:max_len]
         else:
@@ -295,6 +295,9 @@ class Coupon(object):
         max_len = self._get_capability("customer_address").max_len
         address = person.get_address_string()[:max_len]
         self._driver.identify_customer(name, address, document)
+
+    def is_customer_identified(self):
+        return self._driver.coupon_is_customer_identified()
 
     def open(self):
         return self._driver.open()
@@ -342,5 +345,5 @@ class Coupon(object):
 
         return True
 
-    def close(self):
-        return self._driver.close()
+    def close(self, promotional_message=''):
+        return self._driver.close(promotional_message)
