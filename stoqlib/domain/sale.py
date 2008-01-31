@@ -118,7 +118,7 @@ class SaleItem(Domain):
             storable.decrease_stock(self.quantity, branch)
 
     def cancel(self, branch):
-        storable = IStorable(self.sellable)
+        storable = IStorable(self.sellable, None)
         if storable:
             storable.increase_stock(self.quantity, branch)
 
