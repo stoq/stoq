@@ -55,6 +55,10 @@ class _IndividualDocuments(BaseEditorSlave):
                                     _IndividualDocuments.proxy_widgets)
 
     def on_cpf__validate(self, widget, value):
+        # This will allow the user to use an empty value to this field
+        if self.cpf.is_empty():
+            return
+
         if not validate_cpf(value):
             return ValidationError(_(u'The CPF is not valid.'))
 

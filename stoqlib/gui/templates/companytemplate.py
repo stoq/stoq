@@ -43,6 +43,10 @@ class CompanyDocumentsSlave(BaseEditorSlave):
                                     CompanyDocumentsSlave.proxy_widgets)
 
     def on_cnpj__validate(self, widget, value):
+        # This will allow the user to use an empty value to this field
+        if self.cnpj.is_empty():
+            return
+
         if not validate_cnpj(value):
             return ValidationError(_(u'The CNPJ is not valid.'))
 
