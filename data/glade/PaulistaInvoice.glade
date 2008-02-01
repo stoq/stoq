@@ -46,10 +46,10 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyEntry" id="doc_entry">
+                    <widget class="ProxyEntry" id="document">
                         <property name="data_type">unicode</property>
-                        <property name="mandatory">True</property>
-                        <property name="model_attribute">doc_entry</property>
+                        <property name="is_focus">True</property>
+                        <property name="model_attribute">document</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>

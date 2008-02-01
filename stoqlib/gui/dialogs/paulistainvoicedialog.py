@@ -23,6 +23,7 @@
 ##
 ##
 
+from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
 from stoqlib.domain.fiscal import PaulistaInvoice
@@ -39,6 +40,7 @@ class PaulistaInvoiceDialog(BaseEditor):
     size = (260, 160)
     model_type = Settable
     gladefile = "PaulistaInvoice"
+    proxy_widgets = ("document",)
     cpf_mask = u"000.000.000-00"
     cnpj_mask = u"00.000.000/0000-00"
 
@@ -57,19 +59,22 @@ class PaulistaInvoiceDialog(BaseEditor):
 
     def _set_cpf(self):
         self.doc_label.set_text(_(u"CPF:"))
-        self.doc_entry.set_mask(self.cpf_mask)
+        self.document.set_mask(self.cpf_mask)
         self.model.document_type = PaulistaInvoice.TYPE_CPF
-        self.doc_entry.grab_focus()
+        self.document.grab_focus()
 
     def _set_cnpj(self):
         self.doc_label.set_text(_(u"CNPJ:"))
-        self.doc_entry.set_mask(self.cnpj_mask)
+        self.document.set_mask(self.cnpj_mask)
         self.model.document_type = PaulistaInvoice.TYPE_CNPJ
-        self.doc_entry.grab_focus()
+        self.document.grab_focus()
 
     #
     # BaseEditor
     #
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def on_confirm(self):
         return PaulistaInvoice(sale=self.model.sale,
@@ -87,18 +92,8 @@ class PaulistaInvoiceDialog(BaseEditor):
         else:
             self._set_cnpj()
 
-    def on_doc_entry__content_changed(self, widget):
-        if self.doc_entry.is_empty():
-            return
-
-        #XXX: Kiwi should auto connect the validate signal
-        value = self.doc_entry.get_text()
+    def on_document__validate(self, widget, value):
         if self.cpf.get_active() and not validate_cpf(value):
-            self.doc_entry.set_invalid(u"The CPF is not valid.")
+            return ValidationError(_(u"The CPF is not valid."))
         elif self.cnpj.get_active() and not validate_cnpj(value):
-            self.doc_entry.set_invalid(u"The CNPJ is not valid.")
-        else:
-            self.doc_entry.set_valid()
-            return
-
-        self.model.document = value
+            return ValidationError(_(u"The CNPJ is not valid."))
