@@ -3,15 +3,15 @@
 Summary: A powerful retail system
 Name: stoq
 Version: 0.9.4
-Release: 1
+Release: 4
 License: GPL
 Group: System Environment/Libraries
 URL: http://www.stoq.com.br/
 Source: http://download.stoq.com.br/sources/0.9.1/stoq-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: python-kiwi >= 1.9.20, stoqlib >= 0.9.4-3
+Requires: python-kiwi >= 1.9.20, stoqlib >= 0.9.4-4
 Requires: python-abi = %(%{__python} -c "import sys; print sys.version[:3]")
-BuildRequires: python-kiwi >= 1.9.20, stoqlib >= 0.9.4-3
+BuildRequires: python-kiwi >= 1.9.20, stoqlib >= 0.9.4-4
 BuildArch: noarch
 
 %description
@@ -47,6 +47,9 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{python_sitelib}/stoq
 
 %changelog
+* Wed Feb 11 2008 Fabio Morbec <fabio@async.com.br> 0.9.4-4
+- Fix
+
 * Wed Jan 31 2008 Fabio Morbec <fabio@async.com.br> 0.9.4-3
 - Fix
 
