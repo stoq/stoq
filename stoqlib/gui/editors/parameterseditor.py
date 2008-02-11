@@ -23,6 +23,7 @@
 ##
 """ System parameters editor"""
 
+from decimal import Decimal
 import gtk
 from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.widgets.combo import ProxyComboEntry
@@ -123,6 +124,8 @@ class SystemParameterEditor(BaseEditor):
         elif issubclass(field_type, (int, float)):
             self._setup_entry_slave()
         elif issubclass(field_type, unicode):
+            self._setup_entry_slave()
+        elif issubclass(field_type, Decimal):
             self._setup_entry_slave()
         else:
             raise TypeError("ParameterData for `%s' has an invalid "
