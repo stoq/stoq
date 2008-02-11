@@ -1,3 +1,9 @@
+stoqlib (0.9.4-4) feisty; urgency=low
+
+  * Fix
+
+ -- Fabio Morbec <fabio@async.com.br>  Thu, 11 Feb 2008 16:32:35 -0300
+
 stoqlib (0.9.4-3) feisty; urgency=low
 
   * Fix
