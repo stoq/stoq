@@ -54,8 +54,9 @@ class PaulistaInvoiceDialog(BaseEditor):
                         document_type=PaulistaInvoice.TYPE_CPF)
 
     def _setup_widgets(self):
+        self.handler_block(self.document, 'validate')
         self._set_cpf()
-        self.validate_confirm()
+        self.handler_unblock(self.document, 'validate')
 
     def _set_cpf(self):
         self.doc_label.set_text(_(u"CPF:"))
@@ -77,6 +78,9 @@ class PaulistaInvoiceDialog(BaseEditor):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def on_confirm(self):
+        if self.document.is_empty():
+            return None
+
         return PaulistaInvoice(sale=self.model.sale,
                                document_type=self.model.document_type,
                                document=self.model.document,
@@ -93,6 +97,9 @@ class PaulistaInvoiceDialog(BaseEditor):
             self._set_cnpj()
 
     def on_document__validate(self, widget, value):
+        # this will allow the user to use an empty value to this field
+        if self.document.is_empty():
+            return
         if self.cpf.get_active() and not validate_cpf(value):
             return ValidationError(_(u"The CPF is not valid."))
         elif self.cnpj.get_active() and not validate_cnpj(value):
