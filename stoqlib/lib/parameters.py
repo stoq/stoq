@@ -24,6 +24,8 @@
 ##
 """ Parameters and system data for applications"""
 
+from decimal import Decimal
+
 from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
 from kiwi.log import Logger
@@ -340,9 +342,9 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('MAX_SALE_ORDER_VALIDITY', int, initial=30),
         ParameterAttr('MAX_SALE_DISCOUNT', int, initial=5),
         ParameterAttr('USE_SCALE_PRICE', bool, initial=False),
-        ParameterAttr('ICMS_TAX', int, initial=18),
-        ParameterAttr('ISS_TAX', int, initial=18),
-        ParameterAttr('SUBSTITUTION_TAX', int, initial=18),
+        ParameterAttr('ICMS_TAX', Decimal, initial=18),
+        ParameterAttr('ISS_TAX', Decimal, initial=18),
+        ParameterAttr('SUBSTITUTION_TAX', Decimal, initial=18),
         ParameterAttr('POS_SEPARATE_CASHIER', bool, initial=False),
         ParameterAttr('DEFAULT_AREA_CODE', int, initial=16),
         ParameterAttr('SALE_PAY_COMMISSION_WHEN_CONFIRMED', bool,

@@ -279,15 +279,15 @@ class TestParameter(DomainTest):
 
     def testICMSTax(self):
         param = self.sparam.ICMS_TAX
-        assert isinstance(param, int)
+        assert isinstance(param, Decimal)
 
     def testISSTax(self):
         param = self.sparam.ISS_TAX
-        assert isinstance(param, int)
+        assert isinstance(param, Decimal)
 
     def testSubstitutionTax(self):
         param = self.sparam.SUBSTITUTION_TAX
-        assert isinstance(param, int)
+        assert isinstance(param, Decimal)
 
     def testDefaultAreaCode(self):
         param = self.sparam.DEFAULT_AREA_CODE
