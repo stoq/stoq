@@ -2,6 +2,8 @@ stoq (0.9.4-4) gutsy; urgency=low
 
   * Fixes and bugs.
 
+ -- Fabio Morbec <fabio@async.com.br>  Thu, 11 Feb 2008 16:48:13 -0200
+
 stoq (0.9.4-3) gutsy; urgency=low
 
   * Fix
