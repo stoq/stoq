@@ -508,6 +508,26 @@ class BranchSettingsStep(WizardEditorStep):
     # Kiwi Callbacks
     #
 
+    def on_icms__validate(self, entry, value):
+        if value > 100:
+            return ValidationError(_("ICMS can not be greater than 100"))
+        if value < 0:
+            return ValidationError(_("ICMS can not be less than 0"))
+
+    def on_iss__validate(self, entry, value):
+        if value > 100:
+            return ValidationError(_("ISS can not be greater than 100"))
+        if value < 0:
+            return ValidationError(_("ISS can not be less than 0"))
+
+    def on_substitution_icms__validate(self, entry, value):
+        if value > 100:
+            return ValidationError(_("ICMS Substitution can not be greater "
+                                     "than 100"))
+        if value < 0:
+            return ValidationError(_("ICMS Substitution can not be "
+                                     "less than 0"))
+
     def on_cnpj__validate(self, widget, value):
         if not validate_cnpj(value):
             return ValidationError(_(u'The CNPJ is not valid.'))

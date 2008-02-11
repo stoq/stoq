@@ -144,6 +144,7 @@
                                     <widget class="ProxyEntry" id="icms">
                                         <property name="data_type">Decimal</property>
                                         <property name="mandatory">True</property>
+                                        <property name="max_length">6</property>
                                         <property name="model_attribute">icms</property>
                                         <property name="visible">True</property>
                                         <property name="width_chars">3</property>
@@ -289,6 +290,7 @@
                                         <property name="data_type">Decimal</property>
                                         <property name="mandatory">True</property>
                                         <property name="model_attribute">substitution_icms</property>
+                                        <property name="max_length">6</property>
                                         <property name="visible">True</property>
                                         <property name="width_chars">3</property>
                                         <property name="xalign">1.0</property>
@@ -323,6 +325,7 @@
                                         <property name="is_focus">True</property>
                                         <property name="mandatory">True</property>
                                         <property name="model_attribute">iss</property>
+                                        <property name="max_length">6</property>
                                         <property name="visible">True</property>
                                         <property name="width_chars">3</property>
                                         <property name="xalign">1.0</property>
