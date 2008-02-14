@@ -290,6 +290,32 @@ class Payment(Domain):
             return self.open_date.date().strftime('%x')
         return ""
 
+    def get_due_date_info(self):
+        """Returns the due date change information
+        @returns: a PaymentDueDateInfo instance or None if the due date
+        was not changed.
+        """
+        conn = self.get_connection()
+        return  PaymentDueDateInfo.selectOneBy(payment=self,
+                                               connection=conn)
+
+
+class PaymentDueDateInfo(Domain):
+    """ A class to hold information about due date change of a payment.
+
+    @param change_date: the date that a new a due date was set
+    @param last_due_date: the due date that was set before it changed
+    @param due_date_change_reason: the reason of the due date change
+    @param payment: the same
+    @param responsible: the user responsible for the due date change
+    """
+    change_date = DateTimeCol(default=datetime.datetime.now)
+    last_due_date = DateTimeCol(default=None)
+    due_date_change_reason = UnicodeCol(default=None)
+    payment = ForeignKey('Payment')
+    responsible = ForeignKey('PersonAdaptToUser')
+
+
 #
 # Payment adapters
 #

@@ -447,6 +447,21 @@
                             </packing>
                         </child>
                         <child>
+                            <widget class="GtkVBox" id="vbox3">
+                                <property name="border_width">6</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="ObjectList" id="payments_info_list">
+                                        <property name="visible">True</property>
+                                    </widget>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="position">2</property>
+                                <property name="tab_label" context="yes" translatable="yes">Changes</property>
+                            </packing>
+                        </child>
+                        <child>
                             <widget class="GtkVBox" id="vbox2">
                                 <property name="border_width">6</property>
                                 <property name="spacing">6</property>
@@ -470,7 +485,7 @@
                                 </child>
                             </widget>
                             <packing>
-                                <property name="position">2</property>
+                                <property name="position">3</property>
                                 <property name="tab_label" context="yes" translatable="yes">Notes</property>
                             </packing>
                         </child>

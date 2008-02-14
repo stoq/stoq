@@ -59,6 +59,9 @@ class InPaymentView(Viewable):
                    Person.q.id == PersonAdaptToClient.q._originalID),
         ]
 
+    def can_change_due_date(self):
+        return not self.payment.is_paid()
+
     def get_status_str(self):
         return Payment.statuses[self.status]
 

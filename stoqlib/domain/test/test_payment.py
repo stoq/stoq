@@ -29,7 +29,7 @@ from decimal import Decimal
 from kiwi.datatypes import currency
 
 from stoqlib.domain.payment.methods import CheckPM
-from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.payment import Payment, PaymentDueDateInfo
 
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -176,3 +176,24 @@ class TestPayment(DomainTest):
         self.assertEqual(payment.get_days_late(), 4)
         payment.pay()
         self.assertEqual(payment.get_days_late(), 0)
+
+    def testGetPaymentDueDateInfo(self):
+        method = CheckPM.selectOne(connection=self.trans)
+        payment = Payment(value=currency(100),
+                          due_date=datetime.datetime.now(),
+                          open_date=None,
+                          method=method,
+                          group=None,
+                          till=None,
+                          destination=None,
+                          connection=self.trans)
+        info = payment.get_due_date_info()
+        self.failIf(info is not None)
+
+        due_date_info = PaymentDueDateInfo(last_due_date=payment.due_date,
+                                           payment=payment,
+                                           responsible=self.create_user(),
+                                           connection=self.trans)
+        info = payment.get_due_date_info()
+        self.failIf(info is None)
+        self.assertEqual(info, due_date_info)

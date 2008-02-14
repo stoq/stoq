@@ -26,10 +26,11 @@ from decimal import Decimal
 
 from stoqdrivers.enum import PaymentMethodType
 
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
-from stoqlib.domain.interfaces import IPaymentGroup
+from stoqlib.domain.interfaces import IPaymentGroup, IStorable
 from stoqlib.domain.payment.methods import APaymentMethod
-from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.payment import Payment, PaymentDueDateInfo
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.parameters import sysparam
@@ -168,3 +169,42 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(value, Decimal(0))
         self.assertEqual(commissions.count(), 4)
         self.failIf(commissions[-1].value >= 0)
+
+    def testGetDuePaymentsInfo(self):
+        sale = self.create_sale()
+        sellable = self.create_sellable()
+        item = sale.add_sellable(sellable, quantity=2, price=300)
+        product = sellable.get_adapted()
+        product.addFacet(IStorable, connection=self.trans)
+        storable = IStorable(sellable)
+        storable.increase_stock(100, get_current_branch(self.trans))
+        sale.order()
+        group = sale.addFacet(IPaymentGroup, connection=self.trans)
+        method = APaymentMethod.get_by_enum(self.trans,
+                                            PaymentMethodType.CHECK)
+        inpayment1 = method.create_inpayment(group, Decimal(300))
+        inpayment2 = method.create_inpayment(group, Decimal(300))
+        sale.confirm()
+
+        self.assertEqual(group.get_due_payments_info().count(), 0)
+        payment = inpayment1.get_adapted()
+        user = self.create_user()
+        due_date_info1 = PaymentDueDateInfo(last_due_date=payment.due_date,
+                                            payment=payment,
+                                            responsible=user,
+                                            connection=self.trans)
+
+        due_payments_info = group.get_due_payments_info()
+        self.assertEqual(due_payments_info.count(), 1)
+        self.assertEqual(due_payments_info[0], due_date_info1)
+
+        payment = inpayment2.get_adapted()
+        due_date_info2 = PaymentDueDateInfo(last_due_date=payment.due_date,
+                                            payment=payment,
+                                            responsible=user,
+                                            connection=self.trans)
+
+        due_payments_info = group.get_due_payments_info()
+        self.assertEqual(due_payments_info.count(), 2)
+        self.assertEqual(due_payments_info[0], due_date_info1)
+        self.assertEqual(due_payments_info[1], due_date_info2)

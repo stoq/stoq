@@ -47,7 +47,7 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import (IContainer, IPaymentGroup,
                                        IInPayment)
-from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.payment import Payment, PaymentDueDateInfo
 from stoqlib.domain.till import Till
 from stoqlib.lib.defaults import get_method_names
 from stoqlib.lib.parameters import sysparam
@@ -243,6 +243,15 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         payments = Payment.selectBy(connection=conn, **query)
         for payment in payments:
             payment.method.delete_payment(method_iface, payment)
+
+    def get_due_payments_info(self):
+        """Returns all the PaymentDueDateInfo instances related to the
+        payments of this group.
+        """
+        query = AND(Payment.q.groupID == self.id,
+                    PaymentDueDateInfo.q.paymentID == Payment.q.id)
+        conn = self.get_connection()
+        return PaymentDueDateInfo.select(query, connection=conn)
 
     #
     # Accessors

@@ -28,6 +28,7 @@
 
 import datetime
 
+import pango
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
@@ -76,6 +77,7 @@ class SaleDetailsDialog(BaseEditor):
     def _setup_columns(self):
         self.items_list.set_columns(self._get_items_columns())
         self.payments_list.set_columns(self._get_payments_columns())
+        self.payments_info_list.set_columns(self._get_payments_info_columns())
 
     def _setup_summary_labels(self):
         summary_label = SummaryLabel(klist=self.payments_list,
@@ -101,6 +103,8 @@ class SaleDetailsDialog(BaseEditor):
         group = IPaymentGroup(self.sale_order, None)
         if group:
             self.payments_list.add_list(group.get_items())
+            self.payments_info_list.add_list(group.get_due_payments_info())
+
         self._setup_summary_labels()
 
     def _get_payments_columns(self):
@@ -135,6 +139,18 @@ class SaleDetailsDialog(BaseEditor):
                        width=100, justify=gtk.JUSTIFY_RIGHT),
                 Column('price', _("Price"), data_type=currency, width=100),
                 Column('total', _("Total"), data_type=currency, width=100)]
+
+    def _get_payments_info_columns(self):
+        return [Column('payment.description', _(u"Payment"),
+                        data_type=str, expand=True, sorted=True,
+                        ellipsize=pango.ELLIPSIZE_END),
+                Column('last_due_date', _(u"Last Due Date"),
+                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                Column('payment.due_date', _(u"Current Due Date"),
+                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                Column('due_date_change_reason', _(u"Reason"),
+                        data_type=str, expand=True,
+                        ellipsize=pango.ELLIPSIZE_END)]
 
     #
     # BaseEditor hooks
