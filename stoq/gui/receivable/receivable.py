@@ -47,6 +47,7 @@ from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.paymentduedatedialog import PaymentDueDateChangeDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 
@@ -97,6 +98,7 @@ class ReceivableApp(SearchableAppWindow):
         selected = self.results.get_selected_rows()
         self.receive_button.set_sensitive(self._can_receive(selected))
         self.details_button.set_sensitive(self._same_sale(selected))
+        self.due_date_change_button.set_sensitive(self._can_change_due_date(selected))
         self.Receipt.set_sensitive(self._can_emit_receipt(selected))
 
     def _has_rows(self, result_list, has_rows):
@@ -171,6 +173,24 @@ class ReceivableApp(SearchableAppWindow):
         trans.close()
         self._update_widgets()
 
+    def _change_due_date(self, receivable_view):
+        """ Receives a receivable_view and change the payment due date
+        related to the view.
+        @param receivable_view: a InPaymentView instance
+        """
+        assert receivable_view.can_change_due_date()
+        trans = new_transaction()
+        payment = trans.get(receivable_view.payment)
+        sale = trans.get(receivable_view.sale)
+        retval = run_dialog(PaymentDueDateChangeDialog, self,
+                            trans, payment, sale)
+
+        if finish_transaction(trans, retval):
+            receivable_view.sync()
+            self.results.update(receivable_view)
+
+        trans.close()
+
     def _can_emit_receipt(self, receivable_views):
         """
         Determines if we can emit the receipt for a list of
@@ -206,6 +226,18 @@ class ReceivableApp(SearchableAppWindow):
                    view.status == Payment.STATUS_PENDING
                    for view in receivable_views)
 
+    def _can_change_due_date(self, receivable_views):
+        """
+        Determines if a list of receivable_views can have it's due date
+        changed. To do so they must meet the following conditions:
+          - The list  must have only one element
+          - The payment was not paid
+        """
+        if len(receivable_views) != 1:
+            return False
+
+        return receivable_views[0].can_change_due_date()
+
     def _same_sale(self, receivable_views):
         """
         Determines if a list of receivable_views are in the same sale
@@ -232,6 +264,10 @@ class ReceivableApp(SearchableAppWindow):
     def on_details_button__clicked(self, button):
         selected = self.results.get_selected_rows()[0]
         self._show_details(selected)
+
+    def on_due_date_change_button__clicked(self, button):
+        receivable_view = self.results.get_selected_rows()[0]
+        self._change_due_date(receivable_view)
 
     def on_receive_button__clicked(self, button):
         self._receive(self.results.get_selected_rows())
