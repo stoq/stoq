@@ -1,0 +1,151 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="PaymentDueDateChangeDialog">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkVBox" id="vbox1">
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkTable" id="table1">
+                        <property name="border_width">6</property>
+                        <property name="column_spacing">6</property>
+                        <property name="n_columns">2</property>
+                        <property name="n_rows">2</property>
+                        <property name="row_spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel1">
+                                <property name="label" context="yes" translatable="yes">Order Number:</property>
+                                <property name="model_attribute">kiwilabel1</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="x_options">fill</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="client_supplier_lbl">
+                                <property name="label" context="yes" translatable="yes">Client:</property>
+                                <property name="model_attribute">client_supplier_lbl</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="top_attach">1</property>
+                                <property name="x_options">fill</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="order_number_lbl">
+                                <property name="data_type">int</property>
+                                <property name="model_attribute">order_number_lbl</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="name_lbl">
+                                <property name="model_attribute">name_lbl</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHBox" id="hbox1">
+                        <property name="border_width">6</property>
+                        <property name="spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="ProxyLabel" id="due_date_lbl">
+                                <property name="data_type">unicode</property>
+                                <property name="model_attribute">due_date_lbl</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyDateEntry" id="due_date">
+                                <property name="data_type">date</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">due_date</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHBox" id="hbox2">
+                        <property name="border_width">6</property>
+                        <property name="spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel5">
+                                <property name="label" context="yes" translatable="yes">Reason:</property>
+                                <property name="model_attribute">kiwilabel5</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                                <property name="yalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                                <property name="hscrollbar_policy">automatic</property>
+                                <property name="shadow_type">etched-in</property>
+                                <property name="visible">True</property>
+                                <property name="vscrollbar_policy">automatic</property>
+                                <child>
+                                    <widget class="ProxyTextView" id="due_date_change_reason">
+                                        <property name="data_type">unicode</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="model_attribute">due_date_change_reason</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="position">2</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>
