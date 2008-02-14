@@ -85,18 +85,18 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="Receipt">
-                        <property name="name">Receipt</property>
-                        <property name="label" translatable="yes">R_eceipt</property>
-                        <property name="accelerator">&lt;Control&gt;r</property>
-                    </widget>
-                </child>
-                <child>
                     <widget class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
                         <property name="label" translatable="yes">Quit</property>
                         <property name="tooltip" translatable="yes">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="Receipt">
+                        <property name="name">Receipt</property>
+                        <property name="label" translatable="yes">R_eceipt</property>
+                        <property name="accelerator">&lt;Control&gt;r</property>
                     </widget>
                 </child>
                 <child>
@@ -241,7 +241,7 @@
                                                                 <child>
                                                                     <widget class="GtkLabel" id="label5">
                                                                         <property name="label" context="yes" translatable="yes">_Details</property>
-                                                                        <property name="use-underline">True</property>
+                                                                        <property name="use_underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
@@ -253,6 +253,42 @@
                                                     </widget>
                                                 </child>
                                             </widget>
+                                        </child>
+                                        <child>
+                                            <widget class="GtkButton" id="due_date_change_button">
+                                                <property name="is_focus">True</property>
+                                                <property name="sensitive">False</property>
+                                                <property name="visible">True</property>
+                                                <child>
+                                                     <widget class="GtkAlignment" id="alignment2">
+                                                        <property name="visible">True</property>
+                                                        <child>
+                                                            <widget class="GtkVBox" id="vbox4">
+                                                                <property name="visible">True</property>
+                                                                <child>
+                                                                    <widget class="GtkImage" id="image1">
+                                                                        <property name="file">view_refresh24px.png</property>
+                                                                        <property name="visible">True</property>
+                                                                    </widget>
+                                                                </child>
+                                                                <child>
+                                                                    <widget class="GtkLabel" id="label2">
+                                                                        <property name="label" context="yes" translatable="yes">_Change Due Date</property>
+                                                                        <property name="use-underline">True</property>
+                                                                        <property name="visible">True</property>
+                                                                    </widget>
+                                                                    <packing>
+                                                                        <property name="position">1</property>
+                                                                    </packing>
+                                                                </child>
+                                                            </widget>
+                                                        </child>
+                                                     </widget>
+                                                </child>
+                                            </widget>
+                                            <packing>
+                                                <property name="position">1</property>
+                                            </packing>
                                         </child>
                                         <child>
                                             <widget class="GtkButton" id="receive_button">
@@ -274,7 +310,7 @@
                                                                 <child>
                                                                     <widget class="GtkLabel" id="label2">
                                                                         <property name="label" context="yes" translatable="yes">R_eceive payment</property>
-                                                                        <property name="use-underline">True</property>
+                                                                        <property name="use_underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
@@ -287,7 +323,7 @@
                                                 </child>
                                             </widget>
                                             <packing>
-                                                <property name="position">1</property>
+                                                <property name="position">2</property>
                                             </packing>
                                         </child>
                                         <child>
@@ -299,7 +335,7 @@
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
-                                                <property name="position">2</property>
+                                                <property name="position">3</property>
                                             </packing>
                                         </child>
                                     </widget>
