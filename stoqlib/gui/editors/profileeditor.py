@@ -54,7 +54,7 @@ class UserProfileEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        return UserProfile(name='', connection=conn)
+        return UserProfile.create_profile_template(conn, u'', False)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
@@ -85,12 +85,9 @@ class UserProfileEditor(BaseEditor):
 
             self.applications_vbox.pack_start(box, False)
 
-            if self.edit_mode:
-                if not name in settings:
-                    raise AssertionError("Unknown application: %s" % name)
-                model = settings[name]
-            else:
-                model = None
+            if not name in settings:
+                raise AssertionError("Unknown application: %s" % name)
+            model = settings[name]
 
             setattr(self, name, button)
             self.add_proxy(model, [name])
