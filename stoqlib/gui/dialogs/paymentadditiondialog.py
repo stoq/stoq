@@ -29,16 +29,16 @@ import datetime
 
 from kiwi.datatypes import currency
 
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.domain.interfaces import IOutPayment
+from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
-class PaymentAdditionDialog(BaseEditor):
-    gladefile = "PaymentAdditionDialog"
+class BasePaymentAddition(BaseEditor):
+    gladefile = "BasePaymentAddition"
     model_type = Payment
     title = _(u"Payment")
     proxy_widgets = ['value',
@@ -46,10 +46,11 @@ class PaymentAdditionDialog(BaseEditor):
                      'due_date']
 
     def __init__(self, conn, model=None):
-        """ Creates a new PaymentAdditionDialog object
+        """ A base class for additional payments
 
         @param conn: a database connection
         @param model: a L{stoqlib.domain.payment.payment.Payment} object or None
+
         """
         BaseEditor.__init__(self, conn, model)
 
@@ -58,7 +59,7 @@ class PaymentAdditionDialog(BaseEditor):
     #
 
     def create_model(self, trans):
-        payment = Payment(open_date=datetime.date.today(),
+        return Payment(open_date=datetime.date.today(),
                           description='',
                           value=currency(0),
                           base_value=currency(0),
@@ -68,14 +69,12 @@ class PaymentAdditionDialog(BaseEditor):
                           till=None,
                           destination=None,
                           connection=trans)
-        payment.addFacet(IOutPayment, connection=trans)
-        return payment
 
     def on_due_date__activate(self, date):
         self.confirm()
 
     def setup_proxies(self):
-        self.add_proxy(self.model, PaymentAdditionDialog.proxy_widgets)
+        self.add_proxy(self.model, BasePaymentAddition.proxy_widgets)
 
     def validate_confirm(self):
         # FIXME: the kiwi view should export it's state and it shoul
@@ -87,3 +86,41 @@ class PaymentAdditionDialog(BaseEditor):
         self.model.set_pending()
         self.model.base_value = self.model.value
         return self.model
+
+
+class InPaymentAdditionDialog(BasePaymentAddition):
+
+    def __init__(self, conn, till, model=None):
+        """ This dialog is responsible to create additional payments with
+        IInPayment facet.
+
+        @param conn: a database connection
+        @param till a L{stoqlib.domain.till.Till} object or None
+        @param model: a L{stoqlib.domain.payment.payment.Payment} object or None
+        """
+        BasePaymentAddition.__init__(self, conn, model)
+        self._till = till
+        self.model.addFacet(IInPayment, connection=self.conn)
+        self.model.till = self._till
+
+    #
+    # BaseEditor
+    #
+
+    def on_confirm(self):
+        BasePaymentAddition.on_confirm(self)
+        self._till.add_entry(self.model)
+        return self.model
+
+
+class OutPaymentAdditionDialog(BasePaymentAddition):
+
+    def __init__(self, conn, model=None):
+        """ This dialog is responsible to create additional payments with
+        IOutPayment facet.
+
+        @param conn: a database connection
+        @param model: a L{stoqlib.domain.payment.payment.Payment} object or None
+        """
+        BasePaymentAddition.__init__(self, conn, model)
+        self.model.addFacet(IOutPayment, connection=self.conn)

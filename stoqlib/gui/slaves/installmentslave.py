@@ -291,11 +291,20 @@ class _InstallmentConfirmationSlave(BaseEditor):
 
 
 class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
-    model_type = _SaleConfirmationModel
+    model_type = _ConfirmationModel
+
+    def _lonely_setup_widgets(self):
+        _InstallmentConfirmationSlave._setup_widgets(self)
+        self.details_box.hide()
+        self.expander.hide()
 
     def create_model(self, conn):
-        return _SaleConfirmationModel(self._payments,
-                                      self._payments[0].group.get_adapted())
+        if self._payments[0].group:
+            return _SaleConfirmationModel(self._payments,
+                  self._payments[0].group.get_adapted())
+        else:
+            self._setup_widgets = self._lonely_setup_widgets
+            return _LonelyConfirmationModel(self._payments)
 
     def on_close_date__changed(self, proxy_date_entry):
         self._proxy.update('penalty')
