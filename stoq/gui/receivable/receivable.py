@@ -43,13 +43,16 @@ from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.sale import SaleView
+from stoqlib.domain.till import Till
 from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.paymentadditiondialog import InPaymentAdditionDialog
 from stoqlib.gui.dialogs.paymentduedatedialog import PaymentDueDateChangeDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
+from stoqlib.lib.message import info
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -173,6 +176,18 @@ class ReceivableApp(SearchableAppWindow):
         trans.close()
         self._update_widgets()
 
+    def _add_receiving(self):
+        trans = new_transaction()
+        till = Till.get_current(trans)
+        if till is None:
+            trans.close()
+            info(_(u'This action requires an open till.'))
+            return
+
+        retval = self.run_dialog(InPaymentAdditionDialog, trans, till)
+        if finish_transaction(trans, retval):
+            self.results.refresh()
+
     def _change_due_date(self, receivable_view):
         """ Receives a receivable_view and change the payment due date
         related to the view.
@@ -219,6 +234,9 @@ class ReceivableApp(SearchableAppWindow):
         if not receivable_views:
             return False
 
+        if len(receivable_views) == 1:
+            return receivable_views[0].status == Payment.STATUS_PENDING
+
         sale = receivable_views[0].sale
         if sale is None:
             return False
@@ -249,6 +267,8 @@ class ReceivableApp(SearchableAppWindow):
             return False
 
         sale = receivable_views[0].sale
+        if sale is None:
+            return False
         return all(view.sale == sale for view in receivable_views[1:])
 
     #
@@ -280,3 +300,6 @@ class ReceivableApp(SearchableAppWindow):
         payments = [v.payment for v in receivable_views]
         print_report(ReceivalReceipt, payments=payments,
                      sale=receivable_views[0].sale)
+
+    def on_AddReceiving__activate(self, action):
+        self._add_receiving()

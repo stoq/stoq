@@ -42,7 +42,7 @@ from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.paymentadditiondialog import PaymentAdditionDialog
+from stoqlib.gui.dialogs.paymentadditiondialog import OutPaymentAdditionDialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.printing import print_report
@@ -253,6 +253,6 @@ class PayableApp(SearchableAppWindow):
 
     def on_AddPayment__activate(self, action):
         trans = new_transaction()
-        retval = self.run_dialog(PaymentAdditionDialog, trans)
+        retval = self.run_dialog(OutPaymentAdditionDialog, trans)
         if finish_transaction(trans, retval):
             self.results.refresh()

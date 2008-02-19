@@ -5,6 +5,14 @@
         <child>
             <widget class="GtkActionGroup" id="DefaultActions">
                 <child>
+                    <widget class="GtkAction" id="AddReceiving">
+                        <property name="name">AddReceiving</property>
+                        <property name="label" translatable="yes">Add receiving...</property>
+                        <property name="stock_id">gtk-add</property>
+                       <property name="accelerator">&lt;Control&gt;r</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Bill">
                         <property name="name">Bill</property>
                         <property name="label" translatable="yes">Bills</property>
@@ -163,6 +171,7 @@
         <ui id="initial-state"><![CDATA[<ui>
 	<menubar action="menubar">
 	  <menu action="TillMenu">
+	    <menuitem action="AddReceiving"/>
 	    <menuitem action="Receipt"/>
 	    <menuitem action="quit_action"/>
 	  </menu>
