@@ -43,6 +43,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.paymentadditiondialog import OutPaymentAdditionDialog
+from stoqlib.gui.dialogs.paymentduedatedialog import PaymentDueDateChangeDialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.printing import print_report
@@ -126,6 +127,36 @@ class PayableApp(SearchableAppWindow):
         """
         return (self._same_purchase(payable_views) or
                 self._same_sale(payable_views))
+
+    def _change_due_date(self, payable_view):
+        """ Receives a payable_view and change the payment due date
+        related to the view.
+        @param payable_view: a OutPaymentView instance
+        """
+        assert payable_view.can_change_due_date()
+        trans = new_transaction()
+        payment = trans.get(payable_view.payment)
+        order = trans.get(payable_view.sale)
+        if order is None:
+            order = trans.get(payable_view.purchase)
+        retval = run_dialog(PaymentDueDateChangeDialog, self, trans,
+                            payment, order)
+        if finish_transaction(trans, retval):
+            payable_view.sync()
+            self.results.update(payable_view)
+
+        trans.close()
+
+    def _can_change_due_date(self, payable_views):
+        """ Determines if a list of payables_views can have it's due
+        date changed. To do so they must meet the following conditions:
+            - The list must have only one element
+            - The payment was not paid
+        """
+        if len(payable_views) != 1:
+            return False
+
+        return payable_views[0].can_change_due_date()
 
     def _pay(self, payable_views):
         """
@@ -214,6 +245,7 @@ class PayableApp(SearchableAppWindow):
     def _update_widgets(self):
         selected = self.results.get_selected_rows()
         self.details_button.set_sensitive(self._can_show_details(selected))
+        self.due_date_change_button.set_sensitive(self._can_change_due_date(selected))
         self.pay_order_button.set_sensitive(self._same_purchase(selected))
         self.pay_order_button.set_sensitive(self._can_pay(selected))
         self.print_button.set_sensitive(bool(self.results))
@@ -235,6 +267,10 @@ class PayableApp(SearchableAppWindow):
     def on_details_button__clicked(self, button):
         payable_view = self.results.get_selected_rows()[0]
         self._show_details(payable_view)
+
+    def on_due_date_change_button__clicked(self, button):
+        payable_view = self.results.get_selected_rows()[0]
+        self._change_due_date(payable_view)
 
     def on_pay_order_button__clicked(self, button):
         self._pay(self.results.get_selected_rows())
