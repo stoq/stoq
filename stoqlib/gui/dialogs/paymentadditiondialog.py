@@ -90,27 +90,15 @@ class BasePaymentAddition(BaseEditor):
 
 class InPaymentAdditionDialog(BasePaymentAddition):
 
-    def __init__(self, conn, till, model=None):
+    def __init__(self, conn, model=None):
         """ This dialog is responsible to create additional payments with
         IInPayment facet.
 
         @param conn: a database connection
-        @param till a L{stoqlib.domain.till.Till} object or None
         @param model: a L{stoqlib.domain.payment.payment.Payment} object or None
         """
         BasePaymentAddition.__init__(self, conn, model)
-        self._till = till
         self.model.addFacet(IInPayment, connection=self.conn)
-        self.model.till = self._till
-
-    #
-    # BaseEditor
-    #
-
-    def on_confirm(self):
-        BasePaymentAddition.on_confirm(self)
-        self._till.add_entry(self.model)
-        return self.model
 
 
 class OutPaymentAdditionDialog(BasePaymentAddition):
