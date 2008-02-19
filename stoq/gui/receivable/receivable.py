@@ -43,7 +43,6 @@ from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.sale import SaleView
-from stoqlib.domain.till import Till
 from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.printing import print_report
@@ -52,7 +51,6 @@ from stoqlib.gui.dialogs.paymentadditiondialog import InPaymentAdditionDialog
 from stoqlib.gui.dialogs.paymentduedatedialog import PaymentDueDateChangeDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
-from stoqlib.lib.message import info
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -178,13 +176,7 @@ class ReceivableApp(SearchableAppWindow):
 
     def _add_receiving(self):
         trans = new_transaction()
-        till = Till.get_current(trans)
-        if till is None:
-            trans.close()
-            info(_(u'This action requires an open till.'))
-            return
-
-        retval = self.run_dialog(InPaymentAdditionDialog, trans, till)
+        retval = self.run_dialog(InPaymentAdditionDialog, trans)
         if finish_transaction(trans, retval):
             self.results.refresh()
 
