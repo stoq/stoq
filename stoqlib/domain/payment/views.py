@@ -108,6 +108,9 @@ class OutPaymentView(Viewable):
     def get_status_str(self):
         return Payment.statuses[self.status]
 
+    def can_change_due_date(self):
+        return not self.payment.is_paid()
+
     @property
     def purchase(self):
         if self.purchase_id:

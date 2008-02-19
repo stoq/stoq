@@ -110,6 +110,7 @@ class PurchaseDetailsDialog(BaseEditor):
     def _setup_widgets(self):
         self.ordered_items.set_columns(self._get_ordered_columns())
         self.received_items.set_columns(self._get_received_columns())
+        self.payments_info_list.set_columns(self._get_payments_info_columns())
 
         purchase_items = PurchaseItemView.select_by_purchase(
             self.model, self.conn)
@@ -120,6 +121,7 @@ class PurchaseDetailsDialog(BaseEditor):
         group = IPaymentGroup(self.model, None)
         if group is not None:
             self.payments_list.add_list(group.get_items())
+            self.payments_info_list.add_list(group.get_due_payments_info())
         self._setup_summary_labels()
 
     def _get_ordered_columns(self):
@@ -169,6 +171,18 @@ class PurchaseDetailsDialog(BaseEditor):
                               width=92, color='red',
                               justify=gtk.JUSTIFY_RIGHT,
                               data_func=payment_value_colorize)]
+
+    def _get_payments_info_columns(self):
+        return [Column('payment.description', _(u"Payment"),
+                        data_type=str, expand=True, sorted=True,
+                        ellipsize=pango.ELLIPSIZE_END),
+                Column('last_due_date', _(u"Last Due Date"),
+                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                Column('payment.due_date', _(u"Current Due Date"),
+                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                Column('due_date_change_reason', _(u"Reason"),
+                        data_type=str, expand=True,
+                        ellipsize=pango.ELLIPSIZE_END)]
 
     #
     # BaseEditor hooks
