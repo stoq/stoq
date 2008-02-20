@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source
+## Copyright (C) 2005-2008 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -34,8 +34,7 @@ from stoqlib.database.runtime import (new_transaction, finish_transaction,
                                       get_connection)
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.exceptions import SelectionError, StoqlibError
-from stoqlib.gui.base.dialogs import (run_dialog, get_dialog,
-                                      BasicPluggableDialog, BasicDialog)
+from stoqlib.gui.base.dialogs import run_dialog, get_dialog, BasicDialog
 from stoqlib.gui.base.wizards import BaseWizard
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
@@ -414,60 +413,6 @@ class AdditionListSlave(GladeSlaveDelegate):
 
     def on_delete_button__clicked(self, button):
         self._clear()
-
-
-class AdditionListDialog(BasicPluggableDialog):
-    size = (500, 500)
-
-    def __init__(self, conn, editor_class=None, columns=None,
-                 klist_objects=None, title='', visual_mode=False):
-        self.title = title
-        BasicPluggableDialog.__init__(self)
-        self.addition_list = None
-        self.conn = conn
-        self.visual_mode = visual_mode
-        self._initialize(editor_class, columns, klist_objects)
-
-    def get_slave(self, editor_class, columns, klist_objects):
-        return AdditionListSlave(self.conn, columns,
-                                 editor_class, klist_objects,
-                                 visual_mode=self.visual_mode)
-
-    def _initialize(self, editor_class, columns, klist_objects):
-        self.addition_list = self.get_slave(editor_class, columns,
-                                            klist_objects)
-        self.addition_list.on_confirm = self.on_confirm
-        self.addition_list.on_cancel = self.on_cancel
-        self.addition_list.validate_confirm = self.validate_confirm
-        hide_footer = self.visual_mode
-        BasicPluggableDialog._initialize(self, self.addition_list,
-                                         size=self.size, title=self.title,
-                                         hide_footer=hide_footer)
-
-    def register_editor_kwargs(self, **kwargs):
-        self.addition_list.register_editor_kwargs(**kwargs)
-
-    def set_before_delete_items(self, callback):
-        self.addition_list.connect('before-delete-items', callback)
-
-    def set_on_add_item(self, callback):
-        self.addition_list.connect('on-add-item', callback)
-
-    def set_on_edit_item(self, callback):
-        self.addition_list.connect('on-edit-item', callback)
-
-    #
-    # BasicPluggableDialog callbacks
-    #
-
-    def on_cancel(self):
-        return
-
-    def on_confirm(self):
-        return self.addition_list.klist
-
-    def validate_confirm(self):
-        return True
 
 
 class SimpleListDialog(BasicDialog):
