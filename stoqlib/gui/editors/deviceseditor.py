@@ -34,10 +34,10 @@ from stoqlib.database.runtime import get_connection, get_current_station
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.person import BranchStation
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
 
 class DeviceSettingsEditor(BaseEditor):
     gladefile = 'DeviceSettingsEditor'
@@ -174,20 +174,7 @@ class DeviceSettingsEditor(BaseEditor):
                 return False
         return True
 
-    # FIXME: this part will improved when bug #2334 is fixed.
     def on_confirm(self):
-        if not self.model.is_a_printer():
-            return self.model
-        is_enabled = self.edit_mode or self.model.constants
-        # FIXME: this part will be improved when bug #2641 is fixed
-        is_enabled = is_enabled or (self.model.brand != "bematech"
-                                    and self.model.model != "DP20C")
-        if not is_enabled:
-            warning( _(u"The printer will be disabled"),
-                     _(u"The printer will be disabled automatically "
-                        "because there are no constants defined yet."))
-            self.model.inactivate()
-
         return self.model
 
     #

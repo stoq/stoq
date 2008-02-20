@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006, 2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,41 +19,45 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Henrique Romano                 <henrique@async.com.br>
+## Author(s):   Henrique Romano <henrique@async.com.br>
+##              Johan Dahlin    <jdahlin@async.com.br>
 ##
 ##
-""" Device Settings listing dialog """
+"""Device Settings listing dialog """
 
-from stoqlib.gui.base.lists import AdditionListDialog
-from stoqlib.gui.slaves.devicesslave import DeviceSettingsDialogSlave
-from stoqlib.lib.translation import stoqlib_gettext
+from kiwi.ui.objectlist import Column
+
+from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.devices import DeviceSettings
+from stoqlib.gui.base.lists import ModelListDialog
+from stoqlib.gui.editors.deviceseditor import DeviceSettingsEditor
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-class DeviceSettingsDialog(AdditionListDialog):
-    size = (500, 300)
-    def __init__(self, conn, station=None):
-        self._station = station
-        AdditionListDialog.__init__(self, conn, title=_("Devices"))
-        self.set_before_delete_items(self._on_delete_items)
 
-    def _on_delete_items(self, slave, items):
-        result = DeviceSettings.select(
-            DeviceSettings.q.type == DeviceSettings.FISCAL_PRINTER_DEVICE,
-            connection=self.conn)
-        if result:
-            return
-        self.conn.commit()
+class DeviceSettingsDialog(ModelListDialog):
 
-    #
-    # AdditionListDialog hooks
-    #
+    # ModelListDialog
+    model_type = DeviceSettings
+    title = _('Device settings')
+    size = (620, 300)
 
-    def get_slave(self, editor_class, columns, klist_objects):
-        return DeviceSettingsDialogSlave (self.conn,
-                                          station=self._station)
+    # ListDialog
+    columns =  [
+        Column('device_type_name', title=_('Device Type'),
+               data_type=str, sorted=True, width=120),
+        Column('description', title=_('Description'),
+               data_type=str, expand=True),
+        Column('station.name', title=_('Station'),
+               data_type=str, width=150, searchable=True),
+        Column('is_active', title=_("Active"),
+               data_type=bool, width=100)]
 
-    def on_confirm(self):
-        self.conn.commit()
-        return AdditionListDialog.on_confirm(self)
+    def _populate(self):
+        return DeviceSettings.select(connection=self.trans)
+
+    def run_editor(self, trans, model):
+        return self.run_dialog(DeviceSettingsEditor, conn=trans,
+                               model=model,
+                               station=get_current_station(trans))
