@@ -38,7 +38,7 @@ from stoqdrivers.serialbase import SerialPort
 from stoqlib.database.columns import DecimalCol
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IActive
+from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -46,7 +46,7 @@ _ = stoqlib_gettext
 
 
 class DeviceSettings(Domain):
-    implements(IActive)
+    implements(IActive, IDescribable)
 
     type = IntCol()
     brand = UnicodeCol()
@@ -154,6 +154,13 @@ class DeviceSettings(Domain):
         if self.is_active:
             return _(u'Active')
         return _(u'Inactive')
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.get_printer_description()
 
 
 class FiscalDayTax(Domain):
