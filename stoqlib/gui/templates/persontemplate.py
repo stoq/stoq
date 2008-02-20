@@ -131,8 +131,8 @@ class _PersonEditorTemplate(BaseEditorSlave):
             self.address_slave.set_model(new_main_address)
 
     def on_contacts_button__clicked(self, button):
-        run_dialog(LiaisonListDialog, self, self.conn, self.model,
-                   self.model.liaisons, visual_mode=self.visual_mode)
+        run_dialog(LiaisonListDialog, self, self.conn,
+                   person=self.model)
 
     #
     # Private API

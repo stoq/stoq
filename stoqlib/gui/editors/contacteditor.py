@@ -23,7 +23,8 @@
 ##              Henrique Romano             <henrique@async.com.br>
 ##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##
-""" Person Liaisons editor implementation"""
+
+"""Person Liaisons editor implementation"""
 
 
 from stoqlib.lib.translation import stoqlib_gettext
@@ -32,13 +33,15 @@ from stoqlib.domain.person import Liaison
 
 _ = stoqlib_gettext
 
+
 class ContactEditor(BaseEditor):
     model_name = _('Liaison')
     model_type = Liaison
     gladefile = 'ContactEditor'
     proxy_widgets = ('name', 'phone_number')
 
-    def __init__(self, conn, model):
+    def __init__(self, conn, model, person):
+        self.person = person
         BaseEditor.__init__(self, conn, model)
         self.set_description(self.model.name)
 
@@ -47,7 +50,7 @@ class ContactEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        return Liaison(person=None, connection=conn)
+        return Liaison(person=self.person, connection=conn)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, ContactEditor.proxy_widgets)

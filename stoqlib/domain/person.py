@@ -164,9 +164,19 @@ class VoterData(Domain):
 class Liaison(Domain):
     """Base class to store the person's contact informations."""
 
+    implements(IDescribable)
+
     name = UnicodeCol(default='')
     phone_number = UnicodeCol(default='')
     person = ForeignKey('Person')
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.name
+
 
 class Calls(Domain):
     """Person's calls information.

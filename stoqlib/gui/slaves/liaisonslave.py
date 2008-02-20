@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005, 2006, 2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,13 +22,15 @@
 ## Author(s):   Daniel Saran R. da Cunha    <daniel@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
 ##              Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
-""" Liaison slave implementation"""
+
+"""Liaison slave implementation"""
 
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.lists import AdditionListDialog
+from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.contacteditor import ContactEditor
 from stoqlib.lib.validators import format_phone_number
 from stoqlib.domain.person import Liaison
@@ -36,35 +38,30 @@ from stoqlib.domain.person import Liaison
 _ = stoqlib_gettext
 
 
-class LiaisonListDialog(AdditionListDialog):
+class LiaisonListDialog(ModelListDialog):
 
-    def __init__(self, conn, person, liaison_list=None,
-                 visual_mode=False):
+    # ModelListDialog
+    model_type = Liaison
+    editor_class = ContactEditor
+    title = _("Liasons")
+    size = (500, 250)
+
+    # ListDialog
+    columns = [Column('name', title=_('Name'),
+                      data_type=str, expand=True),
+               Column('phone_number', title=_('Phone Number'),
+                      format_func=format_phone_number,
+                      data_type=str, width=200)]
+
+    def __init__(self, trans, person):
         self.person = person
-        AdditionListDialog.__init__(self, conn, ContactEditor,
-                                    self.get_columns(), liaison_list,
-                                    _('Additional Contacts'),
-                                    visual_mode=visual_mode)
-        self.set_before_delete_items(self.before_delete_items)
-        self.set_on_add_item(self.on_add_item)
+        self.trans = trans
+        ModelListDialog.__init__(self, trans)
+        self.set_reuse_transaction(trans)
 
-    def get_columns(self):
-        return [Column('name', title=_('Name'),
-                       data_type=str, expand=True),
-                Column('phone_number', title=_('Phone Number'),
-                       format_func=format_phone_number,
-                       data_type=str, width=200)]
+    def populate(self):
+        return Liaison.selectBy(person=self.person, connection=self.trans)
 
-    def get_liaisons(self):
-        return self.klist
-
-    #
-    # Callbacks
-    #
-
-    def before_delete_items(self, slave, items):
-        for item in items:
-            Liaison.delete(item.id, connection=self.conn)
-
-    def on_add_item(self, slave, item):
-        item.person = self.person
+    def run_editor(self, trans, model):
+        return self.run_dialog(ContactEditor, conn=trans,
+                               model=model, person=self.person)
