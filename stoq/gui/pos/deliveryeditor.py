@@ -152,8 +152,9 @@ class DeliveryEditor(BaseEditor):
 
     def on_client__content_changed(self, combo):
         client = combo.get_selected_data()
-        self._update_address(client.person.get_main_address())
-        self.change_address_button.set_sensitive(True)
+        if client:
+            self._update_address(client.person.get_main_address())
+            self.change_address_button.set_sensitive(True)
 
     def on_create_client__clicked(self, button):
         self._create_client()
