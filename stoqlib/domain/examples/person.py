@@ -83,16 +83,16 @@ def create_people():
                         mobile_number='2222-2222',
                         email='gigi@stoq.com')]
 
-    company_data = [dict(cnpj='66782278129',
+    company_data = [dict(cnpj='59.221.887/0001-90',
                          fancy_name='RJA',
                          state_registry='0098'),
-                    dict(cnpj='4444',
+                    dict(cnpj='59.221.887/0001-90',
                          fancy_name='PlugLine',
                          state_registry='1111'),
-                    dict(cnpj='777',
+                    dict(cnpj='62.639.183/0001-47',
                          fancy_name='Buffet Italia',
                          state_registry='555'),
-                    dict(cnpj='1110',
+                    dict(cnpj='94.476.037/0001-34',
                          fancy_name='Pizzaria Donnatello',
                          state_registry='3421')]
 
