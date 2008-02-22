@@ -313,7 +313,7 @@ class ECFUI(object):
     def _on_StartApplicationEvent(self, appname, app):
         self._add_ui_menus(appname, app.main_window.uimanager)
 
-    def _on_SaleConfirm(self, sale):
+    def _on_SaleConfirm(self, sale, trans):
         self._confirm_sale(sale)
 
     def _on_TillOpen(self, till):
