@@ -178,7 +178,8 @@ class Payment(Domain):
     def cancel(self):
         # TODO Check for till entries here and call cancel_till_entry if
         # it's possible. Bug 2598
-        if self.status not in [Payment.STATUS_PREVIEW, Payment.STATUS_PENDING]:
+        if self.status not in [Payment.STATUS_PREVIEW, Payment.STATUS_PENDING,
+                               Payment.STATUS_PAID]:
             raise StoqlibError("Invalid status for cancel operation, "
                                 "got %s" % self.get_status_str())
         self.status = self.STATUS_CANCELLED

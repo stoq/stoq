@@ -177,6 +177,20 @@ class TestPayment(DomainTest):
         payment.pay()
         self.assertEqual(payment.get_days_late(), 0)
 
+    def testCancel(self):
+        method = CheckPM.selectOne(connection=self.trans)
+        payment = Payment(value=currency(100),
+                          due_date=datetime.datetime.now(),
+                          method=method,
+                          group=None,
+                          till=None,
+                          destination=None,
+                          connection=self.trans)
+        payment.set_pending()
+        payment.pay()
+        payment.cancel()
+        self.assertEqual(payment.status, Payment.STATUS_CANCELLED)
+
     def testGetPaymentDueDateInfo(self):
         method = CheckPM.selectOne(connection=self.trans)
         payment = Payment(value=currency(100),
