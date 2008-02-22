@@ -41,6 +41,7 @@ from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.gui.editors.personeditor import (BranchEditor,
                                               ClientEditor, SupplierEditor,
                                               EmployeeEditor,
+                                              UserEditor,
                                               CreditProviderEditor)
 
 
@@ -137,13 +138,16 @@ class PersonRoleTypeStep(WizardEditorStep):
         self._setup_widgets()
 
     def _setup_widgets(self):
-        if self.wizard.role_editor == BranchEditor:
-            label = _('Adding a %s')
-            self.individual_check.set_sensitive(False)
+        label = _('What kind of %s are you adding?')
+        role_editor = self.wizard.role_editor
+        if role_editor == BranchEditor or role_editor == UserEditor:
             self.company_check.set_sensitive(False)
-            self.company_check.set_active(True)
-        else:
-            label = _('What kind of %s are you adding?')
+            self.individual_check.set_sensitive(False)
+            if role_editor == UserEditor:
+                self.individual_check.set_active(True)
+            else:
+                label = _('Adding a %s')
+                self.company_check.set_active(True)
         role_name = self.wizard.get_role_name().lower()
         self.person_role_label.set_text(label % role_name)
         self.person_role_label.set_size('large')
