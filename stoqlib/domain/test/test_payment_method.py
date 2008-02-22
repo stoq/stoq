@@ -314,3 +314,24 @@ class TestPaymentMethodDetails(DomainTest):
         method_details = PaymentMethodDetails.get_active_method_details(
             provider=provider, conn=self.trans)
         self.failIf(method_details)
+
+
+class TestCardInstallmentSettings(DomainTest):
+
+        def testCalculatePaymentDueDate(self):
+            # default settings: payment_day = closing_day = 15
+            settings = self.create_card_installment_settings()
+            today = datetime.datetime.today()
+            # Reset day and month here, so we can avoid the bound cases
+            # of 'today' attributes
+            start_due_dates = [today.replace(day=14, month=3),
+                               today.replace(day=15, month=3),
+                               today.replace(day=16, month=3)]
+            for date in start_due_dates:
+                due_date = settings.calculate_payment_duedate(date)
+                if date.day > settings.closing_day:
+                    self.assertEqual(due_date.day, settings.payment_day)
+                    self.assertEqual(due_date.month, date.month + 1)
+                else:
+                    self.assertEqual(due_date.day, settings.payment_day)
+                    self.assertEqual(due_date.month, date.month)

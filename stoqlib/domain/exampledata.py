@@ -443,6 +443,12 @@ class ExampleCreator(object):
                                     destination=None,
                                     connection=self.trans)
 
+    def create_card_installment_settings(self, payment_day=15, closing_day=15):
+        from stoqlib.domain.payment.methods import CardInstallmentSettings
+        return CardInstallmentSettings(payment_day=payment_day,
+                                        closing_day=closing_day,
+                                        connection=self.trans)
+
     def create_payment(self):
         from stoqlib.domain.payment.payment import Payment
         return Payment(group=None,

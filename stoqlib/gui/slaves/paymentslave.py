@@ -28,6 +28,7 @@
 
 from decimal import Decimal
 import datetime
+from dateutil.relativedelta import relativedelta
 
 from kiwi.datatypes import format_price, currency, ValidationError
 from kiwi.utils import gsignal
@@ -761,10 +762,16 @@ class _CreditProviderMethodSlave(BaseEditorSlave):
         self._setup_payment_types()
 
     def _setup_payments(self):
-        # FIXME: This is broken, should create multiple methods
-        self.method.create_inpayment(self.wizard.payment_group,
-                                     self.total_value,
-                                     self.sale.open_date)
+        payment_type = self.model.payment_type
+        due_dates = []
+        start_due_date = datetime.datetime.today()
+        for i in range(self.model.installments_number):
+            due_dates.append(payment_type.calculate_payment_duedate(
+                start_due_date))
+            start_due_date += relativedelta(months=+1)
+
+        self.method.create_inpayments(self.wizard.payment_group,
+                                      self.total_value, due_dates)
 
     #
     # PaymentMethodStep hooks
