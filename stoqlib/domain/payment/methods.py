@@ -122,7 +122,7 @@ class CardInstallmentSettings(Domain):
 
     def calculate_payment_duedate(self, first_duedate):
         if first_duedate.day > self.closing_day:
-            first_duedate += relativedelta(month=+1)
+            first_duedate += relativedelta(months=+1)
         return first_duedate.replace(day=self.payment_day)
 
 
