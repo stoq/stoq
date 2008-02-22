@@ -371,10 +371,11 @@ class Sale(ValidatableDomain):
         return self.status == Sale.STATUS_CONFIRMED
 
     def can_cancel(self):
-        """Only ordered sales can be cancelled
+        """Only ordered, confirmed and paid sales can be cancelled.
         @returns: True if the sale can be cancelled, otherwise False
         """
-        return self.status == Sale.STATUS_ORDERED
+        return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID,
+                               Sale.STATUS_ORDERED)
 
     def can_return(self):
         """Only confirmed or paid sales can be returned
@@ -424,7 +425,7 @@ class Sale(ValidatableDomain):
         group = IPaymentGroup(self)
         group.confirm()
 
-        SaleConfirmEvent.emit(self)
+        SaleConfirmEvent.emit(self, conn)
 
         self.confirm_date = const.NOW()
         self.status = Sale.STATUS_CONFIRMED
@@ -790,6 +791,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         AbstractPaymentGroup.cancel(self, renegotiation)
 
 
+    #
     # Private API
     #
 

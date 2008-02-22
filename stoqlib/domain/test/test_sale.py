@@ -499,10 +499,10 @@ class TestSale(DomainTest):
 
         self._add_payments(sale)
         sale.confirm()
-        self.failIf(sale.can_cancel())
+        self.failUnless(sale.can_cancel())
 
         sale.set_paid()
-        self.failIf(sale.can_cancel())
+        self.failUnless(sale.can_cancel())
 
         sale.return_(sale.create_sale_return_adapter())
         self.failIf(sale.can_cancel())
