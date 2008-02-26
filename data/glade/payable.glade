@@ -13,6 +13,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="SetNotPaid">
+                        <property name="name">SetNotPaid</property>
+                        <property name="label" translatable="yes">Set as not paid...</property>
+                        <property name="stock_id">gtk-undo</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Bill">
                         <property name="name">Bill</property>
                         <property name="label" translatable="yes">Bills</property>
@@ -172,6 +179,7 @@
 	  <menubar action="menubar">
 	    <menu action="TillMenu">
 	      <menuitem action="AddPayment"/>
+	      <menuitem action="SetNotPaid"/>
 	      <menuitem action="Receipt"/>
 	      <menuitem action="quit_action"/>
 	    </menu>

@@ -43,7 +43,8 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.paymentadditiondialog import OutPaymentAdditionDialog
-from stoqlib.gui.dialogs.paymentduedatedialog import PaymentDueDateChangeDialog
+from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
+                                                     PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.printing import print_report
@@ -137,15 +138,39 @@ class PayableApp(SearchableAppWindow):
         trans = new_transaction()
         payment = trans.get(payable_view.payment)
         order = trans.get(payable_view.sale)
+
         if order is None:
             order = trans.get(payable_view.purchase)
+
         retval = run_dialog(PaymentDueDateChangeDialog, self, trans,
                             payment, order)
+
         if finish_transaction(trans, retval):
             payable_view.sync()
             self.results.update(payable_view)
 
         trans.close()
+
+    def _change_status(self, payable_view):
+        """Show a dialog do enter a reason for status change
+        @param payable_view: a OutPaymentView instance
+        """
+        trans = new_transaction()
+        payment = trans.get(payable_view.payment)
+        order = trans.get(payable_view.sale)
+
+        if order is None:
+            order = trans.get(payable_view.purchase)
+
+        retval = run_dialog(PaymentStatusChangeDialog, self, trans,
+                            payment, order)
+
+        if finish_transaction(trans, retval):
+            payable_view.sync()
+            self.results.update(payable_view)
+
+        trans.close()
+
 
     def _can_change_due_date(self, payable_views):
         """ Determines if a list of payables_views can have it's due
@@ -201,20 +226,22 @@ class PayableApp(SearchableAppWindow):
                    view.status == Payment.STATUS_PENDING
                    for view in payable_views)
 
-    def _are_paid(self, payable_views):
+    def _are_paid(self, payable_views, respect_purchase=True):
         """
         Determines if a list of payables_views are paid.
         To do so they must meet the following conditions:
-          - Be in the same purchase order
+          - Be in the same purchase order.
+            (This will be satistied only if respect_purchase is True)
           - The payment status needs to be set to PAID
         """
         if not payable_views:
             return False
 
         purchase = payable_views[0].purchase
-        if purchase is None:
+        if purchase is None and respect_purchase:
             return False
-        return all(view.purchase == purchase and
+
+        return all((view.purchase == purchase or not respect_purchase) and
                    view.payment.is_paid() for view in payable_views)
 
     def _same_purchase(self, payable_views):
@@ -249,7 +276,8 @@ class PayableApp(SearchableAppWindow):
         self.pay_order_button.set_sensitive(self._same_purchase(selected))
         self.pay_order_button.set_sensitive(self._can_pay(selected))
         self.print_button.set_sensitive(bool(self.results))
-        self.Receipt.set_sensitive(self._are_paid(selected))
+        self.Receipt.set_sensitive(self._are_paid(selected, respect_purchase=True))
+        self.SetNotPaid.set_sensitive(self._are_paid(selected, respect_purchase=False))
 
     def _get_status_values(self):
         items = [(value, key) for key, value in Payment.statuses.items()]
@@ -292,3 +320,8 @@ class PayableApp(SearchableAppWindow):
         retval = self.run_dialog(OutPaymentAdditionDialog, trans)
         if finish_transaction(trans, retval):
             self.results.refresh()
+
+    def on_SetNotPaid__activate(self, action):
+        payable_view = self.results.get_selected_rows()[0]
+        self._change_status(payable_view)
+
