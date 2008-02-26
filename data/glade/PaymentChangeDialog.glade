@@ -1,7 +1,10 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface>
-    <widget class="GtkWindow" id="PaymentDueDateChangeDialog">
+    <widget class="GtkSizeGroup" id="sizegroup1">
+        <property name="mode">horizontal</property>
+    </widget>
+    <widget class="GtkWindow" id="PaymentChangeDialog">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
         <child>
@@ -70,7 +73,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkHBox" id="hbox1">
+                    <widget class="GtkHBox" id="due_date_box">
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
                         <property name="visible">True</property>
@@ -104,6 +107,40 @@
                     </packing>
                 </child>
                 <child>
+                    <widget class="GtkHBox" id="status_box">
+                        <property name="border_width">6</property>
+                        <property name="spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel2">
+                                <property name="label" context="yes" translatable="yes">Status:</property>
+                                <property name="model_attribute">kiwilabel2</property>
+                                <property name="sizegroup">sizegroup1</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyComboBox" id="status_combo">
+                                <property name="data_type">object</property>
+                                <property name="model_attribute">status</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="position">2</property>
+                    </packing>
+                </child>
+                <child>
                     <widget class="GtkHBox" id="hbox2">
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
@@ -112,6 +149,7 @@
                             <widget class="ProxyLabel" id="kiwilabel5">
                                 <property name="label" context="yes" translatable="yes">Reason:</property>
                                 <property name="model_attribute">kiwilabel5</property>
+                                <property name="sizegroup">sizegroup1</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
                                 <property name="yalign">0.0</property>
@@ -127,10 +165,10 @@
                                 <property name="visible">True</property>
                                 <property name="vscrollbar_policy">automatic</property>
                                 <child>
-                                    <widget class="ProxyTextView" id="due_date_change_reason">
+                                    <widget class="ProxyTextView" id="change_reason">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
-                                        <property name="model_attribute">due_date_change_reason</property>
+                                        <property name="model_attribute">change_reason</property>
                                         <property name="visible">True</property>
                                     </widget>
                                 </child>
@@ -142,7 +180,7 @@
                     </widget>
                     <packing>
                         <property name="expand">False</property>
-                        <property name="position">2</property>
+                        <property name="position">3</property>
                     </packing>
                 </child>
             </widget>

@@ -43,6 +43,7 @@ from stoqlib.gui.printing import print_report
 from stoqlib.domain.interfaces import IClient, IPaymentGroup
 from stoqlib.domain.person import Person
 from stoqlib.domain.sale import SaleView, Sale
+from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.reporting.sale import SaleOrderReport
 
 _ = stoqlib_gettext
@@ -103,7 +104,9 @@ class SaleDetailsDialog(BaseEditor):
         group = IPaymentGroup(self.sale_order, None)
         if group:
             self.payments_list.add_list(group.get_items())
-            self.payments_info_list.add_list(group.get_due_payments_info())
+            changes = PaymentChangeHistoryView.select_by_group(group,
+                                                          connection=self.conn)
+            self.payments_info_list.add_list(changes)
 
         self._setup_summary_labels()
 
@@ -141,17 +144,20 @@ class SaleDetailsDialog(BaseEditor):
                 Column('total', _("Total"), data_type=currency, width=100)]
 
     def _get_payments_info_columns(self):
-        return [Column('payment.description', _(u"Payment"),
-                        data_type=str, expand=True, sorted=True,
+        return [Column('change_date', _(u"When"),
+                        data_type=datetime.date, sorted=True,),
+                Column('description', _(u"Payment"),
+                        data_type=str, expand=True,
                         ellipsize=pango.ELLIPSIZE_END),
-                Column('last_due_date', _(u"Last Due Date"),
-                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                Column('payment.due_date', _(u"Current Due Date"),
-                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                Column('due_date_change_reason', _(u"Reason"),
+                Column('changed_field', _(u"Changed"),
+                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                Column('from_value', _(u"From"),
+                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                Column('to_value', _(u"To"),
+                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                Column('reason', _(u"Reason"),
                         data_type=str, expand=True,
                         ellipsize=pango.ELLIPSIZE_END)]
-
     #
     # BaseEditor hooks
     #

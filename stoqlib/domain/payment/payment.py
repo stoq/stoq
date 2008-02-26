@@ -141,6 +141,22 @@ class Payment(Domain):
         self._check_status(self.STATUS_PREVIEW, 'set_pending')
         self.status = self.STATUS_PENDING
 
+    def set_not_paid(self, change_entry):
+        """Set a STATUS_PAID payment as STATUS_PENDING. This requires clearing
+        paid_date and paid_value
+
+        @param change_entry: an PaymentChangeHistory object, that will hold the changes
+        information
+        """
+        self._check_status(self.STATUS_PAID, 'set_not_paid')
+
+        change_entry.last_status = self.STATUS_PAID
+        change_entry.new_status = self.STATUS_PENDING
+
+        self.status = self.STATUS_PENDING
+        self.paid_date = None
+        self.paid_value = None
+
     def pay(self, paid_date=None, paid_value=None):
         """Pay the current payment set its status as STATUS_PAID"""
         self._check_status(self.STATUS_PENDING, 'pay')
@@ -291,30 +307,26 @@ class Payment(Domain):
             return self.open_date.date().strftime('%x')
         return ""
 
-    def get_due_date_info(self):
-        """Returns the due date change information
-        @returns: a PaymentDueDateInfo instance or None if the due date
-        was not changed.
-        """
-        conn = self.get_connection()
-        return  PaymentDueDateInfo.selectOneBy(payment=self,
-                                               connection=conn)
+class PaymentChangeHistory(Domain):
+    """ A class to hold information about changes to a payment.
 
+    Only one tuple (last_due_date, new_due_date) or (last_status, new_status)
+    should be non-null at a time.
 
-class PaymentDueDateInfo(Domain):
-    """ A class to hold information about due date change of a payment.
-
-    @param change_date: the date that a new a due date was set
-    @param last_due_date: the due date that was set before it changed
-    @param due_date_change_reason: the reason of the due date change
-    @param payment: the same
-    @param responsible: the user responsible for the due date change
+    @param payment: the payment changed
+    @param change_reason: the reason of the due date change
+    @param last_due_date: the due date that was set before the changed
+    @param new_due_date: the due date that was set after changed
+    @param last_status: status before the change
+    @param new_status: status after change
     """
+    payment = ForeignKey('Payment')
+    change_reason = UnicodeCol(default=None)
     change_date = DateTimeCol(default=datetime.datetime.now)
     last_due_date = DateTimeCol(default=None)
-    due_date_change_reason = UnicodeCol(default=None)
-    payment = ForeignKey('Payment')
-    responsible = ForeignKey('PersonAdaptToUser')
+    new_due_date = DateTimeCol(default=None)
+    last_status = IntCol(default=None)
+    new_status = IntCol(default=None)
 
 
 #

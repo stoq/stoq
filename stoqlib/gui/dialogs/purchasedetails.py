@@ -36,6 +36,7 @@ from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.printing import print_report
+from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.reporting.purchase import PurchaseOrderReport
@@ -114,6 +115,7 @@ class PurchaseDetailsDialog(BaseEditor):
 
         purchase_items = PurchaseItemView.select_by_purchase(
             self.model, self.conn)
+
         self.ordered_items.add_list(purchase_items)
         self.received_items.add_list(purchase_items)
 
@@ -121,7 +123,11 @@ class PurchaseDetailsDialog(BaseEditor):
         group = IPaymentGroup(self.model, None)
         if group is not None:
             self.payments_list.add_list(group.get_items())
-            self.payments_info_list.add_list(group.get_due_payments_info())
+
+            changes = PaymentChangeHistoryView.select_by_group(group,
+                                                          connection=self.conn)
+            self.payments_info_list.add_list(changes)
+
         self._setup_summary_labels()
 
     def _get_ordered_columns(self):
@@ -173,14 +179,18 @@ class PurchaseDetailsDialog(BaseEditor):
                               data_func=payment_value_colorize)]
 
     def _get_payments_info_columns(self):
-        return [Column('payment.description', _(u"Payment"),
-                        data_type=str, expand=True, sorted=True,
+        return [Column('change_date', _(u"When"),
+                        data_type=datetime.date, sorted=True,),
+                Column('description', _(u"Payment"),
+                        data_type=str, expand=True,
                         ellipsize=pango.ELLIPSIZE_END),
-                Column('last_due_date', _(u"Last Due Date"),
-                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                Column('payment.due_date', _(u"Current Due Date"),
-                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                Column('due_date_change_reason', _(u"Reason"),
+                Column('changed_field', _(u"Changed"),
+                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                Column('from_value', _(u"From"),
+                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                Column('to_value', _(u"To"),
+                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                Column('reason', _(u"Reason"),
                         data_type=str, expand=True,
                         ellipsize=pango.ELLIPSIZE_END)]
 
