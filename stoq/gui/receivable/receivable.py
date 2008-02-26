@@ -48,7 +48,7 @@ from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.paymentadditiondialog import InPaymentAdditionDialog
-from stoqlib.gui.dialogs.paymentduedatedialog import PaymentDueDateChangeDialog
+from stoqlib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 
