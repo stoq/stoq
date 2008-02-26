@@ -23,16 +23,24 @@
 ##              Fabio Morbec <fabio@async.com.br>
 ##
 
+import datetime
+
+from kiwi.datatypes import converter
+
 from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
-                                            PaymentAdaptToOutPayment)
+                                            PaymentAdaptToOutPayment,
+                                            PaymentChangeHistory)
 from stoqlib.domain.person import (Person, PersonAdaptToClient,
                                    PersonAdaptToSupplier)
 from stoqlib.domain.purchase import (PurchaseOrder,
                                      PurchaseOrderAdaptToPaymentGroup)
 from stoqlib.domain.sale import Sale, SaleAdaptToPaymentGroup, SaleView
+from stoqlib.lib.translation import stoqlib_gettext
 
 from sqlobject.sqlbuilder import LEFTJOINOn, INNERJOINOn
 from sqlobject.viewable import Viewable
+
+_ = stoqlib_gettext
 
 class InPaymentView(Viewable):
     columns = dict(
@@ -124,3 +132,53 @@ class OutPaymentView(Viewable):
     @property
     def payment(self):
         return Payment.get(self.id, connection=self.get_connection())
+
+class PaymentChangeHistoryView(Viewable):
+    """Holds information about changes to a payment.
+    """
+
+    columns = dict(
+        id=PaymentChangeHistory.q.id,
+        description=Payment.q.description,
+        reason=PaymentChangeHistory.q.change_reason,
+        change_date=PaymentChangeHistory.q.change_date,
+        last_due_date=PaymentChangeHistory.q.last_due_date,
+        new_due_date=PaymentChangeHistory.q.new_due_date,
+        last_status=PaymentChangeHistory.q.last_status,
+        new_status=PaymentChangeHistory.q.new_status,
+    )
+
+    joins = [
+        INNERJOINOn(None, Payment,
+                    Payment.q.id == PaymentChangeHistory.q.paymentID)
+    ]
+
+
+    @classmethod
+    def select_by_group(cls, group, connection):
+        return PaymentChangeHistoryView.select((Payment.q.groupID == group.id),
+                                           connection=connection)
+
+    @property
+    def changed_field(self):
+        """Return the name of the changed field."""
+
+        if self.last_due_date:
+            return _('Due Date')
+        elif self.last_status:
+            return _('Status')
+
+    @property
+    def from_value(self):
+        if self.last_due_date:
+            return converter.as_string(datetime.date, self.last_due_date)
+        elif self.last_status:
+            return Payment.statuses[self.last_status]
+
+    @property
+    def to_value(self):
+        if self.new_due_date:
+            return converter.as_string(datetime.date, self.new_due_date)
+        elif self.new_status:
+            return Payment.statuses[self.new_status]
+
