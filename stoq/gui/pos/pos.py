@@ -206,7 +206,8 @@ class POSApp(AppWindow):
         argument
         """
         if new_item:
-            if self._coupon_add_item(sale_item) == -1:
+            # Only add to the coupon if we really have one.
+            if self._coupon and self._coupon_add_item(sale_item) == -1:
                 return
             self.sale_items.append(sale_item)
         else:
