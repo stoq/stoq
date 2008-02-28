@@ -206,8 +206,7 @@ class POSApp(AppWindow):
         argument
         """
         if new_item:
-            # Only add to the coupon if we really have one.
-            if self._coupon and self._coupon_add_item(sale_item) == -1:
+            if self._coupon_add_item(sale_item) == -1:
                 return
             self.sale_items.append(sale_item)
         else:
@@ -586,8 +585,16 @@ class POSApp(AppWindow):
         return coupon
 
     def _coupon_add_item(self, sale_item):
+        """Adds an item to the coupon.
+
+        Should return -1 if the coupon was not added, but will return None if
+        CONFIRM_SALES_ON_TILL is true
+
+        See L{stoqlib.gui.fiscalprinter.FiscalCoupon} for more information
+        """
         if self.param.CONFIRM_SALES_ON_TILL:
-            return -1
+            return
+
         if self._coupon is None:
             coupon = self._open_coupon()
             if not coupon:
