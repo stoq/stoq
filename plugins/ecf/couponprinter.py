@@ -116,27 +116,6 @@ class CouponPrinter(object):
         assert value > 0
         self._driver.till_remove_cash(value)
 
-    def emit_coupon(self, sale):
-        """ Emit a coupon for a Sale instance.
-
-        @returns: True if the coupon has been emitted, False otherwise.
-        """
-        if not sale.products:
-            return True
-
-        coupon = self.create_coupon(sale)
-        if sale.client:
-            coupon.identify_customer(sale.client.person)
-        if not coupon.open():
-            return False
-        for product in sale.products:
-            coupon.add_item(product)
-        if not coupon.totalize():
-            return False
-        if not coupon.setup_payments():
-            return False
-        return coupon.close()
-
     def summarize(self):
         """sends a summarize (leituraX) command to the printer"""
         try:

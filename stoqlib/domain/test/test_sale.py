@@ -33,7 +33,8 @@ from stoqdrivers.enum import TaxType, PaymentMethodType
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
-from stoqlib.domain.interfaces import (IPaymentGroup,
+from stoqlib.domain.interfaces import (IIndividual,
+                                       IPaymentGroup,
                                        ISellable,
                                        IStorable,
                                        IOutPayment,
@@ -622,6 +623,27 @@ class TestSale(DomainTest):
         self.assertEqual(value, Decimal(0))
         self.assertEqual(commissions.count(), 2)
         self.failIf(commissions[-1].value >= 0)
+
+    def testGetClientRole(self):
+        sale = self.create_sale()
+        client_role = sale.get_client_role()
+        self.failUnless(client_role is None)
+
+        sale.client = self.create_client()
+        client_role = sale.get_client_role()
+        self.failIf(client_role is None)
+
+    def testCreatePaulistaInvoiceEntry(self):
+        sale = self.create_sale()
+        paulista_invoice = sale.create_paulista_invoice_entry()
+        self.failUnless(paulista_invoice is None)
+
+        client = self.create_client()
+        IIndividual(client.person).cpf = "000.000.000-00"
+        sale.client = client
+        paulista_invoice = sale.create_paulista_invoice_entry()
+        self.failIf(paulista_invoice is None)
+
 
 class TestSaleItem(DomainTest):
     def testGetTotal(self):
