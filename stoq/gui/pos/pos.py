@@ -42,17 +42,14 @@ from stoqlib.database.runtime import (new_transaction,
                                       finish_transaction,
                                       get_current_user,
                                       get_current_branch)
-from stoqlib.domain.interfaces import (IDelivery, IPaymentGroup, ISalesPerson,
-                                       IProduct, IService, IIndividual,
-                                       ICompany)
+from stoqlib.domain.interfaces import (IDelivery, ISalesPerson, IProduct,
+                                       IService)
 from stoqlib.domain.devices import DeviceSettings
-from stoqlib.domain.fiscal import PaulistaInvoice
 from stoqlib.domain.product import ProductAdaptToSellable, IStorable
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.till import Till
-from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.lib.message import info, yesno
@@ -60,7 +57,6 @@ from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
-from stoqlib.gui.dialogs.paulistainvoicedialog import PaulistaInvoiceDialog
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -68,7 +64,6 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import SaleSearch
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 
 from stoq.gui.application import AppWindow
 from stoq.gui.pos.deliveryeditor import DeliveryEditor
@@ -529,7 +524,9 @@ class POSApp(AppWindow):
             sale.order()
             trans.commit(close=True)
         else:
-            ordered = self._confirm_order(trans, sale)
+            assert self._coupon
+
+            ordered = self._coupon.confirm(sale, trans)
             if not finish_transaction(trans, ordered):
                 trans.close()
                 return
@@ -541,30 +538,6 @@ class POSApp(AppWindow):
             # the objects from trans into self.conn
             self.conn.commit()
         self._clear_order()
-
-    def _confirm_order(self, trans, sale):
-        assert self._coupon
-        model = self.run_dialog(ConfirmSaleWizard, trans, sale)
-        if not model:
-            return False
-        if sale.client:
-            self._coupon.identify_customer(sale.client.person)
-
-        if not self._coupon.totalize(sale):
-            return False
-        if not self._coupon.setup_payments(sale):
-            return False
-        message = self._get_coupon_message(sale, trans)
-        if not self._coupon.close(sale, message):
-            return False
-        sale.confirm()
-
-        if sale.paid_with_money():
-            sale.set_paid()
-
-        print_cheques_for_payment_group(trans, IPaymentGroup(sale))
-
-        return True
 
     #
     # Coupon related
@@ -609,37 +582,6 @@ class POSApp(AppWindow):
 
         assert self._coupon
         self._coupon.remove_item(sale_item)
-
-    def _get_coupon_message(self, sale, trans):
-        if not self.param.ENABLE_PAULISTA_INVOICE:
-            return u""
-
-        has_document = False
-        if sale.client and self._coupon.is_customer_identified():
-            client = IIndividual(sale.client.person, None)
-            if client:
-                document_type = PaulistaInvoice.TYPE_CPF
-                client_document = client.cpf
-            else:
-                client = ICompany(sale.client.person)
-                document_type = PaulistaInvoice.TYPE_CNPJ
-                client_document = client.cnpj
-
-            if not client_document:
-                model = None
-            else:
-                has_document = True
-                model = PaulistaInvoice(document_type=document_type,
-                                        document=client_document,
-                                        sale=sale, connection=trans)
-        elif not has_document:
-            model = self.run_dialog(PaulistaInvoiceDialog, trans, sale)
-
-        msg = u"\n"
-        if model and not has_document:
-            msg += _(u'Customer CPF/CNPJ: ') + model.document
-
-        return msg
 
     #
     # Actions

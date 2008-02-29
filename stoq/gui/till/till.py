@@ -39,10 +39,8 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       rollback_and_begin, finish_transaction)
-from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
-from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.lib.message import yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
@@ -53,7 +51,6 @@ from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import SaleSearch
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
-from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
 
 from stoq.gui.application import SearchableAppWindow
@@ -157,20 +154,30 @@ class TillApp(SearchableAppWindow):
         selected = self.results.get_selected()
         sale = Sale.get(selected.id, connection=self.conn)
         title = _('Confirm Sale')
-        model = self.run_dialog(ConfirmSaleWizard, self.conn, sale)
-        if not finish_transaction(self.conn, model):
+        coupon = self._open_coupon()
+        if not coupon:
             return
-        if not self._printer.emit_coupon(sale):
-            return
-        sale.confirm()
+        self._add_sale_items(sale, coupon)
+        if coupon.confirm(sale, self.conn):
+            self.conn.commit()
+            self.refresh()
 
-        if sale.paid_with_money():
-            sale.set_paid()
+    def _open_coupon(self):
+        coupon = self._printer.create_coupon()
 
-        print_cheques_for_payment_group(self.conn, IPaymentGroup(sale))
+        if coupon:
+            while not coupon.open():
+                if not yesno(
+                    _(u"It is not possible to confirm the sale if the "
+                       "fiscal coupon cannot be opened."),
+                    gtk.RESPONSE_YES, _(u"Try Again"), _(u"Cancel")):
+                    break
 
-        self.conn.commit()
-        self.refresh()
+        return coupon
+
+    def _add_sale_items(self, sale, coupon):
+        for sale_item in sale.get_items():
+            coupon.add_item(sale_item)
 
     def _summary(self):
         self._printer.summarize()
