@@ -42,11 +42,10 @@ from stoqlib.database.runtime import (get_current_user,
 from stoqlib.domain.base import (Domain, ValidatableDomain, BaseSQLView,
                                  ModelAdapter)
 from stoqlib.domain.events import SaleConfirmEvent
-from stoqlib.domain.fiscal import FiscalBookEntry
+from stoqlib.domain.fiscal import FiscalBookEntry, PaulistaInvoice
 from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IContainer, IOutPayment,
                                        IPaymentGroup, ISellable,
-                                       IIndividual, ICompany,
                                        IDelivery, IStorable, IProduct)
 from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.payment.methods import MoneyPM
@@ -255,11 +254,6 @@ class Sale(ValidatableDomain):
     @ivar surcharge_value:
     @ivar total_amount: the total value of all the items in the same
     @ivar notes: Some optional additional information related to this sale.
-    @ivar client_role: This field indicates what client role is tied with
-       the sale order. This is important since a client can have two roles
-       associated, i.e, Individual and/or Company. This is useful when
-       printing the sale invoice. One of Sale.CLIENT_INDIVIDUAL or
-       Sale.CLIENT_COMPANY.
     @ivar coupon_id:
     @ivar service_invoice_number:
     @ivar cfop:
@@ -273,9 +267,6 @@ class Sale(ValidatableDomain):
      STATUS_CANCELLED,
      STATUS_ORDERED,
      STATUS_RETURNED) = range(6)
-
-    (CLIENT_INDIVIDUAL,
-     CLIENT_COMPANY) = range(2)
 
     statuses = {STATUS_INITIAL:     _(u"Opened"),
                 STATUS_CONFIRMED:   _(u"Confirmed"),
@@ -298,7 +289,6 @@ class Sale(ValidatableDomain):
     notes = UnicodeCol(default='')
     coupon_id = IntCol()
     service_invoice_number = IntCol(default=None)
-    client_role = IntCol(default=None)
     cfop = ForeignKey("CfopData")
     total_amount = PriceCol(default=0)
 
@@ -525,31 +515,41 @@ class Sale(ValidatableDomain):
             return _(u'Not Specified')
         return self.client.get_name()
 
-    # Warning: "get_client_role" would be a Kiwi accessor here and this is not
-    # what we want.
-    def get_sale_client_role(self):
+    def get_client_role(self):
+        """Fetches the client role
+
+        @returns: the client role (a PersonAdaptToIndividual or a
+        _PersonAdaptToCompany) instance or None if the sale haven't a client.
+        """
         if not self.client:
             return None
-        person = self.client.person
-        if self.client_role is None:
+        client_role = self.client.person.has_individual_or_company_facets()
+        if client_role is None:
             raise DatabaseInconsistency("The sale %r have a client but no "
                                         "client_role defined." % self)
-        elif self.client_role == Sale.CLIENT_INDIVIDUAL:
-            return IIndividual(person)
-        elif self.client_role == Sale.CLIENT_COMPANY:
-            return ICompany(person)
+
+        return client_role
+
+    def create_paulista_invoice_entry(self):
+        """ Creates a Paulista Invoice entry
+
+        @returns: a PaulistaInvoice instance or None if the sale have
+        no client or if the client hasn't a document (CPF/CNPJ) set.
+        """
+        client_role = self.get_client_role()
+        if hasattr(client_role, 'cpf'):
+            document_type = PaulistaInvoice.TYPE_CPF
+            document = client_role.cpf
+        elif hasattr(client_role, 'cnpj'):
+            document_type = PaulistaInvoice.TYPE_CNPJ
+            document = client_role.cnpj
         else:
-            raise DatabaseInconsistency("Invalid client_role for sale %r, "
-                                        "got %r" % (self, self.client_role))
+            return
 
-    # XXX: depends on bug #2893
-#     def _set_client_role(self, value):
-#         if value not in (Sale.CLIENT_INDIVIDUAL,
-#                          Sale.CLIENT_COMPANY):
-#             raise TypeError("The client role should be one of constantes "
-#                             "CLIENT_INDIVIDUAL or CLIENT_COMPANY")
-#         self._SO_set_client_role(value)
-
+        if document:
+            return PaulistaInvoice(document_type=document_type,
+                                   document=document, sale=self,
+                                   connection=self.get_connection())
 
     # Other methods
 
