@@ -230,7 +230,8 @@
 	      <menuitem action="TillHistory"/>
 	      <menuitem action="FiscalTillOperations"/>
 	    </menu>
-	      <menu action="help_menu">
+        <placeholder name="ExtraMenu"/>
+	    <menu action="help_menu">
 	      <menuitem action="about_menu"/>
 	    </menu>
 	  </menubar>
