@@ -127,7 +127,7 @@ class ECFUI(object):
 
         ui_string = """<ui>
           <menubar name="menubar">
-            <placeholder name="PluginMenus">
+            <placeholder name="ExtraMenu">
               <menu action="ECFMenu">
                 <menuitem action="CancelLastDocument" name="CancelLastDocument"/>
                 <menuitem action="Summary" name="Summary"/>
@@ -153,10 +153,12 @@ class ECFUI(object):
     def _add_till_menus(self, uimanager):
         ui_string = """<ui>
           <menubar name="menubar">
-            <menu action="ECFMenu">
-              <menuitem action="Summary"/>
-              <menuitem action="ReadMemory"/>
-            </menu>
+            <placeholder name="ExtraMenu">
+              <menu action="ECFMenu">
+                <menuitem action="Summary"/>
+                <menuitem action="ReadMemory"/>
+              </menu>
+            </placeholder>
           </menubar>
         </ui>"""
         ag = gtk.ActionGroup('ECFMenuActions')
