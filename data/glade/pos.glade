@@ -249,7 +249,7 @@
                 <menuitem action="TillOpen"/>
                 <menuitem action="TillClose"/>
               </menu>
-            <placeholder name="PluginMenus"/>
+              <placeholder name="ExtraMenu"/>
               <menu action="help_menu">
                 <menuitem action="About"/>
               </menu>
