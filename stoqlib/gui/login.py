@@ -58,6 +58,7 @@ class LoginDialog(GladeDelegate, RunnableView):
                           delete_handler=gtk.main_quit)
         if title:
             self.set_title(title)
+        self.get_toplevel().set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         self.setup_widgets()
 
     def setup_widgets(self):
