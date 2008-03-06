@@ -1,4 +1,4 @@
-% name, phone_number, mobile_number, email, rg, cpf, 
+% name, phone_number, mobile_number, email, cnpj, state_registry,
 % city, country, state, street, number, district, 
 % open_contract, freight_percentage
-José Carlos de Carvalho,9283-2745,8173-2832,jccarvalho@stoq.com.br,30.992.531-9,532.245.171-40,Riberão Preto,Brazil,SP,Rua Principal,234,Centro,2010-06-03,7
+José Carlos de Carvalho,9283-2745,8173-2832,jccarvalho@stoq.com.br,37.165.431/0001-18,53224517140,Riberão Preto,Brazil,SP,Rua Principal,234,Centro,2010-06-03,7

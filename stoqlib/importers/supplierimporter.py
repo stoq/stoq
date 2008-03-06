@@ -20,11 +20,12 @@
 ##
 ##
 ## Author(s):       Johan Dahlin                <jdahlin@async.com.br>
+##                  George Kussumoto            <george@async.com.br>
 ##
 ##
 
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.interfaces import IIndividual, ISupplier
+from stoqlib.domain.interfaces import ICompany, ISupplier
 from stoqlib.domain.person import Person
 from stoqlib.importers.csvimporter import CSVImporter
 from stoqlib.lib.parameters import sysparam
@@ -34,8 +35,8 @@ class SupplierImporter(CSVImporter):
               'phone_number',
               'mobile_number',
               'email',
-              'rg',
-              'cpf',
+              'cnpj',
+              'state_registry',
               'city',
               'country',
               'state',
@@ -50,10 +51,11 @@ class SupplierImporter(CSVImporter):
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
-        person.addFacet(IIndividual,
+        person.addFacet(ICompany,
                         connection=trans,
-                        cpf=data.cpf,
-                        rg_number=data.rg)
+                        cnpj=data.cnpj,
+                        fancy_name=data.name,
+                        state_registry=data.state_registry)
 
         ctloc = CityLocation.get_or_create(trans=trans,
                                            city=data.city,
