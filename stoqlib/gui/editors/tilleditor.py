@@ -34,6 +34,7 @@ from kiwi.python import Settable
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
+                                   TillAddTillEntryEvent,
                                    TillAddCashEvent, TillRemoveCashEvent)
 from stoqlib.domain.interfaces import IEmployee
 from stoqlib.domain.person import Person
@@ -325,10 +326,11 @@ class CashAdvanceEditor(BaseEditor):
             except (TillError, DeviceError), e:
                 warning(str(e))
                 return None
-            till.add_debit_entry(value,
-                                 (_(u'Cash advance paid to employee: %s')
-                                  % self._get_employee_name()))
+            till_entry = till.add_debit_entry(
+                value, (_(u'Cash advance paid to employee: %s') % (
+                self._get_employee_name(),)))
 
+            TillAddTillEntryEvent.emit(till_entry, self.conn)
             return self.model
 
         return valid
@@ -387,8 +389,12 @@ class CashOutEditor(BaseEditor):
                 warning(str(e))
                 return None
 
-            return till.add_debit_entry(
+            till_entry = till.add_debit_entry(
                 value, (_(u'Cash out: %s') % (self.reason.get_text(),)))
+
+
+            TillAddTillEntryEvent.emit(till_entry, self.conn)
+            return till_entry
 
         return valid
 
@@ -439,10 +445,11 @@ class CashInEditor(BaseEditor):
                 warning(str(e))
                 return None
 
-            return till.add_credit_entry(
+            till_entry = till.add_credit_entry(
                 self.model.value,
                 (_(u'Cash in: %s') % (self.reason.get_text(),)))
 
+            TillAddTillEntryEvent.emit(till_entry, self.conn)
+            return till_entry
+
         return valid
-
-

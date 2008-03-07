@@ -49,6 +49,8 @@ class ECFPrinter(Domain):
     @param station:
     @param is_active:
     @param constants:
+    @cvar last_sale: reference for the last Sale
+    @cvar last_till_entry: reference for the last TillEntry
     """
     implements(IActive, IDescribable)
 
@@ -59,6 +61,8 @@ class ECFPrinter(Domain):
     station = ForeignKey("BranchStation")
     is_active = BoolCol(default=True)
     constants = MultipleJoin('DeviceConstant')
+    last_sale = ForeignKey("Sale", default=None)
+    last_till_entry = ForeignKey("TillEntry", default=None)
 
     #
     # Public API
@@ -187,6 +191,11 @@ class ECFPrinter(Domain):
 
     def get_description(self):
         return '%s %s' % (self.brand.capitalize(), self.model)
+
+    @classmethod
+    def get_last_document(cls, station, conn):
+        return cls.selectOneBy(station=station, is_active=True,
+                               connection=conn)
 
 
 class DeviceConstant(Domain):
