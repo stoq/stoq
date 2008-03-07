@@ -20,15 +20,19 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
+##              Fabio Morbec      <fabio@async.com.br>
 ##
 
 import gtk
 from kiwi.log import Logger
 from stoqdrivers.exceptions import CouponOpenError, DriverError
-from stoqlib.database.runtime import get_current_station, get_connection
+from stoqlib.database.runtime import (get_current_station, get_connection,
+                                      new_transaction)
 from stoqlib.domain.events import (SaleConfirmEvent, TillAddCashEvent,
                                    TillRemoveCashEvent, TillOpenEvent,
-                                   TillCloseEvent)
+                                   TillCloseEvent, TillAddTillEntryEvent)
+from stoqlib.domain.renegotiation import RenegotiationData
+from stoqlib.domain.sale import Sale
 from stoqlib.exceptions import DeviceError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.events import StartApplicationEvent, CouponCreatedEvent
@@ -56,6 +60,7 @@ class ECFUI(object):
         TillOpenEvent.connect(self._on_TillOpen)
         TillCloseEvent.connect(self._on_TillClose)
         TillAddCashEvent.connect(self._on_TillAddCash)
+        TillAddTillEntryEvent.connect(self._on_AddTillEntry)
         TillRemoveCashEvent.connect(self._on_TillRemoveCash)
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         CouponCreatedEvent.connect(self._on_CouponCreatedEvent)
@@ -231,6 +236,16 @@ class ECFUI(object):
 
         return retval
 
+    def _set_last_sale(self, sale, trans):
+        printer = trans.get(self._printer._printer)
+        printer.last_sale = sale
+        printer.last_till_entry = None
+
+    def _set_last_till_entry(self, till_entry, trans):
+        printer = trans.get(self._printer._printer)
+        printer.last_till_entry = till_entry
+        printer.last_sale = None
+
     def _add_cash(self, till, value):
         log.info('ECFCouponPrinter.add_cash(%r, %r)' % (till, value,))
 
@@ -273,6 +288,63 @@ class ECFUI(object):
             fiscalcoupon.connect_object(signal, callback, coupon)
         return coupon
 
+    def _get_last_document(self, trans):
+        printer = self._printer.get_printer()
+        return ECFPrinter.get_last_document(station=printer.station,
+                                            conn=trans)
+
+    def _confirm_last_document_cancel(self, last_doc):
+        if last_doc.last_sale is None and last_doc.last_till_entry is None:
+            info(_("There is no sale nor till entry to cancel"))
+            return
+
+        if last_doc.last_sale:
+            msg = _("Do you really want to cancel the sale number %d "
+                     "and value %.2f ?" % (last_doc.last_sale.id,
+                                           last_doc.last_sale.total_amount))
+        elif last_doc.last_till_entry.value > 0:
+            msg = _("Do you really want to cancel the last cash added "
+                    "number %d and value %.2f ?" % (
+                        last_doc.last_till_entry.id,
+                        last_doc.last_till_entry.value))
+        else:
+            msg = _("Do you really want to cancel the last cash removed "
+                    "number %d and value %.2f ?" % (
+                        last_doc.last_till_entry.id,
+                        last_doc.last_till_entry.value))
+        return yesno(msg, gtk.RESPONSE_NO, _("Cancel Last Document"),
+                     _(u"Not now"))
+
+    def _cancel_last_till_entry(self, last_doc, trans):
+        till_entry = trans.get(last_doc.last_till_entry)
+        try:
+            self._printer.cancel_last_coupon()
+            if till_entry.value > 0:
+                till_entry.description = _("Cash out")
+            else:
+                till_entry.description = _("Cash in")
+            till_entry.value = -till_entry.value
+            last_doc.last_till_entry = None
+        except:
+            info(_("Cancelling failed, nothing to cancel"))
+            return
+
+    def _cancel_last_sale(self, last_doc, trans):
+        if last_doc.last_sale.status == Sale.STATUS_RETURNED:
+            return
+        sale = trans.get(last_doc.last_sale)
+        renegotiation = RenegotiationData(
+            reason=_("Cancel last document"),
+            paid_total=sale.total_amount,
+            invoice_number=sale.id,
+            penalty_value=0,
+            sale=sale,
+            responsible=sale.salesperson,
+            new_order=None,
+            connection=trans)
+        sale.return_(renegotiation)
+        last_doc.last_sale = None
+
     def _cancel_last_document(self):
         try:
             self._validate_printer()
@@ -280,16 +352,24 @@ class ECFUI(object):
             warning(e)
             return
 
-        if yesno(
-            _(u"Do you really want to cancel the last document?"),
-            gtk.RESPONSE_NO, _(u"Not now"), _("Cancel Last Document")):
+        trans = new_transaction()
+        last_doc = self._get_last_document(trans)
+        if not self._confirm_last_document_cancel(last_doc):
+            trans.close()
             return
 
-        cancelled = self._printer.cancel()
-        if not cancelled:
-            info(_("Cancelling sale failed, nothing to cancel"))
+        if last_doc.last_till_entry:
+            self._cancel_last_till_entry(last_doc, trans)
         else:
-            info(_("Document was cancelled"))
+            cancelled = self._printer.cancel()
+            if not cancelled:
+                info(_("Cancelling sale failed, nothing to cancel"))
+                trans.close()
+                return
+            else:
+                self._cancel_last_sale(last_doc, trans)
+        trans.commit()
+        info(_("Document was cancelled"))
 
     def _till_summarize(self):
         try:
@@ -317,6 +397,7 @@ class ECFUI(object):
 
     def _on_SaleConfirm(self, sale, trans):
         self._confirm_sale(sale)
+        self._set_last_sale(sale, trans)
 
     def _on_TillOpen(self, till):
         return self._open_till(till)
@@ -332,6 +413,9 @@ class ECFUI(object):
 
     def _on_CouponCreatedEvent(self, coupon):
         self._coupon_create(coupon)
+
+    def _on_AddTillEntry(self, till_entry, trans):
+        self._set_last_till_entry(till_entry, trans)
 
     #
     # Callbacks

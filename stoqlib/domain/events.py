@@ -75,3 +75,14 @@ class TillRemoveCashEvent(Event):
     @param value: amount remove from the till
     """
 
+
+class TillAddTillEntryEvent(Event):
+    """
+    This event is emitted when:
+
+    cash is added to a till;
+    cash is removed from a till;
+    @param till_entry: TillEntry object
+    @param conn: database connection
+    """
+

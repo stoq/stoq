@@ -100,6 +100,10 @@ class CouponPrinter(object):
 
         return True
 
+    def cancel_last_coupon(self):
+        """Cancel the last non-fiscal coupon or sale."""
+        self._driver.cancel_last_coupon()
+
     def add_cash(self, value):
         """
         Remove cash to the till
