@@ -100,7 +100,7 @@ class ReceivableApp(SearchableAppWindow):
         selected = self.results.get_selected_rows()
         self.receive_button.set_sensitive(self._can_receive(selected))
         self.details_button.set_sensitive(self._same_sale(selected))
-        self.due_date_change_button.set_sensitive(self._can_change_due_date(selected))
+        self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
         self.Receipt.set_sensitive(self._can_emit_receipt(selected))
         self.SetNotPaid.set_sensitive(self._can_set_not_paid(selected))
 
@@ -303,10 +303,6 @@ class ReceivableApp(SearchableAppWindow):
         selected = self.results.get_selected_rows()[0]
         self._show_details(selected)
 
-    def on_due_date_change_button__clicked(self, button):
-        receivable_view = self.results.get_selected_rows()[0]
-        self._change_due_date(receivable_view)
-
     def on_receive_button__clicked(self, button):
         self._receive(self.results.get_selected_rows())
 
@@ -325,3 +321,7 @@ class ReceivableApp(SearchableAppWindow):
     def on_SetNotPaid__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]
         self._change_status(receivable_view)
+
+    def on_ChangeDueDate__activate(self, action):
+        receivable_view = self.results.get_selected_rows()[0]
+        self._change_due_date(receivable_view)

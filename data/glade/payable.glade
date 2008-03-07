@@ -20,6 +20,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="ChangeDueDate">
+                        <property name="name">ChangeDueDate</property>
+                        <property name="label" translatable="yes">Change Due Date...</property>
+                        <property name="stock_id">gtk-refresh</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Bill">
                         <property name="name">Bill</property>
                         <property name="label" translatable="yes">Bills</property>
@@ -180,6 +187,7 @@
 	    <menu action="TillMenu">
 	      <menuitem action="AddPayment"/>
 	      <menuitem action="SetNotPaid"/>
+	      <menuitem action="ChangeDueDate"/>
 	      <menuitem action="Receipt"/>
 	      <menuitem action="quit_action"/>
 	    </menu>
@@ -269,42 +277,6 @@
                                                     </widget>
                                                 </child>
                                             </widget>
-                                        </child>
-                                        <child>
-                                            <widget class="GtkButton" id="due_date_change_button">
-                                                <property name="is_focus">True</property>
-                                                <property name="sensitive">False</property>
-                                                <property name="visible">True</property>
-                                                <child>
-                                                     <widget class="GtkAlignment" id="alignment2">
-                                                        <property name="visible">True</property>
-                                                        <child>
-                                                            <widget class="GtkVBox" id="vbox4">
-                                                                <property name="visible">True</property>
-                                                                <child>
-                                                                    <widget class="GtkImage" id="image1">
-                                                                        <property name="file">view_refresh24px.png</property>
-                                                                        <property name="visible">True</property>
-                                                                    </widget>
-                                                                </child>
-                                                                <child>
-                                                                    <widget class="GtkLabel" id="label2">
-                                                                        <property name="label" context="yes" translatable="yes">_Change Due Date</property>
-                                                                        <property name="use-underline">True</property>
-                                                                        <property name="visible">True</property>
-                                                                    </widget>
-                                                                    <packing>
-                                                                        <property name="position">1</property>
-                                                                    </packing>
-                                                                </child>
-                                                            </widget>
-                                                        </child>
-                                                     </widget>
-                                                </child>
-                                            </widget>
-                                            <packing>
-                                                <property name="position">1</property>
-                                            </packing>
                                         </child>
                                         <child>
                                             <widget class="GtkButton" id="pay_order_button">

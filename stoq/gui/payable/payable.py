@@ -272,7 +272,7 @@ class PayableApp(SearchableAppWindow):
     def _update_widgets(self):
         selected = self.results.get_selected_rows()
         self.details_button.set_sensitive(self._can_show_details(selected))
-        self.due_date_change_button.set_sensitive(self._can_change_due_date(selected))
+        self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
         self.pay_order_button.set_sensitive(self._same_purchase(selected))
         self.pay_order_button.set_sensitive(self._can_pay(selected))
         self.print_button.set_sensitive(bool(self.results))
@@ -295,10 +295,6 @@ class PayableApp(SearchableAppWindow):
     def on_details_button__clicked(self, button):
         payable_view = self.results.get_selected_rows()[0]
         self._show_details(payable_view)
-
-    def on_due_date_change_button__clicked(self, button):
-        payable_view = self.results.get_selected_rows()[0]
-        self._change_due_date(payable_view)
 
     def on_pay_order_button__clicked(self, button):
         self._pay(self.results.get_selected_rows())
@@ -325,3 +321,7 @@ class PayableApp(SearchableAppWindow):
         payable_view = self.results.get_selected_rows()[0]
         self._change_status(payable_view)
 
+    def on_ChangeDueDate__activate(self, action):
+        payable_view = self.results.get_selected_rows()[0]
+        self._change_due_date(payable_view)
+ 
