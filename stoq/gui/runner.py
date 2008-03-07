@@ -192,7 +192,7 @@ class ApplicationRunner(object):
             self._current_app.hide()
 
         if not self.login(try_cookie=False):
-            self._current_app.show()
+            self._current_app.shutdown()
             return
 
         appname = self.choose()
