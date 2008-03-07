@@ -32,6 +32,7 @@ instead signals and interfaces for that.
 
 from decimal import Decimal
 
+from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.python import Settable
 
@@ -155,11 +156,11 @@ class SellableItemStep(WizardEditorStep):
 
     def post_init(self):
         self.sellable.grab_focus()
-        self.sellable_hbox.set_focus_chain([self.sellable,
+        self.item_hbox.set_focus_chain([self.sellable,
                                         self.quantity, self.cost,
                                         self.add_sellable_button,
                                         self.product_button])
-        self.register_validate_function(self.wizard.refresh_next)
+        self.register_validate_function(self._validate)
         self.force_validation()
 
     def setup_proxies(self):
@@ -235,6 +236,10 @@ class SellableItemStep(WizardEditorStep):
         self._refresh_next()
         self.force_validation()
 
+    def _validate(self, value):
+        self.add_sellable_button.set_sensitive(value)
+        self.wizard.refresh_next(value)
+
     #
     # callbacks
     #
@@ -265,6 +270,12 @@ class SellableItemStep(WizardEditorStep):
 
     def on_quantity__activate(self, entry):
         self._add_sellable()
+
+    def on_quantity__validate(self, entry, value):
+        # only support integer quantities
+        if value <= 0 or value != int(value):
+            return ValidationError(_(u'The quantity must be a positive'
+                                     ' integer number'))
 
     def on_cost__activate(self, entry):
         self._add_sellable()
