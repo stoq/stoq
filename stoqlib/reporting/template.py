@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s):  Henrique Romano         <henrique@async.com.br>
+##              George Kussumoto        <george@async.com.br>
 ##
 ##
 """ Base class implementation for all Stoq reports """
@@ -33,6 +34,7 @@ from trml2pdf.trml2pdf import parseString
 from stoqlib.database.runtime import (new_transaction,
                                 get_current_branch, get_connection)
 from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_phone_number
 from stoqlib.reporting.base.printing import ReportTemplate
@@ -41,8 +43,20 @@ _ = stoqlib_gettext
 
 
 FANCYNAME_FONT = ("Vera-B", 14)
+LOGO_SIZE = (171, 59)
 SMALL_FONT = ("Vera", 12)
 TEXT_HEIGHT = 13
+
+def _get_logotype(trans):
+   logofile = sysparam(trans).CUSTOM_LOGO_FOR_REPORTS
+   if logofile.is_valid():
+       logofile.resize(LOGO_SIZE)
+       #XXX: ImageReader does not deal very well with unicode
+       logofile = str(logofile.image_path)
+   else:
+       logofile = environ.find_resource("pixmaps", "stoq_logo_bgwhite.png")
+
+   return ImageReader(logofile)
 
 
 class BaseStoqReport(ReportTemplate):
@@ -52,7 +66,7 @@ class BaseStoqReport(ReportTemplate):
     def __init__(self, *args, **kwargs):
         ReportTemplate.__init__(self, *args, **kwargs)
         self.trans = new_transaction()
-        self._logotype = self._get_logotype()
+        self._logotype = _get_logotype(self.trans)
         # The BaseReportTemplate's header_height attribute define the
         # vertical position where the document really must starts be
         # drawed (this is used to not override the space reserved to
@@ -64,10 +78,6 @@ class BaseStoqReport(ReportTemplate):
             if not type(title) is tuple:
                 title = (title, )
             self.add_title(*title)
-
-    def _get_logotype(self):
-        logofile = environ.find_resource("pixmaps", "stoq_logo_bgwhite.png")
-        return ImageReader(logofile)
 
     def draw_header(self, canvas):
         canvas.saveState()
@@ -224,9 +234,10 @@ class BaseRMLReport(object):
     def _complete_namespace(self, ns):
         """Add common information in namespace
         """
-        branch = get_current_branch(get_connection())
+        conn = get_connection()
+        branch = get_current_branch(conn)
         branch_address = branch.person.address
-        logo = environ.find_resource('pixmaps', 'stoq_logo_bgwhite.png')
+        logo = _get_logotype(conn)
 
         ns['title'] = self.title
         ns['logo'] = logo
