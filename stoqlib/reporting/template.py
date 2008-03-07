@@ -47,16 +47,13 @@ LOGO_SIZE = (171, 59)
 SMALL_FONT = ("Vera", 12)
 TEXT_HEIGHT = 13
 
-def _get_logotype(trans):
+def _get_logotype_path(trans):
    logofile = sysparam(trans).CUSTOM_LOGO_FOR_REPORTS
    if logofile.is_valid():
        logofile.resize(LOGO_SIZE)
-       #XXX: ImageReader does not deal very well with unicode
-       logofile = str(logofile.image_path)
+       return str(logofile.image_path)
    else:
-       logofile = environ.find_resource("pixmaps", "stoq_logo_bgwhite.png")
-
-   return ImageReader(logofile)
+       return environ.find_resource("pixmaps", "stoq_logo_bgwhite.png")
 
 
 class BaseStoqReport(ReportTemplate):
@@ -66,7 +63,8 @@ class BaseStoqReport(ReportTemplate):
     def __init__(self, *args, **kwargs):
         ReportTemplate.__init__(self, *args, **kwargs)
         self.trans = new_transaction()
-        self._logotype = _get_logotype(self.trans)
+        logotype_path = _get_logotype_path(self.trans)
+        self._logotype = ImageReader(logotype_path)
         # The BaseReportTemplate's header_height attribute define the
         # vertical position where the document really must starts be
         # drawed (this is used to not override the space reserved to
@@ -237,7 +235,7 @@ class BaseRMLReport(object):
         conn = get_connection()
         branch = get_current_branch(conn)
         branch_address = branch.person.address
-        logo = _get_logotype(conn)
+        logo = _get_logotype_path(conn)
 
         ns['title'] = self.title
         ns['logo'] = logo
