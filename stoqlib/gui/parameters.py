@@ -33,6 +33,7 @@ from stoqlib.database.runtime import rollback_and_begin
 from stoqlib.domain.base import AbstractModel
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.parameter import ParameterData
+from stoqlib.lib.imageutils import ImageHelper
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicDialog
@@ -95,6 +96,8 @@ class ParametersListingDialog(BasicDialog):
                 raise TypeError("Parameter `%s' must implement IDescribable "
                                 "interface." % obj.field_name)
             return data.get_description()
+        elif isinstance(data, ImageHelper):
+            return data.image_path
         elif isinstance(data, bool):
             return [_("No"), _("Yes")][data]
         return data
