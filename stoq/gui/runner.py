@@ -29,6 +29,7 @@ import gtk
 from kiwi.log import Logger
 from stoqlib.exceptions import LoginError
 from stoqlib.gui.events import StartApplicationEvent
+from stoqlib.database.runtime import get_connection, get_current_user
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.message import error, info
 from kiwi.component import get_utility
@@ -122,6 +123,11 @@ class ApplicationRunner(object):
 
         return available_applications
 
+    def _get_current_username(self):
+        conn = get_connection()
+        user = get_current_user(conn)
+        return user.username
+
     # Public API
 
     def choose(self):
@@ -191,8 +197,16 @@ class ApplicationRunner(object):
         if self._current_app:
             self._current_app.hide()
 
+        old_user = self._get_current_username()
+
         if not self.login(try_cookie=False):
             self._current_app.shutdown()
+            return
+
+        # If the username is the same
+        if (old_user == self._get_current_username() and
+            self._current_app):
+            self._current_app.show()
             return
 
         appname = self.choose()
