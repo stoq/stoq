@@ -26,6 +26,8 @@
 ##
 """ Individual edition template slaves implementation.  """
 
+import datetime
+
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import ValidationError
 from kiwi.python import AttributeForwarder
@@ -175,6 +177,10 @@ class _IndividualDetailsSlave(BaseEditorSlave):
 
     def on_marital_status__changed(self, *args):
         self._update_marital_status()
+
+    def on_birth_date__validate(self, widget, date):
+        if date >= datetime.date.today():
+            return ValidationError(_(u"Birth date must be less than today"))
 
 
 class IndividualEditorTemplate(BaseEditorSlave):
