@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -93,8 +93,9 @@ class LoginDialog(GladeDelegate, RunnableView):
     def on_ok_button__clicked(self, button):
         self._do_login()
 
-    def on_cancel_button__clicked(self, button):
+    def on_quit_button__clicked(self, button):
         gtk.main_quit()
+        self.retval = False
 
     def on_username__activate(self, entry):
         self.password.grab_focus()
@@ -104,7 +105,7 @@ class LoginDialog(GladeDelegate, RunnableView):
 
     def set_field_sensitivity(self, sensitive=True):
         for widget in (self.username, self.password, self.ok_button,
-                       self.cancel_button):
+                       self.quit_button):
             widget.set_sensitive(sensitive)
 
     def _do_login(self):
