@@ -38,6 +38,7 @@ Current flow of the database steps:
             If DB is empty -> ECFPluginStep
             Otherwise      -> BranchSettingsStep
                 -> ECFPluginStep
+-> FinishInstallationStep
 
 """
 
@@ -536,14 +537,35 @@ class BranchSettingsStep(WizardEditorStep):
 class ECFPluginStep(BaseWizardStep):
     gladefile = 'ECFPluginStep'
 
-    def has_next_step(self):
-        return False
+    def next_step(self):
+        return FinishInstallationStep(self.conn, self.wizard, self)
 
     def post_init(self):
         self.wizard.enable_ecf = True
 
     def on_yes__toggled(self, radio):
         self.wizard.enable_ecf = radio.get_active()
+
+
+class FinishInstallationStep(BaseWizardStep):
+    gladefile = 'FinishInstallationStep'
+
+    def has_next_step(self):
+        return False
+
+    def post_init(self):
+        # replaces the cancel button with a quit button
+        self.wizard.cancel_button.set_label(gtk.STOCK_QUIT)
+        # self._cancel will be a callback for the quit button
+        self.wizard.cancel = self._cancel
+        self.wizard.next_button.set_label(_(u'Run Stoq'))
+
+    def _cancel(self):
+        # This is the last step, so we will finish the installation
+        # before we quit
+        self.wizard.finish()
+        # Use False instead of None, so we can distinguish quit from cancel
+        self.wizard.retval = False
 
 
 #

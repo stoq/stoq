@@ -177,8 +177,12 @@ def _run_first_time_wizard(options):
     from stoqlib.gui.base.dialogs import run_dialog
     from stoq.gui.config import FirstTimeConfigWizard
     model = run_dialog(FirstTimeConfigWizard, None, options)
-    if not model:
+    if model is None:
         raise SystemExit("No configuration data provided")
+    # We have a successfull installation, but the user want to close the
+    # the application now.
+    if model is False:
+        raise SystemExit()
 
 def _setup_ui_dialogs():
     # This needs to be here otherwise we can't install the dialog
