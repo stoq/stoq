@@ -48,7 +48,8 @@ from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.paymentadditiondialog import InPaymentAdditionDialog
-from stoqlib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
+from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
+                                                     PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 
@@ -101,6 +102,7 @@ class ReceivableApp(SearchableAppWindow):
         self.details_button.set_sensitive(self._same_sale(selected))
         self.due_date_change_button.set_sensitive(self._can_change_due_date(selected))
         self.Receipt.set_sensitive(self._can_emit_receipt(selected))
+        self.SetNotPaid.set_sensitive(self._can_set_not_paid(selected))
 
     def _has_rows(self, result_list, has_rows):
         self.print_button.set_sensitive(has_rows)
@@ -198,6 +200,22 @@ class ReceivableApp(SearchableAppWindow):
 
         trans.close()
 
+    def _change_status(self, receivable_view):
+        """Show a dialog do enter a reason for status change
+        @param receivable_view: a InPaymentView instance
+        """
+        trans = new_transaction()
+        payment = trans.get(receivable_view.payment)
+        order = trans.get(receivable_view.sale)
+        retval = run_dialog(PaymentStatusChangeDialog, self, trans,
+                            payment, order)
+
+        if finish_transaction(trans, retval):
+            receivable_view.sync()
+            self.results.update(receivable_view)
+
+        trans.close()
+
     def _can_emit_receipt(self, receivable_views):
         """
         Determines if we can emit the receipt for a list of
@@ -235,6 +253,14 @@ class ReceivableApp(SearchableAppWindow):
         return all(view.sale == sale and
                    view.status == Payment.STATUS_PENDING
                    for view in receivable_views)
+
+    def _can_set_not_paid(self, receivable_views):
+        """whether or not we can change the paid status
+        """
+        if len(receivable_views) != 1:
+            return False
+
+        return receivable_views[0].payment.is_paid()
 
     def _can_change_due_date(self, receivable_views):
         """
@@ -295,3 +321,7 @@ class ReceivableApp(SearchableAppWindow):
 
     def on_AddReceiving__activate(self, action):
         self._add_receiving()
+
+    def on_SetNotPaid__activate(self, action):
+        receivable_view = self.results.get_selected_rows()[0]
+        self._change_status(receivable_view)
