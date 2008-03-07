@@ -32,7 +32,6 @@ from stoqlib.domain.commission import CommissionView
 from stoqlib.domain.sale import SaleView
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.reporting.base.flowables import RIGHT
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import (get_formatted_price, format_quantity,
                                     format_phone_number,
                                     get_formatted_percentage)
@@ -96,9 +95,7 @@ class SaleOrderReport(BaseStoqReport):
     #
 
     def get_title(self):
-        return (_("Sale Order on %s, with due date of %d days")
-                % (self.sale.open_date.strftime("%x"),
-                   sysparam(get_connection()).MAX_SALE_ORDER_VALIDITY))
+        return (_("Sale Order on %s") % self.sale.open_date.strftime("%x"))
 
 class SalesReport(SearchResultsReport):
     # This should be properly verified on BaseStoqReport. Waiting for
