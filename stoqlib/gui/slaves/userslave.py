@@ -194,13 +194,20 @@ class UserDetailsSlave(BaseEditorSlave):
         if self.show_password_fields:
             self._attach_slaves()
             self.change_password_button.hide()
-        self._setup_entry_completion()
+        self._setup_profile_entry_completion()
+        self._setup_role_entry_completition()
 
-    def _setup_entry_completion(self):
+    def _setup_profile_entry_completion(self):
         if self.model.profile is None:
             self.model.profile = UserProfile.get_default(conn=self.conn)
         profiles = UserProfile.select(connection=self.conn, orderBy='name')
         self.profile.prefill([(p.name, p) for p in profiles])
+
+    def _setup_role_entry_completition(self):
+        roles = EmployeeRole.select(connection=self.conn)
+        items = [(role.name, role) for role in roles]
+        items.insert(0, (_("No Role"), None))
+        self.role.prefill(items)
 
     def _attach_slaves(self):
         self.password_slave = PasswordEditorSlave(self.conn)
@@ -224,15 +231,15 @@ class UserDetailsSlave(BaseEditorSlave):
         # 2) Show some additional information in the user interface, which
         #    are related to the facets the current profile will add
         profile = self.profile.get_selected()
-        if profile.name == 'Salesperson':
-            person = self.model.person
-            if not IEmployee(person, None):
-                role = EmployeeRole.selectOneBy(name=profile.name,
-                                                connection=self.conn)
-                person.addFacet(IEmployee, role=role, connection=self.conn)
+        person = self.model.person
+        if not IEmployee(person, None):
+            person.addFacet(IEmployee, role=self.role.read(),
+                            connection=self.conn)
 
-                if not ISalesPerson(person, None):
-                    person.addFacet(ISalesPerson, connection=self.conn)
+        # If the user can access POS then he/she can perform sales too
+        can_access_pos = profile.check_app_permission("pos")
+        if  can_access_pos and not ISalesPerson(person, None):
+            person.addFacet(ISalesPerson, connection=self.conn)
 
     #
     # Kiwi handlers
