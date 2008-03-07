@@ -210,6 +210,7 @@ class PurchaseItemStep(SellableItemStep):
     #
 
     def post_init(self):
+        SellableItemStep.post_init(self)
         self.slave.set_editor(ProductEditor)
         self._refresh_next()
         self.product_button.hide()
