@@ -5,7 +5,7 @@
         <property name="mode">horizontal</property>
     </widget>
     <widget class="GtkWindow" id="SalesPersonStep">
-        <property name="border_width">5</property>
+        <property name="border_width">6</property>
         <property name="default_height">250</property>
         <property name="default_width">440</property>
         <child>
@@ -111,29 +111,6 @@
                             <widget class="GtkHBox" id="hbox2">
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="GtkHButtonBox" id="hbuttonbox1">
-                                        <property name="visible">True</property>
-                                        <child>
-                                            <widget class="GtkButton" id="notes_button">
-                                                <property name="label" context="yes" translatable="yes">Notes...</property>
-                                                <property name="visible">True</property>
-                                            </widget>
-                                        </child>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkLabel" id="label2">
-                                        <property name="visible">True</property>
-                                        <property name="xalign">0.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
-                                <child>
                                     <widget class="GtkTable" id="table1">
                                         <property name="column_spacing">6</property>
                                         <property name="n_columns">2</property>
@@ -144,18 +121,18 @@
                                             <widget class="ProxyLabel" id="kiwilabel3">
                                                 <property name="data_type">unicode</property>
                                                 <property name="label" context="yes" translatable="yes">Subtotal:</property>
-                                                <property name="model_attribute"></property>
+                                                <property name="model_attribute">kiwilabel3</property>
                                                 <property name="visible">True</property>
-                                                <property name="xalign">1.0</property>
+                                                <property name="xalign">0.0</property>
                                             </widget>
                                         </child>
                                         <child>
                                             <widget class="ProxyLabel" id="kiwilabel5">
                                                 <property name="data_type">unicode</property>
                                                 <property name="label" context="yes" translatable="yes">Total:</property>
-                                                <property name="model_attribute"></property>
+                                                <property name="model_attribute">kiwilabel5</property>
                                                 <property name="visible">True</property>
-                                                <property name="xalign">1.0</property>
+                                                <property name="xalign">0.0</property>
                                             </widget>
                                             <packing>
                                                 <property name="bottom_attach">2</property>
@@ -165,19 +142,22 @@
                                         <child>
                                             <widget class="ProxyLabel" id="subtotal_lbl">
                                                 <property name="data_type">currency</property>
+                                                <property name="justify">right</property>
                                                 <property name="label" context="yes" translatable="yes">0.00</property>
                                                 <property name="model_attribute">sale_subtotal</property>
                                                 <property name="visible">True</property>
-                                                <property name="xalign">1.0</property>
+                                                <property name="xalign">0.0</property>
                                             </widget>
                                             <packing>
                                                 <property name="left_attach">1</property>
                                                 <property name="right_attach">2</property>
+                                                <property name="x_options">expand</property>
                                             </packing>
                                         </child>
                                         <child>
                                             <widget class="ProxyLabel" id="total_lbl">
                                                 <property name="data_type">currency</property>
+                                                <property name="justify">right</property>
                                                 <property name="label" context="yes" translatable="yes">0.00</property>
                                                 <property name="model_attribute">total_sale_amount</property>
                                                 <property name="visible">True</property>
@@ -188,12 +168,41 @@
                                                 <property name="left_attach">1</property>
                                                 <property name="right_attach">2</property>
                                                 <property name="top_attach">1</property>
+                                                <property name="x_options">expand</property>
+                                            </packing>
+                                        </child>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="label2">
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.0</property>
+                                        <property name="xpad">12</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="position">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkHButtonBox" id="hbuttonbox1">
+                                        <property name="spacing">6</property>
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <widget class="GtkButton" id="notes_button">
+                                                <property name="is_focus">True</property>
+                                                <property name="label" context="yes" translatable="yes">Notes...</property>
+                                                <property name="visible">True</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="pack_type">end</property>
                                             </packing>
                                         </child>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
-                                        <property name="position">2</property>
+                                        <property name="fill">False</property>
+                                        <property name="pack_type">end</property>
+                                        <property name="position">1</property>
                                     </packing>
                                 </child>
                             </widget>
@@ -202,18 +211,35 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkExpander" id="subtotal_expander">
-                                <property name="is_focus">True</property>
-                                <property name="label" context="yes" translatable="yes">Order Details</property>
+                            <widget class="GtkHBox" id="hbox4">
+                                <property name="spacing">6</property>
                                 <property name="visible">True</property>
-                                <property name="width_request">25</property>
                                 <child>
-                                    <widget class="GtkEventBox" id="discount_surcharge_slave">
+                                    <widget class="GtkEventBox" id="cash_change_holder">
                                         <property name="visible">True</property>
                                         <child>
                                             <placeholder/>
                                         </child>
                                     </widget>
+                                </child>
+                                <child>
+                                    <widget class="GtkExpander" id="subtotal_expander">
+                                        <property name="is_focus">True</property>
+                                        <property name="label" context="yes" translatable="yes">Order Details</property>
+                                        <property name="visible">True</property>
+                                        <property name="width_request">25</property>
+                                        <child>
+                                            <widget class="GtkEventBox" id="discount_surcharge_slave">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                    <placeholder/>
+                                                </child>
+                                            </widget>
+                                        </child>
+                                    </widget>
+                                    <packing>
+                                        <property name="position">1</property>
+                                    </packing>
                                 </child>
                             </widget>
                             <packing>

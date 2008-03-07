@@ -48,6 +48,7 @@ from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.gui.slaves.cashchangeslave import CashChangeSlave
 from stoqlib.gui.slaves.paymentmethodslave import (SelectPaymentMethodSlave,
                                                    PmSlaveType)
 from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave, BillMethodSlave,
@@ -574,6 +575,7 @@ class _AbstractSalesPersonStep(WizardEditorStep):
     def _update_totals(self):
         for field_name in ('total_sale_amount', 'sale_subtotal'):
             self.proxy.update(field_name)
+        self.cash_change_slave.update_total_sale_amount()
 
     def setup_widgets(self):
         salespersons = Person.iselect(ISalesPerson, connection=self.conn)
@@ -670,6 +672,9 @@ class _AbstractSalesPersonStep(WizardEditorStep):
         self.pm_slave.connect('method-changed', self.on_payment_method_changed)
         self.attach_slave('select_method_holder', self.pm_slave)
 
+        self.cash_change_slave = CashChangeSlave(self.conn, self.model)
+        self.attach_slave('cash_change_holder', self.cash_change_slave)
+
     def setup_proxies(self):
         self.setup_widgets()
         self.proxy = self.add_proxy(self.model,
@@ -699,13 +704,14 @@ class SalesPersonStep(_AbstractSalesPersonStep):
     def _update_next_step(self, method_name):
         if method_name == PmSlaveType.MONEY:
             self.wizard.enable_finish()
+            self.cash_change_slave.enable_cash_change()
         elif method_name in (PmSlaveType.GIFT_CERTIFICATE,
                              PmSlaveType.MULTIPLE):
             self.wizard.disable_finish()
+            self.cash_change_slave.disable_cash_change()
         else:
             raise ValueError(
                 "Invalid payment method interface, got %s" % method_name)
-
 
     #
     # AbstractSalesPersonStep hooks
@@ -736,9 +742,19 @@ class SalesPersonStep(_AbstractSalesPersonStep):
     def on_next_step(self):
         selected_method = self._get_selected_payment_method()
         if selected_method == PmSlaveType.MONEY:
+            if not self.cash_change_slave.can_finish():
+                warning(_(u"Invalid value, please verify if it was "
+                          "properly typed."))
+                return self
+
+            # We have to modify the payment, so the fiscal printer can
+            # calculate and print the payback, if necessary.
+            payment = self.wizard.setup_cash_payment().get_adapted()
+            total = self.cash_change_slave.get_received_value()
+            payment.base_value = total
+
             # Return None here means call wizard.finish, which is exactly
             # what we need
-            self.wizard.setup_cash_payment()
             return
 
         elif selected_method == PmSlaveType.GIFT_CERTIFICATE:
@@ -806,7 +822,7 @@ class _AbstractSaleWizard(BaseWizard):
     def setup_cash_payment(self, total=None):
         money_method = MoneyPM.selectOne(connection=self.conn)
         total = total or self.payment_group.get_total_received()
-        money_method.create_inpayment(self.payment_group, total)
+        return money_method.create_inpayment(self.payment_group, total)
 
 
 class ConfirmSaleWizard(_AbstractSaleWizard):
