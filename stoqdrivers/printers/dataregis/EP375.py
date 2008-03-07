@@ -546,6 +546,10 @@ class EP375(SerialBase, BaseChequePrinter):
         self._send_command(self.CMD_CANCEL_COUPON)
         self._is_coupon_open = False
 
+    def cancel_last_coupon(self):
+        """Cancel the last non fiscal coupon or the last sale."""
+        self._send_command(self.CMD_CANCEL_COUPON)
+
     def coupon_totalize(self, discount=Decimal("0.0"),
                         surcharge=Decimal("0.0"), taxcode=TaxType.NONE):
         # The callsite must check if discount and charge are used together,

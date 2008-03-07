@@ -182,6 +182,11 @@ class ICouponPrinter(IDevice):
         a new one.
         """
 
+    def cancel_last_coupon():
+        """
+        Cancel the last closed non-fiscal coupon or the last sale.
+        """
+
     def coupon_totalize(discount=Decimal("0.0"), surcharge=Decimal("0.0"),
                         taxcode=TaxType.NONE):
         """ Closes the coupon applies addition a discount or surcharge and tax.

@@ -179,6 +179,10 @@ class FiscalPrinter(BasePrinter):
         self.totalized_value = Decimal("0.0")
         return retval
 
+    def cancel_last_coupon(self):
+        """Cancel the last non fiscal coupon or the last sale."""
+        self._driver.cancel_last_coupon()
+
     @capcheck(int)
     def cancel_item(self, item_id):
         log.info('coupon_cancel_item(item_id=%r)' % (item_id,))

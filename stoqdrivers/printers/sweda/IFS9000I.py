@@ -539,6 +539,10 @@ class IFS9000I(SerialBase):
     def coupon_cancel(self):
         self.send_command(self.CMD_COUPON_CANCEL)
 
+    def cancel_last_coupon(self):
+        """Cancel the last non fiscal coupon or the last sale."""
+        self.send_command(self.CMD_COUPON_CANCEL)
+
     def coupon_add_payment(self, payment_method, value, description='',
                            custom_pm=''):
         if not custom_pm:

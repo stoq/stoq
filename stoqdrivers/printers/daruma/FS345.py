@@ -420,6 +420,10 @@ class FS345(SerialBase):
             self._check_status()
         self.send_command(CMD_CANCEL_COUPON)
 
+    def cancel_last_coupon(self):
+        """Cancel the last non fiscal coupon or the last sale."""
+        self.send_command(CMD_CANCEL_COUPON)
+
     def coupon_totalize(self, discount=Decimal("0.0"), surcharge=Decimal("0.0"),
                         taxcode=TaxType.NONE):
         self._check_status()

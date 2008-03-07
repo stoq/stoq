@@ -62,6 +62,7 @@ CMD_REDUCE_Z = 5
 CMD_READ_X = 6
 CMD_READ_MEMORY = 8
 CMD_COUPON_CANCEL = 14
+CMD_CANCEL_LAST = 81
 CMD_STATUS = 19
 CMD_ADD_VOUCHER = 25
 CMD_READ_TAXCODES = 26
@@ -438,6 +439,10 @@ class MP25(SerialBase):
         to open new coupons after this is called.
         """
         self._send_command(CMD_COUPON_CANCEL)
+
+    def cancel_last_coupon(self):
+        """Cancel the last non fiscal coupon or the last sale."""
+        self._send_command(CMD_CANCEL_LAST)
 
     def coupon_close(self, message=""):
         """  This can only be called when the coupon is open, has items added,

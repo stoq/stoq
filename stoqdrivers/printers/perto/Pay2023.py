@@ -526,6 +526,10 @@ class Pay2023(SerialBase, BaseChequePrinter):
     def coupon_cancel(self):
         self._send_command('CancelaCupom')
 
+    def cancel_last_coupon(self):
+        """Cancel the last non fiscal coupon or the last sale."""
+        self._send_command('CancelaCupom')
+
     def coupon_totalize(self, discount=Decimal("0.0"),
                         surcharge=Decimal("0.0"), taxcode=TaxType.NONE):
         # The FISCnet protocol (the protocol used in this printer model)
