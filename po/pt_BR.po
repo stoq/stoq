@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-11 13:08-0300\n"
+"POT-Creation-Date: 2008-03-12 10:05-0300\n"
 "PO-Revision-Date: 2007-08-28 13:34-0300\n"
 "Last-Translator: Silvio Rangel <silvio@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -4493,7 +4493,7 @@ msgstr "Pagamento"
 #: ../stoqlib/gui/dialogs/purchasedetails.py:187
 #: ../stoqlib/gui/dialogs/saledetails.py:152
 msgid "Changed"
-msgstr "Aterado"
+msgstr "Alterado"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:189
 #: ../stoqlib/gui/dialogs/saledetails.py:154
@@ -4575,7 +4575,7 @@ msgstr "Alterar Vencimento dos Pagamentos"
 #: ../stoqlib/gui/dialogs/paymentchangedialog.py:110
 #, python-format
 msgid "Set current due date (%s) to:"
-msgstr "Insirar a nova data de vencimento (%s) para:"
+msgstr "Nova data de vencimento (%s) para:"
 
 #: ../stoqlib/gui/dialogs/paymentchangedialog.py:131
 msgid "The due date must be set to a future date."
