@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-11 13:08-0300\n"
+"POT-Creation-Date: 2008-03-12 09:50-0300\n"
 "PO-Revision-Date: 2007-07-18 11:50-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -220,11 +220,11 @@ msgstr ""
 msgid "The CNPJ is not valid."
 msgstr ""
 
-#: ../stoq/gui/config.py:580
+#: ../stoq/gui/config.py:561
 msgid "Run Stoq"
 msgstr ""
 
-#: ../stoq/gui/config.py:596
+#: ../stoq/gui/config.py:577
 msgid "Setting up Stoq"
 msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-11 13:08-0300\n"
+"POT-Creation-Date: 2008-03-12 09:50-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -218,11 +218,11 @@ msgstr ""
 msgid "The CNPJ is not valid."
 msgstr ""
 
-#: ../stoq/gui/config.py:580
+#: ../stoq/gui/config.py:561
 msgid "Run Stoq"
 msgstr ""
 
-#: ../stoq/gui/config.py:596
+#: ../stoq/gui/config.py:577
 msgid "Setting up Stoq"
 msgstr ""
 

@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-11 13:08-0300\n"
+"POT-Creation-Date: 2008-03-12 09:50-0300\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -257,11 +257,11 @@ msgstr "ICMS Substituto não pode ser menor do que 100"
 msgid "The CNPJ is not valid."
 msgstr "O CNPJ não é válido."
 
-#: ../stoq/gui/config.py:580
+#: ../stoq/gui/config.py:561
 msgid "Run Stoq"
 msgstr "Rodar Stoq"
 
-#: ../stoq/gui/config.py:596
+#: ../stoq/gui/config.py:577
 msgid "Setting up Stoq"
 msgstr "Configurando o Stoq"
 
