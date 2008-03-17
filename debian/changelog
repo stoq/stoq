@@ -1,3 +1,10 @@
+stoqdrivers (1:0.9.3) gutsy; urgency=low
+
+  * Non Maintainer Upload
+  * New Release
+
+ -- George Y. Kussumoto (georgeyk) <george@async.com.br>  Mon, 17 Mar 2008 16:46:26 -0300
+
 stoqdrivers (1:0.9.1-2) gutsy; urgency=low
 
   * New release

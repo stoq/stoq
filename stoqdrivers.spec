@@ -5,7 +5,7 @@
 
 Summary: Fiscal driver collection
 Name: stoqdrivers
-Version: 0.9.2
+Version: 0.9.3
 Release: 1
 License: LGPL
 Group: System Environment/Libraries
