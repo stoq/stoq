@@ -1,3 +1,10 @@
+stoq (0.9.5) gutsy; urgency=low
+
+  * Non Maintainer Upload
+  * New Release
+
+ -- George Y. Kussumoto (georgeyk) <george@async.com.br>  Tue, 18 Mar 2008 13:56:57 -0300
+
 stoq (0.9.4-4) gutsy; urgency=low
 
   * Fixes and bugs.
@@ -98,13 +105,13 @@ stoq (0.9.0-4) dapper; urgency=low
 stoq (0.9.0-3) dapper; urgency=low
 
   * Remove debian/preinst
-  * Bump stoqlib version 
+  * Bump stoqlib version
 
  -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 17:01:47 -0300
 
 stoq (0.9.0-2) dapper; urgency=low
 
-  * Bump stoqlib requirement, do not use absolute paths for pixmaps 
+  * Bump stoqlib requirement, do not use absolute paths for pixmaps
 
  -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 16:43:37 -0300
 
