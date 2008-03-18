@@ -24,9 +24,9 @@ PyGTK 2.8.1 or higher
 PostgresSQL 8.1 or higher
 Psycopg 2.0.5 or higher
 zope.interface 3.0.0 or higher
-Kiwi 1.9.20
+Kiwi 1.9.21
 Gazpacho 0.6.6
-Stoqdrivers 0.9.2
+Stoqdrivers 0.9.3
 Python Imaging Library (PIL) 1.1.5 or higher
 Reportlab 1.20
 

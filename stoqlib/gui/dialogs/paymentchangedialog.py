@@ -28,7 +28,6 @@ import datetime
 
 from kiwi.datatypes import ValidationError
 
-from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
