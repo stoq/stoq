@@ -507,8 +507,7 @@ class POSApp(AppWindow):
             sale_item.notes = fake_sale_item.notes
             sale_item.estimated_fix_date = fake_sale_item.estimated_fix_date
 
-            if fake_sale_item.deliver:
-                assert self._delivery
+            if self._delivery and fake_sale_item.deliver:
                 item = sale_item.addFacet(IDelivery,
                                           connection=sale.get_connection())
                 item.address = address_string
