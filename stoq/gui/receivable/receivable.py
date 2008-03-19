@@ -213,6 +213,7 @@ class ReceivableApp(SearchableAppWindow):
         if finish_transaction(trans, retval):
             receivable_view.sync()
             self.results.update(receivable_view)
+            self.results.unselect_all()
 
         trans.close()
 
