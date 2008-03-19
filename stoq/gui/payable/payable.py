@@ -168,6 +168,7 @@ class PayableApp(SearchableAppWindow):
         if finish_transaction(trans, retval):
             payable_view.sync()
             self.results.update(payable_view)
+            self.results.unselect_all()
 
         trans.close()
 
