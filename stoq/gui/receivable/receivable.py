@@ -149,6 +149,8 @@ class ReceivableApp(SearchableAppWindow):
     #
 
     def _show_details(self, receivable_view):
+        if receivable_view.sale_id is None:
+            return
         sale_view = SaleView.get(receivable_view.sale_id)
         run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
 
