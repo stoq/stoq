@@ -73,17 +73,13 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         purchase_widgets = (self.purchase_number_label,
                             self.purchase_supplier_label,
                             self.order_number, self.supplier_label)
-        if self.model.purchase:
-            for widget in purchase_widgets:
-                widget.show()
-        else:
+        if not self.model.purchase:
             for widget in purchase_widgets:
                 widget.hide()
         self._setup_transporter_entry()
         cfop_items = [(item.get_description(), item)
                         for item in CfopData.select(connection=self.conn)]
         self.cfop.prefill(cfop_items)
-
         # The user should not be allowed to change the transporter,
         # if it's already set.
         if self.model.transporter:
@@ -138,17 +134,17 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     on_secure_value__validate = _positive_validator
     on_expense_value__validate = _positive_validator
 
-    def on_freight__content_changed(self, widget):
+    def after_freight__content_changed(self, widget):
         try:
             value = widget.read()
         except ValidationError:
             value = ValueUnset
 
         if value is ValueUnset:
-            self.model.freight_total = 0
+            self.model.freight = 0
         self.proxy.update('total')
 
-    def on_ipi__content_changed(self, widget):
+    def after_ipi__content_changed(self, widget):
         try:
             value = widget.read()
         except ValidationError:
@@ -158,7 +154,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             self.model.ipi_total = 0
         self.proxy.update('total')
 
-    def on_discount_value__content_changed(self, widget):
+    def after_discount_value__content_changed(self, widget):
         try:
             value = widget.read()
         except ValidationError:
@@ -168,14 +164,14 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             self.model.discount_value = 0
         self.proxy.update('total')
 
-    def on_discount_value__validate(self, widget, value):
+    def after_discount_value__validate(self, widget, value):
         if value < 0:
             return ValidationError(_("Discount must be greater than zero"))
         if value > self.model.get_total():
             return ValidationError(_("Discount must be less "
                                      "than %s" % (self.model.get_total(),)))
 
-    def on_secure_value__content_changed(self, widget):
+    def after_secure_value__content_changed(self, widget):
         try:
             value = widget.read()
         except ValidationError:
@@ -185,7 +181,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             self.model.secure_value = 0
         self.proxy.update('total')
 
-    def on_expense_value__content_changed(self, widget):
+    def after_expense_value__content_changed(self, widget):
         try:
             value = widget.read()
         except ValidationError:
