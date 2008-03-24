@@ -27,7 +27,7 @@
 
 
 from sqlobject import BLOBCol
-from sqlobject.sqlbuilder import INNERJOINOn, LEFTJOINOn
+from sqlobject.sqlbuilder import AND, INNERJOINOn, LEFTJOINOn
 from sqlobject.viewable import Viewable
 from zope.interface import implements
 
@@ -98,14 +98,16 @@ class ServiceView(Viewable):
 
     joins = [
         INNERJOINOn(None, ServiceAdaptToSellable,
-                    ServiceAdaptToSellable.q._originalID == Service.q.id),
-        INNERJOINOn(None, ASellable,
                     ServiceAdaptToSellable.q.id == ASellable.q.id),
-        INNERJOINOn(None, BaseSellableInfo,
-                    ASellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
+        INNERJOINOn(None, Service,
+                    Service.q.id == ServiceAdaptToSellable.q._originalID),
         LEFTJOINOn(None, SellableUnit,
                    ASellable.q.unitID == SellableUnit.q.id),
         ]
+
+    clause = AND(
+        BaseSellableInfo.q.id == ASellable.q.base_sellable_infoID,
+    )
 
     def get_unit(self):
         return self.unit or u""
