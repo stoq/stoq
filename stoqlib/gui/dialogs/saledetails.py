@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -40,13 +40,31 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.printing import print_report
-from stoqlib.domain.interfaces import IClient, IPaymentGroup
+from stoqlib.domain.interfaces import IClient, IPaymentGroup, IOutPayment
 from stoqlib.domain.person import Person
 from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.reporting.sale import SaleOrderReport
 
 _ = stoqlib_gettext
+
+
+
+# A workaround to show negative values in the interface
+class _TemporaryOutPayment(object):
+
+    class method:
+        description = None
+
+    def __init__(self, payment):
+        self.id = payment.id
+        self.description = payment.description
+        self.method.description = payment.method.description
+        self.due_date = payment.due_date
+        self.paid_date = payment.paid_date
+        self.status_str = payment.get_status_str()
+        self.base_value = -payment.base_value
+        self.paid_value = -payment.paid_value
 
 
 class SaleDetailsDialog(BaseEditor):
@@ -82,11 +100,21 @@ class SaleDetailsDialog(BaseEditor):
 
     def _setup_summary_labels(self):
         summary_label = SummaryLabel(klist=self.payments_list,
-                                     column='base_value',
+                                     column='paid_value',
                                      label='<b>%s</b>' % _(u"Total:"),
                                      value_format='<b>%s</b>')
         summary_label.show()
         self.payments_vbox.pack_start(summary_label, False)
+
+    def _get_payments(self, group):
+        payments = list(group.get_items())
+        for payment in payments:
+            if IOutPayment(payment, None):
+                tmp_outpayment = _TemporaryOutPayment(payment)
+                payments.remove(payment)
+                payments.append(tmp_outpayment)
+
+        return payments
 
     def _setup_widgets(self):
         if not self.model.client_id:
@@ -103,7 +131,8 @@ class SaleDetailsDialog(BaseEditor):
         self.items_list.add_list(self.sale_order.get_items())
         group = IPaymentGroup(self.sale_order, None)
         if group:
-            self.payments_list.add_list(group.get_items())
+            payments = self._get_payments(group)
+            self.payments_list.add_list(payments)
             changes = PaymentChangeHistoryView.select_by_group(group,
                                                           connection=self.conn)
             self.payments_info_list.add_list(changes)
