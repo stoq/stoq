@@ -210,9 +210,11 @@ class ApplicationRunner(object):
             return
 
         appname = self.choose()
-        if appname:
-            self.run(appname)
+        if not appname:
+            self._current_app.shutdown()
+            return
 
+        self.run(appname)
 
     def get_app_by_name(self, appname):
         """
