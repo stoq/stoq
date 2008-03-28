@@ -310,8 +310,8 @@ class PurchasePaymentStep(WizardEditorStep):
         self.payment_method_hbox.set_focus_chain([self.method_combo])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
-        # force the initial state of next_button
-        self.wizard.refresh_next(False)
+        can_finish = self.slave.payment_list.get_total_difference() == 0
+        self.wizard.refresh_next(can_finish)
 
     def setup_proxies(self):
         self._setup_widgets()
