@@ -135,8 +135,11 @@ class PluginManager(object):
         @param plugin_name: The name of the plugin
         """
         plugin = self._get_plugin(plugin_name)
-
         trans = new_transaction()
+        if InstalledPlugin.selectOneBy(plugin_name=plugin_name,
+                                       connection=trans):
+            trans.close()
+            return
         InstalledPlugin(connection=trans,
                         plugin_name=plugin_name,
                         plugin_version=1)
