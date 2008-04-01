@@ -554,7 +554,6 @@ class Sale(ValidatableDomain):
     # Other methods
 
     def paid_with_money(self):
-        from stoqlib.domain.payment.methods import MoneyPM
         group = IPaymentGroup(self, None)
         assert group
         for payment in group.get_items():
