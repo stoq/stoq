@@ -75,7 +75,7 @@ class RoleEditorStep(BaseWizardStep):
         # We don't want to create duplicate person objects when switching
         # steps.
         rollback_and_begin(self.conn)
-        return self.previous
+        return BaseWizardStep.previous_step(self)
 
     def has_next_step(self):
         return False
