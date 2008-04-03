@@ -56,10 +56,6 @@ class RoleEditorStep(BaseWizardStep):
 
     def __init__(self, wizard, conn, previous, role_type, person=None,
                  phone_number=None):
-        # We don't want to create duplicate person objects when switching
-        # steps.
-        rollback_and_begin(conn)
-
         BaseWizardStep.__init__(self, conn, wizard, previous=previous)
         role_editor = self.wizard.role_editor(self.conn,
                                               person=person,
@@ -74,6 +70,12 @@ class RoleEditorStep(BaseWizardStep):
         refresh_method = self.wizard.refresh_next
         self.person_slave.register_validate_function(refresh_method)
         self.person_slave.force_validation()
+
+    def previous_step(self):
+        # We don't want to create duplicate person objects when switching
+        # steps.
+        rollback_and_begin(self.conn)
+        return self.previous
 
     def has_next_step(self):
         return False
