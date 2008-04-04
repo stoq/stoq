@@ -86,8 +86,10 @@ class ECFAsyncPrinterStatus(gobject.GObject):
         c = port.read()
         self._reply += c
         if self.printer.status_reply_complete(self._reply):
-            self.emit('reply', self._reply)
+            # We need to remove the timeout before emitting the reply,
+            # so we can show dialogs inside the reply callback.
             self._remove_timeout()
+            self.emit('reply', self._reply)
             return False
         return True
 

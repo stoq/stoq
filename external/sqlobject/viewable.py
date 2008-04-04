@@ -156,7 +156,7 @@ class Viewable(object):
 
         cols = columns.copy()
         if not 'id' in cols:
-            raise TypeError("You need a id column in %r" % cls)
+           raise TypeError("You need a id column in %r" % cls)
 
         idquery = cols.pop('id')
         cls.sqlmeta.table = idquery.tableName
@@ -276,7 +276,7 @@ def queryForSelect(conn, select):
         ns = select.ops['ns'].copy()
         q += '%s AS id, %s FROM %s' % (
             ns.pop('id'),
-            ', '.join(['%s AS %s' % (ns[item], item)
+            ', '.join(['%s AS %s' % (conn.sqlrepr(ns[item]), item)
                        for item in sorted(ns.keys())]),
             ", ".join(tables))
 
@@ -295,11 +295,16 @@ def queryForSelect(conn, select):
             groupBy = True
             break
 
-    if groupBy:
+    if cls.group_by:
+        q += ' GROUP BY ' + cls.group_by
+    elif groupBy:
         items = []
         for item in ns.values():
-            if not isinstance(item, SQLCall):
-                items.append(str(item))
+            if isinstance(item, SQLCall):
+                for arg in item.args:
+                    items.append(conn.sqlrepr(item))
+            else:
+                items.append(conn.sqlrepr(item))
         items.append(str(select.ops['ns']['id']))
         q += " GROUP BY %s" % ', '.join(items)
 
@@ -307,7 +312,7 @@ def queryForSelect(conn, select):
     end = ops.get('end', None)
     if start or end:
         q = conn._queryAddLimitOffset(q, start, end)
-
+    print q
     return q
 
 
