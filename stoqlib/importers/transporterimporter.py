@@ -40,7 +40,7 @@ class TransporterImporter(CSVImporter):
               'country',
               'state',
               'street',
-              'street_number',
+              'streetnumber',
               'district',
               'open_contract',
               'freight_percentage']
@@ -62,11 +62,12 @@ class TransporterImporter(CSVImporter):
                                            city=data.city,
                                            state=data.state,
                                            country=data.country)
+        streetnumber = data.streetnumber and int(data.streetnumber) or None
         address = Address(is_main_address=True,
                           person=person, city_location=ctloc,
                           connection=trans,
                           street=data.street,
-                          number=int(data.street_number),
+                          streetnumber=streetnumber,
                           district=data.district)
 
         dict(open_contract_date=self.parse_date(data.open_contract),

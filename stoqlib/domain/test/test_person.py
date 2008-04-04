@@ -98,10 +98,10 @@ class TestPerson(DomainTest):
         person = self.create_person()
         ctloc = CityLocation(connection=self.trans)
         address = Address(connection=self.trans, person=person,
-                          city_location=ctloc, street ='bla', number=2,
+                          city_location=ctloc, street ='bla', streetnumber=2,
                           district='fed', is_main_address=True)
         self.assertEquals(person.get_address_string(), _(u'%s %s, %s') % (
-            address.street, address.number, address.district))
+            address.street, address.streetnumber, address.district))
 
     #This method is used by test_check_individual_or_company_facets() method
     def _check_has_individual_or_company_facets(self, person):

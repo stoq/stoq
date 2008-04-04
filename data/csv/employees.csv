@@ -1,5 +1,5 @@
 % name, phone_number, mobile_number, email, rg, cpf, role, employee_number,
-% start, salary, city, country, state, street, number, district,
+% start, salary, city, country, state, street, streetnumber, district,
 % profile, username, password,
 Cleusa Blanc Ferreira Norbiato,5143-2587,9112-5487,cnorbiato@stoq.com.br,13.681.316-1,243.835.646-40,Financeiro,120,2006-01-01,600,Sao Paulo,Brazil,SP,Rua das flores,90,Vila Matilde,Salesperson,regi,regi243
 Maria Aparecida Ardana,8722-9822,8987-5432,maradana@stoq.com.br,83.233.851-5,115.338.625-91,Gerente,189,2006-02-03,1200,Curitiba,Brazil,PR,Rua XV de Novembro,232,Centro,Salesperson,r9madrid,r9brasil

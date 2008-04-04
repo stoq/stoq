@@ -86,7 +86,8 @@ class StoqlibSintegraGenerator(object):
                                  self.start,
                                  self.end)
         self.sintegra.add_complement_header(
-            address.street, address.number,
+            # If we don't have a street number, use zero for sintegra
+            address.street, address.streetnumber or 0,
             address.complement,
             address.district,
             address.get_postal_code_number(),

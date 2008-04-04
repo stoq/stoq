@@ -498,7 +498,7 @@ CREATE TABLE address (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     street text,
-    number integer CONSTRAINT positive_number CHECK (number > 0),
+    streetnumber integer CONSTRAINT positive_streetnumber CHECK (streetnumber > 0),
     district text,
     postal_code text,
     complement text,

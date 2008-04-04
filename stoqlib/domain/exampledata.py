@@ -280,7 +280,7 @@ class ExampleCreator(object):
     def create_address(self):
         from stoqlib.domain.address import Address
         return Address(street='Mainstreet',
-                       number=138,
+                       streetnumber=138,
                        district='Cidade Araci',
                        postal_code='12345-678',
                        complement='Compl',
