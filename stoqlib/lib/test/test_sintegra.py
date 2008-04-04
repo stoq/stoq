@@ -86,7 +86,8 @@ class SintegraTest(DomainTest):
                      address.get_state(),
                      branch.person.get_fax_number_number(),
                      start, end)
-        s.add_complement_header(address.street, address.number,
+        # if we don't a street number, use zero for sintegra
+        s.add_complement_header(address.street, address.streetnumber or 0,
                                 address.complement,
                                 address.district,
                                 address.get_postal_code_number(),

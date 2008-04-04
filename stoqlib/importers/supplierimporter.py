@@ -41,7 +41,7 @@ class SupplierImporter(CSVImporter):
               'country',
               'state',
               'street',
-              'street_number',
+              'streetnumber',
               'district']
 
     def process_one(self, data, fields, trans):
@@ -61,11 +61,12 @@ class SupplierImporter(CSVImporter):
                                            city=data.city,
                                            state=data.state,
                                            country=data.country)
+        streetnumber = data.streetnumber and int(data.streetnumber) or None
         address = Address(is_main_address=True,
                           person=person, city_location=ctloc,
                           connection=trans,
                           street=data.street,
-                          number=int(data.street_number),
+                          streetnumber=streetnumber,
                           district=data.district)
 
         person.addFacet(ISupplier, connection=trans)

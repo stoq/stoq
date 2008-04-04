@@ -90,13 +90,19 @@ class TestAddress(DomainTest):
         location = self.create_city_location()
 
         street = 'Rua das Couves'
-        number = 283
+        streetnumber = 283
         district = 'Federal'
         address = Address(person=person, city_location=location,
-                          street=street, number=number, district=district,
+                          street=street, streetnumber=streetnumber,
+                          district=district,
                           connection=self.trans)
         string = address.get_address_string()
-        self.assertEquals(string, u'%s %s, %s' % (street, number, district))
+        self.assertEquals(string, u'%s %s, %s' % (street, streetnumber,
+                                                  district))
+
+        address.streetnumber = None
+        string = address.get_address_string()
+        self.assertEquals(string, u'%s %s, %s' % (street, 'N/A', district))
 
         address.street = ""
         string = address.get_address_string()

@@ -32,8 +32,12 @@ from zope.interface import implements
 
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.base import Domain
-from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.interfaces import IDescribable
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
+
 
 class CityLocation(Domain):
     """Base class to store the locations. Used to store a person's address
@@ -101,7 +105,7 @@ class Address(Domain):
     implements(IDescribable)
 
     street = UnicodeCol(default='')
-    number = IntCol(default=None)
+    streetnumber = IntCol(default=None)
     district = UnicodeCol(default='')
     postal_code = UnicodeCol(default='')
     complement = UnicodeCol(default='')
@@ -110,8 +114,8 @@ class Address(Domain):
     city_location = ForeignKey('CityLocation')
 
     def is_valid_model(self):
-        return (self.street and self.number and self.district
-                and self.city_location.is_valid_model())
+        return (self.street and self.district and
+                self.city_location.is_valid_model())
 
     def get_city(self):
         return self.city_location.city
@@ -131,11 +135,13 @@ class Address(Domain):
                                   if c in '1234567890']))
 
     def get_address_string(self):
-        if self.street and self.number and self.district:
-            return u'%s %s, %s' % (self.street, self.number,
+        if self.street and self.streetnumber and self.district:
+            return u'%s %s, %s' % (self.street, self.streetnumber,
                                    self.district)
-        elif self.street and self.number:
-            return u'%s %s' % (self.street, self.number)
+        elif self.street and self.district:
+            return u'%s %s, %s' % (self.street, _(u'N/A'), self.district)
+        elif self.street and self.streetnumber:
+            return u'%s %s' % (self.street, self.streetnumber)
         elif self.street:
             return self.street
 

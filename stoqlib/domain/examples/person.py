@@ -103,13 +103,13 @@ def create_people():
                     dict(city='Rio de Janeiro', country='Brazil', state='RJ'),
                     dict(city='Salvador', country='Brazil', state='BA')]
 
-    address_data = [dict(street='Rua das flores', number=77,
+    address_data = [dict(street='Rua das flores', streetnumber=77,
                          district='Vila Matilde'),
-                    dict(street='Rua XV de Novembro', number=278,
+                    dict(street='Rua XV de Novembro', streetnumber=278,
                          district='Centro'),
-                    dict(street='Avenida Paulista', number=1533,
+                    dict(street='Avenida Paulista', streetnumber=1533,
                          district='Brigadeiro'),
-                    dict(street='Avenida Andradas', number=876,
+                    dict(street='Avenida Andradas', streetnumber=876,
                          district='Pinheiros')]
 
     finance_table = Person.getAdapterClass(ICreditProvider)

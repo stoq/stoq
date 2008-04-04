@@ -46,7 +46,7 @@ _ = stoqlib_gettext
 
 class _AddressModel(AttributeForwarder):
     attributes = [
-        'number',
+        'streetnumber',
         'district',
         'street',
         'complement',
@@ -85,7 +85,7 @@ class AddressSlave(BaseEditorSlave):
     gladefile = 'AddressSlave'
 
     proxy_widgets = [
-        'number',
+        'streetnumber',
         'district',
         'street',
         'complement',
@@ -93,6 +93,7 @@ class AddressSlave(BaseEditorSlave):
         'city',
         'state',
         'country',
+        'streetnumber_check',
         ]
 
     @argcheck(object, Person, Address, bool, bool)
@@ -132,6 +133,9 @@ class AddressSlave(BaseEditorSlave):
         self.country.prefill(get_countries())
         self.proxy = self.add_proxy(self.model,
                                     AddressSlave.proxy_widgets)
+        has_street_number = self.model.streetnumber > 0
+        self.streetnumber_check.set_active(has_street_number)
+        self._update_streetnumber()
 
     def can_confirm(self):
         return self.model.is_valid_model()
@@ -140,14 +144,30 @@ class AddressSlave(BaseEditorSlave):
         self.model.ensure_address()
         return self.model.target
 
+    def _update_streetnumber(self):
+        has_street_number = self.streetnumber_check.get_active()
+        self.streetnumber.set_sensitive(has_street_number)
+        if not has_street_number:
+            self.model.streetnumber = None
+            text = _(u"N/A")
+        elif self.model.streetnumber:
+           text = str(self.model.streetnumber)
+        else:
+            text = ''
+
+        self.streetnumber.set_text(text)
+
     #
     # Kiwi callbacks
     #
 
-    def on_number__validate(self, entry, number):
-        if number <= 0:
-            return ValidationError(_("Number cannot be zero or less"
-                                      " than zero"))
+    def on_streetnumber__validate(self, entry, streetnumber):
+        if streetnumber <= 0:
+            return ValidationError(_("Number cannot be zero or less than zero"))
+
+    def on_streetnumber_check__clicked(self, check_button):
+        self._update_streetnumber()
+
 
 class AddressEditor(BaseEditor):
     model_name = _('Address')
