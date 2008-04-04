@@ -23,6 +23,7 @@
 ##
 ##
 
+import gtk
 from kiwi.enums import ListType
 from kiwi.ui.widgets.list import Column
 from stoqdrivers.interfaces import ICouponPrinter
@@ -36,7 +37,7 @@ from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.dialogs.progressdialog import ProgressDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.devicemanager import DeviceManager
-from stoqlib.lib.message import info
+from stoqlib.lib.message import info, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 from ecfprinterstatus import ECFAsyncPrinterStatus
@@ -107,12 +108,12 @@ class ECFEditor(BaseEditor):
     def validate_confirm(self):
         if self.edit_mode:
             return True
-        status = ECFAsyncPrinterStatus(self.model.device_name,
+        self._status = ECFAsyncPrinterStatus(self.model.device_name,
                                        self.model.printer_class)
-        status.connect('reply', self._printer_status__reply)
-        status.connect('timeout', self._printer_status__timeout)
+        self._status.connect('reply', self._printer_status__reply)
+        self._status.connect('timeout', self._printer_status__timeout)
         self.progress_dialog.set_label(_("Probing for a %s printer on %s" % (
-            self.model.model_name, status.get_device_name())))
+            self.model.model_name, self._status.get_device_name())))
         self.progress_dialog.start()
         return False
 
@@ -141,6 +142,13 @@ class ECFEditor(BaseEditor):
         self.progress_dialog.stop()
         if not self._populate_ecf_printer(status):
             return
+
+        if not yesno(_(u"A ECF Printer was added.\n"
+                       "You need to restart Stoq before using it."),
+                     gtk.RESPONSE_NO,
+                     _(u"Continue"),
+                     _(u"Restart now")):
+            raise SystemExit
 
         # FIXME: move to base dialogs or base editor
         self.main_dialog.retval = self.model
@@ -256,6 +264,8 @@ class ECFListDialog(ModelListDialog):
     def __init__(self):
         ModelListDialog.__init__(self)
         self.set_list_type(ListType.UNREMOVABLE)
+
+    # ModelListDialog
 
     def populate(self):
         return ECFPrinter.selectBy(
