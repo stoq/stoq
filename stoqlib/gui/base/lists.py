@@ -27,7 +27,7 @@
 import gtk
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.objectlist import ObjectList
-from kiwi.ui.listdialog import ListDialog
+from kiwi.ui.listdialog import ListSlave
 from kiwi.utils import gsignal
 
 from stoqlib.database.runtime import (new_transaction, finish_transaction,
@@ -42,25 +42,10 @@ from stoqlib.lib.message import yesno
 
 _ = stoqlib_gettext
 
-class ModelListDialog(ListDialog):
-    """A dialog which displays all items in a table and allows you to
-    add and remove items from it
 
-    @cvar model_type: an SQLObject for the table we want to modify, must
-      implement the IDescribable interface.
-    @cvar columns: a list of L{kiwi.ui.objectlist.Columns}
-    @cvar editor_class: class used to edit the model, must take the
-      constructor arguments (conn, model)
-    @cvar size: a two sized tuple;  (width, height) or None
-    @cvar title: window title
-    """
-    model_type = None
-    columns = None
-    editor_class = None
-    size = None
-    title = None
+class ModelListSlave(ListSlave):
 
-    def __init__(self, conn=None):
+    def __init__(self, columns, conn=None):
         """
         Create a new ModelListDialog object.
         @param conn: A database connection
@@ -68,20 +53,11 @@ class ModelListDialog(ListDialog):
         if not conn:
             conn = get_connection()
         self.conn = conn
+
+        self._model_list_type = None
         self._reuse_transaction = False
-
-        if self.model_type is None:
-            raise TypeError("%s must define a model_type class attribute" %
-                            type(self).__name__)
-        if not IDescribable.implementedBy(self.model_type):
-            raise TypeError("%s must provide the IDescribable interface" %
-                            self.model_type.__name__)
-
-        ListDialog.__init__(self)
-        if self.size:
-            self.set_size_request(*self.size)
-        if self.title:
-            self.set_title(self.title)
+        self._editor_class = None
+        ListSlave.__init__(self, columns)
 
     def _delete_with_transaction(self, model, trans):
         self.delete_model(model, trans)
@@ -117,7 +93,7 @@ class ModelListDialog(ListDialog):
         return retval
 
     #
-    # ListDialog
+    # ListSlave
     #
 
     def populate(self):
@@ -145,6 +121,19 @@ class ModelListDialog(ListDialog):
     #
     # Public API
     #
+
+    def set_model_type(self, model_type):
+        """Set the type of the model this slave is containing
+        @param model_type: the model type
+        """
+        self._model_type = model_type
+
+    def set_editor_class(self, editor_class):
+        """Set the editor class which will be used to modify
+        the mode of this slave
+        @param editor_class: the editor class
+        """
+        self._editor_class = editor_class
 
     def set_reuse_transaction(self, trans):
         """
@@ -176,12 +165,12 @@ class ModelListDialog(ListDialog):
         """This can be override by a subclass who wants to send in
         custom arguments to the editor.
         """
-        if self.editor_class is None:
+        if self._editor_class is None:
             raise ValueError("editor_class cannot be None in %s" % (
                 type(self).__name__))
 
         return self.run_dialog(
-            self.editor_class,
+            self._editor_class,
             conn=trans, model=model)
 
     def delete_model(self, model, trans):
@@ -192,7 +181,48 @@ class ModelListDialog(ListDialog):
         @param model: model to delete
         @param trans: the transaction to delete the model within
         """
-        self.model_type.delete(model.id, connection=trans)
+        self._model_type.delete(model.id, connection=trans)
+
+
+class ModelListDialog(gtk.Dialog, ModelListSlave):
+    """A dialog which displays all items in a table and allows you to
+    add and remove items from it
+
+    @cvar model_type: an SQLObject for the table we want to modify, must
+      implement the IDescribable interface.
+    @cvar columns: a list of L{kiwi.ui.objectlist.Columns}
+    @cvar editor_class: class used to edit the model, must take the
+      constructor arguments (conn, model)
+    @cvar size: a two sized tuple;  (width, height) or None
+    @cvar title: window title
+    """
+    model_type = None
+    editor_class = None
+    columns = None
+    size = None
+    title = None
+
+    def __init__(self, conn=None):
+        if not self.columns:
+            raise ValueError("columns cannot be empty")
+
+        if self.model_type is None:
+            raise TypeError("%s must define a model_type class attribute" %
+                            type(self).__name__)
+        if not IDescribable.implementedBy(self.model_type):
+            raise TypeError("%s must provide the IDescribable interface" %
+                            self.model_type.__name__)
+
+        gtk.Dialog.__init__(self)
+        if self.size:
+            self.set_size_request(*self.size)
+        if self.title:
+            self.set_title(self.title)
+        self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        ModelListSlave.__init__(self, self.columns)
+        self.set_model_type(self.model_type)
+        self.set_editor_class(self.editor_class)
+        self.vbox.pack_start(self.listcontainer)
 
 
 class AdditionListSlave(GladeSlaveDelegate):
