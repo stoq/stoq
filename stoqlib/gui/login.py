@@ -150,7 +150,7 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
         self.main_dialog = BasicWrappingDialog(self, self.title,
                                                size=self.size)
         toplevel = self.main_dialog.get_toplevel()
-        icon = toplevel.render_icon('stoq-warehouse-app', gtk.ICON_SIZE_MENU)
+        icon = toplevel.render_icon('stoq-stock-app', gtk.ICON_SIZE_MENU)
         toplevel.set_icon(icon)
 
         self.applications = applications
