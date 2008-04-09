@@ -27,7 +27,7 @@ gui/stock/app.py:
     Main callsite for Stock application
 """
 
-from stoq.gui.stock.sock import StockApp
+from stoq.gui.stock.stock import StockApp
 
 # Here we define config in the call site: /bin/stoq file
 def main(config):
