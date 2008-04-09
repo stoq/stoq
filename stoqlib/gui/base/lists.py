@@ -45,7 +45,7 @@ _ = stoqlib_gettext
 
 class ModelListSlave(ListSlave):
 
-    def __init__(self, columns, conn=None):
+    def __init__(self, columns=None, conn=None):
         """
         Create a new ModelListDialog object.
         @param conn: A database connection
@@ -57,6 +57,7 @@ class ModelListSlave(ListSlave):
         self._model_list_type = None
         self._reuse_transaction = False
         self._editor_class = None
+        columns = columns or self.get_columns()
         ListSlave.__init__(self, columns)
 
     def _delete_with_transaction(self, model, trans):
