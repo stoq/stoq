@@ -79,7 +79,6 @@ class SellableItemStep(WizardEditorStep):
     table = ASellable
     item_table = None
     summary_label_text = None
-    list_slave_class = AdditionListSlave
 
     def __init__(self, wizard, previous, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
@@ -173,7 +172,7 @@ class SellableItemStep(WizardEditorStep):
                                              SellableItemStep.sellable_widgets)
 
     def setup_slaves(self):
-        self.slave = self.list_slave_class(
+        self.slave = AdditionListSlave(
             self.conn, self.get_columns(),
             klist_objects=self.get_saved_items())
         self.slave.connect('before-delete-items',
