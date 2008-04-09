@@ -268,7 +268,7 @@ _parameter_info = dict(
     _(u'Purchase'),
     _(u'Default Receiving CFOP'),
     _(u'Default CFOP (Fiscal Code of Operations) used when receiving '
-      'products in the warehouse application.')),
+      'products in the stock application.')),
 
     ICMS_TAX=ParameterDetails(
     _(u'Sales'),

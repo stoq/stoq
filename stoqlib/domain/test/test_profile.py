@@ -55,7 +55,7 @@ class TestProfileSettings(DomainTest):
     def test_update_profile_applications(self):
         profile = UserProfile(connection=self.trans, name='assistant')
 
-        profile.add_application_reference('warehouse',
+        profile.add_application_reference('stock',
                                           has_permission=True)
         items = profile.profile_settings
         assert len(items) == 1
