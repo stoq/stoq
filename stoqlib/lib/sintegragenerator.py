@@ -105,8 +105,13 @@ class StoqlibSintegraGenerator(object):
             for tax in item.taxes:
                 if not tax.value:
                     continue
+
+                code = tax.code
+                if tax.type == 'ISS':
+                    code = 'ISS'
+
                 self.sintegra.add_fiscal_tax(item.emission_date, item.serial,
-                                             tax.code, tax.value)
+                                             code, tax.value)
 
     def _get_cnpj_or_cpf(self, receiving_order):
         person = receiving_order.supplier.person
