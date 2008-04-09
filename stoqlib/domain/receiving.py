@@ -123,7 +123,7 @@ class ReceivingOrder(ValidatableDomain):
         the order is closed.
     @ivar status: status of the order
     @ivar receival_date: Date that order has been closed.
-    @ivar confirm_date: Date that order was send to Warehouse application.
+    @ivar confirm_date: Date that order was send to Stock application.
     @ivar notes: Some optional additional information related to this order.
     @ivar freight_total: Total of freight paid in receiving order.
     @ivar surcharge_value:
