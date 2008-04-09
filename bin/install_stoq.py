@@ -41,15 +41,8 @@ if majmin < REQUIRED_VERSION:
                      "install a new version."
                      % ('.'.join(map(str, REQUIRED_VERSION)), version_string))
 
-DEFAULT_STOQ_VERSION = '0.8.0'
-DEFAULT_URL = ("http://www.async.com.br/projects/stoq/dist/%s" %
-               DEFAULT_STOQ_VERSION)
+DEFAULT_URL = ('http://download.stoq.com.br/sources/LATEST/')
 
-stoq_required_packages = [('kiwi', '1.9.8'),
-                          ('gazpacho', '0.6.6'),
-                          ('stoqdrivers', '0.3.1'),
-                          ('stoqlib', DEFAULT_STOQ_VERSION),
-                          ('stoq', DEFAULT_STOQ_VERSION)]
 
 
 #
@@ -57,10 +50,41 @@ stoq_required_packages = [('kiwi', '1.9.8'),
 #
 
 
-import urllib2
+from HTMLParser import HTMLParser
 import commands
 import optparse
 import tempfile, shutil
+import urllib2
+
+
+class StoqURLParser(HTMLParser):
+    """ A simple parser for Stoq source code webpage, retrieving
+    the package names in there
+    """
+    def __init__(self, *args, **kwargs):
+        HTMLParser.__init__(self, *args, **kwargs)
+        self._packages = {'kiwi': '',
+                          'gazpacho': '',
+                          'stoqdrivers': '',
+                          'stoqlib': '',
+                          'stoq': ''}
+
+    def handle_starttag(self, tag, attrs):
+        if tag == 'a':
+            package = attrs[0][1]
+            name = package.split('-')[0]
+            if self._packages.has_key(name):
+                self._packages[name] = package
+
+    def _check_packages(self):
+        for name, package in self._packages.iteritems():
+            if not bool(package):
+                raise SystemError("Package %s not found in %s!" %
+                                                (name, DEFAULT_URL))
+
+    def get_packages(self):
+        self._check_packages()
+        return self._packages.values()
 
 
 def fetch_packages(tmpdir):
@@ -79,22 +103,27 @@ and place it in this directory before rerunning this script.)
 ---------------------------------------------------------------------------"""
             % DEFAULT_URL)
 
-    downloaded_packages = []
-    for package_name, version in stoq_required_packages:
-        filename = '%s-%s.tar.gz' % (package_name, version)
-        url = '%s/%s' % (DEFAULT_URL, filename)
-        file_path = os.path.join(tmpdir, filename)
+    if not tmpdir.endswith('/'):
+        tmpdir += '/'
 
-        src = dst = None
-        if not os.path.exists(file_path):# Avoiding repeated downloads
+    src = urllib2.urlopen(DEFAULT_URL)
+    parser = StoqURLParser()
+    parser.feed(src.read())
+    downloaded_packages = []
+
+    for package_name in parser.get_packages():
+        package_src = DEFAULT_URL + package_name
+        package_dst = tmpdir + package_name
+
+        if not os.path.exists(package_dst):
             try:
-                print " Downloading file %s ... " % filename,
+                print " Downloading file %s ... " % package_src,
                 sys.stdout.flush()
-                src = urllib2.urlopen(url)
+                src = urllib2.urlopen(package_src)
                 # Read/write all in one block, so we don't create a corrupt file
                 # if the download is interrupted.
                 data = src.read()
-                dst = open(file_path,"wb")
+                dst = open(package_dst, "wb")
                 dst.write(data)
                 print "ok"
             finally:
@@ -103,8 +132,8 @@ and place it in this directory before rerunning this script.)
                 if dst:
                     dst.close()
         else:
-            print " Found file %s in the current directory" % filename
-        downloaded_packages.append((package_name, filename))
+            print " Found file %s in the current directory" % package_dst
+        downloaded_packages.append((package_name, package_dst))
     return downloaded_packages
 
 
@@ -144,7 +173,7 @@ def install_packages(options, tmpdir):
                              "is %s" % (file_name, ret[1]))
         print "ok"
 
-        dirname = '%s/%s' % (tmpdir, file_name.replace('.tar.gz', ''))
+        dirname = file_name.replace('.tar.gz', '')
         os.chdir(dirname)
 
         print "Installing package %s... " % package_name,
@@ -173,7 +202,7 @@ def main(args):
         if not options.currdir:
             shutil.rmtree(tmpdir)
 
-    print "Stoq %s has been sucessfully installed." % DEFAULT_STOQ_VERSION
+    print "Stoq has been successfully installed."
 
 
 if __name__=='__main__':
