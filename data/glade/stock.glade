@@ -96,7 +96,7 @@
                 <child>
                     <widget class="GtkAction" id="SalesMenu">
                         <property name="name">SalesMenu</property>
-                        <property name="label" translatable="yes">_Warehouse</property>
+                        <property name="label" translatable="yes">_Stock</property>
                     </widget>
                 </child>
                 <child>
@@ -206,11 +206,11 @@
 	  </toolbar>
 	</ui>]]></ui>
     </widget>
-    <widget class="GtkWindow" id="warehouse">
+    <widget class="GtkWindow" id="stock">
         <property name="destroy_with_parent">True</property>
         <property name="height_request">570</property>
         <property name="role"></property>
-        <property name="title" context="yes" translatable="yes">STOQ - Warehouse Application</property>
+        <property name="title" context="yes" translatable="yes">STOQ - Stock Application</property>
         <property name="width_request">800</property>
         <property name="window_position">center</property>
         <child>
