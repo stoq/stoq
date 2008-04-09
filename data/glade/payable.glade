@@ -145,8 +145,8 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="TillMenu">
-                        <property name="name">TillMenu</property>
+                    <widget class="GtkAction" id="PayableMenu">
+                        <property name="name">PayableMenu</property>
                         <property name="label" translatable="yes">_Payable</property>
                     </widget>
                 </child>
@@ -184,7 +184,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui>
 	  <menubar action="menubar">
-	    <menu action="TillMenu">
+	    <menu action="PayableMenu">
 	      <menuitem action="AddPayment"/>
 	      <menuitem action="SetNotPaid"/>
 	      <menuitem action="ChangeDueDate"/>
