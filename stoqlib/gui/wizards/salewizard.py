@@ -163,12 +163,15 @@ class PaymentMethodStep(WizardEditorStep):
     def _setup_combo(self):
         active_methods = APaymentMethod.get_active_methods(self.conn)
         combo_items = []
+        has_client = self.model.client is not None
         for method in active_methods:
+            can_use_method = True
             method_type = type(method)
             if method_type == CheckPM:
                 slave_class = CheckMethodSlave
             elif method_type == BillPM:
                 slave_class = BillMethodSlave
+                can_use_method = has_client
             elif method_type == CardPM:
                 providers = method.get_credit_card_providers()
                 if not providers:
@@ -185,6 +188,7 @@ class PaymentMethodStep(WizardEditorStep):
                         provider.is_active = False
                         self.conn.savepoint('payment')
             elif method_type == FinancePM:
+                can_use_method = has_client
                 companies = method.get_finance_companies()
                 if not companies:
                     continue
@@ -194,7 +198,7 @@ class PaymentMethodStep(WizardEditorStep):
                         slave_class = FinanceMethodSlave
             else:
                 continue
-            if method.is_active:
+            if method.is_active and can_use_method:
                 self.method_dict[method] = method_type, slave_class
                 combo_items.append((method.description, method))
         self.method_combo.prefill(combo_items)
