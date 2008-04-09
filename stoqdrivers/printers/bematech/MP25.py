@@ -609,19 +609,23 @@ class MP25(SerialBase):
         status = self._read_register(REGISTER_TOTALIZERS)
         status = struct.unpack('>H', status)[0]
         values = self._send_command(CMD_READ_TOTALIZERS, response='219s')
+
         taxes = []
         for i in range(length):
-            # Skip service taxes
             if 1 << 15-i & status != 0:
-                continue
+                type = 'ISS'
+            else:
+                type = 'ICMS'
+
             name = bcd2hex(names[i*2:i*2+2])
             value = bcd2dec(values[i*7:i*7+7])
-            taxes.append((name, value/Decimal(100)))
-        taxes.append(('CANC', total_cancelations/Decimal(100)))
-        taxes.append(('DESC', total_discount/Decimal(100)))
-        taxes.append(('I', bcd2dec(values[112:119])/Decimal(100)))
-        taxes.append(('N', bcd2dec(values[119:126])/Decimal(100)))
-        taxes.append(('F', bcd2dec(values[126:133])/Decimal(100)))
+            taxes.append((name, value/Decimal(100), type))
+
+        taxes.append(('CANC', total_cancelations/Decimal(100), 'ICMS'))
+        taxes.append(('DESC', total_discount/Decimal(100), 'ICMS'))
+        taxes.append(('I', bcd2dec(values[112:119])/Decimal(100), 'ICMS'))
+        taxes.append(('N', bcd2dec(values[119:126])/Decimal(100), 'ICMS'))
+        taxes.append(('F', bcd2dec(values[126:133])/Decimal(100), 'ICMS'))
         date = bcd2hex(opening_date[:6])
 
         return Settable(

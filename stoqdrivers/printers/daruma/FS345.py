@@ -583,23 +583,26 @@ class FS345(SerialBase):
 
         taxes = []
         for i in range(14):
+            reg = tax_codes[i*5+1:i*5+5]
+            if reg == '////':
+                continue
+            reg = reg.replace('.', '')
+
             if tax_codes[i*5] in 'ABCDEFGHIJKLMNOP':
-                reg = tax_codes[i*5+1:i*5+5]
-                if reg == '////':
-                    continue
-                reg = reg.replace('.', '')
+                type = 'ICMS'
             else:
-                reg = 'ISS'
+                type = 'ISS'
+
             sold = fiscal_registries[88+(i*14):102+(i*14)]
-            taxes.append((reg, Decimal(sold)/100))
+            taxes.append((reg, Decimal(sold)/100, type))
 
-        taxes.append(('DESC', Decimal(fiscal_registries[19:32]) / 100))
-        taxes.append(('CANC', Decimal(fiscal_registries[33:46]) / 100))
-        taxes.append(('I', Decimal(fiscal_registries[47:60]) / 100))
-        taxes.append(('N', Decimal(fiscal_registries[61:74]) / 100))
-        taxes.append(('F', Decimal(fiscal_registries[75:88]) / 100))
+        taxes.append(('DESC', Decimal(fiscal_registries[19:32]) / 100, 'ICMS'))
+        taxes.append(('CANC', Decimal(fiscal_registries[33:46]) / 100, 'ICMS'))
+        taxes.append(('I', Decimal(fiscal_registries[47:60]) / 100, 'ICMS'))
+        taxes.append(('N', Decimal(fiscal_registries[61:74]) / 100, 'ICMS'))
+        taxes.append(('F', Decimal(fiscal_registries[75:88]) / 100, 'ICMS'))
 
-        total_sold = sum(value for _, value in taxes)
+        total_sold = sum(value for _, value, _ in taxes)
 
         old_total = Decimal(fiscal_registries[:18]) / 100
         cancelled = Decimal(fiscal_registries[33:46]) / 100
