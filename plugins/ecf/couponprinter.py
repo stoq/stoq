@@ -26,6 +26,7 @@
 """FiscalPrinting (ECF) integration."""
 
 from decimal import Decimal
+import datetime
 
 from kiwi.argcheck import argcheck
 from kiwi.log import Logger
@@ -153,10 +154,12 @@ class CouponPrinter(object):
             return
 
         trans = new_transaction()
+        # coupon_start and coupon_end are actually, start coo, and current coo.
         coupon_start = data.coupon_start
         coupon_end = data.coupon_end
-        # 0 means that the opening date isn't known, fetch
-        # the end date in the database and add 1
+        # 0 means that the start coo isn't known, fetch
+        # the current coo from the the database and add 1
+        # TODO: try to avoid this hack
         if coupon_start == 0:
             results = FiscalDayHistory.selectBy(
                 station=self._printer.station,
@@ -181,12 +184,14 @@ class CouponPrinter(object):
                                coupon_end=coupon_end,
                                crz=data.crz,
                                cro=data.cro,
+                               reduction_date=datetime.datetime.today(),
                                period_total=data.period_total,
                                total=data.total)
-        for code, value in data.taxes:
+
+        for code, value, type in data.taxes:
             FiscalDayTax(fiscal_day_history=day,
                          code=code, value=value,
-                         connection=trans)
+                         type=type, connection=trans)
         trans.commit(close=True)
 
     def get_printer(self):

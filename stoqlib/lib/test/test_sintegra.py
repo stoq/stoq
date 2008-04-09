@@ -52,6 +52,7 @@ class SintegraTest(DomainTest):
     def testComplete(self):
         station = self.create_station()
         today = datetime.date(2007, 1, 1)
+        reduction_date = datetime.datetime(2007, 1, 1, 23, 59)
         day = FiscalDayHistory(connection=self.trans,
                                emission_date=today,
                                station=station,
@@ -62,10 +63,11 @@ class SintegraTest(DomainTest):
                                crz=18,
                                cro=25,
                                period_total=Decimal("456.00"),
-                               total=Decimal("123141.00"))
-        for code, value in [('2500', Decimal("123.00")),
-                            ('F', Decimal("789.00"))]:
-            FiscalDayTax(fiscal_day_history=day, code=code, value=value,
+                               total=Decimal("123141.00"),
+                               reduction_date=reduction_date)
+        for code, value, type in [('2500', Decimal("123.00"), 'ICMS'),
+                                  ('F', Decimal("789.00"), 'ICMS')]:
+            FiscalDayTax(fiscal_day_history=day, code=code, value=value, type=type,
                          connection=self.trans)
 
         branch = get_current_branch(self.trans)

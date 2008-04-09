@@ -178,6 +178,7 @@ class FiscalDayTax(Domain):
     fiscal_day_history = ForeignKey('FiscalDayHistory')
     code = StringCol()
     value = DecimalCol()
+    type = StringCol()
 
 
 class FiscalDayHistory(Domain):
@@ -195,3 +196,4 @@ class FiscalDayHistory(Domain):
     period_total = DecimalCol()
     total = DecimalCol()
     taxes = MultipleJoin('FiscalDayTax')
+    reduction_date = DateTimeCol()
