@@ -29,6 +29,7 @@ from kiwi.python import Settable
 from kiwi.datatypes import currency
 
 from stoqlib.database.runtime import get_current_branch
+from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.interfaces import ISellable, IStorable
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
@@ -47,6 +48,7 @@ class ProductRetentionDialog(BaseEditor):
                      'reason',
                      'available',
                      'product_description',
+                     'cfop',
                      'supplier')
 
     def __init__(self, conn, product):
@@ -65,12 +67,16 @@ class ProductRetentionDialog(BaseEditor):
         return Settable(reason='',
                         available=currency(0),
                         product_description='',
+                        cfop=None,
                         supplier=self.product.get_main_supplier_name(),
                         quantity=Decimal())
 
     def setup_widgets(self):
         self.quantity.set_range(1,
                                 self.storable.get_full_balance(self.branch))
+        cfops = [(cfop.get_description(), cfop)
+                      for cfop in CfopData.select(connection=self.conn)]
+        self.cfop.prefill(cfops)
 
     def setup_proxies(self):
         self.storable = IStorable(self.product)
@@ -86,7 +92,8 @@ class ProductRetentionDialog(BaseEditor):
         return True
 
     def on_confirm(self):
-        return self.product.block(quantity=self.model.quantity,
-                                  branch=self.branch,
-                                  reason=self.model.reason,
-                                  product=self.product)
+        return self.product.retain(quantity=self.model.quantity,
+                                   branch=self.branch,
+                                   reason=self.model.reason,
+                                   cfop=self.model.cfop,
+                                   product=self.product)

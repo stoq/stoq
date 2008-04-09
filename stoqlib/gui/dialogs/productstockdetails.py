@@ -164,9 +164,11 @@ class ProductStockHistoryDialog(BaseEditor):
     def _get_retention_columns(self):
         return [Column("id", title=_("#"), data_type=int,
                         justify=gtk.JUSTIFY_RIGHT, sorted=True),
+                Column("retention_date", title=_(u"When"),
+                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 Column("reason", title=_(u"Reason"), data_type=str,
                         expand=True),
-                Column("quantity", title=_(u"Quantity Retended"),
+                Column("quantity", title=_(u"Quantity Retained"),
                         data_type=Decimal)]
 
     #

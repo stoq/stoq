@@ -144,7 +144,7 @@ class TestProductHistory(DomainTest):
         self.failUnless(prod_hist)
         self.assertEqual(prod_hist.quantity_transfered, qty)
 
-    def testAddRetendedQuantity(self):
+    def testAddRetainedQuantity(self):
         sellable = self.create_sellable()
         sellable.status = ASellable.STATUS_AVAILABLE
         product = sellable.get_adapted()
@@ -153,10 +153,10 @@ class TestProductHistory(DomainTest):
         self.failIf(ProductHistory.selectOneBy(connection=self.trans,
                                                sellable=sellable))
 
-        retended_qty = 4
-        retended = self.create_retended_product(product, retended_qty)
-        self.assertEqual(sellable, ISellable(retended.product))
+        retained_qty = 4
+        retained = self.create_retained_product(product, retained_qty)
+        self.assertEqual(sellable, ISellable(retained.product))
         prod_hist = ProductHistory.selectOneBy(connection=self.trans,
                                                sellable=sellable)
         self.failUnless(prod_hist)
-        self.assertEqual(prod_hist.quantity_retended, retended_qty)
+        self.assertEqual(prod_hist.quantity_retained, retained_qty)

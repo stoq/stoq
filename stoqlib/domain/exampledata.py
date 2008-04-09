@@ -513,12 +513,12 @@ class ExampleCreator(object):
                                  quantity=quantity,
                                  connection=self.trans)
 
-    def create_retended_product(self, product, quantity):
+    def create_retained_product(self, product, quantity):
         from stoqlib.database.runtime import get_current_branch
         branch = get_current_branch(self.trans)
         reason = "Test"
-        return product.block(quantity=quantity, branch=branch,
-                             reason=reason, product=product)
+        return product.retain(quantity=quantity, branch=branch,
+                              reason=reason, product=product)
 
     def get_station(self):
         return get_current_station(self.trans)
