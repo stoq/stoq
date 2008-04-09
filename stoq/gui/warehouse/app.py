@@ -22,13 +22,13 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-gui/warehouse/app.py:
+gui/stock/app.py:
 
-    Main callsite for Warehouse application
+    Main callsite for Stock application
 """
 
-from stoq.gui.warehouse.warehouse import WarehouseApp
+from stoq.gui.stock.sock import StockApp
 
 # Here we define config in the call site: /bin/stoq file
 def main(config):
-    return WarehouseApp
+    return StockApp

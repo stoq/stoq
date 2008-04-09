@@ -26,8 +26,8 @@ import gettext
 
 _ = gettext.gettext
 
-application = _('Warehouse')
-description = _("""Warehouse application.""")
+application = _('Stock')
+description = _("""Stock application.""")
 
-icon_name = 'stoq-warehouse-app'
+icon_name = 'stoq-stock-app'
 

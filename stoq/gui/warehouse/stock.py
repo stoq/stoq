@@ -22,7 +22,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Johan Dahlin                <jdahlin@async.com.br>
 ##
-""" Main gui definition for warehouse application.  """
+""" Main gui definition for stock application.  """
 
 import gettext
 import decimal
@@ -54,10 +54,10 @@ from stoq.gui.application import SearchableAppWindow
 _ = gettext.gettext
 
 
-class WarehouseApp(SearchableAppWindow):
-    app_name = _('Warehouse')
-    app_icon_name = 'stoq-warehouse-app'
-    gladefile = "warehouse"
+class StockApp(SearchableAppWindow):
+    app_name = _('Stock')
+    app_icon_name = 'stoq-stock-app'
+    gladefile = "stock"
     search_table = ProductWithStockView
     search_labels = _('Matching:')
     klist_selection_mode = gtk.SELECTION_MULTIPLE
