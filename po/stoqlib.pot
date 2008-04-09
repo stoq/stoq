@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-27 13:06-0300\n"
+"POT-Creation-Date: 2008-04-09 12:12-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,7 +62,6 @@ msgstr ""
 #: ../stoqlib/gui/editors/invoiceeditor.py:213
 #: ../stoqlib/gui/editors/invoiceeditor.py:271
 #: ../stoqlib/gui/slaves/installmentslave.py:192
-#: ../stoqlib/gui/slaves/devicesslave.py:56
 #: ../stoqlib/gui/wizards/receivingwizard.py:243
 #: ../stoqlib/gui/wizards/salewizard.py:409
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:109
@@ -604,7 +603,7 @@ msgstr ""
 #: ../stoqlib/gui/search/personsearch.py:335
 #: ../stoqlib/gui/search/stationsearch.py:56
 #: ../stoqlib/gui/slaves/liaisonslave.py:50
-#: ../stoqlib/gui/wizards/personwizard.py:106
+#: ../stoqlib/gui/wizards/personwizard.py:115
 #: ../plugins/ecf/deviceconstanteditor.py:135
 msgid "Name"
 msgstr ""
@@ -1003,7 +1002,7 @@ msgstr ""
 #: ../stoqlib/lib/parameters.py:270
 msgid ""
 "Default CFOP (Fiscal Code of Operations) used when receiving products in the "
-"warehouse application."
+"stock application."
 msgstr ""
 
 #: ../stoqlib/lib/parameters.py:275
@@ -2229,12 +2228,12 @@ msgstr ""
 msgid "State registry number"
 msgstr ""
 
-#: ../stoqlib/lib/sintegragenerator.py:116
+#: ../stoqlib/lib/sintegragenerator.py:117
 #, python-format
 msgid "You need to have a CNPJ number set on Company %s"
 msgstr ""
 
-#: ../stoqlib/lib/sintegragenerator.py:130
+#: ../stoqlib/lib/sintegragenerator.py:131
 #, python-format
 msgid "You need to have a State Registry set on Company %s"
 msgstr ""
@@ -2361,10 +2360,9 @@ msgstr ""
 #: ../stoqlib/gui/search/giftcertificatesearch.py:65
 #: ../stoqlib/gui/search/giftcertificatesearch.py:91
 #: ../stoqlib/gui/editors/personeditor.py:178
-#: ../stoqlib/gui/slaves/devicesslave.py:65
 #: ../stoqlib/gui/dialogs/devices.py:54
 #: ../stoqlib/gui/dialogs/paymentmethod.py:85
-#: ../plugins/ecf/ecfprinterdialog.py:251 ../plugins/ecf/ecfdomain.py:185
+#: ../plugins/ecf/ecfprinterdialog.py:259 ../plugins/ecf/ecfdomain.py:185
 #: ../data/glade/BranchDetailsSlave.glade.h:1
 #: ../data/glade/DeviceSettingsEditor.glade.h:1
 #: ../data/glade/TransporterDataSlave.glade.h:3
@@ -2542,6 +2540,11 @@ msgstr ""
 msgid "By Sale Total"
 msgstr ""
 
+#: ../stoqlib/domain/address.py:142
+#: ../stoqlib/gui/editors/addresseditor.py:152
+msgid "N/A"
+msgstr ""
+
 #: ../stoqlib/domain/purchase.py:125 ../stoqlib/domain/sale.py:274
 #: ../stoqlib/domain/payment/payment.py:80
 #: ../stoqlib/domain/payment/group.py:69
@@ -2583,19 +2586,19 @@ msgstr ""
 msgid "Returned"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:731
+#: ../stoqlib/domain/sale.py:730
 #, python-format
 msgid "sale %s"
 msgstr ""
 
 #. The sale was not entirely paid, so we have to payback the
 #. till, because the sale amount have already been added in there
-#: ../stoqlib/domain/sale.py:813
+#: ../stoqlib/domain/sale.py:812
 #, python-format
 msgid "Debit on Till: Sale %d Returned"
 msgstr ""
 
-#: ../stoqlib/domain/sale.py:823
+#: ../stoqlib/domain/sale.py:822
 #, python-format
 msgid "%s Money Returned for Sale %d"
 msgstr ""
@@ -2759,7 +2762,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/parameterseditor.py:104
 #: ../stoqlib/gui/base/dialogs.py:460
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:264
-#: ../stoqlib/gui/wizards/personwizard.py:96
+#: ../stoqlib/gui/wizards/personwizard.py:105
 msgid "Yes"
 msgstr ""
 
@@ -2887,8 +2890,7 @@ msgstr ""
 #: ../stoqlib/gui/search/tillsearch.py:126
 #: ../stoqlib/gui/search/stationsearch.py:42
 #: ../stoqlib/gui/editors/invoiceeditor.py:274
-#: ../stoqlib/gui/slaves/devicesslave.py:60
-#: ../stoqlib/gui/dialogs/devices.py:52 ../plugins/ecf/ecfprinterdialog.py:250
+#: ../stoqlib/gui/dialogs/devices.py:52 ../plugins/ecf/ecfprinterdialog.py:258
 msgid "Station"
 msgstr ""
 
@@ -3050,7 +3052,7 @@ msgstr ""
 #: ../stoqlib/gui/search/personsearch.py:278
 #: ../stoqlib/gui/search/personsearch.py:337
 #: ../stoqlib/gui/slaves/liaisonslave.py:52
-#: ../stoqlib/gui/wizards/personwizard.py:108
+#: ../stoqlib/gui/wizards/personwizard.py:117
 msgid "Phone Number"
 msgstr ""
 
@@ -3686,31 +3688,31 @@ msgstr ""
 msgid "Delivery Item"
 msgstr ""
 
-#: ../stoqlib/gui/editors/addresseditor.py:149
+#: ../stoqlib/gui/editors/addresseditor.py:166
 msgid "Number cannot be zero or less than zero"
 msgstr ""
 
-#: ../stoqlib/gui/editors/addresseditor.py:153
-#: ../stoqlib/gui/editors/addresseditor.py:204
-#: ../stoqlib/gui/editors/addresseditor.py:235
+#: ../stoqlib/gui/editors/addresseditor.py:173
+#: ../stoqlib/gui/editors/addresseditor.py:224
+#: ../stoqlib/gui/editors/addresseditor.py:255
 msgid "Address"
 msgstr ""
 
-#: ../stoqlib/gui/editors/addresseditor.py:200
+#: ../stoqlib/gui/editors/addresseditor.py:220
 msgid "Additional Addresses"
 msgstr ""
 
-#: ../stoqlib/gui/editors/addresseditor.py:206
-#: ../stoqlib/gui/editors/addresseditor.py:237
+#: ../stoqlib/gui/editors/addresseditor.py:226
+#: ../stoqlib/gui/editors/addresseditor.py:257
 msgid "City"
 msgstr ""
 
-#: ../stoqlib/gui/editors/addresseditor.py:208
-#: ../stoqlib/gui/editors/addresseditor.py:239
+#: ../stoqlib/gui/editors/addresseditor.py:228
+#: ../stoqlib/gui/editors/addresseditor.py:259
 msgid "State"
 msgstr ""
 
-#: ../stoqlib/gui/editors/addresseditor.py:231
+#: ../stoqlib/gui/editors/addresseditor.py:251
 msgid "Select an address"
 msgstr ""
 
@@ -3812,21 +3814,21 @@ msgstr ""
 msgid "Notification"
 msgstr ""
 
-#: ../stoqlib/gui/base/lists.py:321
+#: ../stoqlib/gui/base/lists.py:351
 #, python-format
 msgid "Delete these %d items?"
 msgstr ""
 
-#: ../stoqlib/gui/base/lists.py:323
+#: ../stoqlib/gui/base/lists.py:353
 msgid "Delete this item?"
 msgstr ""
 
-#: ../stoqlib/gui/base/lists.py:324 ../plugins/ecf/ecfui.py:197
+#: ../stoqlib/gui/base/lists.py:354 ../plugins/ecf/ecfui.py:197
 #: ../plugins/ecf/ecfui.py:227
 msgid "Cancel"
 msgstr ""
 
-#: ../stoqlib/gui/base/lists.py:324
+#: ../stoqlib/gui/base/lists.py:354
 msgid "Delete items"
 msgstr ""
 
@@ -3994,11 +3996,6 @@ msgstr ""
 
 #: ../stoqlib/gui/slaves/employeeslave.py:245
 msgid "Salary"
-msgstr ""
-
-#: ../stoqlib/gui/slaves/devicesslave.py:51
-#: ../stoqlib/gui/dialogs/devices.py:48
-msgid "Device Type"
 msgstr ""
 
 #: ../stoqlib/gui/slaves/userslave.py:114
@@ -4173,26 +4170,26 @@ msgstr ""
 msgid "Edit Order"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/personwizard.py:95
+#: ../stoqlib/gui/wizards/personwizard.py:104
 #, python-format
 msgid "Does the %s already exist?"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/personwizard.py:98
+#: ../stoqlib/gui/wizards/personwizard.py:107
 #, python-format
 msgid "No, it's a new %s"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/personwizard.py:111
+#: ../stoqlib/gui/wizards/personwizard.py:120
 msgid "Mobile"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/personwizard.py:141
+#: ../stoqlib/gui/wizards/personwizard.py:150
 #, python-format
 msgid "What kind of %s are you adding?"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/personwizard.py:149
+#: ../stoqlib/gui/wizards/personwizard.py:158
 #, python-format
 msgid "Adding a %s"
 msgstr ""
@@ -4205,7 +4202,7 @@ msgstr ""
 msgid "Add Payment Type"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/abstractwizard.py:277
+#: ../stoqlib/gui/wizards/abstractwizard.py:276
 msgid "The quantity must be a positive integer number"
 msgstr ""
 
@@ -4234,6 +4231,10 @@ msgstr ""
 
 #: ../stoqlib/gui/dialogs/devices.py:43
 msgid "Device settings"
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/devices.py:48
+msgid "Device Type"
 msgstr ""
 
 #: ../stoqlib/gui/dialogs/clientdetails.py:55
@@ -4621,33 +4622,47 @@ msgstr ""
 msgid "This number must be positive and greater than 0"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:63
+#: ../plugins/ecf/ecfprinterdialog.py:64
 msgid "Fiscal Printer"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:114
+#: ../plugins/ecf/ecfprinterdialog.py:115
 #, python-format
 msgid "Probing for a %s printer on %s"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:151
+#: ../plugins/ecf/ecfprinterdialog.py:146
+msgid ""
+"A ECF Printer was added.\n"
+"You need to restart Stoq before using it."
+msgstr ""
+
+#: ../plugins/ecf/ecfprinterdialog.py:149
+msgid "Continue"
+msgstr ""
+
+#: ../plugins/ecf/ecfprinterdialog.py:150
+msgid "Restart now"
+msgstr ""
+
+#: ../plugins/ecf/ecfprinterdialog.py:159
 #, python-format
 msgid "Could not find a %s printer connected to %s"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:178
+#: ../plugins/ecf/ecfprinterdialog.py:186
 msgid "This printer is already known to the system"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:243
+#: ../plugins/ecf/ecfprinterdialog.py:251
 msgid "Fiscal Printers"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:248
+#: ../plugins/ecf/ecfprinterdialog.py:256
 msgid "Model"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:249
+#: ../plugins/ecf/ecfprinterdialog.py:257
 msgid "Serial"
 msgstr ""
 
