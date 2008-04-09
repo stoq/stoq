@@ -148,6 +148,7 @@ class ECFEditor(BaseEditor):
                      gtk.RESPONSE_NO,
                      _(u"Continue"),
                      _(u"Restart now")):
+            self.conn.commit()
             raise SystemExit
 
         # FIXME: move to base dialogs or base editor
