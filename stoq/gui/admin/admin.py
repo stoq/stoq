@@ -33,7 +33,8 @@ from kiwi.ui.widgets.list import Column
 from kiwi.ui.search import ComboSearchFilter
 from sqlobject.sqlbuilder import AND
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.database.runtime import (new_transaction, finish_transaction,
+                                      get_current_branch)
 from stoqlib.domain.person import Person, PersonAdaptToUser
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.invoice import InvoiceLayout
@@ -165,6 +166,14 @@ class AdminApp(SearchableAppWindow):
         self.run_dialog(SellableTaxConstantsDialog, self.conn)
 
     def on_sintegra__activate(self, action):
+        branch = get_current_branch(self.conn)
+
+        if branch.manager is None:
+            info(_(
+                "You must define a manager to this branch before you can create"
+                " a sintegra archive"))
+            return
+
         self.run_dialog(SintegraDialog, self.conn)
 
     def on_BranchSearch__activate(self, action):
