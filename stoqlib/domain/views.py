@@ -156,7 +156,7 @@ class ProductQuantityView(Viewable):
         quantity_sold=func.SUM(ProductHistory.q.quantity_sold),
         quantity_received=func.SUM(ProductHistory.q.quantity_received),
         quantity_transfered=func.SUM(ProductHistory.q.quantity_transfered),
-        quantity_retended=func.SUM(ProductHistory.q.quantity_retended),
+        quantity_retained=func.SUM(ProductHistory.q.quantity_retained),
         )
 
     hidden_columns = ['sold_date', 'received_date']

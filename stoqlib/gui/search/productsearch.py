@@ -221,7 +221,7 @@ class ProductSearchQuantity(SearchDialog):
                        data_type=Decimal),
                 Column('quantity_transfered', title=_('Transfered'),
                        format_func=format_data, data_type=Decimal),
-                Column('quantity_retended', title=_('Retended'),
+                Column('quantity_retained', title=_('Retained'),
                        format_func=format_data, data_type=Decimal),
                 Column('quantity_received', title=_('Received'),
                        format_func=format_data,

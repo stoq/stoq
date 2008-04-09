@@ -99,6 +99,8 @@ class ProductRetentionHistory(Domain):
     quantity = DecimalCol(default=0)
     reason = UnicodeCol(default='')
     product = ForeignKey('Product')
+    retention_date = DateTimeCol(default=None)
+    cfop = ForeignKey('CfopData', default=None)
 
 
 class Product(Domain):
@@ -120,16 +122,19 @@ class Product(Domain):
     # General Methods
     #
 
-    def block(self, quantity, branch, reason, product):
+    def retain(self, quantity, branch, reason, product, cfop=None):
         storable = IStorable(self)
         storable.decrease_stock(quantity, branch)
+        today = datetime.date.today()
         conn = self.get_connection()
-        retended_item = ProductRetentionHistory(quantity=quantity,
+        retained_item = ProductRetentionHistory(quantity=quantity,
+                                                retention_date=today,
                                                 product=product,
                                                 reason=reason,
+                                                cfop=cfop,
                                                 connection=conn)
-        ProductHistory.add_retended_item(conn, branch, retended_item)
-        return retended_item
+        ProductHistory.add_retained_item(conn, branch, retained_item)
+        return retained_item
 
     #
     # Acessors
@@ -155,7 +160,7 @@ class Product(Domain):
 
 class ProductHistory(Domain):
     """Stores product history, such as sold, received, transfered and
-    retended quantities.
+    retained quantities.
     """
     # We keep a reference to ASellable instead of Product because we want to
     # display the sellable id in the interface instead of the product id for
@@ -163,7 +168,7 @@ class ProductHistory(Domain):
     quantity_sold = DecimalCol(default=None)
     quantity_received = DecimalCol(default=None)
     quantity_transfered = DecimalCol(default=None)
-    quantity_retended = DecimalCol(default=None)
+    quantity_retained = DecimalCol(default=None)
     sold_date = DateTimeCol(default=None)
     received_date = DateTimeCol(default=None)
     branch = ForeignKey("PersonAdaptToBranch")
@@ -216,17 +221,17 @@ class ProductHistory(Domain):
             connection=conn)
 
     @classmethod
-    def add_retended_item(cls, conn, branch, retended_item):
+    def add_retained_item(cls, conn, branch, retained_item):
         """
-        Adds a retended_item, populates the ProductHistory table using a
+        Adds a retained_item, populates the ProductHistory table using a
         product_retention_history created during a product retention
 
         @param conn: a database connection
         @param branch: the source branch
-        @param retended_item: a ProductRetentionHistory instance
+        @param retained_item: a ProductRetentionHistory instance
         """
-        cls(branch=branch, sellable=ISellable(retended_item.product),
-            quantity_retended=retended_item.quantity,
+        cls(branch=branch, sellable=ISellable(retained_item.product),
+            quantity_retained=retained_item.quantity,
             received_date=datetime.date.today(),
             connection=conn)
 
