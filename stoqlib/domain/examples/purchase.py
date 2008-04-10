@@ -81,6 +81,7 @@ def create_purchases():
                                       sellable=sellable,
                                       order=order)
     order.create_preview_outpayments(trans, group, order.get_purchase_total())
+    order.confirm()
 
     receiving_order = ReceivingOrder(purchase=order,
                                      responsible=user,
@@ -99,7 +100,6 @@ def create_purchases():
                                             receiving_order=receiving_order)
 
     receiving_order.set_valid()
-    order.confirm()
     receiving_order.confirm()
 
     trans.commit()

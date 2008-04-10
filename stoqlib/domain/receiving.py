@@ -183,7 +183,7 @@ class ReceivingOrder(ValidatableDomain):
         """
         difference = self.get_total() - self.get_products_total()
         if difference != 0:
-            query = dict(group=group, status=Payment.STATUS_PREVIEW)
+            query = dict(group=group, status=Payment.STATUS_PENDING)
             payments = Payment.selectBy(connection=self.get_connection(),
                                         **query)
             payments_number = payments.count()

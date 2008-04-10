@@ -198,14 +198,6 @@ _parameter_info = dict(
       'able to change the salesperson of an opened '
       'order on sale checkout dialog')),
 
-    USE_PURCHASE_PREVIEW_PAYMENTS=ParameterDetails(
-    _(u'Purchase'),
-    _(u'Use Purchase Preview '
-      'Payments'),
-    _(u'Generate preview payments for new purchases which are not received '
-      'yet. Once the order is received the preview payments will be '
-      'also confirmed as valid payments with STATUS_PENDING')),
-
     RETURN_MONEY_ON_SALES=ParameterDetails(
     _(u'Sales'),
     _(u'Return Money On Sales'),
@@ -342,8 +334,6 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('COUNTRY_SUGGESTED', unicode, initial=u'Brazil'),
         ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
         ParameterAttr('MANDATORY_INTEREST_CHARGE', bool, initial=False),
-        ParameterAttr('USE_PURCHASE_PREVIEW_PAYMENTS', bool,
-                      initial=True),
         ParameterAttr('RETURN_MONEY_ON_SALES', bool, initial=True),
         ParameterAttr('RECEIVE_PRODUCTS_WITHOUT_ORDER', bool,
                       initial=True),

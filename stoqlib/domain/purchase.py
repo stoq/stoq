@@ -44,7 +44,6 @@ from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.interfaces import IPaymentGroup, IContainer
 from stoqlib.domain.sellable import ASellable, BaseSellableInfo, SellableUnit
 from stoqlib.lib.defaults import calculate_interval, quantize
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
 
@@ -264,12 +263,11 @@ class PurchaseOrder(ValidatableDomain):
             raise ValueError('Invalid order status, it should be '
                              'ORDER_PENDING, got %s'
                              % self.get_status_str())
-        conn = self.get_connection()
-        if sysparam(conn).USE_PURCHASE_PREVIEW_PAYMENTS:
-            group = IPaymentGroup(self, None)
-            if not group:
-                raise ValueError('You must have a IPaymentGroup facet '
-                                 'defined at this point')
+        group = IPaymentGroup(self, None)
+        if not group:
+            raise ValueError('You must have a IPaymentGroup facet '
+                             'defined at this point')
+        group.confirm()
         self.status = self.ORDER_CONFIRMED
         self.confirm_date = confirm_date
 
@@ -279,9 +277,6 @@ class PurchaseOrder(ValidatableDomain):
         if not self.status == self.ORDER_CONFIRMED:
             raise ValueError('Invalid status, it should be confirmed '
                              'got %s instead' % self.get_status_str())
-        payment = IPaymentGroup(self)
-        for item in payment.get_items():
-            item.set_pending()
         self.status = self.ORDER_CLOSED
 
     def cancel(self):
@@ -460,6 +455,10 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
 #                                "ISupplier facet at this point")
 #         order = self.get_adapted()
 #         order.supplier = supplier
+
+    def confirm(self):
+        for payment in self.get_items():
+            payment.set_pending()
 
     def pay(self, payment):
         pass

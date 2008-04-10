@@ -184,20 +184,6 @@ class TestParameter(DomainTest):
         param = self.sparam.ACCEPT_CHANGE_SALESPERSON
         assert isinstance(param, bool)
 
-      # Cannot perform this test, see bug 2655 to further details.
-#     def testPurchasePreviewPayment(self):
-#         supplier = Person.getAdapterClass(ISupplier).select(
-#                        connection=self.trans)[0]
-#         branch = Person.getAdapterClass(IBranch).select(
-#                      connection=self.trans)[0]
-#         purchase = PurchaseOrder(connection=self.trans, supplier=supplier,
-#                                  branch=branch,
-#                                  status=PurchaseOrder.ORDER_PENDING)
-#         purchase.addFacet(IPaymentGroup, connection=self.trans)
-#         purchase.confirm()
-#         param = self.sparam.USE_PURCHASE_PREVIEW_PAYMENTS
-#         assert isinstance (param, int)
-
     # Some enhancement is necessary here, this test needs to be improved
     def testReturnMoneyOnSales(self):
         param = self.sparam.RETURN_MONEY_ON_SALES
