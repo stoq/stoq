@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-04-09 12:07-0300\n"
+"POT-Creation-Date: 2008-04-10 11:39-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -289,7 +289,7 @@ msgstr ""
 
 #: ../stoq/gui/till/till.py:68 ../stoq/gui/payable/payable.py:66
 #: ../stoq/gui/purchase/purchase.py:62 ../stoq/gui/sales/sales.py:63
-#: ../stoq/gui/admin/admin.py:70 ../stoq/gui/receivable/receivable.py:86
+#: ../stoq/gui/admin/admin.py:71 ../stoq/gui/receivable/receivable.py:86
 msgid "matching:"
 msgstr ""
 
@@ -337,7 +337,7 @@ msgstr ""
 
 #: ../stoq/gui/till/till.py:149 ../stoq/gui/payable/payable.py:285
 #: ../stoq/gui/purchase/purchase.py:218 ../stoq/gui/sales/sales.py:171
-#: ../stoq/gui/admin/admin.py:103 ../stoq/gui/receivable/receivable.py:112
+#: ../stoq/gui/admin/admin.py:104 ../stoq/gui/receivable/receivable.py:112
 msgid "Any"
 msgstr ""
 
@@ -421,7 +421,7 @@ msgstr ""
 msgid "Paid Date"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:106 ../stoq/gui/admin/admin.py:95
+#: ../stoq/gui/payable/payable.py:106 ../stoq/gui/admin/admin.py:96
 #: ../stoq/gui/receivable/receivable.py:142
 msgid "Status"
 msgstr ""
@@ -577,7 +577,7 @@ msgstr ""
 msgid "Inventory application."
 msgstr ""
 
-#: ../stoq/gui/admin/__init__.py:29 ../stoq/gui/admin/admin.py:66
+#: ../stoq/gui/admin/__init__.py:29 ../stoq/gui/admin/admin.py:67
 msgid "Administrative"
 msgstr ""
 
@@ -585,25 +585,31 @@ msgstr ""
 msgid "Administrative application."
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:79
+#: ../stoq/gui/admin/admin.py:80
 msgid "Show users with status"
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:86
+#: ../stoq/gui/admin/admin.py:87
 msgid "Login Name"
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:88
+#: ../stoq/gui/admin/admin.py:89
 msgid "Profile"
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:92
+#: ../stoq/gui/admin/admin.py:93
 msgid "Name"
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:137
+#: ../stoq/gui/admin/admin.py:138
 msgid ""
 "You must create at least one invoice layout before adding aninvoice printer"
+msgstr ""
+
+#: ../stoq/gui/admin/admin.py:173
+msgid ""
+"You must define a manager to this branch before you can create a sintegra "
+"archive"
 msgstr ""
 
 #: ../stoq/gui/pos/deliveryeditor.py:57 ../stoq/gui/pos/deliveryeditor.py:61
