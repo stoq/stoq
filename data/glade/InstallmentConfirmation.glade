@@ -321,7 +321,47 @@
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
+                    <widget class="GtkHButtonBox" id="hbuttonbox1">
+                        <property name="layout_style">start</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkButton" id="details_button">
+                                <property name="is_focus">True</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                                <child>
+                                    <widget class="GtkAlignment" id="alignment4">
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.0</property>
+                                        <child>
+                                            <widget class="GtkHBox" id="hbox3">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                    <widget class="GtkImage" id="image2">
+                                                        <property name="file">kfind16px.png</property>
+                                                        <property name="visible">True</property>
+                                                    </widget>
+                                                </child>
+                                                <child>
+                                                    <widget class="GtkLabel" id="label12">
+                                                        <property name="label" context="yes" translatable="yes">Details...</property>
+                                                        <property name="visible">True</property>
+                                                    </widget>
+                                                    <packing>
+                                                        <property name="position">1</property>
+                                                    </packing>
+                                                </child>
+                                            </widget>
+                                        </child>
+                                    </widget>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                            </packing>
+                        </child>
+                    </widget>
                     <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
