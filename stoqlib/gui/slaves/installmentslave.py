@@ -31,10 +31,13 @@ from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.objectlist import Column
 from kiwi import ValueUnset
 
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.sale import Sale
+from stoqlib.domain.sale import Sale, SaleView
 
 _ = stoqlib_gettext
 
@@ -184,6 +187,11 @@ class _InstallmentConfirmationSlave(BaseEditor):
         BaseEditor.__init__(self, conn)
         self._setup_widgets()
 
+    def run_details_dialog(self):
+        """ This can be overriden to provide a custom dialog when the
+        user click in the details button.
+        """
+
     # Private
 
     def _get_columns(self):
@@ -289,6 +297,9 @@ class _InstallmentConfirmationSlave(BaseEditor):
         self._update_interest(pay_interest=toggle.get_active())
         self._update_total_value()
 
+    def on_details_button__clicked(self, widget):
+        self.run_details_dialog()
+
 
 class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
     model_type = _ConfirmationModel
@@ -297,6 +308,7 @@ class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         _InstallmentConfirmationSlave._setup_widgets(self)
         self.details_box.hide()
         self.expander.hide()
+        self.details_button.hide()
 
     def create_model(self, conn):
         if self._payments[0].group:
@@ -305,6 +317,10 @@ class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         else:
             self._setup_widgets = self._lonely_setup_widgets
             return _LonelyConfirmationModel(self._payments)
+
+    def run_details_dialog(self):
+        sale_view = SaleView.get(self.model.get_order_number())
+        run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
 
     def on_close_date__changed(self, proxy_date_entry):
         self._proxy.update('penalty')
@@ -324,6 +340,7 @@ class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
 
         if isinstance(self.model, _LonelyConfirmationModel):
             self.details_box.hide()
+            self.details_button.hide()
 
     def create_model(self, conn):
         if self._payments[0].group:
@@ -332,3 +349,7 @@ class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         else:
             model = _LonelyConfirmationModel(self._payments)
         return model
+
+    def run_details_dialog(self):
+        purchase = self.model._purchase
+        run_dialog(PurchaseDetailsDialog, self, self.conn, purchase)
