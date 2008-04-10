@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -124,6 +124,10 @@ class AddressSlave(BaseEditorSlave):
         self.model = model
         self.proxy.set_model(self.model)
 
+    def confirm(self):
+        self.model.ensure_address()
+
+        return self.model.target
     #
     # BaseEditorSlave hooks
     #
@@ -139,10 +143,6 @@ class AddressSlave(BaseEditorSlave):
 
     def can_confirm(self):
         return self.model.is_valid_model()
-
-    def on_confirm(self):
-        self.model.ensure_address()
-        return self.model.target
 
     def _update_streetnumber(self):
         has_street_number = self.streetnumber_check.get_active()
@@ -171,7 +171,7 @@ class AddressSlave(BaseEditorSlave):
 
 class AddressEditor(BaseEditor):
     model_name = _('Address')
-    model_type = _AddressModel
+    model_type = Address
     gladefile = 'AddressEditor'
 
     def __init__(self, conn, person, address=None):
@@ -182,11 +182,6 @@ class AddressEditor(BaseEditor):
                             % type(person))
         self.current_main_address = self.person.get_main_address()
 
-        if address is not None:
-            assert isinstance(address, Address)
-            address = conn.get(address)
-            address = _AddressModel(address, conn)
-
         BaseEditor.__init__(self, conn, address)
         self.set_description(self.model_name)
 
@@ -195,15 +190,14 @@ class AddressEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        address = Address(person=self.person,
-                          city_location=CityLocation.get_default(conn),
-                          is_main_address=False,
-                          connection=conn)
-        return _AddressModel(address, conn)
+        return Address(person=self.person,
+                       city_location=CityLocation.get_default(conn),
+                       is_main_address=False,
+                       connection=conn)
 
     def setup_slaves(self):
-        self.address_slave = AddressSlave(self.conn, self.person, self.model.target,
-                                          False,
+        self.address_slave = AddressSlave(self.conn, self.person, self.model,
+                                          is_main_address=False,
                                           visual_mode=self.visual_mode)
         self.attach_slave('main_holder', self.address_slave)
 
@@ -211,9 +205,7 @@ class AddressEditor(BaseEditor):
         return self.model.is_valid_model()
 
     def on_confirm(self):
-        self.model.ensure_address()
-
-        return self.model.target
+        return self.address_slave.confirm()
 
 
 class AddressAdditionDialog(ModelListDialog):
