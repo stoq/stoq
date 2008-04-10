@@ -109,10 +109,10 @@ class TestReceivingOrder(DomainTest):
         for item in order.purchase.get_items():
             item.quantity_received = 0
         order.purchase.status = order.purchase.ORDER_PENDING
-        order.purchase.confirm()
         group = IPaymentGroup(order.purchase)
         total = order.get_total()
         order.purchase.create_preview_outpayments(self.trans, group, total)
+        order.purchase.confirm()
 
         payment_dict = {}
         for pay in group.get_items():

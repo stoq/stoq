@@ -66,11 +66,10 @@ class TestPurchaseOrder(DomainTest):
         self.failUnless(len(payments) > 0)
 
         for payment in payments:
-            self.assertEqual(payment.status, Payment.STATUS_PREVIEW)
+            self.assertEqual(payment.status, Payment.STATUS_PENDING)
 
         order.close()
-        for payment in payments:
-            self.assertEqual(payment.status, Payment.STATUS_PENDING)
+        self.assertEqual(order.status, PurchaseOrder.ORDER_CLOSED)
 
     def testCanCancelPartial(self):
         order = self.create_purchase_order()
