@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-04-09 12:12-0300\n"
+"POT-Creation-Date: 2008-04-10 11:42-0300\n"
 "PO-Revision-Date: 2007-07-18 11:35-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -63,7 +63,7 @@ msgstr "Kod"
 #: ../stoqlib/gui/editors/invoiceeditor.py:271
 #: ../stoqlib/gui/slaves/installmentslave.py:192
 #: ../stoqlib/gui/wizards/receivingwizard.py:243
-#: ../stoqlib/gui/wizards/salewizard.py:409
+#: ../stoqlib/gui/wizards/salewizard.py:413
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:109
 #: ../stoqlib/gui/wizards/purchasewizard.py:198
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:82
@@ -187,7 +187,7 @@ msgstr "Betalningsmetod"
 #: ../stoqlib/reporting/sale.py:122 ../stoqlib/gui/search/salesearch.py:68
 #: ../stoqlib/gui/search/giftcertificatesearch.py:137
 #: ../stoqlib/gui/wizards/receivingwizard.py:104
-#: ../stoqlib/gui/wizards/salewizard.py:408
+#: ../stoqlib/gui/wizards/salewizard.py:412
 #: ../stoqlib/gui/dialogs/tillhistory.py:61
 msgid "Number"
 msgstr "Nummer"
@@ -323,7 +323,7 @@ msgstr "Kostnad"
 #: ../stoqlib/gui/search/servicesearch.py:103
 #: ../stoqlib/gui/search/giftcertificatesearch.py:79
 #: ../stoqlib/gui/search/giftcertificatesearch.py:143
-#: ../stoqlib/gui/wizards/salewizard.py:411
+#: ../stoqlib/gui/wizards/salewizard.py:415
 #: ../stoqlib/gui/dialogs/saledetails.py:172
 msgid "Price"
 msgstr "Pris"
@@ -382,7 +382,7 @@ msgstr "Välj föremål"
 
 #: ../stoqlib/reporting/product.py:157
 #, fuzzy
-msgid "Quantity retended"
+msgid "Quantity retained"
 msgstr "Antal"
 
 #: ../stoqlib/reporting/product.py:160
@@ -2275,12 +2275,12 @@ msgstr "Enhetsttyp"
 msgid "State registry number"
 msgstr ""
 
-#: ../stoqlib/lib/sintegragenerator.py:117
+#: ../stoqlib/lib/sintegragenerator.py:122
 #, python-format
 msgid "You need to have a CNPJ number set on Company %s"
 msgstr ""
 
-#: ../stoqlib/lib/sintegragenerator.py:131
+#: ../stoqlib/lib/sintegragenerator.py:136
 #, python-format
 msgid "You need to have a State Registry set on Company %s"
 msgstr ""
@@ -2410,7 +2410,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/personeditor.py:178
 #: ../stoqlib/gui/dialogs/devices.py:54
 #: ../stoqlib/gui/dialogs/paymentmethod.py:85
-#: ../plugins/ecf/ecfprinterdialog.py:259 ../plugins/ecf/ecfdomain.py:185
+#: ../plugins/ecf/ecfprinterdialog.py:260 ../plugins/ecf/ecfdomain.py:185
 #: ../data/glade/BranchDetailsSlave.glade.h:1
 #: ../data/glade/DeviceSettingsEditor.glade.h:1
 #: ../data/glade/TransporterDataSlave.glade.h:3
@@ -2947,7 +2947,7 @@ msgstr ""
 #: ../stoqlib/gui/search/tillsearch.py:126
 #: ../stoqlib/gui/search/stationsearch.py:42
 #: ../stoqlib/gui/editors/invoiceeditor.py:274
-#: ../stoqlib/gui/dialogs/devices.py:52 ../plugins/ecf/ecfprinterdialog.py:258
+#: ../stoqlib/gui/dialogs/devices.py:52 ../plugins/ecf/ecfprinterdialog.py:259
 msgid "Station"
 msgstr "Dator"
 
@@ -3314,7 +3314,7 @@ msgstr "Radera"
 
 #: ../stoqlib/gui/search/productsearch.py:224
 #, fuzzy
-msgid "Retended"
+msgid "Retained"
 msgstr "Återlämnad"
 
 #: ../stoqlib/gui/search/productsearch.py:226
@@ -3752,7 +3752,7 @@ msgstr ""
 
 #: ../stoqlib/gui/editors/sellableeditor.py:332
 #: ../stoqlib/gui/editors/giftcertificateeditor.py:136
-#: ../stoqlib/gui/wizards/salewizard.py:346
+#: ../stoqlib/gui/wizards/salewizard.py:350
 #, python-format
 msgid "The barcode %s already exists"
 msgstr ""
@@ -3916,21 +3916,21 @@ msgstr "Verifierad"
 msgid "Notification"
 msgstr "Dator"
 
-#: ../stoqlib/gui/base/lists.py:351
+#: ../stoqlib/gui/base/lists.py:352
 #, python-format
 msgid "Delete these %d items?"
 msgstr ""
 
-#: ../stoqlib/gui/base/lists.py:353
+#: ../stoqlib/gui/base/lists.py:354
 msgid "Delete this item?"
 msgstr ""
 
-#: ../stoqlib/gui/base/lists.py:354 ../plugins/ecf/ecfui.py:197
+#: ../stoqlib/gui/base/lists.py:355 ../plugins/ecf/ecfui.py:197
 #: ../plugins/ecf/ecfui.py:227
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: ../stoqlib/gui/base/lists.py:354
+#: ../stoqlib/gui/base/lists.py:355
 #, fuzzy
 msgid "Delete items"
 msgstr "Ta bort föremål"
@@ -3996,7 +3996,7 @@ msgid "Select Image"
 msgstr "Välj bild"
 
 #: ../stoqlib/gui/slaves/receivingslave.py:120
-#: ../stoqlib/gui/wizards/salewizard.py:698
+#: ../stoqlib/gui/wizards/salewizard.py:702
 msgid "Additional Information"
 msgstr ""
 
@@ -4058,12 +4058,12 @@ msgid "Supplier: "
 msgstr "Leverantör: "
 
 #: ../stoqlib/gui/slaves/paymentslave.py:126
-#: ../stoqlib/gui/wizards/salewizard.py:427
+#: ../stoqlib/gui/wizards/salewizard.py:431
 msgid "Overpaid:"
 msgstr "Överbetalad"
 
 #: ../stoqlib/gui/slaves/paymentslave.py:128
-#: ../stoqlib/gui/wizards/salewizard.py:425
+#: ../stoqlib/gui/wizards/salewizard.py:429
 #: ../data/glade/PaymentListSlave.glade.h:2
 msgid "Outstanding:"
 msgstr "Utstående"
@@ -4190,50 +4190,50 @@ msgstr "Välj föremål"
 msgid "Receiving Order"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:244
+#: ../stoqlib/gui/wizards/salewizard.py:248
 #, python-format
 msgid "Select method of payment for the %s outstanding value"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:304
+#: ../stoqlib/gui/wizards/salewizard.py:308
 #, python-format
 msgid "Create a <u>%s</u> with this value"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:306
+#: ../stoqlib/gui/wizards/salewizard.py:310
 #, python-format
 msgid "There is %s overpaid"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:440
+#: ../stoqlib/gui/wizards/salewizard.py:444
 #, python-format
 msgid "The gift certificate with code '%s' doesn't exists."
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:460
+#: ../stoqlib/gui/wizards/salewizard.py:464
 #, python-format
 msgid "The gift certificate '%s' was already added to thelist"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:497
+#: ../stoqlib/gui/wizards/salewizard.py:501
 msgid "<b>Total:</b>"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:746
+#: ../stoqlib/gui/wizards/salewizard.py:750
 msgid "Invalid value, please verify if it was properly typed."
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:763
+#: ../stoqlib/gui/wizards/salewizard.py:767
 msgid ""
 "There is no sold gift certificates at this moment.\n"
 "Please select another payment method."
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:833
+#: ../stoqlib/gui/wizards/salewizard.py:837
 msgid "Sale Checkout"
 msgstr ""
 
-#: ../stoqlib/gui/wizards/salewizard.py:861
+#: ../stoqlib/gui/wizards/salewizard.py:865
 msgid "Confirm PreOrder"
 msgstr ""
 
@@ -4494,6 +4494,7 @@ msgstr "Betalad"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:182
 #: ../stoqlib/gui/dialogs/saledetails.py:176
+#: ../stoqlib/gui/dialogs/productstockdetails.py:167
 msgid "When"
 msgstr ""
 
@@ -4524,7 +4525,7 @@ msgstr "Till"
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:193
 #: ../stoqlib/gui/dialogs/saledetails.py:187
-#: ../stoqlib/gui/dialogs/productstockdetails.py:167
+#: ../stoqlib/gui/dialogs/productstockdetails.py:169
 #, fuzzy
 msgid "Reason"
 msgstr "Anledning:"
@@ -4567,11 +4568,11 @@ msgstr ""
 msgid "Supplier Details"
 msgstr "Sök"
 
-#: ../stoqlib/gui/dialogs/productretention.py:41
+#: ../stoqlib/gui/dialogs/productretention.py:42
 msgid "Product Retention"
 msgstr ""
 
-#: ../stoqlib/gui/dialogs/productretention.py:84
+#: ../stoqlib/gui/dialogs/productretention.py:90
 msgid "You can not retain a product without a reason!"
 msgstr ""
 
@@ -4627,32 +4628,32 @@ msgstr "Datum:"
 msgid "Responsible"
 msgstr "Ansvarig:"
 
-#: ../stoqlib/gui/dialogs/productstockdetails.py:169
+#: ../stoqlib/gui/dialogs/productstockdetails.py:171
 #, fuzzy
-msgid "Quantity Retended"
+msgid "Quantity Retained"
 msgstr "Antal"
 
-#: ../plugins/ecf/couponprinter.py:128
+#: ../plugins/ecf/couponprinter.py:129
 msgid "Could not print summary"
 msgstr ""
 
-#: ../plugins/ecf/couponprinter.py:143
+#: ../plugins/ecf/couponprinter.py:144
 #, python-format
 msgid "Invalid serial number for fiscal printer connected to %s"
 msgstr ""
 
-#: ../plugins/ecf/couponprinter.py:249
+#: ../plugins/ecf/couponprinter.py:254
 msgid "Could not print item"
 msgstr ""
 
-#: ../plugins/ecf/couponprinter.py:314
+#: ../plugins/ecf/couponprinter.py:319
 #, python-format
 msgid ""
 "Can't find a valid identifier for the payment method type: %s. It is not "
 "possible add the payment on the coupon"
 msgstr ""
 
-#: ../plugins/ecf/couponprinter.py:323
+#: ../plugins/ecf/couponprinter.py:328
 #, python-format
 msgid ""
 "The payment method used in this sale (%s) is not configured in the fiscal "
@@ -4801,26 +4802,26 @@ msgstr "_Fortsätt"
 msgid "Restart now"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:159
+#: ../plugins/ecf/ecfprinterdialog.py:160
 #, python-format
 msgid "Could not find a %s printer connected to %s"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:186
+#: ../plugins/ecf/ecfprinterdialog.py:187
 msgid "This printer is already known to the system"
 msgstr ""
 
-#: ../plugins/ecf/ecfprinterdialog.py:251
+#: ../plugins/ecf/ecfprinterdialog.py:252
 #, fuzzy
 msgid "Fiscal Printers"
 msgstr "Skatteskrivare"
 
-#: ../plugins/ecf/ecfprinterdialog.py:256
+#: ../plugins/ecf/ecfprinterdialog.py:257
 #, fuzzy
 msgid "Model"
 msgstr "Modell:"
 
-#: ../plugins/ecf/ecfprinterdialog.py:257
+#: ../plugins/ecf/ecfprinterdialog.py:258
 #, fuzzy
 msgid "Serial"
 msgstr "Syrien"
@@ -5285,7 +5286,7 @@ msgstr ""
 
 #: ../data/glade/PaymentChangeDialog.glade.h:3
 #: ../data/glade/CashOutEditor.glade.h:1
-#: ../data/glade/ProductRetentionDialog.glade.h:6
+#: ../data/glade/ProductRetentionDialog.glade.h:7
 #: ../data/glade/CashInEditor.glade.h:1
 #: ../data/glade/SaleReturnSlave.glade.h:7
 msgid "Reason:"
@@ -5364,6 +5365,7 @@ msgid "Details"
 msgstr "Detaljer"
 
 #: ../data/glade/FiscalBookEntryEditor.glade.h:1
+#: ../data/glade/ProductRetentionDialog.glade.h:3
 #: ../data/glade/ReceivingInvoiceSlave.glade.h:2
 #: ../data/glade/CfopEditor.glade.h:2
 msgid "CFOP:"
@@ -5632,15 +5634,16 @@ msgstr "Kassautdrag..."
 msgid "Available:"
 msgstr "Tillgänglig:"
 
-#: ../data/glade/ProductRetentionDialog.glade.h:3
+#: ../data/glade/ProductRetentionDialog.glade.h:4
 msgid "Main Supplier:"
 msgstr "Huvudleverantör:"
 
-#: ../data/glade/ProductRetentionDialog.glade.h:4
-msgid "Number of items to block: "
-msgstr ""
-
 #: ../data/glade/ProductRetentionDialog.glade.h:5
+#, fuzzy
+msgid "Number of items to retain: "
+msgstr "Antal delbetalningar:"
+
+#: ../data/glade/ProductRetentionDialog.glade.h:6
 #: ../data/glade/ProductStockHistoryDialog.glade.h:2
 #: ../data/glade/AbstractProductStep.glade.h:5
 #: ../data/glade/SellableItemEditor.glade.h:3
@@ -6456,6 +6459,10 @@ msgstr ""
 #: ../data/template/receipt.rml.extracted.h:14
 msgid "VALUE:"
 msgstr "VÄRDE"
+
+#, fuzzy
+#~ msgid "Retended"
+#~ msgstr "Återlämnad"
 
 #, fuzzy
 #~ msgid "No Tax"
