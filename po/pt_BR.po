@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-04-09 12:07-0300\n"
+"POT-Creation-Date: 2008-04-10 11:39-0300\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -330,7 +330,7 @@ msgstr "Caixa"
 
 #: ../stoq/gui/till/till.py:68 ../stoq/gui/payable/payable.py:66
 #: ../stoq/gui/purchase/purchase.py:62 ../stoq/gui/sales/sales.py:63
-#: ../stoq/gui/admin/admin.py:70 ../stoq/gui/receivable/receivable.py:86
+#: ../stoq/gui/admin/admin.py:71 ../stoq/gui/receivable/receivable.py:86
 msgid "matching:"
 msgstr "contendo:"
 
@@ -378,7 +378,7 @@ msgstr "Total"
 
 #: ../stoq/gui/till/till.py:149 ../stoq/gui/payable/payable.py:285
 #: ../stoq/gui/purchase/purchase.py:218 ../stoq/gui/sales/sales.py:171
-#: ../stoq/gui/admin/admin.py:103 ../stoq/gui/receivable/receivable.py:112
+#: ../stoq/gui/admin/admin.py:104 ../stoq/gui/receivable/receivable.py:112
 msgid "Any"
 msgstr "Qualquer"
 
@@ -468,7 +468,7 @@ msgstr "Vencimento"
 msgid "Paid Date"
 msgstr "Pagamento"
 
-#: ../stoq/gui/payable/payable.py:106 ../stoq/gui/admin/admin.py:95
+#: ../stoq/gui/payable/payable.py:106 ../stoq/gui/admin/admin.py:96
 #: ../stoq/gui/receivable/receivable.py:142
 msgid "Status"
 msgstr "Situação"
@@ -632,7 +632,7 @@ msgstr "Código de Barras:"
 msgid "Inventory application."
 msgstr "Aplicativo para auditoria e ajuste de estoque."
 
-#: ../stoq/gui/admin/__init__.py:29 ../stoq/gui/admin/admin.py:66
+#: ../stoq/gui/admin/__init__.py:29 ../stoq/gui/admin/admin.py:67
 msgid "Administrative"
 msgstr "Administrativo"
 
@@ -642,28 +642,36 @@ msgstr ""
 "Aplicativo para administração\n"
 "e parametrização do sistema."
 
-#: ../stoq/gui/admin/admin.py:79
+#: ../stoq/gui/admin/admin.py:80
 msgid "Show users with status"
 msgstr "Exibir usuários com situação"
 
-#: ../stoq/gui/admin/admin.py:86
+#: ../stoq/gui/admin/admin.py:87
 msgid "Login Name"
 msgstr "Usuário"
 
-#: ../stoq/gui/admin/admin.py:88
+#: ../stoq/gui/admin/admin.py:89
 msgid "Profile"
 msgstr "Perfil"
 
-#: ../stoq/gui/admin/admin.py:92
+#: ../stoq/gui/admin/admin.py:93
 msgid "Name"
 msgstr "Nome"
 
-#: ../stoq/gui/admin/admin.py:137
+#: ../stoq/gui/admin/admin.py:138
 msgid ""
 "You must create at least one invoice layout before adding aninvoice printer"
 msgstr ""
 "É necessário criar ao menos um layout de nota fiscal para adicionar\n"
 " uma impressora"
+
+#: ../stoq/gui/admin/admin.py:173
+msgid ""
+"You must define a manager to this branch before you can create a sintegra "
+"archive"
+msgstr ""
+"Você deve definir um gerente para esta unidade, desta forma poderá gerar o "
+"arquivo sintegra"
 
 #: ../stoq/gui/pos/deliveryeditor.py:57 ../stoq/gui/pos/deliveryeditor.py:61
 msgid "Delivery"
