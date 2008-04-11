@@ -143,6 +143,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="payment_categories">
+                        <property name="name">payment_categories</property>
+                        <property name="label" translatable="yes">Payment Categories...</property>
+                        <property name="accelerator">&lt;Control&gt;a</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
                         <property name="label" translatable="yes">Quit</property>
@@ -279,6 +286,7 @@
             <menu action="settings_menu">
               <menuitem action="devices_setup"/>
               <menuitem action="PaymentMethod"/>
+              <menuitem action="payment_categories"/>
               <menuitem action="taxes"/>
               <menuitem action="sintegra"/>
               <menuitem action="system_parameters"/>

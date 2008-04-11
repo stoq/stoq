@@ -42,6 +42,7 @@ from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.gtkadds import render_pixbuf
 from stoqlib.gui.dialogs.paymentadditiondialog import OutPaymentAdditionDialog
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
@@ -55,7 +56,6 @@ from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.slaves.installmentslave import PurchaseInstallmentConfirmationSlave
 
 _ = gettext.gettext
-
 
 class PayableApp(SearchableAppWindow):
 
@@ -94,9 +94,11 @@ class PayableApp(SearchableAppWindow):
     def get_columns(self):
         return [Column('id', title=_('#'), width=46,
                        data_type=int, sorted=True, format='%04d'),
+                Column('color', title=_('Description'), width=20,
+                       data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
                 Column('description', title=_('Description'), width=170,
                        data_type=str, ellipsize=pango.ELLIPSIZE_END,
-                       expand=True),
+                       expand=True, column='color'),
                 Column('supplier_name', title=_('Supplier'), data_type=str,
                        width=160, ellipsize=pango.ELLIPSIZE_END),
                 Column('due_date', title=_('Due Date'),
