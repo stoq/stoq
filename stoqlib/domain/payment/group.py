@@ -117,7 +117,8 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         till = Till.get_current(conn)
         return Payment(due_date=due_date, value=value, till=till,
                        description=description, group=self, method=method,
-                       destination=destination, connection=conn)
+                       destination=destination, category=None,
+                       connection=conn)
 
     def confirm(self):
         """This can be implemented in a subclass, but it's not required"""
