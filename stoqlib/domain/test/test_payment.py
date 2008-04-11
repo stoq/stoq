@@ -36,8 +36,12 @@ from stoqlib.domain.test.domaintest import DomainTest
 class TestPayment(DomainTest):
     def test_new(self):
         payment = Payment(value=currency(10), due_date=datetime.datetime.now(),
-                          method=None, group=None, till=None,
-                          destination=None, connection=self.trans)
+                          method=None,
+                          group=None,
+                          till=None,
+                          destination=None,
+                          category=None,
+                          connection=self.trans)
         self.failUnless(payment.status == Payment.STATUS_PREVIEW)
 
     def _get_relative_day(self, days):
@@ -52,6 +56,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           destination=None,
+                          category=None,
                           connection=self.trans)
 
         for day, expected_value in [(0, 0),
@@ -89,6 +94,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           destination=None,
+                          category=None,
                           connection=self.trans)
 
         for day, expected_value in [(0, 0),
@@ -125,6 +131,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           destination=None,
+                          category=None,
                           connection=self.trans)
         self.failIf(payment.is_paid())
         payment.set_pending()
@@ -140,6 +147,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           destination=None,
+                          category=None,
                           connection=self.trans)
         today = datetime.date.today().strftime('%x')
         self.failIf(payment.get_paid_date_string() == today)
@@ -156,6 +164,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           destination=None,
+                          category=None,
                           connection=self.trans)
         self.assertEqual(payment.get_open_date_string(), "")
         payment.open_date = datetime.datetime.now()
@@ -171,6 +180,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           destination=None,
+                          category=None,
                           connection=self.trans)
         payment.set_pending()
         self.assertEqual(payment.get_days_late(), 4)
@@ -185,6 +195,7 @@ class TestPayment(DomainTest):
                           group=None,
                           till=None,
                           destination=None,
+                          category=None,
                           connection=self.trans)
         payment.set_pending()
         payment.pay()

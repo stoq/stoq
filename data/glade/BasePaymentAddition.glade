@@ -8,20 +8,20 @@
             <widget class="GtkTable" id="table1">
                 <property name="column_spacing">6</property>
                 <property name="n_columns">2</property>
-                <property name="n_rows">4</property>
+                <property name="n_rows">5</property>
                 <property name="row_spacing">6</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="ProxyLabel" id="kiwilabel1">
-                        <property name="label" context="yes" translatable="yes">Value ($CURRENCY):</property>
-                        <property name="model_attribute">kiwilabel1</property>
+                    <widget class="GtkLabel" id="label3">
+                        <property name="label" context="yes" translatable="yes">Category:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="label2">
-                        <property name="label" context="yes" translatable="yes">Description:</property>
+                    <widget class="ProxyLabel" id="kiwilabel1">
+                        <property name="label" context="yes" translatable="yes">Value ($CURRENCY):</property>
+                        <property name="model_attribute">kiwilabel1</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
@@ -31,8 +31,8 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="label1">
-                        <property name="label" context="yes" translatable="yes">Due date:</property>
+                    <widget class="GtkLabel" id="label2">
+                        <property name="label" context="yes" translatable="yes">Description:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
@@ -42,14 +42,36 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="label4">
-                        <property name="label" context="yes" translatable="yes">Type:</property>
+                    <widget class="GtkLabel" id="label1">
+                        <property name="label" context="yes" translatable="yes">Due date:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">4</property>
                         <property name="top_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label4">
+                        <property name="label" context="yes" translatable="yes">Type:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">5</property>
+                        <property name="top_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyComboEntry" id="category">
+                        <property name="model_attribute">category</property>
+                        <property name="data_type">object</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
                     </packing>
                 </child>
                 <child>
@@ -62,8 +84,10 @@
                         <property name="xalign">1.0</property>
                     </widget>
                     <packing>
+                        <property name="bottom_attach">2</property>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
                     </packing>
                 </child>
                 <child>
@@ -75,10 +99,10 @@
                         <property name="xalign">1.0</property>
                     </widget>
                     <packing>
-                        <property name="bottom_attach">2</property>
+                        <property name="bottom_attach">3</property>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">1</property>
+                        <property name="top_attach">2</property>
                     </packing>
                 </child>
                 <child>
@@ -89,10 +113,10 @@
                         <property name="visible">True</property>
                     </widget>
                     <packing>
-                        <property name="bottom_attach">3</property>
+                        <property name="bottom_attach">4</property>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">2</property>
+                        <property name="top_attach">3</property>
                     </packing>
                 </child>
                 <child>
@@ -102,10 +126,10 @@
                         <property name="xalign">0.0</property>
                     </widget>
                     <packing>
-                        <property name="bottom_attach">4</property>
+                        <property name="bottom_attach">5</property>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">3</property>
+                        <property name="top_attach">4</property>
                     </packing>
                 </child>
             </widget>

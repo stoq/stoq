@@ -289,6 +289,7 @@ class APaymentMethod(InheritableModel):
                           group=payment_group,
                           method=self,
                           method_details=method_details,
+                          category=None,
                           till=till,
                           description=description)
         facet = payment.addFacet(iface, connection=conn)
