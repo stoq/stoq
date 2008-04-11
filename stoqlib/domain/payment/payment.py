@@ -97,6 +97,7 @@ class Payment(Domain):
     group = ForeignKey('AbstractPaymentGroup')
     till = ForeignKey('Till')
     destination = ForeignKey('PaymentDestination')
+    category = ForeignKey('PaymentCategory')
 
     def _check_status(self, status, operation_name):
         assert self.status == status, ('Invalid status for %s '

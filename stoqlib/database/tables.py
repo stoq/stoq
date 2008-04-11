@@ -72,6 +72,7 @@ _tables = [
      ('synchronization', ["BranchSynchronization"]),
      ('station', ["BranchStation"]),
      ('till', ["Till", "TillEntry"]),
+     ('payment.category', ["PaymentCategory"]),
      ('payment.destination', ["PaymentDestination", "StoreDestination",
                               "BankDestination"]),
      ('payment.operation', ["PaymentOperation", "POAdaptToPaymentDevolution",

@@ -457,6 +457,7 @@ class ExampleCreator(object):
                        value=Decimal(10),
                        till=None,
                        method=self.create_payment_method(),
+                       category=None,
                        connection=self.trans)
 
     def create_payment_group(self):

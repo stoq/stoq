@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007,2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -27,6 +27,7 @@ import datetime
 
 from kiwi.datatypes import converter
 
+from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
                                             PaymentAdaptToOutPayment,
                                             PaymentChangeHistory)
@@ -52,6 +53,7 @@ class InPaymentView(Viewable):
         paid_date=Payment.q.paid_date,
         value=Payment.q.value,
         sale_id=Sale.q.id,
+        color=PaymentCategory.q.color,
         )
 
     joins = [
@@ -65,6 +67,8 @@ class InPaymentView(Viewable):
                    PersonAdaptToClient.q.id == Sale.q.clientID),
         LEFTJOINOn(None, Person,
                    Person.q.id == PersonAdaptToClient.q._originalID),
+        LEFTJOINOn(None, PaymentCategory,
+                   PaymentCategory.q.id == Payment.q.categoryID),
         ]
 
     def can_change_due_date(self):
@@ -94,6 +98,7 @@ class OutPaymentView(Viewable):
         value=Payment.q.value,
         purchase_id=PurchaseOrder.q.id,
         sale_id=Sale.q.id,
+        color=PaymentCategory.q.color,
         )
 
     joins = [
@@ -111,6 +116,8 @@ class OutPaymentView(Viewable):
                     PersonAdaptToSupplier.q.id == PurchaseOrder.q.supplierID),
         LEFTJOINOn(None, Person,
                    Person.q.id == PersonAdaptToSupplier.q._originalID),
+        LEFTJOINOn(None, PaymentCategory,
+                   PaymentCategory.q.id == Payment.q.categoryID),
         ]
 
     def get_status_str(self):

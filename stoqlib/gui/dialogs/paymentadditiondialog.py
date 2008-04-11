@@ -30,6 +30,7 @@ import datetime
 from kiwi.datatypes import currency
 
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
+from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
@@ -43,7 +44,8 @@ class BasePaymentAddition(BaseEditor):
     title = _(u"Payment")
     proxy_widgets = ['value',
                      'description',
-                     'due_date']
+                     'due_date',
+                     'category']
 
     def __init__(self, conn, model=None):
         """ A base class for additional payments
@@ -60,20 +62,26 @@ class BasePaymentAddition(BaseEditor):
 
     def create_model(self, trans):
         return Payment(open_date=datetime.date.today(),
-                          description='',
-                          value=currency(0),
-                          base_value=currency(0),
-                          due_date=None,
-                          method=None,
-                          group=None,
-                          till=None,
-                          destination=None,
-                          connection=trans)
+                       description='',
+                       value=currency(0),
+                       base_value=currency(0),
+                       due_date=None,
+                       method=None,
+                       group=None,
+                       till=None,
+                       category=None,
+                       destination=None,
+                       connection=trans)
 
     def on_due_date__activate(self, date):
         self.confirm()
 
     def setup_proxies(self):
+        categories = PaymentCategory.select(connection=self.trans).orderBy('name')
+        if categories:
+            self.category.prefill([(c.name, c) for c in categories])
+        else:
+            categories.set_sensitive(False)
         self.add_proxy(self.model, BasePaymentAddition.proxy_widgets)
 
     def validate_confirm(self):
