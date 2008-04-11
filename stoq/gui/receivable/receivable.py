@@ -47,6 +47,7 @@ from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.gtkadds import render_pixbuf
 from stoqlib.gui.dialogs.paymentadditiondialog import InPaymentAdditionDialog
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
@@ -130,9 +131,11 @@ class ReceivableApp(SearchableAppWindow):
     def get_columns(self):
         return [Column('id', title=_('#'), width=46,
                        data_type=int, sorted=True, format='%04d'),
+                Column('color', title=_('Description'), width=20,
+                       data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
                 Column('description', title=_('Description'), width=170,
                        data_type=str, expand=True,
-                       ellipsize=pango.ELLIPSIZE_END),
+                       ellipsize=pango.ELLIPSIZE_END, column='color'),
                 Column('drawee', title=_('Drawee'), data_type=str,
                        width=160, ellipsize=pango.ELLIPSIZE_END),
                 Column('due_date', title=_('Due Date'),
