@@ -81,7 +81,7 @@ class BasePaymentAddition(BaseEditor):
         if categories:
             self.category.prefill([(c.name, c) for c in categories])
         else:
-            self.categories.set_sensitive(False)
+            self.category.set_sensitive(False)
         self.add_proxy(self.model, BasePaymentAddition.proxy_widgets)
 
     def validate_confirm(self):
