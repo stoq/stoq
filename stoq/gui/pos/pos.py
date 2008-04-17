@@ -37,6 +37,7 @@ from kiwi.argcheck import argcheck
 from kiwi.log import Logger
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
+from kiwi.ui.widgets.contextmenu import ContextMenu, ContextMenuItem
 from stoqdrivers.enum import UnitType
 from stoqlib.database.runtime import (new_transaction,
                                       finish_transaction,
@@ -190,6 +191,22 @@ class POSApp(AppWindow):
 
         self.order_total_label.set_size('xx-large')
         self.order_total_label.set_bold(True)
+        self._create_context_menu()
+
+    def _create_context_menu(self):
+        menu = ContextMenu()
+
+        item = ContextMenuItem(gtk.STOCK_ADD)
+        item.connect('activate', self._on_context_add__activate)
+        menu.append(item)
+
+        item = ContextMenuItem(gtk.STOCK_REMOVE)
+        item.connect('activate', self._on_context_remove__activate)
+        item.connect('can-disable', self._on_context_remove__can_disable)
+        menu.append(item)
+
+        self.sale_items.set_context_menu(menu)
+        menu.show_all()
 
     def _update_totals(self):
         subtotal = currency(sum([item.total for item in self.sale_items]))
@@ -538,6 +555,15 @@ class POSApp(AppWindow):
             self.conn.commit()
         self._clear_order()
 
+    def _remove_selected_item(self):
+        sale_item = self.sale_items.get_selected()
+        self._coupon_remove_item(sale_item)
+        self.sale_items.remove(sale_item)
+        self._check_delivery_removed(sale_item)
+        self._select_first_item()
+        self._update_widgets()
+
+
     #
     # Coupon related
     #
@@ -626,6 +652,19 @@ class POSApp(AppWindow):
     # Other callbacks
     #
 
+    def _on_context_add__activate(self, menu_item):
+        self._run_advanced_search()
+
+    def _on_context_remove__activate(self, menu_item):
+        self._remove_selected_item()
+
+    def _on_context_remove__can_disable(self, menu_item):
+        selected = self.sale_items.get_selected()
+        if selected:
+            return False
+
+        return True
+
     def on_advanced_search__clicked(self, button):
         self._run_advanced_search()
 
@@ -648,12 +687,7 @@ class POSApp(AppWindow):
         self._update_widgets()
 
     def on_remove_item_button__clicked(self, button):
-        sale_item = self.sale_items.get_selected()
-        self._coupon_remove_item(sale_item)
-        self.sale_items.remove(sale_item)
-        self._check_delivery_removed(sale_item)
-        self._select_first_item()
-        self._update_widgets()
+        self._remove_selected_item()
 
     def on_delivery_button__clicked(self, button):
         self._create_delivery()
