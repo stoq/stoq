@@ -531,6 +531,15 @@ class FS345(SerialBase):
         identifier = self.send_command(CMD_GET_IDENTIFIER)
         return identifier[1:9]
 
+    def get_ccf(self):
+        # Daruma FS345 does not have ccf. See:
+        # http://www.forumweb.com.br/foruns/lofiversion/index.php/t64417.html
+        return self.get_coo()
+
+    def get_coo(self):
+        registries = self._get_registers()
+        return registries[7:12]
+
     def get_tax_constants(self):
         fiscal_registries = self._get_fiscal_registers()
 

@@ -89,6 +89,8 @@ REGISTER_TOTAL_CANCELATIONS = 4
 REGISTER_TOTAL_DISCOUNT = 5
 REGISTER_CRO = 10
 REGISTER_TOTAL = 3
+REGISTER_CCF = 55
+REGISTER_COO = 6
 
 NAK = 21
 ACK = 6
@@ -349,6 +351,12 @@ class MP25(SerialBase):
             #  1 + (52 * 16) + (52 * 10) + (52 * 10) + (52 * 1)
             #  1 + 832 + 520 + 520 + 52 = 1925
             fmt = 'b832s520s520s52s'
+        elif reg == REGISTER_CCF:
+            fmt = '3s'
+            bcd = True
+        elif reg == REGISTER_COO:
+            fmt = '3s'
+            bcd = True
         else:
             raise NotImplementedError(reg)
 
@@ -551,6 +559,12 @@ class MP25(SerialBase):
 
     def get_serial(self):
         return self._read_register(REGISTER_SERIAL)
+
+    def get_ccf(self):
+        return self._read_register(REGISTER_CCF)
+
+    def get_coo(self):
+        return self._read_register(REGISTER_COO)
 
     def get_tax_constants(self):
         status = self._read_register(REGISTER_TOTALIZERS)

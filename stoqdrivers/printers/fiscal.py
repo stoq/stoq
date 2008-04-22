@@ -278,6 +278,27 @@ class FiscalPrinter(BasePrinter):
 
         return self._driver.get_payment_constants()
 
+    def get_ccf(self):
+        """Fiscal Coupon Counter
+
+        @retval: the last document ccf
+        @rtype: integer
+        """
+        log.info('get_ccf()')
+
+        return self._driver.get_ccf()
+
+    def get_coo(self):
+        """Operation Order Counter
+
+        @retval: the last document coo
+        @rtype: integer
+        """
+        log.info('get_coo()')
+
+        return self._driver.get_coo()
+
+
     def get_sintegra(self):
         log.info('get_sintegra()')
 
