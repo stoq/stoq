@@ -106,17 +106,6 @@ class FiscalBookEntry(Domain):
             payment_group=self.payment_group,
             connection=conn)
 
-
-class PaulistaInvoice(Domain):
-    """"""
-    (TYPE_CPF,
-     TYPE_CNPJ) = range(2)
-
-    document_type = IntCol(default=TYPE_CPF)
-    document = UnicodeCol(default=None)
-    sale = ForeignKey('Sale')
-
-
 class _FiscalBookEntryView(object):
 
     columns = dict(

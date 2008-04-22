@@ -39,12 +39,10 @@ from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.paulistainvoicedialog import PaulistaInvoiceDialog
 from stoqlib.gui.editors.tilleditor import TillOpeningEditor, TillClosingEditor
 from stoqlib.gui.events import CouponCreatedEvent
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 from stoqlib.lib.message import warning, yesno
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -154,7 +152,7 @@ class FiscalCoupon(gobject.GObject):
     gsignal('remove-item', object)
     gsignal('add-payments', object)
     gsignal('totalize', object)
-    gsignal('close', str, retval=int)
+    gsignal('close', object, retval=int)
     gsignal('cancel')
 
     def __init__(self, parent):
@@ -279,9 +277,10 @@ class FiscalCoupon(gobject.GObject):
             return False
         if not self.setup_payments(sale):
             return False
-        message = self._get_coupon_message(sale, trans)
-        if not self.close(sale, message):
+
+        if not self.close(sale, trans):
             return False
+
         sale.confirm()
 
         if sale.paid_with_money():
@@ -328,29 +327,15 @@ class FiscalCoupon(gobject.GObject):
 
         return True
 
-    def close(self, sale, promotional_message=''):
+    def close(self, sale, trans):
         # XXX: Remove this when bug #2827 is fixed.
         if not self._item_ids:
             return True
         try:
-            coupon_id = self.emit('close', promotional_message)
+            coupon_id = self.emit('close', sale)
+            sale.coupon_id = coupon_id
             return True
         except (DeviceError, DriverError), details:
             warning(_("It's not possible to close the coupon"), str(details))
 
-        sale.coupon_id = coupon_id
         return False
-
-    def _get_coupon_message(self, sale, trans):
-        if not sysparam(trans).ENABLE_PAULISTA_INVOICE:
-            return u""
-
-        model = sale.create_paulista_invoice_entry()
-        if model is None:
-            model = run_dialog(PaulistaInvoiceDialog, self, trans, sale)
-
-        msg = u""
-        if model and not self.is_customer_identified():
-            msg += _(u'Customer CPF/CNPJ: ') + model.document
-
-        return msg

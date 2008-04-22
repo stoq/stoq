@@ -44,6 +44,8 @@ from stoqlib.lib.defaults import get_all_methods_dict, get_method_names
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
+from ecfdomain import FiscalSaleHistory
+
 _ = stoqlib_gettext
 
 log = Logger("stoq-ecf-plugin.couponprinter")
@@ -333,5 +335,34 @@ class Coupon(object):
 
         return True
 
-    def close(self, promotional_message=''):
-        return self._driver.close(promotional_message)
+    def close(self, sale, document, document_type):
+        self._create_fiscal_sale_data(sale, document, document_type)
+        message = self._get_coupon_message(document)
+        coupon_id = self._driver.close(message)
+        return coupon_id
+
+    def _get_coupon_message(self, document):
+        msg = u""
+        # If the customer is already identified, The document will be printed and there is no
+        # need to add this message
+        if document and not self.is_customer_identified():
+            msg += _(u'Customer CPF/CNPJ: ') + document
+
+        return msg
+
+    def _create_fiscal_sale_data(self, sale, document, document_type):
+        trans = new_transaction()
+        FiscalSaleHistory(sale=sale,
+                       document_type=document_type,
+                       document=document,
+                       coo=self.get_coo(),
+                       document_counter=self.get_ccf(),
+                       connection=trans)
+        trans.commit(close=True)
+
+    def get_ccf(self):
+        return self._driver.get_ccf()
+
+    def get_coo(self):
+        return self._driver.get_coo()
+
