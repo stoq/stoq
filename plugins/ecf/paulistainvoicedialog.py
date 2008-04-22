@@ -26,10 +26,11 @@
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
-from stoqlib.domain.fiscal import PaulistaInvoice
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_cpf, validate_cnpj
+
+from ecfdomain import FiscalSaleHistory
 
 _ = stoqlib_gettext
 
@@ -51,7 +52,7 @@ class PaulistaInvoiceDialog(BaseEditor):
 
     def _create_model(self, sale):
         return Settable(sale=sale, document=u'',
-                        document_type=PaulistaInvoice.TYPE_CPF)
+                        document_type=FiscalSaleHistory.TYPE_CPF)
 
     def _setup_widgets(self):
         self.handler_block(self.document, 'validate')
@@ -61,13 +62,13 @@ class PaulistaInvoiceDialog(BaseEditor):
     def _set_cpf(self):
         self.doc_label.set_text(_(u"CPF:"))
         self.document.set_mask(self.cpf_mask)
-        self.model.document_type = PaulistaInvoice.TYPE_CPF
+        self.model.document_type = FiscalSaleHistory.TYPE_CPF
         self.document.grab_focus()
 
     def _set_cnpj(self):
         self.doc_label.set_text(_(u"CNPJ:"))
         self.document.set_mask(self.cnpj_mask)
-        self.model.document_type = PaulistaInvoice.TYPE_CNPJ
+        self.model.document_type = FiscalSaleHistory.TYPE_CNPJ
         self.document.grab_focus()
 
     #
@@ -81,10 +82,7 @@ class PaulistaInvoiceDialog(BaseEditor):
         if self.document.is_empty():
             return None
 
-        return PaulistaInvoice(sale=self.model.sale,
-                               document_type=self.model.document_type,
-                               document=self.model.document,
-                               connection=self.conn)
+        return self.model
 
     #
     # Kiwi callbacks

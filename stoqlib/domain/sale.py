@@ -42,7 +42,7 @@ from stoqlib.database.runtime import (get_current_user,
 from stoqlib.domain.base import (Domain, ValidatableDomain, BaseSQLView,
                                  ModelAdapter)
 from stoqlib.domain.events import SaleConfirmEvent
-from stoqlib.domain.fiscal import FiscalBookEntry, PaulistaInvoice
+from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IContainer, IOutPayment,
                                        IPaymentGroup, ISellable,
@@ -529,27 +529,6 @@ class Sale(ValidatableDomain):
                                         "client_role defined." % self)
 
         return client_role
-
-    def create_paulista_invoice_entry(self):
-        """ Creates a Paulista Invoice entry
-
-        @returns: a PaulistaInvoice instance or None if the sale have
-        no client or if the client hasn't a document (CPF/CNPJ) set.
-        """
-        client_role = self.get_client_role()
-        if hasattr(client_role, 'cpf'):
-            document_type = PaulistaInvoice.TYPE_CPF
-            document = client_role.cpf
-        elif hasattr(client_role, 'cnpj'):
-            document_type = PaulistaInvoice.TYPE_CNPJ
-            document = client_role.cnpj
-        else:
-            return
-
-        if document:
-            return PaulistaInvoice(document_type=document_type,
-                                   document=document, sale=self,
-                                   connection=self.get_connection())
 
     # Other methods
 

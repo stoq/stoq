@@ -25,12 +25,14 @@
 
 import gtk
 from kiwi.log import Logger
+from kiwi.python import Settable
 from stoqdrivers.exceptions import CouponOpenError, DriverError
 from stoqlib.database.runtime import (get_current_station, get_connection,
                                       new_transaction)
 from stoqlib.domain.events import (SaleConfirmEvent, TillAddCashEvent,
                                    TillRemoveCashEvent, TillOpenEvent,
                                    TillCloseEvent, TillAddTillEntryEvent)
+from stoqlib.domain.person import PersonAdaptToIndividual, _PersonAdaptToCompany
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
 from stoqlib.exceptions import DeviceError
@@ -41,10 +43,11 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 from couponprinter import CouponPrinter
-from ecfdomain import ECFPrinter
+from ecfdomain import ECFPrinter, FiscalSaleHistory
 from ecfprinterdialog import ECFListDialog
 from ecfprinterstatus import ECFAsyncPrinterStatus
 from ecfmemorydialog import FiscalMemoryDialog
+from paulistainvoicedialog import PaulistaInvoiceDialog
 
 _ = stoqlib_gettext
 log = Logger("stoq-ecf-plugin")
@@ -388,6 +391,26 @@ class ECFUI(object):
             return
         run_dialog(FiscalMemoryDialog, None, self.conn, self._printer)
 
+
+    def _get_client_document(self, sale):
+        """Returns a Settable with two attributes: document, a string with
+        the client cpf or cnpj and document_type, being one of
+        (FiscalSaleHistory.TYPE_CPF, FiscalSaleHistory.TYPE_CNPJ )
+        """
+        client_role = sale.get_client_role()
+        if isinstance(client_role, PersonAdaptToIndividual):
+            document_type = FiscalSaleHistory.TYPE_CPF
+            document = client_role.cpf
+        elif isinstance(client_role, _PersonAdaptToCompany):
+            document_type = FiscalSaleHistory.TYPE_CNPJ
+            document = client_role.cnpj
+        else:
+            return
+
+        if document:
+            return Settable(document_type=document_type,
+                            document=document, sale=sale)
+
     #
     # Events
     #
@@ -445,8 +468,18 @@ class ECFUI(object):
     def _on_coupon__totalize(self, coupon, sale):
         coupon.totalize(sale)
 
-    def _on_coupon__close(self, coupon, promotional_message):
-        return coupon.close(promotional_message)
+    def _on_coupon__close(self, coupon, sale):
+        model = self._get_client_document(sale)
+
+        if sysparam(self.conn).ENABLE_PAULISTA_INVOICE and not model:
+            model = run_dialog(PaulistaInvoiceDialog, self, self.conn, sale)
+
+        document = document_type = None
+        if model:
+            document = model.document
+            document_type = model.document_type
+
+        return coupon.close(sale, document, document_type)
 
     def _on_coupon__cancel(self, coupon):
         coupon.cancel()

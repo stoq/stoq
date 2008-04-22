@@ -289,3 +289,18 @@ class DeviceConstant(Domain):
 
     def get_description(self):
         return self.constant_name
+
+
+class FiscalSaleHistory(Domain):
+    """Holds fiscal information about the sales.
+    """
+    (TYPE_CPF,
+     TYPE_CNPJ) = range(2)
+
+    document_type = IntCol(default=TYPE_CPF)
+    document = UnicodeCol(default=None)
+    sale = ForeignKey('Sale')
+    coo = IntCol(default=0)
+    document_counter = IntCol(default=0)
+
+
