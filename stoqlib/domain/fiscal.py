@@ -60,19 +60,20 @@ class FiscalBookEntry(Domain):
     implements(IReversal)
 
     (TYPE_PRODUCT,
-     TYPE_SERVICE) = range(2)
+     TYPE_SERVICE,
+     TYPE_INVENTORY) = range(3)
 
     date = DateTimeCol(default=datetime.datetime.now)
     is_reversal = BoolCol(default=False)
     invoice_number = IntCol()
     cfop = ForeignKey("CfopData")
     branch = ForeignKey("PersonAdaptToBranch")
-    drawee = ForeignKey("Person")
-    payment_group = ForeignKey("AbstractPaymentGroup")
-    iss_value = PriceCol()
-    icms_value = PriceCol()
-    ipi_value = PriceCol()
-    entry_type = IntCol()
+    drawee = ForeignKey("Person", default=None)
+    payment_group = ForeignKey("AbstractPaymentGroup", default=None)
+    iss_value = PriceCol(default=None)
+    icms_value = PriceCol(default=None)
+    ipi_value = PriceCol(default=None)
+    entry_type = IntCol(default=None)
 
 
     #

@@ -9,6 +9,7 @@ Imports that will be used in this doctest:
     >>> from stoqlib.domain.interfaces import ISellable
     >>> from stoqlib.domain.sellable import ASellable
     >>> from stoqlib.domain.sellable import BaseSellableInfo
+    >>> from stoqlib.domain.sellable import SellableCategory
 
 Create a new transaction
 
@@ -153,8 +154,20 @@ Selling the sellable, removes it from the list of available sellables:
     >>> sellable in ASellable.get_available_sellables(trans)
     False
 
+Also, we can get a list of available sellable by a list of categories:
+
+    >>> category = SellableCategory(description='Battery', connection=trans)
+    >>> sellable.category = category
+    >>> sellable.can_sell()
+    >>> sellable in ASellable.get_availables_by_categories(trans, [category])
+    True
+
 Unblocked means available or sold:
 
+    >>> sellable in ASellable.get_unblocked_sellables(trans)
+    True
+
+    >> sellable.sell()
     >>> sellable in ASellable.get_unblocked_sellables(trans)
     True
 
