@@ -124,6 +124,8 @@ class ExampleCreator(object):
             'IBranch': self.create_branch,
             'IEmployee': self.create_employee,
             'IIndividual': self.create_individual,
+            'Inventory': self.create_inventory,
+            'InventoryItem': self.create_inventory_item,
             'ISalesPerson': self.create_sales_person,
             'ISupplier': self.create_supplier,
             'ITransporter': self.create_transporter,
@@ -520,6 +522,24 @@ class ExampleCreator(object):
         reason = "Test"
         return product.retain(quantity=quantity, branch=branch,
                               reason=reason, product=product)
+
+    def create_inventory(self):
+        from stoqlib.domain.inventory import Inventory
+        branch = self.create_branch("Main")
+        return Inventory(branch=branch, connection=self.trans)
+
+    def create_inventory_item(self, inventory=None, quantity=5):
+        from stoqlib.domain.inventory import InventoryItem
+        if not inventory:
+            inventory = self.create_inventory()
+        sellable = self.create_sellable()
+        product = sellable.get_adapted()
+        storable = product.addFacet(IStorable, connection=self.trans)
+        storable.increase_stock(quantity, inventory.branch)
+        return InventoryItem(product=product,
+                             recorded_quantity=quantity,
+                             inventory=inventory,
+                             connection=self.trans)
 
     def get_station(self):
         return get_current_station(self.trans)

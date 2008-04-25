@@ -133,6 +133,7 @@ _tables = [
                   "FiscalDayTax"]),
      ('commission', ["CommissionSource", "Commission"]),
      ('transfer', ["TransferOrder", "TransferOrderItem"]),
+     ('inventory', ["Inventory", "InventoryItem"]),
 
 ]
 

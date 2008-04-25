@@ -198,8 +198,9 @@ class ProductCountingReport(SearchResultsReport):
         return [
             OTC(_("Code"), lambda obj: '%03d' % obj.id, width=60,
                 truncate=True),
-            OTC(_("Description"), lambda obj: obj.description, truncate=True),
-            OTC(_("Fiscal Class"), lambda obj: obj.tax_description,
+            OTC(_("Description"), lambda obj:
+                obj.base_sellable_info.description, truncate=True),
+            OTC(_("Fiscal Class"), lambda obj: obj.tax_constant.description,
                 width=80, truncate=True),
             OTC(_("Quantity"), None, width=80, truncate=True),
             # FIXME: This column should be virtual, waiting for bug #2764

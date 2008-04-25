@@ -273,6 +273,9 @@ class Domain(BaseDomain, AdaptableSQLObject):
                    self._connection.__class__.__name__))
         BaseDomain._create(self, id, **kw)
 
+    @property
+    def user(self):
+        return self.te_modified.user
 
     @classmethod
     def iselect(cls, iface, *args, **kwargs):
