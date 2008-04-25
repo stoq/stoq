@@ -31,8 +31,8 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="SalesMenu">
-                        <property name="name">SalesMenu</property>
+                    <widget class="GtkAction" id="InventoryMenu">
+                        <property name="name">InventoryMenu</property>
                         <property name="label" translatable="yes">_Inventory</property>
                     </widget>
                 </child>
@@ -60,10 +60,27 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="new_inventory">
+                        <property name="name">new_inventory</property>
+                        <property name="tooltip" translatable="yes">Create new Inventory</property>
+                        <property name="label" translatable="yes">Open I_nventory...</property>
+                        <property name="stock_id">gtk-new</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="adjust_action">
                         <property name="name">adjust_action</property>
                         <property name="label" translatable="yes">_Adjust</property>
                         <property name="stock_id">gtk-convert</property>
+                        <property name="accelerator">&lt;Control&gt;a</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="counting_action">
+                        <property name="name">counting_action</property>
+                        <property name="label" translatable="yes">_Counting</property>
+                        <property name="stock_id">gtk-index</property>
+                        <property name="accelerator">&lt;Control&gt;C</property>
                     </widget>
                 </child>
                 <child>
@@ -76,18 +93,22 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui>
 	  <menubar action="menubar">
-	    <menu action="SalesMenu">
+	    <menu action="InventoryMenu">
+	      <menuitem action="new_inventory"/>
+	      <menuitem action="counting_action"/>
+	      <menuitem action="adjust_action"/>
+	      <separator name="sep"/>
 	      <menuitem action="Quit"/>
-	    </menu>
-	    <menu action="SearchMenu">
 	    </menu>
 	    <menu action="help_menu">
 	      <menuitem action="about_menu"/>
 	    </menu>
 	  </menubar>
 	  <toolbar action="toolbar1">
-	  </toolbar>
-	</ui>]]></ui>
+	      <toolitem action="counting_action"/>
+	      <toolitem action="adjust_action"/>
+      </toolbar>
+</ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="inventory">
         <property name="destroy_with_parent">True</property>
@@ -124,6 +145,15 @@
                         <property name="spacing">2</property>
                         <property name="visible">True</property>
                         <child>
+                            <widget constructor="initial-state" class="GtkToolbar" id="toolbar1">
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                            </packing>
+                        </child>
+                        <child>
                             <widget class="GtkEventBox" id="search_holder">
                                 <property name="visible">True</property>
                                 <child>
@@ -144,35 +174,6 @@
                                         <property name="spacing">5</property>
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="GtkButton" id="adjust_button">
-                                                <property name="is_focus">True</property>
-                                                <property name="visible">True</property>
-                                                <child>
-                                                    <widget class="GtkAlignment" id="alignment6">
-                                                        <property name="visible">True</property>
-                                                        <child>
-                                                            <widget class="GtkVBox" id="vbox4">
-                                                                <property name="visible">True</property>
-                                                                <child>
-                                                                    <widget class="GtkLabel" id="label2">
-                                                                        <property name="label" context="yes" translatable="yes">_Adjust...</property>
-                                                                        <property name="use-underline">True</property>
-                                                                        <property name="visible">True</property>
-                                                                    </widget>
-                                                                    <packing>
-                                                                        <property name="position">1</property>
-                                                                    </packing>
-                                                                </child>
-                                                            </widget>
-                                                        </child>
-                                                    </widget>
-                                                </child>
-                                            </widget>
-                                            <packing>
-                                                <property name="position">1</property>
-                                            </packing>
-                                        </child>
-                                        <child>
                                             <widget class="GtkButton" id="print_button">
                                                 <property name="image_position">top</property>
                                                 <property name="is_focus">True</property>
@@ -181,7 +182,7 @@
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
-                                                <property name="position">2</property>
+                                                <property name="position">1</property>
                                             </packing>
                                         </child>
                                     </widget>
@@ -192,7 +193,6 @@
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
-                                <property name="fill">False</property>
                                 <property name="position">2</property>
                             </packing>
                         </child>
