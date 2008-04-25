@@ -26,22 +26,25 @@
 """ Main gui definition for inventory application. """
 
 import gettext
-from decimal import Decimal
-import pango
+import datetime
 import gtk
 
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.interfaces import IBranch
+from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.domain.interfaces import IBranch, ISellable
+from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Person
-from stoqlib.domain.views import ProductFullStockView
-from stoqlib.reporting.product import ProductCountingReport
-
+from stoqlib.domain.product import ProductStockItem
+from stoqlib.exceptions import DatabaseInconsistency
 from stoq.gui.application import SearchableAppWindow
+from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
+from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
+from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
+from stoqlib.gui.printing import print_report
+from stoqlib.reporting.product import ProductCountingReport
 
 _ = gettext.gettext
 
@@ -50,13 +53,12 @@ class InventoryApp(SearchableAppWindow):
     app_name = _('Inventory')
     app_icon_name = 'stoq-inventory-app'
     gladefile = "inventory"
-    search_table = ProductFullStockView
+    search_table = Inventory
     search_labels = _('Matching:')
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
-        self._setup_widgets()
         self._update_widgets()
 
     #
@@ -64,41 +66,35 @@ class InventoryApp(SearchableAppWindow):
     #
 
     def create_filters(self):
-        self.executer.set_query(self.query)
-        self.set_text_field_columns(['description'])
+        self.set_text_field_columns(["id"])
         self.branch_filter = ComboSearchFilter(
-            _('Show products at:'), self._get_branches())
-        self.branch_filter.select(get_current_branch(self.conn))
-        self.add_filter(self.branch_filter, position=SearchFilterPosition.TOP)
+            _('Show inventories at:'), self._get_branches_for_filter())
+        self.add_filter(self.branch_filter,
+                        position=SearchFilterPosition.TOP,
+                        columns=["branchID"])
 
     def get_columns(self):
         return [Column('id', title=_('Code'), sorted=True,
-                       data_type=int, format='%03d'),
-                Column('barcode', title=_("Barcode"), data_type=str),
-                Column('description', title=_("Description"),
-                       data_type=str, expand=True,
-                       ellipsize=pango.ELLIPSIZE_END),
-                Column('stock', title=_('Quantity'),
-                       data_type=Decimal),
-                Column('unit', title=_("Unit"), data_type=str)]
-
-    def query(self, query, conn):
-        branch = self.branch_filter.get_state().value
-        return self.search_table.select_by_branch(query, branch,
-                                                  connection=conn)
+                       order=gtk.SORT_DESCENDING,
+                       data_type=int, format='%03d', width=80),
+                Column('status_str', title=_('status'),
+                       data_type=str, width=100),
+                Column('branch.person.name', title=_('Branch'),
+                       data_type=str, expand=True),
+                Column('open_date', title=_('Opened'),
+                       data_type=datetime.date, width=120),
+                Column('close_date', title=_(u'Closed'),
+                       data_type=datetime.date, width=120)]
 
     #
     # Private API
     #
 
-    def _setup_widgets(self):
-        self.search.set_summary_label(column='stock',
-                                      label=_('<b>Stock Total:</b>'),
-                                      format='<b>%s</b>')
-
     def _get_branches(self):
-        items = [(b.person.name, b)
-                  for b in Person.iselect(IBranch, connection=self.conn)]
+        return Person.iselect(IBranch, connection=self.conn)
+
+    def _get_branches_for_filter(self):
+        items = [(b.person.name, b.id) for b in self._get_branches()]
         if not items:
             raise DatabaseInconsistency('You should have at least one '
                                         'branch on your database.'
@@ -107,24 +103,92 @@ class InventoryApp(SearchableAppWindow):
         return items
 
     def _update_widgets(self):
-        has_items = len(self.results) > 0
-        self.print_button.set_sensitive(has_items)
-        self.adjust_button.set_sensitive(False)
+        has_open = False
+        all_counted = False
+        rows = self.results.get_selected_rows()
+        if len(rows) == 1:
+            all_counted = rows[0].all_items_counted()
+            has_open = rows[0].is_open()
+
+        self.print_button.set_sensitive(has_open)
+        self.new_inventory.set_sensitive(self._can_open())
+        self.counting_action.set_sensitive(has_open)
+        self.adjust_action.set_sensitive(has_open and all_counted)
+
+    def _get_available_branches_to_inventory(self):
+        """Returns a list of branches where we can open an inventory.
+        Note that we can open a inventory if:
+            - There's no inventory opened yet (in the same branch)
+            - The branch must have some stock
+        """
+        available_branches = []
+        for branch in self._get_branches():
+            has_open_inventory = Inventory.selectOneBy(
+                status=Inventory.STATUS_OPEN, branch=branch,
+                connection=self.conn)
+            if not has_open_inventory:
+                stock = ProductStockItem.selectBy(branch=branch,
+                                                  connection=self.conn)
+                if stock.count() > 0:
+                    available_branches.append(branch)
+
+        return available_branches
+
+    def _can_open(self):
+        # we can open an inventory if we have at least one branch
+        # available
+        return bool(self._get_available_branches_to_inventory())
+
+    def _open_inventory(self):
+        trans = new_transaction()
+        branches = self._get_available_branches_to_inventory()
+        model = self.run_dialog(OpenInventoryDialog, trans, branches)
+        finish_transaction(trans, model)
+        trans.close()
+        self.refresh()
+        self._update_widgets()
+
+    def _register_product_counting(self):
+        trans = new_transaction()
+        inventory = trans.get(self.results.get_selected_rows()[0])
+        model = self.run_dialog(ProductCountingDialog, inventory, trans)
+        finish_transaction(trans, model)
+        trans.close()
+        self._update_widgets()
+
+    def _adjust_product_quantities(self):
+        trans = new_transaction()
+        inventory = trans.get(self.results.get_selected_rows()[0])
+        model = self.run_dialog(ProductsAdjustmentDialog, inventory, trans)
+        finish_transaction(trans, model)
+        trans.close()
+        self._update_widgets()
 
     def _update_filter_slave(self, slave):
         self.refresh()
+
+    def _get_sellables_by_inventory(self, inventory):
+        for item in inventory.get_items():
+            yield ISellable(item.product)
 
     #
     # Callbacks
     #
 
-    def on_adjust_button__clicked(self, button):
-        # To be implemented
-        pass
+    def on_new_inventory__activate(self, action):
+        self._open_inventory()
+
+    def on_counting_action__activate(self, action):
+        self._register_product_counting()
+
+    def on_adjust_action__activate(self, action):
+        self._adjust_product_quantities()
 
     def on_results__selection_changed(self, results, product):
         self._update_widgets()
 
     def on_print_button__clicked(self, button):
-        results = self.results.get_selected_rows() or self.results
-        self.print_report(ProductCountingReport, results)
+        selected = self.results.get_selected_rows()[0]
+        sellables = list(self._get_sellables_by_inventory(selected))
+        if sellables:
+            print_report(ProductCountingReport, sellables)
