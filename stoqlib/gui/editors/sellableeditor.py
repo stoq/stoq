@@ -150,7 +150,7 @@ class SellablePriceEditor(BaseEditor):
         self.attach_slave('on_commission_data_holder', commission_slave)
         if self.model.category:
             desc = self.model.category.description
-            label = 'Calculate Commission From: %s' % desc
+            label = _('Calculate Commission From: %s') % desc
             commission_slave.change_label(label)
 
     #
