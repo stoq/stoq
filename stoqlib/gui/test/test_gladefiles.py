@@ -23,6 +23,7 @@
 ##              Johan Dahlin  <jdahlin@async.com.br>
 ##
 
+import os.path
 import re
 
 from twisted.trial import unittest
@@ -41,10 +42,9 @@ def _get_gladefiles():
 class TestGladeFiles(unittest.TestCase):
 
     def testGladeFileDomain(self):
-        matcher = re.compile('^<glade-interface domain="stoqlib"', re.M)
+        domain_line = '<glade-interface domain="stoqlib"'
         for gladefile in _get_gladefiles():
             contents = open(gladefile).read()
-            match = re.search(matcher, contents)
-            # The test is ok, but when it fails the error message does
-            # help in anything!
-            self.failIf(match is None)
+            filename = os.path.basename(gladefile)
+            self.failIf(contents.find(domain_line) < 0,
+                        "Missing the domain entry in %s" % filename)
