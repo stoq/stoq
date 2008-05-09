@@ -44,7 +44,7 @@ from stoqlib.lib.defaults import get_all_methods_dict, get_method_names
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
-from ecfdomain import FiscalSaleHistory
+from ecfdomain import FiscalSaleHistory, ECFDocumentHistory
 
 _ = stoqlib_gettext
 
@@ -70,6 +70,7 @@ class CouponPrinter(object):
         """
         log.info("Opening till")
 
+        self._register_emitted_document(ECFDocumentHistory.TYPE_SUMMARY)
         self._driver.summarize()
 
     def close_till(self, previous_day=False):
@@ -82,6 +83,7 @@ class CouponPrinter(object):
         self._update_sintegra_data()
 
         log.info("Closing till")
+        self._register_emitted_document(ECFDocumentHistory.TYPE_Z_REDUCTION)
         self._driver.close_till(previous_day=previous_day)
 
     def cancel(self):
@@ -126,15 +128,18 @@ class CouponPrinter(object):
     def summarize(self):
         """sends a summarize (leituraX) command to the printer"""
         try:
+            self._register_emitted_document(ECFDocumentHistory.TYPE_SUMMARY)
             self._driver.summarize()
         except DriverError, details:
                     warning(_("Could not print summary"),
                         str(details))
 
     def memory_by_date(self, start_date, end_date):
+        self._register_emitted_document(ECFDocumentHistory.TYPE_MEMORY_READ)
         self._driver.till_read_memory(start_date, end_date)
 
     def memory_by_reductions(self, start, end):
+        self._register_emitted_document(ECFDocumentHistory.TYPE_MEMORY_READ)
         self._driver.till_read_memory_by_reductions(start, end)
 
     def create_coupon(self, coupon):
@@ -150,6 +155,28 @@ class CouponPrinter(object):
         return True
 
     # Private
+    def _register_emitted_document(self, type):
+        """Register an emitted document.
+        """
+        # We are registering this before the actual emission, so, coo and crz are -1 offset.
+        # gnf though is already the correct value.
+        coo = self._driver.get_coo()+1
+        gnf = self._driver.get_gnf()
+        crz = None
+        if type == ECFDocumentHistory.TYPE_Z_REDUCTION:
+            crz = self._driver.get_crz()+1
+
+        trans = new_transaction()
+        doc = ECFDocumentHistory(connection=trans,
+                              printer=self._printer,
+                              type=type,
+                              coo=coo,
+                              gnf=gnf,
+                              crz=crz)
+
+        trans.commit(close=True)
+        return doc
+
     def _update_sintegra_data(self):
         data = self._driver.get_sintegra()
         if data is None:

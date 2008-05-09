@@ -22,8 +22,9 @@
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##
 
+import datetime
 from sqlobject.col import (BoolCol, StringCol, ForeignKey, IntCol,
-                           UnicodeCol, BLOBCol)
+                           UnicodeCol, BLOBCol, DateTimeCol)
 from sqlobject.joins import MultipleJoin
 from stoqdrivers.constants import describe_constant
 from stoqdrivers.printers.fiscal import FiscalPrinter
@@ -302,5 +303,22 @@ class FiscalSaleHistory(Domain):
     sale = ForeignKey('Sale')
     coo = IntCol(default=0)
     document_counter = IntCol(default=0)
+
+
+class ECFDocumentHistory(Domain):
+    """Documents emitted by the fiscal printer.
+
+    This does not include fiscal coupons
+    """
+    (TYPE_MEMORY_READ,
+     TYPE_Z_REDUCTION,
+     TYPE_SUMMARY,) = range(3)
+
+    printer = ForeignKey("ECFPrinter")
+    type = IntCol()
+    coo = IntCol(default=0)
+    gnf = IntCol(default=0)
+    crz = IntCol(default=None)
+    emission_date = DateTimeCol(default=datetime.datetime.now)
 
 
