@@ -538,7 +538,15 @@ class FS345(SerialBase):
 
     def get_coo(self):
         registries = self._get_registers()
-        return registries[7:12]
+        return int(registries[7:12])
+
+    def get_gnf(self):
+        registries = self._get_registers()
+        return int(registries[13:18])
+
+    def get_crz(self):
+        registries = self._get_registers()
+        return int(registries[39:42])
 
     def get_tax_constants(self):
         fiscal_registries = self._get_fiscal_registers()

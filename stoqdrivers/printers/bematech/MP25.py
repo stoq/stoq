@@ -91,6 +91,7 @@ REGISTER_CRO = 10
 REGISTER_TOTAL = 3
 REGISTER_CCF = 55
 REGISTER_COO = 6
+REGISTER_GNF = 7
 
 NAK = 21
 ACK = 6
@@ -357,6 +358,9 @@ class MP25(SerialBase):
         elif reg == REGISTER_COO:
             fmt = '3s'
             bcd = True
+        elif reg == REGISTER_GNF:
+            fmt = '3s'
+            bcd = True
         else:
             raise NotImplementedError(reg)
 
@@ -565,6 +569,12 @@ class MP25(SerialBase):
 
     def get_coo(self):
         return self._read_register(REGISTER_COO)
+
+    def get_gnf(self):
+        return self._read_register(REGISTER_GNF)
+
+    def get_crz(self):
+        return self._read_register(REGISTER_NUMBER_REDUCTIONS_Z)
 
     def get_tax_constants(self):
         status = self._read_register(REGISTER_TOTALIZERS)

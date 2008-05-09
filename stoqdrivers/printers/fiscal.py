@@ -298,6 +298,26 @@ class FiscalPrinter(BasePrinter):
 
         return self._driver.get_coo()
 
+    def get_gnf(self):
+        """Nonfiscal Operation General Counter
+
+        @retval: gnf
+        @rtype: integer
+        """
+        log.info('get_gnf()')
+
+        return self._driver.get_gnf()
+
+    def get_crz(self):
+        """Z Reduction Counter
+
+        @retval: the last document crz
+        @rtype: integer
+        """
+        log.info('get_crz()')
+
+        return self._driver.get_crz()
+
 
     def get_sintegra(self):
         log.info('get_sintegra()')
