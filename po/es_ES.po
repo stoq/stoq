@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-13 15:10-0300\n"
+"POT-Creation-Date: 2008-05-14 12:54-0300\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Rafael Villar Burke <pachi@rvburke.com>\n"
 "Language-Team: Spanish <es_ES@li.org>\n"
@@ -880,7 +880,7 @@ msgid "Paste object from the Clipboard"
 msgstr "Pegar objeto del portapapeles"
 
 #: ../data/glade/till.glade.h:15 ../data/glade/sales_app.glade.h:15
-#: ../data/glade/purchase.glade.h:18 ../data/glade/payable.glade.h:13
+#: ../data/glade/purchase.glade.h:17 ../data/glade/payable.glade.h:13
 #: ../data/glade/admin.glade.h:26 ../data/glade/inventory.glade.h:6
 #: ../data/glade/receivable.glade.h:12 ../data/glade/pos.glade.h:25
 #: ../data/glade/stock.glade.h:13
@@ -888,7 +888,7 @@ msgid "Quit"
 msgstr "Salir"
 
 #: ../data/glade/till.glade.h:16 ../data/glade/sales_app.glade.h:16
-#: ../data/glade/purchase.glade.h:19 ../data/glade/payable.glade.h:14
+#: ../data/glade/purchase.glade.h:18 ../data/glade/payable.glade.h:14
 #: ../data/glade/admin.glade.h:27 ../data/glade/inventory.glade.h:7
 #: ../data/glade/receivable.glade.h:13 ../data/glade/pos.glade.h:26
 #: ../data/glade/stock.glade.h:14
@@ -908,7 +908,7 @@ msgid "Sales..."
 msgstr "Ventas..."
 
 #: ../data/glade/till.glade.h:20 ../data/glade/sales_app.glade.h:18
-#: ../data/glade/purchase.glade.h:21 ../data/glade/payable.glade.h:15
+#: ../data/glade/purchase.glade.h:20 ../data/glade/payable.glade.h:15
 #: ../data/glade/admin.glade.h:31 ../data/glade/receivable.glade.h:16
 #: ../data/glade/pos.glade.h:32 ../data/glade/stock.glade.h:18
 msgid "Save a file"
@@ -937,28 +937,28 @@ msgstr "Histórico de Caja..."
 msgid "_Confirm..."
 msgstr "Confirmar"
 
-#: ../data/glade/till.glade.h:26 ../data/glade/purchase.glade.h:30
+#: ../data/glade/till.glade.h:26 ../data/glade/purchase.glade.h:29
 #: ../data/glade/payable.glade.h:20 ../data/glade/receivable.glade.h:21
 #, fuzzy
 msgid "_Details"
 msgstr "Detalles"
 
 #: ../data/glade/till.glade.h:27 ../data/glade/sales_app.glade.h:23
-#: ../data/glade/purchase.glade.h:31 ../data/glade/payable.glade.h:21
+#: ../data/glade/purchase.glade.h:30 ../data/glade/payable.glade.h:21
 #: ../data/glade/admin.glade.h:37 ../data/glade/receivable.glade.h:22
 #: ../data/glade/pos.glade.h:39 ../data/glade/stock.glade.h:22
 msgid "_Edit"
 msgstr "_Editar"
 
 #: ../data/glade/till.glade.h:28 ../data/glade/sales_app.glade.h:24
-#: ../data/glade/purchase.glade.h:32 ../data/glade/payable.glade.h:22
+#: ../data/glade/purchase.glade.h:31 ../data/glade/payable.glade.h:22
 #: ../data/glade/receivable.glade.h:23 ../data/glade/pos.glade.h:40
 #: ../data/glade/stock.glade.h:23
 msgid "_File"
 msgstr "_Archivo"
 
 #: ../data/glade/till.glade.h:29 ../data/glade/sales_app.glade.h:25
-#: ../data/glade/purchase.glade.h:33 ../data/glade/payable.glade.h:23
+#: ../data/glade/purchase.glade.h:32 ../data/glade/payable.glade.h:23
 #: ../data/glade/admin.glade.h:38 ../data/glade/inventory.glade.h:11
 #: ../data/glade/receivable.glade.h:24 ../data/glade/pos.glade.h:41
 #: ../data/glade/stock.glade.h:24
@@ -971,7 +971,7 @@ msgid "_Return..."
 msgstr "Devolver..."
 
 #: ../data/glade/till.glade.h:31 ../data/glade/sales_app.glade.h:27
-#: ../data/glade/purchase.glade.h:36 ../data/glade/admin.glade.h:42
+#: ../data/glade/purchase.glade.h:35 ../data/glade/admin.glade.h:42
 #: ../data/glade/inventory.glade.h:13 ../data/glade/pos.glade.h:43
 #: ../data/glade/stock.glade.h:27
 msgid "_Search"
@@ -982,7 +982,7 @@ msgid "_Till"
 msgstr "Caja"
 
 #: ../data/glade/till.glade.h:33 ../data/glade/sales_app.glade.h:28
-#: ../data/glade/purchase.glade.h:38 ../data/glade/payable.glade.h:26
+#: ../data/glade/purchase.glade.h:37 ../data/glade/payable.glade.h:26
 #: ../data/glade/admin.glade.h:44 ../data/glade/receivable.glade.h:26
 #: ../data/glade/pos.glade.h:45 ../data/glade/stock.glade.h:30
 msgid "_User"
@@ -1000,11 +1000,11 @@ msgstr ""
 msgid "Gift Certificates..."
 msgstr "Vales de Compra..."
 
-#: ../data/glade/sales_app.glade.h:13 ../data/glade/purchase.glade.h:16
+#: ../data/glade/sales_app.glade.h:13 ../data/glade/purchase.glade.h:15
 msgid "Products"
 msgstr "Productos"
 
-#: ../data/glade/sales_app.glade.h:14 ../data/glade/purchase.glade.h:17
+#: ../data/glade/sales_app.glade.h:14 ../data/glade/purchase.glade.h:16
 #: ../data/glade/pos.glade.h:23
 msgid "Products..."
 msgstr "Productos..."
@@ -1017,7 +1017,7 @@ msgstr "V_entas"
 msgid "Services"
 msgstr "Servicios"
 
-#: ../data/glade/sales_app.glade.h:21 ../data/glade/purchase.glade.h:25
+#: ../data/glade/sales_app.glade.h:21 ../data/glade/purchase.glade.h:24
 #: ../data/glade/pos.glade.h:34
 msgid "Services..."
 msgstr "Servicios..."
@@ -1091,60 +1091,55 @@ msgstr "Cambiar de Usuario..."
 msgid "Ed_it..."
 msgstr "Editar..."
 
-#: ../data/glade/purchase.glade.h:15
-#, fuzzy
-msgid "Product Features..."
-msgstr "Productos..."
-
-#: ../data/glade/purchase.glade.h:20 ../data/glade/admin.glade.h:30
+#: ../data/glade/purchase.glade.h:19 ../data/glade/admin.glade.h:30
 #: ../data/glade/pos.glade.h:31 ../data/glade/stock.glade.h:17
 msgid "Save _as"
 msgstr "Guardar como"
 
-#: ../data/glade/purchase.glade.h:22 ../data/glade/admin.glade.h:32
+#: ../data/glade/purchase.glade.h:21 ../data/glade/admin.glade.h:32
 #: ../data/glade/pos.glade.h:33 ../data/glade/stock.glade.h:19
 msgid "Save with a differente name"
 msgstr "Guardar con un nombre distinto"
 
-#: ../data/glade/purchase.glade.h:23
+#: ../data/glade/purchase.glade.h:22
 msgid "Send"
 msgstr "Enviar"
 
-#: ../data/glade/purchase.glade.h:24
+#: ../data/glade/purchase.glade.h:23
 msgid "Send to Supplier..."
 msgstr "Enviar al suministrador..."
 
-#: ../data/glade/purchase.glade.h:26
+#: ../data/glade/purchase.glade.h:25
 msgid "Suppliers"
 msgstr "Suministradores"
 
-#: ../data/glade/purchase.glade.h:27
+#: ../data/glade/purchase.glade.h:26
 msgid "Suppliers..."
 msgstr "Suministradores..."
 
-#: ../data/glade/purchase.glade.h:28
+#: ../data/glade/purchase.glade.h:27
 msgid "Transporters..."
 msgstr "Transportistas..."
 
-#: ../data/glade/purchase.glade.h:29
+#: ../data/glade/purchase.glade.h:28
 #, fuzzy
 msgid "_Cancel"
 msgstr "Cancelar"
 
-#: ../data/glade/purchase.glade.h:34
+#: ../data/glade/purchase.glade.h:33
 msgid "_Order"
 msgstr "Pedido"
 
-#: ../data/glade/purchase.glade.h:35 ../data/glade/admin.glade.h:41
+#: ../data/glade/purchase.glade.h:34 ../data/glade/admin.glade.h:41
 msgid "_Receive"
 msgstr "Recibir"
 
-#: ../data/glade/purchase.glade.h:37 ../data/glade/admin.glade.h:43
+#: ../data/glade/purchase.glade.h:36 ../data/glade/admin.glade.h:43
 #: ../data/glade/inventory.glade.h:14 ../data/glade/stock.glade.h:29
 msgid "_Store Cookie"
 msgstr "Guardar Cookie"
 
-#: ../data/glade/purchase.glade.h:39
+#: ../data/glade/purchase.glade.h:38
 msgid "purchase"
 msgstr "compra"
 
@@ -1497,22 +1492,6 @@ msgstr ""
 msgid "_Inventory"
 msgstr ""
 
-#: ../data/glade/FinishInstallationStep.glade.h:1
-msgid "<b>Stoq was successfully installed in your system!</b>"
-msgstr ""
-
-#: ../data/glade/FinishInstallationStep.glade.h:2
-msgid ""
-"Stoq was installed in your system and now you are going to finish this "
-"wizard.\n"
-"\n"
-"Click in the finish button and you will be able to select one of Stoq "
-"applications.\n"
-"\n"
-"Depending on your choices you will be logged or will be prompted to log as "
-"admin user.\n"
-msgstr ""
-
 #: ../data/glade/receivable.glade.h:2
 #, fuzzy
 msgid "Add receiving..."
@@ -1646,6 +1625,26 @@ msgstr "Retención..."
 #, fuzzy
 msgid "_Stock"
 msgstr "Guardar"
+
+#: ../data/glade/FinishInstallationStep.glade.h:1
+msgid "<b>Stoq was successfully installed in your system!</b>"
+msgstr ""
+
+#: ../data/glade/FinishInstallationStep.glade.h:2
+msgid ""
+"Stoq was installed in your system and now you are going to finish this "
+"wizard.\n"
+"\n"
+"Click in the finish button and you will be able to select one of Stoq "
+"applications.\n"
+"\n"
+"Depending on your choices you will be logged or will be prompted to log as "
+"admin user.\n"
+msgstr ""
+
+#, fuzzy
+#~ msgid "Product Features..."
+#~ msgstr "Productos..."
 
 #, fuzzy
 #~ msgid "Barcode"
