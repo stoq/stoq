@@ -295,6 +295,12 @@ _parameter_info = dict(
     _(u'This is the default tax constant which will be used '
       'when adding new products to the system')),
 
+    ENABLE_COMPOSED_PRODUCT=ParameterDetails(
+    _(u'General'),
+    _(u'Enable composed products'),
+    _(u'When this parameter is set, a product will be able to compose '
+       'or be composed by other products.')),
+
     )
 
 class ParameterAttr:
@@ -349,6 +355,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('SALE_PAY_COMMISSION_WHEN_CONFIRMED', bool,
                        initial=False),
         ParameterAttr('CUSTOM_LOGO_FOR_REPORTS', ImageHelper, initial=''),
+        ParameterAttr('ENABLE_COMPOSED_PRODUCT', bool, initial=False),
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
         ParameterAttr('DEFAULT_SALES_CFOP', u'fiscal.CfopData'),

@@ -157,6 +157,42 @@ class Product(Domain):
             is_main_supplier=True,
             connection=self.get_connection())
 
+    def get_components(self):
+        """Returns the products which are our components.
+
+        @returns: a sequence of Product instances
+        """
+        for component in ProductComponent.selectBy(
+            product=self, connection=self.get_connection()):
+            yield component
+
+    def get_production_cost(self):
+        """ Return the production cost of a Product. The production cost
+        is defined as the sum of the product cost plus the costs of its
+        components.
+
+        @returns: the production cost
+        """
+        value = ISellable(self).cost
+        for component in self.get_components():
+            value += (component.component.get_production_cost() *
+                      component.quantity)
+        return value
+
+    def is_composed_by(self, product):
+        """Returns if we are composed by a given product or not.
+
+        @param product: a possible component of this product
+        @returns: True if the given product is one of our component or a
+        component of our components, otherwise False.
+        """
+        for component in self.get_components():
+            if product is component.component:
+                return True
+            if component.component.is_composed_by(product):
+                return True
+        return False
+
 
 class ProductHistory(Domain):
     """Stores product history, such as sold, received, transfered and
@@ -457,3 +493,11 @@ class ProductAdaptToStorable(ModelAdapter):
                                             connection=self.get_connection())
 
 Product.registerFacet(ProductAdaptToStorable, IStorable)
+
+
+class ProductComponent(Domain):
+    """A product and it's related component eg other product
+    """
+    quantity = DecimalCol(default=Decimal(1))
+    product = ForeignKey('Product')
+    component = ForeignKey('Product')

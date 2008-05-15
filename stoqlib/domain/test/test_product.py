@@ -31,7 +31,7 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.sellable import BaseSellableInfo, ASellable
 from stoqlib.domain.payment.methods import MoneyPM
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
-                                    ProductHistory)
+                                    ProductHistory, ProductComponent)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.interfaces import IStorable, ISellable, IPaymentGroup
 
@@ -58,6 +58,81 @@ class TestProduct(DomainTest):
         ProductSupplierInfo(connection=self.trans, supplier=supplier,
                             product=self.product, is_main_supplier=True)
         self.failUnless(self.product.get_main_supplier_info())
+
+    def testGetComponents(self):
+        self.assertEqual(list(self.product.get_components()), [])
+
+        components = []
+        for i in range(3):
+            component = self.create_product()
+            product_component = ProductComponent(product=self.product,
+                                                 component=component,
+                                                 connection=self.trans)
+            components.append(product_component)
+        self.assertEqual(list(self.product.get_components()),
+                        components)
+
+    def testGetProductionCost(self):
+        product = self.create_product()
+        sellable = ISellable(product)
+        sellable.cost = 50
+        production_cost = sellable.cost
+        self.assertEqual(product.get_production_cost(), production_cost)
+
+        component1 = self.create_product()
+        sellable1 = ISellable(component1)
+        sellable1.cost = 100
+        production_cost += sellable1.cost
+        product_component = ProductComponent(product=product,
+                                             component=component1,
+                                             connection=self.trans)
+        self.assertEqual(product.get_production_cost(), production_cost)
+
+        product_component.quantity = 3
+        # one component1 is already in product_cost
+        production_cost += (sellable1.cost * 2)
+        self.assertEqual(product.get_production_cost(), production_cost)
+
+        component2 = self.create_product()
+        sellable2 = ISellable(component2)
+        sellable2.cost = 10
+        ProductComponent(product=component1, component=component2,
+                         connection=self.trans)
+        component1_production = sellable1.cost + sellable2.cost
+        self.assertEqual(component1.get_production_cost(),
+                         component1_production)
+
+        # times three, because product is composed by 3 items of
+        # component1
+        production_cost += (sellable2.cost * 3)
+        self.assertEqual(product.get_production_cost(), production_cost)
+
+        ProductComponent(product=product, component=component2,
+                         connection=self.trans)
+        production_cost += sellable2.cost
+        self.assertEqual(product.get_production_cost(), production_cost)
+
+    def testIsComposedBy(self):
+        component = self.create_product()
+        self.assertEqual(self.product.is_composed_by(component), False)
+
+        ProductComponent(product=self.product, component=component,
+                         connection=self.trans)
+        self.assertEqual(self.product.is_composed_by(component), True)
+
+        component2 = self.create_product()
+        ProductComponent(product=component, component=component2,
+                         connection=self.trans)
+        self.assertEqual(self.product.is_composed_by(component2), True)
+        self.assertEqual(component.is_composed_by(component2), True)
+
+        component3 = self.create_product()
+        ProductComponent(product=self.product, component=component3,
+                         connection=self.trans)
+        self.assertEqual(self.product.is_composed_by(component3), True)
+        self.assertEqual(component.is_composed_by(component3), False)
+        self.assertEqual(component2.is_composed_by(component3), False)
+
 
 class TestProductSellableItem(DomainTest):
 
