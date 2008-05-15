@@ -218,6 +218,13 @@ class SellableEditor(BaseEditor):
         self.set_description(
             ISellable(self.model).base_sellable_info.description)
 
+    def add_extra_tab(self, tabname, tabslave):
+        self.sellable_notebook.set_show_tabs(True)
+        self.sellable_notebook.set_show_border(True)
+
+        self.attach_slave('extra_holder', tabslave)
+        self.sellable_notebook.set_tab_label_text(self.extra_tab, tabname)
+
     def set_widget_formats(self):
         for widget in (self.cost, self.stock_total_lbl, self.price):
             widget.set_data_format('%.02f')
