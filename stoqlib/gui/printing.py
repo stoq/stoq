@@ -287,4 +287,4 @@ def print_report(report_class, *args, **kwargs):
         dialog.run()
         os.unlink(report.filename)
     else:
-        run_dialog(PrintDialog, report_class, *args, **kwargs)
+        run_dialog(PrintDialog, None, report_class, *args, **kwargs)
