@@ -152,7 +152,7 @@ class DatabaseSettings(object):
     # FIXME: Remove/Rethink
     def check_database_address(self):
         try:
-            socket.gethostbyaddr(self.address)
+            socket.getaddrinfo(self.address, None)
         except socket.gaierror:
             return False
         return True
