@@ -133,12 +133,12 @@ class ApplicationRunner(object):
     def choose(self):
         """
         Displays a list of applications
-        @param: selected application or None if nothing was selected
+        @returns: selected application or None if nothing was selected
         """
 
         available_applications = self._get_available_applications()
         if len(available_applications) == 1:
-            return available_applications[0].name
+            return available_applications[0]
 
         from stoqlib.gui.base.dialogs import run_dialog
         from stoqlib.gui.login import SelectApplicationsDialog
