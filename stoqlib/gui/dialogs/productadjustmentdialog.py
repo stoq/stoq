@@ -57,7 +57,7 @@ class ProductsAdjustmentDialog(BaseEditor):
 
     def _setup_widgets(self):
         self.register_validate_function(self._validate)
-        self.main_dialog.ok_button.set_label(u'_Finish Inventory')
+        self.main_dialog.ok_button.set_label(_(u'_Finish Inventory'))
         self.main_dialog.cancel_button.set_label(gtk.STOCK_CLOSE)
 
         company = ICompany(self.model.branch, None)

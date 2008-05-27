@@ -96,7 +96,7 @@ class _TemporaryCategory(object):
 class OpenInventoryDialog(BaseEditor):
     gladefile = 'OpenInventoryDialog'
     model_type = _TemporaryInventory
-    title = 'Open Inventory'
+    title = _('Open Inventory')
     size = (750, 450)
     proxy_branch_widgets = ['open_date', 'branch_combo']
 
@@ -109,7 +109,7 @@ class OpenInventoryDialog(BaseEditor):
 
     def _setup_widgets(self):
         # open inventory button
-        self.main_dialog.ok_button.set_label("_Open")
+        self.main_dialog.ok_button.set_label(_(u"_Open"))
         # select all the branches that are able to open an inventory
         branches = []
         for branch in self._branches:
