@@ -363,6 +363,8 @@ class POSApp(AppWindow):
         sellable = self._get_sellable()
         self.add_button.set_sensitive(sellable is not None)
         if not sellable:
+            info(_(u'The barcode %s does not exist.') %
+                    self.barcode.get_text())
             self._run_advanced_search(search_str)
             return
 
@@ -375,10 +377,11 @@ class POSApp(AppWindow):
                 self._read_scale(sellable)
 
         storable = IStorable(sellable, None)
-        if storable:
+        if storable is not None:
             if not self._check_available_stock(storable, sellable):
                 info(_("You cannot sell more items of product %s, "
-                       "it's out of stock." % (sellable.get_description())))
+                       "the available quantities are not enough." %
+                        sellable.get_description()))
                 self.barcode.set_text('')
                 self.barcode.grab_focus()
                 return
@@ -389,10 +392,11 @@ class POSApp(AppWindow):
     def _check_available_stock(self, storable, sellable):
         branch = get_current_branch(self.conn)
         available = storable.get_full_balance(branch)
-        added = len([sale_item
+        added = sum([sale_item.quantity
                      for sale_item in self.sale_items
                          if sale_item.sellable == sellable])
-        return available - added > 0
+        added += self.sellableitem_proxy.model.quantity
+        return available - added >= 0
 
     def _clear_order(self):
         log.info("Clearing order")
