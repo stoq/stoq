@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-26 13:52-0300\n"
+"POT-Creation-Date: 2008-05-27 16:31-0300\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Rafael Villar Burke <pachi@rvburke.com>\n"
 "Language-Team: Spanish <es_ES@li.org>\n"
@@ -324,96 +324,96 @@ msgstr "Stoq - %s"
 msgid "Search:"
 msgstr "Buscar:"
 
-#: ../stoq/gui/till/till.py:64 ../stoq/gui/till/__init__.py:29
+#: ../stoq/gui/till/till.py:65 ../stoq/gui/till/__init__.py:29
 msgid "Till"
 msgstr "Caja"
 
-#: ../stoq/gui/till/till.py:68 ../stoq/gui/payable/payable.py:66
+#: ../stoq/gui/till/till.py:69 ../stoq/gui/payable/payable.py:66
 #: ../stoq/gui/purchase/purchase.py:62 ../stoq/gui/sales/sales.py:63
 #: ../stoq/gui/admin/admin.py:72 ../stoq/gui/receivable/receivable.py:87
 msgid "matching:"
 msgstr "incluyendo:"
 
-#: ../stoq/gui/till/till.py:95 ../stoq/gui/payable/payable.py:83
+#: ../stoq/gui/till/till.py:96 ../stoq/gui/payable/payable.py:83
 #: ../stoq/gui/sales/sales.py:83 ../stoq/gui/receivable/receivable.py:122
 msgid "Paid or due date:"
 msgstr "Pagado o vencimiento:"
 
-#: ../stoq/gui/till/till.py:98 ../stoq/gui/purchase/purchase.py:79
+#: ../stoq/gui/till/till.py:99 ../stoq/gui/purchase/purchase.py:79
 msgid "Show orders with status"
 msgstr "Mostrar pedidos en situación"
 
-#: ../stoq/gui/till/till.py:105
+#: ../stoq/gui/till/till.py:106
 #, python-format
 msgid "Stoq - Till for Branch %03d"
 msgstr "Stoq - Caja de Unidad %03d"
 
-#: ../stoq/gui/till/till.py:108 ../stoq/gui/purchase/purchase.py:85
+#: ../stoq/gui/till/till.py:109 ../stoq/gui/purchase/purchase.py:85
 #: ../stoq/gui/sales/sales.py:94
 msgid "Number"
 msgstr "Número"
 
-#: ../stoq/gui/till/till.py:110 ../stoq/gui/sales/sales.py:65
+#: ../stoq/gui/till/till.py:111 ../stoq/gui/sales/sales.py:65
 msgid "Date Started"
 msgstr "Fecha de inicio"
 
-#: ../stoq/gui/till/till.py:112 ../stoq/gui/sales/sales.py:96
+#: ../stoq/gui/till/till.py:113 ../stoq/gui/sales/sales.py:96
 msgid "Client"
 msgstr "Cliente"
 
-#: ../stoq/gui/till/till.py:115 ../stoq/gui/sales/sales.py:99
+#: ../stoq/gui/till/till.py:116 ../stoq/gui/sales/sales.py:99
 msgid "Salesperson"
 msgstr "Vendedor"
 
-#: ../stoq/gui/till/till.py:118 ../stoq/gui/stock/stock.py:88
+#: ../stoq/gui/till/till.py:119 ../stoq/gui/stock/stock.py:88
 #: ../stoq/gui/pos/deliveryeditor.py:106 ../stoq/gui/pos/pos.py:154
 msgid "Quantity"
 msgstr "Cantidad"
 
-#: ../stoq/gui/till/till.py:121 ../stoq/gui/purchase/purchase.py:98
+#: ../stoq/gui/till/till.py:122 ../stoq/gui/purchase/purchase.py:98
 #: ../stoq/gui/sales/sales.py:105 ../stoq/gui/pos/pos.py:160
 msgid "Total"
 msgstr "Total"
 
-#: ../stoq/gui/till/till.py:149 ../stoq/gui/payable/payable.py:287
+#: ../stoq/gui/till/till.py:150 ../stoq/gui/payable/payable.py:287
 #: ../stoq/gui/purchase/purchase.py:218 ../stoq/gui/sales/sales.py:171
 #: ../stoq/gui/admin/admin.py:105 ../stoq/gui/receivable/receivable.py:113
 msgid "Any"
 msgstr "Cualquiera"
 
-#: ../stoq/gui/till/till.py:156
+#: ../stoq/gui/till/till.py:157
 msgid "Confirm Sale"
 msgstr "Confirmar la Venta"
 
-#: ../stoq/gui/till/till.py:171
+#: ../stoq/gui/till/till.py:172
 #, fuzzy
 msgid ""
 "It is not possible to confirm the sale if the fiscal coupon cannot be opened."
 msgstr "No es posible iniciar una nueva venta si no se puede abrir factura."
 
-#: ../stoq/gui/till/till.py:173 ../stoq/gui/pos/pos.py:579
+#: ../stoq/gui/till/till.py:174 ../stoq/gui/pos/pos.py:585
 msgid "Try Again"
 msgstr "Intente de nuevo"
 
-#: ../stoq/gui/till/till.py:173 ../stoq/gui/pos/pos.py:579
+#: ../stoq/gui/till/till.py:174 ../stoq/gui/pos/pos.py:585
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: ../stoq/gui/till/till.py:187 ../stoq/gui/pos/pos.py:213
+#: ../stoq/gui/till/till.py:188 ../stoq/gui/pos/pos.py:215
 #, python-format
 msgid "Total: %s"
 msgstr "Total: %s"
 
-#: ../stoq/gui/till/till.py:248
+#: ../stoq/gui/till/till.py:251
 msgid "Till Closed"
 msgstr "Caja cerrada"
 
-#: ../stoq/gui/till/till.py:252
+#: ../stoq/gui/till/till.py:255
 #, python-format
 msgid "Till Opened on %s"
 msgstr "Caja abierta el %s"
 
-#: ../stoq/gui/till/till.py:281 ../stoq/gui/pos/pos.py:643
+#: ../stoq/gui/till/till.py:284 ../stoq/gui/pos/pos.py:649
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
@@ -423,11 +423,11 @@ msgstr ""
 "\n"
 "¿Cerrar la caja?"
 
-#: ../stoq/gui/till/till.py:283 ../stoq/gui/pos/pos.py:645
+#: ../stoq/gui/till/till.py:286 ../stoq/gui/pos/pos.py:651
 msgid "Not now"
 msgstr "Ahora no"
 
-#: ../stoq/gui/till/till.py:283 ../stoq/gui/pos/pos.py:645
+#: ../stoq/gui/till/till.py:286 ../stoq/gui/pos/pos.py:651
 msgid "Close Till"
 msgstr "Cerrar la caja..."
 
@@ -723,7 +723,7 @@ msgstr ""
 msgid "The Delivery cost must be a positive value."
 msgstr ""
 
-#: ../stoq/gui/pos/__init__.py:29 ../stoq/gui/pos/pos.py:96
+#: ../stoq/gui/pos/__init__.py:29 ../stoq/gui/pos/pos.py:97
 msgid "Point of Sales"
 msgstr "Punto de Venta"
 
@@ -748,7 +748,7 @@ msgstr "Cerrar"
 #. It's not a common operation to add more than one item at
 #. a time, it's also problematic since you'd have to show
 #. one dialog per service item. See #3092
-#: ../stoq/gui/pos/pos.py:241
+#: ../stoq/gui/pos/pos.py:243
 msgid ""
 "Only one service was added since its not possible toadd more than one "
 "service to an order at a time."
@@ -756,24 +756,31 @@ msgstr ""
 "Únicamente se agregó un servicio, ya que no es posible añadir más de un "
 "servicio a una orden de cada vez."
 
-#: ../stoq/gui/pos/pos.py:380
+#: ../stoq/gui/pos/pos.py:368
 #, python-format
-msgid "You cannot sell more items of product %s, it's out of stock."
+msgid "The barcode %s does not exist."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:437
+#: ../stoq/gui/pos/pos.py:384
+#, python-format
+msgid ""
+"You cannot sell more items of product %s, the available quantities are not "
+"enough."
+msgstr ""
+
+#: ../stoq/gui/pos/pos.py:443
 msgid "The current order will be canceled, Confirm?"
 msgstr "El pedido actual será cancelado, ¿confirmar?"
 
-#: ../stoq/gui/pos/pos.py:438
+#: ../stoq/gui/pos/pos.py:444
 msgid "Go Back"
 msgstr "Volver"
 
-#: ../stoq/gui/pos/pos.py:438 ../data/glade/pos.glade.h:9
+#: ../stoq/gui/pos/pos.py:444 ../data/glade/pos.glade.h:9
 msgid "Cancel Order"
 msgstr "Cancelar Pedido"
 
-#: ../stoq/gui/pos/pos.py:577
+#: ../stoq/gui/pos/pos.py:583
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr "No es posible iniciar una nueva venta si no se puede abrir factura."
