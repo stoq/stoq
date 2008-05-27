@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-26 14:03-0300\n"
+"POT-Creation-Date: 2008-05-27 16:39-0300\n"
 "PO-Revision-Date: 2007-04-09 10:04-0300\n"
 "Last-Translator: Rafael Villar Burke <pachi@rvburke.com>\n"
 "Language-Team: Spanish <es_ES@li.org>\n"
@@ -125,7 +125,7 @@ msgstr "Fecha"
 #: ../stoqlib/gui/dialogs/saledetails.py:155
 #: ../stoqlib/gui/dialogs/tillhistory.py:68
 #: ../stoqlib/gui/dialogs/supplierdetails.py:153
-#: ../plugins/ecf/deviceconstanteditor.py:141
+#: ../plugins/ecf/deviceconstanteditor.py:136
 msgid "Value"
 msgstr "Valor"
 
@@ -640,7 +640,7 @@ msgstr "Ingreso para el puesto \"%s\" de la unidad \"%s\""
 #: ../stoqlib/gui/search/stationsearch.py:56
 #: ../stoqlib/gui/slaves/liaisonslave.py:50
 #: ../stoqlib/gui/wizards/personwizard.py:108
-#: ../plugins/ecf/deviceconstanteditor.py:140
+#: ../plugins/ecf/deviceconstanteditor.py:135
 msgid "Name"
 msgstr "Nombre"
 
@@ -3858,7 +3858,8 @@ msgid "Price settings"
 msgstr "Ajustes de precio"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:153
-#: ../stoqlib/gui/editors/categoryeditor.py:117
+#: ../stoqlib/gui/editors/categoryeditor.py:102
+#: ../stoqlib/gui/editors/categoryeditor.py:118
 #, fuzzy, python-format
 msgid "Calculate Commission From: %s"
 msgstr "Comisión Sugerida (%)"
@@ -4461,6 +4462,10 @@ msgstr "Total %s"
 msgid "Products Adjustment"
 msgstr "Producto"
 
+#: ../stoqlib/gui/dialogs/productadjustmentdialog.py:60
+msgid "_Finish Inventory"
+msgstr ""
+
 #: ../stoqlib/gui/dialogs/productadjustmentdialog.py:104
 #, fuzzy
 msgid "Recorded Quantity"
@@ -4728,6 +4733,16 @@ msgstr "Configuración de formas de pago"
 #, fuzzy
 msgid "Supplier Details"
 msgstr "Detalles de la Venta"
+
+#: ../stoqlib/gui/dialogs/openinventorydialog.py:99
+msgid "Open Inventory"
+msgstr ""
+
+#. open inventory button
+#: ../stoqlib/gui/dialogs/openinventorydialog.py:112
+#, fuzzy
+msgid "_Open"
+msgstr "Abierto"
 
 #: ../stoqlib/gui/dialogs/openinventorydialog.py:222
 msgid "No products have been found in the selected categories."
@@ -5037,7 +5052,7 @@ msgstr ""
 "La máquina registradora no encontró una constante para el impuesto de "
 "constante %r"
 
-#: ../plugins/ecf/ecfdomain.py:231 ../plugins/ecf/deviceconstanteditor.py:192
+#: ../plugins/ecf/ecfdomain.py:231 ../plugins/ecf/deviceconstanteditor.py:204
 #: ../plugins/ecf/tests/test_device.py:41
 msgid "Tax"
 msgstr "Impuesto"
@@ -5046,11 +5061,11 @@ msgstr "Impuesto"
 msgid "Device constant"
 msgstr "Dispositivos"
 
-#: ../plugins/ecf/deviceconstanteditor.py:191
+#: ../plugins/ecf/deviceconstanteditor.py:203
 msgid "Units"
 msgstr "Unidads"
 
-#: ../plugins/ecf/deviceconstanteditor.py:193
+#: ../plugins/ecf/deviceconstanteditor.py:205
 #: ../data/glade/ClientDetailsDialog.glade.h:4
 #: ../data/glade/SaleDetailsDialog.glade.h:9
 #: ../data/glade/PurchaseDetailsDialog.glade.h:17
