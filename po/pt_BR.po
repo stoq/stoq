@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-26 14:03-0300\n"
+"POT-Creation-Date: 2008-05-27 16:39-0300\n"
 "PO-Revision-Date: 2007-08-28 13:34-0300\n"
 "Last-Translator: Silvio Rangel <silvio@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -126,7 +126,7 @@ msgstr "Data"
 #: ../stoqlib/gui/dialogs/saledetails.py:155
 #: ../stoqlib/gui/dialogs/tillhistory.py:68
 #: ../stoqlib/gui/dialogs/supplierdetails.py:153
-#: ../plugins/ecf/deviceconstanteditor.py:141
+#: ../plugins/ecf/deviceconstanteditor.py:136
 msgid "Value"
 msgstr "Valor"
 
@@ -636,7 +636,7 @@ msgstr "vendas para %s na unidade %s"
 #: ../stoqlib/gui/search/stationsearch.py:56
 #: ../stoqlib/gui/slaves/liaisonslave.py:50
 #: ../stoqlib/gui/wizards/personwizard.py:108
-#: ../plugins/ecf/deviceconstanteditor.py:140
+#: ../plugins/ecf/deviceconstanteditor.py:135
 msgid "Name"
 msgstr "Nome"
 
@@ -3817,7 +3817,8 @@ msgid "Price settings"
 msgstr "Ajustes de preço"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:153
-#: ../stoqlib/gui/editors/categoryeditor.py:117
+#: ../stoqlib/gui/editors/categoryeditor.py:102
+#: ../stoqlib/gui/editors/categoryeditor.py:118
 #, python-format
 msgid "Calculate Commission From: %s"
 msgstr "Calcular comissão de: %s"
@@ -4390,6 +4391,10 @@ msgstr "Custo Total"
 msgid "Products Adjustment"
 msgstr "Ajuste de Produto"
 
+#: ../stoqlib/gui/dialogs/productadjustmentdialog.py:60
+msgid "_Finish Inventory"
+msgstr "_Fechar Inventário"
+
 #: ../stoqlib/gui/dialogs/productadjustmentdialog.py:104
 msgid "Recorded Quantity"
 msgstr "Quantidade Gravada"
@@ -4645,6 +4650,15 @@ msgstr "Configuração de Formas de Pagamento"
 #: ../stoqlib/gui/dialogs/supplierdetails.py:55
 msgid "Supplier Details"
 msgstr "Detalhes do Fornecedor"
+
+#: ../stoqlib/gui/dialogs/openinventorydialog.py:99
+msgid "Open Inventory"
+msgstr "Abrir Inventário"
+
+#. open inventory button
+#: ../stoqlib/gui/dialogs/openinventorydialog.py:112
+msgid "_Open"
+msgstr "_Abrir"
 
 #: ../stoqlib/gui/dialogs/openinventorydialog.py:222
 msgid "No products have been found in the selected categories."
@@ -4937,7 +4951,7 @@ msgid "fiscal printer is missing a constant for tax constant '%s'"
 msgstr ""
 "A impressora fiscal não encontrou a constante para a imposto constante '%s'"
 
-#: ../plugins/ecf/ecfdomain.py:231 ../plugins/ecf/deviceconstanteditor.py:192
+#: ../plugins/ecf/ecfdomain.py:231 ../plugins/ecf/deviceconstanteditor.py:204
 #: ../plugins/ecf/tests/test_device.py:41
 msgid "Tax"
 msgstr "Imposto"
@@ -4946,11 +4960,11 @@ msgstr "Imposto"
 msgid "Device constant"
 msgstr "Constante de Dispositivo"
 
-#: ../plugins/ecf/deviceconstanteditor.py:191
+#: ../plugins/ecf/deviceconstanteditor.py:203
 msgid "Units"
 msgstr "Unidades"
 
-#: ../plugins/ecf/deviceconstanteditor.py:193
+#: ../plugins/ecf/deviceconstanteditor.py:205
 #: ../data/glade/ClientDetailsDialog.glade.h:4
 #: ../data/glade/SaleDetailsDialog.glade.h:9
 #: ../data/glade/PurchaseDetailsDialog.glade.h:17
