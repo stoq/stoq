@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007, 2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -33,8 +33,8 @@ from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ObjectList
 
 from stoqdrivers.enum import TaxType
-from stoqlib.gui.base.dialogs import BasicDialog
-from stoqlib.gui.base.lists import ModelListSlave
+from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
+from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.defaults import UNKNOWN_CHARACTER
 from stoqlib.lib.translation import stoqlib_gettext
@@ -121,38 +121,39 @@ class _DeviceConstantEditor(BaseEditor):
     def on_device_value__content_changed(self, entry):
         self._update_hex(dec2hex(entry.get_text()))
 
-
-class _DeviceConstantsList(ModelListSlave):
-    model_type = DeviceConstant
-
-    def __init__(self, trans, printer=None):
+class _DeviceConstantsList(AdditionListSlave):
+    def __init__(self, conn, printer):
         self._printer = printer
         self._constant_type = None
-        self.trans = trans
-        ModelListSlave.__init__(self, trans)
-        self.set_reuse_transaction(trans)
+        AdditionListSlave.__init__(self, conn,
+                                   self._get_columns())
+        self.connect('on-add-item', self._on_list_slave__add_item)
+        self.connect('before-delete-items',
+                     self._on_list_slave__before_delete_items)
 
-    #
-    # ListSlave
-    #
-
-    def get_columns(self):
+    def _get_columns(self):
         return [Column('constant_name', _('Name'), expand=True),
                 Column('device_value', _('Value'), data_type=str,
                        width=120, format_func=lambda x: repr(x)[1:-1])]
 
-    def populate(self):
-        return self._printer.get_constants_by_type(self._constant_type)
+    def _before_delete_items(self, list_slave, items):
+        self.conn.commit()
+        self._refresh()
+
+    def _refresh(self):
+        self.klist.clear()
+        self.klist.extend(self._printer.get_constants_by_type(
+            self._constant_type))
 
     #
-    # ModelListSlave
+    # AdditionListSlave
     #
 
-    def run_editor(self, trans, model):
-        return self.run_dialog(_DeviceConstantEditor, conn=trans,
-                               model=model,
-                               printer=self._printer,
-                               constant_type=self._constant_type)
+    def run_editor(self, model):
+        return run_dialog(_DeviceConstantEditor, conn=self.conn,
+                          model=model,
+                          printer=self._printer,
+                          constant_type=self._constant_type)
 
     #
     # Public API
@@ -160,7 +161,18 @@ class _DeviceConstantsList(ModelListSlave):
 
     def switch(self, constant_type):
         self._constant_type = constant_type
-        self.refresh()
+        self._refresh()
+
+    #
+    # Callbacks
+    #
+
+    def _on_list_slave__add_item(self, slave, item):
+        self._refresh()
+
+    def _on_list_slave__before_delete_items(self, slave, items):
+        for item in items:
+            DeviceConstant.delete(item.id, connection=self.conn)
 
 
 class DeviceConstantsDialog(BasicDialog):
