@@ -461,7 +461,7 @@ class MP25(SerialBase):
         payments added and totalized is called. It needs to be possible to open
         new coupons after this is called.
         """
-        self._send_command(CMD_COUPON_CLOSE)
+        self._send_command(CMD_COUPON_CLOSE, "-%60s" % (message,))
         self._reset()
         return self._get_coupon_number()
 
