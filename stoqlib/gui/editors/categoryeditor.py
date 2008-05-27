@@ -98,7 +98,8 @@ class SellableCategoryEditor(BaseEditor):
         commission_slave = CategoryCommissionSlave(self.conn, self.model)
         self.attach_slave('on_commission_data_holder', commission_slave)
         cat = self.category.get_selected_label()
-        commission_slave.change_label('Calculate Commission From: %s' % cat)
+        commission_slave.change_label(
+            _(u'Calculate Commission From: %s') % cat)
 
         tax_slave = CategoryTributarySituationSlave(self.conn,
                                                     self.model)
