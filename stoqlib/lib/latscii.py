@@ -143,11 +143,17 @@ def register_codec():
     codecs.register(getregentry)
 
     def latscii_error(uerr):
-        key = ord(uerr.object[uerr.start:uerr.end])
-        try:
-            return unichr(decoding_map[key]), uerr.end
-        except KeyError:
-            handler = codecs.lookup_error('replace')
-            return handler(uerr)
+        text = uerr.object[uerr.start:uerr.end]
+        ret = ''
+
+        for c in text:
+            key = ord(c)
+            try:
+                ret += unichr(decoding_map[key])
+            except KeyError:
+                handler = codecs.lookup_error('replace')
+                return handler(uerr)
+
+        return ret, uerr.end
     codecs.register_error('replacelatscii', latscii_error)
 

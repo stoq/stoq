@@ -21,7 +21,11 @@
 ##
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##              Fabio Morbec      <fabio@async.com.br>
+##              Ronaldo Maia      <romaia@async.com.br>
 ##
+
+import datetime
+import os
 
 import gtk
 from kiwi.log import Logger
@@ -42,6 +46,7 @@ from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
+from catgenerator import StoqlibCATGenerator
 from couponprinter import CouponPrinter
 from ecfdomain import ECFPrinter, FiscalSaleHistory
 from ecfprinterdialog import ECFListDialog
@@ -236,6 +241,26 @@ class ECFUI(object):
                     retval = False
 
             break
+
+        if sysparam(self.conn).ENABLE_PAULISTA_INVOICE:
+            day = datetime.date.today()
+            if previous_day:
+                # XXX: Make sure this is tested
+                day = till.opening_date
+
+            dir = os.path.join(os.environ['HOME'], '.stoq', 'cat52')
+            if not os.path.exists(dir):
+                os.mkdir(dir)
+
+            printer = self._printer.get_printer()
+            driver = printer.get_fiscal_driver()
+
+            if not printer.user_number:
+                user_info = driver.get_user_info()
+                printer.set_user_info(user_info)
+
+            generator = StoqlibCATGenerator(self.conn, day, printer)
+            generator.write(dir)
 
         return retval
 
