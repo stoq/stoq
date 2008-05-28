@@ -166,6 +166,7 @@ class TemplateDriver(SerialBase):
              coupon_end=100,
              cro=230,
              crz=1232,
+             coo=320,
              period_total=Decimal("1123"),
              total=Decimal("2311123"),
              taxes=taxes)

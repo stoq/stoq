@@ -104,6 +104,11 @@ class BaseDevice:
     def get_model_name(self):
         return self._driver.model_name
 
+    def get_firmware_version(self):
+        """Printer firmware version
+        """
+        return self._driver.get_firmware_version()
+
     def check_interfaces(self):
         """ This method must be implemented in subclass and must ensure that the
         driver implements a valid interface for the current operation state.

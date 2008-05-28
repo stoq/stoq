@@ -89,6 +89,7 @@ REGISTER_TOTAL_CANCELATIONS = 4
 REGISTER_TOTAL_DISCOUNT = 5
 REGISTER_CRO = 10
 REGISTER_TOTAL = 3
+REGISTER_FIRMWARE = 41
 REGISTER_CCF = 55
 REGISTER_COO = 6
 REGISTER_GNF = 7
@@ -153,6 +154,8 @@ class MP25(SerialBase):
     supported = True
     model_name = "Bematech MP25 FI"
     coupon_printer_charset = "cp850"
+
+    EOL_DELIMIT = '\n'
 
     st1_codes = {
         128: (OutofPaperError(_("Printer is out of paper"))),
@@ -352,6 +355,9 @@ class MP25(SerialBase):
             #  1 + (52 * 16) + (52 * 10) + (52 * 10) + (52 * 1)
             #  1 + 832 + 520 + 520 + 52 = 1925
             fmt = 'b832s520s520s52s'
+        elif reg == REGISTER_FIRMWARE:
+            fmt = '3s'
+            bcd = True
         elif reg == REGISTER_CCF:
             fmt = '3s'
             bcd = True
@@ -426,6 +432,21 @@ class MP25(SerialBase):
         self._send_command(CMD_READ_MEMORY,
                            '%s%sI' % (start.strftime('%d%m%y'),
                                       end.strftime('%d%m%y')))
+
+    def _till_read_memory_to_serial(self, start, end):
+        ret = self._send_command(CMD_READ_MEMORY,
+                           '%s%sR' % (start.strftime('%d%m%y'),
+                                      end.strftime('%d%m%y')))
+
+        data = ''
+        while True:
+            c = self.read(1)
+            if ord(c) == 0x03:
+                break
+
+            data += unicode(c, self.coupon_printer_charset)
+
+        return data
 
     def till_read_memory_by_reductions(self, start, end):
         self._send_command(CMD_READ_MEMORY,
@@ -617,7 +638,10 @@ class MP25(SerialBase):
     def get_sintegra(self):
         opening_date = self._read_register(REGISTER_EMISSION_DATE)
         cro = self._read_register(REGISTER_CRO)
+        # FIXME: This is being fetched before the actual reduction, so the value will be wrong by
+        # -1
         crz = self._read_register(REGISTER_NUMBER_REDUCTIONS_Z)
+        coo = self._get_coupon_number()
         total_cancelations = self._read_register(REGISTER_TOTAL_CANCELATIONS)
         total_discount = self._read_register(REGISTER_TOTAL_DISCOUNT)
 
@@ -662,7 +686,48 @@ class MP25(SerialBase):
              coupon_end=coupon_end,
              cro=cro,
              crz=crz,
+             coo=coo,
              period_total=grande_total - total_bruto,
              total=grande_total,
              taxes=taxes)
 
+    def get_firmware_version(self):
+        """Return the firmware version"""
+        # REGISTER IS AN INTEGER: 10000 and shoud be formated as 01.00.00
+        ret = self._read_register(REGISTER_FIRMWARE)
+        ret = '%0*d' % (6, ret)
+        firmware = "%s:%s:%s" % (ret[0:2], ret[2:4], ret[4:6])
+        return firmware
+
+
+    def get_user_registration_info(self):
+        # http://partners.bematech.com.br/flashtip/2007/06/
+        data = self._till_read_memory_to_serial(datetime.date.today(), datetime.date.today())
+
+        pos = data.index('--------USUÁRIOS--------')
+        end = data.index('----REDUÇõES DIÁRIAS----')
+        data = data[pos:end].split('\n')
+
+        user_number = 0
+        cro = 0
+        register_date = datetime.date.today()
+        register_time = datetime.time(0,0,0)
+        for i in data:
+            if not i.startswith('Usuário:'):
+                continue
+
+            user_number = int(i[8:12])
+            cro = int(i[20:24])
+
+            date_parts = i[28:38].split('/')
+            time_parts = i[39:].split(':')
+            register_date = datetime.datetime(int(date_parts[2]),
+                                              int(date_parts[1]),
+                                              int(date_parts[0]),
+                                              int(time_parts[0]),
+                                              int(time_parts[1]))
+
+        return Settable(
+                user_number=user_number,
+                register_date=register_date,
+                cro=cro)

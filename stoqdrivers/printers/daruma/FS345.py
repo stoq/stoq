@@ -251,7 +251,7 @@ class FS345(SerialBase):
         elif error == 16:
             raise DriverError("Bad discount/markup parameter", error)
         elif error == 21:
-            log.warning(_('No paper'), error)
+            log.warning(_('Printer error %s: No paper'), error)
         elif error == 22:
             raise DriverError(
                 "Reduce Z was already sent today, try again tomorrow", error)
@@ -299,6 +299,10 @@ class FS345(SerialBase):
 
         print 'Sum', int(value[27:41]) / 100.0
         print 'GT atual', value[41:59]
+
+    def get_firmware_version(self):
+        """Return the firmware version."""
+        return self.send_command(CMD_GET_FIRMWARE)
 
     def _get_fiscal_registers(self):
         value = self.send_command(CMD_GET_FISCAL_REGISTRIES)
@@ -497,6 +501,20 @@ class FS345(SerialBase):
         self.send_command(CMD_READ_MEMORY, 'x%s%s' % (start.strftime('%d%m%y'),
                                                       end.strftime('%d%m%y')))
 
+    def _till_read_memory_to_serial(self, start, end):
+        # Page 39
+        ret = self.send_command(CMD_READ_MEMORY, 's%s%s' % (start.strftime('%d%m%y'),
+                                                            end.strftime('%d%m%y')))
+        data = ''
+        while True:
+            line = self.readline()
+            if line[-1] == '\xff':
+                break
+            data += line
+
+        data = unicode(data, 'cp860')
+        return (ret, data)
+
     def till_read_memory_by_reductions(self, start, end):
         # Page 39
         self.send_command(CMD_READ_MEMORY, 'x00%04d00%04d' % (start, end))
@@ -552,6 +570,7 @@ class FS345(SerialBase):
         fiscal_registries = self._get_fiscal_registers()
 
         tax_codes = self.send_command(CMD_GET_TAX_CODES)[1:]
+        print tax_codes
 
         constants = []
         for i in range(14):
@@ -640,8 +659,32 @@ class FS345(SerialBase):
              coupon_start=int(registries[:6]),
              coupon_end=int(registries[7:12]),
              cro=int(registries[35:38]),
-             crz=int(registries[39:42]),
+             crz=int(registries[39:42]), # FIXME: this is being fetched before the actual
+                                         # reduction, so it will offset by one.
+             coo=int(registries[6:12]),
              period_total=period_total,
              total=period_total + old_total,
              taxes=taxes)
+
+    def get_user_registration_info(self):
+        """Returns current ecf user registration date and time,
+        id in the printer and cro relative to the user registration
+        """
+        (coo, data) = self._till_read_memory_to_serial(datetime.date.today(),
+                                                      datetime.date.today())
+
+        pos = data.index(u'Relação dos Usuários')
+        data = data[pos:].split('\n')
+
+        date_parts = data[2][0:10].split('/')
+        time_parts = data[2][11:16].split(':')
+
+        return Settable(
+                user_number=int(data[1][7:]),
+                register_date=datetime.datetime(int(date_parts[2]),
+                                                int(date_parts[1]),
+                                                int(date_parts[0]),
+                                                int(time_parts[0]),
+                                                int(time_parts[1])),
+                cro=int(data[2][29:33]))
 

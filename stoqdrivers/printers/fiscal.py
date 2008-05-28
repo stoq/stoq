@@ -245,6 +245,15 @@ class FiscalPrinter(BasePrinter):
 
         return self._driver.till_read_memory(start, end)
 
+    @capcheck(datetime.date, datetime.date)
+    def till_read_memory_to_serial(self, start, end):
+        assert start <= end <= datetime.date.today(), (
+            "start must be less then end and both must be less today")
+        log.info('till_read_memory(start=%r, end=%r)' % (
+            start, end))
+
+        return self._driver.till_read_memory_to_serial(start, end)
+
     @capcheck(int, int)
     def till_read_memory_by_reductions(self, start, end):
         assert end >= start > 0, ("start must be less then end "
@@ -323,3 +332,11 @@ class FiscalPrinter(BasePrinter):
         log.info('get_sintegra()')
 
         return self._driver.get_sintegra()
+
+    def get_user_info(self):
+        """Returns current ecf user registration date and time,
+        id in the printer and cro relative to the user registration
+        """
+        log.info('get_user_info()')
+
+        return self._driver.get_user_registration_info()
