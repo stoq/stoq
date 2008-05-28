@@ -25,7 +25,7 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-05-27 16:39-0300\n"
-"PO-Revision-Date: 2007-08-28 13:34-0300\n"
+"PO-Revision-Date: 2008-05-28 17:56-0300\n"
 "Last-Translator: Silvio Rangel <silvio@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -5077,7 +5077,7 @@ msgstr "%"
 
 #: ../data/glade/StartPurchaseStep.glade.h:4
 msgid "A_dd/Edit Supplier..."
-msgstr "Adicionar/Editar Fornecedor..."
+msgstr "A_dicionar/Editar Fornecedor..."
 
 #: ../data/glade/StartPurchaseStep.glade.h:8
 #: ../data/glade/PurchaseDetailsDialog.glade.h:8
@@ -5283,11 +5283,11 @@ msgstr "Número máximo de Parcelas:"
 
 #: ../data/glade/LoginDialog.glade.h:2
 msgid "_Password:"
-msgstr "Senha:"
+msgstr "_Senha:"
 
 #: ../data/glade/LoginDialog.glade.h:3
 msgid "_Username:"
-msgstr "Usuário:"
+msgstr "_Usuário:"
 
 #: ../data/glade/SellableEditor.glade.h:1
 #: ../data/glade/ProductSupplierEditor.glade.h:3
@@ -5450,7 +5450,7 @@ msgstr "<b>Endereço de Entrega:</b>"
 
 #: ../data/glade/DeliveryEditor.glade.h:2
 msgid "Additional _Instructions"
-msgstr "Instruções Adicionais"
+msgstr "Instruções _Adicionais"
 
 #: ../data/glade/DeliveryEditor.glade.h:3
 msgid "Change _Address"
@@ -5493,7 +5493,7 @@ msgstr "CFOP:"
 
 #: ../data/glade/PersonEditorTemplate.glade.h:1
 msgid "Co_ntacts..."
-msgstr "Contatos..."
+msgstr "Co_ntatos..."
 
 #: ../data/glade/PersonEditorTemplate.glade.h:3
 msgid "Custom Tab"
@@ -5525,7 +5525,7 @@ msgstr "Celular:"
 
 #: ../data/glade/PersonEditorTemplate.glade.h:13
 msgid "More _Addresses..."
-msgstr "Mais Endereços..."
+msgstr "Mais _Endereços..."
 
 #: ../data/glade/PersonEditorTemplate.glade.h:14
 #: ../data/glade/PaymentCategoryEditor.glade.h:2
@@ -5548,7 +5548,7 @@ msgstr "Situação do Funcionário:"
 
 #: ../data/glade/FinishPurchaseStep.glade.h:1
 msgid "A_dd/Edit Transporter..."
-msgstr "Adicionar/Editar Transportadora..."
+msgstr "A_dicionar/Editar Transportadora..."
 
 #: ../data/glade/FinishPurchaseStep.glade.h:2
 #: ../data/glade/PurchaseDetailsDialog.glade.h:7
@@ -5914,7 +5914,7 @@ msgstr "Valor:"
 
 #: ../data/glade/EmployeeRoleSlave.glade.h:1
 msgid "A_dd/Edit Role..."
-msgstr "Adicionar/Editar Cargo..."
+msgstr "A_dicionar/Editar Cargo..."
 
 #: ../data/glade/EmployeeRoleSlave.glade.h:3
 msgid "Salary ($CURRENCY):"
@@ -5930,7 +5930,7 @@ msgstr "Com situação:"
 
 #: ../data/glade/ProductSupplierSlave.glade.h:2
 msgid "Supplied by: "
-msgstr "Fornecido por:"
+msgstr "Fornecido por: "
 
 #: ../data/glade/TillClosing.glade.h:1
 msgid "<b>Cash Amounts:</b>"
@@ -6043,7 +6043,7 @@ msgstr "Criar um %s com esse valor."
 
 #: ../data/glade/SaleRenegotiationOverpaidStep.glade.h:3
 msgid "Gift Certificate Barcode:"
-msgstr "Código de barras de Vale Compra"
+msgstr "Código de barras de Vale Compra:"
 
 #: ../data/glade/SaleRenegotiationOverpaidStep.glade.h:4
 msgid "Return the value in money"
@@ -6077,7 +6077,7 @@ msgstr "_Remover"
 #: ../data/glade/AdditionListSlave.glade.h:3
 #: ../data/glade/SearchEditor.glade.h:1
 msgid "_Edit..."
-msgstr "Editar..."
+msgstr "_Editar..."
 
 #: ../data/glade/GiftCertificateTypeEditor.glade.h:4
 #: ../data/glade/FinanceDetailsSlave.glade.h:5
@@ -6181,7 +6181,7 @@ msgstr "Usuário:"
 
 #: ../data/glade/OpenInventoryDialog.glade.h:5
 msgid "_Unselect All"
-msgstr "Deselecionar todos"
+msgstr "_Deselecionar todos"
 
 #: ../data/glade/BillDataSlave.glade.h:1
 msgid "Duedate:"
@@ -6227,7 +6227,7 @@ msgstr "Dia de Pagamento:"
 
 #: ../data/glade/SearchEditor.glade.h:2
 msgid "_New..."
-msgstr "Novo ..."
+msgstr "_Novo ..."
 
 #: ../data/glade/PaymentListSlave.glade.h:1
 msgid "$20.40"
@@ -6248,7 +6248,7 @@ msgstr "Selecione a Forma de Pagamento:"
 
 #: ../data/glade/SimpleEntryEditor.glade.h:1
 msgid "label: "
-msgstr "label:"
+msgstr "label: "
 
 #: ../data/glade/IndividualDocuments.glade.h:1
 msgid "   .   .   -  "
