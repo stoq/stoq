@@ -52,6 +52,9 @@ class ECFPrinter(Domain):
     @param constants:
     @cvar last_sale: reference for the last Sale
     @cvar last_till_entry: reference for the last TillEntry
+    @cvar user_number: the current registrer user in the printer
+    @cvar register_date: when the current user was registred
+    @cvar register_cro: cro when the user was registred
     """
     implements(IActive, IDescribable)
 
@@ -64,6 +67,9 @@ class ECFPrinter(Domain):
     constants = MultipleJoin('DeviceConstant')
     last_sale = ForeignKey("Sale", default=None)
     last_till_entry = ForeignKey("TillEntry", default=None)
+    user_number = IntCol()
+    register_date = DateTimeCol()
+    register_cro = IntCol()
 
     #
     # Public API
@@ -170,6 +176,12 @@ class ECFPrinter(Domain):
     def get_fiscal_driver(self):
         port = SerialPort(device=self.device_name)
         return FiscalPrinter(brand=self.brand, model=self.model, port=port)
+
+
+    def set_user_info(self, user_info):
+        self.user_number = user_info.user_number
+        self.register_cro = user_info.cro
+        self.register_date = user_info.register_date
 
     #
     # IActive implementation

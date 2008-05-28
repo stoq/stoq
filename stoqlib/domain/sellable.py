@@ -77,10 +77,10 @@ class SellableTaxConstant(Domain):
     tax_value = DecimalCol(default=None)
 
     _mapping = {
-        int(TaxType.NONE): 'TAX_NONE',
-        int(TaxType.EXEMPTION): 'TAX_EXEMPTION',
-        int(TaxType.SUBSTITUTION): 'TAX_SUBSTITUTION',
-        int(TaxType.SERVICE): 'TAX_SERVICE',
+        int(TaxType.NONE): 'TAX_NONE',                      # Não tributado - ICMS
+        int(TaxType.EXEMPTION): 'TAX_EXEMPTION',            # Isento - ICMS
+        int(TaxType.SUBSTITUTION): 'TAX_SUBSTITUTION',      # Substituição tributária - ICMS
+        int(TaxType.SERVICE): 'TAX_SERVICE',                # ISS
         }
 
     def get_value(self):
