@@ -24,7 +24,7 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-05-27 16:31-0300\n"
-"PO-Revision-Date: 2007-02-08 17:26-0200\n"
+"PO-Revision-Date: 2008-05-28 17:51-0300\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -177,9 +177,7 @@ msgstr ""
 msgid ""
 "The database address '%s' is invalid. Please fix the address you have set "
 "and try again"
-msgstr ""
-"O endereço da base de dados '%s' é inválido. Por favor corrija o endereço "
-"que você definiu:"
+msgstr "O endereço da base de dados '%s' é inválido. Por favor corrija o endereço que você definiu e tenta de novo"
 
 #: ../stoq/gui/config.py:174 ../stoq/gui/config.py:175
 msgid "Invalid database address"
@@ -217,9 +215,7 @@ msgstr ""
 msgid ""
 "There is already a database called <b>%s</b> on <b>%s</b>. You must enter "
 "the password for the user <b>%s</b> to continue the installation: "
-msgstr ""
-"Já existe uma base de dados chamada <b>%s</b> em <b>%s</b>. Você deve entrar "
-"com o password para o usuário <b>%s</b> para continuar a instalação:"
+msgstr "Já existe uma base de dados chamada <b>%s</b> em <b>%s</b>. Você deve entrar com o password para o usuário <b>%s</b> para continuar a instalação: "
 
 #: ../stoq/gui/config.py:381
 msgid "<b>Administrator Account</b>"
@@ -276,7 +272,7 @@ msgstr ""
 
 #: ../stoq/gui/application.py:172
 msgid "_Store"
-msgstr "Gravar"
+msgstr "_Gravar"
 
 #: ../stoq/gui/application.py:173
 msgid "Store a cookie"
@@ -284,7 +280,7 @@ msgstr "Gravar Cookie"
 
 #: ../stoq/gui/application.py:174
 msgid "_Clear"
-msgstr "Limpar"
+msgstr "_Limpar"
 
 #: ../stoq/gui/application.py:175
 msgid "Clear the cookie"
@@ -292,7 +288,7 @@ msgstr "Limpar Cookie"
 
 #: ../stoq/gui/application.py:176
 msgid "C_hange User"
-msgstr "Trocar de Usuário"
+msgstr "_Trocar de Usuário"
 
 #: ../stoq/gui/application.py:177
 msgid "Change user"
@@ -940,7 +936,7 @@ msgstr "Sair do programa"
 #: ../data/glade/purchase.glade.h:19 ../data/glade/stock.glade.h:17
 #: ../data/glade/admin.glade.h:30 ../data/glade/pos.glade.h:31
 msgid "Save _as"
-msgstr "Save _as"
+msgstr "Salvar _como"
 
 #: ../data/glade/purchase.glade.h:20 ../data/glade/receivable.glade.h:16
 #: ../data/glade/till.glade.h:20 ../data/glade/sales_app.glade.h:18
@@ -993,7 +989,7 @@ msgstr "_Detalhes"
 #: ../data/glade/stock.glade.h:22 ../data/glade/admin.glade.h:37
 #: ../data/glade/pos.glade.h:39 ../data/glade/payable.glade.h:21
 msgid "_Edit"
-msgstr "Editar"
+msgstr "_Editar"
 
 #: ../data/glade/purchase.glade.h:31 ../data/glade/receivable.glade.h:23
 #: ../data/glade/till.glade.h:28 ../data/glade/sales_app.glade.h:24
@@ -1096,7 +1092,7 @@ msgstr "R_eceber"
 #: ../data/glade/receivable.glade.h:17 ../data/glade/till.glade.h:21
 #: ../data/glade/sales_app.glade.h:19 ../data/glade/payable.glade.h:16
 msgid "Save with a different name"
-msgstr "Salvar como"
+msgstr "Salvar como um nome diferente"
 
 #: ../data/glade/receivable.glade.h:18 ../data/glade/payable.glade.h:17
 msgid "Set as not paid..."
@@ -1478,7 +1474,7 @@ msgstr "Código de Barras:"
 
 #: ../data/glade/pos.glade.h:6
 msgid "C_hange User..."
-msgstr "Trocar de Usuário..."
+msgstr "T_rocar de Usuário..."
 
 #: ../data/glade/pos.glade.h:8
 msgid "Cancel Last Document"
