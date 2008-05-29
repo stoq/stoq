@@ -132,7 +132,7 @@ class CATFile(object):
                                 ecf_type="ECF-IF",
                                 ecf_brand=self.brand,
                                 ecf_model=self.model,
-                                ecf_sb_version=driver.get_firmware(),
+                                ecf_sb_version=driver.get_firmware_version(),
                                 ecf_sb_date='',
                                 ecf_sb_hour='',
                                 ecf_number=self.printer.id,             # VERIFY
