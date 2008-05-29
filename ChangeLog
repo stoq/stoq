@@ -1,146 +1,3378 @@
-=== 0.9.3 === George Y. Kussumoto (georgeyk) <george@async.com.br>
+2008-05-28 20:41  Ronaldo Maia <romaia@async.com.br>
 
-	* Bug fix: 3418
+	* [r7608] docs/fiscal-driver-template.py, stoqdrivers/base.py,
+	  stoqdrivers/printers/bematech/MP25.py,
+	  stoqdrivers/printers/daruma/FS345.py,
+	  stoqdrivers/printers/fiscal.py: Bug 3448 - Adicionando métodos
+	  para obter versãodo firmware e informações sobre o cadastro do
+	  usuário na ecf
 
-	Release 0.9.3
+2008-05-27 17:06  George Kussumoto <george@async.com.br>
 
-=== 0.9.2 === Fabio Morbec  <fabio@async.com.br>
+	* [r7603] stoqdrivers/printers/bematech/MP25.py: # Revert the last
+	  fix. It breaks some tests.
 
-	* Bug fix: 3610
+2008-05-27 16:37  George Kussumoto <george@async.com.br>
 
-	Release 0.9.2
+	* [r7602] stoqdrivers/printers/bematech/MP25.py: # Fix for print
+	  problems with bematech MP-25 (part of bug #3610). # r=jdahlin
 
-=== 0.9.1 === Fabio Morbec  <fabio@async.com.br>
+2008-05-09 13:12  Ronaldo Maia <romaia@async.com.br>
 
-    * Added an initial Esc/P printer.
-	* Bug fix: 3553
+	* [r7588] stoqdrivers/printers/bematech/MP25.py,
+	  stoqdrivers/printers/daruma/FS345.py,
+	  stoqdrivers/printers/fiscal.py: -- Bug 3709 - Store ecf documents
+	  information.
+	  
+	  Adding methods to retrieve gnf and crz
 
-	Release 0.9.1
+2008-04-22 17:29  Ronaldo Maia <romaia@async.com.br>
 
-=== 0.9.0 === Fabio Morbec  <fabio@async.com.br>
+	* [r7575] stoqdrivers/printers/bematech/MP25.py,
+	  stoqdrivers/printers/daruma/FS345.py,
+	  stoqdrivers/printers/fiscal.py: Bug 3671 Estender informações
+	  capturadas para geração de arquivos magnéticos - informações
+	  sobre vendas (Registro E14)
 
-	* Update generate Sintegra for Daruma
-	* Added Template
+2008-04-09 21:35  Ronaldo Maia <romaia@async.com.br>
 
-	Release 0.9.0
+	* [r7544] stoqdrivers/printers/bematech/MP25.py,
+	  stoqdrivers/printers/daruma/FS345.py: Bug 3671 Estender
+	  informações capturadas para geração de arquivos magnéticos -
+	  informações sobre redução Z (Registro E12 e E13)
 
-=== 0.6.0 ===
-2007-03-23  Johan Dahlin  <jdahlin@async.com.br>
+2008-03-17 20:05  George Kussumoto <george@async.com.br>
 
-	* Makefile:
-	* NEWS:
-	* debian/changelog:
-	* docs/release-checklist.txt:
-	* po/pt_BR.po:
-	* po/stoqdrivers.pot:
-	* stoqdrivers/__init__.py:
+	* [r7495] ChangeLog, NEWS, debian/changelog, debian/control,
+	  po/es_ES.po, po/pt_BR.po, po/stoqdrivers.pot, stoqdrivers.spec,
+	  stoqdrivers/__init__.py: # Release 0.9.3
 
-	Release 0.6.0
+2008-03-07 13:08  Fábio Morbec
 
-2006-06-26  Henrique Romano  <henrique@async.com.br>
+	* [r7471] stoqdrivers/interfaces.py,
+	  stoqdrivers/printers/bematech/MP25.py,
+	  stoqdrivers/printers/daruma/FS345.py,
+	  stoqdrivers/printers/dataregis/EP375.py,
+	  stoqdrivers/printers/fiscal.py,
+	  stoqdrivers/printers/perto/Pay2023.py,
+	  stoqdrivers/printers/sweda/IFS9000I.py: #3418: Cancelamento de
+	  Cupom Fiscal deve cancelar qualquer tipo de lançamento. r=jdahlin
 
-	* stoqdrivers/devices/readers/barcode/metrologic/MC630.py:
+2008-01-31 18:03  Fábio Morbec
 
-	Initial implementation for Metrologic MC630 barcode reader.
+	* [r7408] ChangeLog, NEWS, po/es_ES.po, po/pt_BR.po,
+	  po/stoqdrivers.pot, stoqdrivers.spec, stoqdrivers/__init__.py:
+	  Release 0.9.2
 
-2006-06-20  Henrique Romano  <henrique@async.com.br>
+2008-01-31 16:25  George Kussumoto <george@async.com.br>
 
-	* stoqdrivers/devices/printers/dataregis/EP375.py:
+	* [r7401] stoqdrivers/interfaces.py,
+	  stoqdrivers/printers/bematech/MP25.py,
+	  stoqdrivers/printers/daruma/FS345.py,
+	  stoqdrivers/printers/dataregis/EP375.py,
+	  stoqdrivers/printers/fiscal.py,
+	  stoqdrivers/printers/perto/Pay2023.py,
+	  stoqdrivers/printers/sweda/IFS9000I.py,
+	  stoqdrivers/printers/virtual/Simple.py: #3610: Inserir CPF e CNPJ
+	  ao finalizar venda para atender as exigencias da N.F. Paulista.
+	  r=jdahlin
 
-	Implementing has_opened_sale and has_opened_report on EP375Status.
-	Adding an internal attribute for EP375 driver to manage the coupon
-	status.	Fixing a bug on coupon_cancel, now the driver should works
-	without more "invalid state" problems.
+2008-01-25 14:13  Silvio Rangel <silvio@async.com.br>
 
-2006-06-20  Henrique Romano  <henrique@async.com.br>
+	* [r7385] po/es_ES.po, po/pt_BR.po, po/stoqdrivers.pot: Correção do
+	  arquivo que estava quebrado
 
-	* stoqdrivers/devices/printers/dataregis/EP375.py:
+2007-11-20 18:39  Fábio Morbec
 
-	On totalize, the surcharge and discount values are given in percent.
-	Also fixing a bug in get_remaining_value(), the coupon subtotal was 
-	being calculated erroneously.
+	* [r7368] stoqdrivers/printers/bematech/MP25.py: #3508: Ao abrir o
+	  caixa sem fazer suprimento a leitura X não é impressa. r=jdahlin
 
-2006-06-19  Henrique Romano  <henrique@async.com.br>
+2007-11-08 16:04  Fábio Morbec
 
-	* tests/data/Bematech_MP25_FI-test_add_item.txt:
-	* tests/data/Bematech_MP25_FI-test_add_payment.txt:
-	* tests/data/Bematech_MP25_FI-test_cancel_coupon.txt:
-	* tests/data/Bematech_MP25_FI-test_cancel_item.txt:
-	* tests/data/Bematech_MP25_FI-test_close_coupon.txt:
-	* tests/data/Bematech_MP25_FI-test_coupon_open.txt:
-	* tests/data/Bematech_MP25_FI-test_till_add_cash.txt:
-	* tests/data/Bematech_MP25_FI-test_till_remove_cash.txt:
-	* tests/data/Bematech_MP25_FI-test_totalize.txt:
+	* [r7348] debian/changelog, stoqdrivers.spec: ajuste para gerar
+	  versao correta do pacote.
 
-	Add tests data for Bematech MP25
+2007-11-08 15:12  Fábio Morbec
 
-2006-06-19  Henrique Romano  <henrique@async.com.br>
+	* [r7346] debian/changelog, stoqdrivers.spec: fixes to release
+	  0.9.1
 
-	* tests/base.py:
+2007-11-08 14:38  Fábio Morbec
 
-	Initial implementation of PlaybackPort
+	* [r7343] ChangeLog, NEWS, debian/changelog, debian/control,
+	  po/es_ES.po, po/pt_BR.po, po/stoqdrivers.pot, stoqdrivers.spec,
+	  stoqdrivers/__init__.py, stoqdrivers/abicomp.py,
+	  stoqdrivers/interfaces.py: Release 0.9.1
 
-2006-01-16  Henrique Romano  <henrique@async.com.br>
+2007-09-12 20:58  Johan Dahlin <jdahlin@async.com.br>
 
-	reviewed by: Evandro Vale Miquelito <evandro@async.com.br>
+	* [r7256] stoqdrivers/escp.py: Add an initial Esc/P printer
 
-	* stoqdrivers/constants.py:
-	* stoqdrivers/devices/base.py:
-	* stoqdrivers/devices/printers/base.py:
-	* stoqdrivers/devices/scales/base.py:
-	* stoqdrivers/devices/scales/scales.py:
+2007-08-31 13:09  Fábio Morbec
 
-	BaseDevice implementation and code update, fix bug #2386
-	
-2006-01-10  Henrique Romano  <henrique@async.com.br>
+	* [r7203] debian/changelog, stoqdrivers.spec: Ajuste para release
 
-	reviewed by: Johan Dahlin <jdahlin@async.com.br>>
+2007-08-30 18:01  Fábio Morbec
 
-	* stoqdrivers/constants.py:
-	* stoqdrivers/devices/printers/bematech/MP25.py:
-	* stoqdrivers/devices/printers/daruma/FS345.py:
-	* stoqdrivers/devices/printers/dataregis/EP375.py:
-	* stoqdrivers/devices/printers/fiscal.py:
-	* stoqdrivers/devices/printers/interface.py:
-	* stoqdrivers/devices/printers/perto/Pay2023.py:
-	* stoqdrivers/devices/printers/sweda/IFS9000I.py:
-	* stoqdrivers/devices/printers/virtual/Simple.py:
+	* [r7179] debian/changelog: mudança na versao em debia/changelog
 
-	Fix for bug #2383: Implements support for product's 
-	custom unit.
+2007-08-30 17:54  Fábio Morbec
 
-2006-01-10  Henrique Romano  <henrique@async.com.br>
+	* [r7178] debian/changelog, po/es_ES.po, po/pt_BR.po,
+	  po/stoqdrivers.pot, stoqdrivers.spec: 0.9.0-2
 
-	reviewed by: Johan Dahlin <jdahlin@async.com.br>
+2007-08-30 14:50  Fábio Morbec
 
-	* stoqdrivers/devices/printers/bematech/MP25.py:
-	* stoqdrivers/devices/printers/daruma/FS345.py:
-	* stoqdrivers/devices/printers/dataregis/EP375.py:
-	* stoqdrivers/devices/printers/fiscal.py:
-	* stoqdrivers/devices/printers/interface.py:
-	* stoqdrivers/devices/printers/perto/Pay2023.py:
-	* stoqdrivers/devices/printers/sweda/IFS9000I.py:
+	* [r7176] ChangeLog, NEWS, debian/changelog, po/es_ES.po,
+	  po/pt_BR.po, po/stoqdrivers.pot, stoqdrivers.spec,
+	  stoqdrivers/__init__.py, stoqdrivers/printers/bematech/MP25.py:
+	  0.9.0
 
-	Fix for bug #2362: close_coupon method must return
-	the COO (operation order counter).
+2007-08-21 14:58  Johan Dahlin <jdahlin@async.com.br>
 
-2006-01-06  Henrique Romano  <henrique@async.com.br>
+	* [r7134] stoqdrivers/printers/daruma/FS345.py: Just emit readX
+	  instead of saying that it isn't emitted
 
-	reviewed by: Johan Dahlin <jdahlin@async.com.br>
+2007-08-06 15:15  Silvio Rangel <silvio@async.com.br>
 
-	* stoqdrivers/devices/printers/bematech/MP25.py:
-	* stoqdrivers/devices/serialbase.py:
+	* [r7098] po/es_ES.po, po/pt_BR.po, po/stoqdrivers.pot: Atualização
+	  e revisão de tradução
 
-	Implements support for Bematech's extended protocol.
+2007-07-25 20:13  Johan Dahlin <jdahlin@async.com.br>
 
-2006-01-04  Henrique Romano  <henrique@async.com.br>
+	* [r7005] stoqdrivers/printers/daruma/FS345.py: 23 is
+	  PendingReduceZ
 
-	* stoqdrivers/devices/scales/interface.py:
-	* stoqdrivers/devices/scales/toledo/PrixIII.py:
-	* stoqdrivers/exceptions.py:
+2007-07-24 20:14  Johan Dahlin <jdahlin@async.com.br>
 
-	Initial support for Toled Prix III scale (fix bug #2369)
+	* [r6988] stoqdrivers/printers/daruma/FS345.py: Do not count
+	  cancelled two times and move the offset of taxes one to the left.
+	  Should fix the problems we have closing the till
 
-2006-01-02  Henrique Romano  <henrique@async.com.br>
+2007-07-18 17:28  Johan Dahlin <jdahlin@async.com.br>
 
-	* ChangeLog: initial revision of Changelog file.
+	* [r6937] docs/fiscal-driver-template.py: MP25 -> TemplateDriver
+
+2007-07-18 17:24  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6936] docs/fiscal-driver-template.py: reorganize, add comments
+
+2007-07-18 17:20  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6935] docs/fiscal-driver-template.py: Add a template driver
+
+2007-07-18 16:01  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6931] stoqdrivers/interfaces.py,
+	  stoqdrivers/printers/bematech/MP25.py,
+	  stoqdrivers/printers/daruma/FS345.py,
+	  stoqdrivers/printers/fiscal.py: Move fetch of sintegra data to a
+	  separate api
+
+2007-07-18 16:00  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6930] stoqdrivers.spec: Update spec
+
+2007-07-17 14:08  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6908] ., Makefile: Move common makefile rules into
+	  common/async.mk
+
+2007-07-16 21:01  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6897] Makefile, debian/changelog: Put up another set of
+	  packages
+
+2007-07-16 20:52  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6896] Makefile, NEWS, debian/changelog,
+	  stoqdrivers/__init__.py: 0.8.0
+
+2007-07-16 20:18  Fábio Morbec
+
+	* [r6893] stoqdrivers/printers/bematech/MP25.py: Gerar arquivo
+	  sintegra para impressora Bematech, MP25
+
+2007-07-16 17:21  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6886] stoqdrivers/printers/bematech/MP25.py: Lovely tests.
+	  thank you
+
+2007-07-16 17:17  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6885] stoqdrivers/printers/bematech/MP25.py: Fix off by one
+	  error, 1 is the first, not 0
+
+2007-07-16 15:50  Silvio Rangel <silvio@async.com.br>
+
+	* [r6880] po/es_ES.po, po/pt_BR.po, po/stoqdrivers.pot: Atualização
+	  e Revisão de Tradução
+
+2007-07-16 15:46  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6879] stoqdrivers/printers/daruma/FS345.py: Only send IDENTIFY
+	  CUSTOMER if we have a customer set
+
+2007-07-16 15:40  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6878] tests/data/daruma-FS345-add-item.txt,
+	  tests/data/daruma-FS345-add-payment.txt,
+	  tests/data/daruma-FS345-cancel-item.txt,
+	  tests/data/daruma-FS345-close-coupon.txt,
+	  tests/data/daruma-FS345-totalize.txt: Update Daruma tests
+
+2007-07-16 15:35  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6877] stoqdrivers/printers/daruma/FS345.py: Send in customer
+	  details in the beginning, not in the end of the line
+
+2007-07-16 15:33  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6876] stoqdrivers/printers/daruma/FS345.py: Send in default
+	  values where we don't have customer information
+
+2007-07-13 21:16  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6851] stoqdrivers/printers/bematech/MP25.py: implement
+	  till_read_memory and till_read_memory_by_reductions in bematech
+
+2007-07-13 20:34  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6848] stoqdrivers/interfaces.py,
+	  stoqdrivers/printers/bematech/MP25.py,
+	  stoqdrivers/printers/daruma/FS345.py,
+	  stoqdrivers/printers/dataregis/EP375.py,
+	  stoqdrivers/printers/fiscal.py,
+	  stoqdrivers/printers/perto/Pay2023.py,
+	  stoqdrivers/printers/sweda/IFS9000I.py,
+	  stoqdrivers/printers/virtual/Simple.py: Add a previous_day
+	  argument to close_till
+
+2007-07-13 20:33  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6847] stoqdrivers/printers/base.py: filter out unsupported
+	  printers
+
+2007-07-12 13:10  Silvio Rangel <silvio@async.com.br>
+
+	* [r6839] po/es_ES.po, po/pt_BR.po, po/stoqdrivers.pot: Atualização
+	  e revisão de tradução
+
+2007-07-11 20:54  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6828] stoqdrivers/printers/fiscal.py: Reset the state completly
+	  when closing and canceling a coupon
+
+2007-07-11 19:46  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6822] stoqdrivers/interfaces.py,
+	  stoqdrivers/printers/bematech/MP25.py,
+	  stoqdrivers/printers/daruma/FS345.py,
+	  stoqdrivers/printers/fiscal.py, tests/base.py,
+	  tests/data/bematech-MP25-add-item.txt,
+	  tests/data/bematech-MP25-add-payment.txt,
+	  tests/data/bematech-MP25-cancel-coupon.txt,
+	  tests/data/bematech-MP25-cancel-item.txt,
+	  tests/data/bematech-MP25-close-coupon.txt,
+	  tests/data/bematech-MP25-coupon-open.txt,
+	  tests/data/bematech-MP25-till-add-cash.txt,
+	  tests/data/bematech-MP25-till-remove-cash.txt,
+	  tests/data/bematech-MP25-totalize.txt,
+	  tests/data/daruma-FS345-add-item.txt,
+	  tests/data/daruma-FS345-add-payment.txt,
+	  tests/data/daruma-FS345-cancel-coupon.txt,
+	  tests/data/daruma-FS345-cancel-item.txt,
+	  tests/data/daruma-FS345-close-coupon.txt,
+	  tests/data/daruma-FS345-coupon-open.txt,
+	  tests/data/daruma-FS345-till-add-cash.txt,
+	  tests/data/daruma-FS345-till-remove-cash.txt,
+	  tests/data/daruma-FS345-totalize.txt, tests/test_coupon.py: Clean
+	  up bematech driver. Use unified API for everything and make it
+	  pass the testsuite
+
+2007-07-11 17:33  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6820] stoqdrivers/printers/daruma/FS345.py: Add a bug reference
+
+2007-07-10 21:07  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6811] stoqdrivers/printers/base.py,
+	  stoqdrivers/printers/bematech/MP25.py,
+	  stoqdrivers/printers/daruma/FS345.py,
+	  stoqdrivers/printers/fiscal.py: Add get_payment_constants() to
+	  bematech and daruma
+
+2007-07-10 16:03  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6810] stoqdrivers/printers/daruma/FS345.py: Try to workaround
+	  add voucher bug.
+
+2007-07-10 15:58  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6809] stoqdrivers/printers/daruma/FS345.py: Send LeituraX and
+	  retry sending the command if we had an E42 error.
+
+2007-07-05 15:36  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6792] stoqdrivers/printers/bematech/MP25.py: revert
+	  query_status for now
+
+2007-07-05 15:34  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6791] stoqdrivers/printers/bematech/MP25.py: Small cleanups
+
+2007-07-03 19:50  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6790] stoqdrivers/printers/bematech/MP25.py: remove trailing
+	  whitespace
+
+2007-07-03 19:49  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6789] stoqdrivers/printers/bematech/MP25.py,
+	  tests/data/bematech-MP25-add-item.txt,
+	  tests/data/bematech-MP25-add-payment.txt,
+	  tests/data/bematech-MP25-cancel-coupon.txt,
+	  tests/data/bematech-MP25-cancel-item.txt,
+	  tests/data/bematech-MP25-close-coupon.txt,
+	  tests/data/bematech-MP25-coupon-open.txt,
+	  tests/data/bematech-MP25-till-add-cash.txt,
+	  tests/data/bematech-MP25-till-remove-cash.txt,
+	  tests/data/bematech-MP25-totalize.txt, tests/test_coupon.py:
+	  Clean up bematech driver. Use unified API for everything and make
+	  it pass the testsuite
+
+2007-07-03 19:44  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6788] tests/base.py: format traceback and unescape \
+
+2007-07-02 17:49  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6784] docs/examples/fiscal.py, stoqdrivers/base.py,
+	  stoqdrivers/devices/base.py, stoqdrivers/devices/interfaces.py,
+	  stoqdrivers/devices/printers, stoqdrivers/devices/readers,
+	  stoqdrivers/devices/scales, stoqdrivers/devices/serialbase.py,
+	  stoqdrivers/interfaces.py, stoqdrivers/printers,
+	  stoqdrivers/printers/base.py,
+	  stoqdrivers/printers/bematech/DP20C.py,
+	  stoqdrivers/printers/bematech/MP25.py,
+	  stoqdrivers/printers/cheque.py,
+	  stoqdrivers/printers/daruma/FS2100.py,
+	  stoqdrivers/printers/daruma/FS345.py,
+	  stoqdrivers/printers/daruma/FS600MFD.py,
+	  stoqdrivers/printers/dataregis/EP375.py,
+	  stoqdrivers/printers/fiscal.py,
+	  stoqdrivers/printers/perto/Pay2023.py,
+	  stoqdrivers/printers/sweda/IFS9000I.py,
+	  stoqdrivers/printers/virtual/Simple.py, stoqdrivers/readers,
+	  stoqdrivers/readers/barcode/base.py,
+	  stoqdrivers/readers/barcode/metrologic/MC630.py,
+	  stoqdrivers/readers/barcode/reader.py, stoqdrivers/scales,
+	  stoqdrivers/scales/base.py, stoqdrivers/scales/scales.py,
+	  stoqdrivers/scales/toledo/PrixIII.py, stoqdrivers/serialbase.py,
+	  tests/base.py, tests/check_ifaces_impl.py, tests/test_coupon.py,
+	  tools/testdriver.py: Move stoqdrivers.devices.* -> stoqdrivers.*
+
+2007-06-28 20:49  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6769] stoqdrivers/devices/base.py: Make the name a bit shorter
+
+2007-06-28 20:27  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6767] stoqdrivers/devices/printers/fiscal.py: Add
+	  status_reply_complete to FiscalPrinter class
+
+2007-06-28 19:48  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6762] stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/fiscal.py, tests/base.py,
+	  tests/data/bematech-MP25-add-item.txt,
+	  tests/data/bematech-MP25-add-payment.txt,
+	  tests/data/bematech-MP25-cancel-coupon.txt,
+	  tests/data/bematech-MP25-cancel-item.txt,
+	  tests/data/bematech-MP25-close-coupon.txt,
+	  tests/data/bematech-MP25-coupon-open.txt,
+	  tests/data/bematech-MP25-till-add-cash.txt,
+	  tests/data/bematech-MP25-till-remove-cash.txt,
+	  tests/data/bematech-MP25-totalize.txt,
+	  tests/data/daruma-FS345-add-item.txt,
+	  tests/data/daruma-FS345-add-payment.txt,
+	  tests/data/daruma-FS345-cancel-coupon.txt,
+	  tests/data/daruma-FS345-cancel-item.txt,
+	  tests/data/daruma-FS345-close-coupon.txt,
+	  tests/data/daruma-FS345-coupon-open.txt,
+	  tests/data/daruma-FS345-till-add-cash.txt,
+	  tests/data/daruma-FS345-till-remove-cash.txt,
+	  tests/data/daruma-FS345-totalize.txt, tests/test_coupon.py,
+	  tools/testdriver.py: Update bematech and daruma tests, disable
+	  all others
+
+2007-06-28 18:56  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6761] stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py: Add an api to
+	  fetch all tax constants from the printer. Implement it for Daruma
+	  FS345, Perto Pay 2023 and Bematech. Also add an api to allow for
+	  asynchrous quering of status. Remove old API to fetch tax
+	  constants
+
+2007-06-28 18:42  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6755] stoqdrivers/devices/serialbase.py: Add a fileno() method,
+	  to access the file descriptor of the port
+
+2007-06-18 18:51  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6738] stoqdrivers/devices/printers/daruma/FS345.py: Update to
+	  recent API
+
+2007-05-25 12:18  Fábio Morbec
+
+	* [r6684] stoqdrivers/devices/printers/virtual/Simple.py: #3382:
+	  Erro ao fazer venda com desconto com impressora virtual.
+	  r=jdahlin
+
+2007-05-24 15:26  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6683] po/es_ES.po: Complete the spanish translation
+
+2007-05-24 14:46  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6679] po/es_ES.po, po/pt_BR.po, po/stoqdrivers.pot: Update
+	  translations
+
+2007-05-24 13:05  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6676] AUTHORS: Make me the maintainer add pachi
+
+2007-05-24 13:01  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6671] po/es_ES.po, po/pt_BR.po, po/stoqdrivers.pot: Add spanish
+	  and update translation
+
+2007-05-24 12:59  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6670] Makefile: remove upload target
+
+2007-05-23 18:16  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6662] Makefile, NEWS, debian/changelog, stoqdrivers.spec,
+	  stoqdrivers/__init__.py: 0.7.0
+
+2007-05-23 14:39  Silvio Rangel <silvio@async.com.br>
+
+	* [r6655] po/pt_BR.po, po/stoqdrivers.pot: Atualização e Revisão da
+	  Tradução
+
+2007-05-22 20:30  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6625] MANIFEST.in, debian/changelog, debian/preinst: Remove
+	  preinst
+
+2007-05-22 17:45  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6621] MANIFEST.in, Makefile, debian/changelog, debian/control,
+	  debian/preinst, debian/pycompat, debian/pyversions, debian/rules:
+	  Update debian package
+
+2007-05-21 14:03  Fábio Morbec
+
+	* [r6589] stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py: #3374: Erro ao
+	  pedir impressão de memória fiscal por número de redução.
+	  r=jdahlin
+
+2007-05-18 14:50  Fábio Morbec
+
+	* [r6580] stoqdrivers/devices/interfaces.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py: #3255: Criar no
+	  menu opção para emissão de memória fiscal das ECFs. r=jdahlin
+
+2007-05-10 20:53  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6501] stoqdrivers/devices/printers/perto/Pay2023.py: Add
+	  cancelled items, discounts and sevice taxes.
+
+2007-05-10 17:50  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6493] stoqdrivers/devices/printers/daruma/FS345.py: Return
+	  proper sintegra data in close_till()
+
+2007-05-09 22:53  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6490] stoqdrivers/devices/printers/virtual/Simple.py: Disable
+	  sintegra for virtual printer
+
+2007-05-09 20:34  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6487] stoqdrivers/devices/interfaces.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py: Remove
+	  get_sintegra_data and make close_till return the object instead
+
+2007-05-09 16:18  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6486] stoqdrivers/devices/interfaces.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py: #3348: Add a way
+	  to fetch Sintegra data
+
+2007-04-19 15:12  Silvio Rangel <silvio@async.com.br>
+
+	* [r6390] po/pt_BR.po, po/stoqdrivers.pot: Atualização e Revisão
+	  das Traduções
+
+2007-04-10 14:19  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6357] stoqdrivers/devices/printers/cheque.py: Oops, forgot this
+
+2007-04-10 14:16  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6356] stoqdrivers/devices/printers/bematech/DP20C.py,
+	  stoqdrivers/devices/printers/cheque.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py: Consistent
+	  datetime imports
+
+2007-04-05 21:20  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6337] stoqdrivers/devices/interfaces.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py: #3287: Implement
+	  an interface to read the fiscal memory
+
+2007-04-03 21:19  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6301] stoqdrivers/devices/base.py: Remove new line
+
+2007-04-03 19:05  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6297] stoqdrivers/devices/printers/daruma/FS345.py: Convert the
+	  No paper exception into a log warning
+
+2007-04-03 18:38  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6296] stoqdrivers/devices/printers/daruma/FS345.py: Grr,
+	  get_status in close_till, not coupon_open
+
+2007-04-03 18:37  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6295] stoqdrivers/devices/printers/daruma/FS345.py: Use
+	  get_status instead of check_status, so an exception isn't raised
+
+2007-04-03 18:32  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6294] stoqdrivers/devices/printers/daruma/FS345.py: #3264:
+	  Close the coupon in darums close_till if it's open.
+
+2007-03-30 15:44  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6258] docs/examples/fiscal.py, stoqdrivers/constants.py,
+	  stoqdrivers/devices/base.py, stoqdrivers/devices/interfaces.py,
+	  stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS2100.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py,
+	  stoqdrivers/devices/readers/barcode/reader.py,
+	  stoqdrivers/devices/scales/base.py, stoqdrivers/enum.py,
+	  tests/base.py, tests/test_coupon.py: #3262: Use kiwi.python.enum
+	  for all enums/constants, stoqdrivers part
+
+2007-03-30 14:34  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6257] stoqdrivers.spec: Depend on pyserial instead of
+	  python-serial
+
+2007-03-26 16:03  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6224] locale: Ignore everthing in locale
+
+2007-03-26 15:11  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6216] Makefile: Add test-upload target
+
+2007-03-26 15:02  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6213] stoqdrivers.spec: Update 0.6.0 .spec
+
+2007-03-26 13:38  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6199] ., Makefile: Add apidocs/web targets.
+
+2007-03-26 13:38  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6198] stoqdrivers/devices/printers/dataregis/EP375.py: Convert
+	  to a comment, it's not really api documentation
+
+2007-03-23 20:03  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6194] Makefile, docs/release-checklist.txt: Update Makefile and
+	  release checklist
+
+2007-03-23 20:00  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6192] ChangeLog, Makefile, NEWS, debian/changelog,
+	  docs/release-checklist.txt, po/pt_BR.po, po/stoqdrivers.pot,
+	  stoqdrivers/__init__.py: 0.6.0
+
+2007-03-23 19:49  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6191] stoqdrivers/devices/printers/perto/Pay2023.py: Remove
+	  command constants, no real need since the string identifiers are
+	  as easy to use and using an english constants just adds an
+	  unnecessary layer of indirection
+
+2007-03-23 18:40  Silvio Rangel <silvio@async.com.br>
+
+	* [r6184] po/pt_BR.po, po/stoqdrivers.pot: Atualização e revisão da
+	  tradução
+
+2007-03-23 17:59  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6177] stoqdrivers/devices/printers/virtual/Simple.py: Include a
+	  service tax by default in the fiscal printer
+
+2007-03-22 21:28  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6160] stoqdrivers/constants.py: #3215: Para serviços de
+	  delivery deve ser gerado lançamento de impostos nas E. Add a
+	  service tax constant.
+
+2007-03-22 21:24  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6159] stoqdrivers/devices/printers/perto/Pay2023.py: Remove out
+	  custom constants and replace them with an auto-configuration
+	  method
+
+2007-03-22 18:05  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6155] tools/testdriver.py: Try to convert to int, an
+	  improvement, but still not good
+
+2007-03-22 18:05  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6154] stoqdrivers/devices/printers/perto/Pay2023.py: Print out
+	  an assert, since it occasionally happens
+
+2007-03-21 23:38  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6143] tests/base.py: Fix silly typo, write W in write and not R
+
+2007-03-21 23:38  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6142] tests/base.py: Refactor data conversion to a separate
+	  method
+
+2007-03-21 23:35  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6141] tests/base.py, tests/data/bematech-MP25-add-item.txt,
+	  tests/data/bematech-MP25-add-payment.txt,
+	  tests/data/bematech-MP25-cancel-coupon.txt,
+	  tests/data/bematech-MP25-cancel-item.txt,
+	  tests/data/bematech-MP25-close-coupon.txt,
+	  tests/data/bematech-MP25-coupon-open.txt,
+	  tests/data/bematech-MP25-till-add-cash.txt,
+	  tests/data/bematech-MP25-till-remove-cash.txt,
+	  tests/data/bematech-MP25-totalize.txt,
+	  tests/data/daruma-FS345-add-item.txt,
+	  tests/data/daruma-FS345-add-payment.txt,
+	  tests/data/daruma-FS345-cancel-coupon.txt,
+	  tests/data/daruma-FS345-cancel-item.txt,
+	  tests/data/daruma-FS345-close-coupon.txt,
+	  tests/data/daruma-FS345-coupon-open.txt,
+	  tests/data/daruma-FS345-till-add-cash.txt,
+	  tests/data/daruma-FS345-till-remove-cash.txt,
+	  tests/data/daruma-FS345-totalize.txt,
+	  tests/data/dataregis-EP375-add-item.txt,
+	  tests/data/dataregis-EP375-add-payment.txt,
+	  tests/data/dataregis-EP375-cancel-coupon.txt,
+	  tests/data/dataregis-EP375-cancel-item.txt,
+	  tests/data/dataregis-EP375-close-coupon.txt,
+	  tests/data/dataregis-EP375-coupon-open.txt,
+	  tests/data/dataregis-EP375-till-add-cash.txt,
+	  tests/data/dataregis-EP375-till-remove-cash.txt,
+	  tests/data/dataregis-EP375-totalize.txt,
+	  tests/data/perto-Pay2023-add-item.txt,
+	  tests/data/perto-Pay2023-add-payment.txt,
+	  tests/data/perto-Pay2023-cancel-coupon.txt,
+	  tests/data/perto-Pay2023-cancel-item.txt,
+	  tests/data/perto-Pay2023-close-coupon.txt,
+	  tests/data/perto-Pay2023-coupon-open.txt,
+	  tests/data/perto-Pay2023-till-add-cash.txt,
+	  tests/data/perto-Pay2023-till-remove-cash.txt,
+	  tests/data/perto-Pay2023-totalize.txt,
+	  tests/data/sweda-IFS9000I-add-item.txt,
+	  tests/data/sweda-IFS9000I-add-payment.txt,
+	  tests/data/sweda-IFS9000I-cancel-coupon.txt,
+	  tests/data/sweda-IFS9000I-cancel-item.txt,
+	  tests/data/sweda-IFS9000I-close-coupon.txt,
+	  tests/data/sweda-IFS9000I-coupon-open.txt,
+	  tests/data/sweda-IFS9000I-till-add-cash.txt,
+	  tests/data/sweda-IFS9000I-till-remove-cash.txt,
+	  tests/data/sweda-IFS9000I-totalize.txt: Rework the data format
+	  for the printer tests. It's now denser and easier to read/modify.
+	  Convert all the old tests
+
+2007-03-21 22:30  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6140] tools/testdriver.py: Printer->Device
+
+2007-03-21 22:29  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6139] tools, tools/testdriver.py: Add a small test script to
+	  call individual methods of a driver
+
+2007-03-21 18:54  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6138] stoqdrivers/devices/printers/daruma/FS345.py: This change
+	  got lost
+
+2007-03-21 18:51  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6137] stoqdrivers/devices/printers/daruma/FS345.py,
+	  tests/data/daruma-FS345-add-item.txt,
+	  tests/data/daruma-FS345-add-payment.txt,
+	  tests/data/daruma-FS345-cancel-coupon.txt,
+	  tests/data/daruma-FS345-cancel-item.txt,
+	  tests/data/daruma-FS345-close-coupon.txt,
+	  tests/data/daruma-FS345-coupon-open.txt,
+	  tests/data/daruma-FS345-till-add-cash.txt,
+	  tests/data/daruma-FS345-till-remove-cash.txt,
+	  tests/data/daruma-FS345-totalize.txt: FS345 is already
+	  calculating the correct markup/discount, do not bother doing it
+	  again. Update tests
+
+2007-03-21 18:07  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6136] stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py: #3228: Cliente é
+	  persistido nas vendas futuras onde não há cliente selecionado
+
+2007-03-21 15:28  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6129] stoqdrivers/abicomp.py, stoqdrivers/abicompcodec.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py: Rename abicompcodec
+	  to abicomp and add a register_codec() function. Add license
+	  header, take credit and document
+
+2007-03-21 14:28  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6128] stoqdrivers/abicompcodec.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py: Add ABICOMP codec
+	  and use it for daruma FS345. Hopefully this will fix #3222
+
+2007-03-20 15:31  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6124] stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/exceptions.py, tests/data/perto-Pay2023-add-item.txt,
+	  tests/data/perto-Pay2023-add-payment.txt,
+	  tests/data/perto-Pay2023-cancel-coupon.txt,
+	  tests/data/perto-Pay2023-cancel-item.txt,
+	  tests/data/perto-Pay2023-close-coupon.txt,
+	  tests/data/perto-Pay2023-coupon-open.txt,
+	  tests/data/perto-Pay2023-totalize.txt: Rewrite return value
+	  parser in Perto. Reuse _read_register. Add a code to DriverError
+
+2007-03-20 14:01  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6120] stoqdrivers/devices/printers/perto/Pay2023.py: Use
+	  read_register() in a few more places. Document tax codes better
+
+2007-03-19 20:25  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6115] stoqdrivers/devices/printers/perto/Pay2023.py: Add
+	  support for reading registers suitable for sending to sintegra
+
+2007-03-16 21:14  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6108] stoqdrivers/devices/printers/virtual/Simple.py: Raise
+	  DriverError the second time the till is closed
+
+2007-03-12 20:59  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6101] stoqdrivers/devices/printers/perto/Pay2023.py: Only use
+	  strings in constants. Convert to int in add_payment
+
+2007-03-09 22:13  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6100] stoqdrivers/devices/printers/perto/Pay2023.py,
+	  tests/data/perto-Pay2023-totalize.txt: Send f/t instead of
+	  False/True
+
+2007-03-09 22:11  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6099] tests/data/perto-Pay2023-add-item.txt,
+	  tests/data/perto-Pay2023-add-payment.txt,
+	  tests/data/perto-Pay2023-cancel-coupon.txt,
+	  tests/data/perto-Pay2023-cancel-item.txt,
+	  tests/data/perto-Pay2023-close-coupon.txt,
+	  tests/data/perto-Pay2023-till-add-cash.txt,
+	  tests/data/perto-Pay2023-till-remove-cash.txt,
+	  tests/data/perto-Pay2023-totalize.txt: Update the tests too
+
+2007-03-09 22:11  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6098] stoqdrivers/devices/printers/perto/Pay2023.py: Do the
+	  data type conversion in _send_command instead of the callsite, we
+	  forgot a couple of places (discount).
+
+2007-03-09 21:47  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6097] stoqdrivers/devices/printers/perto/Pay2023.py,
+	  tests/data/perto-Pay2023-add-item.txt,
+	  tests/data/perto-Pay2023-add-payment.txt,
+	  tests/data/perto-Pay2023-cancel-coupon.txt,
+	  tests/data/perto-Pay2023-cancel-item.txt,
+	  tests/data/perto-Pay2023-close-coupon.txt,
+	  tests/data/perto-Pay2023-totalize.txt: Send only three digits for
+	  quantity as the manual says. Use -2 for MONEY_PM
+
+2007-03-09 20:48  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6094] stoqdrivers/devices/printers/perto/Pay2023.py,
+	  tests/base.py, tests/data/perto-Pay2023-add-item.txt,
+	  tests/data/perto-Pay2023-add-payment.txt,
+	  tests/data/perto-Pay2023-cancel-coupon.txt,
+	  tests/data/perto-Pay2023-cancel-item.txt,
+	  tests/data/perto-Pay2023-close-coupon.txt,
+	  tests/data/perto-Pay2023-coupon-open.txt,
+	  tests/data/perto-Pay2023-till-add-cash.txt,
+	  tests/data/perto-Pay2023-till-remove-cash.txt,
+	  tests/data/perto-Pay2023-totalize.txt, tests/test_coupon.py:
+	  #2421: Incluir suporte à sangria para Impressora Perto Pay2023
+
+2007-03-09 20:44  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6093] stoqdrivers/devices/printers/perto/Pay2023.py: Make sure
+	  that we can always close the till, even if we forgot to close a
+	  document
+
+2007-03-08 14:32  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6068] stoqdrivers/devices/printers/daruma/FS345.py: Remove
+	  checks in close_till, they are wrong.
+
+2007-03-08 14:26  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6067] stoqdrivers/devices/printers/daruma/FS345.py: 21 is No
+	  paper and 42 is really Read X needs to be emitted
+
+2007-03-07 22:52  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6060] stoqdrivers/devices/printers/perto/Pay2023.py: Remove
+	  assertion
+
+2007-03-07 13:09  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6055] stoqdrivers/devices/printers/fiscal.py: Use log.info for
+	  these messages
+
+2007-03-07 12:57  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6053] stoqdrivers/devices/base.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/serialbase.py, stoqdrivers/log.py: Use kiwi
+	  logger everywhere. Remove stoqdrivers log
+
+2007-03-06 22:21  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6052] stoqdrivers/devices/printers/daruma/FS345.py,
+	  tests/data/daruma-FS345-totalize.txt: Set the discount percentage
+	  properly
+
+2007-03-06 21:47  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6051] stoqdrivers/devices/printers/fiscal.py: Add debugging log
+
+2007-03-06 20:42  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6048] stoqdrivers/devices/printers/bematech/MP25.py: partly
+	  revert the last checkin until the printer work again
+
+2007-03-06 20:30  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6047] stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py: Remove TAX_ICMS
+
+2007-03-06 16:18  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6037] stoqdrivers/devices/printers/dataregis/EP375.py: Make
+	  strings out of the constants and remove ICMS
+
+2007-03-06 15:39  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6036] stoqdrivers/devices/printers/sweda/IFS9000I.py: Add a
+	  note to custom tax codes
+
+2007-03-06 15:21  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6033] stoqdrivers/devices/printers/daruma/FS345.py: Remove old
+	  tax constants
+
+2007-03-06 15:21  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6032] stoqdrivers/devices/printers/sweda/IFS9000I.py: Add unit
+	  document reference
+
+2007-03-06 15:21  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6031] tests/data/sweda-IFS9000I-add-item.txt,
+	  tests/data/sweda-IFS9000I-add-payment.txt,
+	  tests/data/sweda-IFS9000I-cancel-coupon.txt,
+	  tests/data/sweda-IFS9000I-cancel-item.txt,
+	  tests/data/sweda-IFS9000I-close-coupon.txt,
+	  tests/data/sweda-IFS9000I-totalize.txt: Update the Sweda tests
+	  for the last commit
+
+2007-03-06 14:58  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6030] stoqdrivers/devices/printers/sweda/IFS9000I.py: Remove
+	  TAX_ICMS and map TAX_NONE to N instead of I
+
+2007-03-02 16:11  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r6004] stoqdrivers/constants.py,
+	  stoqdrivers/devices/interfaces.py,
+	  stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py, tests/base.py,
+	  tests/test_coupon.py: #3201: Update constants and add a default
+	  values to the printers. Change the API to use strings instead of
+	  taxcode instances in coupon_add_item
+
+2007-03-01 15:56  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5965] stoqdrivers/constants.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py: #3204: Remove IOF
+
+2007-02-22 14:01  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5907] stoqdrivers/configparser.py, stoqdrivers/constants.py,
+	  stoqdrivers/devices/base.py, stoqdrivers/devices/interfaces.py,
+	  stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/bematech/DP20C.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/capabilities.py,
+	  stoqdrivers/devices/printers/daruma/FS2100.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/daruma/FS600MFD.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py,
+	  stoqdrivers/devices/readers/barcode/reader.py,
+	  stoqdrivers/devices/scales/base.py,
+	  stoqdrivers/devices/scales/scales.py,
+	  stoqdrivers/devices/scales/toledo/PrixIII.py,
+	  stoqdrivers/exceptions.py, stoqdrivers/log.py,
+	  stoqdrivers/translation.py, stoqdrivers/utils.py: epydoc markup
+	  fixes
+
+2007-02-04 20:59  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5736] MANIFEST.in, Makefile, debian/control, stoqdrivers.spec:
+	  Add RPM specfile, update debian packages
+
+2007-02-03 17:27  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5734] stoqdrivers/devices, stoqdrivers/devices/printers: Ignore
+	  *.pyc files
+
+2007-02-03 17:23  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5733] tests: Ignore pyc files
+
+2007-01-26 15:10  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5621] Makefile: Remove leading epoch
+
+2007-01-26 15:04  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5619] NEWS, debian/changelog, stoqdrivers/__init__.py:
+	  Stoqdrivers 0.5.0
+
+2007-01-26 14:57  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5618] po/pt_BR.po, po/stoqdrivers.pot: Update Portuguse
+	  translation
+
+2007-01-26 14:38  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5617] stoqdrivers/devices/printers/daruma/FS345.py,
+	  tests/data/daruma-FS345-add-item.txt,
+	  tests/data/daruma-FS345-add-payment.txt,
+	  tests/data/daruma-FS345-cancel-coupon.txt,
+	  tests/data/daruma-FS345-cancel-item.txt,
+	  tests/data/daruma-FS345-close-coupon.txt,
+	  tests/data/daruma-FS345-coupon-open.txt,
+	  tests/data/daruma-FS345-till-add-cash.txt,
+	  tests/data/daruma-FS345-till-remove-cash.txt,
+	  tests/data/daruma-FS345-totalize.txt: Do not verify that a coupon
+	  is open in cancel(). Update tests
+
+2007-01-26 13:36  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5612] stoqdrivers/devices/printers/sweda/IFS9000I.py: Map
+	  another error to an exception
+
+2007-01-26 13:16  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5611] stoqdrivers/devices/printers/sweda/IFS9000I.py: Print a
+	  warning when we fail to parse an item
+
+2007-01-25 15:05  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5601] stoqdrivers/devices/printers/daruma/FS345.py: Readd back
+	  verify_coupon_open since we can't use the FS345 more today
+
+2007-01-25 14:34  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5600] stoqdrivers/devices/printers/daruma/FS345.py: Sort ifs by
+	  error number, add error 22
+
+2007-01-25 14:11  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5598] stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/exceptions.py: Update Daruma FS345 driver to 1) not
+	  check that a coupon is open when canceling 2) convert error code
+	  for 'there no open document to cancel' to an exception
+
+2007-01-25 12:31  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5594] stoqdrivers/devices/printers/virtual/Simple.py: Relax
+	  checking in coupon_cancel a bit
+
+2007-01-24 17:59  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5583] Makefile: Refactor deb building into a separate script
+
+2007-01-24 16:39  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5578] Makefile: Sync with stoq/stoqlib Makefile's
+
+2007-01-19 13:57  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5540] stoqdrivers/devices/printers/daruma/FS345.py: Add another
+	  comment describing CMD_CANCEL_COUPON
+
+2007-01-19 13:56  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5539] stoqdrivers/devices/interfaces.py: Update docstring
+
+2006-12-05 13:29  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5466] stoqdrivers/devices/printers/virtual/Simple.py: Improve
+	  VirtualPrinter implementation coverage
+
+2006-11-23 11:53  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5375] stoqdrivers/devices/printers/daruma/FS345.py: whitespace
+
+2006-11-22 20:49  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5374] stoqdrivers/devices/printers/daruma/FS345.py,
+	  tests/data/daruma-FS345-add-item.txt,
+	  tests/data/daruma-FS345-add-payment.txt,
+	  tests/data/daruma-FS345-cancel-coupon.txt,
+	  tests/data/daruma-FS345-cancel-item.txt,
+	  tests/data/daruma-FS345-close-coupon.txt,
+	  tests/data/daruma-FS345-coupon-open.txt,
+	  tests/data/daruma-FS345-till-add-cash.txt,
+	  tests/data/daruma-FS345-till-remove-cash.txt,
+	  tests/data/daruma-FS345-totalize.txt: Fix race when cupon is open
+	  and a pending reduce Z is required. Update tests
+
+2006-11-22 20:46  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5373] tests/data/daruma-FS345-add-item.txt,
+	  tests/data/daruma-FS345-add-payment.txt,
+	  tests/data/daruma-FS345-cancel-coupon.txt,
+	  tests/data/daruma-FS345-cancel-item.txt,
+	  tests/data/daruma-FS345-close-coupon.txt,
+	  tests/data/daruma-FS345-coupon-open.txt,
+	  tests/data/daruma-FS345-till-add-cash.txt,
+	  tests/data/daruma-FS345-till-remove-cash.txt,
+	  tests/data/daruma-FS345-totalize.txt: Revert tests changes
+
+2006-11-22 20:44  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5372] tests/base.py, tests/data/daruma-FS345-add-item.txt,
+	  tests/data/daruma-FS345-add-payment.txt,
+	  tests/data/daruma-FS345-cancel-coupon.txt,
+	  tests/data/daruma-FS345-cancel-item.txt,
+	  tests/data/daruma-FS345-close-coupon.txt,
+	  tests/data/daruma-FS345-coupon-open.txt,
+	  tests/data/daruma-FS345-till-add-cash.txt,
+	  tests/data/daruma-FS345-till-remove-cash.txt,
+	  tests/data/daruma-FS345-totalize.txt: Writed->Written
+
+2006-11-22 20:38  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5371] tests/base.py: WRITED->WROTE
+
+2006-10-23 12:44  Henrique Romano
+
+	* [r5198] stoqdrivers/devices/printers/bematech/MP25.py: move
+	  comment
+
+2006-10-23 12:42  Henrique Romano
+
+	* [r5197] stoqdrivers/devices/printers/dataregis/EP375.py:
+	  s/FIXME/mark
+
+2006-10-23 12:41  Henrique Romano
+
+	* [r5196] stoqdrivers/devices/printers/dataregis/EP375.py: reformat
+	  comment
+
+2006-10-23 12:40  Henrique Romano
+
+	* [r5195] stoqdrivers/devices/printers/dataregis/EP375.py:
+	  s/XXX/warning
+
+2006-10-19 11:20  Henrique Romano
+
+	* [r5151] stoqdrivers/devices/serialbase.py: s/XXX/WARNING
+
+2006-10-11 20:31  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5048] Makefile: Generate only uncompressed Packages & Sources,
+	  since apt-ftparchive expects that
+
+2006-10-11 20:19  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r5046] Makefile: Generate proper archive
+
+2006-10-09 19:59  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r4996] Makefile: Add tags
+
+2006-10-09 19:45  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r4992] Makefile, debian/changelog: Bump epoch in package and add
+	  upload rule
+
+2006-10-09 19:19  Henrique Romano
+
+	* [r4991] po/pt_BR.po, po/stoqdrivers.pot: gettext update
+
+2006-10-09 19:18  Henrique Romano
+
+	* [r4990] docs/examples/fiscal.py: oops
+
+2006-10-09 19:17  Henrique Romano
+
+	* [r4989] docs/examples/fiscal.py: remove wrong line
+
+2006-10-09 18:54  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r4980] debian/changelog: Set proper version
+
+2006-10-09 18:50  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r4979] Makefile: Sign packages by default
+
+2006-10-09 18:50  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r4978] MANIFEST.in: Include debian directory in tarball
+
+2006-10-09 18:50  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r4977] Makefile: Add a Makefile
+
+2006-09-18 22:25  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r4644] stoqdrivers/devices/serialbase.py: Make VirtualPort
+	  implement ISerialPort properly
+
+2006-09-18 22:16  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r4638] stoqdrivers/devices/interfaces.py: remove self from
+	  interface
+
+2006-08-29 18:52  Henrique Romano
+
+	* [r4299] stoqdrivers/devices/serialbase.py: Make VirtualPort
+	  implement the ISerialPort interface
+
+2006-08-29 14:47  Henrique Romano
+
+	* [r4291] stoqdrivers/devices/printers/perto/Pay2023.py: Remove
+	  unneeded comment
+
+2006-08-28 18:49  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r4284] README: Bump requirement
+
+2006-08-28 15:43  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r4278] debian/changelog, debian/control: Set proper requirement
+	  for zope.interface
+
+2006-08-28 15:35  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r4275] debian/control: Add python-serial to Build-Depends-Indep
+
+2006-08-28 15:32  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r4274] debian/control: Update dependencies and maintainer
+
+2006-08-25 20:00  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r4268] debian, debian/changelog, debian/compat, debian/control,
+	  debian/copyright, debian/rules: Add debian package
+
+2006-08-25 14:09  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r4250] MANIFEST.in: Include .po & .mo files in the tarball
+
+2006-08-24 12:26  Henrique Romano
+
+	* [r4238] NEWS, stoqdrivers/__init__.py: prepare for release 0.4
+
+2006-08-22 19:46  Henrique Romano
+
+	* [r4212] stoqdrivers/devices/serialbase.py: Adding a virtual port
+
+2006-07-13 18:04  Henrique Romano
+
+	* [r3918] stoqdrivers/devices/interfaces.py: Minor change
+
+2006-07-13 17:58  Henrique Romano
+
+	* [r3917] stoqdrivers/devices/base.py: Remove unneeded method
+
+2006-07-12 19:32  Lincoln Molica
+
+	* [r3911] po/pt_BR.po, po/stoqdrivers.pot: Translation is now up to
+	  date for stoqdrivers. r=johan
+
+2006-06-26 13:44  Henrique Romano
+
+	* [r3836] ChangeLog,
+	  stoqdrivers/devices/readers/barcode/metrologic,
+	  stoqdrivers/devices/readers/barcode/metrologic/MC630.py,
+	  stoqdrivers/devices/readers/barcode/metrologic/__init__.py:
+	  Initial implementation for Metrologic MC630. Fixes bug #2502
+
+2006-06-26 13:42  Henrique Romano
+
+	* [r3835] stoqdrivers/devices/readers/barcode/base.py: Adding a
+	  base class for all barcode reader devices
+
+2006-06-26 13:28  Henrique Romano
+
+	* [r3834] stoqdrivers/devices/serialbase.py: Commenting
+	  SerialPort's set_options()
+
+2006-06-26 13:22  Henrique Romano
+
+	* [r3833] stoqdrivers/devices/readers/barcode/base.py: Adding
+	  get_supported_barcode_readers, following the package's flow
+
+2006-06-26 13:17  Henrique Romano
+
+	* [r3832] stoqdrivers/devices/readers/barcode,
+	  stoqdrivers/devices/readers/barcode/__init__.py,
+	  stoqdrivers/devices/readers/barcode/reader.py: Adding Barcode
+	  readers interface implementation
+
+2006-06-23 13:33  Henrique Romano
+
+	* [r3829] stoqdrivers/devices/base.py: Define device type name
+
+2006-06-23 13:28  Henrique Romano
+
+	* [r3828] stoqdrivers/constants.py: Adding new device type
+
+2006-06-21 18:58  Henrique Romano
+
+	* [r3817] stoqdrivers/devices/interfaces.py: Adding interface for
+	  barcode readers
+
+2006-06-21 18:54  Henrique Romano
+
+	* [r3816] stoqdrivers/devices/readers,
+	  stoqdrivers/devices/readers/__init__.py: Adding directory to
+	  reading devices
+
+2006-06-21 12:09  Henrique Romano
+
+	* [r3812] tests/test_coupon.py: Mark a test
+
+2006-06-21 12:07  Henrique Romano
+
+	* [r3811] tests/base.py: We should *never* use SerialPort directly
+	  in the callsite code. The same for '/dev/ttyS0' -- avoid this as
+	  much as possible.
+
+2006-06-21 11:39  Henrique Romano
+
+	* [r3810] tests/test_coupon.py: oops
+
+2006-06-21 11:38  Henrique Romano
+
+	* [r3809] stoqdrivers/devices/printers/perto/Pay2023.py: Adding one
+	  more exception to manage. Fixing also another decimal issue.
+
+2006-06-20 20:55  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r3808] stoqdrivers/devices/printers/bematech/MP25.py: fix driver
+
+2006-06-20 20:55  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r3807] stoqdrivers/devices/printers/bematech/MP25.py: Try
+	  breaking driver
+
+2006-06-20 20:53  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r3806] tests/data/sweda-IFS9000I-add-item.txt,
+	  tests/data/sweda-IFS9000I-add-payment.txt,
+	  tests/data/sweda-IFS9000I-cancel-coupon.txt,
+	  tests/data/sweda-IFS9000I-cancel-item.txt,
+	  tests/data/sweda-IFS9000I-close-coupon.txt,
+	  tests/data/sweda-IFS9000I-coupon-open.txt,
+	  tests/data/sweda-IFS9000I-till-add-cash.txt,
+	  tests/data/sweda-IFS9000I-till-remove-cash.txt,
+	  tests/data/sweda-IFS9000I-totalize.txt: add sweda, forgot
+
+2006-06-20 20:48  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r3805] tests/base.py: indentation error
+
+2006-06-20 20:44  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r3804] tests/base.py,
+	  tests/data/Bematech_MP25_FI-test_add_item.txt,
+	  tests/data/Bematech_MP25_FI-test_add_payment.txt,
+	  tests/data/Bematech_MP25_FI-test_cancel_coupon.txt,
+	  tests/data/Bematech_MP25_FI-test_cancel_item.txt,
+	  tests/data/Bematech_MP25_FI-test_close_coupon.txt,
+	  tests/data/Bematech_MP25_FI-test_coupon_open.txt,
+	  tests/data/Bematech_MP25_FI-test_till_add_cash.txt,
+	  tests/data/Bematech_MP25_FI-test_till_remove_cash.txt,
+	  tests/data/Bematech_MP25_FI-test_totalize.txt,
+	  tests/data/Daruma_FS_345-test_add_item.txt,
+	  tests/data/Daruma_FS_345-test_add_payment.txt,
+	  tests/data/Daruma_FS_345-test_cancel_coupon.txt,
+	  tests/data/Daruma_FS_345-test_cancel_item.txt,
+	  tests/data/Daruma_FS_345-test_close_coupon.txt,
+	  tests/data/Daruma_FS_345-test_coupon_open.txt,
+	  tests/data/Daruma_FS_345-test_till_add_cash.txt,
+	  tests/data/Daruma_FS_345-test_till_remove_cash.txt,
+	  tests/data/Daruma_FS_345-test_totalize.txt,
+	  tests/data/Dataregis_375_EP-test_add_item.txt,
+	  tests/data/Dataregis_375_EP-test_add_payment.txt,
+	  tests/data/Dataregis_375_EP-test_cancel_coupon.txt,
+	  tests/data/Dataregis_375_EP-test_cancel_item.txt,
+	  tests/data/Dataregis_375_EP-test_close_coupon.txt,
+	  tests/data/Dataregis_375_EP-test_coupon_open.txt,
+	  tests/data/Dataregis_375_EP-test_till_add_cash.txt,
+	  tests/data/Dataregis_375_EP-test_till_remove_cash.txt,
+	  tests/data/Dataregis_375_EP-test_totalize.txt,
+	  tests/data/Sweda_IFS_9000_I-test_add_item.txt,
+	  tests/data/Sweda_IFS_9000_I-test_add_payment.txt,
+	  tests/data/Sweda_IFS_9000_I-test_cancel_coupon.txt,
+	  tests/data/Sweda_IFS_9000_I-test_cancel_item.txt,
+	  tests/data/Sweda_IFS_9000_I-test_close_coupon.txt,
+	  tests/data/Sweda_IFS_9000_I-test_coupon_open.txt,
+	  tests/data/Sweda_IFS_9000_I-test_till_add_cash.txt,
+	  tests/data/Sweda_IFS_9000_I-test_till_remove_cash.txt,
+	  tests/data/Sweda_IFS_9000_I-test_totalize.txt,
+	  tests/data/bematech-MP25-add-item.txt,
+	  tests/data/bematech-MP25-add-payment.txt,
+	  tests/data/bematech-MP25-cancel-coupon.txt,
+	  tests/data/bematech-MP25-cancel-item.txt,
+	  tests/data/bematech-MP25-close-coupon.txt,
+	  tests/data/bematech-MP25-coupon-open.txt,
+	  tests/data/bematech-MP25-till-add-cash.txt,
+	  tests/data/bematech-MP25-till-remove-cash.txt,
+	  tests/data/bematech-MP25-totalize.txt,
+	  tests/data/daruma-FS345-add-item.txt,
+	  tests/data/daruma-FS345-add-payment.txt,
+	  tests/data/daruma-FS345-cancel-coupon.txt,
+	  tests/data/daruma-FS345-cancel-item.txt,
+	  tests/data/daruma-FS345-close-coupon.txt,
+	  tests/data/daruma-FS345-coupon-open.txt,
+	  tests/data/daruma-FS345-till-add-cash.txt,
+	  tests/data/daruma-FS345-till-remove-cash.txt,
+	  tests/data/daruma-FS345-totalize.txt,
+	  tests/data/dataregis-EP375-add-item.txt,
+	  tests/data/dataregis-EP375-add-payment.txt,
+	  tests/data/dataregis-EP375-cancel-coupon.txt,
+	  tests/data/dataregis-EP375-cancel-item.txt,
+	  tests/data/dataregis-EP375-close-coupon.txt,
+	  tests/data/dataregis-EP375-coupon-open.txt,
+	  tests/data/dataregis-EP375-till-add-cash.txt,
+	  tests/data/dataregis-EP375-till-remove-cash.txt,
+	  tests/data/dataregis-EP375-totalize.txt: Rename tests and make it
+	  possible to run it without having a serial port
+
+2006-06-20 20:37  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r3803] tests/test_log.py: remove test_log
+
+2006-06-20 20:32  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r3802] tests/data/Daruma_FS_600_MFD-test_add_item.txt,
+	  tests/data/Daruma_FS_600_MFD-test_add_payment.txt,
+	  tests/data/Daruma_FS_600_MFD-test_cancel_coupon.txt,
+	  tests/data/Daruma_FS_600_MFD-test_cancel_item.txt,
+	  tests/data/Daruma_FS_600_MFD-test_close_coupon.txt,
+	  tests/data/Daruma_FS_600_MFD-test_coupon_open.txt,
+	  tests/data/Daruma_FS_600_MFD-test_till_add_cash.txt,
+	  tests/data/Daruma_FS_600_MFD-test_till_remove_cash.txt,
+	  tests/data/Daruma_FS_600_MFD-test_totalize.txt,
+	  tests/test_coupon.py: Remove FS600
+
+2006-06-20 20:20  Henrique Romano
+
+	* [r3801] tests/test_coupon.py: Enable tests for Sweda IFS9000I
+
+2006-06-20 20:20  Henrique Romano
+
+	* [r3800] tests/data/Sweda_IFS_9000_I-test_add_item.txt,
+	  tests/data/Sweda_IFS_9000_I-test_add_payment.txt,
+	  tests/data/Sweda_IFS_9000_I-test_cancel_coupon.txt,
+	  tests/data/Sweda_IFS_9000_I-test_cancel_item.txt,
+	  tests/data/Sweda_IFS_9000_I-test_close_coupon.txt,
+	  tests/data/Sweda_IFS_9000_I-test_coupon_open.txt,
+	  tests/data/Sweda_IFS_9000_I-test_till_add_cash.txt,
+	  tests/data/Sweda_IFS_9000_I-test_till_remove_cash.txt,
+	  tests/data/Sweda_IFS_9000_I-test_totalize.txt: Adding test data
+	  files for Sweda IFS9000I driver
+
+2006-06-20 20:19  Henrique Romano
+
+	* [r3799] stoqdrivers/devices/printers/sweda/IFS9000I.py: Fix on
+	  coupon_add_surchage, removing wrong attribute reference and
+	  updating get_totalized_value to return Decimal instead float
+
+2006-06-20 19:57  Henrique Romano
+
+	* [r3797] stoqdrivers/devices/printers/sweda/IFS9000I.py: Adding
+	  one more exception to manage
+
+2006-06-20 19:42  Henrique Romano
+
+	* [r3796] tests/data/Daruma_FS_345-test_add_item.txt,
+	  tests/data/Daruma_FS_345-test_add_payment.txt,
+	  tests/data/Daruma_FS_345-test_cancel_coupon.txt,
+	  tests/data/Daruma_FS_345-test_cancel_item.txt,
+	  tests/data/Daruma_FS_345-test_close_coupon.txt,
+	  tests/data/Daruma_FS_345-test_coupon_open.txt,
+	  tests/data/Daruma_FS_345-test_till_add_cash.txt,
+	  tests/data/Daruma_FS_345-test_till_remove_cash.txt,
+	  tests/data/Daruma_FS_345-test_totalize.txt,
+	  tests/data/Daruma_FS_600_MFD-test_add_item.txt,
+	  tests/data/Daruma_FS_600_MFD-test_add_payment.txt,
+	  tests/data/Daruma_FS_600_MFD-test_cancel_coupon.txt,
+	  tests/data/Daruma_FS_600_MFD-test_cancel_item.txt,
+	  tests/data/Daruma_FS_600_MFD-test_close_coupon.txt,
+	  tests/data/Daruma_FS_600_MFD-test_coupon_open.txt,
+	  tests/data/Daruma_FS_600_MFD-test_till_add_cash.txt,
+	  tests/data/Daruma_FS_600_MFD-test_till_remove_cash.txt,
+	  tests/data/Daruma_FS_600_MFD-test_totalize.txt: adding test data
+	  files for daruma FS345 and daruma FS600MFD drivers
+
+2006-06-20 19:41  Henrique Romano
+
+	* [r3795] stoqdrivers/devices/printers/daruma/FS345.py:
+	  coupon_totalize must return the coupon total, considering
+	  surcharge and markup.
+
+2006-06-20 19:30  Henrique Romano
+
+	* [r3794] tests/test_coupon.py: Don't create tests classes
+	  dinamically, since there are some drivers that we can't test
+	  (Daruma FS2100, for instance).
+
+2006-06-20 19:26  Henrique Romano
+
+	* [r3793] stoqdrivers/devices/printers/daruma/FS345.py: Minor
+	  change, using decimal properly
+
+2006-06-20 19:17  Henrique Romano
+
+	* [r3791] stoqdrivers/devices/printers/daruma/FS345.py:
+	  s/markup/surcharge
+
+2006-06-20 19:05  Henrique Romano
+
+	* [r3790] stoqdrivers/devices/printers/daruma/FS345.py: remove
+	  super()
+
+2006-06-20 18:58  Henrique Romano
+
+	* [r3789] tests/data/Dataregis_375_EP-test_add_item.txt,
+	  tests/data/Dataregis_375_EP-test_add_payment.txt,
+	  tests/data/Dataregis_375_EP-test_cancel_coupon.txt,
+	  tests/data/Dataregis_375_EP-test_cancel_item.txt,
+	  tests/data/Dataregis_375_EP-test_close_coupon.txt,
+	  tests/data/Dataregis_375_EP-test_coupon_open.txt,
+	  tests/data/Dataregis_375_EP-test_till_add_cash.txt,
+	  tests/data/Dataregis_375_EP-test_till_remove_cash.txt,
+	  tests/data/Dataregis_375_EP-test_totalize.txt: Adding test data
+	  files for Dataregis 375EP
+
+2006-06-20 18:56  Henrique Romano
+
+	* [r3788] tests/test_coupon.py: Adding support to test multiple
+	  printers at same time
+
+2006-06-20 18:56  Henrique Romano
+
+	* [r3787] tests/base.py: BaseTest subclasses must define brand and
+	  model attributes now.
+
+2006-06-20 18:54  Henrique Romano
+
+	* [r3786] tests/data/Bematech_MP25_FI-test_cancel_coupon.txt:
+	  Update data file since test_cancel_coupon has changed
+
+2006-06-20 18:36  Henrique Romano
+
+	* [r3785] tests/test_coupon.py: Minor changes: remove the item id
+	  test, since it doesn't make sense (each driver is free to assign
+	  an unique ID for its coupon items). Also adding an item to the
+	  coupon on test_cancel_coupon (it will test properly the
+	  driver/printer).
+
+2006-06-20 18:28  Henrique Romano
+
+	* [r3784] stoqdrivers/devices/printers/dataregis/EP375.py: Check if
+	  the coupon is open on add_item()
+
+2006-06-20 18:17  Henrique Romano
+
+	* [r3783] stoqdrivers/devices/printers/dataregis/EP375.py: Oops, we
+	  need to manage the case where no coupon is really opened (lets
+	  the tests works again).
+
+2006-06-20 18:11  Henrique Romano
+
+	* [r3782] ChangeLog,
+	  stoqdrivers/devices/printers/dataregis/EP375.py: Implementing
+	  has_opened_sale and has_opened_report on EP375Status. Adding an
+	  internal attribute for EP375 driver to manage the coupon status.
+	  Fixing a bug on coupon_cancel, now the driver should works
+	  without more "invalid state" problems
+
+2006-06-20 13:24  Henrique Romano
+
+	* [r3781] ChangeLog,
+	  stoqdrivers/devices/printers/dataregis/EP375.py: On totalize, the
+	  surcharge and discount values are given in percent. Also fixing a
+	  bug in get_remaining_value(), the coupon subtotal was being
+	  calculated erroneously.
+
+2006-06-19 18:22  Henrique Romano
+
+	* [r3777] ChangeLog, tests/data/Bematech_MP25_FI-test_add_item.txt,
+	  tests/data/Bematech_MP25_FI-test_add_payment.txt,
+	  tests/data/Bematech_MP25_FI-test_cancel_coupon.txt,
+	  tests/data/Bematech_MP25_FI-test_cancel_item.txt,
+	  tests/data/Bematech_MP25_FI-test_close_coupon.txt,
+	  tests/data/Bematech_MP25_FI-test_coupon_open.txt,
+	  tests/data/Bematech_MP25_FI-test_till_add_cash.txt,
+	  tests/data/Bematech_MP25_FI-test_till_remove_cash.txt,
+	  tests/data/Bematech_MP25_FI-test_totalize.txt: adding tests data
+	  for Bematech MP25 driver
+
+2006-06-19 18:01  Henrique Romano
+
+	* [r3774] tests/test_coupon.py: Test the coupon total value
+
+2006-06-19 17:59  Henrique Romano
+
+	* [r3773] tests/test_coupon.py: Extend a little bit test_add_item,
+	  check the item ids returned.
+
+2006-06-19 17:53  Henrique Romano
+
+	* [r3772] tests/test_coupon.py: Product code must be unicode
+
+2006-06-19 17:45  Henrique Romano
+
+	* [r3771] tests/test_coupon.py, tests/test_flow.py: Adding more
+	  tests to test_coupon and removing test_flow (covered by
+	  test_coupon now).
+
+2006-06-19 17:32  Henrique Romano
+
+	* [r3770] ChangeLog, tests/base.py: Initial implementation of
+	  PlaybackPort
+
+2006-06-19 17:24  Henrique Romano
+
+	* [r3769] tests/test_coupon.py: Add correct payment value,
+	  considering surcharge specified to totalize().
+
+2006-06-19 17:16  Henrique Romano
+
+	* [r3768] stoqdrivers/devices/printers/bematech/MP25.py: Revert
+	  checkin 3767, the precision was right, the problem is in
+	  bcd2dec... \x10\x00 should return 1000, not 100.
+
+2006-06-19 13:01  Henrique Romano
+
+	* [r3767] stoqdrivers/devices/printers/bematech/MP25.py: Fix a bug,
+	  adjust the value precision (.XX, not .XXX)
+
+2006-06-19 12:54  Henrique Romano
+
+	* [r3766] stoqdrivers/devices/printers/bematech/MP25.py: Minor
+	  change, use Decimal properly
+
+2006-06-19 12:31  Henrique Romano
+
+	* [r3765] stoqdrivers/devices/printers/bematech/MP25.py: Adding
+	  extra checks and removing unneeded comment. We must raise
+	  CancelItemError when the item ID is invalid and (optionally) use
+	  the last item id when no one is specified.
+
+2006-06-17 14:04  Henrique Romano
+
+	* [r3764] stoqdrivers/devices/printers/bematech/MP25.py: Minor
+	  change
+
+2006-06-17 13:07  Henrique Romano
+
+	* [r3763] tests/base.py: Change the way as the tests data are
+	  saved, now we have the lines stored as hexadecimal values, also
+	  the input/output order is considered -- so the bytes written/read
+	  are logged in the order as they appears.
+
+2006-06-17 12:57  Henrique Romano
+
+	* [r3762] tests/base.py: Implement completely the ISerialPort
+
+2006-06-17 12:53  Henrique Romano
+
+	* [r3761] tests/base.py: Decorate the device's port in the right
+	  way, so we don't need the DEVICE_PORT constant
+
+2006-06-17 12:43  Henrique Romano
+
+	* [r3760] stoqdrivers/devices/serialbase.py: Implement get_port
+
+2006-06-17 12:42  Henrique Romano
+
+	* [r3759] stoqdrivers/devices/base.py: Implement port accessors
+
+2006-06-16 20:55  Henrique Romano
+
+	* [r3758] stoqdrivers/devices/base.py,
+	  stoqdrivers/devices/interfaces.py,
+	  stoqdrivers/devices/printers/bematech/DP20C.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py,
+	  stoqdrivers/devices/serialbase.py, tests/base.py: - Separate
+	  "serial port" related methods from SerialBase. - Create an
+	  interface ISerialPort - Allow callsites decorate the port object
+	  used by the driver, so we can remove the IBytesRecorder interface
+	  and its related methods from BaseDevice and SerialBase. r=jdahlin
+
+2006-06-16 16:50  Henrique Romano
+
+	* [r3757] stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/serialbase.py: Move read_insist to MP25
+	  driver, it is Bematech specific
+
+2006-06-16 15:58  Henrique Romano
+
+	* [r3756] stoqdrivers/devices/printers/daruma/FS2100.py,
+	  stoqdrivers/devices/serialbase.py: Remove DEBUG_MODE since it is
+	  useless
+
+2006-06-16 15:55  Henrique Romano
+
+	* [r3755] stoqdrivers/devices/printers/sweda/IFS9000I.py: Remove
+	  useless variable
+
+2006-06-16 15:02  Henrique Romano
+
+	* [r3754] tests/test_flow.py: Inherit from BaseTest
+
+2006-06-16 15:01  Henrique Romano
+
+	* [r3753] tests/test_coupon.py: BaseTest inheritance
+
+2006-06-16 14:57  Henrique Romano
+
+	* [r3752] stoqdrivers/devices/base.py: document a bit
+
+2006-06-16 14:41  Henrique Romano
+
+	* [r3751] tests/base.py: Initial implementation of BaseTest and
+	  TestBytesRecorder
+
+2006-06-16 14:32  Henrique Romano
+
+	* [r3750] tests/test_log.py: whitespace
+
+2006-06-16 14:27  Henrique Romano
+
+	* [r3749] tests/log_test.py, tests/test_log.py: Rename module
+
+2006-06-16 12:17  Henrique Romano
+
+	* [r3744] stoqdrivers/devices/printers/dataregis/EP375.py: Minor
+	  change
+
+2006-06-14 16:53  Henrique Romano
+
+	* [r3742] tests/data: directory to store the test data files.
+
+2006-06-14 13:37  Henrique Romano
+
+	* [r3741] tests/test_coupon.py: Add unit test for coupon emission.
+
+2006-06-14 12:38  Henrique Romano
+
+	* [r3737] stoqdrivers/devices/printers/fiscal.py: Code moved to
+	  docs/examples/fiscal.py
+
+2006-06-14 12:36  Henrique Romano
+
+	* [r3736] docs/examples, docs/examples/fiscal.py: Add examples
+
+2006-06-14 12:10  Henrique Romano
+
+	* [r3735] stoqdrivers/devices/printers/daruma/FS345.py: Fix a bug,
+	  coupon_totalize return value must be always decimal
+
+2006-06-14 12:08  Henrique Romano
+
+	* [r3734] stoqdrivers/devices/printers/fiscal.py: s/elif/if, also
+	  remove get_status()
+
+2006-06-13 19:23  Henrique Romano
+
+	* [r3727] stoqdrivers/devices/printers/fiscal.py: Change checking
+	  order
+
+2006-06-13 19:13  Henrique Romano
+
+	* [r3726] stoqdrivers/devices/printers/fiscal.py: Follow API
+	  specification
+
+2006-06-13 18:02  Henrique Romano
+
+	* [r3724] stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/fiscal.py: Move check from driver
+	  implementation to its interface.
+
+2006-06-13 16:58  Henrique Romano
+
+	* [r3723] stoqdrivers/devices/printers/dataregis/EP375.py: Fixing a
+	  bug, adjusting CMD_ADD_ITEM_WITH_SURCHARGE. Also using better
+	  exception for cancel_item and refactor a little add_item.
+
+2006-06-12 19:31  Henrique Romano
+
+	* [r3714] tests/test_flow.py: Minor change
+
+2006-06-12 19:17  Henrique Romano
+
+	* [r3710] tests/check_ifaces_impl.py: Improve implementation
+
+2006-06-12 19:04  Henrique Romano
+
+	* [r3709] tests/check_ifaces_impl.py: Implement check for scales.
+
+2006-06-12 18:57  Henrique Romano
+
+	* [r3708] tests/check_ifaces_impl.py: Fix test
+
+2006-06-12 18:57  Henrique Romano
+
+	* [r3707] stoqdrivers/devices/interfaces.py: Rename IPrinter to
+	  IDevice and makes IScale inherit from it
+
+2006-06-12 18:45  Henrique Romano
+
+	* [r3706] stoqdrivers/devices/scales/base.py,
+	  stoqdrivers/devices/scales/toledo/PrixIII.py: Update imports
+
+2006-06-12 18:43  Henrique Romano
+
+	* [r3705] stoqdrivers/devices/interfaces.py,
+	  stoqdrivers/devices/scales/interface.py: Move scales interface to
+	  devices.interfaces module
+
+2006-06-12 18:38  Henrique Romano
+
+	* [r3702] stoqdrivers/devices/interfaces.py: Update authors
+
+2006-06-12 18:36  Henrique Romano
+
+	* [r3701] stoqdrivers/devices/interfaces.py,
+	  stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/bematech/DP20C.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/cheque.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py: Move
+	  printers.interface to stoqdrivers.devices.interfaces, update
+	  imports.
+
+2006-06-12 18:28  Henrique Romano
+
+	* [r3700] stoqdrivers/devices/base.py,
+	  stoqdrivers/devices/interfaces.py,
+	  stoqdrivers/devices/serialbase.py: BaseDevice's get_driver(),
+	  SerialBase's set_recorder(), IBytesRecorder specification.
+
+2006-06-12 17:53  Henrique Romano
+
+	* [r3699] tests/test_flow.py: Fix a bug, updating callsite to the
+	  API changes.
+
+2006-06-12 13:15  Henrique Romano
+
+	* [r3692] stoqdrivers/devices/printers/cheque.py: Remove
+	  BasePrinter inheritance
+
+2006-06-06 03:50  Henrique Romano
+
+	* [r3654] stoqdrivers/__init__.py: Update version
+
+2006-06-02 20:38  Henrique Romano
+
+	* [r3627] NEWS: Updating NEWS for release 0.3.1
+
+2006-06-02 20:30  Henrique Romano
+
+	* [r3625] stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS2100.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py,
+	  tests/test_flow.py: Fix for bug #2531: Redefine optional
+	  parameters of FiscalPrinter API r=evandro
+
+2006-06-02 19:10  Henrique Romano
+
+	* [r3619] stoqdrivers/devices/printers/dataregis/EP375.py: The
+	  first 6 chars of the product code must be *digits*, so "123 "
+	  will fails too. Fixing also the Decimal operation, the operant
+	  must be an integer.
+
+2006-06-02 18:19  Henrique Romano
+
+	* [r3618] po/pt_BR.po, po/stoqdrivers.pot: Updating translation and
+	  improving pt_BR
+
+2006-06-02 17:33  Henrique Romano
+
+	* [r3614] stoqdrivers/configparser.py, stoqdrivers/constants.py,
+	  stoqdrivers/devices/base.py,
+	  stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/cheque.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py,
+	  stoqdrivers/log.py, stoqdrivers/translation.py: Implement
+	  stoqdrivers_gettext and use it
+
+2006-06-01 21:56  Lincoln Molica
+
+	* [r3595] po/pt_BR.po, po/stoqdrivers.pot: Fixed bug 2628,
+	  translation for warnings and error messages to stoqdrivers.
+	  r=henrique
+
+2006-06-01 15:07  Henrique Romano
+
+	* [r3583] stoqdrivers/devices/printers/fiscal.py,
+	  tests/test_flow.py: Raise InvalidValue when a item without price
+	  is inserted in the coupon. Add a simple test.
+
+2006-06-01 14:59  Henrique Romano
+
+	* [r3582] stoqdrivers/exceptions.py: Adding one more exception
+
+2006-06-01 14:54  Henrique Romano
+
+	* [r3580] stoqdrivers/exceptions.py: Whitespace
+
+2006-06-01 13:41  Henrique Romano
+
+	* [r3577] stoqdrivers/log.py: Update category
+
+2006-05-26 17:25  Henrique Romano
+
+	* [r3492] bin: removing useless directory
+
+2006-05-26 17:22  Henrique Romano
+
+	* [r3491] stoqdrivers/devices/printers/daruma/FS2100.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py:
+	  s/charge/surcharge
+
+2006-05-01 13:01  Henrique Romano
+
+	* [r3366] stoqdrivers/constants.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py: Adding a custom
+	  payment method support to the FiscalPrinter API.
+
+2006-04-26 14:48  Henrique Romano
+
+	* [r3343] stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py: Adding
+	  get_constants() method to FiscalPrinter API, updating drivers.
+
+2006-04-26 14:28  Henrique Romano
+
+	* [r3342] stoqdrivers/constants.py: Implementing a simple function
+	  to describe constants briefly
+
+2006-04-26 14:23  Henrique Romano
+
+	* [r3341] stoqdrivers/constants.py: Minor change -- improving
+	  comment
+
+2006-04-26 14:21  Henrique Romano
+
+	* [r3340] stoqdrivers/devices/base.py,
+	  stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS2100.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py: Adding
+	  get_items() to IDriverConstants interface and renaming
+	  get_constant_value to get_value.
+
+2006-04-24 19:04  Henrique Romano
+
+	* [r3315] stoqdrivers/devices/printers/daruma/FS345.py: Minor
+	  change: separating helper methods from interface implementation
+
+2006-04-19 19:16  Henrique Romano
+
+	* [r3310] stoqdrivers/devices/printers/daruma/FS345.py: Raising
+	  proper exceptions
+
+2006-04-19 19:01  Henrique Romano
+
+	* [r3309] stoqdrivers/devices/printers/daruma/FS345.py: Fixing a
+	  bug, creating customer data in instatiation time to avoid
+	  problems with coupon_close
+
+2006-04-19 18:58  Henrique Romano
+
+	* [r3308] stoqdrivers/devices/printers/daruma/FS345.py: Fixing a
+	  bug, wrong indices
+
+2006-04-19 18:55  Henrique Romano
+
+	* [r3307] stoqdrivers/__init__.py: Pyflakes
+
+2006-04-15 23:25  Henrique Romano
+
+	* [r3302] setup.py: Consistency
+
+2006-04-15 23:24  Henrique Romano
+
+	* [r3301] setup.py: whitespace
+
+2006-04-15 23:23  Henrique Romano
+
+	* [r3300] setup.py: Minor change, adjusting package's long
+	  description
+
+2006-04-15 22:52  Henrique Romano
+
+	* [r3299] README: Fixing text
+
+2006-03-21 14:51  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r3146] setup.py: Use kiwi.dist.setup
+
+2006-03-21 14:20  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r3141] stoqdrivers/__init__.py: locale resource not needed with
+	  latest kiwi
+
+2006-03-17 12:32  Henrique Romano
+
+	* [r3124] tests/check_ifaces_impl.py: Minor change, printing the
+	  interface name
+
+2006-03-16 12:20  Henrique Romano
+
+	* [r3117] stoqdrivers/constants.py,
+	  stoqdrivers/devices/printers/interface.py: Fixing comments.
+
+2006-03-15 19:52  Henrique Romano
+
+	* [r3104] stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py: Pyflakes
+
+2006-03-15 19:22  Henrique Romano
+
+	* [r3098] stoqdrivers/constants.py, stoqdrivers/devices/base.py,
+	  stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/cheque.py,
+	  stoqdrivers/devices/printers/daruma/FS2100.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py: Fix for bug
+	  #2246: Include support for define the printer constants. This is
+	  a initial implementation.
+
+2006-03-14 18:39  Henrique Romano
+
+	* [r3089] tests/test_flow.py: Pyflakes
+
+2006-03-14 14:51  Henrique Romano
+
+	* [r3085] stoqdrivers/devices/printers/dataregis/EP375.py: Thanks
+	  Johan, you've found a bug.
+
+2006-03-14 14:27  Henrique Romano
+
+	* [r3084] stoqdrivers/devices/printers/dataregis/EP375.py: Hmmm
+
+2006-03-14 14:24  Henrique Romano
+
+	* [r3083] stoqdrivers/devices/printers/daruma/FS2100.py: following
+	  API specification.
+
+2006-03-14 14:21  Henrique Romano
+
+	* [r3082] stoqdrivers/devices/printers/daruma/FS345.py: Following
+	  API specification.
+
+2006-03-14 14:19  Henrique Romano
+
+	* [r3081] stoqdrivers/devices/printers/interface.py: Prefixing
+	  properly "identify_customer" function name.
+
+2006-03-14 14:17  Henrique Romano
+
+	* [r3080] stoqdrivers/devices/printers/interface.py: get_status is
+	  useless and must be removed right now.
+
+2006-03-14 14:15  Henrique Romano
+
+	* [r3079] tests/check_ifaces_impl.py: Catching Invalid instead
+	  Broken[Method]Implementation.
+
+2006-03-14 14:11  Henrique Romano
+
+	* [r3078] tests/check_ifaces_impl.py: Adding a simple module to
+	  test the drivers implementation
+
+2006-03-13 13:43  Henrique Romano
+
+	* [r3075] stoqdrivers/devices/printers/dataregis/EP375.py: Extra
+	  work to allow us work with product code that contains letters.
+
+2006-03-10 01:21  Evandro Miquelito
+
+	* [r3018] stoqdrivers/__init__.py: Fixing a bug and catching proper
+	  exceptions
+
+2006-03-09 22:56  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r3009] MANIFEST.in: Add po directory
+
+2006-03-09 22:30  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r3007] .: Add svn:ignore
+
+2006-03-09 22:29  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r3006] MANIFEST.in: Add MANIFEST.in for sdist
+
+2006-03-09 13:35  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r2998] setup.py: Improve version checking
+
+2006-03-09 13:20  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r2997] setup.py: kiwi_version and python serial 2.1
+
+2006-03-08 23:06  Evandro Miquelito
+
+	* [r2992] setup.py: Adding resource locale
+
+2006-03-08 23:03  Evandro Miquelito
+
+	* [r2991] setup.py: Using the right version attribute
+
+2006-03-08 23:00  Evandro Miquelito
+
+	* [r2990] setup.py: Fixing setup.py
+
+2006-03-08 22:58  Evandro Miquelito
+
+	* [r2989] setup.py: Minor changes
+
+2006-03-08 22:18  Evandro Miquelito
+
+	* [r2984] setup.py: Adding a dependencies check and updating setup
+	  informations
+
+2006-03-08 22:17  Evandro Miquelito
+
+	* [r2983] stoqdrivers/__init__.py, stoqdrivers/__version__.py:
+	  Removing __version__.py file and moving its contents to
+	  __init__.py
+
+2006-03-08 19:12  Henrique Romano
+
+	* [r2980] NEWS, stoqdrivers/__version__.py: Updating NEWS and
+	  version for 0.3.0 version
+
+2006-03-07 05:40  Evandro Miquelito
+
+	* [r2933] stoqdrivers/devices/printers/virtual/Simple.py: fixing a
+	  bug: making charge and discount really useful in virtual printer
+	  totalize method
+
+2006-03-05 17:20  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r2885] setup.py: use new kiwi api
+
+2006-03-02 21:57  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r2827] tests/__init__.py: add an empty __init__.py so trial can
+	  run
+
+2006-02-23 19:15  Henrique Romano
+
+	* [r2765] stoqdrivers/devices/printers/sweda/IFS9000I.py: No sales
+	  reports is required.
+
+2006-02-23 18:42  Henrique Romano
+
+	* [r2764] stoqdrivers/devices/printers/virtual/Simple.py: virtual
+	  Simple printer must return the coupon COO.
+
+2006-02-21 15:02  Henrique Romano
+
+	* [r2717] stoqdrivers/devices/printers/perto/Pay2023.py: Adding one
+	  more exception to manage
+
+2006-02-21 15:02  Henrique Romano
+
+	* [r2716] stoqdrivers/devices/serialbase.py: Removing an useless
+	  method
+
+2006-02-21 14:32  Henrique Romano
+
+	* [r2714] stoqdrivers/devices/printers/fiscal.py: Turning
+	  _has_been_totalized to False when the coupon is closed with
+	  success.
+
+2006-02-21 13:40  Henrique Romano
+
+	* [r2713] tests/test_flow.py: Improving test_flow, using unittest
+
+2006-02-21 11:43  Henrique Romano
+
+	* [r2711] tests/log_test.py: Fixing import
+
+2006-02-20 19:28  Henrique Romano
+
+	* [r2709] tests/test_flow.py: DRY
+
+2006-02-20 19:01  Henrique Romano
+
+	* [r2708] stoqdrivers/devices/printers/interface.py: Changing
+	  Stoqdrivers API, now quantities/values only can be expressed by
+	  decimal.Decimal instances.
+
+2006-02-20 18:29  Henrique Romano
+
+	* [r2704] stoqdrivers/log.py: Adjusting log level properly
+
+2006-02-20 18:28  Henrique Romano
+
+	* [r2703] stoqdrivers/log.py: Whitespaces
+
+2006-02-20 18:26  Henrique Romano
+
+	* [r2702] tests/test_flow.py: Pyflakes
+
+2006-02-20 18:26  Henrique Romano
+
+	* [r2701] stoqdrivers/devices/printers/fiscal.py: - Turns
+	  has_been_totalized private. - Raise CloseCouponError when close()
+	  is called with no payments added. - decimal.Decimal initial
+	  support.
+
+2006-02-20 18:22  Henrique Romano
+
+	* [r2700] stoqdrivers/devices/printers/dataregis/EP375.py:
+	  decimal.Decimal support and managing CouponNotOpen exception.
+
+2006-02-20 18:20  Henrique Romano
+
+	* [r2699] stoqdrivers/devices/printers/perto/Pay2023.py: Remove
+	  useless comments and adding one more exception to manage.
+
+2006-02-20 18:19  Henrique Romano
+
+	* [r2698] tests/test_flow.py: Improving test_flow module.
+
+2006-02-20 14:19  Henrique Romano
+
+	* [r2691] stoqdrivers/devices/printers/bematech/MP25.py: raising
+	  the correct exceptions.
+
+2006-02-20 14:18  Henrique Romano
+
+	* [r2690] stoqdrivers/devices/printers/sweda/IFS9000I.py: Fixing a
+	  bug
+
+2006-02-20 13:40  Henrique Romano
+
+	* [r2688] tests/test_flow.py: Updating test; now it works with
+	  bematech driver
+
+2006-02-20 13:16  Henrique Romano
+
+	* [r2685] stoqdrivers/devices/printers/bematech/MP25.py: Initial
+	  decimal.Decimal support.
+
+2006-02-18 14:15  Henrique Romano
+
+	* [r2679] stoqdrivers/tests: Removing an useless directory
+
+2006-02-17 19:37  Evandro Miquelito
+
+	* [r2664] stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py: Pyflakes
+
+2006-02-17 18:17  Henrique Romano
+
+	* [r2663] stoqdrivers/devices/printers/dataregis/EP375.py: Using
+	  Decimals()
+
+2006-02-17 18:16  Henrique Romano
+
+	* [r2662] stoqdrivers/devices/printers/virtual/Simple.py: Decimal
+	  issues
+
+2006-02-17 17:48  Henrique Romano
+
+	* [r2659] stoqdrivers/devices/printers/fiscal.py: Using Decimal
+	  instead float.
+
+2006-02-17 17:32  Henrique Romano
+
+	* [r2656] stoqdrivers/devices/printers/fiscal.py: Using number
+	  instead float.
+
+2006-02-17 17:12  Henrique Romano
+
+	* [r2654] tests/test_flow.py: Fixing some wrong function parameters
+	  and adding a TODO list.
+
+2006-02-17 17:12  Henrique Romano
+
+	* [r2653] stoqdrivers/devices/printers/sweda/IFS9000I.py: Adding
+	  more exceptions to manage.
+
+2006-02-17 17:09  Henrique Romano
+
+	* [r2652] stoqdrivers/exceptions.py: Adding AlreadyTotalized
+	  exception.
+
+2006-02-17 16:41  Henrique Romano
+
+	* [r2651] stoqdrivers/devices/printers/sweda/IFS9000I.py: Avoiding
+	  coupon_open break if the client identification is not made.
+
+2006-02-17 16:08  Henrique Romano
+
+	* [r2646] stoqdrivers/common.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py: There is no
+	  reason for _check_float, IFS9000I driver is redoing capcheck
+	  work. Removing _check_float and is_float as well.
+
+2006-02-14 18:06  Henrique Romano
+
+	* [r2543] stoqdrivers/devices/printers/bematech/DP20C.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/cheque.py,
+	  stoqdrivers/devices/printers/daruma/FS2100.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py,
+	  stoqdrivers/utils.py: Fix for bug #2441: Manage text encoding
+	  sent to the printers. r=jdahlin
+
+2006-02-13 13:06  Henrique Romano
+
+	* [r2522] stoqdrivers/devices/printers/bematech/DP20C.py: DP20C's
+	  get_capabilities() implementation.
+
+2006-02-08 19:47  Henrique Romano
+
+	* [r2465] stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/capabilities.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py: Include support
+	  for till cash in/out on stoqdrivers. Fixes bug #2408 r=jdahlin
+
+2006-02-08 13:54  Henrique Romano
+
+	* [r2431] stoqdrivers/devices/printers/dataregis/EP375.py:
+	  whitespaces
+
+2006-02-08 13:37  Henrique Romano
+
+	* [r2427] stoqdrivers/devices/base.py,
+	  stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/scales/base.py: Pyflakes & whitespaces
+
+2006-02-01 11:37  Henrique Romano
+
+	* [r2304] stoqdrivers/devices/printers/interface.py: Removing
+	  useless whitespace
+
+2006-01-31 17:44  Henrique Romano
+
+	* [r2295] stoqdrivers/devices/printers/cheque.py: get_banks() must
+	  have the bank code as key, not its name.
+
+2006-01-31 12:27  Henrique Romano
+
+	* [r2280] stoqdrivers/devices/printers/sweda/IFS9000I.py: Minor
+	  change
+
+2006-01-30 19:05  Henrique Romano
+
+	* [r2277] stoqdrivers/conf/dataregis.ini: UTF-8 issues
+
+2006-01-30 19:03  Henrique Romano
+
+	* [r2276] stoqdrivers/conf/bematech.ini: UTF-8 issues
+
+2006-01-27 13:25  Henrique Romano
+
+	* [r2230] stoqdrivers/devices/printers/base.py: Implementing a very
+	  useful function to get all the printers that implements an
+	  specific interface.
+
+2006-01-27 13:25  Henrique Romano
+
+	* [r2229] stoqdrivers/devices/printers/bematech/DP20C.py: Declaring
+	  DP20C's model name.
+
+2006-01-25 18:21  Henrique Romano
+
+	* [r2196] stoqdrivers/conf/bematech.ini,
+	  stoqdrivers/devices/printers/bematech/DP20C.py: Initial
+	  implementation of Bematech DP20C
+
+2006-01-19 11:17  Henrique Romano
+
+	* [r2135] stoqdrivers/devices/printers/base.py: Fixing a bug
+
+2006-01-17 20:20  Henrique Romano
+
+	* [r2121] stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/scales/scales.py: We don't need check for
+	  interfaces on get_supported_printers, this a task for BasePrinter
+	  when creating a new driver instance.
+
+2006-01-16 19:30  Henrique Romano
+
+	* [r2114] stoqdrivers/devices/base.py: Adding the very useful
+	  notify_read method. Patch by Johan Dahlin.
+
+2006-01-16 18:45  Henrique Romano
+
+	* [r2112] stoqdrivers/devices/base.py: oops
+
+2006-01-16 18:38  Henrique Romano
+
+	* [r2111] ChangeLog, stoqdrivers/constants.py,
+	  stoqdrivers/devices/base.py,
+	  stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/scales/base.py,
+	  stoqdrivers/devices/scales/scales.py: Fix for bug #2386:
+	  BaseDevice implementation r=evandro
+
+2006-01-13 20:16  Henrique Romano
+
+	* [r2096] stoqdrivers/devices/printers/base.py: Implementing
+	  get_printer_name()
+
+2006-01-13 19:49  Henrique Romano
+
+	* [r2095] stoqdrivers/devices/scales/interface.py,
+	  stoqdrivers/devices/scales/toledo/PrixIII.py: Scale API change:
+	  s/scale_name/model_name
+
+2006-01-13 19:48  Henrique Romano
+
+	* [r2094] stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS2100.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/daruma/FS600MFD.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py: FiscalPrinter API
+	  change: s/printer_name/model_name
+
+2006-01-13 18:23  Henrique Romano
+
+	* [r2081] stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/scales/base.py,
+	  stoqdrivers/devices/scales/interface.py,
+	  stoqdrivers/devices/scales/toledo/PrixIII.py,
+	  stoqdrivers/utils.py: Implementing get_supported_scales().
+
+2006-01-13 11:05  Henrique Romano
+
+	* [r2063] stoqdrivers/devices/printers/bematech/MP25.py: Updating
+	  authors.
+
+2006-01-10 20:18  Henrique Romano
+
+	* [r2046] ChangeLog, stoqdrivers/constants.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py: Fix for bug
+	  #2383: Implements support for product's custom unit. r=jdahlin
+
+2006-01-10 18:39  Henrique Romano
+
+	* [r2045] ChangeLog, stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py: Fix for bug
+	  #2362: close_coupon method must return the COO (operation order
+	  counter). r=jdahlin
+
+2006-01-07 00:16  Henrique Romano
+
+	* [r2034] stoqdrivers/devices/printers/interface.py: Fixing
+	  workflow and updating docstrings formatting.
+
+2006-01-06 19:54  Henrique Romano
+
+	* [r2033] ChangeLog, stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/serialbase.py: Fix for bug #2153: Implements
+	  support for Bematech's extended protocol. r=jdahlin
+
+2006-01-04 13:15  Henrique Romano
+
+	* [r2013] ChangeLog, stoqdrivers/devices/scales/interface.py,
+	  stoqdrivers/devices/scales/toledo,
+	  stoqdrivers/devices/scales/toledo/PrixIII.py,
+	  stoqdrivers/devices/scales/toledo/__init__.py,
+	  stoqdrivers/exceptions.py: Fix for bug #2369: Implements support
+	  for Toledo PrixIII scale.
+
+2006-01-04 12:50  Henrique Romano
+
+	* [r2012] stoqdrivers/devices/printers/daruma/FS345.py: Fixing a
+	  wrong attribute reference
+
+2006-01-04 12:49  Henrique Romano
+
+	* [r2011] stoqdrivers/devices/printers/bematech/MP25.py: Fixing a
+	  bug found on Bematech MP25 driver: the index "02" for payment
+	  method is not registered in our printer.
+
+2006-01-03 21:04  Henrique Romano
+
+	* [r1996] locale, po/POTFILES.list, po/stoqdrivers.pot,
+	  stoqdrivers/__init__.py, stoqdrivers/configparser.py,
+	  stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/cheque.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py,
+	  stoqdrivers/log.py: Fix for bug #700: Stoqdrivers exception
+	  messages should be internationalized r=jdahlin
+
+2006-01-02 20:44  Henrique Romano
+
+	* [r1987] MANIFEST.in: Specifying data files that must be installed
+	  with the package.
+
+2006-01-02 20:43  Henrique Romano
+
+	* [r1986] ChangeLog: Initial revision of the Changelog file.
+
+2006-01-02 20:41  Henrique Romano
+
+	* [r1985] NEWS, README: Initial revision of README and NEWS files.
+
+2006-01-02 14:42  Henrique Romano
+
+	* [r1978] stoqdrivers/devices/printers/sweda/IFS9000I.py: Applying
+	  PEP8 specification to docstrings.
+
+2006-01-02 13:57  Henrique Romano
+
+	* [r1977] stoqdrivers/constants.py: Consistency.
+
+2006-01-02 13:56  Henrique Romano
+
+	* [r1976] stoqdrivers/__version__.py: Adjusting version.
+
+2005-12-23 14:54  Henrique Romano
+
+	* [r1973] stoqdrivers/devices/printers/perto/Pay2023.py: Fixing two
+	  bugs: 1) self._customer_* must be defined in class instantiation
+	  time and 2) parse_value must consider values greater than 1000
+	  (these values are in the format 'XX.XXX,XX')
+
+2005-12-23 14:52  Henrique Romano
+
+	* [r1972] stoqdrivers/devices/printers/virtual/Simple.py: Adding
+	  printer_name attribute
+
+2005-12-22 16:18  Henrique Romano
+
+	* [r1956] stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py: FiscalPrinter API
+	  inconsistency.
+	  
+	  Addition of coupon_identify_customer on FiscalPrinter API.
+	  
+	  r=evandro
+
+2005-12-19 19:07  Henrique Romano
+
+	* [r1940] stoqdrivers/devices/printers/sweda/IFS9000I.py: PEP8
+
+2005-12-19 19:00  Henrique Romano
+
+	* [r1939] stoqdrivers/devices/printers/perto/Pay2023.py: oops
+
+2005-12-19 18:50  Henrique Romano
+
+	* [r1938] stoqdrivers/devices/printers/perto/Pay2023.py: Fixing
+	  some methods implementation to follow the API specification.
+	  Partial fix for bug #2125.
+
+2005-12-19 13:52  Henrique Romano
+
+	* [r1937] stoqdrivers/devices/printers/dataregis/EP375.py: Fixing
+	  the coupon_totalize() return value, following the API
+	  specification.
+
+2005-12-19 13:00  Henrique Romano
+
+	* [r1936] stoqdrivers/devices/printers/daruma/FS2100.py: Fixing a
+	  bug, parsing correctly the 'add_item' command output.
+
+2005-12-15 21:59  Henrique Romano
+
+	* [r1932] setup.py, stoqdrivers/__init__.py, stoqdrivers/conf,
+	  stoqdrivers/conf/dataregis.ini, stoqdrivers/conf/perto.ini,
+	  stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/cheque.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/virtual/Simple.py: Fix for bug
+	  #2284: Implements support for cheque impression of different
+	  banks. r=jdahlin
+
+2005-12-15 14:14  Henrique Romano
+
+	* [r1924] stoqdrivers/devices/printers/perto/Pay2023.py: Removing a
+	  bug. The values that represents price on Perto Pay (FISCnet
+	  protocol) must be formatted properly, this patch create a common
+	  method to format these values and update the callsites.
+
+2005-12-15 13:07  Henrique Romano
+
+	* [r1908] stoqdrivers/devices/printers/base.py: If brand, model and
+	  device is specified, don't try load a config file.
+
+2005-12-14 20:02  Henrique Romano
+
+	* [r1890] stoqdrivers/devices/printers/base.py: Do not return the
+	  virtual printer through get_supported_printers, instead the new
+	  function get_virtual_printer must be used.
+
+2005-12-14 18:50  Henrique Romano
+
+	* [r1889] stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/virtual,
+	  stoqdrivers/devices/printers/virtual/Simple.py,
+	  stoqdrivers/devices/printers/virtual/__init__.py,
+	  stoqdrivers/exceptions.py, tests/test_flow.py: Fix for bug #2346:
+	  Virtual printer implementation r=jdahlin.
+
+2005-12-14 16:13  Henrique Romano
+
+	* [r1881] stoqdrivers/devices/printers/fiscal.py: Fixing a bug on
+	  coupon_close and improving exception message.
+
+2005-12-09 18:54  Henrique Romano
+
+	* [r1840] stoqdrivers/devices/printers/fiscal.py: Including a
+	  little check to avoid close_coupon raise a error when the
+	  payments doesn't match the coupon total value.
+
+2005-12-09 18:52  Henrique Romano
+
+	* [r1839] stoqdrivers/devices/printers/bematech/MP25.py:
+	  close_till() can be used normally.
+
+2005-12-08 18:22  Henrique Romano
+
+	* [r1824] stoqdrivers/devices/printers/perto/Pay2023.py: Fixing two
+	  bugs: 1) just call CMD_ADD_COUPON_DIFFERENCE if we have a value
+	  to send; 2) Formatting the payment value properly, FISCnet
+	  requires a ',' instead of '.' for values of type "money".
+
+2005-12-07 19:09  Henrique Romano
+
+	* [r1810] stoqdrivers/devices/printers/base.py: Isn't possible
+	  adjust the baudrate by a configuration file anymore, removing a
+	  TODO with this.
+
+2005-12-07 18:57  Henrique Romano
+
+	* [r1809] stoqdrivers/devices/printers/sweda/IFS9000I.py: Just
+	  marking a FIXME and removing a bug.
+
+2005-12-06 19:44  Henrique Romano
+
+	* [r1797] stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS2100.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/daruma/FS600MFD.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py: Removing the
+	  string "Printer" from the driver classes name and allowing
+	  defines the brand, model and device by class parameters.
+
+2005-12-06 16:40  Henrique Romano
+
+	* [r1795] stoqdrivers/devices/printers/dataregis/EP375.py: Setting
+	  the min_len for item_code capability in dataregis 375EP.
+
+2005-12-06 16:37  Henrique Romano
+
+	* [r1794] stoqdrivers/devices/printers/capabilities.py: Fix for bug
+	  #2328: Capability class must have a 'min_size' parameter.
+	  r=jdahlin.
+
+2005-12-06 13:41  Henrique Romano
+
+	* [r1793] stoqdrivers/devices/printers/daruma/FS345.py: We don't
+	  need these checks anymore
+
+2005-12-06 13:38  Henrique Romano
+
+	* [r1792] stoqdrivers/devices/printers/perto/Pay2023.py: Setting
+	  the right exception.
+
+2005-12-02 13:15  Henrique Romano
+
+	* [r1761] stoqdrivers/devices/printers/fiscal.py: removing a wrong
+	  line.
+
+2005-11-30 18:13  Henrique Romano
+
+	* [r1744] stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/capabilities.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/exceptions.py: Fix for bug #2176: Driver capabilities
+	  implementation.
+	  
+	  Initial implementation of driver capabilities.
+	  
+	  r=jdahlin
+
+2005-11-28 20:04  Henrique Romano
+
+	* [r1739] stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS2100.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/daruma/FS600MFD.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py: Just adding an
+	  extra attribute to ICouponPrinter interface, r=jdahlin
+
+2005-11-25 20:17  Henrique Romano
+
+	* [r1727] setup.py: using kiwi's listpackages
+
+2005-11-25 17:06  Henrique Romano
+
+	* [r1721] setup.py: updating setup.py
+
+2005-11-23 18:39  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1706] stoqdrivers/devices/printers/bematech/MP25.py: use
+	  category MP25
+
+2005-11-22 21:02  Henrique Romano
+
+	* [r1697] stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/perto/Pay2023.py: ooops, broken API
+
+2005-11-22 20:02  Henrique Romano
+
+	* [r1696] stoqdrivers/devices/printers/perto,
+	  stoqdrivers/devices/printers/perto/Pay2023.py,
+	  stoqdrivers/devices/printers/perto/__init__.py,
+	  stoqdrivers/exceptions.py: Fix for bug #2280: Implementation of
+	  PertoPay 2023 driver
+	  
+	  r=evandro
+
+2005-11-21 12:32  Henrique Romano
+
+	* [r1658] stoqdrivers/devices/serialbase.py: handle_error must
+	  raise NotImplementedError if not implemented in its subclasses
+
+2005-11-18 17:47  Henrique Romano
+
+	* [r1654] stoqdrivers/devices/printers/base.py: Fixing an invalid
+	  method reference.
+
+2005-11-16 20:24  Henrique Romano
+
+	* [r1648] stoqdrivers/devices/printers/base.py: Just implementing a
+	  function to get all the printers currently supported by
+	  stoqdrivers.
+	  
+	  r=jdahlin
+
+2005-11-16 17:56  Henrique Romano
+
+	* [r1646] stoqdrivers/configparser.py,
+	  stoqdrivers/devices/printers/base.py: Renaming
+	  FiscalPrinterConfig to StoqdriversConfig
+
+2005-11-16 17:25  Henrique Romano
+
+	* [r1644] stoqdrivers/common.py, stoqdrivers/configparser.py,
+	  stoqdrivers/constants.py,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/daruma/FS2100.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/daruma/FS600MFD.py,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/serialbase.py, stoqdrivers/exceptions.py,
+	  stoqdrivers/log.py, tests/log_test.py:
+	  s/FiscalPrinter/Stoqdrivers
+
+2005-11-16 13:42  Henrique Romano
+
+	* [r1643] stoqdrivers/devices/printers/dataregis,
+	  stoqdrivers/devices/printers/dataregis/EP375.py,
+	  stoqdrivers/devices/printers/dataregis/__init__.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/interface.py: Fix for bug #2240:
+	  Implementing support for printer Dataregis EP375
+	  
+	  Initial implementation of dataregis EP375 printer driver.
+	  
+	  r=jdahlin
+
+2005-11-09 21:29  Henrique Romano
+
+	* [r1585] AUTHORS, stoqdrivers/configparser.py,
+	  stoqdrivers/devices, stoqdrivers/devices/__init__.py,
+	  stoqdrivers/devices/printers,
+	  stoqdrivers/devices/printers/__init__.py,
+	  stoqdrivers/devices/printers/base.py,
+	  stoqdrivers/devices/printers/bematech,
+	  stoqdrivers/devices/printers/bematech/MP25.py,
+	  stoqdrivers/devices/printers/bematech/__init__.py,
+	  stoqdrivers/devices/printers/daruma,
+	  stoqdrivers/devices/printers/daruma/FS2100.py,
+	  stoqdrivers/devices/printers/daruma/FS345.py,
+	  stoqdrivers/devices/printers/daruma/FS600MFD.py,
+	  stoqdrivers/devices/printers/daruma/__init__.py,
+	  stoqdrivers/devices/printers/fiscal.py,
+	  stoqdrivers/devices/printers/interface.py,
+	  stoqdrivers/devices/printers/sweda,
+	  stoqdrivers/devices/printers/sweda/IFS9000I.py,
+	  stoqdrivers/devices/printers/sweda/__init__.py,
+	  stoqdrivers/devices/scales,
+	  stoqdrivers/devices/scales/__init__.py,
+	  stoqdrivers/devices/serialbase.py, stoqdrivers/drivers,
+	  stoqdrivers/exceptions.py, stoqdrivers/fiscalprinter.conf,
+	  stoqdrivers/networkserial.py, stoqdrivers/printer.py,
+	  stoqdrivers/serialdevice.py: Fix for bug #2239: Update the
+	  directory structure to allow works with multiples devices.
+	  
+	  r=jdahlin.
+
+2005-11-09 18:33  Henrique Romano
+
+	* [r1583] fiscalprinter, setup.py, stoqdrivers,
+	  stoqdrivers/common.py, stoqdrivers/configparser.py,
+	  stoqdrivers/constants.py, stoqdrivers/drivers/bematech/MP25.py,
+	  stoqdrivers/drivers/daruma/FS2100.py,
+	  stoqdrivers/drivers/daruma/FS345.py,
+	  stoqdrivers/drivers/daruma/FS600MFD.py,
+	  stoqdrivers/drivers/interface.py,
+	  stoqdrivers/drivers/serialbase.py,
+	  stoqdrivers/drivers/skeleton.py,
+	  stoqdrivers/drivers/sweda/IFS9000I.py, stoqdrivers/exceptions.py,
+	  stoqdrivers/log.py, stoqdrivers/networkserial.py,
+	  stoqdrivers/printer.py, stoqdrivers/serialdevice.py: Renaming
+	  fiscalprinter to stoqdrivers and fixing imports.
+
+2005-11-09 17:56  Henrique Romano
+
+	* [r1582] fiscalprinter/gui: Removing the gui/ directory. We don't
+	  want GUI's on the package, since that an another one (and better)
+	  will be implemented in stoq/stoqlib soon.
+
+2005-11-08 13:27  Henrique Romano
+
+	* [r1552] : Renaming fiscalprinter package to stoqdrivers.
+
+2005-10-21 16:19  Henrique Romano
+
+	* [r1485] : Turning FiscalPrinter Kiwi dependent. Implementing also
+	  some extra data types to Kiwi's argcheck and updating callsites.
+
+2005-10-10 21:37  Henrique Romano
+
+	* [r1403] : If a read X or reduce Z is done, we must finish the
+	  test.
+
+2005-10-07 13:50  Henrique Romano
+
+	* [r1353] : Fixing line size.
+
+2005-10-07 13:01  Henrique Romano
+
+	* [r1352] : Removing pyflakes warnings.
+
+2005-10-06 17:52  Henrique Romano
+
+	* [r1345] : broken english
+
+2005-10-05 20:51  Henrique Romano
+
+	* [r1340] : Fix for bug #2158: Implementation of function for
+	  payment method addition. r=jdahlin
+
+2005-09-29 13:22  Henrique Romano
+
+	* [r1300] : Fixing import errors and implementing some checks when
+	  doing a reduce Z.
+
+2005-09-29 01:31  Henrique Romano
+
+	* [r1299] : Just cleaning a bit the formatters. Thanks to Johan by
+	  the tip.
+
+2005-09-26 14:37  Henrique Romano
+
+	* [r1264] : Fix for bug #2156: Driver for Sweda IFS9000I doesn't
+	  supports more than one charge attached by coupon.
+
+2005-09-26 13:15  Henrique Romano
+
+	* [r1263] : Driver for Daruma FS345 is also compatible with model
+	  FS600MFD.
+
+2005-09-23 22:38  Henrique Romano
+
+	* [r1262] : Fix for bug #2131: Implements stardandized exceptions
+	  management for the drivers.
+	  
+	  r=jdahlin
+
+2005-09-23 14:52  Henrique Romano
+
+	* [r1261] : Implementing methods to get the id of the last item
+	  added to the coupon (with success), this will help us return
+	  correct values in coupon_add_item and avoid erros on passing the
+	  parameter to coupon_cancel_item.
+
+2005-09-23 13:46  Henrique Romano
+
+	* [r1260] : When additing an item to coupon, its number must be
+	  returned (we need a counter in the instance to manage this).
+	  Fixing also an error on cancel_item function: the item number
+	  must prefixed with '0' and not ' '
+
+2005-09-22 21:09  Henrique Romano
+
+	* [r1257] : Fix for bug #2155: Implements support for Daruma FS345
+	  item cancellation
+	  
+	  r=jdahlin
+
+2005-09-22 16:09  Henrique Romano
+
+	* [r1255] : Just documenting a HACK (will be fixed soon) and
+	  adjusting the printer command created in coupon_totalize: we
+	  don't need send a message if no message is specified (this
+	  parameter is optional)
+
+2005-09-21 19:18  Henrique Romano
+
+	* [r1252] : Just fixing a wrong reference.
+
+2005-09-21 18:45  Henrique Romano
+
+	* [r1251] : Setting properly the package license.
+
+2005-09-21 18:42  Henrique Romano
+
+	* [r1250] : Fix for bug #2148: Implementation of install script for
+	  FiscalPrinter.
+	  
+	  r=jdahlin
+
+2005-09-20 18:18  Henrique Romano
+
+	* [r1241] : When catching a ImportError, print the reason why the
+	  module can not be imported.
+
+2005-09-20 13:19  Henrique Romano
+
+	* [r1239] : Fix for bug #2132: Implements support for Daruma model
+	  FS2100
+	  
+	  r=jdahlin
+
+2005-09-19 20:01  Henrique Romano
+
+	* [r1236] : Fix for bug #2133: Implement support to multiple
+	  printer models by driver. r=jdahlin
+
+2005-09-16 15:53  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1233] : update doc
+
+2005-09-15 19:01  Henrique Romano
+
+	* [r1226] : First parameter is self.
+
+2005-09-14 03:36  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1225] : Add keyword argument support for argcheck. Add some
+	  basic tests
+
+2005-09-13 18:42  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1224] : Readd cancel checks
+
+2005-09-13 18:40  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1223] : Add TODO
+
+2005-09-12 15:39  cleber
+
+	* [r1221] : Modified to use fiscalprinter.log, and some general
+	  debugging cleanups.
+
+2005-09-12 12:46  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1220] : default to a printer we have
+
+2005-09-11 01:13  Evandro Miquelito
+
+	* [r1219] : Adding driver for sweda IFS9000I printer
+
+2005-09-11 01:10  pyone
+
+	* [r1218] : More changes on GUI
+
+2005-09-11 00:49  cleber
+
+	* [r1217] : Use read_insist() instead of read() (because of the
+	  rename in the last commit)
+
+2005-09-11 00:47  cleber
+
+	* [r1216] : Renamed read() to read_insist(), to avoid problems with
+	  other drivers.
+
+2005-09-11 00:07  cleber
+
+	* [r1215] : Driver for the Bematech MP2XFI family.
+
+2005-09-11 00:05  cleber
+
+	* [r1214] : Overriden read method, so that reads are more reliable.
+	  This fixes many issues with Bema and Sweda drivers.
+
+2005-09-10 23:53  pyone
+
+	* [r1213] : Changed add_resource at gui main
+
+2005-09-10 23:18  pyone
+
+	* [r1212] : More changes on GUI. GUI broken yet
+
+2005-09-10 22:48  Evandro Miquelito
+
+	* [r1211] : Unit argument is actually integer
+
+2005-09-10 22:43  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1210] : comment out network device for now
+
+2005-09-10 22:42  Evandro Miquelito
+
+	* [r1209] : Fixing imports.
+
+2005-09-10 22:33  Evandro Miquelito
+
+	* [r1208] : Adding a DEBUG_MODE attribute for serialbase
+
+2005-09-10 22:15  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1207] : Import DriverError
+
+2005-09-10 22:06  Evandro Miquelito
+
+	* [r1206] : Adding a exception
+
+2005-09-10 22:02  Evandro Miquelito
+
+	* [r1205] : Improving docstring.
+
+2005-09-10 22:00  pyone
+
+	* [r1204] : GUI changes
+
+2005-09-10 21:40  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1203] : Land FiscalPrinter API, utils and FS345 driver. Remove
+	  basedriver and basedevice
+
+2005-09-10 21:07  Evandro Miquelito
+
+	* [r1202] : s/markup/charge
+
+2005-09-10 20:49  pyone
+
+	* [r1201] : fiscalprinter removed. Changes on GUI to use interface
+
+2005-09-10 19:30  pyone
+
+	* [r1200] : GUI Design
+
+2005-09-10 17:32  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1199] : separate totalize/close again, to simplify driver
+	  implementations
+
+2005-09-10 17:31  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1198] : ignore pyc
+
+2005-09-10 17:31  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1197] : Improve logging
+
+2005-09-10 17:23  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1196] :
+
+2005-09-10 16:14  Evandro Miquelito
+
+	* [r1195] : Ops.. :-)
+
+2005-09-10 16:06  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1194] : s/company/customer/
+
+2005-09-10 15:40  Evandro Miquelito
+
+	* [r1193] : Updating skeleton module structure
+
+2005-09-10 15:37  Evandro Miquelito
+
+	* [r1192] : Fixing docstring
+
+2005-09-10 15:37  Evandro Miquelito
+
+	* [r1191] : Renaming model.py module to skeleton.py
+
+2005-09-10 15:35  Evandro Miquelito
+
+	* [r1190] : Removing executable permission for basedriver module
+
+2005-09-10 15:33  Evandro Miquelito
+
+	* [r1189] : Constants are now in a constants.py module
+
+2005-09-10 15:32  Evandro Miquelito
+
+	* [r1188] : Moving interface.y module to drivers directory.
+
+2005-09-10 15:31  Evandro Miquelito
+
+	* [r1187] : Adding a new constants.py module
+
+2005-09-10 15:17  Evandro Miquelito
+
+	* [r1186] : Moving tax constants from interface module to
+	  basedriver module and make them easily available for driver
+	  modules.
+
+2005-09-10 15:16  Evandro Miquelito
+
+	* [r1185] : Updating driver interface.
+
+2005-09-10 15:07  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1184] : improve doc strings
+
+2005-09-10 14:55  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1183] : Merge close/totalize. Add item_id argument for
+	  add_charge
+
+2005-09-10 14:43  Evandro Miquelito
+
+	* [r1182] : Adding one more exception: PrinterError
+
+2005-09-10 14:34  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1181] : Checkin first version of IFiscalPrinterDriver API
+
+2005-09-10 14:10  Evandro Miquelito
+
+	* [r1180] : Adding constants for product label units and fixing a
+	  small bug.
+
+2005-09-09 20:07  Evandro Miquelito
+
+	* [r1177] : Fixing a small bug in log.py module. We neet to set the
+	  log handler always in the constructor.
+
+2005-09-09 19:42  Evandro Miquelito
+
+	* [r1176] : Fixing a comment.
+
+2005-09-09 19:34  Evandro Miquelito
+
+	* [r1175] : Removing inline imports and fixing a small bug in
+	  BaseDriver.
+
+2005-09-09 19:33  Evandro Miquelito
+
+	* [r1174] : Applying Kiko comments.
+
+2005-09-09 19:26  Evandro Miquelito
+
+	* [r1173] : More improvements after revision.
+
+2005-09-09 19:25  Evandro Miquelito
+
+	* [r1172] : Applying some improvements in revision.
+
+2005-09-09 17:32  cleber
+
+	* [r1171] : Added tests directory.
+
+2005-09-09 15:45  pyone
+
+	* [r1170] : log.py bug fixed. main.glade improvements and
+	  basedriver.py using Log class
+
+2005-09-09 15:11  Evandro Miquelito
+
+	* [r1169] : Removing bad exceptions
+
+2005-09-09 14:23  Evandro Miquelito
+
+	* [r1168] : Adding a basedriver module
+
+2005-09-09 14:22  Evandro Miquelito
+
+	* [r1167] : Adding config file management and a new common.py
+	  module.
+
+2005-09-09 14:22  Evandro Miquelito
+
+	* [r1166] : Adding more exceptions
+
+2005-09-09 14:21  Evandro Miquelito
+
+	* [r1165] : Adding device management modules
+
+2005-09-09 12:52  Evandro Miquelito
+
+	* [r1164] : Using gettext and some import adjustments.
+
+2005-09-09 12:46  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r1163] : Indentation, limit to a maximum width of 80 characters
+
+2005-09-09 03:04  pyone
+
+	* [r1161] : Minor change
+
+2005-09-09 03:02  pyone
+
+	* [r1160] : Log system with test suite
+
+2005-09-08 23:25  Evandro Miquelito
+
+	* [r1159] : Adding a better header for main.py and creating a glade
+	  directory.
+
+2005-09-08 22:35  Evandro Miquelito
+
+	* [r1158] : Removing executable permissions
+
+2005-09-08 22:34  pyone
+
+	* [r1157] : MainWindow files removed
+
+2005-09-08 22:29  Evandro Miquelito
+
+	* [r1156] : Adding a initial driver skeleton definition.
+
+2005-09-08 21:59  pyone
+
+	* [r1155] : Changed MainWindow to main
+
+2005-09-08 21:52  pyone
+
+	* [r1154] : fiscalprinter gui MainWindow added
+
+2005-09-08 21:49  Evandro Miquelito
+
+	* [r1153] : Adding an exception module.
+
+2005-09-08 21:40  Evandro Miquelito
+
+	* [r1152] : Starting fiscalprinter jobs.
+

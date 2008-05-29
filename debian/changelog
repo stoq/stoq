@@ -1,3 +1,9 @@
+stoqdrivers (1:0.9.4) intrepid; urgency=low
+
+  * New Release.
+
+ -- George Y. Kussumoto <george@async.com.br>  Thu, 29 May 2008 16:36:19 -0300
+
 stoqdrivers (1:0.9.3) gutsy; urgency=low
 
   * Non Maintainer Upload

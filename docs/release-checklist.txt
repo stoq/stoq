@@ -1,11 +1,16 @@
-Check bugzilla
 Update translations:
   kiwi-i18n -pstoqdrivers -u -c
+make Changelog
 Update NEWS
+Update README
 Bump version number:
   stoqdrivers/__init__.py
 make release
-Update ChangeLog, add marker
+Update debian/changelog, add marker (dch -v newversion)
+Update debian/control (verify dependencies)
+make apidocs
+make deb
+    Test the package and fix some lintian errors
 Commit
 make release-tag
 make upload-release
