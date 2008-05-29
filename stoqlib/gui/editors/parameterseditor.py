@@ -33,7 +33,8 @@ from stoqlib.domain.base import AbstractModel
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.imageutils import ImageHelper
-from stoqlib.lib.parameters import sysparam, get_parameter_details
+from stoqlib.lib.parameters import (sysparam, get_parameter_details,
+                                    DirectoryParameter)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -72,13 +73,16 @@ class SystemParameterEditor(BaseEditor):
         widget.show()
         self._entry = widget
 
-    def _setup_entry_with_filechooser_button_slave(self):
+    def _setup_entry_with_filechooser_button_slave(self, dir_only=False):
         hbox = gtk.HBox(spacing=6)
         self._setup_entry_slave(hbox)
-        title = _(u'Logotype File selection')
+        title = _(u'Cat 52 directory selection')
         filechooser_button = gtk.FileChooserButton(title)
         filechooser_button.connect('selection-changed',
             self._on_filechooser_button__selection_changed)
+
+        if dir_only:
+            filechooser_button.set_action(gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
 
         hbox.pack_start(filechooser_button, expand=False)
         filechooser_button.show()
@@ -135,6 +139,8 @@ class SystemParameterEditor(BaseEditor):
             self._setup_comboboxentry_slave()
         elif issubclass(field_type, ImageHelper):
             self._setup_entry_with_filechooser_button_slave()
+        elif issubclass(field_type, DirectoryParameter):
+            self._setup_entry_with_filechooser_button_slave(dir_only=True)
         elif issubclass(field_type, bool):
             self._setup_radio_slave()
         elif issubclass(field_type, (int, float)):
