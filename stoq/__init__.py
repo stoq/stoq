@@ -26,7 +26,7 @@
 
 program_name    = "Stoq"
 website         = 'http://www.stoq.com.br'
-version         = "0.9.5"
+version         = "0.9.6"
 release_date    = (2008, 03, 18)
 
 try:
