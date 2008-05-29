@@ -1,3 +1,9 @@
+stoq (0.9.6) intrepid; urgency=low
+
+  * New Release
+
+ -- George Y. Kussumoto <george@async.com.br>  Thu, 29 May 2008 19:56:53 -0300
+
 stoq (0.9.5) gutsy; urgency=low
 
   * Non Maintainer Upload

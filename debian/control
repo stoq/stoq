@@ -1,29 +1,17 @@
 Source: stoq
 Section: python
 Priority: optional
-Maintainer: Fabio Morbec <fabio@async.com.br>
+Maintainer: George Y. Kussumoto <george@async.com.br>
 Build-Depends: debhelper (>= 4.2.28), cdbs, python-dev (>= 2.4), python-support
-Build-Depends-Indep: python-kiwi (>= 1.9.20), stoqlib (>= 0.9.4-4)
+Build-Depends-Indep: python-kiwi (>= 1.9.21), stoqlib (>= 0.9.5)
 Standards-Version: 3.7.3
 
 Package: stoq
 Architecture: all
-Depends: stoqlib (>= 0.9.5), postgresql-client-common
+Depends: stoqlib (>= 0.9.6), postgresql-client-common
 Replaces: stoq
 Conflicts: stoq
-Description: Stoq Server and Administration tools
- Stoq is a suite of Retail Management System applications.
- It includes the following applications;
- Point of Sales, Cash register, Sales, Purchase Orders, Inventory control,
- Customer Relationship Management (CRM), Accounts Payable and
- Accounts Receivable, Printable Reports, Employees and Suppliers registry.
- .
- This packages includes the administration tools for  installing and
- configuring the database used by Stoq
-Replaces: stoq
-Provides: stoq
-Conflicts: stoq
-Description: Stoq Client
+Description: An advanced retail system
  Stoq is a suite of Retail Management System applications.
  It includes the following applications;
  Point of Sales, Cash register, Sales, Purchase Orders, Inventory control,

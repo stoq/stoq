@@ -1,3 +1,73 @@
+2008-05-28 20:58  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7610] po/pt_BR.po: Add keyboards mnemonics
+
+2008-05-27 19:44  Silvio Rangel <silvio@async.com.br>
+
+	* [r7607] po/es_CL.po, po/es_ES.po, po/pt_BR.po, po/stoq.pot,
+	  po/sv.po: Atualização e revisão de tradução
+
+2008-05-27 17:19  George Kussumoto <george@async.com.br>
+
+	* [r7604] stoq/gui/pos/pos.py: #3399: Ao digitar um código de
+	  barras inexistente, deve retornar uma mensagem. r=jdahlin
+
+2008-05-26 20:35  George Kussumoto <george@async.com.br>
+
+	* [r7600] stoq/gui/runner.py: # Fix error when change the user who
+	  is only allowed to open one # application. r=george
+
+2008-05-26 17:16  Silvio Rangel <silvio@async.com.br>
+
+	* [r7599] po/es_CL.po, po/es_ES.po, po/pt_BR.po, po/stoq.pot,
+	  po/sv.po: Atualização e revisão de tradução
+
+2008-05-14 16:00  George Kussumoto <george@async.com.br>
+
+	* [r7592] po/es_CL.po, po/es_ES.po, po/pt_BR.po, po/stoq.pot,
+	  po/sv.po: #3719: Tradução correta de valores mínimos de ICMS e
+	  ISS. (patch by Leonardo Pinheiro) r=george
+
+2008-05-13 18:16  George Kussumoto <george@async.com.br>
+
+	* [r7590] po/es_CL.po, po/es_ES.po, po/pt_BR.po, po/stoq.pot,
+	  po/sv.po: #3713: (Stoq) "Método de pagamento" deveria ser "Forma
+	  de pagamento"). (patch by Leonardo Pinheiro) r=silvio
+
+2008-04-25 19:48  George Kussumoto <george@async.com.br>
+
+	* [r7579] data/glade/inventory.glade,
+	  stoq/gui/inventory/inventory.py: #3077: Implementar wizard para
+	  abrir o processo de inventário. r=jdahlin
+
+2008-04-17 21:09  Ronaldo Maia <romaia@async.com.br>
+
+	* [r7574] stoq/gui/pos/pos.py: add a context menu in POS for
+	  adding/removing sale items. FIXES 3690
+
+2008-04-17 14:07  Silvio Rangel <silvio@async.com.br>
+
+	* [r7571] po/es_CL.po, po/es_ES.po, po/pt_BR.po, po/stoq.pot,
+	  po/sv.po: Atualização e revisão de tradução
+
+2008-04-14 15:47  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7569] tools/stoq-dev: Make it usable for anonymous users too
+
+2008-04-11 18:43  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7566] data/glade/admin.glade, stoq/gui/admin/admin.py,
+	  stoq/gui/payable/payable.py, stoq/gui/receivable/receivable.py:
+	  #3683: Add support for payment categories, r=george
+
+2008-04-10 17:30  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7560] ChangeLog: Re-generate
+
+2008-04-10 17:15  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7557] ChangeLog: Add generated ChangeLog
+
 2008-04-10 14:45  Silvio Rangel <silvio@async.com.br>
 
 	* [r7550] po/es_CL.po, po/es_ES.po, po/pt_BR.po, po/stoq.pot,
