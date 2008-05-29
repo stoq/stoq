@@ -35,7 +35,6 @@ class PaymentCategory(Domain):
     """I am a payment category.
     I contain a name and a color
     @ivar name: category name
-    @type color: string or None
     @ivar color: category color, like #ff0000 for red.
     @type color: string or None
     """

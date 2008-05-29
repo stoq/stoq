@@ -174,7 +174,7 @@ class Inventory(Domain):
     def close(self, close_date=None):
         """Closes the inventory process
 
-        @oaram close_date: the closing date or None for right now.
+        @param close_date: the closing date or None for right now.
         @type: datetime.datetime
         """
         if not close_date:

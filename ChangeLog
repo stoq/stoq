@@ -1,3 +1,235 @@
+2008-05-29 20:22  Ronaldo Maia <romaia@async.com.br>
+
+	* [r7617] plugins/ecf/ecfui.py: pegar informações do usuário antes
+	  de fechar o caixa.
+
+2008-05-29 20:10  Ronaldo Maia <romaia@async.com.br>
+
+	* [r7616] po/es_ES.po, po/pt_BR.po, po/stoqlib.pot, po/sv.po:
+	  atualizando tradução pt_BR
+
+2008-05-29 19:54  Ronaldo Maia <romaia@async.com.br>
+
+	* [r7615] plugins/ecf/ecfui.py,
+	  stoqlib/gui/editors/parameterseditor.py,
+	  stoqlib/gui/parameters.py, stoqlib/lib/parameters.py: Bug 3732 -
+	  adicionar parametro para selecionar destino do cat52
+
+2008-05-29 17:44  Silvio Rangel <silvio@async.com.br>
+
+	* [r7614] po/es_ES.po, po/pt_BR.po, po/stoqlib.pot, po/sv.po:
+	  Atualização e revisão de tradução
+
+2008-05-29 15:51  Ronaldo Maia <romaia@async.com.br>
+
+	* [r7612] plugins/ecf/cat52.py: use correct method name
+
+2008-05-28 20:58  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7611] po/pt_BR.po: Update portuguese translation and add
+	  keyboard mnemonics
+
+2008-05-28 20:50  Ronaldo Maia <romaia@async.com.br>
+
+	* [r7609] plugins/ecf/cat52.py, plugins/ecf/catgenerator.py,
+	  plugins/ecf/ecfdomain.py, plugins/ecf/ecfui.py,
+	  plugins/ecf/sql/patch-5.sql, stoqlib/domain/sellable.py,
+	  stoqlib/domain/test/test_cat52.py, stoqlib/lib/latscii.py,
+	  stoqlib/lib/test/cat52-expected.txt: Bug 3448 - Geração de
+	  arquivo magnético de acordo com Portaria CAT 52/07
+
+2008-05-27 19:43  Silvio Rangel <silvio@async.com.br>
+
+	* [r7606] po/es_ES.po, po/pt_BR.po, po/stoqlib.pot, po/sv.po:
+	  Atualização e revisão de tradução
+
+2008-05-27 19:11  George Kussumoto <george@async.com.br>
+
+	* [r7605] stoqlib/gui/dialogs/openinventorydialog.py,
+	  stoqlib/gui/dialogs/productadjustmentdialog.py,
+	  stoqlib/gui/editors/categoryeditor.py: #Fix strings for i18n.
+
+2008-05-27 11:45  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7601] plugins/ecf/deviceconstanteditor.py: Revert accidentally
+	  committed changes from r7582
+
+2008-05-26 17:04  Silvio Rangel <silvio@async.com.br>
+
+	* [r7598] po/es_ES.po, po/pt_BR.po, po/stoqlib.pot, po/sv.po:
+	  Atualização e revisão de tradução
+
+2008-05-26 16:45  George Kussumoto <george@async.com.br>
+
+	* [r7597] stoqlib/gui/dialogs/productadjustmentdialog.py: # Fix
+	  typo in the validation error messagea. r=george
+
+2008-05-26 15:29  George Kussumoto <george@async.com.br>
+
+	* [r7596] setup.py: #3728: URL do projeto Gazpacho está incorreta.
+	  (Path by Leonardo Pinheiro) r=george
+
+2008-05-26 13:41  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7595] stoqlib/database/settings.py: #3716: O wizard de
+	  configuração inicial só aceita IP com DNS reverso (Patch by
+	  Leonardo Pinheiro), r=jdahlin
+
+2008-05-20 17:09  George Kussumoto <george@async.com.br>
+
+	* [r7594] stoqlib/gui/printing.py: #3726: Erro ao imprimir
+	  relatório sem o módulo gtkunixprint. r=jdahlin
+
+2008-05-15 18:58  George Kussumoto <george@async.com.br>
+
+	* [r7593] data/glade/ProductComponentEditor.glade,
+	  data/glade/ProductComponentSlave.glade,
+	  data/glade/SellableEditor.glade, data/sql/patch-44.sql,
+	  stoqlib/domain/product.py, stoqlib/domain/test/test_product.py,
+	  stoqlib/gui/editors/producteditor.py,
+	  stoqlib/gui/editors/sellableeditor.py, stoqlib/lib/parameters.py:
+	  #3606: Wizard para criação de produto composto. r=romaia
+
+2008-05-13 18:27  George Kussumoto <george@async.com.br>
+
+	* [r7591] po/es_ES.po, po/pt_BR.po, po/stoqlib.pot, po/sv.po:
+	  #3715: (Stoqlib) "Método de pagamento" deveria ser "Forma de
+	  pagamento"). (Patch by Leonardo Pinheiro) r=silvio
+
+2008-05-09 13:14  Ronaldo Maia <romaia@async.com.br>
+
+	* [r7589] plugins/ecf/couponprinter.py, plugins/ecf/ecfdomain.py,
+	  plugins/ecf/sql/patch-4.sql: -- Bug 3709 - Store ecf documents
+	  information
+
+2008-05-08 16:35  George Kussumoto <george@async.com.br>
+
+	* [r7585] data/glade/DeviceConstantsEditor.glade,
+	  stoqlib/gui/test/test_gladefiles.py: #3707: Fix broken test &
+	  update the TestGladeFileDomain
+
+2008-05-08 16:02  George Kussumoto <george@async.com.br>
+
+	* [r7584] stoqlib/gui/test, stoqlib/gui/test/__init__.py,
+	  stoqlib/gui/test/test_gladefiles.py: #3707: Criar testes para
+	  arquivos glade. r=jdahlin
+
+2008-04-30 22:41  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7582] data/glade/CashChangeSlave.glade,
+	  data/glade/OpenInventoryDialog.glade,
+	  data/glade/PaymentCategoryEditor.glade,
+	  data/glade/PaymentChangeDialog.glade,
+	  data/glade/ProductAdjustmentDialog.glade,
+	  data/glade/ProductsAdjustment.glade,
+	  data/glade/TransferOrderDetails.glade,
+	  plugins/ecf/deviceconstanteditor.py,
+	  stoqlib/gui/editors/sellableeditor.py: #3648: Alguns textos não
+	  estão sendo traduzidos
+
+2008-04-25 19:58  George Kussumoto <george@async.com.br>
+
+	* [r7581] data/glade/ProductAdjustmentDialog.glade,
+	  data/glade/ProductsAdjustment.glade,
+	  stoqlib/gui/dialogs/productadjustmentdialog.py: #3221: Ajustes de
+	  estoque devem gerar lançamento em CFOP especifica. r=jdahlin
+
+2008-04-25 19:53  George Kussumoto <george@async.com.br>
+
+	* [r7580] stoqlib/gui/dialogs/productcountingdialog.py: #3591:
+	  Implementar wizard para cadastro de contagem física de estoque.
+	  r=jdahlin
+
+2008-04-25 19:47  George Kussumoto <george@async.com.br>
+
+	* [r7578] data/glade/OpenInventoryDialog.glade,
+	  data/sql/patch-43.sql, stoqlib/database/tables.py,
+	  stoqlib/domain/base.py, stoqlib/domain/exampledata.py,
+	  stoqlib/domain/fiscal.py, stoqlib/domain/inventory.py,
+	  stoqlib/domain/sellable.py, stoqlib/domain/test/sellable.txt,
+	  stoqlib/domain/test/test_inventory.py,
+	  stoqlib/gui/dialogs/openinventorydialog.py,
+	  stoqlib/reporting/product.py: #3077: Implementar wizard para
+	  abrir o processo de inventário. r=jdahlin
+
+2008-04-22 19:18  Ronaldo Maia <romaia@async.com.br>
+
+	* [r7576] data/glade/PaulistaInvoice.glade, data/sql/patch-42.sql,
+	  plugins/ecf/couponprinter.py, plugins/ecf/ecfdomain.py,
+	  plugins/ecf/ecfui.py, plugins/ecf/glade/PaulistaInvoice.glade,
+	  plugins/ecf/paulistainvoicedialog.py, stoqlib/domain/fiscal.py,
+	  stoqlib/domain/sale.py, stoqlib/domain/test/test_sale.py,
+	  stoqlib/gui/dialogs/paulistainvoicedialog.py,
+	  stoqlib/gui/fiscalprinter.py: Bug 3671 Estender informações
+	  capturadas para geração de arquivos magnéticos - informações
+	  sobre vendas (Registro E14)
+
+2008-04-17 14:36  Silvio Rangel <silvio@async.com.br>
+
+	* [r7572] po/es_ES.po, po/pt_BR.po, po/stoqlib.pot, po/sv.po:
+	  Atualização e revisão de tradução
+
+2008-04-11 19:53  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7568] stoqlib/gui/dialogs/paymentadditiondialog.py: unbreak
+	  buildbot, this time really!
+
+2008-04-11 19:47  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7567] stoqlib/domain/payment/group.py,
+	  stoqlib/gui/dialogs/paymentadditiondialog.py: unbreak buildbot
+
+2008-04-11 18:43  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7565] data/glade/BasePaymentAddition.glade,
+	  data/glade/PaymentCategoryEditor.glade, data/sql/patch-41.sql,
+	  stoqlib/database/tables.py, stoqlib/domain/exampledata.py,
+	  stoqlib/domain/payment/category.py,
+	  stoqlib/domain/payment/methods.py,
+	  stoqlib/domain/payment/payment.py,
+	  stoqlib/domain/payment/views.py,
+	  stoqlib/domain/test/test_payment.py, stoqlib/gui/base/gtkadds.py,
+	  stoqlib/gui/dialogs/paymentadditiondialog.py,
+	  stoqlib/gui/dialogs/paymentcategorydialog.py,
+	  stoqlib/gui/editors/paymentcategoryeditor.py: #3683: Add support
+	  for payment categories, r=george
+
+2008-04-10 19:18  George Kussumoto <george@async.com.br>
+
+	* [r7562] data/glade/InstallmentConfirmation.glade,
+	  stoqlib/gui/slaves/installmentslave.py: #3684: Devemos notificar
+	  na confirmação de pagamento se o pedido de compra foi recebido.
+	  r=jdahlin
+
+2008-04-10 17:20  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7558] ChangeLog: Update ChangeLog, include revisions and break
+	  paragraphs
+
+2008-04-10 17:13  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7556] ChangeLog: Add ChangeLog
+
+2008-04-10 16:54  Johan Dahlin <jdahlin@async.com.br>
+
+	* [r7553] stoqlib/gui/editors/addresseditor.py: #3681: No botão
+	  "mais endereços" a opção de cidade e estado não podem ser
+	  alteradas, r=george
+
+2008-04-10 16:27  George Kussumoto <george@async.com.br>
+
+	* [r7552] stoqlib/domain/examples/purchase.py,
+	  stoqlib/domain/purchase.py, stoqlib/domain/receiving.py,
+	  stoqlib/domain/test/test_purchase.py,
+	  stoqlib/domain/test/test_receiving.py, stoqlib/lib/parameters.py,
+	  stoqlib/lib/test/test_parameters.py: #3643: Permitir o pagamento
+	  de pedidos não recebidos. r=jdahlin
+
+2008-04-10 14:45  Silvio Rangel <silvio@async.com.br>
+
+	* [r7551] po/es_ES.po, po/pt_BR.po, po/stoqlib.pot, po/sv.po:
+	  Atualização e revisão de tradução
+
 2008-04-09 21:34  Ronaldo Maia <romaia@async.com.br>
 
 	* [r7543] data/sql/patch-40.sql, plugins/ecf/couponprinter.py,
