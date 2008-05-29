@@ -220,6 +220,19 @@ class ECFUI(object):
         # Callsite catches DeviceError
         self._validate_printer()
 
+        printer = self._printer.get_printer()
+        driver = printer.get_fiscal_driver()
+
+        # Closing the till is a async operation. So, we need to call get_user_info
+        # before we close it, as the printer will not respond for a few seconds
+        # while printing.
+        if sysparam(self.conn).ENABLE_PAULISTA_INVOICE and not printer.user_number:
+            trans = new_transaction()
+            printer = trans.get(printer)
+            user_info = driver.get_user_info()
+            printer.set_user_info(user_info)
+            trans.commit()
+
         retval = True
         while True:
             try:
@@ -251,13 +264,6 @@ class ECFUI(object):
             dir = sysparam(self.conn).CAT52_DEST_DIR.path
             if not os.path.exists(dir):
                 os.mkdir(dir)
-
-            printer = self._printer.get_printer()
-            driver = printer.get_fiscal_driver()
-
-            if not printer.user_number:
-                user_info = driver.get_user_info()
-                printer.set_user_info(user_info)
 
             generator = StoqlibCATGenerator(self.conn, day, printer)
             generator.write(dir)
