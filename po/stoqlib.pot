@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-27 16:39-0300\n"
+"POT-Creation-Date: 2008-05-29 14:43-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -344,7 +344,7 @@ msgstr ""
 #: ../stoqlib/gui/dialogs/productadjustmentdialog.py:100
 #: ../stoqlib/gui/dialogs/productstockdetails.py:132
 #: ../stoqlib/gui/dialogs/productstockdetails.py:146
-#: ../plugins/ecf/ecfdomain.py:230
+#: ../plugins/ecf/ecfdomain.py:242
 msgid "Unit"
 msgstr ""
 
@@ -2382,7 +2382,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/personeditor.py:178
 #: ../stoqlib/gui/dialogs/devices.py:54
 #: ../stoqlib/gui/dialogs/paymentmethod.py:85
-#: ../plugins/ecf/ecfprinterdialog.py:260 ../plugins/ecf/ecfdomain.py:186
+#: ../plugins/ecf/ecfprinterdialog.py:260 ../plugins/ecf/ecfdomain.py:198
 #: ../data/glade/BranchDetailsSlave.glade.h:1
 #: ../data/glade/DeviceSettingsEditor.glade.h:1
 #: ../data/glade/TransporterDataSlave.glade.h:3
@@ -2400,7 +2400,7 @@ msgstr ""
 #: ../stoqlib/domain/payment/methods.py:706
 #: ../stoqlib/gui/search/personsearch.py:266
 #: ../stoqlib/gui/search/giftcertificatesearch.py:66
-#: ../plugins/ecf/ecfdomain.py:187 ../data/glade/BranchDetailsSlave.glade.h:3
+#: ../plugins/ecf/ecfdomain.py:199 ../data/glade/BranchDetailsSlave.glade.h:3
 #: ../data/glade/TransporterDataSlave.glade.h:5
 #: ../data/glade/UserStatusSlave.glade.h:2
 msgid "Inactive"
@@ -2704,7 +2704,7 @@ msgid ""
 "Close the till?"
 msgstr ""
 
-#: ../stoqlib/gui/fiscalprinter.py:119 ../plugins/ecf/ecfui.py:319
+#: ../stoqlib/gui/fiscalprinter.py:119 ../plugins/ecf/ecfui.py:344
 msgid "Not now"
 msgstr ""
 
@@ -3548,8 +3548,8 @@ msgid "Remove"
 msgstr ""
 
 #: ../stoqlib/gui/editors/producteditor.py:276
-#: ../stoqlib/gui/base/lists.py:355 ../plugins/ecf/ecfui.py:200
-#: ../plugins/ecf/ecfui.py:230
+#: ../stoqlib/gui/base/lists.py:355 ../plugins/ecf/ecfui.py:205
+#: ../plugins/ecf/ecfui.py:235
 msgid "Cancel"
 msgstr ""
 
@@ -4463,7 +4463,7 @@ msgstr ""
 
 #: ../stoqlib/gui/dialogs/purchasedetails.py:184
 #: ../stoqlib/gui/dialogs/paymentadditiondialog.py:44
-#: ../stoqlib/gui/dialogs/saledetails.py:178 ../plugins/ecf/ecfdomain.py:232
+#: ../stoqlib/gui/dialogs/saledetails.py:178 ../plugins/ecf/ecfdomain.py:244
 msgid "Payment"
 msgstr ""
 
@@ -4641,97 +4641,97 @@ msgstr ""
 msgid "Customer CPF/CNPJ: "
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:72
+#: ../plugins/ecf/ecfui.py:77
 msgid "Summary"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:90
+#: ../plugins/ecf/ecfui.py:95
 msgid "This operation requires a connected fiscal printer"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:100
+#: ../plugins/ecf/ecfui.py:105
 msgid "Fiscalprinters serial number is different!"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:125 ../plugins/ecf/ecfui.py:150
-#: ../plugins/ecf/ecfui.py:174
+#: ../plugins/ecf/ecfui.py:130 ../plugins/ecf/ecfui.py:155
+#: ../plugins/ecf/ecfui.py:179
 msgid "ECF"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:126
+#: ../plugins/ecf/ecfui.py:131
 msgid "Configure fiscal printer..."
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:151 ../plugins/ecf/ecfui.py:175
+#: ../plugins/ecf/ecfui.py:156 ../plugins/ecf/ecfui.py:180
 msgid "Read Memory"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:153 ../plugins/ecf/ecfui.py:318
+#: ../plugins/ecf/ecfui.py:158 ../plugins/ecf/ecfui.py:343
 msgid "Cancel Last Document"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:197
+#: ../plugins/ecf/ecfui.py:202
 msgid ""
 "It's not possible to emit a read X for the configured printer.\n"
 "Would you like to ignore this error and continue?"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:201 ../plugins/ecf/ecfui.py:231
+#: ../plugins/ecf/ecfui.py:206 ../plugins/ecf/ecfui.py:236
 msgid "Ignore"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:202 ../plugins/ecf/ecfui.py:232
+#: ../plugins/ecf/ecfui.py:207 ../plugins/ecf/ecfui.py:237
 msgid "Try Again"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:227
+#: ../plugins/ecf/ecfui.py:232
 msgid ""
 "It's not possible to emit a reduce Z for the configured printer.\n"
 "Would you like to ignore this error and continue?"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:301
+#: ../plugins/ecf/ecfui.py:326
 msgid "There is no sale nor till entry to cancel"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:305
+#: ../plugins/ecf/ecfui.py:330
 #, python-format
 msgid "Do you really want to cancel the sale number %d and value %.2f ?"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:309
+#: ../plugins/ecf/ecfui.py:334
 #, python-format
 msgid ""
 "Do you really want to cancel the last cash added number %d and value %.2f ?"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:314
+#: ../plugins/ecf/ecfui.py:339
 #, python-format
 msgid ""
 "Do you really want to cancel the last cash removed number %d and value %.2f ?"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:326
+#: ../plugins/ecf/ecfui.py:351
 msgid "Cash out"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:328
+#: ../plugins/ecf/ecfui.py:353
 msgid "Cash in"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:332
+#: ../plugins/ecf/ecfui.py:357
 msgid "Cancelling failed, nothing to cancel"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:340
+#: ../plugins/ecf/ecfui.py:365
 msgid "Cancel last document"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:369
+#: ../plugins/ecf/ecfui.py:394
 msgid "Cancelling sale failed, nothing to cancel"
 msgstr ""
 
-#: ../plugins/ecf/ecfui.py:375
+#: ../plugins/ecf/ecfui.py:400
 msgid "Document was cancelled"
 msgstr ""
 
@@ -4795,24 +4795,28 @@ msgstr ""
 msgid "Serial"
 msgstr ""
 
-#: ../plugins/ecf/ecfdomain.py:103
+#: ../plugins/ecf/ecfdomain.py:109
 #, python-format
 msgid "%d %%"
 msgstr ""
 
-#: ../plugins/ecf/ecfdomain.py:158
+#: ../plugins/ecf/ecfdomain.py:164
 #, python-format
 msgid "fiscal printer is missing a constant for the custom tax constant '%s'"
 msgstr ""
 
-#: ../plugins/ecf/ecfdomain.py:165
+#: ../plugins/ecf/ecfdomain.py:171
 #, python-format
 msgid "fiscal printer is missing a constant for tax constant '%s'"
 msgstr ""
 
-#: ../plugins/ecf/ecfdomain.py:231 ../plugins/ecf/deviceconstanteditor.py:204
+#: ../plugins/ecf/ecfdomain.py:243 ../plugins/ecf/deviceconstanteditor.py:204
 #: ../plugins/ecf/tests/test_device.py:41
 msgid "Tax"
+msgstr ""
+
+#: ../plugins/ecf/catgenerator.py:69
+msgid "There must be a printer configured"
 msgstr ""
 
 #: ../plugins/ecf/deviceconstanteditor.py:63
