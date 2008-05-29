@@ -34,7 +34,7 @@ from stoqlib.domain.base import AbstractModel
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.lib.imageutils import ImageHelper
-from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam, DirectoryParameter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.base.search import SearchEditorToolBar
@@ -98,6 +98,8 @@ class ParametersListingDialog(BasicDialog):
             return data.get_description()
         elif isinstance(data, ImageHelper):
             return data.image_path
+        elif isinstance(data, DirectoryParameter):
+            return data.path
         elif isinstance(data, bool):
             return [_("No"), _("Yes")][data]
         return data

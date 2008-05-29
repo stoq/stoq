@@ -41,6 +41,10 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+class DirectoryParameter(object):
+    def __init__(self, path):
+        self.path = path
+
 
 log = Logger('stoqlib.parameters')
 
@@ -301,6 +305,11 @@ _parameter_info = dict(
     _(u'When this parameter is set, a product will be able to compose '
        'or be composed by other products.')),
 
+    CAT52_DEST_DIR=ParameterDetails(
+    _(u'General'),
+    _(u'Cat 52 destination directory'),
+    _(u'Where the file generated after a Z-reduction should be saved.')),
+
     )
 
 class ParameterAttr:
@@ -356,6 +365,7 @@ class ParameterAccess(ClassInittableObject):
                        initial=False),
         ParameterAttr('CUSTOM_LOGO_FOR_REPORTS', ImageHelper, initial=''),
         ParameterAttr('ENABLE_COMPOSED_PRODUCT', bool, initial=False),
+        ParameterAttr('CAT52_DEST_DIR', DirectoryParameter, initial='~/.stoq/cat52'),
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
         ParameterAttr('DEFAULT_SALES_CFOP', u'fiscal.CfopData'),
@@ -475,7 +485,7 @@ class ParameterAccess(ClassInittableObject):
             param = self._cache[field_name]
             if issubclass(field_type, AbstractModel):
                 return field_type.get(param.id, connection=self.conn)
-            elif issubclass(field_type, ImageHelper):
+            elif issubclass(field_type, (ImageHelper, DirectoryParameter)):
                return param
             else:
                 return field_type(param)

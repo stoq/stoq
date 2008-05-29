@@ -248,7 +248,7 @@ class ECFUI(object):
                 # XXX: Make sure this is tested
                 day = till.opening_date
 
-            dir = os.path.join(os.environ['HOME'], '.stoq', 'cat52')
+            dir = sysparam(self.conn).CAT52_DEST_DIR.path
             if not os.path.exists(dir):
                 os.mkdir(dir)
 
