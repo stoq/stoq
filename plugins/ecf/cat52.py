@@ -41,7 +41,8 @@ def _argtype_name(argtype):
     else:
         return argtype.__name__
 
-# See http://www.fazenda.sp.gov.br/publicacao/noticia.aspx?id=571 for a complete list of this:
+# See http://www.fazenda.sp.gov.br/publicacao/noticia.aspx?id=571
+# for a complete list of this:
 
 BRAND_CODES = {
     'daruma':   'DR',
@@ -78,7 +79,7 @@ class CATFile(object):
     def __init__(self, printer):
         self._registers = []
         self.printer = printer
-
+        self.software_version = None
         self.brand = BRAND_FULL_NAME[self.printer.brand]
         self.model = MODEL_FULL_NAME[(self.printer.brand, self.printer.model)]
 
@@ -92,11 +93,13 @@ class CATFile(object):
     # E00
     def add_software_house(self, soft_house, software):
         """
-        @param soft_house: Information from the software house: cnpj, ie, im, name
-        @param software: Information about this piece of software: name and version
+        @param soft_house: Information from the software house: cnpj,
+          ie, im, name
+        @param software: Information about this piece of software: name
+          and version
 
-        Acording to the cat52/07, coo, software_number, line01 and line02 should be filled with
-        blanks
+        Acording to the cat52/07, coo, software_number, line01 and
+        line02 should be filled with blanks
         """
         self.add(CATRegisterE00(serial_number=self.printer.device_serial,
                                 additional_mf="",
@@ -111,7 +114,8 @@ class CATFile(object):
                                 im=soft_house.im,
                                 soft_house=soft_house.name,
                                 soft_name=software.program_name,
-                                soft_version=software.version,
+                                soft_version=(self.software_version or
+                                              software.version),
                                 line01="",
                                 line02=""))
 
@@ -128,16 +132,19 @@ class CATFile(object):
 
         """
         self.add(CATRegisterE01(serial_number=self.printer.device_serial,
-                                additional_mf='',                       # VERIFY
+                                # VERIFY
+                                additional_mf='',                      
                                 ecf_type="ECF-IF",
                                 ecf_brand=self.brand,
                                 ecf_model=self.model,
                                 ecf_sb_version=driver.get_firmware_version(),
                                 ecf_sb_date='',
                                 ecf_sb_hour='',
-                                ecf_number=self.printer.id,             # VERIFY
+                                # VERIFY
+                                ecf_number=self.printer.id,             
                                 user_cnpj=company.get_cnpj_number(),
-                                command="APL",                          # Application
+                                # Application
+                                command="APL",                          
                                 initial_crz=initial_crz,
                                 final_crz=final_crz,
                                 initial_date=start,
@@ -229,14 +236,17 @@ class CATFile(object):
 
     # E14
     def add_fiscal_coupon(self, sale, client, fiscal_data):
-        subtotal = sale.total_amount - sale.surcharge_value + sale.discount_value
+        subtotal = (sale.total_amount -
+                    sale.surcharge_value +
+                    sale.discount_value)
         client_name = ''
         if client:
             client_name = client.person.name
 
         cpf_cnpj = 0
         if fiscal_data.document:
-            cpf_cnpj = int(''.join([c for c in fiscal_data.document if c.isdigit()]))
+            cpf_cnpj = int(''.join([c for c in fiscal_data.document
+                                          if c.isdigit()]))
 
         self.add(CATRegisterE14(serial_number=self.printer.device_serial,
                                 additional_mf='',
@@ -253,13 +263,15 @@ class CATFile(object):
                                 total=sale.total_amount,
                                 canceled=False,                     # !!!
                                 surcharge_canceled=0,
-                                discount_surcharge_order='A',       #stoqlib/domain/sale.py:489
+                                #stoqlib/domain/sale.py:489
+                                discount_surcharge_order='A',       
                                 client_name=client_name,
                                 client_cpf_cnpj=cpf_cnpj,
         ))
 
     # E15
-    def add_fiscal_coupon_details(self, sale, client, fiscal_data, item, iss_tax, sequence):
+    def add_fiscal_coupon_details(self, sale, client, fiscal_data,
+                                  item, iss_tax, sequence):
         tax = item.sellable.get_tax_constant()
         partial_totalizer = ''
         if tax.tax_type == TaxType.SERVICE:         # ISS
@@ -271,41 +283,47 @@ class CATFile(object):
         elif tax.tax_type == TaxType.SUBSTITUTION:  # Substi. Tribut.
             partial_totalizer = 'F1'
         elif tax.tax_type == TaxType.CUSTOM:
-            partial_totalizer = '%0*dT%0*d' % (2, tax.id, 4, tax.tax_value * 100)
+            tax_id = 1
+            partial_totalizer = '%0*dT%0*d' % (2, tax.id, 4,
+                                               tax.tax_value * 100)
 
-        self.add(CATRegisterE15(serial_number=self.printer.device_serial,
-                                additional_mf='',
-                                ecf_model=self.model,
-                                user_number=self.printer.user_number,
-                                coo=fiscal_data.coo,
-                                document_counter=fiscal_data.document_counter,
-
-                                item_number=sequence,
-                                item_code=item.sellable.get_code_str(),
-                                item_description=item.get_description(),
-                                item_amount=item.quantity * 100,                # precision = 2
-                                item_unit=item.sellable.get_unit_description() or 'un',
-                                item_unitary_value=item.price * 100,            # precision = 2
-                                item_discount=0,                        # We don't offer discount
-                                item_surcharge=0,                       # or surcharge for items,
-                                                                        # only for the subtotal
-                                item_total=item.price * item.quantity * 100,    # precison = 2
-                                item_partial_totalizer=partial_totalizer,
-
-                                item_canceled='N',                  # Stoq does not store
-                                item_canceled_amount=0,             # canceled items
-                                item_canceled_value=0,              #
-                                item_canceled_surcharge=0,          #
-
-                                round_or_trunc='A',                 # !!! A ou T
-                                amount_decimal_precision=2,         # !!!
-                                value_decimal_precision=2,          # !!!
-
-
+        self.add(CATRegisterE15(
+            serial_number=self.printer.device_serial,
+            additional_mf='',
+            ecf_model=self.model,
+            user_number=self.printer.user_number,
+            coo=fiscal_data.coo,
+            document_counter=fiscal_data.document_counter,
+            item_number=sequence,
+            item_code=item.sellable.get_code_str(),
+            item_description=item.get_description(),
+            # precision = 2
+            item_amount=item.quantity * 100, 
+            item_unit=(item.sellable.get_unit_description() or 'un'),
+            item_unitary_value=item.price * 100, 
+            # We don't offer discount,
+            item_discount=0,   
+            # or surcharge for items,
+            item_surcharge=0,
+            # only for the subtotal
+            # precison = 2
+            item_total=item.price * item.quantity * 100,
+            item_partial_totalizer=partial_totalizer,
+            
+            # Stoq does not store
+            item_canceled='N',                  
+            # canceled items
+            item_canceled_amount=0, 
+            item_canceled_value=0,              #
+            item_canceled_surcharge=0,          #
+            round_or_trunc='A',                 # !!! A ou T
+            amount_decimal_precision=2,         # !!!
+            value_decimal_precision=2,          # !!!
         ))
 
     # E21
-    def add_payment_method(self, sale, fiscal_data, payment, renegotiation=None):
+    def add_payment_method(self, sale, fiscal_data,
+                           payment, renegotiation=None):
         returned = 'N'
         returned_value = 0
         if sale.return_date:
@@ -315,18 +333,19 @@ class CATFile(object):
                 returned = 'P'
                 returned_value -= renegotiation.penalty_value
 
-        self.add(CATRegisterE21(serial_number=self.printer.device_serial,
-                                additional_mf='',
-                                ecf_model=self.model,
-                                user_number=self.printer.user_number,
-                                coo=fiscal_data.coo,
-                                document_counter=fiscal_data.document_counter,
-                                gnf=0,
-                                payment_method=payment.method.get_description(),
-                                value=payment.value * 100,
-                                returned=returned,                      # S/N/P
-                                returned_value=returned_value * 100,    # Only if P
-                                ))
+        self.add(CATRegisterE21(
+            serial_number=self.printer.device_serial,
+            additional_mf='',
+            ecf_model=self.model,
+            user_number=self.printer.user_number,
+            coo=fiscal_data.coo,
+            document_counter=fiscal_data.document_counter,
+            gnf=0,
+            payment_method=payment.method.get_description(),
+            value=payment.value * 100,
+            returned=returned,                      # S/N/P
+            returned_value=returned_value * 100,    # Only if P
+            ))
 
     # E16
     def add_other_document(self, document):
@@ -518,8 +537,10 @@ class CATRegisterE02(CATRegister):
         ('additional_mf', 1, basestring),
         ('ecf_model', 20, basestring),
         ('user_cnpj', 14, number),
-        ('user_ie', 14, number), #XXX: This should be number, but acording to cat52, it is
-                                 # string ?!?
+        # XXX: This should be number, but acording to cat52, it is
+        # string ?!?
+        ('user_ie', 14, number), 
+                                 
         ('user_name', 40, basestring),
         ('user_address', 120, basestring),
         ('register_date', 8, datetime.date),
@@ -580,15 +601,20 @@ class CATRegisterE14(CATRegister):
         ('discount_type', 1, basestring),       # V = $ / P = %
         ('surcharge', 13, number),
         ('surcharge_type', 1, basestring),      # V = $ / P = %
-        ('total', 14, number),                  # Total after discount and surcharge
-        ('canceled', 1, bool),                  # If the document was canceled
-        ('surcharge_canceled', 13, number),     # surcharge canceled value
-        ('discount_surcharge_order', 1, basestring), # The order that the discount
-                                                # and surchage were applied:
-                                                # 'D' if discount came first or 'A'
-                                                # otherwise
+        # Total after discount and surcharge
+        ('total', 14, number),                  
+        # If the document was canceled
+        ('canceled', 1, bool),                  
+        # surcharge canceled value
+        ('surcharge_canceled', 13, number),     
+        # The order that the discount
+        # and surchage were applied:
+        # 'D' if discount came first or 'A'
+        # otherwise
+        ('discount_surcharge_order', 1, basestring), 
         ('client_name', 40, basestring),
-        ('client_cpf_cnpj', 14, number),        # cpf or cnpj, depending on the client
+        # cpf or cnpj, depending on the client
+        ('client_cpf_cnpj', 14, number),
         ]
 
 class CATRegisterE15(CATRegister):
@@ -612,16 +638,23 @@ class CATRegisterE15(CATRegister):
         ('item_discount', 8, number),
         ('item_surcharge', 8, number),
         ('item_total', 14, number),
-        ('item_partial_totalizer', 7, basestring),  # See table 6.5.1.2. !!!
-        ('item_canceled', 1, basestring),           # S - yes / N - no / P - partial
-        ('item_canceled_amount', 7, number),        # Only if partial cancelment
-        ('item_canceled_value', 13, number),        # idem
-        ('item_canceled_surcharge', 13, number),    # currency
-
-        ('round_or_trunc', 1, basestring),              # A - round / T - trunc
-        ('amount_decimal_precision', 1, number),    # Number of decimal precision for the amount
-        ('value_decimal_precision', 1, number),     # Number of decimal precision for the unitary
-                                                    # value
+        # See table 6.5.1.2. !!!
+        ('item_partial_totalizer', 7, basestring),  
+        # S - yes / N - no / P - partial
+        ('item_canceled', 1, basestring),           
+        # Only if partial cancelment
+        ('item_canceled_amount', 7, number),        
+        # idem
+        ('item_canceled_value', 13, number),        
+        # currency
+        ('item_canceled_surcharge', 13, number),    
+        # A - round / T - trunc
+        ('round_or_trunc', 1, basestring),              
+        # Number of decimal precision for the amount
+        ('amount_decimal_precision', 1, number),    
+        # Number of decimal precision for the unitary
+        # value
+        ('value_decimal_precision', 1, number),     
     ]
 
 class CATRegisterE16(CATRegister):
@@ -653,11 +686,14 @@ class CATRegisterE21(CATRegister):
         ('ecf_model', 20, basestring),
         ('user_number', 2, number),
         ('coo', 6, number),
-        ('document_counter', 6, number),    # ccf
-        ('gnf', 6, number),                 # See documentation - not appliable to stoq right now.
+        # ccf
+        ('document_counter', 6, number),    
+        # See documentation - not appliable to stoq right now.
+        ('gnf', 6, number),                 
         ('payment_method', 15, basestring),
         ('value', 13, number),
-        ('returned', 1, basestring),         # S/N/P
+        # S/N/P
+        ('returned', 1, basestring),         
         ('returned_value', 13, number),
     ]
 
