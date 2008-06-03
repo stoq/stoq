@@ -87,7 +87,6 @@ class Cat52Test(DomainTest):
         storable.increase_stock(100, get_current_branch(self.trans))
         return sellable
 
-
     def testComplete(self):
         station = self.create_station()
         today = datetime.date(2007, 1, 1)
@@ -106,7 +105,8 @@ class Cat52Test(DomainTest):
                                reduction_date=reduction_date)
         for code, value, type in [('2500', Decimal("123.00"), 'ICMS'),
                                   ('F', Decimal("789.00"), 'ICMS')]:
-            FiscalDayTax(fiscal_day_history=day, code=code, value=value, type=type,
+            FiscalDayTax(fiscal_day_history=day, code=code,
+                         value=value, type=type,
                          connection=self.trans)
 
         printer = ECFPrinter(
@@ -122,9 +122,11 @@ class Cat52Test(DomainTest):
                     )
 
         f = CATFile(printer)
+        f.software_version = '6.6.6' # kiko sends <3
 
         f.add_software_house(async, stoqlib)
-        # Cant call add_ecf_identification, since it depends on a conected printer
+        # Cant call add_ecf_identification, since it depends on a
+        # conected printer
         #f.add_ecf_identification()
 
         for item in FiscalDayHistory.select(connection=self.trans):
@@ -136,9 +138,10 @@ class Cat52Test(DomainTest):
         sale = self.create_sale()
         sale.client = self.create_client()
         sale.confirm_date = today
-        self._add_product(sale, 100)
-        self._add_payments(sale)
+        sellable = self._add_product(sale, 100)
+        sellable.id = 9999
 
+        self._add_payments(sale)
         history = FiscalSaleHistory(connection=self.trans,
                                     sale=sale)
 

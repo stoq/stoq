@@ -283,8 +283,9 @@ class CATFile(object):
         elif tax.tax_type == TaxType.SUBSTITUTION:  # Substi. Tribut.
             partial_totalizer = 'F1'
         elif tax.tax_type == TaxType.CUSTOM:
+            # FIXME: Use another way of counting the totalizers
             tax_id = 1
-            partial_totalizer = '%0*dT%0*d' % (2, tax.id, 4,
+            partial_totalizer = '%0*dT%0*d' % (2, tax_id, 4,
                                                tax.tax_value * 100)
 
         self.add(CATRegisterE15(
