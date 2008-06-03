@@ -114,7 +114,7 @@ def create_main_branch(trans, name):
     branch = person.addFacet(IBranch, connection=trans)
     trans.commit()
 
-    sysparam(trans).MAIN_COMPANY = branch.person.id
+    sysparam(trans).MAIN_COMPANY = branch.id
 
     provide_utility(ICurrentBranch, branch)
 
