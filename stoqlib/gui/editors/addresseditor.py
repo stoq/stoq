@@ -90,10 +90,13 @@ class AddressSlave(BaseEditorSlave):
         'street',
         'complement',
         'postal_code',
+        'streetnumber_check',
+        ]
+
+    location_widgets = [
         'city',
         'state',
         'country',
-        'streetnumber_check',
         ]
 
     @argcheck(object, Person, Address, bool, bool)
@@ -126,8 +129,8 @@ class AddressSlave(BaseEditorSlave):
 
     def confirm(self):
         self.model.ensure_address()
-
         return self.model.target
+
     #
     # BaseEditorSlave hooks
     #
@@ -140,6 +143,9 @@ class AddressSlave(BaseEditorSlave):
         has_street_number = self.model.streetnumber > 0
         self.streetnumber_check.set_active(has_street_number)
         self._update_streetnumber()
+
+        self.add_proxy(self.model.city_location,
+                       AddressSlave.location_widgets)
 
     def can_confirm(self):
         return self.model.is_valid_model()
