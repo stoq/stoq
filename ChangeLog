@@ -1,3 +1,32 @@
+2008-06-03 19:02  George Kussumoto <george@async.com.br>
+
+	* [r7630] stoqlib/gui/editors/addresseditor.py: # Fix: add the
+	  missing proxy to city location in AddressSlave
+
+2008-06-03 15:53  Ronaldo Maia <romaia@async.com.br>
+
+	* [r7629] data/sql/patch-45.sql, stoqlib/database/admin.py: Bug
+	  3733 - parametro MAIN_COMPANY setado incorretamente para o id do
+	  person, em vez do id do branch.
+
+2008-05-29 22:32  Ronaldo Maia <romaia@async.com.br>
+
+	* [r7626] stoqlib/lib/test/cat52-expected.txt: also update md5 hash
+	  for cat 52 test
+
+2008-05-29 22:21  George Kussumoto <george@async.com.br>
+
+	* [r7625] stoqlib/lib/test/cat52-expected.txt: # Fix stoqlib
+	  version number in cat52 test
+
+2008-05-29 22:09  George Kussumoto <george@async.com.br>
+
+	* [r7623] CONTRIBUTORS, ChangeLog, README, debian/changelog,
+	  debian/control, po/es_ES.po, po/pt_BR.po, po/stoqlib.pot,
+	  po/sv.po, setup.py, stoqlib.spec, stoqlib/__init__.py,
+	  stoqlib/domain/inventory.py, stoqlib/domain/payment/category.py:
+	  # New Release
+
 2008-05-29 20:22  Ronaldo Maia <romaia@async.com.br>
 
 	* [r7617] plugins/ecf/ecfui.py: pegar informações do usuário antes
