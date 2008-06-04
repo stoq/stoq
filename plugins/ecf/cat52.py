@@ -82,7 +82,8 @@ class CATFile(object):
         self.software_version = None
         self.brand = BRAND_FULL_NAME[self.printer.brand]
         self.model = MODEL_FULL_NAME[(self.printer.brand, self.printer.model)]
-
+        self._tax_counter = 1
+        
     def add(self, register):
         """Add register to the file.
         @param register: a register
@@ -283,11 +284,10 @@ class CATFile(object):
         elif tax.tax_type == TaxType.SUBSTITUTION:  # Substi. Tribut.
             partial_totalizer = 'F1'
         elif tax.tax_type == TaxType.CUSTOM:
-            # FIXME: Use another way of counting the totalizers
-            tax_id = 1
-            partial_totalizer = '%0*dT%0*d' % (2, tax_id, 4,
+            partial_totalizer = '%0*dT%0*d' % (2, self._tax_counter, 4,
                                                tax.tax_value * 100)
-
+            self._tax_counter += 1
+            
         self.add(CATRegisterE15(
             serial_number=self.printer.device_serial,
             additional_mf='',
