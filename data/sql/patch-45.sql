@@ -7,7 +7,7 @@
 
 UPDATE parameter_data SET field_value =
     CASE WHEN (SELECT max(id) FROM person_adapt_to_branch) < field_value::integer THEN
-        (SELECT id::text FROM person_adapt_to_branch WHERE original_id = field_value)
+        (SELECT id::text FROM person_adapt_to_branch WHERE original_id = field_value::integer)
     ELSE
         field_value
     END
