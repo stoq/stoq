@@ -27,7 +27,7 @@
 
 import datetime
 
-from kiwi.datatypes import currency
+from kiwi.datatypes import currency, ValidationError
 
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.domain.payment.category import PaymentCategory
@@ -94,6 +94,14 @@ class BasePaymentAddition(BaseEditor):
         self.model.set_pending()
         self.model.base_value = self.model.value
         return self.model
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_value__validate(self, widget, newvalue):
+        if newvalue is None or newvalue <= 0:
+            return ValidationError(_(u"The value must be greater than zero."))
 
 
 class InPaymentAdditionDialog(BasePaymentAddition):
