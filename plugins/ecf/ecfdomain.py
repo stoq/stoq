@@ -67,9 +67,9 @@ class ECFPrinter(Domain):
     constants = MultipleJoin('DeviceConstant')
     last_sale = ForeignKey("Sale", default=None)
     last_till_entry = ForeignKey("TillEntry", default=None)
-    user_number = IntCol()
-    register_date = DateTimeCol()
-    register_cro = IntCol()
+    user_number = IntCol(default=None)
+    register_date = DateTimeCol(default=None)
+    register_cro = IntCol(default=None)
 
     #
     # Public API
