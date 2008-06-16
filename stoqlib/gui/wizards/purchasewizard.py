@@ -246,7 +246,6 @@ class PurchasePaymentStep(WizardEditorStep):
                  (_('Check'), PaymentMethodType.CHECK),
                  (_('Money'), PaymentMethodType.MONEY)]
         self.method_combo.prefill(items)
-        self.method_combo.select(items[0][1])
 
     def _get_slave_class(self, method_type):
         """Returns the slave class corresponding to a payment method type
@@ -319,6 +318,8 @@ class PurchasePaymentStep(WizardEditorStep):
                                           PurchasePaymentStep.order_widgets)
         self.proxy = self.add_proxy(self.model,
                                     PurchasePaymentStep.payment_widgets)
+        # Set the first payment method as default
+        self.method_combo.select_item_by_position(0)
 
     #
     # callbacks
