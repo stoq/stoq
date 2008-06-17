@@ -236,8 +236,8 @@ class SellableItemStep(WizardEditorStep):
         self.force_validation()
 
     def _validate(self, value):
-        self.add_sellable_button.set_sensitive(value)
-        self.wizard.refresh_next(value)
+        self.add_sellable_button.set_sensitive(value and bool(self.sellable.read()))
+        self.wizard.refresh_next(value and bool(len(self.slave.klist)))
 
     #
     # callbacks
