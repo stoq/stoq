@@ -109,7 +109,7 @@ class SellableTaxConstantsDialog(ModelListDialog):
         self.listcontainer.edit_button.set_sensitive(is_custom)
 
 class SellablePriceEditor(BaseEditor):
-    model_name = 'Product Price'
+    model_name = _(u'Product Price')
     model_type = ASellable
     gladefile = 'SellablePriceEditor'
 

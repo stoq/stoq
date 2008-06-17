@@ -79,7 +79,7 @@ class ServiceItemEditor(BaseEditor):
 
 
 class ServiceEditor(SellableEditor):
-    model_name = 'Service'
+    model_name = _(u'Service')
     model_type = Service
 
     def setup_slaves(self):

@@ -52,7 +52,7 @@ class InvoiceGrid(FieldGrid):
 
 
 class InvoiceLayoutEditor(BaseEditor):
-    model_name = 'Invoice Layouts'
+    model_name = _(u'Invoice Layouts')
     model_type = InvoiceLayout
     gladefile = 'InvoiceLayoutEditor'
     size = (780, 540)
@@ -223,7 +223,7 @@ class InvoiceLayoutDialog(ModelListDialog):
 
 
 class InvoicePrinterEditor(BaseEditor):
-    model_name = 'Invoice Printers'
+    model_name = _(u'Invoice Printers')
     model_type = InvoicePrinter
     gladefile = 'InvoicePrinterEditor'
 
