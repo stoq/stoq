@@ -84,7 +84,7 @@ class GiftCertificateEditor(BaseEditor):
     """An editor for gift certificates. A gift certificate can be sold as a
     product through POS application.
     """
-    model_name = 'Gift Certificate'
+    model_name = _(u'Gift Certificate')
     model_type = Settable
     gladefile = 'GiftCertificateEditor'
     title = _('Add Gift Certificates')
