@@ -82,6 +82,7 @@ class StockApp(SearchableAppWindow):
     def get_columns(self):
         return [Column('id', title=_('Code'), sorted=True,
                        data_type=int, format='%03d', width=80),
+                Column('barcode', title=_("Barcode"), data_type=str, width=100),
                 Column('description', title=_("Description"),
                        data_type=str, expand=True,
                        ellipsize=pango.ELLIPSIZE_END),
