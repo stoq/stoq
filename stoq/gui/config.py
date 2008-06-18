@@ -55,7 +55,7 @@ from kiwi.ui.dialogs import info
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
 from stoqlib.database.admin import (USER_ADMIN_DEFAULT_NAME, user_has_usesuper,
                                     create_main_branch)
-from stoqlib.database.interfaces import ICurrentBranchStation
+from stoqlib.database.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
                                       get_current_branch)
 from stoqlib.database.settings import DatabaseSettings
@@ -68,7 +68,7 @@ from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
-from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.message import warning, yesno, error
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import provide_plugin_manager
 from stoqlib.lib.validators import validate_cnpj
@@ -253,6 +253,15 @@ class DatabaseSettingsStep(WizardEditorStep):
 
         dummy = object()
         if self.has_installed_db:
+            # So we already have a installed db. At this point we should set our branch.
+            branches = Person.iselect(IBranch, connection=conn)
+            if not branches:
+                error(_("Schema error, no branches found"))
+
+            # use first branch until we support multiple branches.
+            self.wizard.branch = branches[0]
+            provide_utility(ICurrentBranch, self.wizard.branch)
+
             return ExistingAdminPasswordStep(conn, self.wizard, self, dummy)
         else:
             return AdminPasswordStep(conn, self.wizard, self, dummy)
