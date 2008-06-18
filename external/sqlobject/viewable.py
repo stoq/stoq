@@ -27,11 +27,9 @@ import copy
 
 from sqlobject.dbconnection import Iteration
 from sqlobject.declarative import DeclarativeMeta, setup_attributes
-from sqlobject.sqlbuilder import (SQLCall, SQLObjectField, SQLObjectTable,
+from sqlobject.sqlbuilder import (SQLCall, SQLObjectField,
                                   NoDefault, AND)
-from sqlobject.col import SOIntCol
 from sqlobject.sresults import SelectResults
-from sqlobject.styles import underToMixed
 from sqlobject.classregistry import registry
 
 
@@ -287,7 +285,7 @@ def queryForSelect(conn, select):
             q = q[:-1]
 
     q += " WHERE"
-    q = conn._addWhereClause(select, q, limit=0)
+    q = conn._addWhereClause(select, q, limit=0, order=0)
 
     groupBy = False
     for item in ns.values():
@@ -302,6 +300,9 @@ def queryForSelect(conn, select):
                 items.append(str(item))
         items.append(str(select.ops['ns']['id']))
         q += " GROUP BY %s" % ', '.join(items)
+
+    if ops.get('dbOrderBy'):
+        q = conn._queryAddOrderByClause(select, q)
 
     start = ops.get('start', 0)
     end = ops.get('end', None)
