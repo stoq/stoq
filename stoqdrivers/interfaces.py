@@ -320,6 +320,43 @@ class ICouponPrinter(IDevice):
         Gets an object that implements ISintegraData or None.
         """
 
+    def get_firmware_version(self):
+        """Firmware version of the printer
+        """
+
+    def get_ccf(self):
+        """Fiscal Coupon Counter
+
+        @retval: the last document ccf
+        @rtype: integer
+        """
+
+    def get_coo(self):
+        """Operation Order Counter
+
+        @retval: the last document coo
+        @rtype: integer
+        """
+
+    def get_gnf(self):
+        """Nonfiscal Operation General Counter
+
+        @retval: gnf
+        @rtype: integer
+        """
+
+    def get_crz(self):
+        """Z Reduction Counter
+
+        @retval: the last document crz
+        @rtype: integer
+        """
+
+    def get_user_registration_info(self):
+        """Returns current ecf user registration date and time,
+        id in the printer and cro relative to the user registration
+        """
+
 class IChequePrinter(IDevice):
     """ Interface specification for cheque printers. """
 
