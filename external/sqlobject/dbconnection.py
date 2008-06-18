@@ -468,6 +468,23 @@ class DBAPI(DBConnection):
             q = self.sqlrepr(q)
         ops = select.ops
 
+        if order and ops.get('dbOrderBy'):
+            q = self._queryAddOrderByClause(select, q)
+
+        start = ops.get('start', 0)
+        end = ops.get('end', None)
+
+        q = startSelect + ' ' + q
+
+        if limit and (start or end):
+            # @@: Raising an error might be an annoyance, but some warning is
+            # in order.
+            #assert ops.get('orderBy'), "Getting a slice of an unordered set is unpredictable!"
+            q = self._queryAddLimitOffset(q, start, end)
+
+        return q
+
+    def _queryAddOrderByClause(self, select, q):
         def clauseList(lst, desc=False):
             if type(lst) not in (type([]), type(())):
                 lst = [lst]
@@ -493,21 +510,9 @@ class DBAPI(DBConnection):
             else:
                 return s
 
-        if order and ops.get('dbOrderBy'):
-            q = "%s ORDER BY %s" % (q, clauseList(ops['dbOrderBy'], ops.get('reversed', False)))
-
-        start = ops.get('start', 0)
-        end = ops.get('end', None)
-
-        q = startSelect + ' ' + q
-
-        if limit and (start or end):
-            # @@: Raising an error might be an annoyance, but some warning is
-            # in order.
-            #assert ops.get('orderBy'), "Getting a slice of an unordered set is unpredictable!"
-            q = self._queryAddLimitOffset(q, start, end)
-
-        return q
+        ops = select.ops
+        return "%s ORDER BY %s" % (q, clauseList(ops['dbOrderBy'],
+                                   ops.get('reversed', False)))
 
     def _SO_createJoinTable(self, join):
         self.query(self._SO_createJoinTableSQL(join))
