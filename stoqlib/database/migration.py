@@ -327,7 +327,7 @@ class PluginSchemaMigration(SchemaMigration):
     def generate_sql_for_patch(self, level):
         assert self._plugin
         return ("UPDATE installed_plugin "
-                "SET plugin_version = %s"
+                "SET plugin_version = %s "
                 "WHERE id = %s") % (self.conn.sqlrepr(level),
                                     self.conn.sqlrepr(self._plugin.id))
 
