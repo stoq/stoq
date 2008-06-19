@@ -140,8 +140,11 @@ class AddressSlave(BaseEditorSlave):
         self.country.prefill(get_countries())
         self.proxy = self.add_proxy(self.model,
                                     AddressSlave.proxy_widgets)
+
         has_street_number = self.model.streetnumber > 0
-        self.streetnumber_check.set_active(has_street_number)
+        # Enable if we already have a number or if we are adding a new address.
+        self.streetnumber_check.set_active(has_street_number
+                                           or not self.edit_mode)
         self._update_streetnumber()
 
         self.add_proxy(self.model.city_location,
