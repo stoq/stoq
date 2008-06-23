@@ -24,6 +24,8 @@
 ##
 """Dialog for listing payment categories"""
 
+from kiwi.datatypes import ValidationError
+
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
@@ -34,6 +36,13 @@ class PaymentCategoryEditor(BaseEditor):
     model_name = _('Payment Category')
     model_type = PaymentCategory
     gladefile = 'PaymentCategoryEditor'
+
+    def _category_name_exists(self, name):
+        category = PaymentCategory.selectOneBy(name=name,
+                                               connection=self.conn)
+        if category is self.model:
+            return False
+        return category is not None
 
     def create_model(self, trans):
         return PaymentCategory(name='',
@@ -49,3 +58,15 @@ class PaymentCategoryEditor(BaseEditor):
 
     def on_name__activate(self, entry):
         self.confirm()
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_name__validate(self, widget, new_name):
+        if not new_name:
+            return ValidationError(
+                _(u"The payment category should have name."))
+        if self._category_name_exists(new_name):
+            return ValidationError(
+                _(u"The payment category '%s' already exists.") % new_name)
