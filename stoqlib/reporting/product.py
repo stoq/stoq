@@ -50,7 +50,7 @@ class ProductReport(SearchResultsReport):
     def __init__(self, filename, products, *args, **kwargs):
         self._products = products
         ProductReport.main_object_name = _("products from branch %s") % \
-            (kwargs['branch'],)
+            (kwargs['branch_name'],)
         SearchResultsReport.__init__(self, filename, products,
                                      ProductReport.report_name,
                                      landscape=True,
@@ -101,7 +101,7 @@ class ProductPriceReport(SearchResultsReport):
     def __init__(self, filename, products, *args, **kwargs):
         self._products = products
         ProductPriceReport.main_object_name = _("products from branch %s") % \
-            (kwargs['branch'],)
+            (kwargs['branch_name'],)
         SearchResultsReport.__init__(self, filename, products,
                                      ProductReport.report_name,
                                      landscape=False,

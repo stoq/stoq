@@ -153,20 +153,20 @@ class SalesPersonReport(SearchResultsReport):
     obj_type = CommissionView
     report_name = _("Sales")
 
-    def __init__(self, filename, salesperson_list, salesperson,
+    def __init__(self, filename, salesperson_list, salesperson_name,
                  *args, **kwargs):
         branch = get_current_branch(get_connection())
         self.salesperson_list = salesperson_list
         SalesPersonReport.main_object_name = _("sales on branch %s") % (
             branch.get_description())
-        if salesperson is not None:
+        if salesperson_name is not None:
             SalesPersonReport.main_object_name = _("sales from %s "
-                "on branch %s" % (salesperson, branch.get_description()))
+                "on branch %s" % (salesperson_name, branch.get_description()))
         SearchResultsReport.__init__(self, filename, salesperson_list,
                                      SalesPersonReport.report_name,
-                                     landscape=(salesperson is None),
+                                     landscape=(salesperson_name is None),
                                      *args, **kwargs)
-        self._sales_person = salesperson
+        self._sales_person = salesperson_name
         self._setup_sales_person_table()
 
     def _get_columns(self):

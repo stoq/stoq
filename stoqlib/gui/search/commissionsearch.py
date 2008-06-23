@@ -84,5 +84,6 @@ class CommissionSearch(SearchDialog):
                         data_type=currency)]
 
     def on_print_button_clicked(self, button):
+        salesperson_name = self._salesperson_filter.combo.get_selected()
         print_report(SalesPersonReport, list(self.results),
-                     salesperson=self._salesperson_filter.combo.get_selected())
+                     salesperson_name=salesperson_name)
