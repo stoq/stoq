@@ -107,11 +107,11 @@ class ProductSearch(SearchEditor):
 
     def on_print_button_clicked(self, button):
         print_report(ProductReport, list(self.results),
-                     branch=self.branch_filter.combo.get_active_text())
+                     branch_name=self.branch_filter.combo.get_active_text())
 
     def on_print_price_button_clicked(self, button):
         print_report(ProductPriceReport, list(self.results),
-                     branch=self.branch_filter.combo.get_active_text())
+                     branch_name=self.branch_filter.combo.get_active_text())
 
     def _has_rows(self, results, obj):
         SearchEditor._has_rows(self, results, obj)

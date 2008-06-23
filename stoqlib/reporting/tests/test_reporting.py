@@ -134,10 +134,12 @@ class TestReport(DomainTest):
         self.checkPDF(TransferOrderReceipt, orders[0], items)
 
     def testProductReport(self):
-        products = list(ProductFullStockView.select(connection=self.trans))
-        branch = self.create_branch()
-        self.checkPDF(ProductReport, products,
-                      branch=branch,
+        # the orderBy clause is only needed by the test
+        products = ProductFullStockView.select(connection=self.trans)\
+                                       .orderBy('id')
+        branch_name = self.create_branch('Any').person.name
+        self.checkPDF(ProductReport, list(products),
+                      branch_name=branch_name,
                       date=datetime.date(2007, 1, 1))
 
     def testTillHistoryReport(self):
@@ -212,12 +214,15 @@ class TestReport(DomainTest):
         sale.confirm()
         sale.set_paid()
 
+        salesperson_name = salesperson.person.name
         commissions = CommissionView.select(connection=self.trans)
-        self.checkPDF(SalesPersonReport, list(commissions), salesperson,
+        self.checkPDF(SalesPersonReport, list(commissions), salesperson_name,
                       date=datetime.date(2007, 1, 1))
 
     def testProductPriceReport(self):
-        products = list(ProductFullStockView.select(connection=self.trans))
-        branch = self.create_branch()
-        self.checkPDF(ProductPriceReport, products, branch=branch,
-                      date=datetime.date(2007, 1, 1))
+        # the orderBy clause is only needed by the test
+        products = ProductFullStockView.select(connection=self.trans)\
+                                       .orderBy('id')
+        branch_name = self.create_branch('Any').person.name
+        self.checkPDF(ProductPriceReport, list(products),
+                      branch_name=branch_name, date=datetime.date(2007, 1, 1))
