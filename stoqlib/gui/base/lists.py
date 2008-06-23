@@ -108,7 +108,8 @@ class ModelListSlave(ListSlave):
         return self._prepare_run_editor(None)
 
     def remove_item(self, item):
-        retval = self.default_remove(IDescribable(item).get_description())
+        retval = self.listcontainer.default_remove(
+            IDescribable(item).get_description())
         if retval:
             # Remove the list before deleting it because it'll be late
             # afterwards, the object is invalid and SQLObject will complain
