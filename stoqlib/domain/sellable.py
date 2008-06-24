@@ -353,6 +353,10 @@ class ASellable(InheritableModelAdapter):
     def get_unit_description(self):
         return self.unit and self.unit.description or u""
 
+    def get_category_description(self):
+        category = self.category
+        return category and category.description or u""
+
     def get_tax_constant(self):
         if self.tax_constant:
             return self.tax_constant

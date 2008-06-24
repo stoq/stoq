@@ -122,7 +122,8 @@ class ProductSearch(SearchEditor):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description', 'barcode'])
+        self.set_text_field_columns(['description', 'barcode',
+                                     'category_description'])
         self.executer.set_query(self._executer_query)
 
         # Branch
@@ -151,8 +152,8 @@ class ProductSearch(SearchEditor):
                        format='%03d', width=70),
                 Column('barcode', title=_('Barcode'), data_type=str,
                        width=130),
-                Column('description', title=_('Description'), data_type=str,
-                       expand=True),
+                Column('product_and_category_description',
+                        title=_('Description'), data_type=str),
                 Column('cost', _('Cost'), data_type=currency,
                        width=90),
                 Column('price', title=_('Price'), data_type=currency,

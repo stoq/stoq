@@ -61,6 +61,7 @@ class ProductFullStockView(Viewable):
         description=BaseSellableInfo.q.description,
         product_id=Product.q.id,
         tax_description=SellableTaxConstant.q.description,
+        category_description=SellableCategory.q.description,
         stock=func.SUM(ProductStockItem.q.quantity +
                        ProductStockItem.q.logic_quantity),
         )
@@ -69,6 +70,9 @@ class ProductFullStockView(Viewable):
         # Tax Constant
         LEFTJOINOn(None, SellableTaxConstant,
                    SellableTaxConstant.q.id == ASellable.q.tax_constantID),
+        # Category
+        LEFTJOINOn(None, SellableCategory,
+                   SellableCategory.q.id == ASellable.q.categoryID),
         # Product
         INNERJOINOn(None, ProductAdaptToSellable,
                     ProductAdaptToSellable.q.id == ASellable.q.id),
@@ -102,6 +106,18 @@ class ProductFullStockView(Viewable):
         if unit == u"":
             return u"un"
         return unit
+
+    def get_product_and_category_description(self):
+        """Returns the product and the category description in one string.
+        The category description will be formatted inside square
+        brackets, if any. Otherwise, only the product description will
+        be returned.
+        """
+        category_description = ''
+        if self.category_description:
+            category_description += '[' + self.category_description + '] '
+
+        return category_description + self.description
 
     @property
     def product(self):
