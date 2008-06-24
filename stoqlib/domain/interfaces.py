@@ -142,6 +142,12 @@ class ISellable(Interface):
     def get_unit_description():
         """Undocumented"""
 
+    def get_category_description():
+        """Returns the sellable category description
+        @returns: the category description or an empty string if no category
+        was set.
+        """
+
     def get_tax_constant():
         """Returns the tax constant for this sellable.
         If it's unset, return the constant from the category, if any

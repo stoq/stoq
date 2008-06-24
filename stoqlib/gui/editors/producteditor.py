@@ -38,6 +38,7 @@ from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.domain.product import ProductSupplierInfo, Product, ProductComponent
+from stoqlib.domain.views import ProductFullStockView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
@@ -103,6 +104,7 @@ class _TemporaryProductComponent(object):
             sellable = ISellable(self.component)
             self.id = sellable.id
             self.description = sellable.get_description()
+            self.category = sellable.get_category_description()
             self.unit = sellable.get_unit_description()
             self.production_cost = self.component.get_production_cost()
 
@@ -150,18 +152,18 @@ class ProductComponentSlave(BaseEditorSlave):
     def _get_columns(self):
         return [Column('id', title=_(u'Code'), data_type=int,
                         expander=True, sorted=True),
+                Column('quantity', title=_(u'Quantity'),
+                        data_type=Decimal),
+                Column('unit', title=_(u'Unit'), data_type=str),
                 Column('description', title=_(u'Description'),
                         data_type=str, expand=True),
-                Column('unit', title=_(u'Unit'), data_type=str),
+                Column('category', title=_(u'Category'), data_type=str),
                 Column('production_cost', title=_(u'Production Cost'),
                         data_type=currency),
-                Column('quantity', title=_(u'Quantity'), data_type=Decimal)]
+                ]
 
     def _setup_widgets(self):
-        products = Product.select(Product.q.id!=self._product.id,
-                                  connection=self.conn)
-        components = [(ISellable(p).get_description(), p) for p in products]
-        self.component_combo.prefill(components)
+        self.component_combo.prefill(list(self._get_products()))
 
         self.component_tree.set_columns(self._get_columns())
         self._populate_component_tree()
@@ -172,6 +174,26 @@ class ProductComponentSlave(BaseEditorSlave):
         self.component_label.show()
         self.component_tree_vbox.pack_start(self.component_label, False)
         self._update_widgets()
+
+    def _get_products(self, sort_by_name=True):
+        # FIXME: This is a kind of workaround until we have the
+        # SQLCompletion funcionality, then we will not need to sort the
+        # data.
+        if sort_by_name:
+            attr = 'description'
+        else:
+            attr = 'sellable_category.description'
+
+        products = []
+        for product_view in ProductFullStockView\
+                .select(connection=self.conn).orderBy(attr):
+            if product_view.product is self._product:
+                continue
+
+            description = product_view.get_product_and_category_description()
+            products.append((description, product_view.product))
+
+        return products
 
     def _update_widgets(self):
         has_selected = self.component_combo.read() is not None
@@ -322,6 +344,11 @@ class ProductComponentSlave(BaseEditorSlave):
         selected = self.component_tree.get_selected()
         self._remove_component(selected)
 
+    def on_sort_components_check__toggled(self, widget):
+        sort_by_name = not widget.get_active()
+        self.component_combo.prefill(
+            self._get_products(sort_by_name=sort_by_name))
+        self.component_combo.select_item_by_position(0)
 
 #
 # Editors

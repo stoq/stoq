@@ -278,8 +278,10 @@ class SellableEditor(BaseEditor):
     #
 
     def setup_combos(self):
-        category_list = SellableCategory.select(SellableCategory.q.categoryID != None,
-                                                connection=self.conn)
+        category_list = SellableCategory.select(
+            SellableCategory.q.categoryID != None,
+            connection=self.conn).orderBy('description')
+
         items = [(cat.get_description(), cat) for cat in category_list]
         self.category_combo.prefill(items)
 

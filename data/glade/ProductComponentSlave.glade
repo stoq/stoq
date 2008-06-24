@@ -10,40 +10,56 @@
                 <property name="spacing">6</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="GtkHBox" id="hbox1">
-                        <property name="spacing">6</property>
+                    <widget class="GtkVBox" id="vbox2">
                         <property name="visible">True</property>
                         <child>
-                            <widget class="GtkLabel" id="label1">
-                                <property name="label" context="yes" translatable="yes">Component:</property>
+                            <widget class="GtkHBox" id="hbox1">
+                                <property name="spacing">6</property>
                                 <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
+                                <child>
+                                    <widget class="GtkLabel" id="label1">
+                                        <property name="label" context="yes" translatable="yes">Component:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="ProxyComboEntry" id="component_combo">
+                                        <property name="data_type">str</property>
+                                        <property name="mandatory">True</property>
+                                        <property name="model_attribute">component</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkButton" id="add_button">
+                                        <property name="is_focus">True</property>
+                                        <property name="label">gtk-add</property>
+                                        <property name="use_stock">True</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">2</property>
+                                    </packing>
+                                </child>
                             </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                            </packing>
                         </child>
                         <child>
-                            <widget class="ProxyComboEntry" id="component_combo">
-                                <property name="data_type">str</property>
-                                <property name="mandatory">True</property>
-                                <property name="model_attribute">component</property>
+                            <widget class="ProxyCheckButton" id="sort_components_check">
+                                <property name="data_type">bool</property>
+                                <property name="label" context="yes" translatable="yes">Sort components by category</property>
+                                <property name="model_attribute">sort_components_check</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="GtkButton" id="add_button">
-                                <property name="is_focus">True</property>
-                                <property name="label">gtk-add</property>
-                                <property name="use_stock">True</property>
-                                <property name="visible">True</property>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="position">2</property>
                             </packing>
                         </child>
                     </widget>
