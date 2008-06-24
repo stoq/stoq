@@ -34,9 +34,10 @@ from kiwi.ui.search import ComboSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.service import Service, ServiceView
-from stoqlib.reporting.service import ServiceReport
+from stoqlib.reporting.service import ServiceReport, ServicePriceReport
 from stoqlib.gui.base.columns import Column
-from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.base.gtkadds import change_button_appearance
+from stoqlib.gui.base.search import SearchEditor, SearchDialogPrintSlave
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
 from stoqlib.gui.printing import print_report
 
@@ -64,6 +65,20 @@ class ServiceSearch(SearchEditor):
                               hide_toolbar=hide_toolbar,
                               selection_mode=selection_mode)
         self.set_searchbar_labels(_('matching'))
+        self._setup_print_slave()
+
+    def _setup_print_slave(self):
+        self._print_slave = SearchDialogPrintSlave()
+        change_button_appearance(self._print_slave.print_price_button,
+                                 gtk.STOCK_PRINT, _("_Table of Price"))
+        self.attach_slave('print_holder', self._print_slave)
+        self._print_slave.connect('print', self.on_print_price_button_clicked)
+        self._print_slave.print_price_button.set_sensitive(False)
+        self.results.connect('has-rows', self._has_rows)
+
+    def _has_rows(self, results, obj):
+        SearchEditor._has_rows(self, results, obj)
+        self._print_slave.print_price_button.set_sensitive(obj)
 
     #
     # SearchDialog Hooks
@@ -110,3 +125,6 @@ class ServiceSearch(SearchEditor):
 
     def on_print_button_clicked(self, button):
         print_report(ServiceReport, list(self.results))
+
+    def on_print_price_button_clicked(self, button):
+        print_report(ServicePriceReport, list(self.results))
