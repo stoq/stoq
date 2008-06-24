@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s):  Fabio Morbec            <fabio@async.com.br>
-##
+##              George Y. Kussumoto     <george@async.com.br>
 ##
 """ Services report implementation """
 
@@ -29,7 +29,7 @@ from decimal import Decimal
 from kiwi.currency import format_price
 
 from stoqlib.domain.service import ServiceView
-from stoqlib.reporting.template import SearchResultsReport
+from stoqlib.reporting.template import SearchResultsReport, PriceReport
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -75,3 +75,13 @@ class ServiceReport(SearchResultsReport):
                        format_price(total_cm, False, 2), ""]
         self.add_object_table(self._services, self._get_columns(),
                               summary_row=summary_row)
+
+
+class ServicePriceReport(PriceReport):
+    """This report show a list of services and it's prices."""
+    report_name = _("Service Listing")
+
+    def __init__(self, filename, services, *args, **kwargs):
+        # XXX: We should not change main_object_name here
+        PriceReport.main_object_name = ''
+        PriceReport.__init__(self, filename, services, *args, **kwargs)

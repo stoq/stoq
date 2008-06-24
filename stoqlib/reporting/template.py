@@ -25,6 +25,8 @@
 ##
 """ Base class implementation for all Stoq reports """
 
+from decimal import Decimal
+
 from kiwi.environ import environ
 from mako.lookup import TemplateLookup
 from reportlab.lib.units import mm
@@ -36,8 +38,9 @@ from stoqlib.database.runtime import (new_transaction,
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_phone_number
+from stoqlib.lib.validators import format_phone_number, format_quantity
 from stoqlib.reporting.base.printing import ReportTemplate
+from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 
 _ = stoqlib_gettext
 
@@ -194,6 +197,39 @@ class SearchResultsReport(BaseStoqReport):
         if notes:
             notes = "%s %s" % (self.main_object_name.capitalize(), notes)
         return (title, notes)
+
+
+class PriceReport(SearchResultsReport):
+    """ This is a base report which shows a list of items returned by a
+    SearchBar listing both it's description and price.
+    """
+    # This should be properly verified on SearchResultsReport. Waiting for
+    # bug 2517
+    report_name = ""
+
+    def __init__(self, filename, items, *args, **kwargs):
+        self._items = items
+        SearchResultsReport.__init__(self, filename, items, self.report_name,
+                                     landscape=False, *args, **kwargs)
+        self._setup_items_table()
+
+    def _get_columns(self):
+        return [OTC(_("Code"), lambda obj: '%03d' % obj.id, width=60,
+                    truncate=True),
+                OTC(_("Description"), lambda obj: obj.description,
+                    truncate=True),
+                OTC(_("Price"), lambda obj: obj.price, width=60,
+                    truncate=True),
+            ]
+
+    def _setup_items_table(self):
+        total_price = 0
+        for item in self._items:
+            total_price += item.price or Decimal(0)
+        summary_row = ["",  _("Total:"), format_quantity(total_price)]
+        self.add_object_table(self._items, self._get_columns(),
+                              summary_row=summary_row)
+
 
 class BaseRMLReport(object):
     """

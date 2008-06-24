@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Fabio Morbec      <fabio@async.com.br>
+##              George Kussumoto  <george@async.com.br>
 ##
 """ This module test reporties """
 
@@ -39,6 +40,7 @@ from stoqlib.domain.commission import CommissionSource, CommissionView
 from stoqlib.domain.interfaces import IPaymentGroup, ISellable, IStorable
 from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
+from stoqlib.domain.service import ServiceView
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.views import ProductFullStockView
@@ -46,6 +48,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.payment import (ReceivablePaymentReport,
                                        PayablePaymentReport)
 from stoqlib.reporting.product import ProductReport, ProductPriceReport
+from stoqlib.reporting.service import ServicePriceReport
 from stoqlib.reporting.sale import SalesPersonReport
 from stoqlib.reporting.till import TillHistoryReport
 from stoqlib.lib.diffutils import diff_files
@@ -226,3 +229,8 @@ class TestReport(DomainTest):
         branch_name = self.create_branch('Any').person.name
         self.checkPDF(ProductPriceReport, list(products),
                       branch_name=branch_name, date=datetime.date(2007, 1, 1))
+
+    def testServicePriceReport(self):
+        services = ServiceView.select(connection=self.trans).orderBy('id')
+        self.checkPDF(ServicePriceReport, list(services),
+                      date=datetime.date(2007, 1, 1))

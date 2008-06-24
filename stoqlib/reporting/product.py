@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -29,7 +29,7 @@
 
 from decimal import Decimal
 
-from stoqlib.reporting.template import SearchResultsReport
+from stoqlib.reporting.template import SearchResultsReport, PriceReport
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.lib.validators import format_quantity
@@ -88,41 +88,18 @@ class ProductReport(SearchResultsReport):
                               summary_row=summary_row)
 
 
-class ProductPriceReport(SearchResultsReport):
+class ProductPriceReport(PriceReport):
     """ This report show a list of all products returned by a SearchBar,
     listing both its description and price in the selected stock.
     """
-    # This should be properly verified on SearchResultsReport. Waiting for
-    # bug 2517
-    obj_type = ProductFullStockView
     report_name = _("Product Listing")
     filter_format_string = _("on branch <u>%s</u>")
 
     def __init__(self, filename, products, *args, **kwargs):
-        self._products = products
-        ProductPriceReport.main_object_name = _("products from branch %s") % \
+        # XXX: We should not change main_object_name here
+        PriceReport.main_object_name = _("products from branch %s") % \
             (kwargs['branch_name'],)
-        SearchResultsReport.__init__(self, filename, products,
-                                     ProductReport.report_name,
-                                     landscape=False,
-                                     *args, **kwargs)
-        self._setup_items_table()
-
-    def _get_columns(self):
-        return [
-            OTC(_("Code"), lambda obj: '%03d' % obj.id, width=60,
-                truncate=True),
-            OTC(_("Description"), lambda obj: obj.description, truncate=True),
-            OTC(_("Price"), lambda obj: obj.price, width=60, truncate=True),
-            ]
-
-    def _setup_items_table(self):
-        total_price = 0
-        for item in self._products:
-            total_price += item.price or Decimal(0)
-        summary_row = ["",  _("Total:"), format_quantity(total_price)]
-        self.add_object_table(self._products, self._get_columns(),
-                              summary_row=summary_row)
+        PriceReport.__init__(self, filename, products, *args, **kwargs)
 
 
 class ProductQuantityReport(SearchResultsReport):

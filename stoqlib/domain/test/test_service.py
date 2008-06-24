@@ -25,7 +25,7 @@
 
 from stoqlib.domain.interfaces import IDelivery
 from stoqlib.domain.sale import DeliveryItem
-from stoqlib.domain.service import ServiceView
+from stoqlib.domain.service import Service, ServiceView
 from stoqlib.exceptions import SellError
 
 from stoqlib.domain.test.domaintest import DomainTest
@@ -53,8 +53,7 @@ class TestServiceSellableItem(DomainTest):
 class TestServiceView(DomainTest):
 
     def testServiceViewSelect(self):
-        service = self.create_service().id
-        self.trans.commit()
+        service = Service.get(1, connection=self.trans).id
         services = [s.service_id for s in
                     ServiceView.select(connection=self.trans)]
         self.failIf(service not in services)
