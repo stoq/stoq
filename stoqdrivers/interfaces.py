@@ -315,44 +315,50 @@ class ICouponPrinter(IDevice):
         is going to get constant values from.
         """
 
-    def get_sintegra(self):
+    def get_payment_constants():
+        """"""
+
+    def get_serial():
+        """Returns the serial number for the printer"""
+
+    def get_sintegra():
         """
         Gets an object that implements ISintegraData or None.
         """
 
-    def get_firmware_version(self):
+    def get_firmware_version():
         """Firmware version of the printer
         """
 
-    def get_ccf(self):
+    def get_ccf():
         """Fiscal Coupon Counter
 
         @retval: the last document ccf
         @rtype: integer
         """
 
-    def get_coo(self):
+    def get_coo():
         """Operation Order Counter
 
         @retval: the last document coo
         @rtype: integer
         """
 
-    def get_gnf(self):
+    def get_gnf():
         """Nonfiscal Operation General Counter
 
         @retval: gnf
         @rtype: integer
         """
 
-    def get_crz(self):
+    def get_crz():
         """Z Reduction Counter
 
         @retval: the last document crz
         @rtype: integer
         """
 
-    def get_user_registration_info(self):
+    def get_user_registration_info():
         """Returns current ecf user registration date and time,
         id in the printer and cro relative to the user registration
         """
