@@ -228,7 +228,7 @@ class ECFEditor(BaseEditor):
                           'cheque': PaymentMethodType.CHECK,
                           'boleto' : PaymentMethodType.BILL,
                           'cartao credito' : PaymentMethodType.CREDIT_CARD,
-                          'cartao debito' : PaymentMethodType.CREDIT_CARD,
+                          'cartao debito' : PaymentMethodType.DEBIT_CARD,
                           'financeira' : PaymentMethodType.FINANCIAL,
                           'vale compra' : PaymentMethodType.GIFT_CERTIFICATE
                           }
