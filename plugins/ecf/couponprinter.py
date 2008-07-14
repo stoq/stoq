@@ -57,7 +57,9 @@ class CouponPrinter(object):
     stoqdrivers, refer to it for documentation
     """
     def __init__(self, printer):
+        # This is an ECFPrinter instance
         self._printer = printer
+        # and this is a FiscalPrinter instance
         self._driver = printer.get_fiscal_driver()
 
     #
@@ -327,6 +329,29 @@ class Coupon(object):
     def cancel(self):
         return self._driver.cancel()
 
+    def _get_payment_method_constant(self, method_type):
+        all_methods = get_all_methods_dict().items()
+        method_id = None
+
+        for method_id, mtype in all_methods:
+            if mtype == method_type:
+                break
+        else:
+            raise ValueError(
+                _("Can't find a valid identifier for the payment "
+                  "method type: %s. It is not possible add "
+                  "the payment on the coupon") %
+                method_type.__name__)
+
+        constant = self._printer.get_payment_constant(method_id)
+        if not constant:
+            method_name = get_method_names()[method_id]
+            raise DeviceError(
+                _("The payment method used in this sale (%s) is not "
+                  "configured in the fiscal printer." % method_name))
+
+        return constant
+
     def add_payments(self, sale):
         """ Add the payments defined in the sale to the coupon. Note that this
         function must be called after all the payments has been created.
@@ -336,27 +361,8 @@ class Coupon(object):
         group = IPaymentGroup(sale)
 
         log.info("we have %d payments" % (group.get_items().count()),)
-        all_methods = get_all_methods_dict().items()
-        method_id = None
         for payment in group.get_items():
-            method_type = type(payment.method)
-            for method_id, mtype in all_methods:
-                if mtype == method_type:
-                    break
-            else:
-                raise ValueError(
-                    _("Can't find a valid identifier for the payment "
-                      "method type: %s. It is not possible add "
-                        "the payment on the coupon") %
-                    method_type.__name__)
-
-            constant = self._printer.get_payment_constant(method_id)
-            if not constant:
-                method_name = get_method_names()[method_id]
-                raise DeviceError(
-                    _("The payment method used in this sale (%s) is not "
-                      "configured in the fiscal printer." % method_name))
-
+            constant = self._get_payment_method_constant(type(payment.method))
             self._driver.add_payment(constant.device_value,
                                      payment.base_value)
 
@@ -392,4 +398,19 @@ class Coupon(object):
 
     def get_coo(self):
         return self._driver.get_coo()
+
+    def print_payment_receipt(self, coo, payment, receipt):
+        """Print a payment receipt for a payment in a coupon
+
+        @param coo: the coo for the coupon
+        @param payment:
+        @param receipt: the text to be printed
+        """
+        constant = self._get_payment_method_constant(type(payment.method))
+        receipt_id = self._driver.get_payment_receipt_identifier(constant.constant_name)
+
+        self._driver.payment_receipt_open(receipt_id, coo, constant.device_value, payment.value)
+        self._driver.payment_receipt_print(receipt)
+        self._driver.payment_receipt_close()
+
 

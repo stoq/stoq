@@ -317,7 +317,9 @@ class ECFUI(object):
             ('add-payments', self._on_coupon__add_payments),
             ('totalize', self._on_coupon__totalize),
             ('close', self._on_coupon__close),
-            ('cancel', self._on_coupon__cancel)
+            ('cancel', self._on_coupon__cancel),
+            ('get-coo', self._on_coupon__get_coo),
+            ('print-payment-receipt', self._on_coupon__print_payment_receipt),
             ]:
             fiscalcoupon.connect_object(signal, callback, coupon)
         return coupon
@@ -514,6 +516,12 @@ class ECFUI(object):
 
     def _on_coupon__cancel(self, coupon):
         coupon.cancel()
+
+    def _on_coupon__get_coo(self, coupon):
+        return coupon.get_coo()
+
+    def _on_coupon__print_payment_receipt(self, coupon, coo, payment, receipt):
+        coupon.print_payment_receipt(coo, payment, receipt)
 
     def _on_TillSummary__activate(self, action):
         self._till_summarize()

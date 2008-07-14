@@ -35,6 +35,7 @@ from zope.interface import implements
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.interfaces import (IContainer, IGiftCertificate,
                                        IPaymentGroup)
+from stoqlib.domain.payment.methods import CardPM
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.exceptions import DeviceError, TillError
@@ -154,10 +155,14 @@ class FiscalCoupon(gobject.GObject):
     gsignal('totalize', object)
     gsignal('close', object, retval=int)
     gsignal('cancel')
+    gsignal('get-coo', retval=int)
+                                   # coo, payment, text
+    gsignal('print-payment-receipt', int, object, str)
 
     def __init__(self, parent):
         gobject.GObject.__init__(self)
 
+        self._coo = None
         self._parent = parent
         self._item_ids = {}
 
@@ -261,6 +266,9 @@ class FiscalCoupon(gobject.GObject):
                 warning(_(u"It is not possible to emit the coupon"),
                         str(e))
                 return False
+
+        self._coo = self.emit('get-coo')
+
         return True
 
     def confirm(self, sale, trans):
@@ -283,11 +291,22 @@ class FiscalCoupon(gobject.GObject):
 
         sale.confirm()
 
+        # TODO: this should be fixed with bug 2249
+        #self._print_receipts(sale)
+
         if sale.paid_with_money():
             sale.set_paid()
 
         print_cheques_for_payment_group(trans, IPaymentGroup(sale))
         return True
+
+    def _print_receipts(self, sale):
+        group = IPaymentGroup(sale)
+        for payment in group.get_items():
+            if type(payment.method) == CardPM:
+                # The text is a response from the TEF software. That should probably be stored as
+                # a temporary property of the payment. To be fixed with bug 2249
+                self.print_payment_receipt(payment, 'STOQ RULES')
 
     def totalize(self, sale):
         # XXX: Remove this when bug #2827 is fixed.
@@ -337,5 +356,20 @@ class FiscalCoupon(gobject.GObject):
             return True
         except (DeviceError, DriverError), details:
             warning(_("It's not possible to close the coupon"), str(details))
+
+        return False
+
+
+    def print_payment_receipt(self, payment, receipt):
+        """Print the receipt for the payment.
+
+        This must be called after the coupon is closed.
+        """
+        try:
+            self.emit('print-payment-receipt', self._coo, payment, receipt)
+            return True
+        except (DriverError, DeviceError), details:
+            warning(_(u"It is not possible to print the payment receipt"),
+                    str(details))
 
         return False
