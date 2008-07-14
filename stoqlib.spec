@@ -2,7 +2,7 @@
 
 Summary: A powerful retail system library
 Name: stoqlib
-Version: 0.9.5
+Version: 0.9.6.2
 Release: 4
 License: LGPL
 Group: System Environment/Libraries
