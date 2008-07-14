@@ -263,6 +263,19 @@ class FiscalPrinter(BasePrinter):
 
         self._driver.till_read_memory_by_reductions(start, end)
 
+    def payment_receipt_open(self, identifier, coo, method, value):
+        log.info('payment_receipt_open(identifier=%s, coo=%s, method=%s, value=%s)'
+                  % (identifier, coo, method, value))
+        return self._driver.payment_receipt_open(identifier, coo, method, value)
+
+    def payment_receipt_print(self, text):
+        log.info('payment_receipt_print(text=%s)' % text)
+        return self._driver.payment_receipt_print(text)
+
+    def payment_receipt_close(self):
+        log.info('payment_receipt_close()')
+        return self._driver.payment_receipt_close()
+
     def get_serial(self):
         log.info('get_serial()')
 
@@ -286,6 +299,10 @@ class FiscalPrinter(BasePrinter):
         log.info('get_payment_constants()')
 
         return self._driver.get_payment_constants()
+
+    def get_payment_receipt_identifier(self, method):
+        log.info('get_payment_receipt_identifier(method=%s)' % method)
+        return self._driver.get_payment_receipt_identifier(method)
 
     def get_ccf(self):
         """Fiscal Coupon Counter

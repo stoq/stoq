@@ -76,6 +76,9 @@ CMD_READ_REGISTER = 35
 CMD_ADD_ITEM = 63
 CMD_ADD_PAYMENT = 72
 CMD_GET_REGISTERS = 88
+CMD_PAYMENT_RECEIPT_OPEN = 66
+CMD_PAYMENT_RECEIPT_PRINT = 67
+CMD_PAYMENT_RECEIPT_CLOSE = 21
 
 # Page 51
 REGISTER_LAST_ITEM_ID = 12
@@ -554,6 +557,33 @@ class MP25(SerialBase):
         totalized_value = self._get_coupon_subtotal()
         self.remainder_value = totalized_value
         return totalized_value
+
+    def get_payment_receipt_identifier(self, method):
+        # We don't need one.
+        return None
+
+    def _get_payment_description(self, method_id):
+        constants = self.get_payment_constants()
+        for value, name in constants:
+            if value == method_id:
+                return name
+
+    def payment_receipt_open(self, identifier, coo, method_id, value):
+        method = self._get_payment_description(method_id)
+        if not method:
+            raise DriverError('Looks like this payment method '
+                              'is not configured in the printer')
+
+        value = int(value*100)
+        self._send_command(CMD_PAYMENT_RECEIPT_OPEN,
+                           '%-16s%014d%06d' % (method, value, coo))
+
+    def payment_receipt_print(self, text):
+        for line in text.split('\n'):
+            self._send_command(CMD_PAYMENT_RECEIPT_PRINT, line)
+
+    def payment_receipt_close(self):
+        self._send_command(CMD_PAYMENT_RECEIPT_CLOSE)
 
     def get_capabilities(self):
         return dict(

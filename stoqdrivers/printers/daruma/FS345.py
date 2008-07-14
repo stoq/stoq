@@ -76,21 +76,21 @@ CMD_REDUCE_Z = 208
 CMD_READ_MEMORY = 209
 # [ESC] 210 Emissão de Cupom Adicional
 # [ESC] 211 Abertura de Relatório Gerencial (Leitura X)
-# [ESC] 212 Fechamento de Relatório Gerencial (Leitura X)
-# [ESC] 213 Linha de texto de Relatório Gerencial (Leitura X)
+CMD_CLOSE_NON_FISCAL_BOUND_RECEIPT = 212        # Pg. 37
+CMD_PRINT_LINE_NON_FISCAL_BOUND_RECEIPT = 213   # Pg. 37
 CMD_ADD_ITEM_1L13D = 214
 CMD_ADD_ITEM_2L13D = 215
 CMD_ADD_ITEM_3L13D = 216
 CMD_OPEN_VOUCHER = 217
 CMD_DESCRIBE_MESSAGES = 218
-# [ESC] 219 Abertura de Comprovante Não Fiscal Vinculado
+CMD_OPEN_NON_FISCAL_BOUND_RECEIPT = 219 # Pg 36
 CMD_CONFIGURE_TAXES = 220
 CMD_LAST_RECORD = 221
 # [ESC] 223 Descrição de produto em 3 linhas com código de 13 dígitos
 #           (Formato fixo p/ Quantidade 5,3)
 CMD_ADD_ITEM_3L13D53U = 223
 # [ESC] 225 Descrição de produto com preço unitário com 3 decimais
-# [ESC] 226 Criação de Comprovante Não Fiscal (Vinculado ou Não)
+CMD_DESCRIBE_NON_FISCAL_RECEIPT = 226   # Pg. 42
 # [ESC] 227 Subtotalização de Cupom Fiscal
 # [ESC] 228 Configuração da IF
 CMD_GET_CONFIGURATION = 229
@@ -359,13 +359,16 @@ class FS345(SerialBase):
         self.send_command(CMD_CONFIGURE_TAXES, 'S0400')
 
     def _configure_payment_methods(self):
-        #self.send_command(CMD_DESCRIBE_MESSAGES, 'PGDinheiro')
-        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGXCHEQUE            ')
-        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGXBOLETO            ')
-        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGVCARTAO CREDITO    ')
-        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGVCARTAO DEBITO     ')
-        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGVFINANCEIRA        ')
-        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGVOUTROS            ')
+        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGXADinheiro         ')
+        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGXBCheque           ')
+        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGXCBoleto           ')
+        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGVDCartao Credito   ')
+        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGVECartao Debito    ')
+        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGVFFinanceira       ')
+        self.send_command(CMD_DESCRIBE_MESSAGES, 'PGVGVale Compra      ')
+
+    def _configure_bound_receipts(self):
+        self.send_command(CMD_DESCRIBE_NON_FISCAL_RECEIPT, 'VCartao Credito       ')
 
     #
     # API implementation
@@ -489,6 +492,46 @@ class FS345(SerialBase):
         date = time.strftime('%d%m%y%H%M%S', time.localtime())
         self.send_command(CMD_REDUCE_Z, date)
 
+    def _get_bound_receipt_constants(self):
+        # Also page 48
+        messages = self.send_command(CMD_GET_PERSONAL_MESSAGES)
+
+        raw = messages[372:708]
+        constants = []
+        const_letter = 'ABCDEFGHIJKLMNOP'
+        for i, char in enumerate(const_letter):
+            const = raw[i*21:i*21+21]
+            constants.append((char, const.strip()))
+
+        return constants
+
+    def get_payment_receipt_identifier(self, method_name):
+        """Returns the receipt identifier corresponding to the payment method.
+
+        @param method_name: this is the payment method name. A receipt with
+                            the same name should be configured at the printer.
+        """
+        constants = self._get_bound_receipt_constants()
+        for id, name in constants:
+            if str(name) == str(method_name):
+                return id
+
+        raise DriverError(_("Receipt for method %s is not configured") % method_name)
+
+    def payment_receipt_open(self, identifier, coo, method, value):
+        value = int(value * 100)
+        # res is the coo for the current document.
+        res = self.send_command(CMD_OPEN_NON_FISCAL_BOUND_RECEIPT,
+                          '%c%c%06d%012d' % (identifier, method, coo, value))
+
+    def payment_receipt_print(self, text):
+        for line in text.split('\n'):
+            self.send_command(CMD_PRINT_LINE_NON_FISCAL_BOUND_RECEIPT,
+                              line + chr(255))
+
+    def payment_receipt_close(self):
+        self.send_command(CMD_CLOSE_NON_FISCAL_BOUND_RECEIPT)
+
     def till_add_cash(self, value):
         self._add_voucher(CASH_IN_TYPE, value)
         self._add_payment('A', value, '')
@@ -606,8 +649,10 @@ class FS345(SerialBase):
         method_letter = 'ABCDEFGHIJKLMNOP'
         for i in range(16):
             method = raw[i*18:i*18+18]
-            if method[0] == 'V':
-                methods.append((method_letter[i], method[1:].strip()))
+            # XXX V = vinculavel. Why Only These????
+            #if method[0] == 'V':
+            #    methods.append((method_letter[i], method[1:].strip()))
+            methods.append((method_letter[i], method[1:].strip()))
 
         return methods
 

@@ -378,6 +378,30 @@ class TestCoupon(object):
             self.failUnlessRaises(CouponOpenError, self._device.open)
         self._device.cancel()
 
+    def _get_constant(self, constants, value):
+        for device_value, name in constants:
+            if name.lower() == value.lower():
+                return device_value
+
+        return None
+
+    def test_payment_receipt(self):
+        payment_id = self._get_constant(self._device.get_payment_constants(),
+                                        'Cartao Credito')
+        receipt_id = self._device.get_payment_receipt_identifier('Cartao Credito')
+
+        self._open_coupon()
+        self._device.add_item(u"987654", u"Monitor LG 775N", Decimal(10),
+                             self._taxnone)
+
+        self._device.totalize()
+        self._device.add_payment(payment_id, Decimal(10))
+        coo = self._device.close()
+
+        self._device.payment_receipt_open(receipt_id, coo, payment_id, Decimal(10))
+        self._device.payment_receipt_print('Stoq payment receipt')
+        self._device.payment_receipt_close()
+
 class DarumaFS345(TestCoupon, BaseTest):
     brand = 'daruma'
     model = 'FS345'

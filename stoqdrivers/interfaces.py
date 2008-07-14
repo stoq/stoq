@@ -287,6 +287,34 @@ class ICouponPrinter(IDevice):
         @type end: int
         """
 
+    def get_payment_receipt_identifier(method_name):
+        """If the printer requires an identifier to open a payment receipt,
+        this method should return that identifier.
+
+        @param method_name: get receipt for specific method name.
+        """
+
+    def payment_receipt_open(identifier, coo, method, value):
+        """Opens a non-fiscal bound receipt for a payment
+
+        @param identifier: a char (A-P) representing the receipt to use.
+                           The receipt must already be configured at the printer.
+        @param method: another char (A-P) for the payment method. Also, this must be
+                       configured at the printer. The payment method must be bindable
+        @param coo: coo for the coupon containing the payment
+        @param value: the value of the payment
+        """
+
+    def payment_receipt_print(text):
+        """Prints the payment receipt text
+
+        @param text: text to be printed
+        """
+
+    def payment_receipt_close():
+        """Closes previouly opened payment receipt
+        """
+
     #
     # Getting printer status
     #
