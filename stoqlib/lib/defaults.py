@@ -117,8 +117,8 @@ def get_all_methods_dict():
     return {PaymentMethodType.MONEY: MoneyPM,
             PaymentMethodType.CHECK: CheckPM,
             PaymentMethodType.BILL: BillPM,
-            PaymentMethodType.CREDIT_CARD: CardPM,
-            PaymentMethodType.DEBIT_CARD: CardPM,
+            PaymentMethodType.CREDIT_CARD: CardPM, # WTF? we need one type for each or someway to
+            PaymentMethodType.DEBIT_CARD: CardPM,  # diferenciate both. bug 3671
             PaymentMethodType.GIFT_CERTIFICATE: GiftCertificatePM,
             PaymentMethodType.FINANCIAL: FinancePM}
 
