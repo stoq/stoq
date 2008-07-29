@@ -410,6 +410,10 @@ class BematechMP25FI(TestCoupon, BaseTest):
     brand = 'bematech'
     model = 'MP25'
 
+class BematechMP2100(TestCoupon, BaseTest):
+    brand = 'bematech'
+    model = 'MP2100'
+
 # class DataregisEP375(TestCoupon, BaseTest):
 #     brand = "dataregis"
 #     model = "EP375"
