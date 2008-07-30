@@ -218,3 +218,80 @@ class PurchaseOrderReport(BaseStoqReport):
     def get_title(self):
         order_number = self._order.get_order_number_str()
         return _("Purchase Order #%s") % order_number
+
+
+class PurchaseQuoteReport(BaseStoqReport):
+    """A quote report to be sent to suppliers
+    """
+    report_name = _(u'Quote Request')
+
+    def __init__(self, filename, quote, *args, **kwargs):
+        self._quote = quote
+        BaseStoqReport.__init__(self, filename, self.report_name,
+                                landscape=True, *args, **kwargs)
+        self._setup_quote_details()
+        self._setup_payments()
+        self._setup_items_table()
+        self._add_signature_field()
+
+    def _get_items_columns(self):
+        return [
+            OTC(_("Item"), lambda obj: "%s" % obj.sellable.get_description(),
+                expand=True, truncate=True),
+            # FIXME: This column should be virtual, waiting for bug #2764
+            OTC("Unit", lambda obj: obj.sellable.get_unit_description(),
+                virtual=False, width=50, align=LEFT),
+            OTC(_("Cost"), lambda obj: "", width=70, align=RIGHT),
+            OTC(_("Quantity"), lambda obj: format_quantity(obj.quantity),
+                width=70, align=RIGHT),
+            OTC(_("Total"), lambda obj: "", width=90, align=RIGHT),]
+
+    def _get_freight_line(self):
+        return [_(u"Transporter:"), u"",
+                _(u"Freight:"), u""]
+
+    def _setup_quote_details(self):
+        cols = [TC("", width=100),
+                TC("", width=285, expand=True, truncate=True),
+                TC("", width=50),
+                TC("", width=285, expand=True, truncate=True)]
+        data = [[_(u"Open Date:"), self._quote.get_open_date_as_string(),
+                 # To be filled
+                 _(u"Deadline:"), ""],
+                [_(u"Supplier:"), self._quote.get_supplier_name(),
+                 _(u"Branch:"), self._quote.get_branch_name()]]
+
+        data.append(self._get_freight_line())
+        self.add_column_table(data, cols, do_header=False,
+                              highlight=HIGHLIGHT_NEVER, margins=2,
+                              table_line=TABLE_LINE_BLANK, width=730)
+        self.add_blank_space(5)
+
+    def _setup_payments(self):
+        self.add_paragraph(_(u"Payment Settings"), style="Title")
+        self.add_blank_space(5)
+        cols = [TC("", width=150, expand=True), TC("", width=150, expand=True),
+                TC("", width=150, expand=True), TC("", width=150, expand=True)]
+        data = [[_(u"Payment Method:"), "", _(u"Installments:"), ""],
+                [_(u"Intervals:"), "", _(u"Obs:"), ""]]
+        self.add_column_table(data, cols, do_header=False,
+                              highlight=HIGHLIGHT_NEVER, margins=2,
+                              table_line=TABLE_LINE_BLANK, width=730)
+        self.add_blank_space(5)
+
+    def _setup_items_table(self):
+        self.add_paragraph(_(u"Quoting Items"), style="Title")
+        items = self._quote.get_items()
+        self.add_object_table(list(items), self._get_items_columns())
+        self.add_blank_space(5)
+
+    def _add_signature_field(self):
+        # The supplier name here ?
+        self.add_signatures([_(u"Responsible")])
+
+    #
+    # BaseStoqReport
+    #
+
+    def get_title(self):
+        return self.report_name

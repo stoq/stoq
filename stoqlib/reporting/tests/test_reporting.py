@@ -40,6 +40,7 @@ from stoqlib.domain.commission import CommissionSource, CommissionView
 from stoqlib.domain.interfaces import IPaymentGroup, ISellable, IStorable
 from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.till import Till, TillEntry
@@ -48,6 +49,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.payment import (ReceivablePaymentReport,
                                        PayablePaymentReport)
 from stoqlib.reporting.product import ProductReport, ProductPriceReport
+from stoqlib.reporting.purchase import PurchaseQuoteReport
 from stoqlib.reporting.service import ServicePriceReport
 from stoqlib.reporting.sale import SalesPersonReport
 from stoqlib.reporting.till import TillHistoryReport
@@ -233,4 +235,11 @@ class TestReport(DomainTest):
     def testServicePriceReport(self):
         services = ServiceView.select(connection=self.trans).orderBy('id')
         self.checkPDF(ServicePriceReport, list(services),
+                      date=datetime.date(2007, 1, 1))
+
+    def testPurchaseQuoteReport(self):
+        quoted_item = self.create_purchase_order_item()
+        quote = quoted_item.order
+        quote.status = PurchaseOrder.ORDER_QUOTING
+        self.checkPDF(PurchaseQuoteReport, quote,
                       date=datetime.date(2007, 1, 1))
