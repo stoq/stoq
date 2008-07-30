@@ -45,6 +45,7 @@ from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.search.productsearch import ProductSearchQuantity
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
+from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.productretention import ProductRetentionDialog
 from stoqlib.reporting.product import ProductReport
@@ -183,6 +184,10 @@ class StockApp(SearchableAppWindow):
 
     def on_ProductHistory__activate(self, action):
         self.run_dialog(ProductSearchQuantity, self.conn)
+
+    def on_initial_stock_action__activate(self, action):
+        branch = self.branch_filter.get_state().value
+        self.run_dialog(InitialStockDialog, self.conn, branch)
 
     def on_receiving_search_action_clicked(self, button):
         self.run_dialog(PurchaseReceivingSearch, self.conn)
