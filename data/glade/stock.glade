@@ -167,6 +167,14 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="initial_stock_action">
+                        <property name="name">initial_stock_action</property>
+                        <property name="label" translatable="yes">_Initial Stock</property>
+                        <property name="stock_id">gtk-go-up</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;I</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="transfer_action">
                         <property name="name">transfer_action</property>
                         <property name="label" translatable="yes">Transfer</property>
@@ -187,8 +195,9 @@
 	  <menubar action="menubar">
 	    <menu action="SalesMenu">
 	      <menuitem action="receive_action"/>
-             <menuitem action="transfer_action"/>
-	      <separator name="sep"/>
+          <menuitem action="transfer_action"/>
+          <menuitem action="initial_stock_action"/>
+      <separator name="sep"/>
 	      <menuitem action="Quit"/>
 	    </menu>
 	    <menu action="SearchMenu">
