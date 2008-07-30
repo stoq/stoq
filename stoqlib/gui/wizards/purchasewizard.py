@@ -27,6 +27,7 @@
 """ Purchase wizard definition """
 
 import datetime
+from decimal import Decimal
 
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
@@ -180,6 +181,10 @@ class PurchaseItemStep(SellableItemStep):
         SellableItemStep.setup_slaves(self)
         self.hide_add_and_edit_buttons()
 
+        self.sellable.connect(
+            'content-changed', self._on_sellable__content_changed)
+        self.cost.set_editable(True)
+        self.cost.connect('validate', self._on_cost__validate)
 
     #
     # SellableItemStep virtual methods
@@ -187,7 +192,7 @@ class PurchaseItemStep(SellableItemStep):
 
     def get_order_item(self, sellable, cost, quantity):
         item = self.model.add_item(sellable, quantity)
-        item.cost = cost
+        item.cost = self.cost.read()
         return item
 
     def get_saved_items(self):
@@ -217,6 +222,36 @@ class PurchaseItemStep(SellableItemStep):
 
     def next_step(self):
         return PurchasePaymentStep(self.wizard, self, self.conn, self.model)
+
+    #
+    # Private API
+    #
+
+    def _validate_sellable_cost(self):
+        sellable = self.sellable.get_selected_data()
+        if sellable is None:
+            return
+        for item in self.slave.klist:
+            if item.sellable == sellable:
+                # set the value in the cost entry only, we don't want to keep
+                # a custom sellable cost outside this purchase
+                self.cost.set_text(str(item.cost))
+                self.cost.set_editable(False)
+                return
+
+        self.cost.set_editable(True)
+
+    #
+    # Callbacks
+    #
+
+    def _on_sellable__content_changed(self, widget):
+        self._validate_sellable_cost()
+
+    def _on_cost__validate(self, widget, value):
+        if value <= Decimal(0):
+            return ValidationError(_(u"The cost must be greater than zero."))
+
 
 class PurchasePaymentStep(WizardEditorStep):
     gladefile = 'PurchasePaymentStep'
