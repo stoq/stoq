@@ -41,7 +41,8 @@ from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
-from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
+from stoqlib.gui.wizards.purchasewizard import (PurchaseWizard,
+                                                QuotePurchaseWizard)
 from stoqlib.gui.search.categorysearch import (SellableCategorySearch,
                                                BaseSellableCatSearch)
 from stoqlib.gui.search.productsearch import ProductSearch
@@ -131,7 +132,8 @@ class PurchaseApp(SearchableAppWindow):
             can_cancel = False
 
         if one_selected:
-            can_edit = selection[0].status == PurchaseOrder.ORDER_PENDING
+            can_edit = (selection[0].status == PurchaseOrder.ORDER_PENDING or
+                        selection[0].status == PurchaseOrder.ORDER_QUOTING)
         self.cancel_button.set_sensitive(can_cancel)
         self.edit_button.set_sensitive(can_edit)
         self.SendToSupplier.set_sensitive(can_send_supplier)
@@ -153,7 +155,11 @@ class PurchaseApp(SearchableAppWindow):
         if qty != 1:
             raise ValueError('You should have only one order selected, '
                              'got %d instead' % qty )
-        self._open_order(selected[0].purchase, edit_mode=False)
+        purchase = selected[0].purchase
+        if purchase.status == PurchaseOrder.ORDER_PENDING:
+            self._open_order(purchase, edit_mode=False)
+        else:
+            self._quote_order(purchase)
         self.refresh()
 
     def _run_details_dialog(self):
@@ -218,6 +224,13 @@ class PurchaseApp(SearchableAppWindow):
         items.insert(0, (_('Any'), None))
         return items
 
+    def _quote_order(self, quote=None):
+        trans = new_transaction()
+        quote = trans.get(quote)
+        model = self.run_dialog(QuotePurchaseWizard, trans, quote)
+        rv = finish_transaction(trans, model)
+        trans.close()
+
     #
     # Kiwi Callbacks
     #
@@ -252,6 +265,12 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_SendToSupplier__activate(self, action):
         self._send_selected_items_to_supplier()
+
+    def on_QuoteOrder__activate(self, action):
+        self._quote_order()
+
+    def on_Quote__activate(self, action):
+        self._quote_order()
 
     # FIXME: Kiwi autoconnection OR rename, see #2323
 

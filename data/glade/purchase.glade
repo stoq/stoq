@@ -10,6 +10,15 @@
                         <property name="label" translatable="yes">Add Order...</property>
                         <signal handler="_on_order_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;o</property>
+                        <property name="stock_id">gtk-new</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="QuoteOrder">
+                        <property name="name">QuoteOrder</property>
+                        <property name="label" translatable="yes">Quote Order...</property>
+                        <property name="stock_id">gtk-index</property>
+                        <property name="accelerator">&lt;Control&gt;q</property>
                     </widget>
                 </child>
                 <child>
@@ -114,6 +123,14 @@
                         <property name="label" translatable="yes">Add Order</property>
                         <property name="stock_id">gtk-new</property>
                         <signal handler="_on_order_action_clicked" name="activate"/>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="Quote">
+                        <property name="name">Quote</property>
+                        <property name="label" translatable="yes">Quote Order</property>
+                        <property name="stock_id">gtk-index</property>
+                        <property name="accelerator">&lt;Control&gt;q</property>
                     </widget>
                 </child>
                 <child>
@@ -237,6 +254,7 @@
 	<menubar action="menubar">
           <menu action="PurchaseMenu">
 	    <menuitem action="AddOrder"/>
+	    <menuitem action="QuoteOrder"/>
 	    <menuitem action="SendToSupplier"/>
 	    <separator name="sep"/>
 	    <menuitem action="Quit"/>
@@ -255,6 +273,7 @@
 	  </menubar>
 	  <toolbar action="toolbar1">
 	    <toolitem action="Purchase"/>
+	    <toolitem action="Quote"/>
 	    <toolitem action="ProductButton"/>
 	    <toolitem action="SuppliersButton"/>
 	    <toolitem action="SendToSupplier"/>
