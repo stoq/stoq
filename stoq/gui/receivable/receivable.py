@@ -103,7 +103,8 @@ class ReceivableApp(SearchableAppWindow):
         self.details_button.set_sensitive(self._same_sale(selected))
         self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
         self.Receipt.set_sensitive(self._can_emit_receipt(selected))
-        self.SetNotPaid.set_sensitive(self._can_set_not_paid(selected))
+        self.SetNotPaid.set_sensitive(
+            self._can_change_payment_status(selected))
 
     def _has_rows(self, result_list, has_rows):
         self.print_button.set_sensitive(has_rows)
@@ -260,13 +261,13 @@ class ReceivableApp(SearchableAppWindow):
                    view.status == Payment.STATUS_PENDING
                    for view in receivable_views)
 
-    def _can_set_not_paid(self, receivable_views):
+    def _can_change_payment_status(self, receivable_views):
         """whether or not we can change the paid status
         """
         if len(receivable_views) != 1:
             return False
 
-        return receivable_views[0].payment.is_paid()
+        return receivable_views[0].can_change_payment_status()
 
     def _can_change_due_date(self, receivable_views):
         """
