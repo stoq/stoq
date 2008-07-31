@@ -92,7 +92,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyLabel" id="kiwilabel4">
+                            <widget class="ProxyLabel" id="cost_label">
                                 <property name="label" context="yes" translatable="yes">Cost:</property>
                                 <property name="model_attribute"></property>
                                 <property name="visible">True</property>
