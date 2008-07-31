@@ -39,7 +39,7 @@ from stoqlib.gui.printing import print_report
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
 from stoqlib.domain.interfaces import IPaymentGroup
-from stoqlib.reporting.purchase import PurchaseOrderReport
+from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
 
 _ = stoqlib_gettext
 
@@ -194,6 +194,14 @@ class PurchaseDetailsDialog(BaseEditor):
                         data_type=str, expand=True,
                         ellipsize=pango.ELLIPSIZE_END)]
 
+    def _print_report(self):
+        if self.model.status == PurchaseOrder.ORDER_QUOTING:
+            report = PurchaseQuoteReport
+        else:
+            report = PurchaseOrderReport
+
+        print_report(report, self.model)
+
     #
     # BaseEditor hooks
     #
@@ -215,4 +223,4 @@ class PurchaseDetailsDialog(BaseEditor):
     #
 
     def on_print_button__clicked(self, button):
-        print_report(PurchaseOrderReport, self.model)
+        self._print_report()
