@@ -28,6 +28,7 @@ import datetime
 from kiwi.datatypes import converter
 
 from stoqlib.domain.payment.category import PaymentCategory
+from stoqlib.domain.payment.methods import MoneyPM
 from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
                                             PaymentAdaptToOutPayment,
                                             PaymentChangeHistory)
@@ -73,6 +74,11 @@ class InPaymentView(Viewable):
 
     def can_change_due_date(self):
         return not self.payment.is_paid()
+
+    def can_change_payment_status(self):
+        # cash receivings can't be changed
+        use_money_method = isinstance(self.payment.method, MoneyPM)
+        return not use_money_method and self.payment.is_paid()
 
     def get_status_str(self):
         return Payment.statuses[self.status]

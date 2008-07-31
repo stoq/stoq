@@ -749,6 +749,9 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     def pay(self, payment):
         from stoqlib.domain.commission import Commission
 
+        if self._already_have_commission(payment):
+            return
+
         if not self._pay_commission_at_confirm():
             commission = Commission(commission_type=self._get_commission_type(),
                                      sale=self.sale, payment=payment,
@@ -772,6 +775,13 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     #
     # Private API
     #
+
+    def _already_have_commission(self, payment):
+        from stoqlib.domain.commission import Commission
+
+        commission = Commission.selectOneBy(payment=payment,
+                                            connection=self.get_connection())
+        return commission is not None
 
     def _cancel_pending_payments(self):
         for payment in Payment.selectBy(group=self,
