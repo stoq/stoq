@@ -44,6 +44,7 @@ from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
 from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
 from stoqlib.gui.printing import print_report
+from stoqlib.lib.message import yesno
 from stoqlib.reporting.product import ProductCountingReport
 
 _ = gettext.gettext
@@ -105,12 +106,15 @@ class InventoryApp(SearchableAppWindow):
     def _update_widgets(self):
         has_open = False
         all_counted = False
+        has_adjusted = False
         rows = self.results.get_selected_rows()
         if len(rows) == 1:
             all_counted = rows[0].all_items_counted()
             has_open = rows[0].is_open()
+            has_adjusted = rows[0].has_adjusted_items()
 
         self.print_button.set_sensitive(has_open)
+        self.cancel_button.set_sensitive(has_open and not has_adjusted)
         self.new_inventory.set_sensitive(self._can_open())
         self.counting_action.set_sensitive(has_open)
         self.adjust_action.set_sensitive(has_open and all_counted)
@@ -123,9 +127,7 @@ class InventoryApp(SearchableAppWindow):
         """
         available_branches = []
         for branch in self._get_branches():
-            has_open_inventory = Inventory.selectOneBy(
-                status=Inventory.STATUS_OPEN, branch=branch,
-                connection=self.conn)
+            has_open_inventory = Inventory.has_open(self.conn, branch)
             if not has_open_inventory:
                 stock = ProductStockItem.selectBy(branch=branch,
                                                   connection=self.conn)
@@ -147,6 +149,16 @@ class InventoryApp(SearchableAppWindow):
         trans.close()
         self.refresh()
         self._update_widgets()
+
+    def _cancel_inventory(self):
+        if yesno(_(u'Are you sure you want to cancel this inventory ?'),
+                 gtk.RESPONSE_YES, _(u'No'), _(u'Cancel Inventory')):
+            return
+
+        trans = new_transaction()
+        inventory = trans.get(self.results.get_selected_rows()[0])
+        inventory.cancel()
+        trans.commit()
 
     def _register_product_counting(self):
         trans = new_transaction()
@@ -186,6 +198,9 @@ class InventoryApp(SearchableAppWindow):
 
     def on_results__selection_changed(self, results, product):
         self._update_widgets()
+
+    def on_cancel_button__clicked(self, widget):
+        self._cancel_inventory()
 
     def on_print_button__clicked(self, button):
         selected = self.results.get_selected_rows()[0]
