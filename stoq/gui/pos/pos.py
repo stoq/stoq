@@ -46,6 +46,7 @@ from stoqlib.database.runtime import (new_transaction,
 from stoqlib.domain.interfaces import (IDelivery, ISalesPerson, IProduct,
                                        IService)
 from stoqlib.domain.devices import DeviceSettings
+from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.product import ProductAdaptToSellable, IStorable
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.sale import Sale
@@ -57,6 +58,7 @@ from stoqlib.lib.message import info, yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
+from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
@@ -193,6 +195,9 @@ class POSApp(AppWindow):
         self.order_total_label.set_bold(True)
         self._create_context_menu()
 
+        if Inventory.has_open(self.conn, get_current_branch(self.conn)):
+            show_inventory_process_message()
+
     def _create_context_menu(self):
         menu = ContextMenu()
 
@@ -273,6 +278,12 @@ class POSApp(AppWindow):
             has_till = False
             till_close = True
             till_open = False
+        if Inventory.has_open(self.conn, get_current_branch(self.conn)):
+            has_till = False
+            till_close = False
+            till_open = True
+            self.Sales.set_sensitive(False)
+
         self.TillOpen.set_sensitive(till_open)
         self.TillClose.set_sensitive(till_close)
         self.barcode.set_sensitive(not till_open)

@@ -36,6 +36,7 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       finish_transaction)
 from stoqlib.domain.interfaces import IBranch, IStorable
+from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import ProductAdaptToSellable
 from stoqlib.domain.views import ProductWithStockView
@@ -46,6 +47,7 @@ from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.search.productsearch import ProductSearchQuantity
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
+from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.productretention import ProductRetentionDialog
 from stoqlib.reporting.product import ProductReport
@@ -106,6 +108,9 @@ class StockApp(SearchableAppWindow):
                                       label=_('<b>Stock Total:</b>'),
                                       format='<b>%s</b>')
 
+        if Inventory.has_open(self.conn, get_current_branch(self.conn)):
+            show_inventory_process_message()
+
     def _get_branches(self):
         items = [(b.person.name, b)
                   for b in Person.iselect(IBranch, connection=self.conn)]
@@ -117,8 +122,15 @@ class StockApp(SearchableAppWindow):
         return items
 
     def _update_widgets(self):
-        is_main_branch = (self.branch_filter.get_state().value is
-                          get_current_branch(self.conn))
+        branch = get_current_branch(self.conn)
+        if Inventory.has_open(self.conn, branch):
+            self.retention_button.set_sensitive(False)
+            self.transfer_action.set_sensitive(False)
+            self.receive_action.set_sensitive(False)
+            self.initial_stock_action.set_sensitive(False)
+            return
+
+        is_main_branch = self.branch_filter.get_state().value is branch
         has_stock = len(self.results) > 0
         one_selected = len(self.results.get_selected_rows()) == 1
         self.history_button.set_sensitive(one_selected and is_main_branch)
