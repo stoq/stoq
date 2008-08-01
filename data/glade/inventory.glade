@@ -181,6 +181,36 @@
                                                 <property name="use_stock">True</property>
                                                 <property name="visible">True</property>
                                             </widget>
+                                        </child>
+                                        <child>
+                                            <widget class="GtkButton" id="cancel_button">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                    <widget class="GtkAlignment" id="alignment16">
+                                                        <property name="visible">True</property>
+                                                        <child>
+                                                            <widget class="GtkVBox" id="vbox3">
+                                                                <property name="visible">True</property>
+                                                                <child>
+                                                                    <widget class="GtkImage" id="image1">
+                                                                        <property name="file">remove24px.png</property>
+                                                                        <property name="visible">True</property>
+                                                                    </widget>
+                                                                </child>
+                                                                <child>
+                                                                    <widget class="GtkLabel" id="label8">
+                                                                        <property name="label" context="yes" translatable="yes">Cancel</property>
+                                                                        <property name="visible">True</property>
+                                                                    </widget>
+                                                                    <packing>
+                                                                        <property name="position">1</property>
+                                                                    </packing>
+                                                                </child>
+                                                            </widget>
+                                                        </child>
+                                                    </widget>
+                                                </child>
+                                            </widget>
                                             <packing>
                                                 <property name="position">1</property>
                                             </packing>
