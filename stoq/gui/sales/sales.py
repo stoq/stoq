@@ -35,9 +35,11 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import get_current_station
+from stoqlib.database.runtime import get_current_branch, get_current_station
+from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
+from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
@@ -123,13 +125,19 @@ class SalesApp(SearchableAppWindow):
                             self._update_toolbar)
         self._update_toolbar()
 
+        if Inventory.has_open(self.conn, get_current_branch(self.conn)):
+            show_inventory_process_message()
+
     def _update_toolbar(self, *args):
         sale_view = self._klist.get_selected()
         can_print_invoice = bool(sale_view and
                                  sale_view.client_name is not None)
         self.print_invoice.set_sensitive(can_print_invoice)
 
-        can_return = bool(sale_view and sale_view.sale.can_return())
+        if Inventory.has_open(self.conn, get_current_branch(self.conn)):
+            can_return = False
+        else:
+            can_return = bool(sale_view and sale_view.sale.can_return())
         self.sale_toolbar.return_sale_button.set_sensitive(can_return)
 
     def _print_invoice(self):
