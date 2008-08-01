@@ -26,7 +26,7 @@
 import datetime
 
 from sqlobject.col import ForeignKey, DateTimeCol, IntCol, UnicodeCol
-from sqlobject.sqlbuilder import AND
+from sqlobject.sqlbuilder import AND, ISNOTNULL
 
 from stoqlib.database.columns import DecimalCol
 from stoqlib.domain.base import Domain
@@ -150,10 +150,11 @@ class Inventory(Domain):
     @ivar branch: branch where the inventory process was done
     """
 
-    (STATUS_OPEN, STATUS_CLOSED) = range(2)
+    (STATUS_OPEN, STATUS_CLOSED, STATUS_CANCELLED) = range(3)
 
-    statuses = {STATUS_OPEN:   _(u"Opened"),
-                STATUS_CLOSED: _(u"Closed")}
+    statuses = {STATUS_OPEN:      _(u"Opened"),
+                STATUS_CLOSED:    _(u"Closed"),
+                STATUS_CANCELLED: _(u"Cancelled")}
 
     status = IntCol(default=STATUS_OPEN)
     invoice_number = IntCol(default=None)
@@ -222,6 +223,15 @@ class Inventory(Domain):
                                    connection=conn):
                 yield branch
 
+    @classmethod
+    def has_open(cls, conn, branch):
+        """Returns if there is an inventory opened at the moment or not.
+
+        @returns: The open inventory, if there is one. None otherwise.
+        """
+        return cls.selectOneBy(status=Inventory.STATUS_OPEN,
+                               branch=branch, connection=conn)
+
     def get_items_for_adjustment(self):
         """Returns all the inventory items that needs adjustment, that is
         the recorded quantity is different from the actual quantity.
@@ -236,3 +246,29 @@ class Inventory(Domain):
                     InventoryItem.q.reason == u"")
         conn = self.get_connection()
         return InventoryItem.select(query, connection=conn)
+
+    def has_adjusted_items(self):
+        """Returns if we already have an item adjusted or not.
+
+        @returns: True if there is one or more items adjusted, False
+        otherwise.
+        """
+        query = AND(InventoryItem.q.inventoryID == self.id,
+                    ISNOTNULL(InventoryItem.q.cfop_dataID),
+                    InventoryItem.q.reason != u"")
+        conn = self.get_connection()
+        return InventoryItem.select(query, connection=conn).count() > 0 
+
+    def cancel(self):
+        """Cancel this inventory. Notice that, to cancel an inventory no
+        products should have been adjusted.
+        """
+        if not self.is_open():
+            raise AssertionError(
+                "You can't cancel an inventory that is not opened!")
+
+        if self.has_adjusted_items():
+            raise AssertionError(
+                "You can't cancel an inventory that has adjusted items!")
+
+        self.status = Inventory.STATUS_CANCELLED

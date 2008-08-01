@@ -26,6 +26,7 @@ from decimal import Decimal
 
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -37,6 +38,56 @@ class TestInventory(DomainTest):
 
         inventory.close()
         self.failIf(inventory.is_open())
+
+    def testCancel(self):
+        inventory = self.create_inventory()
+        inventory.cancel()
+        self.assertEqual(inventory.status, Inventory.STATUS_CANCELLED)
+
+        inventory = self.create_inventory()
+        inventory.close()
+        self.assertRaises(AssertionError, inventory.cancel)
+        self.assertEqual(inventory.status, Inventory.STATUS_CLOSED)
+
+        inventory = self.create_inventory()
+        item = self.create_inventory_item(inventory)
+        item.actual_quantity = item.recorded_quantity - 1
+        item.cfop_data = self.create_cfop_data()
+        item.reason = "Test"
+        item.adjust(invoice_number=13)
+        self.assertRaises(AssertionError, inventory.cancel)
+        self.assertEqual(inventory.status, Inventory.STATUS_OPEN)
+
+    def testHasAdjustedItems(self):
+        inventory = self.create_inventory()
+        items = []
+        for i in range(3):
+            item = self.create_inventory_item(inventory)
+            item.actual_quantity = item.recorded_quantity - 1
+            items.append(item)
+
+        self.assertEqual(inventory.has_adjusted_items(), False)
+
+        for item in items:
+            item.actual_quantity = 3
+
+        self.assertEqual(inventory.has_adjusted_items(), False)
+        cfop = self.create_cfop_data()
+
+        items[0].reason = "Test"
+        items[0].cfop_data = cfop
+        items[0].adjust(invoice_number=13)
+        self.assertEqual(inventory.has_adjusted_items(), True)
+
+        items[1].reason = "Test"
+        items[1].cfop_data = cfop
+        items[1].adjust(invoice_number=13)
+        self.assertEqual(inventory.has_adjusted_items(), True)
+
+        items[2].reason = "Test"
+        items[2].cfop_data = cfop
+        items[2].adjust(invoice_number=13)
+        self.assertEqual(inventory.has_adjusted_items(), True)
 
     def testGetItems(self):
         inventory = self.create_inventory()
@@ -69,6 +120,10 @@ class TestInventory(DomainTest):
         inventory.close()
         self.assertEqual(inventory.status, inventory.STATUS_CLOSED)
 
+        self.assertRaises(AssertionError, inventory.close)
+
+        inventory = self.create_inventory()
+        inventory.cancel()
         self.assertRaises(AssertionError, inventory.close)
 
     def testAllItemsCounted(self):
