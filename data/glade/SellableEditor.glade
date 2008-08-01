@@ -473,24 +473,6 @@
                         <property name="tab_label" context="yes" translatable="yes">Product</property>
                     </packing>
                 </child>
-                <child>
-                    <widget class="GtkVBox" id="extra_tab">
-                        <property name="border_width">6</property>
-                        <property name="visible">True</property>
-                        <child>
-                            <widget class="GtkEventBox" id="extra_holder">
-                                <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
-                            </widget>
-                        </child>
-                    </widget>
-                    <packing>
-                        <property name="position">1</property>
-                        <property name="tab_label" context="yes" translatable="yes">Extra Tab</property>
-                    </packing>
-                </child>
             </widget>
         </child>
     </widget>

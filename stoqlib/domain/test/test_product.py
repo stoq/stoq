@@ -133,6 +133,22 @@ class TestProduct(DomainTest):
         self.assertEqual(component.is_composed_by(component3), False)
         self.assertEqual(component2.is_composed_by(component3), False)
 
+    def testSuppliers(self):
+        product = self.create_product()
+        supplier = self.create_supplier()
+
+        info = ProductSupplierInfo(connection=self.trans,
+                                   product=product,
+                                   supplier=supplier)
+
+        suppliers = list(product.get_suppliers_info())
+
+        # self.create_product already adds a supplier. so here we must have 2
+        self.assertEqual(len(suppliers), 2)
+        self.assertEqual(info in suppliers, True)
+
+        self.assertEqual(product.is_supplied_by(supplier), True)
+
 
 class TestProductSellableItem(DomainTest):
 

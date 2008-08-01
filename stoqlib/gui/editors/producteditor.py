@@ -41,7 +41,8 @@ from stoqlib.domain.product import ProductSupplierInfo, Product, ProductComponen
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import SimpleListDialog
-from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import (BaseEditor, BaseEditorSlave,
+                                            BaseRelationshipEditorSlave)
 from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.gui.slaves.productslave import ProductTributarySituationSlave
 from stoqlib.lib.message import warning, info, yesno
@@ -51,47 +52,10 @@ from stoqlib.lib.validators import get_formatted_price
 
 _ = stoqlib_gettext
 
+
 #
 # Slaves
 #
-
-class ProductSupplierSlave(BaseEditorSlave):
-    """ A basic slave for suppliers selection.  This slave emits the
-    'cost-changed' signal when the supplier's product cost has
-    changed.
-    """
-    gladefile = 'ProductSupplierSlave'
-    proxy_widgets = 'supplier_lbl',
-    model_type = Product
-
-    gsignal("cost-changed")
-
-    def on_supplier_button__clicked(self, button):
-        self.edit_supplier()
-
-    def edit_supplier(self):
-        suppliers = PersonAdaptToSupplier.select(connection=self.conn)
-        if not suppliers:
-            warning(_(u"There is no supplier registered in system"))
-            return
-        main_supplier = self.model.get_main_supplier_info()
-        if not main_supplier:
-            current_cost = currency(0)
-        else:
-            current_cost =  main_supplier.base_cost
-        result = run_dialog(ProductSupplierEditor, self, self.conn,
-                            self.model)
-        if not result:
-            return
-        if result.base_cost != current_cost:
-            self.emit("cost-changed")
-        self.proxy.update('main_supplier_info.name')
-
-    def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model,
-                                    ProductSupplierSlave.proxy_widgets)
-
-
 class _TemporaryProductComponent(object):
     def __init__(self, product=None, component=None, quantity=Decimal(1)):
         self.product = product
@@ -350,6 +314,74 @@ class ProductComponentSlave(BaseEditorSlave):
             self._get_products(sort_by_name=sort_by_name))
         self.component_combo.select_item_by_position(0)
 
+class ProductSupplierEditor(BaseEditor):
+    model_name = _('Product Supplier')
+    model_type = ProductSupplierInfo
+    gladefile = 'ProductSupplierEditor'
+
+    proxy_widgets = ('base_cost', 'icms', 'notes')
+
+    def __init__(self, conn, model=None):
+        BaseEditor.__init__(self, conn, model)
+
+    #
+    # BaseEditor hooks
+    #
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    def validate_confirm(self):
+        return self.base_cost.read() > 0
+
+    #
+    # Kiwi handlers
+    #
+    def on_base_cost__validate(self, entry, value):
+        if not value or value <= currency(0):
+            return ValidationError("Value must be greater than zero.")
+
+
+
+class ProductSupplierSlave(BaseRelationshipEditorSlave):
+    """A slave for changing the suppliers for a product.
+    """
+    target_name = _(u'Supplier')
+    editor = ProductSupplierEditor
+    model_type = ProductSupplierInfo
+
+    def __init__(self, conn, product):
+        self._product = product
+        BaseRelationshipEditorSlave.__init__(self, conn)
+
+    def get_targets(self):
+        suppliers = PersonAdaptToSupplier.get_active_suppliers(self.conn)
+        return [(s.person.name, s) for s in suppliers]
+
+    def get_relations(self):
+        return self._product.get_suppliers_info()
+
+    def get_columns(self):
+        return [Column('name', title=_(u'Supplier'),
+                        data_type=str, expand=True, sorted=True),
+                Column('base_cost', title=_(u'Cost'),
+                        data_type=currency),]
+
+    def create_model(self):
+        product = self._product
+        supplier = self.target_combo.read()
+
+        if product.is_supplied_by(supplier):
+            product_desc = ISellable(self._product).get_description()
+            info(_(u'%s is already supplied by %s' % (product_desc,
+                                                      supplier.person.name)))
+            return
+
+        model = ProductSupplierInfo(product=product,
+                                    supplier=supplier,
+                                    connection=self.conn)
+        return model
+
+
 #
 # Editors
 #
@@ -393,127 +425,7 @@ class ProductComponentEditor(BaseEditor):
                                     'greater than zero.'))
 
 
-class ProductSupplierEditor(BaseEditor):
-    model_name = _('Product Suppliers')
-    model_type = Product
-    gladefile = 'ProductSupplierEditor'
 
-    proxy_widgets = ('supplier_combo',
-                     'base_cost',
-                     'icms',
-                     'notes')
-
-    def __init__(self, conn, model=None):
-        self._last_supplier = None
-        BaseEditor.__init__(self, conn, model)
-        # XXX: Waiting fix for bug #2043
-        self.new_supplier_button.set_sensitive(False)
-
-    def setup_combos(self):
-        # FIXME: Implement and use IDescribable on PersonAdaptToSupplier
-        suppliers = Person.iselect(ISupplier, connection=self.conn)
-        items = [(obj.person.name, obj) for obj in suppliers]
-
-        assert items, ("There is no suppliers in database!")
-
-        self.supplier_combo.prefill(sorted(items))
-
-    def list_suppliers(self):
-        cols = [Column('name', title=_('Supplier name'),
-                       data_type=str, width=350),
-                Column('base_cost', title=_('Base Cost'),
-                       data_type=float, width=120)]
-
-        run_dialog(SimpleListDialog, self, cols, self.model.suppliers)
-
-    def update_model(self):
-        # Don't update the model if the proxy is not created,
-        # since content-changed is potentially called very early
-        if not self.prod_supplier_proxy:
-            return
-        selected_supplier = self.supplier_combo.get_selected_data()
-
-        # Kiwi proxy already sets the supplier attribute to new selected
-        # supplier, so we need revert this and set the correct supplier:
-        self.prod_supplier_proxy.model.supplier = self._last_supplier
-
-        self._last_supplier = selected_supplier
-        is_valid_model = self.prod_supplier_proxy.model.base_cost
-
-        if is_valid_model:
-            self.prod_supplier_proxy.model.product = self.model
-
-        for supplier_info in self.model.suppliers:
-            if supplier_info.supplier is selected_supplier:
-                model = supplier_info
-                break
-        else:
-            model = ProductSupplierInfo(connection=self.conn, product=None,
-                                        supplier=selected_supplier)
-        self.prod_supplier_proxy.set_model(model)
-
-        # updating the field for the widget validation works fine
-        self.prod_supplier_proxy.update('base_cost')
-
-    #
-    # BaseEditor hooks
-    #
-
-    def get_title(self, *args):
-        return _('Add supplier information')
-
-    def setup_proxies(self):
-        self.prod_supplier_proxy = None
-        self.setup_combos()
-        model = self.model.get_main_supplier_info()
-        if not model:
-            supplier = sysparam(self.conn).SUGGESTED_SUPPLIER
-            model = ProductSupplierInfo(connection=self.conn, product=None,
-                                        is_main_supplier=True,
-                                        supplier=supplier)
-        self.prod_supplier_proxy = self.add_proxy(model,
-                                                  self.proxy_widgets)
-
-        # XXX:  GTK don't allow me get the supplier selected in the combo
-        # *when* the 'changed' signal is emitted, i.e, when the 'changed'
-        # callback is called, the model already have the new value selected
-        # by user, so I need to store in a local attribute the last model
-        # selected.
-        self._last_supplier = model.supplier
-
-    # Move this to Product domain class see #2400
-    def update_main_supplier_references(self, main_supplier):
-        if not self.model.suppliers:
-            return
-        for s in self.model.suppliers:
-            if s is main_supplier:
-                s.is_main_supplier = True
-                continue
-            s.is_main_supplier = False
-
-    def on_confirm(self):
-        current_supplier = self.prod_supplier_proxy.model
-        is_valid_model = current_supplier and current_supplier.base_cost
-        if not current_supplier or not is_valid_model:
-            return
-
-        current_supplier.product = self.model
-        self.update_main_supplier_references(current_supplier)
-        return current_supplier
-
-    #
-    # Kiwi handlers
-    #
-
-    def on_supplier_list_button__clicked(self, button):
-        self.list_suppliers()
-
-    def on_supplier_combo__content_changed(self, *args):
-        self.update_model()
-
-    def on_base_cost__validate(self, entry, value):
-        if not value or value <= currency(0):
-            return ValidationError("Value must be greater than zero.")
 
 class ProductEditor(SellableEditor):
     model_name = _('Product')
@@ -528,10 +440,9 @@ class ProductEditor(SellableEditor):
     #
 
     def setup_slaves(self):
-        supplier_slave = ProductSupplierSlave(self.conn, self.model)
-        supplier_slave.connect("cost-changed",
-                               self._on_supplier_slave__cost_changed)
-        self.attach_slave('product_supplier_holder', supplier_slave)
+        self._suppliers_slave = ProductSupplierSlave(self.conn, self.model)
+        self.add_extra_tab(_(u'Suppliers'), self._suppliers_slave)
+
         # XXX: tax_holder is a Brazil-specifc area
         tax_slave = ProductTributarySituationSlave(self.conn,
                                                    ISellable(self.model))
@@ -567,21 +478,3 @@ class ProductEditor(SellableEditor):
 
         return self.model
 
-    #
-    # Callbacks
-    #
-
-    def _on_supplier_slave__cost_changed(self, slave):
-        if not self.sellable_proxy.model.cost and self.model.suppliers:
-            base_cost = self.model.get_main_supplier_info().base_cost
-            self.sellable_proxy.model.cost = base_cost or currency(0)
-            self.sellable_proxy.update('cost')
-
-        if self.sellable_proxy.model.base_sellable_info.price:
-            return
-        cost = self.sellable_proxy.model.cost or currency(0)
-        markup = (self.sellable_proxy.model.get_suggested_markup()
-                  or Decimal(0))
-        price = cost + ((markup / 100) * cost)
-        self.sellable_proxy.model.base_sellable_info.price = price
-        self.sellable_proxy.update('base_sellable_info.price')

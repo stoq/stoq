@@ -157,6 +157,15 @@ class Product(Domain):
             is_main_supplier=True,
             connection=self.get_connection())
 
+    def get_suppliers_info(self):
+        """Returns a list of suppliers for this product
+
+        @returns: a list of suppliers
+        @rtype: list of ProductSupplierInfo
+        """
+        return ProductSupplierInfo.selectBy(
+            product=self, connection=self.get_connection())
+
     def get_components(self):
         """Returns the products which are our components.
 
@@ -178,6 +187,14 @@ class Product(Domain):
             value += (component.component.get_production_cost() *
                       component.quantity)
         return value
+
+    def is_supplied_by(self, supplier):
+        """If this product is supplied by the given supplier, returns the
+        object with the supplier information. Returns None otherwise
+        """
+        return ProductSupplierInfo.selectOneBy(
+                        product=self, supplier=supplier,
+                        connection=self.get_connection()) is not None
 
     def is_composed_by(self, product):
         """Returns if we are composed by a given product or not.
