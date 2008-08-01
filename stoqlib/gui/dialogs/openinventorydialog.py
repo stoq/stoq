@@ -257,3 +257,10 @@ class OpenInventoryDialog(BaseEditor):
 
     def _on_category_tree__row_expanded(self, tree, parent_category):
         self._expand_category_tree(parent_category)
+
+
+def show_inventory_process_message():
+    msg = _(u'There is an inventory process open at the moment.\n'
+            'While that inventory is open, you will be unable to do '
+            'operations that modify your stock.')
+    return info(msg)
