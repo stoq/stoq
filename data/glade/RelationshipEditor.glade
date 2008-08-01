@@ -1,78 +1,66 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
-    <widget class="GtkWindow" id="ProductSupplierSlave">
+    <widget class="GtkWindow" id="RelationshipEditor">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
+        <property name="visible">True</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
                 <property name="border_width">6</property>
                 <property name="spacing">6</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="GtkHSeparator" id="hseparator1">
-                        <property name="visible">True</property>
-                    </widget>
-                </child>
-                <child>
                     <widget class="GtkHBox" id="hbox1">
                         <property name="spacing">6</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="GtkTable" id="table1">
-                                <property name="n_columns">1</property>
-                                <property name="n_rows">4</property>
+                            <widget class="GtkLabel" id="model_name_label">
+                                <property name="label" context="yes" translatable="yes">Model name:</property>
                                 <property name="visible">True</property>
-                                <child>
-                                    <widget class="GtkLabel" id="label1">
-                                        <property name="justify">right</property>
-                                        <property name="label" context="yes" translatable="yes">Supplied by: </property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="bottom_attach">4</property>
-                                    </packing>
-                                </child>
+                                <property name="xalign">0.0</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="supplier_lbl">
-                                <property name="data_type">unicode</property>
-                                <property name="model_attribute">main_supplier_info.name</property>
+                            <widget class="ProxyComboEntry" id="target_combo">
+                                <property name="data_type">object</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">target_combo</property>
                                 <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkButton" id="supplier_button">
-                                <property name="is_focus">True</property>
-                                <property name="label" context="yes" translatable="yes">...</property>
+                            <widget class="GtkButton" id="add_button">
+                                <property name="label">gtk-add</property>
+                                <property name="use_stock">True</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
-                                <property name="fill">False</property>
                                 <property name="position">2</property>
                             </packing>
                         </child>
                     </widget>
                     <packing>
-                        <property name="position">1</property>
+                        <property name="expand">False</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkHSeparator" id="hseparator2">
+                    <widget class="GtkVBox" id="model_vbox">
                         <property name="visible">True</property>
+                        <child>
+                            <placeholder/>
+                            <packing/>
+                        </child>
                     </widget>
                     <packing>
-                        <property name="position">2</property>
+                        <property name="position">1</property>
                     </packing>
                 </child>
             </widget>

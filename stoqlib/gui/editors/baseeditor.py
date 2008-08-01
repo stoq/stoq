@@ -27,13 +27,15 @@
 
 import gtk
 from gtk import gdk
+from kiwi.enums import ListType
 from kiwi.log import Logger
 from kiwi.ui.delegates import GladeSlaveDelegate
+from kiwi.ui.listdialog import ListContainer
 from kiwi.ui.widgets.label import ProxyLabel
 
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.dialogs import BasicWrappingDialog
+from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
 
 log = Logger('stoqlib.gui.editors')
 
@@ -276,3 +278,146 @@ class BaseEditor(BaseEditorSlave):
         @param widget_name: name of the widget to be confirmable
         """
         self.main_dialog.set_confirm_widget(widget_name)
+
+
+class BaseRelationshipEditorSlave(GladeSlaveDelegate):
+    """An editor for relationships between objects
+
+    BaseRelationshipEditor provides an easy way to edit (add/remove) relations
+    between objects.
+
+    It doesn't allow creations of new objects, only linking between them.
+    (the linking might require new objects, though)
+
+    For example, you could edit suppliers for a product (or produts supplied
+    by an supplier).
+
+    Subclasses must implement get_targets, get_columns, get_relations, and
+    create_model.
+    """
+    gladefile = 'RelationshipEditor'
+    target_name = None
+    model_type = None
+    editor = None
+
+    def __init__(self, conn, parent=None):
+        self._parent = parent
+        self.conn = conn
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
+        self._setup_widgets()
+
+    def _setup_relations_list(self):
+        self.relations_list = ListContainer(self.get_columns(), gtk.ORIENTATION_HORIZONTAL)
+        self.relations_list._vbox.padding= 0
+        self.model_vbox.pack_start(self.relations_list)
+
+        self.relations_list.set_list_type(ListType.UNADDABLE)
+
+        self.relations_list.connect('remove-item',
+                                    self._on_remove_item__clicked)
+        self.relations_list.connect('edit-item', self._on_edit_item__clicked)
+
+        self.relations_list.show()
+
+    def _setup_widgets(self):
+        self.model_name_label.set_label(self.target_name + ':')
+        targets = self.get_targets()
+        self.target_combo.prefill(targets)
+
+        self._setup_relations_list()
+
+        size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+        size_group.add_widget(self.add_button)
+        size_group.add_widget(self.relations_list.edit_button)
+        size_group.add_widget(self.relations_list.remove_button)
+
+        self.add_button.set_sensitive(False)
+
+        if not self.editor:
+            self.relations_list.edit_button.set_sensitive(False)
+
+        self.relations_list.add_items(self.get_relations())
+
+    def get_targets(self):
+        """Returns a list of valid taret objects.
+
+        for instance, if suppliers for a product are being edited, then this
+        should return a list fo suppliers.
+        """
+        raise NotImplementedError
+
+    def get_columns(self):
+        """Columns to display"""
+        raise NotImplementedError
+
+    def get_relations(self):
+        """Returns the already existing relations.
+
+        This may be entries from a maping table or entries from the target
+        table itself, depending on the type of relationship
+        """
+        raise NotImplementedError
+
+    def create_model(self):
+        """This method should create the model when adding a new relationship.
+
+        If the addition is canceled. It will automatically be removed.
+        """
+        raise NotImplementedError
+
+    def add(self):
+        model = self.create_model()
+
+        if not model:
+            return False
+
+        if not self.editor:
+            return model
+
+        res = run_dialog(self.editor, self, self.conn, model)
+
+        if not res:
+            self.model_type.delete(id=model.id, connection=self.conn)
+
+        return res
+
+    def edit(self, model):
+        return run_dialog(self.editor, self, self.conn, model)
+
+    def remove(self, model):
+        self.model_type.delete(model.id, connection=self.conn)
+        return True
+
+    def _run_editor(self, model=None):
+        """Runs an editor for the relationship (if necessary).
+
+        An editor may be necessary only if there is an mapping table and
+        and extra information in this table.
+        """
+        if model is None:
+            res = self.add()
+        else:
+            res = self.edit(model)
+
+        return res
+
+    def on_add_button__clicked(self, widget):
+        result = self._run_editor()
+        if result:
+            self.relations_list.add_item(result)
+
+    def on_target_combo__content_changed(self, widget):
+        has_selected = self.target_combo.read() is not None
+        self.add_button.set_sensitive(has_selected)
+
+    def _on_edit_item__clicked(self, list, item):
+        result = self._run_editor(item)
+
+        if result:
+            self.relations_list.update_item(result)
+
+    def _on_remove_item__clicked(self, list, item):
+        if self.remove(item):
+            self.relations_list.remove_item(item)
+
+

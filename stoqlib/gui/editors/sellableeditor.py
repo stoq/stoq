@@ -27,6 +27,8 @@
 ##
 """ Editors definitions for sellable"""
 
+import gtk
+
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
@@ -222,8 +224,10 @@ class SellableEditor(BaseEditor):
         self.sellable_notebook.set_show_tabs(True)
         self.sellable_notebook.set_show_border(True)
 
-        self.attach_slave('extra_holder', tabslave)
-        self.sellable_notebook.set_tab_label_text(self.extra_tab, tabname)
+        event_box = gtk.EventBox()
+        event_box.show()
+        self.sellable_notebook.append_page(event_box, gtk.Label(tabname))
+        self.attach_slave(tabname, tabslave, event_box)
 
     def set_widget_formats(self):
         for widget in (self.cost, self.stock_total_lbl, self.price):

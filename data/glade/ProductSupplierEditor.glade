@@ -11,32 +11,9 @@
                 <property name="border_width">6</property>
                 <property name="column_spacing">6</property>
                 <property name="n_columns">4</property>
-                <property name="n_rows">4</property>
+                <property name="n_rows">2</property>
                 <property name="row_spacing">6</property>
                 <property name="visible">True</property>
-                <child>
-                    <widget class="GtkLabel" id="label1">
-                        <property name="label" context="yes" translatable="yes">Standard Supplier:</property>
-                        <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
-                    </widget>
-                    <packing>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="GtkHSeparator" id="hseparator1">
-                        <property name="visible">True</property>
-                    </widget>
-                    <packing>
-                        <property name="bottom_attach">2</property>
-                        <property name="right_attach">4</property>
-                        <property name="top_attach">1</property>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
-                    </packing>
-                </child>
                 <child>
                     <widget class="GtkLabel" id="label2">
                         <property name="label" context="yes" translatable="yes">Supplier Cost:</property>
@@ -44,8 +21,6 @@
                         <property name="xalign">1.0</property>
                     </widget>
                     <packing>
-                        <property name="bottom_attach">3</property>
-                        <property name="top_attach">2</property>
                         <property name="x_options">fill</property>
                         <property name="y_options">fill</property>
                     </packing>
@@ -61,21 +36,9 @@ Information:</property>
                         <property name="yalign">0.0</property>
                     </widget>
                     <packing>
-                        <property name="bottom_attach">4</property>
-                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="top_attach">1</property>
                         <property name="x_options">fill</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="ProxyComboEntry" id="supplier_combo">
-                        <property name="data_type">object</property>
-                        <property name="model_attribute">supplier</property>
-                        <property name="visible">True</property>
-                    </widget>
-                    <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -85,6 +48,7 @@ Information:</property>
                         <child>
                             <widget class="ProxyEntry" id="base_cost">
                                 <property name="data_type">Decimal</property>
+                                <property name="is_focus">True</property>
                                 <property name="mandatory">True</property>
                                 <property name="model_attribute">base_cost</property>
                                 <property name="visible">True</property>
@@ -98,6 +62,7 @@ Information:</property>
                         <child>
                             <widget class="ProxyLabel" id="label10">
                                 <property name="label" context="yes" translatable="yes">ICMS:</property>
+                                <property name="model_attribute"></property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -122,6 +87,7 @@ Information:</property>
                         <child>
                             <widget class="ProxyLabel" id="kiwilabel1">
                                 <property name="label" context="yes" translatable="yes">%</property>
+                                <property name="model_attribute"></property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
                             </widget>
@@ -132,10 +98,8 @@ Information:</property>
                         </child>
                     </widget>
                     <packing>
-                        <property name="bottom_attach">3</property>
                         <property name="left_attach">1</property>
                         <property name="right_attach">4</property>
-                        <property name="top_attach">2</property>
                         <property name="y_options">fill</property>
                     </packing>
                 </child>
@@ -159,39 +123,10 @@ Information:</property>
                         </child>
                     </widget>
                     <packing>
-                        <property name="bottom_attach">4</property>
+                        <property name="bottom_attach">2</property>
                         <property name="left_attach">1</property>
                         <property name="right_attach">4</property>
-                        <property name="top_attach">3</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="GtkButton" id="new_supplier_button">
-                        <property name="visible">True</property>
-                        <child>
-                            <widget class="GtkImage" id="new_supplier_button-image">
-                                <property name="stock">gtk-new</property>
-                                <property name="visible">True</property>
-                            </widget>
-                        </child>
-                    </widget>
-                    <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="GtkButton" id="supplier_list_button">
-                        <property name="label" context="yes" translatable="yes">...</property>
-                        <property name="visible">True</property>
-                    </widget>
-                    <packing>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
+                        <property name="top_attach">1</property>
                     </packing>
                 </child>
             </widget>
