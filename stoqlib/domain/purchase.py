@@ -38,10 +38,11 @@ from sqlobject.viewable import Viewable
 
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-from stoqlib.domain.base import ValidatableDomain, Domain, BaseSQLView
+from stoqlib.domain.base import (ValidatableDomain, Domain, BaseSQLView,
+                                 ModelAdapter)
 from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.group import AbstractPaymentGroup
-from stoqlib.domain.interfaces import IPaymentGroup, IContainer
+from stoqlib.domain.interfaces import IPaymentGroup, IContainer, IQuote
 from stoqlib.domain.sellable import ASellable, BaseSellableInfo, SellableUnit
 from stoqlib.lib.defaults import calculate_interval, quantize
 from stoqlib.lib.translation import stoqlib_gettext
@@ -419,6 +420,9 @@ class PurchaseOrder(ValidatableDomain):
     def get_open_date_as_string(self):
         return self.open_date and self.open_date.strftime("%x") or ""
 
+    def get_quote_deadline_as_string(self):
+        return self.quote_deadline and self.quote_deadline.strftime("%x") or ""
+
     def get_receiving_orders(self):
         """Returns all ReceivingOrder related to this purchase order
         """
@@ -436,6 +440,43 @@ class PurchaseOrder(ValidatableDomain):
             raise DatabaseInconsistency('Got an unexpected status value: '
                                         '%s' % status)
         return cls.statuses[status]
+
+
+class PurchaseOrderAdaptToQuote(ModelAdapter):
+    implements(IQuote)
+
+    group = ForeignKey('QuoteGroup')
+
+    def get_group(self):
+        return self.group
+
+PurchaseOrder.registerFacet(PurchaseOrderAdaptToQuote, IQuote)
+
+
+class QuoteGroup(Domain):
+    implements(IContainer)
+
+    def get_items(self):
+        return PurchaseOrderAdaptToQuote.selectBy(
+            group=self, connection=self.get_connection())
+
+    @argcheck(PurchaseOrderAdaptToQuote)
+    def remove_item(self, item):
+        conn = self.get_connection()
+        if item.group is not self:
+            raise ValueError('You can not remove an item which does not '
+                             'belong to this group.')
+
+        order = item.get_adapted()
+        order.removeFacet(IQuote)
+        for order_item in order.get_items():
+            order.remove_item(order_item)
+        PurchaseOrder.delete(order.id, connection=conn)
+
+    @argcheck(PurchaseOrder)
+    def add_item(self, item):
+        conn = self.get_connection()
+        return item.addFacet(IQuote, group=self, connection=conn)
 
 
 class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):

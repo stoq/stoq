@@ -551,3 +551,9 @@ class IReversal(Interface):
         """Takes a financial entry and reverse it, creating a new instance
         with an oposite value
         """
+
+class IQuote(Interface):
+    """A purchase quote interface"""
+
+    def get_group():
+        """Get the quote group"""

@@ -54,9 +54,10 @@ from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave,
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.person import Person
-from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
+from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem, QuoteGroup
 from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
-                                       IPaymentGroup, IOutPayment, IProduct)
+                                       IPaymentGroup, IOutPayment, IProduct,
+                                       IQuote)
 from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
 
 _ = stoqlib_gettext
@@ -428,6 +429,52 @@ class FinishPurchaseStep(WizardEditorStep):
         print_report(PurchaseOrderReport, self.model)
 
 
+class StartQuoteStep(WizardEditorStep):
+    gladefile = 'StartQuoteStep'
+    model_type = PurchaseOrder
+    proxy_widgets = ['open_date', 'quote_deadline', 'branch_combo',]
+
+    def __init__(self, wizard, previous, conn, model):
+        WizardEditorStep.__init__(self, conn, wizard, model, previous)
+
+    def _setup_widgets(self):
+        quote_group = "%05d" % self.wizard.quote_group.id
+        self.quote_group.set_text(quote_group)
+
+        table = Person.getAdapterClass(IBranch)
+        branches = table.get_active_branches(self.conn)
+        items = [(s.person.name, s) for s in branches]
+        self.branch_combo.prefill(sorted(items))
+
+    #
+    # WizardStep
+    #
+
+    def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+
+    def next_step(self):
+        return QuoteItemsStep(self.wizard, self, self.conn, self.model)
+
+    #
+    # BaseEditorSlave
+    #
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.add_proxy(self.model, StartQuoteStep.proxy_widgets)
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_quote_deadline__validate(self, widget, date):
+        if date <= datetime.date.today():
+            return ValidationError(
+                _("The quote deadline date must be set to a future date"))
+
+
 class QuoteItemsStep(PurchaseItemStep):
 
     def setup_slaves(self):
@@ -540,6 +587,9 @@ class QuoteSupplierStep(WizardEditorStep):
         quote.supplier = selected.supplier
         if not quote.get_valid():
             quote.set_valid()
+
+        self.wizard.quote_group.add_item(quote)
+
         self.conn.commit()
 
     def _show_products(self):
@@ -641,12 +691,13 @@ class QuotePurchaseWizard(BaseWizard):
     def __init__(self, conn, model=None):
         title = self._get_title(model)
         self.edit = model is not None
+        self.quote_group = self._get_or_create_quote_group(model, conn)
         model = model or self._create_model(conn)
         if model.status != PurchaseOrder.ORDER_QUOTING:
             raise ValueError('Invalid order status. It should '
                              'be ORDER_QUOTING')
 
-        first_step = QuoteItemsStep(self, None, conn, model)
+        first_step = StartQuoteStep(self, None, conn, model)
         BaseWizard.__init__(self, conn, first_step, model, title=title)
 
     def _get_title(self, model=None):
@@ -660,6 +711,13 @@ class QuotePurchaseWizard(BaseWizard):
         status = PurchaseOrder.ORDER_QUOTING
         return PurchaseOrder(supplier=supplier, branch=branch, status=status,
                              expected_receival_date=None, connection=conn)
+
+    def _get_or_create_quote_group(self, order, conn):
+        adapted = IQuote(order, None)
+        if adapted is not None:
+            return adapted.get_group()
+        else:
+            return QuoteGroup(connection=conn)
 
     def _delete_model(self):
         if self.edit:
