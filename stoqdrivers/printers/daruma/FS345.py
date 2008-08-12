@@ -117,6 +117,8 @@ CMD_GET_DATES = 250
 CASH_IN_TYPE = 'B'
 CASH_OUT_TYPE = 'A'
 
+RETRIES_BEFORE_TIMEOUT = 5
+
 def isbitset(value, bit):
     # BCD crap
     return (int(value, 16) >> bit) & 1 == 1
@@ -157,7 +159,8 @@ class FS345(SerialBase):
     def send_command(self, command, extra=''):
         raw = chr(command) + extra
         while True:
-            retval = self.writeline(raw)
+            self.write(self.CMD_PREFIX + raw + self.CMD_SUFFIX)
+            retval = self._read_reply()
             if retval.startswith(':E'):
                 try:
                     self.handle_error(retval, raw)
@@ -170,10 +173,29 @@ class FS345(SerialBase):
 
         return retval[1:]
 
+    def _read_reply(self):
+        rep = ''
+        timeouts = 0
+
+        while True:
+            if timeouts > RETRIES_BEFORE_TIMEOUT:
+                raise DriverError('Timeout')
+
+            c = self.read(1)
+            if len(c) != 1:
+                timeouts += 1
+                continue
+
+            if c == self.EOL_DELIMIT:
+                log.debug("<<< %r" % rep)
+                return rep
+
+            rep += c
+
     # Status
     def _get_status(self):
         self.write(CMD_STATUS)
-        return self.readline()
+        return self._read_reply()
 
     def status_check(self, S, byte, bit):
         return isbitset(S[byte], bit)

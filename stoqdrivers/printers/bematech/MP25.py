@@ -101,6 +101,8 @@ NAK = 21
 ACK = 6
 STX = 2
 
+RETRIES_BEFORE_TIMEOUT = 5
+
 class MP25Constants(BaseDriverConstants):
     _constants = {
         UnitType.WEIGHT:      'Kg',
@@ -255,7 +257,7 @@ class MP25(SerialBase):
         a = 0
         data = ''
         while True:
-            if a > 10:
+            if a > RETRIES_BEFORE_TIMEOUT:
                 raise DriverError("Timeout")
 
             a += 1
