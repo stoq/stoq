@@ -94,6 +94,8 @@ class StartPurchaseStep(WizardEditorStep):
         self.branch.prefill(sorted(items))
 
     def _setup_widgets(self):
+        allow_outdated = sysparam(self.conn).ALLOW_OUTDATED_PURCHASES
+        self.open_date.set_sensitive(allow_outdated)
         self._fill_supplier_combo()
         self._fill_branch_combo()
         self._update_widgets()
@@ -161,6 +163,8 @@ class StartPurchaseStep(WizardEditorStep):
             self.supplier.select(model)
 
     def on_open_date__validate(self, widget, date):
+        if sysparam(self.conn).ALLOW_OUTDATED_PURCHASES:
+            return
         if date < datetime.date.today():
             return ValidationError(
                 _("Expected receival date must be set to today or "

@@ -86,6 +86,12 @@ _parameter_info = dict(
     _(u'A default base sellable category which we always get as a '
       'suggestion when adding a new Sellable on the system')),
 
+    ALLOW_OUTDATED_PURCHASES=ParameterDetails(
+    _(u'Purchase'),
+    _(u'Allow outdated purchases'),
+    _(u'Allows the inclusion of purchases done previously than the '
+      'current date.')),
+
     DEFAULT_PAYMENT_DESTINATION=ParameterDetails(
     _(u'Financial'),
     _(u'Default Payment Destination'),
@@ -366,6 +372,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('CUSTOM_LOGO_FOR_REPORTS', ImageHelper, initial=''),
         ParameterAttr('ENABLE_COMPOSED_PRODUCT', bool, initial=False),
         ParameterAttr('CAT52_DEST_DIR', DirectoryParameter, initial='~/.stoq/cat52'),
+        ParameterAttr('ALLOW_OUTDATED_PURCHASES', bool, initial=False),
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
         ParameterAttr('DEFAULT_SALES_CFOP', u'fiscal.CfopData'),
