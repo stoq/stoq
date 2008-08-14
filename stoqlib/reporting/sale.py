@@ -178,9 +178,9 @@ class SalesPersonReport(SearchResultsReport):
             OTC(_("Code"), lambda obj: obj.code, truncate=True,
                 width=60),
             OTC(_("Total Amount"), lambda obj: get_formatted_price(
-                obj.total_amount), truncate=True, width=105),
+                obj.get_total_amount()), truncate=True, width=105),
             OTC(_("P/A"), lambda obj: get_formatted_price(
-                obj.payment_amount), truncate=True, width=90),
+                obj.get_payment_amount()), truncate=True, width=90),
             OTC(_("Percentage"), lambda obj: get_formatted_percentage(
                 obj.commission_percentage), truncate=True,
                 width=100),
@@ -194,13 +194,15 @@ class SalesPersonReport(SearchResultsReport):
         total_amount = total_payment = total_percentage = total_value = \
             total_sold = 0
         for commission_view in self.salesperson_list:
-            total_amount += commission_view.total_amount
-            total_payment += commission_view.payment_amount
-            total_percentage += commission_view.commission_percentage
+            total_amount += commission_view.get_total_amount()
+            total_payment += commission_view.get_payment_amount()
             total_value += commission_view.commission_value
             total_sold += commission_view.quantity_sold()
-        if total_percentage:
-            total_percentage = total_percentage/len(self.salesperson_list)
+
+        if total_amount > 0:
+            total_percentage = total_value * 100 / total_amount
+        else:
+            total_percentage = 0
 
         summary_row = ["", _("Total:"), get_formatted_price(total_amount),
                        get_formatted_price(total_payment),
@@ -208,12 +210,17 @@ class SalesPersonReport(SearchResultsReport):
                        get_formatted_price(total_value),
                        format_quantity(total_sold)]
 
+        # salesperson_list might have multiples items that refers to the
+        # same sale. This will count the right number of sales.
+        sales_qty = len([s.id for s in self.salesperson_list
+                                    if not s.sale_returned()])
+
         text = None
         if self._sales_person is not None:
             summary_row.pop(0)
             va = 0
             if total_amount:
-                va = total_amount/len(self.salesperson_list)
+                va = total_amount/sales_qty
             text = _("Sold value per sales %s") % (get_formatted_price(va,))
             total_sellables = sum([item.sale.get_items_total_quantity()
                 for item in self.salesperson_list])
@@ -225,5 +232,4 @@ class SalesPersonReport(SearchResultsReport):
         self.add_preformatted_text(_("S/P: Sellables sold per sale"))
         if text:
             self.add_preformatted_text(text)
-            self.add_preformatted_text(_("Total of sales: %d") % (
-                len(self.salesperson_list),))
+            self.add_preformatted_text(_("Total of sales: %d" %  sales_qty))
