@@ -163,7 +163,9 @@ class OpenInventoryDialog(BaseEditor):
         if not selected:
             return []
 
-        return ASellable.get_availables_by_categories(self.conn, selected)
+        include_uncategorized = self.include_uncategorized_check.get_active()
+        return ASellable.get_availables_by_categories(self.conn, selected,
+                                                      include_uncategorized)
 
     def _select(self, categories, select_value):
         for category in categories:
@@ -231,7 +233,9 @@ class OpenInventoryDialog(BaseEditor):
                               branch=self.model.branch,
                               connection=self.conn)
         for sellable in self._get_sellables():
-            storable = IStorable(sellable)
+            storable = IStorable(sellable, None)
+            if storable is None:
+                continue
             # a sellable without stock can't be part of inventory
             if storable.get_stock_item(self.model.branch) is not None:
                 recorded_quantity = storable.get_full_balance(self.model.branch)
