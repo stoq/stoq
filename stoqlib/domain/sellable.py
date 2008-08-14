@@ -468,14 +468,19 @@ class ASellable(InheritableModelAdapter):
         return cls._get_sellables_by_barcode(conn, barcode,
                                              IN(cls.q.status, statuses))
     @classmethod
-    def get_availables_by_categories(cls, conn, categories):
+    def get_availables_by_categories(cls, conn, categories,
+                                     include_uncategorized=True):
         """Returns the available sellables by a list of categories.
 
         @param conn: a sqlobject Transaction instance
         @param categories: a list of SellableCategory instances
+        @param include_uncategorized: whether or not include the sellables
+            without a category
         """
         #FIXME: This query should be faster, waiting for #3696
 
+        if include_uncategorized:
+            categories.append(None)
         for sellable in cls.get_available_sellables(conn):
             if sellable.category in categories:
                 yield sellable

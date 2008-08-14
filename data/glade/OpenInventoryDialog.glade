@@ -134,24 +134,43 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkHButtonBox" id="hbuttonbox1">
-                        <property name="layout_style">start</property>
+                    <widget class="GtkHBox" id="hbox1">
                         <property name="spacing">6</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="GtkButton" id="select_all">
-                                <property name="label">gtk-select-all</property>
-                                <property name="use_stock">True</property>
+                            <widget class="GtkHButtonBox" id="hbuttonbox1">
+                                <property name="layout_style">start</property>
+                                <property name="spacing">6</property>
                                 <property name="visible">True</property>
+                                <child>
+                                    <widget class="GtkButton" id="select_all">
+                                        <property name="label">gtk-select-all</property>
+                                        <property name="use_stock">True</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <widget class="GtkButton" id="unselect_all">
+                                        <property name="label" context="yes" translatable="yes">_Unselect All</property>
+                                        <property name="use_underline">True</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
                             </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                            </packing>
                         </child>
                         <child>
-                            <widget class="GtkButton" id="unselect_all">
-                                <property name="label" context="yes" translatable="yes">_Unselect All</property>
-                                <property name="use_underline">True</property>
+                            <widget class="GtkCheckButton" id="include_uncategorized_check">
+                                <property name="label" context="yes" translatable="yes">Include uncategorized products</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
+                                <property name="expand">False</property>
                                 <property name="position">1</property>
                             </packing>
                         </child>
