@@ -33,6 +33,7 @@ from sqlobject.viewable import Viewable
 from stoqlib.database.columns import DecimalCol
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.base import Domain
+from stoqlib.domain.interfaces import IOutPayment
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Person, PersonAdaptToSalesPerson
 from stoqlib.domain.sale import Sale
@@ -170,8 +171,7 @@ class CommissionView(Viewable):
         commission_value=Commission.q.value,
         commission_percentage=Commission.q.value/Sale.q.total_amount*100,
         salesperson_name=Person.q.name,
-        payment_amount=Payment.q.value,
-        total_amount=Sale.q.total_amount,
+        payment_id=Payment.q.id,
         open_date=Sale.q.open_date,
        )
 
@@ -196,6 +196,31 @@ class CommissionView(Viewable):
     def sale(self):
         return Sale.get(self.id, connection=get_connection())
 
+    @property
+    def payment(self):
+        return Payment.get(self.payment_id, connection=get_connection())
+
     def quantity_sold(self):
-        sale = Sale.get(self.id, connection=get_connection())
-        return sale.get_items_total_quantity()
+        if self.sale_returned():
+            # zero means 'this sale does not changed our stock'
+            return Decimal(0)
+
+        return self.sale.get_items_total_quantity()
+
+    def get_payment_amount(self):
+        # the returning payment should be shown as negative one
+        if IOutPayment(self.payment, None) is not None:
+            return -self.payment.value
+        return self.payment.value
+
+    def get_total_amount(self):
+        # XXX: No, the sale amount does not change. But I return different
+        # values based in type of the payment to guess how I might show the
+        # total sale amount.
+        negative = IOutPayment(self.payment, None) is not None
+        if negative:
+            return -self.sale.total_amount
+        return self.sale.total_amount
+
+    def sale_returned(self):
+        return self.sale.status == Sale.STATUS_RETURNED
