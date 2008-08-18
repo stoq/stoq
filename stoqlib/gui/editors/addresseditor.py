@@ -147,8 +147,7 @@ class AddressSlave(BaseEditorSlave):
                                            or not self.edit_mode)
         self._update_streetnumber()
 
-        self.add_proxy(self.model.city_location,
-                       AddressSlave.location_widgets)
+        self.add_proxy(self.model, AddressSlave.location_widgets)
 
     def can_confirm(self):
         return self.model.is_valid_model()
