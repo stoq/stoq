@@ -75,7 +75,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
         self.attach_model_slave('note_holder', NoteSlave, self.model)
 
     def on_confirm(self):
-        self.address_slave.on_confirm()
+        self.address_slave.confirm()
         main_address = self.address_slave.model
         main_address.person = self.model
         return self.model
