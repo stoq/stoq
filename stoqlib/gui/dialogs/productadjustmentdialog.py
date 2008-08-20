@@ -140,6 +140,16 @@ class ProductsAdjustmentDialog(BaseEditor):
         self.model.close()
         return self.model
 
+    def on_cancel(self):
+        # if we cancel this dialog, but all items have been adjusted, we need
+        # to close the inventory or some items might be adjusted more than one
+        # time.
+        if not self._has_rows():
+            self.model.close()
+            return self.model
+
+        return False
+
     #
     # Kiwi Callbacks
     #
