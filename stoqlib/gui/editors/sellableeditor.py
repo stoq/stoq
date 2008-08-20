@@ -50,6 +50,7 @@ from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
 from stoqlib.gui.slaves.imageslaveslave import ImageSlave
+from stoqlib.lib.message import info
 from stoqlib.lib.validators import get_price_format_str
 
 _ = stoqlib_gettext
@@ -109,6 +110,18 @@ class SellableTaxConstantsDialog(ModelListDialog):
         is_custom = constant.tax_type == TaxType.CUSTOM
         self.listcontainer.remove_button.set_sensitive(is_custom)
         self.listcontainer.edit_button.set_sensitive(is_custom)
+
+    def delete_model(self, model, trans):
+        sellables = ASellable.selectBy(tax_constant=model, connection=trans)
+        quantity = sellables.count()
+        if quantity > 0:
+            msg = _(u"You can't remove this tax, since %d products or "
+                    "services are taxed with '%s'." % (
+                    quantity, model.get_description()))
+            info(msg)
+        else:
+            SellableTaxConstant.delete(model.id, connection=trans)
+
 
 class SellablePriceEditor(BaseEditor):
     model_name = _(u'Product Price')
