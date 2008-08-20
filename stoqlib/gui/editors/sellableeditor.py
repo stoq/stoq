@@ -357,6 +357,11 @@ class SellableEditor(BaseEditor):
         if value <= 0:
            return ValidationError(_("Cost cannot be zero or negative"))
 
+    def on_unit_entry__validate(self, entry, value):
+        unit = self._sellable.unit
+        if unit.unit_index == UnitType.CUSTOM and not value:
+            return ValidationError(_(u"Unit must have a description"))
+
     def on_category_combo__content_changed(self, widget):
         category_cb = self.category_combo.get_text()
         category = SellableCategory.selectOneBy(description=category_cb,
