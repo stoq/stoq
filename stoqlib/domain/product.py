@@ -102,6 +102,17 @@ class ProductRetentionHistory(Domain):
     retention_date = DateTimeCol(default=None)
     cfop = ForeignKey('CfopData', default=None)
 
+    def cancel_retention(self, branch):
+        """Remove the ProductRetentionHistory entry and return the
+        product quantity retained to stock again.
+
+        @param branch: the branch containing the stock
+        """
+        storable = IStorable(self.product)
+        storable.increase_stock(self.quantity, branch)
+        ProductRetentionHistory.delete(
+            self.id, connection=self.get_connection())
+
 
 class Product(Domain):
     """Class responsible to store basic products informations."""

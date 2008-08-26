@@ -41,6 +41,7 @@ from stoqlib.domain.interfaces import IStorable, IProduct
 from stoqlib.domain.receiving import ReceivingOrderItem
 from stoqlib.domain.sale import SaleItem
 from stoqlib.domain.transfer import TransferOrderItem
+from stoqlib.lib.message import yesno
 
 _ = stoqlib_gettext
 
@@ -57,7 +58,8 @@ class ProductStockHistoryDialog(BaseEditor):
     model_type = ProductAdaptToSellable
     gladefile = "ProductStockHistoryDialog"
 
-    def __init__(self, conn, model):
+    def __init__(self, conn, model, branch):
+        self._branch = branch
         BaseEditor.__init__(self, conn, model)
         self._setup_widgets()
 
@@ -112,6 +114,12 @@ class ProductStockHistoryDialog(BaseEditor):
                                                value_format=value_format)
         retention_summary_label.show()
         self.retention_vbox.pack_start(retention_summary_label, False)
+        self.retention_vbox.reorder_child(retention_summary_label, 1)
+
+    def _update_widgets(self):
+        has_selected = self.retention_list.get_selected() is not None
+        has_branch = self._branch is not None
+        self.cancel_retention_button.set_sensitive(has_selected and has_branch)
 
     def _get_receiving_columns(self):
         return [Column("receiving_order.id",
@@ -171,6 +179,15 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column("quantity", title=_(u"Quantity Retained"),
                         data_type=Decimal)]
 
+    def _cancel_retention(self, retention):
+        msg = _(u'Do you really want to cancel this retention ?')
+        if yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _(u'No')):
+            self.retention_list.remove(retention)
+            retention.cancel_retention(self._branch)
+            # We need to commit here or the 'cancel' operation will not
+            # take effect
+            self.conn.commit()
+
     #
     # BaseEditor Hooks
     #
@@ -180,3 +197,14 @@ class ProductStockHistoryDialog(BaseEditor):
 
         storable = IStorable(self.model)
         self.add_proxy(storable, ['full_balance'])
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_cancel_retention_button__clicked(self, widget):
+        retention = self.retention_list.get_selected()
+        self._cancel_retention(retention)
+
+    def on_retention_list__selection_changed(self, widget, item):
+        self._update_widgets()
