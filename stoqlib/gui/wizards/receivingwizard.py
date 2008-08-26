@@ -72,11 +72,8 @@ class PurchaseSelectionStep(WizardEditorStep):
         WizardEditorStep.__init__(self, conn, wizard, model)
 
     def _refresh_next(self, validation_value):
-        if sysparam(self.conn).RECEIVE_PRODUCTS_WITHOUT_ORDER:
-            validation_value = True
-        else:
-            validation_value = len(self.search.results) == 1
-        self.wizard.refresh_next(validation_value)
+        has_selection = self.search.results.get_selected() is not None
+        self.wizard.refresh_next(has_selection)
 
     def _create_search(self):
         self.search = SearchSlaveDelegate(self._get_columns())
@@ -120,8 +117,6 @@ class PurchaseSelectionStep(WizardEditorStep):
     def _update_view(self):
         has_selection = self.search.results.get_selected() is not None
         self.details_button.set_sensitive(has_selection)
-        if not sysparam(self.conn).RECEIVE_PRODUCTS_WITHOUT_ORDER:
-            self.wizard.refresh_next(has_selection)
 
     #
     # WizardStep hooks

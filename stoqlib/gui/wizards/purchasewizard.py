@@ -35,7 +35,7 @@ from kiwi.ui.widgets.list import Column
 from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.database.runtime import (get_current_branch, new_transaction,
-                                      finish_transaction)
+                                      finish_transaction, get_current_user)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 from stoqlib.lib.message import info
@@ -46,6 +46,7 @@ from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
@@ -55,6 +56,8 @@ from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem, QuoteGroup
+from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
+                                      get_receiving_items_by_purchase_order)
 from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
                                        IPaymentGroup, IOutPayment, IProduct,
                                        IQuote)
@@ -394,14 +397,51 @@ class FinishPurchaseStep(WizardEditorStep):
         self.salesperson_name.grab_focus()
         self.notes.set_accepts_tab(False)
 
+    def _create_receiving_order(self):
+        receiving_model = ReceivingOrder(
+            responsible=get_current_user(self.conn),
+            purchase=self.model,
+            supplier=self.model.supplier,
+            branch=self.model.branch,
+            transporter=self.model.transporter,
+            invoice_number=None,
+            connection=self.conn)
+
+        # Creates ReceivingOrderItem's
+        get_receiving_items_by_purchase_order(self.model, receiving_model)
+
+        self.wizard.receiving_model = receiving_model
+
     #
     # WizardStep hooks
     #
 
     def has_next_step(self):
-        return False
+        return self.receive_now.get_active()
+
+    def next_step(self):
+        # In case the check box for receiving the products now is not active,
+        # This is the last step.
+        if not self.receive_now.get_active():
+            return
+
+        self._create_receiving_order()
+        return ReceivingInvoiceStep(self.conn, self.wizard,
+                                    self.wizard.receiving_model, self)
 
     def post_init(self):
+        # A receiving model was created. We should remove it (and its items),
+        # since after this step we can either receive the products now or
+        # later, on the stock application.
+        receiving_model = self.wizard.receiving_model
+        if receiving_model:
+            for item in receiving_model.get_items():
+                ReceivingOrderItem.delete(item.id, self.conn)
+
+            ReceivingOrder.delete(receiving_model.id, connection=self.conn)
+            self.wizard.receiving_model = None
+
+
         self.salesperson_name.grab_focus()
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
@@ -428,6 +468,12 @@ class FinishPurchaseStep(WizardEditorStep):
         if rv:
             self._setup_transporter_entry()
             self.transporter.select(model)
+
+    def on_receive_now__toggled(self, widget):
+        if self.receive_now.get_active():
+            self.wizard.disable_finish()
+        else:
+            self.wizard.enable_finish()
 
     def on_print_button__clicked(self, button):
         print_report(PurchaseOrderReport, self.model)
@@ -659,6 +705,8 @@ class PurchaseWizard(BaseWizard):
     def __init__(self, conn, model=None, edit_mode=False):
         title = self._get_title(model)
         model = model or self._create_model(conn)
+        # If we receive the order right after the purchase.
+        self.receiving_model = None
         if model.status != PurchaseOrder.ORDER_PENDING:
             raise ValueError('Invalid order status. It should '
                              'be ORDER_PENDING')
@@ -686,6 +734,14 @@ class PurchaseWizard(BaseWizard):
         if not self.model.get_valid():
             self.model.set_valid()
         self.retval = self.model
+
+        if self.receiving_model:
+            if not self.receiving_model.get_valid():
+                self.receiving_model.set_valid()
+            self.model.confirm()
+            # Confirming the receiving will close the purchase
+            self.receiving_model.confirm()
+
         self.close()
 
 
