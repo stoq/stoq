@@ -31,7 +31,8 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.sellable import BaseSellableInfo, ASellable
 from stoqlib.domain.payment.methods import MoneyPM
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
-                                    ProductHistory, ProductComponent)
+                                    ProductHistory, ProductComponent,
+                                    ProductRetentionHistory)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.interfaces import IStorable, ISellable, IPaymentGroup
 
@@ -251,3 +252,30 @@ class TestProductHistory(DomainTest):
                                                sellable=sellable)
         self.failUnless(prod_hist)
         self.assertEqual(prod_hist.quantity_retained, retained_qty)
+
+
+class TestProductRetentionHistory(DomainTest):
+
+    def testCancelRetention(self):
+        sellable = self.create_sellable()
+        sellable.status = ASellable.STATUS_AVAILABLE
+        product = sellable.get_adapted()
+        storable = product.addFacet(IStorable, connection=self.trans)
+        branch = get_current_branch(self.trans)
+        quantity = 10
+        storable.increase_stock(quantity, branch)
+        retained_quantity = 3
+        retained = self.create_retained_product(product, retained_quantity)
+        history_entry = ProductRetentionHistory.selectOneBy(product=product,
+            quantity=retained_quantity, connection=self.trans)
+
+        self.failIf(history_entry is None)
+        self.assertEqual(storable.get_full_balance(branch),
+                         quantity - retained_quantity)
+
+        retained.cancel_retention(branch)
+        history_entry = ProductRetentionHistory.selectOneBy(product=product,
+            quantity=retained_quantity, connection=self.trans)
+
+        self.failUnless(history_entry is None)
+        self.assertEqual(storable.get_full_balance(branch), quantity)

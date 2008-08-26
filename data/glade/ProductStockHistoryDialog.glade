@@ -89,7 +89,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkNotebook" id="notebook1">
+                    <widget class="GtkNotebook" id="history_notebook">
                         <property name="border_width">6</property>
                         <property name="is_focus">True</property>
                         <property name="visible">True</property>
@@ -161,8 +161,25 @@
                                     </widget>
                                 </child>
                                 <child>
-                                    <placeholder/>
+                                    <widget class="GtkHButtonBox" id="hbuttonbox1">
+                                        <property name="layout_style">start</property>
+                                        <property name="spacing">6</property>
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <widget class="ProxyButton" id="cancel_retention_button">
+                                                <property name="data_type">str</property>
+                                                <property name="is_focus">True</property>
+                                                <property name="label">gtk-revert-to-saved</property>
+                                                <property name="model_attribute">cancel_retention_button</property>
+                                                <property name="sensitive">False</property>
+                                                <property name="use_stock">True</property>
+                                                <property name="visible">True</property>
+                                            </widget>
+                                        </child>
+                                    </widget>
                                     <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
                                         <property name="position">1</property>
                                     </packing>
                                 </child>
