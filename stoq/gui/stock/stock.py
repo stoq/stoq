@@ -216,4 +216,5 @@ class StockApp(SearchableAppWindow):
                              "this point")
         sellable = ProductAdaptToSellable.get(selected[0].id,
                                               connection=self.conn)
-        self.run_dialog(ProductStockHistoryDialog, self.conn, sellable)
+        self.run_dialog(ProductStockHistoryDialog, self.conn, sellable,
+                        branch=self.branch_filter.combo.get_selected())
