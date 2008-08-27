@@ -41,8 +41,8 @@ from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
-from stoqlib.gui.wizards.purchasewizard import (PurchaseWizard,
-                                                QuotePurchaseWizard)
+from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
+from stoqlib.gui.wizards.purchasequotewizard import QuotePurchaseWizard
 from stoqlib.gui.search.categorysearch import (SellableCategorySearch,
                                                BaseSellableCatSearch)
 from stoqlib.gui.search.productsearch import ProductSearch
