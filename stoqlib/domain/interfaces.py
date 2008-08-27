@@ -552,8 +552,3 @@ class IReversal(Interface):
         with an oposite value
         """
 
-class IQuote(Interface):
-    """A purchase quote interface"""
-
-    def get_group():
-        """Get the quote group"""

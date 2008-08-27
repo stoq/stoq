@@ -11,7 +11,7 @@
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkLabel" id="label1">
-                        <property name="label" context="yes" translatable="yes">Select one or more suppliers to generate the quote:</property>
+                        <property name="label" context="yes" translatable="yes">Select one or more suppliers to generate quote(s):</property>
                         <property name="visible">True</property>
                         <property name="xalign">0.0</property>
                     </widget>
@@ -28,28 +28,63 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkHButtonBox" id="hbuttonbox1">
-                        <property name="layout_style">start</property>
+                    <widget class="GtkHBox" id="hbox1">
                         <property name="spacing">6</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="GtkButton" id="print_button">
-                                <property name="label">gtk-print</property>
-                                <property name="sensitive">False</property>
-                                <property name="use_stock">True</property>
+                            <widget class="GtkHButtonBox" id="hbuttonbox1">
+                                <property name="layout_style">start</property>
+                                <property name="spacing">6</property>
                                 <property name="visible">True</property>
+                                <child>
+                                    <widget class="GtkButton" id="print_button">
+                                        <property name="label">gtk-print</property>
+                                        <property name="sensitive">False</property>
+                                        <property name="use_stock">True</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkButton" id="view_products_button">
+                                        <property name="is_focus">True</property>
+                                        <property name="label" context="yes" translatable="yes">_View Products</property>
+                                        <property name="sensitive">False</property>
+                                        <property name="use_underline">True</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkButton" id="missing_products_button">
+                                        <property name="label" context="yes" translatable="yes">_Missing Products</property>
+                                        <property name="use_underline">True</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">2</property>
+                                    </packing>
+                                </child>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkButton" id="view_products_button">
+                            <widget class="ProxyCheckButton" id="include_all_products">
+                                <property name="active">True</property>
+                                <property name="data_type">bool</property>
                                 <property name="is_focus">True</property>
-                                <property name="label" context="yes" translatable="yes">_View Products</property>
-                                <property name="sensitive">False</property>
-                                <property name="use_underline">True</property>
+                                <property name="label" context="yes" translatable="yes">Include all products in quotes</property>
+                                <property name="model_attribute">include_all_products</property>
                                 <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
