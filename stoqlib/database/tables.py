@@ -126,7 +126,7 @@ _tables = [
                   "ProductRetentionHistory"]),
      ('purchase', ["PurchaseOrder",
                    "PurchaseOrderAdaptToPaymentGroup",
-                   "PurchaseOrderAdaptToQuote",
+                   "Quotation",
                    "PurchaseItem",
                    "QuoteGroup"]),
      ('receiving', ["ReceivingOrder", "ReceivingOrderItem"]),
