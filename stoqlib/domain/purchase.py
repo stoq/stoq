@@ -38,11 +38,10 @@ from sqlobject.viewable import Viewable
 
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-from stoqlib.domain.base import (ValidatableDomain, Domain, BaseSQLView,
-                                 ModelAdapter)
+from stoqlib.domain.base import ValidatableDomain, Domain, BaseSQLView
 from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.group import AbstractPaymentGroup
-from stoqlib.domain.interfaces import IPaymentGroup, IContainer, IQuote
+from stoqlib.domain.interfaces import IPaymentGroup, IContainer, IDescribable
 from stoqlib.domain.sellable import ASellable, BaseSellableInfo, SellableUnit
 from stoqlib.lib.defaults import calculate_interval, quantize
 from stoqlib.lib.translation import stoqlib_gettext
@@ -110,6 +109,7 @@ class PurchaseItem(Domain):
         unit = self.sellable.unit
         return "%s %s" % (format_quantity(self.quantity_received),
                           unit and unit.description or u"")
+
 
 class PurchaseOrder(ValidatableDomain):
     """Purchase and order definition."""
@@ -442,41 +442,52 @@ class PurchaseOrder(ValidatableDomain):
         return cls.statuses[status]
 
 
-class PurchaseOrderAdaptToQuote(ModelAdapter):
-    implements(IQuote)
-
+class Quotation(Domain):
     group = ForeignKey('QuoteGroup')
+    purchase = ForeignKey('PurchaseOrder')
 
-    def get_group(self):
-        return self.group
+    implements(IDescribable)
 
-PurchaseOrder.registerFacet(PurchaseOrderAdaptToQuote, IQuote)
+    def get_description(self):
+        supplier = self.purchase.supplier.person.name
+        return "Group %04d - %s" % (self.group.id, supplier)
 
 
 class QuoteGroup(Domain):
-    implements(IContainer)
+
+    implements(IContainer, IDescribable)
+
+    #
+    # IContainer
+    #
 
     def get_items(self):
-        return PurchaseOrderAdaptToQuote.selectBy(
-            group=self, connection=self.get_connection())
+        return Quotation.selectBy(group=self, connection=self.get_connection())
 
-    @argcheck(PurchaseOrderAdaptToQuote)
+    @argcheck(Quotation)
     def remove_item(self, item):
         conn = self.get_connection()
         if item.group is not self:
             raise ValueError('You can not remove an item which does not '
                              'belong to this group.')
 
-        order = item.get_adapted()
-        order.removeFacet(IQuote)
+        order = item.purchase
         for order_item in order.get_items():
             order.remove_item(order_item)
         PurchaseOrder.delete(order.id, connection=conn)
+        Quotation.delete(item.id, connection=conn)
 
     @argcheck(PurchaseOrder)
     def add_item(self, item):
         conn = self.get_connection()
-        return item.addFacet(IQuote, group=self, connection=conn)
+        return Quotation(purchase=item, group=self, connection=conn)
+
+    #
+    # IDescribable
+    #
+
+    def get_description(self):
+        return _(u"quote number %04d" % self.id)
 
 
 class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
