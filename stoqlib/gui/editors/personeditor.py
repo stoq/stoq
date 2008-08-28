@@ -29,12 +29,14 @@
 import datetime
 from decimal import Decimal
 
+import gtk
+
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.wizards.paymentmethodwizard import PaymentMethodDetailsWizard
-from stoqlib.gui.base.lists import AdditionListSlave
+from stoqlib.gui.base.lists import ModelListSlave
 from stoqlib.gui.editors.simpleeditor import SimpleEntryEditor
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.gui.slaves.paymentmethodslave import FinanceDetailsSlave
@@ -164,11 +166,18 @@ class CreditProviderEditor(BasePersonRoleEditor):
         slave.attach_slave('person_status_holder', self.details_slave)
 
 
-class CardProviderEditor(CreditProviderEditor):
+class _ProviderList(ModelListSlave):
+    def __init__(self, conn, credprovider):
+        self._credprovider = credprovider
+        orientation = gtk.ORIENTATION_HORIZONTAL
+        ModelListSlave.__init__(self, conn=conn, orientation=orientation)
+        self.set_model_type(PaymentMethodDetails)
 
-    provtype = Person.getAdapterClass(ICreditProvider).PROVIDER_CARD
+    #
+    # ModelListSlave
+    #
 
-    def _get_columns(self):
+    def get_columns(self):
         return [Column('description', _('Payment Type'), data_type=unicode,
                        expand=True, sorted=True),
                 Column('destination_name', _('Destination'),
@@ -178,31 +187,24 @@ class CardProviderEditor(CreditProviderEditor):
                 Column('is_active', _('Active'), data_type=bool,
                        editable=True)]
 
+    def run_editor(self, conn, model):
+        return self.run_dialog(PaymentMethodDetailsWizard, conn=conn,
+                               model=model, credprovider=self._credprovider)
+
+    def populate(self):
+        return PaymentMethodDetails.selectBy(
+            providerID=self._credprovider.id, connection=self.conn)
+
+
+class CardProviderEditor(CreditProviderEditor):
+
+    provtype = Person.getAdapterClass(ICreditProvider).PROVIDER_CARD
+
     def setup_slaves(self):
         CreditProviderEditor.setup_slaves(self)
-        items = PaymentMethodDetails.selectBy(providerID=self.model.id,
-                                              connection=self.conn)
-        addlist = AdditionListSlave(self.conn, self._get_columns(),
-                                    PaymentMethodDetailsWizard,
-                                    list(items))
-        addlist.register_editor_kwargs(credprovider=self.model)
-        addlist.connect('before-delete-items', self.before_delete_items)
-        addlist.klist.connect('cell-edited', self.on_cell_edited)
+        addlist = _ProviderList(self.conn, self.model)
         slave = self.main_slave.get_person_slave()
         slave.attach_custom_slave(addlist, _("Payment Types"))
-
-    #
-    # Callbacks
-    #
-
-    def before_delete_items(self, slave, items):
-        for item in items:
-            table = type(item)
-            table.delete(item.id, connection=self.conn)
-
-    def on_cell_edited(self, klist, obj, attr):
-        conn = obj.get_connection()
-        conn.commit()
 
 
 class FinanceProviderEditor(CreditProviderEditor):

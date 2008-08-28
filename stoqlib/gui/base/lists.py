@@ -45,7 +45,8 @@ _ = stoqlib_gettext
 
 class ModelListSlave(ListSlave):
 
-    def __init__(self, columns=None, conn=None):
+    def __init__(self, columns=None, conn=None,
+                 orientation=gtk.ORIENTATION_VERTICAL):
         """
         Create a new ModelListDialog object.
         @param conn: A database connection
@@ -54,11 +55,11 @@ class ModelListSlave(ListSlave):
             conn = get_connection()
         self.conn = conn
 
-        self._model_list_type = None
+        self._model_type = None
         self._reuse_transaction = False
         self._editor_class = None
         columns = columns or self.get_columns()
-        ListSlave.__init__(self, columns)
+        ListSlave.__init__(self, columns, orientation)
 
     def _delete_with_transaction(self, model, trans):
         self.delete_model(model, trans)
@@ -89,7 +90,7 @@ class ModelListSlave(ListSlave):
             retval = self.run_editor(trans, model)
             finish_transaction(trans, retval)
             if retval:
-                retval = self.model_type.get(retval.id, connection=self.conn)
+                retval = self._model_type.get(retval.id, connection=self.conn)
             trans.close()
         return retval
 
