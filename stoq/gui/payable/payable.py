@@ -49,6 +49,7 @@ from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
 from stoqlib.reporting.payment import PayablePaymentReport
 from stoqlib.reporting.payment_receipt import PaymentReceipt
 
@@ -287,6 +288,9 @@ class PayableApp(SearchableAppWindow):
         items.insert(0, (_('Any'), None))
         return items
 
+    def _run_bill_check_search(self):
+        run_dialog(OutPaymentBillCheckSearch, self, self.conn)
+
     #
     # Kiwi callbacks
     #
@@ -327,4 +331,6 @@ class PayableApp(SearchableAppWindow):
     def on_ChangeDueDate__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]
         self._change_due_date(payable_view)
- 
+
+    def on_BillCheckSearch__activate(self, action):
+        self._run_bill_check_search()

@@ -52,6 +52,7 @@ from stoqlib.gui.dialogs.paymentadditiondialog import InPaymentAdditionDialog
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 
 from stoq.gui.application import SearchableAppWindow
@@ -296,6 +297,9 @@ class ReceivableApp(SearchableAppWindow):
             return False
         return all(view.sale == sale for view in receivable_views[1:])
 
+    def _run_bill_check_search(self):
+        run_dialog(InPaymentBillCheckSearch, self, self.conn)
+
     #
     # Kiwi callbacks
     #
@@ -332,3 +336,6 @@ class ReceivableApp(SearchableAppWindow):
     def on_ChangeDueDate__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]
         self._change_due_date(receivable_view)
+
+    def on_BillCheckSearch__activate(self, action):
+        self._run_bill_check_search()
