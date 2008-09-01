@@ -39,7 +39,9 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, CommissionView
 from stoqlib.domain.interfaces import IPaymentGroup, ISellable, IStorable
 from stoqlib.domain.payment.methods import APaymentMethod
-from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
+from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
+                                          InCheckPaymentView,
+                                          OutCheckPaymentView)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.test.domaintest import DomainTest
@@ -47,7 +49,8 @@ from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.payment import (ReceivablePaymentReport,
-                                       PayablePaymentReport)
+                                       PayablePaymentReport,
+                                       BillCheckPaymentReport)
 from stoqlib.reporting.product import ProductReport, ProductPriceReport
 from stoqlib.reporting.purchase import PurchaseQuoteReport
 from stoqlib.reporting.service import ServicePriceReport
@@ -129,6 +132,20 @@ class TestReport(DomainTest):
         for item in in_payments:
             item.due_date = datetime.date(2007, 1, 1)
         self.checkPDF(ReceivablePaymentReport, in_payments, date=datetime.date(2007, 1, 1))
+
+    def testPayableBillCheckPaymentReport(self):
+        out_payments = list(OutCheckPaymentView.select(connection=self.trans))
+        for item in out_payments:
+            item.due_date = datetime.date(2007, 1, 1)
+        self.checkPDF(BillCheckPaymentReport, out_payments,
+                      date=datetime.date(2007, 1, 1))
+
+    def testReceivableBillCheckPaymentReport(self):
+        in_payments = list(InCheckPaymentView.select(connection=self.trans))
+        for item in in_payments:
+            item.due_date = datetime.date(2007, 1, 1)
+        self.checkPDF(BillCheckPaymentReport, in_payments,
+                      date=datetime.date(2007, 1, 1))
 
     def testTransferOrderReceipt(self):
         from stoqlib.domain.transfer import TransferOrder, TransferOrderItem

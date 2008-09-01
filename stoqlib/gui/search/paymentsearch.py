@@ -1,0 +1,97 @@
+# -*- coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2008 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+##  Author(s): George Kussumoto   <george@async.com.br>
+##
+##
+""" Search dialogs for payment objects """
+
+import datetime
+
+import gtk
+
+from kiwi.datatypes import currency
+from kiwi.ui.search import DateSearchFilter
+from kiwi.ui.widgets.list import Column
+
+from stoqlib.domain.payment.views import InCheckPaymentView, OutCheckPaymentView
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.printing import print_report
+from stoqlib.reporting.payment import BillCheckPaymentReport
+
+_ = stoqlib_gettext
+
+
+class _BaseBillCheckSearch(SearchDialog):
+
+    title = _(u"Bill & Check Payments Search")
+    size = (750, 500)
+    searching_by_date = True
+    selection_mode = gtk.SELECTION_MULTIPLE
+
+    #
+    # SearchDialog Hooks
+    #
+
+    def create_filters(self):
+        self.set_text_field_columns(['payment_number', 'account'])
+
+        date_filter = DateSearchFilter(_('Paid or due date:'))
+        self.add_filter(date_filter, columns=['paid_date', 'due_date'])
+
+        self.set_searchbar_labels(_(u'Bill or check number:'))
+
+    def get_columns(self):
+        return [Column('id', title=_('#'), data_type=int,
+                       sorted=True, format='%04d'),
+                Column('bank_id', title=_(u'Bank'), data_type=int,
+                       format='%03d'),
+                Column('branch', title=_(u'Branch Number'), data_type=str,
+                        expand=True),
+                Column('account', title=_(u'Account'), data_type=str,
+                       expand=True),
+                Column('payment_number', title=_(u'Number'), data_type=str,
+                       expand=True),
+                Column('due_date', title=_('Due Date'),
+                       data_type=datetime.date),
+                Column('paid_date', title=_('Paid Date'),
+                       data_type=datetime.date),
+                Column('status_str', title=_('Status'), data_type=str),
+                Column('value', title=_('Value'), data_type=currency)]
+
+    def _print_report(self):
+        print_report(BillCheckPaymentReport, self.results)
+
+    #
+    # Callbacks
+    #
+
+    def on_print_button_clicked(self, widget):
+        self._print_report()
+
+
+class InPaymentBillCheckSearch(_BaseBillCheckSearch):
+    table = InCheckPaymentView
+
+
+class OutPaymentBillCheckSearch(_BaseBillCheckSearch):
+    table = OutCheckPaymentView
