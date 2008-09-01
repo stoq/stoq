@@ -60,6 +60,18 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="SearchMenu">
+                        <property name="name">SearchMenu</property>
+                        <property name="label" translatable="yes">_Search</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="BillCheckSearch">
+                        <property name="name">BillCheckSearch</property>
+                        <property name="label" translatable="yes">Bill and Check... </property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Copy">
                         <property name="name">Copy</property>
                         <property name="tooltip" translatable="yes">Copy selected object into the clipboard</property>
@@ -191,6 +203,9 @@
 	    <menuitem action="Receipt"/>
 	    <menuitem action="quit_action"/>
 	  </menu>
+      <menu action="SearchMenu">
+        <menuitem action="BillCheckSearch"/>
+      </menu> 
 	  <menu action="help_menu">
 	    <menuitem action="about_menu"/>
 	  </menu>
