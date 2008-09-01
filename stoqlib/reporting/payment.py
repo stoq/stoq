@@ -47,9 +47,11 @@ class _BasePaymentReport(SearchResultsReport):
     def _setup_table(self):
         total_value = sum([item.value for item in self._payments],
                           Decimal(0))
-        summary_row = ["", "", "", "", "", _("Total:"),
-                       get_formatted_price(total_value)]
-        self.add_object_table(self._payments, self.get_columns(), width=745,
+        columns = self.get_columns()
+        summary_row = ["" for i in range(len(columns))]
+        summary_row[-2] = _("Total:")
+        summary_row[-1] = get_formatted_price(total_value)
+        self.add_object_table(self._payments, columns, width=745,
                               summary_row=summary_row)
 
 
@@ -102,6 +104,40 @@ class PayablePaymentReport(_BasePaymentReport):
                     lambda obj: obj.get_status_str(), width=50),
                 OTC(_("Value"),
                     lambda obj: get_formatted_price(obj.value), width=100,
+                    align=RIGHT)
+            ]
+
+
+class BillCheckPaymentReport(_BasePaymentReport):
+    """This report shows a list of payments and some information about the
+    bill or check method payment (if available) like: the bank id, the bank
+    branch, the bank account. The field payment_number in the report can be
+    the check number or the bill number.
+    """
+
+    def get_columns(self):
+        return [OTC(_("#"),
+                    lambda obj: obj.id, width=40, align=RIGHT),
+                OTC(_("Bank"),
+                    lambda obj: obj.bank_id or "", width=40,
+                    expand=True, expand_factor=1),
+                OTC(_("Branch"),
+                    lambda obj: obj.branch or "", width=60,
+                    expand=True, expand_factor=1),
+                OTC(_("Account"),
+                    lambda obj: obj.account or "", width=60,
+                    expand=True, expand_factor=1),
+                OTC(_("Payment number"),
+                    lambda obj: obj.payment_number or "", width=80,
+                    expand=True, expand_factor=1),
+                OTC(_("Due date"),
+                    lambda obj: format_date(obj.payment.due_date), width=80),
+                OTC(_("Paid date"),
+                    lambda obj: format_date(obj.payment.paid_date), width=80),
+                OTC(_("Status"),
+                    lambda obj: obj.get_status_str(), width=50),
+                OTC(_("Value"),
+                    lambda obj: get_formatted_price(obj.value), width=90,
                     align=RIGHT)
             ]
 
