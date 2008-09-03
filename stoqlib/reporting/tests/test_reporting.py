@@ -136,14 +136,14 @@ class TestReport(DomainTest):
     def testPayableBillCheckPaymentReport(self):
         out_payments = list(OutCheckPaymentView.select(connection=self.trans))
         for item in out_payments:
-            item.due_date = datetime.date(2007, 1, 1)
+            item.payment.due_date = datetime.date(2007, 1, 1)
         self.checkPDF(BillCheckPaymentReport, out_payments,
                       date=datetime.date(2007, 1, 1))
 
     def testReceivableBillCheckPaymentReport(self):
         in_payments = list(InCheckPaymentView.select(connection=self.trans))
         for item in in_payments:
-            item.due_date = datetime.date(2007, 1, 1)
+            item.payment.due_date = datetime.date(2007, 1, 1)
         self.checkPDF(BillCheckPaymentReport, in_payments,
                       date=datetime.date(2007, 1, 1))
 
