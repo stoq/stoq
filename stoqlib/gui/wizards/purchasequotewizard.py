@@ -25,24 +25,32 @@
 
 import datetime
 
+import gtk
+
 from kiwi.datatypes import currency, ValidationError
+from kiwi.db.sqlobj import SQLObjectQueryExecuter
 from kiwi.python import Settable
+from kiwi.ui.search import SearchSlaveDelegate, DateSearchFilter
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import get_current_branch
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.message import info
-from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.validators import format_quantity
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.lists import SimpleListDialog
-from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.printing import print_report
-from stoqlib.gui.wizards.purchasewizard import PurchaseItemStep
+from stoqlib.database.runtime import (get_current_branch, new_transaction,
+                                      finish_transaction)
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import (PurchaseOrder, PurchaseItem, QuoteGroup,
                                      Quotation)
 from stoqlib.domain.interfaces import IBranch, IProduct
+from stoqlib.domain.views import QuotationView
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.lists import SimpleListDialog
+from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
+                                      BaseWizardStep)
+from stoqlib.gui.dialogs.quotedialog import QuoteFillingDialog
+from stoqlib.gui.printing import print_report
+from stoqlib.gui.wizards.purchasewizard import PurchaseItemStep
+from stoqlib.lib.message import info, yesno
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import format_quantity
 from stoqlib.reporting.purchase import PurchaseQuoteReport
 
 _ = stoqlib_gettext
@@ -294,8 +302,93 @@ class QuoteSupplierStep(WizardEditorStep):
         self._show_products()
 
 
+class QuoteGroupSelectionStep(BaseWizardStep):
+    gladefile = 'QuoteGroupSelectionStep'
+
+    def __init__(self, wizard, conn):
+        self._next_step = None
+        BaseWizardStep.__init__(self, conn, wizard)
+        self._setup_slaves()
+
+    def _setup_slaves(self):
+        self.search = SearchSlaveDelegate(self._get_columns())
+        self.attach_slave('search_group_holder', self.search)
+
+        executer = SQLObjectQueryExecuter()
+        executer.set_table(QuotationView)
+        self.search.set_query_executer(executer)
+
+        self.search.set_text_field_columns(['supplier_name'])
+        filter = self.search.get_primary_filter()
+        filter.set_label(_(u'Supplier:'))
+        self.search.focus_search_entry()
+        self.search.results.connect('selection-changed',
+                                    self._on_searchlist__selection_changed)
+
+        date_filter = DateSearchFilter(_('Date:'))
+        self.search.add_filter(date_filter, columns=['open_date', 'deadline'])
+
+    def _get_columns(self):
+        return [Column('id', title=_('Quote'), sorted=True,
+                        data_type=int, format="%04d"),
+                Column('group_id', title=_('Group'), data_type=int,
+                        format="%04d"),
+                Column('supplier_name', title=_('Supplier'), data_type=str,
+                        expand=True),
+                Column('open_date', title=_('Open Date'),
+                        data_type=datetime.date),
+                Column('deadline', title=_('Deadline'),
+                        data_type=datetime.date),]
+
+    def _update_view(self):
+        has_selected = self.search.results.get_selected() is not None
+        self.edit_button.set_sensitive(has_selected)
+        self.remove_button.set_sensitive(has_selected)
+        self.wizard.refresh_next(has_selected)
+
+    def _run_quote_editor(self):
+        trans = new_transaction()
+        selected = trans.get(self.search.results.get_selected().purchase)
+        retval = run_dialog(QuoteFillingDialog, self, selected, trans)
+        finish_transaction(trans, retval)
+        self._update_view()
+
+    def _remove_quote(self):
+        q = self.search.results.get_selected().quotation
+        msg = _(u'Are you sure you want to remove "%s" ?' % q.get_description())
+        if yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _('No')):
+            trans = new_transaction()
+            quote = trans.get(q)
+            Quotation.delete(quote.id, connection=trans)
+            finish_transaction(trans, True)
+            self.search.refresh()
+
+    #
+    # WizardStep hooks
+    #
+
+    def next_step(self):
+        pass
+
+    def has_previous_step(self):
+        return False
+
+    #
+    # Callbacks
+    #
+
+    def _on_searchlist__selection_changed(self, *args):
+        self._update_view()
+
+    def on_edit_button__clicked(self, widget):
+        self._run_quote_editor()
+
+    def on_remove_button__clicked(self, widget):
+        self._remove_quote()
+
+
 #
-# Main wizard
+# Main wizards
 #
 
 
@@ -349,4 +442,23 @@ class QuotePurchaseWizard(BaseWizard):
     def finish(self):
         self._delete_model()
         self.retval = True
+        self.close()
+
+
+class ReceiveQuoteWizard(BaseWizard):
+    title = _("Receive Quote Wizard")
+    size = (750, 450)
+
+    def __init__(self, conn):
+        self.model = None
+        first_step = QuoteGroupSelectionStep(self, conn)
+        BaseWizard.__init__(self, conn, first_step, self.model)
+        self.next_button.set_sensitive(False)
+
+    #
+    # WizardStep hooks
+    #
+
+    def finish(self):
+        self.retval = self.model
         self.close()

@@ -27,6 +27,7 @@ import copy
 
 from sqlobject.dbconnection import Iteration
 from sqlobject.declarative import DeclarativeMeta, setup_attributes
+from sqlobject.main import sqlhub
 from sqlobject.sqlbuilder import (SQLCall, SQLObjectField,
                                   NoDefault, AND)
 from sqlobject.sresults import SelectResults
@@ -131,6 +132,8 @@ class Viewable(object):
       to query for it using the Viewable.q.column magic
     """
     __metaclass__ = DeclarativeMeta
+
+    _connection = sqlhub
 
     sqlmeta = ViewableMeta
     columns = {}

@@ -28,10 +28,12 @@ from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn, OR
 
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.interfaces import ISellable
+from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.domain.product import (Product, ProductAdaptToSellable,
                                     ProductAdaptToStorable,
                                     ProductStockItem,
                                     ProductHistory)
+from stoqlib.domain.purchase import Quotation, QuoteGroup, PurchaseOrder
 from stoqlib.domain.sellable import (ASellable, SellableUnit,
                                      BaseSellableInfo, SellableCategory,
                                      SellableTaxConstant)
@@ -298,3 +300,41 @@ class SellableCategoryView(Viewable):
 
         return CommissionSource.selectOneBy(category=base_category,
                                             connection=self.get_connection())
+
+
+class QuotationView(Viewable):
+    """Stores information about the quote group and its quotes.
+    """
+    columns = dict(
+        id=Quotation.q.id,
+        purchase_id=Quotation.q.purchaseID,
+        group_id=Quotation.q.groupID,
+        group_code=Quotation.q.groupID,
+        open_date=PurchaseOrder.q.open_date,
+        deadline=PurchaseOrder.q.quote_deadline,
+        supplier_name=Person.q.name,
+    )
+
+    joins = [
+        LEFTJOINOn(None, PurchaseOrder,
+                   PurchaseOrder.q.id == Quotation.q.purchaseID),
+        LEFTJOINOn(None, PersonAdaptToSupplier,
+                   PersonAdaptToSupplier.q.id == PurchaseOrder.q.supplierID),
+        LEFTJOINOn(None, Person, Person.q.id ==
+                   PersonAdaptToSupplier.q._originalID),
+    ]
+
+    clause = AND(QuoteGroup.q.id == Quotation.q.groupID)
+
+    @property
+    def group(self):
+        return QuoteGroup.get(self.group_id, connection=self.get_connection())
+
+    @property
+    def quotation(self):
+        return Quotation.get(self.id, connection=self.get_connection())
+
+    @property
+    def purchase(self):
+        return PurchaseOrder.get(self.purchase_id,
+                                 connection=self.get_connection())
