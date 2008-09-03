@@ -134,6 +134,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="SearchQuotes">
+                        <property name="name">SearchQuotes</property>
+                        <property name="label" translatable="yes">Quotes...</property>
+                        <property name="accelerator">&lt;Control&gt;e</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="PurchaseMenu">
                         <property name="name">PurchaseMenu</property>
                         <property name="label" translatable="yes">_Order</property>
@@ -266,6 +273,7 @@
 	    <menuitem action="Services"/>
 	    <menuitem action="Suppliers"/>
 	    <menuitem action="Transporter"/>
+	    <menuitem action="SearchQuotes"/>
 	  </menu>
           <menu action="help_menu">
 	    <menuitem action="about_menu"/>
