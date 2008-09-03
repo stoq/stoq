@@ -42,7 +42,8 @@ from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
-from stoqlib.gui.wizards.purchasequotewizard import QuotePurchaseWizard
+from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
+                                                     ReceiveQuoteWizard)
 from stoqlib.gui.search.categorysearch import (SellableCategorySearch,
                                                BaseSellableCatSearch)
 from stoqlib.gui.search.productsearch import ProductSearch
@@ -271,6 +272,9 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_Quote__activate(self, action):
         self._quote_order()
+
+    def on_SearchQuotes__activate(self, action):
+        self.run_dialog(ReceiveQuoteWizard, self.conn)
 
     # FIXME: Kiwi autoconnection OR rename, see #2323
 
