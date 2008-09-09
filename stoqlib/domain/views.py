@@ -324,7 +324,8 @@ class QuotationView(Viewable):
                    PersonAdaptToSupplier.q._originalID),
     ]
 
-    clause = AND(QuoteGroup.q.id == Quotation.q.groupID)
+    clause = AND(QuoteGroup.q.id == Quotation.q.groupID,
+                 PurchaseOrder.q._is_valid_model == True)
 
     @property
     def group(self):

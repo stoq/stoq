@@ -29,7 +29,7 @@ from decimal import Decimal
 from kiwi.datatypes import currency
 
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 from stoqlib.domain.interfaces import IPaymentGroup
 
 from stoqlib.domain.test.domaintest import DomainTest
@@ -102,3 +102,19 @@ class TestPurchaseOrder(DomainTest):
         self.assertEqual(order.get_freight(), currency(0))
         transporter.freight_percentage = Decimal(7)
         self.assertEqual(order.get_freight(), Decimal(7))
+
+
+class TestQuoteGroup(DomainTest):
+
+    def testCancel(self):
+        group = QuoteGroup(connection=self.trans)
+        quote = PurchaseOrder(supplier=self.create_supplier(),
+                              branch=self.create_branch(),
+                              status=PurchaseOrder.ORDER_QUOTING,
+                              _is_valid_model=True,
+                              connection=self.trans)
+        quotation = group.add_item(quote)
+
+        self.assertEqual(quote.status, PurchaseOrder.ORDER_QUOTING)
+        group.cancel()
+        self.assertEqual(quote.status, PurchaseOrder.ORDER_CANCELLED)

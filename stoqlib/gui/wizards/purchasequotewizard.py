@@ -25,6 +25,8 @@
 
 import datetime
 
+from decimal import Decimal
+
 import gtk
 
 from kiwi.datatypes import currency, ValidationError
@@ -46,7 +48,8 @@ from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.dialogs.quotedialog import QuoteFillingDialog
 from stoqlib.gui.printing import print_report
-from stoqlib.gui.wizards.purchasewizard import PurchaseItemStep
+from stoqlib.gui.wizards.purchasewizard import (PurchaseItemStep,
+                                                PurchaseWizard)
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -102,9 +105,9 @@ class StartQuoteStep(WizardEditorStep):
     #
 
     def on_quote_deadline__validate(self, widget, date):
-        if date <= datetime.date.today():
-            return ValidationError(
-                _("The quote deadline date must be set to a future date"))
+        if date < datetime.date.today():
+            return ValidationError(_(u"The quote deadline date must be set to "
+                                     "today or a future date"))
 
 
 class QuoteItemsStep(PurchaseItemStep):
@@ -324,6 +327,8 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         self.search.focus_search_entry()
         self.search.results.connect('selection-changed',
                                     self._on_searchlist__selection_changed)
+        self.search.results.connect('row-activated',
+                                    self._on_searchlist__row_activated)
 
         date_filter = DateSearchFilter(_('Date:'))
         self.search.add_filter(date_filter, columns=['open_date', 'deadline'])
@@ -340,11 +345,26 @@ class QuoteGroupSelectionStep(BaseWizardStep):
                 Column('deadline', title=_('Deadline'),
                         data_type=datetime.date),]
 
+    def _can_purchase(self, item):
+        return item.cost > currency(0) and item.quantity > Decimal(0)
+
+    def _can_order(self):
+        # return if the quote group contain items that can be ordered
+        selected = self.search.results.get_selected()
+        if selected is None:
+            return False
+
+        for quote in selected.group.get_items():
+            for item in quote.purchase.get_items():
+                if self._can_purchase(item):
+                    return True
+        return False
+
     def _update_view(self):
         has_selected = self.search.results.get_selected() is not None
         self.edit_button.set_sensitive(has_selected)
         self.remove_button.set_sensitive(has_selected)
-        self.wizard.refresh_next(has_selected)
+        self.wizard.refresh_next(self._can_order())
 
     def _run_quote_editor(self):
         trans = new_transaction()
@@ -356,35 +376,193 @@ class QuoteGroupSelectionStep(BaseWizardStep):
     def _remove_quote(self):
         q = self.search.results.get_selected().quotation
         msg = _(u'Are you sure you want to remove "%s" ?' % q.get_description())
-        if yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _('No')):
-            trans = new_transaction()
-            quote = trans.get(q)
-            Quotation.delete(quote.id, connection=trans)
-            finish_transaction(trans, True)
-            self.search.refresh()
+        if not yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _('No')):
+            return
+
+        trans = new_transaction()
+        group = trans.get(q.group)
+        quote = trans.get(q)
+        group.remove_item(quote)
+        # there is no reason to keep the group if there's no more quotes
+        if group.get_items().count() == 0:
+            QuoteGroup.delete(group.id, connection=trans)
+        finish_transaction(trans, True)
+        self.search.refresh()
 
     #
     # WizardStep hooks
     #
 
     def next_step(self):
-        pass
+        selected = self.search.results.get_selected()
+        if selected is None:
+            return
 
-    def has_previous_step(self):
-        return False
+        return QuoteGroupItemsSelectionStep(self.wizard, self.conn,
+                                            selected.group, self)
 
     #
     # Callbacks
     #
 
-    def _on_searchlist__selection_changed(self, *args):
+    def _on_searchlist__selection_changed(self, widget, item):
         self._update_view()
+
+    def _on_searchlist__row_activated(self, widget, item):
+        self._run_quote_editor()
 
     def on_edit_button__clicked(self, widget):
         self._run_quote_editor()
 
     def on_remove_button__clicked(self, widget):
         self._remove_quote()
+
+
+class QuoteGroupItemsSelectionStep(BaseWizardStep):
+    gladefile = 'QuoteGroupItemsSelectionStep'
+
+    def __init__(self, wizard, conn, group, previous=None):
+        self._group = group
+        self._next_step = None
+        BaseWizardStep.__init__(self, conn, wizard, previous)
+        self._setup_widgets()
+
+    def _setup_widgets(self):
+        self.quoted_items.connect(
+            'selection-changed', self._on_quoted_items__selection_changed)
+        self.quoted_items.set_columns(self._get_columns())
+        # populate the list
+        for quote in self._group.get_items():
+            for purchase_item in quote.purchase.get_items():
+                if not self._can_purchase(purchase_item):
+                    continue
+
+                self.quoted_items.append(Settable(
+                    selected=True, order=quote.purchase, item=purchase_item,
+                    description=purchase_item.sellable.get_description(),
+                    supplier=quote.purchase.get_supplier_name(),
+                    quantity=purchase_item.quantity,
+                    cost=purchase_item.cost))
+
+    def _get_columns(self):
+        return [Column('selected', title=" ", data_type=bool, editable=True),
+                Column('description', title=_('Description'), data_type=str,
+                        expand=True, sorted=True),
+                Column('supplier', title=_('Supplier'), data_type=str,
+                        expand=True),
+                Column('quantity', title=_(u'Quantity'), data_type=Decimal),
+                Column('cost', title=_(u'Cost'), data_type=currency),]
+
+    def _update_widgets(self):
+        if not self.quoted_items:
+            has_selected = False
+        else:
+            has_selected = any([q.selected for q in self.quoted_items])
+        self.create_order_button.set_sensitive(has_selected)
+
+    def _can_purchase(self, purchaseitem):
+        return (purchaseitem.cost > currency(0) and
+                purchaseitem.quantity > Decimal(0))
+
+    def _select_quotes(self, value):
+        for item in self.quoted_items:
+            item.selected = bool(value)
+        self.quoted_items.refresh()
+        self._update_widgets()
+
+    def _cancel_group(self):
+        msg = _(u'Are you sure you want to cancel this group ? '
+                'If so, note that all the quotes will be cancelled.')
+        if not yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _('No')):
+            return
+
+        trans = new_transaction()
+        group = trans.get(self._group)
+        group.cancel()
+        QuoteGroup.delete(group.id, connection=trans)
+        finish_transaction(trans, True)
+        self.wizard.finish()
+
+    def _get_purchase_from_quote(self, quote, trans):
+        quote_purchase = quote.purchase
+        real_order = quote_purchase.clone()
+        has_selected_items = False
+        # add selected items
+        for quoted_item in self.quoted_items:
+            order = trans.get(quoted_item.order)
+            if order is quote_purchase and quoted_item.selected:
+                purchase_item = trans.get(quoted_item.item).clone()
+                purchase_item.order = real_order
+                has_selected_items = True
+
+        real_order.open_date = datetime.date.today()
+        real_order.quote_deadline = None
+        real_order.status = PurchaseOrder.ORDER_PENDING
+        if has_selected_items:
+            return real_order
+        else:
+            PurchaseOrder.delete(real_order.id, connection=trans)
+
+    def _close_quotes(self, quotes):
+        if not quotes:
+            return
+
+        if not yesno(_(u'Should we close the quotes used to compose the '
+                        'purchase order ?'),
+                    gtk.RESPONSE_NO, _(u'Yes'), _('No')):
+            return
+
+        trans = new_transaction()
+        for q in quotes:
+            quotation = trans.get(q)
+            quotation.close()
+        finish_transaction(trans, True)
+
+    def _create_orders(self):
+        trans = new_transaction()
+        group = trans.get(self._group)
+        quotes = []
+        for quote in group.get_items():
+            purchase = self._get_purchase_from_quote(quote, trans)
+            if not purchase:
+                continue
+
+            retval = run_dialog(PurchaseWizard, self, trans, purchase)
+            finish_transaction(trans, retval)
+            # keep track of the quotes that might be closed
+            if retval:
+                quotes.append(quote)
+
+        self._close_quotes(quotes)
+    #
+    # WizardStep
+    #
+
+    def post_init(self):
+        self.wizard.enable_finish()
+        self.wizard.next_button.set_label(gtk.STOCK_CLOSE)
+
+    def has_next_step(self):
+        return False
+
+    #
+    # Callbacks
+    #
+
+    def _on_quoted_items__selection_changed(self, widget, item):
+        self._update_widgets()
+
+    def on_select_all_button__clicked(self, widget):
+        self._select_quotes(True)
+
+    def on_unselect_all_button__clicked(self, widget):
+        self._select_quotes(False)
+
+    def on_cancel_group_button__clicked(self, widget):
+        self._cancel_group()
+
+    def on_create_order_button__clicked(self, widget):
+        self._create_orders()
 
 
 #
