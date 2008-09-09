@@ -452,6 +452,23 @@ class Quotation(Domain):
         supplier = self.purchase.supplier.person.name
         return "Group %04d - %s" % (self.group.id, supplier)
 
+    #
+    # Public API
+    #
+
+    def close(self):
+        """Closes the quotation"""
+        # we don't have a specific status for closed quotes, so we keep the
+        # current status (quoting) and set it as an invalid model
+        if not self.is_closed():
+            self.purchase.set_invalid()
+
+    def is_closed(self):
+        """Returns if the quotation is closed or not.
+        @returns: True if the quotation is closed, False otherwise.
+        """
+        return not self.purchase.get_valid()
+
 
 class QuoteGroup(Domain):
 
@@ -472,10 +489,10 @@ class QuoteGroup(Domain):
                              'belong to this group.')
 
         order = item.purchase
+        Quotation.delete(item.id, connection=conn)
         for order_item in order.get_items():
             order.remove_item(order_item)
         PurchaseOrder.delete(order.id, connection=conn)
-        Quotation.delete(item.id, connection=conn)
 
     @argcheck(PurchaseOrder)
     def add_item(self, item):
@@ -488,6 +505,17 @@ class QuoteGroup(Domain):
 
     def get_description(self):
         return _(u"quote number %04d" % self.id)
+
+    #
+    # Public API
+    #
+
+    def cancel(self):
+        """Cancel a quote group."""
+        conn = self.get_connection()
+        for quote in self.get_items():
+            quote.purchase.cancel()
+            Quotation.delete(quote.id, connection=conn)
 
 
 class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
