@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-03 11:03-0300\n"
+"POT-Creation-Date: 2008-09-10 09:54-0300\n"
 "PO-Revision-Date: 2008-05-28 17:56-0300\n"
 "Last-Translator: Silvio Rangel <silvio@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -87,9 +87,11 @@ msgstr "Código"
 #: ../stoqlib/gui/wizards/salewizard.py:413
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:109
 #: ../stoqlib/gui/wizards/purchasewizard.py:210
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:119
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:130
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:449
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:82
 #: ../stoqlib/gui/dialogs/productadjustmentdialog.py:98
+#: ../stoqlib/gui/dialogs/quotedialog.py:91
 #: ../stoqlib/gui/dialogs/productcountingdialog.py:75
 #: ../stoqlib/gui/dialogs/devices.py:50
 #: ../stoqlib/gui/dialogs/clientdetails.py:139
@@ -185,7 +187,9 @@ msgstr "Pedido de Compra"
 #: ../stoqlib/gui/editors/producteditor.py:364
 #: ../stoqlib/gui/editors/personeditor.py:310
 #: ../stoqlib/gui/wizards/receivingwizard.py:105
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:167
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:178
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:341
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:451
 #: ../stoqlib/gui/dialogs/productstockdetails.py:134
 msgid "Supplier"
 msgstr "Fornecedor"
@@ -368,7 +372,9 @@ msgstr "serviços"
 #: ../stoqlib/gui/editors/producteditor.py:366
 #: ../stoqlib/gui/wizards/receivingwizard.py:246
 #: ../stoqlib/gui/wizards/purchasewizard.py:216
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:454
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:86
+#: ../stoqlib/gui/dialogs/quotedialog.py:95
 #: ../stoqlib/gui/dialogs/receivingdialog.py:88
 #: ../stoqlib/gui/dialogs/purchasedetails.py:141
 #: ../stoqlib/gui/dialogs/purchasedetails.py:155
@@ -385,7 +391,7 @@ msgstr "M.C."
 #: ../stoqlib/gui/editors/producteditor.py:121
 #: ../stoqlib/gui/wizards/receivingwizard.py:244
 #: ../stoqlib/gui/wizards/purchasewizard.py:214
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:123
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:134
 #: ../stoqlib/gui/dialogs/productadjustmentdialog.py:100
 #: ../stoqlib/gui/dialogs/productstockdetails.py:140
 #: ../stoqlib/gui/dialogs/productstockdetails.py:154
@@ -409,8 +415,10 @@ msgstr "produtos da unidade %s"
 #: ../stoqlib/reporting/sale.py:73 ../stoqlib/gui/editors/producteditor.py:119
 #: ../stoqlib/gui/wizards/receivingwizard.py:240
 #: ../stoqlib/gui/wizards/purchasewizard.py:212
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:121
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:132
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:453
 #: ../stoqlib/gui/dialogs/transferorderdialog.py:84
+#: ../stoqlib/gui/dialogs/quotedialog.py:93
 #: ../stoqlib/gui/dialogs/receivingdialog.py:85
 #: ../stoqlib/gui/dialogs/purchasedetails.py:138
 #: ../stoqlib/gui/dialogs/saledetails.py:170
@@ -554,6 +562,7 @@ msgid "Status:"
 msgstr "Situação:"
 
 #: ../stoqlib/reporting/purchase.py:192 ../stoqlib/reporting/purchase.py:261
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:326
 #: ../stoqlib/gui/dialogs/paymentchangedialog.py:71
 #: ../data/glade/StartPurchaseStep.glade.h:12
 #: ../data/glade/ReceivingInvoiceSlave.glade.h:14
@@ -2788,12 +2797,12 @@ msgstr "FOB"
 msgid "CIF"
 msgstr "CIF"
 
-#: ../stoqlib/domain/purchase.py:490
+#: ../stoqlib/domain/purchase.py:507
 #, python-format
 msgid "quote number %04d"
 msgstr "Cotação número %04d"
 
-#: ../stoqlib/domain/purchase.py:526
+#: ../stoqlib/domain/purchase.py:554
 #, python-format
 msgid "order %s"
 msgstr "pedido %s"
@@ -2972,6 +2981,7 @@ msgid "Stoq System Parameters"
 msgstr "Parâmetros de Sistema do Stoq"
 
 #: ../stoqlib/gui/parameters.py:80
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:339
 msgid "Group"
 msgstr "Grupo"
 
@@ -2987,6 +2997,9 @@ msgstr "Valor Atual"
 #: ../stoqlib/gui/editors/parameterseditor.py:114
 #: ../stoqlib/gui/base/dialogs.py:460
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:264
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:379
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:476
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:512
 #: ../stoqlib/gui/dialogs/productstockdetails.py:184
 msgid "No"
 msgstr "Não"
@@ -2995,6 +3008,9 @@ msgstr "Não"
 #: ../stoqlib/gui/editors/parameterseditor.py:108
 #: ../stoqlib/gui/base/dialogs.py:460
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:264
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:379
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:476
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:512
 #: ../stoqlib/gui/wizards/personwizard.py:98
 #: ../stoqlib/gui/dialogs/productstockdetails.py:184
 msgid "Yes"
@@ -3062,6 +3078,7 @@ msgstr "contendo:"
 #: ../stoqlib/gui/search/productsearch.py:200
 #: ../stoqlib/gui/search/receivingsearch.py:76
 #: ../stoqlib/gui/wizards/receivingwizard.py:94
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:333
 #: ../stoqlib/gui/dialogs/tillhistory.py:75
 #: ../data/glade/ProductsAdjustment.glade.h:3
 #: ../data/glade/EmployeeDetailsSlave.glade.h:7
@@ -3071,6 +3088,7 @@ msgid "Date:"
 msgstr "Data:"
 
 #: ../stoqlib/gui/search/transfersearch.py:89
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:343
 msgid "Open Date"
 msgstr "Abertura:"
 
@@ -3823,7 +3841,7 @@ msgid "The component quantity must be greater than zero."
 msgstr "A quantidade do componente deve ser maior que zero."
 
 #: ../stoqlib/gui/editors/producteditor.py:431
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:228
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:239
 #: ../data/glade/SellableEditor.glade.h:8
 #: ../data/glade/SellableTypeStep.glade.h:2
 msgid "Product"
@@ -4500,11 +4518,11 @@ msgstr "Novo Pedido"
 msgid "Edit Order"
 msgstr "Editar o Pedido"
 
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:99
-msgid "The quote deadline date must be set to a future date"
-msgstr "O prazo para cotação deve ser uma data futura"
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:109
+msgid "The quote deadline date must be set to today or a future date"
+msgstr "O prazo para cotação deve ser a data atual ou uma data futura"
 
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:161
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:172
 msgid ""
 "No supplier have been found for any of the selected items.\n"
 "This quote will be cancelled."
@@ -4512,31 +4530,60 @@ msgstr ""
 "Nenhum fornecedor foi encontrado para qualquer um dos itens selecionados.\n"
 "Esta cotação será cancelada."
 
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:169
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:180
 msgid "Supplied/Total"
 msgstr "Fornecido/Total"
 
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:199
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:210
 #, python-format
 msgid "%s/%s"
 msgstr "%s/%s"
 
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:234
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:245
 #, python-format
 msgid "Products supplied by %s"
 msgstr "Produtos fornecidos por %s"
 
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:248
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:259
 msgid "Missing Products"
 msgstr "Produtos não cotados"
 
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:319
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:337
+msgid "Quote"
+msgstr "Cotação"
+
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:345
+msgid "Deadline"
+msgstr "Prazo"
+
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:378
+#, python-format
+msgid "Are you sure you want to remove \"%s\" ?"
+msgstr "Tem certeza que deseja remover \"%s\" ?"
+
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:474
+msgid ""
+"Are you sure you want to cancel this group ? If so, note that all the quotes "
+"will be cancelled."
+msgstr ""
+"Tem certeza que deseja cancelar este grupo ? Se sim, note que todas as "
+"cotações serão canceladas."
+
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:510
+msgid "Should we close the quotes used to compose the purchase order ?"
+msgstr "Deseja fechar as cotações utilizadas para compor uma ordem de compra ?"
+
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:590
 msgid "New Quote"
 msgstr "Nova Cotação"
 
-#: ../stoqlib/gui/wizards/purchasequotewizard.py:320
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:591
 msgid "Edit Quote"
 msgstr "Editar Cotação"
+
+#: ../stoqlib/gui/wizards/purchasequotewizard.py:627
+msgid "Receive Quote Wizard"
+msgstr "Recebimento de Cotação"
 
 #: ../stoqlib/gui/wizards/personwizard.py:97
 #, python-format
@@ -4622,6 +4669,18 @@ msgstr "Categorias de Pagamento"
 #: ../stoqlib/gui/dialogs/paymentcategorydialog.py:52
 msgid "Color"
 msgstr "Cores"
+
+#: ../stoqlib/gui/dialogs/quotedialog.py:80
+msgid "Quote Filling"
+msgstr "Preenchimento de Cotação"
+
+#: ../stoqlib/gui/dialogs/quotedialog.py:97
+msgid "Last Cost"
+msgstr "Custo Anterior"
+
+#: ../stoqlib/gui/dialogs/quotedialog.py:98
+msgid "Average Cost"
+msgstr "Custo Médio"
 
 #. We will close only if the user really wants to.
 #. This give the option to the user update the product
@@ -6431,6 +6490,7 @@ msgid "User:"
 msgstr "Usuário:"
 
 #: ../data/glade/OpenInventoryDialog.glade.h:6
+#: ../data/glade/QuoteGroupItemsSelectionStep.glade.h:5
 msgid "_Unselect All"
 msgstr "_Deselecionar todos"
 
@@ -6601,6 +6661,22 @@ msgstr "Número Máximo de Parcelas:"
 #: ../data/glade/ProductComponentSlave.glade.h:1
 msgid "Component:"
 msgstr "Componente:"
+
+#: ../data/glade/QuoteGroupItemsSelectionStep.glade.h:1
+msgid "C_reate Orders"
+msgstr "C_riar Pedidos"
+
+#: ../data/glade/QuoteGroupItemsSelectionStep.glade.h:2
+msgid "Cancel _Group"
+msgstr "Cancelar _Grupo"
+
+#: ../data/glade/QuoteGroupItemsSelectionStep.glade.h:3
+msgid "Select one or more quoted items to compose an order:"
+msgstr "Selecione uma ou mais cotações para compor os pedidos:"
+
+#: ../data/glade/QuoteGroupItemsSelectionStep.glade.h:4
+msgid "_Select All"
+msgstr "_Selecionar todos"
 
 #: ../data/glade/SaleReturnSlave.glade.h:1
 msgid "<b>Cancellation Details:</b>"
@@ -6827,9 +6903,6 @@ msgstr "VALOR:"
 #~ msgid "Supplier name"
 #~ msgstr "Nome do Fornecedor"
 
-#~ msgid "Base Cost"
-#~ msgstr "Custo Base"
-
 #~ msgid "Add supplier information"
 #~ msgstr "Adicione a informação do fornecedor"
 
@@ -6842,9 +6915,8 @@ msgstr "VALOR:"
 #~ msgid "Supplied by: "
 #~ msgstr "Fornecido por: "
 
-#, fuzzy
 #~ msgid "CAT File Generation"
-#~ msgstr "Operações de Caixa"
+#~ msgstr "Geração de Arquivo CAT"
 
 #~ msgid "File selection"
 #~ msgstr "Selecione o arquivo"
@@ -7312,11 +7384,6 @@ msgstr "VALOR:"
 
 #~ msgid "transaction"
 #~ msgstr "transação"
-
-#~ msgid ""
-#~ "Are you sure you want to reverse the \n"
-#~ "%s selected %s?"
-#~ msgstr "Deseja cancelar a(s) %s %s selecionada(s)?"
 
 #~ msgid ""
 #~ "\n"
