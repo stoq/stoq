@@ -9,6 +9,7 @@ make release
 Update debian/changelog, add marker (dch -v newversion)
 Update debian/control (verify dependencies)
 make apidocs
+add a release mark in Changelog
 make deb
     Test the package and fix some lintian errors
 Commit

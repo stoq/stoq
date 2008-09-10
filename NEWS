@@ -1,3 +1,8 @@
+Release 0.9.5 - 10/09/2008:
+    * Bug 3776: Added support for Bematech MP2100 printer
+    * Bug Fix: 3771
+    * Bug Fix: 3759
+
 Release 0.9.4 - 29/05/2008:
     * Bug fix: 3448
 

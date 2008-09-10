@@ -1,3 +1,8 @@
+=== 0.9.5 ===
+2008-09-10 George Kussumoto <george@async.com.br>
+
+	* New Release
+
 2008-05-28 20:41  Ronaldo Maia <romaia@async.com.br>
 
 	* [r7608] docs/fiscal-driver-template.py, stoqdrivers/base.py,
