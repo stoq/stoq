@@ -1,3 +1,9 @@
+stoq (0.9.7) intrepid; urgency=low
+
+  * New Release
+
+ -- George Y. Kussumoto <george@async.com.br>  Wed, 10 Sep 2008 16:27:01 -0300
+
 stoq (0.9.6) intrepid; urgency=low
 
   * New Release
