@@ -1,3 +1,9 @@
+stoqlib (0.9.7) intrepid; urgency=low
+
+  * New Release
+
+ -- George Y. Kussumoto <george@async.com.br>  Wed, 10 Sep 2008 15:48:31 -0300
+
 stoqlib (0.9.6.2) intrepid; urgency=low
 
   * Bugfix Release
