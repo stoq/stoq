@@ -368,8 +368,12 @@ class ASellable(InheritableModelAdapter):
     # IDescribable implementation
     #
 
-    def get_description(self):
-        return self.base_sellable_info.get_description()
+    def get_description(self, full_description=False):
+        desc = self.base_sellable_info.get_description()
+        if full_description and self.get_category_description():
+            desc = "[%s] %s" % (self.get_category_description(), desc)
+
+        return desc
 
     #
     # Classmethods

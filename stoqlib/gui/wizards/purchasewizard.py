@@ -181,8 +181,9 @@ class PurchaseItemStep(SellableItemStep):
     def setup_sellable_entry(self):
         sellables = ASellable.get_unblocked_sellables(self.conn, storable=True)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        self.sellable.prefill([(sellable.get_description(), sellable)
-                              for sellable in sellables[:max_results]])
+        self.sellable.prefill(
+            [(sellable.get_description(full_description=True), sellable)
+             for sellable in sellables[:max_results]])
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
@@ -208,6 +209,8 @@ class PurchaseItemStep(SellableItemStep):
     def get_columns(self):
         return [
             Column('sellable.description', title=_('Description'),
+                   data_type=str, expand=True, searchable=True),
+            Column('sellable.category_description', title=_('Category'),
                    data_type=str, expand=True, searchable=True),
             Column('quantity', title=_('Quantity'), data_type=float, width=90,
                    format_func=format_quantity),
