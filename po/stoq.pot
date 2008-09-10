@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-03 10:20-0300\n"
+"POT-Creation-Date: 2008-09-10 09:40-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -292,7 +292,7 @@ msgid "Till"
 msgstr ""
 
 #: ../stoq/gui/till/till.py:68 ../stoq/gui/payable/payable.py:67
-#: ../stoq/gui/purchase/purchase.py:63 ../stoq/gui/sales/sales.py:65
+#: ../stoq/gui/purchase/purchase.py:64 ../stoq/gui/sales/sales.py:65
 #: ../stoq/gui/admin/admin.py:72 ../stoq/gui/receivable/receivable.py:88
 msgid "matching:"
 msgstr ""
@@ -302,7 +302,7 @@ msgstr ""
 msgid "Paid or due date:"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:98 ../stoq/gui/purchase/purchase.py:80
+#: ../stoq/gui/till/till.py:98 ../stoq/gui/purchase/purchase.py:81
 msgid "Show orders with status"
 msgstr ""
 
@@ -311,7 +311,7 @@ msgstr ""
 msgid "Stoq - Till for Branch %03d"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:108 ../stoq/gui/purchase/purchase.py:86
+#: ../stoq/gui/till/till.py:108 ../stoq/gui/purchase/purchase.py:87
 #: ../stoq/gui/sales/sales.py:96
 msgid "Number"
 msgstr ""
@@ -333,13 +333,13 @@ msgstr ""
 msgid "Quantity"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:121 ../stoq/gui/purchase/purchase.py:99
+#: ../stoq/gui/till/till.py:121 ../stoq/gui/purchase/purchase.py:100
 #: ../stoq/gui/sales/sales.py:107 ../stoq/gui/pos/pos.py:162
 msgid "Total"
 msgstr ""
 
 #: ../stoq/gui/till/till.py:149 ../stoq/gui/payable/payable.py:288
-#: ../stoq/gui/purchase/purchase.py:224 ../stoq/gui/sales/sales.py:179
+#: ../stoq/gui/purchase/purchase.py:225 ../stoq/gui/sales/sales.py:179
 #: ../stoq/gui/admin/admin.py:105 ../stoq/gui/receivable/receivable.py:115
 msgid "Any"
 msgstr ""
@@ -414,7 +414,7 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: ../stoq/gui/payable/payable.py:103 ../stoq/gui/purchase/purchase.py:90
+#: ../stoq/gui/payable/payable.py:103 ../stoq/gui/purchase/purchase.py:91
 msgid "Supplier"
 msgstr ""
 
@@ -480,7 +480,7 @@ msgstr ""
 msgid "You must have at least one item in stock to perfom this action."
 msgstr ""
 
-#: ../stoq/gui/purchase/__init__.py:29 ../stoq/gui/purchase/purchase.py:59
+#: ../stoq/gui/purchase/__init__.py:29 ../stoq/gui/purchase/purchase.py:60
 msgid "Purchase"
 msgstr ""
 
@@ -488,56 +488,56 @@ msgstr ""
 msgid "Purchase application."
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:77
+#: ../stoq/gui/purchase/purchase.py:78
 msgid "Open date is:"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:88 ../stoq/gui/inventory/inventory.py:85
+#: ../stoq/gui/purchase/purchase.py:89 ../stoq/gui/inventory/inventory.py:85
 msgid "Opened"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:93
+#: ../stoq/gui/purchase/purchase.py:94
 msgid "Ordered"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:96
+#: ../stoq/gui/purchase/purchase.py:97
 msgid "Received"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:108
+#: ../stoq/gui/purchase/purchase.py:109
 msgid "<b>Orders Total:</b>"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:183
+#: ../stoq/gui/purchase/purchase.py:184
 msgid "There are no orders with status pending in the selection"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:187
+#: ../stoq/gui/purchase/purchase.py:188
 #, python-format
 msgid "The %d selected orders will be marked as sent."
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:190
+#: ../stoq/gui/purchase/purchase.py:191
 msgid "The selected order will be marked as sent."
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:191
+#: ../stoq/gui/purchase/purchase.py:192
 msgid "Don't Send"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:191
+#: ../stoq/gui/purchase/purchase.py:192
 msgid "Send to supplier"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:210
+#: ../stoq/gui/purchase/purchase.py:211
 msgid "The selected order(s) will be cancelled."
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:211
+#: ../stoq/gui/purchase/purchase.py:212
 msgid "Don't Cancel"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:211
+#: ../stoq/gui/purchase/purchase.py:212
 msgid "Cancel order(s)"
 msgstr ""
 
@@ -894,72 +894,76 @@ msgstr ""
 msgid "Quote Order..."
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:21 ../data/glade/stock.glade.h:17
+#: ../data/glade/purchase.glade.h:21
+msgid "Quotes..."
+msgstr ""
+
+#: ../data/glade/purchase.glade.h:22 ../data/glade/stock.glade.h:17
 #: ../data/glade/admin.glade.h:30 ../data/glade/pos.glade.h:31
 msgid "Save _as"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:22 ../data/glade/receivable.glade.h:17
+#: ../data/glade/purchase.glade.h:23 ../data/glade/receivable.glade.h:17
 #: ../data/glade/till.glade.h:20 ../data/glade/sales_app.glade.h:18
 #: ../data/glade/stock.glade.h:18 ../data/glade/admin.glade.h:31
 #: ../data/glade/pos.glade.h:32 ../data/glade/payable.glade.h:16
 msgid "Save a file"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:23 ../data/glade/stock.glade.h:19
+#: ../data/glade/purchase.glade.h:24 ../data/glade/stock.glade.h:19
 #: ../data/glade/admin.glade.h:32 ../data/glade/pos.glade.h:33
 msgid "Save with a differente name"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:24
+#: ../data/glade/purchase.glade.h:25
 msgid "Send"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:25
+#: ../data/glade/purchase.glade.h:26
 msgid "Send to Supplier..."
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:26 ../data/glade/sales_app.glade.h:21
+#: ../data/glade/purchase.glade.h:27 ../data/glade/sales_app.glade.h:21
 #: ../data/glade/pos.glade.h:34
 msgid "Services..."
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:27
+#: ../data/glade/purchase.glade.h:28
 msgid "Suppliers"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:28
+#: ../data/glade/purchase.glade.h:29
 msgid "Suppliers..."
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:29
+#: ../data/glade/purchase.glade.h:30
 msgid "Transporters..."
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:30
+#: ../data/glade/purchase.glade.h:31
 msgid "_Cancel"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:31 ../data/glade/receivable.glade.h:22
+#: ../data/glade/purchase.glade.h:32 ../data/glade/receivable.glade.h:22
 #: ../data/glade/till.glade.h:26 ../data/glade/payable.glade.h:21
 msgid "_Details"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:32 ../data/glade/receivable.glade.h:23
+#: ../data/glade/purchase.glade.h:33 ../data/glade/receivable.glade.h:23
 #: ../data/glade/till.glade.h:27 ../data/glade/sales_app.glade.h:23
 #: ../data/glade/stock.glade.h:22 ../data/glade/admin.glade.h:37
 #: ../data/glade/pos.glade.h:39 ../data/glade/payable.glade.h:22
 msgid "_Edit"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:33 ../data/glade/receivable.glade.h:24
+#: ../data/glade/purchase.glade.h:34 ../data/glade/receivable.glade.h:24
 #: ../data/glade/till.glade.h:28 ../data/glade/sales_app.glade.h:24
 #: ../data/glade/stock.glade.h:23 ../data/glade/pos.glade.h:40
 #: ../data/glade/payable.glade.h:23
 msgid "_File"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:34 ../data/glade/receivable.glade.h:25
+#: ../data/glade/purchase.glade.h:35 ../data/glade/receivable.glade.h:25
 #: ../data/glade/till.glade.h:29 ../data/glade/inventory.glade.h:12
 #: ../data/glade/sales_app.glade.h:25 ../data/glade/stock.glade.h:24
 #: ../data/glade/admin.glade.h:38 ../data/glade/pos.glade.h:41
@@ -967,15 +971,15 @@ msgstr ""
 msgid "_Help"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:35
+#: ../data/glade/purchase.glade.h:36
 msgid "_Order"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:36 ../data/glade/admin.glade.h:41
+#: ../data/glade/purchase.glade.h:37 ../data/glade/admin.glade.h:41
 msgid "_Receive"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:37 ../data/glade/receivable.glade.h:27
+#: ../data/glade/purchase.glade.h:38 ../data/glade/receivable.glade.h:27
 #: ../data/glade/till.glade.h:31 ../data/glade/inventory.glade.h:14
 #: ../data/glade/sales_app.glade.h:27 ../data/glade/stock.glade.h:28
 #: ../data/glade/admin.glade.h:42 ../data/glade/pos.glade.h:43
@@ -983,19 +987,19 @@ msgstr ""
 msgid "_Search"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:38 ../data/glade/inventory.glade.h:15
+#: ../data/glade/purchase.glade.h:39 ../data/glade/inventory.glade.h:15
 #: ../data/glade/stock.glade.h:30 ../data/glade/admin.glade.h:43
 msgid "_Store Cookie"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:39 ../data/glade/receivable.glade.h:28
+#: ../data/glade/purchase.glade.h:40 ../data/glade/receivable.glade.h:28
 #: ../data/glade/till.glade.h:33 ../data/glade/sales_app.glade.h:28
 #: ../data/glade/stock.glade.h:31 ../data/glade/admin.glade.h:44
 #: ../data/glade/pos.glade.h:45 ../data/glade/payable.glade.h:28
 msgid "_User"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:40
+#: ../data/glade/purchase.glade.h:41
 msgid "purchase"
 msgstr ""
 
