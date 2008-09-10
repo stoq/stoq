@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-10 09:40-0300\n"
+"POT-Creation-Date: 2008-09-10 13:08-0300\n"
 "PO-Revision-Date: 2008-05-28 17:51-0300\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -961,15 +961,15 @@ msgstr "Sair do programa"
 
 #: ../data/glade/purchase.glade.h:19
 msgid "Quote Order"
-msgstr "Pedido de Cotação"
+msgstr "Cotação"
 
 #: ../data/glade/purchase.glade.h:20
 msgid "Quote Order..."
-msgstr "Pedido de Cotação..."
+msgstr "Cotação..."
 
 #: ../data/glade/purchase.glade.h:21
 msgid "Quotes..."
-msgstr "Costações..."
+msgstr "Cotações..."
 
 #: ../data/glade/purchase.glade.h:22 ../data/glade/stock.glade.h:17
 #: ../data/glade/admin.glade.h:30 ../data/glade/pos.glade.h:31
