@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-10 09:54-0300\n"
+"POT-Creation-Date: 2008-09-10 13:06-0300\n"
 "PO-Revision-Date: 2008-05-28 17:56-0300\n"
 "Last-Translator: Silvio Rangel <silvio@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -3090,7 +3090,7 @@ msgstr "Data:"
 #: ../stoqlib/gui/search/transfersearch.py:89
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:343
 msgid "Open Date"
-msgstr "Abertura:"
+msgstr "Abertura"
 
 #: ../stoqlib/gui/search/transfersearch.py:91
 msgid "Source"
