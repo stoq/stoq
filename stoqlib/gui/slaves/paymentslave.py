@@ -400,7 +400,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             yield self.method_iface(payment, None)
 
     def _is_sale(self):
-        """"Returns if our order object is a Sale instance"""
+        """Returns if our order object is a Sale instance"""
         return isinstance(self.order, Sale)
 
     def _get_total_amount(self):
