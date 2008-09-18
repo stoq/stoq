@@ -351,6 +351,10 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
         self._product = product
         BaseRelationshipEditorSlave.__init__(self, conn)
 
+        suggested = sysparam(conn).SUGGESTED_SUPPLIER
+        if suggested is not None:
+            self.target_combo.select(suggested)
+
     def get_targets(self):
         suppliers = PersonAdaptToSupplier.get_active_suppliers(self.conn)
         return [(s.person.name, s) for s in suppliers]
@@ -423,8 +427,6 @@ class ProductComponentEditor(BaseEditor):
                                     'greater than zero.'))
 
 
-
-
 class ProductEditor(SellableEditor):
     model_name = _('Product')
     model_type = Product
@@ -463,11 +465,6 @@ class ProductEditor(SellableEditor):
                        tax_constant=tax_constant,
                        connection=conn)
         model.addFacet(IStorable, connection=conn)
-        supplier = sysparam(conn).SUGGESTED_SUPPLIER
-        ProductSupplierInfo(connection=conn,
-                            is_main_supplier=True,
-                            supplier=supplier,
-                            product=model)
         return model
 
     def on_confirm(self):
