@@ -92,8 +92,6 @@ class Payment(Domain):
     description = UnicodeCol(default=None)
     payment_number = UnicodeCol(default=None)
     method = ForeignKey('APaymentMethod')
-    # FIXME: Move to methods itself?
-    method_details = ForeignKey('PaymentMethodDetails', default=None)
     group = ForeignKey('AbstractPaymentGroup')
     till = ForeignKey('Till')
     destination = ForeignKey('PaymentDestination')
@@ -257,17 +255,6 @@ class Payment(Domain):
             return currency(0)
 
         return currency(self.method.interest / 100 * self.value)
-
-    def get_thirdparty(self):
-        if self.method_details:
-            return self.method_details.get_thirdparty()
-        return self.method.get_thirdparty(self.group)
-
-    def get_thirdparty_name(self):
-        thirdparty = self.get_thirdparty()
-        if thirdparty:
-            return thirdparty.name
-        return _(u'Anonymous')
 
     def is_paid(self):
         """Check if the payment is paid.
