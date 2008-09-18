@@ -44,7 +44,6 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.editors.sellableeditor import SellableItemEditor
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
