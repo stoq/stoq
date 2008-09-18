@@ -39,7 +39,6 @@ from stoqlib.domain.product import ProductAdaptToStorable
 from stoqlib.domain.interfaces import ISellable
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_quantity
 
 _ = stoqlib_gettext
 
