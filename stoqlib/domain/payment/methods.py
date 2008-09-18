@@ -231,10 +231,9 @@ class APaymentMethod(InheritableModel):
     #
 
     @argcheck(object, AbstractPaymentGroup, Decimal, datetime.datetime,
-              object, basestring, basestring, Till)
+              basestring, basestring, Till)
     def create_payment(self, iface, payment_group, value, due_date=None,
-                       method_details=None, description=None,
-                       base_value=None, till=None):
+                       description=None, base_value=None, till=None):
         """Creates a new payment according to a payment method interface
         @param iface: a payment method interface eg L{IOutPayment} or
         L{IInPayment}
@@ -252,12 +251,9 @@ class APaymentMethod(InheritableModel):
 
         if due_date is None:
             due_date = datetime.datetime.today()
-        if method_details:
-            max = method_details.get_max_installments_number()
-            destination = method_details.destination
-        else:
-            destination = self.destination
-            max = self.get_max_installments_number()
+        destination = self.destination
+        max = self.get_max_installments_number()
+
         if iface is IInPayment:
             if created_number == max:
                 raise PaymentMethodError('You can not create more inpayments '
@@ -288,7 +284,6 @@ class APaymentMethod(InheritableModel):
                           base_value=base_value,
                           group=payment_group,
                           method=self,
-                          method_details=method_details,
                           category=None,
                           till=till,
                           description=description)
@@ -357,45 +352,39 @@ class APaymentMethod(InheritableModel):
         return _(u'%s/%s %s for %s') % (installment, installments,
                                         self.description, group_desc)
 
-    @argcheck(AbstractPaymentGroup, Decimal, datetime.datetime, object,
+    @argcheck(AbstractPaymentGroup, Decimal, datetime.datetime,
               basestring, Decimal, Till)
     def create_inpayment(self, payment_group, value, due_date=None,
-                         details=None, description=None,
-                         base_value=None, till=None):
+                         description=None, base_value=None, till=None):
         """Creates a new inpayment
         @param payment_group: a L{APaymentGroup} subclass
         @param value: value of payment
         @param due_date: optional, due date of payment
-        @param details: optional
         @param description: optional, description of the payment
         @param base_value: optional
         @param till: optional
         @returns: a L{PaymentAdaptToInPayment}
         """
         return self.create_payment(IInPayment, payment_group,
-                                    value, due_date,
-                                    details, description,
-                                    base_value, till)
+                                   value, due_date,
+                                   description, base_value, till)
 
-    @argcheck(AbstractPaymentGroup, Decimal, datetime.datetime, object,
+    @argcheck(AbstractPaymentGroup, Decimal, datetime.datetime,
               basestring, Decimal, Till)
     def create_outpayment(self, payment_group, value, due_date=None,
-                          details=None, description=None,
-                          base_value=None, till=None):
+                          description=None, base_value=None, till=None):
         """Creates a new outpayment
         @param payment_group: a L{APaymentGroup} subclass
         @param value: value of payment
         @param due_date: optional, due date of payment
-        @param details: optional
         @param description: optional, description of the payment
         @param base_value: optional
         @param till: optional
         @returns: a L{PaymentAdaptToOutPayment}
         """
         return self.create_payment(IOutPayment, payment_group,
-                                    value, due_date,
-                                    details, description,
-                                    base_value, till)
+                                   value, due_date,
+                                   description, base_value, till)
 
     @argcheck(AbstractPaymentGroup, Decimal, object)
     def create_inpayments(self, payment_group, value, due_dates):
@@ -410,7 +399,7 @@ class APaymentMethod(InheritableModel):
         @returns: a list of L{PaymentAdaptToInPayment}
         """
         return self.create_payments(IInPayment, payment_group,
-                                     value, due_dates)
+                                    value, due_dates)
 
 
     @argcheck(AbstractPaymentGroup, Decimal, object)
@@ -426,7 +415,7 @@ class APaymentMethod(InheritableModel):
         @returns: a list of L{PaymentAdaptToOutPayment}
         """
         return self.create_payments(IOutPayment, payment_group,
-                                     value, due_dates)
+                                    value, due_dates)
 
     def get_implemented_iface(self):
         """ Return the payment method interface implemented. If there is more
