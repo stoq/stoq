@@ -32,20 +32,18 @@ import gtk
 
 from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
-from kiwi.utils import gsignal
 
-from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
+from stoqlib.domain.interfaces import ISellable, IStorable
 from stoqlib.domain.sellable import BaseSellableInfo
-from stoqlib.domain.person import Person, PersonAdaptToSupplier
+from stoqlib.domain.person import PersonAdaptToSupplier
 from stoqlib.domain.product import ProductSupplierInfo, Product, ProductComponent
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.editors.baseeditor import (BaseEditor, BaseEditorSlave,
                                             BaseRelationshipEditorSlave)
 from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.gui.slaves.productslave import ProductTributarySituationSlave
-from stoqlib.lib.message import warning, info, yesno
+from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
