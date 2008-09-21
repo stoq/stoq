@@ -31,9 +31,11 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 from kiwi.datatypes import format_price, currency, ValidationError
+from kiwi.component import get_utility
 from kiwi.utils import gsignal
 from kiwi.ui.views import SlaveView
 
+from stoqlib.database.runtime import get_connection
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
@@ -45,11 +47,13 @@ from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
                                             FinanceDetails,
                                             PaymentMethodDetails,
                                             APaymentMethod,
-                                            CheckPM, BillPM, MoneyPM)
+                                            CardPM, CheckPM, BillPM, MoneyPM,
+                                            FinancePM)
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
 from stoqlib.drivers.cheque import get_current_cheque_printer_settings
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.lib.defaults import (interval_types, INTERVALTYPE_MONTH,
      DECIMAL_PRECISION, calculate_interval)
 from stoqlib.lib.translation import stoqlib_gettext
@@ -855,3 +859,15 @@ class MultipleMethodSlave:
     # XXX We must clean all the payments created for this payment group when
     # creating this slave since there is no way to filter them by payment
     # method after create payments here.
+
+
+
+def register_payment_slaves():
+    dsm = get_utility(IDomainSlaveMapper)
+    conn = get_connection()
+    for pm_class, slave_class in [
+        (BillPM, BillMethodSlave),
+        (CheckPM, CheckMethodSlave),
+        (CardPM, CardMethodSlave),
+        (FinancePM, FinanceMethodSlave)]:
+        dsm.register(pm_class.selectOne(connection=conn), slave_class)

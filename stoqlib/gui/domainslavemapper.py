@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,8 +20,22 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 
-"""Graphical User Interface: Dialogs, Editors, Search, Slaves, Wizards etc
+"""A domain to slave singleton mapper
 """
 
-from stoqlib.gui.bootstrap import bootstrap
-bootstrap()
+from zope.interface import implements
+
+from stoqlib.gui.interfaces import IDomainSlaveMapper
+
+
+class DefaultDomainSlaveMapper(object):
+    implements(IDomainSlaveMapper)
+    
+    def __init__(self):
+        self._slave_classes = {}
+
+    def register(self, domain, slave_class):
+        self._slave_classes[type(domain)] = slave_class
+
+    def get_slave_class(self, domain):
+        return self._slave_classes.get(type(domain))

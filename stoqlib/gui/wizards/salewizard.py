@@ -27,12 +27,13 @@
 
 from decimal import Decimal
 
-from kiwi.utils import gsignal
+from kiwi.argcheck import argcheck
+from kiwi.component import get_utility
+from kiwi.datatypes import currency
+from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.ui.wizard import WizardStep
-from kiwi.datatypes import currency
-from kiwi.argcheck import argcheck
-from kiwi.python import Settable
+from kiwi.utils import gsignal
 from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.database.runtime import (StoqlibTransaction, finish_transaction,
@@ -42,27 +43,21 @@ from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.defaults import get_all_methods_dict
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.gui.slaves.cashchangeslave import CashChangeSlave
 from stoqlib.gui.slaves.paymentmethodslave import (SelectPaymentMethodSlave,
                                                    PmSlaveType)
-from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave, BillMethodSlave,
-                                             CardMethodSlave,
-                                             FinanceMethodSlave)
+from stoqlib.gui.slaves.paymentslave import register_payment_slaves
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.domain.interfaces import IInPayment
-from stoqlib.domain.person import (Person, ClientView,
-                                   PersonAdaptToCreditProvider)
-from stoqlib.domain.payment.methods import (APaymentMethod,
-                                            MoneyPM, BillPM, CheckPM,
-                                            CardPM, FinancePM,
-                                            PaymentMethodDetails,
+from stoqlib.domain.person import Person, ClientView
+from stoqlib.domain.payment.methods import (APaymentMethod, MoneyPM,
                                             GiftCertificatePM)
 from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.sale import Sale
@@ -88,7 +83,9 @@ class GiftCertificateOverpaidSettings:
 
 
 
-#
+
+
+
 # Wizard Steps
 #
 
@@ -97,119 +94,76 @@ class PaymentMethodStep(WizardEditorStep):
     model_type = Sale
     slave_holder = 'method_holder'
 
-    def __init__(self, wizard, previous, conn, model,
-                 outstanding_value=currency(0)):
-        # A dictionary for payment method informaton. Each key is a
-        # PaymentMethod adapter and its value is a tuple where the first
-        # element is a payment method interface and the second one is the
-        # slave class
-        self.method_dict = {}
-        # A cache for instantiated slaves
-        self.slaves_dict = {}
-        self.method_slave = None
+    def __init__(self, wizard, previous, conn, model, outstanding_value=None):
+        self._methods = {}
+        self._method_slave = None
 
-        self.outstanding_value = outstanding_value
-        self.group = wizard.payment_group
-        self.renegotiation_mode = outstanding_value > currency(0)
+        if outstanding_value is None:
+            outstanding_value = currency(0)
+        self._outstanding_value = outstanding_value
+
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
-        self.conn.savepoint('payment')
 
+        self.conn.savepoint('payment')
+        register_payment_slaves()
+        self._create_ui()
+
+    def _create_ui(self):
         self.handler_block(self.method_combo, 'changed')
-        self._setup_combo()
+        self._prefill_methods()
         self.handler_unblock(self.method_combo, 'changed')
 
         self._update_payment_method_slave()
 
-    def _set_method_slave(self, slave_class, slave_args):
-        # FIXME: This could be improved to cache the editor, but
-        #        not the models between runs. That requires heavy
-        #        modifications to BaseEditor (separating UI from Persistence)
-        if 1: # not self.slaves_dict.has_key(slave_class):
-            slave = slave_class(*slave_args)
-            self.slaves_dict[slave_class] = slave
-        else:
-            slave = self.slaves_dict[slave_class]
-
-        self.method_slave = slave
-
-    def _update_payment_method(self, method_type):
-        if self.renegotiation_mode:
-            return
-
-        for method_name, value in get_all_methods_dict().items():
-            if value == method_type:
-                break
-        else:
-            raise AssertionError
-        self.group.set_method(int(method_name))
-
     def _update_payment_method_slave(self):
-        selected = self.method_combo.get_selected_data()
-        if not selected:
+        method = self.method_combo.get_selected_data()
+        if method is None:
+             return
+        self._update_payment_method(method)
+        slave = self._create_slave(method)
+        if slave is not None:
+            self._attach_slave(slave)
+
+    def _update_payment_method(self, method):
+        # If the outstanding value is set we're renegotiating
+        if self._outstanding_value > currency(0):
             return
-        slave_args = (self.wizard, self, self.conn, self.model,
-                      selected, self.outstanding_value)
-        if not self.method_dict.has_key(selected):
-            raise ValueError('Invalid payment method type: %s'
-                             % type(selected))
-        iface, slave_class = self.method_dict[selected]
-        self._update_payment_method(iface)
-        self._set_method_slave(slave_class, slave_args)
+        self.wizard.payment_group.set_method(int(method.method_type))
+
+    def _create_slave(self, method):
+        dsm = get_utility(IDomainSlaveMapper)
+        slave_class = dsm.get_slave_class(method)
+        assert slave_class
+        slave = slave_class(self.wizard, self, self.conn, self.model,
+                            method, self._outstanding_value)
+        self._method_slave = slave
+        return slave
+    
+    def _attach_slave(self, slave):
         if self.get_slave(self.slave_holder):
             self.detach_slave(self.slave_holder)
+        self.attach_slave(self.slave_holder, slave)
 
-        self.attach_slave(self.slave_holder, self.method_slave)
-
-    def _setup_combo(self):
-        active_methods = APaymentMethod.get_active_methods(self.conn)
-        combo_items = []
-        has_client = self.model.client is not None
-        for method in active_methods:
-            can_use_method = True
-            method_type = type(method)
-            if method_type == CheckPM:
-                slave_class = CheckMethodSlave
-            elif method_type == BillPM:
-                slave_class = BillMethodSlave
-                can_use_method = has_client
-            elif method_type == CardPM:
-                providers = method.get_credit_card_providers()
-                if not providers:
-                    continue
-                for provider in providers:
-                    payment_details = \
-                        PaymentMethodDetails.get_active_method_details(
-                            provider=provider, conn=self.conn)
-                    if (provider.provider_type ==
-                            PersonAdaptToCreditProvider.PROVIDER_CARD and
-                            payment_details):
-                        slave_class = CardMethodSlave
-                    else:
-                        provider.is_active = False
-                        self.conn.savepoint('payment')
-            elif method_type == FinancePM:
-                can_use_method = has_client
-                companies = method.get_finance_companies()
-                if not companies:
-                    continue
-                for company in companies:
-                    if (company.provider_type ==
-                            PersonAdaptToCreditProvider.PROVIDER_FINANCE):
-                        slave_class = FinanceMethodSlave
-            else:
+    def _prefill_methods(self):
+        methods = []
+        dsm = get_utility(IDomainSlaveMapper)
+        for method in APaymentMethod.get_active_methods(self.conn):
+            if dsm.get_slave_class(method) is None:
                 continue
-            if method.is_active and can_use_method:
-                self.method_dict[method] = method_type, slave_class
-                combo_items.append((method.description, method))
-        self.method_combo.prefill(combo_items)
-
+            if not method.is_active:
+                continue
+            if not method.selectable():
+                self.conn.savepoint('payment')
+                continue
+            methods.append((method.description, method))
+        self.method_combo.prefill(methods)
 
     #
     # WizardStep hooks
     #
 
     def validate_step(self):
-        self.method_slave.finish()
+        self._method_slave.finish()
         return True
 
     def has_next_step(self):
@@ -217,9 +171,9 @@ class PaymentMethodStep(WizardEditorStep):
 
     def post_init(self):
         self.method_combo.grab_focus()
-        self._setup_combo()
-        if self.method_slave:
-            self.method_slave.update_view()
+        self._prefill_methods()
+        if self._method_slave:
+            self._method_slave.update_view()
 
     #
     # Kiwi callbacks

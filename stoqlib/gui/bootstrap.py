@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,8 +20,25 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 
-"""Graphical User Interface: Dialogs, Editors, Search, Slaves, Wizards etc
+"""Bootstrapping the GUI parts of Stoq
 """
 
-from stoqlib.gui.bootstrap import bootstrap
-bootstrap()
+from kiwi.component import provide_utility
+from kiwi.datatypes import get_localeconv
+from kiwi.ui.widgets.label import ProxyLabel
+
+
+def _register_proxy_markup():    
+    ProxyLabel.replace('$CURRENCY', get_localeconv()['currency_symbol'])
+
+def _register_domain_slave_mapper():
+    from stoqlib.gui.interfaces import IDomainSlaveMapper
+    from stoqlib.gui.domainslavemapper import DefaultDomainSlaveMapper
+    provide_utility(IDomainSlaveMapper, DefaultDomainSlaveMapper())
+
+def bootstrap():
+    """Run the UI bootstrap for Stoqlib,
+    this should only happen once.
+    """
+    _register_proxy_markup()
+    _register_domain_slave_mapper()
