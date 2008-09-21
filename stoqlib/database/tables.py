@@ -73,8 +73,7 @@ _tables = [
      ('station', ["BranchStation"]),
      ('till', ["Till", "TillEntry"]),
      ('payment.category', ["PaymentCategory"]),
-     ('payment.destination', ["PaymentDestination", "StoreDestination",
-                              "BankDestination"]),
+     ('payment.destination', ["PaymentDestination"]),
      ('payment.operation', ["PaymentOperation", "POAdaptToPaymentDevolution",
                             "POAdaptToPaymentDeposit"]),
     # XXX Unfortunately we must add 'methods.py' module in two places
