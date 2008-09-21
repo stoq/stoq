@@ -39,7 +39,7 @@ from stoqlib.domain.base import (Domain, InheritableModel)
 from stoqlib.domain.interfaces import (IInPayment, ICreditProvider,
                                        IActive, IOutPayment,
                                        IDescribable)
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, PersonAdaptToCreditProvider
 from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.payment.payment import Payment
@@ -506,13 +506,17 @@ class APaymentMethod(InheritableModel):
         @param payment: A L{PaymentAdaptToInPayment} or L{PaymentAdaptToOutPayment}
         """
 
+    def selectable(self):
+        return True
+
+
 class MoneyPM(APaymentMethod):
 
     # Money payment method must be always available
     active_editable = False
     name = 'money'
     description = _(u'Money')
-
+    method_type = PaymentMethodType.MONEY
     _inheritable = False
 
     #
@@ -527,6 +531,7 @@ class GiftCertificatePM(APaymentMethod):
 
     name = 'gift certificate'
     description = _(u'Gift Certificate')
+    method_type = PaymentMethodType.GIFT_CERTIFICATE
 
     _inheritable = False
 
@@ -550,6 +555,7 @@ class CheckPM(_AbstractCheckBillMethodMixin, APaymentMethod):
 
     name = 'check'
     description = _(u'Check')
+    method_type = PaymentMethodType.CHECK
 
     _inheritable = False
     max_installments_number = IntCol(default=12)
@@ -593,6 +599,7 @@ class BillPM(_AbstractCheckBillMethodMixin, APaymentMethod):
 
     name = 'bill'
     description = _(u'Bill')
+    method_type = PaymentMethodType.BILL
 
     _inheritable = False
     max_installments_number = IntCol(default=12)
@@ -600,10 +607,12 @@ class BillPM(_AbstractCheckBillMethodMixin, APaymentMethod):
     def get_available_bill_accounts(self):
         raise NotImplementedError
 
+
 class CardPM(APaymentMethod):
 
     name = 'card'
     description = _(u'Card')
+    method_type = PaymentMethodType.CREDIT_CARD
 
     _inheritable = False
 
@@ -625,10 +634,16 @@ class CardPM(APaymentMethod):
         # FIXME:
         return 12
 
+    def selectable(self):
+        return PersonAdaptToCreditProvider.has_card_provider(
+            self.get_connection())
+
+
 class FinancePM(APaymentMethod):
 
     name = 'finance'
     description = _(u'Finance')
+    method_type = PaymentMethodType.FINANCIAL
 
     _inheritable = False
 
@@ -643,6 +658,10 @@ class FinancePM(APaymentMethod):
         table = Person.getAdapterClass(ICreditProvider)
         conn = self.get_connection()
         return table.get_finance_companies(conn)
+
+    def selectable(self):
+        return PersonAdaptToCreditProvider.has_finance_provider(
+            self.get_connection())
 
 
 #

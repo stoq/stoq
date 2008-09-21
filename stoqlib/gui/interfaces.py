@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source
+## Copyright (C) 2008 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -21,3 +21,24 @@
 ##
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##
+
+from zope.interface import Interface
+
+
+class IDomainSlaveMapper(Interface):
+    """
+    This is a singleton responsible for mapping
+    a domain object to a slave.
+    """
+
+    def register(domain_class, slave_class):
+        """Register a slave class for a domain class.
+        @param domain_class:
+        @param slave_class:
+        """
+
+    def get_slave_class(domain_class):
+        """Fetch a slave class given a domain class.
+        @param domain_class:
+        @returns: the slave class or None
+        """

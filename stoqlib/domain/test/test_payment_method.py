@@ -221,6 +221,10 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         payment = method.create_outpayment(group, Decimal(10))
         self.failIf(payment.get_adapted().bank)
 
+    def testSelectable(self):
+        method = self.method_type.selectOne(connection=self.trans)
+        method.selectable()
+        
 class TestAPaymentMethod(DomainTest, _TestPaymentMethod):
     method_type = CheckPM
     enum = PaymentMethodType.CHECK

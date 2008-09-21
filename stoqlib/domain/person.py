@@ -786,6 +786,27 @@ class PersonAdaptToCreditProvider(PersonAdapter):
         return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_FINANCE,
                             connection=conn)
 
+    @classmethod
+    def has_finance_provider(cls, conn):
+        """Find out if there is a finance provider
+        @param conn: a database connection
+        @returns: if there is a finance provider
+        """
+        return bool(cls.selectBy(is_active=True,
+                                 provider_type=cls.PROVIDER_FINANCE,
+                                 connection=conn).count())
+
+    @classmethod
+    def has_card_provider(cls, conn):
+        """Find out if there is a card provider
+        @param conn: a database connection
+        @returns: if there is a card provider
+        """
+        return bool(cls.selectBy(is_active=True,
+                                 provider_type=cls.PROVIDER_FINANCE,
+                                 connection=conn).count())
+
+
 Person.registerFacet(PersonAdaptToCreditProvider, ICreditProvider)
 
 class PersonAdaptToSalesPerson(PersonAdapter):
