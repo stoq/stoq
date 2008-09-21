@@ -469,6 +469,7 @@ class ExampleCreator(object):
     def create_payment_destination(self):
         from stoqlib.domain.payment.destination import PaymentDestination
         return PaymentDestination(description='foobar',
+                                  branch=None,
                                   connection=self.trans)
 
     def create_on_sale_info(self):

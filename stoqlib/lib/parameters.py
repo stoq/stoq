@@ -387,7 +387,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('DEFAULT_SALESPERSON_ROLE',
                       u'person.EmployeeRole'),
         ParameterAttr('DEFAULT_PAYMENT_DESTINATION',
-                      u'payment.destination.StoreDestination'),
+                      u'payment.destination.PaymentDestination'),
         ParameterAttr('DELIVERY_SERVICE',
                       u'service.ServiceAdaptToSellable'),
         ParameterAttr('DEFAULT_GIFT_CERTIFICATE_TYPE',
@@ -584,12 +584,12 @@ class ParameterAccess(ClassInittableObject):
     def ensure_payment_destination(self):
         # Note that this method must always be called after
         # ensure_main_company
-        from stoqlib.domain.payment.destination import StoreDestination
+        from stoqlib.domain.payment.destination import PaymentDestination
         key = "DEFAULT_PAYMENT_DESTINATION"
-        if self.get_parameter_by_field(key, StoreDestination):
+        if self.get_parameter_by_field(key, PaymentDestination):
             return
         branch = self.MAIN_COMPANY
-        pm = StoreDestination(description=_(u'Default Store Destination'),
+        pm = PaymentDestination(description=_(u'Default Store Destination'),
                               branch=branch,
                               connection=self.conn)
         self._set_schema(key, pm.id)
