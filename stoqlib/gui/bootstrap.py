@@ -34,7 +34,8 @@ def _register_proxy_markup():
 def _register_domain_slave_mapper():
     from stoqlib.gui.interfaces import IDomainSlaveMapper
     from stoqlib.gui.domainslavemapper import DefaultDomainSlaveMapper
-    provide_utility(IDomainSlaveMapper, DefaultDomainSlaveMapper())
+    provide_utility(IDomainSlaveMapper, DefaultDomainSlaveMapper(),
+                    replace=True)
 
 def bootstrap():
     """Run the UI bootstrap for Stoqlib,
