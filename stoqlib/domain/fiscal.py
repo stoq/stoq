@@ -32,15 +32,16 @@ import datetime
 
 from sqlobject import (UnicodeCol, DateTimeCol, ForeignKey, IntCol,
                        BoolCol)
-from sqlobject.sqlbuilder import AND, LEFTJOINOn
+from sqlobject.sqlbuilder import AND, LEFTJOINOn, const
 from sqlobject.viewable import Viewable
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol
-from stoqlib.lib.parameters import sysparam
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IReversal
 from stoqlib.domain.person import Person
+from stoqlib.lib.parameters import sysparam
 
 
 class CfopData(Domain):
@@ -92,6 +93,64 @@ class FiscalBookEntry(Domain):
                                entry_type=entry_type,
                                connection=conn)
 
+    @classmethod
+    def _create_fiscal_entry(cls, conn, entry_type, group, cfop, invoice_number,
+                             iss_value=0, icms_value=0, ipi_value=0):
+        return FiscalBookEntry(
+            entry_type=entry_type,
+            iss_value=iss_value,
+            ipi_value=ipi_value,
+            icms_value=icms_value,
+            invoice_number=invoice_number,
+            cfop=cfop,
+            drawee=group.get_thirdparty(),
+            branch=get_current_branch(conn),
+            date=const.NOW(),
+            payment_group=group,
+            connection=conn)
+
+    @classmethod
+    def create_product_entry(cls, conn, group, cfop, invoice_number, value,
+                             ipi_value=0):
+        """Creates a new product entry in the fiscal book
+        @param conn: a database connection
+        @param group: payment group
+        @type  group: L{AbstractPaymentGroup}
+        @param cfop: cfop for the entry
+        @type  cfop: L{CfopData}
+        @param invoice_number: payment invoice number
+        @param value: value of the payment
+        @param ipi_value: ipi value of the payment
+        @returns: a fiscal book entry
+        @rtype: L{FiscalBookEntry}
+        """
+        return cls._create_fiscal_entry(
+            conn,
+            FiscalBookEntry.TYPE_PRODUCT,
+            group, cfop, invoice_number,
+            icms_value=value, ipi_value=ipi_value,
+            )
+
+    @classmethod
+    def create_service_entry(cls, conn, group, cfop, invoice_number, value):
+        """Creates a new service entry in the fiscal book
+        @param conn: a database connection
+        @param group: payment group
+        @type  group: L{AbstractPaymentGroup}
+        @param cfop: cfop for the entry
+        @type  cfop: L{CfopData}
+        @param invoice_number: payment invoice number
+        @param value: value of the payment
+        @returns: a fiscal book entry
+        @rtype: L{FiscalBookEntry}
+        """
+        return cls._create_fiscal_entry(
+            conn,
+            FiscalBookEntry.TYPE_SERVICE,
+            group, cfop, invoice_number,
+            iss_value=value,
+            )
+
     def reverse_entry(self, invoice_number):
         conn = self.get_connection()
         return FiscalBookEntry(
@@ -106,6 +165,7 @@ class FiscalBookEntry(Domain):
             is_reversal=True,
             payment_group=self.payment_group,
             connection=conn)
+
 
 class _FiscalBookEntryView(object):
 
@@ -140,6 +200,7 @@ class _FiscalBookEntryView(object):
         drawee = Person.get(self.drawee_id,
                             connection=self.get_connection())
         return drawee.name
+
 
 class IcmsIpiView(_FiscalBookEntryView, Viewable):
     """

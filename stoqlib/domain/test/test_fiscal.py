@@ -24,7 +24,8 @@
 ##
 """ This module tests all fiscal data"""
 
-from stoqlib.domain.fiscal import CfopData
+from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
+from stoqlib.domain.interfaces import IPaymentGroup
 
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -70,6 +71,19 @@ class TestIcmsIpiBookEntry(TestFiscalBookEntry, DomainTest):
        self.assertEquals(reversal.icms_value, 10)
        self.assertEquals(reversal.ipi_value, 10)
 
+    def testCreateProductEntry(self):
+        sale = self.create_sale()
+        sale.add_sellable(self.create_sellable(), price=150)
+        group = sale.addFacet(IPaymentGroup, connection=self.trans)
+        book_entry = FiscalBookEntry.create_product_entry(
+            self.trans,
+            group, sale.cfop, sale.coupon_id,
+            123)
+        self.failUnless(book_entry)
+        self.assertEquals(book_entry.icms_value, 123)
+        self.assertEquals(book_entry.entry_type,
+                           FiscalBookEntry.TYPE_PRODUCT)
+
 
 class TestIssBookEntry(TestFiscalBookEntry, DomainTest):
 
@@ -80,3 +94,19 @@ class TestIssBookEntry(TestFiscalBookEntry, DomainTest):
         issbookentry = self.create_book_entry()
         reversal = issbookentry.reverse_entry(201)
         self.assertEquals(reversal.iss_value, 10)
+
+    def testCreateServiceEntry(self):
+        sale = self.create_sale()
+        sale.add_sellable(self.create_sellable(), price=150)
+        group = sale.addFacet(IPaymentGroup, connection=self.trans)
+        book_entry = FiscalBookEntry.create_service_entry(
+            self.trans,
+            group,
+            sale.cfop,
+            sale.service_invoice_number,
+            123)
+        self.failUnless(book_entry)
+        self.assertEquals(book_entry.iss_value, 123)
+        self.assertEquals(book_entry.entry_type,
+                          FiscalBookEntry.TYPE_SERVICE)
+

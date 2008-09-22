@@ -41,10 +41,8 @@ from sqlobject.sqlbuilder import AND, IN, const
 from stoqdrivers.enum import PaymentMethodType
 from zope.interface import implements
 
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import InheritableModelAdapter
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import (IContainer, IPaymentGroup,
                                        IInPayment)
 from stoqlib.domain.payment.payment import Payment
@@ -145,33 +143,6 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     #
     # Fiscal methods
     #
-
-    def _create_fiscal_entry(self, entry_type, cfop, invoice_number,
-                             iss_value=0, icms_value=0, ipi_value=0):
-        conn = self.get_connection()
-        return FiscalBookEntry(
-            entry_type=entry_type,
-            iss_value=iss_value,
-            ipi_value=ipi_value,
-            icms_value=icms_value,
-            invoice_number=invoice_number,
-            cfop=cfop,
-            drawee=self.get_thirdparty(),
-            branch=get_current_branch(conn),
-            date=const.NOW(),
-            payment_group=self,
-            connection=conn)
-
-    def create_icmsipi_book_entry(self, cfop, invoice_number, icms_value,
-                                  ipi_value=0):
-        self._create_fiscal_entry(FiscalBookEntry.TYPE_PRODUCT, cfop,
-                                  invoice_number,
-                                  icms_value=icms_value, ipi_value=ipi_value)
-
-    def create_iss_book_entry(self, cfop, invoice_number, iss_value):
-        self._create_fiscal_entry(FiscalBookEntry.TYPE_SERVICE, cfop,
-                                  invoice_number,
-                                  iss_value=iss_value)
 
     def _get_paid_payments(self):
         return Payment.select(AND(Payment.q.groupID == self.id,
