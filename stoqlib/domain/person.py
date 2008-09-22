@@ -803,7 +803,7 @@ class PersonAdaptToCreditProvider(PersonAdapter):
         @returns: if there is a card provider
         """
         return bool(cls.selectBy(is_active=True,
-                                 provider_type=cls.PROVIDER_FINANCE,
+                                 provider_type=cls.PROVIDER_CARD,
                                  connection=conn).count())
 
 

@@ -95,7 +95,6 @@ class PaymentMethodStep(WizardEditorStep):
     slave_holder = 'method_holder'
 
     def __init__(self, wizard, previous, conn, model, outstanding_value=None):
-        self._methods = {}
         self._method_slave = None
 
         if outstanding_value is None:
