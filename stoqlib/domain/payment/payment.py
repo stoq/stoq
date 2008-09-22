@@ -34,10 +34,7 @@ from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol
 from stoqlib.domain.base import Domain, ModelAdapter
-from stoqlib.domain.payment.operation import PaymentOperation
-from stoqlib.domain.interfaces import (IInPayment, IOutPayment,
-                                       IPaymentDevolution,
-                                       IPaymentDeposit)
+from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -167,28 +164,6 @@ class Payment(Domain):
         self.status = self.STATUS_PAID
         if self.group:
             self.group.pay(self)
-
-    def submit(self, submit_date=None):
-        """The first stage of payment acquittance is submiting and mark a
-        payment with STATUS_REVIEWING
-        """
-        self._check_status(self.STATUS_PAID, 'submit')
-        conn = self.get_connection()
-        operation = PaymentOperation(connection=conn,
-                                     operation_date=submit_date)
-        operation.addFacet(IPaymentDeposit, connection=conn)
-        self.status = self.STATUS_REVIEWING
-
-    def reject(self, reason, reject_date=None):
-        """If there is some problems in the  first stage of payment
-        acquittance we must call reject for it.
-        """
-        self._check_status(self.STATUS_REVIEWING, 'reject')
-        conn = self.get_connection()
-        operation = PaymentOperation(connection=conn,
-                                     operation_date=reject_date)
-        operation.addFacet(IPaymentDevolution, connection=conn, reason=reason)
-        self.status = self.STATUS_PAID
 
     def cancel(self):
         # TODO Check for till entries here and call cancel_till_entry if

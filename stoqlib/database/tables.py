@@ -74,8 +74,6 @@ _tables = [
      ('till', ["Till", "TillEntry"]),
      ('payment.category', ["PaymentCategory"]),
      ('payment.destination', ["PaymentDestination"]),
-     ('payment.operation', ["PaymentOperation", "POAdaptToPaymentDevolution",
-                            "POAdaptToPaymentDeposit"]),
     # XXX Unfortunately we must add 'methods.py' module in two places
     # here since the class Payment needs one of its classes. This will
     # be fixed in bug 2036.

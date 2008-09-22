@@ -532,18 +532,6 @@ class IDelivery(Interface):
         """
 
 
-class IPaymentDevolution(Interface):
-    """A devolution payment operation"""
-
-    def get_devolution_date():
-        """Get the day when the payment was returned"""
-
-class IPaymentDeposit(Interface):
-    """A deposit payment operation"""
-
-    def get_deposit_date():
-        """Get the day when the payment was paid"""
-
 class IReversal(Interface):
     """A financial entry which support reversal operations"""
 
