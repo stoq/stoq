@@ -919,42 +919,16 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         av_difference = self._get_average_difference()
 
         if sale.products:
-            icms_total = self._get_icms_total(av_difference)
-            self.create_icmsipi_book_entry(sale.cfop, sale.coupon_id,
-                                           icms_total)
+            FiscalBookEntry.create_product_entry(
+                self.get_connection(),
+                self, sale.cfop, sale.coupon_id,
+                self._get_icms_total(av_difference))
 
         if sale.services and sale.service_invoice_number:
-            iss_total = self._get_iss_total(av_difference)
-            self.create_iss_book_entry(sale.cfop,
-                                       sale.service_invoice_number,
-                                       iss_total)
-
-#     def update_iss_entries(self):
-#         """Update iss entries after printing a service invoice"""
-#         av_difference = self._get_average_difference()
-#         sale = self.sale
-#         if not self._has_iss_entry():
-#             iss_total = self._get_iss_total(av_difference)
-#             self.create_iss_book_entry(sale.cfop,
-#                                        sale.service_invoice_number,
-#                                        iss_total)
-#             return
-
-#         conn = self.get_connection()
-#         iss_entry = IssBookEntry.get_entry_by_payment_group(conn, self)
-#         if iss_entry.invoice_number == sale.service_invoice_number:
-#             return
-
-#         # User just cancelled the old invoice and would like to print a
-#         # new one -> reverse old entry and create a new one
-#         iss_entry.reverse_entry(iss_entry.invoice_number)
-
-#         # create the new iss entry
-#         iss_total = self._get_iss_total(av_difference)
-#         self.create_iss_book_entry(sale.cfop,
-#                                    sale.service_invoice_number,
-#                                    iss_total)
-
+            FiscalBookEntry.create_service_entry(
+                self.get_connection(),
+                self, sale.cfop, sale.service_invoice_number,
+                self._get_iss_total(av_difference))
 
 Sale.registerFacet(SaleAdaptToPaymentGroup, IPaymentGroup)
 

@@ -35,6 +35,7 @@ from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain, ValidatableDomain
+from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import ProductHistory
@@ -170,8 +171,10 @@ class ReceivingOrder(ValidatableDomain):
             item.add_stock_items()
 
         group = IPaymentGroup(self.purchase)
-        group.create_icmsipi_book_entry(self.cfop, self.invoice_number,
-                                        self.icms_total, self.ipi_total)
+        FiscalBookEntry.create_product_entry(
+            self.get_connection(),
+            group, self.cfop, self.invoice_number,
+            self.icms_total, self.ipi_total)
         self._update_payment_values(group)
         self.invoice_total = self.get_total()
         if self.purchase.can_close():
