@@ -11,7 +11,8 @@ UPDATE asellable_item
    SET te_created_id = inheritable_model.te_created_id,
        te_modified_id = inheritable_model.te_modified_id
   FROM inheritable_model
- WHERE inheritable_model.child_name = 'ASellableItem';
+ WHERE inheritable_model.child_name = 'ASellableItem' AND
+       inheritable_model.id = asellable_item.id;
 DELETE FROM inheritable_model WHERE child_name = 'ASellableItem';
        
 --
