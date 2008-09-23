@@ -240,7 +240,7 @@ class SellableFullStockView(Viewable):
     @classmethod
     def select_by_branch(cls, query, branch, connection=None):
         if branch:
-            # We need the OR part to be able to list services and gift certificates
+            # We need the OR part to be able to list services
             branch_query = OR(ProductStockItem.q.branchID == branch.id,
                               ProductStockItem.q.branchID == None)
             if query:

@@ -44,7 +44,6 @@ def _create_adapter_test():
     #
     TODO = {
         'AbstractPaymentGroup': ' ',
-        'GiftCertificateAdaptToSellable': ' ',
         }
 
     def _test_adapter(self, adapter):

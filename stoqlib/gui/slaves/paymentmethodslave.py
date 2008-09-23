@@ -37,13 +37,12 @@ from stoqlib.exceptions import StoqlibError
 
 class PmSlaveType(enum):
     (MONEY,
-     GIFT_CERTIFICATE,
-     MULTIPLE) = range(3)
+     MULTIPLE) = range(2)
 
 
 class SelectPaymentMethodSlave(GladeSlaveDelegate):
     """ This slave show a radion button group with three payment method options:
-    Money, Gift Certificate and Other (any other method supported by the system).
+    Money and Other (any other method supported by the system).
     The visibility of these buttons are directly related to payment method
     availability in the company.
     """
@@ -61,8 +60,6 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
     def _select_payment_method(self, method_type):
         if method_type == PmSlaveType.MONEY:
             widget = self.cash_check
-        elif method_type == PmSlaveType.GIFT_CERTIFICATE:
-            widget = self.certificate_check
         else:
             widget = self.othermethods_check
         widget.set_active(True)
@@ -72,17 +69,10 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         if not money_method.is_active:
             raise StoqlibError("The money payment method should be always "
                                "available")
-        gift_method = PaymentMethod.get_by_name(self.conn, 'giftcertificate')
-        if not gift_method.is_active:
-            self.certificate_check.hide()
-
-        #self.othermethods_check.hide()
 
     def get_selected_method(self):
         if self.cash_check.get_active():
             return PmSlaveType.MONEY
-        elif self.certificate_check.get_active():
-            return PmSlaveType.GIFT_CERTIFICATE
         elif self.othermethods_check.get_active():
             return PmSlaveType.MULTIPLE
         else:
@@ -97,11 +87,6 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         if not radio.get_active():
             return
         self.emit('method-changed', PmSlaveType.MONEY)
-
-    def on_certificate_check__toggled(self, radio):
-        if not radio.get_active():
-            return
-        self.emit('method-changed', PmSlaveType.GIFT_CERTIFICATE)
 
     def on_othermethods_check__toggled(self, radio):
         if not radio.get_active():

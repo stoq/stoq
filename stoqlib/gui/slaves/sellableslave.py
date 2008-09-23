@@ -33,8 +33,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 class OnSaleInfoSlave(BaseEditorSlave):
-    """A slave for price and dates information when a certain product,
-    service or gift certificate is on sale.
+    """A slave for price and dates information when a certain product
+    or service is on sale.
     """
     gladefile = 'OnSaleInfoSlave'
     model_type = OnSaleInfo

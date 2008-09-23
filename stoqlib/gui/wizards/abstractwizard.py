@@ -40,7 +40,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.domain.sellable import ASellable
-from stoqlib.domain.giftcertificate import GiftCertificate
 
 _ = stoqlib_gettext
 
@@ -106,9 +105,7 @@ class SellableItemStep(WizardEditorStep):
     def setup_sellable_entry(self):
         result = ASellable.get_unblocked_sellables(self.conn)
         self.sellable.prefill([(sellable.get_description(), sellable)
-                               for sellable in result
-                                   if not isinstance(sellable.get_adapted(),
-                                                     GiftCertificate)])
+                               for sellable in result)
 
     def get_order_item(self):
         raise NotImplementedError('This method must be defined on child')

@@ -108,16 +108,6 @@ class TestParameter(DomainTest):
         service = self.sparam.DELIVERY_SERVICE
         assert isinstance(service, ServiceAdaptToSellable)
 
-    def testDefaultGiftCertificateType(self):
-        self._create_examples()
-        param = self.sparam.DEFAULT_GIFT_CERTIFICATE_TYPE
-        sellable_cert = self.sale.add_custom_gift_certificate(
-                            certificate_value=Decimal(200),
-                            certificate_number=u'500')
-        assert isinstance(sellable_cert, ASellable)
-        self.assertEqual(sellable_cert.base_sellable_info.description,
-                         param.base_sellable_info.description)
-
     # System constants based on stoq.lib.parameters
 
     def testUseLogicQuantity(self):

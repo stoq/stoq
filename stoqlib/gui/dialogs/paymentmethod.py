@@ -34,7 +34,6 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.search import SearchEditorToolBar
 from stoqlib.gui.editors.paymentmethodeditor import PaymentMethodEditor
-from stoqlib.gui.search.giftcertificatesearch import GiftCertificateTypeSearch
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning
 
@@ -82,7 +81,9 @@ class PaymentMethodsDialog(BasicDialog):
 
     def _get_dialog(self, method):
         method_editors = {
-            'giftcertificate': GiftCertificateTypeSearch,
+            # Keep this around since the payment method is not
+            # actually gone when migrating from old databases
+            'giftcertificate': NotImplementedError,
             'creditcard': NotImplementedError,
             'debitcard': NotImplementedError,
             'money': (PaymentMethodEditor, method),

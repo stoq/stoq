@@ -23,7 +23,6 @@
 
 from kiwi.environ import environ
 from stoqlib.domain.examples import log
-from stoqlib.domain.examples.giftcertificate import create_giftcertificates
 from stoqlib.domain.examples.person import create_people, set_person_utilities
 from stoqlib.domain.examples.purchase import create_purchases
 from stoqlib.domain.examples.sale import create_sales
@@ -57,5 +56,4 @@ def create(utilities=False):
     _import_one(ServiceImporter, 'services.csv')
     create_sales()
     create_purchases()
-    create_giftcertificates()
     create_transfer()

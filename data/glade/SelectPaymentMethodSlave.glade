@@ -27,19 +27,6 @@
                                     </widget>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="certificate_check">
-                                        <property name="active">False</property>
-                                        <property name="data_type">bool</property>
-                                        <property name="group">cash_check</property>
-                                        <property name="label" context="yes" translatable="yes">_Gift Certificate</property>
-                                        <property name="use-underline">True</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
-                                <child>
                                     <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="othermethods_check">
                                         <property name="active">False</property>
                                         <property name="data_type">bool</property>

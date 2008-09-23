@@ -389,7 +389,7 @@ class SellableItemEditor(BaseEditor):
     model_names = {ReceivingOrderItem: _('Receiving Item'),
                    SaleItem: _('Sale Item'),
                    DeliveryItem: _('Delivery Item'),
-                   PurchaseItem: _('Gift Certificate')}
+                   PurchaseItem: _('Purchase Item')}
 
     def __init__(self, conn, model_type=ReceivingOrderItem, model=None,
                  restrict_increase_qty=True):

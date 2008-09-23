@@ -142,26 +142,6 @@ class CardPaymentOperation(object):
             method.get_connection())
 
 
-class GiftCertificatePaymentOperation(object):
-    implements(IPaymentOperation)
-
-    description = _(u'Gift Certificate')
-    max_installments = 1
-
-    #
-    # IPaymentOperation
-    #
-    
-    def payment_create(self, payment):
-        pass
-
-    def payment_delete(self, payment):
-        pass
-    
-    def selectable(self, method):
-        return False
-
-    
 def register_payment_operations():
     pmm = get_utility(IPaymentOperationManager, None)
     if pmm is None:
@@ -172,4 +152,3 @@ def register_payment_operations():
     pmm.register('check', CheckPaymentOperation())
     pmm.register('bill', BillPaymentOperation())
     pmm.register('card', CardPaymentOperation())
-    pmm.register('giftcertificate', GiftCertificatePaymentOperation())
