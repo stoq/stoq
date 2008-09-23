@@ -14,7 +14,8 @@ UPDATE abstract_stock_item
        te_modified_id = inheritable_model.te_modified_id,
        is_valid_model = inheritable_model.is_valid_model
   FROM inheritable_model
- WHERE inheritable_model.child_name = 'AbstractStockItem';
+ WHERE inheritable_model.child_name = 'AbstractStockItem' AND
+       inheritable_model.id = abstract_stock_item.id;
 DELETE FROM inheritable_model WHERE child_name = 'AbstractStockItem';
 
 --

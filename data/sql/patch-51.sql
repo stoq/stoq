@@ -12,7 +12,8 @@ UPDATE payment_destination
    SET te_created_id = inheritable_model.te_created_id,
        te_modified_id = inheritable_model.te_modified_id
   FROM inheritable_model
- WHERE inheritable_model.child_name = 'PaymentDestination';
+ WHERE inheritable_model.child_name = 'PaymentDestination' AND
+       inheritable_model.id = payment_destination.id;;
 DELETE FROM inheritable_model WHERE child_name = 'PaymentDestination';
 
 --
