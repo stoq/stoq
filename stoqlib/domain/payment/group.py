@@ -102,19 +102,6 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         # FIXME: Proper implementation
         return currency(0)
 
-    def add_payment(self, value, description, method, destination=None,
-                    due_date=None):
-        if due_date is None:
-            due_date = const.NOW()
-        """Create a new payment and add it to the group"""
-        conn = self.get_connection()
-        destination = destination or sysparam(conn).DEFAULT_PAYMENT_DESTINATION
-        till = Till.get_current(conn)
-        return Payment(due_date=due_date, value=value, till=till,
-                       description=description, group=self, method=method,
-                       destination=destination, category=None,
-                       connection=conn)
-
     def confirm(self):
         """This can be implemented in a subclass, but it's not required"""
 

@@ -96,14 +96,6 @@ class TestParameter(DomainTest):
         base_category = self.sparam.DEFAULT_BASE_CATEGORY
         assert isinstance(base_category, SellableCategory)
 
-    def testPaymentDestination(self):
-        self._create_examples()
-        param = self.sparam.DEFAULT_PAYMENT_DESTINATION
-        method = PaymentMethod.get_by_name(self.trans, 'money')
-        new_payment = self.group.add_payment(value=10, description='testing',
-                                             method=method)
-        self.failUnless(new_payment.destination is param)
-
     def testDeliveryService(self):
         service = self.sparam.DELIVERY_SERVICE
         assert isinstance(service, ServiceAdaptToSellable)
