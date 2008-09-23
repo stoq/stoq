@@ -485,10 +485,6 @@ class IPaymentGroup(Interface):
     def get_balance():
         """The total amount of all the payments this payment group holds"""
 
-    def add_payment(value, description, method, destination=None,
-                    due_date=None):
-        """Add a new payment for this group"""
-
     def get_total_received():
         """Return the total amount paid by the client (sale total)
         deducted of payment method commissions"""
