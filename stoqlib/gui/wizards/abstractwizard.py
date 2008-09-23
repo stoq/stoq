@@ -105,7 +105,7 @@ class SellableItemStep(WizardEditorStep):
     def setup_sellable_entry(self):
         result = ASellable.get_unblocked_sellables(self.conn)
         self.sellable.prefill([(sellable.get_description(), sellable)
-                               for sellable in result)
+                               for sellable in result])
 
     def get_order_item(self):
         raise NotImplementedError('This method must be defined on child')
