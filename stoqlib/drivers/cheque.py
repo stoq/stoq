@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -27,7 +27,6 @@ from stoqdrivers.printers.cheque import ChequePrinter
 
 from stoqlib.database.runtime import get_current_station, get_current_branch
 from stoqlib.domain.devices import DeviceSettings
-from stoqlib.domain.payment.methods import CheckPM
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -65,10 +64,10 @@ def print_cheques_for_payment_group(conn, group):
     max_len = printer.get_capability("cheque_city").max_len
     city = main_address.city_location.city[:max_len]
     for idx, payment in enumerate(payments):
-        method = payment.method
-        if not isinstance(method, CheckPM):
+        if payment.method.method_name == 'check':
             continue
-        check_data = method.get_check_data_by_payment(payment)
+        check_data = payment.method.operation.get_check_data_by_payment(
+            payment)
         bank_id = check_data.bank_data.bank_id
         try:
             bank = printer_banks[bank_id]

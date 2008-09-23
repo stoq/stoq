@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):    Evandro Vale Miquelito      <evandro@async.com.br>
+##               Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
 """ Slaves for payment methods management"""
@@ -29,14 +30,8 @@ from kiwi.python import enum
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.database.runtime import get_connection
-from stoqlib.domain.payment.destination import PaymentDestination
-from stoqlib.domain.payment.methods import (FinanceDetails,
-                                            MoneyPM,
-                                            GiftCertificatePM,
-                                            BillPM,
-                                            CheckPM)
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.exceptions import StoqlibError
 
 
@@ -45,49 +40,6 @@ class PmSlaveType(enum):
      GIFT_CERTIFICATE,
      MULTIPLE) = range(3)
 
-class _CheckBillSettingsSlave(BaseEditorSlave):
-    model_type = BillPM
-    gladefile = 'CheckBillSettingsSlave'
-    proxy_widgets = ('installments_number',
-                     'interest',
-                     'daily_penalty')
-
-    def setup_proxies(self):
-        self.add_proxy(self.model, _CheckBillSettingsSlave.proxy_widgets)
-
-class BillSettingsSlave(_CheckBillSettingsSlave):
-    model_type = BillPM
-
-class CheckSettingsSlave(_CheckBillSettingsSlave):
-    model_type = CheckPM
-
-class InstallmentsNumberSettingsSlave(BaseEditorSlave):
-    gladefile = 'InstallmentsNumberSettingsSlave'
-    proxy_widgets = ('installments_number',)
-
-    def __init__(self, conn, model):
-        self.model_type = type(model)
-        BaseEditorSlave.__init__(self, conn, model)
-
-    def setup_proxies(self):
-        self.add_proxy(self.model,
-                       InstallmentsNumberSettingsSlave.proxy_widgets)
-
-
-class FinanceDetailsSlave(BaseEditorSlave):
-    gladefile = 'FinanceDetailsSlave'
-    model_type = FinanceDetails
-    proxy_widgets = ('destination',
-                     'commission',
-                     'receive_days')
-
-    def setup_proxies(self):
-        table = PaymentDestination
-        destinations = [(p.description, p)
-                        for p in table.select(connection=self.conn)]
-        self.destination.prefill(destinations, sort=True)
-        self.add_proxy(self.model,
-                       FinanceDetailsSlave.proxy_widgets)
 
 class SelectPaymentMethodSlave(GladeSlaveDelegate):
     """ This slave show a radion button group with three payment method options:
@@ -116,11 +68,11 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         widget.set_active(True)
 
     def _setup_widgets(self):
-        money_method = MoneyPM.selectOne(connection=self.conn)
+        money_method = PaymentMethod.get_by_name(self.conn, 'money')
         if not money_method.is_active:
             raise StoqlibError("The money payment method should be always "
                                "available")
-        gift_method = GiftCertificatePM.selectOne(connection=self.conn)
+        gift_method = PaymentMethod.get_by_name(self.conn, 'giftcertificate')
         if not gift_method.is_active:
             self.certificate_check.hide()
 

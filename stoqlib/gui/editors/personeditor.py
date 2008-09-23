@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -23,23 +23,17 @@
 ##            Evandro Vale Miquelito      <evandro@async.com.br>
 ##            Ariqueli Tejada Fonseca     <aritf@async.com.br>
 ##            Bruno Rafael Garcia         <brg@async.com.br>
+##            Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Person editors definition """
 
 import datetime
-from decimal import Decimal
-
-import gtk
 
 from kiwi.datatypes import ValidationError
-from kiwi.ui.widgets.list import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.wizards.paymentmethodwizard import PaymentMethodDetailsWizard
-from stoqlib.gui.base.lists import ModelListSlave
 from stoqlib.gui.editors.simpleeditor import SimpleEntryEditor
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
-from stoqlib.gui.slaves.paymentmethodslave import FinanceDetailsSlave
 from stoqlib.gui.slaves.clientslave import ClientStatusSlave
 from stoqlib.gui.slaves.credproviderslave import CreditProviderDetailsSlave
 from stoqlib.gui.slaves.employeeslave import (EmployeeDetailsSlave,
@@ -51,9 +45,7 @@ from stoqlib.gui.slaves.userslave import UserDetailsSlave, UserStatusSlave
 from stoqlib.gui.slaves.supplierslave import SupplierDetailsSlave
 from stoqlib.gui.slaves.transporterslave import TransporterDataSlave
 from stoqlib.gui.slaves.branchslave import BranchDetailsSlave
-from stoqlib.domain.payment.methods import (PaymentMethodDetails,
-                                            FinanceDetails)
-from stoqlib.domain.person import EmployeeRole, Person
+from stoqlib.domain.person import EmployeeRole
 from stoqlib.domain.interfaces import (IClient, ICreditProvider, IEmployee,
                                        ISupplier, ITransporter, IUser,
                                        ICompany, IIndividual, IBranch)
@@ -164,65 +156,6 @@ class CreditProviderEditor(BasePersonRoleEditor):
                                    visual_mode=self.visual_mode)
         slave = self.main_slave.get_person_slave()
         slave.attach_slave('person_status_holder', self.details_slave)
-
-
-class _ProviderList(ModelListSlave):
-    def __init__(self, conn, credprovider):
-        self._credprovider = credprovider
-        orientation = gtk.ORIENTATION_HORIZONTAL
-        ModelListSlave.__init__(self, conn=conn, orientation=orientation)
-        self.set_model_type(PaymentMethodDetails)
-
-    #
-    # ModelListSlave
-    #
-
-    def get_columns(self):
-        return [Column('description', _('Payment Type'), data_type=unicode,
-                       expand=True, sorted=True),
-                Column('destination_name', _('Destination'),
-                       data_type=unicode, width=90),
-                Column('commission', _('Commission (%)'),
-                       data_type=Decimal, width=120),
-                Column('is_active', _('Active'), data_type=bool,
-                       editable=True)]
-
-    def run_editor(self, conn, model):
-        return self.run_dialog(PaymentMethodDetailsWizard, conn=conn,
-                               model=model, credprovider=self._credprovider)
-
-    def populate(self):
-        return PaymentMethodDetails.selectBy(
-            providerID=self._credprovider.id, connection=self.conn)
-
-
-class CardProviderEditor(CreditProviderEditor):
-
-    provtype = Person.getAdapterClass(ICreditProvider).PROVIDER_CARD
-
-    def setup_slaves(self):
-        CreditProviderEditor.setup_slaves(self)
-        addlist = _ProviderList(self.conn, self.model)
-        slave = self.main_slave.get_person_slave()
-        slave.attach_custom_slave(addlist, _("Payment Types"))
-
-
-class FinanceProviderEditor(CreditProviderEditor):
-
-    provtype = Person.getAdapterClass(ICreditProvider).PROVIDER_FINANCE
-
-    def setup_slaves(self):
-        CreditProviderEditor.setup_slaves(self)
-
-        item = FinanceDetails.selectOne(
-            PaymentMethodDetails.q.providerID == self.model.id,
-            connection=self.conn)
-        if item is None:
-            item = FinanceDetails(connection=self.conn,
-                                  provider=self.model, destination=None)
-        finance_slave = FinanceDetailsSlave(self.conn, item)
-        slave = self.main_slave.get_person_slave()
-        slave.attach_custom_slave(finance_slave, _("Finance Details"))
 
 
 class EmployeeEditor(BasePersonRoleEditor):

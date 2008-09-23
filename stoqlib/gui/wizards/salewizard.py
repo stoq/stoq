@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -34,7 +34,6 @@ from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.ui.wizard import WizardStep
 from kiwi.utils import gsignal
-from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.database.runtime import (StoqlibTransaction, finish_transaction,
                                       new_transaction)
@@ -55,11 +54,10 @@ from stoqlib.gui.slaves.paymentmethodslave import (SelectPaymentMethodSlave,
 from stoqlib.gui.slaves.paymentslave import register_payment_slaves
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.domain.interfaces import IInPayment
 from stoqlib.domain.person import Person, ClientView
-from stoqlib.domain.payment.methods import (APaymentMethod, MoneyPM,
-                                            GiftCertificatePM)
 from stoqlib.domain.payment.group import AbstractPaymentGroup
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.giftcertificate import GiftCertificate
@@ -116,18 +114,9 @@ class PaymentMethodStep(WizardEditorStep):
 
     def _update_payment_method_slave(self):
         method = self.method_combo.get_selected_data()
-        if method is None:
-             return
-        self._update_payment_method(method)
-        slave = self._create_slave(method)
-        if slave is not None:
+        if method is not None:
+            slave = self._create_slave(method)
             self._attach_slave(slave)
-
-    def _update_payment_method(self, method):
-        # If the outstanding value is set we're renegotiating
-        if self._outstanding_value > currency(0):
-            return
-        self.wizard.payment_group.set_method(int(method.method_type))
 
     def _create_slave(self, method):
         dsm = get_utility(IDomainSlaveMapper)
@@ -146,15 +135,17 @@ class PaymentMethodStep(WizardEditorStep):
     def _prefill_methods(self):
         methods = []
         dsm = get_utility(IDomainSlaveMapper)
-        for method in APaymentMethod.get_active_methods(self.conn):
+        for method in PaymentMethod.get_active_methods(self.conn):
             if dsm.get_slave_class(method) is None:
                 continue
-            if not method.is_active:
-                continue
-            if not method.selectable():
-                self.conn.savepoint('payment')
-                continue
-            methods.append((method.description, method))
+            if method.is_active:
+                if method.selectable():
+                    methods.append((method.description, method))
+                else:
+                    self.conn.savepoint('payment')
+        if not methods:
+            warning(_("There are no available payment methods"))
+            return
         self.method_combo.prefill(methods)
 
     #
@@ -220,7 +211,7 @@ class SaleRenegotiationOutstandingStep(WizardEditorStep):
                                  self.outstanding_value)
 
     def post_init(self):
-        self.wizard.payment_group.clear_preview_payments(IInPayment)
+        self.wizard.payment_group.clear_unused()
         self.cash_check.grab_focus()
         self.wizard.enable_finish()
 
@@ -466,7 +457,7 @@ class GiftCertificateSelectionStep(WizardEditorStep):
             raise ValueError('You should have at least one gift certificate '
                              'selected at this point')
         gift_total = 0
-        method = GiftCertificatePM.selectOne(connection=self.conn)
+        method = PaymentMethod.get_by_name(self.conn, 'giftcertificate')
         for certificate in self.slave.klist:
             method.create_inpayment(self.group, certificate.price)
             gift_total += certificate.price
@@ -586,18 +577,6 @@ class _AbstractSalesPersonStep(WizardEditorStep):
     #
 
     def next_step(self):
-        method_name = self.pm_slave.get_selected_method()
-        if method_name == PmSlaveType.MONEY:
-            self.payment_group.set_method(int(PaymentMethodType.MONEY))
-        elif method_name == PmSlaveType.GIFT_CERTIFICATE:
-            self.payment_group.set_method(int(PaymentMethodType.GIFT_CERTIFICATE))
-        elif method_name == PmSlaveType.MULTIPLE:
-            # FIXME
-            self.payment_group.set_method(10)
-        else:
-            raise ValueError(
-                "Invalid payment method interface, got %s" % method_name)
-
         return self.on_next_step()
 
     #
@@ -618,14 +597,7 @@ class _AbstractSalesPersonStep(WizardEditorStep):
         if not group:
             raise StoqlibError(
                 "You should have a IPaymentGroup facet defined at this point")
-        method = group.default_method
-        if method == PaymentMethodType.MONEY:
-            method_type = PmSlaveType.MONEY
-        elif method == PaymentMethodType.GIFT_CERTIFICATE:
-            method_type = PmSlaveType.GIFT_CERTIFICATE
-        else:
-            method_type = PmSlaveType.MULTIPLE
-        self.pm_slave = SelectPaymentMethodSlave(method_type=method_type)
+        self.pm_slave = SelectPaymentMethodSlave(method_type=PmSlaveType.MONEY)
         self.pm_slave.connect('method-changed', self.on_payment_method_changed)
         self.attach_slave('select_method_holder', self.pm_slave)
 
@@ -691,7 +663,7 @@ class SalesPersonStep(_AbstractSalesPersonStep):
     #
 
     def post_init(self):
-        self.wizard.payment_group.clear_preview_payments(IInPayment)
+        self.wizard.payment_group.clear_unused()
         self.register_validate_function(self.wizard.refresh_next)
         self._update_next_step(self._get_selected_payment_method())
         self.force_validation()
@@ -777,7 +749,7 @@ class _AbstractSaleWizard(BaseWizard):
     #
 
     def setup_cash_payment(self, total=None):
-        money_method = MoneyPM.selectOne(connection=self.conn)
+        money_method = PaymentMethod.get_by_name(self.conn, 'money')
         total = total or self.payment_group.get_total_received()
         return money_method.create_inpayment(self.payment_group, total)
 
@@ -795,7 +767,7 @@ class ConfirmSaleWizard(_AbstractSaleWizard):
 
     def __init__(self, conn, model):
         _AbstractSaleWizard.__init__(self, conn, model)
-
+        register_payment_operations()
         if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
             # This was added to allow us to work even if an error
             # happened while adding a payment, where we already order

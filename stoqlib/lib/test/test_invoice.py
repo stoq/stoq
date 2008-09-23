@@ -30,7 +30,7 @@ from stoqlib.domain.interfaces import (IPaymentGroup,
                                        ISellable,
                                        IStorable)
 from stoqlib.domain.invoice import InvoiceLayout
-from stoqlib.domain.payment.methods import MoneyPM
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.diffutils import diff_files
@@ -56,12 +56,12 @@ def compare_invoice_file(invoice, basename):
         raise AssertionError("Files differ, check output above")
 
 class InvoiceTest(DomainTest):
-    def _add_payments(self, sale, method_type=MoneyPM):
+    def _add_payments(self, sale):
         group = IPaymentGroup(sale, None)
         if group is None:
             group = sale.addFacet(IPaymentGroup, connection=self.trans)
 
-        method = method_type.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, 'money')
         payment = method.create_inpayment(group,
                                           sale.get_sale_subtotal())
         payment.get_adapted().due_date = datetime.datetime(2000, 1, 1)

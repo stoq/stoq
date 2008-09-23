@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,7 @@ from decimal import Decimal
 from stoqdrivers.enum import PaymentMethodType
 from stoqdrivers.exceptions import DriverError
 from stoqlib.domain.interfaces import IPaymentGroup, ISellable
-from stoqlib.domain.payment.methods import BillPM, CheckPM, MoneyPM
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqdrivers.exceptions import CouponOpenError
 
@@ -100,10 +100,9 @@ class _TestFiscalCouponPayments:
     def _add_sale_payments(self, sale, constant, method_type):
         group = sale.addFacet(IPaymentGroup,
                               connection=self.trans,
-                              default_method=int(constant),
                               installments_number=1)
 
-        method = method_type.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, method_type)
         method.create_inpayment(group, sale.get_total_sale_amount())
         self.sale.set_valid()
 
@@ -113,17 +112,20 @@ class _TestFiscalCouponPayments:
         self._add_sale_payments(self.sale, self.constant, self.method)
         self.coupon.setup_payments()
 
+
 class TestFiscalCouponPaymentsBill(DomainTest, _TestFiscalCouponPayments):
     setUp = _TestFiscalCouponPayments.setUp
-    method = BillPM
+    method = 'bill'
     constant = PaymentMethodType.BILL
+
 
 class TestFiscalCouponPaymentsCheck(DomainTest, _TestFiscalCouponPayments):
     setUp = _TestFiscalCouponPayments.setUp
-    method = CheckPM
+    method = 'check'
     constant = PaymentMethodType.CHECK
+
 
 class TestFiscalCouponPaymentsMoney(DomainTest, _TestFiscalCouponPayments):
     setUp = _TestFiscalCouponPayments.setUp
-    method = MoneyPM
+    method = 'money'
     constant = PaymentMethodType.MONEY

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source
+## Copyright (C) 2005-2008 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -590,8 +590,8 @@ class ParameterAccess(ClassInittableObject):
             return
         branch = self.MAIN_COMPANY
         pm = PaymentDestination(description=_(u'Default Store Destination'),
-                              branch=branch,
-                              connection=self.conn)
+                                branch=branch,
+                                connection=self.conn)
         self._set_schema(key, pm.id)
 
     def ensure_delivery_service(self):

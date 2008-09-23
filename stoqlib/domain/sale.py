@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -48,7 +48,7 @@ from stoqlib.domain.interfaces import (IContainer, IOutPayment,
                                        IPaymentGroup, ISellable,
                                        IDelivery, IStorable, IProduct)
 from stoqlib.domain.payment.group import AbstractPaymentGroup
-from stoqlib.domain.payment.methods import MoneyPM
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import (Product, ProductAdaptToSellable,
                                     ProductHistory)
@@ -59,8 +59,8 @@ from stoqlib.domain.till import Till
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
                                 StoqlibError)
 from stoqlib.lib.defaults import quantize
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 
 
 _ = stoqlib_gettext
@@ -430,7 +430,8 @@ class Sale(ValidatableDomain):
         for payment in group.get_items():
             if not payment.is_paid():
                 raise StoqlibError(
-                    "You cannot close a sale without paying all the payment")
+                    "You cannot close a sale without paying all the payment. "
+                    "Payment %r is still not paid" % (payment,))
 
         self.close_date = const.NOW()
         self.status = Sale.STATUS_PAID
@@ -533,10 +534,14 @@ class Sale(ValidatableDomain):
     # Other methods
 
     def paid_with_money(self):
+        """Find out if the sale is paid using money
+        @returns: True if the sale was paid with money, otherwise False
+        @rtype: bool
+        """
         group = IPaymentGroup(self, None)
         assert group
         for payment in group.get_items():
-            if not isinstance(payment.method, MoneyPM):
+            if payment.method.method_name != 'money':
                 return False
         return True
 
@@ -712,9 +717,6 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         return (self.sale.get_total_sale_amount() -
                 self._get_pm_commission_total())
 
-    def get_default_payment_method(self):
-        return self.default_method
-
     def confirm(self):
         from stoqlib.domain.commission import Commission
 
@@ -805,7 +807,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         if not paid_value:
             return
 
-        money = MoneyPM.selectOne(connection=conn)
+        money = PaymentMethod.get_by_name(conn, 'money')
         out_payment = money.create_outpayment(
             self, paid_value,
             description=_('%s Money Returned for Sale %d') % (

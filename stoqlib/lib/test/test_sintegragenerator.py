@@ -5,7 +5,7 @@ from stoqdrivers.enum import TaxType
 from stoqlib.database.runtime import get_current_branch
 
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup, IProduct
-from stoqlib.domain.payment.methods import MoneyPM
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
@@ -78,7 +78,7 @@ class TestSintegraGenerator(DomainTest):
         group = IPaymentGroup(sale, None)
         if group is None:
             group = sale.addFacet(IPaymentGroup, connection=self.trans)
-        method = MoneyPM.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, 'money')
         payment = method.create_inpayment(group,
                                           sale.get_sale_subtotal())
 

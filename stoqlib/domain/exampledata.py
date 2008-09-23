@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -110,7 +110,7 @@ class ExampleCreator(object):
 
     def create_by_type(self, model_type):
         known_types = {
-            'APaymentMethod': self.create_payment_method,
+            'PaymentMethod': self.create_payment_method,
             'ASellable': self.create_sellable,
             'AbstractPaymentGroup' : self.create_payment_group,
             'BaseSellableInfo': self.create_base_sellable_info,
@@ -433,23 +433,8 @@ class ExampleCreator(object):
                                 open_contract_date=datetime.date(2006, 01, 01))
 
     def create_payment_method(self):
-        from stoqdrivers.enum import PaymentMethodType
-        from stoqlib.domain.payment.methods import APaymentMethod
-        return APaymentMethod.get_by_enum(self.trans, PaymentMethodType.MONEY)
-
-    def create_payment_method_details(self, provider=None):
-        from stoqlib.domain.payment.methods import PaymentMethodDetails
-        if not provider:
-            provider = self.create_credit_provider()
-        return PaymentMethodDetails(is_active=True, provider=provider,
-                                    destination=None,
-                                    connection=self.trans)
-
-    def create_card_installment_settings(self, payment_day=15, closing_day=15):
-        from stoqlib.domain.payment.methods import CardInstallmentSettings
-        return CardInstallmentSettings(payment_day=payment_day,
-                                        closing_day=closing_day,
-                                        connection=self.trans)
+        from stoqlib.domain.payment.method import PaymentMethod
+        return PaymentMethod.get_by_name(self.trans, 'money')
 
     def create_payment(self):
         from stoqlib.domain.payment.payment import Payment

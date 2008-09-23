@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,14 +25,9 @@
 import datetime
 from decimal import Decimal
 
-from stoqdrivers.enum import PaymentMethodType
-
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.interfaces import IPaymentGroup, IInPayment, IOutPayment
-from stoqlib.domain.payment.methods import (APaymentMethod,
-                                            BillPM, CheckPM, FinancePM,
-                                            PaymentMethodDetails,
-                                            MoneyPM, GiftCertificatePM)
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import (Payment,
                                             PaymentAdaptToInPayment,
                                             PaymentAdaptToOutPayment)
@@ -47,14 +42,14 @@ class _TestPaymentMethod:
         group = sale.addFacet(IPaymentGroup,
                               connection=self.trans)
 
-        method = self.method_type.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, self.method_type)
         return method.create_inpayment(group, Decimal(100))
 
     def createOutPayment(self):
         purchase = self.create_purchase_order()
         group = IPaymentGroup(purchase)
 
-        method = self.method_type.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, self.method_type)
         return method.create_outpayment(group, Decimal(100))
 
     def createInPayments(self, no=3):
@@ -63,7 +58,7 @@ class _TestPaymentMethod:
                               connection=self.trans)
 
         d = datetime.datetime.today()
-        method = self.method_type.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, self.method_type)
         payments = method.create_inpayments(group, Decimal(100),
                                             [d] * no)
 
@@ -74,7 +69,7 @@ class _TestPaymentMethod:
         group = IPaymentGroup(purchase)
 
         d = datetime.datetime.today()
-        method = self.method_type.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, self.method_type)
         payments = method.create_outpayments(group, Decimal(100),
                                              [d] * no)
         return [p.get_adapted() for p in payments]
@@ -90,7 +85,7 @@ class _TestPaymentMethod:
 
         group = IPaymentGroup(order)
         value = Decimal(100)
-        method = self.method_type.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, self.method_type)
         return method.create_payment(iface, group, value)
 
     def createPayments(self, iface, no=3):
@@ -105,7 +100,7 @@ class _TestPaymentMethod:
         group = IPaymentGroup(order)
         value = Decimal(100)
         due_dates = [datetime.datetime.today()] * no
-        method = self.method_type.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, self.method_type)
         return method.create_payments(iface, group, value, due_dates)
 
 class _TestPaymentMethodsBase(_TestPaymentMethod):
@@ -124,9 +119,6 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         self.assertEqual(payment.value, Decimal(100))
 
     def testCreateInPayments(self):
-        if self.method_type in (MoneyPM, GiftCertificatePM):
-            return
-
         payments = self.createInPayments()
         athird = quantize(Decimal(100) / Decimal(3))
         rest = quantize(Decimal(100) - (athird * 2))
@@ -136,9 +128,6 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         self.assertEqual(payments[2].value, rest)
 
     def testCreateOutPayments(self):
-        if self.method_type in (MoneyPM, GiftCertificatePM):
-            return
-
         payments = self.createOutPayments()
         athird = quantize(Decimal(100) / Decimal(3))
         rest = quantize(Decimal(100) - (athird * 2))
@@ -161,9 +150,6 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         self.assertEqual(payment.value, Decimal(100))
 
     def testCreatePayments(self):
-        if self.method_type in (MoneyPM, GiftCertificatePM):
-            return
-
         inpayments = self.createPayments(IInPayment)
         self.assertEqual(len(inpayments), 3)
         payments = [p.get_adapted() for p in inpayments]
@@ -186,10 +172,10 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         sale = self.create_sale()
         group = sale.addFacet(IPaymentGroup,
                               connection=self.trans)
-        method = self.method_type.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, self.method_type)
         desc = method.describe_payment(group)
         self.failUnless(isinstance(desc, unicode))
-        self.failUnless(self.method_type.description in desc)
+        self.failUnless(method.description in desc)
 
         self.assertRaises(AssertionError, method.describe_payment, group, 0)
         self.assertRaises(AssertionError, method.describe_payment, group, 1, 0)
@@ -199,35 +185,22 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         self.failUnless('456' in desc, desc)
         self.failUnless('123/456' in desc, desc)
 
-    def testGetByEnum(self):
-        self.assertEqual(APaymentMethod.get_by_enum(self.trans,
-                                                    self.enum),
-                         self.method_type.selectOne(connection=self.trans))
-
-
     def testMaxInPaymnets(self):
-        method = self.method_type.selectOne(connection=self.trans)
-        max = method.get_max_installments_number()
+        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        max = method.max_installments
         self.assertRaises(ValueError, self.createInPayments, max + 1)
 
     def testMaxOutPaymnets(self):
-        method = self.method_type.selectOne(connection=self.trans)
-        max = method.get_max_installments_number()
-        self.createOutPayments(max + 1)
-
-    def testBank(self):
-        method = self.method_type.selectOne(connection=self.trans)
-        group = IPaymentGroup(self.create_purchase_order())
-        payment = method.create_outpayment(group, Decimal(10))
-        self.failIf(payment.get_adapted().bank)
+        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        self.createOutPayments(method.max_installments + 1)
 
     def testSelectable(self):
-        method = self.method_type.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, self.method_type)
         method.selectable()
-        
+
+
 class TestAPaymentMethod(DomainTest, _TestPaymentMethod):
-    method_type = CheckPM
-    enum = PaymentMethodType.CHECK
+    method_type = 'check'
 
     def _createUnclosedTill(self):
         till = Till(station=get_current_station(self.trans),
@@ -271,71 +244,49 @@ class TestAPaymentMethod(DomainTest, _TestPaymentMethod):
             self.failUnless(isinstance(outpayments[i],
                                        PaymentAdaptToOutPayment))
 
-class TestMoneyPM(DomainTest, _TestPaymentMethodsBase):
-    method_type = MoneyPM
-    enum = PaymentMethodType.MONEY
 
-class TestCheckPM(DomainTest, _TestPaymentMethodsBase):
-    method_type = CheckPM
-    enum = PaymentMethodType.CHECK
+class TestMoney(DomainTest, _TestPaymentMethodsBase):
+    method_type = 'money'
+
+    def testCreateInPayments(self):
+        pass
+
+    def testCreateOutPayments(self):
+        pass
+
+    def testCreatePayments(self):
+        pass
+
+    
+class TestCheck(DomainTest, _TestPaymentMethodsBase):
+    method_type = 'check'
 
     def testCheckDataCreated(self):
         payment = self.createInPayment()
-        method = self.method_type.selectOne(connection=self.trans)
-        check_data = method.get_check_data_by_payment(payment.get_adapted())
+        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        check_data = method.operation.get_check_data_by_payment(
+            payment.get_adapted())
         self.failUnless(check_data)
 
     def testBank(self):
-        method = self.method_type.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, self.method_type)
         group = IPaymentGroup(self.create_purchase_order())
         payment = method.create_outpayment(group, Decimal(10))
         self.failUnless(payment.get_adapted().bank)
 
-class TestBillPM(DomainTest, _TestPaymentMethodsBase):
-    method_type = BillPM
-    enum = PaymentMethodType.BILL
 
-class TestFinancePM(DomainTest, _TestPaymentMethodsBase):
-    method_type = FinancePM
-    enum = PaymentMethodType.FINANCIAL
-
-class TestGiftCertificatePM(DomainTest, _TestPaymentMethodsBase):
-    method_type = GiftCertificatePM
-    enum = PaymentMethodType.GIFT_CERTIFICATE
-
-class TestPaymentMethodDetails(DomainTest):
-
-    def testGetActiveMethodDetails(self):
-        provider = self.create_credit_provider()
-        method_details = PaymentMethodDetails.get_active_method_details(
-            provider=provider, conn=self.trans)
-        self.failIf(method_details)
-        payment_method_details = self.create_payment_method_details(provider)
-        method_details = PaymentMethodDetails.get_active_method_details(
-            provider=provider, conn=self.trans)
-        self.failUnless(method_details)
-        payment_method_details.is_active = False
-        method_details = PaymentMethodDetails.get_active_method_details(
-            provider=provider, conn=self.trans)
-        self.failIf(method_details)
+class TestBill(DomainTest, _TestPaymentMethodsBase):
+    method_type = 'bill'
 
 
-class TestCardInstallmentSettings(DomainTest):
+class TestGiftCertificate(DomainTest, _TestPaymentMethodsBase):
+    method_type = 'giftcertificate'
 
-        def testCalculatePaymentDueDate(self):
-            # default settings: payment_day = closing_day = 15
-            settings = self.create_card_installment_settings()
-            today = datetime.datetime.today()
-            # Reset day and month here, so we can avoid the bound cases
-            # of 'today' attributes
-            start_due_dates = [today.replace(day=14, month=3),
-                               today.replace(day=15, month=3),
-                               today.replace(day=16, month=3)]
-            for date in start_due_dates:
-                due_date = settings.calculate_payment_duedate(date)
-                if date.day > settings.closing_day:
-                    self.assertEqual(due_date.day, settings.payment_day)
-                    self.assertEqual(due_date.month, date.month + 1)
-                else:
-                    self.assertEqual(due_date.day, settings.payment_day)
-                    self.assertEqual(due_date.month, date.month)
+    def testCreateInPayments(self):
+        pass
+
+    def testCreateOutPayments(self):
+        pass
+
+    def testCreatePayments(self):
+        pass

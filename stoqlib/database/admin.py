@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -52,7 +52,9 @@ from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.sellable import SellableTaxConstant, SellableUnit
 from stoqlib.exceptions import StoqlibError
 from stoqlib.importers.invoiceimporter import InvoiceImporter
+from stoqlib.lib.interfaces import IPaymentOperationManager
 from stoqlib.lib.message import error
+from stoqlib.lib.paymentoperation import PaymentOperationManager
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -121,19 +123,35 @@ def create_main_branch(trans, name):
     return branch
 
 
-def ensure_payment_methods():
-    log.info("Creating payment methods")
+def _register_payment_methods():
+    """Registers the payment methods and creates persistent
+    domain classes associated with them.
+    """
+    from stoqlib.domain.payment.method import PaymentMethod
+    from stoqlib.domain.payment.operation import register_payment_operations
+
+    pom = PaymentOperationManager()
+    provide_utility(IPaymentOperationManager, pom)
+
+    log.info("Registering payment operations")
+    register_payment_operations()
+    
     trans = new_transaction()
-    from stoqlib.domain.payment.methods import (MoneyPM, BillPM, CheckPM,
-                                                GiftCertificatePM,
-                                                CardPM, FinancePM)
-
     destination = sysparam(trans).DEFAULT_PAYMENT_DESTINATION
-    for pm_type in (MoneyPM, BillPM, CheckPM):
-        pm_type(connection=trans, destination=destination)
 
-    for pm_type in (GiftCertificatePM, CardPM, FinancePM):
-        pm_type(connection=trans)
+    log.info("Creating domain objects for payment methods")
+    for operation_name in pom.get_operation_names():
+        operation = pom.get(operation_name)
+        pm = PaymentMethod.selectOneBy(connection=trans,
+                                       method_name=operation_name)
+        if pm is None:
+            pm = PaymentMethod(connection=trans,
+                               destination=destination,
+                               method_name=operation_name,
+                               description=None,
+                               max_installments=1)
+        pm.description = operation.description
+        pm.max_installments = operation.max_installments
 
     trans.commit(close=True)
 
@@ -143,7 +161,7 @@ def get_admin_user(conn):
     @returns: the admin user for the system
     """
     return Person.iselectOneBy(IUser, username=USER_ADMIN_DEFAULT_NAME,
-                            connection=conn)
+                               connection=conn)
 
 def ensure_sellable_constants():
     """ Create native sellable constants. """
@@ -253,7 +271,7 @@ def initialize_system(delete_only=False, verbose=False):
     settings = get_utility(IDatabaseSettings)
     clean_database(settings.dbname)
     create_base_schema()
-    ensure_payment_methods()
+    _register_payment_methods()
     ensure_sellable_constants()
     ensure_system_parameters()
     create_default_profiles()

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -37,9 +37,7 @@ from stoqlib.lib.validators import format_phone_number
 from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
                                               EmployeeEditor,
                                               TransporterEditor,
-                                              EmployeeRoleEditor, BranchEditor,
-                                              CardProviderEditor,
-                                              FinanceProviderEditor)
+                                              EmployeeRoleEditor, BranchEditor)
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -189,26 +187,6 @@ class AbstractCreditProviderSearch(BasePersonSearch):
         cards = trans.get(obj.provider)
         cards.is_active = obj.is_active
         trans.commit(close=True)
-
-
-class CardProviderSearch(AbstractCreditProviderSearch):
-    title = _('Card Provider Search')
-    search_lbl_text = _('Card providers matching:')
-    result_strings = _('card provider'), _('card providers')
-    editor_class = CardProviderEditor
-
-    def get_provider_type(self):
-        return self.provider_table.PROVIDER_CARD
-
-
-class FinanceProviderSearch(AbstractCreditProviderSearch):
-    title = _('Finance Provider Search')
-    search_lbl_text = _('Finance providers matching:')
-    result_strings = _('finance provider'), _('finance providers')
-    editor_class = FinanceProviderEditor
-
-    def get_provider_type(self):
-        return self.provider_table.PROVIDER_FINANCE
 
 
 class ClientSearch(BasePersonSearch):

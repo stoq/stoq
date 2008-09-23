@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -33,9 +33,9 @@ from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.interfaces import (IPaymentGroup,
                                        ISellable,
                                        IStorable)
-from stoqlib.domain.payment.methods import MoneyPM
-from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sellable import SellableTaxConstant
+from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib import test
 from stoqlib.lib.diffutils import diff_files
 from stoqlib.lib.pluginmanager import provide_plugin_manager
@@ -65,12 +65,12 @@ class Cat52Test(DomainTest):
         manager = provide_plugin_manager()
         manager.enable_plugin('ecf')
 
-    def _add_payments(self, sale, method_type=MoneyPM):
+    def _add_payments(self, sale, method_type='money'):
         group = IPaymentGroup(sale, None)
         if group is None:
             group = sale.addFacet(IPaymentGroup, connection=self.trans)
 
-        method = method_type.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, method_type)
         payment = method.create_inpayment(group,
                                           sale.get_sale_subtotal())
 

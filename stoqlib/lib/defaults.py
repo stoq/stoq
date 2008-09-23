@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source
+## Copyright (C) 2005-2008 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -27,8 +27,6 @@
 
 import datetime
 from decimal import Decimal
-
-from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -100,27 +98,6 @@ def calculate_interval(interval_type, intervals):
 #
 # Payments
 #
-
-def get_method_names():
-    return {PaymentMethodType.MONEY: _(u'Money'),
-            PaymentMethodType.CHECK: _(u'Check'),
-            PaymentMethodType.BILL: _(u'Bill'),
-            PaymentMethodType.CREDIT_CARD: _(u'Card'),
-            PaymentMethodType.DEBIT_CARD: _(u'Debit Card'),
-            PaymentMethodType.FINANCIAL: _(u'Finance'),
-            PaymentMethodType.GIFT_CERTIFICATE: _(u'Gift Certificate')}
-
-def get_all_methods_dict():
-    from stoqlib.domain.payment.methods import (MoneyPM, BillPM, CheckPM,
-                                                GiftCertificatePM,
-                                                CardPM, FinancePM)
-    return {PaymentMethodType.MONEY: MoneyPM,
-            PaymentMethodType.CHECK: CheckPM,
-            PaymentMethodType.BILL: BillPM,
-            PaymentMethodType.CREDIT_CARD: CardPM, # WTF? we need one type for each or someway to
-            PaymentMethodType.DEBIT_CARD: CardPM,  # diferenciate both. bug 3671
-            PaymentMethodType.GIFT_CERTIFICATE: GiftCertificatePM,
-            PaymentMethodType.FINANCIAL: FinancePM}
 
 def payment_value_colorize(column_data):
     """A helper method for payment value columns used to set different

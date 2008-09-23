@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -40,7 +40,6 @@ from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        IContainer)
 from stoqlib.exceptions import DeviceError
-from stoqlib.lib.defaults import get_all_methods_dict, get_method_names
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -329,26 +328,12 @@ class Coupon(object):
     def cancel(self):
         return self._driver.cancel()
 
-    def _get_payment_method_constant(self, method_type):
-        all_methods = get_all_methods_dict().items()
-        method_id = None
-
-        for method_id, mtype in all_methods:
-            if mtype == method_type:
-                break
-        else:
-            raise ValueError(
-                _("Can't find a valid identifier for the payment "
-                  "method type: %s. It is not possible add "
-                  "the payment on the coupon") %
-                method_type.__name__)
-
-        constant = self._printer.get_payment_constant(method_id)
+    def _get_payment_method_constant(self, method):
+        constant = self._printer.get_payment_constant(method.method_type)
         if not constant:
-            method_name = get_method_names()[method_id]
             raise DeviceError(
                 _("The payment method used in this sale (%s) is not "
-                  "configured in the fiscal printer." % method_name))
+                  "configured in the fiscal printer." % (method.name,)))
 
         return constant
 
@@ -362,7 +347,7 @@ class Coupon(object):
 
         log.info("we have %d payments" % (group.get_items().count()),)
         for payment in group.get_items():
-            constant = self._get_payment_method_constant(type(payment.method))
+            constant = self._get_payment_method_constant(payment.method)
             self._driver.add_payment(constant.device_value,
                                      payment.base_value)
 

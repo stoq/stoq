@@ -35,7 +35,7 @@ from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        IIndividual)
 from stoqlib.domain.address import CityLocation
 from stoqlib.domain.person import Person, EmployeeRole
-from stoqlib.domain.payment.methods import BillPM, MoneyPM
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sellable import SellableCategory, ASellable
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.receiving import ReceivingOrder
@@ -99,7 +99,7 @@ class TestParameter(DomainTest):
     def testPaymentDestination(self):
         self._create_examples()
         param = self.sparam.DEFAULT_PAYMENT_DESTINATION
-        method = MoneyPM.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, 'money')
         new_payment = self.group.add_payment(value=10, description='testing',
                                              method=method)
         self.failUnless(new_payment.destination is param)
@@ -169,7 +169,7 @@ class TestParameter(DomainTest):
             parameter_name='MANDATORY_INTEREST_CHARGE',
             value=u'1')
 
-        bill = BillPM.selectOne(connection=self.trans)
+        bill = PaymentMethod.get_by_name(self.trans, 'bill')
         self.failUnlessRaises(PaymentError,
                               bill._calculate_payment_value,
                               total_value=Decimal(512),

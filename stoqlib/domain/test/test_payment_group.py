@@ -24,11 +24,9 @@
 
 from decimal import Decimal
 
-from stoqdrivers.enum import PaymentMethodType
-
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.interfaces import IPaymentGroup
-from stoqlib.domain.payment.methods import APaymentMethod
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
@@ -42,7 +40,7 @@ class TestPaymentGroup(DomainTest):
         item = sale.add_sellable(sellable, price=150)
         group = sale.addFacet(IPaymentGroup, connection=self.trans)
 
-        method = APaymentMethod.get_by_enum(self.trans, PaymentMethodType.BILL)
+        method = PaymentMethod.get_by_name(self.trans, 'bill')
         payment = method.create_inpayment(group, Decimal(10))
         payment = payment.get_adapted()
         self.assertEqual(payment.status, Payment.STATUS_PREVIEW)
@@ -62,8 +60,7 @@ class TestPaymentGroup(DomainTest):
         sale.order()
         group = sale.addFacet(IPaymentGroup, connection=self.trans)
 
-        method = APaymentMethod.get_by_enum(self.trans,
-                                            PaymentMethodType.CHECK)
+        method = PaymentMethod.get_by_name(self.trans, 'check')
         payment1 = method.create_inpayment(group, Decimal(100))
         payment2 = method.create_inpayment(group, Decimal(200))
         group.confirm()
@@ -99,8 +96,7 @@ class TestPaymentGroup(DomainTest):
         sale.order()
         group = sale.addFacet(IPaymentGroup, connection=self.trans)
 
-        method = APaymentMethod.get_by_enum(self.trans,
-                                            PaymentMethodType.CHECK)
+        method = PaymentMethod.get_by_name(self.trans, 'check')
         payment1 = method.create_inpayment(group, Decimal(300))
         payment2 = method.create_inpayment(group, Decimal(450))
         payment3 = method.create_inpayment(group, Decimal(150))
@@ -147,8 +143,7 @@ class TestPaymentGroup(DomainTest):
 
         sale.order()
         group = sale.addFacet(IPaymentGroup, connection=self.trans)
-        method = APaymentMethod.get_by_enum(self.trans,
-                                            PaymentMethodType.CHECK)
+        method = PaymentMethod.get_by_name(self.trans, 'check')
         payment1 = method.create_inpayment(group, Decimal(300))
         payment2 = method.create_inpayment(group, Decimal(450))
         payment3 = method.create_inpayment(group, Decimal(150))
