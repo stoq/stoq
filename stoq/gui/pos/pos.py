@@ -61,7 +61,6 @@ from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
-from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import SaleSearch
@@ -643,10 +642,6 @@ class POSApp(AppWindow):
     def on_ServiceSearch__activate(self, action):
         self.run_dialog(ServiceSearch, self.conn, hide_toolbar=True,
                         hide_cost_column=True)
-
-    def on_GiftCertificateSearch__activate(self, action):
-        self.run_dialog(GiftCertificateSearch, self.conn, hide_footer=True,
-                        hide_toolbar=True)
 
     def on_OrderCheckout__activate(self, action):
         self._checkout()

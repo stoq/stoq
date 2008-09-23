@@ -87,13 +87,6 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="GiftCertificateSearch">
-                        <property name="name">GiftCertificateSearch</property>
-                        <property name="label" translatable="yes">Gift Certificates...</property>
-                        <property name="accelerator">&lt;Control&gt;g</property>
-                    </widget>
-                </child>
-                <child>
                     <widget class="GtkAction" id="New">
                         <property name="name">New</property>
                         <property name="tooltip" translatable="yes">Create a new file</property>
@@ -243,7 +236,6 @@
                 <menuitem action="Clients"/>
                 <menuitem action="ProductSearch"/>
                 <menuitem action="ServiceSearch"/>
-                <menuitem action="GiftCertificateSearch"/>
               </menu>
               <menu action="TillMenu">
                 <menuitem action="TillOpen"/>
