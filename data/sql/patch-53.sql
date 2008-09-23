@@ -31,16 +31,27 @@ UPDATE apayment_method SET method_name = 'check' WHERE child_name = 'CheckPM';
 UPDATE apayment_method SET method_name = 'giftcertificate' WHERE child_name = 'GiftCertificatePM';
 UPDATE apayment_method SET method_name = 'money' WHERE child_name = 'MoneyPM';
 UPDATE apayment_method 
-   SET max_installments = bill_p_m.max_installments_number
+   SET max_installments = bill_p_m.max_installments_number,
+       description = 'Bill'
   FROM bill_p_m
  WHERE apayment_method.method_name = 'bill';
 UPDATE apayment_method 
-   SET max_installments = check_p_m.max_installments_number
+   SET max_installments = check_p_m.max_installments_number,
+       description = 'Check'
   FROM check_p_m
  WHERE apayment_method.method_name = 'check';
-UPDATE apayment_method SET max_installments = 1 WHERE apayment_method.method_name = 'money';
-UPDATE apayment_method SET max_installments = 1 WHERE apayment_method.method_name = 'giftcertificate';
-UPDATE apayment_method SET max_installments = 12 WHERE apayment_method.method_name = 'card';
+UPDATE apayment_method 
+   SET max_installments = 1,
+       description = 'Money'
+ WHERE apayment_method.method_name = 'money';
+UPDATE apayment_method 
+   SET max_installments = 1,
+       description = 'Gift Certificate'
+ WHERE apayment_method.method_name = 'giftcertificate';
+UPDATE apayment_method 
+   SET max_installments = 12,
+       description = 'Card'
+ WHERE apayment_method.method_name = 'card';
 
 -- PaymentMethod: Drop unused
 DELETE FROM inheritable_model WHERE child_name = 'APaymentMethod';
