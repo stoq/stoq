@@ -1,3 +1,5 @@
+-- #3070: Definir método correto de controle de comissões aos vendedores.
+
 CREATE TABLE commission_source (
     id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,

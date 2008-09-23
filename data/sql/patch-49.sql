@@ -1,4 +1,4 @@
--- # 3780: Tabela city location contem entradas duplicadas
+-- #3780: Tabela city location contem entradas duplicadas
 
 SELECT new_cl.min_id as new_id, c.id as old_id INTO alternative
 -- elegemos um dos ids para ser unico, poderia ser MAX

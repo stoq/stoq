@@ -1,4 +1,4 @@
--- #3671 Add more information to z-reduction tables.
+-- #3671: Add more information to z-reduction tables.
 
 ALTER TABLE fiscal_day_history ADD COLUMN reduction_date timestamp;
 

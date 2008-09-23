@@ -1,4 +1,4 @@
--- #3671 Add fiscal information about sales.
+-- #3671: Add fiscal information about sales.
 
 ALTER TABLE paulista_invoice RENAME TO fiscal_sale_history;
 ALTER TABLE paulista_invoice_id_seq RENAME TO fiscal_sale_history_id_seq;
