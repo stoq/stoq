@@ -44,7 +44,6 @@ from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.lib.invoice import SaleInvoice
 from stoqlib.lib.validators import format_quantity
@@ -200,9 +199,6 @@ class SalesApp(SearchableAppWindow):
 
     def _on_commission_action__clicked(self, button):
         self.run_dialog(CommissionSearch, self.conn)
-
-    def _on_gift_certificates_action_clicked(self, button):
-        self.run_dialog(GiftCertificateSearch, self.conn)
 
     def _on_services_action_clicked(self, button):
         self.run_dialog(ServiceSearch, self.conn, hide_toolbar=True)
