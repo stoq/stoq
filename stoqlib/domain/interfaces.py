@@ -164,11 +164,6 @@ class IService(Interface):
     """
 
 
-class IGiftCertificate(Interface):
-    """A GiftCertificate, this is mainly used as a marker.
-    """
-
-
 class IStorable(Interface):
     """Storable documentation for a certain product or a sellable item.
     Each storable can have references to many concrete items which will

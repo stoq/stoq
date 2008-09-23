@@ -110,10 +110,6 @@ class SQLError(Exception):
     """Bad syntax for sql scripts"""
 
 
-class GiftCertificateError(Exception):
-    """Errors for gift certificates"""
-
-
 class SellableError(Exception):
     """Errors for sellables"""
 

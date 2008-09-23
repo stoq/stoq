@@ -279,14 +279,3 @@ class TestBill(DomainTest, _TestPaymentMethodsBase):
     method_type = 'bill'
 
 
-class TestGiftCertificate(DomainTest, _TestPaymentMethodsBase):
-    method_type = 'giftcertificate'
-
-    def testCreateInPayments(self):
-        pass
-
-    def testCreateOutPayments(self):
-        pass
-
-    def testCreatePayments(self):
-        pass

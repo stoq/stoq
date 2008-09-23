@@ -57,7 +57,7 @@ class Payment(Domain):
     # When you confirm a sale or a purchase, the status is modified to PENDING
     # If you pay with money, status is set to STATUS_PAID
     # Otherwise it's left as pending until the money is received.
-    # Finally if you cancel the payment (or use a gift certificate),
+    # Finally if you cancel the payment
     # the status is set to STATUS_CANCELLED
 
     # Purchase: (PENDING, PAID, REVIEWING, CONFIRMED, CANCELLED)

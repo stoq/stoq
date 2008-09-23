@@ -43,7 +43,6 @@ from stoqlib.domain.base import (Domain, ValidatableDomain, BaseSQLView,
                                  ModelAdapter)
 from stoqlib.domain.events import SaleConfirmEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IContainer, IOutPayment,
                                        IPaymentGroup, ISellable,
                                        IDelivery, IStorable, IProduct)
@@ -574,35 +573,6 @@ class Sale(ValidatableDomain):
                                  sale=self)
 
     #
-    # MOVE away!
-    #
-
-    @argcheck(Decimal, unicode)
-    def add_custom_gift_certificate(self, certificate_value,
-                                    certificate_number):
-        """This method adds a new custom gift certificate to the current
-        sale order.
-
-        @returns: a GiftCertificateAdaptToSellable instance
-        """
-        conn = self.get_connection()
-        cert_type = sysparam(conn).DEFAULT_GIFT_CERTIFICATE_TYPE
-        sellable_info = cert_type.base_sellable_info.clone()
-        if not sellable_info:
-            raise ValueError('A valid gift certificate type must be '
-                             'provided at this point')
-        sellable_info.price = certificate_value
-        certificate = GiftCertificate(connection=conn)
-        sellable_cert = certificate.addFacet(ISellable, connection=conn,
-                                             barcode=certificate_number,
-                                             base_sellable_info=
-                                             sellable_info)
-        # The new gift certificate which has been created is actually an
-        # item of our sale order
-        self.add_sellable(sellable_cert)
-        return sellable_cert
-
-    #
     # Properties
     #
 
@@ -886,7 +856,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         if not sale.get_items():
             raise DatabaseInconsistency(
                 "Sale orders must have items, which means products or "
-                "services or gift certificates")
+                "services")
         total_quantity = sale.get_items_total_quantity()
         if not total_quantity:
             raise DatabaseInconsistency("Sale total quantity should never "
@@ -912,10 +882,6 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         Important: freight and interest are not part of the base value for
         ICMS. Only product values and surcharge which applies increasing the
         product totals are considered here.
-
-        Note that we are not calculating ICMS or ISS for gift certificates since
-        it will be calculated for the products sold when using gift
-        certificates as payment methods.
         """
         sale = self.sale
         av_difference = self._get_average_difference()

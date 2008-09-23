@@ -60,30 +60,13 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import ASellable
-from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IPaymentGroup, ISalesPerson,
                                        ISellable)
 
-_ = stoqlib_gettext
+N_ = _ = stoqlib_gettext
 
 
-class GiftCertificateOverpaidSettings:
-    """Stores general settings for sale orders with gift certificates and
-    when the sum of gift certificate values is greater then the total sale
-    amount
-    """
-
-    (TYPE_RETURN_MONEY,
-     TYPE_GIFT_CERTIFICATE) = range(2)
-
-    renegotiation_value = Decimal(0)
-    certificate_number = None
-
-
-
-
-
-
+#
 # Wizard Steps
 #
 
@@ -140,7 +123,7 @@ class PaymentMethodStep(WizardEditorStep):
                 continue
             if method.is_active:
                 if method.selectable():
-                    methods.append((method.description, method))
+                    methods.append((N_(method.description), method))
                 else:
                     self.conn.savepoint('payment')
         if not methods:
@@ -247,10 +230,6 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
     def _setup_widgets(self):
         if not sysparam(self.conn).RETURN_MONEY_ON_SALES:
             self.return_check.set_sensitive(False)
-        certificate = sysparam(self.conn).DEFAULT_GIFT_CERTIFICATE_TYPE
-        description = certificate.base_sellable_info.description
-        text = _('Create a <u>%s</u> with this value') % description
-        self.certificate_check.child.set_markup(text)
         header_text = (_('There is %s overpaid') %
                        get_formatted_price(self.overpaid_value))
         self.header_label.set_text(header_text)
@@ -258,17 +237,7 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
         self.header_label.set_bold(True)
 
     def refresh_next(self, validation_value):
-        if (self.certificate_check.get_active() and
-            not self.model.certificate_number):
-            validation_value = False
         self.wizard.refresh_next(validation_value)
-
-    def _create_gift_certificate_settings(self, rtype, value, number=None):
-        settings = GiftCertificateOverpaidSettings()
-        settings.renegotiation_type = rtype
-        settings.renegotiation_value = value
-        settings.certificate_number = number
-        return settings
 
     #
     # BaseEditorSlave hooks
@@ -276,8 +245,7 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
 
     def create_model(self, conn):
         return Settable(certificate_number=None,
-                        first_number=None, last_number=None,
-                        gift_certificate_type=None)
+                        first_number=None, last_number=None)
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -295,15 +263,7 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
             self.certificate_number.set_invalid(msg)
             return False
 
-        value = self.overpaid_value
-        if self.certificate_check.get_active():
-            rtype = GiftCertificateOverpaidSettings.TYPE_GIFT_CERTIFICATE
-            obj = self._create_gift_certificate_settings(rtype, value,
-                                                         number)
-        else:
-            rtype = GiftCertificateOverpaidSettings.TYPE_RETURN_MONEY
-            obj = self._create_gift_certificate_settings(rtype, value)
-        self.emit('on-validate-step', obj)
+        self.emit('on-validate-step')
         return True
 
     def has_next_step(self):
@@ -331,177 +291,6 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
     def on_return_check__toggled(self, *args):
         self._update_widgets()
 
-
-class GiftCertificateSelectionStep(WizardEditorStep):
-    gladefile = 'GiftCertificateSelectionStep'
-    model_type = Settable
-    proxy_widgets = ('certificate_number',)
-
-    def __init__(self, wizard, previous, conn, sale):
-        self.sale = sale
-        self.sale_total = self.sale.get_total_sale_amount()
-        self.group = wizard.payment_group
-        WizardEditorStep.__init__(self, conn, wizard, previous=previous)
-
-    def _setup_widgets(self):
-        self.header_label.set_size('large')
-        self.header_label.set_bold(True)
-        adapter_class = GiftCertificate.getAdapterClass(ISellable)
-        sellables = adapter_class.get_sold_sellables(self.conn)
-        items = [(sellable.get_short_description(), sellable)
-                     for sellable in sellables]
-        self.certificate_number.prefill(items)
-
-    def _get_columns(self):
-        return [Column('id', title=_('Number'), data_type=str, width=90),
-                Column('description', title=_('Description'), data_type=str,
-                       expand=True, searchable=True),
-                Column('price', title=_('Price'), data_type=currency,
-                       width=90)]
-
-    def _update_total(self, *args):
-        self.summary.update_total()
-        gift_total = currency(
-            sum([gift.price for gift in self.slave.klist], currency(0)))
-        if gift_total == self.sale_total:
-            text = ''
-            value = ''
-            self.wizard.enable_finish()
-        else:
-            value = self.sale_total - gift_total
-            if gift_total < self.sale_total:
-                text = _('Outstanding:')
-            else:
-                text = _('Overpaid:')
-                value = -value
-            value = get_formatted_price(value)
-            self.wizard.disable_finish()
-
-        self.difference_label.set_text(text)
-        self.difference_value_label.set_text(value)
-
-    def _get_certificate_by_code(self, code):
-        certificate = GiftCertificate.iselectOneBy(ISellable, code=code,
-                                                   connection=self.conn)
-        if certificate is None:
-            self.certificate_number.set_invalid(
-                _("The gift certificate with code '%s' doesn't exists.") % code)
-        return certificate
-
-    def _update_widgets(self):
-        has_gift_certificate = self.certificate_number.get_text() != ''
-        self.add_button.set_sensitive(has_gift_certificate)
-        if len(self.slave.klist):
-            self.wizard.enable_next()
-        else:
-            self.wizard.disable_next()
-
-    def _add_item(self):
-        certificate = self.proxy.model and self.proxy.model.number
-        self.add_button.set_sensitive(False)
-        if not certificate:
-            code = self.certificate_number.get_text()
-            certificate = self._get_certificate_by_code(code)
-            if not certificate:
-                return
-        if certificate in self.slave.klist[:]:
-            msg = (_("The gift certificate '%s' was already added to the"
-                     "list") % certificate.get_short_description())
-            self.certificate_number.set_invalid(msg)
-            return
-        item = certificate or self.model.number
-        self.slave.klist.append(item)
-        # As we have a selection extended mode for kiwi list, we
-        # need to unselect everything before select the new instance.
-        self.slave.klist.unselect_all()
-        self.slave.klist.select(item)
-        self.certificate_number.set_text('')
-        self.wizard.enable_next()
-        self._update_total()
-
-    #
-    # BaseEditorSlave hooks
-    #
-
-    def create_model(self, conn):
-        return Settable(certificate_number=None,
-                        first_number=None, last_number=None,
-                        gift_certificate_type=None)
-
-    def setup_proxies(self):
-        self._setup_widgets()
-        self.proxy = self.add_proxy(
-            self.model, GiftCertificateSelectionStep.proxy_widgets)
-
-    def setup_slaves(self):
-        self.slave = AdditionListSlave(self.conn,
-                                       self._get_columns(),
-                                       klist_objects=[])
-        self.slave.hide_edit_button()
-        self.slave.hide_add_button()
-        self.slave.connect('after-delete-items', self.after_delete_items)
-        self.summary = SummaryLabel(klist=self.slave.klist,
-                                    column='price',
-                                    label=_('<b>Total:</b>'),
-                                    value_format="<b>%s</b>")
-        self.summary.show()
-        self.slave.list_vbox.pack_start(self.summary, expand=False)
-        self.attach_slave('list_holder', self.slave)
-
-    #
-    # WizardStep hooks
-    #
-
-    def next_step(self):
-        if not len(self.slave.klist):
-            raise ValueError('You should have at least one gift certificate '
-                             'selected at this point')
-        gift_total = 0
-        method = PaymentMethod.get_by_name(self.conn, 'giftcertificate')
-        for certificate in self.slave.klist:
-            method.create_inpayment(self.group, certificate.price)
-            gift_total += certificate.price
-        if gift_total == self.sale_total:
-            # finish the wizard
-            return
-        elif self.sale_total > gift_total:
-            outstanding_value = self.sale_total - gift_total
-            return SaleRenegotiationOutstandingStep(
-                self.wizard, self, self.conn, self.sale, outstanding_value)
-        else:
-            overpaid_value = gift_total - self.sale_total
-            step = SaleRenegotiationOverpaidStep(
-                self.wizard, self, self.conn, self.sale, self.group,
-                overpaid_value)
-            return step
-
-    def post_init(self):
-        # Reset this field each time users go back to this step
-        self.wizard.gift_certificate_settings = None
-
-        self.register_validate_function(self.wizard.refresh_next)
-        self._update_total()
-        self.certificate_number.grab_focus()
-        self._update_widgets()
-
-    #
-    # Callbacks
-    #
-
-    def on_add_button__clicked(self, button):
-        self._add_item()
-
-    def on_certificate_number__activate(self, *args):
-        if not self.add_button.get_property('sensitive'):
-            return
-        self._add_item()
-
-    def on_certificate_number__changed(self, *args):
-        self._update_widgets()
-
-    def after_delete_items(self, *args):
-        self._update_total()
-        self._update_widgets()
 
 class _AbstractSalesPersonStep(WizardEditorStep):
     """ An abstract step which allows to define a salesperson, the sale's
@@ -634,8 +423,7 @@ class SalesPersonStep(_AbstractSalesPersonStep):
         if method_name == PmSlaveType.MONEY:
             self.wizard.enable_finish()
             self.cash_change_slave.enable_cash_change()
-        elif method_name in (PmSlaveType.GIFT_CERTIFICATE,
-                             PmSlaveType.MULTIPLE):
+        elif method_name == PmSlaveType.MULTIPLE:
             self.wizard.disable_finish()
             self.cash_change_slave.disable_cash_change()
         else:
@@ -686,14 +474,6 @@ class SalesPersonStep(_AbstractSalesPersonStep):
             # what we need
             return
 
-        elif selected_method == PmSlaveType.GIFT_CERTIFICATE:
-            table = GiftCertificate.getAdapterClass(ISellable)
-            if not table.get_sold_sellables(self.conn):
-                msg = _('There is no sold gift certificates at this moment.'
-                        '\nPlease select another payment method.')
-                warning(msg)
-                return self
-            step_class = GiftCertificateSelectionStep
         else:
             step_class = PaymentMethodStep
         return step_class(self.wizard, self, self.conn, self.model)

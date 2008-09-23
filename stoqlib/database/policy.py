@@ -65,8 +65,6 @@ class Shop(SynchronizationPolicy):
         ('ProductStockItem', SyncPolicy.FROM_SOURCE),
         ('ProductRetentionHistory', SyncPolicy.FROM_SOURCE),
 
-        ('GiftCertificate', SyncPolicy.INITIAL),
-
         ('Service', SyncPolicy.FROM_SOURCE),
         ('Sale', SyncPolicy.FROM_TARGET),
         ('ParameterData', SyncPolicy.INITIAL),

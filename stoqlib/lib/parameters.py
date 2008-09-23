@@ -104,12 +104,6 @@ _parameter_info = dict(
     _(u'Delivery Service'),
     _(u'The default delivery service in the system.')),
 
-    DEFAULT_GIFT_CERTIFICATE_TYPE=ParameterDetails(
-    _(u'Sales'),
-    _(u'Default Gift Certificate Type'),
-    _(u'The default gift certificate type used when canceling '
-       'sales and during renegotiations.')),
-
     USE_LOGIC_QUANTITY=ParameterDetails(
     _(u'Stock'),
     _(u'Use Logic Quantity'),
@@ -390,8 +384,6 @@ class ParameterAccess(ClassInittableObject):
                       u'payment.destination.PaymentDestination'),
         ParameterAttr('DELIVERY_SERVICE',
                       u'service.ServiceAdaptToSellable'),
-        ParameterAttr('DEFAULT_GIFT_CERTIFICATE_TYPE',
-                      u'giftcertificate.GiftCertificateType'),
         ParameterAttr('DEFAULT_PRODUCT_TAX_CONSTANT',
                       u'sellable.SellableTaxConstant'),
         ]
@@ -542,7 +534,6 @@ class ParameterAccess(ClassInittableObject):
         self.ensure_main_company()
         self.ensure_payment_destination()
         self.ensure_delivery_service()
-        self.ensure_default_gift_certificate_type()
         self.ensure_product_tax_constant()
 
     #
@@ -613,23 +604,6 @@ class ParameterAccess(ClassInittableObject):
                                     base_sellable_info=sellable_info,
                                     connection=self.conn)
         self._set_schema(key, sellable.id)
-
-    def ensure_default_gift_certificate_type(self):
-        """Creates a initial gift certificate that will be tied with return
-        values of sale cancelations.
-        """
-        from stoqlib.domain.sellable import BaseSellableInfo
-        from stoqlib.domain.giftcertificate import GiftCertificateType
-        key = "DEFAULT_GIFT_CERTIFICATE_TYPE"
-        if self.get_parameter_by_field(key, GiftCertificateType):
-            return
-        description = _(u'General Gift Certificate')
-        sellable_info = BaseSellableInfo(connection=self.conn,
-                                         description=description,
-                                         price=currency(0))
-        certificate = GiftCertificateType(connection=self.conn,
-                                          base_sellable_info=sellable_info)
-        self._set_schema(key, certificate.id)
 
     def _ensure_cfop(self, key, description, code):
         from stoqlib.domain.fiscal import CfopData

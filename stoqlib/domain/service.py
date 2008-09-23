@@ -80,8 +80,7 @@ class ServiceView(Viewable):
         cost               - the sellable cost
         price              - the sellable price
         description        - the sellable description
-        unit               - the unit in case the sellable is not a gift
-                             certificate
+        unit               - the unit in case the sellable is not a product
         service_id         - the id of the service table
     """
 

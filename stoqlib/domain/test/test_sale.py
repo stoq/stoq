@@ -36,8 +36,7 @@ from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 from stoqlib.domain.interfaces import (IPaymentGroup,
                                        ISellable,
                                        IStorable,
-                                       IOutPayment,
-                                       IGiftCertificate)
+                                       IOutPayment)
 from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentAdaptToOutPayment
@@ -141,11 +140,6 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         self.failUnlessRaises(TypeError,
                               sale.get_status_name, 'invalid status')
-
-    def test_add_custom_gift_certificate(self):
-        sale = self.create_sale()
-        self.failUnless(IGiftCertificate(
-            sale.add_custom_gift_certificate(Decimal(230), u'11'), None))
 
     def testCheckPaymentGroup(self):
         sale_no_payment = self.create_sale()
