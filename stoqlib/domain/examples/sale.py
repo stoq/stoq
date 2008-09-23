@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,26 +20,27 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):        Henrique Romano <henrique@async.com.br>
+##                   Johan Dahlin    <jdahlin@async.com.br>
 ##
 """ Create a simple sale to an example database"""
 
-import sys
 import datetime
+import sys
 
 from stoqlib.database.runtime import (new_transaction,
-                            get_current_station, get_current_branch)
-from stoqlib.exceptions import SellError
-from stoqlib.lib.defaults import INTERVALTYPE_MONTH, calculate_interval
-from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.translation import stoqlib_gettext
+                                      get_current_station, get_current_branch)
 from stoqlib.domain.examples import log
 from stoqlib.domain.interfaces import (ISellable, IClient, IPaymentGroup,
                                        ISalesPerson)
-from stoqlib.domain.payment.methods import CheckPM
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
+from stoqlib.exceptions import SellError
+from stoqlib.lib.defaults import INTERVALTYPE_MONTH, calculate_interval
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -98,7 +99,7 @@ def _create_sale(trans, open_date, status, branch, salesperson, client,
         raise ValueError("Number of installments for this payment method can "
                          "not be greater than %d, got %d"
                          % (MAX_INSTALLMENTS_NUMBER, installments_number))
-    method = CheckPM.selectOne(connection=trans)
+    method = PaymentMethod.get_by_name(trans, 'check')
 
     interval = calculate_interval(DEFAULT_PAYMENT_INTERVAL_TYPE,
                                   DEFAULT_PAYMENTS_INTERVAL)

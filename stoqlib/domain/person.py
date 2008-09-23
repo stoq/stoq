@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -754,11 +754,9 @@ class PersonAdaptToCreditProvider(PersonAdapter):
     """A credit provider facet of a person."""
     implements(ICreditProvider)
 
-    (PROVIDER_CARD,
-     PROVIDER_FINANCE) = range(2)
+    (PROVIDER_CARD,) = range(1)
 
-    provider_types = {PROVIDER_CARD:    _(u'Card Provider'),
-                      PROVIDER_FINANCE: _(u'Finance Provider')}
+    provider_types = {PROVIDER_CARD: _(u'Card Provider')}
 
     is_active = BoolCol(default=True)
     provider_type = IntCol(default=PROVIDER_CARD)
@@ -777,24 +775,6 @@ class PersonAdaptToCreditProvider(PersonAdapter):
         """
         return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_CARD,
                             connection=conn)
-
-    @classmethod
-    def get_finance_companies(cls, conn):
-        """Get a list of all financial credit providers.
-        @param conn: a database connection
-        """
-        return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_FINANCE,
-                            connection=conn)
-
-    @classmethod
-    def has_finance_provider(cls, conn):
-        """Find out if there is a finance provider
-        @param conn: a database connection
-        @returns: if there is a finance provider
-        """
-        return bool(cls.selectBy(is_active=True,
-                                 provider_type=cls.PROVIDER_FINANCE,
-                                 connection=conn).count())
 
     @classmethod
     def has_card_provider(cls, conn):

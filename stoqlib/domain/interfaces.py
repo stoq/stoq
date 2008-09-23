@@ -59,7 +59,6 @@ class IContainer(Interface):
         """Remove from the list or database the item desired."""
 
 
-
 class IDescribable(Interface):
     """It defines that a object can be described through get_description
     method.
@@ -429,6 +428,7 @@ class ISalesPerson(IPersonFacet):
 class IBankBranch(IPersonFacet):
     branch = Attribute('A bank branch definition')
 
+
 class ICreditProvider(IPersonFacet):
     provider_type = Attribute('This attribute must be either'
                               'provider card or provider '
@@ -441,8 +441,6 @@ class ICreditProvider(IPersonFacet):
     def get_card_providers(conn):
         """Return a list of credit card providers"""
 
-    def get_finance_companies(conn):
-        """Return a list of finance companies"""
 
 class ITransporter(IPersonFacet):
     """An individual or company engaged in the transportation"""
@@ -499,9 +497,6 @@ class IPaymentGroup(Interface):
     def get_total_received():
         """Return the total amount paid by the client (sale total)
         deducted of payment method commissions"""
-
-    def get_default_payment_method():
-        """FIXME"""
 
     def confirm():
         """Validate the current payment group, create payments."""

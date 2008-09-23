@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,6 @@ import datetime
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from zope.interface import implements
-from stoqdrivers.enum import PaymentMethodType
 from sqlobject import (ForeignKey, IntCol, DateTimeCol, UnicodeCol,
                        SQLObject)
 from sqlobject.sqlbuilder import AND, INNERJOINOn, LEFTJOINOn, const
@@ -39,7 +38,7 @@ from sqlobject.viewable import Viewable
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.domain.base import ValidatableDomain, Domain, BaseSQLView
-from stoqlib.domain.payment.methods import APaymentMethod
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.interfaces import IPaymentGroup, IContainer, IDescribable
 from stoqlib.domain.sellable import ASellable, BaseSellableInfo, SellableUnit
@@ -239,8 +238,7 @@ class PurchaseOrder(ValidatableDomain):
     #
 
     def create_preview_outpayments(self, conn, group, total):
-        method = APaymentMethod.get_by_enum(
-            conn, PaymentMethodType.get(group.default_method))
+        method = PaymentMethod.get_by_name(conn, 'money')
         if group.interval_type:
             interval = calculate_interval(group.interval_type, group.intervals)
             due_dates = []

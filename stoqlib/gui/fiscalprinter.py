@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -35,7 +35,6 @@ from zope.interface import implements
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.interfaces import (IContainer, IGiftCertificate,
                                        IPaymentGroup)
-from stoqlib.domain.payment.methods import CardPM
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.exceptions import DeviceError, TillError
@@ -303,7 +302,7 @@ class FiscalCoupon(gobject.GObject):
     def _print_receipts(self, sale):
         group = IPaymentGroup(sale)
         for payment in group.get_items():
-            if type(payment.method) == CardPM:
+            if payment.method.method_name == 'card':
                 # The text is a response from the TEF software. That should probably be stored as
                 # a temporary property of the payment. To be fixed with bug 2249
                 self.print_payment_receipt(payment, 'STOQ RULES')

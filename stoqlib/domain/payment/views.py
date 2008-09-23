@@ -31,7 +31,7 @@ from kiwi.datatypes import converter
 
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.category import PaymentCategory
-from stoqlib.domain.payment.methods import MoneyPM, CheckData
+from stoqlib.domain.payment.method import CheckData
 from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
                                             PaymentAdaptToOutPayment,
                                             PaymentChangeHistory)
@@ -81,8 +81,8 @@ class InPaymentView(Viewable):
 
     def can_change_payment_status(self):
         # cash receivings can't be changed
-        use_money_method = isinstance(self.payment.method, MoneyPM)
-        return not use_money_method and self.payment.is_paid()
+        return (self.payment.method.method_name != 'money' and
+                self.payment.is_paid())
 
     def get_status_str(self):
         return Payment.statuses[self.status]

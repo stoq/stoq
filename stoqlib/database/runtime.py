@@ -80,9 +80,10 @@ class StoqlibTransaction(Transaction):
                     modified_te.sync()
 
     def add_modified_object(self, obj):
-        objdict = self._modified_object_sets[-1]
-        objset = objdict.setdefault(type(obj), set())
-        objset.add(obj.te_modified)
+        if obj.te_modified is not None:
+            objdict = self._modified_object_sets[-1]
+            objset = objdict.setdefault(type(obj), set())
+            objset.add(obj.te_modified)
 
     def commit(self, close=False):
         self._update_transaction_entry()

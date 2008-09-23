@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -24,10 +24,8 @@
 """ Editors for payment method management.  """
 
 
-from stoqlib.domain.payment.methods import APaymentMethod
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.destination import PaymentDestination
-from stoqlib.gui.slaves.paymentmethodslave import (BillSettingsSlave,
-                                                   CheckSettingsSlave)
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -39,16 +37,19 @@ class PaymentMethodEditor(BaseEditor):
     model_name = _('Payment Method')
     size = (450, 200)
     gladefile = 'PaymentMethodEditor'
-    proxy_widgets = ('destination', )
+    proxy_widgets = ('destination',
+                     'max_installments',
+                     'interest',
+                     'daily_penalty')
 
     def __init__(self, conn, model):
         """
         Create a new PaymentMethodEditor object.
         @param conn: an sqlobject Transaction instance
         @param model: an adapter of PaymentMethod which means a subclass of
-                      APaymentMethod
+                      PaymentMethod
         """
-        self.model_type = APaymentMethod
+        self.model_type = PaymentMethod
         BaseEditor.__init__(self, conn, model)
         self.set_description(model.description)
 
@@ -65,17 +66,3 @@ class PaymentMethodEditor(BaseEditor):
     def setup_proxies(self):
         self._setup_widgets()
         self.add_proxy(self.model, PaymentMethodEditor.proxy_widgets)
-
-
-class BillMethodEditor(PaymentMethodEditor):
-
-    def setup_slaves(self):
-        slave = BillSettingsSlave(self.conn, self.model)
-        self.attach_slave('slave_holder', slave)
-
-class CheckMethodEditor(PaymentMethodEditor):
-
-    def setup_slaves(self):
-        slave = CheckSettingsSlave(self.conn, self.model)
-        self.attach_slave('slave_holder', slave)
-

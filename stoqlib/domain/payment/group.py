@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -38,7 +38,6 @@ from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from sqlobject.col import IntCol, DateTimeCol
 from sqlobject.sqlbuilder import AND, IN, const
-from stoqdrivers.enum import PaymentMethodType
 from zope.interface import implements
 
 from stoqlib.domain.base import InheritableModelAdapter
@@ -47,7 +46,6 @@ from stoqlib.domain.interfaces import (IContainer, IPaymentGroup,
                                        IInPayment)
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.till import Till
-from stoqlib.lib.defaults import get_method_names
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -72,7 +70,6 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     open_date = DateTimeCol(default=datetime.datetime.now)
     close_date = DateTimeCol(default=None)
     cancel_date = DateTimeCol(default=None)
-    default_method = IntCol(default=int(PaymentMethodType.MONEY))
     installments_number = IntCol(default=1)
     interval_type = IntCol(default=None)
     intervals = IntCol(default=None)
@@ -134,7 +131,8 @@ class AbstractPaymentGroup(InheritableModelAdapter):
 
     @argcheck(Payment)
     def remove_item(self, payment):
-        Payment.delete(payment.id, connection=self.get_connection())
+        assert payment.group == self, payment.group
+        payment.group = None
 
     def get_items(self):
         return Payment.selectBy(group=self,
@@ -177,11 +175,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     def get_total_paid(self):
         return currency(self._get_paid_payments().sum('value') or 0)
 
-    def set_method(self, method):
-        self.default_method = method
-
     def add_inpayments(self):
-        from stoqlib.domain.payment.methods import MoneyPM
         conn = self.get_connection()
         till = Till.get_current(conn)
 
@@ -197,24 +191,20 @@ class AbstractPaymentGroup(InheritableModelAdapter):
             assert IInPayment(payment, None)
             till.add_entry(payment)
 
-            if isinstance(payment.method, MoneyPM):
+            if payment.method.method_name == 'money':
                 payment.pay()
 
-    def clear_preview_payments(self, method_iface, ignore_method=None):
+    def clear_unused(self):
         """Delete payments of preview status associated to the current
         payment_group. It can happen if user open and cancel this wizard.
-        @param payment_iface: the payment method interface
-        @param ignore_method: a payment method which will be ignored
-                              in the search for payments
         """
-        query = dict(status=Payment.STATUS_PREVIEW, group=self)
-        conn = self.get_connection()
-        if ignore_method:
-            query['method'] = ignore_method.selectOne(connection=conn)
-
-        payments = Payment.selectBy(connection=conn, **query)
+        payments = Payment.selectBy(
+            connection=self.get_connection(),
+            status=Payment.STATUS_PREVIEW,
+            group=self)
         for payment in payments:
-            payment.method.delete_payment(method_iface, payment)
+            self.remove_item(payment)
+            Payment.delete(payment.id)
 
     #
     # Accessors
@@ -225,17 +215,3 @@ class AbstractPaymentGroup(InheritableModelAdapter):
             raise DatabaseInconsistency("Invalid status, got %d"
                                         % self.status)
         return self.statuses[self.status]
-
-    def get_default_payment_method(self):
-        """This hook must be redefined in a subclass when it's necessary"""
-        return self.default_method
-
-    def get_default_payment_method_name(self):
-        """This hook must be redefined in a subclass when it's necessary"""
-        method_names = get_method_names()
-        if not self.default_method in method_names.keys():
-            raise DatabaseInconsistency('Invalid payment method, got %d'
-                                        % self.default_method)
-        return method_names[self.default_method]
-
-

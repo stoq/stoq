@@ -28,12 +28,10 @@ from decimal import Decimal
 
 from kiwi.datatypes import currency
 
-from stoqdrivers.enum import PaymentMethodType
-
 from stoqlib.exceptions import TillError
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.interfaces import IPaymentGroup
-from stoqlib.domain.payment.methods import APaymentMethod
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.till import Till
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -44,7 +42,7 @@ class TestTill(DomainTest):
         sellable = self.create_sellable()
         sale.add_sellable(sellable, price=10)
         group = sale.addFacet(IPaymentGroup, connection=self.trans)
-        method = APaymentMethod.get_by_enum(self.trans, PaymentMethodType.BILL)
+        method = PaymentMethod.get_by_name(self.trans, 'bill')
         payment = method.create_inpayment(group, Decimal(10))
         return payment.get_adapted()
 
@@ -53,7 +51,7 @@ class TestTill(DomainTest):
         sellable = self.create_sellable()
         purchase.add_item(sellable, 1)
         group = IPaymentGroup(purchase)
-        method = APaymentMethod.get_by_enum(self.trans, PaymentMethodType.BILL)
+        method = PaymentMethod.get_by_name(self.trans, 'bill')
         payment = method.create_outpayment(group, Decimal(10))
         return payment.get_adapted()
 

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -41,9 +41,11 @@ from stoqlib.domain.person import Person, PersonAdaptToBranch
 from stoqlib.domain.interfaces import IBranch, IUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
+                                    IPaymentOperationManager,
                                     ISystemNotifier)
 from stoqlib.lib.message import DefaultSystemNotifier
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.paymentoperation import PaymentOperationManager
 
 log = Logger('stoqlib.database.testsuite')
 
@@ -105,8 +107,8 @@ def _provide_current_station(station_name=None, branch_name=None):
     station = BranchStation.get_station(trans, branch, station_name)
     if not station:
         station = BranchStation.create(trans, branch, station_name)
-        trans.commit(close=True)
-
+        trans.commit()
+    
     assert station
     assert station.is_active
 
@@ -158,6 +160,12 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
 
     return rv
 
+def _provide_payment_operation_manager():
+    from stoqlib.domain.payment.operation import register_payment_operations
+
+    provide_utility(IPaymentOperationManager, PaymentOperationManager())
+    register_payment_operations()
+
 def provide_utilities(station_name, branch_name=None):
     """
     Provide utilities like current user and current station.
@@ -166,6 +174,7 @@ def provide_utilities(station_name, branch_name=None):
     """
     _provide_current_user()
     _provide_current_station(station_name, branch_name)
+    _provide_payment_operation_manager()
 
 def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
                         password="", station_name=None, quick=False):

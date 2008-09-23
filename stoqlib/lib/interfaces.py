@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006,2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -24,7 +24,8 @@
 
 """ Stoqlib Interfaces """
 
-from zope.interface.interface import Interface
+from zope.interface.interface import Interface, Attribute
+
 
 class CookieError(Exception):
     pass
@@ -116,3 +117,53 @@ class IPlugin(Interface):
         pass
 
 
+
+class IPaymentOperation(Interface):
+    """An object implementing IPaymentOperation is a 1:1
+    mapping to a payment method. It's responsible for the
+    logic specific parts of a method.
+    """
+    name = Attribute('name')
+    description = Attribute('description')
+    max_installments = Attribute('max_installments')
+
+    def payment_create(payment):
+        """This is called when a payment is created
+        @param payment: the created payment
+        """
+
+    def payment_delete(payment):
+        """This is called just before a payment is deleted
+        @param payment: the payment which is going to be deleted
+        """
+
+    def selectable(method):
+        """This is called to find out if the method should
+        be shown in the slave list of payment methods
+        @returns: True if it should be shown, otherwise
+        """
+
+
+class IPaymentOperationManager(Interface):
+    """This is a singleton for storing payment
+    operations. You can register one and fetch by name
+    """
+    def get_operation_names():
+        """Get the operation names registered in this manager
+        @returns: payment names
+        @rtype: list of strings
+        """
+
+    def register(name, operation):
+        """Register a payment operation.
+        @param name: name of the payment operation
+        @param operation: the payment operation
+        @type operation: an object implementing L{IPaymentOperation}
+        """
+    def get(name):
+        """Get an operation given a name
+        @param name: name of the operation
+        @returns: the operation
+        @rtype operation: an object implementing L{IPaymentOperation}
+        """
+    

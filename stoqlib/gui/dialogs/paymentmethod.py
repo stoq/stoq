@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito  <evandro@async.com.br>
+##              Johan Dahlin            <jdahlin@async.com.br>
 ##
 ##
 """ Dialogs for payment method management"""
@@ -28,21 +29,14 @@ import gtk
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.database.runtime import finish_transaction
-from stoqlib.domain.payment.methods import APaymentMethod
-from stoqlib.domain.payment.methods import (MoneyPM, BillPM, CheckPM,
-                                            GiftCertificatePM,
-                                            CardPM, FinancePM)
-from stoqlib.gui.editors.paymentmethodeditor import (PaymentMethodEditor,
-                                                     BillMethodEditor,
-                                                     CheckMethodEditor)
-from stoqlib.gui.base.dialogs import BasicDialog
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.search import SearchEditorToolBar
-from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.paymentmethodeditor import PaymentMethodEditor
 from stoqlib.gui.search.giftcertificatesearch import GiftCertificateTypeSearch
-from stoqlib.gui.search.personsearch import (FinanceProviderSearch,
-                                             CardProviderSearch)
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.message import warning
 
 _ = stoqlib_gettext
 
@@ -68,7 +62,7 @@ class PaymentMethodsDialog(BasicDialog):
         self.attach_slave("extra_holder", self._toolbar_slave)
 
     def _setup_list(self):
-        methods = APaymentMethod.select(connection=self.conn)
+        methods = PaymentMethod.select(connection=self.conn)
         self.klist = ObjectList(self._get_columns(), methods,
                                 gtk.SELECTION_BROWSE)
         self.klist.connect("selection-changed",
@@ -86,21 +80,31 @@ class PaymentMethodsDialog(BasicDialog):
                        editable_attribute='active_editable',
                        editable=True)]
 
-    def _get_dialog(self, item):
-        methods_dict = {GiftCertificatePM: GiftCertificateTypeSearch,
-                        CardPM: CardProviderSearch,
-                        MoneyPM: (PaymentMethodEditor, item),
-                        CheckPM: (CheckMethodEditor, item),
-                        BillPM: (BillMethodEditor, item),
-                        FinancePM: FinanceProviderSearch}
-        item_table = type(item)
-        if item_table in methods_dict.keys():
-            return methods_dict[item_table]
-        raise TypeError('Invalid payment method adapter, got %r'
-                        % item)
+    def _get_dialog(self, method):
+        method_editors = {
+            'giftcertificate': GiftCertificateTypeSearch,
+            'creditcard': NotImplementedError,
+            'debitcard': NotImplementedError,
+            'money': (PaymentMethodEditor, method),
+            'check': (PaymentMethodEditor, method),
+            'bill': (PaymentMethodEditor, method),
+            }
+        dialog = method_editors.get(method.method_name)
+        if dialog is None:
+            raise TypeError(
+                'Invalid payment method adapter: %s' % (
+                method.method_name,))
+        elif dialog is NotImplementedError:
+            warning(_('Editor for %s is not implemented' % (
+                method.method_name)))
+            return None
+                 
+        return dialog
 
     def _edit_item(self, item):
         dialog = self._get_dialog(item)
+        if dialog is None:
+            return
         dialog_args = [self, self.conn]
         if isinstance(dialog, tuple):
             dialog, model = dialog

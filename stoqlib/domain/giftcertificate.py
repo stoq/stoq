@@ -148,12 +148,11 @@ class GiftCertificateAdaptToSellable(ASellable):
         ASellable._create(self, id, **kw)
 
     def apply_as_payment_method(self):
-        from stoqlib.domain.payment.methods import GiftCertificatePM
         if self.status != self.STATUS_SOLD:
             raise InvalidStatus('This gift certificate must be sold to be used '
                                 'as a payment method.')
-        conn = self.get_connection()
-        method = GiftCertificatePM.selectOne(connection=conn)
+        from stoqlib.domain.payment.method import PaymentMethod
+        method = PaymentMethod.get_by_name(self.get_connection(), 'giftcertificate')
         payment = method.create_inpayment(self.group, self.price)
         payment.get_adapted().set_pending()
         self.status = self.STATUS_CLOSED

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -88,7 +88,7 @@ class Payment(Domain):
     discount = PriceCol(default=0)
     description = UnicodeCol(default=None)
     payment_number = UnicodeCol(default=None)
-    method = ForeignKey('APaymentMethod')
+    method = ForeignKey('PaymentMethod')
     group = ForeignKey('AbstractPaymentGroup')
     till = ForeignKey('Till')
     destination = ForeignKey('PaymentDestination')
@@ -109,6 +109,44 @@ class Payment(Domain):
         if not 'base_value' in kw or not kw['base_value']:
             kw['base_value'] = kw['value']
         Domain._create(self, id, **kw)
+
+    @classmethod
+    def delete(cls, obj_id, connection):
+        # First call hooks, do this first so the hook
+        # have access to everything it needs
+        payment = cls.get(obj_id, connection)
+        payment.method.operation.payment_delete(payment)
+
+        # Remove from the In/Out tables, ideally this would
+        # be stored so we don't have to do trial and error
+        out_payment = IOutPayment(payment, None)
+        in_payment = IInPayment(payment, None)
+        if out_payment is not None:
+            PaymentAdaptToOutPayment.delete(
+                out_payment.id, connection)
+        elif in_payment is not None:
+            PaymentAdaptToInPayment.delete(
+                in_payment.id, connection)
+
+        super(cls, Payment).delete(obj_id, connection)
+
+    #
+    # Properties
+    #
+    
+    @property
+    def bank(self):
+        """Get a BankAccount instance
+        @returns: a BankAccount instance, if the payment method does not
+        provide a bank account.
+        """
+        # This is mainly used by receipt.rml, and is a convenience
+        # property, ideally we should move it to payment operation
+        # somehow
+        if self.method.method_name == 'check':
+            data = self.method.operation.get_check_data_by_payment(self)
+            return data.bank_data
+
 
     #
     # Public API
@@ -242,16 +280,6 @@ class Payment(Domain):
         @returns: True if the payment is paid, otherwise False
         """
         return self.status == Payment.STATUS_PREVIEW
-
-    @property
-    def bank(self):
-        """Get a BankAccount instance
-        @returns: a BankAccount instance, if the payment method does not
-        provide a bank account.
-        """
-        if self.method.name == 'check':
-            data = self.method.get_check_data_by_payment(self)
-            return data.bank_data
 
     def get_paid_date_string(self):
         """Get a paid date string

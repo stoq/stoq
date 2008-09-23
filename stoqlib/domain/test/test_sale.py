@@ -28,7 +28,7 @@ from decimal import Decimal
 
 from kiwi.datatypes import currency
 from sqlobject.sqlbuilder import AND
-from stoqdrivers.enum import TaxType, PaymentMethodType
+from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
@@ -39,7 +39,7 @@ from stoqlib.domain.interfaces import (IPaymentGroup,
                                        IOutPayment,
                                        IGiftCertificate)
 from stoqlib.domain.payment.group import AbstractPaymentGroup
-from stoqlib.domain.payment.methods import APaymentMethod, CheckPM, MoneyPM
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentAdaptToOutPayment
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import SellableTaxConstant
@@ -49,12 +49,12 @@ from stoqlib.lib.parameters import sysparam
 
 class TestSale(DomainTest):
 
-    def _add_payments(self, sale, method_type=MoneyPM):
+    def _add_payments(self, sale, method_type='money'):
         group = IPaymentGroup(sale, None)
         if group is None:
             group = sale.addFacet(IPaymentGroup, connection=self.trans)
-
-        method = method_type.selectOne(connection=self.trans)
+            
+        method = PaymentMethod.get_by_name(self.trans, method_type)
         payment = method.create_inpayment(group,
                                           sale.get_sale_subtotal())
 
@@ -171,7 +171,7 @@ class TestSale(DomainTest):
         self._add_product(sale)
         sale.order()
 
-        self._add_payments(sale, method_type=MoneyPM)
+        self._add_payments(sale, method_type='money')
         group = IPaymentGroup(sale)
         self.failIf(FiscalBookEntry.selectOneBy(
             entry_type=FiscalBookEntry.TYPE_PRODUCT,
@@ -201,7 +201,7 @@ class TestSale(DomainTest):
         self._add_product(sale)
         sale.order()
 
-        self._add_payments(sale, method_type=CheckPM)
+        self._add_payments(sale, method_type='check')
         group = IPaymentGroup(sale)
         self.failIf(FiscalBookEntry.selectOneBy(
             entry_type=FiscalBookEntry.TYPE_PRODUCT,
@@ -296,7 +296,7 @@ class TestSale(DomainTest):
         self.failUnless(IOutPayment(payment, None))
         self.assertEqual(payment.value, paid_payment.value)
         self.assertEqual(payment.status, Payment.STATUS_PAID)
-        self.failUnless(isinstance(payment.method, MoneyPM))
+        self.assertEqual(payment.method.method_name, 'money')
 
         cfop = CfopData.selectOneBy(code='5.202', connection=self.trans)
         book_entry = FiscalBookEntry.selectOneBy(
@@ -350,7 +350,7 @@ class TestSale(DomainTest):
         out_payment_plus_penalty = payment.value + renegotiation.penalty_value
         self.assertEqual(out_payment_plus_penalty, paid_payment.value)
         self.assertEqual(payment.status, Payment.STATUS_PAID)
-        self.failUnless(isinstance(payment.method, MoneyPM))
+        self.assertEqual(payment.method.method_name, 'money')
 
         cfop = CfopData.selectOneBy(code='5.202', connection=self.trans)
         book_entry = FiscalBookEntry.selectOneBy(
@@ -377,8 +377,7 @@ class TestSale(DomainTest):
         balance_initial = till.get_balance()
 
         group = sale.addFacet(IPaymentGroup, connection=self.trans)
-        method = APaymentMethod.get_by_enum(self.trans,
-                                            PaymentMethodType.CHECK)
+        method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = method.create_inpayment(group, Decimal(300))
         sale.confirm()
         self.failUnless(sale.can_return())
@@ -414,8 +413,7 @@ class TestSale(DomainTest):
         balance_initial = till.get_balance()
 
         group = sale.addFacet(IPaymentGroup, connection=self.trans)
-        method = APaymentMethod.get_by_enum(self.trans,
-                                            PaymentMethodType.CHECK)
+        method = PaymentMethod.get_by_name(self.trans, 'check')
         payment1 = method.create_inpayment(group, Decimal(100))
         payment2 = method.create_inpayment(group, Decimal(100))
         payment3 = method.create_inpayment(group, Decimal(100))
@@ -456,8 +454,7 @@ class TestSale(DomainTest):
         balance_initial = till.get_balance()
 
         group = sale.addFacet(IPaymentGroup, connection=self.trans)
-        method = APaymentMethod.get_by_enum(self.trans,
-                                            PaymentMethodType.CHECK)
+        method = PaymentMethod.get_by_name(self.trans, 'check')
         payment1 = method.create_inpayment(group, Decimal(100))
         payment2 = method.create_inpayment(group, Decimal(100))
         payment3 = method.create_inpayment(group, Decimal(100))
@@ -631,6 +628,23 @@ class TestSale(DomainTest):
         sale.client = self.create_client()
         client_role = sale.get_client_role()
         self.failIf(client_role is None)
+
+    def testPaidWithMoney(self):
+        sale = self.create_sale()
+        self._add_product(sale)
+        sale.order()
+        self._add_payments(sale, method_type='money')
+        sale.confirm()
+
+        self.failUnless(sale.paid_with_money())
+
+        sale = self.create_sale()
+        self._add_product(sale)
+        sale.order()
+        self._add_payments(sale, method_type='check')
+        sale.confirm()
+
+        self.failIf(sale.paid_with_money())
 
 
 class TestSaleItem(DomainTest):

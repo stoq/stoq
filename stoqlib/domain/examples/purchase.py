@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -23,8 +23,6 @@
 ##                  Johan Dahlin            <jdahlin@async.com.br>
 ##
 """ Create purchase objects for an example database"""
-
-from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       get_current_user)
@@ -67,10 +65,9 @@ def create_purchases():
                           branch=branch)
     order.set_valid()
     group = order.addFacet(IPaymentGroup,
-                   default_method=int(PaymentMethodType.BILL),
-                   intervals=1,
-                   interval_type=INTERVALTYPE_MONTH,
-                   connection=trans)
+                           intervals=1,
+                           interval_type=INTERVALTYPE_MONTH,
+                           connection=trans)
 
     for sellable in sellables:
         if not IProduct(sellable, None):

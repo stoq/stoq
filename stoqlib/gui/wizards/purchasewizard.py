@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -31,7 +31,6 @@ from decimal import Decimal
 
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
-from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.database.runtime import (get_current_branch, new_transaction,
                                       finish_transaction, get_current_user)
@@ -49,13 +48,13 @@ from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave,
                                              BillMethodSlave, MoneyMethodSlave)
 from stoqlib.domain.sellable import ASellable
-from stoqlib.domain.payment.methods import APaymentMethod
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
-                                       IPaymentGroup, IOutPayment)
+                                       IPaymentGroup)
 from stoqlib.reporting.purchase import PurchaseOrderReport
 
 _ = stoqlib_gettext
@@ -272,56 +271,40 @@ class PurchasePaymentStep(WizardEditorStep):
 
     def __init__(self, wizard, previous, conn, model):
         self.order = model
-        pg = IPaymentGroup(model, None)
-        if pg:
-            model = pg
-        else:
-            method = PaymentMethodType.BILL
-            interval_type = INTERVALTYPE_MONTH
-            model = model.addFacet(IPaymentGroup, default_method=int(method),
+        model = IPaymentGroup(model, None)
+        if model is not None:
+            model = model.addFacet(IPaymentGroup,
                                    intervals=1,
-                                   interval_type=interval_type,
+                                   interval_type=INTERVALTYPE_MONTH,
                                    connection=conn)
         self.slave = None
         self.discount_surcharge_slave = None
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
 
     def _setup_widgets(self):
-        items = [(_('Bill'), PaymentMethodType.BILL),
-                 (_('Check'), PaymentMethodType.CHECK),
-                 (_('Money'), PaymentMethodType.MONEY)]
+        items = [
+            (_('Bill'), PaymentMethod.get_by_name('bill', self.conn)),
+            (_('Check'), PaymentMethod.get_by_name('check', self.conn)),
+            (_('Money'), PaymentMethod.get_by_name('money', self.conn)),
+            ]
         self.method_combo.prefill(items)
-
-    def _get_slave_class(self, method_type):
-        """Returns the slave class corresponding to a payment method type
-        """
-        if method_type == PaymentMethodType.BILL:
-            return BillMethodSlave
-        if method_type == PaymentMethodType.CHECK:
-            return CheckMethodSlave
-        if method_type == PaymentMethodType.MONEY:
-            return MoneyMethodSlave
-
-    def _get_slave_args(self, method_type):
-        """Returns a tuple with a the slave arguments corresponding to
-            a a payment method type
-        """
-        # payment_group is used in slave class
-        self.wizard.payment_group = self.model
-        payment_method = APaymentMethod.get_by_enum(self.conn, method_type)
-        return (self.wizard, self, self.conn, self.order, payment_method)
 
     def _set_method_slave(self):
         """Sets the payment method slave"""
         method = self.method_combo.get_selected_data()
-        if method is not None:
-            self.model.set_method(int(method))
-
-            slave_class = self._get_slave_class(method)
-            if slave_class:
-                slave_args = self._get_slave_args(method)
-                self.slave = slave_class(*slave_args)
-                self.attach_slave('method_slave_holder', self.slave)
+        if method is None:
+            return
+        slave_classes = {
+            'bill': BillMethodSlave,
+            'check': CheckMethodSlave,
+            'money': MoneyMethodSlave,
+            }
+        slave_class = slave_classes.get(method.method_name)
+        if slave_class:
+            self.wizard.payment_group = self.model
+            self.slave = slave_class(self.wizard, self,
+                                     self.conn, self.order, method)
+            self.attach_slave('method_slave_holder', self.slave)
 
     def _update_payment_method_slave(self):
         """Updates the payment method slave """
@@ -330,13 +313,14 @@ class PurchasePaymentStep(WizardEditorStep):
             self.slave.get_toplevel().hide()
             self.detach_slave(holder_name)
             self.slave = None
+
         # remove all payments created last time, if any
-        self.model.clear_preview_payments(IOutPayment)
+        self.model.clear_unused()
         if not self.slave:
             self._set_method_slave()
 
     def _update_totals(self, *args):
-        for field_name in ('purchase_subtotal', 'purchase_total'):
+        for field_name in ['purchase_subtotal', 'purchase_total']:
             self.order_proxy.update(field_name)
 
     #

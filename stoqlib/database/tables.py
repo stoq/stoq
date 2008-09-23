@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -74,31 +74,12 @@ _tables = [
      ('till', ["Till", "TillEntry"]),
      ('payment.category', ["PaymentCategory"]),
      ('payment.destination', ["PaymentDestination"]),
-    # XXX Unfortunately we must add 'methods.py' module in two places
-    # here since the class Payment needs one of its classes. This will
-    # be fixed in bug 2036.
      ('payment.group', ["AbstractPaymentGroup"]),
-     ('payment.methods', ["APaymentMethod",
-                          "PaymentMethodDetails"]),
+     ('payment.method', ["PaymentMethod", "CheckData"]),
      ('payment.payment', ["Payment",
                           "PaymentAdaptToInPayment",
                           "PaymentAdaptToOutPayment"]),
      ('fiscal', ["CfopData", "FiscalBookEntry"]),
-     ('payment.methods', ["BillCheckGroupData",
-                          "CheckData",
-                          "MoneyPM",
-                          "CheckPM",
-                          "BillPM",
-                          "CardPM",
-                          "FinancePM",
-                          "GiftCertificatePM",
-                          "CardInstallmentSettings",
-                          "DebitCardDetails",
-                          "CreditCardDetails",
-                          "CardInstallmentsStoreDetails",
-                          "CardInstallmentsProviderDetails",
-                          "FinanceDetails",
-                          "CreditProviderGroupData"]),
      ('sellable', ["OnSaleInfo", "BaseSellableInfo"]),
      ('giftcertificate', ["GiftCertificate",
                           "GiftCertificateAdaptToSellable",

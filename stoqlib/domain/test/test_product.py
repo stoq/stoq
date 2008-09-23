@@ -28,13 +28,13 @@
 
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.sellable import BaseSellableInfo, ASellable
-from stoqlib.domain.payment.methods import MoneyPM
+from stoqlib.domain.interfaces import IStorable, ISellable, IPaymentGroup
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductHistory, ProductComponent,
                                     ProductRetentionHistory)
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.interfaces import IStorable, ISellable, IPaymentGroup
+from stoqlib.domain.sellable import BaseSellableInfo, ASellable
 
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -207,7 +207,7 @@ class TestProductHistory(DomainTest):
         storable.increase_stock(100, get_current_branch(self.trans))
         sale_item = sale.add_sellable(sellable, quantity=5)
 
-        method = MoneyPM.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, 'money')
         method.create_inpayment(IPaymentGroup(sale),
                                 sale.get_sale_subtotal())
 

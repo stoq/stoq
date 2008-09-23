@@ -1,5 +1,5 @@
 --
--- Copyright (C) 2006,2007 Async Open Source
+-- Copyright (C) 2006-2008 Async Open Source
 --
 -- This program is free software; you can redistribute it and/or
 -- modify it under the terms of the GNU Lesser General Public License
@@ -23,6 +23,8 @@
 --
 -- Tables
 --
+
+-- TODO: Verify patchlevels 27-51,54-
 
 CREATE TABLE transaction_entry (
     id serial NOT NULL PRIMARY KEY,
@@ -518,23 +520,10 @@ CREATE TABLE abstract_payment_group (
     open_date timestamp,
     close_date timestamp,
     cancel_date timestamp,
-    default_method integer CONSTRAINT positive_default_method CHECK (default_method >= 0),
     installments_number integer CONSTRAINT positive_installments_number CHECK (installments_number > 0),
     interval_type integer,
     intervals integer,
     child_name character varying(255)
-);
-
-CREATE TABLE bill_check_group_data (
-    id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    installments_number integer CONSTRAINT positive_installments_number CHECK (installments_number > 0),
-    first_duedate timestamp,
-    interest numeric(10,2) CONSTRAINT interest_percent CHECK (interest >= 0 AND interest <= 100),
-    interval_type integer,
-    intervals integer,
-    group_id bigint REFERENCES abstract_payment_group(id)
 );
 
 CREATE TABLE branch_synchronization (
@@ -575,14 +564,11 @@ CREATE TABLE card_installments_store_details (
 );
 
 CREATE TABLE payment_destination (
-    -- Subclasses:
-    --    store_destination
-    --    bank_destination
     id serial NOT NULL PRIMARY KEY,
     description text,
     account_id bigint REFERENCES bank_account(id),
     notes text,
-    child_name character varying(255)
+    branch_id bigint REFERENCES person_adapt_to_branch(id)
 );
 
 CREATE TABLE payment_method_details (
@@ -591,7 +577,6 @@ CREATE TABLE payment_method_details (
     --    credit_card_details
     --    card_installments_store_details
     --    card_installments_provider_details
-    --    finance_details
     id serial NOT NULL PRIMARY KEY,
     is_active boolean,
     commission numeric(10,2),
@@ -600,18 +585,19 @@ CREATE TABLE payment_method_details (
     child_name character varying(255)
 );
 
-CREATE TABLE apayment_method (
-    -- Subclasses:
-    --    money_p_m
-    --    gift_certificate_p_m
-    --    card_p_m
-    --    finance_p_m
+CREATE TABLE payment_method (
     id serial NOT NULL PRIMARY KEY,
     is_active boolean,
-    child_name character varying(255),
-    daily_penalty numeric(10,2) CHECK (daily_penalty >= 0 AND daily_penalty <= 100),
+    daily_penalty numeric(10,2) CONSTRAINT valid_daily_penalty CHECK (daily_penalty >= 0 AND daily_penalty <= 100),
     interest numeric(10,2) CONSTRAINT interest_percent CHECK (interest >= 0 AND interest <= 100),
     destination_id bigint REFERENCES payment_destination(id)
+    te_created_id bigint REFERENCES transaction_entry(id);
+    te_modified_id bigint REFERENCES transaction_entry(id);
+    method_name text UNIQUE;
+    description text;
+    payment_day integer CONSTRAINT valid_payment_day CHECK (payment_day >= 1 AND payment_day <= 28);
+    closing_day integer CONSTRAINT valid_closing_day CHECK (closing_day >= 1 AND closing_day <= 28);
+    max_installments integer CONSTRAINT positive_max_installments CHECK (max_installments > 0);
 );
 
 CREATE TABLE payment (
@@ -630,8 +616,7 @@ CREATE TABLE payment (
     discount numeric(10,2) CONSTRAINT positive_discount CHECK (discount >= 0),
     description text,
     payment_number text,
-    method_id bigint REFERENCES apayment_method(id),
-    method_details_id bigint REFERENCES payment_method_details(id),
+    method_id bigint REFERENCES payment_method(id),
     group_id bigint REFERENCES abstract_payment_group(id),
     till_id bigint REFERENCES till(id),
     destination_id bigint REFERENCES payment_destination(id)
@@ -703,11 +688,6 @@ CREATE TABLE employee_role_history (
     is_active boolean
 );
 
-CREATE TABLE finance_details (
-    id serial NOT NULL PRIMARY KEY,
-    receive_days integer CONSTRAINT positive_receive_days CHECK (receive_days >= 0)
-);
-
 CREATE TABLE gift_certificate (
     id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
@@ -732,8 +712,6 @@ CREATE TABLE gift_certificate_type (
 
 CREATE TABLE inheritable_model (
     -- Subclasses:
-    --   apayment_method
-    --   payment_destination
     --   payment_method_details
     id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
@@ -781,66 +759,6 @@ CREATE TABLE payment_adapt_to_out_payment (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     original_id bigint UNIQUE REFERENCES payment(id)
-);
-
-CREATE TABLE payment_method (
-    id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
-);
-
-CREATE TABLE payment_operation (
-    id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    operation_date timestamp
-);
-
-CREATE TABLE bill_p_m (
-    id serial NOT NULL PRIMARY KEY,
-    max_installments_number integer CONSTRAINT positive_max_installments_number CHECK (max_installments_number > 0),
-    original_id bigint UNIQUE REFERENCES payment_method(id)
-);
-
-CREATE TABLE card_p_m (
-    id serial NOT NULL PRIMARY KEY,
-    original_id bigint UNIQUE REFERENCES payment_method(id)
-);
-
-CREATE TABLE check_p_m (
-    id serial NOT NULL PRIMARY KEY,
-    max_installments_number integer CONSTRAINT positive_max_installments_number CHECK (max_installments_number > 0),
-    original_id bigint UNIQUE REFERENCES payment_method(id)
-);
-
-CREATE TABLE finance_p_m (
-    id serial NOT NULL PRIMARY KEY,
-    original_id bigint UNIQUE REFERENCES payment_method(id)
-);
-
-CREATE TABLE gift_certificate_p_m (
-    id serial NOT NULL PRIMARY KEY,
-    original_id bigint UNIQUE REFERENCES payment_method(id)
-);
-
-CREATE TABLE money_p_m (
-    id serial NOT NULL PRIMARY KEY,
-    original_id bigint UNIQUE REFERENCES payment_method(id)
-);
-
-CREATE TABLE po_adapt_to_payment_deposit (
-    id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    original_id bigint UNIQUE REFERENCES payment_operation(id)
-);
-
-CREATE TABLE po_adapt_to_payment_devolution (
-    id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    reason text,
-    original_id bigint UNIQUE REFERENCES payment_operation(id)
 );
 
 CREATE TABLE product_retention_history (
@@ -925,11 +843,6 @@ CREATE TABLE delivery_item (
     delivery_id bigint REFERENCES sale_item_adapt_to_delivery(id)
 );
 
-CREATE TABLE store_destination (
-    id serial NOT NULL PRIMARY KEY,
-    branch_id bigint REFERENCES person_adapt_to_branch(id)
-);
-
 CREATE TABLE till_entry (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -939,11 +852,6 @@ CREATE TABLE till_entry (
     value numeric(10,2),
     till_id bigint NOT NULL REFERENCES till(id),
     payment_id integer
-);
-
-CREATE TABLE bank_destination (
-    id serial NOT NULL PRIMARY KEY,
-    branch_id bigint REFERENCES person_adapt_to_bank_branch(id)
 );
 
 CREATE TABLE fiscal_book_entry (

@@ -29,16 +29,12 @@ from decimal import Decimal
 import os
 import sys
 
-
-from stoqdrivers.enum import PaymentMethodType
-
 import stoqlib
 from stoqlib.database.runtime import get_current_station
-
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, CommissionView
 from stoqlib.domain.interfaces import IPaymentGroup, ISellable, IStorable
-from stoqlib.domain.payment.methods import APaymentMethod
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
                                           InCheckPaymentView,
                                           OutCheckPaymentView)
@@ -173,7 +169,7 @@ class TestReport(DomainTest):
         sellable = self.create_sellable()
         sale.add_sellable(sellable, price=100)
         group = sale.addFacet(IPaymentGroup, connection=self.trans)
-        method = APaymentMethod.get_by_enum(self.trans, PaymentMethodType.BILL)
+        method = PaymentMethod.get_by_name(self.trans, 'bill')
         payment = method.create_inpayment(group, Decimal(100))
         inpayment = payment.get_adapted()
 
@@ -227,8 +223,7 @@ class TestReport(DomainTest):
         if group is None:
             group = sale.addFacet(IPaymentGroup, connection=self.trans)
 
-        method = APaymentMethod.get_by_enum(self.trans,
-                                           PaymentMethodType.MONEY)
+        method = PaymentMethod.get_by_name(self.trans, 'money')
         till = Till.get_last_opened(self.trans)
         payment = method.create_inpayment(group,
                                           sale.get_sale_subtotal(),

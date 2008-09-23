@@ -28,9 +28,8 @@ from decimal import Decimal
 
 from kiwi.datatypes import currency
 
-from stoqlib.domain.payment.methods import CheckPM
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-
 from stoqlib.domain.test.domaintest import DomainTest
 
 class TestPayment(DomainTest):
@@ -48,7 +47,7 @@ class TestPayment(DomainTest):
         return datetime.date.today() + datetime.timedelta(days)
 
     def testGetPenalty(self):
-        method = CheckPM.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
                           due_date=datetime.datetime.now(),
                           open_date=datetime.datetime.now(),
@@ -87,7 +86,7 @@ class TestPayment(DomainTest):
             self.assertRaises(ValueError, payment.get_penalty, paid_date)
 
     def testGetInterest(self):
-        method = CheckPM.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
                           due_date=datetime.datetime.now(),
                           method=method,
@@ -124,7 +123,7 @@ class TestPayment(DomainTest):
             self.assertRaises(ValueError, payment.get_interest, paid_date)
 
     def testIsPaid(self):
-        method = CheckPM.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
                           due_date=datetime.datetime.now(),
                           method=method,
@@ -140,7 +139,7 @@ class TestPayment(DomainTest):
         self.failUnless(payment.is_paid())
 
     def testGetPaidDateString(self):
-        method = CheckPM.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
                           due_date=datetime.datetime.now(),
                           method=method,
@@ -156,7 +155,7 @@ class TestPayment(DomainTest):
         self.failUnless(payment.get_paid_date_string() == today)
 
     def testGetOpenDateString(self):
-        method = CheckPM.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
                           due_date=datetime.datetime.now(),
                           open_date=None,
@@ -171,7 +170,7 @@ class TestPayment(DomainTest):
         self.assertNotEqual(payment.get_open_date_string(), "")
 
     def testGetDaysLate(self):
-        method = CheckPM.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, 'check')
         open_date = due_date = self._get_relative_day(-4)
         payment = Payment(value=currency(100),
                           due_date=due_date,
@@ -188,7 +187,7 @@ class TestPayment(DomainTest):
         self.assertEqual(payment.get_days_late(), 0)
 
     def testCancel(self):
-        method = CheckPM.selectOne(connection=self.trans)
+        method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
                           due_date=datetime.datetime.now(),
                           method=method,

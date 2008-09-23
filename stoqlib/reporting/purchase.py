@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,6 @@
 from decimal import Decimal
 
 from kiwi.datatypes import currency
-from stoqdrivers.enum import PaymentMethodType
 
 from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
                                            TableColumn as TC,
@@ -170,16 +169,11 @@ class PurchaseOrderReport(BaseStoqReport):
         group = IPaymentGroup(self._order)
         if not group:
             return
-        if group.default_method == PaymentMethodType.MONEY:
-            msg = _("Paid in cash")
+        if group.installments_number > 1:
+            msg = (_("Paid in %d installments")
+                   % (group.installments_number,))
         else:
-            method_name = group.get_default_payment_method_name()
-            if group.installments_number > 1:
-                msg = (_("Paid with %s in %d installments")
-                       % (method_name, group.installments_number))
-            else:
-                msg = (_("Paid with %s in %d installments")
-                       % (method_name, group.installments_number))
+            msg = _("Paid in 1 installment")
         self.add_paragraph(msg, style="Normal-Bold")
 
     def _setup_order_details_table(self):

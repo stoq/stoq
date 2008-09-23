@@ -13,29 +13,42 @@
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU Lesser General Public License for more details.
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU Lesser General Public License
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-
-"""A domain to slave singleton mapper
-"""
+##  Author(s):  Johan Dahlin                <jdahlin@async.com.br>
+##
 
 from zope.interface import implements
 
-from stoqlib.gui.interfaces import IDomainSlaveMapper
+from stoqlib.lib.interfaces import IPaymentOperation, IPaymentOperationManager
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
 
 
-class DefaultDomainSlaveMapper(object):
-    implements(IDomainSlaveMapper)
-    
+class PaymentOperationManager(object):
+    implements(IPaymentOperationManager)
     def __init__(self):
-        self._slave_classes = {}
+        self._methods = {}
+        
+    def register(self, name, klass):
+        """
+        @param name:
+        @param klass:
+        """
+        if not IPaymentOperation.providedBy(klass):
+            raise ValueError(
+                "%r does not  implement required interface "
+                "IPaymentOperation" % (klass,))
+        self._methods[name] = klass
 
-    def register(self, domain, slave_class):
-        self._slave_classes[(type(domain), domain.id)] = slave_class
+    def get_operation_names(self):
+        return self._methods.keys()
 
-    def get_slave_class(self, domain):
-        return self._slave_classes.get((type(domain), domain.id))
+    def get(self, name):
+        return self._methods.get(name)
+
