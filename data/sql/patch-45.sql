@@ -1,4 +1,4 @@
--- #Bug 3733 fail to update schema from 0.9.5 to 0.9.6
+-- #3733: fail to update schema from 0.9.5 to 0.9.6
 
 
 -- In case the parameter MAIN_COMPANY is greater then the last id of the available branches,
