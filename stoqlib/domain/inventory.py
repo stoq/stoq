@@ -26,7 +26,7 @@
 import datetime
 
 from sqlobject.col import ForeignKey, DateTimeCol, IntCol, UnicodeCol
-from sqlobject.sqlbuilder import AND, ISNOTNULL
+from sqlobject.sqlbuilder import const, AND, ISNOTNULL
 
 from stoqlib.database.columns import DecimalCol
 from stoqlib.domain.base import Domain
@@ -179,7 +179,7 @@ class Inventory(Domain):
         @type: datetime.datetime
         """
         if not close_date:
-            close_date = datetime.datetime.now()
+            close_date = const.NOW()
 
         if not self.is_open():
             raise AssertionError("You can not close an inventory which is "
