@@ -190,7 +190,7 @@ class PaymentListSlave(BaseEditorSlave):
         else:
             difference *= -1
             for unused in range(difference):
-                self.remove_last_payment_slave()
+                self._remove_last_payment_slave()
 
     def add_slave(self, slave=None):
         if not self.max_installments:
