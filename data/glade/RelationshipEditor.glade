@@ -4,7 +4,7 @@
     <widget class="GtkWindow" id="RelationshipEditor">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
-        <property name="visible">True</property>
+        <property name="visible">False</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
                 <property name="border_width">6</property>
