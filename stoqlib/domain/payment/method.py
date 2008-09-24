@@ -30,6 +30,7 @@ import datetime
 from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
 from sqlobject import IntCol, ForeignKey, BoolCol, StringCol, UnicodeCol
+from sqlobject.sqlbuilder import const
 from zope.interface import implements
 
 from stoqlib.database.columns import DecimalCol
@@ -213,7 +214,7 @@ class PaymentMethod(Domain):
         conn = self.get_connection()
 
         if due_date is None:
-            due_date = datetime.datetime.today()
+            due_date = const.NOW()
 
         if iface is IInPayment:
             payment_count = Payment.selectBy(
