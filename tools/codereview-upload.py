@@ -495,12 +495,9 @@ def GuessBase():
                     base = "http" + base[5:]
                 logging.info("Guessed Google Code base = %s", base)
             elif url.startswith('svn+ssh://svn@code.fluendo.com'):
-                url = url.replace('svn+ssh://svn@', 'https')
                 path = path.replace('flumotion/flumotion', 'flumotion')
                 base = "https://code.fluendo.com/flumotion/svn" + path
             elif url.startswith('svn+ssh://async.com.br/pub/'):
-                url = url.replace('svn+ssh://', 'http')
-                url = url.replace('async.com.br', 'svn.async.com.br')
                 base = "http://svn.async.com.br/svn" + path.replace('/pub/', '/')
             else:
                 ErrorExit("Unrecognized svn project root: %s" % url)
