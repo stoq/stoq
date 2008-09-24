@@ -63,6 +63,9 @@ class AdaptableSQLObject(Adaptable):
     def registerFacet(cls, facet, *ifaces):
         super(AdaptableSQLObject, cls).registerFacet(facet, *ifaces)
 
+        if not issubclass(facet, (SQLObject, InheritableSQLObject)):
+            return
+
         # This might not be the best location to do this, but it has
         # a nice lazy property to it. The alternative would be to
         # attach it to all domain objects during startup, or just
@@ -98,12 +101,17 @@ def _adaptable_sqlobject_adapter_hook(iface, obj):
     if not facetType:
         return
 
-    # FIXME: Use selectOneBy
-    results = facetType.selectBy(
-        _originalID=obj.id, connection=obj.get_connection())
+    # Persistant Adapters
+    if issubclass(facetType, SQLObjectAdapter):
+        # FIXME: Use selectOneBy
+        results = facetType.selectBy(
+            _originalID=obj.id, connection=obj.get_connection())
 
-    if results.count() == 1:
-        return results[0]
+        if results.count() == 1:
+            return results[0]
+    # Non-Persistant Adapters
+    else:
+        return facetType(obj)
 
 adapter_hooks.append(_adaptable_sqlobject_adapter_hook)
 
