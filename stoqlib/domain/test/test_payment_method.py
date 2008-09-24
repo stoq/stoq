@@ -36,6 +36,7 @@ from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
 from stoqlib.lib.defaults import quantize
 
+
 class _TestPaymentMethod:
     def createInPayment(self):
         sale = self.create_sale()
@@ -199,7 +200,7 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         method.selectable()
 
 
-class TestAPaymentMethod(DomainTest, _TestPaymentMethod):
+class TestPaymentMethod(DomainTest, _TestPaymentMethod):
     method_type = 'check'
 
     def _createUnclosedTill(self):
@@ -277,5 +278,9 @@ class TestCheck(DomainTest, _TestPaymentMethodsBase):
 
 class TestBill(DomainTest, _TestPaymentMethodsBase):
     method_type = 'bill'
+
+
+class TestCard(DomainTest, _TestPaymentMethodsBase):
+    method_type = 'card'
 
 
