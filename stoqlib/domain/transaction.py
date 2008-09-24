@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -27,10 +27,11 @@
 from sqlobject import SQLObject
 from sqlobject.col import DateTimeCol, IntCol
 
+
 class TransactionEntry(SQLObject):
     """
-    A TransactionEntry keeps track of state associated with a transaction.
-    It's main use case is to know information about the system when
+    A TransactionEntry keeps track of state associated with a database
+    transaction. It's main use case is to know information about the system when
     a domain object is created or modified.
 
     @cvar te_time:
