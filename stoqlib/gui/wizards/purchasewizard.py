@@ -273,11 +273,11 @@ class PurchasePaymentStep(WizardEditorStep):
     def __init__(self, wizard, previous, conn, model):
         self.order = model
         model = IPaymentGroup(model, None)
-        if model is not None:
-            model = model.addFacet(IPaymentGroup,
-                                   intervals=1,
-                                   interval_type=INTERVALTYPE_MONTH,
-                                   connection=conn)
+        if model is None:
+            model = self.order.addFacet(IPaymentGroup,
+                                        intervals=1,
+                                        interval_type=INTERVALTYPE_MONTH,
+                                        connection=conn)
         self.slave = None
         self.discount_surcharge_slave = None
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
@@ -357,6 +357,7 @@ class PurchasePaymentStep(WizardEditorStep):
 
     def on_method_combo__content_changed(self, *args):
         self._update_payment_method_slave()
+
 
 class FinishPurchaseStep(WizardEditorStep):
     gladefile = 'FinishPurchaseStep'
