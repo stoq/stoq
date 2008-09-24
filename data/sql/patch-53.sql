@@ -3,7 +3,9 @@
 -- Financial details is gone
 DROP TABLE finance_p_m;
 DROP TABLE finance_details;
-DELETE FROM apayment_method WHERE child_name = 'FinancePM';
+-- We can't remove it because there might be payments referecing it, so
+-- just disable it instead.
+UPDATE apayment_method SET is_active = FALSE WHERE child_name = 'FinancePM';
 
 -- PaymentMethod: Add new columns
 ALTER TABLE apayment_method ADD COLUMN te_created_id bigint REFERENCES transaction_entry(id);
@@ -28,6 +30,7 @@ UPDATE apayment_method
 UPDATE apayment_method SET method_name = 'bill'  WHERE child_name = 'BillPM';
 UPDATE apayment_method SET method_name = 'card' WHERE child_name = 'CardPM';
 UPDATE apayment_method SET method_name = 'check' WHERE child_name = 'CheckPM';
+UPDATE apayment_method SET method_name = 'finance' WHERE child_name = 'FinancePM';
 UPDATE apayment_method SET method_name = 'giftcertificate' WHERE child_name = 'GiftCertificatePM';
 UPDATE apayment_method SET method_name = 'money' WHERE child_name = 'MoneyPM';
 UPDATE apayment_method 

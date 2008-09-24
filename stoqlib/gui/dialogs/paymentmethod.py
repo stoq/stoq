@@ -81,9 +81,11 @@ class PaymentMethodsDialog(BasicDialog):
 
     def _get_dialog(self, method):
         method_editors = {
-            # Keep this around since the payment method is not
+            # Keep these around since the payment method is not
             # actually gone when migrating from old databases
             'giftcertificate': NotImplementedError,
+            'finance': NotImplementedError,
+            
             'creditcard': NotImplementedError,
             'debitcard': NotImplementedError,
             'money': (PaymentMethodEditor, method),
