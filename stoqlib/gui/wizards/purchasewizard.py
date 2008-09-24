@@ -49,6 +49,7 @@ from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave,
                                              BillMethodSlave, MoneyMethodSlave)
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
@@ -283,9 +284,9 @@ class PurchasePaymentStep(WizardEditorStep):
 
     def _setup_widgets(self):
         items = [
-            (_('Bill'), PaymentMethod.get_by_name('bill', self.conn)),
-            (_('Check'), PaymentMethod.get_by_name('check', self.conn)),
-            (_('Money'), PaymentMethod.get_by_name('money', self.conn)),
+            (_('Bill'), PaymentMethod.get_by_name(self.conn, 'bill')),
+            (_('Check'), PaymentMethod.get_by_name(self.conn, 'check')),
+            (_('Money'), PaymentMethod.get_by_name(self.conn, 'money')),
             ]
         self.method_combo.prefill(items)
 
@@ -477,6 +478,7 @@ class PurchaseWizard(BaseWizard):
         if model.status != PurchaseOrder.ORDER_PENDING:
             raise ValueError('Invalid order status. It should '
                              'be ORDER_PENDING')
+        register_payment_operations()
         first_step = StartPurchaseStep(self, conn, model)
         BaseWizard.__init__(self, conn, first_step, model, title=title,
                             edit_mode=edit_mode)
