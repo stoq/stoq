@@ -530,7 +530,7 @@ class _AbstractSaleWizard(BaseWizard):
 
     def setup_cash_payment(self, total=None):
         money_method = PaymentMethod.get_by_name(self.conn, 'money')
-        total = total or self.payment_group.get_total_received()
+        total = total or self.model.get_total_sale_amount()
         return money_method.create_inpayment(self.payment_group, total)
 
 

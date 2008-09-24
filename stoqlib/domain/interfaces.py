@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -44,6 +44,7 @@ class IActive(Interface):
     def get_status_string():
         """Active or Inactive in the specific locale"""
 
+
 class IContainer(Interface):
     """An objects that holds other objects or items"""
 
@@ -65,6 +66,7 @@ class IDescribable(Interface):
     """
     def get_description():
         """ Returns a description that identifies the object """
+
 
 class ISellable(Interface):
     """ Represents the sellable information of a certain item such a product
@@ -225,17 +227,20 @@ class IStorable(Interface):
         This method also considers the logic stock
         """
 
+
 class IPersonFacet(Interface):
     """A facet on a Person, the only thing it has is a named reference
     back to the person itself.
     """
     person = Attribute("a Person")
 
+
 class IPaymentFacet(Interface):
     """A facet on a Payment, the only thing it has is a named reference
     back to the payment itself.
     """
     payment = Attribute("a Payment")
+
 
 class IIndividual(IPersonFacet):
     """Being or characteristic of a single person, concerning one
@@ -276,6 +281,7 @@ class IIndividual(IPersonFacet):
         @returns: the cpf number as a number
         @rtype: integer
         """
+
 
 class ICompany(IPersonFacet):
     """An institution created to conduct business"""
@@ -373,6 +379,7 @@ class IEmployee(IPersonFacet):
     def get_active_role_history():
         """FIXME"""
 
+
 class IUser(IPersonFacet):
     """An employee which have access to one or more Stoq applications"""
 
@@ -381,6 +388,7 @@ class IUser(IPersonFacet):
                         'which represents what this user can do in the '
                         'system')
     password = Attribute('Password')
+
 
 class IBranch(IPersonFacet):
     """An administrative division of some larger or more complex
@@ -411,6 +419,7 @@ class IBranch(IPersonFacet):
         @param trans: a transaction
         """
 
+
 class ISalesPerson(IPersonFacet):
     """An employee in charge of make sales"""
 
@@ -419,6 +428,7 @@ class ISalesPerson(IPersonFacet):
     commission_type = Attribute('A rule used to calculate the amount of '
                                'commission. This is a reference to another '
                                'object')
+
 
 class IBankBranch(IPersonFacet):
     branch = Attribute('A bank branch definition')
@@ -445,17 +455,17 @@ class ITransporter(IPersonFacet):
     freight_percentage = Attribute('The percentage amount of freight '
                                    'charged by this transporter')
 
+
 class IInPayment(IPaymentFacet):
     """ Interface specification for InPayments. """
 
-    def receive():
-        """ Confirm the payment. """
 
 class IOutPayment(IPaymentFacet):
     """ Interface specification for OutPayments. """
 
     def pay():
         """ Confirm the payment."""
+
 
 class IPaymentGroup(Interface):
     """ Interface specification for PaymentGroups. """
@@ -473,21 +483,9 @@ class IPaymentGroup(Interface):
         """Return the thirdparty attached to the payment group. It must be
         always a Person instance"""
 
-    def update_thirdparty_status():
-        """Verifies if we still have payments in late to be paid and update
-        the thirdparty financial status
-        """
-
     def get_group_description():
         """Returns a group description which will be used when building
         descriptions for payments"""
-
-    def get_balance():
-        """The total amount of all the payments this payment group holds"""
-
-    def get_total_received():
-        """Return the total amount paid by the client (sale total)
-        deducted of payment method commissions"""
 
     def confirm():
         """Validate the current payment group, create payments."""

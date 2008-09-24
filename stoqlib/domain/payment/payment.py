@@ -329,14 +329,6 @@ class PaymentAdaptToInPayment(ModelAdapter):
 
     implements(IInPayment)
 
-    # TODO: Unused
-    def receive(self):
-        payment = self.get_adapted()
-        if not payment.status == Payment.STATUS_PENDING:
-            raise ValueError("This payment is already received.")
-        payment.pay()
-        payment.group.update_thirdparty_status()
-
 Payment.registerFacet(PaymentAdaptToInPayment, IInPayment)
 
 

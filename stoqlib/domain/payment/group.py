@@ -91,17 +91,6 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         """
         raise NotImplementedError
 
-    def update_thirdparty_status(self):
-        raise NotImplementedError
-
-    def get_balance(self):
-        # FIXME: Move sum to SQL statement
-        return sum([s.value for s in self.get_items()])
-
-    def get_total_received(self):
-        # FIXME: Proper implementation
-        return currency(0)
-
     def confirm(self):
         """This can be implemented in a subclass, but it's not required"""
 

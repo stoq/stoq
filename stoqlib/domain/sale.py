@@ -683,10 +683,6 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     def get_group_description(self):
         return _(u'sale %s') % self.sale.get_order_number_str()
 
-    def get_total_received(self):
-        return (self.sale.get_total_sale_amount() -
-                self._get_pm_commission_total())
-
     def confirm(self):
         from stoqlib.domain.commission import Commission
 
