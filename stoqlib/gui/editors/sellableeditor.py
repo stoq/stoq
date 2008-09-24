@@ -222,6 +222,7 @@ class SellableEditor(BaseEditor):
                                         % _(u"This unit type requires "
                                             "weighing"))
         BaseEditor.__init__(self, conn, model)
+        self.enable_window_controls()
 
         # image slave for sellables
         image_slave = ImageSlave(self.conn, self.model)

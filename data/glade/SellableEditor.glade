@@ -4,7 +4,7 @@
     <widget class="GtkWindow" id="SellableEditor">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
-        <property name="visible">True</property>
+        <property name="visible">False</property>
         <child>
             <widget class="GtkNotebook" id="sellable_notebook">
                 <property name="can_focus">False</property>
@@ -29,6 +29,9 @@
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
+                                    <packing>
+                                        <property name="x_options">fill</property>
+                                    </packing>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="label6">
@@ -39,6 +42,7 @@
                                     <packing>
                                         <property name="bottom_attach">2</property>
                                         <property name="top_attach">1</property>
+                                        <property name="x_options">fill</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -50,6 +54,7 @@
                                     <packing>
                                         <property name="bottom_attach">3</property>
                                         <property name="top_attach">2</property>
+                                        <property name="x_options">fill</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -68,25 +73,27 @@
                                 <child>
                                     <widget class="ProxyLabel" id="label4">
                                         <property name="label" context="yes" translatable="yes">Cost ($CURRENCY):</property>
-                                        <property name="model_attribute"></property>
+                                        <property name="model_attribute">label4</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">5</property>
                                         <property name="top_attach">4</property>
+                                        <property name="x_options">fill</property>
                                     </packing>
                                 </child>
                                 <child>
                                     <widget class="ProxyLabel" id="label5">
                                         <property name="label" context="yes" translatable="yes">Sale Price ($CURRENCY):</property>
-                                        <property name="model_attribute"></property>
+                                        <property name="model_attribute">label5</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">6</property>
                                         <property name="top_attach">5</property>
+                                        <property name="x_options">fill</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -114,6 +121,7 @@
                                     <packing>
                                         <property name="bottom_attach">9</property>
                                         <property name="top_attach">8</property>
+                                        <property name="x_options">fill</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -467,6 +475,9 @@
                                     </packing>
                                 </child>
                             </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                            </packing>
                         </child>
                     </widget>
                     <packing>

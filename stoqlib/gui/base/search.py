@@ -148,6 +148,7 @@ class SearchDialog(BasicDialog):
         self.executer = SQLObjectQueryExecuter(get_connection())
         self.set_table(self.search_table)
 
+        self.enable_window_controls()
         self.disable_ok()
         self.set_ok_label(_('Se_lect Items'))
         self._setup_search()
