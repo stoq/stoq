@@ -98,8 +98,9 @@ class BaseEditorSlave(GladeSlaveDelegate):
                     self.__class__.__name__, self.model_type.__name__,
                     model))
         else:
-            raise ValueError("Editors must define a model_type or "
-                             "model_iface attributes")
+            raise ValueError("Editor %s must define a model_type or "
+                             "model_iface attributes" % (
+                self.__class__.__name__,))
         self.model = model
 
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
