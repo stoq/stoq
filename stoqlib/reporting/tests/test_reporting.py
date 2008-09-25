@@ -33,7 +33,7 @@ import stoqlib
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, CommissionView
-from stoqlib.domain.interfaces import IPaymentGroup, ISellable, IStorable
+from stoqlib.domain.interfaces import ISellable, IStorable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
                                           InCheckPaymentView,
@@ -168,9 +168,8 @@ class TestReport(DomainTest):
         sale = self.create_sale()
         sellable = self.create_sellable()
         sale.add_sellable(sellable, price=100)
-        group = sale.addFacet(IPaymentGroup, connection=self.trans)
         method = PaymentMethod.get_by_name(self.trans, 'bill')
-        payment = method.create_inpayment(group, Decimal(100))
+        payment = method.create_inpayment(sale.group, Decimal(100))
         inpayment = payment.get_adapted()
 
         TillEntry(value=25, id=20,
@@ -219,13 +218,9 @@ class TestReport(DomainTest):
 
         sale.order()
 
-        group = IPaymentGroup(sale, None)
-        if group is None:
-            group = sale.addFacet(IPaymentGroup, connection=self.trans)
-
         method = PaymentMethod.get_by_name(self.trans, 'money')
         till = Till.get_last_opened(self.trans)
-        payment = method.create_inpayment(group,
+        payment = method.create_inpayment(sale.group,
                                           sale.get_sale_subtotal(),
                                           till=till)
         sale.confirm()

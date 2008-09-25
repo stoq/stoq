@@ -31,12 +31,12 @@ from decimal import Decimal
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        ISalesPerson, IClient,
-                                       IUser, IPaymentGroup, IEmployee,
+                                       IUser, IEmployee,
                                        IIndividual)
 from stoqlib.domain.address import CityLocation
 from stoqlib.domain.person import Person, EmployeeRole
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.sellable import SellableCategory, ASellable
+from stoqlib.domain.sellable import SellableCategory
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.sale import Sale
@@ -58,14 +58,14 @@ class TestParameter(DomainTest):
         client = person.addFacet(IClient, connection=self.trans)
         self.branch = person.addFacet(IBranch, connection=self.trans)
 
+        group = self.create_payment_group()
         self.sale = Sale(coupon_id=123, client=client,
                          cfop=self.sparam.DEFAULT_SALES_CFOP,
+                         group=group,
                          salesperson=self.salesperson,
                          connection=self.trans)
 
         self.storable = self.create_storable()
-
-        self.group = self.sale.addFacet(IPaymentGroup, connection=self.trans)
 
     def setUp(self):
         DomainTest.setUp(self)
@@ -189,27 +189,29 @@ class TestParameter(DomainTest):
 
     def testDefaultSalesCFOP(self):
         self._create_examples()
-        param = self.sparam.DEFAULT_SALES_CFOP
+        group = self.create_payment_group()
         sale = Sale(coupon_id=123, salesperson=self.salesperson,
-                    connection=self.trans)
-        self.assertEqual(sale.cfop, param)
+                    group=group, connection=self.trans)
+        self.assertEqual(sale.cfop, self.sparam.DEFAULT_SALES_CFOP)
         param = self.sparam.DEFAULT_RECEIVING_CFOP
+        group = self.create_payment_group()
         sale = Sale(coupon_id=432, salesperson=self.salesperson,
-                    connection=self.trans, cfop=param)
-        self.failIfEqual(sale.cfop, self.sparam.DEFAULT_SALES_CFOP)
+                    group=group, cfop=param, connection=self.trans)
+        self.assertEquals(sale.cfop, param)
 
     def testDefaultReturnSalesCFOP(self):
         from stoqlib.domain.fiscal import FiscalBookEntry
         self._create_examples()
         wrong_param = self.sparam.DEFAULT_SALES_CFOP
         drawee = Person(name='Antonione', connection=self.trans)
+        group = self.create_payment_group()
         book_entry = FiscalBookEntry(
             entry_type=FiscalBookEntry.TYPE_SERVICE,
             invoice_number=123,
             cfop=wrong_param,
             branch=self.branch,
             drawee=drawee,
-            payment_group=self.group,
+            payment_group=group,
             iss_value=1,
             icms_value=0,
             ipi_value=0,

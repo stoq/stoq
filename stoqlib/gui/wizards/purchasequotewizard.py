@@ -350,11 +350,11 @@ class QuoteGroupSelectionStep(BaseWizardStep):
 
     def _can_order(self):
         # return if the quote group contain items that can be ordered
-        selected = self.search.results.get_selected()
-        if selected is None:
+        purchase = self.search.results.get_selected()
+        if purchase is None:
             return False
 
-        for quote in selected.group.get_items():
+        for quote in purchase.payments:
             for item in quote.purchase.get_items():
                 if self._can_purchase(item):
                     return True

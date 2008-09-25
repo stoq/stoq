@@ -25,7 +25,6 @@
 """ This module tests all fiscal data"""
 
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
-from stoqlib.domain.interfaces import IPaymentGroup
 
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -74,10 +73,9 @@ class TestIcmsIpiBookEntry(TestFiscalBookEntry, DomainTest):
     def testCreateProductEntry(self):
         sale = self.create_sale()
         sale.add_sellable(self.create_sellable(), price=150)
-        group = sale.addFacet(IPaymentGroup, connection=self.trans)
         book_entry = FiscalBookEntry.create_product_entry(
             self.trans,
-            group, sale.cfop, sale.coupon_id,
+            sale.group, sale.cfop, sale.coupon_id,
             123)
         self.failUnless(book_entry)
         self.assertEquals(book_entry.icms_value, 123)
@@ -98,10 +96,9 @@ class TestIssBookEntry(TestFiscalBookEntry, DomainTest):
     def testCreateServiceEntry(self):
         sale = self.create_sale()
         sale.add_sellable(self.create_sellable(), price=150)
-        group = sale.addFacet(IPaymentGroup, connection=self.trans)
         book_entry = FiscalBookEntry.create_service_entry(
             self.trans,
-            group,
+            sale.group,
             sale.cfop,
             sale.service_invoice_number,
             123)

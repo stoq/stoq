@@ -24,14 +24,14 @@
 """ Slaves for purchase management """
 
 
+from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.defaults import interval_types
-from stoqlib.domain.interfaces import IPaymentGroup
 
 
 class PurchasePaymentSlave(BaseEditorSlave):
     gladefile = 'PurchasePaymentSlave'
-    model_iface = IPaymentGroup
+    model_type = PaymentGroup
     proxy_widgets = ('interval_type_combo',
                      'intervals',
                      'installments_number')

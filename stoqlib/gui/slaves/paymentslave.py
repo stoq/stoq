@@ -108,7 +108,7 @@ class PaymentListSlave(BaseEditorSlave):
     #
     # Private
     #
-    
+
     def _remove_payment_slave(self, widget):
         slave = self.payment_slaves[widget]
         del self.payment_slaves[widget]
@@ -126,7 +126,7 @@ class PaymentListSlave(BaseEditorSlave):
     #
     # Public API
     #
-    
+
     def get_total_difference(self):
         """Get the difference for the total of check payments invoiced. If
         the difference is zero the entire sale total value is invoiced.
@@ -744,7 +744,7 @@ class CardMethodSlave(BaseEditorSlave):
             provider=None)
 
     # Private
-    
+
     def _setup_widgets(self):
         provider_items = [(p.short_name, p) for p in self.providers]
         self.credit_provider.prefill(provider_items)

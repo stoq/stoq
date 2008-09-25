@@ -25,16 +25,8 @@ from decimal import Decimal
 import os
 import sys
 
-from stoqdrivers.enum import TaxType
-
 import stoqlib
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
-from stoqlib.domain.interfaces import (IPaymentGroup,
-                                       ISellable,
-                                       IStorable)
-from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib import test
 from stoqlib.lib.diffutils import diff_files
@@ -45,6 +37,7 @@ sys.path.append('plugins/ecf')
 from cat52 import CATFile
 from catgenerator import async
 from ecfdomain import ECFPrinter, FiscalSaleHistory
+
 
 def compare_files(sfile, basename):
     expected = basename + '-expected.txt'
@@ -64,28 +57,6 @@ class Cat52Test(DomainTest):
 
         manager = provide_plugin_manager()
         manager.enable_plugin('ecf')
-
-    def _add_payments(self, sale, method_type='money'):
-        group = IPaymentGroup(sale, None)
-        if group is None:
-            group = sale.addFacet(IPaymentGroup, connection=self.trans)
-
-        method = PaymentMethod.get_by_name(self.trans, method_type)
-        payment = method.create_inpayment(group,
-                                          sale.get_sale_subtotal())
-
-    def _add_product(self, sale, price=None):
-        product = self.create_product(price=price)
-        sellable = ISellable(product)
-        sellable.tax_constant = SellableTaxConstant(
-            description="18",
-            tax_type=int(TaxType.CUSTOM),
-            tax_value=18,
-            connection=self.trans)
-        sale.add_sellable(sellable, quantity=1)
-        storable = product.addFacet(IStorable, connection=self.trans)
-        storable.increase_stock(100, get_current_branch(self.trans))
-        return sellable
 
     def testComplete(self):
         station = self.create_station()
@@ -138,10 +109,10 @@ class Cat52Test(DomainTest):
         sale = self.create_sale()
         sale.client = self.create_client()
         sale.confirm_date = today
-        sellable = self._add_product(sale, 100)
+        sellable = self.add_product(sale, price=100)
         sellable.id = 9999
 
-        self._add_payments(sale)
+        self.add_payments(sale)
         history = FiscalSaleHistory(connection=self.trans,
                                     sale=sale)
 
@@ -150,8 +121,7 @@ class Cat52Test(DomainTest):
             f.add_fiscal_coupon_details(sale, sale.client, history,
                                         item, 800, i+1)
 
-        group = IPaymentGroup(sale)
-        for payment in group.get_items():
+        for payment in sale.payments:
             f.add_payment_method(sale, history, payment)
 
 

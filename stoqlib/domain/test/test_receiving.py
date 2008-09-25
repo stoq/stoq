@@ -26,9 +26,9 @@
 from kiwi.datatypes import currency
 
 from stoqlib.database.exceptions import IntegrityError
-from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.test.domaintest import DomainTest
 """ This module test all class in stoq/domain/receiving.py """
+
 
 class TestReceivingOrder(DomainTest):
 
@@ -91,14 +91,13 @@ class TestReceivingOrder(DomainTest):
         order.purchase.status = order.purchase.ORDER_PENDING
         order.purchase.confirm()
         order.confirm()
-        group = IPaymentGroup(order.purchase)
         total = order.get_total()
-        order.purchase.create_preview_outpayments(self.trans, group, total)
-        for pay in group.get_items():
+        installment_count = order.payments.count()
+        for pay in order.payments:
             self.assertEqual(pay.value,
-                order.get_total()/group.installments_number)
+                order.get_total()/installment_count)
             self.assertEqual(pay.value,
-                order.get_total()/group.installments_number)
+                order.get_total()/installment_count)
         self.assertEqual(order.invoice_total, order.get_total())
 
     def testUpdatePaymentValues(self):
@@ -109,15 +108,14 @@ class TestReceivingOrder(DomainTest):
         for item in order.purchase.get_items():
             item.quantity_received = 0
         order.purchase.status = order.purchase.ORDER_PENDING
-        group = IPaymentGroup(order.purchase)
         total = order.get_total()
-        order.purchase.create_preview_outpayments(self.trans, group, total)
         order.purchase.confirm()
 
+        installment_count = order.payments.count()
         payment_dict = {}
-        for pay in group.get_items():
+        for pay in order.payments:
             self.assertEqual(pay.value,
-                order.get_total()/group.installments_number)
+                order.get_total()/installment_count)
             payment_dict[pay] = pay.value
 
         order.discount_value = 20
@@ -127,10 +125,8 @@ class TestReceivingOrder(DomainTest):
         order.expense_value = 5
         order.confirm()
 
-        group = IPaymentGroup(order.purchase)
-        for pay in group.get_items():
-            self.assertEqual(pay.value,
-                order.get_total()/group.installments_number)
+        for pay in order.payments:
+            self.assertEqual(pay.value, order.get_total()/installment_count)
             self.failIf(pay.value <= payment_dict[pay])
 
 

@@ -30,39 +30,26 @@ from kiwi.datatypes import currency
 
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
-from stoqlib.domain.interfaces import IPaymentGroup
 
 from stoqlib.domain.test.domaintest import DomainTest
 
-class TestPurchaseOrder(DomainTest):
-    def create_purchase_order(self):
-        return PurchaseOrder(supplier=self.create_supplier(),
-                             branch=self.create_branch(),
-                             connection=self.trans)
 
+class TestPurchaseOrder(DomainTest):
     def testConfirmOrder(self):
         order = self.create_purchase_order()
-        # FIXME: Use a better exception?
         self.assertRaises(ValueError, order.confirm)
         order.status = PurchaseOrder.ORDER_PENDING
-        self.assertRaises(ValueError, order.confirm)
 
-        group = order.addFacet(IPaymentGroup, connection=self.trans)
-        order.create_preview_outpayments(self.trans, group,
-                                          order.get_purchase_total())
         order.confirm()
 
     def testClose(self):
         order = self.create_purchase_order()
         self.assertRaises(ValueError, order.close)
         order.status = PurchaseOrder.ORDER_PENDING
-        self.assertRaises(ValueError, order.confirm)
-        group = order.addFacet(IPaymentGroup, connection=self.trans)
-        order.create_preview_outpayments(self.trans, group,
-                                          order.get_purchase_total())
+        self.add_payments(order)
         order.confirm()
 
-        payments = list(group.get_items())
+        payments = list(order.payments)
         self.failUnless(len(payments) > 0)
 
         for payment in payments:
@@ -107,14 +94,12 @@ class TestPurchaseOrder(DomainTest):
 class TestQuoteGroup(DomainTest):
 
     def testCancel(self):
-        group = QuoteGroup(connection=self.trans)
-        quote = PurchaseOrder(supplier=self.create_supplier(),
-                              branch=self.create_branch(),
-                              status=PurchaseOrder.ORDER_QUOTING,
-                              _is_valid_model=True,
-                              connection=self.trans)
-        quotation = group.add_item(quote)
+        quote = QuoteGroup(connection=self.trans)
+        order = self.create_purchase_order()
+        order.status = PurchaseOrder.ORDER_QUOTING
+        order._is_valid_model = True
+        quotation = quote.add_item(order)
 
-        self.assertEqual(quote.status, PurchaseOrder.ORDER_QUOTING)
-        group.cancel()
-        self.assertEqual(quote.status, PurchaseOrder.ORDER_CANCELLED)
+        self.assertEqual(order.status, PurchaseOrder.ORDER_QUOTING)
+        order.cancel()
+        self.assertEqual(order.status, PurchaseOrder.ORDER_CANCELLED)

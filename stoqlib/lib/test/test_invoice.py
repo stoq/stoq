@@ -26,8 +26,7 @@ import os
 from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.interfaces import (IPaymentGroup,
-                                       ISellable,
+from stoqlib.domain.interfaces import (ISellable,
                                        IStorable)
 from stoqlib.domain.invoice import InvoiceLayout
 from stoqlib.domain.payment.method import PaymentMethod
@@ -57,12 +56,8 @@ def compare_invoice_file(invoice, basename):
 
 class InvoiceTest(DomainTest):
     def _add_payments(self, sale):
-        group = IPaymentGroup(sale, None)
-        if group is None:
-            group = sale.addFacet(IPaymentGroup, connection=self.trans)
-
         method = PaymentMethod.get_by_name(self.trans, 'money')
-        payment = method.create_inpayment(group,
+        payment = method.create_inpayment(sale.group,
                                           sale.get_sale_subtotal())
         payment.get_adapted().due_date = datetime.datetime(2000, 1, 1)
 

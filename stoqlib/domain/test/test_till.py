@@ -30,7 +30,6 @@ from kiwi.datatypes import currency
 
 from stoqlib.exceptions import TillError
 from stoqlib.database.runtime import get_current_station
-from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.till import Till
 from stoqlib.domain.test.domaintest import DomainTest
@@ -41,18 +40,16 @@ class TestTill(DomainTest):
         sale = self.create_sale()
         sellable = self.create_sellable()
         sale.add_sellable(sellable, price=10)
-        group = sale.addFacet(IPaymentGroup, connection=self.trans)
         method = PaymentMethod.get_by_name(self.trans, 'bill')
-        payment = method.create_inpayment(group, Decimal(10))
+        payment = method.create_inpayment(sale.group, Decimal(10))
         return payment.get_adapted()
 
     def _create_outpayment(self):
         purchase = self.create_purchase_order()
         sellable = self.create_sellable()
         purchase.add_item(sellable, 1)
-        group = IPaymentGroup(purchase)
         method = PaymentMethod.get_by_name(self.trans, 'bill')
-        payment = method.create_outpayment(group, Decimal(10))
+        payment = method.create_outpayment(purchase.group, Decimal(10))
         return payment.get_adapted()
 
     def testGetCurrentTillOpen(self):

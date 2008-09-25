@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,50 +25,42 @@
 from decimal import Decimal
 
 from stoqlib.domain.commission import CommissionSource, Commission
-from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.parameters import sysparam
 
+
 class TestPaymentGroup(DomainTest):
     def testConfirm(self):
-        # Actually it tests SaleAdaptToPaymentGroup.confirm
         sale = self.create_sale()
         sellable = self.create_sellable()
         item = sale.add_sellable(sellable, price=150)
-        group = sale.addFacet(IPaymentGroup, connection=self.trans)
 
         method = PaymentMethod.get_by_name(self.trans, 'bill')
-        payment = method.create_inpayment(group, Decimal(10))
+        payment = method.create_inpayment(sale.group, Decimal(10))
         payment = payment.get_adapted()
         self.assertEqual(payment.status, Payment.STATUS_PREVIEW)
-        group.confirm()
+        sale.group.confirm()
         self.assertEqual(payment.status, Payment.STATUS_PENDING)
 
     def testInstallmentsCommissionAmount(self):
         sysparam(self.trans).SALE_PAY_COMMISSION_WHEN_CONFIRMED = True
         sale = self.create_sale()
-        sellable = self.create_sellable()
+        sellable = self.add_product(sale, price=300)
+        sale.order()
         source = CommissionSource(asellable=sellable,
                                   direct_value=12,
                                   installments_value=5,
                                   connection=self.trans)
 
-        item = sale.add_sellable(sellable, price=300)
-        sale.order()
-        group = sale.addFacet(IPaymentGroup, connection=self.trans)
-
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        payment1 = method.create_inpayment(group, Decimal(100))
-        payment2 = method.create_inpayment(group, Decimal(200))
-        group.confirm()
+        payment1 = method.create_inpayment(sale.group, Decimal(100))
+        payment2 = method.create_inpayment(sale.group, Decimal(200))
         self.failIf(Commission.selectBy(sale=sale, connection=self.trans))
 
-        # the commissions are created after the payment
-        payment1.get_adapted().pay()
-        payment2.get_adapted().pay()
+        sale.confirm()
 
         commissions = Commission.selectBy(sale=sale,
                                           connection=self.trans)
@@ -84,45 +76,40 @@ class TestPaymentGroup(DomainTest):
         self.assertEquals(commissions[1].value, Decimal("10.00"))
 
     def testInstallmentsCommissionAmountWithMultipleItems(self):
-        sysparam(self.trans).SALE_PAY_COMMISSION_WHEN_CONFIRMED = True
-        sale = self.create_sale()
-        sellable = self.create_sellable()
-        source = CommissionSource(asellable=sellable,
-                                  direct_value=12,
-                                  installments_value=5,
-                                  connection=self.trans)
+        sysparam(self.trans).SALE_PAY_COMMISSION_WHEN_CONFIRMED = 1
 
-        item = sale.add_sellable(sellable, quantity=3, price=300)
+        sale = self.create_sale()
+        sellable = self.add_product(sale, price=300, quantity=3)
         sale.order()
-        group = sale.addFacet(IPaymentGroup, connection=self.trans)
+
+        CommissionSource(asellable=sellable,
+                         direct_value=12,
+                         installments_value=5,
+                         connection=self.trans)
 
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        payment1 = method.create_inpayment(group, Decimal(300))
-        payment2 = method.create_inpayment(group, Decimal(450))
-        payment3 = method.create_inpayment(group, Decimal(150))
-        group.confirm()
+        payment1 = method.create_inpayment(sale.group, Decimal(300))
+        payment2 = method.create_inpayment(sale.group, Decimal(450))
+        payment3 = method.create_inpayment(sale.group, Decimal(150))
         self.failIf(Commission.selectBy(sale=sale, connection=self.trans))
 
-        # the commissions are created after the payment
-        payment1.get_adapted().pay()
-        payment2.get_adapted().pay()
-        payment3.get_adapted().pay()
+        sale.confirm()
 
         commissions = Commission.selectBy(sale=sale,
-                                          connection=self.trans)
+                                          connection=self.trans).orderBy('value')
         self.assertEquals(commissions.count(), 3)
         for c in commissions:
             self.failUnless(c.commission_type == Commission.INSTALLMENTS)
 
         # the first payment represent 1/3 of the total amount
-        # 5% of 900: 45,00 * 1/3 => 15,00 
-        self.assertEquals(commissions[0].value, Decimal("15.00"))
-        # the second payment represent 1/2 of the total amount
-        # 45 / 2 => 22,50
-        self.assertEquals(commissions[1].value, Decimal("22.50"))
-        # the third payment represent 1/6 of the total amount
         # 45 / 6 => 7.50
-        self.assertEquals(commissions[2].value, Decimal("7.50"))
+        self.assertEquals(commissions[0].value, Decimal("7.50"))
+        # the second payment represent 1/3 of the total amount
+        # 5% of 900: 45,00 * 1/3 => 15,00 
+        self.assertEquals(commissions[1].value, Decimal("15.00"))
+        # the third payment represent 1/2 of the total amount
+        # 45 / 2 => 22,50
+        self.assertEquals(commissions[2].value, Decimal("22.50"))
 
     def testInstallmentsCommissionAmountWhenSaleReturn(self):
         from stoqlib.database.runtime import get_current_branch
@@ -142,11 +129,10 @@ class TestPaymentGroup(DomainTest):
         storable.increase_stock(100, get_current_branch(self.trans))
 
         sale.order()
-        group = sale.addFacet(IPaymentGroup, connection=self.trans)
         method = PaymentMethod.get_by_name(self.trans, 'check')
-        payment1 = method.create_inpayment(group, Decimal(300))
-        payment2 = method.create_inpayment(group, Decimal(450))
-        payment3 = method.create_inpayment(group, Decimal(150))
+        payment1 = method.create_inpayment(sale.group, Decimal(300))
+        payment2 = method.create_inpayment(sale.group, Decimal(450))
+        payment3 = method.create_inpayment(sale.group, Decimal(150))
         sale.confirm()
 
         # the commissions are created after the payment

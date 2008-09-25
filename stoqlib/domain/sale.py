@@ -44,9 +44,9 @@ from stoqlib.domain.base import (Domain, ValidatableDomain, BaseSQLView,
 from stoqlib.domain.events import SaleConfirmEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import (IContainer, IOutPayment,
-                                       IPaymentGroup, ISellable,
-                                       IDelivery, IStorable, IProduct)
-from stoqlib.domain.payment.group import AbstractPaymentGroup
+                                       IPaymentTransaction, ISellable,
+                                       IDelivery, IStorable, IProduct,
+                                       IInPayment)
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import (Product, ProductAdaptToSellable,
@@ -275,9 +275,9 @@ class Sale(ValidatableDomain):
                 STATUS_RETURNED:    _(u"Returned")}
 
     status = IntCol(default=STATUS_INITIAL)
-    client = ForeignKey('PersonAdaptToClient', default=None)
-    salesperson = ForeignKey('PersonAdaptToSalesPerson')
-    branch = ForeignKey('PersonAdaptToBranch', default=None)
+    coupon_id = IntCol()
+    service_invoice_number = IntCol(default=None)
+    notes = UnicodeCol(default='')
     open_date = DateTimeCol(default=datetime.datetime.now)
     confirm_date = DateTimeCol(default=None)
     close_date = DateTimeCol(default=None)
@@ -285,11 +285,12 @@ class Sale(ValidatableDomain):
     return_date = DateTimeCol(default=None)
     discount_value = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
-    notes = UnicodeCol(default='')
-    coupon_id = IntCol()
-    service_invoice_number = IntCol(default=None)
-    cfop = ForeignKey("CfopData")
     total_amount = PriceCol(default=0)
+    cfop = ForeignKey("CfopData")
+    client = ForeignKey('PersonAdaptToClient', default=None)
+    salesperson = ForeignKey('PersonAdaptToSalesPerson')
+    branch = ForeignKey('PersonAdaptToBranch', default=None)
+    group = ForeignKey('PaymentGroup')
 
     #
     # SQLObject hooks
@@ -411,8 +412,8 @@ class Sale(ValidatableDomain):
 
         self.total_amount = self.get_total_sale_amount()
 
-        group = IPaymentGroup(self)
-        group.confirm()
+        transaction = IPaymentTransaction(self)
+        transaction.confirm()
 
         SaleConfirmEvent.emit(self, conn)
 
@@ -425,12 +426,14 @@ class Sale(ValidatableDomain):
         """
         assert self.can_set_paid()
 
-        group = IPaymentGroup(self)
-        for payment in group.get_items():
+        for payment in self.group.payments:
             if not payment.is_paid():
                 raise StoqlibError(
                     "You cannot close a sale without paying all the payment. "
                     "Payment %r is still not paid" % (payment,))
+
+        transaction = IPaymentTransaction(self)
+        transaction.pay()
 
         self.close_date = const.NOW()
         self.status = Sale.STATUS_PAID
@@ -463,8 +466,8 @@ class Sale(ValidatableDomain):
         """
         assert self.can_return()
 
-        group = IPaymentGroup(self)
-        group.cancel(renegotiation)
+        transaction = IPaymentTransaction(self)
+        transaction.return_(renegotiation)
 
         self.return_date = const.NOW()
         self.status = Sale.STATUS_RETURNED
@@ -537,9 +540,7 @@ class Sale(ValidatableDomain):
         @returns: True if the sale was paid with money, otherwise False
         @rtype: bool
         """
-        group = IPaymentGroup(self, None)
-        assert group
-        for payment in group.get_items():
+        for payment in self.group.payments:
             if payment.method.method_name != 'money':
                 return False
         return True
@@ -564,8 +565,7 @@ class Sale(ValidatableDomain):
         conn = self.get_connection()
         current_user = get_current_user(conn)
         assert current_user
-        group = IPaymentGroup(self)
-        paid_total = group.get_total_paid()
+        paid_total = self.group.get_total_paid()
         return RenegotiationData(connection=conn,
                                  paid_total=paid_total,
                                  invoice_number=None,
@@ -595,6 +595,11 @@ class Sale(ValidatableDomain):
                 SaleItem.q.sellableID == ServiceAdaptToSellable.q.id,
                 ServiceAdaptToSellable.q._originalID == Service.q.id),
             connection=self.get_connection())
+
+    @property
+    def payments(self):
+        return Payment.selectBy(group=self.group,
+                                connection=self.get_connection())
 
     def _get_discount_by_percentage(self):
         discount_value = self.discount_value
@@ -660,53 +665,89 @@ class Sale(ValidatableDomain):
 #
 
 
-class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
+class SaleAdaptToPaymentTransaction(object):
+    implements(IPaymentTransaction)
 
-    _inheritable = False
-
-    #
-    # Properties
-    #
-
-    @property
-    def sale(self):
-        return self.get_adapted()
+    def __init__(self, sale):
+        self.sale = sale
 
     #
-    # IPaymentGroup implementation
+    # IPaymentTransaction
     #
-
-    def get_thirdparty(self):
-        client = self.sale.client
-        return client and client.person or None
-
-    def get_group_description(self):
-        return _(u'sale %s') % self.sale.get_order_number_str()
 
     def confirm(self):
-        from stoqlib.domain.commission import Commission
+        self.sale.group.confirm()
 
-        self.add_inpayments()
+        self._add_inpayments()
         self._create_fiscal_entries()
 
-        if self._pay_commission_at_confirm():
-            conn = self.get_connection()
-            type = self._get_commission_type()
-            for item in self.get_items():
-                Commission(commission_type=type,
-                           sale=self.sale, payment=item,
-                           salesperson=self.sale.salesperson,
-                           connection=conn)
+        if self._create_commission_at_confirm():
+            for payment in self.sale.payments:
+                self._create_commission(payment)
 
-    def _pay_commission_at_confirm(self):
-        conn = self.get_connection()
+    def pay(self):
+        create_commission = not self._create_commission_at_confirm()
+        if not create_commission:
+            return
+        for payment in self.sale.payments:
+            # FIXME: This shouldn't be needed, something is called
+            #        twice where it shouldn't be
+            if self._already_have_commission(payment):
+                continue
+            commission = self._create_commission(payment)
+            if IOutPayment(payment, None) is not None:
+                commission.value = -commission.value
+
+    def cancel(self):
+        pass
+
+    def return_(self, renegotiation):
+        assert self.sale.group.can_cancel()
+
+        for sale_item in self.sale.get_items():
+            sale_item.cancel(self.sale.branch)
+        self._payback_paid_payments(renegotiation.penalty_value)
+        self._revert_fiscal_entry(renegotiation.invoice_number)
+        self.sale.group.cancel()
+
+    #
+    # Private API
+    #
+
+    def _create_commission(self, payment):
+        from stoqlib.domain.commission import Commission
+        return Commission(commission_type=self._get_commission_type(),
+                          sale=self.sale,
+                          payment=payment,
+                          salesperson=self.sale.salesperson,
+                          connection=self.sale.get_connection())
+
+    def _add_inpayments(self):
+        payments = self.sale.payments
+        if not payments.count():
+            raise ValueError(
+                'You must have at least one payment for each payment group')
+
+        till = Till.get_current(self.sale.get_connection())
+        for payment in payments:
+            assert payment.is_pending(), payment.get_status_str()
+            assert IInPayment(payment, None)
+            till.add_entry(payment)
+
+        # FIXME: Move this to a payment method specific hook
+        if payments.count() == 1 and payment.method.method_name == 'money':
+            self.sale.group.pay()
+            self.pay()
+
+    def _create_commission_at_confirm(self):
+        conn = self.sale.get_connection()
         return sysparam(conn).SALE_PAY_COMMISSION_WHEN_CONFIRMED
 
     def _get_commission_type(self):
         from stoqlib.domain.commission import Commission
 
         nitems = 0
-        for item in self.get_items():
+        for item in self.sale.group.payments:
             if IOutPayment(item, None) is None:
                 nitems += 1
 
@@ -714,53 +755,27 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
             return Commission.DIRECT
         return Commission.INSTALLMENTS
 
-    def pay(self, payment):
-        from stoqlib.domain.commission import Commission
-
-        if self._already_have_commission(payment):
-            return
-
-        if not self._pay_commission_at_confirm():
-            commission = Commission(commission_type=self._get_commission_type(),
-                                     sale=self.sale, payment=payment,
-                                     salesperson=self.sale.salesperson,
-                                     connection=self.get_connection())
-            if IOutPayment(payment, None) is not None:
-                commission.value = -commission.value
-
-    def cancel(self, renegotiation):
-        assert self.can_cancel()
-
-        for sale_item in self.sale.get_items():
-            sale_item.cancel(self.sale.branch)
-        self._cancel_pending_payments()
-        self._payback_paid_payments(renegotiation.penalty_value)
-        self._revert_fiscal_entry(renegotiation.invoice_number)
-
-        AbstractPaymentGroup.cancel(self, renegotiation)
-
-
-    #
-    # Private API
-    #
-
     def _already_have_commission(self, payment):
         from stoqlib.domain.commission import Commission
 
-        commission = Commission.selectOneBy(payment=payment,
-                                            connection=self.get_connection())
+        commission = Commission.selectOneBy(
+            payment=payment,
+            connection=self.sale.get_connection())
         return commission is not None
 
-    def _cancel_pending_payments(self):
-        for payment in Payment.selectBy(group=self,
-                                        status=Payment.STATUS_PENDING,
-                                        connection=self.get_connection()):
-            payment.cancel()
+    def _restore_commission(self, payment):
+        from stoqlib.domain.commission import Commission
+        old_commission_value = Commission.selectBy(
+            sale=self.sale,
+            connection=self.sale.get_connection()).sum('value')
+        if old_commission_value > 0:
+            commission = self._create_commission(payment)
+            commission.value = -old_commission_value
 
     def _payback_paid_payments(self, penalty_value):
-        conn = self.get_connection()
+        conn = self.sale.get_connection()
         till = Till.get_current(conn)
-        paid_value = self.get_total_paid()
+        paid_value = self.sale.group.get_total_paid()
         till_difference = self.sale.get_total_sale_amount() - paid_value
 
         if till_difference > 0:
@@ -775,19 +790,19 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
         money = PaymentMethod.get_by_name(conn, 'money')
         out_payment = money.create_outpayment(
-            self, paid_value,
+            self.sale.group, paid_value,
             description=_('%s Money Returned for Sale %d') % (
             '1/1', self.sale.id), till=till)
         payment = out_payment.get_adapted()
         payment.set_pending()
         payment.pay()
-
+        self._restore_commission(payment)
         till.add_entry(payment)
 
     def _revert_fiscal_entry(self, invoice_number):
         entry = FiscalBookEntry.selectOneBy(
-            payment_group=self,
-            connection=self.get_connection())
+            payment_group=self.sale.group,
+            connection=self.sale.get_connection())
         if entry is not None:
             entry.reverse_entry(invoice_number)
 
@@ -807,7 +822,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
                               applied over all sale items
         """
         icms_total = Decimal(0)
-        conn = self.get_connection()
+        conn = self.sale.get_connection()
         for item in self.sale.products:
             price = item.price + av_difference
             sellable = item.sellable
@@ -828,7 +843,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
                               applied over all sale items
         """
         iss_total = Decimal(0)
-        conn = self.get_connection()
+        conn = self.sale.get_connection()
         iss_tax = sysparam(conn).ISS_TAX / Decimal(100)
         for item in self.sale.services:
             price = item.price + av_difference
@@ -837,19 +852,19 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def _has_iss_entry(self):
         return FiscalBookEntry.has_entry_by_payment_group(
-            self.get_connection(),
-            self,
+            self.sale.get_connection(),
+            self.sale.group,
             type=FiscalBookEntry.TYPE_SERVICE)
 
     def _has_icms_entry(self):
         return FiscalBookEntry.has_entry_by_payment_group(
-            self.get_connection(),
-            self,
+            self.sale.get_connection(),
+            self.sale.group,
             type=FiscalBookEntry.TYPE_PRODUCT)
 
     def _get_average_difference(self):
         sale = self.sale
-        if not sale.get_items():
+        if not sale.get_items().count():
             raise DatabaseInconsistency(
                 "Sale orders must have items, which means products or "
                 "services")
@@ -867,7 +882,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def _get_iss_entry(self):
         return FiscalBookEntry.get_entry_by_payment_group(
-            self.get_connection(), self,
+            self.sale.get_connection(), self.sale.group,
             FiscalBookEntry.TYPE_SERVICE)
 
     def _create_fiscal_entries(self):
@@ -884,17 +899,17 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
         if sale.products:
             FiscalBookEntry.create_product_entry(
-                self.get_connection(),
-                self, sale.cfop, sale.coupon_id,
+                sale.get_connection(),
+                sale.group, sale.cfop, sale.coupon_id,
                 self._get_icms_total(av_difference))
 
         if sale.services and sale.service_invoice_number:
             FiscalBookEntry.create_service_entry(
-                self.get_connection(),
-                self, sale.cfop, sale.service_invoice_number,
+                sale.get_connection(),
+                sale.group, sale.cfop, sale.service_invoice_number,
                 self._get_iss_total(av_difference))
 
-Sale.registerFacet(SaleAdaptToPaymentGroup, IPaymentGroup)
+Sale.registerFacet(SaleAdaptToPaymentTransaction, IPaymentTransaction)
 
 
 #

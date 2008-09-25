@@ -31,18 +31,18 @@ from kiwi.datatypes import converter
 
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.category import PaymentCategory
+from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import CheckData
 from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
                                             PaymentAdaptToOutPayment,
                                             PaymentChangeHistory)
 from stoqlib.domain.person import (Person, PersonAdaptToClient,
                                    PersonAdaptToSupplier)
-from stoqlib.domain.purchase import (PurchaseOrder,
-                                     PurchaseOrderAdaptToPaymentGroup)
-from stoqlib.domain.sale import Sale, SaleAdaptToPaymentGroup, SaleView
+from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.lib.translation import stoqlib_gettext
 
-from sqlobject.sqlbuilder import LEFTJOINOn, INNERJOINOn
+from sqlobject.sqlbuilder import Alias, LEFTJOINOn, INNERJOINOn
 from sqlobject.viewable import Viewable
 
 _ = stoqlib_gettext
@@ -64,10 +64,10 @@ class InPaymentView(Viewable):
     joins = [
         INNERJOINOn(None, PaymentAdaptToInPayment,
                     PaymentAdaptToInPayment.q._originalID == Payment.q.id),
-        LEFTJOINOn(None, SaleAdaptToPaymentGroup,
-                   SaleAdaptToPaymentGroup.q.id == Payment.q.groupID),
+        LEFTJOINOn(None, PaymentGroup,
+                   PaymentGroup.q.id == Payment.q.groupID),
         LEFTJOINOn(None, Sale,
-                   Sale.q.id == SaleAdaptToPaymentGroup.q._originalID),
+                   Sale.q.groupID == PaymentGroup.q.id),
         LEFTJOINOn(None, PersonAdaptToClient,
                    PersonAdaptToClient.q.id == Sale.q.clientID),
         LEFTJOINOn(None, Person,
@@ -96,7 +96,9 @@ class InPaymentView(Viewable):
     def payment(self):
         return Payment.get(self.id, connection=self.get_connection())
 
+
 class OutPaymentView(Viewable):
+
     columns = dict(
         id=Payment.q.id,
         description=Payment.q.description,
@@ -110,19 +112,22 @@ class OutPaymentView(Viewable):
         color=PaymentCategory.q.color,
         )
 
+    PaymentGroup_Sale = Alias(PaymentGroup, 'payment_group_sale')
+    PaymentGroup_Purchase = Alias(PaymentGroup, 'payment_group_purchase')
+
     joins = [
         INNERJOINOn(None, PaymentAdaptToOutPayment,
                     PaymentAdaptToOutPayment.q._originalID == Payment.q.id),
-        LEFTJOINOn(None, PurchaseOrderAdaptToPaymentGroup,
-                   PurchaseOrderAdaptToPaymentGroup.q.id == Payment.q.groupID),
+        LEFTJOINOn(None, PaymentGroup_Purchase,
+                   PaymentGroup_Purchase.q.id == Payment.q.groupID),
         LEFTJOINOn(None, PurchaseOrder,
-                   PurchaseOrder.q.id == PurchaseOrderAdaptToPaymentGroup.q._originalID),
-        LEFTJOINOn(None, SaleAdaptToPaymentGroup,
-                   SaleAdaptToPaymentGroup.q.id == Payment.q.groupID),
+                   PurchaseOrder.q.groupID == PaymentGroup_Purchase.q.id),
+        LEFTJOINOn(None, PaymentGroup_Sale,
+                   PaymentGroup_Sale.q.id == Payment.q.groupID),
         LEFTJOINOn(None, Sale,
-                   Sale.q.id == SaleAdaptToPaymentGroup.q._originalID),
+                   Sale.q.id == PaymentGroup_Sale.q.id),
         LEFTJOINOn(None, PersonAdaptToSupplier,
-                    PersonAdaptToSupplier.q.id == PurchaseOrder.q.supplierID),
+                   PersonAdaptToSupplier.q.id == PurchaseOrder.q.supplierID),
         LEFTJOINOn(None, Person,
                    Person.q.id == PersonAdaptToSupplier.q._originalID),
         LEFTJOINOn(None, PaymentCategory,
@@ -184,6 +189,7 @@ class InCheckPaymentView(_CheckPaymentView):
     columns = _CheckPaymentView.columns
     joins = _CheckPaymentView.joins
     clause = AND(PaymentAdaptToInPayment.q._originalID == Payment.q.id)
+
 
 class OutCheckPaymentView(_CheckPaymentView):
     """Stores information about bill and check payments.

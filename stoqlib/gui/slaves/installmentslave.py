@@ -110,7 +110,9 @@ class _SaleConfirmationModel(_ConfirmationModel):
 
 
 class _PurchaseConfirmationModel(_ConfirmationModel):
-    def __init__(self, payments, purchase):
+    def __init__(self, payments, group):
+        purchase = PurchaseOrder.selectOneBy(group=group,
+                                             connection=group.get_connection())
         if not isinstance(purchase, PurchaseOrder):
             raise TypeError("purchase must be a PurchaseOrder")
         _ConfirmationModel.__init__(self, payments)
@@ -345,7 +347,7 @@ class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
     def create_model(self, conn):
         if self._payments[0].group:
             model = _PurchaseConfirmationModel(
-                self._payments, self._payments[0].group.get_adapted())
+                self._payments, self._payments[0].group)
         else:
             model = _LonelyConfirmationModel(self._payments)
         return model

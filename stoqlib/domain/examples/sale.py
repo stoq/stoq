@@ -30,8 +30,9 @@ import sys
 from stoqlib.database.runtime import (new_transaction,
                                       get_current_station, get_current_branch)
 from stoqlib.domain.examples import log
-from stoqlib.domain.interfaces import (ISellable, IClient, IPaymentGroup,
+from stoqlib.domain.interfaces import (ISellable, IClient,
                                        ISalesPerson)
+from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
@@ -84,17 +85,18 @@ def get_all_products(trans):
 
 def _create_sale(trans, open_date, status, branch, salesperson, client,
                     coupon_id, product, installments_number):
+    group = PaymentGroup(connection=trans)
     sale = Sale(client=client, status=status,
                 open_date=open_date, coupon_id=coupon_id,
                 salesperson=salesperson, branch=branch,
                 cfop=sysparam(trans).DEFAULT_SALES_CFOP,
+                group=group,
                 connection=trans)
+    sale.set_valid()
     sellable_facet = ISellable(product)
     sale.add_sellable(sellable_facet)
     sale_total = sellable_facet.base_sellable_info.price
     # Sale's payments
-    group = sale.addFacet(IPaymentGroup, connection=trans,
-                          installments_number=DEFAULT_PAYMENTS_NUMBER)
     if installments_number > MAX_INSTALLMENTS_NUMBER:
         raise ValueError("Number of installments for this payment method can "
                          "not be greater than %d, got %d"
@@ -108,8 +110,6 @@ def _create_sale(trans, open_date, status, branch, salesperson, client,
         due_dates.append(open_date + datetime.timedelta(i * interval))
     for p in method.create_inpayments(group, sale_total, due_dates):
         p.get_adapted().open_date = open_date
-
-    sale.set_valid()
 
     return sale
 

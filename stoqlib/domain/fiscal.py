@@ -70,7 +70,7 @@ class FiscalBookEntry(Domain):
     cfop = ForeignKey("CfopData")
     branch = ForeignKey("PersonAdaptToBranch")
     drawee = ForeignKey("Person", default=None)
-    payment_group = ForeignKey("AbstractPaymentGroup", default=None)
+    payment_group = ForeignKey("PaymentGroup", default=None)
     iss_value = PriceCol(default=None)
     icms_value = PriceCol(default=None)
     ipi_value = PriceCol(default=None)
@@ -103,7 +103,7 @@ class FiscalBookEntry(Domain):
             icms_value=icms_value,
             invoice_number=invoice_number,
             cfop=cfop,
-            drawee=group.get_thirdparty(),
+            drawee=group.recipient,
             branch=get_current_branch(conn),
             date=const.NOW(),
             payment_group=group,
@@ -115,7 +115,7 @@ class FiscalBookEntry(Domain):
         """Creates a new product entry in the fiscal book
         @param conn: a database connection
         @param group: payment group
-        @type  group: L{AbstractPaymentGroup}
+        @type  group: L{PaymentGroup}
         @param cfop: cfop for the entry
         @type  cfop: L{CfopData}
         @param invoice_number: payment invoice number
@@ -136,7 +136,7 @@ class FiscalBookEntry(Domain):
         """Creates a new service entry in the fiscal book
         @param conn: a database connection
         @param group: payment group
-        @type  group: L{AbstractPaymentGroup}
+        @type  group: L{PaymentGroup}
         @param cfop: cfop for the entry
         @type  cfop: L{CfopData}
         @param invoice_number: payment invoice number

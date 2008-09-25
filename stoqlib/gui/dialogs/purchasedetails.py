@@ -38,7 +38,6 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
-from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
 
 _ = stoqlib_gettext
@@ -120,13 +119,12 @@ class PurchaseDetailsDialog(BaseEditor):
         self.received_items.add_list(purchase_items)
 
         self.payments_list.set_columns(self._get_payments_columns())
-        group = IPaymentGroup(self.model, None)
-        if group is not None:
-            self.payments_list.add_list(group.get_items())
+        self.payments_list.add_list(self.model.payments)
 
-            changes = PaymentChangeHistoryView.select_by_group(group,
-                                                          connection=self.conn)
-            self.payments_info_list.add_list(changes)
+        changes = PaymentChangeHistoryView.select_by_group(
+            self.model.group,
+            connection=self.conn)
+        self.payments_info_list.add_list(changes)
 
         self._setup_summary_labels()
 
@@ -209,9 +207,7 @@ class PurchaseDetailsDialog(BaseEditor):
     def setup_proxies(self):
         self._setup_widgets()
         self.add_proxy(self.model, PurchaseDetailsDialog.proxy_widgets)
-        payment_group = IPaymentGroup(self.model, None)
-        if payment_group:
-            self.add_proxy(payment_group, PurchaseDetailsDialog.payment_proxy)
+        self.add_proxy(self.model.group, PurchaseDetailsDialog.payment_proxy)
         receiving_orders = self.model.get_receiving_orders()
         receiving_details = _TemporaryReceivingDetails(receiving_orders)
         self.add_proxy(receiving_details,

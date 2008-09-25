@@ -34,7 +34,7 @@ import stoqlib
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.devices import FiscalDayHistory
-from stoqlib.domain.interfaces import ICompany, IOutPayment, IPaymentGroup
+from stoqlib.domain.interfaces import ICompany, IOutPayment
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.parameters import sysparam
@@ -177,8 +177,7 @@ class StoqlibCATGenerator(object):
             if sale.return_date:
                 continue
 
-            group = IPaymentGroup(sale)
-            for payment in group.get_items():
+            for payment in sale.payments:
                 self.cat.add_payment_method(sale, history[0], payment)
 
 
@@ -193,8 +192,7 @@ class StoqlibCATGenerator(object):
             if len(list(history)) != 1:
                 continue
 
-            group = IPaymentGroup(sale)
-            for payment in group.get_items():
+            for payment in sale.payments:
                 if IOutPayment(payment, None):
                     continue
 

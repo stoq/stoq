@@ -26,7 +26,6 @@
 
 from decimal import Decimal
 
-from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
 from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
@@ -500,7 +499,12 @@ class ParameterAccess(ClassInittableObject):
             # XXX: workaround to works with boolean types:
             value = value.field_value
             if field_type is bool:
-                value = int(value)
+                if value == 'True':
+                    value = True
+                elif value == 'False':
+                    value = False
+                else:
+                    value = bool(int(value))
             param = field_type(value)
         self._cache[field_name] = param
         return param

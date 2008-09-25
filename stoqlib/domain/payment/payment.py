@@ -89,7 +89,7 @@ class Payment(Domain):
     description = UnicodeCol(default=None)
     payment_number = UnicodeCol(default=None)
     method = ForeignKey('PaymentMethod')
-    group = ForeignKey('AbstractPaymentGroup')
+    group = ForeignKey('PaymentGroup')
     till = ForeignKey('Till')
     destination = ForeignKey('PaymentDestination')
     category = ForeignKey('PaymentCategory')
@@ -200,8 +200,6 @@ class Payment(Domain):
         self.paid_value = paid_value
         self.paid_date = paid_date or const.NOW()
         self.status = self.STATUS_PAID
-        if self.group:
-            self.group.pay(self)
 
     def cancel(self):
         # TODO Check for till entries here and call cancel_till_entry if
@@ -274,6 +272,12 @@ class Payment(Domain):
         @returns: True if the payment is paid, otherwise False
         """
         return self.status == Payment.STATUS_PAID
+
+    def is_pending(self):
+        """Check if the payment is pending.
+        @returns: True if the payment is pending, otherwise False
+        """
+        return self.status == Payment.STATUS_PENDING
 
     def is_preview(self):
         """Check if the payment is in preview state
