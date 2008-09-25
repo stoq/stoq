@@ -34,7 +34,7 @@ from kiwi.ui.objectlist import Column, ColoredColumn
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import SummaryLabel
 
-from stoqlib.domain.interfaces import IClient, IPaymentGroup
+from stoqlib.domain.interfaces import IClient
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -72,8 +72,7 @@ class ClientDetailsDialog(BaseEditor):
         for sale_view in sales:
             sale = Sale.get(sale_view.id, connection=self.conn)
             self.services.extend(sale.services)
-            group = IPaymentGroup(sale)
-            self.payments.extend(group.get_items())
+            self.payments.extend(sale.payments)
             for product in sale.products:
                 qty = product.quantity
                 price = product.price

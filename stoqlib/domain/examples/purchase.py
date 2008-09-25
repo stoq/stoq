@@ -24,16 +24,19 @@
 ##
 """ Create purchase objects for an example database"""
 
+import datetime
+
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       get_current_user)
 from stoqlib.domain.examples import log
+from stoqlib.domain.interfaces import ISupplier, ITransporter, IProduct
 from stoqlib.domain.person import Person
+from stoqlib.domain.payment.group import PaymentGroup
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
-from stoqlib.domain.interfaces import (ISupplier, IPaymentGroup,
-                                       ITransporter, IProduct)
 from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
 from stoqlib.domain.sellable import ASellable
-from stoqlib.lib.defaults import INTERVALTYPE_MONTH
+from stoqlib.lib.defaults import calculate_interval, INTERVALTYPE_MONTH
 
 
 def create_purchases():
@@ -58,16 +61,13 @@ def create_purchases():
 
     branch = get_current_branch(trans)
     user = get_current_user(trans)
-
+    group = PaymentGroup(connection=trans)
     order = PurchaseOrder(connection=trans,
                           status=PurchaseOrder.ORDER_PENDING,
                           supplier=suppliers[0],
+                          group=group,
                           branch=branch)
     order.set_valid()
-    group = order.addFacet(IPaymentGroup,
-                           intervals=1,
-                           interval_type=INTERVALTYPE_MONTH,
-                           connection=trans)
 
     for sellable in sellables:
         if not IProduct(sellable, None):
@@ -77,7 +77,12 @@ def create_purchases():
                                       base_cost=sellable.cost,
                                       sellable=sellable,
                                       order=order)
-    order.create_preview_outpayments(trans, group, order.get_purchase_total())
+
+    method = PaymentMethod.get_by_name(trans, 'money')
+    interval = calculate_interval(INTERVALTYPE_MONTH, 1)
+    due_date = order.expected_pay_date + datetime.timedelta(interval)
+    method.create_outpayment(order.group, order.get_purchase_total(),
+                             due_date)
     order.confirm()
 
     receiving_order = ReceivingOrder(purchase=order,

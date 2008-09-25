@@ -47,7 +47,7 @@ def get_current_cheque_printer_settings(conn):
                          device=res.get_port_name())
 
 def print_cheques_for_payment_group(conn, group):
-    """ Given a instance that implements the IPaymentGroup interface, iterate
+    """ Given a instance that implements the PaymentGroup interface, iterate
     over all its items printing a cheque for them.
     """
     payments = group.get_items()
@@ -73,7 +73,7 @@ def print_cheques_for_payment_group(conn, group):
             bank = printer_banks[bank_id]
         except KeyError:
             continue
-        thirdparty = group.get_thirdparty()
+        thirdparty = group.recipient
         info(_(u"Insert Cheque %d") % (idx+1))
         max_len = printer.get_capability("cheque_thirdparty").max_len
         thirdparty = thirdparty and thirdparty.name[:max_len] or ""

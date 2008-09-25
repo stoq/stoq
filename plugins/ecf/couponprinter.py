@@ -37,7 +37,7 @@ from stoqdrivers.exceptions import (DriverError, CouponNotOpenError,
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
-from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
+from stoqlib.domain.interfaces import (IIndividual, ICompany,
                                        IContainer)
 from stoqlib.exceptions import DeviceError
 from stoqlib.lib.message import warning
@@ -343,10 +343,8 @@ class Coupon(object):
         """
         log.info("setting up payments for %r" % (sale,))
 
-        group = IPaymentGroup(sale)
-
-        log.info("we have %d payments" % (group.get_items().count()),)
-        for payment in group.get_items():
+        log.info("we have %d payments" % (sale.payments.count()),)
+        for payment in sale.payments:
             constant = self._get_payment_method_constant(payment.method)
             self._driver.add_payment(constant.device_value,
                                      payment.base_value)

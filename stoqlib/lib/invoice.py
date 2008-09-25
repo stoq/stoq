@@ -31,7 +31,7 @@ from decimal import Decimal
 from stoqdrivers.enum import TaxType
 from stoqdrivers.escp import EscPPrinter
 
-from stoqlib.domain.interfaces import ICompany, IIndividual, IPaymentGroup
+from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -520,8 +520,7 @@ class F(InvoiceFieldDescription):
     description = _('Number of payments')
     length =  4
     def fetch(self):
-        group = IPaymentGroup(self.sale)
-        return str(group.get_items().count())
+        return str(self.sale.payments.count())
 
 _add_invoice_field(F)
 
@@ -531,8 +530,7 @@ class F(InvoiceFieldDescription):
     description = _('Payment due dates')
     length =  1
     def fetch(self):
-        group = IPaymentGroup(self.sale)
-        dates = [str(p.due_date.date()) for p in group.get_items()]
+        dates = [str(p.due_date.date()) for p in self.sale.payments]
         return ', '.join(dates)
 
 _add_invoice_field(F)
@@ -542,8 +540,7 @@ class F(InvoiceFieldDescription):
     description = _('Payment values')
     length =  1
     def fetch(self):
-        group = IPaymentGroup(self.sale)
-        dates = [str(p.value) for p in group.get_items()]
+        dates = [str(p.value) for p in self.sale.payments]
         return ', '.join(dates)
 
 _add_invoice_field(F)

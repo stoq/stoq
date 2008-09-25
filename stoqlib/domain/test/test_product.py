@@ -28,7 +28,7 @@
 
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.interfaces import IStorable, ISellable, IPaymentGroup
+from stoqlib.domain.interfaces import IStorable, ISellable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductHistory, ProductComponent,
@@ -37,6 +37,7 @@ from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import BaseSellableInfo, ASellable
 
 from stoqlib.domain.test.domaintest import DomainTest
+
 
 class TestProductSupplierInfo(DomainTest):
 
@@ -47,6 +48,7 @@ class TestProductSupplierInfo(DomainTest):
                                    product=product,
                                    supplier=supplier)
         self.assertEqual(info.get_name(), supplier.get_description())
+
 
 class TestProduct(DomainTest):
     def setUp(self):
@@ -199,7 +201,6 @@ class TestProductHistory(DomainTest):
 
     def testAddSoldQuantity(self):
         sale = self.create_sale()
-        sale.addFacet(IPaymentGroup, connection=self.trans)
         sellable = self.create_sellable()
         sellable.status = ASellable.STATUS_AVAILABLE
         product = sellable.get_adapted()
@@ -208,8 +209,7 @@ class TestProductHistory(DomainTest):
         sale_item = sale.add_sellable(sellable, quantity=5)
 
         method = PaymentMethod.get_by_name(self.trans, 'money')
-        method.create_inpayment(IPaymentGroup(sale),
-                                sale.get_sale_subtotal())
+        method.create_inpayment(sale.group, sale.get_sale_subtotal())
 
         self.failIf(ProductHistory.selectOneBy(connection=self.trans,
                                                sellable=sellable))

@@ -108,7 +108,6 @@ def _create_domain_test():
         'ReceivingOrder': 'invalid invoice number',
         'ProductAdaptToSellable' : '',
         'ServiceAdaptToSellable' : '',
-        'PurchaseOrderAdaptToPaymentGroup': '',
         'CommissionSource': '',
         'Commission': '',
         }

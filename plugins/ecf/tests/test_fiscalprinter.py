@@ -27,10 +27,11 @@ from decimal import Decimal
 
 from stoqdrivers.enum import PaymentMethodType
 from stoqdrivers.exceptions import DriverError
-from stoqlib.domain.interfaces import IPaymentGroup, ISellable
+from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqdrivers.exceptions import CouponOpenError
+
 
 class TestCouponPrinter(DomainTest):
     def setUp(self):
@@ -98,12 +99,8 @@ class _TestFiscalCouponPayments:
         self.coupon.totalize()
 
     def _add_sale_payments(self, sale, constant, method_type):
-        group = sale.addFacet(IPaymentGroup,
-                              connection=self.trans,
-                              installments_number=1)
-
         method = PaymentMethod.get_by_name(self.trans, method_type)
-        method.create_inpayment(group, sale.get_total_sale_amount())
+        method.create_inpayment(sale.group, sale.get_total_sale_amount())
         self.sale.set_valid()
 
     def testSetupPayment(self):

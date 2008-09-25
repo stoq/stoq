@@ -40,8 +40,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 from stoqlib.domain.person import PersonAdaptToBranch
+from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.payment.group import AbstractPaymentGroup
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
 
@@ -75,10 +75,10 @@ class TillFiscalOperationsView(Viewable):
                     BranchStation.q.id == Till.q.stationID),
         INNERJOINOn(None, PersonAdaptToBranch,
                     PersonAdaptToBranch.q.id == BranchStation.q.branchID),
-        INNERJOINOn(None, AbstractPaymentGroup,
-                    AbstractPaymentGroup.q.id == Payment.q.groupID),
+        INNERJOINOn(None, PaymentGroup,
+                    PaymentGroup.q.id == Payment.q.groupID),
         INNERJOINOn(None, FiscalBookEntry,
-                    FiscalBookEntry.q.payment_groupID == AbstractPaymentGroup.q.id),
+                    FiscalBookEntry.q.payment_groupID == PaymentGroup.q.id),
         INNERJOINOn(None, CfopData,
                     CfopData.q.id == FiscalBookEntry.q.cfopID),
         ]

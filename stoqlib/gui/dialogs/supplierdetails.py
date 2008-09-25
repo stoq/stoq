@@ -35,7 +35,7 @@ from kiwi.ui.objectlist import Column, ColoredColumn
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import SummaryLabel
 
-from stoqlib.domain.interfaces import ISupplier, IPaymentGroup
+from stoqlib.domain.interfaces import ISupplier
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import SupplierEditor
@@ -70,8 +70,7 @@ class SupplierDetailsDialog(BaseEditor):
         product_dict = {}
         for purchase_view in purchases:
             purchase = PurchaseOrder.get(purchase_view.id, connection=self.conn)
-            group = IPaymentGroup(purchase)
-            self.payments.extend(group.get_items())
+            self.payments.extend(purchase.payments)
             for purchase_item in purchase.get_items():
                 qty = purchase_item.quantity
                 cost = purchase_item.cost

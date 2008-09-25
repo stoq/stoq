@@ -34,8 +34,16 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.database.runtime import (get_current_branch, new_transaction,
                                       finish_transaction, get_current_user)
+from stoqlib.domain.interfaces import IBranch, ITransporter, ISupplier
+from stoqlib.domain.payment.group import PaymentGroup
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.operation import register_payment_operations
+from stoqlib.domain.person import Person
+from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
+from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
+                                      get_receiving_items_by_purchase_order)
+from stoqlib.domain.sellable import ASellable
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
@@ -47,15 +55,6 @@ from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave,
                                              BillMethodSlave, MoneyMethodSlave)
-from stoqlib.domain.sellable import ASellable
-from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.operation import register_payment_operations
-from stoqlib.domain.person import Person
-from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
-from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
-                                      get_receiving_items_by_purchase_order)
-from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
-                                       IPaymentGroup)
 from stoqlib.reporting.purchase import PurchaseOrderReport
 
 _ = stoqlib_gettext
@@ -265,22 +264,16 @@ class PurchaseItemStep(SellableItemStep):
 
 class PurchasePaymentStep(WizardEditorStep):
     gladefile = 'PurchasePaymentStep'
-    model_iface = IPaymentGroup
+    model_type = PaymentGroup
     payment_widgets = ('method_combo',)
     order_widgets = ('subtotal_lbl',
                      'total_lbl')
 
     def __init__(self, wizard, previous, conn, model):
         self.order = model
-        model = IPaymentGroup(model, None)
-        if model is None:
-            model = self.order.addFacet(IPaymentGroup,
-                                        intervals=1,
-                                        interval_type=INTERVALTYPE_MONTH,
-                                        connection=conn)
         self.slave = None
         self.discount_surcharge_slave = None
-        WizardEditorStep.__init__(self, conn, wizard, model, previous)
+        WizardEditorStep.__init__(self, conn, wizard, model.group, previous)
 
     def _setup_widgets(self):
         items = [
@@ -492,8 +485,12 @@ class PurchaseWizard(BaseWizard):
     def _create_model(self, conn):
         supplier = sysparam(conn).SUGGESTED_SUPPLIER
         branch = get_current_branch(conn)
+        group = PaymentGroup(connection=conn)
         status = PurchaseOrder.ORDER_PENDING
-        return PurchaseOrder(supplier=supplier, branch=branch, status=status,
+        return PurchaseOrder(supplier=supplier,
+                             branch=branch,
+                             status=status,
+                             group=group,
                              connection=conn)
 
     #

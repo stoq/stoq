@@ -26,7 +26,7 @@ import datetime
 from decimal import Decimal
 
 from stoqlib.database.runtime import get_current_station
-from stoqlib.domain.interfaces import IPaymentGroup, IInPayment, IOutPayment
+from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import (Payment,
                                             PaymentAdaptToInPayment,
@@ -40,38 +40,28 @@ from stoqlib.lib.defaults import quantize
 class _TestPaymentMethod:
     def createInPayment(self):
         sale = self.create_sale()
-        group = sale.addFacet(IPaymentGroup,
-                              connection=self.trans)
-
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        return method.create_inpayment(group, Decimal(100))
+        return method.create_inpayment(sale.group, Decimal(100))
 
     def createOutPayment(self):
         purchase = self.create_purchase_order()
-        group = IPaymentGroup(purchase)
-
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        return method.create_outpayment(group, Decimal(100))
+        return method.create_outpayment(purchase.group, Decimal(100))
 
     def createInPayments(self, no=3):
         sale = self.create_sale()
-        group = sale.addFacet(IPaymentGroup,
-                              connection=self.trans)
-
         d = datetime.datetime.today()
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        payments = method.create_inpayments(group, Decimal(100),
+        payments = method.create_inpayments(sale.group, Decimal(100),
                                             [d] * no)
 
         return [p.get_adapted() for p in payments]
 
     def createOutPayments(self, no=3):
         purchase = self.create_purchase_order()
-        group = IPaymentGroup(purchase)
-
         d = datetime.datetime.today()
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        payments = method.create_outpayments(group, Decimal(100),
+        payments = method.create_outpayments(purchase.group, Decimal(100),
                                              [d] * no)
         return [p.get_adapted() for p in payments]
 
@@ -80,29 +70,25 @@ class _TestPaymentMethod:
             order = self.create_purchase_order()
         elif iface is IInPayment:
             order = self.create_sale()
-            order.addFacet(IPaymentGroup, connection=self.trans)
         else:
             order = None
 
-        group = IPaymentGroup(order)
         value = Decimal(100)
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        return method.create_payment(iface, group, value)
+        return method.create_payment(iface, order.group, value)
 
     def createPayments(self, iface, no=3):
         if iface is IOutPayment:
             order = self.create_purchase_order()
         elif iface is IInPayment:
             order = self.create_sale()
-            order.addFacet(IPaymentGroup, connection=self.trans)
         else:
             order = None
 
-        group = IPaymentGroup(order)
         value = Decimal(100)
         due_dates = [datetime.datetime.today()] * no
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        return method.create_payments(iface, group, value, due_dates)
+        return method.create_payments(iface, order.group, value, due_dates)
 
 class _TestPaymentMethodsBase(_TestPaymentMethod):
     def testCreateInPayment(self):
@@ -171,17 +157,15 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
 
     def testDescribePayment(self):
         sale = self.create_sale()
-        group = sale.addFacet(IPaymentGroup,
-                              connection=self.trans)
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        desc = method.describe_payment(group)
+        desc = method.describe_payment(sale.group)
         self.failUnless(isinstance(desc, unicode))
         self.failUnless(method.description in desc)
 
-        self.assertRaises(AssertionError, method.describe_payment, group, 0)
-        self.assertRaises(AssertionError, method.describe_payment, group, 1, 0)
-        self.assertRaises(AssertionError, method.describe_payment, group, 2, 1)
-        desc = method.describe_payment(group, 123, 456)
+        self.assertRaises(AssertionError, method.describe_payment, sale.group, 0)
+        self.assertRaises(AssertionError, method.describe_payment, sale.group, 1, 0)
+        self.assertRaises(AssertionError, method.describe_payment, sale.group, 2, 1)
+        desc = method.describe_payment(sale.group, 123, 456)
         self.failUnless('123' in desc, desc)
         self.failUnless('456' in desc, desc)
         self.failUnless('123/456' in desc, desc)
@@ -270,9 +254,9 @@ class TestCheck(DomainTest, _TestPaymentMethodsBase):
         self.failUnless(check_data)
 
     def testBank(self):
+        sale = self.create_sale()
         method = PaymentMethod.get_by_name(self.trans, self.method_type)
-        group = IPaymentGroup(self.create_purchase_order())
-        payment = method.create_outpayment(group, Decimal(10))
+        payment = method.create_outpayment(sale.group, Decimal(10))
         self.failUnless(payment.get_adapted().bank)
 
 

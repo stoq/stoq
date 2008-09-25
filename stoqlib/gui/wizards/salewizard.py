@@ -31,7 +31,6 @@ from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
 from kiwi.datatypes import currency
 from kiwi.python import Settable
-from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.ui.wizard import WizardStep
 from kiwi.utils import gsignal
 
@@ -43,7 +42,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -55,13 +53,12 @@ from stoqlib.gui.slaves.paymentslave import register_payment_slaves
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.domain.person import Person, ClientView
-from stoqlib.domain.payment.group import AbstractPaymentGroup
+from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import ASellable
-from stoqlib.domain.interfaces import (IPaymentGroup, ISalesPerson,
-                                       ISellable)
+from stoqlib.domain.interfaces import ISalesPerson
 
 N_ = _ = stoqlib_gettext
 
@@ -218,7 +215,7 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
     gsignal('on-validate-step', object)
 
     @argcheck(BaseWizard, WizardStep, StoqlibTransaction, Sale,
-              AbstractPaymentGroup, Decimal)
+              PaymentGroup, Decimal)
     def __init__(self, wizard, previous, conn, sale, payment_group,
                  overpaid_value):
         self.overpaid_value = overpaid_value
@@ -303,7 +300,7 @@ class _AbstractSalesPersonStep(WizardEditorStep):
                      'salesperson_combo',
                      'client')
 
-    @argcheck(BaseWizard, StoqlibTransaction, Sale, AbstractPaymentGroup)
+    @argcheck(BaseWizard, StoqlibTransaction, Sale, PaymentGroup)
     def __init__(self, wizard, conn, model, payment_group):
         self.payment_group = payment_group
         WizardEditorStep.__init__(self, conn, wizard, model)
@@ -382,10 +379,7 @@ class _AbstractSalesPersonStep(WizardEditorStep):
             self.detach_slave(slave_holder)
         self.attach_slave('discount_surcharge_slave', self.discsurcharge_slave)
 
-        group = IPaymentGroup(self.model, None)
-        if not group:
-            raise StoqlibError(
-                "You should have a IPaymentGroup facet defined at this point")
+
         self.pm_slave = SelectPaymentMethodSlave(method_type=PmSlaveType.MONEY)
         self.pm_slave.connect('method-changed', self.on_payment_method_changed)
         self.attach_slave('select_method_holder', self.pm_slave)
@@ -519,10 +513,7 @@ class _AbstractSaleWizard(BaseWizard):
         if not isinstance(model, Sale):
             raise StoqlibError("Invalid datatype for model, it should be "
                                "of type Sale, got %s instead" % model)
-        group = IPaymentGroup(model, None)
-        if not group:
-            group = model.addFacet(IPaymentGroup, connection=conn)
-        self.payment_group = group
+        self.payment_group = model.group
 
     #
     # Public API

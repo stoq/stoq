@@ -33,7 +33,7 @@ from stoqdrivers.exceptions import (DriverError, CouponOpenError,
 from zope.interface import implements
 
 from stoqlib.database.runtime import new_transaction, finish_transaction
-from stoqlib.domain.interfaces import IContainer, IPaymentGroup
+from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.exceptions import DeviceError, TillError
@@ -288,12 +288,11 @@ class FiscalCoupon(gobject.GObject):
         if sale.paid_with_money():
             sale.set_paid()
 
-        print_cheques_for_payment_group(trans, IPaymentGroup(sale))
+        print_cheques_for_payment_group(trans, sale.group)
         return True
 
     def _print_receipts(self, sale):
-        group = IPaymentGroup(sale)
-        for payment in group.get_items():
+        for payment in sale.payments:
             if payment.method.method_name == 'card':
                 # The text is a response from the TEF software. That should probably be stored as
                 # a temporary property of the payment. To be fixed with bug 2249

@@ -467,40 +467,31 @@ class IOutPayment(IPaymentFacet):
         """ Confirm the payment."""
 
 
-class IPaymentGroup(Interface):
+class IPaymentTransaction(Interface):
     """ Interface specification for PaymentGroups. """
 
-    status = Attribute('The status of the payment group. ')
-    open_date = Attribute('The open date of the payment group.')
-    close_date = Attribute('The close date of the payment group.')
-    notes = Attribute('Extra notes for the payment group.')
-    payments = Attribute('A list of payments associated to this payment '
-                         'group')
-    thirdparty = Attribute('The thirdparty associated to this payment group.')
-
-
-    def get_thirdparty():
-        """Return the thirdparty attached to the payment group. It must be
-        always a Person instance"""
-
-    def get_group_description():
-        """Returns a group description which will be used when building
-        descriptions for payments"""
-
     def confirm():
-        """Validate the current payment group, create payments."""
-
-    def cancel(renegotiation):
-        pass
-
-    def can_cancel():
-        pass
-
-    def pay(payment):
-        """This is an optional hook on the PaymentGroup which is called
-        when you pay a payment.
-        @param payment: the payment which was paid
+        """Transaction is confirmed.
+        Payments might occur at this time, in case of money payment,
+        others may happen later
         """
+
+    def pay():
+        """All payment for this transaction are paid.
+        """
+
+    def cancel():
+        """Cancels the transaction before it's completed.
+        """
+
+    def return_(renegotiation):
+        """Returns the goods purchased.
+        This means that all paid payments are paid back and
+        all pending onces are cancelled.
+        Commissions may also reversed.
+        @param renegotiation: renegotiation data
+        """
+
 
 class IDelivery(Interface):
     """ Specification of a Delivery interface for a sellable. """

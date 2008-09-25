@@ -29,14 +29,15 @@ from decimal import Decimal
 from stoqdrivers.enum import TaxType
 from sqlobject.sqlbuilder import const
 
-from stoqlib.database.runtime import get_current_station
+from stoqlib.database.runtime import (get_current_station,
+                                      get_current_branch)
 from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
                                        IIndividual, ISupplier,
                                        ISellable, IStorable, ISalesPerson,
                                        IClient, IUser, ITransporter,
                                        IBankBranch,
                                        ICreditProvider,
-                                       IPaymentGroup, IProduct)
+                                       IProduct)
 from stoqlib.lib.parameters import sysparam
 
 # Do not remove, these are used by doctests
@@ -110,9 +111,9 @@ class ExampleCreator(object):
 
     def create_by_type(self, model_type):
         known_types = {
-            'PaymentMethod': self.create_payment_method,
+            'PaymentMethod': self.get_payment_method,
             'ASellable': self.create_sellable,
-            'AbstractPaymentGroup' : self.create_payment_group,
+            'PaymentGroup' : self.create_payment_group,
             'BaseSellableInfo': self.create_base_sellable_info,
             'BranchStation': self.get_station,
             'Bank': self.create_bank,
@@ -266,10 +267,12 @@ class ExampleCreator(object):
             till.open_till()
         salesperson = self.create_sales_person()
         branch = self.create_branch()
+        group = self.create_payment_group()
         return Sale(coupon_id=0,
                     open_date=const.NOW(),
                     salesperson=salesperson, branch=branch,
                     cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,
+                    group=group,
                     connection=self.trans)
 
     def create_city_location(self):
@@ -312,11 +315,11 @@ class ExampleCreator(object):
 
     def create_purchase_order(self):
         from stoqlib.domain.purchase import PurchaseOrder
-        order = PurchaseOrder(supplier=self.create_supplier(),
+        group = self.create_payment_group()
+        return PurchaseOrder(supplier=self.create_supplier(),
                               branch=self.create_branch(),
-                            connection=self.trans)
-        order.addFacet(IPaymentGroup, connection=self.trans)
-        return order
+                              group=group,
+                              connection=self.trans)
 
     def create_purchase_order_item(self):
         from stoqlib.domain.purchase import PurchaseItem
@@ -361,9 +364,9 @@ class ExampleCreator(object):
 
     def create_fiscal_book_entry(self, entry_type=None, icms_value=0,
                                  iss_value=0, ipi_value=0, invoice_number=None):
-        from stoqlib.domain.payment.group import AbstractPaymentGroup
+        from stoqlib.domain.payment.group import PaymentGroup
         from stoqlib.domain.fiscal import FiscalBookEntry
-        payment_group = AbstractPaymentGroup(connection=self.trans)
+        payment_group = PaymentGroup(connection=self.trans)
         return FiscalBookEntry(invoice_number=invoice_number,
                                icms_value=icms_value,
                                iss_value=iss_value,
@@ -432,10 +435,6 @@ class ExampleCreator(object):
                                 short_name='Velec',
                                 open_contract_date=datetime.date(2006, 01, 01))
 
-    def create_payment_method(self):
-        from stoqlib.domain.payment.method import PaymentMethod
-        return PaymentMethod.get_by_name(self.trans, 'money')
-
     def create_payment(self):
         from stoqlib.domain.payment.payment import Payment
         return Payment(group=None,
@@ -443,13 +442,13 @@ class ExampleCreator(object):
                        destination=None,
                        value=Decimal(10),
                        till=None,
-                       method=self.create_payment_method(),
+                       method=self.get_payment_method(),
                        category=None,
                        connection=self.trans)
 
     def create_payment_group(self):
-        from stoqlib.domain.payment.group import AbstractPaymentGroup
-        return AbstractPaymentGroup(connection=self.trans)
+        from stoqlib.domain.payment.group import PaymentGroup
+        return PaymentGroup(connection=self.trans)
 
     def create_payment_destination(self):
         from stoqlib.domain.payment.destination import PaymentDestination
@@ -503,7 +502,6 @@ class ExampleCreator(object):
                                  connection=self.trans)
 
     def create_retained_product(self, product, quantity):
-        from stoqlib.database.runtime import get_current_branch
         branch = get_current_branch(self.trans)
         reason = "Test"
         return product.retain(quantity=quantity, branch=branch,
@@ -527,12 +525,37 @@ class ExampleCreator(object):
                              inventory=inventory,
                              connection=self.trans)
 
+    def get_payment_method(self, name='money'):
+        from stoqlib.domain.payment.method import PaymentMethod
+        return PaymentMethod.get_by_name(self.trans, name)
+
     def get_station(self):
         return get_current_station(self.trans)
 
     def get_location(self):
         from stoqlib.domain.address import CityLocation
         return CityLocation.get_default(self.trans)
+
+    def add_product(self, sale, price=None, quantity=1):
+        product = self.create_product(price=price)
+        sellable = ISellable(product)
+        sellable.tax_constant = self.create_sellable_tax_constant()
+        sale.add_sellable(sellable, quantity=quantity)
+        storable = product.addFacet(IStorable, connection=self.trans)
+        storable.increase_stock(100, get_current_branch(self.trans))
+        return sellable
+
+    def add_payments(self, obj, method_type='money'):
+        from stoqlib.domain.sale import Sale
+        from stoqlib.domain.purchase import PurchaseOrder
+        if isinstance(obj, Sale):
+            total = obj.get_sale_subtotal()
+        elif isinstance(obj, PurchaseOrder):
+            total = obj.get_purchase_subtotal()
+        else:
+            raise ValueError(obj)
+        method = self.get_payment_method(method_type)
+        return method.create_inpayment(obj.group, total)
 
 
 

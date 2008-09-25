@@ -39,9 +39,9 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.template import SearchResultsReport, BaseStoqReport
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
-from stoqlib.domain.interfaces import IPaymentGroup
 
 _ = stoqlib_gettext
+
 
 class PurchaseReport(SearchResultsReport):
     report_name = _("Purchase Order Report")
@@ -166,12 +166,10 @@ class PurchaseOrderReport(BaseStoqReport):
         return freight_line
 
     def _setup_payment_group_data(self):
-        group = IPaymentGroup(self._order)
-        if not group:
-            return
-        if group.installments_number > 1:
+        installments_number = self._order.payments.count()
+        if installments_number > 1:
             msg = (_("Paid in %d installments")
-                   % (group.installments_number,))
+                   % (installments_number,))
         else:
             msg = _("Paid in 1 installment")
         self.add_paragraph(msg, style="Normal-Bold")

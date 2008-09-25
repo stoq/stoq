@@ -56,7 +56,6 @@ from stoqlib.domain.person import (Person,
 from stoqlib.domain.product import Product
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -320,6 +319,7 @@ class TestCompany(_PersonFacetTest, DomainTest):
         company.cnpj = '111.222.333.444'
         self.assertEquals(company.get_cnpj_number(), 111222333444)
 
+
 class TestClient(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToClient
 
@@ -354,23 +354,17 @@ class TestClient(_PersonFacetTest, DomainTest):
         assert people
         salesperson = people[0]
         count_sales = client.get_client_sales().count()
-        date = datetime.date(2050, 11, 11)
-        new_sale = Sale(coupon_id=123, client=client, cfop=cfop,
-                        salesperson=salesperson,
-                        connection=self.trans,
-                        open_date=date)
-        new_sale.set_valid()
+        sale = self.create_sale()
+        sale.client = client
+        sale.set_valid()
         products = Product.select(connection=self.trans)
         assert products
         product = products[0]
         sellable_product = ISellable(product)
-        new_sale.add_sellable(sellable_product)
+        sale.add_sellable(sellable_product)
         one_more_sale = client.get_client_sales().count()
         self.assertEquals(count_sales + 1, one_more_sale)
-        last_purchase_date = client.get_last_purchase_date()
 
-        #Testing get_last_purchase_date method bellow
-        self.assertEquals(client.get_last_purchase_date(), date)
 
 class TestSupplier(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToSupplier

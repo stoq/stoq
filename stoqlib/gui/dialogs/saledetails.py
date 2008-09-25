@@ -40,7 +40,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.printing import print_report
-from stoqlib.domain.interfaces import IClient, IPaymentGroup, IOutPayment
+from stoqlib.domain.interfaces import IClient, IOutPayment
 from stoqlib.domain.person import Person
 from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
@@ -106,15 +106,10 @@ class SaleDetailsDialog(BaseEditor):
         summary_label.show()
         self.payments_vbox.pack_start(summary_label, False)
 
-    def _get_payments(self, group):
-        payments = list(group.get_items())
-        for payment in payments:
+    def _get_payments(self, sale):
+        for payment in sale.payments:
             if IOutPayment(payment, None):
-                tmp_outpayment = _TemporaryOutPayment(payment)
-                payments.remove(payment)
-                payments.append(tmp_outpayment)
-
-        return payments
+                yield _TemporaryOutPayment(payment)
 
     def _setup_widgets(self):
         if not self.model.client_id:
@@ -129,13 +124,11 @@ class SaleDetailsDialog(BaseEditor):
             self.cancel_details_button.hide()
 
         self.items_list.add_list(self.sale_order.get_items())
-        group = IPaymentGroup(self.sale_order, None)
-        if group:
-            payments = self._get_payments(group)
-            self.payments_list.add_list(payments)
-            changes = PaymentChangeHistoryView.select_by_group(group,
-                                                          connection=self.conn)
-            self.payments_info_list.add_list(changes)
+        self.payments_list.add_list(self._get_payments())
+        changes = PaymentChangeHistoryView.select_by_group(
+            self.sale_order.group,
+            connection=self.conn)
+        self.payments_info_list.add_list(changes)
 
         self._setup_summary_labels()
 

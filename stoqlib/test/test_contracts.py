@@ -43,7 +43,6 @@ def _create_adapter_test():
     #    class methods
     #
     TODO = {
-        'AbstractPaymentGroup': ' ',
         }
 
     def _test_adapter(self, adapter):

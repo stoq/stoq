@@ -38,7 +38,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import (IInPayment, IActive, IOutPayment,
                                        IDescribable)
 from stoqlib.domain.payment.destination import PaymentDestination
-from stoqlib.domain.payment.group import AbstractPaymentGroup
+from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import (PaymentError, DatabaseInconsistency,
@@ -101,7 +101,7 @@ class PaymentMethod(Domain):
     closing_day = IntCol(default=None)
     max_installments = IntCol(default=1)
     destination = ForeignKey('PaymentDestination', default=None)
-    
+
     #
     # IActive implementation
     #
@@ -139,7 +139,7 @@ class PaymentMethod(Domain):
         @rtype: object implementing IPaymentOperation
         """
         return get_utility(IPaymentOperationManager).get(self.method_name)
-    
+
     #
     # Private API
     #
@@ -195,14 +195,14 @@ class PaymentMethod(Domain):
     #       they don't really belong to the method itself.
     #       They should either go into the group or to a separate payment
     #       factory singleton.
-    @argcheck(object, AbstractPaymentGroup, Decimal, datetime.datetime,
+    @argcheck(object, PaymentGroup, Decimal, datetime.datetime,
               basestring, basestring, Till)
     def create_payment(self, iface, payment_group, value, due_date=None,
                        description=None, base_value=None, till=None):
         """Creates a new payment according to a payment method interface
         @param iface: a payment method interface eg L{IOutPayment} or
         L{IInPayment}
-        @param payment_group: a L{APaymentGroup} subclass
+        @param payment_group: a L{PaymentGroup} subclass
         @param value: value of payment
         @param due_date: optional, due date of payment
         @param details: optional
@@ -230,7 +230,7 @@ class PaymentMethod(Domain):
                 raise DatabaseInconsistency(
                     'You have more inpayments in database than the maximum '
                     'allowed for this payment method')
-            
+
         if not description:
             description = self.describe_payment(payment_group)
 
@@ -258,7 +258,7 @@ class PaymentMethod(Domain):
         self.operation.payment_create(facet)
         return facet
 
-    @argcheck(object, AbstractPaymentGroup, Decimal, object)
+    @argcheck(object, PaymentGroup, Decimal, object)
     def create_payments(self, iface, group, value, due_dates):
         """Creates new payments according to a payment method interface.
         The values of the individual payments are calculated by taking
@@ -267,7 +267,7 @@ class PaymentMethod(Domain):
         sequence.
         @param iface: a payment method interface eg L{IOutPayment} or
         L{IInPayment}
-        @param payment_group: a L{APaymentGroup} subclass
+        @param payment_group: a L{PaymentGroup} subclass
         @param value: value of payment
         @param due_dates: a list of datetime objects
         @returns: a list of L{PaymentAdaptToOutPayment} or
@@ -287,7 +287,6 @@ class PaymentMethod(Domain):
 
         payments = []
         payments_total = Decimal(0)
-        group_desc = group.get_group_description()
         for i, due_date in enumerate(due_dates):
             payment = self.create_payment(iface,
                 group, normalized_value, due_date,
@@ -307,7 +306,7 @@ class PaymentMethod(Domain):
         format: current_installment/total_of_installments payment_description
         for payment_group_description
 
-        @param payment_group: a L{APaymentGroup}
+        @param payment_group: a L{PaymentGroup}
         @param installment: current installment
         @param installments: total installments
         @returns: a payment description
@@ -315,16 +314,16 @@ class PaymentMethod(Domain):
         assert installment > 0
         assert installments > 0
         assert installments >= installment
-        group_desc = payment_group.get_group_description()
         return _(u'%s/%s %s for %s') % (installment, installments,
-                                        self.get_description(), group_desc)
+                                        self.get_description(),
+                                        payment_group.get_description())
 
-    @argcheck(AbstractPaymentGroup, Decimal, datetime.datetime,
+    @argcheck(PaymentGroup, Decimal, datetime.datetime,
               basestring, Decimal, Till)
     def create_inpayment(self, payment_group, value, due_date=None,
                          description=None, base_value=None, till=None):
         """Creates a new inpayment
-        @param payment_group: a L{APaymentGroup} subclass
+        @param payment_group: a L{PaymentGroup} subclass
         @param value: value of payment
         @param due_date: optional, due date of payment
         @param description: optional, description of the payment
@@ -336,12 +335,12 @@ class PaymentMethod(Domain):
                                    value, due_date,
                                    description, base_value, till)
 
-    @argcheck(AbstractPaymentGroup, Decimal, datetime.datetime,
+    @argcheck(PaymentGroup, Decimal, datetime.datetime,
               basestring, Decimal, Till)
     def create_outpayment(self, payment_group, value, due_date=None,
                           description=None, base_value=None, till=None):
         """Creates a new outpayment
-        @param payment_group: a L{APaymentGroup} subclass
+        @param payment_group: a L{PaymentGroup} subclass
         @param value: value of payment
         @param due_date: optional, due date of payment
         @param description: optional, description of the payment
@@ -353,14 +352,14 @@ class PaymentMethod(Domain):
                                    value, due_date,
                                    description, base_value, till)
 
-    @argcheck(AbstractPaymentGroup, Decimal, object)
+    @argcheck(PaymentGroup, Decimal, object)
     def create_inpayments(self, payment_group, value, due_dates):
         """Creates a list of new inpayments, the values of the individual
         payments are calculated by taking the value and dividing it by
         the number of payments.
         The number of payments is determined by the length of the due_dates
         sequence.
-        @param payment_group: a L{APaymentGroup} subclass
+        @param payment_group: a L{PaymentGroup} subclass
         @param value: total value of all payments
         @param due_dates: a list of datetime objects
         @returns: a list of L{PaymentAdaptToInPayment}
@@ -369,14 +368,14 @@ class PaymentMethod(Domain):
                                     value, due_dates)
 
 
-    @argcheck(AbstractPaymentGroup, Decimal, object)
+    @argcheck(PaymentGroup, Decimal, object)
     def create_outpayments(self, payment_group, value, due_dates):
         """Creates a list of new outpayments, the values of the individual
         payments are calculated by taking the value and dividing it by
         the number of payments.
         The number of payments is determined by the length of the due_dates
         sequence.
-        @param payment_group: a L{APaymentGroup} subclass
+        @param payment_group: a L{PaymentGroup} subclass
         @param value: total value of all payments
         @param due_dates: a list of datetime objects
         @returns: a list of L{PaymentAdaptToOutPayment}
@@ -401,16 +400,6 @@ class PaymentMethod(Domain):
         """
         return PaymentMethod.selectOneBy(connection=conn,
                                          method_name=name)
-
-    @argcheck(AbstractPaymentGroup)
-    def get_thirdparty(self, payment_group):
-        """ Returns the thirdparty associated with this payment method. If
-        the method doesn't have it's own thirdparty the payment_group
-        thirdparty will be returned.
-
-        @param payment_group: a L{APaymentGroup} subclass
-        """
-        return payment_group.get_thirdparty()
 
     def selectable(self):
         """Finds out if the method is selectable, eg

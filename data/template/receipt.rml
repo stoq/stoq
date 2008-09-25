@@ -26,8 +26,7 @@
 <%
   from stoqlib.lib.cardinal_formatters import get_price_cardinal
   value = sum([payment.value for payment in payments])
-  payment_description = ", ".join([payment.description
-                                        for payment in payments])
+  payment_description = ", ".join([payment.description for payment in payments])
   payment_description += " made in " + payment.get_open_date_string()
 %>
 <%include file="style.rml"/>
