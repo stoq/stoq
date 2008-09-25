@@ -63,28 +63,31 @@ class StoqURLParser(HTMLParser):
     """
     def __init__(self, *args, **kwargs):
         HTMLParser.__init__(self, *args, **kwargs)
-        self._packages = {'kiwi': '',
-                          'gazpacho': '',
-                          'stoqdrivers': '',
-                          'stoqlib': '',
-                          'stoq': ''}
+        self._packages = [['gazpacho',    ''],
+                          ['kiwi',        ''],
+                          ['stoqdrivers', ''],
+                          ['stoqlib',     ''],
+                          ['stoq',        '']]
 
     def handle_starttag(self, tag, attrs):
         if tag == 'a':
             package = attrs[0][1]
             name = package.split('-')[0]
-            if self._packages.has_key(name):
-                self._packages[name] = package
+            for i, package_data in enumerate(self._packages):
+                if name == package_data[0]:
+                    self._packages[i] = [name, package]
+                    break
 
     def _check_packages(self):
-        for name, package in self._packages.iteritems():
+        for name, package in self._packages:
             if not bool(package):
                 raise SystemError("Package %s not found in %s!" %
                                                 (name, DEFAULT_URL))
 
     def get_packages(self):
         self._check_packages()
-        return self._packages.values()
+        for name, package in self._packages:
+            yield package
 
 
 def fetch_packages(tmpdir):
