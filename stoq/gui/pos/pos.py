@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -47,6 +47,7 @@ from stoqlib.domain.interfaces import (IDelivery, ISalesPerson, IProduct,
                                        IService)
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.inventory import Inventory
+from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.product import ProductAdaptToSellable, IStorable
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.sale import Sale
@@ -521,9 +522,11 @@ class POSApp(AppWindow):
         branch = get_current_branch(trans)
         salesperson = ISalesPerson(user.person)
         cfop = sysparam(trans).DEFAULT_SALES_CFOP
+        group = PaymentGroup(connection=trans)
         sale = Sale(connection=trans,
                     branch=branch,
                     salesperson=salesperson,
+                    group=group,
                     cfop=cfop,
                     coupon_id=None)
 
