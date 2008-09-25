@@ -33,6 +33,8 @@ from dateutil.parser import parse
 from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
 from sqlobject import SQLObjectNotFound
+from sqlobject.inheritance import InheritableSQLObject
+from sqlobject.main import SQLObject
 from sqlobject.sqlbuilder import const
 
 from stoqlib.database.admin import create_base_schema
@@ -84,7 +86,8 @@ def _collect_table(tables, table):
         # FIXME: Remove this and put the adapter tables in
         #        the policy list directly instead
         for facet_type in table.getFacetTypes():
-            _collect_table(tables, facet_type)
+            if issubclass(facet_type, (SQLObject, InheritableSQLObject)):
+                _collect_table(tables, facet_type)
 
 def get_tables(policy, pfilter=None):
     """Fetches a list of tables given a specific policy.
