@@ -34,7 +34,7 @@ from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.database.runtime import new_transaction, finish_transaction
-from stoqlib.domain.interfaces import IBranch, ISellable
+from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import ProductStockItem
@@ -181,7 +181,7 @@ class InventoryApp(SearchableAppWindow):
 
     def _get_sellables_by_inventory(self, inventory):
         for item in inventory.get_items():
-            yield ISellable(item.product)
+            yield item.product.sellable
 
     #
     # Callbacks

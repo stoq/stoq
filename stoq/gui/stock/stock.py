@@ -38,7 +38,6 @@ from stoqlib.database.runtime import (new_transaction, get_current_branch,
 from stoqlib.domain.interfaces import IBranch, IStorable
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Person
-from stoqlib.domain.product import ProductAdaptToSellable
 from stoqlib.domain.views import ProductWithStockView
 from stoqlib.lib.message import warning
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
@@ -214,7 +213,6 @@ class StockApp(SearchableAppWindow):
         if len(selected) != 1:
             raise ValueError("You should have only one selected item at "
                              "this point")
-        sellable = ProductAdaptToSellable.get(selected[0].id,
-                                              connection=self.conn)
+        sellable = Sellable.get(selected[0].id, connection=self.conn)
         self.run_dialog(ProductStockHistoryDialog, self.conn, sellable,
                         branch=self.branch_filter.combo.get_selected())
