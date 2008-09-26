@@ -27,14 +27,13 @@ from sqlobject.viewable import Viewable
 from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn, OR
 
 from stoqlib.domain.commission import CommissionSource
-from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.person import Person, PersonAdaptToSupplier
-from stoqlib.domain.product import (Product, ProductAdaptToSellable,
+from stoqlib.domain.product import (Product,
                                     ProductAdaptToStorable,
                                     ProductStockItem,
                                     ProductHistory)
 from stoqlib.domain.purchase import Quotation, QuoteGroup, PurchaseOrder
-from stoqlib.domain.sellable import (ASellable, SellableUnit,
+from stoqlib.domain.sellable import (Sellable, SellableUnit,
                                      BaseSellableInfo, SellableCategory,
                                      SellableTaxConstant)
 
@@ -55,10 +54,10 @@ class ProductFullStockView(Viewable):
      """
 
     columns = dict(
-        id=ASellable.q.id,
-        barcode=ASellable.q.barcode,
-        status=ASellable.q.status,
-        cost=ASellable.q.cost,
+        id=Sellable.q.id,
+        barcode=Sellable.q.barcode,
+        status=Sellable.q.status,
+        cost=Sellable.q.cost,
         price=BaseSellableInfo.q.price,
         description=BaseSellableInfo.q.description,
         product_id=Product.q.id,
@@ -71,15 +70,13 @@ class ProductFullStockView(Viewable):
     joins = [
         # Tax Constant
         LEFTJOINOn(None, SellableTaxConstant,
-                   SellableTaxConstant.q.id == ASellable.q.tax_constantID),
+                   SellableTaxConstant.q.id == Sellable.q.tax_constantID),
         # Category
         LEFTJOINOn(None, SellableCategory,
-                   SellableCategory.q.id == ASellable.q.categoryID),
+                   SellableCategory.q.id == Sellable.q.categoryID),
         # Product
-        INNERJOINOn(None, ProductAdaptToSellable,
-                    ProductAdaptToSellable.q.id == ASellable.q.id),
         INNERJOINOn(None, Product,
-                    Product.q.id == ProductAdaptToSellable.q._originalID),
+                    Product.q.sellableID == Sellable.q.id),
         # Product Stock Item
         LEFTJOINOn(None, ProductAdaptToStorable,
                    ProductAdaptToStorable.q._originalID == Product.q.id),
@@ -89,7 +86,7 @@ class ProductFullStockView(Viewable):
         ]
 
     clause = AND(
-        BaseSellableInfo.q.id == ASellable.q.base_sellable_infoID,
+        BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID,
         )
 
     @classmethod
@@ -104,7 +101,7 @@ class ProductFullStockView(Viewable):
         return cls.select(query, connection=connection)
 
     def get_unit_description(self):
-        unit = ISellable(self.product).get_unit_description()
+        unit = self.product.sellable.get_unit_description()
         if unit == u"":
             return u"un"
         return unit
@@ -180,10 +177,10 @@ class ProductQuantityView(Viewable):
     hidden_columns = ['sold_date', 'received_date']
 
     joins = [
-        INNERJOINOn(None, ASellable,
-                    ProductHistory.q.sellableID == ASellable.q.id),
+        INNERJOINOn(None, Sellable,
+                    ProductHistory.q.sellableID == Sellable.q.id),
         INNERJOINOn(None, BaseSellableInfo,
-                    ASellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
+                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
     ]
 
 
@@ -204,10 +201,10 @@ class SellableFullStockView(Viewable):
      """
 
     columns = dict(
-        id=ASellable.q.id,
-        barcode=ASellable.q.barcode,
-        status=ASellable.q.status,
-        cost=ASellable.q.cost,
+        id=Sellable.q.id,
+        barcode=Sellable.q.barcode,
+        status=Sellable.q.status,
+        cost=Sellable.q.cost,
         price=BaseSellableInfo.q.price,
         description=BaseSellableInfo.q.description,
         unit=SellableUnit.q.description,
@@ -219,12 +216,10 @@ class SellableFullStockView(Viewable):
     joins = [
         # Sellable unit
         LEFTJOINOn(None, SellableUnit,
-                   SellableUnit.q.id == ASellable.q.unitID),
+                   SellableUnit.q.id == Sellable.q.unitID),
         # Product
-        LEFTJOINOn(None, ProductAdaptToSellable,
-                   ProductAdaptToSellable.q.id == ASellable.q.id),
         LEFTJOINOn(None, Product,
-                   Product.q.id == ProductAdaptToSellable.q._originalID),
+                   Product.q.sellableID == Sellable.q.id),
         # Product Stock Item
         LEFTJOINOn(None, ProductAdaptToStorable,
                    ProductAdaptToStorable.q._originalID == Product.q.id),
@@ -234,7 +229,7 @@ class SellableFullStockView(Viewable):
         ]
 
     clause = AND(
-        BaseSellableInfo.q.id == ASellable.q.base_sellable_infoID,
+        BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID,
         )
 
     @classmethod

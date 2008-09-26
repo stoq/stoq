@@ -23,7 +23,7 @@
 ##
 
 from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.product import ProductHistory
+from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -50,7 +50,9 @@ class TestTransferOrder(DomainTest):
         item = self.create_transfer_order_item(order, quantity=2)
         self.assertEqual(order.can_close(), True)
 
-        storable = IStorable(item.sellable)
+        product = Product.selectOneBy(sellable=item.sellable,
+                                      connection=self.trans)
+        storable = IStorable(product)
         before_qty = storable.get_full_balance(order.source_branch)
         order.send_item(item)
         after_qty = storable.get_full_balance(order.source_branch)
@@ -70,7 +72,7 @@ class TestTransferOrder(DomainTest):
         self.assertEqual(order.can_close(), True)
         order.send_item(item)
 
-        storable = IStorable(item.sellable)
+        storable = IStorable(item.sellable.product)
         if storable.has_stock_by_branch(order.destination_branch):
             before_qty = storable.get_full_balance()
         else:

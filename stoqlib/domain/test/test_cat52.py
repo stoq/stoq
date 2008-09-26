@@ -110,7 +110,7 @@ class Cat52Test(DomainTest):
         sale.client = self.create_client()
         sale.confirm_date = today
         sellable = self.add_product(sale, price=100)
-        sellable.id = 9999
+        sellable.get_code_str = lambda : '09999'
 
         self.add_payments(sale)
         history = FiscalSaleHistory(connection=self.trans,

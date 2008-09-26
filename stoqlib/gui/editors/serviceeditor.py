@@ -35,9 +35,9 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.gui.slaves.serviceslave import ServiceTributarySituationSlave
-from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.service import Service
 from stoqlib.domain.sellable import (BaseSellableInfo,
+                                     Sellable,
                                      SellableTaxConstant)
 
 _ = stoqlib_gettext
@@ -84,7 +84,7 @@ class ServiceEditor(SellableEditor):
 
     def setup_slaves(self):
         tax_slave = ServiceTributarySituationSlave(self.conn,
-                                                   ISellable(self.model))
+                                                   self.model.sellable)
         self.attach_slave("tax_holder", tax_slave)
 
     def setup_widgets(self):
@@ -97,11 +97,11 @@ class ServiceEditor(SellableEditor):
     #
 
     def create_model(self, conn):
-        model = Service(connection=conn)
         sellable_info = BaseSellableInfo(connection=conn,
                                          description='', price=currency(0))
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.conn)
-        model.addFacet(ISellable, base_sellable_info=sellable_info,
-                       tax_constant=tax_constant,
-                       connection=conn)
+        sellable = Sellable(base_sellable_info=sellable_info,
+                            tax_constant=tax_constant,
+                            connection=conn)
+        model = Service(sellable=sellable, connection=conn)
         return model

@@ -26,8 +26,7 @@ import os
 from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.interfaces import (ISellable,
-                                       IStorable)
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.invoice import InvoiceLayout
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sellable import SellableTaxConstant
@@ -63,7 +62,7 @@ class InvoiceTest(DomainTest):
 
     def _add_product(self, sale, tax=None, price=None):
         product = self.create_product(price=price)
-        sellable = ISellable(product)
+        sellable = product.sellable
         sellable.tax_constant = SellableTaxConstant(
             description=str(tax),
             tax_type=int(TaxType.CUSTOM),
@@ -90,7 +89,9 @@ class InvoiceTest(DomainTest):
         invoice = SaleInvoice(sale, layout)
         invoice.today = datetime.datetime(2007, 1, 1, 10, 20, 30)
 
-        for n, sale_item in enumerate(sale.products):
-            sale_item.sellable.id = 1000 + n
-
+        for n, sale_item in enumerate(sale.products.orderBy('price')):
+            # Ugly, look away
+            sale_item.sellable.get_code = lambda n=n : 1000 + n
+            sale_item.sellable.base_sellable_info.get_description = \
+                 lambda : 'DESCRIPTION'
         compare_invoice_file(invoice, 'sale-invoice')

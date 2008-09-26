@@ -30,7 +30,7 @@ from kiwi.datatypes import currency
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.interfaces import ISellable, IStorable
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning
@@ -55,8 +55,8 @@ class ProductRetentionDialog(BaseEditor):
         # FIXME: BaseEditor should provide support for this
         if IStorable(product, None) is None:
             raise TypeError("Product must provide a IStorable facet")
-        if ISellable(product, None) is None:
-            raise TypeError("Product must provide a ISellable facet")
+        if product.sellable is None:
+            raise TypeError("Product must have sellable set")
         self.branch = get_current_branch(conn)
         self.product = product
         model = self._get_model(conn, product)
@@ -80,7 +80,7 @@ class ProductRetentionDialog(BaseEditor):
 
     def setup_proxies(self):
         self.storable = IStorable(self.product)
-        sellable = ISellable(self.product)
+        sellable = self.product.sellable
         self.model.product_description = sellable.get_description()
         self.model.available = self.storable.get_full_balance(self.branch)
         self.add_proxy(self.model, self.proxy_widgets)

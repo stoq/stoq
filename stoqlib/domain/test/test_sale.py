@@ -31,8 +31,7 @@ from sqlobject.sqlbuilder import AND
 
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
-from stoqlib.domain.interfaces import (ISellable,
-                                       IStorable,
+from stoqlib.domain.interfaces import (IStorable,
                                        IOutPayment)
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
@@ -44,10 +43,6 @@ from stoqlib.lib.parameters import sysparam
 
 
 class TestSale(DomainTest):
-
-    def _add_delivery(self, sale):
-        sellable = sysparam(self.trans).DELIVERY_SERVICE
-        sale.add_sellable(sellable, quantity=1)
 
     def testGetPercentageValue(self):
         sale = self.create_sale()
@@ -204,7 +199,7 @@ class TestSale(DomainTest):
     def testReturn(self):
         sale = self.create_sale()
         sellable = self.add_product(sale)
-        storable = IStorable(sellable)
+        storable = IStorable(sellable.product)
         balance_before_sale = storable.get_full_balance()
         sale.order()
         self.add_payments(sale)
@@ -463,13 +458,13 @@ class TestSale(DomainTest):
         self.failIf(sale.products)
 
         service = self.create_service()
-        sellable = ISellable(service)
+        sellable = service.sellable
         sale.add_sellable(sellable, quantity=1)
 
         self.failIf(sale.products)
 
         product = self.create_product()
-        sellable = ISellable(product)
+        sellable = product.sellable
         sale.add_sellable(sellable, quantity=1)
 
         self.failUnless(sale.products)
@@ -479,13 +474,13 @@ class TestSale(DomainTest):
         self.failIf(sale.services)
 
         product = self.create_product()
-        sellable = ISellable(product)
+        sellable = product.sellable
         sale.add_sellable(sellable, quantity=1)
 
         self.failIf(sale.services)
 
         service = self.create_service()
-        sellable = ISellable(service)
+        sellable = service.sellable
         sale.add_sellable(sellable, quantity=1)
 
         self.failUnless(sale.services)
@@ -495,7 +490,9 @@ class TestSale(DomainTest):
         self.failIf(sale.can_set_paid())
 
         self.add_product(sale)
-        self._add_delivery(sale)
+
+        sellable = sysparam(self.trans).DELIVERY_SERVICE
+        sale.add_sellable(sellable, quantity=1)
         sale.order()
         self.failIf(sale.can_set_paid())
 
@@ -597,12 +594,12 @@ class TestSaleItem(DomainTest):
     def testGetTotal(self):
         sale = self.create_sale()
         product = self.create_product(price=10)
-        sale_item = sale.add_sellable(product, quantity=5)
+        sale_item = sale.add_sellable(product.sellable, quantity=5)
 
         self.assertEqual(sale_item.get_total(), 50)
 
     def testGetDescription(self):
         sale = self.create_sale()
         product = self.create_product()
-        sale_item = sale.add_sellable(product)
+        sale_item = sale.add_sellable(product.sellable)
         self.assertEqual(sale_item.get_description(), 'Description')

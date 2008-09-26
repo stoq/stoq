@@ -138,7 +138,7 @@ class FiscalPrinterHelper:
 
 class FiscalCoupon(gobject.GObject):
     """ This class is used just to allow us cancel an item with base in a
-    ASellable object. Currently, services can't be added, and they
+    Sellable object. Currently, services can't be added, and they
     are just ignored -- be aware, if a coupon with only services is
     emitted, it will not be opened in fact, but just ignored.
     """

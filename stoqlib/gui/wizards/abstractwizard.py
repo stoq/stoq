@@ -39,7 +39,7 @@ from kiwi.python import Settable
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep
 from stoqlib.gui.base.lists import AdditionListSlave
-from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.sellable import Sellable
 
 _ = stoqlib_gettext
 
@@ -75,7 +75,7 @@ class SellableItemStep(WizardEditorStep):
                      'unit_label',
                      'cost')
     model_type = None
-    table = ASellable
+    table = Sellable
     item_table = None
     summary_label_text = None
 
@@ -103,7 +103,7 @@ class SellableItemStep(WizardEditorStep):
     #
 
     def setup_sellable_entry(self):
-        result = ASellable.get_unblocked_sellables(self.conn)
+        result = Sellable.get_unblocked_sellables(self.conn)
         self.sellable.prefill([(sellable.get_description(), sellable)
                                for sellable in result])
 

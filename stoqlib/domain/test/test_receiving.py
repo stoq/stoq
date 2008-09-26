@@ -23,11 +23,17 @@
 ##              George Kussumoto  <george@async.com.br>
 ##
 
+""" This module test all class in stoq/domain/receiving.py """
+
+from decimal import Decimal
 from kiwi.datatypes import currency
 
 from stoqlib.database.exceptions import IntegrityError
+from stoqlib.database.runtime import get_current_branch
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.product import ProductStockItem
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.test.domaintest import DomainTest
-""" This module test all class in stoq/domain/receiving.py """
 
 
 class TestReceivingOrder(DomainTest):
@@ -86,9 +92,12 @@ class TestReceivingOrder(DomainTest):
         self.assertRaises(ValueError, order.confirm)
         self.assertRaises(ValueError, order.confirm)
 
+        storable = IStorable(order_item.sellable.product)
+        stock_item = storable.get_stock_item(branch=order.branch)
         for item in order.purchase.get_items():
             item.quantity_received = 0
         order.purchase.status = order.purchase.ORDER_PENDING
+        self.assertEquals(stock_item.quantity, 8)
         order.purchase.confirm()
         order.confirm()
         total = order.get_total()
@@ -99,6 +108,45 @@ class TestReceivingOrder(DomainTest):
             self.assertEqual(pay.value,
                 order.get_total()/installment_count)
         self.assertEqual(order.invoice_total, order.get_total())
+        self.assertEquals(stock_item.quantity, 16)
+
+    def testOrderReceiveSell(self):
+        product = self.create_product()
+        storable = product.addFacet(IStorable, connection=self.trans)
+        self.failIf(ProductStockItem.selectOneBy(storable=storable,
+                                                 connection=self.trans))
+        purchase_order = self.create_purchase_order()
+        purchase_order.set_valid()
+        purchase_item = purchase_order.add_item(product.sellable, 1)
+        purchase_order.status = purchase_order.ORDER_PENDING
+        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method.create_outpayment(purchase_order.group,
+                                 purchase_order.get_purchase_total())
+        purchase_order.confirm()
+
+        receiving_order = self.create_receiving_order(purchase_order)
+        receiving_order.branch = get_current_branch(self.trans)
+        receiving_order.set_valid()
+        receiving_order_item = self.create_receiving_order_item(
+            receiving_order=receiving_order,
+            sellable=product.sellable,
+            purchase_item=purchase_item,
+            quantity=1)
+        self.failIf(ProductStockItem.selectOneBy(storable=storable,
+                                                 connection=self.trans))
+        receiving_order.confirm()
+        product_stock_item = ProductStockItem.selectOneBy(storable=storable,
+                                                          connection=self.trans)
+        self.failUnless(product_stock_item)
+        self.assertEquals(product_stock_item.quantity, 1)
+
+        sale = self.create_sale()
+        sale_item = sale.add_sellable(product.sellable)
+        sale.order()
+        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method.create_inpayment(sale.group, Decimal(100))
+        sale.confirm()
+        self.assertEquals(product_stock_item.quantity, 0)
 
     def testUpdatePaymentValues(self):
         order = self.create_receiving_order()

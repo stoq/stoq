@@ -36,7 +36,6 @@ from kiwi.ui.listdialog import ListSlave
 from stoqlib.database.runtime import (new_transaction, finish_transaction,
                                       get_current_branch)
 from stoqlib.domain.product import ProductAdaptToStorable
-from stoqlib.domain.interfaces import ISellable
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -46,7 +45,7 @@ _ = stoqlib_gettext
 class _TemporaryStorableItem(object):
     def __init__(self, item):
         self.obj = item
-        sellable = ISellable(item)
+        sellable = item.sellable
         self.code = sellable.get_code_str()
         self.description = sellable.get_description()
         self.initial_stock = 0

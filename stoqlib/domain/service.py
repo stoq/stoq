@@ -27,16 +27,15 @@
 
 
 from sqlobject import BLOBCol
+from sqlobject.col import ForeignKey
 from sqlobject.sqlbuilder import AND, INNERJOINOn, LEFTJOINOn
 from sqlobject.viewable import Viewable
 from zope.interface import implements
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain
-from stoqlib.domain.sellable import (ASellable,
-                                     BaseSellableInfo, SellableUnit)
-from stoqlib.domain.interfaces import ISellable, IService
-
+from stoqlib.domain.sellable import (BaseSellableInfo, Sellable,
+                                     SellableUnit)
 
 _ = stoqlib_gettext
 
@@ -49,21 +48,7 @@ class Service(Domain):
     """Class responsible to store basic service informations."""
 
     image = BLOBCol(default='')
-    implements(IService)
-
-
-class ServiceAdaptToSellable(ASellable):
-    """A service implementation as a sellable facet."""
-
-    _inheritable = False
-
-    def _create(self, id, **kw):
-        if 'status' not in kw:
-            kw['status'] = ASellable.STATUS_AVAILABLE
-        ASellable._create(self, id, **kw)
-
-Service.registerFacet(ServiceAdaptToSellable, ISellable)
-
+    sellable = ForeignKey('Sellable')
 
 
 #
@@ -85,10 +70,10 @@ class ServiceView(Viewable):
     """
 
     columns = dict(
-        id=ASellable.q.id,
-        barcode=ASellable.q.barcode,
-        status=ASellable.q.status,
-        cost=ASellable.q.cost,
+        id=Sellable.q.id,
+        barcode=Sellable.q.barcode,
+        status=Sellable.q.status,
+        cost=Sellable.q.cost,
         price=BaseSellableInfo.q.price,
         description=BaseSellableInfo.q.description,
         unit=SellableUnit.q.description,
@@ -96,16 +81,14 @@ class ServiceView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, ServiceAdaptToSellable,
-                    ServiceAdaptToSellable.q.id == ASellable.q.id),
         INNERJOINOn(None, Service,
-                    Service.q.id == ServiceAdaptToSellable.q._originalID),
+                    Service.q.sellableID == Sellable.q.id),
         LEFTJOINOn(None, SellableUnit,
-                   ASellable.q.unitID == SellableUnit.q.id),
+                   Sellable.q.unitID == SellableUnit.q.id),
         ]
 
     clause = AND(
-        BaseSellableInfo.q.id == ASellable.q.base_sellable_infoID,
+        BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID,
     )
 
     def get_unit(self):

@@ -106,8 +106,6 @@ def _create_domain_test():
 
     TODO = {
         'ReceivingOrder': 'invalid invoice number',
-        'ProductAdaptToSellable' : '',
-        'ServiceAdaptToSellable' : '',
         'CommissionSource': '',
         'Commission': '',
         }

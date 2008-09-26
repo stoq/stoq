@@ -4,7 +4,7 @@ from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_current_branch
 
-from stoqlib.domain.interfaces import IStorable, IProduct
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
@@ -54,14 +54,14 @@ class TestSintegraGenerator(DomainTest):
         order.set_valid()
         order.confirm()
 
-        sellable.id = 9999
-        sellable2.id = 10000
+        sellable.get_code = lambda : 9999
+        sellable2.get_code = lambda : 10000
 
         sale = self.create_sale()
         sale.open_date = datetime.date(2007, 6, 10)
 
         sellable3 = self.create_sellable()
-        product = IProduct(sellable3)
+        product = sellable3.product
         sellable.tax_constant = SellableTaxConstant(
             description="18",
             tax_type=int(TaxType.CUSTOM),
@@ -83,7 +83,7 @@ class TestSintegraGenerator(DomainTest):
         sale.set_paid()
         sale.close_date = datetime.date(2007, 6, 10)
         sale.confirm_date = datetime.date(2007, 6, 10)
-        sellable3.id = 9999
+        sellable3.get_code = lambda : 9999
 
         generator = StoqlibSintegraGenerator(self.trans,
                                              datetime.date(2007, 6, 1),

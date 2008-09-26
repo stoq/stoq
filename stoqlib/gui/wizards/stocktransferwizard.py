@@ -34,7 +34,7 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import IBranch, IEmployee, IStorable
 from stoqlib.domain.person import Person
-from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.wizards import (BaseWizard, BaseWizardStep)
@@ -91,10 +91,10 @@ class StockTransferProductStep(SellableItemStep):
 
     def setup_sellable_entry(self):
         branch = get_current_branch(self.conn)
-        sellables = ASellable.get_unblocked_sellables(self.conn,
-                                                      storable=True)
+        sellables = Sellable.get_unblocked_sellables(self.conn,
+                                                     storable=True)
         self.sellable.prefill([(s.get_description(), s) for s in sellables
-                                if IStorable(s).has_stock_by_branch(self.branch)])
+                                if IStorable(s.product).has_stock_by_branch(self.branch)])
 
     def get_saved_items(self):
         return list(self.model.get_items())
@@ -117,7 +117,7 @@ class StockTransferProductStep(SellableItemStep):
             ]
 
     def _get_stock_quantity(self, item):
-        storable = IStorable(item.sellable)
+        storable = IStorable(item.sellable.product)
         stock_item = storable.get_stock_item(self.branch)
         return stock_item.quantity or 0
 
@@ -137,7 +137,7 @@ class StockTransferProductStep(SellableItemStep):
         if sellable is None:
             return
 
-        storable = IStorable(sellable)
+        storable = IStorable(sellable.product)
         quantity = storable.get_full_balance(self.branch)
         for item in self.slave.klist:
             if item.sellable == sellable:

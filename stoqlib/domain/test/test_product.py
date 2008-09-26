@@ -28,13 +28,13 @@
 
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.interfaces import IStorable, ISellable
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductHistory, ProductComponent,
                                     ProductRetentionHistory)
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.sellable import BaseSellableInfo, ASellable
+from stoqlib.domain.sellable import BaseSellableInfo, Sellable
 
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -53,7 +53,9 @@ class TestProductSupplierInfo(DomainTest):
 class TestProduct(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
-        self.product = Product(connection=self.trans)
+        sellable = self.create_sellable()
+        self.product = Product(sellable=sellable,
+                               connection=self.trans)
 
     def test_get_main_supplier_info(self):
         self.failIf(self.product.get_main_supplier_info())
@@ -77,13 +79,13 @@ class TestProduct(DomainTest):
 
     def testGetProductionCost(self):
         product = self.create_product()
-        sellable = ISellable(product)
+        sellable = product.sellable
         sellable.cost = 50
         production_cost = sellable.cost
         self.assertEqual(product.get_production_cost(), production_cost)
 
         component1 = self.create_product()
-        sellable1 = ISellable(component1)
+        sellable1 = component1.sellable
         sellable1.cost = 100
         production_cost += sellable1.cost
         product_component = ProductComponent(product=product,
@@ -97,7 +99,7 @@ class TestProduct(DomainTest):
         self.assertEqual(product.get_production_cost(), production_cost)
 
         component2 = self.create_product()
-        sellable2 = ISellable(component2)
+        sellable2 = component2.sellable
         sellable2.cost = 10
         ProductComponent(product=component1, component=component2,
                          connection=self.trans)
@@ -157,12 +159,12 @@ class TestProductSellableItem(DomainTest):
 
     def testSell(self):
         sale = self.create_sale()
-        product = Product(connection=self.trans)
         base_sellable_info = BaseSellableInfo(connection=self.trans)
-        sellable = product.addFacet(ISellable, barcode='xyz',
-                                    base_sellable_info=base_sellable_info,
-                                    connection=self.trans)
-        sale_item = sale.add_sellable(product)
+        sellable = Sellable(barcode='xyz',
+                            base_sellable_info=base_sellable_info,
+                            connection=self.trans)
+        product = Product(sellable=sellable, connection=self.trans)
+        sale_item = sale.add_sellable(product.sellable)
         storable = product.addFacet(IStorable, connection=self.trans)
 
         branch = get_current_branch(self.trans)
@@ -202,8 +204,8 @@ class TestProductHistory(DomainTest):
     def testAddSoldQuantity(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
-        sellable.status = ASellable.STATUS_AVAILABLE
-        product = sellable.get_adapted()
+        sellable.status = Sellable.STATUS_AVAILABLE
+        product = sellable.product
         storable = product.addFacet(IStorable, connection=self.trans)
         storable.increase_stock(100, get_current_branch(self.trans))
         sale_item = sale.add_sellable(sellable, quantity=5)
@@ -238,8 +240,8 @@ class TestProductHistory(DomainTest):
 
     def testAddRetainedQuantity(self):
         sellable = self.create_sellable()
-        sellable.status = ASellable.STATUS_AVAILABLE
-        product = sellable.get_adapted()
+        sellable.status = Sellable.STATUS_AVAILABLE
+        product = sellable.product
         storable = product.addFacet(IStorable, connection=self.trans)
         storable.increase_stock(10, get_current_branch(self.trans))
         self.failIf(ProductHistory.selectOneBy(connection=self.trans,
@@ -247,7 +249,7 @@ class TestProductHistory(DomainTest):
 
         retained_qty = 4
         retained = self.create_retained_product(product, retained_qty)
-        self.assertEqual(sellable, ISellable(retained.product))
+        self.assertEqual(sellable, retained.product.sellable)
         prod_hist = ProductHistory.selectOneBy(connection=self.trans,
                                                sellable=sellable)
         self.failUnless(prod_hist)
@@ -258,8 +260,8 @@ class TestProductRetentionHistory(DomainTest):
 
     def testCancelRetention(self):
         sellable = self.create_sellable()
-        sellable.status = ASellable.STATUS_AVAILABLE
-        product = sellable.get_adapted()
+        sellable.status = Sellable.STATUS_AVAILABLE
+        product = sellable.product
         storable = product.addFacet(IStorable, connection=self.trans)
         branch = get_current_branch(self.trans)
         quantity = 10

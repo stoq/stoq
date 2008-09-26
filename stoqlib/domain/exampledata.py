@@ -33,11 +33,10 @@ from stoqlib.database.runtime import (get_current_station,
                                       get_current_branch)
 from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
                                        IIndividual, ISupplier,
-                                       ISellable, IStorable, ISalesPerson,
+                                       IStorable, ISalesPerson,
                                        IClient, IUser, ITransporter,
                                        IBankBranch,
-                                       ICreditProvider,
-                                       IProduct)
+                                       ICreditProvider)
 from stoqlib.lib.parameters import sysparam
 
 # Do not remove, these are used by doctests
@@ -73,7 +72,7 @@ def create_product(trans):
     return ExampleCreator.create(trans, 'Product')
 
 def create_sellable(trans):
-    return ExampleCreator.create(trans, 'ProductAdaptToSellable')
+    return ExampleCreator.create(trans, 'Sellable')
 
 def create_sale(trans):
     return ExampleCreator.create(trans, 'Sale')
@@ -112,7 +111,7 @@ class ExampleCreator(object):
     def create_by_type(self, model_type):
         known_types = {
             'PaymentMethod': self.get_payment_method,
-            'ASellable': self.create_sellable,
+            'Sellable': self.create_sellable,
             'PaymentGroup' : self.create_payment_group,
             'BaseSellableInfo': self.create_base_sellable_info,
             'BranchStation': self.get_station,
@@ -148,7 +147,6 @@ class ExampleCreator(object):
             'PersonAdaptToTransporter': self.create_transporter,
             'PersonAdaptToUser': self.create_user,
             'Product': self.create_product,
-            'ProductAdaptToSellable' : self.create_sellable,
             'ProductAdaptToStorable' : self.create_storable,
             'PurchaseOrder' : self.create_purchase_order,
             'PurchaseItem' : self.create_purchase_order_item,
@@ -156,6 +154,7 @@ class ExampleCreator(object):
             'ReceivingOrderItem' : self.create_receiving_order_item,
             'RenegotiationData' : self.create_renegotiation_data,
             'Sale': self.create_sale,
+            'Sellable' : self.create_sellable,
             'Service': self.create_service,
             'Till': self.create_till,
             'UserProfile': self.create_user_profile,
@@ -224,18 +223,18 @@ class ExampleCreator(object):
 
     def create_storable(self):
         from stoqlib.domain.product import Product
-        product = Product(connection=self.trans)
+        sellable = self.create_sellable()
+        product = Product(sellable=sellable, connection=self.trans)
         return product.addFacet(IStorable, connection=self.trans)
 
     def create_product(self, price=None):
         from stoqlib.domain.product import ProductSupplierInfo
         sellable = self.create_sellable(price=price)
-        product = IProduct(sellable)
         ProductSupplierInfo(connection=self.trans,
                             supplier=self.create_supplier(),
-                            product=product,
+                            product=sellable.product,
                             is_main_supplier=True)
-        return product
+        return sellable.product
 
     def create_base_sellable_info(self, price=None):
         from stoqlib.domain.sellable import BaseSellableInfo
@@ -247,16 +246,18 @@ class ExampleCreator(object):
 
     def create_sellable(self, price=None):
         from stoqlib.domain.product import Product
-        product = Product(connection=self.trans)
+        from stoqlib.domain.sellable import Sellable
         tax_constant = sysparam(self.trans).DEFAULT_PRODUCT_TAX_CONSTANT
         base_sellable_info = self.create_base_sellable_info(price=price)
         on_sale_info = self.create_on_sale_info()
-        return product.addFacet(ISellable,
-                                cost=125,
-                                tax_constant=tax_constant,
-                                base_sellable_info=base_sellable_info,
-                                on_sale_info=on_sale_info,
-                                connection=self.trans)
+        sellable = Sellable(cost=125,
+                            tax_constant=tax_constant,
+                            base_sellable_info=base_sellable_info,
+                            on_sale_info=on_sale_info,
+                            connection=self.trans)
+        product = Product(sellable=sellable,
+                          connection=self.trans)
+        return sellable
 
     def create_sale(self):
         from stoqlib.domain.sale import Sale
@@ -334,30 +335,33 @@ class ExampleCreator(object):
         return CfopData(connection=self.trans, code=u'123',
                         description=u'test')
 
-    def create_receiving_order(self):
+    def create_receiving_order(self, purchase_order=None):
         from stoqlib.domain.receiving import ReceivingOrder
-        purchase = self.create_purchase_order()
+        if purchase_order is None:
+            purchase_order = self.create_purchase_order()
         cfop = self.create_cfop_data()
         cfop.code = '1.102'
         return ReceivingOrder(connection=self.trans,
                               invoice_number=222,
-                              supplier=purchase.supplier,
+                              supplier=purchase_order.supplier,
                               responsible=self.create_user(),
-                              purchase=purchase,
+                              purchase=purchase_order,
                               branch=self.create_branch(),
                               cfop=cfop)
 
-    def create_receiving_order_item(self, receiving_order=None, sellable=None):
+    def create_receiving_order_item(self, receiving_order=None, sellable=None,
+                                    purchase_item=None, quantity=8):
         from stoqlib.domain.receiving import ReceivingOrderItem
         if receiving_order is None:
             receiving_order = self.create_receiving_order()
         if sellable is None:
             sellable = self.create_sellable()
-            product = IProduct(sellable)
+            product = sellable.product
             product.addFacet(IStorable, connection=self.trans)
-        purchase_item = receiving_order.purchase.add_item(sellable, 8)
+        if purchase_item is None:
+            purchase_item = receiving_order.purchase.add_item(sellable, quantity)
         return ReceivingOrderItem(connection=self.trans,
-                                  quantity=8, cost=125,
+                                  quantity=quantity, cost=125,
                                   purchase_item=purchase_item,
                                   sellable=sellable,
                                   receiving_order=receiving_order)
@@ -391,16 +395,15 @@ class ExampleCreator(object):
                                              invoice_number=201)
 
     def create_service(self):
-        from stoqlib.domain.sellable import SellableTaxConstant
+        from stoqlib.domain.sellable import Sellable, SellableTaxConstant
         from stoqlib.domain.service import Service
-        service = Service(connection=self.trans)
         sellable_info = self.create_base_sellable_info()
         tax_constant = SellableTaxConstant.get_by_type(
             TaxType.SERVICE, self.trans)
-        service.addFacet(ISellable,
-                         tax_constant=tax_constant,
-                         base_sellable_info=sellable_info,
-                         connection=self.trans)
+        sellable = Sellable(tax_constant=tax_constant,
+                            base_sellable_info=sellable_info,
+                            connection=self.trans)
+        service = Service(sellable=sellable, connection=self.trans)
         return service
 
     def create_renegotiation_data(self):
@@ -487,13 +490,14 @@ class ExampleCreator(object):
                              connection=self.trans)
 
     def create_transfer_order_item(self, order=None, quantity=5):
-        from stoqlib.domain.sellable import ASellable
+        from stoqlib.domain.product import Product
+        from stoqlib.domain.sellable import Sellable
         from stoqlib.domain.transfer import TransferOrderItem
         if not order:
             order = self.create_transfer_order()
         sellable = self.create_sellable()
-        sellable.status = ASellable.STATUS_AVAILABLE
-        product = sellable.get_adapted()
+        sellable.status = Sellable.STATUS_AVAILABLE
+        product = Product.selectOneBy(sellable=sellable, connection=self.trans)
         storable = product.addFacet(IStorable, connection=self.trans)
         storable.increase_stock(quantity, order.source_branch)
         return TransferOrderItem(sellable=sellable,
@@ -517,7 +521,7 @@ class ExampleCreator(object):
         if not inventory:
             inventory = self.create_inventory()
         sellable = self.create_sellable()
-        product = sellable.get_adapted()
+        product = sellable.product
         storable = product.addFacet(IStorable, connection=self.trans)
         storable.increase_stock(quantity, inventory.branch)
         return InventoryItem(product=product,
@@ -538,7 +542,7 @@ class ExampleCreator(object):
 
     def add_product(self, sale, price=None, quantity=1):
         product = self.create_product(price=price)
-        sellable = ISellable(product)
+        sellable = product.sellable
         sellable.tax_constant = self.create_sellable_tax_constant()
         sale.add_sellable(sellable, quantity=quantity)
         storable = product.addFacet(IStorable, connection=self.trans)

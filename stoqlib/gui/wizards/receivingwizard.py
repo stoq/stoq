@@ -48,7 +48,7 @@ from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
-from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.sellable import Sellable
 
 _ = stoqlib_gettext
 
@@ -213,7 +213,7 @@ class ReceivingOrderProductStep(SellableItemStep):
         if purchase:
             sellables = [i.sellable for i in purchase.get_pending_items()]
         else:
-            sellables = ASellable.get_unblocked_sellables(self.conn)
+            sellables = Sellable.get_unblocked_sellables(self.conn)
         self.sellable.prefill([(sellable.get_description(), sellable)
                                  for sellable in sellables])
 
@@ -272,8 +272,8 @@ class ReceivingOrderProductStep(SellableItemStep):
         # We are going to call a SearchEditor subclass which means
         # database synchronization... Outch, time to commit !
         self.conn.commit()
-        item_statuses = [ASellable.STATUS_AVAILABLE,
-                         ASellable.STATUS_SOLD]
+        item_statuses = [Sellable.STATUS_AVAILABLE,
+                         Sellable.STATUS_SOLD]
         items = run_dialog(ProductSearch, self, self.conn,
                            hide_footer=False, hide_toolbar=True,
                            hide_price_column=True,

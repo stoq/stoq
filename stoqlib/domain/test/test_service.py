@@ -35,12 +35,12 @@ class TestServiceSellableItem(DomainTest):
         sale = self.create_sale()
 
         service = self.create_service()
-        service_item = sale.add_sellable(service, quantity=1, price=10)
+        service_item = sale.add_sellable(service.sellable, quantity=1, price=10)
         self.assertRaises(SellError,
                           DeliveryItem.create_from_sellable_item, service_item)
 
         product = self.create_product()
-        product_item = sale.add_sellable(product, quantity=1, price=10)
+        product_item = sale.add_sellable(product.sellable, quantity=1, price=10)
         delivery_item = DeliveryItem.create_from_sellable_item(product_item)
 
 

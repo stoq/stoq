@@ -29,13 +29,13 @@ import datetime
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       get_current_user)
 from stoqlib.domain.examples import log
-from stoqlib.domain.interfaces import ISupplier, ITransporter, IProduct
+from stoqlib.domain.interfaces import ISupplier, ITransporter
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
-from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.sellable import Sellable
 from stoqlib.lib.defaults import calculate_interval, INTERVALTYPE_MONTH
 
 
@@ -54,7 +54,7 @@ def create_purchases():
         raise ValueError('You must have at least one suppliers in your '
                          'database at this point.')
 
-    sellables = ASellable.select(connection=trans)
+    sellables = Sellable.select(connection=trans)
     if not sellables.count():
         raise ValueError('You must have at least one sellables in your '
                          'database at this point.')
@@ -62,46 +62,45 @@ def create_purchases():
     branch = get_current_branch(trans)
     user = get_current_user(trans)
     group = PaymentGroup(connection=trans)
-    order = PurchaseOrder(connection=trans,
-                          status=PurchaseOrder.ORDER_PENDING,
-                          supplier=suppliers[0],
-                          group=group,
-                          branch=branch)
-    order.set_valid()
+    purchase = PurchaseOrder(connection=trans,
+                             status=PurchaseOrder.ORDER_PENDING,
+                             supplier=suppliers[0],
+                             group=group,
+                             branch=branch)
+    purchase.set_valid()
 
     for sellable in sellables:
-        if not IProduct(sellable, None):
+        if not sellable.product:
             continue
-        purchase_item = PurchaseItem(connection=trans,
-                                      quantity=5,
-                                      base_cost=sellable.cost,
-                                      sellable=sellable,
-                                      order=order)
+        PurchaseItem(connection=trans,
+                     quantity=5,
+                     base_cost=sellable.cost,
+                     sellable=sellable,
+                     order=purchase)
 
     method = PaymentMethod.get_by_name(trans, 'money')
     interval = calculate_interval(INTERVALTYPE_MONTH, 1)
-    due_date = order.expected_pay_date + datetime.timedelta(interval)
-    method.create_outpayment(order.group, order.get_purchase_total(),
+    due_date = purchase.expected_pay_date + datetime.timedelta(interval)
+    method.create_outpayment(purchase.group, purchase.get_purchase_total(),
                              due_date)
-    order.confirm()
+    purchase.confirm()
 
-    receiving_order = ReceivingOrder(purchase=order,
+    receiving_order = ReceivingOrder(purchase=purchase,
                                      responsible=user,
                                      supplier=suppliers[0],
                                      invoice_number=1,
                                      transporter=transporters[0],
                                      branch=branch,
                                      connection=trans)
+    receiving_order.set_valid()
 
-    for purchase_item in order.get_items():
+    for purchase_item in purchase.get_items():
         receicing_item = ReceivingOrderItem(connection=trans,
                                             cost=purchase_item.sellable.cost,
                                             sellable=purchase_item.sellable,
                                             quantity=5,
                                             purchase_item=purchase_item,
                                             receiving_order=receiving_order)
-
-    receiving_order.set_valid()
     receiving_order.confirm()
 
     trans.commit()

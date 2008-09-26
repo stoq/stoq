@@ -25,11 +25,12 @@
 
 from kiwi.datatypes import currency
 
-from stoqlib.domain.sellable import (SellableCategory,
-                                     BaseSellableInfo)
+from stoqlib.domain.sellable import (BaseSellableInfo,
+                                     Sellable,
+                                     SellableCategory)
 from stoqlib.domain.product import Product
-from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.test.domaintest import DomainTest
+
 
 class TestSellableCategory(DomainTest):
     def setUp(self):
@@ -81,7 +82,7 @@ class TestSellableCategory(DomainTest):
         category.tax_constant = constant2
         self.assertEquals(category.get_tax_constant(), constant2)
 
-class TestASellable(DomainTest):
+class TestSellable(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
         self._base_category = SellableCategory(description="Cigarro",
@@ -95,17 +96,16 @@ class TestASellable(DomainTest):
         # When the price isn't defined, but the category and the cost. In this
         # case the sellable must have the price calculated applying the category's
         # markup in the sellable's cost.
-        product = Product(connection=self.trans)
         self._category.suggested_markup = 0
         sellable_info = BaseSellableInfo(description=u"MX123",
                                          max_discount=0,
                                          commission=0,
                                          connection=self.trans)
-        sellable = product.addFacet(ISellable,
-                                    base_sellable_info=sellable_info,
-                                    cost=100,
-                                    category=self._category,
-                                    connection=self.trans)
+        sellable = Sellable(base_sellable_info=sellable_info,
+                            cost=100,
+                            category=self._category,
+                            connection=self.trans)
+        product = Product(sellable=sellable, connection=self.trans)
         self.failUnless(sellable.markup == self._category.get_markup(),
                         ("Expected markup: %r, got %r"
                          % (self._category.get_markup(),
@@ -119,16 +119,15 @@ class TestASellable(DomainTest):
         # When the price isn't defined, but the category, markup and the cost.
         # In this case the category's markup must be ignored and the price
         # calculated applying the markup specified in the sellable's cost.
-        product = Product(connection=self.trans)
         sellable_info = BaseSellableInfo(description=u"FY123",
                                          connection=self.trans)
         markup = 5
-        sellable = product.addFacet(ISellable,
-                                    base_sellable_info=sellable_info,
-                                    category=self._category,
-                                    markup=markup,
-                                    cost=100,
-                                    connection=self.trans)
+        sellable = Sellable(base_sellable_info=sellable_info,
+                            category=self._category,
+                            markup=markup,
+                            cost=100,
+                            connection=self.trans)
+        product = Product(sellable=sellable, connection=self.trans)
         self.failUnless(sellable.markup == markup,
                         ("Expected markup: %r, got %r"
                          % (markup, sellable.markup)))
@@ -138,14 +137,13 @@ class TestASellable(DomainTest):
                          % (price, sellable.price)))
 
     def test_commission(self):
-        product = Product(connection=self.trans)
         sellable_info = BaseSellableInfo(description=u"TX342",
                                          connection=self.trans)
         self._category.salesperson_commission = 10
-        sellable = product.addFacet(ISellable,
-                                    base_sellable_info=sellable_info,
-                                    category=self._category,
-                                    connection=self.trans)
+        sellable = Sellable(base_sellable_info=sellable_info,
+                            category=self._category,
+                            connection=self.trans)
+        product = Product(sellable=sellable, connection=self.trans)
         self.failUnless(sellable.commission
                         == self._category.salesperson_commission,
                         ("Expected salesperson commission: %r, got %r"
@@ -153,13 +151,13 @@ class TestASellable(DomainTest):
                             sellable.commission)))
 
     def test_prices_and_markups(self):
-        product = Product(connection=self.trans)
         sellable_info = BaseSellableInfo(description="Test", price=currency(100),
                                          connection=self.trans)
         self._category.markup = 0
-        sellable = product.addFacet(ISellable, category=self._category, cost=50,
-                                    base_sellable_info=sellable_info,
-                                    connection=self.trans)
+        sellable = Sellable(category=self._category, cost=50,
+                            base_sellable_info=sellable_info,
+                            connection=self.trans)
+        product = Product(sellable=sellable, connection=self.trans)
         self.failUnless(sellable.price == 100,
                         "Expected price: %r, got %r" % (100, sellable.price))
         self.failUnless(sellable.markup == 100,
@@ -173,12 +171,12 @@ class TestASellable(DomainTest):
 
         # When the price specified isn't equivalent to the markup specified.
         # In this case the price don't must be updated based on the markup.
-        product = Product(connection=self.trans)
         sellable_info = BaseSellableInfo(description="Test", price=currency(100),
                                          connection=self.trans)
-        sellable = product.addFacet(ISellable, markup=10, cost=50,
-                                    base_sellable_info=sellable_info,
-                                    connection=self.trans)
+        sellable = Sellable(markup=10, cost=50,
+                            base_sellable_info=sellable_info,
+                            connection=self.trans)
+        product = Product(sellable=sellable, connection=self.trans)
         self.failUnless(sellable.price == 100)
 
         # A simple test: product without cost and price, markup must be 0

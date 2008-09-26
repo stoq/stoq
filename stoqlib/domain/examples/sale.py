@@ -30,8 +30,7 @@ import sys
 from stoqlib.database.runtime import (new_transaction,
                                       get_current_station, get_current_branch)
 from stoqlib.domain.examples import log
-from stoqlib.domain.interfaces import (ISellable, IClient,
-                                       ISalesPerson)
+from stoqlib.domain.interfaces import IClient, ISalesPerson
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.person import Person
@@ -45,19 +44,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-# Number of installments for the sale
-DEFAULT_PAYMENTS_NUMBER = 4
-
-# Interval between payments (in days)
-DEFAULT_PAYMENTS_INTERVAL = 30
-
 # Number of sales to be created
 DEFAULT_SALE_NUMBER = 4
-
-DEFAULT_PAYMENT_INTERVAL_TYPE = INTERVALTYPE_MONTH
-DEFAULT_PAYMENT_INTERVALS = 1
-
-MAX_INSTALLMENTS_NUMBER = 12
 
 def get_till(trans):
     till = Till.get_current(trans)
@@ -93,19 +81,12 @@ def _create_sale(trans, open_date, status, branch, salesperson, client,
                 group=group,
                 connection=trans)
     sale.set_valid()
-    sellable_facet = ISellable(product)
-    sale.add_sellable(sellable_facet)
-    sale_total = sellable_facet.base_sellable_info.price
-    # Sale's payments
-    if installments_number > MAX_INSTALLMENTS_NUMBER:
-        raise ValueError("Number of installments for this payment method can "
-                         "not be greater than %d, got %d"
-                         % (MAX_INSTALLMENTS_NUMBER, installments_number))
+    sale.add_sellable(product.sellable)
     method = PaymentMethod.get_by_name(trans, 'check')
 
-    interval = calculate_interval(DEFAULT_PAYMENT_INTERVAL_TYPE,
-                                  DEFAULT_PAYMENTS_INTERVAL)
+    interval = calculate_interval(INTERVALTYPE_MONTH, 30)
     due_dates = []
+    sale_total = product.sellable.base_sellable_info.price
     for i in range(installments_number):
         due_dates.append(open_date + datetime.timedelta(i * interval))
     for p in method.create_inpayments(group, sale_total, due_dates):
@@ -140,8 +121,7 @@ def create_sales():
                   datetime.datetime.today() + datetime.timedelta(10),
                   datetime.datetime.today() + datetime.timedelta(15),
                   datetime.datetime.today() + datetime.timedelta(23)]
-    installments_numbers = [i * 2 for i in range(1,
-                                                 DEFAULT_SALE_NUMBER + 1)]
+    installments_numbers = [i * 2 for i in range(1, DEFAULT_SALE_NUMBER + 1)]
     for index, (open_date, status, salesperson, client, product,
                 installments_number) in enumerate(zip(open_dates,
                                                       sale_statuses,

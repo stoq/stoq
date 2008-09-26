@@ -41,7 +41,7 @@ from stoqlib.domain.base import ValidatableDomain, Domain, BaseSQLView
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,
                                        IDescribable)
-from stoqlib.domain.sellable import ASellable, BaseSellableInfo, SellableUnit
+from stoqlib.domain.sellable import Sellable, BaseSellableInfo, SellableUnit
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
@@ -61,7 +61,7 @@ class PurchaseItem(Domain):
     quantity_received = DecimalCol(default=0)
     base_cost = PriceCol()
     cost = PriceCol()
-    sellable = ForeignKey('ASellable')
+    sellable = ForeignKey('Sellable')
     order = ForeignKey('PurchaseOrder')
 
     def _create(self, id, **kw):
@@ -549,7 +549,7 @@ class PurchaseItemView(Viewable):
     columns = dict(
         id=PurchaseItem.q.id,
         purchase_id=PurchaseOrder.q.id,
-        sellable=ASellable.q.id,
+        sellable=Sellable.q.id,
         cost=PurchaseItem.q.cost,
         quantity=PurchaseItem.q.quantity,
         quantity_received=PurchaseItem.q.quantity_received,
@@ -561,14 +561,14 @@ class PurchaseItemView(Viewable):
 
     clause = AND(
         PurchaseOrder.q.id == PurchaseItem.q.orderID,
-        BaseSellableInfo.q.id == ASellable.q.base_sellable_infoID,
+        BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID,
         )
 
     joins = [
-        INNERJOINOn(None, ASellable,
-                    ASellable.q.id == PurchaseItem.q.sellableID),
+        INNERJOINOn(None, Sellable,
+                    Sellable.q.id == PurchaseItem.q.sellableID),
         LEFTJOINOn(None, SellableUnit,
-                   SellableUnit.q.id == ASellable.q.unitID),
+                   SellableUnit.q.id == Sellable.q.unitID),
         ]
 
     def get_quantity_as_string(self):

@@ -38,8 +38,7 @@ from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IClient,
                                        ITransporter, ISupplier,
                                        ICreditProvider, IEmployee,
-                                       IUser, IBranch, ISalesPerson,
-                                       ISellable)
+                                       IUser, IBranch, ISalesPerson)
 from stoqlib.domain.person import (Person,
                                    EmployeeRole, WorkPermitData,
                                    MilitaryData, VoterData,
@@ -360,8 +359,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         products = Product.select(connection=self.trans)
         assert products
         product = products[0]
-        sellable_product = ISellable(product)
-        sale.add_sellable(sellable_product)
+        sale.add_sellable(product.sellable)
         one_more_sale = client.get_client_sales().count()
         self.assertEquals(count_sales + 1, one_more_sale)
 

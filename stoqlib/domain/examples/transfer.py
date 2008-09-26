@@ -27,10 +27,9 @@ import datetime
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.examples import log
-from stoqlib.domain.interfaces import IProduct
 from stoqlib.domain.person import PersonAdaptToUser, PersonAdaptToBranch
 from stoqlib.domain.product import ProductHistory
-from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 
 
@@ -43,7 +42,7 @@ def create_transfer():
         raise ValueError('You must have at least two employees in your '
                          'database at this point.')
 
-    sellables = ASellable.select(connection=trans)
+    sellables = Sellable.select(connection=trans)
     if not sellables.count():
         raise ValueError('You must have at least one sellables in your '
                          'database at this point.')
@@ -65,7 +64,7 @@ def create_transfer():
                           destination_responsible=employees[1])
 
     for sellable in sellables:
-        if not IProduct(sellable, None):
+        if not sellable.product:
             continue
         transfer_item = TransferOrderItem(connection=trans,
                                           quantity=1,

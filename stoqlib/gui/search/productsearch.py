@@ -36,7 +36,7 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import Product
-from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductFullStockView, ProductQuantityView
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.search import (SearchDialog, SearchEditor,
@@ -133,7 +133,7 @@ class ProductSearch(SearchEditor):
         self.branch_filter = branch_filter
 
         # Status
-        statuses = [(desc, id) for id, desc in ASellable.statuses.items()]
+        statuses = [(desc, id) for id, desc in Sellable.statuses.items()]
         statuses.insert(0, (_('Any'), None))
         status_filter = ComboSearchFilter(_('with status:'), statuses)
         status_filter.select(None)

@@ -91,7 +91,7 @@ class TributarySituationSlave(BaseEditorSlave):
     def setup_proxies(self):
         self.setup_combos()
         self.proxy = self.add_proxy(self.model,
-                            TributarySituationSlave.proxy_widgets)
+                                    TributarySituationSlave.proxy_widgets)
         self._update_tax_value()
 
     def on_tax_constant__changed(self, combo):

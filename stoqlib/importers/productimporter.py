@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source
+## Copyright (C) 2007-2008 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -27,10 +27,11 @@ from stoqlib.database.runtime import get_connection
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
-from stoqlib.domain.sellable import (SellableCategory,
-                                     SellableUnit,
-                                     BaseSellableInfo)
+from stoqlib.domain.interfaces import IStorable, ISupplier
+from stoqlib.domain.sellable import (BaseSellableInfo,
+                                     Sellable,
+                                     SellableCategory,
+                                     SellableUnit)
 from stoqlib.importers.csvimporter import CSVImporter
 from stoqlib.lib.parameters import sysparam
 
@@ -73,13 +74,6 @@ class ProductImporter(CSVImporter):
         return obj
 
     def process_one(self, data, fields, trans):
-        product = Product(connection=trans)
-
-        ProductSupplierInfo(connection=trans,
-                            supplier=self.supplier,
-                            is_main_supplier=True,
-                            product=product)
-
         base_category = self._get_or_create(
             SellableCategory, trans,
             suggested_markup=data.markup,
@@ -111,13 +105,17 @@ class ProductImporter(CSVImporter):
             unit = self.units[data.unit]
         else:
             unit = None
-        product.addFacet(
-            ISellable, connection=trans,
-            cost=data.cost,
-            barcode=data.barcode,
-            category=category,
-            base_sellable_info=sellable_info,
-            unit=unit,
-            tax_constant=self.tax_constant,
-            )
+        sellable = Sellable(connection=trans,
+                            cost=data.cost,
+                            barcode=data.barcode,
+                            category=category,
+                            base_sellable_info=sellable_info,
+                            unit=unit,
+                            tax_constant=self.tax_constant)
+        product = Product(sellable=sellable, connection=trans)
+
+        ProductSupplierInfo(connection=trans,
+                            supplier=self.supplier,
+                            is_main_supplier=True,
+                            product=product)
         product.addFacet(IStorable, connection=trans)

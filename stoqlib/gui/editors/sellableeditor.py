@@ -39,11 +39,11 @@ from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.domain.interfaces import ISellable, IStorable
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.purchase import PurchaseItem
 from stoqlib.domain.receiving import ReceivingOrderItem
 from stoqlib.domain.sale import SaleItem, DeliveryItem
-from stoqlib.domain.sellable import (SellableCategory, ASellable,
+from stoqlib.domain.sellable import (SellableCategory, Sellable,
                                      SellableUnit,
                                      SellableTaxConstant)
 from stoqlib.gui.base.lists import ModelListDialog
@@ -112,7 +112,7 @@ class SellableTaxConstantsDialog(ModelListDialog):
         self.listcontainer.edit_button.set_sensitive(is_custom)
 
     def delete_model(self, model, trans):
-        sellables = ASellable.selectBy(tax_constant=model, connection=trans)
+        sellables = Sellable.selectBy(tax_constant=model, connection=trans)
         quantity = sellables.count()
         if quantity > 0:
             msg = _(u"You can't remove this tax, since %d products or "
@@ -125,7 +125,7 @@ class SellableTaxConstantsDialog(ModelListDialog):
 
 class SellablePriceEditor(BaseEditor):
     model_name = _(u'Product Price')
-    model_type = ASellable
+    model_type = Sellable
     gladefile = 'SellablePriceEditor'
 
     proxy_widgets = ('cost',
@@ -153,7 +153,7 @@ class SellablePriceEditor(BaseEditor):
                                          SellablePriceEditor.proxy_widgets)
         if self.model.markup is not None:
             return
-        sellable = ISellable(self.model)
+        sellable = self.model.sellable
         self.model.markup = sellable.get_suggested_markup()
         self.main_proxy.update('markup')
 
@@ -195,7 +195,7 @@ class SellablePriceEditor(BaseEditor):
 class SellableEditor(BaseEditor):
     """This is a base class for ProductEditor and ServiceEditor and should
     be used when editing sellable objects. Note that sellable objects
-    are instances inherited by ASellable."""
+    are instances inherited by Sellable."""
 
     # This must be be properly defined in the child classes
     model_name = None
@@ -232,7 +232,7 @@ class SellableEditor(BaseEditor):
         self.setup_widgets()
 
         self.set_description(
-            ISellable(self.model).base_sellable_info.description)
+            self.model.sellable.base_sellable_info.description)
 
     def add_extra_tab(self, tabname, tabslave):
         self.sellable_notebook.set_show_tabs(True)
@@ -250,7 +250,7 @@ class SellableEditor(BaseEditor):
         self.requires_weighing_label.set_text("")
 
     def edit_sale_price(self):
-        sellable = ISellable(self.model)
+        sellable = self.model.sellable
         result = run_dialog(SellablePriceEditor, self, self.conn, sellable)
         if result:
             self.sellable_proxy.update('base_sellable_info.price')
@@ -315,7 +315,7 @@ class SellableEditor(BaseEditor):
     def setup_proxies(self):
         self.set_widget_formats()
         self.setup_combos()
-        self._sellable = ISellable(self.model)
+        self._sellable = self.model.sellable
 
         barcode = self._sellable.barcode
         self.barcode_proxy = self.add_proxy(Settable(barcode=barcode),
@@ -355,7 +355,7 @@ class SellableEditor(BaseEditor):
     def validate_confirm(self, *args):
         barcode = self.barcode_proxy.model.barcode
         if barcode != self._original_barcode:
-            if ASellable.check_barcode_exists(barcode):
+            if Sellable.check_barcode_exists(barcode):
                 msg = _('The barcode %s already exists') % barcode
                 self.barcode.set_invalid(msg)
                 return False

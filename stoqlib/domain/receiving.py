@@ -58,7 +58,7 @@ class ReceivingOrderItem(Domain):
     quantity = DecimalCol()
     cost = PriceCol()
     purchase_item = ForeignKey('PurchaseItem')
-    sellable = ForeignKey('ASellable')
+    sellable = ForeignKey('Sellable')
     receiving_order = ForeignKey('ReceivingOrder')
 
     #
@@ -107,8 +107,8 @@ class ReceivingOrderItem(Domain):
                 self.get_remaining_quantity()))
 
         branch = self.receiving_order.branch
-        storable = IStorable(self.sellable, None)
-        if not storable is None:
+        storable = IStorable(self.sellable.product, None)
+        if storable is not None:
             storable.increase_stock(self.quantity, branch)
         purchase = self.purchase_item.order
         purchase.increase_quantity_received(self.sellable, self.quantity)

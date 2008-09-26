@@ -44,16 +44,15 @@ from stoqlib.domain.base import (Domain, ValidatableDomain, BaseSQLView,
 from stoqlib.domain.events import SaleConfirmEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import (IContainer, IOutPayment,
-                                       IPaymentTransaction, ISellable,
-                                       IDelivery, IStorable, IProduct,
+                                       IPaymentTransaction,
+                                       IDelivery, IStorable,
                                        IInPayment)
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.product import (Product, ProductAdaptToSellable,
-                                    ProductHistory)
+from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.renegotiation import RenegotiationData
-from stoqlib.domain.sellable import ASellable
-from stoqlib.domain.service import Service, ServiceAdaptToSellable
+from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.service import Service
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
                                 StoqlibError)
@@ -84,7 +83,7 @@ class SaleItem(Domain):
     base_price = PriceCol()
     price = PriceCol()
     sale = ForeignKey('Sale')
-    sellable = ForeignKey('ASellable')
+    sellable = ForeignKey('Sellable')
 
     # This is currently only used by services
     notes = UnicodeCol(default=None)
@@ -111,12 +110,12 @@ class SaleItem(Domain):
         if not self.sellable.can_be_sold():
             raise SellError('%r is already sold' % self.sellable)
 
-        storable = IStorable(self.sellable, None)
+        storable = IStorable(self.sellable.product, None)
         if storable:
             storable.decrease_stock(self.quantity, branch)
 
     def cancel(self, branch):
-        storable = IStorable(self.sellable, None)
+        storable = IStorable(self.sellable.product, None)
         if storable:
             storable.increase_stock(self.quantity, branch)
 
@@ -154,7 +153,7 @@ class DeliveryItem(Domain):
     """Class responsible to store all the products for a certain delivery"""
 
     quantity = DecimalCol()
-    sellable = ForeignKey('ASellable')
+    sellable = ForeignKey('Sellable')
     delivery = ForeignKey('SaleItem', default=None)
 
     #
@@ -169,7 +168,7 @@ class DeliveryItem(Domain):
 
     @classmethod
     def create_from_sellable_item(cls, sale_item):
-        if not IProduct(sale_item.sellable, None):
+        if not sale_item.sellable.product:
             raise SellError(
                 "It's only possible to deliver products, not %r" % (
                 type(sale_item),))
@@ -208,7 +207,7 @@ class SaleItemAdaptToDelivery(ModelAdapter):
     # General methods
     #
 
-    @argcheck(ASellable)
+    @argcheck(Sellable)
     def get_item_by_sellable(self, sellable):
         return DeliveryItem.selectOneBy(connection=self.get_connection(),
                                         delivery=self,
@@ -406,7 +405,7 @@ class Sale(ValidatableDomain):
         conn = self.get_connection()
         branch = get_current_branch(conn)
         for item in self.get_items():
-            if IProduct(item.sellable, None):
+            if item.sellable.product:
                 ProductHistory.add_sold_item(conn, branch, item)
             item.sell(branch)
 
@@ -545,14 +544,13 @@ class Sale(ValidatableDomain):
                 return False
         return True
 
-    def add_sellable(self, obj, quantity=1, price=None):
+    def add_sellable(self, sellable, quantity=1, price=None):
         """Adds a new sellable item to a sale
-        @param obj: the sellable
+        @param sellable: the sellable
         @param quantity: quantity to add, defaults to 1
         @param price: optional, the price, it not set the price
           from the sellable will be used
         """
-        sellable = ISellable(obj)
         price = price or sellable.price
         return SaleItem(connection=self.get_connection(),
                         quantity=quantity,
@@ -584,16 +582,14 @@ class Sale(ValidatableDomain):
     def products(self):
         return SaleItem.select(
             AND(SaleItem.q.saleID == self.id,
-                SaleItem.q.sellableID == ProductAdaptToSellable.q.id,
-                ProductAdaptToSellable.q._originalID == Product.q.id),
+                SaleItem.q.sellableID == Product.q.sellableID),
             connection=self.get_connection())
 
     @property
     def services(self):
         return SaleItem.select(
             AND(SaleItem.q.saleID == self.id,
-                SaleItem.q.sellableID == ServiceAdaptToSellable.q.id,
-                ServiceAdaptToSellable.q._originalID == Service.q.id),
+                SaleItem.q.sellableID == Service.q.sellableID),
             connection=self.get_connection())
 
     @property

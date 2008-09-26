@@ -29,9 +29,9 @@ import datetime
 from kiwi.ui.objectlist import Column
 
 from stoqlib.database.runtime import get_current_user
-from stoqlib.domain.interfaces import IStorable, IProduct
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.inventory import Inventory, InventoryItem
-from stoqlib.domain.sellable import ASellable, SellableCategory
+from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
@@ -164,8 +164,8 @@ class OpenInventoryDialog(BaseEditor):
             return []
 
         include_uncategorized = self.include_uncategorized_check.get_active()
-        return ASellable.get_availables_by_categories(self.conn, selected,
-                                                      include_uncategorized)
+        return Sellable.get_availables_by_categories(self.conn, selected,
+                                                     include_uncategorized)
 
     def _select(self, categories, select_value):
         for category in categories:
@@ -233,13 +233,13 @@ class OpenInventoryDialog(BaseEditor):
                               branch=self.model.branch,
                               connection=self.conn)
         for sellable in self._get_sellables():
-            storable = IStorable(sellable, None)
+            storable = IStorable(sellable.product, None)
             if storable is None:
                 continue
             # a sellable without stock can't be part of inventory
             if storable.get_stock_item(self.model.branch) is not None:
                 recorded_quantity = storable.get_full_balance(self.model.branch)
-                InventoryItem(product=IProduct(sellable),
+                InventoryItem(product=sellable.product,
                               recorded_quantity=recorded_quantity,
                               inventory=inventory,
                               connection=self.conn)

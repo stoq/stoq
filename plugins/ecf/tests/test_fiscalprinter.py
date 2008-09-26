@@ -27,7 +27,6 @@ from decimal import Decimal
 
 from stoqdrivers.enum import PaymentMethodType
 from stoqdrivers.exceptions import DriverError
-from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqdrivers.exceptions import CouponOpenError
@@ -67,7 +66,7 @@ class TestFiscalCoupon(DomainTest):
 
     def testAddItemProduct(self):
         product = self.create_product()
-        sellable = ISellable(product)
+        sellable = product.sellable
         item = self.sale.add_sellable(sellable)
 
         self.assertRaises(CouponOpenError, self.coupon.add_item, item)
@@ -77,7 +76,7 @@ class TestFiscalCoupon(DomainTest):
 
     def testAddItemService(self):
         service = self.create_service()
-        sellable = ISellable(service)
+        sellable = service.sellable
         item = self.sale.add_sellable(sellable)
 
         self.coupon.open()
@@ -91,7 +90,7 @@ class _TestFiscalCouponPayments:
         self.coupon = self.printer.create_coupon(self.sale)
 
     def _open_and_add(self, product):
-        sellable = ISellable(product)
+        sellable = product.sellable
         item = self.sale.add_sellable(sellable)
 
         self.coupon.open()
