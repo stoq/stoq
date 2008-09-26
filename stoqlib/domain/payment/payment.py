@@ -28,11 +28,11 @@
 import datetime
 
 from kiwi.datatypes import currency
-from sqlobject.col import IntCol, DateTimeCol, UnicodeCol, ForeignKey
-from sqlobject.sqlbuilder import const
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol
+from stoqlib.database.orm import IntCol, DateTimeCol, UnicodeCol, ForeignKey
+from stoqlib.database.orm import const
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError

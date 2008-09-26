@@ -26,17 +26,30 @@
 
 from kiwi.db.sqlobj import SQLObjectQueryExecuter
 
-from sqlobject import connectionForURI, SQLObjectNotFound, SQLObjectMoreThanOneResultError
+from sqlobject import (connectionForURI, sqlhub, SQLObjectNotFound,
+                       SQLObjectMoreThanOneResultError)
+from sqlobject.col import (BoolCol, BLOBCol, DateTimeCol, DecimalCol,
+                           ForeignKey, IntCol, StringCol, UnicodeCol)
+from sqlobject.col import (Col, SOBoolCol, SODateTimeCol, SODecimalCol,
+                           SOForeignKey, SOIntCol, SOStringCol, SOUnicodeCol)
+from sqlobject.converters import registerConverter, sqlrepr
 from sqlobject.dbconnection import DBAPI, Transaction
+from sqlobject.joins import MultipleJoin, SingleJoin
 from sqlobject.main import SQLObject
+from sqlobject.sqlbuilder import (AND, Alias, IN, INNERJOINOn, ISNOTNULL,
+                                  LEFTJOINOn, LIKE, OR, SQLExpression, Update,
+                                  NoDefault, const, func, sqlIdentifier)
 from sqlobject.sresults import SelectResults
 from sqlobject.util.csvexport import export_csv
 from sqlobject.viewable import Viewable
 
 
+# MainObject
 
 class ORMObject(SQLObject):
     pass
+
+# Exceptions
 
 # ORMObject.get raises this
 ORMObjectNotFound = SQLObjectNotFound
@@ -45,9 +58,53 @@ ORMObjectMoreThanOneResultError = SQLObjectMoreThanOneResultError
 
 ORMObjectQueryExecuter = SQLObjectQueryExecuter
 
+# Columns
+BLOBCol = BLOBCol
+BoolCol = BoolCol
+DateTimeCol = DateTimeCol
+DecimalCol = DecimalCol
+ForeignKey = ForeignKey
+IntCol = IntCol
+MultipleJoin = MultipleJoin
+SingleJoin = SingleJoin
+StringCol = StringCol
+UnicodeCol = UnicodeCol
+
+# Column classes
+Col = Col
+SOBoolCol = SOBoolCol
+SODateTimeCol = SODateTimeCol
+SODecimalCol = SODecimalCol
+SOForeignKey = SOForeignKey
+SOIntCol = SOIntCol
+SOStringCol = SOStringCol
+SOUnicodeCol = SOUnicodeCol
+
+# SQLBuilder
+Alias = Alias
+AND = AND
+IN = IN
+INNERJOINOn = INNERJOINOn
+ISNOTNULL = ISNOTNULL
+LEFTJOINOn = LEFTJOINOn
+LIKE = LIKE
+const = const
+func = func
+OR = OR
+SQLExpression = SQLExpression
+sqlIdentifier = sqlIdentifier
+sqlrepr = sqlrepr
+
+# Connections
+DBAPI = DBAPI
 connectionForURI = connectionForURI
 Transaction = Transaction
-DBAPI = DBAPI
-SelectResults = SelectResults
+
+# Misc
 export_csv = export_csv
+registerConverter = registerConverter
+SelectResults = SelectResults
+NoDefault = NoDefault
+Update = Update
 Viewable = Viewable
+sqlhub = sqlhub

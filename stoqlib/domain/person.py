@@ -71,12 +71,12 @@ See L{stoqlib.lib.component} for more information on adapters.
 
 import datetime
 
-from sqlobject import (DateTimeCol, UnicodeCol, IntCol,
-                       ForeignKey, MultipleJoin, BoolCol)
-from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol
+from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
+                                  ForeignKey, MultipleJoin, BoolCol)
+from stoqlib.database.orm import func, AND, INNERJOINOn, LEFTJOINOn
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.address import Address

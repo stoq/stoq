@@ -28,16 +28,16 @@
 
 """ User editor slaves implementation.  """
 
-from sqlobject.sqlbuilder import func
 from kiwi.datatypes import ValidationError
 
-from stoqlib.lib.defaults import MINIMUM_PASSWORD_CHAR_LEN
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
-from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.database.orm import func
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.person import EmployeeRole, Person
 from stoqlib.domain.interfaces import IEmployee, ISalesPerson, IUser
+from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.lib.defaults import MINIMUM_PASSWORD_CHAR_LEN
+from stoqlib.lib.translation import stoqlib_gettext
 
 
 _ = stoqlib_gettext

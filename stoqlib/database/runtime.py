@@ -28,12 +28,12 @@ import sys
 
 from kiwi.component import get_utility, provide_utility, implements
 from kiwi.log import Logger
-from sqlobject.sqlbuilder import sqlIdentifier, const, Update, IN
 
 from stoqlib.database.interfaces import (
     IDatabaseSettings, IConnection, ITransaction, ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
 from stoqlib.database.orm import ORMObject, Transaction
+from stoqlib.database.orm import sqlIdentifier, const, Update, IN
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import error, yesno, info
 from stoqlib.lib.translation import stoqlib_gettext

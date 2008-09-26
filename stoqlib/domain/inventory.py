@@ -25,10 +25,9 @@
 
 import datetime
 
-from sqlobject.col import ForeignKey, DateTimeCol, IntCol, UnicodeCol
-from sqlobject.sqlbuilder import const, AND, ISNOTNULL
-
 from stoqlib.database.columns import DecimalCol
+from stoqlib.database.orm import ForeignKey, DateTimeCol, IntCol, UnicodeCol
+from stoqlib.database.orm import const, AND, ISNOTNULL
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IBranch,  IStorable
 from stoqlib.domain.fiscal import FiscalBookEntry

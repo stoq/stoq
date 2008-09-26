@@ -23,9 +23,6 @@
 ##
 
 import datetime
-from sqlobject.col import (BoolCol, StringCol, ForeignKey, IntCol,
-                           UnicodeCol, BLOBCol, DateTimeCol)
-from sqlobject.joins import MultipleJoin
 from stoqdrivers.constants import describe_constant
 from stoqdrivers.printers.fiscal import FiscalPrinter
 from stoqdrivers.serialbase import SerialPort
@@ -33,6 +30,9 @@ from stoqdrivers.enum import PaymentMethodType, UnitType, TaxType
 from zope.interface import implements
 
 from stoqlib.database.columns import DecimalCol
+from stoqlib.database.orm import (BoolCol, StringCol, ForeignKey, IntCol,
+                                  UnicodeCol, BLOBCol, DateTimeCol)
+from stoqlib.database.orm import MultipleJoin
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.exceptions import DeviceError

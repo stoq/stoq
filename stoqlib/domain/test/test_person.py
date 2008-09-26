@@ -28,9 +28,8 @@
 import datetime
 
 from kiwi.datatypes import currency
-from sqlobject.sqlbuilder import AND
 
-from stoqlib.database.orm import ORMObjectMoreThanOneResultError
+from stoqlib.database.orm import ORMObjectMoreThanOneResultError, AND
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator

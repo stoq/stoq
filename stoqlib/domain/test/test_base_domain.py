@@ -22,10 +22,9 @@
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##
 
-from sqlobject.col import IntCol
 from zope.interface import implements, Interface
 
-from stoqlib.database.orm import ORMObjectMoreThanOneResultError
+from stoqlib.database.orm import ORMObjectMoreThanOneResultError, IntCol
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.base import Domain, ModelAdapter
 

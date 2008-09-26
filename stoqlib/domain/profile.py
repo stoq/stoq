@@ -25,8 +25,8 @@
 """ User profile management for applications"""
 
 from kiwi.component import get_utility
-from sqlobject import UnicodeCol, ForeignKey, MultipleJoin, BoolCol
 
+from stoqlib.database.orm import UnicodeCol, ForeignKey, MultipleJoin, BoolCol
 from stoqlib.domain.base import Domain
 from stoqlib.lib.interfaces import IApplicationDescriptions
 

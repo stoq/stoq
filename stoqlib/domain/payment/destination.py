@@ -24,10 +24,10 @@
 ##
 """ Payment destination management implementations. """
 
-from sqlobject import UnicodeCol, ForeignKey
 from zope.interface import implements
 
 from stoqlib.domain.base import Domain
+from stoqlib.database.orm import UnicodeCol, ForeignKey
 from stoqlib.domain.interfaces import IDescribable
 
 #

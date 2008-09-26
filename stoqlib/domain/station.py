@@ -24,9 +24,9 @@
 ##
 """ Station, a branch station per computer """
 
-from sqlobject import UnicodeCol, ForeignKey, BoolCol
 from zope.interface import implements
 
+from stoqlib.database.orm import UnicodeCol, ForeignKey, BoolCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IBranch
 from stoqlib.exceptions import StoqlibError

@@ -25,10 +25,10 @@
 ##
 """ Routines for system data management"""
 
-from sqlobject import DateTimeCol, IntCol
-
+from stoqlib.database.orm import DateTimeCol, IntCol
 from stoqlib.database.orm import ORMObject
 from stoqlib.domain.base import AbstractModel
+
 
 class SystemTable(ORMObject, AbstractModel):
     """Stores information about database schema migration

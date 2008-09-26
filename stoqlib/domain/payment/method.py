@@ -29,11 +29,11 @@ import datetime
 
 from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
-from sqlobject import IntCol, ForeignKey, BoolCol, StringCol, UnicodeCol
-from sqlobject.sqlbuilder import const
 from zope.interface import implements
 
 from stoqlib.database.columns import DecimalCol
+from stoqlib.database.orm import IntCol, ForeignKey, BoolCol, StringCol, UnicodeCol
+from stoqlib.database.orm import const
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import (IInPayment, IActive, IOutPayment,
                                        IDescribable)

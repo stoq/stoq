@@ -24,8 +24,7 @@
 ##
 """ Transaction domain class """
 
-from sqlobject.col import DateTimeCol, IntCol
-
+from stoqlib.database.orm import DateTimeCol, IntCol
 from stoqlib.database.orm import ORMObject
 
 

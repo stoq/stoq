@@ -21,8 +21,7 @@
 ##
 """ Domain classes to manage bank accounts """
 
-from sqlobject import UnicodeCol, IntCol
-
+from stoqlib.database.orm import UnicodeCol, IntCol
 from stoqlib.domain.base import Domain
 
 #

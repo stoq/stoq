@@ -27,8 +27,8 @@ import datetime
 from decimal import Decimal
 
 from stoqdrivers.enum import TaxType
-from sqlobject.sqlbuilder import const
 
+from stoqlib.database.orm import const
 from stoqlib.database.runtime import (get_current_station,
                                       get_current_branch)
 from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,

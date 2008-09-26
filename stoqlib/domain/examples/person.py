@@ -29,9 +29,9 @@ import datetime
 import gettext
 
 from kiwi.component import provide_utility
-from sqlobject.sqlbuilder import const
 
 from stoqlib.database.interfaces import ICurrentBranch, ICurrentBranchStation
+from stoqlib.database.orm import const
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.examples import log
 from stoqlib.domain.address import Address, CityLocation

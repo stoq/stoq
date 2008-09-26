@@ -24,9 +24,9 @@
 ##
 """Invoice domain classes; field, layout and printer
 """
-from sqlobject.col import ForeignKey, IntCol, StringCol, UnicodeCol
 from zope.interface import implements
 
+from stoqlib.database.orm import ForeignKey, IntCol, StringCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 

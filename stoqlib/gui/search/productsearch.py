@@ -66,7 +66,7 @@ class ProductSearch(SearchEditor):
                  hide_price_column=False):
         """
         Create a new ProductSearch object.
-        @param conn: a sqlobject Transaction instance
+        @param conn: a orm Transaction instance
         @param hide_footer: do I have to hide the dialog footer?
         @param hide_toolbar: do I have to hide the dialog toolbar?
         @param selection_mode: the kiwi list selection mode

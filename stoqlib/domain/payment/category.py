@@ -24,9 +24,9 @@
 """Payment category, user defined grouping of payments
 """
 
-from sqlobject import StringCol, UnicodeCol
 from zope.interface import implements
 
+from stoqlib.database.orm import StringCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 

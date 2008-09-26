@@ -25,9 +25,9 @@
 ##
 """ Domain classes for handling parameters """
 
-from sqlobject import UnicodeCol, BoolCol, StringCol
-
+from stoqlib.database.orm import UnicodeCol, BoolCol, StringCol
 from stoqlib.domain.base import Domain
+
 
 class ParameterData(Domain):
     """ Class to store system parameters.

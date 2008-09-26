@@ -25,11 +25,11 @@
 """ Base routines for domain modules """
 
 from kiwi.component import get_utility
-from sqlobject import ForeignKey, BoolCol
-from sqlobject.converters import sqlrepr
-from sqlobject.sqlbuilder import SQLExpression, AND, const
 from zope.interface.interface import adapter_hooks
 
+from stoqlib.database.orm import ForeignKey, BoolCol
+from stoqlib.database.orm import sqlrepr
+from stoqlib.database.orm import SQLExpression, AND, const
 from stoqlib.database.orm import ORMObject, DBAPI, Transaction
 from stoqlib.database.runtime import (StoqlibTransaction, get_current_user,
                                       get_current_station)

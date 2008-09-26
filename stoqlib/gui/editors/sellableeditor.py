@@ -32,13 +32,10 @@ import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
-from sqlobject.sqlbuilder import LIKE, func
 from stoqdrivers.enum import TaxType, UnitType
 
+from stoqlib.database.orm import LIKE, func
 from stoqlib.database.runtime import new_transaction
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.purchase import PurchaseItem
 from stoqlib.domain.receiving import ReceivingOrderItem
@@ -46,11 +43,14 @@ from stoqlib.domain.sale import SaleItem, DeliveryItem
 from stoqlib.domain.sellable import (SellableCategory, Sellable,
                                      SellableUnit,
                                      SellableTaxConstant)
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import ModelListDialog
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
 from stoqlib.gui.slaves.imageslaveslave import ImageSlave
 from stoqlib.lib.message import info
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_price_format_str
 
 _ = stoqlib_gettext
