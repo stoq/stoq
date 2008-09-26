@@ -25,6 +25,7 @@
 ##
 """ Sale return wizards definition """
 
+from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
@@ -90,6 +91,7 @@ class SaleReturnWizard(BaseWizard):
     title = _('Return Sale Order')
 
     def __init__(self, conn, model):
+        register_payment_operations()
         self.renegotiation = None
         first_step = SaleReturnStep(conn, self, model)
         BaseWizard.__init__(self, conn, first_step, model)

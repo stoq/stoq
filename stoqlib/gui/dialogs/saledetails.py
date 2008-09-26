@@ -110,6 +110,8 @@ class SaleDetailsDialog(BaseEditor):
         for payment in sale.payments:
             if IOutPayment(payment, None):
                 yield _TemporaryOutPayment(payment)
+            else:
+                yield payment
 
     def _setup_widgets(self):
         if not self.model.client_id:
@@ -124,7 +126,7 @@ class SaleDetailsDialog(BaseEditor):
             self.cancel_details_button.hide()
 
         self.items_list.add_list(self.sale_order.get_items())
-        self.payments_list.add_list(self._get_payments())
+        self.payments_list.add_list(self._get_payments(self.sale_order))
         changes = PaymentChangeHistoryView.select_by_group(
             self.sale_order.group,
             connection=self.conn)
