@@ -31,8 +31,8 @@ import pango
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.widgets.list import Column
 from kiwi.ui.search import ComboSearchFilter
-from sqlobject.sqlbuilder import AND
 
+from stoqlib.database.orm import AND
 from stoqlib.database.runtime import (new_transaction, finish_transaction,
                                       get_current_branch)
 from stoqlib.domain.person import Person, PersonAdaptToUser

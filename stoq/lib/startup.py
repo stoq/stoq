@@ -32,8 +32,8 @@ import sys
 
 from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
-from sqlobject import sqlhub
 from stoqlib.database.admin import ensure_admin_user, initialize_system
+from stoqlib.database.orm import sqlhub
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.runtime import get_connection, set_current_branch_station, new_transaction
 from stoqlib.domain.profile import UserProfile
