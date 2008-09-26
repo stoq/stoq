@@ -14,6 +14,7 @@ UPDATE asellable_item
  WHERE inheritable_model.child_name = 'ASellableItem' AND
        inheritable_model.id = asellable_item.id;
 DELETE FROM inheritable_model WHERE child_name = 'ASellableItem';
+SELECT setval('asellable_item_id_seq', (SELECT last_value from inheritable_model_id_seq));
        
 --
 -- 2) Remove ProductSellableItem, ServiceSellableItem, GiftCertificateItem,

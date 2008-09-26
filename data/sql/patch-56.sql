@@ -21,7 +21,7 @@ UPDATE asellable
   FROM inheritable_model_adapter
  WHERE inheritable_model_adapter.child_name = 'ASellable' AND
        inheritable_model_adapter.id = asellable.id;
-DELETE FROM inheritable_model_adapter WHERE child_name = 'ASellable';
+SELECT setval('asellable_id_seq', (SELECT last_value from inheritable_model_adapter_id_seq));
 
 ALTER TABLE asellable DROP COLUMN child_name;
 DROP TABLE product_adapt_to_sellable;
