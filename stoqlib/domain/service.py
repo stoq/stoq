@@ -30,7 +30,6 @@ from sqlobject import BLOBCol
 from sqlobject.col import ForeignKey
 from sqlobject.sqlbuilder import AND, INNERJOINOn, LEFTJOINOn
 from sqlobject.viewable import Viewable
-from zope.interface import implements
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain
