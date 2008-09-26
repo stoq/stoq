@@ -29,10 +29,10 @@ import gettext
 
 import gtk
 from kiwi.component import get_utility
-from kiwi.db.sqlobj import SQLObjectQueryExecuter
 from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
 from kiwi.ui.search import SearchSlaveDelegate
+from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       get_connection)
 from stoqlib.lib.interfaces import ICookieFile
@@ -268,7 +268,7 @@ class SearchableAppWindow(AppWindow):
         if self.search_table is None:
             raise TypeError("%r must define a search_table attribute" % self)
 
-        self.executer = SQLObjectQueryExecuter(get_connection())
+        self.executer = ORMObjectQueryExecuter(get_connection())
         self.executer.set_table(self.search_table)
 
         self.search = SearchSlaveDelegate(self.get_columns())
