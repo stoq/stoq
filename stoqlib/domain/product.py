@@ -29,12 +29,12 @@ from decimal import Decimal
 
 from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
-from sqlobject import (UnicodeCol, ForeignKey, MultipleJoin, DateTimeCol,
-                       BoolCol, BLOBCol)
-from sqlobject.sqlbuilder import const
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol
+from stoqlib.database.orm import (UnicodeCol, ForeignKey, MultipleJoin, DateTimeCol,
+                                  BoolCol, BLOBCol)
+from stoqlib.database.orm import const
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (IStorable, IContainer,

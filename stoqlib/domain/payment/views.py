@@ -26,9 +26,9 @@
 import datetime
 
 from kiwi.datatypes import converter
-from sqlobject.sqlbuilder import AND
-from sqlobject.sqlbuilder import Alias, LEFTJOINOn, INNERJOINOn
 
+from stoqlib.database.orm import AND
+from stoqlib.database.orm import Alias, LEFTJOINOn, INNERJOINOn
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.category import PaymentCategory

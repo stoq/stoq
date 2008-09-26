@@ -26,12 +26,12 @@ import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import currency
-from sqlobject.col import (SOBoolCol, SODateTimeCol, SOForeignKey, SOIntCol,
-                           SOStringCol, SOUnicodeCol)
-from sqlobject.sqlbuilder import NoDefault
 from twisted.trial.unittest import SkipTest
 
 from stoqlib.database.columns import AbstractDecimalCol, SOPriceCol
+from stoqlib.database.orm import (SOBoolCol, SODateTimeCol, SOForeignKey, SOIntCol,
+                                  SOStringCol, SOUnicodeCol)
+from stoqlib.database.orm import NoDefault
 from stoqlib.database.tables import get_table_types
 
 from stoqlib.domain.test.domaintest import DomainTest

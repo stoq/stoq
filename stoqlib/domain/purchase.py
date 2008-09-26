@@ -30,9 +30,9 @@ import datetime
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from zope.interface import implements
-from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
-from sqlobject.sqlbuilder import AND, INNERJOINOn, LEFTJOINOn, const
 
+from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
+from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn, const
 from stoqlib.database.orm import ORMObject, Viewable
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import ValidatableDomain, Domain, BaseSQLView

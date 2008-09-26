@@ -24,8 +24,7 @@
 ##
 """ BranchSynchronization domain class """
 
-from sqlobject.col import DateTimeCol, ForeignKey, StringCol
-
+from stoqlib.database.orm import DateTimeCol, ForeignKey, StringCol
 from stoqlib.database.orm import ORMObject
 from stoqlib.domain.person import PersonAdaptToBranch
 

@@ -24,12 +24,11 @@
 ##
 """ Person role wizards definition """
 
-from sqlobject.sqlbuilder import OR, LIKE
 from kiwi.python import Settable
 from kiwi.argcheck import argcheck
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.orm import Transaction
+from stoqlib.database.orm import Transaction, OR, LIKE
 from stoqlib.database.runtime import rollback_and_begin
 from stoqlib.domain.person import Person
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,

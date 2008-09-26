@@ -31,8 +31,8 @@ from decimal import Decimal
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.objectlist import Column
-from sqlobject.sqlbuilder import AND
 
+from stoqlib.database.orm import AND
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sellable import Sellable
@@ -60,7 +60,7 @@ class SellableSearch(SearchEditor):
                  sale_items=None, quantity=None, double_click_confirm=False):
         """
         Create a new SellableSearch object.
-        @param conn: a sqlobject Transaction instance
+        @param conn: a orm Transaction instance
         @param hide_footer: do I have to hide the dialog footer?
         @param hide_toolbar: do I have to hide the dialog toolbar?
         @param selection_mode: the kiwi list selection mode

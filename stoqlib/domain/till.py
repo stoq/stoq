@@ -28,12 +28,12 @@
 
 import datetime
 
-from sqlobject import IntCol, DateTimeCol, ForeignKey, UnicodeCol
-from sqlobject.sqlbuilder import AND, const
 from kiwi.datatypes import currency
 from kiwi.log import Logger
 
 from stoqlib.database.columns import PriceCol
+from stoqlib.database.orm import IntCol, DateTimeCol, ForeignKey, UnicodeCol
+from stoqlib.database.orm import AND, const
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IOutPayment, IInPayment

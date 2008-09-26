@@ -31,9 +31,9 @@ from decimal import Decimal
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
-from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 
 from stoqlib.database.columns import PriceCol, DecimalCol
+from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.domain.base import Domain, ValidatableDomain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IStorable

@@ -30,13 +30,13 @@ import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import currency
-from sqlobject import DateTimeCol, UnicodeCol, IntCol, ForeignKey
-from sqlobject.joins import SingleJoin
-from sqlobject.sqlbuilder import AND, IN, OR
 from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol
+from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol, ForeignKey
+from stoqlib.database.orm import SingleJoin
+from stoqlib.database.orm import AND, IN, OR
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.base import Domain

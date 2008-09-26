@@ -25,14 +25,13 @@
 
 from decimal import Decimal
 
-from sqlobject.sqlbuilder import AND, OR, LEFTJOINOn
-
 from kiwi.datatypes import currency
 from kiwi.enums import ListType
 from kiwi.python import AttributeForwarder
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
+from stoqlib.database.orm import AND, OR, LEFTJOINOn
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext

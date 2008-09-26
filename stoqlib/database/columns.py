@@ -29,9 +29,8 @@ from decimal import Decimal
 
 from formencode.validators import Validator
 from kiwi.datatypes import currency
-from sqlobject.col import SODecimalCol, Col
-from sqlobject.converters import registerConverter
 
+from stoqlib.database.orm import SODecimalCol, Col, registerConverter
 from stoqlib.lib.defaults import DECIMAL_PRECISION, DECIMAL_SIZE
 
 

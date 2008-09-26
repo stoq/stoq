@@ -34,15 +34,15 @@ differently
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
-from sqlobject.col import IntCol, ForeignKey
-from sqlobject.joins import SingleJoin
-from sqlobject.sqlbuilder import AND, IN
 from zope.interface import implements
 
-from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.database.orm import IntCol, ForeignKey
+from stoqlib.database.orm import SingleJoin
+from stoqlib.database.orm import AND, IN
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

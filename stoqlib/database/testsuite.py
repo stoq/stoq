@@ -29,11 +29,11 @@ import socket
 
 from kiwi.component import provide_utility, utilities
 from kiwi.log import Logger
-from sqlobject.sqlbuilder import AND
 
 from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.interfaces import (
     ICurrentBranch, ICurrentBranchStation, ICurrentUser, IDatabaseSettings)
+from stoqlib.database.orm import AND
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.examples.createall import create

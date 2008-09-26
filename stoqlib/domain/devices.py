@@ -26,16 +26,16 @@
 Domain classes related to stoqdrivers package.
 """
 
-from sqlobject.col import (UnicodeCol, IntCol, ForeignKey, BoolCol,
-                           DateTimeCol, StringCol)
-from sqlobject.joins import MultipleJoin
-from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 from stoqdrivers.printers.cheque import ChequePrinter
 from stoqdrivers.scales.scales import Scale
 from stoqdrivers.serialbase import SerialPort
 
 from stoqlib.database.columns import DecimalCol
+from stoqlib.database.orm import (UnicodeCol, IntCol, ForeignKey, BoolCol,
+                           DateTimeCol, StringCol)
+from stoqlib.database.orm import MultipleJoin
+from stoqlib.database.orm import AND
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable

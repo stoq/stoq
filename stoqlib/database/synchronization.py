@@ -32,13 +32,12 @@ import subprocess
 from dateutil.parser import parse
 from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
-from sqlobject.sqlbuilder import const
 
 from stoqlib.database.admin import create_base_schema
 from stoqlib.database.database import dump_table
 from stoqlib.database.interfaces import (ICurrentBranchStation, ICurrentBranch,
                                          IDatabaseSettings)
-from stoqlib.database.orm import ORMObject, ORMObjectNotFound
+from stoqlib.database.orm import ORMObject, ORMObjectNotFound, const
 from stoqlib.database.runtime import (get_connection, new_transaction,
                                       get_current_branch)
 from stoqlib.database.policy import get_policy_by_name

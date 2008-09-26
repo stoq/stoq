@@ -27,8 +27,8 @@ import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import currency
-from sqlobject.sqlbuilder import AND
 
+from stoqlib.database.orm import AND
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 from stoqlib.domain.interfaces import (IStorable,

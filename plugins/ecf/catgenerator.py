@@ -28,11 +28,10 @@
 import os
 import string
 
-from sqlobject.sqlbuilder import AND, func
-
 import stoqlib
 
 from stoqlib.database.runtime import get_current_branch
+from stoqlib.database.orm import AND, func
 from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.interfaces import ICompany, IOutPayment
 from stoqlib.domain.renegotiation import RenegotiationData

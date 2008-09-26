@@ -25,11 +25,10 @@
 ##
 
 from kiwi.argcheck import argcheck
-from sqlobject.sqlbuilder import AND, func
-from sqlobject import (UnicodeCol, IntCol,
-                       ForeignKey, BoolCol)
 from zope.interface import implements
 
+from stoqlib.database.orm import (AND, func, UnicodeCol, IntCol, ForeignKey,
+                                  BoolCol)
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable

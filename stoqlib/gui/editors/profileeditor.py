@@ -27,8 +27,8 @@ import gtk
 from kiwi.component import get_utility
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.checkbutton import ProxyCheckButton
-from sqlobject.sqlbuilder import func, AND
 
+from stoqlib.database.orm import func, AND
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.profile import UserProfile
 from stoqlib.gui.editors.baseeditor import BaseEditor

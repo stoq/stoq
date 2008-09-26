@@ -22,9 +22,10 @@
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##
 
-from sqlobject.col import StringCol, IntCol
 
 from stoqlib.domain.base import Domain
+from stoqlib.database.orm import StringCol, IntCol
+
 
 class InstalledPlugin(Domain):
     """This object represent an installed and activated plugin.

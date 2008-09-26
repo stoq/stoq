@@ -30,12 +30,12 @@ from decimal import Decimal
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
-from sqlobject.col import ForeignKey, UnicodeCol, DateTimeCol, IntCol
-from sqlobject.sqlbuilder import AND, const
 from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
 from stoqlib.database.orm import ORMObject
+from stoqlib.database.orm import ForeignKey, UnicodeCol, DateTimeCol, IntCol
+from stoqlib.database.orm import AND, const
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)

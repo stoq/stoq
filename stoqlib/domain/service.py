@@ -26,10 +26,9 @@
 """ Base classes to manage services informations """
 
 
-from sqlobject import BLOBCol
-from sqlobject.col import ForeignKey
-from sqlobject.sqlbuilder import AND, INNERJOINOn, LEFTJOINOn
-
+from stoqlib.database.orm import BLOBCol
+from stoqlib.database.orm import ForeignKey
+from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.sellable import (BaseSellableInfo, Sellable,

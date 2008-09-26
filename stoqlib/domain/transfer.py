@@ -27,10 +27,9 @@ import datetime
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
-from sqlobject import ForeignKey, IntCol
-from sqlobject.col import DateTimeCol
-
 from stoqlib.database.columns import DecimalCol
+from stoqlib.database.orm import ForeignKey, IntCol
+from stoqlib.database.orm import DateTimeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.interfaces import IContainer, IStorable
