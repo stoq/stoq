@@ -32,12 +32,12 @@ from sqlobject.col import (BoolCol, BLOBCol, DateTimeCol, DecimalCol,
                            ForeignKey, IntCol, StringCol, UnicodeCol)
 from sqlobject.col import (Col, SOBoolCol, SODateTimeCol, SODecimalCol,
                            SOForeignKey, SOIntCol, SOStringCol, SOUnicodeCol)
-from sqlobject.converters import registerConverter, sqlrepr
-from sqlobject.dbconnection import DBAPI, Transaction
+from sqlobject.converters import registerConverter
+from sqlobject.dbconnection import Transaction
 from sqlobject.joins import MultipleJoin, SingleJoin
 from sqlobject.main import SQLObject
 from sqlobject.sqlbuilder import (AND, Alias, IN, INNERJOINOn, ISNOTNULL,
-                                  LEFTJOINOn, LIKE, OR, SQLExpression, Update,
+                                  LEFTJOINOn, LIKE, OR, Update,
                                   NoDefault, const, func, sqlIdentifier)
 from sqlobject.sresults import SelectResults
 from sqlobject.util.csvexport import export_csv
@@ -91,12 +91,9 @@ LIKE = LIKE
 const = const
 func = func
 OR = OR
-SQLExpression = SQLExpression
 sqlIdentifier = sqlIdentifier
-sqlrepr = sqlrepr
 
 # Connections
-DBAPI = DBAPI
 connectionForURI = connectionForURI
 Transaction = Transaction
 
