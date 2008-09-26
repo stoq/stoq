@@ -43,15 +43,14 @@ from stoqlib.database.runtime import (new_transaction,
                                       finish_transaction,
                                       get_current_user,
                                       get_current_branch)
-from stoqlib.domain.interfaces import (IDelivery, ISalesPerson, IProduct,
-                                       IService)
+from stoqlib.domain.interfaces import IDelivery, ISalesPerson
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.product import ProductAdaptToSellable, IStorable
+from stoqlib.domain.product import IStorable
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import Till
 from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TillError
@@ -106,7 +105,6 @@ class POSApp(AppWindow):
         self.param = sysparam(self.conn)
         self.max_results = self.param.MAX_SEARCH_RESULTS
         self.client_table = PersonAdaptToClient
-        self._product_table = ProductAdaptToSellable
         self._coupon = None
         self._printer = FiscalPrinterHelper(
             self.conn, parent=self.get_toplevel())
@@ -234,11 +232,11 @@ class POSApp(AppWindow):
         self._reset_quantity_proxy()
         self._update_totals()
 
-    @argcheck(ASellable, bool)
+    @argcheck(Sellable, bool)
     def _update_list(self, sellable, notify_on_entry=False):
         quantity = self.sellableitem_proxy.model.quantity
 
-        is_service = IService(sellable, None)
+        is_service = sellable.service
         if is_service and quantity > 1:
             # It's not a common operation to add more than one item at
             # a time, it's also problematic since you'd have to show
@@ -259,9 +257,9 @@ class POSApp(AppWindow):
         if not barcode:
             raise StoqlibError("_get_sellable needs a barcode")
 
-        return ASellable.selectOneBy(barcode=barcode,
-                                     status=ASellable.STATUS_AVAILABLE,
-                                     connection=self.conn)
+        return Sellable.selectOneBy(barcode=barcode,
+                                    status=Sellable.STATUS_AVAILABLE,
+                                    connection=self.conn)
 
     def _select_first_item(self):
         if len(self.sale_items):
@@ -299,9 +297,9 @@ class POSApp(AppWindow):
         has_products = False
         has_services = False
         for sale_item in self.sale_items:
-            if sale_item and IProduct(sale_item.sellable, None):
+            if sale_item and sale_item.sellable.product:
                 has_products = True
-            if sale_item and IService(sale_item.sellable, None):
+            if sale_item and sale_item.sellable.service:
                 has_services = True
             if has_products and has_services:
                 break
@@ -310,7 +308,7 @@ class POSApp(AppWindow):
         sale_item = self.sale_items.get_selected()
         can_edit = bool(
             sale_item is not None and
-            IService(sale_item.sellable, None) and
+            sale_item.sellable.service and
             sale_item.sellable != sysparam(self.conn).DELIVERY_SERVICE)
         self.edit_item_button.set_sensitive(can_edit)
 
@@ -344,7 +342,7 @@ class POSApp(AppWindow):
         if not sellable_view_item:
             return
 
-        sellable = ASellable.get(sellable_view_item.id, connection=self.conn)
+        sellable = Sellable.get(sellable_view_item.id, connection=self.conn)
         self._update_list(sellable)
         self.barcode.grab_focus()
 
@@ -356,7 +354,7 @@ class POSApp(AppWindow):
     def _get_deliverable_items(self):
         """Returns a list of sale items which can be delivered"""
         return [item for item in self.sale_items
-                        if IProduct(item.sellable, None) is not None]
+                        if item.sellable.product is not None]
 
     def _check_delivery_removed(self, sale_item):
         # If a delivery was removed, we need to remove all
@@ -379,7 +377,7 @@ class POSApp(AppWindow):
             self._run_advanced_search(search_str)
             return
 
-        if IProduct(sellable, None):
+        if sellable.product:
             # If the sellable has a weight unit specified and we have a scale
             # configured for this station, go and check what the scale says.
             if (sellable and sellable.unit and
@@ -430,7 +428,7 @@ class POSApp(AppWindow):
         self._coupon = None
 
     def _edit_sale_item(self, sale_item):
-        if IService(sale_item.sellable, None):
+        if sale_item.sellable.service:
             delivery_service = self.param.DELIVERY_SERVICE
             if sale_item.sellable == delivery_service:
                 self._edit_delivery()
