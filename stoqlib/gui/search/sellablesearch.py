@@ -34,9 +34,8 @@ from kiwi.ui.objectlist import Column
 from sqlobject.sqlbuilder import AND
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.product import Product
-from stoqlib.domain.interfaces import ISellable, IStorable
-from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.search import SearchEditor
@@ -86,7 +85,6 @@ class SellableSearch(SearchEditor):
         self.set_searchbar_labels(_('Show items matching:'))
         self.set_result_strings(*self.searchbar_result_strings)
         self.set_ok_label(self.footer_ok_label)
-        self.product_table = Product.getAdapterClass(ISellable)
         if search_str:
             self.set_searchbar_search_string(search_str)
             self.search.refresh()
@@ -103,7 +101,7 @@ class SellableSearch(SearchEditor):
                 raise TypeError("You need to specify a quantity "
                                 "when supplying an order")
             for item in sale_items:
-                if IStorable(item.sellable, None):
+                if IStorable(item.sellable.product, None):
                     quantity = self.current_sale_stock.get(item.sellable.id, 0)
                     quantity += item.quantity
                     self.current_sale_stock[item.sellable.id] = quantity
@@ -143,8 +141,8 @@ class SellableSearch(SearchEditor):
         self.set_edit_button_sensitive(bool(sellable_view))
         if not sellable_view:
             return
-        sellable = ASellable.get(sellable_view.id, self.conn)
-        if (IStorable(sellable, None) and
+        sellable = Sellable.get(sellable_view.id, self.conn)
+        if (IStorable(sellable.product, None) and
             self.quantity > self._get_available_stock(sellable_view)):
             self.ok_button.set_sensitive(False)
         else:
@@ -161,12 +159,12 @@ class SellableSearch(SearchEditor):
 
         if self._delivery_service :
             queries.append(AND(
-                SellableFullStockView.q.status == ASellable.STATUS_AVAILABLE,
+                SellableFullStockView.q.status == Sellable.STATUS_AVAILABLE,
                 SellableFullStockView.q.id != self._delivery_service.id))
         # If we select a quantity which is not an integer, filter out
         # sellables without a unit set
         if self.quantity is not None and (self.quantity % 1) != 0:
-            queries.append(ASellable.q.unitID != None)
+            queries.append(Sellable.q.unitID != None)
         branch = get_current_branch(conn)
         query = AND(*queries)
         return SellableFullStockView.select_by_branch(query, branch,

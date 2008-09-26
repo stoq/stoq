@@ -28,11 +28,10 @@
 from stoqdrivers.enum import TaxType
 
 from stoqlib.gui.slaves.sellableslave import TributarySituationSlave
-from stoqlib.domain.product import ProductAdaptToSellable
-from stoqlib.domain.sellable import SellableTaxConstant
+from stoqlib.domain.sellable import Sellable, SellableTaxConstant
 
 class ProductTributarySituationSlave(TributarySituationSlave):
-    model_type = ProductAdaptToSellable
+    model_type = Sellable
 
     def setup_combos(self):
         constants = SellableTaxConstant.select(connection=self.trans)

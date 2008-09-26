@@ -128,6 +128,7 @@ def _create_slave_test():
         'UserEditor': ' ',
         'TillClosingEditor': 'requires an open till',
         'InvoicePrinterEditor' : '',
+        'ServiceTributarySituationSlave': ' ',
         }
     namespace = dict(_test_slave=_test_slave)
 
@@ -145,7 +146,7 @@ def _create_slave_test():
         func.__name__ = name
         if tname in TODO:
             func.todo = TODO[tname]
-        if tname in SKIP:
+        elif tname in SKIP:
             func.skip = SKIP[tname]
         namespace[name] = func
 

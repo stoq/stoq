@@ -33,7 +33,7 @@ from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.parameter import ParameterData
-from stoqlib.domain.interfaces import ISupplier, IBranch, ISellable
+from stoqlib.domain.interfaces import ISupplier, IBranch
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.imageutils import ImageHelper
 from stoqlib.lib.translation import stoqlib_gettext
@@ -382,7 +382,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('DEFAULT_PAYMENT_DESTINATION',
                       u'payment.destination.PaymentDestination'),
         ParameterAttr('DELIVERY_SERVICE',
-                      u'service.ServiceAdaptToSellable'),
+                      u'sellable.Sellable'),
         ParameterAttr('DEFAULT_PRODUCT_TAX_CONSTANT',
                       u'sellable.SellableTaxConstant'),
         ]
@@ -591,22 +591,20 @@ class ParameterAccess(ClassInittableObject):
 
     def ensure_delivery_service(self):
         from stoqlib.domain.sellable import (BaseSellableInfo,
+                                             Sellable,
                                              SellableTaxConstant)
         from stoqlib.domain.service import Service
         key = "DELIVERY_SERVICE"
-        table = Service.getAdapterClass(ISellable)
-        if self.get_parameter_by_field(key, table):
+        if self.get_parameter_by_field(key, Sellable):
             return
-
-        service = Service(connection=self.conn)
 
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.conn)
         sellable_info = BaseSellableInfo(connection=self.conn,
                                          description=_(u'Delivery'))
-        sellable = service.addFacet(ISellable,
-                                    tax_constant=tax_constant,
-                                    base_sellable_info=sellable_info,
-                                    connection=self.conn)
+        sellable = Sellable(tax_constant=tax_constant,
+                            base_sellable_info=sellable_info,
+                            connection=self.conn)
+        service = Service(sellable=sellable, connection=self.conn)
         self._set_schema(key, sellable.id)
 
     def _ensure_cfop(self, key, description, code):

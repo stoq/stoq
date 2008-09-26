@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source
+## Copyright (C) 2007-2008 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -27,9 +27,11 @@ from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.service import Service
-from stoqlib.domain.sellable import BaseSellableInfo, SellableTaxConstant
-from stoqlib.domain.interfaces import ISellable
+from stoqlib.domain.sellable import (BaseSellableInfo,
+                                     Sellable,
+                                     SellableTaxConstant)
 from stoqlib.importers.csvimporter import CSVImporter
+
 
 class ServiceImporter(CSVImporter):
     fields = ['description',
@@ -46,12 +48,14 @@ class ServiceImporter(CSVImporter):
         assert self.tax_constant
 
     def process_one(self, data, fields, trans):
-        service = Service(connection=trans)
         sellable_info = BaseSellableInfo(connection=trans,
                                          description=data.description,
                                          price=data.price)
+        sellable = Sellable(connection=trans,
+                            base_sellable_info=sellable_info,
+                            tax_constant=self.tax_constant,
+                            cost=data.cost,
+                            barcode=data.barcode)
+        service = Service(sellable=sellable,
+                          connection=trans)
 
-        service.addFacet(ISellable, connection=trans,
-                         base_sellable_info=sellable_info,
-                         tax_constant=self.tax_constant,
-                         cost=data.cost, barcode=data.barcode)

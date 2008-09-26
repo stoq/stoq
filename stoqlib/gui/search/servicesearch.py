@@ -32,7 +32,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service, ServiceView
 from stoqlib.reporting.service import ServiceReport, ServicePriceReport
 from stoqlib.gui.base.columns import Column
@@ -86,7 +86,7 @@ class ServiceSearch(SearchEditor):
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'barcode'])
-        items = [(v, k) for k, v in ASellable.statuses.items()]
+        items = [(v, k) for k, v in Sellable.statuses.items()]
         items.insert(0, (_('Any'), None))
         service_filter = ComboSearchFilter(_('Show services with status'),
                                           items)

@@ -31,14 +31,15 @@ from decimal import Decimal
 
 from kiwi.datatypes import currency
 from sqlobject import DateTimeCol, UnicodeCol, IntCol, ForeignKey
+from sqlobject.joins import SingleJoin
 from sqlobject.sqlbuilder import AND, IN, OR
 from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import get_connection
-from stoqlib.domain.interfaces import ISellable, IDescribable
-from stoqlib.domain.base import Domain, InheritableModelAdapter
+from stoqlib.domain.interfaces import IDescribable
+from stoqlib.domain.base import Domain
 from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
                                 BarcodeDoesNotExists)
 from stoqlib.lib.parameters import sysparam
@@ -203,10 +204,35 @@ class BaseSellableInfo(Domain):
 
 
 
-class ASellable(InheritableModelAdapter):
-    """A sellable (a product or a service, for instance)."""
+class Sellable(Domain):
+    """ Sellable information of a certain item such a product
+    or a service. Note that sellable is not actually a concrete item but
+    only its reference as a sellable. Concrete items are created by
+    IContainer routines.
 
-    implements(ISellable, IDescribable)
+    @ivar status: status the sellable is in
+    @type status: enum
+    @ivar price: price of sellable
+    @type price: float
+    @ivar description: full description of sallable
+    @type description: string
+    @ivar category: a reference to category table
+    @type category: L{SellableCategory}
+    @ivar markup: ((cost/price)-1)*100
+    @type markup: float
+    @ivar cost: final cost of sellable
+    @type cost: float
+    @ivar max_discount: maximum discount allowed
+    @type max_discount: float
+    @ivar commission: commission to pay after selling this sellable
+    @type commission: float
+    @ivar on_sale_price: A special price used when we have a "on sale" state
+    @type on_sale_price: float
+    @ivar on_sale_start_date:
+    @ivar on_sale_end_date:
+    """
+
+    implements(IDescribable)
 
     (STATUS_AVAILABLE,
      STATUS_SOLD,
@@ -231,6 +257,10 @@ class ASellable(InheritableModelAdapter):
     category = ForeignKey('SellableCategory', default=None)
     tax_constant = ForeignKey('SellableTaxConstant', default=None)
 
+    product = SingleJoin('Product', joinColumn='sellable_id')
+    service = SingleJoin('Service', joinColumn='sellable_id')
+
+
     def _create(self, id, **kw):
         markup = None
         if not 'kw' in kw:
@@ -239,14 +269,15 @@ class ASellable(InheritableModelAdapter):
                 kw['on_sale_info'] = OnSaleInfo(connection=conn)
             # markup specification must to reflect in the sellable price, since
             # there is no such column -- but we can only change the price right
-            # after InheritableModelAdapter._create() get executed.
+            # after Domain._create() get executed.
             markup = kw.pop('markup', None)
-        InheritableModelAdapter._create(self, id, **kw)
+
+        Domain._create(self, id, **kw)
         # I'm not checking price in 'kw' because it can be specified through
         # base_sellable_info, and then we'll not update the price properly;
         # instead, I check for "self.price" that, at this point (after
-        # InheritableModelAdapter._create excecution) is already set and
-        # accessible through ASellable's price's accessor.
+        # Domain._create excecution) is already set and
+        # accessible through Sellable's price's accessor.
         if not self.price and ('cost' in kw and 'category' in kw):
             markup = markup or kw['category'].get_markup()
             cost = kw.get('cost', currency(0))
@@ -259,7 +290,7 @@ class ASellable(InheritableModelAdapter):
     #
 
     def _set_barcode(self, barcode):
-        if ASellable.check_barcode_exists(barcode):
+        if Sellable.check_barcode_exists(barcode):
             raise SellableError("The barcode %s already exists" % barcode)
         self._SO_set_barcode(barcode)
 
@@ -316,48 +347,85 @@ class ASellable(InheritableModelAdapter):
     def code(self):
         return self.id
 
-    #
-    # ISellable methods
-    #
+    def get_code(self):
+        return self.id
 
     def can_be_sold(self):
+        """Whether the sellable is available and can be sold.
+        @returns: if the item can be sold
+        @rtype: boolean
+        """
+        # FIXME: Perhaps this should be done elsewhere. Johan 2008-09-26
+        if self == sysparam(self.get_connection()).DELIVERY_SERVICE:
+            return True
         return self.status == self.STATUS_AVAILABLE
 
     def is_sold(self):
+        """Whether the sellable is sold.
+        @returns: if the item is sold
+        @rtype: boolean
+        """
         return self.status == self.STATUS_SOLD
 
     def sell(self):
+        """Sell the sellable"""
         if self.is_sold():
             raise ValueError('This sellable is already sold')
         self.status = self.STATUS_SOLD
 
     def cancel(self):
+        """Cancel the sellable"""
         if self.can_be_sold():
             raise ValueError('This sellable is already available')
         self.status = self.STATUS_AVAILABLE
 
     def can_sell(self):
+        """Make the object sellable"""
         # Identical implementation to cancel(), but it has a very different
         # use case, so we keep another method
         self.status = self.STATUS_AVAILABLE
 
     def get_code_str(self):
+        """Fetches the current code represented as a string.
+        @returns: code
+        @rtype: string
+        """
         return u"%05d" % self.id
 
     def get_short_description(self):
+        """Returns a short description of the current sale
+        @returns: description
+        @rtype: string
+        """
         return u'%s %s' % (self.id, self.base_sellable_info.description)
 
     def get_suggested_markup(self):
+        """Returns the suggested markup for the sellable
+        @returns: suggested markup
+        @rtype: decimal
+        """
         return self.category and self.category.get_markup()
 
     def get_unit_description(self):
+        """Returns the sellable category description
+        @returns: the category description or an empty string if no category
+        was set.
+        """
         return self.unit and self.unit.description or u""
 
     def get_category_description(self):
+        """Returns the description of this sellables category
+        If it's unset, return the constant from the category, if any
+        @returns: sellable category description
+        """
         category = self.category
         return category and category.description or u""
 
     def get_tax_constant(self):
+        """Returns the tax constant for this sellable.
+        If it's unset, return the constant from the category, if any
+        @returns: the tax constant or None if unset
+        """
         if self.tax_constant:
             return self.tax_constant
 
@@ -387,9 +455,9 @@ class ASellable(InheritableModelAdapter):
         if not barcode:
             return False
         conn = get_connection()
-        # XXX Do not use cls instead of ASellable here since SQLObject
+        # XXX Do not use cls instead of Sellable here since SQLObject
         # can deal properly with queries in inherited tables in this case
-        results = ASellable.selectBy(barcode=barcode, connection=conn)
+        results = Sellable.selectBy(barcode=barcode, connection=conn)
         return results.count()
 
     @classmethod
@@ -418,11 +486,9 @@ class ASellable(InheritableModelAdapter):
         query = OR(cls.get_available_sellables_query(conn),
                    cls.q.status == cls.STATUS_SOLD)
         if storable:
-            from stoqlib.domain.product import (Product, ProductAdaptToSellable,
-                                                ProductAdaptToStorable)
+            from stoqlib.domain.product import Product, ProductAdaptToStorable
             query = AND(query,
-                        ProductAdaptToSellable.q.id == cls.q.id,
-                        ProductAdaptToSellable.q._originalID == Product.q.id,
+                        Sellable.q.id == Product.q.sellableID,
                         ProductAdaptToStorable.q._originalID == Product.q.id)
 
         return cls.select(query, connection=conn)
@@ -438,7 +504,7 @@ class ASellable(InheritableModelAdapter):
     @classmethod
     def _get_sellables_by_barcode(cls, conn, barcode, extra_query):
         sellable = cls.selectOne(
-            AND(ASellable.q.barcode == barcode,
+            AND(Sellable.q.barcode == barcode,
                 extra_query), connection=conn)
         if sellable is None:
             raise BarcodeDoesNotExists(
@@ -457,7 +523,7 @@ class ASellable(InheritableModelAdapter):
         """
         return cls._get_sellables_by_barcode(
             conn, barcode,
-            ASellable.q.status == ASellable.STATUS_AVAILABLE)
+            Sellable.q.status == Sellable.STATUS_AVAILABLE)
 
     @classmethod
     def get_availables_and_sold_by_barcode(cls, conn, barcode):

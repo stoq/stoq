@@ -26,15 +26,14 @@
 from stoqdrivers.enum import TaxType
 
 from stoqlib.gui.slaves.sellableslave import TributarySituationSlave
-from stoqlib.domain.sellable import SellableTaxConstant
-from stoqlib.domain.service import ServiceAdaptToSellable
+from stoqlib.domain.sellable import Sellable, SellableTaxConstant
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
 class ServiceTributarySituationSlave(TributarySituationSlave):
-    model_type = ServiceAdaptToSellable
+    model_type = Sellable
 
     def setup_combos(self):
         service_tax = SellableTaxConstant.get_by_type(TaxType.SERVICE,

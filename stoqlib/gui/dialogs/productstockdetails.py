@@ -35,11 +35,11 @@ from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.domain.product import (ProductAdaptToSellable,
-                                    ProductRetentionHistory)
-from stoqlib.domain.interfaces import IStorable, IProduct
+from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.product import ProductRetentionHistory
 from stoqlib.domain.receiving import ReceivingOrderItem
 from stoqlib.domain.sale import SaleItem
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrderItem
 from stoqlib.lib.message import yesno
 
@@ -55,7 +55,7 @@ class ProductStockHistoryDialog(BaseEditor):
     title = _("Product History")
     hide_footer = True
     size = (700, 400)
-    model_type = ProductAdaptToSellable
+    model_type = Sellable
     gladefile = "ProductStockHistoryDialog"
 
     def __init__(self, conn, model, branch):
@@ -80,7 +80,7 @@ class ProductStockHistoryDialog(BaseEditor):
                                             connection=self.conn)
         self.transfer_list.add_list(list(items))
 
-        product = IProduct(self.model)
+        product = self.model.product
         items = ProductRetentionHistory.selectBy(product=product,
                                                  connection=self.conn)
         self.retention_list.add_list(list(items))

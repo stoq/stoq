@@ -57,7 +57,7 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.interfaces import ISalesPerson
 
 N_ = _ = stoqlib_gettext
@@ -255,7 +255,7 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
 
     def validate_step(self):
         number = self.model.certificate_number
-        if ASellable.check_barcode_exists(number):
+        if Sellable.check_barcode_exists(number):
             msg = _(u"The barcode %s already exists") % number
             self.certificate_number.set_invalid(msg)
             return False

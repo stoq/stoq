@@ -68,104 +68,6 @@ class IDescribable(Interface):
         """ Returns a description that identifies the object """
 
 
-class ISellable(Interface):
-    """ Represents the sellable information of a certain item such a product
-    or a service. Note that sellable is not actually a concrete item but
-    only its reference as a sellable. Concrete items are created by
-    IContainer routines.
-
-    @type status: enum
-    @type price: float
-    @type description: string
-    @type markup: float
-    @type cost: float
-    @type mas_discount: float
-    @type commission: float
-    @type on_sale_price: float
-    """
-
-    status = Attribute('status the sellable is in')
-    price = Attribute('price of sellable')
-    description = Attribute('full description of sallable')
-    category = Attribute('a reference to category table')
-    markup = Attribute('((cost/price)-1)*100')
-    cost = Attribute('final cost of sellable')
-    max_discount = Attribute('maximum discount allowed')
-    commission = Attribute('commission to pay after selling this sellable')
-
-    # If the sellable is on sale, here we have settings for that
-    on_sale_price = Attribute('A special price used when we have a '
-                              '"on sale" state')
-    # Define here the period that this sellabe will be on sale
-    on_sale_start_date = Attribute('datetime')
-    on_sale_end_date = Attribute('datetime')
-
-    def can_be_sold():
-        """Whether the sellable is available and can be sold.
-        @returns: if the item can be sold
-        @rtype: boolean
-        """
-
-    def is_sold():
-        """Whether the sellable is sold.
-        @returns: if the item is sold
-        @rtype: boolean
-        """
-
-    def sell():
-        """Sell the sellable"""
-
-    def cancel():
-        """Cancel the sellable"""
-
-    def can_sell():
-        """Make the object sellable"""
-
-    def get_code_str():
-        """Fetches the current code represented as a string.
-        @returns: code
-        @rtype: string
-        """
-
-    def get_short_description():
-        """Returns a short description of the current sale
-        @returns: description
-        @rtype: string
-        """
-
-    def get_suggested_markup():
-        """Returns the suggested markup for the sellable
-        @returns: suggested markup
-        @rtype: decimal
-        """
-
-    # FIXME: This should be moved to Product as part of #2729
-    def get_unit_description():
-        """Undocumented"""
-
-    def get_category_description():
-        """Returns the sellable category description
-        @returns: the category description or an empty string if no category
-        was set.
-        """
-
-    def get_tax_constant():
-        """Returns the tax constant for this sellable.
-        If it's unset, return the constant from the category, if any
-        @returns: the tax constant or None if unset
-        """
-
-
-class IProduct(Interface):
-    """A Product, this is mainly used as a marker.
-    """
-
-
-class IService(Interface):
-    """A Service, this is mainly used as a marker.
-    """
-
-
 class IStorable(Interface):
     """Storable documentation for a certain product or a sellable item.
     Each storable can have references to many concrete items which will
@@ -502,7 +404,7 @@ class IDelivery(Interface):
         """Gets all delivery items for a sellable
 
         @param sellable: a sellable
-        @type sellable: ASellable
+        @type sellable: Sellable
         @returns: a list of DeliveryItems
         """
 

@@ -29,9 +29,32 @@ Create a new transaction object:
 
     >>> trans = new_transaction()
 
+To create a unique code for a ProductAdaptToSellable object, I use datetime
+module
+
+    >>> import datetime
+    >>> product_barcode =  'test_code' + str(datetime.datetime.now())
+
+The BaseSellableInfo class stores basic information about sellables. This
+object is mandatory for every new sellable.
+
+    >>> from stoqlib.domain.sellable import BaseSellableInfo
+    >>> description = 'Red Mustang, 1960'
+    >>> sellable_info = BaseSellableInfo(connection=trans,
+    ...                                  description=description,
+    ...                                  price=1500.45)
+
+
+To create a sellable you need to pass in the sellable_info and the barcode.
+
+    >>> from stoqlib.domain.sellable import Sellable
+    >>> sellable = Sellable(base_sellable_info=sellable_info,
+    ...                     connection=trans,
+    ...                     barcode=product_barcode)
+
 Create a new instance of Product class:
 
-    >>> test_product = Product(connection=trans)
+    >>> test_product = Product(sellable=sellable, connection=trans)
 
 To clone a domain class instance, you need to use the clone method.
 
@@ -52,53 +75,5 @@ instance.
 
     >>> assert (test_product.get_connection() is
     ...         test_product_clone.get_connection())
-
-Import ISellable interface and verify if this Product instance has a
-component that implement this interface:
-
-    >>> from stoqlib.domain.interfaces import ISellable
-    >>> ISellable(test_product, None)
-
-To get the correct Adapter class that implements a given interface you have
-to call getAdapterClass method, and never import directly an Adapter class.
-
-    >>> adapter_class = test_product.getAdapterClass(ISellable)
-    >>> adapter_class
-    <class 'stoqlib.domain.product.ProductAdaptToSellable'>
-
-To register a new facet you can call registerFacet class method. But
-stoqlib/domain/product.py module alredy registry ProductAdaptToSeallble facet
-and thus this another call must raise an exception.
-
-    >>> Product.registerFacet(adapter_class, ISellable)
-    Traceback (most recent call last):
-    TypeError: Product does already have a facet for interface ISellable
-
-To create a unique code for a ProductAdaptToSellable object, I use datetime
-module
-
-    >>> import datetime
-    >>> product_barcode =  'test_code' + str(datetime.datetime.now())
-
-The BaseSellableInfo class stores basic information about sellables. This
-object is mandatory for every new sellable.
-
-    >>> from stoqlib.domain.sellable import BaseSellableInfo
-    >>> description = 'Red Mustang, 1960'
-    >>> sellable_info = BaseSellableInfo(connection=trans,
-    ...                                  description=description,
-    ...                                  price=1500.45)
-
-To plug an adapter to a given component you have to call addFacet
-method.
-
-    >>> adapter = test_product.addFacet(ISellable,
-    ...                                 base_sellable_info=sellable_info,
-    ...                                 connection=trans,
-    ...                                 barcode=product_barcode)
-
-Then you can check if the returned instance is of a correct adapter type:
-
-    >>> assert isinstance(adapter, adapter_class)
 
     >>> trans.close()

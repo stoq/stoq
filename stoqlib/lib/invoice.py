@@ -711,7 +711,7 @@ class F(InvoiceFieldDescription):
     def fetch(self):
         for sale_item in self.sale.products:
             yield '%014d / %s' % (
-                sale_item.sellable.id,
+                sale_item.sellable.get_code(),
                 sale_item.get_description())
 
 _add_invoice_field(F)

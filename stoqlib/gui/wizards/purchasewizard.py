@@ -42,7 +42,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
-from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.sellable import Sellable
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
@@ -178,7 +178,7 @@ class PurchaseItemStep(SellableItemStep):
     #
 
     def setup_sellable_entry(self):
-        sellables = ASellable.get_unblocked_sellables(self.conn, storable=True)
+        sellables = Sellable.get_unblocked_sellables(self.conn, storable=True)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         self.sellable.prefill(
             [(sellable.get_description(full_description=True), sellable)

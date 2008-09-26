@@ -46,7 +46,7 @@ _ = stoqlib_gettext
 class CommissionSource(Domain):
     """Commission Source object implementation
 
-    A CommissionSource is tied to a Category or ASellable,
+    A CommissionSource is tied to a Category or Sellable,
     it's used to determine the value of a commission for a certain
     item which is sold.
     There are two different commission values defined here, one
@@ -67,7 +67,7 @@ class CommissionSource(Domain):
     direct_value = DecimalCol()
     installments_value = DecimalCol()
     category = ForeignKey('SellableCategory', default=None)
-    asellable = ForeignKey('ASellable', default=None)
+    asellable = ForeignKey('Sellable', default=None)
 
 
 class Commission(Domain):

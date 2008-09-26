@@ -33,10 +33,10 @@ import gtk
 from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 
-from stoqlib.domain.interfaces import ISellable, IStorable
-from stoqlib.domain.sellable import BaseSellableInfo
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.person import PersonAdaptToSupplier
 from stoqlib.domain.product import ProductSupplierInfo, Product, ProductComponent
+from stoqlib.domain.sellable import BaseSellableInfo, Sellable
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import (BaseEditor, BaseEditorSlave,
@@ -63,7 +63,7 @@ class _TemporaryProductComponent(object):
         if self.component is not None:
             # keep this values in memory in order to speed up the
             # data access
-            sellable = ISellable(self.component)
+            sellable = self.component.sellable
             self.id = sellable.id
             self.description = sellable.get_description()
             self.category = sellable.get_category_description()
@@ -216,7 +216,7 @@ class ProductComponentSlave(BaseEditorSlave):
                     break
 
         if not self._can_add_component(product_component):
-            product_desc = ISellable(self._product).get_description()
+            product_desc = self._product.sellable.get_description()
             component_desc = product_component.description
             info(_(u'You can not add this product as component, since '
                     '%s is composed by %s' % (component_desc, product_desc)))
@@ -373,7 +373,7 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
         supplier = self.target_combo.read()
 
         if product.is_supplied_by(supplier):
-            product_desc = ISellable(self._product).get_description()
+            product_desc = self._product.sellable.get_description()
             info(_(u'%s is already supplied by %s' % (product_desc,
                                                       supplier.person.name)))
             return
@@ -445,7 +445,7 @@ class ProductEditor(SellableEditor):
 
         # XXX: tax_holder is a Brazil-specifc area
         tax_slave = ProductTributarySituationSlave(self.conn,
-                                                   ISellable(self.model))
+                                                   self.model.sellable)
         self.attach_slave("tax_holder", tax_slave)
 
         if self._has_composed_product:
@@ -458,12 +458,12 @@ class ProductEditor(SellableEditor):
         self.stock_lbl.show()
 
     def create_model(self, conn):
-        model = Product(connection=conn)
         sellable_info = BaseSellableInfo(connection=conn)
         tax_constant = sysparam(conn).DEFAULT_PRODUCT_TAX_CONSTANT
-        model.addFacet(ISellable, base_sellable_info=sellable_info,
-                       tax_constant=tax_constant,
-                       connection=conn)
+        sellable = Sellable(base_sellable_info=sellable_info,
+                            tax_constant=tax_constant,
+                            connection=conn)
+        model = Product(connection=conn, sellable=sellable)
         model.addFacet(IStorable, connection=conn)
         return model
 

@@ -25,13 +25,13 @@
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.domain.commission import CommissionSource
-from stoqlib.domain.sellable import ASellable, SellableCategory
+from stoqlib.domain.sellable import Sellable, SellableCategory
 
 class CommissionSlave(BaseEditorSlave):
     """A slave for a sellable(product or service) commission source"""
 
     gladefile = 'CommissionDataSlave'
-    model_type = ASellable
+    model_type = Sellable
     proxy_widgets = ('commission_check_btn',
                      'commission_spin',
                      'commission_inst_spin')

@@ -105,7 +105,7 @@ class TestPaymentGroup(DomainTest):
         # 45 / 6 => 7.50
         self.assertEquals(commissions[0].value, Decimal("7.50"))
         # the second payment represent 1/3 of the total amount
-        # 5% of 900: 45,00 * 1/3 => 15,00 
+        # 5% of 900: 45,00 * 1/3 => 15,00
         self.assertEquals(commissions[1].value, Decimal("15.00"))
         # the third payment represent 1/2 of the total amount
         # 45 / 2 => 22,50
@@ -123,9 +123,9 @@ class TestPaymentGroup(DomainTest):
                                   connection=self.trans)
 
         item = sale.add_sellable(sellable, quantity=3, price=300)
-        product = sellable.get_adapted()
+        product = sellable.product
         product.addFacet(IStorable, connection=self.trans)
-        storable = IStorable(sellable)
+        storable = IStorable(sellable.product)
         storable.increase_stock(100, get_current_branch(self.trans))
 
         sale.order()

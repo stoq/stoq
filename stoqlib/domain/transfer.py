@@ -47,7 +47,7 @@ class TransferOrderItem(Domain):
     @ivar transfer_order: The order this item belongs to
     @ivar quantity: The quantity to transfer
     """
-    sellable = ForeignKey('ASellable')
+    sellable = ForeignKey('Sellable')
     transfer_order = ForeignKey('TransferOrder')
     quantity = DecimalCol()
 
@@ -121,7 +121,7 @@ class TransferOrder(Domain):
         """Sends a product of this order to it's destination branch"""
         assert self.can_close()
 
-        storable = IStorable(transfer_item.sellable)
+        storable = IStorable(transfer_item.sellable.product)
         storable.decrease_stock(transfer_item.quantity, self.source_branch)
         conn = self.get_connection()
         ProductHistory.add_transfered_item(conn, self.source_branch,
@@ -137,7 +137,7 @@ class TransferOrder(Domain):
 
 
         for item in self.get_items():
-            storable = IStorable(item.sellable)
+            storable = IStorable(item.sellable.product)
             storable.increase_stock(item.quantity,
                                     self.destination_branch)
         self.status = TransferOrder.STATUS_CLOSED

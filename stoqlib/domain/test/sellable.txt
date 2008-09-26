@@ -6,8 +6,7 @@ Imports that will be used in this doctest:
 
     >>> from stoqlib.database.runtime import new_transaction
     >>> from stoqlib.domain.product import Product
-    >>> from stoqlib.domain.interfaces import ISellable
-    >>> from stoqlib.domain.sellable import ASellable
+    >>> from stoqlib.domain.sellable import Sellable
     >>> from stoqlib.domain.sellable import BaseSellableInfo
     >>> from stoqlib.domain.sellable import SellableCategory
 
@@ -46,14 +45,13 @@ SellableCategory
 Sellable
 ========
 
-    >>> product = Product(connection=trans)
-    >>> sellable = product.addFacet(ISellable,
-    ...                             base_sellable_info=info,
-    ...                             barcode='1138', connection=trans)
+    >>> sellable = Sellable(base_sellable_info=info,
+    ...                     barcode='1138', connection=trans)
 
     >>> sellable
-    <ProductAdaptToSellable ...>
+    <Sellable ...>
 
+    >>> product = Product(sellable=sellable, connection=trans)
 
 Properties: Markup, Price and Commission
 ========================================
@@ -107,7 +105,7 @@ Querying sellable status
 A newly created sellable is in the status sold, because there are no available
 items to sell:
 
-    >>> sellable.status == ASellable.STATUS_SOLD
+    >>> sellable.status == Sellable.STATUS_SOLD
     True
 
 Since there's no stock, then it cannot be sold:
@@ -142,16 +140,16 @@ Class methods:
 
 This will return a list of available sellables:
 
-    >>> sellable.status == ASellable.STATUS_AVAILABLE
+    >>> sellable.status == Sellable.STATUS_AVAILABLE
     True
     
-    >>> sellable in ASellable.get_available_sellables(trans)
+    >>> sellable in Sellable.get_available_sellables(trans)
     True
 
 Selling the sellable, removes it from the list of available sellables:
 
     >>> sellable.sell()
-    >>> sellable in ASellable.get_available_sellables(trans)
+    >>> sellable in Sellable.get_available_sellables(trans)
     False
 
 Also, we can get a list of available sellable by a list of categories:
@@ -159,52 +157,52 @@ Also, we can get a list of available sellable by a list of categories:
     >>> category = SellableCategory(description='Battery', connection=trans)
     >>> sellable.category = category
     >>> sellable.can_sell()
-    >>> sellable in ASellable.get_availables_by_categories(trans, [category])
+    >>> sellable in Sellable.get_availables_by_categories(trans, [category])
     True
 
 Unblocked means available or sold:
 
-    >>> sellable in ASellable.get_unblocked_sellables(trans)
+    >>> sellable in Sellable.get_unblocked_sellables(trans)
     True
 
     >> sellable.sell()
-    >>> sellable in ASellable.get_unblocked_sellables(trans)
+    >>> sellable in Sellable.get_unblocked_sellables(trans)
     True
 
 Blocking the sellable removes from the return value:
     
-    >>> sellable.status = ASellable.STATUS_BLOCKED
-    >>> sellable in ASellable.get_unblocked_sellables(trans)
+    >>> sellable.status = Sellable.STATUS_BLOCKED
+    >>> sellable in Sellable.get_unblocked_sellables(trans)
     False
     
 Sold means, are the ones which are in the state sold:
 
-    >>> ASellable.get_sold_sellables(trans).count()
-    0L
+    >>> Sellable.get_sold_sellables(trans).count()
+    5L
 
 We can query using a specific barcode:
 
     >>> sellable.barcode == '1138'
     True
     
-    >>> ASellable.get_availables_by_barcode(trans, '1138')
+    >>> Sellable.get_availables_by_barcode(trans, '1138')
     Traceback (most recent call last):
         ...
     BarcodeDoesNotExists: The sellable with barcode '1138' doesn't exists or is not available to be sold
 
     >>> sellable.cancel()
 
-    >>> sellable == ASellable.get_availables_by_barcode(trans, '1138')
+    >>> sellable == Sellable.get_availables_by_barcode(trans, '1138')
     True
 
 And for sold sellables using a specific barcode:
 
-    >>> sellable == ASellable.get_availables_and_sold_by_barcode(trans, '1138')
+    >>> sellable == Sellable.get_availables_and_sold_by_barcode(trans, '1138')
     True
 
-    >>> sellable.status = ASellable.STATUS_BLOCKED
+    >>> sellable.status = Sellable.STATUS_BLOCKED
 
-    >>> ASellable.get_availables_and_sold_by_barcode(trans, '1138')
+    >>> Sellable.get_availables_and_sold_by_barcode(trans, '1138')
     Traceback (most recent call last):
         ...
     BarcodeDoesNotExists: The sellable with barcode '1138' doesn't exists or is not available to be sold

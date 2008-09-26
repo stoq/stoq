@@ -37,10 +37,11 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.database.runtime import (get_current_branch, new_transaction,
                                       finish_transaction)
+from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import (PurchaseOrder, PurchaseItem, QuoteGroup,
                                      Quotation)
-from stoqlib.domain.interfaces import IBranch, IProduct
+from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.views import QuotationView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import SimpleListDialog
@@ -194,7 +195,7 @@ class QuoteSupplierStep(WizardEditorStep):
         for item in self.model.get_items():
             total_items += 1
             sellable = item.sellable
-            product = IProduct(sellable)
+            product = sellable.product
             for supplier_info in product.suppliers:
                 supplier = supplier_info.supplier
                 if supplier is None:
@@ -594,8 +595,11 @@ class QuotePurchaseWizard(BaseWizard):
         supplier = sysparam(conn).SUGGESTED_SUPPLIER
         branch = get_current_branch(conn)
         status = PurchaseOrder.ORDER_QUOTING
+        group = PaymentGroup(connection=conn)
         return PurchaseOrder(supplier=supplier, branch=branch, status=status,
-                             expected_receival_date=None, connection=conn)
+                             expected_receival_date=None,
+                             group=group,
+                             connection=conn)
 
     def _get_or_create_quote_group(self, order, conn):
         if order is not None:

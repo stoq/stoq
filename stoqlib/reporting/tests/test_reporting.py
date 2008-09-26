@@ -33,7 +33,7 @@ import stoqlib
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, CommissionView
-from stoqlib.domain.interfaces import ISellable, IStorable
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
                                           InCheckPaymentView,
@@ -202,7 +202,7 @@ class TestReport(DomainTest):
         sysparam(self.trans).SALE_PAY_COMMISSION_WHEN_CONFIRMED = 1
         salesperson = self.create_sales_person()
         product = self.create_product(price=100)
-        sellable = ISellable(product)
+        sellable = product.sellable
 
         sale = self.create_sale()
         sale.salesperson = salesperson

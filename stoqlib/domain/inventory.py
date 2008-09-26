@@ -30,7 +30,7 @@ from sqlobject.sqlbuilder import const, AND, ISNOTNULL
 
 from stoqlib.database.columns import DecimalCol
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IBranch,  IStorable, ISellable
+from stoqlib.domain.interfaces import IBranch,  IStorable
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import Person
 from stoqlib.lib.translation import stoqlib_gettext
@@ -101,23 +101,23 @@ class InventoryItem(Domain):
 
     def get_code(self):
         """Returns the product code"""
-        sellable = ISellable(self.product)
+        sellable = self.product.sellable
         return sellable.get_code_str()
 
     def get_description(self):
         """Returns the product description"""
-        sellable = ISellable(self.product)
+        sellable = self.product.sellable
         return sellable.get_description()
 
     def get_fiscal_description(self):
         """Returns a description of the product tax constant"""
-        sellable = ISellable(self.product)
+        sellable = self.product.sellable
         return sellable.tax_constant.get_description()
 
     def get_unit_description(self):
         """Returns the product unit description or None if it's not set
         """
-        sellable = ISellable(self.product)
+        sellable = self.product.sellable
         if sellable.unit:
             return sellable.unit.description
 

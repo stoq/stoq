@@ -17,9 +17,14 @@ Create a branch we can use:
     >>> from stoqlib.domain.exampledata import ExampleCreator
     >>> branch = ExampleCreator.create(trans, 'IBranch')
 
+Create a sellable we can use:
+
+    >>> from stoqlib.domain.exampledata import ExampleCreator
+    >>> sellable = ExampleCreator.create(trans, 'Sellable')
+
 Create a new Product and attach a storable facet.
 
-    >>> product = Product(connection=trans)
+    >>> product = Product(connection=trans, sellable=sellable)
     >>> storable = product.addFacet(IStorable, connection=trans)
 
 The storable needs to have it's stock created, let's do so

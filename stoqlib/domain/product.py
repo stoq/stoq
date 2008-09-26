@@ -37,9 +37,8 @@ from zope.interface import implements
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import (ISellable, IStorable, IContainer,
-                                       IBranch, IProduct)
-from stoqlib.domain.sellable import ASellable
+from stoqlib.domain.interfaces import (IStorable, IContainer,
+                                       IBranch)
 from stoqlib.exceptions import StockError, DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
@@ -119,8 +118,7 @@ class Product(Domain):
 
     suppliers = MultipleJoin('ProductSupplierInfo')
     image = BLOBCol(default='')
-
-    implements(IProduct)
+    sellable = ForeignKey('Sellable')
 
     #
     # Facet hooks
@@ -193,7 +191,7 @@ class Product(Domain):
 
         @returns: the production cost
         """
-        value = ISellable(self).cost
+        value = self.sellable.cost
         for component in self.get_components():
             value += (component.component.get_production_cost() *
                       component.quantity)
@@ -226,7 +224,7 @@ class ProductHistory(Domain):
     """Stores product history, such as sold, received, transfered and
     retained quantities.
     """
-    # We keep a reference to ASellable instead of Product because we want to
+    # We keep a reference to Sellable instead of Product because we want to
     # display the sellable id in the interface instead of the product id for
     # consistency with interfaces that display both
     quantity_sold = DecimalCol(default=None)
@@ -236,7 +234,7 @@ class ProductHistory(Domain):
     sold_date = DateTimeCol(default=None)
     received_date = DateTimeCol(default=None)
     branch = ForeignKey("PersonAdaptToBranch")
-    sellable = ForeignKey("ASellable")
+    sellable = ForeignKey("Sellable")
 
     @classmethod
     def add_sold_item(cls, conn, branch, product_sellable_item):
@@ -294,7 +292,7 @@ class ProductHistory(Domain):
         @param branch: the source branch
         @param retained_item: a ProductRetentionHistory instance
         """
-        cls(branch=branch, sellable=ISellable(retained_item.product),
+        cls(branch=branch, sellable=retained_item.product.sellable,
             quantity_retained=retained_item.quantity,
             received_date=datetime.date.today(),
             connection=conn)
@@ -314,14 +312,6 @@ class ProductStockItem(Domain):
 #
 # Adapters
 #
-
-
-class ProductAdaptToSellable(ASellable):
-    """A product implementation as a sellable facet."""
-
-    _inheritable = False
-
-Product.registerFacet(ProductAdaptToSellable, ISellable)
 
 
 class ProductAdaptToStorable(ModelAdapter):
@@ -415,7 +405,7 @@ class ProductAdaptToStorable(ModelAdapter):
 
         # If previously lacked quantity change the status of the sellable
         if not stock_item.quantity:
-            sellable = ISellable(self.product, None)
+            sellable = self.product.sellable
             if sellable:
                 # Rename see bug 2669
                 sellable.can_sell()
@@ -444,7 +434,7 @@ class ProductAdaptToStorable(ModelAdapter):
 
         # If we emptied the entire stock change the status of the sellable
         if not stock_item.quantity:
-            sellable = ISellable(self.product, None)
+            sellable = self.product.sellable
             if sellable:
                 # FIXME: rename sell() to something more useful which is not
                 #        confusing a sale and a sellable, Bug 2669
