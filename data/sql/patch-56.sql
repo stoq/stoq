@@ -15,6 +15,13 @@ UPDATE service
   FROM service_adapt_to_sellable
  WHERE service_adapt_to_sellable.original_id = service.id;
 DELETE FROM inheritable_model_adapter WHERE child_name = 'ServiceAdaptToSellable';
+UPDATE asellable
+   SET te_created_id = inheritable_model_adapter.te_created_id,
+       te_modified_id = inheritable_model_adapter.te_modified_id
+  FROM inheritable_model_adapter
+ WHERE inheritable_model_adapter.child_name = 'ASellable' AND
+       inheritable_model_adapter.id = asellable.id;
+DELETE FROM inheritable_model_adapter WHERE child_name = 'ASellable';
 
 ALTER TABLE asellable DROP COLUMN child_name;
 DROP TABLE product_adapt_to_sellable;
