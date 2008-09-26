@@ -23,9 +23,9 @@
 ##              Fabio Morbec <fabio@async.com.br>
 ##
 
-from sqlobject.viewable import Viewable
 from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn, OR
 
+from stoqlib.database.orm import Viewable
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.domain.product import (Product,

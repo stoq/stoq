@@ -26,10 +26,9 @@
 """Generate a Sintegra archive from the Stoqlib domain classes"""
 
 from kiwi.db.query import DateIntervalQueryState
-from kiwi.db.sqlobj import SQLObjectQueryExecuter
 
+from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import get_connection, get_current_branch
-
 from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.interfaces import ICompany
 from stoqlib.domain.person import (_PersonAdaptToCompany,
@@ -60,7 +59,7 @@ class StoqlibSintegraGenerator(object):
 
     def _date_query(self, search_table, column):
         sfilter = object()
-        executer = SQLObjectQueryExecuter(self.conn)
+        executer = ORMObjectQueryExecuter(self.conn)
         executer.set_filter_columns(sfilter, [column])
         executer.set_table(search_table)
         state = DateIntervalQueryState(filter=sfilter,

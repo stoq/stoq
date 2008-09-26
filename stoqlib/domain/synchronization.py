@@ -24,14 +24,14 @@
 ##
 """ BranchSynchronization domain class """
 
-from sqlobject import SQLObject
 from sqlobject.col import DateTimeCol, ForeignKey, StringCol
 
+from stoqlib.database.orm import ORMObject
 from stoqlib.domain.person import PersonAdaptToBranch
 
 PersonAdaptToBranch # pyflakes
 
-class BranchSynchronization(SQLObject):
+class BranchSynchronization(ORMObject):
     """Created once per branch. Contains a string which is a reference to a policy
     defined in stoqlib.database.policy and a timestamp which is updated each
     time a synchronization is done.

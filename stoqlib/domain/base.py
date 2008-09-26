@@ -25,27 +25,26 @@
 """ Base routines for domain modules """
 
 from kiwi.component import get_utility
-from sqlobject import SQLObject
 from sqlobject import ForeignKey, BoolCol
-from sqlobject.dbconnection import DBAPI, Transaction
 from sqlobject.converters import sqlrepr
 from sqlobject.sqlbuilder import SQLExpression, AND, const
 from zope.interface.interface import adapter_hooks
 
+from stoqlib.database.orm import ORMObject, DBAPI, Transaction
+from stoqlib.database.runtime import (StoqlibTransaction, get_current_user,
+                                      get_current_station)
 from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.domain.transaction import TransactionEntry
 from stoqlib.lib.component import Adapter, Adaptable
-from stoqlib.database.runtime import (StoqlibTransaction, get_current_user,
-                                      get_current_station)
 
 
 DATABASE_ENCODING = 'UTF-8'
 
 #
-# Persistent SQLObject adapters
+# Persistent ORMObject adapters
 #
 
-class SQLObjectAdapter(Adapter):
+class ORMObjectAdapter(Adapter):
     def __init__(self, adaptable, kwargs):
         Adapter.__init__(self, adaptable)
 
@@ -57,12 +56,12 @@ class SQLObjectAdapter(Adapter):
     def get_adapted(self):
         return self._original
 
-class AdaptableSQLObject(Adaptable):
+class AdaptableORMObject(Adaptable):
     @classmethod
     def registerFacet(cls, facet, *ifaces):
-        super(AdaptableSQLObject, cls).registerFacet(facet, *ifaces)
+        super(AdaptableORMObject, cls).registerFacet(facet, *ifaces)
 
-        if not issubclass(facet, SQLObject):
+        if not issubclass(facet, ORMObject):
             return
 
         # This might not be the best location to do this, but it has
@@ -75,7 +74,7 @@ class AdaptableSQLObject(Adaptable):
                                     forceDBName=True))
 
 
-def _adaptable_sqlobject_adapter_hook(iface, obj):
+def _adaptable_orm_adapter_hook(iface, obj):
     """A zope.interface hook used to fetch an adapter when calling
     iface(adaptable).
     It fetches the facet type and does a select in the database to
@@ -87,7 +86,7 @@ def _adaptable_sqlobject_adapter_hook(iface, obj):
 
     # We're only interested in Adaptable subclasses which defines
     # the getFacetType method
-    if not isinstance(obj, AdaptableSQLObject):
+    if not isinstance(obj, AdaptableORMObject):
         return
 
     try:
@@ -101,7 +100,7 @@ def _adaptable_sqlobject_adapter_hook(iface, obj):
         return
 
     # Persistant Adapters
-    if issubclass(facetType, SQLObjectAdapter):
+    if issubclass(facetType, ORMObjectAdapter):
         # FIXME: Use selectOneBy
         results = facetType.selectBy(
             _originalID=obj.id, connection=obj.get_connection())
@@ -112,7 +111,7 @@ def _adaptable_sqlobject_adapter_hook(iface, obj):
     else:
         return facetType(obj)
 
-adapter_hooks.append(_adaptable_sqlobject_adapter_hook)
+adapter_hooks.append(_adaptable_orm_adapter_hook)
 
 #
 # Abstract classes
@@ -131,7 +130,7 @@ class AbstractModel(object):
         return self.id == other.id
 
     #
-    # Overwriting some SQLObject methods
+    # Overwriting some ORMObject methods
     #
 
     def _create(self, *args, **kwargs):
@@ -225,7 +224,7 @@ class AbstractModel(object):
 
     def clone(self):
         """Get a persistent copy of an existent object. Remember that we can
-        not use copy because this approach will not activate SQLObject
+        not use copy because this approach will not activate ORMObject
         methods which allow creating persitent objects. We also always
         need a new id for each copied object.
         """
@@ -243,7 +242,7 @@ class AbstractModel(object):
     def get_connection(self):
         return self._connection
 
-class BaseDomain(AbstractModel, SQLObject):
+class BaseDomain(AbstractModel, ORMObject):
     """An abstract mixin class for domain classes"""
 
 
@@ -252,14 +251,14 @@ class BaseDomain(AbstractModel, SQLObject):
 #
 
 
-class Domain(BaseDomain, AdaptableSQLObject):
+class Domain(BaseDomain, AdaptableORMObject):
     """If you want to be able to extend a certain class with adapters or
     even just have a simple class without sublasses, this is the right
     choice.
     """
     def __init__(self, *args, **kwargs):
         BaseDomain.__init__(self, *args, **kwargs)
-        AdaptableSQLObject.__init__(self)
+        AdaptableORMObject.__init__(self)
 
     def _create(self, id, **kw):
         if not isinstance(self._connection, StoqlibTransaction):
@@ -279,7 +278,7 @@ class Domain(BaseDomain, AdaptableSQLObject):
         associated with the domain class cls.
 
         @param iface: interface
-        @returns: a SQLObject search result
+        @returns: a ORMObject search result
         """
         adapter = cls.getAdapterClass(iface)
         return adapter.select(*args, **kwargs)
@@ -290,7 +289,7 @@ class Domain(BaseDomain, AdaptableSQLObject):
         associated with the domain class cls.
 
         @param iface: interface
-        @returns: a SQLObject search result
+        @returns: a ORMObject search result
         """
         adapter = cls.getAdapterClass(iface)
         return adapter.selectBy(*args, **kwargs)
@@ -301,7 +300,7 @@ class Domain(BaseDomain, AdaptableSQLObject):
         associated with the domain class cls.
 
         @param iface: interface
-        @returns: None, object or raises SQLObjectMoreThanOneResultError
+        @returns: None, object or raises ORMObjectMoreThanOneResultError
         """
         adapter = cls.getAdapterClass(iface)
         return adapter.selectOne(*args, **kwargs)
@@ -312,7 +311,7 @@ class Domain(BaseDomain, AdaptableSQLObject):
         associated with the domain class cls.
 
         @param iface: interface
-        @returns: None, object or raises SQLObjectMoreThanOneResultError
+        @returns: None, object or raises ORMObjectMoreThanOneResultError
         """
         adapter = cls.getAdapterClass(iface)
         return adapter.selectOneBy(*args, **kwargs)
@@ -324,7 +323,7 @@ class Domain(BaseDomain, AdaptableSQLObject):
 
         @param iface: interface
         @param object_id: id of object
-        @returns: the SQLObject
+        @returns: the ORMObject
         """
         adapter = cls.getAdapterClass(iface)
         return adapter.get(object_id, **kwargs)
@@ -405,10 +404,10 @@ class BaseSQLView:
 #
 
 
-class ModelAdapter(BaseDomain, SQLObjectAdapter):
+class ModelAdapter(BaseDomain, ORMObjectAdapter):
 
     def __init__(self, _original=None, *args, **kwargs):
-        SQLObjectAdapter.__init__(self, _original, kwargs) # Modifies kwargs
+        ORMObjectAdapter.__init__(self, _original, kwargs) # Modifies kwargs
         BaseDomain.__init__(self, *args, **kwargs)
 
 

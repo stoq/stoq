@@ -30,7 +30,7 @@ from kiwi.ui.widgets.list import Column
 
 class ForeignKeyColumn(Column):
     """ForeignKeyColumn is a special column which is normally used together
-    with a foreign key, for an sqlobject table.
+    with a foreign key, for an sql table.
     """
     def __init__(self, table, *args, **kwargs):
         """Need an obj_field or adapted argument.

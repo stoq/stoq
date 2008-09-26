@@ -39,8 +39,8 @@ class IDatabaseSettings(Interface):
 
     def get_connection_uri():
         """
-        Gets a SQLObject connection URI.
-        @returns: a SQLObject connection URI.
+        Gets a ORM connection URI.
+        @returns: a ORM connection URI.
         """
 
 class IConnection(Interface):
@@ -68,14 +68,14 @@ class ITransaction(IConnection):
 
     def get(object):
         """Fetches an object within the transaction
-        @param obj: a SQLObject
+        @param obj: a ORMObject
         @returns: a reference to the same object within the transaction
         """
 
     def add_modified_object(object):
         """Adds a modified object to the transaction.
         It's used to update TransactionEntry to keep a log of all modified object
-        @param object: A SQLObject subclass which should be marked as modified
+        @param object: An ORMObject subclass which should be marked as modified
         """
 
     def savepoint(name):

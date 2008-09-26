@@ -22,10 +22,10 @@
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##
 
-from sqlobject import SQLObjectMoreThanOneResultError
 from sqlobject.col import IntCol
 from zope.interface import implements, Interface
 
+from stoqlib.database.orm import ORMObjectMoreThanOneResultError
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.base import Domain, ModelAdapter
 
@@ -100,7 +100,7 @@ class TestSelect(DomainTest):
         ding1 = Ding(connection=self.trans)
         self.assertEquals(Ding.selectOne(connection=self.trans), ding1)
         ding2 = Ding(connection=self.trans)
-        self.assertRaises(SQLObjectMoreThanOneResultError,
+        self.assertRaises(ORMObjectMoreThanOneResultError,
                           Ding.selectOne, connection=self.trans)
 
     def testSelectOneBy(self):
@@ -113,7 +113,7 @@ class TestSelect(DomainTest):
             ding1, Ding.selectOneBy(field=1, connection=self.trans))
         ding2 = Ding(connection=self.trans, field=1)
         self.assertRaises(
-            SQLObjectMoreThanOneResultError,
+            ORMObjectMoreThanOneResultError,
             Ding.selectOneBy, field=1, connection=self.trans)
 
     def testISelect(self):
@@ -133,7 +133,7 @@ class TestSelect(DomainTest):
         ding2.addFacet(IDong, connection=self.trans)
 
         self.assertRaises(
-            SQLObjectMoreThanOneResultError,
+            ORMObjectMoreThanOneResultError,
             Ding.iselectOne, IDong, connection=self.trans)
 
     def testISelectBy(self):
@@ -164,5 +164,5 @@ class TestSelect(DomainTest):
         ding2 = Ding(connection=self.trans)
         ding2.addFacet(IDong, facetfield=1, connection=self.trans)
         self.assertRaises(
-            SQLObjectMoreThanOneResultError,
+            ORMObjectMoreThanOneResultError,
             Ding.iselectOneBy, IDong, facetfield=1, connection=self.trans)

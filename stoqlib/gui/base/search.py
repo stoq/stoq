@@ -26,13 +26,12 @@
 
 import gtk
 from kiwi.argcheck import argcheck
-from kiwi.db.sqlobj import SQLObjectQueryExecuter
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.search import ComboSearchFilter, SearchSlaveDelegate
 from kiwi.utils import gsignal
-from sqlobject.main import SQLObject
 
+from stoqlib.database.orm import ORMObject, ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_connection, new_transaction,
                                       finish_transaction)
 from stoqlib.exceptions import DatabaseInconsistency
@@ -145,7 +144,7 @@ class SearchDialog(BasicDialog):
                                 title=title or self.title,
                                 size=self.size)
 
-        self.executer = SQLObjectQueryExecuter(get_connection())
+        self.executer = ORMObjectQueryExecuter(get_connection())
         self.set_table(self.search_table)
 
         self.enable_window_controls()
@@ -528,9 +527,9 @@ class SearchEditor(SearchDialog):
         retval = self.run_dialog(self.editor_class, self, trans,
                                  trans.get(obj))
         if finish_transaction(trans, retval):
-            # If the return value is an SQLObject, fetch it from
+            # If the return value is an ORMObject, fetch it from
             # the right connection
-            if isinstance(retval, SQLObject):
+            if isinstance(retval, ORMObject):
                 retval = type(retval).get(retval.id, connection=self.conn)
         trans.close()
         return retval

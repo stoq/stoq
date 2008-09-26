@@ -38,7 +38,7 @@ def _create_adapter_test():
     # are defined in an interface.
     #
     # Exceptions:
-    #    SQLObject create to_python/from_python
+    #    ORMObject create to_python/from_python
     #    Private methods, which has a name starting with _
     #    class methods
     #
@@ -59,7 +59,7 @@ def _create_adapter_test():
             if not inspect.ismethod(value):
                 continue
 
-            # Skip methods added by SQLObject
+            # Skip methods added by ORMObject
             if name in ('to_python', 'from_python'):
                 continue
 

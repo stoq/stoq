@@ -31,11 +31,11 @@ from decimal import Decimal
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from sqlobject.col import ForeignKey, UnicodeCol, DateTimeCol, IntCol
-from sqlobject.main import SQLObject
 from sqlobject.sqlbuilder import AND, const
 from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
+from stoqlib.database.orm import ORMObject
 from stoqlib.database.columns import PriceCol, DecimalCol
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
@@ -292,7 +292,7 @@ class Sale(ValidatableDomain):
     group = ForeignKey('PaymentGroup')
 
     #
-    # SQLObject hooks
+    # ORMObject hooks
     #
 
     def _create(self, id, **kw):
@@ -913,7 +913,7 @@ Sale.registerFacet(SaleAdaptToPaymentTransaction, IPaymentTransaction)
 #
 
 
-class SaleView(SQLObject, BaseSQLView):
+class SaleView(ORMObject, BaseSQLView):
     """Stores general informatios about sales"""
     coupon_id = IntCol()
     open_date = DateTimeCol()

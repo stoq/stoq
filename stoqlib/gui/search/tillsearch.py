@@ -32,18 +32,18 @@ from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from kiwi.ui.widgets.list import Column
-from sqlobject.viewable import Viewable
 from sqlobject.sqlbuilder import INNERJOINOn
 
+from stoqlib.database.orm import Viewable
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.search import SearchDialog
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
+from stoqlib.gui.base.search import SearchDialog
+from stoqlib.lib.translation import stoqlib_gettext
 
 
 _ = stoqlib_gettext

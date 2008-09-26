@@ -30,18 +30,17 @@ import datetime
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from zope.interface import implements
-from sqlobject import (ForeignKey, IntCol, DateTimeCol, UnicodeCol,
-                       SQLObject)
+from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from sqlobject.sqlbuilder import AND, INNERJOINOn, LEFTJOINOn, const
-from sqlobject.viewable import Viewable
 
+from stoqlib.database.orm import ORMObject, Viewable
 from stoqlib.database.columns import PriceCol, DecimalCol
-from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.domain.base import ValidatableDomain, Domain, BaseSQLView
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,
                                        IDescribable)
 from stoqlib.domain.sellable import Sellable, BaseSellableInfo, SellableUnit
+from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
@@ -590,7 +589,7 @@ class PurchaseItemView(Viewable):
 # Views
 #
 
-class PurchaseOrderView(SQLObject, BaseSQLView):
+class PurchaseOrderView(ORMObject, BaseSQLView):
     """General information about purchase orders"""
     status = IntCol()
     open_date = DateTimeCol()

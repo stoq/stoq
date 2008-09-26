@@ -28,9 +28,9 @@
 import datetime
 
 from kiwi.datatypes import currency
-from sqlobject.main import SQLObjectMoreThanOneResultError
 from sqlobject.sqlbuilder import AND
 
+from stoqlib.database.orm import ORMObjectMoreThanOneResultError
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
@@ -438,7 +438,7 @@ class TestEmployee(_PersonFacetTest, DomainTest):
         history_validated = False
         try:
             employee.get_active_role_history()
-        except SQLObjectMoreThanOneResultError, e:
+        except ORMObjectMoreThanOneResultError, e:
             history_validated = True
         assert history_validated
 

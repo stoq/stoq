@@ -32,19 +32,18 @@ import subprocess
 from dateutil.parser import parse
 from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
-from sqlobject import SQLObjectNotFound
-from sqlobject.main import SQLObject
 from sqlobject.sqlbuilder import const
 
 from stoqlib.database.admin import create_base_schema
 from stoqlib.database.database import dump_table
 from stoqlib.database.interfaces import (ICurrentBranchStation, ICurrentBranch,
                                          IDatabaseSettings)
-from stoqlib.database.policy import get_policy_by_name
+from stoqlib.database.orm import ORMObject, ORMObjectNotFound
 from stoqlib.database.runtime import (get_connection, new_transaction,
                                       get_current_branch)
+from stoqlib.database.policy import get_policy_by_name
 from stoqlib.database.tables import get_table_type_by_name
-from stoqlib.domain.base import AdaptableSQLObject
+from stoqlib.domain.base import AdaptableORMObject
 from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.synchronization import BranchSynchronization
@@ -81,11 +80,11 @@ def _collect_table(tables, table):
 
     tables.append(table)
 
-    if issubclass(table, AdaptableSQLObject):
+    if issubclass(table, AdaptableORMObject):
         # FIXME: Remove this and put the adapter tables in
         #        the policy list directly instead
         for facet_type in table.getFacetTypes():
-            if issubclass(facet_type, SQLObject):
+            if issubclass(facet_type, ORMObject):
                 _collect_table(tables, facet_type)
 
 def get_tables(policy, pfilter=None):
@@ -571,7 +570,7 @@ class SynchronizationClient(object):
                 tem_id = long(tem_ids)
                 try:
                     obj = table.get(obj_id, connection=trans)
-                except SQLObjectNotFound:
+                except ORMObjectNotFound:
                     obj = None
 
                 entry_attrs = [('te_time', timestamp_),

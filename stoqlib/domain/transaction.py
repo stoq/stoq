@@ -24,11 +24,12 @@
 ##
 """ Transaction domain class """
 
-from sqlobject import SQLObject
 from sqlobject.col import DateTimeCol, IntCol
 
+from stoqlib.database.orm import ORMObject
 
-class TransactionEntry(SQLObject):
+
+class TransactionEntry(ORMObject):
     """
     A TransactionEntry keeps track of state associated with a database
     transaction. It's main use case is to know information about the system when
@@ -45,7 +46,7 @@ class TransactionEntry(SQLObject):
 
     te_time = DateTimeCol(notNone=True)
 
-    # This is used by base classes in Stoq, SQLObject does not allow
+    # This is used by base classes in Stoq, ORMObject does not allow
     # us to use circular dependencies so instead we define them
     # as IntCol and implement our own ForeignKey like wrappers below
 

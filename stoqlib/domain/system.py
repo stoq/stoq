@@ -25,12 +25,12 @@
 ##
 """ Routines for system data management"""
 
-from sqlobject import SQLObject
 from sqlobject import DateTimeCol, IntCol
 
+from stoqlib.database.orm import ORMObject
 from stoqlib.domain.base import AbstractModel
 
-class SystemTable(SQLObject, AbstractModel):
+class SystemTable(ORMObject, AbstractModel):
     """Stores information about database schema migration
 
     I{update}: the date when the database schema was updated

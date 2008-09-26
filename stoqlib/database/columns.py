@@ -23,7 +23,7 @@
 ##                  Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 ##
-""" SQLObject columns and helpers """
+""" ORMObject columns and helpers """
 
 from decimal import Decimal
 
