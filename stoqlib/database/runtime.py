@@ -29,7 +29,6 @@ import sys
 from kiwi.component import get_utility, provide_utility, implements
 from kiwi.log import Logger
 from sqlobject.dbconnection import Transaction
-from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.main import SQLObject
 from sqlobject.sqlbuilder import sqlIdentifier, const, Update, IN
 
@@ -107,7 +106,7 @@ class StoqlibTransaction(Transaction):
         if obj is None:
             return None
 
-        if not isinstance(obj, (SQLObject, InheritableSQLObject)):
+        if not isinstance(obj, SQLObject):
             raise TypeError("obj must be a SQLObject, not %r" % (obj,))
 
         table = type(obj)

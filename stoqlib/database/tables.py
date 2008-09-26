@@ -45,7 +45,6 @@ log = Logger('stoqlib.database.tables')
 _tables = [
      ('transaction', ["TransactionEntry"]),
      ('system', ["SystemTable"]),
-     ('base', ["InheritableModelAdapter", "InheritableModel"]),
      ('parameter', ["ParameterData"]),
      ('account', ["BankAccount", "Bank"]),
      ('profile', ["UserProfile", "ProfileSettings"]),

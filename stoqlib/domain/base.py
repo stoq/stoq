@@ -27,7 +27,6 @@
 from kiwi.component import get_utility
 from sqlobject import SQLObject
 from sqlobject import ForeignKey, BoolCol
-from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.dbconnection import DBAPI, Transaction
 from sqlobject.converters import sqlrepr
 from sqlobject.sqlbuilder import SQLExpression, AND, const
@@ -63,7 +62,7 @@ class AdaptableSQLObject(Adaptable):
     def registerFacet(cls, facet, *ifaces):
         super(AdaptableSQLObject, cls).registerFacet(facet, *ifaces)
 
-        if not issubclass(facet, (SQLObject, InheritableSQLObject)):
+        if not issubclass(facet, SQLObject):
             return
 
         # This might not be the best location to do this, but it has
@@ -212,11 +211,6 @@ class AbstractModel(object):
 
     @classmethod
     def _check_connection(cls, connection):
-        if connection is None and issubclass(cls, InheritableSQLObject):
-            # For an uncertain reason SQLObject doesn't send child
-            # connection to its parent. the interesting thing is that
-            # the connection is actually properly set on the instances
-            return
         if connection is None:
             raise ValueError("You must provide a valid connection "
                              "argument for class %s" % cls)
@@ -236,12 +230,6 @@ class AbstractModel(object):
         need a new id for each copied object.
         """
         columns = self.sqlmeta.columnList
-
-        if isinstance(self, InheritableSQLObject):
-            # This is an InheritableSQLObject object and we also
-            # need to copy data from the parent.
-            # XXX SQLObject should provide a get_parent method.
-            columns += self.sqlmeta.parentClass.sqlmeta.columnList
 
         kwargs = {}
         for column in columns:
@@ -408,16 +396,6 @@ class ValidatableDomain(Domain):
 
 
 
-class InheritableModel(AbstractModel, InheritableSQLObject, AdaptableSQLObject):
-    """Subclasses of InheritableModel are able to be base classes of other
-    classes in a database level. Adapters are also allowed for these classes
-    """
-    def __init__(self, *args, **kwargs):
-        AbstractModel.__init__(self)
-        InheritableSQLObject.__init__(self, *args, **kwargs)
-        AdaptableSQLObject.__init__(self)
-
-
 class BaseSQLView:
     """A base marker class for SQL Views"""
 
@@ -434,15 +412,7 @@ class ModelAdapter(BaseDomain, SQLObjectAdapter):
         BaseDomain.__init__(self, *args, **kwargs)
 
 
-class InheritableModelAdapter(AbstractModel, InheritableSQLObject, SQLObjectAdapter):
-
-    def __init__(self, _original=None, *args, **kwargs):
-        AbstractModel.__init__(self)
-        SQLObjectAdapter.__init__(self, _original, kwargs) # Modifies kwargs
-        InheritableSQLObject.__init__(self, *args, **kwargs)
-
-for klass in (InheritableModel, ValidatableDomain, Domain, ModelAdapter,
-              InheritableModelAdapter):
+for klass in (ValidatableDomain, Domain, ModelAdapter):
     sqlmeta = klass.sqlmeta
     sqlmeta.cacheValues = False
     sqlmeta.addColumn(ForeignKey('TransactionEntry', name='te_created',
