@@ -27,6 +27,8 @@ UPDATE apayment_method
   FROM inheritable_model
  WHERE inheritable_model.child_name = 'APaymentMethod' AND
        inheritable_model.id = apayment_method.id;
+SELECT setval('apayment_method_id_seq', (SELECT last_value from inheritable_model_id_seq));
+
 UPDATE apayment_method SET method_name = 'bill'  WHERE child_name = 'BillPM';
 UPDATE apayment_method SET method_name = 'card' WHERE child_name = 'CardPM';
 UPDATE apayment_method SET method_name = 'check' WHERE child_name = 'CheckPM';

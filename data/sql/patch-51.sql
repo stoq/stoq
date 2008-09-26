@@ -15,6 +15,7 @@ UPDATE payment_destination
  WHERE inheritable_model.child_name = 'PaymentDestination' AND
        inheritable_model.id = payment_destination.id;;
 DELETE FROM inheritable_model WHERE child_name = 'PaymentDestination';
+SELECT setval('payment_destination_id_seq', (SELECT last_value from inheritable_model_id_seq));
 
 --
 -- 2) Migrate branch_id from store_destination to payment_destination
