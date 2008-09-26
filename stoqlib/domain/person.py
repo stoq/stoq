@@ -74,14 +74,10 @@ import datetime
 from sqlobject import (DateTimeCol, UnicodeCol, IntCol,
                        ForeignKey, MultipleJoin, BoolCol)
 from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn
-from sqlobject.viewable import Viewable
-
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import raw_phone_number, format_phone_number
-from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.address import Address
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
@@ -91,6 +87,9 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IDescribable, IPersonFacet)
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.transaction import TransactionEntry
+from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.validators import raw_phone_number, format_phone_number
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -223,7 +222,7 @@ class Person(Domain):
         return self.get_main_address()
 
     #
-    # SQLObject setters
+    # ORMObject setters
     #
 
     def _set_phone_number(self, value):

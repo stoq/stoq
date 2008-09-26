@@ -45,7 +45,7 @@ class PaymentMethodEditor(BaseEditor):
     def __init__(self, conn, model):
         """
         Create a new PaymentMethodEditor object.
-        @param conn: an sqlobject Transaction instance
+        @param conn: an orm Transaction instance
         @param model: an adapter of PaymentMethod which means a subclass of
                       PaymentMethod
         """

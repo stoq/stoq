@@ -25,10 +25,11 @@
 
 import datetime
 
-from sqlobject.sqlbuilder import AND
-
 from kiwi.datatypes import converter
+from sqlobject.sqlbuilder import AND
+from sqlobject.sqlbuilder import Alias, LEFTJOINOn, INNERJOINOn
 
+from stoqlib.database.orm import Viewable
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.group import PaymentGroup
@@ -42,8 +43,6 @@ from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.lib.translation import stoqlib_gettext
 
-from sqlobject.sqlbuilder import Alias, LEFTJOINOn, INNERJOINOn
-from sqlobject.viewable import Viewable
 
 _ = stoqlib_gettext
 

@@ -28,7 +28,7 @@ Stoqlib uses the adapter pattern U{http://en.wikipedia.org/wiki/Adapter_pattern}
 to solve a specific set of problems, most noticeable roles for Persons.
 
 First we need an object that we can adapt into something else.
-It needs to be a subclass of AdaptableSQLObject:
+It needs to be a subclass of AdaptableORMObject:
 
     >>> from stoqlib.lib.component import Adaptable
     >>> class Bike(Adaptable):

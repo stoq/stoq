@@ -30,11 +30,11 @@ from decimal import Decimal
 import gtk
 
 from kiwi.datatypes import currency, ValidationError
-from kiwi.db.sqlobj import SQLObjectQueryExecuter
 from kiwi.python import Settable
 from kiwi.ui.search import SearchSlaveDelegate, DateSearchFilter
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_branch, new_transaction,
                                       finish_transaction)
 from stoqlib.domain.payment.group import PaymentGroup
@@ -318,7 +318,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         self.search = SearchSlaveDelegate(self._get_columns())
         self.attach_slave('search_group_holder', self.search)
 
-        executer = SQLObjectQueryExecuter()
+        executer = ORMObjectQueryExecuter()
         executer.set_table(QuotationView)
         self.search.set_query_executer(executer)
 

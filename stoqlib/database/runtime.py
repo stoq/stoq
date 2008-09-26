@@ -28,13 +28,12 @@ import sys
 
 from kiwi.component import get_utility, provide_utility, implements
 from kiwi.log import Logger
-from sqlobject.dbconnection import Transaction
-from sqlobject.main import SQLObject
 from sqlobject.sqlbuilder import sqlIdentifier, const, Update, IN
 
 from stoqlib.database.interfaces import (
     IDatabaseSettings, IConnection, ITransaction, ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
+from stoqlib.database.orm import ORMObject, Transaction
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import error, yesno, info
 from stoqlib.lib.translation import stoqlib_gettext
@@ -74,7 +73,7 @@ class StoqlibTransaction(Transaction):
                              where=IN(const.id, modified_obj_ids))
                 self.query(self.sqlrepr(sql))
 
-                # We changed the object behind SQLObjects back, sync them
+                # We changed the object behind ORMObjects back, sync them
                 for modified_te in modified_te_objs:
                     modified_te.sync()
 
@@ -106,8 +105,8 @@ class StoqlibTransaction(Transaction):
         if obj is None:
             return None
 
-        if not isinstance(obj, SQLObject):
-            raise TypeError("obj must be a SQLObject, not %r" % (obj,))
+        if not isinstance(obj, ORMObject):
+            raise TypeError("obj must be a ORMObject, not %r" % (obj,))
 
         table = type(obj)
         return table.get(obj.id, connection=self)

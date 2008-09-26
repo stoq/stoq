@@ -100,7 +100,7 @@ class Payment(Domain):
                                        self.statuses[self.status]))
 
     #
-    # SQLObject hooks
+    # ORMObject hooks
     #
 
     def _create(self, id, **kw):

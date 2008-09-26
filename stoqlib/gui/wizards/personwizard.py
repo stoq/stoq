@@ -24,14 +24,12 @@
 ##
 """ Person role wizards definition """
 
-from sqlobject.dbconnection import Transaction
 from sqlobject.sqlbuilder import OR, LIKE
 from kiwi.python import Settable
 from kiwi.argcheck import argcheck
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_phone_number, raw_phone_number
+from stoqlib.database.orm import Transaction
 from stoqlib.database.runtime import rollback_and_begin
 from stoqlib.domain.person import Person
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
@@ -43,6 +41,8 @@ from stoqlib.gui.editors.personeditor import (BranchEditor,
                                               EmployeeEditor,
                                               UserEditor,
                                               CreditProviderEditor)
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import format_phone_number, raw_phone_number
 
 
 _ = stoqlib_gettext

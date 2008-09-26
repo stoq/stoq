@@ -32,11 +32,11 @@ import sys
 import socket
 
 from kiwi.log import Logger
-from sqlobject import connectionForURI
 from zope.interface import implements
 
 from stoqlib.database.exceptions import OperationalError
 from stoqlib.database.interfaces import IDatabaseSettings
+from stoqlib.database.orm import connectionForURI
 from stoqlib.exceptions import ConfigError, DatabaseError
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -50,7 +50,7 @@ class DatabaseSettings(object):
     """DatabaseSettings contains all the information required to connect to
     a database, such as hostname, username and password.
 
-    It also provides helpers on top of SQLObject to return a database
+    It also provides helpers on top of ORMObject to return a database
     connection using the settings inside the object.
     """
 
@@ -129,7 +129,7 @@ class DatabaseSettings(object):
 
     def get_connection_uri(self):
         """Returns a uri representing the current database settings.
-        It's used by SQLObject to connect to a database.
+        It's used by the orm to connect to a database.
         @returns: a string like postgresql://username@localhost/dbname
         """
         return self._build_uri(self.dbname)

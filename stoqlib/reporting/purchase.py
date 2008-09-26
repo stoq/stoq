@@ -199,7 +199,7 @@ class PurchaseOrderReport(BaseStoqReport):
     def _setup_items_table(self):
         items = self._order.get_items()
         # XXX: Stoqlib Reporting try to apply len() on the table data, but
-        # Purchase's get_items returns a SelectResult instance (SQLObject)
+        # Purchase's get_items returns a SelectResult instance (ORMObject)
         # that not supports the len operator.
         self._add_ordered_items_table(list(self._order.get_items()))
 

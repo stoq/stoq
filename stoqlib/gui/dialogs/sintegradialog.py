@@ -27,13 +27,13 @@
 import datetime
 
 from dateutil.relativedelta import relativedelta
-from kiwi.db.sqlobj import SQLObjectQueryExecuter
 from kiwi.ui.dialogs import save
 from kiwi.ui.search import DateSearchFilter
 
+from stoqlib.database.orm import ORMObjectQueryExecuter
+from stoqlib.domain.system import SystemTable
 from stoqlib.gui.base.dialogs import ConfirmDialog
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.domain.system import SystemTable
 from stoqlib.lib.message import warning
 from stoqlib.lib.sintegra import SintegraError
 from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
@@ -128,7 +128,7 @@ class SintegraDialog(ConfirmDialog):
                 name, start, end, position=0)
 
     def _date_filter_query(self, search_table, column):
-        executer = SQLObjectQueryExecuter(self.conn)
+        executer = ORMObjectQueryExecuter(self.conn)
         executer.set_filter_columns(self.date_filter, [column])
         executer.set_table(search_table)
         return executer.search([self.date_filter.get_state()])

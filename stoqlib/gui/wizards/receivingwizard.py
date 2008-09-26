@@ -31,10 +31,10 @@ from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import currency
-from kiwi.db.sqlobj import SQLObjectQueryExecuter
 from kiwi.ui.search import SearchSlaveDelegate, DateSearchFilter
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import get_current_user
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
@@ -77,7 +77,7 @@ class PurchaseSelectionStep(WizardEditorStep):
     def _create_search(self):
         self.search = SearchSlaveDelegate(self._get_columns())
         self.attach_slave('searchbar_holder', self.search)
-        self.executer = SQLObjectQueryExecuter()
+        self.executer = ORMObjectQueryExecuter()
         self.search.set_query_executer(self.executer)
         self.executer.set_table(PurchaseOrderView)
         self.executer.add_query_callback(self._get_extra_query)

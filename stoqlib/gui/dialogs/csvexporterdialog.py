@@ -29,11 +29,7 @@ import gtk
 from kiwi.python import Settable
 from kiwi.ui.objectlist import ObjectList
 
-from sqlobject import SQLObject
-from sqlobject.sresults import SelectResults
-from sqlobject.util.csvexport import export_csv
-from sqlobject.viewable import Viewable
-
+from stoqlib.database.orm import ORMObject, SelectResults, export_csv, Viewable
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.csvexporter import objectlist2csv
 from stoqlib.lib.translation import stoqlib_gettext
@@ -55,8 +51,8 @@ class CSVExporterDialog(BaseEditor):
         @param results:
         """
         if not results or isinstance(results, SelectResults):
-            if not issubclass(klass, (SQLObject, Viewable)):
-                raise TypeError("The klass argument should be a SQLObject or "
+            if not issubclass(klass, (ORMObject, Viewable)):
+                raise TypeError("The klass argument should be a ORMObject or "
                                 "Viewable class or subclass, got '%s' instead" %
                                 klass.__class__.__name__)
 

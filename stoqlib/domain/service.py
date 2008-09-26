@@ -29,12 +29,12 @@
 from sqlobject import BLOBCol
 from sqlobject.col import ForeignKey
 from sqlobject.sqlbuilder import AND, INNERJOINOn, LEFTJOINOn
-from sqlobject.viewable import Viewable
 
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.sellable import (BaseSellableInfo, Sellable,
                                      SellableUnit)
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 

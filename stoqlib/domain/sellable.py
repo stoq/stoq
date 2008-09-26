@@ -286,7 +286,7 @@ class Sellable(Domain):
             self.commission = self.category.get_commission()
 
     #
-    # SQLObject setters
+    # ORMObject setters
     #
 
     def _set_barcode(self, barcode):
@@ -455,7 +455,7 @@ class Sellable(Domain):
         if not barcode:
             return False
         conn = get_connection()
-        # XXX Do not use cls instead of Sellable here since SQLObject
+        # XXX Do not use cls instead of Sellable here since ORMObject
         # can deal properly with queries in inherited tables in this case
         results = Sellable.selectBy(barcode=barcode, connection=conn)
         return results.count()
@@ -518,7 +518,7 @@ class Sellable(Domain):
         A sellable that can be sold can have only one possible
         status: STATUS_AVAILABLE
 
-        @param conn: a sqlobject Transaction instance
+        @param conn: a orm Transaction instance
         @param barcode: a string representing a sellable barcode
         """
         return cls._get_sellables_by_barcode(
@@ -531,7 +531,7 @@ class Sellable(Domain):
         can be sold.  Here we will get sellables with the following
         statuses: STATUS_AVAILABLE, STATUS_SOLD
 
-        @param conn: a sqlobject Transaction instance
+        @param conn: a orm Transaction instance
         @param barcode: a string representing a sellable barcode
         """
         statuses = [cls.STATUS_AVAILABLE, cls.STATUS_SOLD]
@@ -542,7 +542,7 @@ class Sellable(Domain):
                                      include_uncategorized=True):
         """Returns the available sellables by a list of categories.
 
-        @param conn: a sqlobject Transaction instance
+        @param conn: a orm Transaction instance
         @param categories: a list of SellableCategory instances
         @param include_uncategorized: whether or not include the sellables
             without a category

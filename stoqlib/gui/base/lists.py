@@ -191,7 +191,7 @@ class ModelListDialog(gtk.Dialog, ModelListSlave):
     """A dialog which displays all items in a table and allows you to
     add and remove items from it
 
-    @cvar model_type: an SQLObject for the table we want to modify, must
+    @cvar model_type: an ORMObject for the table we want to modify, must
       implement the IDescribable interface.
     @cvar columns: a list of L{kiwi.ui.objectlist.Columns}
     @cvar editor_class: class used to edit the model, must take the

@@ -33,9 +33,9 @@ import datetime
 from sqlobject import (UnicodeCol, DateTimeCol, ForeignKey, IntCol,
                        BoolCol)
 from sqlobject.sqlbuilder import AND, LEFTJOINOn, const
-from sqlobject.viewable import Viewable
 from zope.interface import implements
 
+from stoqlib.database.orm import Viewable
 from stoqlib.database.columns import PriceCol
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
