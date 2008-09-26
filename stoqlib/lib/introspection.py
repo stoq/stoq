@@ -34,8 +34,7 @@ from kiwi.python import namedAny
 from zope.interface import implementedBy
 from zope.interface.interface import InterfaceClass
 
-from stoqlib.domain.base import (InheritableModelAdapter, ModelAdapter,
-                                 SQLObjectAdapter)
+from stoqlib.domain.base import ModelAdapter, SQLObjectAdapter
 
 from stoqlib.lib.component import Adapter
 
@@ -83,8 +82,7 @@ def get_all_adapters():
         if not issubclass(klass, Adapter):
             continue
         # Skip bases classes
-        if klass in (Adapter, SQLObjectAdapter,
-                     InheritableModelAdapter, ModelAdapter):
+        if klass in [Adapter, SQLObjectAdapter, ModelAdapter]:
             continue
 
         yield klass
