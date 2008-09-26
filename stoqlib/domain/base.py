@@ -24,16 +24,13 @@
 ##
 """ Base routines for domain modules """
 
-from kiwi.component import get_utility
 from zope.interface.interface import adapter_hooks
 
 from stoqlib.database.orm import ForeignKey, BoolCol
-from stoqlib.database.orm import sqlrepr
-from stoqlib.database.orm import SQLExpression, AND, const
-from stoqlib.database.orm import ORMObject, DBAPI, Transaction
+from stoqlib.database.orm import AND, const
+from stoqlib.database.orm import ORMObject
 from stoqlib.database.runtime import (StoqlibTransaction, get_current_user,
                                       get_current_station)
-from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.domain.transaction import TransactionEntry
 from stoqlib.lib.component import Adapter, Adaptable
 
@@ -55,6 +52,7 @@ class ORMObjectAdapter(Adapter):
 
     def get_adapted(self):
         return self._original
+
 
 class AdaptableORMObject(Adaptable):
     @classmethod
@@ -149,53 +147,6 @@ class AbstractModel(object):
                 connection=conn)
         super(AbstractModel, self)._create(*args, **kwargs)
 
-    @classmethod
-    def select(cls, clause=None, connection=None, **kwargs):
-        cls._check_connection(connection)
-        if clause and not isinstance(clause, SQLExpression):
-            raise TypeError("Stoqlib doesn't support non sqlbuilder queries")
-        clause_repr = sqlrepr(clause, get_utility(IDatabaseSettings).rdbms)
-        if isinstance(clause_repr, unicode):
-            clause = clause_repr.encode(DATABASE_ENCODING)
-        return super(AbstractModel, cls).select(clause=clause,
-                                                connection=connection,
-                                                **kwargs)
-
-    @classmethod
-    def selectBy(cls, connection=None, **kw):
-        cls._check_connection(connection)
-        for field_name, search_str in kw.items():
-            if not isinstance(search_str, unicode):
-                continue
-            kw[field_name] = search_str.encode(DATABASE_ENCODING)
-        return super(AbstractModel, cls).selectBy(connection=connection,
-                                                  **kw)
-
-    @classmethod
-    def selectOne(cls, clause=None, clauseTables=None, lazyColumns=False,
-                  connection=None):
-        cls._check_connection(connection)
-        if clause and not isinstance(clause, SQLExpression):
-            raise TypeError("Stoqlib doesn't support non sqlbuilder queries")
-        clause_repr = sqlrepr(clause, get_utility(IDatabaseSettings).rdbms)
-        if isinstance(clause_repr, unicode):
-            clause = clause_repr.encode(DATABASE_ENCODING)
-        return super(AbstractModel, cls).selectOne(
-            clause=clause,
-            clauseTables=clauseTables,
-            lazyColumns=lazyColumns,
-            connection=connection)
-
-    @classmethod
-    def selectOneBy(cls, clause=None, connection=None, **kw):
-        cls._check_connection(connection)
-        for field_name, search_str in kw.items():
-            if not isinstance(search_str, unicode):
-                continue
-            kw[field_name] = search_str.encode(DATABASE_ENCODING)
-        return super(AbstractModel, cls).selectOneBy(connection=connection,
-                                                     **kw)
-
     def _SO_setValue(self, name, value, from_, to):
         super(AbstractModel, self)._SO_setValue(name, value, from_, to)
 
@@ -203,20 +154,6 @@ class AbstractModel(object):
             connection = self._connection
             if isinstance(connection, StoqlibTransaction):
                 connection.add_modified_object(self)
-
-    #
-    # Classmethods
-    #
-
-    @classmethod
-    def _check_connection(cls, connection):
-        if connection is None:
-            raise ValueError("You must provide a valid connection "
-                             "argument for class %s" % cls)
-        if not isinstance(connection, (Transaction, DBAPI)):
-            raise TypeError("The argument connection must be of type "
-                            "Transaction, or DBAPI got %r instead"
-                            % connection)
 
     #
     # General methods
@@ -373,8 +310,6 @@ class ValidatableDomain(Domain):
     @classmethod
     def selectOne(cls, clause=None, clauseTables=None, lazyColumns=False,
                   connection=None):
-        if clause and not isinstance(clause, SQLExpression):
-            raise TypeError("Stoqlib doesn't support non sqlbuilder queries")
         # This make queries in stoqlib applications consistent
         query = cls.q._is_valid_model == True
         if clause:
