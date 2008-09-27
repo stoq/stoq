@@ -33,7 +33,6 @@ import sys
 from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from stoqlib.database.admin import ensure_admin_user, initialize_system
-from stoqlib.database.orm import sqlhub
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.runtime import get_connection, set_current_branch_station, new_transaction
 from stoqlib.domain.profile import UserProfile
@@ -97,19 +96,17 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     from stoq.lib.applist import ApplicationDescriptions
     provide_utility(IApplicationDescriptions, ApplicationDescriptions())
 
-    try:
-        conn = get_connection()
-    except DatabaseError, e:
-        error(e.short, e.msg)
-
     if register_station:
+        try:
+            conn = get_connection()
+        except DatabaseError, e:
+            error(e.short, e.msg)
         set_current_branch_station(conn, socket.gethostname())
-
-    migration = StoqlibSchemaMigration()
 
     if check_schema:
         _check_tables()
 
+        migration = StoqlibSchemaMigration()
         if not migration.check_uptodate():
             error(_("Database schema error"),
                   _("The database schema has changed, but the database has "
@@ -122,6 +119,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         manager.activate_plugins()
 
         if check_schema:
+            migration = StoqlibSchemaMigration()
             if not migration.check_plugins():
                 error(_("Database schema error"),
                       _("The database schema has changed, but the database has "
@@ -137,8 +135,8 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
             install_global_keyhandler(keysyms.F12, introspect_slaves)
 
         if options.sqldebug:
+            conn = get_connection()
             conn.debug = True
-    sqlhub.threadConnection = conn
 
 def clean_database(config, options=None):
     """Clean the database
