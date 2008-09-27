@@ -68,8 +68,7 @@ class AdaptableORMObject(Adaptable):
         # load the schema definition from postgres dynamically.
         if not hasattr(facet, '_original'):
             facet.sqlmeta.addColumn(ForeignKey(cls.__name__,
-                                    name='_original',
-                                    forceDBName=True))
+                                    name='_originalID'))
 
 
 def _adaptable_orm_adapter_hook(iface, obj):
