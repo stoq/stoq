@@ -36,7 +36,7 @@ from stoqlib.database.runtime import (get_current_station, get_connection,
 from stoqlib.domain.events import (SaleConfirmEvent, TillAddCashEvent,
                                    TillRemoveCashEvent, TillOpenEvent,
                                    TillCloseEvent, TillAddTillEntryEvent)
-from stoqlib.domain.person import PersonAdaptToIndividual, _PersonAdaptToCompany
+from stoqlib.domain.person import PersonAdaptToIndividual, PersonAdaptToCompany
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
 from stoqlib.exceptions import DeviceError
@@ -434,7 +434,7 @@ class ECFUI(object):
         if isinstance(client_role, PersonAdaptToIndividual):
             document_type = FiscalSaleHistory.TYPE_CPF
             document = client_role.cpf
-        elif isinstance(client_role, _PersonAdaptToCompany):
+        elif isinstance(client_role, PersonAdaptToCompany):
             document_type = FiscalSaleHistory.TYPE_CNPJ
             document = client_role.cnpj
         else:
