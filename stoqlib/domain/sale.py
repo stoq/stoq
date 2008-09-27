@@ -521,7 +521,7 @@ class Sale(ValidatableDomain):
         """Fetches the client role
 
         @returns: the client role (a PersonAdaptToIndividual or a
-        _PersonAdaptToCompany) instance or None if the sale haven't a client.
+        PersonAdaptToCompany) instance or None if the sale haven't a client.
         """
         if not self.client:
             return None

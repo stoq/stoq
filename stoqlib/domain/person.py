@@ -386,8 +386,6 @@ class PersonAdaptToIndividual(PersonAdapter):
                   information.
     """
 
-    class sqlmeta:
-        table = 'person_adapt_to_individual'
     implements(IIndividual)
 
     (STATUS_SINGLE,
@@ -443,7 +441,7 @@ class PersonAdaptToIndividual(PersonAdapter):
 
 Person.registerFacet(PersonAdaptToIndividual, IIndividual)
 
-class _PersonAdaptToCompany(PersonAdapter):
+class PersonAdaptToCompany(PersonAdapter):
     """A company facet of a person.
 
     B{Important attributes}:
@@ -452,9 +450,6 @@ class _PersonAdaptToCompany(PersonAdapter):
         - I{fancy_name}: Represents the fancy name of a company.
     """
     implements(ICompany)
-
-    class sqlmeta:
-        table = 'person_adapt_to_company'
 
     # Cnpj and state_registry are
     # Brazil-specific information.
@@ -483,7 +478,7 @@ class _PersonAdaptToCompany(PersonAdapter):
         return int(''.join([c for c in self.state_registry
                                   if c in '1234567890']))
 
-Person.registerFacet(_PersonAdaptToCompany, ICompany)
+Person.registerFacet(PersonAdaptToCompany, ICompany)
 
 class PersonAdaptToClient(PersonAdapter):
     """A client facet of a person."""
@@ -949,8 +944,8 @@ class SupplierView(Viewable):
         id=Person.q.id,
         name=Person.q.name,
         phone_number=Person.q.phone_number,
-        fancy_name=_PersonAdaptToCompany.q.fancy_name,
-        cnpj=_PersonAdaptToCompany.q.cnpj,
+        fancy_name=PersonAdaptToCompany.q.fancy_name,
+        cnpj=PersonAdaptToCompany.q.cnpj,
         supplier_id=PersonAdaptToSupplier.q.id,
         status=PersonAdaptToSupplier.q.status,
         )
@@ -958,8 +953,8 @@ class SupplierView(Viewable):
     joins = [
         INNERJOINOn(None, PersonAdaptToSupplier,
                    Person.q.id == PersonAdaptToSupplier.q._originalID),
-        LEFTJOINOn(None, _PersonAdaptToCompany,
-                   Person.q.id == _PersonAdaptToCompany.q._originalID),
+        LEFTJOINOn(None, PersonAdaptToCompany,
+                   Person.q.id == PersonAdaptToCompany.q._originalID),
         ]
 
     def get_status_string(self):
