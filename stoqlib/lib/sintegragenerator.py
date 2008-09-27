@@ -31,7 +31,7 @@ from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import get_connection, get_current_branch
 from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.interfaces import ICompany
-from stoqlib.domain.person import (_PersonAdaptToCompany,
+from stoqlib.domain.person import (PersonAdaptToCompany,
                                    PersonAdaptToIndividual)
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.sale import Sale
@@ -115,7 +115,7 @@ class StoqlibSintegraGenerator(object):
     def _get_cnpj_or_cpf(self, receiving_order):
         person = receiving_order.supplier.person
         company = person.has_individual_or_company_facets()
-        if isinstance(company, _PersonAdaptToCompany):
+        if isinstance(company, PersonAdaptToCompany):
             if not company.cnpj:
                 raise SintegraError(
                     _("You need to have a CNPJ number set on Company %s" % (
@@ -129,7 +129,7 @@ class StoqlibSintegraGenerator(object):
 
     def _get_state_registry(self, receiving_order):
         company = receiving_order.supplier.person.has_individual_or_company_facets()
-        if isinstance(company, _PersonAdaptToCompany):
+        if isinstance(company, PersonAdaptToCompany):
             if not company.state_registry:
                 raise SintegraError(
                     _("You need to have a State Registry set on Company %s" % (
