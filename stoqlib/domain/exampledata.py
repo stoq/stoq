@@ -137,7 +137,7 @@ class ExampleCreator(object):
             'Person': self.create_person,
             'PersonAdaptToBankBranch': self.create_bank_branch,
             'PersonAdaptToBranch': self.create_branch,
-            '_PersonAdaptToCompany': self.create_company,
+            'PersonAdaptToCompany': self.create_company,
             'PersonAdaptToClient': self.create_client,
             'PersonAdaptToCreditProvider': self.create_credit_provider,
             'PersonAdaptToEmployee': self.create_employee,
