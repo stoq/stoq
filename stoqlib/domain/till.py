@@ -31,7 +31,7 @@ import datetime
 from kiwi.datatypes import currency
 from kiwi.log import Logger
 
-from stoqlib.database.columns import PriceCol
+from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import IntCol, DateTimeCol, ForeignKey, UnicodeCol
 from stoqlib.database.orm import AND, const
 from stoqlib.database.runtime import get_current_station

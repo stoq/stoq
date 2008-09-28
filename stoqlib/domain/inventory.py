@@ -25,7 +25,7 @@
 
 import datetime
 
-from stoqlib.database.columns import DecimalCol
+from stoqlib.database.orm import DecimalCol
 from stoqlib.database.orm import ForeignKey, DateTimeCol, IntCol, UnicodeCol
 from stoqlib.database.orm import const, AND, ISNOTNULL
 from stoqlib.domain.base import Domain

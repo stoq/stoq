@@ -31,7 +31,7 @@ from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
 from zope.interface import implements
 
-from stoqlib.database.columns import DecimalCol
+from stoqlib.database.orm import DecimalCol
 from stoqlib.database.orm import IntCol, ForeignKey, BoolCol, StringCol, UnicodeCol
 from stoqlib.database.orm import const
 from stoqlib.domain.base import Domain

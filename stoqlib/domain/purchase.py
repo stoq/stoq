@@ -34,7 +34,7 @@ from zope.interface import implements
 from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn, const
 from stoqlib.database.orm import ORMObject, Viewable
-from stoqlib.database.columns import PriceCol, DecimalCol
+from stoqlib.database.orm import PriceCol, DecimalCol
 from stoqlib.domain.base import ValidatableDomain, Domain, BaseSQLView
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,

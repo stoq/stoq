@@ -27,7 +27,7 @@ Commission management
 
 from decimal import Decimal
 
-from stoqlib.database.columns import DecimalCol
+from stoqlib.database.orm import DecimalCol
 from stoqlib.database.orm import ForeignKey, IntCol
 from stoqlib.database.orm import INNERJOINOn
 from stoqlib.database.orm import Viewable

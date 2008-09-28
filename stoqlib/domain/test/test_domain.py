@@ -28,7 +28,7 @@ from decimal import Decimal
 from kiwi.datatypes import currency
 from twisted.trial.unittest import SkipTest
 
-from stoqlib.database.columns import AbstractDecimalCol, SOPriceCol
+from stoqlib.database.orm import AbstractDecimalCol, SOPriceCol
 from stoqlib.database.orm import (SOBoolCol, SODateTimeCol, SOForeignKey, SOIntCol,
                                   SOStringCol, SOUnicodeCol)
 from stoqlib.database.orm import NoDefault

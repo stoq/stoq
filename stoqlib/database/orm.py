@@ -24,11 +24,14 @@
 
 """Simple ORM abstraction layer"""
 
-from kiwi.db.sqlobj import SQLObjectQueryExecuter
+from decimal import Decimal
 
-from sqlobject import (connectionForURI, sqlhub, SQLObjectNotFound,
+from formencode.validators import Validator
+from kiwi.datatypes import currency
+from kiwi.db.sqlobj import SQLObjectQueryExecuter
+from sqlobject import (connectionForURI, SQLObjectNotFound,
                        SQLObjectMoreThanOneResultError)
-from sqlobject.col import (BoolCol, BLOBCol, DateTimeCol, DecimalCol,
+from sqlobject.col import (BoolCol, BLOBCol, DateTimeCol,
                            ForeignKey, IntCol, StringCol, UnicodeCol)
 from sqlobject.col import (Col, SOBoolCol, SODateTimeCol, SODecimalCol,
                            SOForeignKey, SOIntCol, SOStringCol, SOUnicodeCol)
@@ -43,11 +46,60 @@ from sqlobject.sresults import SelectResults
 from sqlobject.util.csvexport import export_csv
 from sqlobject.viewable import Viewable
 
+from stoqlib.lib.defaults import DECIMAL_PRECISION, DECIMAL_SIZE
+
+
+# Currency
+
+def _CurrencyConverter(value, db):
+    return str(Decimal(value))
+registerConverter(currency, _CurrencyConverter)
+
+# Decimal
+
+class AbstractDecimalCol(SODecimalCol):
+    def __init__(self, **kw):
+        kw['size'] = DECIMAL_SIZE
+        kw['precision'] = DECIMAL_PRECISION
+        SODecimalCol.__init__(self, **kw)
+
+class DecimalCol(Col):
+    baseClass = AbstractDecimalCol
+
+
+# Price
+
+class _PriceValidator(Validator):
+
+    def to_python(self, value, state):
+        # Do not allow empty strings or None Values
+        if value is not None:
+            if not isinstance(value, Decimal):
+                value = Decimal(str(value))
+            return currency(value)
+
+    def from_python(self, value, state):
+        return value
+
+
+class SOPriceCol(AbstractDecimalCol):
+    def createValidators(self):
+        return [_PriceValidator()] + super(SOPriceCol, self).createValidators()
+
+class PriceCol(DecimalCol):
+    baseClass = SOPriceCol
+
 
 # MainObject
 
 class ORMObject(SQLObject):
     pass
+
+
+def orm_enable_debugging():
+    from stoqlib.database.runtime import get_connection
+    conn = get_connection()
+    conn.debug = True
 
 # Exceptions
 
@@ -62,7 +114,6 @@ ORMObjectQueryExecuter = SQLObjectQueryExecuter
 BLOBCol = BLOBCol
 BoolCol = BoolCol
 DateTimeCol = DateTimeCol
-DecimalCol = DecimalCol
 ForeignKey = ForeignKey
 IntCol = IntCol
 MultipleJoin = MultipleJoin
@@ -99,9 +150,7 @@ Transaction = Transaction
 
 # Misc
 export_csv = export_csv
-registerConverter = registerConverter
 SelectResults = SelectResults
 NoDefault = NoDefault
 Update = Update
 Viewable = Viewable
-sqlhub = sqlhub

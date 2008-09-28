@@ -73,7 +73,7 @@ import datetime
 
 from zope.interface import implements
 
-from stoqlib.database.columns import PriceCol, DecimalCol
+from stoqlib.database.orm import PriceCol, DecimalCol
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
                                   ForeignKey, MultipleJoin, BoolCol)
 from stoqlib.database.orm import func, AND, INNERJOINOn, LEFTJOINOn
