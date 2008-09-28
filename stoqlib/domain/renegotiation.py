@@ -26,7 +26,7 @@
 
 from kiwi.datatypes import currency
 
-from stoqlib.database.columns import PriceCol
+from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import ForeignKey, UnicodeCol, IntCol
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain

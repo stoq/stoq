@@ -33,7 +33,7 @@ from kiwi.datatypes import currency
 from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
-from stoqlib.database.columns import PriceCol, DecimalCol
+from stoqlib.database.orm import PriceCol, DecimalCol
 from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol, ForeignKey
 from stoqlib.database.orm import SingleJoin
 from stoqlib.database.orm import AND, IN, OR

@@ -30,7 +30,7 @@ import datetime
 from kiwi.datatypes import currency
 from zope.interface import implements
 
-from stoqlib.database.columns import PriceCol
+from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import IntCol, DateTimeCol, UnicodeCol, ForeignKey
 from stoqlib.database.orm import const
 from stoqlib.domain.base import Domain, ModelAdapter

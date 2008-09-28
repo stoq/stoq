@@ -31,7 +31,7 @@ from stoqdrivers.printers.cheque import ChequePrinter
 from stoqdrivers.scales.scales import Scale
 from stoqdrivers.serialbase import SerialPort
 
-from stoqlib.database.columns import DecimalCol
+from stoqlib.database.orm import DecimalCol
 from stoqlib.database.orm import (UnicodeCol, IntCol, ForeignKey, BoolCol,
                            DateTimeCol, StringCol)
 from stoqlib.database.orm import MultipleJoin

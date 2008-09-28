@@ -31,7 +31,7 @@ from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
-from stoqlib.database.columns import PriceCol, DecimalCol
+from stoqlib.database.orm import PriceCol, DecimalCol
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, MultipleJoin, DateTimeCol,
                                   BoolCol, BLOBCol)
 from stoqlib.database.orm import const

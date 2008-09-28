@@ -36,7 +36,7 @@ from stoqlib.database.orm import (UnicodeCol, DateTimeCol, ForeignKey, IntCol,
                                   BoolCol)
 from stoqlib.database.orm import AND, LEFTJOINOn, const
 from stoqlib.database.orm import Viewable
-from stoqlib.database.columns import PriceCol
+from stoqlib.database.orm import PriceCol
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IReversal
