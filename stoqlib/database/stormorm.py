@@ -76,14 +76,11 @@ class PriceCol(DecimalCol):
         return currency(value)
 
 
-class const:
-    NOW = type('NOW', (NamedFunc,), {'name': 'NOW'})
+class FuncClass(object):
+    def __getattr__(self, attr):
+        return type(attr, (NamedFunc,), {'name': attr})
 
-
-class func:
-    UPPER = type('UPPER', (NamedFunc,), {'name': 'UPPER'})
-    SUM = type('SUM', (NamedFunc,), {'name': 'SUM'})
-
+const = func = FuncClass()
 
 class Transaction(object):
     def __init__(self, conn):
