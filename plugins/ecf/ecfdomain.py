@@ -29,7 +29,7 @@ from stoqdrivers.serialbase import SerialPort
 from stoqdrivers.enum import PaymentMethodType, UnitType, TaxType
 from zope.interface import implements
 
-from stoqlib.database.columns import DecimalCol
+from stoqlib.database.orm import DecimalCol
 from stoqlib.database.orm import (BoolCol, StringCol, ForeignKey, IntCol,
                                   UnicodeCol, BLOBCol, DateTimeCol)
 from stoqlib.database.orm import MultipleJoin
