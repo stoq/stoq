@@ -53,6 +53,11 @@ def get_all_classes(package):
             if 'test/' in filename:
                 continue
 
+            # FIXME: Temporary fix until storm is installed properly
+            #        in the buildbot environment
+            if 'stormorm' in filename:
+                continue
+
             # stoqlib/domain/base.py -> stoqlib.domain.base
             modulename = filename[:-3].replace(os.path.sep, '.')
             module = namedAny(modulename)
