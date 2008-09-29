@@ -34,7 +34,7 @@ from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
 from stoqdrivers.enum import TaxType, UnitType
 
-from stoqlib.database.orm import LIKE, func
+from stoqlib.database.orm import LIKE, const
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.purchase import PurchaseItem
@@ -264,7 +264,7 @@ class SellableEditor(BaseEditor):
             self._sellable.unit = None
         else:
             if unit.unit_index == UnitType.CUSTOM:
-                query = LIKE(func.UPPER(SellableUnit.q.description),
+                query = LIKE(const.UPPER(SellableUnit.q.description),
                              "%%%s%%" % unit.description.upper())
             else:
                 query = SellableUnit.q.unit_index == unit.unit_index

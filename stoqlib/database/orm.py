@@ -41,7 +41,7 @@ from sqlobject.joins import MultipleJoin, SingleJoin
 from sqlobject.main import SQLObject
 from sqlobject.sqlbuilder import (AND, Alias, IN, INNERJOINOn, ISNOTNULL,
                                   LEFTJOINOn, LIKE, OR, Update,
-                                  NoDefault, const, func, sqlIdentifier)
+                                  NoDefault, const, sqlIdentifier)
 from sqlobject.sresults import SelectResults
 from sqlobject.util.csvexport import export_csv
 from sqlobject.viewable import Viewable
@@ -144,7 +144,6 @@ ISNOTNULL = ISNOTNULL
 LEFTJOINOn = LEFTJOINOn
 LIKE = LIKE
 const = const
-func = func
 OR = OR
 sqlIdentifier = sqlIdentifier
 

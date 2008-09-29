@@ -27,7 +27,7 @@
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
-from stoqlib.database.orm import (AND, func, UnicodeCol, IntCol, ForeignKey,
+from stoqlib.database.orm import (AND, const, UnicodeCol, IntCol, ForeignKey,
                                   BoolCol)
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.base import Domain
@@ -80,9 +80,9 @@ class CityLocation(Domain):
         @returns: a L{CityLocation} or None
         """
         location = CityLocation.selectOne(
-            AND(func.UPPER(CityLocation.q.city) == city.upper(),
-                func.UPPER(CityLocation.q.state) == state.upper(),
-                func.UPPER(CityLocation.q.country) == country.upper()),
+            AND(const.UPPER(CityLocation.q.city) == city.upper(),
+                const.UPPER(CityLocation.q.state) == state.upper(),
+                const.UPPER(CityLocation.q.country) == country.upper()),
             connection=trans)
         if not location:
             location = CityLocation(

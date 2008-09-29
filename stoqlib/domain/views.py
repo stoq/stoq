@@ -23,7 +23,7 @@
 ##              Fabio Morbec <fabio@async.com.br>
 ##
 
-from stoqlib.database.orm import func, AND, INNERJOINOn, LEFTJOINOn, OR
+from stoqlib.database.orm import const, AND, INNERJOINOn, LEFTJOINOn, OR
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.person import Person, PersonAdaptToSupplier
@@ -62,8 +62,8 @@ class ProductFullStockView(Viewable):
         product_id=Product.q.id,
         tax_description=SellableTaxConstant.q.description,
         category_description=SellableCategory.q.description,
-        stock=func.SUM(ProductStockItem.q.quantity +
-                       ProductStockItem.q.logic_quantity),
+        stock=const.SUM(ProductStockItem.q.quantity +
+                        ProductStockItem.q.logic_quantity),
         )
 
     joins = [
@@ -167,10 +167,10 @@ class ProductQuantityView(Viewable):
         branch=ProductHistory.q.branchID,
         sold_date=ProductHistory.q.sold_date,
         received_date=ProductHistory.q.received_date,
-        quantity_sold=func.SUM(ProductHistory.q.quantity_sold),
-        quantity_received=func.SUM(ProductHistory.q.quantity_received),
-        quantity_transfered=func.SUM(ProductHistory.q.quantity_transfered),
-        quantity_retained=func.SUM(ProductHistory.q.quantity_retained),
+        quantity_sold=const.SUM(ProductHistory.q.quantity_sold),
+        quantity_received=const.SUM(ProductHistory.q.quantity_received),
+        quantity_transfered=const.SUM(ProductHistory.q.quantity_transfered),
+        quantity_retained=const.SUM(ProductHistory.q.quantity_retained),
         )
 
     hidden_columns = ['sold_date', 'received_date']
@@ -208,7 +208,7 @@ class SellableFullStockView(Viewable):
         description=BaseSellableInfo.q.description,
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
-        stock=func.SUM(ProductStockItem.q.quantity +
+        stock=const.SUM(ProductStockItem.q.quantity +
                        ProductStockItem.q.logic_quantity),
         )
 
