@@ -261,7 +261,8 @@ class StoqlibSchemaMigration(SchemaMigration):
     def update_plugins(self):
         for plugin in get_utility(IPluginManager).get_active_plugins():
             migration = plugin.get_migration()
-            migration.update()
+            if migration:
+                migration.update()
 
     def check_plugins(self):
         # This cannot be done in check_uptodate since the plugin domain
@@ -269,6 +270,8 @@ class StoqlibSchemaMigration(SchemaMigration):
         # works in stoq/lib/startup.py
         for plugin in get_utility(IPluginManager).get_active_plugins():
             migration = plugin.get_migration()
+            if not migration:
+                continue
             if not migration.check_uptodate():
                 return False
         return True
