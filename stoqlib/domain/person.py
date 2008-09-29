@@ -76,7 +76,7 @@ from zope.interface import implements
 from stoqlib.database.orm import PriceCol, DecimalCol
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
                                   ForeignKey, MultipleJoin, BoolCol)
-from stoqlib.database.orm import func, AND, INNERJOINOn, LEFTJOINOn
+from stoqlib.database.orm import const, AND, INNERJOINOn, LEFTJOINOn
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.address import Address
@@ -124,7 +124,7 @@ class EmployeeRole(Domain):
         """
         conn = self.get_connection()
         results = EmployeeRole.select(
-            AND(func.UPPER(EmployeeRole.q.name) == name.upper(),
+            AND(const.UPPER(EmployeeRole.q.name) == name.upper(),
                 EmployeeRole.q.id != self.id),
             connection=conn)
         return results.count() > 0

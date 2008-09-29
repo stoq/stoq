@@ -76,11 +76,11 @@ class PriceCol(DecimalCol):
         return currency(value)
 
 
-class FuncClass(object):
+class ConstantSpace(object):
     def __getattr__(self, attr):
         return type(attr, (NamedFunc,), {'name': attr})
 
-const = func = FuncClass()
+const = ConstantSpace()
 
 class Transaction(object):
     def __init__(self, conn):
@@ -237,7 +237,7 @@ class ORMObjectMeta(SQLObjectMeta):
             dbName = dbName[1:]
         property_registry = cls._storm_property_registry
         property_registry.add_property(cls, column, propName)
-        setattr(cls, propName, IntCol(dbName))
+        setattr(cls, name, IntCol(dbName))
 
 
 class ORMObject(SQLObjectBase):

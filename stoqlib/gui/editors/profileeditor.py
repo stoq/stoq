@@ -28,7 +28,7 @@ from kiwi.component import get_utility
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.checkbutton import ProxyCheckButton
 
-from stoqlib.database.orm import func, AND
+from stoqlib.database.orm import const, AND
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.profile import UserProfile
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -102,7 +102,7 @@ class UserProfileEditor(BaseEditor):
 
     def on_profile_name__validate(self, widget, value):
         conn = get_connection()
-        q1 = func.UPPER(UserProfile.q.name) == value.upper()
+        q1 = const.UPPER(UserProfile.q.name) == value.upper()
         q2 = UserProfile.q.id != self.model.id
         query = AND(q1, q2)
         if UserProfile.select(query, connection=conn):

@@ -30,7 +30,7 @@
 
 from kiwi.datatypes import ValidationError
 
-from stoqlib.database.orm import func
+from stoqlib.database.orm import const
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.person import EmployeeRole, Person
 from stoqlib.domain.interfaces import IEmployee, ISalesPerson, IUser
@@ -248,7 +248,7 @@ class UserDetailsSlave(BaseEditorSlave):
     def on_username__validate(self, widget, value):
         # FIXME: Move to Person/IUser
         user_table = Person.getAdapterClass(IUser)
-        query = func.UPPER(user_table.q.username) == value.upper()
+        query = const.UPPER(user_table.q.username) == value.upper()
         user = Person.iselectOne(IUser, query, connection=self.conn)
         if user and self.model.username != value:
             return ValidationError('Username already exist')
