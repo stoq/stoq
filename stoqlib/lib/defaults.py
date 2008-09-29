@@ -25,7 +25,6 @@
 ##
 """Default values for applications"""
 
-import datetime
 from decimal import Decimal
 
 from stoqlib.lib.translation import stoqlib_gettext
@@ -45,14 +44,6 @@ UNKNOWN_CHARACTER = u"\N{REPLACEMENT CHARACTER}"
 #
 # Dates and time
 #
-
-MONTH_PERIOD = 30
-ONE_DAY = 1
-
-dtime_type = datetime.datetime
-START_DATE = dtime_type.today()
-END_DATE = dtime_type.today() + datetime.timedelta(days=MONTH_PERIOD)
-
 
 (INTERVALTYPE_DAY,
  INTERVALTYPE_WEEK,
