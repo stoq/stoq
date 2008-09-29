@@ -31,7 +31,7 @@ import string
 import stoqlib
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.database.orm import AND, func
+from stoqlib.database.orm import AND, const
 from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.interfaces import ICompany, IOutPayment
 from stoqlib.domain.renegotiation import RenegotiationData
@@ -94,23 +94,23 @@ class StoqlibCATGenerator(object):
 
     def _get_z_reductions(self):
         return FiscalDayHistory.select(
-                 AND(func.DATE(FiscalDayHistory.q.emission_date) == self.start,
+                 AND(const.DATE(FiscalDayHistory.q.emission_date) == self.start,
                      FiscalDayHistory.q.serial == self.printer.device_serial),
                  connection=self.conn)
 
     def _get_sales(self, returned=False):
         # TODO: We need to add station_id to the sales table
-        query = AND(func.DATE(Sale.q.confirm_date) == self.start,
+        query = AND(const.DATE(Sale.q.confirm_date) == self.start,
                     #Sale.q.station_id == self.printer.station_id
                     )
         if returned:
-            query = AND(func.DATE(Sale.q.return_date) == self.end,)
+            query = AND(const.DATE(Sale.q.return_date) == self.end,)
 
         return Sale.select(query, connection=self.conn)
 
     def _get_other_documents(self):
         return ECFDocumentHistory.select(
-                AND(func.DATE(ECFDocumentHistory.q.emission_date) == self.start,
+                AND(const.DATE(ECFDocumentHistory.q.emission_date) == self.start,
                     ECFDocumentHistory.q.printerID == self.printer.id),
                 connection=self.conn)
 
