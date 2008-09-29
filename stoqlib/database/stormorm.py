@@ -50,8 +50,6 @@ from storm.sqlobject import SQLObjectBase, SQLObjectMeta
 from storm.sqlobject import AND, Alias, IN, LIKE, OR, _IGNORED
 from storm.sqlobject import SQLObjectResultSet
 
-from stoqlib.lib.defaults import DECIMAL_PRECISION, DECIMAL_SIZE
-
 
 class Viewable(object):
     @classmethod
@@ -69,8 +67,6 @@ class BLOBCol(PropertyAdapter, RawStr):
 
 
 class PriceCol(DecimalCol):
-    size = DECIMAL_SIZE
-    precision = DECIMAL_PRECISION
 
     def parse_set(self, value, from_db):
         return currency(value)
