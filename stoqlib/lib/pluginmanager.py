@@ -146,7 +146,8 @@ class PluginManager(object):
         trans.commit(close=True)
 
         migration = plugin.get_migration()
-        migration.apply_all_patches()
+        if migration:
+            migration.apply_all_patches()
 
     def get_active_plugins(self):
         """Gets a list of all active/enabled plugins
