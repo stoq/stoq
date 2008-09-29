@@ -319,6 +319,13 @@ class Adaptable(object):
 # also a cache which can be used by persisted adapters so we don't
 # need to refetch.
 def _adapter_hook(iface, obj):
-    if isinstance(obj, Adaptable):
+    # Twisted's IPathImportMapper occasionally sends in None
+    # which breaks isinstance, work-around. Johan 2008-09-29
+    try:
+        is_adaptable = isinstance(obj, Adaptable)
+    except TypeError:
+        is_adaptable = False
+
+    if is_adaptable:
         return obj._adapterCache.get(qual(iface))
 adapter_hooks.append(_adapter_hook)
