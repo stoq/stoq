@@ -29,7 +29,7 @@ from decimal import Decimal
 from formencode.validators import Validator
 from kiwi.datatypes import currency
 from kiwi.db.sqlobj import SQLObjectQueryExecuter
-from sqlobject import (connectionForURI, SQLObjectNotFound,
+from sqlobject import (connectionForURI, sqlhub, SQLObjectNotFound,
                        SQLObjectMoreThanOneResultError)
 from sqlobject.col import (BoolCol, BLOBCol, DateTimeCol,
                            ForeignKey, IntCol, StringCol, UnicodeCol)
@@ -100,6 +100,10 @@ def orm_enable_debugging():
     from stoqlib.database.runtime import get_connection
     conn = get_connection()
     conn.debug = True
+
+def orm_startup():
+    from stoqlib.database.runtime import get_connection
+    sqlhub.threadConnection = get_connection()
 
 # Exceptions
 
