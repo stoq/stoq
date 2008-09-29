@@ -129,7 +129,7 @@ def get_country_states():
 # Decimal precision
 #
 
-_format = Decimal('10e-%d' % DECIMAL_PRECISION)
+_format = Decimal('10e-%d' % 2)
 
 def quantize(dec):
     """Quantities a decimal according to the current settings.
