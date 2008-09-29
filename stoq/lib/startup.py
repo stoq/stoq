@@ -34,6 +34,7 @@ from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from stoqlib.database.admin import ensure_admin_user, initialize_system
 from stoqlib.database.migration import StoqlibSchemaMigration
+from stoqlib.database.orm import orm_enable_debugging, orm_startup
 from stoqlib.database.runtime import get_connection, set_current_branch_station, new_transaction
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.profile import ProfileSettings
@@ -135,8 +136,8 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
             install_global_keyhandler(keysyms.F12, introspect_slaves)
 
         if options.sqldebug:
-            conn = get_connection()
-            conn.debug = True
+            orm_enable_debugging()
+    orm_startup()
 
 def clean_database(config, options=None):
     """Clean the database
