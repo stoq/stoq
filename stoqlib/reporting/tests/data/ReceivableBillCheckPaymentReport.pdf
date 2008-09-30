@@ -4,8 +4,8 @@
 1 0 obj
 % The standard fonts dictionary
 << /F1 2 0 R
- /F2+0 10 0 R
- /F3+0 14 0 R
+ /F2+0 9 0 R
+ /F3+0 13 0 R
  /F4 4 0 R >>
 endobj
 % 'F1': class PDFType1Font 
@@ -44,32 +44,12 @@ endobj
 % 'Page1': class PDFPage 
 5 0 obj
 % Page dictionary
-<< /Contents 18 0 R
+<< /Contents 17 0 R
  /MediaBox [ 0
  0
  841.8898
  595.2756 ]
- /Parent 17 0 R
- /Resources << /Font 1 0 R
- /ProcSet [ /PDF
- /Text
- /ImageB
- /ImageC
- /ImageI ]
- /XObject << /FormXob.9e60a385967dabfb98f8c5ef722294d4 3 0 R >> >>
- /Rotate 0
- /Trans <<  >>
- /Type /Page >>
-endobj
-% 'Page2': class PDFPage 
-6 0 obj
-% Page dictionary
-<< /Contents 19 0 R
- /MediaBox [ 0
- 0
- 841.8898
- 595.2756 ]
- /Parent 17 0 R
+ /Parent 16 0 R
  /Resources << /Font 1 0 R
  /ProcSet [ /PDF
  /Text
@@ -82,7 +62,7 @@ endobj
  /Type /Page >>
 endobj
 % 'toUnicodeCMap:AAAAAA+BitstreamVeraSans-Bold': class PDFStream 
-7 0 obj
+6 0 obj
 << /Filter [ /FlateDecode ]
  /Length 720 >>
 stream
@@ -90,7 +70,7 @@ xúÖ’Àj€PÖ·πüB√ñRÏ}O¿rÖz°)ù;ˆIjàe#;Éº}µºB¥âˇ†s–ß—û^›]ﬂıõc7˝:ÏV˜Ìÿ=n˙ı–ªóa’
 
 endobj
 % 'fontFile:/home/jdahlin/dev/stoq/trunk/stoqlib/data/fonts/VeraBd.ttf(AAAAAA+BitstreamVeraSans-Bold)': class PDFStream 
-8 0 obj
+7 0 obj
 << /Filter [ /FlateDecode ]
  /Length 17162
  /Length1 27344 >>
@@ -158,7 +138,7 @@ $∆∫˙J≤†æ≤Bäß®	ZÎ+Ôß‰z ∫ûÜÂz˙ÎÀÍ cUﬁVVµ∞/Ù≠gyçSRYS^[_ÌgùãØ§qp ñ6zÊr‡•¿xm˝‹æ
 
 endobj
 % 'fontDescriptor:AAAAAA+BitstreamVeraSans-Bold': class PDFDictionary 
-9 0 obj
+8 0 obj
 << /Ascent 759.7656
  /CapHeight 759.7656
  /Descent -240.2344
@@ -167,22 +147,22 @@ endobj
  -235.8398
  1416.992
  928.2227 ]
- /FontFile2 8 0 R
+ /FontFile2 7 0 R
  /FontName /AAAAAA+BitstreamVeraSans-Bold
  /ItalicAngle 0
  /StemV 165
  /Type /FontDescriptor >>
 endobj
 % 'F2+0': class PDFTrueTypeFont 
-10 0 obj
+9 0 obj
 % Font Vera-B subset 0
 << /BaseFont /AAAAAA+BitstreamVeraSans-Bold
  /FirstChar 0
- /FontDescriptor 9 0 R
+ /FontDescriptor 8 0 R
  /LastChar 127
  /Name /F2+0
  /Subtype /TrueType
- /ToUnicode 7 0 R
+ /ToUnicode 6 0 R
  /Type /Font
  /Widths [ 600.0977
  600.0977
@@ -314,7 +294,7 @@ endobj
  600.0977 ] >>
 endobj
 % 'toUnicodeCMap:AAAAAA+BitstreamVeraSans-Roman': class PDFStream 
-11 0 obj
+10 0 obj
 << /Filter [ /FlateDecode ]
  /Length 726 >>
 stream
@@ -323,7 +303,7 @@ YÙBS∫üËõT®£åfëoﬂy|B]î(ˇóy˛\ù˘ı›Õ›∞9vÛ/„nuﬂé›„fXèÌ∞{W≠{hOõa&⁄≠7´„ÎÈÙΩ⁄ˆ˚Ÿ|æ
 
 endobj
 % 'fontFile:/home/jdahlin/dev/stoq/trunk/stoqlib/data/fonts/Vera.ttf(AAAAAA+BitstreamVeraSans-Roman)': class PDFStream 
-12 0 obj
+11 0 obj
 << /Filter [ /FlateDecode ]
  /Length 17905
  /Length1 28340 >>
@@ -390,7 +370,7 @@ coëÙ◊H⁄$‚÷»çåæ«.åvê{FYÑ{Ïd‘Hì0 }«BFö»ç§jd¯0á0¸6‘*sê°)a®ï§»êPíl"IÉBíFHb
 
 endobj
 % 'fontDescriptor:AAAAAA+BitstreamVeraSans-Roman': class PDFDictionary 
-13 0 obj
+12 0 obj
 << /Ascent 759.7656
  /CapHeight 759.7656
  /Descent -240.2344
@@ -399,22 +379,22 @@ endobj
  -235.8398
  1287.109
  928.2227 ]
- /FontFile2 12 0 R
+ /FontFile2 11 0 R
  /FontName /AAAAAA+BitstreamVeraSans-Roman
  /ItalicAngle 0
  /StemV 87
  /Type /FontDescriptor >>
 endobj
 % 'F3+0': class PDFTrueTypeFont 
-14 0 obj
+13 0 obj
 % Font Vera subset 0
 << /BaseFont /AAAAAA+BitstreamVeraSans-Roman
  /FirstChar 0
- /FontDescriptor 13 0 R
+ /FontDescriptor 12 0 R
  /LastChar 128
  /Name /F3+0
  /Subtype /TrueType
- /ToUnicode 11 0 R
+ /ToUnicode 10 0 R
  /Type /Font
  /Widths [ 600.0977
  600.0977
@@ -546,87 +526,74 @@ endobj
  600.0977
  612.793 ] >>
 endobj
-% 'R15': class PDFCatalog 
-15 0 obj
+% 'R14': class PDFCatalog 
+14 0 obj
 % Document Root
-<< /Outlines 20 0 R
+<< /Outlines 18 0 R
  /PageMode /UseNone
- /Pages 17 0 R
+ /Pages 16 0 R
  /Type /Catalog >>
 endobj
-% 'R16': class PDFInfo 
-16 0 obj
+% 'R15': class PDFInfo 
+15 0 obj
 << /Author (\(anonymous\))
- /CreationDate (20080930130636)
+ /CreationDate (20080930131656)
  /Keywords ()
  /Producer (ReportLab http://www.reportlab.com)
  /Subject (\(unspecified\))
  /Title (Payment Report) >>
 endobj
-% 'R17': class PDFPages 
-17 0 obj
+% 'R16': class PDFPages 
+16 0 obj
 % page tree
-<< /Count 2
- /Kids [ 5 0 R
- 6 0 R ]
+<< /Count 1
+ /Kids [ 5 0 R ]
  /Type /Pages >>
 endobj
-% 'R18': class PDFStream 
+% 'R17': class PDFStream 
+17 0 obj
+% page stream
+<< /Filter [ /ASCII85Decode
+ /FlateDecode ]
+ /Length 1274 >>
+stream
+Gatm;gQ'uY&:I(.+%f-HZ:X9Eq^$1&cH]$Z<ZqLGp)u(P`_8q-4l_+<k3oe6(Moa]4:m(Fk&ba:Wp8&eRfIUR;EU]WhTb$EL&do$?NT2B_u'W70cuGtMD%i'V(f\6'#[="0FTDhO=2!-Y&:O-q'WdC-C3:>/W<X:Hb6pJHDr,$0,:>5n-+U5CcqPN*]ZPbKg;V(dSL$tBd>N80Mbq1oTbp,76D2s+4#kSO$D)!52O=/bd)(,`P97e)pDY)OTmsHdIPAka1VmgI*C2#?"@nkPEeiu\!#+in9tCffuW;qHC(1u+LIbm0Hot>$Od]9IA%Kjn@Qrsfq\R14lr7Se*hb^2+usg^mL8u9W2o:DsVr`&=?,o1VCuj$BGU[hu%@S8qC`q\E"9U/-lP1:6=Cm!AR,d.Oa@4/74E-\;8B_CB_j?_F,dQOs25%m>Q+paW=]';u8A-dg^\bn$@DjOhKfm)<7)[3Q:(%IoV7Gj\fJaSTHZqG;0)3Hh!hK;CkJZ'gYr9<@IiFAb3f@Yq_B<1eBr(L9rkM_:C;UefFT&XRZ89;/GWkc.OLdTN)2-=nAAhY0J+iO.0-q#Bme8qf;8t5RAGKE.+6BNV-oA3l=g;8fKAo+dtB#dAijT2ssVe&;+%*ehA8Ef%YaR0dp4nkY;d<%o&KZ[K:JMU:8RrPHV@BO/)mt?hZupG?iXg'm5",f6"<:H;NV$$q"_27.4sg]jq)bV67TMGgC4FII6^rE]`1YgF14Ql)'et@<t+'XoEL4gr=Um%sNLQBCfAH@p%AXgs9@\@$oZui\Z?c(Jr=6G-gT$#1WaJ6iD(_Lh<CYM#;,AgKcRuIIi3*GQHdr9&+akB[3^CmuA6B%SmCo9W:&of#1Lq9"Kplca)lTMGQ\3LFkLE:J#NBX#i<"jZ"fr5VAc1^RuR!e6YOU;c!#[hc9U7Ul'm=0_b:WPq.(1Y!(sn"QS=pm4SaO"#I\Y0^NM*WCW'R':eQD#u5`]"=LiiL*_#"@"Qm70P=;p(!J@`dt1Hll%5Vi<sXOF9e[=HZ!`.s?802%0::[N(X0,%/eLd=g'd%ZlCieI7W;Nb>-XuLQr(K6E7"`u3^?aKkW8_egk>4Wd%7cOo5%pgDb_D-5oY=deUmF0!-L6B]cGa0EPVS15JG[4TE!^&A;Y_#;Hs=ZTX_7+pPTZ+K,s0aU]fL]+2fbCb+N6igQGVTDhH!i=.k#h^_HAQp4F,sA-KS2gU"%g[q"@-L34FNZ@`%JJL.:'5H*Q$(\.>kkFR#Z3Z*qW#@DSJhu~>endstream
+
+endobj
+% 'R18': class PDFOutlines 
 18 0 obj
-% page stream
-<< /Filter [ /ASCII85Decode
- /FlateDecode ]
- /Length 1985 >>
-stream
-GauI99lJcU&;KWTr#Z\f%r#3%qu+oHdPM,Z'QITWkb/erU)g.tPfRn$r;5ml,tkOV`??ZG(+aafdCq^.LT;#lK(8U\i:gd%?CeD=DZg`:SR4.G$dHuSZ!YgQ7UP*t>b,R1e$:YOf_?Yh_O27/bYCV\hCOu!58P,)W%9Te2o3(>H#\*Ar2$$QlI&6QK:ZiOH>t_:E&*<*@QalD?"&?obU?g80-*-H`S&<SUSqTb[d[upcX,IWRnq]60@cS`/aepgl3DM3R@QQtRA(ouZSS=J,OSS,m/?LPS50sfFZI&dkDT+1+b*s>VsO.u;D,$GeY:GXaMSc[)9^(SE&M<@In@p%m$Da<Za`_ZT/I.^6T@4+l)2M5qO&eom$J/pii$e<Iq-950fCNF?&,rZ7:>duH$(m21[,:DXgZGU0GM`F;&HDL';=o!)Te9[]6o&_i\7k6[[i7)?#X5B@9+/d8su75fkU%7cL&":2QPsjp9FJ"=KXF0>Kr';U3"eV>eET<QPmi_&sRNu_jm#o'k:]sPQ^rn`-R9I'*WU:!V%8_3VR5&[ja5b.5U+f._H:@)nTNkg\3iPgSjMl?SdW-j6uBC;:crB("CF<KOp//r9jE)FZmKKjin83;N&#F8B=c'rR2*3Z%Ee0S`.]Ue2c4s6?jYUW)l;Q:>BaH:Q6NYj!a'"B4DN3^cb"Ak"*22n_"oHI</.OX"d,s`Z3r_F,k.0Zf')LG0Nrd:M.89B]m-=j#S7D/.Rq)McYt)JqlbMF@.&Rl4d(hh1hluId//nee!pk&Z8^lr9k'.oiiYJI>2*po?!n_#-k`\"tq?f`SGoacp;[)_dTkRbjT-[eafAqNZY=XNF(LBCg+!A_\Sr,`G'T\D>#ZdO2oqR>i"MM`:\g.aTgH7_CLhb<;n:amN0Lgn#(*KTafJ?GOh:OD!0g>Tj^F[5po*0Q#iE$WU5B(:Q1')]CB3>p<m6Y,$,eb^u^.tJ2sV0QaH%>K!8P]k7TWWRQ?q1/usK)X8?M!BF[']"$@RumsXYH@JH.d]mSV+V<71Oi5g*"Cg<TaK.@6J>Y3l38cjcM>p"$)o)qg4F"0.;LLIu<l58HXQJeiM&TCPM^d/\8#?:aD>'7No6-TG#cK8YVBF`;Fkg1@j@u^SMD@+VB'`eP>!$"r=E)6_RTiK\P*7PtDl"j*!LZU9!33&tD,(X6-JtoP'Y5f'4!'$nYi1LF-6`[@+32eife(L6"%aAE!E5YVBA(qV9O_]ts"i*D=!!cL(**RKu^d63GSBg8-E+fa!JA[Gr*4qNpn8*0).KBsY!'$nYi6\Li"V,8Wi,gk)K0s]n#"RmoX*3F>n+"Eua0u.`j8'H0>Y3l38cf6!&idhpqLF3f-ZHYd;o'V<$j2MQ8oktUJn&lH0s1L9VuknM$@kLEXqs'r3IoT3S.#nP@2Nr?WP9(CONsedobQ;CaSjmF4$(t8isN#C._lOo!'@OhHa/3l"$<'uam@@oL1*T8>-)=Z6sFhFY!p>F?jB\^*E3&_BEe*=#;la03h)>dTfEP!NZ`IIc0WN[m"eo5N%;[RWW5,Z!pn8@m)9HL%d\9q-aQ0]TWr"\YnKZV<\le:,s!4$-DNm/#8Ik1W0"6We^fKoe2fnEfp^%lbohJm<_i2faFqEK^Z"OWB8CQ'#-4./h3&VAl]4md&VCFI(fX&Ect_l6$u2>hl"j'?L1W+B1$2#DZ"Zdga`YS$OGH2V6jtOj@VE1B+U5>L`,rGb&jnGlJf&X+B%XO;7V0nDA<0W!:Jt^6;@J&8,(#8Xn5C%.-?oN"jH3VRf9-u=]hb039q8miS@qKVr&s'+/`OV8&CXh?+nh;`!9;gO0tA;O\&%/!Qe_9iq!O=">__*>rbkWiVI,rSINO&4J)5+i43uhYDgDSBY;\tJfAZMi+j=GXmtO^E-Y;R(VY>ZderlclGpb/RL2_Iq%0p*mj7D-KIQd>[*40(.rEe./3h2dc_H,1Fo_]9'Q]RbsrW>4Rg]7~>endstream
-
-endobj
-% 'R19': class PDFStream 
-19 0 obj
-% page stream
-<< /Filter [ /ASCII85Decode
- /FlateDecode ]
- /Length 1109 >>
-stream
-Gatm;9lJcG&A9%PIi)Sfd!""L^FAm-2GJa1(NjM%Z%p"HZCIe-8W@3Rj59<eQ6J>_Ct2ZZ0W7K^hTYHu8Md%7Yje+sn2c90$O2PW\cO48K_,e"Rnb??iFQU[;H]*O-tY=pX<9tUOqlHffgSmWIof^ik*e>n.'(V@?*18GZ:Zm;Y70ULb,'d_C-)/ESKK(k>i=BKD7Kfr&u$"V+>(qZrYp%'i/]4ApZL51],tSgn%[p0/?3QXjj,+K%-`].C"+>.4c@0]gl([Tqg.YPAHh8"\8c)61E$35/sl(*b?UU)f@<_*`Xc!%Ter<37:?CYIlO8>]Q*VU](=hNA*0VqLX".0<Fu.BKJ7^A)-:ME_L4p>;)V@ib!#nSSljXYp%<E)!`+W6>&$kp&2Gr&&LE,2Ak=2Wi_\gBH81u;i1$@iF&Y[sR5,++-UMl<kiZDRh4eh/pS5gQ%=HC7<:siGH7^SN(7C4$V<lF@B#'GC&;2r3c-5!d%`%sB]]^:b;A$n]L(.mSA4?^@A$Osu9-ONB%8C6MCn%O3H,eR#c&h"+6@3OY&ge1F%V2)]n:=t\RPS^K4'f;V6:4j!"SGD,c>7uDUOs*S0oi)i&A<8K^CN`@D]H+X"REHGZVLhn@r/'tJ!FTq[bMiJ&<re^cmlcb(0>d0O@S;ZG;@M?2M\-`jG+W>',]m"ApKn5R3tf^2K#k74(r!mZ1b"@/.lX,7/h5mm<p[prS\c@3#cEjPP.bkY%EANi_\9TQm1>DT%l@P3f!LuXKZ!XmYr5:g4o?A]gY#1TgUuT^nVoVOlKo/6ke=GUPb".HQAYN4g4I\2u0qX65i?:nJF!NR_a.D'p$M5'@Pb,3&e"Zs.U?*Io8!1mpj=)41o$s*F:JJ%^27>YrtN1;/3;%PGuSPAfSW8`Q4ZMN/2%,%Yl'4BEK*Os.T"EiAQ^ORQYWkdV@gn0993$)"Re^ZdN6%#1Kc[>%gu!q\($4?i$D@/`Xlqrq"nCV61*U3c(m+EISk]J_7I;ECGaj?N^*)!K<%THAAEA#*XIs@<_hGN=P)MmU4r9_,`KK2Yr`'eo]e(RC$q]LQuabhrnIm)V?uPq!l<q2ZGrdQ/0t/a1uff+-\hS,Q~>endstream
-
-endobj
-% 'R20': class PDFOutlines 
-20 0 obj
 << /Count 0
  /Type /Outlines >>
 endobj
 xref
-0 21
+0 19
 0000000000 65535 f
 0000000113 00000 n
-0000000251 00000 n
-0000000457 00000 n
-0000006891 00000 n
-0000007058 00000 n
-0000007402 00000 n
-0000007786 00000 n
-0000008712 00000 n
-0000026049 00000 n
-0000026359 00000 n
-0000028044 00000 n
-0000028976 00000 n
-0000047058 00000 n
-0000047365 00000 n
-0000049011 00000 n
-0000049149 00000 n
-0000049376 00000 n
-0000049491 00000 n
-0000051621 00000 n
-0000052877 00000 n
+0000000250 00000 n
+0000000456 00000 n
+0000006890 00000 n
+0000007057 00000 n
+0000007441 00000 n
+0000008367 00000 n
+0000025704 00000 n
+0000026014 00000 n
+0000027698 00000 n
+0000028630 00000 n
+0000046712 00000 n
+0000047019 00000 n
+0000048665 00000 n
+0000048803 00000 n
+0000049030 00000 n
+0000049137 00000 n
+0000050558 00000 n
 trailer
 << /ID 
  % ReportLab generated PDF document -- digest (http://www.reportlab.com) 
- [(U\267\177S6-7\365th\325\010d\354\275O) (U\267\177S6-7\365th\325\010d\354\275O)] 
+ [(\222Z/\007\211\327\231X\276\204\025\233f\216\316g) (\222Z/\007\211\327\231X\276\204\025\233f\216\316g)] 
 
- /Info 16 0 R
- /Root 15 0 R
- /Size 21 >>
+ /Info 15 0 R
+ /Root 14 0 R
+ /Size 19 >>
 startxref
-52929
+50610
 %%EOF
