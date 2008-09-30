@@ -61,13 +61,13 @@ from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.person import Person
 from stoqlib.domain.station import BranchStation
-from stoqlib.domain.examples import createall as examples
 from stoqlib.domain.interfaces import IBranch, IUser, ICompany
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
+from stoqlib.importers.stoqlibexamples import create as examples
 from stoqlib.lib.message import warning, yesno, error
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import provide_plugin_manager

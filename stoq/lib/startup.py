@@ -30,7 +30,6 @@ import gettext
 import socket
 import sys
 
-from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from stoqlib.database.admin import ensure_admin_user, initialize_system
 from stoqlib.database.migration import StoqlibSchemaMigration
@@ -48,8 +47,6 @@ from stoq.lib.options import get_option_parser
 _ = gettext.gettext
 
 def _check_tables():
-    from stoqlib.database.runtime import get_connection
-
     # Check so SystemTable is present
     conn = get_connection()
     if not conn.tableExists('system_table'):
@@ -164,9 +161,3 @@ def _set_default_profile_settings():
     ProfileSettings.set_permission(trans, profile, 'sales', True)
     ProfileSettings.set_permission(trans, profile, 'till', True)
     trans.commit(close=True)
-
-@argcheck(StoqConfig)
-def create_examples(config):
-    """Create example database for a given config file"""
-    from stoqlib.domain.examples.createall import create
-    create()

@@ -105,7 +105,7 @@ class StoqCommandHandler:
         clean_database(config, options)
 
         if options.create_examples:
-            from stoqlib.domain.examples.createall import create
+            from stoqlib.importers.stoqlibexamples import create
             create(utilities=True)
         else:
             # If we don't create examples, create a Test Branch
