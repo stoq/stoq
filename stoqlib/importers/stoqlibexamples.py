@@ -19,7 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-""" Create all objects for an example database used by Stoq applications"""
+"""Import CSVs for the Stoqlib example database"""
 
 from kiwi.component import provide_utility
 from kiwi.environ import environ
