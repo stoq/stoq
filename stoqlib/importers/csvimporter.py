@@ -151,6 +151,14 @@ class CSVImporter(object):
     def parse_date(self, data):
         return datetime.datetime(*map(int, data.split('-')))
 
+    def parse_multi(self, domain_class, field, trans):
+        if field == '*':
+            field_values = domain_class.select(connection=trans)
+        else:
+            field_values = [domain_class.get(int(field_id), connection=trans)
+                            for field_id in field.split('|')]
+        return field_values
+
     def set_lines_per_commit(self, lines):
         """Sets the number of lines which should be parsed between commits.
         Defaults to 500. -1 means that the whole file should be parsed

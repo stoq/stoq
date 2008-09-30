@@ -69,12 +69,6 @@ class PurchaseImporter(CSVImporter):
             raise ValueError("%s is not a valid user" % (
                 data.user_name,))
 
-        if data.sellable_list == '*':
-            sellables = Sellable.select(connection=trans)
-        else:
-            sellables = [Sellable.get(int(sellable_id), connection=trans)
-                         for sellable_id in data.sellable_list.split('|')]
-
         group = PaymentGroup(connection=trans)
         purchase = PurchaseOrder(connection=trans,
                                  status=PurchaseOrder.ORDER_PENDING,
@@ -84,7 +78,7 @@ class PurchaseImporter(CSVImporter):
                                  branch=branch)
         purchase.set_valid()
 
-        for sellable in sellables:
+        for sellable in self.parse_multi(Sellable, data.sellable_list, trans):
             if not sellable.product:
                 continue
             PurchaseItem(connection=trans,

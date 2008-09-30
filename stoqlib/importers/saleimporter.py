@@ -77,14 +77,9 @@ class SaleImporter(CSVImporter):
                     group=group,
                     connection=trans)
         sale.set_valid()
-        if data.product_list == '*':
-            products = Product.select(connection=trans)
-        else:
-            products = [Product.get(int(product_id), connection=trans)
-                         for product_id in data.product_list.split('|')]
 
         total_price = 0
-        for product in products:
+        for product in self.parse_multi(Product, data.product_list, trans):
             sale.add_sellable(product.sellable)
             total_price += product.sellable.base_sellable_info.price
 
