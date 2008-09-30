@@ -68,6 +68,11 @@ class CSVImporter(object):
         'service': 'serviceimporter.ServiceImporter',
         'supplier': 'supplierimporter.SupplierImporter',
         'transporter': 'transporterimporter.TransporterImporter',
+        'branch': 'branchimporter.BranchImporter',
+        'creditprodvider': 'creditprodviderimporter.CreditProdviderImporter',
+        'purchase': 'purchaseimporter.PurchaseImporter',
+        'sale': 'saleimporter.SaleImporter',
+        'transfer': 'transferimporter.TransferImporter',
         }
 
     def __init__(self, lines=500, dry=False):
