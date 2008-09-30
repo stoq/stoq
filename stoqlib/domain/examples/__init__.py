@@ -19,7 +19,3 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-
-from kiwi.log import Logger
-
-log = Logger('stoqlib.examples')
