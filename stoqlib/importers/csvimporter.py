@@ -100,6 +100,7 @@ class CSVImporter(object):
 
         t = time.time()
         trans = new_transaction()
+        self.before_start(trans)
         lineno = 1
         for item in self.read(iterable):
             if skip > lineno:
@@ -204,6 +205,11 @@ class CSVImporter(object):
         @returns: a sequence of parsed items
         """
         return csv.reader(iterable, dialect=self.dialect)
+
+    def before_start(self, trans):
+        """This is called before all the lines are parsed but
+        after creating a transaction.
+        """
 
     def when_done(self, trans):
         """This is called after all the lines are parsed but
