@@ -36,10 +36,10 @@ from stoqlib.database.interfaces import (
 from stoqlib.database.orm import AND
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.database.settings import DatabaseSettings
-from stoqlib.domain.examples.createall import create
 from stoqlib.domain.person import Person, PersonAdaptToBranch
 from stoqlib.domain.interfaces import IBranch, IUser
 from stoqlib.domain.station import BranchStation
+from stoqlib.importers.stoqlibexamples import create
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     IPaymentOperationManager,
                                     ISystemNotifier)
