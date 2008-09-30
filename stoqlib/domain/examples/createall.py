@@ -23,12 +23,11 @@
 
 from kiwi.component import provide_utility
 from kiwi.environ import environ
+from kiwi.log import Logger
 
 from stoqlib.database.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.domain.station import BranchStation
 from stoqlib.database.runtime import new_transaction
-from stoqlib.domain.examples import log
-from stoqlib.domain.examples.transfer import create_transfer
 from stoqlib.importers.branchimporter import BranchImporter
 from stoqlib.importers.clientimporter import ClientImporter
 from stoqlib.importers.creditproviderimporter import CreditProviderImporter
@@ -38,8 +37,11 @@ from stoqlib.importers.purchaseimporter import PurchaseImporter
 from stoqlib.importers.saleimporter import SaleImporter
 from stoqlib.importers.serviceimporter import ServiceImporter
 from stoqlib.importers.supplierimporter import SupplierImporter
+from stoqlib.importers.transferimporter import TransferImporter
 from stoqlib.importers.transporterimporter import TransporterImporter
 from stoqlib.lib.parameters import sysparam
+
+log = Logger('stoqlib.examples')
 
 def _import_one(klass, filename):
     imp = klass()
@@ -69,8 +71,4 @@ def create(utilities=False):
     _import_one(ServiceImporter, 'services.csv')
     _import_one(PurchaseImporter, 'purchases.csv')
     _import_one(SaleImporter, 'sales.csv')
-
-    # FIXME: Move all examples to CSV files, they are easier to customize
-    #        and to add additional example data.
-    # NOTE: Do not add new examples which are not in csv format
-    create_transfer()
+    _import_one(TransferImporter, 'transfers.csv')
