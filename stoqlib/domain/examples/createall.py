@@ -28,7 +28,6 @@ from stoqlib.database.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.domain.station import BranchStation
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.examples import log
-from stoqlib.domain.examples.purchase import create_purchases
 from stoqlib.domain.examples.sale import create_sales
 from stoqlib.domain.examples.transfer import create_transfer
 from stoqlib.importers.branchimporter import BranchImporter
@@ -36,6 +35,7 @@ from stoqlib.importers.clientimporter import ClientImporter
 from stoqlib.importers.creditproviderimporter import CreditProviderImporter
 from stoqlib.importers.employeeimporter import EmployeeImporter
 from stoqlib.importers.productimporter import ProductImporter
+from stoqlib.importers.purchaseimporter import PurchaseImporter
 from stoqlib.importers.serviceimporter import ServiceImporter
 from stoqlib.importers.supplierimporter import SupplierImporter
 from stoqlib.importers.transporterimporter import TransporterImporter
@@ -72,5 +72,5 @@ def create(utilities=False):
     #        and to add additional example data.
     # NOTE: Do not add new examples which are not in csv format
     create_sales()
-    create_purchases()
+    _import_one(PurchaseImporter, 'purchases.csv')
     create_transfer()
