@@ -40,6 +40,13 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+METHOD_CONSTANTS = {
+    'money': PaymentMethodType.MONEY,
+    'check': PaymentMethodType.CHECK,
+    'bill': PaymentMethodType.BILL,
+    'card': PaymentMethodType.CREDIT_CARD, # !!!
+}
+
 
 class ECFPrinter(Domain):
     """
@@ -128,12 +135,16 @@ class ECFPrinter(Domain):
                                        constant_type=constant_type,
                                        connection=self.get_connection())
 
-    def get_payment_constant(self, constant_enum):
+    def get_payment_constant(self, method_name):
         """
-        @param constant_enum:
+        @param method_name:
         @returns: the payment constant
         @rtype: L{DeviceConstant}
         """
+        constant_enum = METHOD_CONSTANTS.get(method_name)
+        if constant_enum is None:
+            raise AssertionError
+
         return DeviceConstant.selectOneBy(
             printer=self,
             constant_type=DeviceConstant.TYPE_PAYMENT,

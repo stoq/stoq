@@ -329,11 +329,11 @@ class Coupon(object):
         return self._driver.cancel()
 
     def _get_payment_method_constant(self, method):
-        constant = self._printer.get_payment_constant(method.method_type)
+        constant = self._printer.get_payment_constant(method.method_name)
         if not constant:
             raise DeviceError(
                 _("The payment method used in this sale (%s) is not "
-                  "configured in the fiscal printer." % (method.name,)))
+                  "configured in the fiscal printer." % (method.method_name,)))
 
         return constant
 
