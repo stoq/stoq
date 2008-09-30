@@ -31,7 +31,7 @@ from kiwi.datatypes import currency
 from kiwi.db.sqlobj import SQLObjectQueryExecuter
 from sqlobject import (connectionForURI, sqlhub, SQLObjectNotFound,
                        SQLObjectMoreThanOneResultError)
-from sqlobject.col import (BoolCol, BLOBCol, DateTimeCol, DecimalCol,
+from sqlobject.col import (BoolCol, BLOBCol, DateTimeCol,
                            ForeignKey, IntCol, StringCol, UnicodeCol)
 from sqlobject.col import (Col, SOBoolCol, SODateTimeCol, SODecimalCol,
                            SOForeignKey, SOIntCol, SOStringCol, SOUnicodeCol)
@@ -46,12 +46,26 @@ from sqlobject.sresults import SelectResults
 from sqlobject.util.csvexport import export_csv
 from sqlobject.viewable import Viewable
 
+from stoqlib.lib.defaults import DECIMAL_PRECISION
+
 
 # Currency
 
 def _CurrencyConverter(value, db):
     return str(Decimal(value))
 registerConverter(currency, _CurrencyConverter)
+
+# Decimal
+
+class AbstractDecimalCol(SODecimalCol):
+    def __init__(self, **kw):
+        kw['size'] = 10
+        kw['precision'] = DECIMAL_PRECISION
+        SODecimalCol.__init__(self, **kw)
+
+class DecimalCol(Col):
+    baseClass = AbstractDecimalCol
+
 
 # Price
 
@@ -68,7 +82,7 @@ class _PriceValidator(Validator):
         return value
 
 
-class SOPriceCol(SODecimalCol):
+class SOPriceCol(AbstractDecimalCol):
     def createValidators(self):
         return [_PriceValidator()] + super(SOPriceCol, self).createValidators()
 
