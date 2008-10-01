@@ -44,20 +44,20 @@ _ = stoqlib_gettext
 
 class MoneyPaymentOperation(object):
     implements(IPaymentOperation)
-    
+
     description = _(u'Money')
     max_installments = 1
 
     #
     # IPaymentOperation
     #
-    
+
     def payment_create(self, payment):
         pass
-    
+
     def payment_delete(self, payment):
         pass
-    
+
     def selectable(self, method):
         return True
 
@@ -110,13 +110,13 @@ class BillPaymentOperation(object):
     #
     # IPaymentOperation
     #
-    
+
     def payment_create(self, payment):
         pass
-    
+
     def payment_delete(self, payment):
         pass
-    
+
     def selectable(self, method):
         return True
 
@@ -130,13 +130,13 @@ class CardPaymentOperation(object):
     #
     # IPaymentOperation
     #
-    
+
     def payment_create(self, payment):
         pass
 
     def payment_delete(self, payment):
         pass
-    
+
     def selectable(self, method):
         return PersonAdaptToCreditProvider.has_card_provider(
             method.get_connection())
