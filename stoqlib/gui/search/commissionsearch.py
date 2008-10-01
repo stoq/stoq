@@ -55,7 +55,7 @@ class CommissionSearch(SearchDialog):
         self.set_text_field_columns(['salesperson_name', 'id'])
         self.set_searchbar_labels(_('matching:'))
 
-        persons = [p.get_adapted().name for p in
+        persons = [p.person.name for p in
                    Person.iselect(ISalesPerson, connection=self.conn)]
         persons = zip(persons, persons)
         persons.insert(0, (_('Anyone'), None))
