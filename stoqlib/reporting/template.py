@@ -82,7 +82,7 @@ class BaseStoqReport(ReportTemplate):
 
     def draw_header(self, canvas):
         canvas.saveState()
-        person = get_current_branch(self.trans).get_adapted()
+        person = get_current_branch(self.trans).person
 
         logo_width, logo_height = self._logotype.getSize()
         header_y = self._topMargin - logo_height - BaseStoqReport.logo_border

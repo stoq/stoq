@@ -69,7 +69,7 @@ class StoqlibSintegraGenerator(object):
 
     def _add_header(self):
         branch = get_current_branch(self.conn)
-        manager = branch.manager.get_adapted()
+        manager = branch.manager.person
         company = ICompany(branch.person)
         address = branch.person.get_main_address()
 
