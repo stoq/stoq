@@ -314,8 +314,9 @@ class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
 
     def create_model(self, conn):
         if self._payments[0].group:
-            return _SaleConfirmationModel(self._payments,
-                  self._payments[0].group.get_adapted())
+            return _SaleConfirmationModel(
+                self._payments,
+                self._payments[0].group.sale)
         else:
             self._setup_widgets = self._lonely_setup_widgets
             return _LonelyConfirmationModel(self._payments)
