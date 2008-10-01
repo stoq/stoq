@@ -313,7 +313,7 @@ class _AbstractSalesPersonStep(WizardEditorStep):
 
     def setup_widgets(self):
         salespersons = Person.iselect(ISalesPerson, connection=self.conn)
-        items = [(s.get_adapted().name, s) for s in salespersons]
+        items = [(s.person.name, s) for s in salespersons]
         self.salesperson_combo.prefill(items)
         if not sysparam(self.conn).ACCEPT_CHANGE_SALESPERSON:
             self.salesperson_combo.set_sensitive(False)

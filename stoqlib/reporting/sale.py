@@ -55,7 +55,7 @@ class SaleOrderReport(BaseStoqReport):
     def _identify_client(self):
         if not self.sale.client:
             return
-        person = self.sale.client.get_adapted()
+        person = self.sale.client.person
         text = "<b>%s:</b> %s" % (_("Client"), person.name)
         if person.phone_number:
             phone_str = ("<b>%s:</b> %s" %

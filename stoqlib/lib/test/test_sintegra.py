@@ -73,7 +73,7 @@ class SintegraTest(DomainTest):
         branch = get_current_branch(self.trans)
         user = self.create_employee()
         branch.manager = user
-        manager = branch.manager.get_adapted()
+        manager = branch.manager.person
         company = ICompany(branch.person)
         address = branch.person.get_main_address()
 
