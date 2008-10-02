@@ -44,3 +44,11 @@ class SyncPolicy(enum):
      INITIAL) = range(4)
 
 
+class CreatePaymentStatus(enum):
+    """
+    Anyone who catches CreatePaymentEvent should return one of this.
+    """
+
+    (SUCCESS,
+     FAIL,
+     UNHANDLED,) = range(3)

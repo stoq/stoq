@@ -28,6 +28,8 @@ from kiwi.log import Logger
 log = Logger('stoqlib.events')
 
 class Event(object):
+    returnclass = None
+
     @classmethod
     def emit(cls, *args, **kwargs):
         log.info('emitting event %r %r' % (args, kwargs))
@@ -35,6 +37,10 @@ class Event(object):
         # Pick the last return value which is not None
         for func, retval in reversed(rv):
             if retval is not None:
+                if (cls.returnclass and type(retval) != cls.returnclass
+                    and not isinstance(retval, cls.returnclass)):
+                    raise TypeError('Expected return value to be %s, got %s'
+                                    % (cls.returnclass, type(retval)))
                 return retval
 
     @classmethod
