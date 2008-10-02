@@ -177,7 +177,7 @@ class PaymentGroup(Domain):
             group=self)
         for payment in payments:
             self.remove_item(payment)
-            Payment.delete(payment.id)
+            Payment.delete(payment.id, connection=self.get_connection())
 
     def get_description(self):
         """Returns a small description for the payment group which will be
