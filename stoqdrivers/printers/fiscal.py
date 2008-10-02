@@ -276,6 +276,10 @@ class FiscalPrinter(BasePrinter):
         log.info('payment_receipt_close()')
         return self._driver.payment_receipt_close()
 
+    def payment_receipt_print_duplicate(self):
+        log.info('payment_receipt_print_duplicate()')
+        return self._driver.payment_receipt_print_duplicate()
+
     def get_serial(self):
         log.info('get_serial()')
 
@@ -357,3 +361,6 @@ class FiscalPrinter(BasePrinter):
         log.info('get_user_info()')
 
         return self._driver.get_user_registration_info()
+
+    def supports_duplicate_receipt(self):
+        return self._driver.supports_duplicate_receipt

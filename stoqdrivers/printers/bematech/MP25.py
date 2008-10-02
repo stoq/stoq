@@ -76,9 +76,12 @@ CMD_READ_REGISTER = 35
 CMD_ADD_ITEM = 63
 CMD_ADD_PAYMENT = 72
 CMD_GET_REGISTERS = 88
+CMD_GERENCIAL_REPORT_OPEN = 83
 CMD_PAYMENT_RECEIPT_OPEN = 66
 CMD_PAYMENT_RECEIPT_PRINT = 67
 CMD_PAYMENT_RECEIPT_CLOSE = 21
+CMD_PAYMENT_RECEIPT_PRINT_DUPLICATE = 91
+CMD_PROGRAM_PAYMENT_METHOD = 71
 
 # Page 51
 REGISTER_LAST_ITEM_ID = 12
@@ -159,6 +162,7 @@ class MP25(SerialBase):
     supported = True
     model_name = "Bematech MP25 FI"
     coupon_printer_charset = "cp850"
+    supports_duplicate_receipt = True
 
     EOL_DELIMIT = '\n'
 
@@ -245,7 +249,7 @@ class MP25(SerialBase):
         CS: 2 bytes, big endian checksum for command
         """
 
-        command = chr(MP25.CMD_PROTO) + command
+        command = chr(self.CMD_PROTO) + command
         return struct.pack('<bH%dsH' % len(command),
                            STX,
                            len(command) + 2,
@@ -280,14 +284,14 @@ class MP25(SerialBase):
                     raise error_codes[key]
 
         if st1 != 0:
-            _check_error_in_dict(MP25.st1_codes, st1)
+            _check_error_in_dict(self.st1_codes, st1)
 
         if st2 != 0:
-            _check_error_in_dict(MP25.st2_codes, st2)
+            _check_error_in_dict(self.st2_codes, st2)
             # first bit means not executed, look in st3 for more
             if st2 & 1:
-                if st3 in MP25.st3_codes:
-                    raise MP25.st3_codes[st3]
+                if st3 in self.st3_codes:
+                    raise self.st3_codes[st3]
 
     def _send_command(self, command, *args, **kwargs):
         fmt = ''
@@ -409,6 +413,15 @@ class MP25(SerialBase):
             self._send_command(CMD_COUPON_CANCEL)
 
         self._send_command(CMD_ADD_VOUCHER, type, "%014d" % int(value * Decimal('1e2')))
+
+    def _configure_payment_methods(self):
+        # Do one at a time, if you need it.
+        ret = self._send_command(CMD_PROGRAM_PAYMENT_METHOD,
+                                 '%-16s1' % 'Cartao Credito', raw=True)
+        #ret = self._send_command(CMD_PROGRAM_PAYMENT_METHOD,
+        #                         '%-16s1' % 'Cartao Debito', raw=True)
+        #ret = self._send_command(CMD_PROGRAM_PAYMENT_METHOD,
+        #                         '%-16s1' % 'Cheque', raw=True)
 
     #
     # This implements the ICouponPrinter Interface
@@ -582,10 +595,13 @@ class MP25(SerialBase):
 
     def payment_receipt_print(self, text):
         for line in text.split('\n'):
-            self._send_command(CMD_PAYMENT_RECEIPT_PRINT, line)
+            self._send_command(CMD_PAYMENT_RECEIPT_PRINT, line + '\n')
 
     def payment_receipt_close(self):
-        self._send_command(CMD_PAYMENT_RECEIPT_CLOSE)
+        ret = self._send_command(CMD_PAYMENT_RECEIPT_CLOSE)
+
+    def payment_receipt_print_duplicate(self):
+        self._send_command(CMD_PAYMENT_RECEIPT_PRINT_DUPLICATE)
 
     def get_capabilities(self):
         return dict(

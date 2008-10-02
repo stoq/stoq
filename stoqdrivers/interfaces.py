@@ -100,6 +100,10 @@ class ICouponPrinter(IDevice):
     coupon_printer_charset = Attribute("The charset name which the "
                                        "coupon printer uses.")
 
+    supports_duplicate_receipt = Attribute(
+                                "Wheater or not the printer can print a "
+                                "duplicate payment receipt")
+
     #
     # Common API
     #
