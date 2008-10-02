@@ -26,8 +26,8 @@
 Events used in the domain code
 """
 
+from stoqlib.enums import CreatePaymentStatus
 from stoqlib.lib.event import Event
-
 
 #
 # Sale events
@@ -39,6 +39,50 @@ class SaleConfirmEvent(Event):
 
     @param sale: the confirmed sale
     """
+
+#
+# Payment related events
+#
+
+class CreatePaymentEvent(Event):
+    """
+    This event is emmited when a payment is about to be created and
+    should be used to 'intercept' that payment creation.
+
+    return value should be one of L{enum.CreatePaymentStatus}
+
+    @param payment_method: The selected payment method.
+    @param sale: The sale the payment should belong to
+    """
+
+    returnclass = CreatePaymentStatus
+
+class CardPaymentReceiptPrepareEvent(Event):
+    """
+    This will be emmited when a card payment receipt should be printed.
+
+    Expected return value is a string to be printed
+
+    @param payment: the receipt of this payment
+    @param supports_duplicate: if the printer being used supports duplicate
+                               receipts
+    """
+
+class CardPaymentReceiptPrintedEvent(Event):
+    """
+    This gets emmited after a card payment receipt is successfully printed.
+
+    @param payment: the receipt of this payment
+    """
+
+class CardPaymentCanceledEvent(Event):
+    """
+    This gets emmited if a card payment receipt fails to be printed, meaning
+    the payment should be cancelled
+
+    @param payment: the receipt of this payment
+    """
+
 
 
 #

@@ -33,6 +33,9 @@ from stoqdrivers.exceptions import (DriverError, CouponOpenError,
 from zope.interface import implements
 
 from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.domain.events import (CardPaymentReceiptPrepareEvent,
+                                   CardPaymentCanceledEvent,
+                                   CardPaymentReceiptPrintedEvent)
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
@@ -154,8 +157,10 @@ class FiscalCoupon(gobject.GObject):
     gsignal('close', object, retval=int)
     gsignal('cancel')
     gsignal('get-coo', retval=int)
+    gsignal('get-supports-duplicate-receipt', retval=bool)
                                    # coo, payment, text
     gsignal('print-payment-receipt', int, object, str)
+    gsignal('cancel-payment-receipt')
 
     def __init__(self, parent):
         gobject.GObject.__init__(self)
@@ -282,8 +287,7 @@ class FiscalCoupon(gobject.GObject):
 
         sale.confirm()
 
-        # TODO: this should be fixed with bug 2249
-        #self._print_receipts(sale)
+        self._print_receipts(sale)
 
         if sale.paid_with_money():
             sale.set_paid()
@@ -292,11 +296,18 @@ class FiscalCoupon(gobject.GObject):
         return True
 
     def _print_receipts(self, sale):
+        supports_duplicate = self.emit('get-supports-duplicate-receipt')
+
         for payment in sale.payments:
             if payment.method.method_name == 'card':
-                # The text is a response from the TEF software. That should probably be stored as
-                # a temporary property of the payment. To be fixed with bug 2249
-                self.print_payment_receipt(payment, 'STOQ RULES')
+                receipt = CardPaymentReceiptPrepareEvent.emit(payment, supports_duplicate)
+                if self.print_payment_receipt(payment, receipt):
+                    CardPaymentReceiptPrintedEvent.emit(payment)
+                else:
+                    pass
+                    # This deserves another bug. If the payment cannot
+                    # be confirmed, we need to cancel the last sale. !!!
+                    # See bug 2249
 
     def totalize(self, sale):
         # XXX: Remove this when bug #2827 is fixed.
@@ -349,12 +360,12 @@ class FiscalCoupon(gobject.GObject):
 
         return False
 
-
     def print_payment_receipt(self, payment, receipt):
         """Print the receipt for the payment.
 
         This must be called after the coupon is closed.
         """
+
         try:
             self.emit('print-payment-receipt', self._coo, payment, receipt)
             return True

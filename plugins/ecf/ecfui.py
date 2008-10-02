@@ -319,6 +319,7 @@ class ECFUI(object):
             ('close', self._on_coupon__close),
             ('cancel', self._on_coupon__cancel),
             ('get-coo', self._on_coupon__get_coo),
+            ('get-supports-duplicate-receipt', self._on_coupon__get_supports_duplicate),
             ('print-payment-receipt', self._on_coupon__print_payment_receipt),
             ]:
             fiscalcoupon.connect_object(signal, callback, coupon)
@@ -519,6 +520,9 @@ class ECFUI(object):
 
     def _on_coupon__get_coo(self, coupon):
         return coupon.get_coo()
+
+    def _on_coupon__get_supports_duplicate(self, coupon):
+        return coupon.get_supports_duplicate_receipt()
 
     def _on_coupon__print_payment_receipt(self, coupon, coo, payment, receipt):
         coupon.print_payment_receipt(coo, payment, receipt)

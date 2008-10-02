@@ -382,6 +382,9 @@ class Coupon(object):
     def get_coo(self):
         return self._driver.get_coo()
 
+    def get_supports_duplicate_receipt(self):
+        return self._driver.supports_duplicate_receipt()
+
     def print_payment_receipt(self, coo, payment, receipt):
         """Print a payment receipt for a payment in a coupon
 
@@ -389,11 +392,17 @@ class Coupon(object):
         @param payment:
         @param receipt: the text to be printed
         """
-        constant = self._get_payment_method_constant(type(payment.method))
+        constant = self._get_payment_method_constant(payment.method)
         receipt_id = self._driver.get_payment_receipt_identifier(constant.constant_name)
 
-        self._driver.payment_receipt_open(receipt_id, coo, constant.device_value, payment.value)
+        supports_duplicate = self._driver.supports_duplicate_receipt()
+
+        self._driver.payment_receipt_open(receipt_id, coo, constant.device_value,
+                                          payment.value)
         self._driver.payment_receipt_print(receipt)
         self._driver.payment_receipt_close()
+
+        if supports_duplicate:
+            self._driver.payment_receipt_print_duplicate()
 
 

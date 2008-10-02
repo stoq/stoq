@@ -13,30 +13,33 @@
                         <property name="label" context="yes" translatable="yes">Method of Payment</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="GtkHBox" id="hbox1">
+                            <widget class="GtkHBox" id="methods_box">
                                 <property name="border_width">6</property>
                                 <property name="spacing">6</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="cash_check">
+                                    <widget class="ProxyRadioButton" id="cash_check">
                                         <property name="data_type">bool</property>
                                         <property name="is_focus">True</property>
                                         <property name="label" context="yes" translatable="yes">C_ash</property>
-                                        <property name="use-underline">True</property>
+                                        <property name="model_attribute">cash_check</property>
+                                        <property name="use_underline">True</property>
                                         <property name="visible">True</property>
                                     </widget>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="othermethods_check">
+                                    <widget class="ProxyRadioButton" id="multiple_check">
                                         <property name="active">False</property>
                                         <property name="data_type">bool</property>
                                         <property name="group">cash_check</property>
-                                        <property name="label" context="yes" translatable="yes">_Other Methods</property>
-                                        <property name="use-underline">True</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="label" context="yes" translatable="yes">Multiple Methods</property>
+                                        <property name="model_attribute">multiple_check</property>
+                                        <property name="sensitive">False</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
-                                        <property name="position">2</property>
+                                        <property name="position">1</property>
                                     </packing>
                                 </child>
                             </widget>
