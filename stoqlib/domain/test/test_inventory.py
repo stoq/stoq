@@ -98,7 +98,7 @@ class TestInventory(DomainTest):
 
         inventory_items = inventory.get_items()
         self.assertEqual(inventory_items.count(), 3)
-        self.assertEqual(list(inventory_items), items)
+        self.assertEqual(sorted(inventory_items), sorted(items))
 
     def testGetItemsForAdjustment(self):
         inventory = self.create_inventory()
@@ -111,7 +111,7 @@ class TestInventory(DomainTest):
 
         adjustment_items = inventory.get_items_for_adjustment()
         self.assertEqual(adjustment_items.count(), len(items))
-        self.assertEqual(list(adjustment_items), items)
+        self.assertEqual(sorted(adjustment_items), sorted(items))
 
     def testClose(self):
         inventory = self.create_inventory()

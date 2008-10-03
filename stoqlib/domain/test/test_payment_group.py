@@ -24,7 +24,10 @@
 
 from decimal import Decimal
 
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
+from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.parameter import ParameterData
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
@@ -33,6 +36,14 @@ from stoqlib.lib.parameters import sysparam
 
 
 class TestPaymentGroup(DomainTest):
+
+    def _payComissionWhenConfirmed(self):
+        sysparam(self.trans).update_parameter(
+            "SALE_PAY_COMMISSION_WHEN_CONFIRMED",
+            "1")
+        self.failUnless(
+            sysparam(self.trans).SALE_PAY_COMMISSION_WHEN_CONFIRMED)
+
     def testConfirm(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
@@ -46,7 +57,8 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(payment.status, Payment.STATUS_PENDING)
 
     def testInstallmentsCommissionAmount(self):
-        sysparam(self.trans).SALE_PAY_COMMISSION_WHEN_CONFIRMED = True
+        self._payComissionWhenConfirmed()
+
         sale = self.create_sale()
         sellable = self.add_product(sale, price=300)
         sale.order()
@@ -59,8 +71,8 @@ class TestPaymentGroup(DomainTest):
         payment1 = method.create_inpayment(sale.group, Decimal(100))
         payment2 = method.create_inpayment(sale.group, Decimal(200))
         self.failIf(Commission.selectBy(sale=sale, connection=self.trans))
-
         sale.confirm()
+        self.failUnless(Commission.selectBy(sale=sale, connection=self.trans))
 
         commissions = Commission.selectBy(sale=sale,
                                           connection=self.trans)
@@ -69,14 +81,14 @@ class TestPaymentGroup(DomainTest):
             self.failUnless(c.commission_type == Commission.INSTALLMENTS)
 
         # the first payment represent 1/3 of the total amount
-        # 5% of 300: 15,00 * 1/3 => 5,00 
+        # 5% of 300: 15,00 * 1/3 => 5,00
         self.assertEquals(commissions[0].value, Decimal("5.00"))
         # the second payment represent 2/3 of the total amount
         # $15 * 2/3 => 10,00
         self.assertEquals(commissions[1].value, Decimal("10.00"))
 
     def testInstallmentsCommissionAmountWithMultipleItems(self):
-        sysparam(self.trans).SALE_PAY_COMMISSION_WHEN_CONFIRMED = 1
+        self._payComissionWhenConfirmed()
 
         sale = self.create_sale()
         sellable = self.add_product(sale, price=300, quantity=3)
@@ -95,8 +107,9 @@ class TestPaymentGroup(DomainTest):
 
         sale.confirm()
 
-        commissions = Commission.selectBy(sale=sale,
-                                          connection=self.trans).orderBy('value')
+        commissions = Commission.selectBy(
+            sale=sale,
+            connection=self.trans).orderBy('value')
         self.assertEquals(commissions.count(), 3)
         for c in commissions:
             self.failUnless(c.commission_type == Commission.INSTALLMENTS)
@@ -112,9 +125,7 @@ class TestPaymentGroup(DomainTest):
         self.assertEquals(commissions[2].value, Decimal("22.50"))
 
     def testInstallmentsCommissionAmountWhenSaleReturn(self):
-        from stoqlib.database.runtime import get_current_branch
-        from stoqlib.domain.interfaces import IStorable
-        sysparam(self.trans).SALE_PAY_COMMISSION_WHEN_CONFIRMED = True
+        self._payComissionWhenConfirmed()
         sale = self.create_sale()
         sellable = self.create_sellable()
         source = CommissionSource(asellable=sellable,

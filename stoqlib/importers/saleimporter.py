@@ -44,7 +44,6 @@ class SaleImporter(CSVImporter):
               'salesperson_name',
               'payment_method',
               'product_list', # ids separated by | or * for all
-              'status',
               'coupon_id',
               'open_date',
               'due_date']
@@ -68,7 +67,6 @@ class SaleImporter(CSVImporter):
                 data.salesperson_name,))
         group = PaymentGroup(connection=trans)
         sale = Sale(client=client,
-                    status=int(data.status),
                     open_date=self.parse_date(data.open_date),
                     coupon_id=int(data.coupon_id),
                     salesperson=salesperson,
@@ -83,9 +81,11 @@ class SaleImporter(CSVImporter):
             sale.add_sellable(product.sellable)
             total_price += product.sellable.base_sellable_info.price
 
+        sale.order()
         method = PaymentMethod.get_by_name(trans, data.payment_method)
         method.create_inpayment(group, total_price,
                                 self.parse_date(data.due_date))
+        sale.confirm()
 
     def before_start(self, trans):
         till = Till.get_current(trans)
@@ -93,15 +93,16 @@ class SaleImporter(CSVImporter):
             till = Till(connection=trans,
                         station=get_current_station(trans))
             till.open_till()
-        self._till = till
+            assert till == Till.get_current(trans)
 
     def when_done(self, trans):
         # This is sort of hack, set the opening/closing dates to the date before
         # it's run, so we can open/close the till in the tests, which uses
         # the examples.
-        self._till.close_till()
+        till = Till.get_current(trans)
+        till.close_till()
         yesterday = datetime.date.today() - datetime.timedelta(1)
-        self._till.opening_date = yesterday
-        self._till.closing_date = yesterday
+        till.opening_date = yesterday
+        till.closing_date = yesterday
 
 

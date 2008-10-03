@@ -684,8 +684,7 @@ class SaleAdaptToPaymentTransaction(object):
                 self._create_commission(payment)
 
     def pay(self):
-        create_commission = not self._create_commission_at_confirm()
-        if not create_commission:
+        if self._create_commission_at_confirm():
             return
         for payment in self.sale.payments:
             # FIXME: This shouldn't be needed, something is called
