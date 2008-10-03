@@ -37,8 +37,7 @@ from stoqlib.domain.payment.method import CheckData
 from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
                                             PaymentAdaptToOutPayment,
                                             PaymentChangeHistory)
-from stoqlib.domain.person import (Person, PersonAdaptToClient,
-                                   PersonAdaptToSupplier)
+from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.lib.translation import stoqlib_gettext
@@ -65,12 +64,10 @@ class InPaymentView(Viewable):
                     PaymentAdaptToInPayment.q._originalID == Payment.q.id),
         LEFTJOINOn(None, PaymentGroup,
                    PaymentGroup.q.id == Payment.q.groupID),
+        LEFTJOINOn(None, Person,
+                    PaymentGroup.q.payerID == Person.q.id),
         LEFTJOINOn(None, Sale,
                    Sale.q.groupID == PaymentGroup.q.id),
-        LEFTJOINOn(None, PersonAdaptToClient,
-                   PersonAdaptToClient.q.id == Sale.q.clientID),
-        LEFTJOINOn(None, Person,
-                   Person.q.id == PersonAdaptToClient.q._originalID),
         LEFTJOINOn(None, PaymentCategory,
                    PaymentCategory.q.id == Payment.q.categoryID),
         ]
@@ -125,10 +122,8 @@ class OutPaymentView(Viewable):
                    PaymentGroup_Sale.q.id == Payment.q.groupID),
         LEFTJOINOn(None, Sale,
                    Sale.q.id == PaymentGroup_Sale.q.id),
-        LEFTJOINOn(None, PersonAdaptToSupplier,
-                   PersonAdaptToSupplier.q.id == PurchaseOrder.q.supplierID),
         LEFTJOINOn(None, Person,
-                   Person.q.id == PersonAdaptToSupplier.q._originalID),
+                   Person.q.id == PaymentGroup_Sale.q.recipientID),
         LEFTJOINOn(None, PaymentCategory,
                    PaymentCategory.q.id == Payment.q.categoryID),
         ]
