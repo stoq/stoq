@@ -100,7 +100,6 @@ class BasePaymentAddition(BaseEditor):
         self.model.set_pending()
         self.model.base_value = self.model.value
         person = self.person.get_selected()
-        print person
         if person is not None:
             setattr(self.model.group,
                     self.person_attribute,
