@@ -46,7 +46,7 @@
 --     total_quantity     - the items total quantity for the sale
 --
 --  Callsites:
---   
+--
 --   stoqlib/domain/person.py
 --   stoqlib/gui/search/salesearch.py
 --   stoqlib/gui/slaves/saleslave.py
@@ -77,8 +77,8 @@ CREATE VIEW sale_view AS
     sum(quantity * price) AS subtotal,
     sum(quantity) AS total_quantity
 
-  FROM asellable_item, person_adapt_to_sales_person, person, sale
-    
+  FROM sale_item, person_adapt_to_sales_person, person, sale
+
     LEFT JOIN person_adapt_to_client
     ON (sale.client_id = person_adapt_to_client.id)
 
@@ -86,13 +86,13 @@ CREATE VIEW sale_view AS
     ON (person_adapt_to_client.original_id = client_person.id)
 
   WHERE sale.is_valid_model = 't' AND
-        asellable_item.sale_id = sale_id AND
+        sale_item.sale_id = sale_id AND
         sale.salesperson_id = person_adapt_to_sales_person.id AND
         person_adapt_to_sales_person.original_id = person.id
- 
-  GROUP BY asellable_item.sale_id, sale.id,
+
+  GROUP BY sale_item.sale_id, sale.id,
            sale.coupon_id,
-           sale.surcharge_value, sale.discount_value, 
+           sale.surcharge_value, sale.discount_value,
            sale.open_date, sale.close_date,
            sale.status, sale.confirm_date,
            sale.cancel_date, sale.notes,
@@ -161,7 +161,7 @@ CREATE VIEW purchase_order_view AS
        purchase_item,
        person AS branch_person,
        purchase_order
-       
+
     LEFT JOIN person_adapt_to_transporter
     ON (purchase_order.transporter_id = person_adapt_to_transporter.id)
 

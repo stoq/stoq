@@ -102,7 +102,8 @@ CREATE TABLE city_location (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     country text,
     city text,
-    state text
+    state text,
+    UNIQUE(country, state, city)
 );
 
 CREATE TABLE person_adapt_to_individual (
@@ -294,12 +295,10 @@ CREATE TABLE sellable_unit (
     unit_index integer CONSTRAINT positive_unit_index CHECK(unit_index >= 0)
 );
 
-CREATE TABLE asellable (
-    -- Subclasses:
-    --    product_adapt_to_sellable
-    --    service_adapt_to_sellable
-    --    gift_certificate_adapt_to_sellable
+CREATE TABLE sellable (
     id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     barcode text,
     status integer CONSTRAINT valid_status CHECK (status >= 0 AND status < 4),
     cost numeric(10,2) CONSTRAINT positive_cost CHECK (cost >= 0),
@@ -308,20 +307,25 @@ CREATE TABLE asellable (
     base_sellable_info_id bigint REFERENCES base_sellable_info(id),
     on_sale_info_id bigint REFERENCES on_sale_info(id),
     category_id bigint REFERENCES sellable_category(id),
-    tax_constant_id bigint REFERENCES sellable_tax_constant(id),
-    child_name character varying(255)
+    tax_constant_id bigint REFERENCES sellable_tax_constant(id)
 );
 
 CREATE TABLE product (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    sellable_id bigint REFERENCES sellable(id),
     image bytea
 );
 
-CREATE TABLE product_adapt_to_sellable (
+CREATE TABLE product_component (
     id serial NOT NULL PRIMARY KEY,
-    original_id bigint UNIQUE REFERENCES product(id)
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    product_id bigint REFERENCES product(id),
+    component_id bigint REFERENCES product(id),
+    quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity > 0),
+    CONSTRAINT different_products CHECK (product_id != component_id)
 );
 
 CREATE TABLE product_adapt_to_storable (
@@ -339,8 +343,8 @@ CREATE TABLE product_supplier_info (
     notes text,
     is_main_supplier boolean,
     icms numeric(10,2) CONSTRAINT positive_icms CHECK (icms >= 0),
-    supplier_id bigint REFERENCES person_adapt_to_supplier(id),
-    product_id bigint REFERENCES product(id)
+    supplier_id bigint NOT NULL REFERENCES person_adapt_to_supplier(id),
+    product_id bigint NOT NULL REFERENCES product(id)
 );
 
 CREATE TABLE product_history (
@@ -350,23 +354,28 @@ CREATE TABLE product_history (
     quantity_sold numeric(10, 2) CONSTRAINT positive_quantity_sold CHECK (quantity_sold >= 0),
     quantity_received numeric(10, 2) CONSTRAINT positive_quantity_received CHECK (quantity_received >= 0),
     quantity_transfered numeric(10, 2) CONSTRAINT positive_quantity_transfered CHECK (quantity_transfered >= 0),
-    quantity_retended numeric(10, 2) CONSTRAINT positive_quantity_retended CHECK (quantity_retended >= 0),
+    quantity_retained numeric(10, 2) CONSTRAINT positive_quantity_retained CHECK (quantity_retained >= 0),
     sold_date timestamp,
     received_date timestamp,
     branch_id bigint REFERENCES person_adapt_to_branch(id),
-    sellable_id bigint REFERENCES asellable(id)
+    sellable_id bigint REFERENCES sellable(id)
 );
 
 CREATE TABLE service (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    sellable_id bigint REFERENCES sellable(id),
     image bytea
 );
 
-CREATE TABLE service_adapt_to_sellable (
+CREATE TABLE payment_group (
     id serial NOT NULL PRIMARY KEY,
-    original_id bigint UNIQUE REFERENCES service(id)
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    status integer CONSTRAINT valid_status CHECK (status >= 0 AND status < 4),
+    payer_id bigint REFERENCES person(id),
+    recipient_id bigint REFERENCES person(id)
 );
 
 CREATE TABLE purchase_order (
@@ -389,7 +398,8 @@ CREATE TABLE purchase_order (
     discount_value numeric(10,2) CONSTRAINT positive_discount_value CHECK (discount_value >= 0),
     supplier_id bigint REFERENCES person_adapt_to_supplier(id),
     branch_id bigint REFERENCES person_adapt_to_branch(id),
-    transporter_id bigint REFERENCES person_adapt_to_transporter(id)
+    transporter_id bigint REFERENCES person_adapt_to_transporter(id),
+    group_id bigint REFERENCES payment_group(id)
 );
 
 CREATE TABLE purchase_item (
@@ -400,8 +410,23 @@ CREATE TABLE purchase_item (
     quantity_received numeric(10,2) CONSTRAINT positive_quantity_received CHECK (quantity_received >= 0),
     base_cost numeric(10,2) CONSTRAINT positive_base_cost CHECK (base_cost >= 0),
     cost numeric(10,2) CONSTRAINT positive_cost CHECK (cost >= 0),
-    sellable_id bigint REFERENCES asellable(id),
+    sellable_id bigint REFERENCES sellable(id),
     order_id bigint REFERENCES purchase_order(id)
+);
+
+CREATE TABLE quote_group (
+    id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
+);
+
+CREATE TABLE quotation (
+     id serial NOT NULL PRIMARY KEY,
+     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+     purchase_id bigint REFERENCES purchase_order(id),
+     group_id bigint REFERENCES quote_group(id)
 );
 
 CREATE TABLE branch_station (
@@ -450,27 +475,22 @@ CREATE TABLE sale (
     surcharge_value numeric(10,2) CONSTRAINT positive_surcharge_value CHECK (surcharge_value >= 0),
     total_amount numeric(10, 2) CONSTRAINT positive_total_amount CHECK (total_amount >= 0),
     notes text,
-    client_role integer,
     client_id bigint REFERENCES person_adapt_to_client(id),
     cfop_id bigint REFERENCES cfop_data(id),
     salesperson_id bigint REFERENCES person_adapt_to_sales_person(id),
-    branch_id bigint REFERENCES person_adapt_to_branch(id)
-);
-
-CREATE TABLE sale_adapt_to_payment_group (
-    id serial NOT NULL PRIMARY KEY,
-    original_id bigint UNIQUE REFERENCES sale(id)
+    branch_id bigint REFERENCES person_adapt_to_branch(id),
+    group_id bigint REFERENCES payment_group(id)
 );
 
 CREATE TABLE sale_item (
     id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
     base_price numeric(10,2) CONSTRAINT positive_base_price CHECK (base_price >= 0),
     price numeric(10,2) CONSTRAINT positive_price CHECK (price >= 0),
     sale_id bigint REFERENCES sale(id),
-    sellable_id bigint REFERENCES asellable(id),
+    sellable_id bigint REFERENCES sellable(id),
     notes text,
     estimated_fix_date timestamp,
     completion_date timestamp
@@ -486,8 +506,8 @@ CREATE TABLE sale_item_adapt_to_delivery (
 
 CREATE TABLE product_stock_item (
     id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     stock_cost numeric(10,2),
     quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
     logic_quantity numeric(10,2) CONSTRAINT positive_logic_quantity CHECK (logic_quantity >= 0),
@@ -507,23 +527,6 @@ CREATE TABLE address (
     is_main_address boolean,
     person_id bigint REFERENCES person(id),
     city_location_id bigint REFERENCES city_location(id)
-);
-
-CREATE TABLE abstract_payment_group (
-    -- Subclasses:
-    --    sale_adapt_to_payment_group
-    --    purchase_order_adapt_to_payment_group
-    id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    status integer CONSTRAINT valid_status CHECK (status >= 0 AND status < 4),
-    open_date timestamp,
-    close_date timestamp,
-    cancel_date timestamp,
-    installments_number integer CONSTRAINT positive_installments_number CHECK (installments_number > 0),
-    interval_type integer,
-    intervals integer,
-    child_name character varying(255)
 );
 
 CREATE TABLE branch_synchronization (
@@ -565,6 +568,8 @@ CREATE TABLE card_installments_store_details (
 
 CREATE TABLE payment_destination (
     id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     description text,
     account_id bigint REFERENCES bank_account(id),
     notes text,
@@ -590,14 +595,22 @@ CREATE TABLE payment_method (
     is_active boolean,
     daily_penalty numeric(10,2) CONSTRAINT valid_daily_penalty CHECK (daily_penalty >= 0 AND daily_penalty <= 100),
     interest numeric(10,2) CONSTRAINT interest_percent CHECK (interest >= 0 AND interest <= 100),
-    destination_id bigint REFERENCES payment_destination(id)
-    te_created_id bigint REFERENCES transaction_entry(id);
-    te_modified_id bigint REFERENCES transaction_entry(id);
-    method_name text UNIQUE;
-    description text;
-    payment_day integer CONSTRAINT valid_payment_day CHECK (payment_day >= 1 AND payment_day <= 28);
-    closing_day integer CONSTRAINT valid_closing_day CHECK (closing_day >= 1 AND closing_day <= 28);
-    max_installments integer CONSTRAINT positive_max_installments CHECK (max_installments > 0);
+    destination_id bigint REFERENCES payment_destination(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    method_name text UNIQUE,
+    description text,
+    payment_day integer CONSTRAINT valid_payment_day CHECK (payment_day >= 1 AND payment_day <= 28),
+    closing_day integer CONSTRAINT valid_closing_day CHECK (closing_day >= 1 AND closing_day <= 28),
+    max_installments integer CONSTRAINT positive_max_installments CHECK (max_installments > 0)
+);
+
+CREATE TABLE payment_category (
+    id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    name text UNIQUE,
+    color text
 );
 
 CREATE TABLE payment (
@@ -617,9 +630,10 @@ CREATE TABLE payment (
     description text,
     payment_number text,
     method_id bigint REFERENCES payment_method(id),
-    group_id bigint REFERENCES abstract_payment_group(id),
+    group_id bigint REFERENCES payment_group(id),
     till_id bigint REFERENCES till(id),
-    destination_id bigint REFERENCES payment_destination(id)
+    destination_id bigint REFERENCES payment_destination(id),
+    category_id bigint REFERENCES payment_category(id)
 );
 
 CREATE TABLE check_data (
@@ -642,12 +656,36 @@ CREATE TABLE credit_provider_group_data (
     installments_number integer CONSTRAINT positive_installments_number CHECK (installments_number > 0),
     payment_type_id bigint REFERENCES payment_method_details(id),
     provider_id bigint REFERENCES person_adapt_to_credit_provider(id),
-    group_id bigint REFERENCES abstract_payment_group(id)
+    group_id bigint REFERENCES payment_group(id)
 );
 
 CREATE TABLE debit_card_details (
     id serial NOT NULL PRIMARY KEY,
     receive_days integer CONSTRAINT positive_receive_days CHECK (receive_days >= 0)
+);
+
+CREATE TABLE payment_change_history (
+    id serial NOT NULL PRIMARY KEY,
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    change_reason text,
+    last_due_date timestamp,
+    change_date timestamp,
+    new_due_date timestamp,
+    last_status integer,
+    new_status integer,
+    payment_id bigint REFERENCES payment(id)
+);
+
+CREATE TABLE fiscal_sale_history (
+    id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    sale_id bigint REFERENCES sale(id),
+    document_type integer CONSTRAINT valid_type CHECK (document_type = 0 OR document_type = 1),
+    document text,
+    coo integer,
+    document_counter integer
 );
 
 CREATE TABLE device_settings (
@@ -666,11 +704,12 @@ CREATE TABLE device_constant (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    is_valid_model boolean,
     constant_type integer CONSTRAINT valid_constant_type CHECK (constant_type >= 0 AND constant_type < 3),
     constant_name text,
     constant_value numeric(10,2) CONSTRAINT positive_constant_value CHECK (constant_value >= 0),
     constant_enum integer CHECK ((constant_enum >= 0 AND constant_enum < 8) OR
-    		                 (constant_enum >= 20 AND constant_enum < 25) OR
+		                         (constant_enum >= 20 AND constant_enum < 25) OR
                                  (constant_enum >= 40 AND constant_enum < 46)),
     device_value bytea,
     device_settings_id bigint REFERENCES device_settings(id)
@@ -686,47 +725,6 @@ CREATE TABLE employee_role_history (
     role_id bigint REFERENCES employee_role(id),
     employee_id bigint REFERENCES person_adapt_to_employee(id),
     is_active boolean
-);
-
-CREATE TABLE gift_certificate (
-    id serial NOT NULL PRIMARY KEY,
-    is_valid_model boolean,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
-);
-
-CREATE TABLE gift_certificate_adapt_to_sellable (
-    id serial NOT NULL PRIMARY KEY,
-    group_id bigint REFERENCES abstract_payment_group(id),
-    original_id bigint UNIQUE REFERENCES gift_certificate(id)
-);
-
-CREATE TABLE gift_certificate_type (
-    id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    is_active boolean,
-    base_sellable_info_id bigint REFERENCES base_sellable_info(id),
-    on_sale_info_id bigint REFERENCES on_sale_info(id)
-);
-
-CREATE TABLE inheritable_model (
-    -- Subclasses:
-    --   payment_method_details
-    id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
-);
-
-CREATE TABLE inheritable_model_adapter (
-    -- Subclasses:
-    --   asellable
-    --   abstract_payment_group
-    id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
 );
 
 CREATE TABLE liaison (
@@ -767,7 +765,9 @@ CREATE TABLE product_retention_history (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
     reason text,
-    product_id bigint REFERENCES product(id)
+    retention_date timestamp,
+    product_id bigint REFERENCES product(id),
+    cfop_id bigint REFERENCES cfop_data(id)
 );
 
 CREATE TABLE profile_settings (
@@ -777,11 +777,6 @@ CREATE TABLE profile_settings (
     app_dir_name text,
     has_permission boolean,
     user_profile_id bigint REFERENCES user_profile(id)
-);
-
-CREATE TABLE purchase_order_adapt_to_payment_group (
-    id serial NOT NULL PRIMARY KEY,
-    original_id bigint UNIQUE REFERENCES purchase_order(id)
 );
 
 CREATE TABLE receiving_order (
@@ -804,7 +799,7 @@ CREATE TABLE receiving_order (
     responsible_id bigint REFERENCES person_adapt_to_user(id),
     supplier_id bigint REFERENCES person_adapt_to_supplier(id),
     branch_id bigint REFERENCES person_adapt_to_branch(id),
-    purchase_id bigint REFERENCES purchase_order(id),
+    purchase_id bigint NOT NULL REFERENCES purchase_order(id),
     transporter_id bigint REFERENCES person_adapt_to_transporter(id),
     secure_value numeric(10,2) CONSTRAINT positive_secure_value CHECK (secure_value >= 0),
     expense_value numeric(10,2) CONSTRAINT positive_expense_value CHECK (expense_value >= 0)
@@ -816,7 +811,7 @@ CREATE TABLE receiving_order_item (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
     cost numeric(10,2) CONSTRAINT positive_cost CHECK (cost >= 0),
-    sellable_id bigint REFERENCES asellable(id),
+    sellable_id bigint REFERENCES sellable(id),
     receiving_order_id bigint REFERENCES receiving_order(id),
     purchase_item_id bigint REFERENCES purchase_item(id)
 );
@@ -839,7 +834,7 @@ CREATE TABLE delivery_item (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
-    sellable_id bigint REFERENCES asellable(id),
+    sellable_id bigint REFERENCES sellable(id),
     delivery_id bigint REFERENCES sale_item_adapt_to_delivery(id)
 );
 
@@ -868,7 +863,7 @@ CREATE TABLE fiscal_book_entry (
     cfop_id bigint REFERENCES cfop_data(id),
     branch_id bigint REFERENCES person_adapt_to_branch(id),
     drawee_id bigint REFERENCES person(id),
-    payment_group_id bigint REFERENCES abstract_payment_group(id)
+    payment_group_id bigint REFERENCES payment_group(id)
 );
 
 CREATE TABLE fiscal_day_history (
@@ -876,7 +871,7 @@ CREATE TABLE fiscal_day_history (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     emission_date date CONSTRAINT past_emission_date CHECK (emission_date <= DATE(NOW())),
-    station_id bigint REFERENCES branch_Station(id),
+    station_id bigint REFERENCES branch_station(id),
     serial text,
     serial_id integer,
     coupon_start integer CONSTRAINT positive_coupon_start CHECK (coupon_start > 0),
@@ -886,7 +881,8 @@ CREATE TABLE fiscal_day_history (
     period_total numeric(10, 2) CONSTRAINT positive_period_total CHECK (period_total >= 0),
     total numeric(10, 2) CONSTRAINT positive_total CHECK (total >= 0),
     tax_total numeric(10, 2) CONSTRAINT positive_tax_total CHECK (tax_total >= 0),
-    CONSTRAINT coupon_start_lower_than_coupon_end CHECK (coupon_start <= coupon_end)
+    CONSTRAINT coupon_start_lower_than_coupon_end CHECK (coupon_start <= coupon_end),
+    reduction_date timestamp
 );
 
 CREATE TABLE fiscal_day_tax (
@@ -895,7 +891,8 @@ CREATE TABLE fiscal_day_tax (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     code text CONSTRAINT valid_code CHECK (code ~ '^([0-9][0-9][0-9][0-9]|I|F|N|ISS|DESC|CANC)$'),
     value numeric(10, 2) CONSTRAINT positive_value CHECK (value >= 0),
-    fiscal_day_history_id bigint REFERENCES fiscal_day_history(id)
+    fiscal_day_history_id bigint REFERENCES fiscal_day_history(id),
+    type text
 );
 
 
@@ -904,22 +901,22 @@ CREATE TABLE installed_plugin (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     plugin_name text UNIQUE NOT NULL,
-    plugin_version integer UNIQUE CONSTRAINT positive_plugin_version 
+    plugin_version integer UNIQUE CONSTRAINT positive_plugin_version
                                   CHECK (plugin_version >= 0)
 );
 
 CREATE TABLE commission_source (
     id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     direct_value numeric(10, 2) NOT NULL CONSTRAINT positive_value
         CHECK (direct_value >= 0),
     installments_value numeric(10, 2) NOT NULL CONSTRAINT positive_installments_value
         CHECK (installments_value >= 0),
     category_id bigint REFERENCES sellable_category(id),
-    asellable_id bigint REFERENCES asellable(id),
-    -- only one reference will exist at a time: category_id or asellable_id
+    asellable_id bigint REFERENCES sellable(id),
+    -- only one reference will exist at a time: category_id or sellable_id
     -- never both or none of them
     CONSTRAINT check_exist_one_fkey
         CHECK (category_id IS NOT NULL AND asellable_id IS NULL OR
@@ -928,8 +925,8 @@ CREATE TABLE commission_source (
 
 CREATE TABLE commission (
     id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     value numeric(10, 2) NOT NULL,
     commission_type integer NOT NULL,
@@ -940,8 +937,8 @@ CREATE TABLE commission (
 
 CREATE TABLE transfer_order (
     id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     open_date timestamp NOT NULL,
     receival_date timestamp,
@@ -955,12 +952,71 @@ CREATE TABLE transfer_order (
 
 CREATE TABLE transfer_order_item (
     id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    sellable_id bigint NOT NULL REFERENCES asellable(id),
+    sellable_id bigint NOT NULL REFERENCES sellable(id),
     transfer_order_id bigint NOT NULL REFERENCES transfer_order(id),
     quantity numeric(10, 2) NOT NULL CONSTRAINT positive_quantity CHECK (quantity > 0)
+);
+
+CREATE TABLE invoice_layout (
+    id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    description varchar NOT NULL,
+    width bigint NOT NULL CONSTRAINT positive_width CHECK (width > 0),
+    height bigint NOT NULL CONSTRAINT positive_height CHECK (height > 0)
+);
+
+CREATE TABLE invoice_field (
+    id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    field_name varchar NOT NULL,
+    layout_id bigint REFERENCES invoice_layout(id),
+    x bigint NOT NULL CONSTRAINT positive_x CHECK (x >= 0),
+    y bigint NOT NULL CONSTRAINT positive_y CHECK (y >= 0),
+    width bigint NOT NULL CONSTRAINT positive_width CHECK (width > 0),
+    height bigint NOT NULL CONSTRAINT positive_height CHECK (height > 0)
+);
+
+CREATE TABLE invoice_printer (
+    id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    device_name varchar NOT NULL,
+    description varchar NOT NULL,
+    station_id bigint REFERENCES branch_station(id),
+    layout_id bigint REFERENCES invoice_layout(id)
+);
+
+CREATE TABLE inventory (
+    id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    status integer CONSTRAINT valid_status CHECK (status >= 0 and status < 3),
+    open_date timestamp NOT NULL,
+    close_date timestamp,
+    invoice_number integer CONSTRAINT positive_invoice_number CHECK (invoice_number > 0  and invoice_number < 999999),
+    branch_id bigint NOT NULL REFERENCES person_adapt_to_branch(id)
+);
+
+CREATE TABLE inventory_item (
+    id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    product_id bigint NOT NULL REFERENCES product(id),
+    recorded_quantity numeric(10,2) CONSTRAINT positive_recorded_quantity CHECK (recorded_quantity >= 0),
+    actual_quantity numeric(10,2) CONSTRAINT positive_actual_quantity CHECK (actual_quantity >= 0),
+    inventory_id bigint NOT NULL REFERENCES inventory(id),
+    reason text,
+    cfop_data_id bigint REFERENCES cfop_data(id)
 );
 
 ALTER TABLE transaction_entry
@@ -980,4 +1036,4 @@ CREATE TABLE system_table (
     generation integer CONSTRAINT positive_generation CHECK (generation >= 0)
 );
 
-INSERT INTO system_table (updated, patchlevel, generation) VALUES (CURRENT_TIME, 25, 0);
+INSERT INTO system_table (updated, patchlevel, generation) VALUES (CURRENT_TIMESTAMP, 0, 1);
