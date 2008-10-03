@@ -146,7 +146,8 @@ class TestSale(DomainTest):
 
         for payment in sale.payments:
             self.assertEquals(payment.status, Payment.STATUS_PAID)
-            entry = TillEntry.selectOneBy(payment=payment, connection=self.trans)
+            entry = TillEntry.selectOneBy(payment=payment,
+                                          connection=self.trans)
             self.assertEquals(entry.value, payment.value)
 
     def testConfirmCheck(self):
@@ -175,7 +176,8 @@ class TestSale(DomainTest):
 
         for payment in sale.payments:
             self.assertEquals(payment.status, Payment.STATUS_PENDING)
-            entry = TillEntry.selectOneBy(payment=payment, connection=self.trans)
+            entry = TillEntry.selectOneBy(payment=payment,
+                                          connection=self.trans)
             self.assertEquals(entry.value, payment.value)
 
     def testConfirmClient(self):
@@ -520,7 +522,8 @@ class TestSale(DomainTest):
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
-        self.failIf(Commission.selectBy(connection=self.trans))
+        self.failIf(Commission.selectBy(sale=sale,
+                                        connection=self.trans))
         sale.confirm()
         commissions = Commission.selectBy(sale=sale,
                                           connection=self.trans)
@@ -543,7 +546,8 @@ class TestSale(DomainTest):
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
-        self.failIf(Commission.selectBy(connection=self.trans))
+        self.failIf(Commission.selectBy(sale=sale,
+                                        connection=self.trans))
         sale.confirm()
         commissions = Commission.selectBy(sale=sale,
                                           connection=self.trans)
@@ -561,7 +565,8 @@ class TestSale(DomainTest):
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
-        self.failIf(Commission.selectBy(connection=self.trans))
+        self.failIf(Commission.selectBy(sale=sale,
+                                        connection=self.trans))
         sale.confirm()
         sale.return_(sale.create_sale_return_adapter())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)

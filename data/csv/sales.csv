@@ -1,5 +1,5 @@
-% branch_name, client_name, salesperson_name, payment_method, product_list, status,
+% branch_name, client_name, salesperson_name, payment_method, product_list,
 % coupon_id, open_date, due_date
-Async Open Source,Vitalina Claudino,Deivis Alexandre Junior,money,1|2|3,2,1001,2008-01-01,2008-01-01
-Async Open Source,Alessandra Almeida Itaberá,Deivis Alexandre Junior,check,4|5|6,3,1002,2008-06-01,2008-06-15
-Async Open Source,Luis Sergio da Silva Marin,Deivis Alexandre Junior,bill,7|8|9,1,1003,2008-09-01,2008-09-15
+Async Open Source,Vitalina Claudino,Deivis Alexandre Junior,money,1|2|3,1001,2008-01-01,2008-01-01
+Async Open Source,Alessandra Almeida Itaberá,Deivis Alexandre Junior,check,4|5|6,1002,2008-06-01,2008-06-15
+Async Open Source,Luis Sergio da Silva Marin,Deivis Alexandre Junior,bill,7|8|9,1003,2008-09-01,2008-09-15

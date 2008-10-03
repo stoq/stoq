@@ -68,7 +68,6 @@ class TestTill(DomainTest):
 
     def testGetCurrentTillClose(self):
         station = get_current_station(self.trans)
-
         self.assertEqual(Till.get_current(self.trans), None)
         till = Till(connection=self.trans, station=station)
         till.open_till()
@@ -87,7 +86,7 @@ class TestTill(DomainTest):
         self.assertRaises(TillError, till.open_till)
 
     def testTillClose(self):
-        station = get_current_station(self.trans)
+        station = self.create_station()
         till = Till(connection=self.trans, station=station)
         till.open_till()
         self.assertEqual(till.status, Till.STATUS_OPEN)
@@ -96,14 +95,14 @@ class TestTill(DomainTest):
         self.assertRaises(TillError, till.close_till)
 
     def testTillCloseMoreThanBalance(self):
-        station = get_current_station(self.trans)
+        station = self.create_station()
         till = Till(connection=self.trans, station=station)
         till.open_till()
         self.assertRaises(ValueError, till.close_till, 20)
 
     def testGetBalance(self):
         till = Till(connection=self.trans,
-                    station=get_current_station(self.trans))
+                    station=self.create_station())
         till.open_till()
 
         old = till.get_balance()
@@ -114,7 +113,7 @@ class TestTill(DomainTest):
 
     def testGetCreditsTotal(self):
         till = Till(connection=self.trans,
-                    station=get_current_station(self.trans))
+                    station=self.create_station())
         till.open_till()
 
         old = till.get_credits_total()
@@ -126,7 +125,7 @@ class TestTill(DomainTest):
 
     def testGetDebitsTotal(self):
         till = Till(connection=self.trans,
-                    station=get_current_station(self.trans))
+                    station=self.create_station())
         till.open_till()
 
         old = till.get_debits_total()
@@ -165,7 +164,7 @@ class TestTill(DomainTest):
         self.assertEqual(Till.get_last_opened(self.trans), till)
 
     def testNeedsClosing(self):
-        till = Till(station=get_current_station(self.trans),
+        till = Till(station=self.create_station(),
                     connection=self.trans)
         self.failIf(till.needs_closing())
         till.open_till()
@@ -177,7 +176,7 @@ class TestTill(DomainTest):
 
     def testAddEntryInPayment(self):
         till = Till(connection=self.trans,
-                    station=get_current_station(self.trans))
+                    station=self.create_station())
         till.open_till()
 
         payment = self._create_inpayment()
@@ -187,7 +186,7 @@ class TestTill(DomainTest):
 
     def testAddEntryOutPayment(self):
         till = Till(connection=self.trans,
-                    station=get_current_station(self.trans))
+                    station=self.create_station())
         till.open_till()
 
         payment = self._create_outpayment()
@@ -197,7 +196,7 @@ class TestTill(DomainTest):
 
     def testAddCreditEntry(self):
         till = Till(connection=self.trans,
-                    station=get_current_station(self.trans))
+                    station=self.create_station())
         till.open_till()
 
         self.assertEqual(till.get_balance(), 0)
@@ -206,7 +205,7 @@ class TestTill(DomainTest):
 
     def testAddDebitEntry(self):
         till = Till(connection=self.trans,
-                    station=get_current_station(self.trans))
+                    station=self.create_station())
         till.open_till()
 
         self.assertEqual(till.get_balance(), 0)
