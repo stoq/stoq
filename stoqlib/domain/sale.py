@@ -387,7 +387,6 @@ class Sale(ValidatableDomain):
         if self.client and not self.client.is_active:
             raise SellError('Unable to make sales for clients with status '
                             '%s' % self.client.get_status_string())
-
         self.set_valid()
 
         self.status = Sale.STATUS_ORDERED
@@ -413,6 +412,9 @@ class Sale(ValidatableDomain):
 
         transaction = IPaymentTransaction(self)
         transaction.confirm()
+
+        if self.client:
+            self.group.payer = self.client.person
 
         SaleConfirmEvent.emit(self, conn)
 

@@ -90,6 +90,15 @@ class TestPurchaseOrder(DomainTest):
         transporter.freight_percentage = Decimal(7)
         self.assertEqual(order.get_freight(), Decimal(7))
 
+    def testConfirmSupplier(self):
+        order = self.create_purchase_order()
+        self.assertRaises(ValueError, order.confirm)
+        order.status = PurchaseOrder.ORDER_PENDING
+
+        order.supplier = self.create_supplier()
+        order.confirm()
+        self.assertEquals(order.group.recipient, order.supplier.person)
+
 
 class TestQuoteGroup(DomainTest):
 

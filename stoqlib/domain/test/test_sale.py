@@ -178,6 +178,16 @@ class TestSale(DomainTest):
             entry = TillEntry.selectOneBy(payment=payment, connection=self.trans)
             self.assertEquals(entry.value, payment.value)
 
+    def testConfirmClient(self):
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+        self.add_payments(sale)
+
+        sale.client = self.create_client()
+        sale.confirm()
+        self.assertEquals(sale.group.payer, sale.client.person)
+
     def testPay(self):
         sale = self.create_sale()
         self.failIf(sale.can_set_paid())

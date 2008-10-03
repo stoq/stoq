@@ -278,6 +278,9 @@ class PurchaseOrder(ValidatableDomain):
         transaction = IPaymentTransaction(self)
         transaction.confirm()
 
+        if self.supplier:
+            self.group.recipient = self.supplier.person
+
         self.status = PurchaseOrder.ORDER_CONFIRMED
         self.confirm_date = confirm_date
 
