@@ -129,6 +129,7 @@ def _create_slave_test():
         'TillClosingEditor': 'requires an open till',
         'InvoicePrinterEditor' : '',
         'ServiceTributarySituationSlave': ' ',
+        'BasePaymentAddition': ' ',
         }
     namespace = dict(_test_slave=_test_slave)
 
