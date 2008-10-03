@@ -12,8 +12,8 @@ def apply_patch(trans):
     if not trans.tableHasColumn(table_name, 'ipi_value'):
         for column in [
             'entry_type integer',
-            'te_created_id bigint REFERENCES transaction_entry(id)',
-            'te_modified_id bigint REFERENCES transaction_entry(id)',
+            'te_created_id bigint unique references transaction_entry(id)',
+            'te_modified_id bigint unique references transaction_entry(id)',
             'icms_value numeric(10,2)',
             'iss_value numeric(10,2)',
             'ipi_value numeric(10,2)']:
@@ -24,7 +24,8 @@ UPDATE abstract_fiscal_book_entry
    SET te_created_id = inheritable_model.te_created_id,
        te_modified_id = inheritable_model.te_modified_id
   FROM inheritable_model
- WHERE inheritable_model.child_name = 'AbstractFiscalBookEntry';
+ WHERE inheritable_model.id = abstract_fiscal_book_entry.id;
+
 DELETE FROM inheritable_model WHERE child_name = 'AbstractFiscalBookEntry';
 
 UPDATE abstract_fiscal_book_entry
@@ -38,7 +39,8 @@ UPDATE abstract_fiscal_book_entry
    SET entry_type = 1,
        iss_value = iss_book_entry.iss_value
   FROM iss_book_entry
- WHERE abstract_fiscal_book_entry.id = iss_book_entry.id;""")
+ WHERE abstract_fiscal_book_entry.id = iss_book_entry.id;
+""")
 
     trans.query("""
 ALTER TABLE abstract_fiscal_book_entry DROP COLUMN child_name;

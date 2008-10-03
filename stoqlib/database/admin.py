@@ -227,7 +227,7 @@ def create_base_schema():
     log.info('Creating base schema')
 
     # A Base schema shared between all RDBMS implementations
-    schema = environ.find_resource('sql', 'schema.sql')
+    schema = environ.find_resource('sql', 'schema-2.sql')
     if execute_sql(schema) != 0:
         error('Failed to create base schema')
 

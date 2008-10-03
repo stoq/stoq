@@ -68,12 +68,14 @@ class Patch(object):
         # Base is the part of the filename minus the extension
         base = os.path.basename(filename).split('.')[0]
 
-        # "patch-20" -> 20
-        self.level = int(base.split('-', 1)[1])
+        # "patch-20-0" -> (20, 0): (level, generation)
+        base_parts = base.split('-', 2)
+        self.level = int(base_parts[1])
+        self.generation = int(base_parts[2])
         self._migration = migration
 
     def __cmp__(self, other):
-        return cmp(self.level, other.level)
+        return cmp(self.get_version(), other.get_version())
 
     def apply(self, conn):
         """Apply the patch
@@ -81,7 +83,7 @@ class Patch(object):
         """
         log.info('Applying: %s' % (self.filename,))
 
-        temporary = tempfile.mktemp(prefix="patch-%d-" % self.level)
+        temporary = tempfile.mktemp(prefix="patch-%d-%d-" % self.get_version())
 
         if self.filename.endswith('.sql'):
             shutil.copy(self.filename, temporary)
@@ -95,7 +97,7 @@ class Patch(object):
         else:
             raise AssertionError("Unknown filename: %s" % (self.filename,))
 
-        sql = self._migration.generate_sql_for_patch(self.level)
+        sql = self._migration.generate_sql_for_patch(self)
         open(temporary, 'a').write(sql)
         retcode = execute_sql(temporary)
         if retcode != 0:
@@ -103,6 +105,12 @@ class Patch(object):
                 os.path.basename(self.filename), retcode))
 
         os.unlink(temporary)
+
+    def get_version(self):
+        """Returns the patch version
+        @returns a tuple with the patch generation and level
+        """
+        return self.generation, self.level
 
 class SchemaMigration(object):
     """Schema migration management
@@ -146,26 +154,26 @@ class SchemaMigration(object):
             return
 
         patches = self._get_patches()
-        latest_available = patches[-1].level
+        latest_available = patches[-1].get_version()
         current_version = self.get_current_version()
 
         last_level = None
         if current_version != latest_available:
             applied = []
             for patch in patches:
-                if patch.level <= current_version:
+                if patch.get_version() <= current_version:
                     continue
                 patch.apply(self.conn)
-                applied.append(patch.level)
+                applied.append(patch)
 
             assert applied
             log.info("All patches (%s) applied." % (
-                ''.join(str(p) for p in applied)))
+                ''.join(str(p.level) for p in applied)))
             last_level = applied[-1]
 
         self.after_update()
 
-        return current_version, last_level
+        return current_version, last_level.get_version()
 
     # Public API
 
@@ -176,16 +184,17 @@ class SchemaMigration(object):
         """
         # Fetch the latest, eg the last in the list
         patches = self._get_patches()
-        latest_available = patches[-1].level
+        latest_available = patches[-1].get_version()
 
         current_version = self.get_current_version()
         if current_version == latest_available:
             return True
         elif current_version > latest_available:
+            current = "(%d.%d)" % current_version
+            latest = "(%d.%d)" % latest_available
             raise DatabaseInconsistency(
-                'The current version of database (%d) is greater than the '
-                'latest available version (%d)'
-                % (current_version, latest_available))
+                'The current version of database %s is greater than the '
+                'latest available version %s' % (current, latest))
 
         return False
 
@@ -193,22 +202,25 @@ class SchemaMigration(object):
         """Apply all available patches
         """
         log.info("Applying all patches")
+        current_version = self.get_current_version()
         for patch in self._get_patches():
-            patch.apply(self.conn)
+            if patch.get_version() > current_version:
+                patch.apply(self.conn)
 
     def update(self):
         """Updates the database schema
         """
         if self.check_uptodate():
-            print 'Database is already at revision %d' % (
+            print 'Database is already at the latest version %d.%d' % (
                 self.get_current_version())
         else:
             from_, to = self._update_schema()
             if to is None:
                 print 'Database schema updated'
             else:
-                print 'Database schema updated from %d to %d' % (from_, to)
-
+                f = "(%d.%d)" % from_
+                t = "(%d.%d)" % to
+                print 'Database schema updated from %s to %s' % (f, t)
 
     def get_current_version(self):
         """This method is revision for returning the database schema version
@@ -219,13 +231,13 @@ class SchemaMigration(object):
         """
         raise NotImplementedError
 
-    def generate_sql_for_patch(self, level):
+    def generate_sql_for_patch(self, patch):
         """This method is responsible for creating an SQL
         statement which is used to update the migration versioning
         information
 
         This must be implemented in a subclass
-        @param level: database level to upgrade to
+        @param patch: the patch that was applied
         @returns: an SQL string
         """
         raise NotImplementedError
@@ -242,7 +254,7 @@ class StoqlibSchemaMigration(SchemaMigration):
     and all its plugins
     """
     patch_resource = 'sql'
-    patch_patterns = ['patch-*.sql', 'patch-*.py']
+    patch_patterns = ['patch-*-*.sql', 'patch-*-*.py']
 
     def check_uptodate(self):
         retval = super(StoqlibSchemaMigration, self).check_uptodate()
@@ -281,14 +293,17 @@ class StoqlibSchemaMigration(SchemaMigration):
 
         if self.conn.tableHasColumn('system_table', 'generation'):
             results = SystemTable.select(connection=self.conn)
-            current_version = results.max('patchlevel')
+            current_generation = results.max('generation')
+            results = SystemTable.selectBy(generation=current_generation,
+                                           connection=self.conn)
+            current_patchlevel = results.max('patchlevel')
         elif self.conn.tableHasColumn('asellable', 'code'):
             raise SystemExit(
                 _("Unsupported database version, you need to reinstall"))
         else:
-            current_version = 0
+            current_generation, current_patchlevel = 0
 
-        return current_version
+        return current_generation, current_patchlevel
 
     def after_update(self):
         # checks if there is new applications and update all the user
@@ -300,11 +315,11 @@ class StoqlibSchemaMigration(SchemaMigration):
         # Updating the parameter list
         ensure_system_parameters(update=True)
 
-    def generate_sql_for_patch(self, level):
+    def generate_sql_for_patch(self, patch):
         return ("INSERT INTO system_table (updated, patchlevel, generation)"
                 "VALUES (NOW(), %s, %s)" % (
-            self.conn.sqlrepr(level),
-            self.conn.sqlrepr(0)))
+            self.conn.sqlrepr(patch.level),
+            self.conn.sqlrepr(patch.generation)))
 
 
 class PluginSchemaMigration(SchemaMigration):
@@ -327,11 +342,11 @@ class PluginSchemaMigration(SchemaMigration):
             plugin_name=self.plugin_name,
             connection=self.conn)
 
-    def generate_sql_for_patch(self, level):
+    def generate_sql_for_patch(self, patch):
         assert self._plugin
         return ("UPDATE installed_plugin "
                 "SET plugin_version = %s "
-                "WHERE id = %s") % (self.conn.sqlrepr(level),
+                "WHERE id = %s") % (self.conn.sqlrepr(patch.level),
                                     self.conn.sqlrepr(self._plugin.id))
 
     def get_current_version(self):
