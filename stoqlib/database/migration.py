@@ -28,6 +28,7 @@
 
 import glob
 import os
+import re
 import shutil
 import tempfile
 
@@ -68,10 +69,10 @@ class Patch(object):
         # Base is the part of the filename minus the extension
         base = os.path.basename(filename).split('.')[0]
 
-        # "patch-20-0" -> (20, 0): (level, generation)
+        # "patch-00-20" -> (00, 20): (generation, level)
         base_parts = base.split('-', 2)
-        self.level = int(base_parts[1])
-        self.generation = int(base_parts[2])
+        self.generation = int(base_parts[1])
+        self.level = int(base_parts[2])
         self._migration = migration
 
     def __cmp__(self, other):
@@ -112,6 +113,7 @@ class Patch(object):
         """
         return self.generation, self.level
 
+
 class SchemaMigration(object):
     """Schema migration management
 
@@ -122,7 +124,7 @@ class SchemaMigration(object):
     """
 
     patch_resource = None
-    patch_patterns = None
+    patch_patterns = ["patch*.sql",  "patch*.py"]
 
     def __init__(self):
         if self.patch_resource is None:
@@ -135,12 +137,23 @@ class SchemaMigration(object):
                 self.__class__.__name__))
         self.conn = get_connection()
 
+    def _patchname_is_valid(self, filename):
+        # simple checking of the patch naming convention
+        valid_patterns = ["patch-\d\d-\d\d.sql", "patch-\d\d-\d\d.py"]
+        for valid_pattern in valid_patterns:
+            if re.match(valid_pattern, os.path.basename(filename)) is not None:
+                return True
+        return False
+
     def _get_patches(self):
         patches = []
         for directory in environ.get_resource_paths(self.patch_resource):
             for pattern in self.patch_patterns:
                 for filename in glob.glob(os.path.join(directory, pattern)):
-                    patches.append(Patch(filename, self))
+                    if self._patchname_is_valid(filename):
+                        patches.append(Patch(filename, self))
+                    else:
+                        print "Invalid patch name: %s" % filename
         return sorted(patches)
 
     def _update_schema(self):
@@ -254,7 +267,6 @@ class StoqlibSchemaMigration(SchemaMigration):
     and all its plugins
     """
     patch_resource = 'sql'
-    patch_patterns = ['patch-*-*.sql', 'patch-*-*.py']
 
     def check_uptodate(self):
         retval = super(StoqlibSchemaMigration, self).check_uptodate()
@@ -351,5 +363,5 @@ class PluginSchemaMigration(SchemaMigration):
 
     def get_current_version(self):
         if self._plugin:
-            return self._plugin.plugin_version
-        return 0
+            return (0, self._plugin.plugin_version)
+        return (0, 0)

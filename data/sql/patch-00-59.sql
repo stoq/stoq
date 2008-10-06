@@ -11,12 +11,6 @@ ALTER TABLE person_adapt_to_transporter
 -- constraints. So, difference between a updated database with a new database
 -- will be that constraint names.
 
---ALTER TABLE commission_source
---	DROP CONSTRAINT check_exist_one_fkey;
---
---ALTER TABLE commission_source
---	ADD CONSTRAINT check_exist_one_fkey CHECK ((((category_id IS NOT NULL) AND (sellable_id IS NULL)) OR ((category_id IS NULL) AND (sellable_id IS NOT NULL))));
---
 ALTER TABLE commission_source
     ADD CONSTRAINT commission_source_te_created_id_key UNIQUE (te_created_id);
 
@@ -76,9 +70,6 @@ ALTER TABLE fiscal_book_entry
 
 ALTER TABLE fiscal_book_entry
 	ADD CONSTRAINT fiscal_book_entry_te_modified_id_fkey FOREIGN KEY (te_modified_id) REFERENCES transaction_entry(id);
-
-ALTER TABLE fiscal_day_tax
-	ADD CONSTRAINT valid_code CHECK ((code ~ '^([0-9][0-9][0-9][0-9]|I|F|N|ISS|DESC|CANC)$'::text));
 
 ALTER TABLE fiscal_sale_history
 	DROP CONSTRAINT paulista_invoice_te_created_id_key;

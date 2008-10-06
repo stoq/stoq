@@ -30,6 +30,9 @@ Helper functions related to administration of the database, creating
 tables, removing tables and configuring administration user.
 """
 
+import glob
+import os.path
+
 from kiwi.argcheck import argcheck
 from kiwi.component import get_utility, provide_utility
 from kiwi.datatypes import currency
@@ -219,6 +222,15 @@ def _create_procedural_languages():
     trans.query('CREATE LANGUAGE plpgsql')
     trans.commit(close=True)
 
+def _get_latest_schema():
+    schema_pattern = "schema-??.sql"
+    schemas = []
+    for resource in environ.get_resource_paths("sql"):
+        for filename in glob.glob(os.path.join(resource, schema_pattern)):
+            schemas.append(filename)
+    assert schemas
+    return schemas[-1]
+
 def create_base_schema():
     log.info('Creating base schema')
 
@@ -227,7 +239,7 @@ def create_base_schema():
     log.info('Creating base schema')
 
     # A Base schema shared between all RDBMS implementations
-    schema = environ.find_resource('sql', 'schema-2.sql')
+    schema = _get_latest_schema()
     if execute_sql(schema) != 0:
         error('Failed to create base schema')
 
