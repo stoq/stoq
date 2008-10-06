@@ -86,6 +86,13 @@ class SaleImporter(CSVImporter):
         method.create_inpayment(group, total_price,
                                 self.parse_date(data.due_date))
         sale.confirm()
+        #XXX: The payments are paid automatically when a sale is confirmed.
+        #     So, we will change all the payment paid_date to the same date
+        #     as open_date, then we can test the reports properly.
+        for payment in sale.group.payments:
+            if payment.is_paid():
+                p = trans.get(payment)
+                p.paid_date = self.parse_date(data.open_date)
 
     def before_start(self, trans):
         till = Till.get_current(trans)
