@@ -58,8 +58,8 @@ class CommissionSlave(BaseEditorSlave):
                 self._create_source()
 
     def _get_source(self):
-        asellable = self.model
-        return CommissionSource.selectOneBy(asellable=asellable.id,
+        sellable = self.model
+        return CommissionSource.selectOneBy(sellable=sellable.id,
                                             connection=self.conn)
 
     def _create_source(self):
@@ -67,7 +67,7 @@ class CommissionSlave(BaseEditorSlave):
         inst = self._get_installments_commission()
         CommissionSource(direct_value=direct,
                          installments_value=inst,
-                         asellable=self.model,
+                         sellable=self.model,
                          connection=self.conn)
 
     def _delete_source(self, source):
