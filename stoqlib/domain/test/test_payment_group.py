@@ -62,7 +62,7 @@ class TestPaymentGroup(DomainTest):
         sale = self.create_sale()
         sellable = self.add_product(sale, price=300)
         sale.order()
-        source = CommissionSource(asellable=sellable,
+        source = CommissionSource(sellable=sellable,
                                   direct_value=12,
                                   installments_value=5,
                                   connection=self.trans)
@@ -94,7 +94,7 @@ class TestPaymentGroup(DomainTest):
         sellable = self.add_product(sale, price=300, quantity=3)
         sale.order()
 
-        CommissionSource(asellable=sellable,
+        CommissionSource(sellable=sellable,
                          direct_value=12,
                          installments_value=5,
                          connection=self.trans)
@@ -128,7 +128,7 @@ class TestPaymentGroup(DomainTest):
         self._payComissionWhenConfirmed()
         sale = self.create_sale()
         sellable = self.create_sellable()
-        source = CommissionSource(asellable=sellable,
+        source = CommissionSource(sellable=sellable,
                                   direct_value=12,
                                   installments_value=5,
                                   connection=self.trans)

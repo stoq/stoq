@@ -514,7 +514,7 @@ class TestSale(DomainTest):
     def testCommissionAmount(self):
         sale = self.create_sale()
         sellable = self.add_product(sale, price=200)
-        source = CommissionSource(asellable=sellable,
+        source = CommissionSource(sellable=sellable,
                                   direct_value=10,
                                   installments_value=5,
                                   connection=self.trans)
@@ -533,12 +533,12 @@ class TestSale(DomainTest):
     def testCommissionAmountMultiple(self):
         sale = self.create_sale()
         sellable = self.add_product(sale, price=200)
-        source = CommissionSource(asellable=sellable,
+        source = CommissionSource(sellable=sellable,
                                   direct_value=10,
                                   installments_value=5,
                                   connection=self.trans)
         sellable = self.add_product(sale, price=300)
-        source = CommissionSource(asellable=sellable,
+        source = CommissionSource(sellable=sellable,
                                   direct_value=12,
                                   installments_value=5,
                                   connection=self.trans)
@@ -557,7 +557,7 @@ class TestSale(DomainTest):
     def testCommissionAmountWhenSaleReturn(self):
         sale = self.create_sale()
         sellable = self.add_product(sale, price=200)
-        source = CommissionSource(asellable=sellable,
+        source = CommissionSource(sellable=sellable,
                                   direct_value=10,
                                   installments_value=5,
                                   connection=self.trans)

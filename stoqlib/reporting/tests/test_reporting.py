@@ -211,7 +211,7 @@ class TestReport(DomainTest):
         storable = product.addFacet(IStorable, connection=self.trans)
         storable.increase_stock(100, get_current_branch(self.trans))
 
-        source = CommissionSource(asellable=sellable,
+        source = CommissionSource(sellable=sellable,
                                   direct_value=Decimal(10),
                                   installments_value=1,
                                   connection=self.trans)

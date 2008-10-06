@@ -58,16 +58,16 @@ class CommissionSource(Domain):
     @cvar installments_value: the commission value to be used in
       more than one installments sales
     @ivar category: the sellable category
-    @ivar asellable: the sellable
+    @ivar sellable: the sellable
 
-    The category and the sellable should not exist when asellable exists
+    The category and the sellable should not exist when sellable exists
     and the opposite is true.
     """
 
     direct_value = DecimalCol()
     installments_value = DecimalCol()
     category = ForeignKey('SellableCategory', default=None)
-    asellable = ForeignKey('Sellable', default=None)
+    sellable = ForeignKey('Sellable', default=None)
 
 
 class Commission(Domain):
@@ -126,16 +126,16 @@ class Commission(Domain):
         """Return the payment percentage of sale"""
         return self.payment.value / self.sale.get_sale_subtotal()
 
-    def _get_commission(self, asellable):
+    def _get_commission(self, sellable):
         """Return the properly commission percentage to be used to
         calculate the commission amount, for a given sellable.
         """
 
         conn = self.get_connection()
-        source = CommissionSource.selectOneBy(asellable=asellable,
+        source = CommissionSource.selectOneBy(sellable=sellable,
                                               connection=conn)
-        if not source and asellable.category:
-           source = self._get_category_commission(asellable.category)
+        if not source and sellable.category:
+           source = self._get_category_commission(sellable.category)
 
         value = 0
         if source:
