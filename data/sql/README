@@ -1,0 +1,36 @@
+Patching the database
+~~~~~~~~~~~~~~~~~~~~~
+
+Naming convention
+-----------------
+
+All database patches follows the pattern:
+    patch-XX-YY.ZZ (example: patch-00-10.sql)
+
+where:
+
+    XX: indicates the generation. Example: 00
+    YY: indicates the patch level. Example: 01
+    ZZ: indicates the file extension. Example: sql
+
+The generation number is used to know which patches we should apply in order
+to take an old database to the latest version available.
+The patch level is also used to update the database, so we will be able to
+apply the patches in the correct order.
+
+There are two extensions available for database patches:
+    - sql: containing pure SQL commands (DDL & DML)
+    -  py: a python script which receives an Transaction in order to modify the
+           database objects (see one patch*.py for an example)
+
+Changing the database generation
+--------------------------------
+
+- Updating the schema:
+You will need to update schema (named schema-X.sql) in order to include all
+the changes of the latest generations. This will ensure that a created
+database using this schema will be similar to a updated one.
+
+- Creating generation mark:
+Just create an empty file named patch-XX-00.sql.
+Where XX indicates the new generation.

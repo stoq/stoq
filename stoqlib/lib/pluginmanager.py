@@ -142,7 +142,7 @@ class PluginManager(object):
             return
         InstalledPlugin(connection=trans,
                         plugin_name=plugin_name,
-                        plugin_version=1)
+                        plugin_version=0)
         trans.commit(close=True)
 
         migration = plugin.get_migration()
