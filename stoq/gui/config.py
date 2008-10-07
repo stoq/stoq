@@ -67,7 +67,7 @@ from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
-from stoqlib.importers.stoqlibexamples import create as examples
+from stoqlib.importers.stoqlibexamples import create as create_examples
 from stoqlib.lib.message import warning, yesno, error
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import provide_plugin_manager
@@ -417,7 +417,7 @@ class ExampleDatabaseStep(WizardEditorStep):
             return BranchSettingsStep(self.conn, self.wizard,
                                       None, self)
         else:
-            examples.create(utilities=True)
+            create_examples(utilities=True)
             self.wizard.installed_examples = True
             branch = get_current_branch(self.conn)
             return ECFPluginStep(self.conn, self.wizard,
