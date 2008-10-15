@@ -43,7 +43,8 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import render_pixbuf
-from stoqlib.gui.dialogs.paymentadditiondialog import OutPaymentAdditionDialog
+from stoqlib.gui.dialogs.paymentadditiondialog import \
+        OutPaymentAdditionDialog, LonelyPaymentDetailsDialog
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
@@ -125,14 +126,18 @@ class PayableApp(SearchableAppWindow):
             run_dialog(SaleDetailsDialog, self,
                        self.conn, payable_view.sale)
         else:
-            raise AssertionError
+            payment = payable_view.payment
+            run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
 
     def _can_show_details(self, payable_views):
         """
         Determines if we can show details for a list of payables
         """
-        return (self._same_purchase(payable_views) or
-                self._same_sale(payable_views))
+        can_show_details = (self._same_purchase(payable_views) or
+                            self._same_sale(payable_views))
+        if not can_show_details and len(payable_views) == 1:
+            can_show_details = True
+        return can_show_details
 
     def _change_due_date(self, payable_view):
         """ Receives a payable_view and change the payment due date
