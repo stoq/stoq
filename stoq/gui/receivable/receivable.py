@@ -48,7 +48,8 @@ from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import render_pixbuf
-from stoqlib.gui.dialogs.paymentadditiondialog import InPaymentAdditionDialog
+from stoqlib.gui.dialogs.paymentadditiondialog import (InPaymentAdditionDialog,
+                                                       LonelyPaymentDetailsDialog)
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -101,7 +102,7 @@ class ReceivableApp(SearchableAppWindow):
     def _update_widgets(self):
         selected = self.results.get_selected_rows()
         self.receive_button.set_sensitive(self._can_receive(selected))
-        self.details_button.set_sensitive(self._same_sale(selected))
+        self.details_button.set_sensitive(self._can_show_details(selected))
         self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
         self.Receipt.set_sensitive(self._can_emit_receipt(selected))
         self.SetNotPaid.set_sensitive(
@@ -156,9 +157,11 @@ class ReceivableApp(SearchableAppWindow):
 
     def _show_details(self, receivable_view):
         if receivable_view.sale_id is None:
-            return
-        sale_view = SaleView.get(receivable_view.sale_id)
-        run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+            payment = receivable_view.payment
+            run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
+        else:
+            sale_view = SaleView.get(receivable_view.sale_id)
+            run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
 
 
     def _receive(self, receivable_views):
@@ -283,19 +286,23 @@ class ReceivableApp(SearchableAppWindow):
 
         return receivable_views[0].can_change_due_date()
 
-    def _same_sale(self, receivable_views):
-        """
-        Determines if a list of receivable_views are in the same sale
+    def _can_show_details(self, receivable_views):
+        """Determines if we can show the receiving details for a list of
+        receivable views.
         To do so they must meet the following conditions:
-          - Be in the same sale
+          - Be in the same sale or
+          - One receiving that not belong to any sale
         """
-
         if not receivable_views:
             return False
 
         sale = receivable_views[0].sale
         if sale is None:
-            return False
+            if len(receivable_views) == 1:
+                return True
+            else:
+                return False
+
         return all(view.sale == sale for view in receivable_views[1:])
 
     def _run_bill_check_search(self):
