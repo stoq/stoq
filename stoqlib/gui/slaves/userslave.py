@@ -197,6 +197,10 @@ class UserDetailsSlave(BaseEditorSlave):
         self._setup_profile_entry_completion()
         self._setup_role_entry_completition()
 
+        employee = IEmployee(self.model, None)
+        if employee is not None:
+            self.role.select(employee.role)
+
     def _setup_profile_entry_completion(self):
         if self.model.profile is None:
             self.model.profile = UserProfile.get_default(conn=self.conn)
@@ -232,9 +236,12 @@ class UserDetailsSlave(BaseEditorSlave):
         #    are related to the facets the current profile will add
         profile = self.profile.get_selected()
         person = self.model.person
-        if not IEmployee(person, None):
+        employee = IEmployee(person, None)
+        if employee is None:
             person.addFacet(IEmployee, role=self.role.read(),
                             connection=self.conn)
+        else:
+            employee.role = self.role.read()
 
         # If the user can access POS then he/she can perform sales too
         can_access_pos = profile.check_app_permission("pos")
