@@ -135,8 +135,9 @@ class _PurchaseConfirmationModel(_ConfirmationModel):
 
 class _LonelyConfirmationModel(_ConfirmationModel):
     def __init__(self, payments):
+        self._payment = payments[0]
         _ConfirmationModel.__init__(self, payments)
-        self.open_date = payments[0].open_date.date()
+        self.open_date = self._payment.open_date.date()
 
     def get_order_number(self):
         return -1
@@ -148,7 +149,23 @@ class _LonelyConfirmationModel(_ConfirmationModel):
         return currency(0)
 
     def get_interest(self):
-        return currency(0)
+        return self._payment.interest
+
+    def set_interest(self, interest):
+        self._payment.interest = interest
+
+    interest = property(get_interest, set_interest)
+
+    def get_discount(self):
+        return self._payment.discount
+
+    def set_discount(self, discount):
+        self._payment.discount = discount
+
+    discount = property(get_discount, set_discount)
+
+    def get_total_value(self):
+        return currency(self._payment.paid_value)
 
 
 class _InstallmentConfirmationSlave(BaseEditor):
@@ -313,10 +330,9 @@ class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         self.details_button.hide()
 
     def create_model(self, conn):
-        if self._payments[0].group:
-            return _SaleConfirmationModel(
-                self._payments,
-                self._payments[0].group.sale)
+        group = self._payments[0].group
+        if group and group.sale:
+            return _SaleConfirmationModel(self._payments, group.sale)
         else:
             self._setup_widgets = self._lonely_setup_widgets
             return _LonelyConfirmationModel(self._payments)
@@ -346,9 +362,9 @@ class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
             self.details_button.hide()
 
     def create_model(self, conn):
-        if self._payments[0].group:
-            model = _PurchaseConfirmationModel(
-                self._payments, self._payments[0].group)
+        group = self._payments[0].group
+        if group and group.purchase:
+            model = _PurchaseConfirmationModel(self._payments, group)
         else:
             model = _LonelyConfirmationModel(self._payments)
         return model
