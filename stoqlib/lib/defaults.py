@@ -25,7 +25,12 @@
 ##
 """Default values for applications"""
 
+import ctypes
+from ctypes.util import find_library
+
 from decimal import Decimal
+
+from dateutil import relativedelta
 
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -60,6 +65,26 @@ interval_values = {INTERVALTYPE_DAY:        1,
                    INTERVALTYPE_MONTH:      30,
                    INTERVALTYPE_YEAR:       365}
 
+# weekday constants
+
+NL_TIME_WEEK_1STDAY = 131174
+NL_TIME_FIRST_WEEKDAY = 131176
+
+# C library
+
+_libc = None
+
+def get_libc():
+    """Returns an accessor to C library.
+
+    @returns: a ctypes.CDLL instance
+    """
+    global _libc
+    if _libc is None:
+        _libc = ctypes.CDLL(find_library("c"))
+    return _libc
+
+
 def calculate_interval(interval_type, intervals):
     """Get the interval type value for a certain INTERVALTYPE_* constant.
     Intervals are useful modes to calculate payment duedates.
@@ -85,6 +110,30 @@ def calculate_interval(interval_type, intervals):
         raise TypeError('Invalid type for intervals argument. It must be '
                         'integer, got %s' % type(intervals))
     return interval_values[interval_type] * intervals
+
+
+def get_weekday_start():
+    """Returns the dateutil.relativedelta.weekday based on the current locale.
+
+    @returns: a dateutil.realtivedelta.weekday instance
+    """
+    libc = get_libc()
+
+    week_origin = libc.nl_langinfo(NL_TIME_WEEK_1STDAY)
+    # we will set week_1sday based on the dateutil.relativedelta.weekday mapping
+    if week_origin == 19971130: # Sunday
+        week_1stday = 6
+    elif week_origin == 19971201: # Monday
+        week_1stday = 0
+    else:
+        raise TypeError('Unknown NL_TIME_WEEK_1STDAY constant')
+
+    v = libc.nl_langinfo(NL_TIME_FIRST_WEEKDAY)
+    first_weekday = ord(ctypes.cast(v, ctypes.c_char_p).value[0])
+    week_start = (week_1stday + first_weekday - 1) % 7
+
+    return relativedelta.weekday(week_start)
+
 
 #
 # Payments

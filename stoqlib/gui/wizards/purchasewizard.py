@@ -39,6 +39,7 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.person import Person
+from stoqlib.domain.product import ProductSupplierInfo
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
@@ -173,6 +174,17 @@ class PurchaseItemStep(SellableItemStep):
     item_table = PurchaseItem
     summary_label_text = "<b>%s</b>" % _('Total Ordered:')
 
+    def _set_expected_receival_date(self, item):
+        supplier = self.model.supplier
+        sellable = item.sellable
+        for supplier_info in ProductSupplierInfo.get_info_by_supplier(
+            self.conn, supplier):
+            if supplier_info.product.sellable is sellable:
+                delta = datetime.timedelta(days=supplier_info.lead_time)
+                expected_receival = self.model.open_date + delta
+                item.expected_receival_date = expected_receival
+                break
+
     #
     # Helper methods
     #
@@ -199,6 +211,7 @@ class PurchaseItemStep(SellableItemStep):
 
     def get_order_item(self, sellable, cost, quantity):
         item = self.model.add_item(sellable, quantity)
+        self._set_expected_receival_date(item)
         item.cost = self.cost.read()
         return item
 
@@ -370,6 +383,11 @@ class FinishPurchaseStep(WizardEditorStep):
         items = [(t.person.name, t) for t in transporters]
         self.transporter.prefill(items)
 
+    def _set_receival_date_suggestion(self):
+        receival_date = self.model.get_items().max('expected_receival_date')
+        if receival_date:
+            self.model.expected_receival_date = receival_date
+
     def _setup_focus(self):
         self.salesperson_name.grab_focus()
         self.notes.set_accepts_tab(False)
@@ -420,6 +438,7 @@ class FinishPurchaseStep(WizardEditorStep):
 
 
         self.salesperson_name.grab_focus()
+        self._set_receival_date_suggestion()
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
