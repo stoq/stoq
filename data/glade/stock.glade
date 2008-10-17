@@ -137,6 +137,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="PurchasedItemsSearch">
+                        <property name="name">PurchasedItemsSearch</property>
+                        <property name="label" translatable="yes">Purchased Items...</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;p</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="about_menu">
                         <property name="name">about_menu</property>
                         <property name="label" translatable="yes">About</property>
@@ -204,6 +211,7 @@
 	      <menuitem action="PurchaseReceiving"/>
 	      <menuitem action="ProductHistory"/>
           <menuitem action="TransferSearch"/>
+          <menuitem action="PurchasedItemsSearch"/>
 	    </menu>
 	    <menu action="help_menu">
 	      <menuitem action="about_menu"/>

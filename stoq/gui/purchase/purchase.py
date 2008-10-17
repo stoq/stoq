@@ -41,6 +41,7 @@ from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
+from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
                                                      ReceiveQuoteWizard)
@@ -275,6 +276,9 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_SearchQuotes__activate(self, action):
         self.run_dialog(ReceiveQuoteWizard, self.conn)
+
+    def on_SearchPurchasedItems__activate(self, action):
+        self.run_dialog(PurchasedItemsSearch, self.conn)
 
     # FIXME: Kiwi autoconnection OR rename, see #2323
 
