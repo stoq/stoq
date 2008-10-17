@@ -60,6 +60,7 @@ class PurchaseItem(Domain):
     quantity_received = DecimalCol(default=0)
     base_cost = PriceCol()
     cost = PriceCol()
+    expected_receival_date = DateTimeCol(default=None)
     sellable = ForeignKey('Sellable')
     order = ForeignKey('PurchaseOrder')
 

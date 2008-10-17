@@ -317,7 +317,7 @@ class ProductSupplierEditor(BaseEditor):
     model_type = ProductSupplierInfo
     gladefile = 'ProductSupplierEditor'
 
-    proxy_widgets = ('base_cost', 'icms', 'notes')
+    proxy_widgets = ('base_cost', 'icms', 'notes', 'lead_time')
 
     def __init__(self, conn, model=None):
         BaseEditor.__init__(self, conn, model)
@@ -325,6 +325,7 @@ class ProductSupplierEditor(BaseEditor):
     #
     # BaseEditor hooks
     #
+
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
@@ -338,6 +339,9 @@ class ProductSupplierEditor(BaseEditor):
         if not value or value <= currency(0):
             return ValidationError("Value must be greater than zero.")
 
+    def on_lead_time__validate(self, entry, value):
+        if value < 1:
+            return ValidationError("Lead time must be greater or equal one day")
 
 
 class ProductSupplierSlave(BaseRelationshipEditorSlave):
@@ -365,6 +369,7 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
     def get_columns(self):
         return [Column('name', title=_(u'Supplier'),
                         data_type=str, expand=True, sorted=True),
+                Column('lead_time_str', title=_(u'Lead time'), data_type=str),
                 Column('base_cost', title=_(u'Cost'),
                         data_type=currency),]
 

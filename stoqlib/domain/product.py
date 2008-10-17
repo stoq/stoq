@@ -33,7 +33,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import PriceCol, DecimalCol
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, MultipleJoin, DateTimeCol,
-                                  BoolCol, BLOBCol)
+                                  BoolCol, BLOBCol, IntCol)
 from stoqlib.database.orm import const
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.person import Person
@@ -72,16 +72,28 @@ class ProductSupplierInfo(Domain):
         - I(icms): a Brazil-specific attribute that means
                    'Imposto sobre circulacao de mercadorias e prestacao '
                    'de servicos'
+        - I{lead_time}: the number of days needed to deliver the product to
+                        purchaser.
     """
 
     base_cost = PriceCol(default=0)
     notes = UnicodeCol(default='')
     is_main_supplier = BoolCol(default=False)
+    lead_time = IntCol(default=1)
     # This is Brazil-specific information
     icms = DecimalCol(default=0)
     supplier =  ForeignKey('PersonAdaptToSupplier', notNone=True)
     product =  ForeignKey('Product')
 
+    #
+    # Classmethods
+    #
+
+    @classmethod
+    def get_info_by_supplier(cls, conn, supplier):
+        """Retuns all the products information provided by the given supplier.
+        """
+        return cls.selectBy(supplier=supplier, connection=conn)
 
     #
     # Auxiliary methods
@@ -90,6 +102,16 @@ class ProductSupplierInfo(Domain):
     def get_name(self):
         if self.supplier:
             return self.supplier.get_description()
+
+    def get_lead_time_str(self):
+        if self.lead_time > 1:
+            day_str = _(u"Days")
+            lead_time = self.lead_time
+        else:
+            day_str = _(u"Day")
+            lead_time = self.lead_time or 0
+
+        return "%d %s" % (lead_time, day_str)
 
 
 class ProductRetentionHistory(Domain):

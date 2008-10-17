@@ -24,11 +24,13 @@
 ##
 """ Implementation of basic dialogs for searching data """
 
+from dateutil.relativedelta import relativedelta
 import gtk
 from kiwi.argcheck import argcheck
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.delegates import GladeSlaveDelegate
-from kiwi.ui.search import ComboSearchFilter, SearchSlaveDelegate
+from kiwi.ui.search import (ComboSearchFilter, SearchSlaveDelegate,
+                            DateSearchOption)
 from kiwi.utils import gsignal
 
 from stoqlib.database.orm import ORMObject, ORMObjectQueryExecuter
@@ -37,6 +39,7 @@ from stoqlib.database.runtime import (get_connection, new_transaction,
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.defaults import get_weekday_start
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -591,3 +594,71 @@ class SearchEditor(SearchDialog):
         the model is a requirement for edit method.
         """
         return model
+
+#
+# Date search options
+#
+
+class ThisWeek(DateSearchOption):
+    name = _('This week')
+
+    def get_interval(self):
+        today = self.get_today_date()
+        weekday = get_weekday_start()
+
+        start = today + relativedelta(weekday=weekday(-1))
+        end = start + relativedelta(days=+6)
+        return start, end
+
+
+class LastWeek(DateSearchOption):
+    name = _('Last Week')
+
+    def get_interval(self):
+        today = self.get_today_date()
+        weekday = get_weekday_start()
+
+        start = today + relativedelta(weeks=-1, weekday=weekday(-1))
+        end = start + relativedelta(days=+6)
+        return start, end
+
+
+class NextWeek(DateSearchOption):
+    name = _('Next week')
+
+    def get_interval(self):
+        today = self.get_today_date()
+        weekday = get_weekday_start()
+        start = today + relativedelta(days=+1, weekday=weekday(+1))
+        end = start + relativedelta(days=+6)
+        return start, end
+
+
+class ThisMonth(DateSearchOption):
+    name = _('This month')
+
+    def get_interval(self):
+        today = self.get_today_date()
+        start = today + relativedelta(day=1)
+        end = today + relativedelta(day=31)
+        return start, end
+
+
+class LastMonth(DateSearchOption):
+    name = _('Last month')
+
+    def get_interval(self):
+        today = self.get_today_date()
+        start = today + relativedelta(months=-1, day=1)
+        end = today + relativedelta(months=-1, day=31)
+        return start, end
+
+
+class NextMonth(DateSearchOption):
+   name = _('Next month')
+
+   def get_interval(self):
+        today = self.get_today_date()
+        start = today + relativedelta(months=+1, day=1)
+        end = today + relativedelta(months=+1, day=31)
+        return start, end

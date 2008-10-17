@@ -47,7 +47,7 @@ Information:</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="ProxyEntry" id="base_cost">
-                                <property name="data_type">Decimal</property>
+                                <property name="data_type">currency</property>
                                 <property name="is_focus">True</property>
                                 <property name="mandatory">True</property>
                                 <property name="model_attribute">base_cost</property>
@@ -94,6 +94,42 @@ Information:</property>
                             <packing>
                                 <property name="expand">False</property>
                                 <property name="position">3</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label1">
+                                <property name="label" context="yes" translatable="yes">Lead Time:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="position">4</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxySpinButton" id="lead_time">
+                                <property name="adjustment">1 1 365 1 10 0</property>
+                                <property name="data_type">int</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">lead_time</property>
+                                <property name="text" context="yes" translatable="yes">0</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="position">5</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label4">
+                                <property name="label" context="yes" translatable="yes">Day(s)</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="position">6</property>
                             </packing>
                         </child>
                     </widget>
