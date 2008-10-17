@@ -38,7 +38,7 @@ from stoqlib.lib.defaults import get_weekday_start
 class TestDateOptions(unittest.TestCase):
 
     def tearDown(self):
-        self._set_locale("")
+        self._set_locale(None)
 
     def _get_week_interval(self, today):
         weekday = get_weekday_start()
