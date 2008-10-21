@@ -181,7 +181,7 @@ class InvoiceLayoutEditor(BaseEditor):
                                  width=grid_field.width,
                                  height=grid_field.height,
                                  connection=self.conn)
-            grid_field.model = field
+        grid_field.model = field
 
     def _field_removed(self, grid_field):
         invoice_field = grid_field.model
