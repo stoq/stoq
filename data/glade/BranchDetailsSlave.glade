@@ -4,7 +4,6 @@
     <widget class="GtkWindow" id="BranchDetailsSlave">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
-        <property name="visible">True</property>
         <child>
             <widget class="GtkTable" id="table1">
                 <property name="column_spacing">12</property>
