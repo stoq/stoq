@@ -5,7 +5,6 @@
         <property name="border_width">5</property>
         <property name="default_height">250</property>
         <property name="default_width">440</property>
-        <property name="visible">True</property>
         <child>
             <widget class="GtkVBox" id="main_box">
                 <property name="border_width">5</property>
