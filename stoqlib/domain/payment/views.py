@@ -123,7 +123,7 @@ class OutPaymentView(Viewable):
         LEFTJOINOn(None, PaymentGroup_Sale,
                    PaymentGroup_Sale.q.id == Payment.q.groupID),
         LEFTJOINOn(None, Sale,
-                   Sale.q.id == PaymentGroup_Sale.q.id),
+                   Sale.q.groupID == PaymentGroup_Sale.q.id),
         LEFTJOINOn(None, Person,
                    Person.q.id == PaymentGroup_Sale.q.recipientID),
         LEFTJOINOn(None, PaymentCategory,
