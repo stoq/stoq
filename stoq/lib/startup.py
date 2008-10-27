@@ -149,7 +149,7 @@ def clean_database(config, options=None):
         verbose = options.verbose
 
     password = password or config.get_password()
-    initialize_system(verbose=verbose)
+    initialize_system()
     _set_default_profile_settings()
     ensure_admin_user(password)
 
