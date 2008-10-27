@@ -60,9 +60,8 @@
                                     <widget class="GtkVBox" id="vbox3">
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="ProxyComboEntry" id="credit_provider">
+                                            <widget class="ProxyComboBox" id="credit_provider">
                                                 <property name="data_type">object</property>
-                                                <property name="list_editable">False</property>
                                                 <property name="model_attribute">provider</property>
                                                 <property name="visible">True</property>
                                             </widget>
@@ -78,15 +77,10 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="GtkVBox" id="vbox2">
+                                    <widget class="GtkVBox" id="types_box">
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="ProxyComboEntry" id="payment_type">
-                                                <property name="data_type">object</property>
-                                                <property name="list_editable">False</property>
-                                                <property name="model_attribute">payment_type</property>
-                                                <property name="visible">True</property>
-                                            </widget>
+                                            <placeholder/>
                                             <packing>
                                                 <property name="expand">False</property>
                                             </packing>

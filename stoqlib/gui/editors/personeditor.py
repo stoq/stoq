@@ -45,7 +45,7 @@ from stoqlib.gui.slaves.userslave import UserDetailsSlave, UserStatusSlave
 from stoqlib.gui.slaves.supplierslave import SupplierDetailsSlave
 from stoqlib.gui.slaves.transporterslave import TransporterDataSlave
 from stoqlib.gui.slaves.branchslave import BranchDetailsSlave
-from stoqlib.domain.person import EmployeeRole
+from stoqlib.domain.person import EmployeeRole, PersonAdaptToCreditProvider
 from stoqlib.domain.interfaces import (IClient, ICreditProvider, IEmployee,
                                        ISupplier, ITransporter, IUser,
                                        ICompany, IIndividual, IBranch)
@@ -156,6 +156,12 @@ class CreditProviderEditor(BasePersonRoleEditor):
                                    visual_mode=self.visual_mode)
         slave = self.main_slave.get_person_slave()
         slave.attach_slave('person_status_holder', self.details_slave)
+
+
+class CardProviderEditor(CreditProviderEditor):
+    model_name = _('Card Provider')
+    title = _('New Card Provider')
+    provtype = PersonAdaptToCreditProvider.PROVIDER_CARD
 
 
 class EmployeeEditor(BasePersonRoleEditor):

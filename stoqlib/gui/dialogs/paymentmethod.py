@@ -33,7 +33,8 @@ from stoqlib.database.runtime import finish_transaction
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.search import SearchEditorToolBar
-from stoqlib.gui.editors.paymentmethodeditor import PaymentMethodEditor
+from stoqlib.gui.editors.paymentmethodeditor import (PaymentMethodEditor,
+                                                     CardPaymentMethodEditor)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning
 
@@ -85,9 +86,8 @@ class PaymentMethodsDialog(BasicDialog):
             # actually gone when migrating from old databases
             'giftcertificate': NotImplementedError,
             'finance': NotImplementedError,
-            
-            'creditcard': NotImplementedError,
-            'debitcard': NotImplementedError,
+
+            'card': (CardPaymentMethodEditor, method),
             'money': (PaymentMethodEditor, method),
             'check': (PaymentMethodEditor, method),
             'bill': (PaymentMethodEditor, method),
@@ -101,7 +101,7 @@ class PaymentMethodsDialog(BasicDialog):
             warning(_('Editor for %s is not implemented' % (
                 method.method_name)))
             return None
-                 
+
         return dialog
 
     def _edit_item(self, item):

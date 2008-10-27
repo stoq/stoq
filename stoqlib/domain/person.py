@@ -757,10 +757,22 @@ class PersonAdaptToCreditProvider(PersonAdapter):
     short_name = UnicodeCol()
     provider_id = UnicodeCol(default='')
     open_contract_date = DateTimeCol()
+    closing_day = IntCol(default=10)
+    payment_day = IntCol(default=10)
+    max_installments = IntCol(default=12)
 
     #
     # ICreditProvider implementation
     #
+
+    @classmethod
+    def get_provider_by_provider_id(cls, provider_id, conn):
+        """Get a provider given a provider id string
+        @param provider_id: a string representing the provider
+        @param conn: a database connection
+        """
+        return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_CARD,
+                            provider_id=provider_id, connection=conn)
 
     @classmethod
     def get_card_providers(cls, conn):

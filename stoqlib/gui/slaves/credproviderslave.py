@@ -36,7 +36,10 @@ class CreditProviderDetailsSlave(BaseEditorSlave):
     gladefile = 'CredProviderDetailsSlave'
     proxy_widgets = ('provider_id',
                      'short_name',
-                     'open_contract_date')
+                     'open_contract_date',
+                     'max_installments',
+                     'payment_day',
+                     'closing_day')
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,

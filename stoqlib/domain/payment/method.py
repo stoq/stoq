@@ -67,6 +67,36 @@ class CheckData(Domain):
     bank_data = ForeignKey('BankAccount')
 
 
+class CreditCardData(Domain):
+    """Stores CreditCard specific state related to a payment
+
+    @ivar payment: the payment
+    @type payment: L{Payment}
+    @ivar card_type:
+    @type card_type: int, > 0, < 3
+    @ivar provider:
+    @type provider: L{PersonAdaptToCreditProvider}
+    """
+    (TYPE_CREDIT,
+     TYPE_DEBIT,
+     TYPE_CREDIT_INSTALLMENTS_STORE,
+     TYPE_CREDIT_INSTALLMENTS_PROVIDER,
+     TYPE_DEBIT_PRE_DATED) = range(5)
+
+    types = {
+        TYPE_CREDIT:                      _('Credit Card'),
+        TYPE_DEBIT:                       _('Debit Card'),
+        TYPE_CREDIT_INSTALLMENTS_STORE:   _('Credit Card Installments Store'),
+        TYPE_CREDIT_INSTALLMENTS_PROVIDER:
+                                       _('Credit Card Installments Provider'),
+        TYPE_DEBIT_PRE_DATED:             _('Debit Card Pre-dated'),
+    }
+
+    payment = ForeignKey('Payment')
+    card_type = IntCol(default=TYPE_CREDIT)
+    provider = ForeignKey('PersonAdaptToCreditProvider', default=None)
+
+
 class PaymentMethod(Domain):
     """A PaymentMethod controls how a payments is paid. Example of payment
     methods are: money, bill, check and credit card.
@@ -255,7 +285,7 @@ class PaymentMethod(Domain):
                           till=till,
                           description=description)
         facet = payment.addFacet(iface, connection=conn)
-        self.operation.payment_create(facet)
+        self.operation.payment_create(payment)
         return facet
 
     @argcheck(object, PaymentGroup, Decimal, object)

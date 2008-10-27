@@ -26,6 +26,8 @@
 ##
 """ Slaves for payment management """
 
+import gtk
+
 from decimal import Decimal
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -38,8 +40,8 @@ from kiwi.ui.views import SlaveView
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
-from stoqlib.domain.payment.method import (
-    CheckData, PaymentMethod)
+from stoqlib.domain.payment.method import (CheckData, PaymentMethod,
+                                           CreditCardData)
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import PersonAdaptToCreditProvider
 from stoqlib.domain.sale import Sale
@@ -70,9 +72,8 @@ class _TemporaryMoneyData(object):
 
 
 class _TemporaryCreditProviderGroupData(object):
-    def __init__(self, group, provider, payment_type):
+    def __init__(self, group, provider):
         self.installments_number = 1
-        self.payment_type = payment_type
         self.provider = provider
         self.group = group
 
@@ -696,8 +697,7 @@ class CardMethodSlave(BaseEditorSlave):
     """
     gladefile = 'CreditProviderMethodSlave'
     model_type = _TemporaryCreditProviderGroupData
-    proxy_widgets = ('payment_type',
-                     'credit_provider',
+    proxy_widgets = ('credit_provider',
                      'installments_number')
 
     def __init__(self, wizard, parent, conn, sale_obj, payment_method,
@@ -705,16 +705,16 @@ class CardMethodSlave(BaseEditorSlave):
         self.sale = sale_obj
         self.wizard = wizard
         self.method = payment_method
-        self.payment_group = self.wizard.payment_group
+        self._payment_group = self.wizard.payment_group
         self.total_value = (outstanding_value or
                             self.sale.get_total_sale_amount())
         self.providers = self._get_credit_providers()
+        self._selected_type = CreditCardData.TYPE_CREDIT
         BaseEditorSlave.__init__(self, conn)
         self.parent = parent
-        # this will be properly updated after changing data in payment_type
-        # widget
+
+        # this will change after the payment type is changed
         self.installments_number.set_range(1, 1)
-        self.payment_type.set_sensitive(False)
         self._refresh_next(False)
 
     #
@@ -723,7 +723,9 @@ class CardMethodSlave(BaseEditorSlave):
 
     def finish(self):
         self._setup_payments()
-        self.update_view()
+
+    def update_view(self):
+        pass
 
     #
     # BaseEditor Slave hooks
@@ -733,14 +735,17 @@ class CardMethodSlave(BaseEditorSlave):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
+        # Workaround for a kiwi bug. report me
+        self.credit_provider.select_item_by_position(1)
+        self.credit_provider.select_item_by_position(0)
+
     def create_model(self, conn):
         if not self.providers:
             raise ValueError('You must have credit providers information '
                              'stored in the database before start doing '
                              'sales')
         return _TemporaryCreditProviderGroupData(
-            group=self.wizard.payment_group,
-            payment_type=None,
+            group=self._payment_group,
             provider=None)
 
     # Private
@@ -748,63 +753,79 @@ class CardMethodSlave(BaseEditorSlave):
     def _setup_widgets(self):
         provider_items = [(p.short_name, p) for p in self.providers]
         self.credit_provider.prefill(provider_items)
-        self._setup_payment_types()
 
-    def _setup_payment_types(self):
-        selected = self.credit_provider.get_selected_data()
-        if not selected:
+        self._radio_group = None
+
+        for ptype, name in CreditCardData.types.items():
+            self._add_card_type(name, ptype)
+
+    def _add_card_type(self, name, payment_type):
+        radio = gtk.RadioButton(self._radio_group, name)
+        radio.set_data('type', payment_type)
+        radio.connect('toggled', self._on_card_type_radio_toggled)
+        self.types_box.pack_start(radio)
+        radio.show()
+
+        if self._radio_group is None:
+            self._radio_group = radio
+
+    def _on_card_type_radio_toggled(self, radio):
+        if not radio.get_active():
             return
-        self.ptypes_items = []
-        self.payment_type.prefill(self.ptypes_items)
+
+        self._selected_type = radio.get_data('type')
+        self._setup_max_installments()
 
     def _refresh_next(self, validation_ok=True):
         validation_ok = validation_ok and self.model.installments_number
         self.wizard.refresh_next(validation_ok)
 
     def _setup_max_installments(self):
-        selected = self.payment_type.get_selected_data()
-        maximum = selected.max_installments
+        type = self._selected_type
+        maximum = 1
+
+        if type == CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE:
+            maximum = self.method.max_installments
+        elif type == CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER:
+            maximum = self.model.provider.max_installments
+
         if maximum > 1:
             minimum = 2
         else:
             minimum = 1
+
         self.installments_number.set_range(minimum, maximum)
 
-    def update_view(self):
-        # This is for PaymentMethodStep compatibility.
-        # FIXME We need to change PaymentMethodDetails to use signals
-        # instead of calling methods of parents and slaves directly
-        self.payment_type.set_sensitive(True)
-
     def _setup_payments(self):
-        payment_type = self.model.payment_type
+        provider = self.model.provider
+        payment_type = self._selected_type
         due_dates = []
         first_duedate = datetime.datetime.today()
         for i in range(self.model.installments_number):
-            if first_duedate.day > payment_type.closing_day:
+            if first_duedate.day > provider.closing_day:
                 first_duedate += relativedelta(months=+1)
-            due_dates.append(first_duedate.replace(day=payment_type.payment_day))
+            due_dates.append(first_duedate.replace(day=provider.payment_day))
             first_duedate += relativedelta(months=+1)
 
-        self.method.create_inpayments(self.wizard.payment_group,
-                                      self.total_value, due_dates)
+        payments = self.method.create_inpayments(self._payment_group,
+                                                 self.total_value, due_dates)
+
+        operation = self.method.operation
+        for payment in payments:
+            data = operation.get_card_data_by_payment(payment.get_adapted())
+            data.card_type = payment_type
+            data.provider = provider
 
     def _get_credit_providers(self):
         return PersonAdaptToCreditProvider.get_card_providers(
             self.method.get_connection())
 
     #
-    # Kiwi callbacks
+    #   Callbacks
     #
 
-    def on_payment_type__content_changed(self, *args):
+    def on_credit_provider__changed(self, combo):
         self._setup_max_installments()
-        self._refresh_next()
-        self.credit_provider.set_sensitive(False)
-
-    def on_credit_provider__content_changed(self, *args):
-        self._setup_payment_types()
-        self.update_view()
 
 
 def register_payment_slaves():
