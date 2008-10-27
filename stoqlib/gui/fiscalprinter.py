@@ -301,13 +301,15 @@ class FiscalCoupon(gobject.GObject):
         for payment in sale.payments:
             if payment.method.method_name == 'card':
                 receipt = CardPaymentReceiptPrepareEvent.emit(payment, supports_duplicate)
+                if receipt is None:
+                    continue
+
                 if self.print_payment_receipt(payment, receipt):
                     CardPaymentReceiptPrintedEvent.emit(payment)
                 else:
-                    pass
-                    # This deserves another bug. If the payment cannot
-                    # be confirmed, we need to cancel the last sale. !!!
-                    # See bug 2249
+                    CardPaymentCanceledEvent.emit(payment)
+                    # If the payment cannot be confirmed, we need to cancel
+                    # the last sale. !!! See bug 2249
 
     def totalize(self, sale):
         # XXX: Remove this when bug #2827 is fixed.

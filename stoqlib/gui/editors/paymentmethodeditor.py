@@ -26,7 +26,9 @@
 
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.destination import PaymentDestination
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.search.personsearch import CardProviderSearch
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -66,3 +68,15 @@ class PaymentMethodEditor(BaseEditor):
     def setup_proxies(self):
         self._setup_widgets()
         self.add_proxy(self.model, PaymentMethodEditor.proxy_widgets)
+
+
+class CardPaymentMethodEditor(PaymentMethodEditor):
+
+    def __init__(self, conn, model):
+        PaymentMethodEditor.__init__(self, conn, model)
+        button = self.add_button('Edit providers')
+        button.connect('clicked', self._on_edit_buton_clicked)
+
+    def _on_edit_buton_clicked(self, button):
+        run_dialog(CardProviderSearch, self, self.conn)
+

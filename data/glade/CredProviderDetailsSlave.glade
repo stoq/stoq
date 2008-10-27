@@ -19,21 +19,21 @@
                     <widget class="GtkTable" id="table1">
                         <property name="column_spacing">5</property>
                         <property name="n_columns">4</property>
-                        <property name="n_rows">2</property>
+                        <property name="n_rows">3</property>
                         <property name="row_spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+                            <widget class="ProxyLabel" id="kiwilabel3">
                                 <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Provider Id:</property>
+                                <property name="model_attribute">kiwilabel3</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
-                                <property name="data_type">unicode</property>
-                                <property name="label" context="yes" translatable="yes">Short Name:</property>
+                            <widget class="GtkLabel" id="label3">
+                                <property name="label" context="yes" translatable="yes">Max Installments:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -43,9 +43,23 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="provider_id">
+                            <widget class="GtkLabel" id="label1">
+                                <property name="label" context="yes" translatable="yes">Payment Day:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="top_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyEntry" id="provider_id">
                                 <property name="data_type">unicode</property>
+                                <property name="editable">False</property>
+                                <property name="is_focus">True</property>
                                 <property name="model_attribute">provider_id</property>
+                                <property name="sensitive">False</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -54,42 +68,83 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="short_name">
+                            <widget class="ProxySpinButton" id="max_installments">
+                                <property name="adjustment">0 0 100 1 10 0</property>
+                                <property name="data_type">int</property>
+                                <property name="model_attribute">max_installments</property>
+                                <property name="text" context="yes" translatable="yes">0</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxySpinButton" id="payment_day">
+                                <property name="adjustment">1 1 28 1 10 0</property>
+                                <property name="data_type">int</property>
+                                <property name="model_attribute">payment_day</property>
+                                <property name="text" context="yes" translatable="yes">1</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel4">
+                                <property name="data_type">unicode</property>
+                                <property name="label" context="yes" translatable="yes">Short Name:</property>
+                                <property name="model_attribute">kiwilabel4</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel5">
+                                <property name="data_type">unicode</property>
+                                <property name="label" context="yes" translatable="yes">Open Contract Date:</property>
+                                <property name="model_attribute"></property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label2">
+                                <property name="label" context="yes" translatable="yes">Closing Day:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyEntry" id="short_name">
                                 <property name="data_type">unicode</property>
                                 <property name="mandatory">True</property>
                                 <property name="model_attribute">short_name</property>
                                 <property name="visible">True</property>
                             </widget>
-                            <packing>
-                                <property name="bottom_attach">2</property>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
-                                <property name="data_type">unicode</property>
-                                <property name="label" context="yes" translatable="yes">Open Contract Date:</property>
-                                <property name="visible">True</property>
-                                <property name="xalign">1.0</property>
-                            </widget>
-                            <packing>
-                                <property name="bottom_attach">2</property>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
                             <packing>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
@@ -106,6 +161,22 @@
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
                                 <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxySpinButton" id="closing_day">
+                                <property name="adjustment">1 1 28 1 10 0</property>
+                                <property name="data_type">int</property>
+                                <property name="is_focus">True</property>
+                                <property name="model_attribute">closing_day</property>
+                                <property name="text" context="yes" translatable="yes">1</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                                <property name="top_attach">2</property>
                             </packing>
                         </child>
                     </widget>

@@ -37,7 +37,8 @@ from stoqlib.lib.validators import format_phone_number
 from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
                                               EmployeeEditor,
                                               TransporterEditor,
-                                              EmployeeRoleEditor, BranchEditor)
+                                              EmployeeRoleEditor, BranchEditor,
+                                              CardProviderEditor)
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -153,6 +154,7 @@ class AbstractCreditProviderSearch(BasePersonSearch):
     search_lbl_text = ''
     result_strings = None
     editor_class = None
+    provider_type = None
 
     def __init__(self, conn, title='', hide_footer=True):
         self.provider_table = PersonAdaptToCreditProvider
@@ -173,20 +175,25 @@ class AbstractCreditProviderSearch(BasePersonSearch):
                 Column('is_active', _('Active'), data_type=bool,
                        editable=True)]
 
-    def get_provider_type(self):
-        raise NotImplementedError("This method must be defined on child")
-
     def get_editor_model(self, provider_view):
         return provider_view.provider
 
     def _get_query(self, states):
-        return self.provider_table.q.provider_type == self.get_provider_type()
+        return self.provider_table.q.provider_type == self.provider_type
 
     def _on_results__cell_edited(self, results, obj, attr):
         trans = new_transaction()
         cards = trans.get(obj.provider)
         cards.is_active = obj.is_active
         trans.commit(close=True)
+
+
+class CardProviderSearch(AbstractCreditProviderSearch):
+    title = _('Card Provider Search')
+    editor_class = CardProviderEditor
+    search_lbl_text = _('matching:')
+    result_strings = _('provider'), _('providers')
+    provider_type = PersonAdaptToCreditProvider.PROVIDER_CARD
 
 
 class ClientSearch(BasePersonSearch):

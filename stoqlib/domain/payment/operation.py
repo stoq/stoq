@@ -34,10 +34,12 @@ from kiwi.component import get_utility, provide_utility
 from zope.interface import implements
 
 from stoqlib.domain.account import BankAccount
-from stoqlib.domain.payment.method import CheckData, Payment
+from stoqlib.domain.payment.method import CheckData, CreditCardData, Payment
 from stoqlib.domain.person import PersonAdaptToCreditProvider
 from stoqlib.lib.interfaces import IPaymentOperation, IPaymentOperationManager
 from stoqlib.lib.translation import stoqlib_gettext
+
+from stoqdrivers.enum import PaymentMethodType
 
 _ = stoqlib_gettext
 
@@ -61,6 +63,9 @@ class MoneyPaymentOperation(object):
     def selectable(self, method):
         return True
 
+    def get_constant(self, payment):
+        return PaymentMethodType.MONEY
+
 
 class CheckPaymentOperation(object):
     implements(IPaymentOperation)
@@ -77,7 +82,7 @@ class CheckPaymentOperation(object):
         conn = payment.get_connection()
         # Every check must have a check data reference
         CheckData(bank_data=BankAccount(connection=conn),
-                  payment=payment.get_adapted(),
+                  payment=payment,
                   connection=conn)
 
     def payment_delete(self, payment):
@@ -89,6 +94,9 @@ class CheckPaymentOperation(object):
 
     def selectable(self, method):
         return True
+
+    def get_constant(self, payment):
+        return PaymentMethodType.CHECK
 
     #
     # Public API
@@ -120,6 +128,9 @@ class BillPaymentOperation(object):
     def selectable(self, method):
         return True
 
+    def get_constant(self, payment):
+        return PaymentMethodType.BILL
+
 
 class CardPaymentOperation(object):
     implements(IPaymentOperation)
@@ -127,19 +138,47 @@ class CardPaymentOperation(object):
     description = _(u'Card')
     max_installments = 12
 
+    CARD_METHOD_CONSTANTS = {
+        CreditCardData.TYPE_CREDIT: PaymentMethodType.CREDIT_CARD,
+        CreditCardData.TYPE_DEBIT: PaymentMethodType.DEBIT_CARD,
+        CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE:
+             PaymentMethodType.CREDIT_CARD,
+        CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER:
+             PaymentMethodType.CREDIT_CARD,
+        CreditCardData.TYPE_DEBIT_PRE_DATED: PaymentMethodType.DEBIT_CARD,
+    }
+
     #
     # IPaymentOperation
     #
 
     def payment_create(self, payment):
-        pass
+        return CreditCardData(connection=payment.get_connection(),
+                              payment=payment)
 
     def payment_delete(self, payment):
-        pass
+        conn = payment.get_connection()
+        credit_card_data = self.get_card_data_by_payment(payment)
+        CreditCardData.delete(credit_card_data.id, connection=conn)
 
     def selectable(self, method):
         return PersonAdaptToCreditProvider.has_card_provider(
             method.get_connection())
+
+    def get_constant(self, payment):
+        card_data = self.get_card_data_by_payment(payment)
+        return self.CARD_METHOD_CONSTANTS.get(card_data.card_type)
+
+
+    #
+    # Public API
+    #
+
+    @argcheck(Payment)
+    def get_card_data_by_payment(self, payment):
+        """Get an existing CreditCardData instance from a payment object."""
+        return CreditCardData.selectOneBy(payment=payment,
+                                          connection=payment.get_connection())
 
 
 def register_payment_operations():

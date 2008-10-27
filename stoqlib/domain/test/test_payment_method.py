@@ -242,7 +242,7 @@ class TestMoney(DomainTest, _TestPaymentMethodsBase):
     def testCreatePayments(self):
         pass
 
-    
+
 class TestCheck(DomainTest, _TestPaymentMethodsBase):
     method_type = 'check'
 
@@ -267,4 +267,9 @@ class TestBill(DomainTest, _TestPaymentMethodsBase):
 class TestCard(DomainTest, _TestPaymentMethodsBase):
     method_type = 'card'
 
-
+    def testCardData(self):
+        payment = self.createInPayment()
+        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        card_data = method.operation.get_card_data_by_payment(
+            payment.get_adapted())
+        self.failUnless(card_data)

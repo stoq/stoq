@@ -328,12 +328,12 @@ class Coupon(object):
     def cancel(self):
         return self._driver.cancel()
 
-    def _get_payment_method_constant(self, method):
-        constant = self._printer.get_payment_constant(method.method_name)
+    def _get_payment_method_constant(self, payment):
+        constant = self._printer.get_payment_constant(payment)
         if not constant:
             raise DeviceError(
                 _("The payment method used in this sale (%s) is not "
-                  "configured in the fiscal printer." % (method.method_name,)))
+                  "configured in the fiscal printer." % (payment.method.method_name,)))
 
         return constant
 
@@ -345,7 +345,7 @@ class Coupon(object):
 
         log.info("we have %d payments" % (sale.payments.count()),)
         for payment in sale.payments:
-            constant = self._get_payment_method_constant(payment.method)
+            constant = self._get_payment_method_constant(payment)
             self._driver.add_payment(constant.device_value,
                                      payment.base_value)
 
@@ -392,7 +392,7 @@ class Coupon(object):
         @param payment:
         @param receipt: the text to be printed
         """
-        constant = self._get_payment_method_constant(payment.method)
+        constant = self._get_payment_method_constant(payment)
         receipt_id = self._driver.get_payment_receipt_identifier(constant.constant_name)
 
         supports_duplicate = self._driver.supports_duplicate_receipt()

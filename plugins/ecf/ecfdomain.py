@@ -35,17 +35,11 @@ from stoqlib.database.orm import (BoolCol, StringCol, ForeignKey, IntCol,
 from stoqlib.database.orm import MultipleJoin
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
+from stoqlib.domain.payment.method import CreditCardData
 from stoqlib.exceptions import DeviceError
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-
-METHOD_CONSTANTS = {
-    'money': PaymentMethodType.MONEY,
-    'check': PaymentMethodType.CHECK,
-    'bill': PaymentMethodType.BILL,
-    'card': PaymentMethodType.CREDIT_CARD, # !!!
-}
 
 
 class ECFPrinter(Domain):
@@ -135,13 +129,14 @@ class ECFPrinter(Domain):
                                        constant_type=constant_type,
                                        connection=self.get_connection())
 
-    def get_payment_constant(self, method_name):
+    def get_payment_constant(self, payment):
         """
-        @param method_name:
+        @param payment: the payment whose method we will lookup the constant
         @returns: the payment constant
         @rtype: L{DeviceConstant}
         """
-        constant_enum = METHOD_CONSTANTS.get(method_name)
+        constant_enum = payment.method.operation.get_constant(payment)
+
         if constant_enum is None:
             raise AssertionError
 

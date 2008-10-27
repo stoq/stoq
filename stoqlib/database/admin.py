@@ -46,9 +46,11 @@ from stoqlib.database.database import execute_sql, clean_database
 from stoqlib.database.interfaces import (ICurrentBranch, ICurrentUser,
                                          IDatabaseSettings)
 from stoqlib.database.migration import StoqlibSchemaMigration
+from stoqlib.database.orm import const
 from stoqlib.database.runtime import get_connection, new_transaction
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
-                                       ISalesPerson, ICompany, IBranch)
+                                       ISalesPerson, ICompany, IBranch,
+                                       ICreditProvider)
 from stoqlib.domain.person import EmployeeRole, Person
 from stoqlib.domain.person import EmployeeRoleHistory
 from stoqlib.domain.profile import UserProfile
@@ -138,7 +140,7 @@ def _register_payment_methods():
 
     log.info("Registering payment operations")
     register_payment_operations()
-    
+
     trans = new_transaction()
     destination = sysparam(trans).DEFAULT_PAYMENT_DESTINATION
 
@@ -157,6 +159,28 @@ def _register_payment_methods():
         pm.max_installments = operation.max_installments
 
     trans.commit(close=True)
+
+def _ensure_card_providers():
+    """ Creates a list of default card providers """
+    log.info("Creating Card Providers")
+    from stoqlib.domain.person import PersonAdaptToCreditProvider
+
+
+    providers = ['VISANET', 'REDECARD', 'AMEX', 'HIPERCARD',
+                 'BANRISUL','PAGGO', 'CREDISHOP', 'CERTIF']
+
+    trans = new_transaction()
+    for name in providers:
+        person = PersonAdaptToCreditProvider.get_provider_by_provider_id(
+                        name, trans)
+        if person:
+            continue
+
+        person = Person(name=name, connection=trans)
+        person.addFacet(ICompany, connection=trans)
+        person.addFacet(ICreditProvider, short_name=name, provider_id=name, 
+                        open_contract_date=const.NOW(), connection=trans)
+    trans.commit()
 
 def get_admin_user(conn):
     """Retrieves the current administrator user for the system
@@ -273,18 +297,18 @@ def _install_invoice_templates():
     importer = InvoiceImporter()
     importer.feed_file(environ.find_resource('csv', 'invoices.csv'))
 
-@argcheck(bool, bool)
-def initialize_system(delete_only=False, verbose=False):
+def initialize_system():
     """Call all the necessary methods to startup Stoq applications for
     every purpose: production usage, testing or demonstration
     """
 
-    log.info("Initialize_system(%r, %r)" % (delete_only, verbose))
+    log.info("Initialize_system")
     settings = get_utility(IDatabaseSettings)
     clean_database(settings.dbname)
     create_base_schema()
     _register_payment_methods()
     ensure_sellable_constants()
     ensure_system_parameters()
+    _ensure_card_providers()
     create_default_profiles()
     _install_invoice_templates()
