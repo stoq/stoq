@@ -100,8 +100,13 @@ class StockTransferProductStep(SellableItemStep):
         return list(self.model.get_items())
 
     def get_order_item(self, sellable, cost, quantity):
-        item = TemporaryTransferOrderItem(quantity=quantity, sellable=sellable)
-        self.model.add_item(item)
+        item = self.get_model_item_by_sellable(sellable)
+        if item is not None:
+            item.quantity += quantity
+        else:
+            item = TemporaryTransferOrderItem(quantity=quantity,
+                                              sellable=sellable)
+            self.model.add_item(item)
         return item
 
     def get_columns(self):
@@ -158,7 +163,8 @@ class StockTransferProductStep(SellableItemStep):
 
     def post_init(self):
         self.product_button.hide()
-        self.hide_add_and_edit_buttons()
+        self.hide_add_button()
+        self.hide_edit_button()
 
     def next_step(self):
         return StockTransferFinishStep(self.conn, self.wizard,

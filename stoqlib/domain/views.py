@@ -382,3 +382,7 @@ class PurchasedItemView(Viewable):
 
     clause = AND(PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED,
                  ProductSupplierInfo.q.supplierID == PersonAdaptToSupplier.q.id)
+
+    @property
+    def purchase_item(self):
+        return PurchaseItem.get(self.id, connection=self.get_connection())

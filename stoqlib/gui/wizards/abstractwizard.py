@@ -86,10 +86,14 @@ class SellableItemStep(WizardEditorStep):
 
     # Public API
 
-    def hide_add_and_edit_buttons(self):
-        """Hides the add and edit buttons
+    def hide_add_button(self):
+        """Hides the add button
         """
-        self.slave.hide_add_button()
+        self.slave.add_button.hide()
+
+    def hide_edit_button(self):
+        """Hides the edit button
+        """
         self.slave.hide_edit_button()
 
     def get_quantity(self):
@@ -97,6 +101,14 @@ class SellableItemStep(WizardEditorStep):
         @returns: the quantity
         """
         return self.proxy.model and self.proxy.model.quantity or Decimal(1)
+
+    def get_model_item_by_sellable(self, sellable):
+        """Returns a model instance by the given sellable.
+        @returns: a model instance or None if we could not find the model.
+        """
+        for item in self.slave.klist:
+            if item.sellable is sellable:
+                return item
 
     #
     # Hooks
@@ -196,6 +208,7 @@ class SellableItemStep(WizardEditorStep):
     def _add_sellable(self):
         sellable = self.sellable.get_selected_data()
         assert sellable
+
         self._update_list(sellable)
         self.proxy.set_model(None)
         self.sellable.grab_focus()
@@ -203,17 +216,8 @@ class SellableItemStep(WizardEditorStep):
     def _update_list(self, sellable):
         quantity = self.get_quantity()
         cost = sellable.cost
-
-        for item in self.slave.klist:
-            if item.sellable == sellable:
-                item.quantity += quantity
-                update = True
-                break
-        else:
-            item = self.get_order_item(sellable, cost, quantity)
-            update = False
-
-        if update:
+        item = self.get_order_item(sellable, cost, quantity)
+        if item in self.slave.klist:
             self.slave.klist.update(item)
         else:
             self.slave.klist.append(item)
