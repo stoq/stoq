@@ -40,6 +40,7 @@ from stoqlib.database.orm import AND, IN, OR
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.base import Domain
+from stoqlib.domain.person import PersonAdaptToSupplier
 from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
                                 BarcodeDoesNotExists)
 from stoqlib.lib.parameters import sysparam
@@ -476,12 +477,14 @@ class Sellable(Domain):
         return cls.select(query, connection=conn)
 
     @classmethod
-    def get_unblocked_sellables(cls, conn, storable=False):
+    def get_unblocked_sellables(cls, conn, storable=False, supplier=None):
         """
         Returns unblocked sellable objects, which means the
         available sellables plus the sold ones.
         @param conn: a database connection
         @param storable: if True, only return Storables
+        @param supplier: a supplier or None, if set limit the returned
+          object to this supplier
         """
         query = OR(cls.get_available_sellables_query(conn),
                    cls.q.status == cls.STATUS_SOLD)
@@ -491,6 +494,12 @@ class Sellable(Domain):
                         Sellable.q.id == Product.q.sellableID,
                         ProductAdaptToStorable.q._originalID == Product.q.id)
 
+        if supplier:
+            from stoqlib.domain.product import Product, ProductSupplierInfo
+            query = AND(query,
+                        Sellable.q.id == Product.q.sellableID,
+                        Product.q.id == ProductSupplierInfo.q.productID,
+                        ProductSupplierInfo.q.supplierID == supplier.id)
         return cls.select(query, connection=conn)
 
     @classmethod
