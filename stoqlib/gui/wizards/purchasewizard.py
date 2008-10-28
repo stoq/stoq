@@ -190,7 +190,10 @@ class PurchaseItemStep(SellableItemStep):
     #
 
     def setup_sellable_entry(self):
-        sellables = Sellable.get_unblocked_sellables(self.conn, storable=True)
+        sellables = Sellable.get_unblocked_sellables(
+            self.conn,
+            storable=True,
+            supplier=self.model.supplier)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         self.sellable.prefill(
             [(sellable.get_description(full_description=True), sellable)
