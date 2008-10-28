@@ -49,6 +49,15 @@ class TestProductSupplierInfo(DomainTest):
                                    supplier=supplier)
         self.assertEqual(info.get_name(), supplier.get_description())
 
+    def testDefaultLeadTimeValue(self):
+        product = self.create_product()
+        supplier = self.create_supplier()
+        info = ProductSupplierInfo(connection=self.trans,
+                                   product=product,
+                                   supplier=supplier)
+        default_lead_time = 1
+        self.assertEqual(info.lead_time, default_lead_time)
+
 
 class TestProduct(DomainTest):
     def setUp(self):
