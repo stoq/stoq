@@ -48,12 +48,12 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
+from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
-from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave,
                                              BillMethodSlave, MoneyMethodSlave)
 from stoqlib.reporting.purchase import PurchaseOrderReport
@@ -198,7 +198,7 @@ class PurchaseItemStep(SellableItemStep):
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
-        self.hide_add_and_edit_buttons()
+        self.hide_add_button()
 
         self.sellable.connect(
             'content-changed', self._on_sellable__content_changed)
@@ -238,7 +238,7 @@ class PurchaseItemStep(SellableItemStep):
 
     def post_init(self):
         SellableItemStep.post_init(self)
-        self.slave.set_editor(ProductEditor)
+        self.slave.set_editor(PurchaseItemEditor)
         self._refresh_next()
         self.product_button.hide()
 

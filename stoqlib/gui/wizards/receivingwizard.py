@@ -248,6 +248,11 @@ class ReceivingOrderProductStep(SellableItemStep):
 
 
     def get_order_item(self, sellable, cost, total_quantity):
+        item = self.get_model_item_by_sellable(sellable)
+        if item is not None:
+            item.quantity += quantity
+            return item
+
         purchase_item = PurchaseItem.selectBy(
             sellable=sellable,
             order=self.model.purchase,

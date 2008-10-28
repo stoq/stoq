@@ -31,17 +31,23 @@ from kiwi.ui.search import DateSearchFilter, Any, Today
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.views import PurchasedItemView
-from stoqlib.gui.base.search import (SearchDialog, ThisWeek, NextWeek,
+from stoqlib.gui.base.search import (SearchEditor, ThisWeek, NextWeek,
                                      ThisMonth, NextMonth)
+from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
-class PurchasedItemsSearch(SearchDialog):
+class PurchasedItemsSearch(SearchEditor):
     title = _('Purchased Items Search')
     size = (775, 450)
     table = search_table = PurchasedItemView
+    editor_class = PurchaseItemEditor
+
+    def __init__(self, conn):
+        SearchEditor.__init__(self, conn=conn)
+        self.hide_new_button()
 
     #
     # SearchDialog Hooks
@@ -68,6 +74,14 @@ class PurchasedItemsSearch(SearchDialog):
     # SearchEditor Hooks
     #
 
+    def update_widgets(self):
+        selected = self.results.get_selected()
+        if selected is not None:
+            can_edit = selected.quantity_received < selected.quantity
+        else:
+            can_edit = False
+        self.set_edit_button_sensitive(can_edit)
+
     def get_columns(self):
         return [Column('order_id', title=_('Order'), data_type=int,
                         sorted=True, format='%03d'),
@@ -82,3 +96,6 @@ class PurchasedItemsSearch(SearchDialog):
                         data_type=datetime.date),
                 Column('expected_receival_date', title=_('Expected receival'),
                         data_type=datetime.date),]
+
+    def get_editor_model(self, model):
+        return model.purchase_item
