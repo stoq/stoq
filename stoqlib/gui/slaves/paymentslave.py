@@ -456,9 +456,11 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                       self.model.intervals)
         installments_number = self.model.installments_number
         self.payment_group.installments_number = installments_number
+        due_date = self.model.first_duedate
         for i in range(installments_number):
-            due_dates.append(self.model.first_duedate +
-                             datetime.timedelta(i * interval))
+            #XXX: convert to datetime.datetime
+            d = datetime.datetime(due_date.year, due_date.month, due_date.day)
+            due_dates.append(d + datetime.timedelta(i * interval))
 
         payments = self.method.create_payments(self.method_iface,
                                                self.wizard.payment_group,
