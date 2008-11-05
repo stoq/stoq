@@ -38,6 +38,7 @@ from stoqlib.database.runtime import (new_transaction, get_current_branch,
 from stoqlib.domain.interfaces import IBranch, IStorable
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Person
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductWithStockView
 from stoqlib.lib.message import warning
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
