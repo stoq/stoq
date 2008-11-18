@@ -30,8 +30,7 @@ from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.domain.product import (Product,
                                     ProductAdaptToStorable,
                                     ProductStockItem,
-                                    ProductHistory,
-                                    ProductSupplierInfo)
+                                    ProductHistory)
 from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
                                      PurchaseItem)
 from stoqlib.domain.sellable import (Sellable, SellableUnit,
@@ -337,27 +336,31 @@ class QuotationView(Viewable):
                                  connection=self.get_connection())
 
 
-class PurchasedItemView(Viewable):
-    """Stores information about the purchase items that will be delivered.
+class PurchasedItemAndStockView(Viewable):
+    """Stores information about the purchase items that will be delivered and
+    also the quantity that is already in stock.
     This view is used to query which products are going to be delivered and if
     they are on time or not.
 
     @cvar id: the id of the purchased item
-    @cvar quantity: the quantity purchased
-    @cvar quantity_received: the quantity already received
+    @cvar product_id: the id of the product
+    @cvar purchased: the quantity purchased
+    @cvar received: the quantity already received
+    @cvar stocked: the quantity in stock
     @cvar expected_receival_date: the date that the item might be deliverd
-    @cvar supplier_name: the item supplier's name
     @cvar purchase_date: the date when the item was purchased
     @cvar branch: the branch where the purchase was done
     """
 
     columns = dict(
         id=PurchaseItem.q.id,
+        product_id=Product.q.id,
         description=BaseSellableInfo.q.description,
-        quantity=PurchaseItem.q.quantity,
-        quantity_received=PurchaseItem.q.quantity_received,
+        purchased=PurchaseItem.q.quantity,
+        received=PurchaseItem.q.quantity_received,
+        stocked=const.SUM(ProductStockItem.q.quantity +
+                          ProductStockItem.q.logic_quantity),
         expected_receival_date=PurchaseItem.q.expected_receival_date,
-        supplier_name=Person.q.name,
         order_id=PurchaseOrder.q.id,
         purchased_date=PurchaseOrder.q.open_date,
         branch=PurchaseOrder.q.branchID,
@@ -372,16 +375,15 @@ class PurchasedItemView(Viewable):
                     Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
         LEFTJOINOn(None, Product,
                    Product.q.sellableID == PurchaseItem.q.sellableID),
-        LEFTJOINOn(None, PersonAdaptToSupplier,
-                   PersonAdaptToSupplier.q.id == PurchaseOrder.q.supplierID),
-        LEFTJOINOn(None, ProductSupplierInfo,
-                   ProductSupplierInfo.q.productID == Product.q.id),
-        LEFTJOINOn(None, Person,
-                   Person.q.id == PersonAdaptToSupplier.q._originalID),
+        LEFTJOINOn(None, ProductAdaptToStorable,
+                   ProductAdaptToStorable.q._originalID == Product.q.id),
+        LEFTJOINOn(None, ProductStockItem,
+                   ProductStockItem.q.storableID == ProductAdaptToStorable.q.id),
     ]
 
     clause = AND(PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED,
-                 ProductSupplierInfo.q.supplierID == PersonAdaptToSupplier.q.id)
+                 PurchaseOrder.q.branchID == ProductStockItem.q.branchID,
+                 PurchaseItem.q.quantity > PurchaseItem.q.quantity_received,)
 
     @property
     def purchase_item(self):
