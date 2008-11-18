@@ -30,7 +30,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import DateSearchFilter, Any, Today
 from kiwi.ui.objectlist import Column
 
-from stoqlib.domain.views import PurchasedItemView
+from stoqlib.domain.views import PurchasedItemAndStockView
 from stoqlib.gui.base.search import (SearchEditor, ThisWeek, NextWeek,
                                      ThisMonth, NextMonth)
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
@@ -42,7 +42,7 @@ _ = stoqlib_gettext
 class PurchasedItemsSearch(SearchEditor):
     title = _('Purchased Items Search')
     size = (775, 450)
-    table = search_table = PurchasedItemView
+    table = search_table = PurchasedItemAndStockView
     editor_class = PurchaseItemEditor
 
     def __init__(self, conn):
@@ -54,7 +54,7 @@ class PurchasedItemsSearch(SearchEditor):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['description', 'supplier_name'])
+        self.set_text_field_columns(['description'])
         # Date
         date_filter = DateSearchFilter(_('Receival expected in:'))
         # custom options
@@ -75,23 +75,20 @@ class PurchasedItemsSearch(SearchEditor):
     #
 
     def update_widgets(self):
-        selected = self.results.get_selected()
-        if selected is not None:
-            can_edit = selected.quantity_received < selected.quantity
-        else:
-            can_edit = False
-        self.set_edit_button_sensitive(can_edit)
+        selected = self.results.get_selected() is not None
+        self.set_edit_button_sensitive(selected)
 
     def get_columns(self):
-        return [Column('order_id', title=_('Order'), data_type=int,
+        return [Column('product_id', title=_('# '), data_type=int,
                         sorted=True, format='%03d'),
-                Column('supplier_name', title=_('Supplier'), data_type=str,
-                        expand=True),
                 Column('description', title=_('Description'), data_type=str,
                         expand=True),
-                Column('quantity', title=_('Quantity'), data_type=Decimal),
-                Column('quantity_received', title=_('Received'),
-                        data_type=Decimal),
+                Column('purchased', title=_('Purchased'), data_type=Decimal,
+                        width=100),
+                Column('received', title=_('Received'),
+                        data_type=Decimal, width=100),
+                Column('stocked', title=_('In Stock'), data_type=Decimal,
+                        width=100),
                 Column('purchased_date', title=_('Purchased date'),
                         data_type=datetime.date),
                 Column('expected_receival_date', title=_('Expected receival'),
