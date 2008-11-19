@@ -253,6 +253,7 @@ def _get_latest_schema():
         for filename in glob.glob(os.path.join(resource, schema_pattern)):
             schemas.append(filename)
     assert schemas
+    schemas.sort()
     return schemas[-1]
 
 def create_base_schema():
