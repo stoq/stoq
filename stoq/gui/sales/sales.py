@@ -66,7 +66,8 @@ class SalesApp(SearchableAppWindow):
     cols_info = {Sale.STATUS_INITIAL: ('open_date', _("Date Started")),
                  Sale.STATUS_CONFIRMED: ('confirm_date', _("Confirm Date")),
                  Sale.STATUS_PAID: ('close_date', _("Close Date")),
-                 Sale.STATUS_CANCELLED: ('cancel_date', _("Cancel Date"))}
+                 Sale.STATUS_CANCELLED: ('cancel_date', _("Cancel Date")),
+                 Sale.STATUS_RETURNED: ('return_data', _('Return Date')),}
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)

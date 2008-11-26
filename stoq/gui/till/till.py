@@ -51,6 +51,7 @@ from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import SaleSearch
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
+from stoqlib.gui.slaves.saleslave import return_sale
 from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
 
 from stoq.gui.application import SearchableAppWindow
@@ -209,7 +210,10 @@ class TillApp(SearchableAppWindow):
         sale_view = self.results.get_selected()
         if sale_view:
             can_confirm = sale_view.sale.can_confirm()
-            can_return = sale_view.sale.can_return()
+            # when confirming sales in till, we also might want to cancel
+            # sales
+            can_return = (sale_view.sale.can_return() or
+                          sale_view.sale.can_cancel())
         else:
             can_confirm = can_return = False
 
@@ -272,6 +276,12 @@ class TillApp(SearchableAppWindow):
     def _run_details_dialog(self):
         sale_view = self._check_selected()
         run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+
+    def _return_sale(self):
+        sale_view = self._check_selected()
+        retval = return_sale(self.get_toplevel(), sale_view, self.conn)
+        if finish_transaction(self.conn, retval):
+            self._update_total()
 
     #
     # Actions
@@ -340,7 +350,5 @@ class TillApp(SearchableAppWindow):
         self._run_details_dialog()
 
     def on_return_button__clicked(self, button):
-        sale_view = self._check_selected()
-        retval = run_dialog(SaleReturnWizard, self, self.conn, sale_view)
-        if finish_transaction(self.conn, retval):
-            self._update_total()
+        self._return_sale()
+
