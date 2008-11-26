@@ -121,7 +121,7 @@ def _create_slave_test():
         'ProductStockHistoryDialog': ' ',
         'ProductSupplierEditor' : ' ',
         'EmployeeRoleSlave': 'duplicated role histories',
-        'SaleCancellationDetailsDialog': ' ',
+        'SaleReturnDetailsDialog': ' ',
         'SellableCategoryEditor': 'glade warnings',
         'BranchEditor': ' ',
         'CreditProviderEditor': ' ',

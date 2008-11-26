@@ -38,6 +38,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.printing import print_report
+from stoqlib.lib.message import yesno
 from stoqlib.lib.validators import get_price_format_str
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -231,10 +232,10 @@ class SaleListToolbar(GladeSlaveDelegate):
         self._show_details(sale)
 
     def on_return_sale_button__clicked(self, button):
-        from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
         sale = self.sales.get_selected()
-        retval = run_dialog(SaleReturnWizard, self.parent, self.conn, sale)
+        retval = return_sale(self.get_parent(), sale, self.conn)
         finish_transaction(self.conn, retval)
+
         if retval:
             self.emit('sale-returned', retval)
 
@@ -335,3 +336,25 @@ class SaleReturnSlave(BaseEditorSlave):
                                "new_order attribute set at this point")
         sale_view = SaleView.get(new_order.id, connection=self.conn)
         run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+
+
+# helper functions
+
+def cancel_sale(sale):
+    msg = _(u'Do you really want to cancel this sale ?')
+    if yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _(u'No')):
+        sale.cancel()
+        return True
+    return False
+
+def return_sale(parent, sale_view, conn):
+    from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
+    sale = Sale.get(sale_view.sale.id, connection=conn)
+    if sale.can_return():
+        retval = run_dialog(SaleReturnWizard, parent, conn, sale_view)
+    elif sale.can_cancel():
+        retval = cancel_sale(sale)
+    else:
+        retval = False
+
+    return retval

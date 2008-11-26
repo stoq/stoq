@@ -441,16 +441,15 @@ class Sale(ValidatableDomain):
 
     def cancel(self):
         """Cancel the sale
-        You can only cancel an ordered sale, it'll un-reserve all sale items.
-        and mark the sale as cancelled.
+        You can only cancel an ordered sale.
         """
         assert self.can_cancel()
 
-        conn = self.get_connection()
-        # FIXME: We should use self.branch, but it's not supported yet
-        branch = get_current_branch(conn)
-        for item in self.get_items():
-            item.cancel(branch)
+        # ordered sale items did not change the stock of such items
+        if self.status != Sale.STATUS_ORDERED:
+            branch = get_current_branch(self.get_connection())
+            for item in self.get_items():
+                item.cancel(branch)
 
         self.cancel_date = const.NOW()
         self.status = Sale.STATUS_CANCELLED
@@ -955,4 +954,3 @@ class SaleView(ORMObject, BaseSQLView):
 
     def get_status_name(self):
         return Sale.get_status_name(self.status)
-

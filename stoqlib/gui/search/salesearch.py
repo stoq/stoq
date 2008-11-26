@@ -81,6 +81,28 @@ class SaleSearch(SearchDialog):
                        width=90)]
 
     def setup_widgets(self):
-        slave = SaleListToolbar(self.conn, self.results, self)
-        slave.disable_editing()
-        self.attach_slave("extra_holder", slave)
+        self._sale_toolbar = SaleListToolbar(self.conn, self.results, self)
+        self._sale_toolbar.connect('sale-returned', self._on_sale__returned)
+        self._sale_toolbar.disable_editing()
+        self.attach_slave("extra_holder", self._sale_toolbar)
+        self.results.connect(
+            'selection-changed', self._on_results__selection_changed)
+
+    def _update_widgets(self, sale_view):
+        if sale_view is None:
+            return
+
+        sale = sale_view.sale
+        can_return = sale.can_return() or sale.can_cancel()
+        self._sale_toolbar.return_sale_button.set_sensitive(can_return)
+
+    #
+    # Callbacks
+    #
+
+    def _on_results__selection_changed(self, results, sale_view):
+        self._update_widgets(sale_view)
+
+    def _on_sale__returned(self, slave, sale_returned):
+        if sale_returned:
+            self._update_widgets(self.results.get_selected())

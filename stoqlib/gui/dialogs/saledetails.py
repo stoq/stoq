@@ -44,6 +44,7 @@ from stoqlib.domain.interfaces import IClient, IOutPayment
 from stoqlib.domain.person import Person
 from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
+from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.reporting.sale import SaleOrderReport
 
 _ = stoqlib_gettext
@@ -120,7 +121,7 @@ class SaleDetailsDialog(BaseEditor):
 
         self.sale_order = Sale.get(self.model.id, connection=self.conn)
 
-        if self.sale_order.status == Sale.STATUS_CANCELLED:
+        if self.sale_order.status == Sale.STATUS_RETURNED:
             self.cancel_details_button.show()
         else:
             self.cancel_details_button.hide()
@@ -207,11 +208,11 @@ class SaleDetailsDialog(BaseEditor):
         run_dialog(ClientDetailsDialog, self, self.conn, client)
 
     def on_cancel_details_button__clicked(self, button):
-        run_dialog(SaleCancellationDetailsDialog, self, self.conn,
+        run_dialog(SaleReturnDetailsDialog, self, self.conn,
                    self.sale_order)
 
 
-class SaleCancellationDetailsDialog(BaseEditor):
+class SaleReturnDetailsDialog(BaseEditor):
     gladefile = "HolderTemplate"
     model_type = Sale
     title = _(u"Sale Cancellation Details")
@@ -220,10 +221,16 @@ class SaleCancellationDetailsDialog(BaseEditor):
 
     def setup_slaves(self):
         from stoqlib.gui.slaves.saleslave import SaleReturnSlave
-        if self.model.status != Sale.STATUS_CANCELLED:
+        if self.model.status != Sale.STATUS_RETURNED:
             raise StoqlibError("Invalid status for sale order, it should be "
                                "cancelled")
-        adapter = self.model.renegotiation_data
-        self.slave = SaleReturnSlave(self.conn, self.model, adapter,
+
+        renegotiation = RenegotiationData.selectOneBy(sale=self.model,
+                                                      connection=self.conn)
+        if renegotiation is None:
+            raise StoqlibError("Returned sales must have the renegotiation "
+                               "information.")
+
+        self.slave = SaleReturnSlave(self.conn, self.model, renegotiation,
                                      visual_mode=True)
         self.attach_slave("place_holder", self.slave)
