@@ -109,6 +109,20 @@ class PurchaseItem(Domain):
         return "%s %s" % (format_quantity(self.quantity_received),
                           unit and unit.description or u"")
 
+    @classmethod
+    def get_ordered_quantity(cls, conn, sellable):
+        """Returns the quantity already ordered of a given sellable.
+        @param conn: a database connection
+        @param sellable: the sellable we want to know the quantity ordered.
+        @returns: the quantity already ordered of a given sellable or zero if
+        no quantity have been ordered.
+        """
+        query = AND(PurchaseItem.q.sellableID==sellable.id,
+                    PurchaseOrder.q.id==PurchaseItem.q.orderID,
+                    PurchaseOrder.q.status==PurchaseOrder.ORDER_CONFIRMED)
+        ordered_items = PurchaseItem.select(query, connection=conn)
+        return ordered_items.sum('quantity') or Decimal(0)
+
 
 class PurchaseOrder(ValidatableDomain):
     """Purchase and order definition."""

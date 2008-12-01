@@ -334,6 +334,9 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         date_filter = DateSearchFilter(_('Date:'))
         self.search.add_filter(date_filter, columns=['open_date', 'deadline'])
 
+        self.edit_button.set_sensitive(False)
+        self.remove_button.set_sensitive(False)
+
     def _get_columns(self):
         return [Column('id', title=_('Quote'), sorted=True,
                         data_type=int, format="%04d"),
@@ -438,11 +441,16 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                 if not self._can_purchase(purchase_item):
                     continue
 
+                sellable = purchase_item.sellable
+                ordered_qty = \
+                    PurchaseItem.get_ordered_quantity(self.conn, sellable)
+
                 self.quoted_items.append(Settable(
                     selected=True, order=quote.purchase, item=purchase_item,
-                    description=purchase_item.sellable.get_description(),
+                    description=sellable.get_description(),
                     supplier=quote.purchase.get_supplier_name(),
                     quantity=purchase_item.quantity,
+                    ordered_quantity=ordered_qty,
                     cost=purchase_item.cost))
 
     def _get_columns(self):
@@ -452,6 +460,8 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                 Column('supplier', title=_('Supplier'), data_type=str,
                         expand=True),
                 Column('quantity', title=_(u'Quantity'), data_type=Decimal),
+                Column('ordered_quantity', title=_(u'Ordered'),
+                        data_type=Decimal),
                 Column('cost', title=_(u'Cost'), data_type=currency),]
 
     def _update_widgets(self):
