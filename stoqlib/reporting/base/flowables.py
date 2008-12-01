@@ -26,6 +26,8 @@
    The flowable alignment constants are defined here too.
 """
 
+from xml.sax.saxutils import escape as xml_escape
+
 from reportlab.lib.units import mm
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_LEFT
@@ -274,7 +276,9 @@ class Paragraph(RParagraph):
         self._ellipsize = ellipsize
         # [total_width, [frag0, frag1, ...fragN]]
         self._first_line_frags = []
-        RParagraph.__init__(self, text, style, bulletText, frags,
+        # text will be parsed as xml, so we need to escape special characters,
+        # if any (eg '&' becomes '&amp').
+        RParagraph.__init__(self, xml_escape(text), style, bulletText, frags,
                             caseSensitive)
 
     #
