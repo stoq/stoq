@@ -4,9 +4,11 @@ from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_current_branch
 
+from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sellable import SellableTaxConstant
+from stoqlib.domain.inventory import Inventory, InventoryItem
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
 from stoqlib.lib.test.test_sintegra import compare_sintegra_file
@@ -84,6 +86,20 @@ class TestSintegraGenerator(DomainTest):
         sale.close_date = datetime.date(2007, 6, 10)
         sale.confirm_date = datetime.date(2007, 6, 10)
         sellable3.get_code = lambda : 9999
+
+        inventory = Inventory(branch=branch, connection=self.trans)
+        inventory.open_date = datetime.date(2007, 6, 15)
+
+        # product came from sellable3
+        inventory_item = InventoryItem(product=product,
+                                       inventory=inventory,
+                                       recorded_quantity=99,
+                                       connection=self.trans)
+        inventory_item.cfop = CfopData.get(1, connection=self.trans)
+        inventory_item.reason = 'Test'
+        inventory_item.actual_quantity = 99
+        inventory_item.adjust(invoice_number=999)
+        inventory.close(close_date=datetime.date(2007, 6, 15))
 
         generator = StoqlibSintegraGenerator(self.trans,
                                              datetime.date(2007, 6, 1),

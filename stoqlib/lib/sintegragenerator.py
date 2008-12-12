@@ -31,6 +31,7 @@ from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import get_connection, get_current_branch
 from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.interfaces import ICompany
+from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import (PersonAdaptToCompany,
                                    PersonAdaptToIndividual)
 from stoqlib.domain.receiving import ReceivingOrder
@@ -164,7 +165,11 @@ class StoqlibSintegraGenerator(object):
         # 4) Add sold products (registry 60R)
         self._add_sold_products()
 
-        # 5) Add sellables (registry 75)
+        # 5) Add inventories (registry 74)
+        for inventory in self._date_query(Inventory, 'close_date'):
+            self._add_inventory(inventory, state)
+
+        # 6) Add sellables (registry 75)
         for sellable in sellables:
             self._add_sellable(sellable)
 
@@ -318,6 +323,28 @@ class StoqlibSintegraGenerator(object):
                                   0, sellable.get_description(),
                                   unit,
                                   0, 0, 0, 0)
+
+    def _add_inventory(self, inventory, state):
+        for item in inventory.get_items():
+            sellable = item.product.sellable
+            # Before bug #3708 the inventory items did not store the product's
+            # cost, in this case, we use the current cost.
+            if item.product_cost:
+                total_product_value = item.get_total_cost()
+            else:
+                total_product_value = sellable.cost * item.actual_quantity
+
+            self.sintegra.add_inventory_item(
+                inventory.close_date,
+                product_code=sellable.get_code(),
+                product_quantity=item.actual_quantity,
+                total_product_value=total_product_value,
+                # we are assuming that the main company owns all the products
+                # see the link in bug #3708 for further details.
+                owner_code=1,
+                owner_cnpj=None,
+                owner_state_registry=None,
+                state=state)
 
 
 def generate(filename, start, end):

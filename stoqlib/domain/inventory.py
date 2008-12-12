@@ -24,6 +24,7 @@
 """ Inventory object and related objects implementation """
 
 import datetime
+from decimal import Decimal
 
 from stoqlib.database.orm import DecimalCol
 from stoqlib.database.orm import ForeignKey, DateTimeCol, IntCol, UnicodeCol
@@ -46,6 +47,7 @@ class InventoryItem(Domain):
     @ivar product: the item
     @ivar recorded_quantity: the recorded quantity of a product
     @ivar actual_quantity: the actual quantity of a product
+    @ivar product_cost: the product's cost when the product was adjusted.
     @ivar inventory: the inventory process that contains this item
     @ivar cfop: the cfop used to adjust this item, this is only set when
         an adjustment is done
@@ -55,6 +57,7 @@ class InventoryItem(Domain):
     product = ForeignKey("Product")
     recorded_quantity = DecimalCol()
     actual_quantity = DecimalCol(default=None)
+    product_cost = DecimalCol(default=None)
     reason = UnicodeCol(default=u"")
     cfop_data = ForeignKey("CfopData", default=None)
     inventory = ForeignKey("Inventory")
@@ -89,6 +92,9 @@ class InventoryItem(Domain):
                                     self.inventory.branch)
 
         self._add_inventory_fiscal_entry(invoice_number)
+        # since we are adjusting the product, we keep its cost for later
+        # usage (it may change in the future)
+        self.product_cost = self.product.sellable.cost
 
     def adjusted(self):
         """Returns True if the item have already been adjusted,
@@ -126,6 +132,16 @@ class InventoryItem(Domain):
         """
         if self.actual_quantity is not None:
             return self.actual_quantity - self.recorded_quantity
+
+    def get_total_cost(self):
+        """Returns the total cost of this item, the actual quantity multiplied
+        by the product cost in the moment it was adjusted. If the item was not
+        adjusted yet, the total cost will be zero.
+        """
+        if not self.adjusted():
+            return Decimal(0)
+
+        return self.product_cost * self.actual_quantity
 
 
 class Inventory(Domain):
