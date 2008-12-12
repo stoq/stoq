@@ -200,6 +200,29 @@ class SintegraFile(object):
                                     ipi * 100,
                                     icms_aliquota * 100))
 
+    def add_inventory_item(self, start, product_code, product_quantity,
+                           total_product_value, owner_code, owner_cnpj,
+                           owner_state_registry, state):
+        inventory_date = int(start.strftime("%Y%m%d"))
+        product_code = '%014d' % (int(product_code))
+        blank = ' ' * 45
+        # When the actual company owns the products, the owner_cnpj and
+        # owner_state_registry fields must be filled with pre-defined values.
+        # See the link in #3708 for details.
+        if owner_code == 1:
+            owner_cnpj = 0
+            owner_state_registry = ' ' * 14
+
+        self.add(SintegraRegister74(inventory_date,
+                                    product_code,
+                                    product_quantity,
+                                    total_product_value,
+                                    owner_code,
+                                    owner_cnpj,
+                                    owner_state_registry,
+                                    state,
+                                    blank))
+
     def add_product(self, start, end, product_code, ncm, desc,
                     unit, aliquota_ipi, aliquota_icms,
                     reducao_icms, base_icms):
@@ -477,6 +500,28 @@ class SintegraRegister54(SintegraRegister):
         ('icms_subst_trib', 12, number),
         ('ipi', 12, number),
         ('icms_aliquota', 4, number),
+        ]
+
+class SintegraRegister74(SintegraRegister):
+    sintegra_number = 74
+    sintegra_fields = [
+        ('inventory_date', 8, number),
+        ('product_code', 14, basestring),
+        ('product_quantity', 13, number),
+        ('total_product_value', 13, number),
+        # 'owner_code' accept the following values:
+        # 1, Mercadorias de propriedade do Informante e em seu poder
+        # 2, Mercadorias de propriedade do Informante em poder de terceiros
+        # 3, Mercadorias de propriedade de terceiros em poder do Informante
+        # according to the document linked in #3708
+        ('owner_code', 1, number),
+        ('owner_cnpj', 14, number),
+        # The 'owner_state_registry' field must conform to the value in
+        # 'owner_code' eg 'owner_state_registry' must be filled with the
+        # company's data that really owns the product.
+        ('owner_state_registry', 14, basestring),
+        ('state', 2, basestring),
+        ('blank', 45, basestring),
         ]
 
 class SintegraRegister75(SintegraRegister):
