@@ -144,7 +144,7 @@ class OutPaymentView(Viewable):
     @property
     def sale(self):
         if self.sale_id:
-            return SaleView.get(self.sale_id)
+            return SaleView.select(SaleView.q.id == self.sale_id)[0]
 
     @property
     def payment(self):

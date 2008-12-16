@@ -338,7 +338,8 @@ class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
             return _LonelyConfirmationModel(self._payments)
 
     def run_details_dialog(self):
-        sale_view = SaleView.get(self.model.get_order_number())
+        sale_view = SaleView.select(
+                        SaleView.q.id == self.model.get_order_number())[0]
         run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
 
     def on_close_date__changed(self, proxy_date_entry):

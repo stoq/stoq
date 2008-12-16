@@ -334,7 +334,8 @@ class SaleReturnSlave(BaseEditorSlave):
         if not new_order:
             raise StoqlibError("The renegotiation instance must have a "
                                "new_order attribute set at this point")
-        sale_view = SaleView.get(new_order.id, connection=self.conn)
+        sale_view = SaleView.select(SaleView.q.id == new_order.id,
+                                    connection=self.conn)[0]
         run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
 
 

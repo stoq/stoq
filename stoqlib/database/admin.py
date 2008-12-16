@@ -275,11 +275,6 @@ def create_base_schema():
     except EnvironmentError:
         pass
 
-    log.info('Creating views')
-    schema = environ.find_resource('sql', 'views.sql')
-    if execute_sql(schema) != 0:
-        error('Failed to create views schema')
-
     migration = StoqlibSchemaMigration()
     migration.apply_all_patches()
 
