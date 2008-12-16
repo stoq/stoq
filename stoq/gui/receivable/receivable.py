@@ -160,7 +160,8 @@ class ReceivableApp(SearchableAppWindow):
             payment = receivable_view.payment
             run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
         else:
-            sale_view = SaleView.get(receivable_view.sale_id)
+            sale_view = SaleView.select(
+                    SaleView.q.id == receivable_view.sale_id)[0]
             run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
 
 
