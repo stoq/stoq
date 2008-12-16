@@ -214,8 +214,14 @@ class Viewable(object):
 
         instance = cls()
         instance.id = idValue
-        instance.__dict__.update(zip(cls.sqlmeta.columnNames,
-                                      selectResults))
+        for name, value in zip(cls.sqlmeta.columnNames, selectResults):
+            col = cls.sqlmeta.columns[name]
+
+            if hasattr(col, 'to_python') and col.to_python:
+                instance.__dict__[name] = col.to_python(value, None)
+            else:
+                instance.__dict__[name] = value
+
         instance._connection = connection
 
         return instance

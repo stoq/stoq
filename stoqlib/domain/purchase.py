@@ -33,12 +33,14 @@ from zope.interface import implements
 
 from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn, const
-from stoqlib.database.orm import ORMObject, Viewable
+from stoqlib.database.orm import ORMObject, Viewable, Alias
 from stoqlib.database.orm import PriceCol, DecimalCol
 from stoqlib.domain.base import ValidatableDomain, Domain, BaseSQLView
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,
                                        IDescribable)
+from stoqlib.domain.person import (Person, PersonAdaptToBranch,
+                                   PersonAdaptToSupplier, PersonAdaptToTransporter)
 from stoqlib.domain.sellable import Sellable, BaseSellableInfo, SellableUnit
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.defaults import quantize
@@ -607,39 +609,110 @@ class PurchaseItemView(Viewable):
 # Views
 #
 
-class PurchaseOrderView(ORMObject, BaseSQLView):
-    """General information about purchase orders"""
-    status = IntCol()
-    open_date = DateTimeCol()
-    quote_deadline = DateTimeCol()
-    expected_receival_date = DateTimeCol()
-    expected_pay_date = DateTimeCol()
-    receival_date = DateTimeCol()
-    confirm_date = DateTimeCol()
-    salesperson_name = UnicodeCol()
-    freight = DecimalCol()
-    surcharge_value = PriceCol()
-    discount_value = PriceCol()
-    supplier_name = UnicodeCol()
-    transporter_name = UnicodeCol()
-    branch_name = UnicodeCol()
-    ordered_quantity = DecimalCol()
-    received_quantity = DecimalCol()
-    subtotal = DecimalCol()
-    total = DecimalCol()
+
+class PurchaseOrderView(Viewable):
+    """General information about purchase orders
+
+    @cvar id: the id of purchase_order table
+    @cvar status: the purchase order status
+    @cvar open_date: the date when the order was started
+    @cvar quote_deadline: the date when the quotation expires
+    @cvar expected_receival_date: expected date to receive products
+    @cvar expected_pay_date: expected date to pay the products
+    @cvar receival_date: the date when the products were received
+    @cvar confirm_date: the date when the order was confirmed
+    @cvar salesperson_name: the name of supplier's salesperson
+    @cvar freight: the freight value
+    @cvar surcharge_value: the surcharge value for the order total
+    @cvar discount_value: the discount_value for the order total
+    @cvar supplier_name: the supplier name
+    @cvar transporter_name: the transporter name
+    @cvar branch_name: the branch company name
+    @cvar ordered_quantity: the total quantity ordered
+    @cvar received_quantity: the total quantity received
+    @cvar subtotal: the order subtotal (sum of product values)
+    @cvar total: subtotal - discount_value + surcharge_value
+    """
+
+    Person_Supplier = Alias(Person, 'person_supplier')
+    Person_Transporter = Alias(Person, 'person_transporter')
+    Person_Branch = Alias(Person, 'person_branch')
+
+    columns = dict(
+        id = PurchaseOrder.q.id,
+        status = PurchaseOrder.q.status,
+        open_date = PurchaseOrder.q.open_date,
+        quote_deadline = PurchaseOrder.q.quote_deadline,
+        expected_receival_date = PurchaseOrder.q.expected_receival_date,
+        expected_pay_date = PurchaseOrder.q.expected_pay_date,
+        receival_date = PurchaseOrder.q.receival_date,
+        confirm_date = PurchaseOrder.q.confirm_date,
+        salesperson_name = PurchaseOrder.q.salesperson_name,
+        freight = PurchaseOrder.q.freight,
+        surcharge_value = PurchaseOrder.q.surcharge_value,
+        discount_value = PurchaseOrder.q.discount_value,
+
+        supplier_name = Person_Supplier.q.name,
+        transporter_name = Person_Transporter.q.name,
+        branch_name = Person_Branch.q.name,
+
+        ordered_quantity = const.SUM(PurchaseItem.q.quantity),
+        received_quantity = const.SUM(PurchaseItem.q.quantity_received),
+        subtotal = const.SUM(PurchaseItem.q.cost * PurchaseItem.q.quantity)
+    )
+
+    joins = [
+        INNERJOINOn(None, PurchaseItem,
+                    PurchaseOrder.q.id == PurchaseItem.q.orderID),
+
+        LEFTJOINOn(None, PersonAdaptToSupplier,
+                   PurchaseOrder.q.supplierID == PersonAdaptToSupplier.q.id),
+        LEFTJOINOn(None, PersonAdaptToTransporter,
+                   PurchaseOrder.q.transporterID == PersonAdaptToTransporter.q.id),
+        LEFTJOINOn(None, PersonAdaptToBranch,
+                   PurchaseOrder.q.branchID == PersonAdaptToBranch.q.id),
+
+        LEFTJOINOn(None, Person_Supplier,
+                   PersonAdaptToSupplier.q._originalID == Person_Supplier.q.id),
+        LEFTJOINOn(None, Person_Transporter,
+                   PersonAdaptToTransporter.q._originalID == Person_Transporter.q.id),
+        LEFTJOINOn(None, Person_Branch,
+                   PersonAdaptToBranch.q._originalID == Person_Branch.q.id),
+    ]
+
+    clause = AND(PurchaseOrder.q._is_valid_model == True)
+
+    #
+    # Properties
+    #
+
+    @property
+    def purchase(self):
+        return PurchaseOrder.get(self.id)
+
+    @property
+    def total(self):
+        return currency(self.subtotal - self.discount_value
+                        + self.surcharge_value)
+
+    #
+    # Public API
+    #
+
+    def get_subtotal(self):
+        return currency(self.subtotal)
+
+    def get_branch_name(self):
+        return unicode(self.branch_name or "")
+
+    def get_supplier_name(self):
+        return unicode(self.supplier_name or "")
 
     def get_transporter_name(self):
-        return self.transporter_name or u""
+        return unicode(self.transporter_name or "")
 
     def get_open_date_as_string(self):
         return self.open_date.strftime("%x")
 
     def get_status_str(self):
         return PurchaseOrder.translate_status(self.status)
-
-    @property
-    def purchase(self):
-        return PurchaseOrder.get(self.id)
-
-    def get_status_name(self):
-        return self.purchase.translate_status(self.status)
