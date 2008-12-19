@@ -41,11 +41,9 @@ from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.till import Till
-from stoqlib.exceptions import (PaymentError, DatabaseInconsistency,
-                                PaymentMethodError)
+from stoqlib.exceptions import DatabaseInconsistency, PaymentMethodError
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.interfaces import IPaymentOperationManager
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -188,13 +186,6 @@ class PaymentMethod(Domain):
             raise TypeError('interest argument must be integer '
                             'or Decimal, got %s instead'
                             % type(interest))
-        conn = self.get_connection()
-        if (sysparam(conn).MANDATORY_INTEREST_CHARGE and
-            interest != self.interest):
-            raise PaymentError('The interest charge is mandatory '
-                               'for this establishment. Got %s of '
-                               'interest, it should be %s'
-                               % (interest, self.interest))
         if not (0 <= interest <= 100):
             raise ValueError("Argument interest must be "
                              "between 0 and 100, got %s"

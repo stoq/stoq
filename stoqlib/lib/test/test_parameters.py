@@ -35,12 +35,11 @@ from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        IIndividual)
 from stoqlib.domain.address import CityLocation
 from stoqlib.domain.person import Person, EmployeeRole
-from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.sale import Sale
-from stoqlib.exceptions import PaymentError, StockError
+from stoqlib.exceptions import StockError
 from stoqlib.domain.test.domaintest import DomainTest
 
 class TestParameter(DomainTest):
@@ -110,10 +109,6 @@ class TestParameter(DomainTest):
         self.failUnlessRaises(StockError,
                               storable._check_logic_quantity)
 
-    def testMaxLateDays(self):
-        param = self.sparam.MAX_LATE_DAYS
-        assert isinstance(param, int)
-
     def testPOSFullScreen(self):
         param = self.sparam.POS_FULL_SCREEN
         assert isinstance(param, bool)
@@ -121,10 +116,6 @@ class TestParameter(DomainTest):
     def testPOSSeparateCashier(self):
         param = self.sparam.POS_SEPARATE_CASHIER
         assert isinstance(param, bool)
-
-    def testAcceptOrderProducts(self):
-        param = self.sparam.ACCEPT_ORDER_PRODUCTS
-        assert isinstance(param, int)
 
     def testLocationSuggested(self):
         location = CityLocation.get_default(self.trans)
@@ -136,26 +127,9 @@ class TestParameter(DomainTest):
         param = self.sparam.HAS_DELIVERY_MODE
         assert isinstance(param, int)
 
-    def testHasStockMode(self):
-        param = self.sparam.HAS_STOCK_MODE
-        assert isinstance(param, int)
-
     def testMaxSearchResults(self):
         param = self.sparam.MAX_SEARCH_RESULTS
         assert isinstance(param, int)
-
-    def testMandatoryInterestCharge(self):
-        return True
-        self.sparam.update_parameter(
-            parameter_name='MANDATORY_INTEREST_CHARGE',
-            value=u'1')
-
-        bill = PaymentMethod.get_by_name(self.trans, 'bill')
-        self.failUnlessRaises(PaymentError,
-                              bill._calculate_payment_value,
-                              total_value=Decimal(512),
-                              interest=Decimal(30),
-                              installments_number=1)
 
     def testConfirmSalesOnTill(self):
         param = self.sparam.CONFIRM_SALES_ON_TILL
@@ -169,18 +143,6 @@ class TestParameter(DomainTest):
     def testReturnMoneyOnSales(self):
         param = self.sparam.RETURN_MONEY_ON_SALES
         assert isinstance(param, bool)
-
-    def testReceiveProductsWithoutOrder(self):
-        param = self.sparam.RECEIVE_PRODUCTS_WITHOUT_ORDER
-        assert isinstance(param, bool)
-
-    def testMaxSaleOrderValidity(self):
-        param = self.sparam.MAX_SALE_ORDER_VALIDITY
-        assert isinstance(param, int)
-
-    def testUseScalePrice(self):
-        param = self.sparam.USE_SCALE_PRICE
-        assert isinstance(param, int)
 
     def testAskSaleCFOP(self):
         param = self.sparam.ASK_SALES_CFOP

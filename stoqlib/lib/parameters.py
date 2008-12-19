@@ -110,12 +110,6 @@ _parameter_info = dict(
       'logic quantities during stock operations. See StockItem '
       'documentation.')),
 
-    MAX_LATE_DAYS=ParameterDetails(
-    _(u'Sales'),
-    _(u'Client Maximum Late Days'),
-    _(u'An integer that represents a maximum number of days which a certain '
-      'client can have unpaid payments with normal status.')),
-
     # XXX This parameter is Stoq-specific. How to deal with that
     # in a better way?
     POS_FULL_SCREEN=ParameterDetails(
@@ -131,13 +125,6 @@ _parameter_info = dict(
       'fiscal printer connected, set this False, so the Till menu will '
       'appear on POS. If you prefer to separate the Till menu from POS '
       'set this True.')),
-
-    ACCEPT_ORDER_PRODUCTS=ParameterDetails(
-    _(u'Sales'),
-    _(u'Accept Order Products'),
-    _(u'Can this company make sales for products that doesn\'t '
-      'actually exist in the stock ? If this parameter is True we can order '
-      'products.')),
 
     ENABLE_PAULISTA_INVOICE=ParameterDetails(
     _(u'Sales'),
@@ -169,23 +156,11 @@ _parameter_info = dict(
     _(u'Does this branch work with delivery service? If not, the '
       'delivery option will be disable on Point of Sales Application.')),
 
-    HAS_STOCK_MODE=ParameterDetails(
-    _(u'Stock'),
-    _(u'Has Stock Mode'),
-    _(u'Does this branch work with storable items? If the answer is negative, '
-      'we will disable stock operations in the system.')),
-
     MAX_SEARCH_RESULTS=ParameterDetails(
     _(u'General'),
     _(u'Max Search Results'),
     _(u'The maximum number of results we must show after searching '
       'in any dialog.')),
-
-    MANDATORY_INTEREST_CHARGE=ParameterDetails(
-    _(u'Sales'),
-    _(u'Mandatory Interest Charge'),
-    _(u'Once this paramter is set, the charge of monthly '
-      'interest will be mandatory for every payment')),
 
     CONFIRM_SALES_ON_TILL=ParameterDetails(
     _(u'Sales'),
@@ -208,18 +183,6 @@ _parameter_info = dict(
       'money to clients when there is overpaid values in sales '
       'with gift certificates as payment method.')),
 
-    RECEIVE_PRODUCTS_WITHOUT_ORDER=ParameterDetails(
-    _(u'Purchase'),
-    _(u'Receive Products Without Order'),
-    _(u'Can we receive products without having a purchase order created '
-      'for them ? If yes, the first step of ReceivalWizard will accept going '
-      'to the second step with no order selected.')),
-
-    MAX_SALE_ORDER_VALIDITY=ParameterDetails(
-    _(u'Sales'),
-    _(u'Max sale order validity'),
-    _(u'The max number of days that a sale order is valid')),
-
     MAX_SALE_DISCOUNT=ParameterDetails(
     _(u'Sales'),
     _(u'Max discount for sales'),
@@ -233,12 +196,6 @@ _parameter_info = dict(
        'if False, pay a relative commission for each commission when '
        'the sales payment is paid.')),
 
-    # XXX: USE_SCALES_PRICE
-    USE_SCALE_PRICE=ParameterDetails(
-    _(u'Sales'),
-    _(u'Use Scale Price'),
-    _(u'Define if we are going to use the price supplied by the scales '
-      'for items that require weighting')),
 
     # XXX: These parameters are Brazil-specific
     ASK_SALES_CFOP=ParameterDetails(
@@ -336,10 +293,7 @@ class ParameterAccess(ClassInittableObject):
         # Adding constants
         ParameterAttr('USE_LOGIC_QUANTITY', bool, initial=True),
         ParameterAttr('POS_FULL_SCREEN', bool, initial=False),
-        ParameterAttr('MAX_LATE_DAYS', int, initial=30),
-        ParameterAttr('HAS_STOCK_MODE', bool, initial=True),
         ParameterAttr('HAS_DELIVERY_MODE', bool, initial=True),
-        ParameterAttr('ACCEPT_ORDER_PRODUCTS', bool, initial=False),
         ParameterAttr('ACCEPT_CHANGE_SALESPERSON', bool, initial=False),
         ParameterAttr('ENABLE_PAULISTA_INVOICE', bool, initial=False),
         ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
@@ -347,14 +301,9 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('STATE_SUGGESTED', unicode, initial=u'SP'),
         ParameterAttr('COUNTRY_SUGGESTED', unicode, initial=u'Brazil'),
         ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
-        ParameterAttr('MANDATORY_INTEREST_CHARGE', bool, initial=False),
         ParameterAttr('RETURN_MONEY_ON_SALES', bool, initial=True),
-        ParameterAttr('RECEIVE_PRODUCTS_WITHOUT_ORDER', bool,
-                      initial=True),
         ParameterAttr('ASK_SALES_CFOP', bool, initial=False),
-        ParameterAttr('MAX_SALE_ORDER_VALIDITY', int, initial=30),
         ParameterAttr('MAX_SALE_DISCOUNT', int, initial=5),
-        ParameterAttr('USE_SCALE_PRICE', bool, initial=False),
         ParameterAttr('ICMS_TAX', Decimal, initial=18),
         ParameterAttr('ISS_TAX', Decimal, initial=18),
         ParameterAttr('SUBSTITUTION_TAX', Decimal, initial=18),

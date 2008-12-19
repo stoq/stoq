@@ -73,7 +73,6 @@ class SellableSearch(SearchEditor):
             automatically confirm
         """
         self.quantity = quantity
-        self.has_stock_mode = sysparam(conn).HAS_STOCK_MODE
         self._delivery_service = sysparam(conn).DELIVERY_SERVICE
         SearchEditor.__init__(self, conn, table=self.table,
                               search_table=self.search_table,
@@ -111,30 +110,23 @@ class SellableSearch(SearchEditor):
     #
 
     def create_filters(self):
-        #if not self.has_stock_mode:
-        #    return
         self.set_text_field_columns(['description'])
         self.executer.set_query(self._executer_query)
 
     def get_columns(self):
         """Hook called by SearchEditor"""
-        columns = [Column('id', title=_('Code'), data_type=int,
-                          format="%03d", sorted=True, width=90,
-                          justify=gtk.JUSTIFY_RIGHT),
-                   Column('barcode', title=_('Barcode'), data_type=str,
-                          width=90, visible=False),
-                   Column('description', title= _('Description'),
-                          data_type=str, expand=True),
-                   Column('price', title=_('Price'), data_type=currency,
-                          width=80, justify=gtk.JUSTIFY_RIGHT)]
-        if self.has_stock_mode:
-            column = AccessorColumn('stock', title=_('Stock'),
-                                    accessor=self._get_available_stock,
-                                    format_func=format_quantity,
-                                    data_type=Decimal,
-                                    width=80)
-            columns.append(column)
-        return columns
+        return [Column('id', title=_('Code'), data_type=int, format="%03d",
+                        sorted=True, width=90, justify=gtk.JUSTIFY_RIGHT),
+                Column('barcode', title=_('Barcode'), data_type=str, width=90,
+                        visible=False),
+                Column('description', title= _('Description'), data_type=str,
+                        expand=True),
+                Column('price', title=_('Price'), data_type=currency, width=80,
+                        justify=gtk.JUSTIFY_RIGHT),
+                AccessorColumn('stock', title=_(u'Stock'),
+                                accessor=self._get_available_stock,
+                                format_func=format_quantity,
+                                data_type=Decimal, width=80),]
 
     def update_widgets(self):
         sellable_view = self.results.get_selected()
