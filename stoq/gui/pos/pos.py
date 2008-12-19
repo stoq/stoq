@@ -327,8 +327,6 @@ class POSApp(AppWindow):
     def _read_scale(self, sellable):
         data = read_scale_info(self.conn)
         self.quantity.set_value(data.weight)
-        if self.param.USE_SCALE_PRICE:
-            self.sellableitem_proxy.model.price = data.price_per_kg
 
     def _run_advanced_search(self, search_str=None):
         sellable_view_item = self.run_dialog(
