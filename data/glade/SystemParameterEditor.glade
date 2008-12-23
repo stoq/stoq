@@ -4,7 +4,6 @@
     <widget class="GtkWindow" id="SystemParameterEditor">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
-        <property name="visible">True</property>
         <property name="width_request">450</property>
         <child>
             <widget class="GtkTable" id="table1">
