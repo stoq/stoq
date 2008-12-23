@@ -4,7 +4,6 @@
     <widget class="GtkWindow" id="ProductAdjustmentDialog">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
-        <property name="visible">True</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
