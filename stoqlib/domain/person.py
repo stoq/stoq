@@ -583,8 +583,9 @@ class PersonAdaptToSupplier(PersonAdapter):
 
     @classmethod
     def get_active_suppliers(cls, conn):
-        query = cls.q.status == cls.STATUS_ACTIVE
-        return cls.select(query, connection=conn)
+        query = AND(cls.q.status == cls.STATUS_ACTIVE,
+                    cls.q._originalID == Person.q.id)
+        return cls.select(query, connection=conn, orderBy=Person.q.name)
 
     def get_supplier_purchases(self):
         from stoqlib.domain.purchase import PurchaseOrderView
