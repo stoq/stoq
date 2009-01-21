@@ -40,7 +40,8 @@ class PaymentMethodType(enum):
      DEBIT_CARD,
      FINANCIAL,
      GIFT_CERTIFICATE,
-     CUSTOM) = range(8)
+     CUSTOM,
+     MULTIPLE) = range(9)
 
 class UnitType(enum):
     """
