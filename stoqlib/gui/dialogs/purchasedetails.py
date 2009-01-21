@@ -30,17 +30,27 @@ import datetime
 import pango
 import gtk
 from kiwi.datatypes import currency
-from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
+from kiwi.ui.widgets.list import Column, SummaryLabel, ListLabel, ColoredColumn
 
-from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.printing import print_report
+from stoqlib.domain.interfaces import IInPayment
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
 from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
 
 _ = stoqlib_gettext
+
+
+def payment_value_colorize(payment):
+    if payment.status == Payment.STATUS_CANCELLED:
+        return gtk.gdk.color_parse('gray')
+    if IInPayment(payment, None):
+        return gtk.gdk.color_parse('blue')
+
+    return gtk.gdk.color_parse('red')
 
 
 class _TemporaryReceivingDetails:
@@ -93,11 +103,24 @@ class PurchaseDetailsDialog(BaseEditor):
     def _setup_summary_labels(self):
         value_format = '<b>%s</b>'
 
-        payment_summary_label = SummaryLabel(klist=self.payments_list,
-                                             column='value',
-                                             label='<b>%s</b>' % _(u"Total:"),
-                                             value_format=value_format)
+        payment_summary_label = ListLabel(klist=self.payments_list,
+                                          column='value',
+                                          label='<b>%s</b>' % _(u"Total:"),
+                                          value_format=value_format)
+
+        total = 0
+        for p in self.model.payments:
+            if p.status == Payment.STATUS_CANCELLED:
+                continue
+
+            if IInPayment(p, None):
+                total -= p.value
+            else:
+                total += p.value
+
+        payment_summary_label.set_value(total)
         payment_summary_label.show()
+
         self.payments_vbox.pack_start(payment_summary_label, False)
 
         order_summary_label = SummaryLabel(klist=self.ordered_items,
@@ -168,12 +191,14 @@ class PurchaseDetailsDialog(BaseEditor):
                       data_type=datetime.date, width=90),
                 Column('status_str', _("Status"), data_type=str, width=80),
                 ColoredColumn('value', _("Value"), data_type=currency,
-                              width=90, color='red',
+                              width=90,
                               justify=gtk.JUSTIFY_RIGHT,
+                              use_data_model=True,
                               data_func=payment_value_colorize),
                 ColoredColumn('paid_value', _("Paid Value"), data_type=currency,
-                              width=92, color='red',
+                              width=92,
                               justify=gtk.JUSTIFY_RIGHT,
+                              use_data_model=True,
                               data_func=payment_value_colorize)]
 
     def _get_payments_info_columns(self):

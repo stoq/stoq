@@ -290,10 +290,12 @@ class PurchasePaymentStep(WizardEditorStep):
     order_widgets = ('subtotal_lbl',
                      'total_lbl')
 
-    def __init__(self, wizard, previous, conn, model):
+    def __init__(self, wizard, previous, conn, model,
+                 outstanding_value=currency(0)):
         self.order = model
         self.slave = None
         self.discount_surcharge_slave = None
+        self.outstanding_value = outstanding_value
         WizardEditorStep.__init__(self, conn, wizard, model.group, previous)
 
     def _setup_widgets(self):
@@ -318,7 +320,8 @@ class PurchasePaymentStep(WizardEditorStep):
         if slave_class:
             self.wizard.payment_group = self.model
             self.slave = slave_class(self.wizard, self,
-                                     self.conn, self.order, method)
+                                     self.conn, self.order, method,
+                                     outstanding_value=self.outstanding_value)
             self.attach_slave('method_slave_holder', self.slave)
 
     def _update_payment_method_slave(self):
