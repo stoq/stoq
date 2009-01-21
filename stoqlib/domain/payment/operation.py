@@ -180,6 +180,31 @@ class CardPaymentOperation(object):
         return CreditCardData.selectOneBy(payment=payment,
                                           connection=payment.get_connection())
 
+# The MultiplePaymentOperation is not a payment operation, but we need to
+# register it, so it could be activated or not. It will not create anything
+# related to payments.
+class MultiplePaymentOperation(object):
+    implements(IPaymentOperation)
+
+    description = _(u'Multiple')
+    max_installments = 12
+
+    #
+    # IPaymentOperation
+    #
+
+    def payment_create(self, payment):
+        pass
+
+    def payment_delete(self, payment):
+        pass
+
+    def selectable(self, method):
+        return True
+
+    def get_constant(self, payment):
+        return PaymentMethodType.MULTIPLE
+
 
 def register_payment_operations():
     pmm = get_utility(IPaymentOperationManager, None)
@@ -191,3 +216,4 @@ def register_payment_operations():
     pmm.register('check', CheckPaymentOperation())
     pmm.register('bill', BillPaymentOperation())
     pmm.register('card', CardPaymentOperation())
+    pmm.register('multiple', MultiplePaymentOperation())

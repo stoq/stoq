@@ -634,14 +634,14 @@ class TestSale(DomainTest):
         client_role = sale.get_client_role()
         self.failIf(client_role is None)
 
-    def testPaidWithMoney(self):
+    def testOnlyPaidWithMoney(self):
         sale = self.create_sale()
         self.add_product(sale)
         sale.order()
         self.add_payments(sale, method_type='money')
         sale.confirm()
 
-        self.failUnless(sale.paid_with_money())
+        self.failUnless(sale.only_paid_with_money())
 
         sale = self.create_sale()
         self.add_product(sale)
@@ -649,7 +649,7 @@ class TestSale(DomainTest):
         self.add_payments(sale, method_type='check')
         sale.confirm()
 
-        self.failIf(sale.paid_with_money())
+        self.failIf(sale.only_paid_with_money())
 
 
 class TestSaleItem(DomainTest):

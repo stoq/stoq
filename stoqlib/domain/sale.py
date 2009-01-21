@@ -538,7 +538,7 @@ class Sale(ValidatableDomain):
 
     # Other methods
 
-    def paid_with_money(self):
+    def only_paid_with_money(self):
         """Find out if the sale is paid using money
         @returns: True if the sale was paid with money, otherwise False
         @rtype: bool
@@ -547,6 +547,11 @@ class Sale(ValidatableDomain):
             if payment.method.method_name != 'money':
                 return False
         return True
+
+    def pay_money_payments(self):
+        for payment in self.group.payments:
+            if payment.method.method_name == 'money':
+                payment.pay()
 
     def add_sellable(self, sellable, quantity=1, price=None):
         """Adds a new sellable item to a sale
