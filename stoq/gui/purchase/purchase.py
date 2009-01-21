@@ -43,6 +43,7 @@ from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
+from stoqlib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
 from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
                                                      ReceiveQuoteWizard)
 from stoqlib.gui.search.categorysearch import (SellableCategorySearch,
@@ -123,6 +124,7 @@ class PurchaseApp(SearchableAppWindow):
         self._update_list_aware_widgets(len(self.results))
         selection = self.results.get_selected_rows()
         can_edit = one_selected = len(selection) == 1
+        can_finish = False
         if selection:
             can_send_supplier = all(
                 order.status == PurchaseOrder.ORDER_PENDING
@@ -136,10 +138,14 @@ class PurchaseApp(SearchableAppWindow):
         if one_selected:
             can_edit = (selection[0].status == PurchaseOrder.ORDER_PENDING or
                         selection[0].status == PurchaseOrder.ORDER_QUOTING)
+            can_finish = (selection[0].status == PurchaseOrder.ORDER_CONFIRMED and
+                          selection[0].received_quantity > 0)
+
         self.cancel_button.set_sensitive(can_cancel)
         self.edit_button.set_sensitive(can_edit)
         self.SendToSupplier.set_sensitive(can_send_supplier)
         self.details_button.set_sensitive(one_selected)
+        self.FinishOrder.set_sensitive(can_finish)
 
     def _open_order(self, order=None, edit_mode=False):
         trans = new_transaction()
@@ -233,6 +239,20 @@ class PurchaseApp(SearchableAppWindow):
         rv = finish_transaction(trans, model)
         trans.close()
 
+    def _finish_order(self):
+        order_views = self.results.get_selected_rows()
+        qty = len(order_views)
+        if qty != 1:
+            raise ValueError('You should have only one order selected '
+                             'at this point, got %d' % qty)
+
+        trans = new_transaction()
+        order = trans.get(order_views[0].purchase)
+        model = self.run_dialog(PurchaseFinishWizard, trans, order)
+        rv = finish_transaction(trans, model)
+        trans.close()
+
+        self.refresh()
     #
     # Kiwi Callbacks
     #
@@ -270,6 +290,9 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_QuoteOrder__activate(self, action):
         self._quote_order()
+
+    def on_FinishOrder__activate(self, action):
+        self._finish_order()
 
     def on_Quote__activate(self, action):
         self._quote_order()
