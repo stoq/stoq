@@ -195,7 +195,7 @@ class ProductStockHistoryDialog(BaseEditor):
     def setup_proxies(self):
         self.add_proxy(self.model, ['description'])
 
-        storable = IStorable(self.model)
+        storable = IStorable(self.model.product)
         self.add_proxy(storable, ['full_balance'])
 
     #
