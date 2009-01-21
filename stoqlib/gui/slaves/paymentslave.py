@@ -32,24 +32,32 @@ from decimal import Decimal
 import datetime
 from dateutil.relativedelta import relativedelta
 
+from kiwi import ValueUnset
 from kiwi.datatypes import format_price, currency, ValidationError
 from kiwi.component import get_utility
+from kiwi.python import Settable
 from kiwi.utils import gsignal
+from kiwi.ui.objectlist import Column
 from kiwi.ui.views import SlaveView
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.account import BankAccount
+from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
+from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import (CheckData, PaymentMethod,
                                            CreditCardData)
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import PersonAdaptToCreditProvider
 from stoqlib.domain.sale import Sale
 from stoqlib.drivers.cheque import get_current_cheque_printer_settings
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.enums import CreatePaymentStatus
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.lib.defaults import (interval_types, INTERVALTYPE_MONTH,
      DECIMAL_PRECISION, calculate_interval)
+from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -369,7 +377,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         # This is very useful when calculating the total amount outstanding
         # or overpaid of the payments
         self.interest_total = currency(0)
-        self.payment_group = self.wizard.payment_group
+        self.payment_group = self.order.group
         self.payment_list = None
         self._reset_btn_validation_ok = True
         self.total_value = outstanding_value or self._get_total_amount()
@@ -398,6 +406,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         max = self.method.max_installments
         self.installments_number.set_range(1, max)
         self.installments_number.set_value(1)
+
         items = [(label, constant) for constant, label
                                 in interval_types.items()]
         self.interval_type_combo.prefill(items)
@@ -423,7 +432,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             self.payment_list.add_slave(slave)
 
     def get_created_adapted_payments(self):
-        for payment in Payment.selectBy(group=self.wizard.payment_group,
+        for payment in Payment.selectBy(group=self.payment_group,
                                         method=self.method,
                                         status=Payment.STATUS_PREVIEW,
                                         connection=self.conn):
@@ -449,6 +458,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     #
     # General methods
     #
+
     def _setup_payments(self):
         self.payment_list.clear_list()
         due_dates = []
@@ -463,7 +473,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             due_dates.append(d + datetime.timedelta(i * interval))
 
         payments = self.method.create_payments(self.method_iface,
-                                               self.wizard.payment_group,
+                                               self.payment_group,
                                                self.total_value,
                                                due_dates)
         interest = Decimal(0)
@@ -499,15 +509,15 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         if not self._data_slave_class:
             raise ValueError('Child classes must define a data_slave_class '
                              'attribute')
-        group = self.wizard.payment_group
         due_date = datetime.datetime.today()
         if not self.payment_list.get_children_number():
             total = self.total_value
         else:
             total = currency(0)
         extra_params = self.get_extra_slave_args()
-        slave = self._data_slave_class(self.conn, group, due_date, total,
-                                       self.method_iface, model, *extra_params)
+        slave = self._data_slave_class(self.conn, self.payment_group, due_date,
+                                       total, self.method_iface, model,
+                                       *extra_params)
         slave.connect('paymentvalue-changed',
                       self._on_slave__paymentvalue_changed)
         slave.connect('duedate-validate',
@@ -539,7 +549,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.interval_type_combo.select_item_by_data(INTERVALTYPE_MONTH)
 
     def create_model(self, conn):
-        return _TemporaryBillData(group=self.wizard.payment_group,
+        return _TemporaryBillData(group=self.payment_group,
                         first_duedate=datetime.datetime.today())
 
     #
@@ -666,7 +676,8 @@ class _MoneyData(BillDataSlave):
 
     def create_model(self, conn):
         money_method = PaymentMethod.get_by_name(conn, 'money')
-        apayment = money_method.create_payment(self._payment_group,
+        apayment = money_method.create_payment(self._method_iface,
+                                               self._payment_group,
                                                self._value,
                                                self._due_date)
         return apayment.get_adapted()
@@ -707,7 +718,7 @@ class CardMethodSlave(BaseEditorSlave):
         self.sale = sale_obj
         self.wizard = wizard
         self.method = payment_method
-        self._payment_group = self.wizard.payment_group
+        self._payment_group = self.sale.group
         self.total_value = (outstanding_value or
                             self.sale.get_total_sale_amount())
         self.providers = self._get_credit_providers()
@@ -830,13 +841,271 @@ class CardMethodSlave(BaseEditorSlave):
         self._setup_max_installments()
 
 
+class _MultipleMethodEditor(BaseEditor):
+    """A generic editor that attaches a payment method slave in a toplevel
+    window.
+    """
+    gladefile = 'HolderTemplate'
+    model_type = PaymentGroup
+    model_name = _(u'Payment')
+    size = (600, 375)
+
+    def __init__(self, wizard, parent, conn, sale_obj, payment_method,
+                 outstanding_value=currency(0)):
+        BaseEditor.__init__(self, conn, sale_obj.group)
+
+        self._method = payment_method
+        dsm = get_utility(IDomainSlaveMapper)
+        slave_class = dsm.get_slave_class(self._method)
+        assert slave_class
+
+        self.conn.savepoint('before_payment_creation')
+
+        #FIXME: This is a workaround to make the slave_class to ignore the
+        #       payments created previously.
+        class _InnerSlaveClass(slave_class):
+            def get_created_adapted_payments(self):
+                return []
+
+        self.slave = _InnerSlaveClass(wizard, parent, self.conn, sale_obj,
+                                      self._method, outstanding_value)
+        #FIXME: We need to control how many payments could be created, since
+        #       we are ignoring the payments created previously.
+        payments = Payment.selectBy(method=self._method, group=sale_obj.group,
+                                    connection=self.conn)
+        max_installments = self._method.max_installments - payments.count()
+        self.slave.installments_number.set_range(1, max_installments)
+
+        self.attach_slave('place_holder', self.slave)
+
+    def on_confirm(self):
+        self.slave.finish()
+        return True
+
+    def on_cancel(self):
+        self.conn.rollback_to_savepoint('before_payment_creation')
+        return False
+
+
+class MultipleMethodSlave(BaseEditorSlave):
+    """A base payment method slave for multiple payments."""
+    gladefile = 'MultipleMethodSlave'
+    model_type = Sale
+
+    def __init__(self, wizard, parent, conn, sale_obj, payment_method,
+                 outstanding_value=currency(0)):
+        # We need a temporary object to hold the value that will be read from
+        # the user. We will set a proxy with this temporary object to help
+        # with the validation.
+        self._holder = Settable(value=Decimal(0))
+
+        self._outstanding_value = outstanding_value
+        self._wizard = wizard
+        # 'money' is the default payment method and it is always avaliable.
+        self._method = PaymentMethod.get_by_name(conn, 'money')
+
+        BaseEditorSlave.__init__(self, conn, sale_obj)
+        self._setup_widgets()
+
+    def setup_proxies(self):
+        self._proxy = self.add_proxy(self._holder, ['base_value',])
+
+    # The two methods below are required to be a payment method slave without
+    # inheriting BasePaymentMethodSlave.
+
+    def update_view(self):
+        # The user can only confirm the payments if there is no value left.
+        can_confirm = self._outstanding_value == 0
+        self._wizard.refresh_next(can_confirm)
+        # The user can only go back if there is no payment.
+        if len(self.payments) > 0:
+            self._wizard.previous_button.set_sensitive(False)
+
+    def finish(self):
+        # All the payments are created in slaves.
+        pass
+
+    #
+    # Private
+    #
+
+    def _setup_widgets(self):
+        self.cash_radio.connect('toggled', self._on_method__toggled)
+        self.cash_radio.set_data('method', self._method)
+        for method in ['bill', 'check', 'card']:
+            self._add_method(PaymentMethod.get_by_name(self.conn, method))
+
+        self.payments.set_columns(self._get_columns())
+
+        self.total_value.set_bold(True)
+        self.received_value.set_bold(True)
+        self.missing_value.set_bold(True)
+        self.total_value.update(self.model.get_total_sale_amount())
+        self._update_values()
+
+    def _update_values(self):
+        total = self.model.get_total_sale_amount()
+        payments = self.model.group.get_items()
+        total_payments = payments.sum('base_value') or Decimal(0)
+        self._outstanding_value = total - total_payments
+
+        if self._outstanding_value > 0:
+            self.base_value.update(self._outstanding_value)
+        else:
+            self.base_value.update(0)
+            self._outstanding_value = 0
+
+        self.received_value.update(total_payments)
+        self._update_missing_or_change_value()
+        self.base_value.grab_focus()
+
+    def _update_missing_or_change_value(self):
+        received = self.received_value.read()
+        if received == ValueUnset:
+            received = currency(0)
+        value = received - self.total_value.read()
+        self.missing_value.update(abs(value))
+        if value < 0:
+            self.missing_change.set_text(_(u'Missing:'))
+        else:
+            self.missing_change.set_text(_(u'Change:'))
+
+    def _get_columns(self):
+        return [Column('description', title=_(u'Description'), data_type=str,
+                        expand=True, sorted=True),
+                Column('base_value', title=_(u'Value'), data_type=currency),
+                Column('due_date', title=_('Due Date'),
+                        data_type=datetime.date),]
+
+    def _add_method(self, payment_method):
+        if not payment_method.is_active:
+            return
+
+        # 'bill' payment method is not allowed without a client.
+        if payment_method.method_name == 'bill' and self.model.client is None:
+            return
+
+        radio = gtk.RadioButton(self.cash_radio, payment_method.description)
+        self.methods_box.pack_start(radio)
+        radio.connect('toggled', self._on_method__toggled)
+        radio.set_data('method', payment_method)
+        radio.show()
+
+    def _can_add_payment(self):
+        payments = self.model.group.get_items()
+        payment_count = payments.filter(
+            Payment.q.methodID==self._method.id).count()
+
+        if payment_count >= self._method.max_installments:
+            info(_(u'You can not add more payments using the %s '
+                   'payment method.') % self._method.description)
+            return False
+        return True
+
+    def _add_payment(self):
+        assert self._method
+
+        if not self._can_add_payment():
+            return
+
+        if self._method.method_name == 'money':
+            self._setup_cash_payment()
+        # We are about to create payments, so we need to consider the fiscal
+        # printer and its operations.
+        # See salewizard.SalesPersonStep.on_next_step for details.
+        retval = CreatePaymentEvent.emit(self._method, self.model)
+
+        if retval is None or retval == CreatePaymentStatus.UNHANDLED:
+            if not self._method.method_name == 'money':
+                self._run_payment_editor()
+
+        self._update_payment_list()
+        self.update_view()
+
+    def _setup_cash_payment(self):
+        has_change_value = self._holder.value - self._outstanding_value > 0
+        if has_change_value:
+            payment_value = self._outstanding_value
+        else:
+            payment_value = self._holder.value
+
+        payment = self._method.create_inpayment(
+            self.model.group, payment_value).get_adapted()
+        # We have to modify the payment, so the fiscal printer can calculate
+        # and print the change.
+        payment.base_value = self._holder.value
+
+        return True
+
+    def _update_payment_list(self):
+        # We reload all the payments each time we update the list. This will
+        # avoid the validation of each payment (add or update) and allow us to
+        # rename the payments at runtime.
+        self.payments.clear()
+        payment_group = self.model.group
+        payments = payment_group.get_items()
+        npayments = payments.count()
+
+        for i, payment in enumerate(payments.orderBy('id')):
+            method_description = payment.method.description
+            description = _(u'%d/%d - %s for sale %05d') % (
+                            i+1, npayments, method_description, self.model.id)
+            payment.description = description
+            self.payments.append(payment)
+
+        self._update_values()
+
+    def _run_payment_editor(self):
+        toplevel = self._wizard.get_toplevel()
+        retval = run_dialog(_MultipleMethodEditor, toplevel, self._wizard,
+                            self, self.conn, self.model, self._method,
+                            self._holder.value)
+        return retval
+
+    #
+    # Callbacks
+    #
+
+    def _on_method__toggled(self, radio):
+        if not radio.get_active():
+            return
+
+        self._method = radio.get_data('method')
+
+    def on_add_button__clicked(self, widget):
+        self._add_payment()
+
+    def on_base_value__validate(self, entry, value):
+        retval = None
+        if value < 0:
+            retval = ValidationError(_(u'The value must be greater than zero.'))
+
+        if self._outstanding_value < 0:
+            self._outstanding_value = 0
+
+        is_money_method = self._method and self._method.method_name == 'money'
+        if self._outstanding_value - value < 0 and not is_money_method:
+            retval = ValidationError(_(u'The value must be lesser than the '
+                                       'missing value.'))
+
+        if not value and self._outstanding_value > 0:
+            retval = ValidationError(_(u'You must provide a payment value.'))
+
+        self._holder.value = value
+        self._update_missing_or_change_value()
+        can_add_payment = retval is None and self._outstanding_value > 0
+        self.add_button.set_sensitive(can_add_payment)
+        return retval
+
+
 def register_payment_slaves():
     dsm = get_utility(IDomainSlaveMapper)
     conn = get_connection()
     for method_name, slave_class in [
         ('bill', BillMethodSlave),
         ('check', CheckMethodSlave),
-        ('card', CardMethodSlave)]:
-        method = PaymentMethod.selectOneBy(connection=conn,
-                                           method_name=method_name)
+        ('card', CardMethodSlave),
+        ('multiple', MultipleMethodSlave),]:
+
+        method = PaymentMethod.get_by_name(conn, method_name)
         dsm.register(method, slave_class)

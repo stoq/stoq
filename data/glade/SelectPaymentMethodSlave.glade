@@ -27,21 +27,6 @@
                                         <property name="visible">True</property>
                                     </widget>
                                 </child>
-                                <child>
-                                    <widget class="ProxyRadioButton" id="multiple_check">
-                                        <property name="active">False</property>
-                                        <property name="data_type">bool</property>
-                                        <property name="group">cash_check</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="label" context="yes" translatable="yes">Multiple Methods</property>
-                                        <property name="model_attribute">multiple_check</property>
-                                        <property name="sensitive">False</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
                             </widget>
                         </child>
                     </widget>

@@ -154,6 +154,15 @@ class PaymentGroup(Domain):
 
         self.status = PaymentGroup.STATUS_PAID
 
+    def pay_money_payments(self):
+        """Pay all money payments in the payment group
+        """
+        assert self.can_pay(), self.get_status_string()
+
+        for payment in self.get_items():
+            if payment.method.method_name == 'money':
+                payment.pay()
+
     def cancel(self):
         """Cancel all payments in the payment group
         """

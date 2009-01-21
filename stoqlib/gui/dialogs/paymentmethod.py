@@ -86,7 +86,8 @@ class PaymentMethodsDialog(BasicDialog):
             # actually gone when migrating from old databases
             'giftcertificate': NotImplementedError,
             'finance': NotImplementedError,
-
+            # TODO: implement editor for 'multiple' payment method.
+            'multiple': NotImplementedError,
             'card': (CardPaymentMethodEditor, method),
             'money': (PaymentMethodEditor, method),
             'check': (PaymentMethodEditor, method),

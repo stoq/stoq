@@ -27,16 +27,12 @@
 
 import gtk
 
-from kiwi.argcheck import argcheck
-from kiwi.component import get_utility
-from kiwi.python import enum
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.exceptions import StoqlibError
-from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -63,14 +59,11 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         self._selected_method = PaymentMethod.get_by_name(self.conn, 'money')
         self.cash_check.connect('toggled', self._on_method__toggled)
         self.cash_check.set_data('method', self._selected_method)
-        self.multiple_check.connect('toggled', self._on_method__toggled)
 
         self._add_payment_method('card')
         self._add_payment_method('bill')
         self._add_payment_method('check')
-
-        # Keep multiple-methods in the last position
-        self.methods_box.reorder_child(self.multiple_check, -1)
+        self._add_payment_method('multiple')
 
     def _add_payment_method(self, method_name):
         method = PaymentMethod.get_by_name(self.conn, method_name)

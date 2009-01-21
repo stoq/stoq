@@ -289,8 +289,10 @@ class FiscalCoupon(gobject.GObject):
 
         self._print_receipts(sale)
 
-        if sale.paid_with_money():
+        if sale.only_paid_with_money():
             sale.set_paid()
+        else:
+            sale.group.pay_money_payments()
 
         print_cheques_for_payment_group(trans, sale.group)
         return True
