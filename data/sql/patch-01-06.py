@@ -5,12 +5,16 @@
 
 from stoqlib.domain.payment.method import PaymentMethod
 
-# Add the 'multiple' payment method.
+# Add the 'multiple' payment method when we are updating the database,
+# otherwise the payment method will be added automaticaly when setting up the
+# system.
 
 def apply_patch(trans):
-    multiple = PaymentMethod.selectOneBy(method_name='multiple',
-                                         connection=trans)
-    if multiple is None:
-        PaymentMethod(method_name=u'multiple',
-                      description=u'Multiple',
-                      connection=trans)
+    has_methods = PaymentMethod.select(connection=trans).count() > 0
+    if has_methods:
+        multiple = PaymentMethod.selectOneBy(method_name='multiple',
+                                             connection=trans)
+        if multiple is None:
+            PaymentMethod(method_name=u'multiple',
+                          description=u'Multiple',
+                          connection=trans)
