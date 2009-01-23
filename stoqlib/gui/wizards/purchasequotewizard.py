@@ -506,9 +506,12 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                 purchase_item.order = real_order
                 has_selected_items = True
 
+        # override some cloned data
+        real_order.group = PaymentGroup(connection=trans)
         real_order.open_date = datetime.date.today()
         real_order.quote_deadline = None
         real_order.status = PurchaseOrder.ORDER_PENDING
+
         if has_selected_items:
             return real_order
         else:
