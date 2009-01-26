@@ -217,7 +217,6 @@ class _Invoice(object):
         list_fields = []
         for field in self.list_fields:
             data, field_type = self._fetch_data_by_field(field)
-            assert isinstance(field_type, list)
             list_fields.append((field, field_type, list(data)))
 
         # Split up the data by page
@@ -259,9 +258,10 @@ class _Invoice(object):
             pages.append(page)
 
         # Footer fields
-        last_page = pages[-1]
-        for field in self.footer_fields:
-            self._add_field(last_page, field)
+        if pages:
+            last_page = pages[-1]
+            for field in self.footer_fields:
+                self._add_field(last_page, field)
 
         return pages
 
