@@ -25,8 +25,10 @@
 """User interfaces for configuring, editing and printing invoices."""
 
 import operator
+from sys import maxint as MAXINT
 
 import gtk
+from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import ObjectList, Column
 
@@ -64,6 +66,8 @@ class InvoiceLayoutEditor(BaseEditor):
         self.enable_normal_window()
         button = self.add_button(stock=gtk.STOCK_PRINT_PREVIEW)
         button.connect('clicked', self._on_preview_button__clicked)
+        self.width.set_range(1, MAXINT)
+        self.height.set_range(1, MAXINT)
 
     def create_model(self, conn):
         return InvoiceLayout(description='Untitled',
@@ -94,10 +98,18 @@ class InvoiceLayoutEditor(BaseEditor):
 
     # Callbacks
 
-    def on_width__content_changed(self, widget):
+    def on_width__validate(self, widget, value):
+        if not value > 0:
+            return ValidationError(_(u'width value must greater than zero.'))
+
+    def on_height__validate(self, widget, value):
+        if not value > 0:
+            return ValidationError(_(u'height value must greater than zero.'))
+
+    def after_width__content_changed(self, widget):
         self.grid.resize(self.model.width, self.model.height)
 
-    def on_height__content_changed(self, widget):
+    def after_height__content_changed(self, widget):
         self.grid.resize(self.model.width, self.model.height)
 
     def _on_grid__field_added(self, grid, grid_field):
@@ -196,7 +208,12 @@ class InvoiceLayoutEditor(BaseEditor):
             return
 
         invoice = SaleInvoice(sales[0], self.model)
-        for page in invoice.generate_pages():
+        invoice_pages = invoice.generate_pages()
+        if not invoice_pages:
+            info(_(u'Not enough fields or data to create an invoice preview.'))
+            return
+
+        for page in invoice_pages:
             for line in page:
                 print repr(line.tostring())
 
