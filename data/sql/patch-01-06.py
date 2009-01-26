@@ -16,5 +16,5 @@ def apply_patch(trans):
                                              connection=trans)
         if multiple is None:
             PaymentMethod(method_name=u'multiple',
-                          description=u'Multiple',
+                          description=_(u'Multiple'),
                           connection=trans)
