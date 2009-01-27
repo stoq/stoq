@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -132,7 +132,7 @@ class AppWindow(BaseAppWindow):
         release_date = stoq.release_date
         about.set_comments('Release Date: %s' %
                            datetime.datetime(*release_date).strftime('%x'))
-        about.set_copyright('Copyright (C) 2005-2008 Async Open Source')
+        about.set_copyright('Copyright (C) 2005-2009 Async Open Source')
 
         # Logo
         icon_file = environ.find_resource('pixmaps', 'stoq_logo.png')

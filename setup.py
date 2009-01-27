@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -30,8 +30,8 @@ import sys
 #
 # Dependency checking
 #
-KIWI_REQUIRED = (1, 9, 22)
-STOQLIB_REQUIRED = '0.9.6'
+KIWI_REQUIRED = (1, 9, 23)
+STOQLIB_REQUIRED = '0.9.7'
 
 # kiwi is only here because we need to use it in setup.py itself,
 # the rest of the dependency checks should be done in stoqlib.
