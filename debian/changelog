@@ -1,3 +1,9 @@
+stoq (0.9.8) jaunty; urgency=low
+
+  * New Release
+
+ -- George Y. Kussumoto <george@async.com.br>  Tue, 27 Jan 2009 16:52:27 -0200
+
 stoq (0.9.7) intrepid; urgency=low
 
   * New Release
