@@ -220,8 +220,8 @@ class BaseEditor(BaseEditorSlave):
         return title_format % model_name
 
     def enable_window_controls(self):
-        """Enables the window controls.
-        @see L{stoqlib.gui.base.dialogs.BasicDialog.enable_window_controls}
+        """Enables the window controls
+        See L{stoqlib.gui.base.dialogs.BasicDialog.enable_window_controls}.
         """
         self.main_dialog.enable_window_controls()
 

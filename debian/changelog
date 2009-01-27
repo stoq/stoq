@@ -1,3 +1,9 @@
+stoqlib (0.9.8) jaunty; urgency=low
+
+  * New Release
+
+ -- George Y. Kussumoto <george@async.com.br>  Tue, 27 Jan 2009 15:35:08 -0200
+
 stoqlib (0.9.7.2) intrepid; urgency=low
 
   * Bugfix Release
@@ -168,9 +174,9 @@ stoqlib (0.9.0-4) dapper; urgency=low
 
  -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 17:01:18 -0300
 
-sto qlib (0.9.0-3) dapper; urgency=low
+stoqlib (0.9.0-3) dapper; urgency=low
 
-  * Remove absolute pixmap paths 
+  * Remove absolute pixmap paths
 
  -- Johan Dahlin <jdahlin@async.com.br>  Tue, 22 May 2007 16:41:17 -0300
 
