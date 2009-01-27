@@ -109,7 +109,7 @@ class Patch(object):
 
     def get_version(self):
         """Returns the patch version
-        @returns a tuple with the patch generation and level
+        @returns: a tuple with the patch generation and level
         """
         return self.generation, self.level
 

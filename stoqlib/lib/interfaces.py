@@ -144,10 +144,10 @@ class IPaymentOperation(Interface):
         """
 
     def get_constant(payment):
-        """This should return a stoqdriver payment method constant.
+        """This should return a stoqdriver payment method constant
         @param payment: the payment whose method we shout return a stoqdrivers
                         constant
-        @returns one L{PaymentMethodConstant}
+        @returns: one L{PaymentMethodConstant}
         """
 
 
