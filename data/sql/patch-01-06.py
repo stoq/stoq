@@ -4,6 +4,7 @@
 #      vendas.
 
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 # Add the 'multiple' payment method when we are updating the database,
 # otherwise the payment method will be added automaticaly when setting up the
