@@ -25,7 +25,6 @@
 """User interfaces for configuring, editing and printing invoices."""
 
 import operator
-from sys import maxint as MAXINT
 
 import gtk
 from kiwi.datatypes import ValidationError
@@ -66,8 +65,8 @@ class InvoiceLayoutEditor(BaseEditor):
         self.enable_normal_window()
         button = self.add_button(stock=gtk.STOCK_PRINT_PREVIEW)
         button.connect('clicked', self._on_preview_button__clicked)
-        self.width.set_range(1, MAXINT)
-        self.height.set_range(1, MAXINT)
+        self.width.set_range(1, 500)
+        self.height.set_range(1, 500)
 
     def create_model(self, conn):
         return InvoiceLayout(description='Untitled',
