@@ -20,6 +20,7 @@ Requirements
 Stoqlib has the following dependencies:
 
 Python 2.4 or higher
+python-dateutil 1.4 or higher
 PyGTK 2.8.1 or higher
 PostgresSQL 8.1 or higher
 Psycopg 2.0.5 or higher
