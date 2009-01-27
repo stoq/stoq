@@ -50,7 +50,7 @@
                                 </child>
                                 <child>
                                     <widget class="ProxySpinButton" id="width">
-                                        <property name="adjustment">0 1 100 1 10 0</property>
+                                        <property name="adjustment">0 1 500 1 10 0</property>
                                         <property name="data_type">long</property>
                                         <property name="model_attribute">width</property>
                                         <property name="text" context="yes" translatable="yes">0</property>
@@ -74,7 +74,7 @@
                                 </child>
                                 <child>
                                     <widget class="ProxySpinButton" id="height">
-                                        <property name="adjustment">0 1 100 1 10 0</property>
+                                        <property name="adjustment">0 1 500 1 10 0</property>
                                         <property name="data_type">long</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">height</property>
