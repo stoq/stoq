@@ -1,3 +1,37 @@
+=== 0.9.6 ===
+2009-01-27 George Kussumoto <george@async.com.br>
+
+	* New Release
+
+2009-01-21 19:06  George Kussumoto <george@async.com.br>
+
+	* [r7901] stoqdrivers/enum.py: #2161: Implementar suporte para
+	  multiplas formas de pagamento no wizard de vendas. r=romaia
+
+2009-01-12 18:29  Ronaldo Maia <romaia@async.com.br>
+
+	* [r7893] stoqdrivers/printers/daruma/FS600MFD.py: Daruma FS600
+	  uses the same commands as FS2100 (including the add item command
+	  different from the FS 325)
+
+2008-10-02 16:32  Ronaldo Maia <romaia@async.com.br>
+
+	* [r7834] tests/data/bematech-MP2100-payment-receipt.txt,
+	  tests/data/bematech-MP25-payment-receipt.txt: fix stoqdriver
+	  tests
+
+2008-10-02 16:21  Ronaldo Maia <romaia@async.com.br>
+
+	* [r7833] stoqdrivers/interfaces.py,
+	  stoqdrivers/printers/bematech/MP25.py,
+	  stoqdrivers/printers/daruma/FS345.py,
+	  stoqdrivers/printers/fiscal.py: part of bug 3816 - Refactor
+	  Payment Wizard
+
+2008-09-10 20:22  George Kussumoto <george@async.com.br>
+
+	* [r7729] debian/control: # Fix wrong version of python-serial
+
 === 0.9.5 ===
 2008-09-10 George Kussumoto <george@async.com.br>
 

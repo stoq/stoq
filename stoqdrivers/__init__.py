@@ -3,7 +3,7 @@
 
 ##
 ## Stoqdrivers
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 ##              Johan Dahlin <henrique@async.com.br>
 ##
 
-__version__ = (0, 9, 5)
+__version__ = (0, 9, 6)
 
 from kiwi.environ import Library
 
