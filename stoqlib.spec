@@ -9,9 +9,9 @@ Group: System Environment/Libraries
 URL: http://www.stoq.com.br/
 Source: http://download.stoq.com.br/sources/LATEST/stoqlib-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: pygtk2 >= 2.8.1, python-zope-interface >= 3.0.1, stoqdrivers >= 0.9.6, python-kiwi >= 1.9.24, python-psycopg2 >= 2.0.5, gazpacho >= 0.6.6, python-imaging >= 1.1.5, python-reportlab >= 1.20
+Requires: pygtk2 >= 2.8.1, python-zope-interface >= 3.0.1, stoqdrivers >= 0.9.6, python-kiwi >= 1.9.24, python-psycopg2 >= 2.0.5, gazpacho >= 0.6.6, python-imaging >= 1.1.5, python-reportlab >= 1.20, python-dateutil >= 1.4
 Requires: python-abi = %(%{__python} -c "import sys; print sys.version[:3]")
-BuildRequires: python-kiwi >= 1.9.24, python-reportlab >= 1.20, python-psycopg2 >= 2.0.5
+BuildRequires: python-kiwi >= 1.9.24, python-reportlab >= 1.20, python-psycopg2 >= 2.0.5, python-dateutil >= 1.4
 BuildArch: noarch
 
 %description
