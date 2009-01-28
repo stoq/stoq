@@ -55,7 +55,7 @@ dependencies = [('ZopeInterface', 'zope.interface', '3.0',
                  'http://www.pythonware.com/products/pil/', None),
                 ('Reportlab', 'reportlab', '1.20',
                  'http://www.reportlab.org/', lambda x: x.Version),
-                ('python-dateutil', 'dateutil', '1.4',
+                ('python-dateutil', 'dateutil', '1.3',
                  'http://labix.org/python-dateutil', lambda x: x.__version__)]
 
 for (package_name, module_name, required_version, url,

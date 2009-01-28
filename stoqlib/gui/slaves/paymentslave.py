@@ -965,7 +965,7 @@ class MultipleMethodSlave(BaseEditorSlave):
             received = currency(0)
         value = received - self.total_value.read()
         self.missing_value.update(abs(value))
-        if value < 0:
+        if value <= 0:
             self.missing_change.set_text(_(u'Missing:'))
         else:
             self.missing_change.set_text(_(u'Change:'))
