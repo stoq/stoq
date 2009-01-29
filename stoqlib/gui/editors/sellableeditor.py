@@ -35,7 +35,6 @@ from kiwi.ui.objectlist import Column
 from stoqdrivers.enum import TaxType, UnitType
 
 from stoqlib.database.orm import LIKE, const
-from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.purchase import PurchaseItem
 from stoqlib.domain.receiving import ReceivingOrderItem
@@ -55,6 +54,10 @@ from stoqlib.lib.validators import get_price_format_str
 
 _ = stoqlib_gettext
 
+class _TemporarySellableUnit(object):
+    def __init__(self, description, unit_index):
+        self.description = description
+        self.unit_index = unit_index
 
 #
 # Editors
@@ -259,34 +262,27 @@ class SellableEditor(BaseEditor):
         raise NotImplementedError
 
     def ensure_sellable_unit(self):
-        unit = self._sellable.unit
-        if unit.unit_index == None:
+        if self._unit.unit_index is None:
             self._sellable.unit = None
         else:
-            if unit.unit_index == UnitType.CUSTOM:
+            if self._unit.unit_index == UnitType.CUSTOM:
                 query = LIKE(const.UPPER(SellableUnit.q.description),
-                             "%%%s%%" % unit.description.upper())
+                             "%%%s%%" % self._unit.description.upper())
             else:
-                query = SellableUnit.q.unit_index == unit.unit_index
-            trans = new_transaction()
-            sellable = SellableUnit.selectOne(query, connection=trans)
-            if not sellable:
-                return
-            self._sellable.unit = trans.get(sellable)
+                query = SellableUnit.q.unit_index == self._unit.unit_index
 
-        SellableUnit.delete(unit.id, connection=self.trans)
+            s_unit = SellableUnit.selectOne(query, connection=self.conn)
+            if s_unit is None:
+                s_unit = SellableUnit(description=self._unit.description,
+                                      unit_index=self._unit.unit_index,
+                                      connection=self.conn)
+            self._sellable.unit = s_unit
 
     def update_unit_entry(self):
-        if (self._sellable and self._sellable.unit
-            and self._sellable.unit.unit_index == UnitType.CUSTOM):
-            enabled = True
-        else:
-            enabled = False
-        self.unit_entry.set_sensitive(enabled)
+        self.unit_entry.set_sensitive(self._unit.unit_index == UnitType.CUSTOM)
 
     def update_requires_weighing_label(self):
-        if (self._sellable is not None
-            and self._sellable.unit.unit_index == UnitType.WEIGHT):
+        if self._unit.unit_index == UnitType.WEIGHT:
             self.requires_weighing_label.set_text(self._requires_weighing_text)
         else:
             self.requires_weighing_label.set_text("")
@@ -314,7 +310,6 @@ class SellableEditor(BaseEditor):
 
     def setup_proxies(self):
         self.set_widget_formats()
-        self.setup_combos()
         self._sellable = self.model.sellable
 
         barcode = self._sellable.barcode
@@ -328,15 +323,17 @@ class SellableEditor(BaseEditor):
         if storable is not None:
             self.add_proxy(storable,
                            SellableEditor.storable_widgets)
+
         if self._sellable.unit:
-            # FIXME: This is absurd, and due to a commit bug
-            #        it ends up in the DB twice in some circumstances
-            self._sellable.unit = self._sellable.unit.clone()
+            self._unit = _TemporarySellableUnit(
+                            description=self._sellable.unit.description,
+                            unit_index=self._sellable.unit.unit_index)
         else:
-            self._sellable.unit = SellableUnit(description=None,
-                                               unit_index=None,
-                                               connection=self.conn)
-        self.unit_proxy = self.add_proxy(self._sellable.unit,
+            self._unit = _TemporarySellableUnit(description=None,
+                                                unit_index=None)
+
+        self.setup_combos()
+        self.unit_proxy = self.add_proxy(self._unit,
                                          SellableEditor.sellable_unit_widgets)
         self.update_requires_weighing_label()
         self.update_unit_entry()
@@ -345,7 +342,7 @@ class SellableEditor(BaseEditor):
     # Kiwi handlers
     #
 
-    def on_unit_combo__changed(self, *args):
+    def on_unit_combo__changed(self, combo):
         self.update_requires_weighing_label()
         self.update_unit_entry()
 
@@ -372,7 +369,7 @@ class SellableEditor(BaseEditor):
            return ValidationError(_("Cost cannot be zero or negative"))
 
     def on_unit_entry__validate(self, entry, value):
-        unit = self._sellable.unit
+        unit = self._unit
         if unit.unit_index == UnitType.CUSTOM and not value:
             return ValidationError(_(u"Unit must have a description"))
 
