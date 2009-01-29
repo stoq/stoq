@@ -47,8 +47,8 @@ from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog,
                                                InvoicePrinterDialog)
 from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
-from stoqlib.gui.parameters import ParametersListingDialog
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
+from stoqlib.gui.search.parametersearch import ParameterSearch
 from stoqlib.gui.search.personsearch import (EmployeeRoleSearch,
                                              EmployeeSearch,
                                              BranchSearch)
@@ -209,7 +209,7 @@ class AdminApp(SearchableAppWindow):
         self.run_dialog(DeviceSettingsDialog, self.conn)
 
     def on_system_parameters__activate(self, action):
-        self.run_dialog(ParametersListingDialog, self.conn)
+        self.run_dialog(ParameterSearch, self.conn)
 
     def on_invoice_printers__activate(self, action):
         self._run_invoice_printer_dialog()
