@@ -963,6 +963,9 @@ class SaleView(Viewable):
 
         total_quantity = const.SUM(SaleItem.q.quantity),
         subtotal = const.SUM(SaleItem.q.quantity * SaleItem.q.price),
+        total = const.SUM(SaleItem.q.price * SaleItem.q.quantity) - \
+              Sale.q.discount_value + Sale.q.surcharge_value
+
     )
 
     joins = [
@@ -987,11 +990,6 @@ class SaleView(Viewable):
     #
 
     @property
-    def total(self):
-        return currency(self.subtotal - self.discount_value
-                        + self.surcharge_value)
-
-    @property
     def sale(self):
         return Sale.get(self.id)
 
@@ -1001,6 +999,9 @@ class SaleView(Viewable):
 
     def get_subtotal(self):
         return currency(self.subtotal)
+
+    def get_total(self):
+        return currency(self.total)
 
     def get_client_name(self):
         return unicode(self.client_name or "")

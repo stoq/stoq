@@ -658,7 +658,9 @@ class PurchaseOrderView(Viewable):
 
         ordered_quantity = const.SUM(PurchaseItem.q.quantity),
         received_quantity = const.SUM(PurchaseItem.q.quantity_received),
-        subtotal = const.SUM(PurchaseItem.q.cost * PurchaseItem.q.quantity)
+        subtotal = const.SUM(PurchaseItem.q.cost * PurchaseItem.q.quantity),
+        total = const.SUM(PurchaseItem.q.cost * PurchaseItem.q.quantity) - \
+            PurchaseOrder.q.discount_value + PurchaseOrder.q.surcharge_value
     )
 
     joins = [
@@ -690,14 +692,12 @@ class PurchaseOrderView(Viewable):
     def purchase(self):
         return PurchaseOrder.get(self.id)
 
-    @property
-    def total(self):
-        return currency(self.subtotal - self.discount_value
-                        + self.surcharge_value)
-
     #
     # Public API
     #
+
+    def get_total(self):
+        return currency(self.total)
 
     def get_subtotal(self):
         return currency(self.subtotal)
