@@ -1319,11 +1319,12 @@ class SQLObject(object):
                orderBy=NoDefault, limit=None,
                lazyColumns=False, reversed=False,
                distinct=False, connection=None,
-               join=None):
+               join=None, having=None):
         return cls.SelectResultsClass(cls, clause,
                              clauseTables=clauseTables,
                              orderBy=orderBy,
                              limit=limit,
+                             having=having,
                              lazyColumns=lazyColumns,
                              reversed=reversed,
                              distinct=distinct,

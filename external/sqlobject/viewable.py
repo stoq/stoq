@@ -231,7 +231,7 @@ class Viewable(object):
                orderBy=NoDefault, limit=None,
                lazyColumns=False, reversed=False,
                distinct=False, connection=None,
-               join=None, columns=None):
+               join=None, columns=None, having=None):
         if cls.clause:
             if clause:
                 clause = AND(clause, cls.clause)
@@ -249,6 +249,7 @@ class Viewable(object):
                                      distinct=distinct,
                                      connection=connection,
                                      join=cls.joins,
+                                     having=having,
                                      ns=cls.columns)
 
     def sync(self):
@@ -265,6 +266,8 @@ class Viewable(object):
 def queryForSelect(conn, select):
     ops = select.ops
     join = ops.get('join')
+    having = ops.get('having')
+
     cls = select.sourceClass
     if join:
         tables = conn._fixTablesForJoins(select)
@@ -305,10 +308,15 @@ def queryForSelect(conn, select):
     if groupBy:
         items = []
         for item in ns.values():
-            if not isinstance(item, SQLCall):
+            # If the field has an aggregate function, than it should not be
+            # in the GROUP BY clause
+            if not item.hasSQLCall():
                 items.append(str(item))
         items.append(str(select.ops['ns']['id']))
         q += " GROUP BY %s" % ', '.join(items)
+
+    if having:
+        q += " HAVING %s" % ' AND '.join([str(i) for i in having])
 
     if ops.get('dbOrderBy'):
         q = conn._queryAddOrderByClause(select, q)
