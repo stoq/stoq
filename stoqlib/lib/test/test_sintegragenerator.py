@@ -92,10 +92,11 @@ class TestSintegraGenerator(DomainTest):
 
         # product came from sellable3
         inventory_item = InventoryItem(product=product,
+                                       product_cost=product.sellable.cost,
                                        inventory=inventory,
                                        recorded_quantity=99,
                                        connection=self.trans)
-        inventory_item.cfop = CfopData.get(1, connection=self.trans)
+        inventory_item.cfop_data = CfopData.get(1, connection=self.trans)
         inventory_item.reason = 'Test'
         inventory_item.actual_quantity = 99
         inventory_item.adjust(invoice_number=999)

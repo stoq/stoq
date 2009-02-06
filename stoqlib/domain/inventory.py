@@ -57,7 +57,7 @@ class InventoryItem(Domain):
     product = ForeignKey("Product")
     recorded_quantity = DecimalCol()
     actual_quantity = DecimalCol(default=None)
-    product_cost = DecimalCol(default=None)
+    product_cost = DecimalCol()
     reason = UnicodeCol(default=u"")
     cfop_data = ForeignKey("CfopData", default=None)
     inventory = ForeignKey("Inventory")
@@ -92,9 +92,6 @@ class InventoryItem(Domain):
                                     self.inventory.branch)
 
         self._add_inventory_fiscal_entry(invoice_number)
-        # since we are adjusting the product, we keep its cost for later
-        # usage (it may change in the future)
-        self.product_cost = self.product.sellable.cost
 
     def adjusted(self):
         """Returns True if the item have already been adjusted,
