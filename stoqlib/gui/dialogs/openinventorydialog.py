@@ -240,6 +240,7 @@ class OpenInventoryDialog(BaseEditor):
             if storable.get_stock_item(self.model.branch) is not None:
                 recorded_quantity = storable.get_full_balance(self.model.branch)
                 InventoryItem(product=sellable.product,
+                              product_cost=sellable.cost,
                               recorded_quantity=recorded_quantity,
                               inventory=inventory,
                               connection=self.conn)

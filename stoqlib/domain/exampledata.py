@@ -525,6 +525,7 @@ class ExampleCreator(object):
         storable = product.addFacet(IStorable, connection=self.trans)
         storable.increase_stock(quantity, inventory.branch)
         return InventoryItem(product=product,
+                             product_cost=product.sellable.cost,
                              recorded_quantity=quantity,
                              inventory=inventory,
                              connection=self.trans)
