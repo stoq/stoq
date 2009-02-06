@@ -73,7 +73,7 @@
       </tr>
     </blockTable>
 % for payment in payments:
-% if payment.method.name == 'check':
+% if payment.method.method_name == 'check':
     <blockTable style="2cols_tableStyle" colWidths="7cm, 12.6cm">
       <tr>
         <td></td>
