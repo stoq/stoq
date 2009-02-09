@@ -8,7 +8,7 @@ Standards-Version: 3.8.0
 
 Package: stoq
 Architecture: all
-Depends: ${misc:Depends}, python, stoqlib (>= 0.9.8), postgresql-client-common
+Depends: ${misc:Depends}, python, stoqlib (>= 0.9.8.4), postgresql-client-common
 Replaces: stoq
 Conflicts: stoq
 Description: An advanced retail system
