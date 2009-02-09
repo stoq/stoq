@@ -91,6 +91,7 @@ class ServiceEditor(SellableEditor):
         self.notes_lbl.set_text(_('Service details'))
         self.stock_total_lbl.hide()
         self.stock_lbl.hide()
+        self.statuses_combo.set_sensitive(True)
 
     #
     # BaseEditor hooks
@@ -102,6 +103,7 @@ class ServiceEditor(SellableEditor):
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.conn)
         sellable = Sellable(base_sellable_info=sellable_info,
                             tax_constant=tax_constant,
+                            status=Sellable.STATUS_AVAILABLE,
                             connection=conn)
         model = Service(sellable=sellable, connection=conn)
         return model
