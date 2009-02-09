@@ -213,7 +213,8 @@ class SellableEditor(BaseEditor):
                         'category_combo',
                         'cost',
                         'price',
-                        'notes')
+                        'notes',
+                        'statuses_combo')
     proxy_widgets = (sellable_unit_widgets +
                      sellable_widgets + barcode_widgets)
 
@@ -291,7 +292,7 @@ class SellableEditor(BaseEditor):
     # BaseEditor hooks
     #
 
-    def setup_combos(self):
+    def setup_sellable_combos(self):
         category_list = SellableCategory.select(
             SellableCategory.q.categoryID != None,
             connection=self.conn).orderBy('description')
@@ -299,6 +300,11 @@ class SellableEditor(BaseEditor):
         items = [(cat.get_description(), cat) for cat in category_list]
         self.category_combo.prefill(items)
 
+        self.statuses_combo.prefill(
+                    [(v, k) for k, v in Sellable.statuses.items()])
+        self.statuses_combo.set_sensitive(False)
+
+    def setup_unit_combo(self):
         primitive_units = SellableUnit.select(
             SellableUnit.q.unit_index != int(UnitType.CUSTOM),
             connection=self.conn)
@@ -312,6 +318,7 @@ class SellableEditor(BaseEditor):
         self.set_widget_formats()
         self._sellable = self.model.sellable
 
+        self.setup_sellable_combos()
         barcode = self._sellable.barcode
         self.barcode_proxy = self.add_proxy(Settable(barcode=barcode),
                                             SellableEditor.barcode_widgets)
@@ -332,7 +339,7 @@ class SellableEditor(BaseEditor):
             self._unit = _TemporarySellableUnit(description=None,
                                                 unit_index=None)
 
-        self.setup_combos()
+        self.setup_unit_combo()
         self.unit_proxy = self.add_proxy(self._unit,
                                          SellableEditor.sellable_unit_widgets)
         self.update_requires_weighing_label()
