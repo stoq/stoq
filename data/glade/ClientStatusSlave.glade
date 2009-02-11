@@ -10,8 +10,15 @@
                 <property name="spacing">5</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="GtkHBox" id="hbox1">
-                        <property name="spacing">5</property>
+                    <placeholder/>
+                    <packing/>
+                </child>
+                <child>
+                    <widget class="GtkTable" id="table1">
+                        <property name="column_spacing">6</property>
+                        <property name="n_columns">4</property>
+                        <property name="n_rows">2</property>
+                        <property name="row_spacing">6</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkLabel" id="label1">
@@ -21,25 +28,89 @@
                             </widget>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+combobox+ComboBox" id="statuses_combo">
-                                <property name="data_type">int</property>
-                                <property name="model_attribute">status</property>
-                                <property name="visible">True</property>
-                            </widget>
+                            <placeholder/>
                             <packing>
-                                <property name="position">1</property>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
-                                <property name="data_type">unicode</property>
+                            <widget class="ProxyComboBox" id="statuses_combo">
+                                <property name="data_type">int</property>
+                                <property name="model_attribute">statuses_combo</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
-                                <property name="position">2</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel1">
+                                <property name="label" context="yes" translatable="yes">Credit Limit ($CURRENCY):</property>
+                                <property name="model_attribute">kiwilabel1</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label2">
+                                <property name="label" context="yes" translatable="yes">Available Credit:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyEntry" id="credit_limit">
+                                <property name="data_type">currency</property>
+                                <property name="model_attribute">credit_limit</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="remaining_store_credit">
+                                <property name="data_type">currency</property>
+                                <property name="justify">center</property>
+                                <property name="label" context="yes" translatable="yes">kiwilabel2</property>
+                                <property name="model_attribute">remaining_store_credit</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                                <property name="top_attach">1</property>
                             </packing>
                         </child>
                     </widget>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
                 </child>
                 <child>
                     <widget class="GtkHSeparator" id="hseparator1">
@@ -47,7 +118,7 @@
                     </widget>
                     <packing>
                         <property name="expand">False</property>
-                        <property name="position">1</property>
+                        <property name="position">2</property>
                     </packing>
                 </child>
             </widget>

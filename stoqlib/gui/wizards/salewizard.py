@@ -215,6 +215,11 @@ class _AbstractSalesPersonStep(WizardEditorStep):
         self.pm_slave.connect('method-changed', self.on_payment_method_changed)
         self.attach_slave('select_method_holder', self.pm_slave)
 
+        self.pm_slave.method_set_sensitive('store_credit',
+                                           bool(self.client.read()))
+        self.pm_slave.method_set_sensitive('bill',
+                                           bool(self.client.read()))
+
         self.cash_change_slave = CashChangeSlave(self.conn, self.model)
         self.attach_slave('cash_change_holder', self.cash_change_slave)
 
@@ -229,6 +234,10 @@ class _AbstractSalesPersonStep(WizardEditorStep):
     #
     # Callbacks
     #
+
+    def on_client__changed(self, entry):
+        self.pm_slave.method_set_sensitive('store_credit', bool(entry.read()))
+        self.pm_slave.method_set_sensitive('bill', bool(entry.read()))
 
     def on_create_client__clicked(self, button):
         self._create_client()
@@ -295,6 +304,17 @@ class SalesPersonStep(_AbstractSalesPersonStep):
             # Return None here means call wizard.finish, which is exactly
             # what we need
             return None
+        elif selected_method.method_name == 'store_credit':
+            client = self.client.read()
+            credit = client.remaining_store_credit
+            total = self.model.get_total_sale_amount()
+
+            if credit < total:
+                warning(_(u"Client %s does not have enought credit left.") % \
+                        client.person.name)
+                return self
+
+            step_class = PaymentMethodStep
         else:
             step_class = PaymentMethodStep
 

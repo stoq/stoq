@@ -73,10 +73,12 @@ import datetime
 
 from zope.interface import implements
 
+from kiwi.datatypes import currency
+
 from stoqlib.database.orm import PriceCol, DecimalCol
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
                                   ForeignKey, MultipleJoin, BoolCol)
-from stoqlib.database.orm import const, AND, INNERJOINOn, LEFTJOINOn
+from stoqlib.database.orm import const, OR, AND, INNERJOINOn, LEFTJOINOn
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.address import Address
@@ -85,6 +87,7 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        ISalesPerson, IBankBranch, IActive,
                                        ICreditProvider, ITransporter,
                                        IDescribable, IPersonFacet)
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.transaction import TransactionEntry
 from stoqlib.exceptions import DatabaseInconsistency
@@ -497,6 +500,7 @@ class PersonAdaptToClient(PersonAdapter):
 
     status = IntCol(default=STATUS_SOLVENT)
     days_late = IntCol(default=0)
+    credit_limit = PriceCol(default=0)
 
     #
     # IActive implementation
@@ -554,6 +558,20 @@ class PersonAdaptToClient(PersonAdapter):
             # The get_client_sales method already returns a sorted list of
             # sales by open_date column
             return sales[-1].open_date.date()
+
+    @property
+    def remaining_store_credit(self):
+        from stoqlib.domain.payment.views import InPaymentView
+        status_query = OR(InPaymentView.q.status == Payment.STATUS_PENDING,
+                          InPaymentView.q.status == Payment.STATUS_CONFIRMED)
+        query = AND(InPaymentView.q.person_id == self.person.id,
+                    status_query,
+                    InPaymentView.q.method_name == 'store_credit')
+
+        debit = InPaymentView.select(query,
+             connection=self.get_connection()).sum('value') or currency('0.0')
+
+        return currency(self.credit_limit - debit)
 
 Person.registerFacet(PersonAdaptToClient, IClient)
 

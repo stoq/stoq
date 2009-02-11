@@ -79,6 +79,13 @@ class _TemporaryMoneyData(object):
         self.intervals = 1
 
 
+class _TemporaryStoreCreditData(object):
+    def __init__(self):
+        self.first_duedate = datetime.datetime.today()
+        self.installments_number = 1
+        self.intervals = 1
+
+
 class _TemporaryCreditProviderGroupData(object):
     def __init__(self, group, provider):
         self.installments_number = 1
@@ -683,6 +690,17 @@ class _MoneyData(BillDataSlave):
         return apayment.get_adapted()
 
 
+class _StoreCreditData(BillDataSlave):
+
+    def create_model(self, conn):
+        method = PaymentMethod.get_by_name(conn, 'store_credit')
+        apayment = method.create_payment(self._method_iface,
+                                         self._payment_group,
+                                         self._value,
+                                         self._due_date)
+        return apayment.get_adapted()
+
+
 class MoneyMethodSlave(BasePaymentMethodSlave):
     model_type = _TemporaryMoneyData
     _data_slave_class = _MoneyData
@@ -702,6 +720,27 @@ class MoneyMethodSlave(BasePaymentMethodSlave):
 
     def create_model(self, conn):
         return _TemporaryMoneyData()
+
+
+class StoreCreditMethodSlave(BasePaymentMethodSlave):
+    model_type = _TemporaryStoreCreditData
+    _data_slave_class = _StoreCreditData
+
+    def __init__(self, wizard, parent, conn, total_amount,
+                 payment_method, outstanding_value=currency(0)):
+        BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
+                                        total_amount, payment_method,
+                                        outstanding_value=outstanding_value)
+        self.bank_label.hide()
+        self.bank_combo.hide()
+        self.first_duedate_lbl.hide()
+        self.first_duedate.hide()
+
+    def get_slave_by_adapted_payment(self, adapted_payment):
+        return self.get_payment_slave(adapted_payment.get_adapted())
+
+    def create_model(self, conn):
+        return _TemporaryStoreCreditData()
 
 
 class CardMethodSlave(BaseEditorSlave):
@@ -932,7 +971,7 @@ class MultipleMethodSlave(BaseEditorSlave):
     def _setup_widgets(self):
         self.cash_radio.connect('toggled', self._on_method__toggled)
         self.cash_radio.set_data('method', self._method)
-        for method in ['bill', 'check', 'card']:
+        for method in ['bill', 'check', 'card', 'store_credit']:
             self._add_method(PaymentMethod.get_by_name(self.conn, method))
 
         self.payments.set_columns(self._get_columns())
@@ -982,8 +1021,11 @@ class MultipleMethodSlave(BaseEditorSlave):
             return
 
         # 'bill' payment method is not allowed without a client.
-        if payment_method.method_name == 'bill' and self.model.client is None:
-            return
+        if (payment_method.method_name == 'bill' or
+            payment_method.method_name == 'store_credit'):
+            if self.model.client is None:
+                return
+
 
         radio = gtk.RadioButton(self.cash_radio, payment_method.description)
         self.methods_box.pack_start(radio)
@@ -1000,6 +1042,17 @@ class MultipleMethodSlave(BaseEditorSlave):
             info(_(u'You can not add more payments using the %s '
                    'payment method.') % self._method.description)
             return False
+
+        if self._method.method_name == 'store_credit':
+            client = self.model.client
+            credit = client.remaining_store_credit
+            total = self._holder.value
+
+            if credit < total:
+                info(_(u"Client %s does not have enought credit left.") % \
+                     client.person.name)
+                return False
+
         return True
 
     def _add_payment(self):
@@ -1105,6 +1158,7 @@ def register_payment_slaves():
         ('bill', BillMethodSlave),
         ('check', CheckMethodSlave),
         ('card', CardMethodSlave),
+        ('store_credit', StoreCreditMethodSlave),
         ('multiple', MultipleMethodSlave),]:
 
         method = PaymentMethod.get_by_name(conn, method_name)

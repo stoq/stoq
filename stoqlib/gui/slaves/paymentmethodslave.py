@@ -49,6 +49,7 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
 
     def __init__(self):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
+        self._options = {}
 
         self.conn = get_connection()
         self._setup_widgets()
@@ -63,6 +64,7 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         self._add_payment_method('card')
         self._add_payment_method('bill')
         self._add_payment_method('check')
+        self._add_payment_method('store_credit')
         self._add_payment_method('multiple')
 
     def _add_payment_method(self, method_name):
@@ -76,14 +78,23 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         radio.set_data('method', method)
         radio.show()
 
+        self._options[method_name] = radio
+
     def _setup_widgets(self):
         money_method = PaymentMethod.get_by_name(self.conn, 'money')
         if not money_method.is_active:
             raise StoqlibError("The money payment method should be always "
                                "available")
 
+    #
+    #   Public API
+    #
+
     def get_selected_method(self):
         return self._selected_method
+
+    def method_set_sensitive(self, method_name, sensitive):
+        self._options[method_name].set_sensitive(sensitive)
 
     #
     # Kiwi callbacks
