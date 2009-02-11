@@ -34,7 +34,7 @@ class PaymentOperationManager(object):
     implements(IPaymentOperationManager)
     def __init__(self):
         self._methods = {}
-        
+
     def register(self, name, klass):
         """
         @param name:

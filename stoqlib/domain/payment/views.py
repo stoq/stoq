@@ -33,7 +33,7 @@ from stoqlib.database.orm import Viewable
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.payment.method import CheckData
+from stoqlib.domain.payment.method import CheckData, PaymentMethod
 from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
                                             PaymentAdaptToOutPayment,
                                             PaymentChangeHistory)
@@ -58,6 +58,8 @@ class InPaymentView(Viewable):
         sale_id=Sale.q.id,
         color=PaymentCategory.q.color,
         payment_number=Payment.q.payment_number,
+        person_id=Person.q.id,
+        method_name=PaymentMethod.q.method_name
         )
 
     joins = [
@@ -71,6 +73,8 @@ class InPaymentView(Viewable):
                    Sale.q.groupID == PaymentGroup.q.id),
         LEFTJOINOn(None, PaymentCategory,
                    PaymentCategory.q.id == Payment.q.categoryID),
+        INNERJOINOn(None, PaymentMethod,
+                    Payment.q.methodID == PaymentMethod.q.id),
         ]
 
     def can_change_due_date(self):

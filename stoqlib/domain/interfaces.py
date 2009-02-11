@@ -211,6 +211,7 @@ class IClient(IPersonFacet):
 
     status = Attribute('ok, indebted, insolvent, inactive')
     days_late = Attribute('How many days is this client indebted')
+    credit_limit = Attribute('How much the user can spend on store credit')
 
     def get_last_purchase_date():
         """Fetch the date of the last purchased item by this client.

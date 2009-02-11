@@ -88,6 +88,7 @@ class PaymentMethodsDialog(BasicDialog):
             'finance': NotImplementedError,
             # TODO: implement editor for 'multiple' payment method.
             'multiple': NotImplementedError,
+            'store_credit': NotImplementedError,
             'card': (CardPaymentMethodEditor, method),
             'money': (PaymentMethodEditor, method),
             'check': (PaymentMethodEditor, method),

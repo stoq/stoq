@@ -24,15 +24,21 @@
 ##
 """ Client editor slaves implementation"""
 
+from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.domain.interfaces import IClient
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
+
 
 class ClientStatusSlave(BaseEditorSlave):
     model_iface = IClient
     gladefile = 'ClientStatusSlave'
 
-    proxy_widgets = ('statuses_combo',)
+    proxy_widgets = ('statuses_combo', 'credit_limit',
+                     'remaining_store_credit')
 
     #
     # BaseEditorSlave hooks
@@ -46,4 +52,12 @@ class ClientStatusSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model,
                                     ClientStatusSlave.proxy_widgets)
 
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_credit_limit__validate(self, entry, value):
+        if value < 0:
+           return ValidationError(
+                        _("Credit limit must be greater than or equal to 0"))
 
