@@ -124,7 +124,8 @@ class TestReport(DomainTest):
         self.checkPDF(PayablePaymentReport, out_payments, date=datetime.date(2007, 1, 1))
 
     def testReceivablePaymentReport(self):
-        in_payments = list(InPaymentView.select(connection=self.trans))
+        payments = InPaymentView.select(connection=self.trans).orderBy('id')
+        in_payments = list(payments)
         for item in in_payments:
             item.due_date = datetime.date(2007, 1, 1)
         self.checkPDF(ReceivablePaymentReport, in_payments, date=datetime.date(2007, 1, 1))
