@@ -200,12 +200,14 @@ class FieldGrid(gtk.Layout):
         self.remove(field.widget)
         self.emit('field-removed', field)
 
-    def _add_field(self, text, x, y, width=-1, height=1):
+    def _add_field(self, text, description, x, y, width=-1, height=1):
         label = gtk.Label()
         label.set_alignment(0, 0)
         label.set_padding(2, 4)
+        if not description:
+            description = text
         label.set_markup(
-            '<span letter_spacing="3072">%s</span>' % (text,))
+            '<span letter_spacing="3072">%s</span>' % (description,))
         label.modify_font(self.font)
         field = FieldInfo(self, text, label, x, y, width, height)
         self._fields.append(field)
@@ -507,14 +509,15 @@ class FieldGrid(gtk.Layout):
     # Public API
     #
 
-    def add_field(self, text, x, y, width=-1, height=1):
+    def add_field(self, text, description, x, y, width=-1, height=1):
         """Adds a new field to the grid
 
         @param text: text of the field
+        @param description: description of the field
         @param x: x position of the field
         @param y: y position of the field
         """
-        return self._add_field(text, x, y, width, height)
+        return self._add_field(text, description, x, y, width, height)
 
     def select_field(self, field):
         """Selects a field
