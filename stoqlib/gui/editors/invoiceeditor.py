@@ -45,7 +45,7 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 
 class InvoiceGrid(FieldGrid):
     def objectlist_dnd_handler(self, item, x, y):
-        child = self.add_field(item.name, x, y)
+        child = self.add_field(item.name, item.description, x, y)
         child.show()
         self.select_field(child)
 
@@ -79,7 +79,8 @@ class InvoiceLayoutEditor(BaseEditor):
                                     InvoiceLayoutEditor.proxy_widgets)
 
         for field in self.model.fields:
-            grid_field = self.grid.add_field(field.field_name,
+            description = self._field_descriptions[field.field_name]
+            grid_field = self.grid.add_field(field.field_name, description,
                                              field.x, field.y,
                                              field.width, field.height)
             grid_field.model = field

@@ -37,7 +37,7 @@ _ = stoqlib_gettext
 
 class PaymentMethodEditor(BaseEditor):
     model_name = _('Payment Method')
-    size = (450, 200)
+    size = (450, 225)
     gladefile = 'PaymentMethodEditor'
     proxy_widgets = ('destination',
                      'max_installments',
@@ -74,7 +74,7 @@ class CardPaymentMethodEditor(PaymentMethodEditor):
 
     def __init__(self, conn, model):
         PaymentMethodEditor.__init__(self, conn, model)
-        button = self.add_button('Edit providers')
+        button = self.add_button(_(u'Edit providers'))
         button.connect('clicked', self._on_edit_buton_clicked)
 
     def _on_edit_buton_clicked(self, button):

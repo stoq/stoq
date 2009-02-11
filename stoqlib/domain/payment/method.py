@@ -152,7 +152,7 @@ class PaymentMethod(Domain):
     #
 
     def get_description(self):
-        return self.description
+        return _(self.description)
 
     #
     # Properties
