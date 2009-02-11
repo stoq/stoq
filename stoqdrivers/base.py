@@ -37,7 +37,7 @@ from stoqdrivers.exceptions import CriticalError, ConfigError
 from stoqdrivers.translation import stoqdrivers_gettext
 from stoqdrivers.serialbase import SerialPort
 
-_ = lambda msg: stoqdrivers_gettext(msg)
+_ = stoqdrivers_gettext
 
 log = Logger('stoqdrivers.basedev')
 

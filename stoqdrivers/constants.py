@@ -32,7 +32,7 @@ StoqDrivers constants
 from stoqdrivers.enum import PaymentMethodType, TaxType, UnitType
 from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: stoqdrivers_gettext(msg)
+_ = stoqdrivers_gettext
 
 # TODO: Improve these descriptions
 _constant_descriptions = {
@@ -52,6 +52,7 @@ _constant_descriptions = {
     PaymentMethodType.BILL: _(u"Bill Payment Method"),
     PaymentMethodType.FINANCIAL: _(u"Financial Payment Method"),
     PaymentMethodType.GIFT_CERTIFICATE: _(u"Gift certificate Payment Method"),
+    PaymentMethodType.MULTIPLE: _(u"Multiple Payment Method"),
     }
 
 def describe_constant(constant_id):

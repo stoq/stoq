@@ -44,7 +44,7 @@ from stoqdrivers.printers.base import BaseDriverConstants
 from stoqdrivers.printers.capabilities import Capability
 from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: stoqdrivers_gettext(msg)
+_ = stoqdrivers_gettext
 
 class CouponItem:
     def __init__(self, id, quantity, value):

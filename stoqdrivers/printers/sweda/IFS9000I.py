@@ -49,7 +49,7 @@ from stoqdrivers.printers.capabilities import Capability
 from stoqdrivers.printers.base import BaseDriverConstants
 from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: stoqdrivers_gettext(msg)
+_ = stoqdrivers_gettext
 
 log = Logger('stoqdrivers.sweda')
 

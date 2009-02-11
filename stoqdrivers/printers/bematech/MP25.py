@@ -50,7 +50,7 @@ from stoqdrivers.printers.base import BaseDriverConstants
 from stoqdrivers.enum import TaxType, UnitType
 from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: stoqdrivers_gettext(msg)
+_ = stoqdrivers_gettext
 
 log = Logger('stoqdrivers.bematech')
 

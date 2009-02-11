@@ -33,7 +33,7 @@ from ConfigParser import ConfigParser
 from stoqdrivers.exceptions import ConfigError
 from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: stoqdrivers_gettext(msg)
+_ = stoqdrivers_gettext
 
 class StoqdriversConfig:
 

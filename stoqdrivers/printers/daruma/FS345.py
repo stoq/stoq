@@ -52,7 +52,7 @@ from stoqdrivers.translation import stoqdrivers_gettext
 
 abicomp.register_codec()
 
-_ = lambda msg: stoqdrivers_gettext(msg)
+_ = stoqdrivers_gettext
 
 log = Logger('stoqdrivers.daruma')
 

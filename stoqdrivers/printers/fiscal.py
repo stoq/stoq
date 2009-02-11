@@ -39,7 +39,7 @@ from stoqdrivers.printers.capabilities import capcheck
 from stoqdrivers.utils import encode_text
 from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: stoqdrivers_gettext(msg)
+_ = stoqdrivers_gettext
 
 log = Logger('stoqdrivers.fiscalprinter')
 

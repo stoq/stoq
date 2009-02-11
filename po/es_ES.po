@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoqdrivers 0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-27 15:01-0200\n"
+"POT-Creation-Date: 2009-02-10 17:03-0200\n"
 "PO-Revision-Date: 2007-01-26 12:57-0200\n"
 "Last-Translator: Lincol Molica <lincoln@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -99,6 +99,11 @@ msgstr "Forma de Pago Financiera"
 #: ../stoqdrivers/constants.py:54
 msgid "Gift certificate Payment Method"
 msgstr "Forma de Pago Vale de Compra"
+
+#: ../stoqdrivers/constants.py:55
+#, fuzzy
+msgid "Multiple Payment Method"
+msgstr "Forma de Pago Pagaré"
 
 #: ../stoqdrivers/configparser.py:77
 #, python-format

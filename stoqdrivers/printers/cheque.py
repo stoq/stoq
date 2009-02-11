@@ -39,7 +39,7 @@ from stoqdrivers.printers.base import BasePrinter
 from stoqdrivers.utils import encode_text
 from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: stoqdrivers_gettext(msg)
+_ = stoqdrivers_gettext
 
 class BankConfiguration:
     """ This class store and manage the Cheque elements positions for a bank.

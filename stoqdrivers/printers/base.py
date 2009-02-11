@@ -40,7 +40,7 @@ from stoqdrivers.enum import DeviceType
 from stoqdrivers.utils import get_module_list
 from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: stoqdrivers_gettext(msg)
+_ = stoqdrivers_gettext
 
 _NoDefault = object()
 

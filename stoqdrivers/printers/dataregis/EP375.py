@@ -55,7 +55,7 @@ ACK = 0x06
 CR = 0x0D
 SUB = 0x1A
 
-_ = lambda msg: stoqdrivers_gettext(msg)
+_ = stoqdrivers_gettext
 
 #
 # Helper functions
