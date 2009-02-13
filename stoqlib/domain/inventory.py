@@ -284,3 +284,6 @@ class Inventory(Domain):
                 "You can't cancel an inventory that has adjusted items!")
 
         self.status = Inventory.STATUS_CANCELLED
+
+    def get_status_str(self):
+        return self.statuses[self.status]
