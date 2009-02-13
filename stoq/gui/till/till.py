@@ -35,7 +35,7 @@ from kiwi.datatypes import currency, converter
 from kiwi.log import Logger
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import SearchColumn
 from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       rollback_and_begin, finish_transaction)
@@ -93,9 +93,6 @@ class TillApp(SearchableAppWindow):
 
     def create_filters(self):
         self.set_text_field_columns(['client_name', 'salesperson_name'])
-        date_filter = DateSearchFilter(_('Paid or due date:'))
-        self.add_filter(
-            date_filter, columns=['open_date'])
         status_filter = ComboSearchFilter(_(u"Show orders with status"),
                                           self._get_status_values())
         status_filter.select(Sale.STATUS_CONFIRMED)
@@ -106,21 +103,21 @@ class TillApp(SearchableAppWindow):
         return _('Stoq - Till for Branch %03d') % get_current_branch(self.conn).id
 
     def get_columns(self):
-        return [Column('id', title=_('Number'), width=80,
-                       data_type=int, format='%05d', sorted=True),
-                Column('open_date', title=_('Date Started'), width=120,
-                       data_type=date, justify=gtk.JUSTIFY_RIGHT),
-                Column('client_name', title=_('Client'),
-                       data_type=str, width=160, expand=True,
-                       ellipsize=pango.ELLIPSIZE_END),
-                Column('salesperson_name', title=_('Salesperson'),
-                       data_type=str, width=160,
-                       ellipsize=pango.ELLIPSIZE_END),
-                Column('total_quantity', title=_('Quantity'),
-                       data_type=decimal.Decimal, width=100,
-                       format_func=format_quantity),
-                Column('total', title=_('Total'), data_type=currency,
-                       width=120)]
+        return [SearchColumn('id', title=_('Number'), width=80,
+                             data_type=int, format='%05d', sorted=True),
+                SearchColumn('open_date', title=_('Date Started'), width=120,
+                             data_type=date, justify=gtk.JUSTIFY_RIGHT),
+                SearchColumn('client_name', title=_('Client'),
+                             data_type=str, width=160, expand=True,
+                             ellipsize=pango.ELLIPSIZE_END),
+                SearchColumn('salesperson_name', title=_('Salesperson'),
+                             data_type=str, width=160,
+                             ellipsize=pango.ELLIPSIZE_END),
+                SearchColumn('total_quantity', title=_('Quantity'),
+                             data_type=decimal.Decimal, width=100,
+                             format_func=format_quantity),
+                SearchColumn('total', title=_('Total'), data_type=currency,
+                             width=120)]
 
     #
     # Till methods

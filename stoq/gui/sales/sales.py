@@ -33,7 +33,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.database.runtime import get_current_branch, get_current_station
 from stoqlib.domain.inventory import Inventory
@@ -82,9 +82,6 @@ class SalesApp(SearchableAppWindow):
 
     def create_filters(self):
         self.set_text_field_columns(['client_name', 'salesperson_name'])
-        date_filter = DateSearchFilter(_('Paid or due date:'))
-        self.add_filter(
-            date_filter, columns=['open_date'])
         status_filter = ComboSearchFilter(_('Show sales with status'),
                                           self._get_status_values())
         status_filter.select(Sale.STATUS_CONFIRMED)
@@ -93,19 +90,19 @@ class SalesApp(SearchableAppWindow):
         self.add_filter(status_filter, position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [Column('id', title=_('Number'), width=80,
-                       format='%05d', data_type=int, sorted=True),
-                Column('client_name', title=_('Client'),
-                       data_type=str, width=140, expand=True,
-                       ellipsize=pango.ELLIPSIZE_END),
-                Column('salesperson_name', title=_('Salesperson'),
-                       data_type=str, width=130,
-                       ellipsize=pango.ELLIPSIZE_END),
-                Column('total_quantity', title=_('Items Quantity'),
-                       data_type=decimal.Decimal, width=140,
-                       format_func=format_quantity),
-                Column('total', title=_('Total'), data_type=currency,
-                       width=120)]
+        return [SearchColumn('id', title=_('Number'), width=80,
+                             format='%05d', data_type=int, sorted=True),
+                SearchColumn('client_name', title=_('Client'),
+                             data_type=str, width=140, expand=True,
+                             ellipsize=pango.ELLIPSIZE_END),
+                SearchColumn('salesperson_name', title=_('Salesperson'),
+                              data_type=str, width=130,
+                              ellipsize=pango.ELLIPSIZE_END),
+                SearchColumn('total_quantity', title=_('Items Quantity'),
+                              data_type=decimal.Decimal, width=140,
+                              format_func=format_quantity),
+                SearchColumn('total', title=_('Total'), data_type=currency,
+                             width=120)]
 
     #
     # Private
@@ -158,6 +155,7 @@ class SalesApp(SearchableAppWindow):
             # When there is no filter for sale status, show the
             # 'date started' column by default
             sale_status = Sale.STATUS_INITIAL
+
         cols = self.get_columns()
         if not sale_status in self.cols_info.keys():
             raise ValueError("Invalid Sale status, got %d" % sale_status)

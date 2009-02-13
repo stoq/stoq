@@ -31,7 +31,7 @@ import pango
 import gtk
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       finish_transaction)
@@ -84,20 +84,22 @@ class StockApp(SearchableAppWindow):
         self.add_filter(self.branch_filter, position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [Column('id', title=_('Code'), sorted=True,
-                       data_type=int, format='%03d', width=80),
-                Column('barcode', title=_("Barcode"), data_type=str, width=100),
-                Column('description', title=_("Description"),
-                       data_type=str, expand=True,
-                       ellipsize=pango.ELLIPSIZE_END),
-                Column('stock', title=_('Quantity'),
-                       data_type=decimal.Decimal, width=100),
-                Column('unit', title=_("Unit"), data_type=str,
-                       width=80)]
+        return [SearchColumn('id', title=_('Code'), sorted=True,
+                             data_type=int, format='%03d', width=80),
+                SearchColumn('barcode', title=_("Barcode"), data_type=str,
+                             width=100),
+                SearchColumn('description', title=_("Description"),
+                             data_type=str, expand=True,
+                             ellipsize=pango.ELLIPSIZE_END),
+                SearchColumn('stock', title=_('Quantity'),
+                             data_type=decimal.Decimal, width=100),
+                SearchColumn('unit', title=_("Unit"), data_type=str,
+                             width=80)]
 
-    def query(self, query, conn):
+    def query(self, query, having, conn):
         branch = self.branch_filter.get_state().value
         return self.search_table.select_by_branch(query, branch,
+                                                  having=having,
                                                   connection=conn)
 
     #

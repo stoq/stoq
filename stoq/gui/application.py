@@ -272,6 +272,7 @@ class SearchableAppWindow(AppWindow):
         self.executer.set_table(self.search_table)
 
         self.search = SearchSlaveDelegate(self.get_columns())
+        self.search.enable_advanced_search()
         self.search.set_query_executer(self.executer)
         self.results = self.search.search.results
         self.set_text_field_label(self.search_label)
