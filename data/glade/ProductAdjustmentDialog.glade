@@ -65,11 +65,22 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyLabel" id="adjustment_quantity">
-                                <property name="data_type">Decimal</property>
-                                <property name="model_attribute">adjustment_quantity</property>
+                            <widget class="GtkHBox" id="hbox3">
                                 <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
+                                <child>
+                                    <widget class="ProxySpinButton" id="adjustment_quantity">
+                                        <property name="adjustment">0 0 100 1 10 0</property>
+                                        <property name="data_type">Decimal</property>
+                                        <property name="digits">2</property>
+                                        <property name="mandatory">True</property>
+                                        <property name="model_attribute">adjustment_quantity</property>
+                                        <property name="text" context="yes" translatable="yes">0.00</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                    </packing>
+                                </child>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">2</property>
