@@ -144,7 +144,7 @@ class SellableSearch(SearchEditor):
     # Private
     #
 
-    def _executer_query(self, query, conn):
+    def _executer_query(self, query, having, conn):
         queries = []
         if query is not None:
             queries.append(query)

@@ -90,7 +90,7 @@ class ProductFullStockView(Viewable):
         )
 
     @classmethod
-    def select_by_branch(cls, query, branch, connection=None):
+    def select_by_branch(cls, query, branch, having=None, connection=None):
         if branch:
             branch_query = ProductStockItem.q.branchID == branch.id
             if query:
@@ -98,7 +98,7 @@ class ProductFullStockView(Viewable):
             else:
                 query = branch_query
 
-        return cls.select(query, connection=connection)
+        return cls.select(query, having=having, connection=connection)
 
     def get_unit_description(self):
         unit = self.product.sellable.get_unit_description()
@@ -233,7 +233,7 @@ class SellableFullStockView(Viewable):
         )
 
     @classmethod
-    def select_by_branch(cls, query, branch, connection=None):
+    def select_by_branch(cls, query, branch, having=None, connection=None):
         if branch:
             # We need the OR part to be able to list services
             branch_query = OR(ProductStockItem.q.branchID == branch.id,
@@ -243,7 +243,7 @@ class SellableFullStockView(Viewable):
             else:
                 query = branch_query
 
-        return cls.select(query, connection=connection)
+        return cls.select(query, having=having, connection=connection)
 
 class SellableCategoryView(Viewable):
     """Stores information about categories.

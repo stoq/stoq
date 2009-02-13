@@ -162,7 +162,7 @@ class ProductSearch(SearchEditor):
                        format_func=format_quantity,
                        data_type=Decimal, width=100)]
 
-    def _executer_query(self, query, conn):
+    def _executer_query(self, query, having, conn):
         branch = self.branch_filter.get_state().value
         if branch is not None:
             branch = PersonAdaptToBranch.get(branch, connection=conn)
