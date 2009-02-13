@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2008-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -31,7 +31,7 @@ import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.database.runtime import finish_transaction
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.interfaces import ICompany
 from stoqlib.domain.inventory import Inventory, InventoryItem
@@ -69,8 +69,7 @@ class ProductsAdjustmentDialog(BaseEditor):
         self.open_date.set_text(self.model.open_date.strftime("%x"))
 
         self.inventory_items.set_columns(self._get_columns())
-        items = self.model.get_items_for_adjustment()
-        self.inventory_items.add_list(items)
+        self._refresh_inventory_items()
 
         if self.model.invoice_number:
             self.invoice_number.set_sensitive(False)
@@ -84,6 +83,12 @@ class ProductsAdjustmentDialog(BaseEditor):
             has_selected = self.inventory_items.get_selected() is not None
             self.adjust_button.set_sensitive(has_selected)
         self.refresh_ok(not self._has_rows())
+
+    def _refresh_inventory_items(self):
+        items = self.model.get_items_for_adjustment()
+        self.inventory_items.add_list(items)
+        self.inventory_items.refresh(True)
+        self._update_widgets()
 
     def _is_valid_invoice_number(self):
         invoice_number = self.invoice_number.read()
@@ -115,16 +120,16 @@ class ProductsAdjustmentDialog(BaseEditor):
     def _run_adjustment_dialog(self, inventory_item):
         retval = run_dialog(AdjustmentDialog, self, self.conn,
                             inventory_item, self.model.invoice_number)
+        finish_transaction(self.conn, retval)
+
         if not retval:
             return
 
         # The adjustment can be done only once
-        self.inventory_items.remove(inventory_item)
-
+        self._refresh_inventory_items()
         # After the first adjustment, the invoice number can not change
         if self.invoice_number.get_property('sensitive'):
             self.invoice_number.set_sensitive(False)
-            self.conn.commit()
 
     #
     # BaseEditor
@@ -188,12 +193,39 @@ class AdjustmentDialog(BaseEditor):
     def __init__(self, conn, model, invoice_number):
         BaseEditor.__init__(self, conn, model)
         self._invoice_number = invoice_number
+        self._setup_widgets()
+
+    def _setup_widgets(self):
+        adjustment_qty = self.model.get_adjustment_quantity()
+        if adjustment_qty > 0:
+            self.adjustment_quantity.set_range(1, adjustment_qty)
+        else:
+            self.adjustment_quantity.set_range(adjustment_qty, -1)
 
     def _setup_combo(self):
         cfops = [(cfop.get_description(), cfop) for cfop in
                                 CfopData.select(connection=self.conn)]
         self.cfop_combo.prefill(cfops)
 
+    def _get_inventory_item(self):
+        adjustment_qty = self.adjustment_quantity.read()
+        if  self.model.get_adjustment_quantity() != adjustment_qty:
+            cloned_item = self.model.clone()
+            # Since we will adjust the cloned_item, we need to override its
+            # actual quantity to reflect the stock situation after the
+            # adjustment. For the same reason, we need to update the recorded
+            # quantity of the original model.
+            recorded = cloned_item.recorded_quantity
+            cloned_item.actual_quantity = recorded + adjustment_qty
+            self.model.recorded_quantity = cloned_item.actual_quantity
+            # The original item still needs to be adjusted, so we need to
+            # override some data.
+            self.model.cfop_data = None
+            self.model.reason = u''
+
+            return cloned_item
+
+        return self.model
     #
     # BaseEditor
     #
@@ -213,11 +245,8 @@ class AdjustmentDialog(BaseEditor):
         return can_confirm
 
     def on_confirm(self):
-        trans = new_transaction()
-        inventory_item = trans.get(self.model)
+        inventory_item = self._get_inventory_item()
         inventory_item.adjust(self._invoice_number)
-        finish_transaction(trans, True)
-
         return inventory_item
 
     #
