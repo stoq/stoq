@@ -35,7 +35,7 @@ from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import SearchColumn
 from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
                                       finish_transaction)
 from stoqlib.lib.message import warning, yesno
@@ -77,30 +77,29 @@ class PurchaseApp(SearchableAppWindow):
 
     def create_filters(self):
         self.set_text_field_columns(['supplier_name'])
-        date_filter = DateSearchFilter(_('Open date is:'))
-        self.add_filter(
-            date_filter, columns=['open_date'])
         self.status_filter = ComboSearchFilter(_('Show orders with status'),
                                                self._get_status_values())
         self.status_filter.select(PurchaseOrder.ORDER_CONFIRMED)
         self.add_filter(self.status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [Column('id', title=_('Number'), sorted=True,
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT, width=80),
-                Column('open_date', title=_('Opened'),
-                       data_type=datetime.date),
-                Column('supplier_name', title=_('Supplier'),
-                       data_type=str, searchable=True, width=200,
-                       expand=True, ellipsize=pango.ELLIPSIZE_END),
-                Column('ordered_quantity', title=_('Ordered'),
-                       data_type=Decimal, width=90,
-                       format_func=format_quantity),
-                Column('received_quantity', title=_('Received'),
-                       data_type=Decimal, width=90,
-                       format_func=format_quantity),
-                Column('total', title=_('Total'),
-                       data_type=currency, width=110)]
+        return [SearchColumn('id', title=_('Number'), sorted=True,
+                             data_type=str, justify=gtk.JUSTIFY_RIGHT,
+                             width=80),
+                SearchColumn('open_date', title=_('Opened'),
+                              long_title='Date Opened',
+                              data_type=datetime.date),
+                SearchColumn('supplier_name', title=_('Supplier'),
+                             data_type=str, searchable=True, width=200,
+                             expand=True, ellipsize=pango.ELLIPSIZE_END),
+                SearchColumn('ordered_quantity', title=_('Ordered'),
+                             data_type=Decimal, width=90,
+                             format_func=format_quantity),
+                SearchColumn('received_quantity', title=_('Received'),
+                             data_type=Decimal, width=90,
+                             format_func=format_quantity),
+                SearchColumn('total', title=_('Total'),
+                             data_type=currency, width=110)]
 
     #
     # Private

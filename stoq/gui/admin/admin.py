@@ -29,7 +29,7 @@ import gettext
 
 import pango
 from kiwi.enums import SearchFilterPosition
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column, SearchColumn
 from kiwi.ui.search import ComboSearchFilter
 
 from stoqlib.database.orm import AND
@@ -85,8 +85,8 @@ class AdminApp(SearchableAppWindow):
         self.add_filter(status_filter, position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [Column('username', title=_('Login Name'), sorted=True,
-                       data_type=str, width=150, searchable=True),
+        return [SearchColumn('username', title=_('Login Name'), sorted=True,
+                              data_type=str, width=150, searchable=True),
                 ForeignKeyColumn(UserProfile, 'name', title=_('Profile'),
                                  obj_field='profile', data_type=str,
                                  width=150, expand=True,

@@ -31,7 +31,7 @@ import gtk
 
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.interfaces import IBranch
@@ -75,21 +75,30 @@ class InventoryApp(SearchableAppWindow):
                         columns=["branchID"])
 
     def get_columns(self):
-        return [Column('id', title=_('Code'), sorted=True,
+        return [SearchColumn('id', title=_('Code'), sorted=True,
                        order=gtk.SORT_DESCENDING,
                        data_type=int, format='%03d', width=80),
-                Column('status_str', title=_('status'),
-                       data_type=str, width=100),
+                SearchColumn('status_str', title=_('Status'),
+                             data_type=str, width=100,
+                             valid_values=self._get_status_values(),
+                             search_attribute='status'),
                 Column('branch.person.name', title=_('Branch'),
                        data_type=str, expand=True),
-                Column('open_date', title=_('Opened'),
+                SearchColumn('open_date', title=_('Opened'),
+                       long_title='Date Opened',
                        data_type=datetime.date, width=120),
-                Column('close_date', title=_(u'Closed'),
+                SearchColumn('close_date', title=_(u'Closed'),
+                       long_title='Date Closed',
                        data_type=datetime.date, width=120)]
 
     #
     # Private API
     #
+
+    def _get_status_values(self):
+        values = [(v, k) for k, v in Inventory.statuses.items()]
+        values.insert(0, (_("Any"), None))
+        return values
 
     def _get_branches(self):
         return Person.iselect(IBranch, connection=self.conn)

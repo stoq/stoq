@@ -37,7 +37,7 @@ from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
@@ -82,9 +82,6 @@ class PayableApp(SearchableAppWindow):
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'supplier_name'])
-        date_filter = DateSearchFilter(_('Paid or due date:'))
-        self.add_filter(
-            date_filter, columns=['paid_date', 'due_date'])
         self.add_filter(
             ComboSearchFilter(_('Show payments with status'),
                               self._get_status_values()),
@@ -94,25 +91,28 @@ class PayableApp(SearchableAppWindow):
         self.print_button.set_sensitive(has_rows)
 
     def get_columns(self):
-        return [Column('id', title=_('#'), width=46,
-                       data_type=int, sorted=True, format='%04d'),
+        return [SearchColumn('id', title=_('#'), long_title='Payment ID',
+                              width=46, data_type=int, sorted=True,
+                              format='%04d'),
                 Column('color', title=_('Description'), width=20,
                        data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
-                Column('description', title=_('Description'),
-                       data_type=str, ellipsize=pango.ELLIPSIZE_END,
-                       expand=True, column='color'),
-                Column('supplier_name', title=_('Supplier'), data_type=str,
-                       expand=True, ellipsize=pango.ELLIPSIZE_END),
-                Column('due_date', title=_('Due Date'),
-                       data_type=datetime.date, width=90),
-                Column('paid_date', title=_('Paid Date'),
-                        data_type=datetime.date, width=90),
-                Column('status_str', title=_('Status'), width=80,
-                       data_type=str),
-                Column('value', title=_('Value'), data_type=currency,
-                       width=80),
-                Column('paid_value', title=_('Paid'), data_type=currency,
-                       width=80)]
+                SearchColumn('description', title=_('Description'),
+                              data_type=str, ellipsize=pango.ELLIPSIZE_END,
+                              expand=True, column='color'),
+                SearchColumn('supplier_name', title=_('Supplier'),
+                             data_type=str, expand=True,
+                             ellipsize=pango.ELLIPSIZE_END),
+                SearchColumn('due_date', title=_('Due Date'),
+                             data_type=datetime.date, width=90),
+                SearchColumn('paid_date', title=_('Paid Date'),
+                             data_type=datetime.date, width=90),
+                SearchColumn('status_str', title=_('Status'), width=80,
+                              data_type=str, search_attribute='status',
+                              valid_values=self._get_status_values()),
+                SearchColumn('value', title=_('Value'), data_type=currency,
+                             width=80),
+                SearchColumn('paid_value', title=_('Paid'), data_type=currency,
+                              long_title='Paid Value', width=80)]
 
     #
     # Private
