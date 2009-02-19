@@ -33,13 +33,13 @@ from zope.interface import implements
 
 from stoqlib.database.orm import DecimalCol
 from stoqlib.database.orm import IntCol, ForeignKey, BoolCol, StringCol, UnicodeCol
-from stoqlib.database.orm import const
+from stoqlib.database.orm import const, AND
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import (IInPayment, IActive, IOutPayment,
                                        IDescribable)
 from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.payment import Payment, PaymentAdaptToInPayment
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DatabaseInconsistency, PaymentMethodError
 from stoqlib.lib.defaults import quantize
@@ -238,10 +238,11 @@ class PaymentMethod(Domain):
             due_date = const.NOW()
 
         if iface is IInPayment:
-            payment_count = Payment.selectBy(
-                group=payment_group.id,
-                method=self,
-                connection=self.get_connection()).count()
+            query = AND(Payment.q.groupID == payment_group.id,
+                        Payment.q.methodID == self.id,
+                        Payment.q.id == PaymentAdaptToInPayment.q._originalID)
+            payment_count = Payment.select(query,
+                                connection=self.get_connection()).count()
             if payment_count == self.max_installments:
                 raise PaymentMethodError(
                     'You can not create more inpayments for this payment '
