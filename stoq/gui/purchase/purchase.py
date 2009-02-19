@@ -39,6 +39,7 @@ from kiwi.ui.objectlist import SearchColumn
 from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
                                       finish_transaction)
 from stoqlib.lib.message import warning, yesno
+from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
@@ -211,6 +212,7 @@ class PurchaseApp(SearchableAppWindow):
                           self.status_filter.get_state().value)
 
     def _cancel_order(self):
+        register_payment_operations()
         order_views = self.results.get_selected_rows()
         assert all(ov.purchase.can_cancel() for ov in order_views)
         if yesno(
