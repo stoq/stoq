@@ -31,7 +31,7 @@ from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import enum
 from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.domain.fiscal import CfopData, IcmsIpiView, IssView
 from stoqlib.gui.base.search import SearchEditor
@@ -67,10 +67,10 @@ class CfopSearch(SearchEditor):
         self.set_text_field_columns(['description', 'code'])
 
     def get_columns(self):
-        return [Column('code', _('CFOP'), data_type=str, sorted=True,
-                       width=90),
-                Column('description', _('Description'), data_type=str,
-                       searchable=True, expand=True)]
+        return [SearchColumn('code', _('CFOP'), data_type=str, sorted=True,
+                             width=90),
+                SearchColumn('description', _('Description'), data_type=str,
+                             searchable=True, expand=True)]
 
 
 class FiscalBookEntrySearch(SearchEditor):
@@ -90,26 +90,26 @@ class FiscalBookEntrySearch(SearchEditor):
         #self.setup_summary_label(col_name, label_text)
 
     def _setup_icms_columns(self):
-        col = Column('icms_value',
-                     title=_('ICMS Total'),
-                     justify=gtk.JUSTIFY_RIGHT,
-                     data_type=currency, width=120)
+        col = SearchColumn('icms_value',
+                           title=_('ICMS Total'),
+                           justify=gtk.JUSTIFY_RIGHT,
+                           data_type=currency, width=120)
         self._setup_columns(col, IcmsIpiView, 'icms_value',
                             _("ICMS Total:"))
 
     def _setup_ipi_columns(self):
-        col = Column('ipi_value',
-                     title=_('IPI Total'),
-                     justify=gtk.JUSTIFY_RIGHT,
-                     data_type=currency, width=120)
+        col = SearchColumn('ipi_value',
+                           title=_('IPI Total'),
+                           justify=gtk.JUSTIFY_RIGHT,
+                           data_type=currency, width=120)
         self._setup_columns(col, IcmsIpiView, 'ipi_value',
                             _("IPI Total:"))
 
     def _setup_iss_columns(self):
-        col = Column('iss_value',
-                     title=_('ISS Total'),
-                     justify=gtk.JUSTIFY_RIGHT,
-                     data_type=currency, width=120)
+        col = SearchColumn('iss_value',
+                           title=_('ISS Total'),
+                           justify=gtk.JUSTIFY_RIGHT,
+                           data_type=currency, width=120)
         self._setup_columns(col, IssView, 'iss_value',
                             _("ISS Total:"))
 
@@ -118,15 +118,15 @@ class FiscalBookEntrySearch(SearchEditor):
     #
 
     def get_columns(self):
-        return [Column('id', title=_('#'), width=80,
-                       data_type=int, sorted=True),
-                Column('date', title=_('Date'), width=80,
-                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                Column('invoice_number', title=_('Invoice'),
-                       data_type=int, width=110),
-                Column('cfop_code', title=_('CFOP'), data_type=str, width=90),
-                Column('drawee_name', title=_('Drawee'),
-                       data_type=str, expand=True)]
+        return [SearchColumn('id', title=_('#'), width=80,
+                             data_type=int, sorted=True),
+                SearchColumn('date', title=_('Date'), width=80,
+                             data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                SearchColumn('invoice_number', title=_('Invoice'),
+                             data_type=int, width=110),
+                SearchColumn('cfop_code', title=_('CFOP'), data_type=str, width=90),
+                SearchColumn('drawee_name', title=_('Drawee'),
+                             data_type=str, expand=True)]
 
 
     def _get_entry_type_query(self, state):

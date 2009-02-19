@@ -31,7 +31,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.database.orm import INNERJOINOn, Viewable
 from stoqlib.database.runtime import get_current_branch
@@ -109,25 +109,20 @@ class TillFiscalOperationsSearch(SearchDialog):
                         position=SearchFilterPosition.TOP,
                         columns=['status'])
 
-        # Date
-        date_filter = DateSearchFilter(_('Date:'))
-        self.add_filter(
-            date_filter, columns=['date'])
-
     def get_columns(self, *args):
-        return [Column('id', title=_('#'), width=60,
-                       justify=gtk.JUSTIFY_RIGHT, format="%05d",
-                       data_type=int, sorted=True),
-                Column('date', title=_('Date'), width=80,
-                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                Column('description', title=_('Description'),
-                       data_type=str, expand=True),
-                Column('station_name', title=_('Station'), data_type=str,
-                       width=120),
-                Column('cfop', title=_(u"Cfop"), data_type=str,
-                       width=100, justify=gtk.JUSTIFY_RIGHT),
-                Column('value', _('Value'), data_type=currency,
-                       width=80)]
+        return [SearchColumn('id', title=_('#'), width=60,
+                             justify=gtk.JUSTIFY_RIGHT, format="%05d",
+                             data_type=int, sorted=True),
+                SearchColumn('date', title=_('Date'), width=80,
+                             data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                SearchColumn('description', title=_('Description'),
+                             data_type=str, expand=True),
+                SearchColumn('station_name', title=_('Station'), data_type=str,
+                             width=120),
+                SearchColumn('cfop', title=_(u"Cfop"), data_type=str,
+                             width=100, justify=gtk.JUSTIFY_RIGHT),
+                SearchColumn('value', _('Value'), data_type=currency,
+                             width=80)]
 
     #
     # Private

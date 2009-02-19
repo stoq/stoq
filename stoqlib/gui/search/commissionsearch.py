@@ -24,11 +24,12 @@
 """ Search dialogs for commission objects """
 
 from decimal import Decimal
+import datetime
 
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
-from kiwi.ui.widgets.list import Column, ColoredColumn
+from kiwi.ui.objectlist import SearchColumn, ColoredColumn, Column
 
 from stoqlib.domain.commission import CommissionView
 from stoqlib.domain.interfaces import ISalesPerson
@@ -64,24 +65,25 @@ class CommissionSearch(SearchDialog):
                         ['salesperson_name'])
         self._salesperson_filter = salesperson_filter
 
-        date_filter = DateSearchFilter(_('Open date is:'))
-        self.add_filter(date_filter, SearchFilterPosition.BOTTOM, ['open_date'])
-
     def get_columns(self):
-        return [Column('id', title=_('Sale'),
-                        data_type=int, sorted=True),
-                Column('salesperson_name', title=_('Salesperson'),
-                        data_type=str, expand=True),
+        return [SearchColumn('id', title=_('Sale'),
+                             data_type=int, sorted=True),
+                SearchColumn('salesperson_name', title=_('Salesperson'),
+                             data_type=str, expand=True),
+                # This column evals to an integer, and due to a bug
+                # in kiwi, its not searchable
                 Column('commission_percentage', title=_('Commission (%)'),
                         data_type=Decimal, format="%.2f"),
                 # negative commissions are shown in red color
                 ColoredColumn('commission_value', title=_('Commission'),
                                color='red', data_func=lambda x: x < 0,
                                data_type=currency),
+                SearchColumn('open_date', title=_('Date'),
+                             data_type=datetime.date),
                 Column('payment_amount', title=_('Payment Value'),
-                        data_type=currency),
+                       data_type=currency),
                 Column('total_amount', title=_('Sale Total'),
-                        data_type=currency)]
+                       data_type=currency)]
 
     def on_print_button_clicked(self, button):
         salesperson_name = self._salesperson_filter.combo.get_selected()

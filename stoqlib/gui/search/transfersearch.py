@@ -29,9 +29,9 @@ from decimal import Decimal
 
 import gtk
 from kiwi.ui.search import DateSearchFilter
+from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
-from stoqlib.gui.base.columns import Column
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
@@ -49,6 +49,7 @@ class TransferOrderSearch(SearchDialog):
     selection_mode = gtk.SELECTION_MULTIPLE
     searchbar_result_strings = _(u"transfer order"), _(u"transfer orders")
     search_by_date = True
+    advanced_search = False
 
     def __init__(self, conn):
         SearchDialog.__init__(self, conn, self.search_table,

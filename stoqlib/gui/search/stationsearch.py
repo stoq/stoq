@@ -41,6 +41,7 @@ class StationSearch(SearchEditor):
     editor_class = StationEditor
     searchbar_result_strings = _("Station"), _("Stations")
     size = (-1, 450)
+    advanced_search = False
 
     #
     # SearchDialog Hooks

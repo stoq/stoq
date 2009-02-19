@@ -41,6 +41,7 @@ class UserProfileSearch(SearchEditor):
     table = UserProfile
     editor_class = UserProfileEditor
     size = (465, 390)
+    advanced_search = False
 
     def __init__(self, conn):
         SearchEditor.__init__(self, conn, self.table, self.editor_class,
