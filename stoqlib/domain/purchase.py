@@ -36,6 +36,7 @@ from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn, const
 from stoqlib.database.orm import ORMObject, Viewable, Alias
 from stoqlib.database.orm import PriceCol, DecimalCol
 from stoqlib.domain.base import ValidatableDomain, Domain, BaseSQLView
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,
                                        IDescribable)
@@ -525,6 +526,7 @@ class QuoteGroup(Domain):
 
 
 class PurchaseOrderAdaptToPaymentTransaction(object):
+    implements(IPaymentTransaction)
 
     def __init__(self, purchase):
         self.purchase = purchase
@@ -541,10 +543,34 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
         pass
 
     def cancel(self):
+        assert self.purchase.group.can_cancel()
+
+        self._payback_paid_payments()
+        self.purchase.group.cancel()
+
+    def return_(self, renegotiation):
         pass
 
-    def return_(renegotiation):
-        pass
+    #
+    # Private API
+    #
+
+    def _payback_paid_payments(self):
+        paid_value = self.purchase.group.get_total_paid()
+
+        # If we didn't pay anything yet, there is no need to create a payback.
+        if not paid_value:
+            return
+
+        money = PaymentMethod.get_by_name(self.purchase.get_connection(), 'money')
+        in_payment = money.create_inpayment(
+            self.purchase.group, paid_value,
+            description=_('%s Money Returned for Purchase %d') % (
+            '1/1', self.purchase.id))
+        payment = in_payment.get_adapted()
+        payment.set_pending()
+        payment.pay()
+
 
 PurchaseOrder.registerFacet(PurchaseOrderAdaptToPaymentTransaction, IPaymentTransaction)
 

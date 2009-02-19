@@ -553,14 +553,16 @@ class ExampleCreator(object):
     def add_payments(self, obj, method_type='money'):
         from stoqlib.domain.sale import Sale
         from stoqlib.domain.purchase import PurchaseOrder
+        method = self.get_payment_method(method_type)
         if isinstance(obj, Sale):
             total = obj.get_sale_subtotal()
+            payment = method.create_inpayment(obj.group, total)
         elif isinstance(obj, PurchaseOrder):
             total = obj.get_purchase_subtotal()
+            payment = method.create_outpayment(obj.group, total)
         else:
             raise ValueError(obj)
-        method = self.get_payment_method(method_type)
-        return method.create_inpayment(obj.group, total)
 
+        return payment
 
 

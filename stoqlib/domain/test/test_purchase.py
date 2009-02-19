@@ -28,6 +28,7 @@ from decimal import Decimal
 
 from kiwi.datatypes import currency
 
+from stoqlib.domain.interfaces import IInPayment
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 
@@ -57,6 +58,59 @@ class TestPurchaseOrder(DomainTest):
 
         order.close()
         self.assertEqual(order.status, PurchaseOrder.ORDER_CLOSED)
+
+    def testCancelNotPaid(self):
+        order = self.create_purchase_order()
+        self.assertRaises(ValueError, order.close)
+        order.status = PurchaseOrder.ORDER_PENDING
+        self.add_payments(order)
+        order.confirm()
+
+        payments = list(order.payments)
+        self.failUnless(len(payments) > 0)
+
+        for payment in payments:
+            self.assertEqual(payment.status, Payment.STATUS_PENDING)
+
+        order.cancel()
+        self.assertEqual(order.status, PurchaseOrder.ORDER_CANCELLED)
+
+        for payment in payments:
+            self.assertEqual(payment.status, Payment.STATUS_CANCELLED)
+
+    def testCancelPaid(self):
+        order = self.create_purchase_order()
+        self.assertRaises(ValueError, order.close)
+        order.status = PurchaseOrder.ORDER_PENDING
+        order.add_item(self.create_sellable(), 1)
+        self.add_payments(order, method_type='money')
+        order.confirm()
+
+        payments = list(order.payments)
+        payments_before_cancel = len(payments)
+        self.failUnless(payments_before_cancel > 0)
+
+        for payment in payments:
+            payment.pay()
+            self.assertEqual(payment.status, Payment.STATUS_PAID)
+
+        total_paid = order.group.get_total_paid()
+
+        order.cancel()
+        self.assertEqual(order.status, PurchaseOrder.ORDER_CANCELLED)
+
+        payments = list(order.payments)
+        payments_after_cancel = len(payments)
+        self.assertEqual(payments_after_cancel, payments_before_cancel+1)
+
+        for payment in payments:
+            # Ok, paid payments of cancelled purchases remain paid...
+            self.assertEqual(payment.status, Payment.STATUS_PAID)
+
+            # ... but there is one payback.
+            if IInPayment(payment, None):
+                self.assertEqual(payment.value, total_paid)
+
 
     def testCanCancelPartial(self):
         order = self.create_purchase_order()
