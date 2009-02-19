@@ -34,7 +34,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
@@ -65,20 +65,20 @@ class SaleSearch(SearchDialog):
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [Column('id', title=_('Number'), width=80,
-                       data_type=int, sorted=True, order=gtk.SORT_DESCENDING),
-                Column('open_date', title=_('Date Started'), width=90,
-                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                Column('client_name', title=_('Client'),
-                       data_type=str, width=200,
-                       ellipsize=pango.ELLIPSIZE_END),
-                Column('salesperson_name', title=_('Salesperson'),
-                       data_type=str, width=200, expand=True),
-                Column('total_quantity', title=_('Items'),
-                       data_type=Decimal, width=60,
-                       format_func=format_quantity),
-                Column('total', title=_('Total'), data_type=currency,
-                       width=90)]
+        return [SearchColumn('id', title=_('Number'), width=80,
+                             data_type=int, sorted=True, order=gtk.SORT_DESCENDING),
+                SearchColumn('open_date', title=_('Date Started'), width=90,
+                             data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                SearchColumn('client_name', title=_('Client'),
+                             data_type=str, width=200,
+                             ellipsize=pango.ELLIPSIZE_END),
+                SearchColumn('salesperson_name', title=_('Salesperson'),
+                             data_type=str, width=200, expand=True),
+                SearchColumn('total_quantity', title=_('Items'),
+                             data_type=Decimal, width=60,
+                             format_func=format_quantity),
+                SearchColumn('total', title=_('Total'), data_type=currency,
+                             width=90)]
 
     def setup_widgets(self):
         self._sale_toolbar = SaleListToolbar(self.conn, self.results, self)

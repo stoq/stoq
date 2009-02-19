@@ -30,7 +30,7 @@ from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import currency
-from kiwi.ui.objectlist import Column
+from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.database.orm import AND
 from stoqlib.database.runtime import get_current_branch
@@ -115,14 +115,14 @@ class SellableSearch(SearchEditor):
 
     def get_columns(self):
         """Hook called by SearchEditor"""
-        return [Column('id', title=_('Code'), data_type=int, format="%03d",
-                        sorted=True, width=90, justify=gtk.JUSTIFY_RIGHT),
-                Column('barcode', title=_('Barcode'), data_type=str, width=90,
-                        visible=False),
-                Column('description', title= _('Description'), data_type=str,
-                        expand=True),
-                Column('price', title=_('Price'), data_type=currency, width=80,
-                        justify=gtk.JUSTIFY_RIGHT),
+        return [SearchColumn('id', title=_('Code'), data_type=int, format="%03d",
+                              sorted=True, width=90, justify=gtk.JUSTIFY_RIGHT),
+                SearchColumn('barcode', title=_('Barcode'), data_type=str, width=90,
+                              visible=False),
+                SearchColumn('description', title= _('Description'), data_type=str,
+                              expand=True),
+                SearchColumn('price', title=_('Price'), data_type=currency, width=80,
+                              justify=gtk.JUSTIFY_RIGHT),
                 AccessorColumn('stock', title=_(u'Stock'),
                                 accessor=self._get_available_stock,
                                 format_func=format_quantity,

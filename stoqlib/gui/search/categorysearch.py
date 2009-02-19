@@ -27,7 +27,9 @@
 creation and edition.
 """
 
-from kiwi.ui.objectlist import Column
+from decimal import Decimal
+
+from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchEditor
@@ -39,7 +41,7 @@ from stoqlib.domain.views import SellableCategoryView
 _ = stoqlib_gettext
 
 class SellableCategorySearch(SearchEditor):
-    size = (700, 500)
+    size = (750, 500)
     title = _('Sellable Category Search')
 
     searchbar_label = _('Categories Matching:')
@@ -58,16 +60,15 @@ class SellableCategorySearch(SearchEditor):
 
     def get_columns(self):
         return [
-            Column("description", _("Description"), data_type=str,
-                   sorted=True, expand=True),
-            Column("suggested_markup", _("Suggested Markup (%)"),
-                   data_type=str, width=180),
-            Column("commission",
-                   _("Commission (%)"), data_type=str,
-                   width=140),
-            Column("installments_commission",
-                   _("Installments Commission (%)"),
-                   data_type=str, width=220),
+            SearchColumn("description", _("Description"), data_type=str,
+                         sorted=True, expand=True),
+            SearchColumn("suggested_markup", _("Suggested Markup (%)"),
+                         data_type=Decimal, width=180),
+            SearchColumn("commission", _("Commission (%)"), data_type=Decimal,
+                         width=140),
+            SearchColumn("installments_commission",
+                         _("Installments Commission (%)"),
+                         data_type=Decimal, width=220),
             ]
 
     def get_editor_model(self, commission_source_category_view):

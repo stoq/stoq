@@ -178,6 +178,7 @@ class _FiscalBookEntryView(object):
         drawee_id=FiscalBookEntry.q.draweeID,
         payment_group_id=FiscalBookEntry.q.payment_groupID,
         cfop_code=CfopData.q.code,
+        drawee_name=Person.q.name,
         )
 
     clause = CfopData.q.id == FiscalBookEntry.q.cfopID
@@ -192,14 +193,6 @@ class _FiscalBookEntryView(object):
     def book_entry(self):
         return FiscalBookEntry.get(self.id,
                                    connection=self.get_connection())
-
-    @property
-    def drawee_name(self):
-        if not self.drawee_id:
-            return u""
-        drawee = Person.get(self.drawee_id,
-                            connection=self.get_connection())
-        return drawee.name
 
 
 class IcmsIpiView(_FiscalBookEntryView, Viewable):

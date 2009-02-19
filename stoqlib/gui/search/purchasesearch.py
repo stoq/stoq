@@ -28,7 +28,7 @@ from decimal import Decimal
 
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import DateSearchFilter, Any, Today
-from kiwi.ui.objectlist import Column
+from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.domain.views import PurchasedItemAndStockView
 from stoqlib.gui.base.search import (SearchEditor, ThisWeek, NextWeek,
@@ -41,7 +41,7 @@ _ = stoqlib_gettext
 
 class PurchasedItemsSearch(SearchEditor):
     title = _('Purchased Items Search')
-    size = (775, 450)
+    size = (780, 450)
     table = search_table = PurchasedItemAndStockView
     editor_class = PurchaseItemEditor
 
@@ -49,22 +49,16 @@ class PurchasedItemsSearch(SearchEditor):
         SearchEditor.__init__(self, conn=conn)
         self.hide_new_button()
 
+    def _get_date_options(self):
+        return [Any, Today, ThisWeek, NextWeek, ThisMonth, NextMonth]
+
     #
     # SearchDialog Hooks
     #
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
-        # Date
-        date_filter = DateSearchFilter(_('Receival expected in:'))
-        # custom options
-        date_filter.clear_options()
-        date_filter.add_custom_options()
-        for opt in [Any, Today, ThisWeek, NextWeek, ThisMonth, NextMonth]:
-            date_filter.add_option(opt)
 
-        date_filter.select(Today)
-        self.add_filter(date_filter, columns=['expected_receival_date'])
         # Branch
         branch_filter = self.create_branch_filter(_('In branch:'))
         self.add_filter(branch_filter, columns=['branch'],
@@ -79,20 +73,21 @@ class PurchasedItemsSearch(SearchEditor):
         self.set_edit_button_sensitive(selected)
 
     def get_columns(self):
-        return [Column('product_id', title=_('# '), data_type=int,
-                        sorted=True, format='%03d'),
-                Column('description', title=_('Description'), data_type=str,
-                        expand=True),
-                Column('purchased', title=_('Purchased'), data_type=Decimal,
-                        width=100),
-                Column('received', title=_('Received'),
-                        data_type=Decimal, width=100),
-                Column('stocked', title=_('In Stock'), data_type=Decimal,
-                        width=100),
-                Column('purchased_date', title=_('Purchased date'),
-                        data_type=datetime.date),
-                Column('expected_receival_date', title=_('Expected receival'),
-                        data_type=datetime.date),]
+        return [SearchColumn('product_id', title=_('# '), data_type=int,
+                             sorted=True, format='%03d'),
+                SearchColumn('description', title=_('Description'), data_type=str,
+                             expand=True),
+                SearchColumn('purchased', title=_('Purchased'), data_type=Decimal,
+                             width=100),
+                SearchColumn('received', title=_('Received'),
+                             data_type=Decimal, width=100),
+                SearchColumn('stocked', title=_('In Stock'), data_type=Decimal,
+                             width=100),
+                SearchColumn('purchased_date', title=_('Purchased date'),
+                             data_type=datetime.date),
+                SearchColumn('expected_receival_date', title=_('Expected receival'),
+                             data_type=datetime.date,
+                             valid_values=self._get_date_options()),]
 
     def get_editor_model(self, model):
         return model.purchase_item

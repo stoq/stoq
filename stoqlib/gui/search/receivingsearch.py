@@ -31,10 +31,10 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import DateSearchFilter
+from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.columns import Column
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
 from stoqlib.gui.printing import print_report
@@ -72,22 +72,18 @@ class PurchaseReceivingSearch(SearchDialog):
         branch_filter = self.create_branch_filter(_(u"In branch"))
         self.add_filter(branch_filter, columns=['branchID'],
                         position=SearchFilterPosition.TOP)
-        # Date
-        date_filter = DateSearchFilter(_('Date:'))
-        self.add_filter(
-            date_filter, columns=['receival_date'])
 
     def get_columns(self):
-        return [Column('purchase.id', _('Purchase Order #'),
-                       data_type=int, width=120),
-                Column('receival_date', _('Receival Date'),
-                       data_type=datetime.date, sorted=True, width=110),
-                Column('supplier_name', _('Supplier'), data_type=unicode,
-                       expand=True),
-                Column('invoice_number', _('Invoice #'), data_type=int,
-                       width=80),
-                Column('invoice_total', _('Invoice Total'),
-                       data_type=currency, width=120)]
+        return [SearchColumn('purchase.id', _('Purchase Order #'),
+                             data_type=int, width=120),
+                SearchColumn('receival_date', _('Receival Date'),
+                             data_type=datetime.date, sorted=True, width=110),
+                SearchColumn('supplier_name', _('Supplier'), data_type=unicode,
+                             expand=True),
+                SearchColumn('invoice_number', _('Invoice #'), data_type=int,
+                             width=80),
+                SearchColumn('invoice_total', _('Invoice Total'),
+                             data_type=currency, width=120)]
 
     #
     # Private

@@ -29,13 +29,13 @@ import gtk
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
+from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import ComboSearchFilter
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service, ServiceView
 from stoqlib.reporting.service import ServiceReport, ServicePriceReport
-from stoqlib.gui.base.columns import Column
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.search import SearchEditor, SearchDialogPrintSlave
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
@@ -103,20 +103,20 @@ class ServiceSearch(SearchEditor):
         return Service.get(model.service_id, connection=self.conn)
 
     def get_columns(self):
-        columns = [Column('id', title=_('Code'), data_type=int, sorted=True,
-                          format="%03d", width=80),
-                   Column('barcode', title=_('Barcode'), data_type=str,
-                          visible=True, width=130),
-                   Column('description', title=_('Description'), data_type=str,
-                          expand=True)]
+        columns = [SearchColumn('id', title=_('Code'), data_type=int, sorted=True,
+                                format="%03d", width=80),
+                   SearchColumn('barcode', title=_('Barcode'), data_type=str,
+                                visible=True, width=130),
+                   SearchColumn('description', title=_('Description'), data_type=str,
+                                expand=True)]
 
         if not self.hide_cost_column:
-            columns.append(Column('cost', _('Cost'), data_type=currency,
-                           width=80))
+            columns.append(SearchColumn('cost', _('Cost'), data_type=currency,
+                                         width=80))
 
         if not self.hide_price_column:
-            columns.append(Column('price', title=_('Price'),
-                                  data_type=currency, width=80))
+            columns.append(SearchColumn('price', title=_('Price'),
+                                        data_type=currency, width=80))
 
         return columns
 

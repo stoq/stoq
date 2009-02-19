@@ -78,7 +78,7 @@ from kiwi.datatypes import currency
 from stoqlib.database.orm import PriceCol, DecimalCol
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
                                   ForeignKey, MultipleJoin, BoolCol)
-from stoqlib.database.orm import const, OR, AND, INNERJOINOn, LEFTJOINOn
+from stoqlib.database.orm import const, OR, AND, INNERJOINOn, LEFTJOINOn, Alias
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.address import Address
@@ -1028,22 +1028,36 @@ class TransporterView(Viewable):
 
 
 class BranchView(Viewable):
+    Manager_Person = Alias(Person, 'person_manager')
+
     columns = dict(
         id=Person.q.id,
         name=Person.q.name,
         branch_id=PersonAdaptToBranch.q.id,
         phone_number=Person.q.phone_number,
+        is_active=PersonAdaptToBranch.q.is_active,
+        manager_name=Manager_Person.q.name
         )
 
     joins = [
         INNERJOINOn(None, PersonAdaptToBranch,
                    Person.q.id == PersonAdaptToBranch.q._originalID),
+        LEFTJOINOn(None, PersonAdaptToEmployee,
+               PersonAdaptToBranch.q.managerID == PersonAdaptToEmployee.q.id),
+        LEFTJOINOn(None, Manager_Person,
+               PersonAdaptToEmployee.q._originalID == Manager_Person.q.id),
         ]
 
     @property
     def branch(self):
         return PersonAdaptToBranch.get(self.branch_id,
                                        connection=self.get_connection())
+
+    def get_status_str(self):
+        if self.is_active:
+            return _('Active')
+
+        return _('Inactive')
 
 
 class CreditProviderView(Viewable):

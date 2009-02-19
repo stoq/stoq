@@ -29,7 +29,7 @@
 from kiwi.argcheck import argcheck
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
@@ -85,27 +85,37 @@ class EmployeeSearch(BasePersonSearch):
     search_lbl_text = _('matching:')
     result_strings = _('employee'), _('employees')
 
+    def _get_status_values(self):
+        items = [(value, key) for key, value in
+                 PersonAdaptToEmployee.statuses.items()]
+        items.insert(0, (_('Any'), None))
+        return items
+
+    def _get_role_values(self):
+        items = [(role.name, role.name) for role in
+                 EmployeeRole.select()]
+        items.insert(0, (_('Any'), None))
+        return items
+
     #
     # SearchDialog Hooks
     #
 
     def create_filters(self):
         self.set_text_field_columns(['name', 'role', 'registry_number'])
-        items = [(value, key) for key, value in
-                 PersonAdaptToEmployee.statuses.items()]
-        items.insert(0, (_('Any'), None))
         status_filter = ComboSearchFilter(_('Show employees with status'),
-                                          items)
+                                          self._get_status_values())
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [Column('name', _('Name'), str,
-                       width=250, expand=True),
-                Column('role', _('Role'), str,
-                       width=250),
-                Column('registry_number', _('Registry Number'), str,
-                       width=150),
-                Column('status_string', _('Status'), str)]
+        return [SearchColumn('name', _('Name'), str, width=250, expand=True),
+                SearchColumn('role', _('Role'), str, width=250,
+                             valid_values=self._get_role_values()),
+                SearchColumn('registry_number', _('Registry Number'), str,
+                             width=150),
+                SearchColumn('status_string', _('Status'), str,
+                             valid_values=self._get_status_values(),
+                             search_attribute='status')]
 
     def get_editor_model(self, model):
         return model.employee
@@ -127,13 +137,13 @@ class SupplierSearch(BasePersonSearch):
         self.set_text_field_columns(['name', 'phone_number', 'cnpj'])
 
     def get_columns(self):
-        return [Column('name', _('Name'), str,
-                       sorted=True, width=250, expand=True),
-                Column('phone_number', _('Phone Number'), str,
-                       format_func=format_phone_number, width=110),
-                Column('fancy_name', _('Fancy Name'), str,
-                       width=180),
-                Column('cnpj', _('CNPJ'), str, width=140)]
+        return [SearchColumn('name', _('Name'), str,
+                             sorted=True, width=250, expand=True),
+                SearchColumn('phone_number', _('Phone Number'), str,
+                             format_func=format_phone_number, width=110),
+                SearchColumn('fancy_name', _('Fancy Name'), str,
+                             width=180),
+                SearchColumn('cnpj', _('CNPJ'), str, width=140)]
 
     def on_details_button_clicked(self, *args):
         selected = self.results.get_selected()
@@ -166,14 +176,14 @@ class AbstractCreditProviderSearch(BasePersonSearch):
         self.executer.add_query_callback(self._get_query)
 
     def get_columns(self):
-        return [Column('name', title=_('Name'),
-                       data_type=str, sorted=True, expand=True),
-                Column('phone_number', _('Phone Number'), str,
-                       format_func=format_phone_number, width=130),
-                Column('short_name', _('Short Name'), str,
-                       width=150),
-                Column('is_active', _('Active'), data_type=bool,
-                       editable=True)]
+        return [SearchColumn('name', title=_('Name'),
+                             data_type=str, sorted=True, expand=True),
+                SearchColumn('phone_number', _('Phone Number'), str,
+                             format_func=format_phone_number, width=130),
+                SearchColumn('short_name', _('Short Name'), str,
+                             width=150),
+                SearchColumn('is_active', _('Active'), data_type=bool,
+                             editable=True)]
 
     def get_editor_model(self, provider_view):
         return provider_view.provider
@@ -217,12 +227,12 @@ class ClientSearch(BasePersonSearch):
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [Column('name', _('Name'), str,
-                       sorted=True, width=250, expand=True),
-                Column('phone_number', _('Phone Number'), str,
-                       format_func=format_phone_number, width=150),
-                Column('cpf', _('CPF'), str, width=130),
-                Column('rg_number', _('RG'), str, width=120)]
+        return [SearchColumn('name', _('Name'), str,
+                             sorted=True, width=250, expand=True),
+                SearchColumn('phone_number', _('Phone Number'), str,
+                             format_func=format_phone_number, width=150),
+                SearchColumn('cpf', _('CPF'), str, width=130),
+                SearchColumn('rg_number', _('RG'), str, width=120)]
 
     @argcheck(ClientView)
     def get_editor_model(self, client_view):
@@ -257,13 +267,13 @@ class TransporterSearch(BasePersonSearch):
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['is_active'])
 
     def get_columns(self):
-        return [Column('name', title=_('Name'),
-                       data_type=str, sorted=True, width=300,
-                       expand=True),
-                Column('phone_number', _('Phone Number'), str,
-                       format_func=format_phone_number, width=180),
-                Column('freight_percentage', _('Freight (%)'), float,
-                       width=150)]
+        return [SearchColumn('name', title=_('Name'),
+                             data_type=str, sorted=True, width=300,
+                             expand=True),
+                SearchColumn('phone_number', _('Phone Number'), str,
+                             format_func=format_phone_number, width=180),
+                SearchColumn('freight_percentage', _('Freight (%)'), float,
+                             width=150)]
 
     def get_editor_model(self, model):
         return model.transporter
@@ -274,6 +284,7 @@ class EmployeeRoleSearch(SearchEditor):
     editor_class = EmployeeRoleEditor
     table = EmployeeRole
     size = (-1, 390)
+    advanced_search = False
 
     def __init__(self, conn):
         SearchEditor.__init__(self, conn, EmployeeRoleSearch.table,
@@ -317,12 +328,11 @@ class BranchSearch(BasePersonSearch):
         self.search.add_filter(status_filter, SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [Column( 'name', _('Name'), str,
-                       width=200, expand=True),
-                Column('phone_number', _('Phone Number'), str,
-                       width=150),
-                #Column('manager_name', _('Manager'), str,
-                #       width=250),
+        return [SearchColumn('name', _('Name'), str, width=200, expand=True),
+                SearchColumn('phone_number', _('Phone Number'), str,
+                             width=150),
+                SearchColumn('manager_name', _('Manager'), str,
+                             width=250),
                 Column('status_str', _('Status'), data_type=str)]
 
     def get_editor_model(self, branch_view):

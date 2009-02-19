@@ -109,6 +109,7 @@ class SearchDialog(BasicDialog):
     @cvar searchbar_labels: labels for SearchBar entry and date fields
     @cvar searchbar_result_strings: a tuple where each item has a singular
       and a plural form for searchbar results label
+    @cvar advanced_search: If the advanced search is enabled or disabled
     """
     main_label_text = ''
     title = ''
@@ -117,6 +118,7 @@ class SearchDialog(BasicDialog):
     search_labels = None
     selection_mode = gtk.SELECTION_BROWSE
     size = ()
+    advanced_search = True
 
     @argcheck(object, object, object, bool, basestring, int, bool)
     def __init__(self, conn, table=None, search_table=None, hide_footer=True,
@@ -181,6 +183,8 @@ class SearchDialog(BasicDialog):
     def _setup_search(self):
         self.search = SearchSlaveDelegate(self.get_columns())
         self.search.set_query_executer(self.executer)
+        if self.advanced_search:
+            self.search.enable_advanced_search()
         self.attach_slave('main', self.search)
         self.header.hide()
 
