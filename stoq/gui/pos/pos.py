@@ -383,7 +383,7 @@ class POSApp(AppWindow):
                 self._scale_settings):
                 self._read_scale(sellable)
 
-        storable = IStorable(sellable, None)
+        storable = IStorable(sellable.product, None)
         if storable is not None:
             if not self._check_available_stock(storable, sellable):
                 info(_("You cannot sell more items of product %s, "
