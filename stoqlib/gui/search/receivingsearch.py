@@ -101,7 +101,8 @@ class PurchaseReceivingSearch(SearchDialog):
         self._show_receiving_order(receiving_order)
 
     def on_print_button_clicked(self, button):
-        print_report(PurchaseReceivalReport, list(self.results))
+        print_report(PurchaseReceivalReport, list(self.results),
+                     filters=self.search.get_search_filters())
 
     def on_details_button_clicked(self, button):
         items = self.results.get_selected_rows()

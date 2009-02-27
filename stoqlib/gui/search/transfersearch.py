@@ -108,7 +108,8 @@ class TransferOrderSearch(SearchDialog):
         if len(orders) == 1:
             items = TransferOrderItem.selectBy(transfer_order=orders[0],
                                                connection=self.conn)
-            print_report(TransferOrderReceipt, orders[0], items)
+            print_report(TransferOrderReceipt, orders[0], items,
+                         filters=self.search.get_search_filters())
 
     def on_details_button_clicked(self, button):
         orders = self.results.get_selected_rows()

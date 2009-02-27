@@ -147,14 +147,11 @@ class SearchResultsReport(BaseStoqReport):
     filter_format_string = ""
 
     def __init__(self, filename, data, report_name, blocked_records=None,
-                 status_name=None, extra_filters=None, start_date=None,
-                 end_date=None, status=None, *args, **kwargs):
+                 status_name=None, filter_strings=[], status=None, *args, **kwargs):
         self._blocked_records = None
         self._status_name = status_name
         self._status = status
-        self._extra_filters = extra_filters
-        self._start_date = start_date
-        self._end_date = end_date
+        self._filter_strings = filter_strings
         self._data = data
         BaseStoqReport.__init__(self, filename, report_name, *args, **kwargs)
 
@@ -177,25 +174,16 @@ class SearchResultsReport(BaseStoqReport):
         else:
             if main_object_name:
                 title += _("all %s") % main_object_name
-        notes = ""
+        base_note = ""
         if self.filter_format_string and self._status_name:
-            notes += self.filter_format_string % self._status_name.lower()
-        if self._extra_filters:
-            notes += " %s " % (_("matching \"%s\"")
-                               % self._extra_filters)
-        if self._start_date:
-            if self._end_date:
-                notes += (_("between %s and %s")
-                          % (self._start_date.strftime("%x"),
-                             self._end_date.strftime("%x")))
-            else:
-                notes += (_("and since %s")
-                          % self._start_date.strftime("%x"))
-        elif self._end_date:
-            notes += (_("until %s")
-                      % self._end_date.strftime("%x"))
-        if notes:
-            notes = "%s %s" % (self.main_object_name.capitalize(), notes)
+            base_note += self.filter_format_string % self._status_name.lower()
+
+        notes = []
+        for filter_string in self._filter_strings:
+            if base_note:
+                notes.append('%s %s' % (base_note, filter_string,))
+            elif filter_string:
+                notes.append(filter_string)
         return (title, notes)
 
 

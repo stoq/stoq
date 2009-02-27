@@ -163,6 +163,7 @@ class ProductCountingReport(SearchResultsReport):
     """
     obj_type = ProductFullStockView
     report_name = _("Product Counting")
+    main_object_name =  _("Inventory Product Counting")
 
     def __init__(self, filename, products, *args, **kwargs):
         self._products = products
