@@ -49,6 +49,7 @@ class ProductFullStockView(Viewable):
     @cvar description: the sellable description
     @cvar unit: the unit of the product
     @cvar product_id: the id of the product table
+    @cvar location: the location of the product
     @cvar branch_id: the id of person_adapt_to_branch table
     @cvar stock: the stock of the product
      """
@@ -61,6 +62,7 @@ class ProductFullStockView(Viewable):
         price=BaseSellableInfo.q.price,
         description=BaseSellableInfo.q.description,
         product_id=Product.q.id,
+        location=Product.q.location,
         tax_description=SellableTaxConstant.q.description,
         category_description=SellableCategory.q.description,
         stock=const.SUM(ProductStockItem.q.quantity +

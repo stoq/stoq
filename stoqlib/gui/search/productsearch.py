@@ -154,6 +154,8 @@ class ProductSearch(SearchEditor):
                              width=130),
                 Column('product_and_category_description',
                         title=_('Description'), data_type=str),
+                SearchColumn('location', title=_('Location'), data_type=str,
+                              visible=False),
                 SearchColumn('cost', _('Cost'), data_type=currency,
                              width=90),
                 SearchColumn('price', title=_('Price'), data_type=currency,

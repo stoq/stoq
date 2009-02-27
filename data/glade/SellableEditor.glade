@@ -104,10 +104,13 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <placeholder/>
+                                    <widget class="GtkLabel" id="location_label">
+                                        <property name="label" context="yes" translatable="yes">Location:</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
                                     <packing>
-                                        <property name="top_attach">7</property>
                                         <property name="bottom_attach">8</property>
+                                        <property name="top_attach">7</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -259,12 +262,15 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <placeholder/>
+                                    <widget class="ProxyEntry" id="location">
+                                        <property name="data_type">unicode</property>
+                                        <property name="model_attribute">location</property>
+                                    </widget>
                                     <packing>
+                                        <property name="bottom_attach">8</property>
                                         <property name="left_attach">1</property>
                                         <property name="right_attach">2</property>
                                         <property name="top_attach">7</property>
-                                        <property name="bottom_attach">8</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -419,6 +425,15 @@
                                     </packing>
                                 </child>
                                 <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="left_attach">2</property>
+                                        <property name="right_attach">3</property>
+                                        <property name="top_attach">6</property>
+                                        <property name="bottom_attach">7</property>
+                                    </packing>
+                                </child>
+                                <child>
                                     <widget class="ProxyLabel" id="requires_weighing_label">
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute"></property>
@@ -432,15 +447,6 @@
                                         <property name="left_attach">2</property>
                                         <property name="right_attach">4</property>
                                         <property name="top_attach">6</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <placeholder/>
-                                    <packing>
-                                        <property name="left_attach">2</property>
-                                        <property name="right_attach">3</property>
-                                        <property name="top_attach">6</property>
-                                        <property name="bottom_attach">7</property>
                                     </packing>
                                 </child>
                                 <child>

@@ -435,6 +435,7 @@ class ProductComponentEditor(BaseEditor):
 class ProductEditor(SellableEditor):
     model_name = _('Product')
     model_type = Product
+    product_widgets = ['location',]
 
     def __init__(self, conn, model=None):
         self._has_composed_product = sysparam(conn).ENABLE_COMPOSED_PRODUCT
@@ -461,6 +462,12 @@ class ProductEditor(SellableEditor):
         self.notes_lbl.set_text(_('Product details'))
         self.stock_total_lbl.show()
         self.stock_lbl.show()
+        self.location_label.show()
+        self.location.show()
+
+    def setup_proxies(self):
+        super(ProductEditor, self).setup_proxies()
+        self.add_proxy(self.model, ProductEditor.product_widgets)
 
     def create_model(self, conn):
         sellable_info = BaseSellableInfo(connection=conn)
