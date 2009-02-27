@@ -32,6 +32,7 @@ import tempfile
 import gtk
 from kiwi.python import Settable
 from kiwi.ui.dialogs import ask_overwrite, error, save
+from kiwi.ui.search import DateSearchFilter
 
 from stoqlib.gui.base.dialogs import (BasicDialog, run_dialog,
                                       get_current_toplevel)
@@ -277,7 +278,22 @@ class GtkPrintDialog(object):
             print 'FIXME, handle error:', error
 
 
+def describe_search_filters_for_reports(**kwargs):
+    filters = kwargs.pop('filters')
+    filter_strings = []
+    for filter in filters:
+        description = filter.get_description()
+        if description:
+            filter_strings.append(description)
+
+    kwargs['filter_strings'] = filter_strings
+    return kwargs
+
+
 def print_report(report_class, *args, **kwargs):
+    if kwargs.has_key('filters') and kwargs['filters']:
+        kwargs = describe_search_filters_for_reports(**kwargs)
+
     if gtkunixprint:
         tmp = tempfile.mktemp(prefix='stoqlib-reporting')
         report = report_class(tmp, *args, **kwargs)

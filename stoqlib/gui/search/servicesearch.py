@@ -124,7 +124,9 @@ class ServiceSearch(SearchEditor):
         return ServiceView.q.service_id != None
 
     def on_print_button_clicked(self, button):
-        print_report(ServiceReport, list(self.results))
+        print_report(ServiceReport, list(self.results),
+                     filters=self.search.get_filters())
 
     def on_print_price_button_clicked(self, button):
-        print_report(ServicePriceReport, list(self.results))
+        print_report(ServicePriceReport, list(self.results),
+                     filters=self.search.get_search_filters())

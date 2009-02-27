@@ -258,16 +258,16 @@ class BaseReportTemplate(BaseDocTemplate):
         line = flowables.ReportLine(*args, **kwargs)
         self.add(line)
 
-    def add_title(self, title, note=None, space_before=SPACING,
+    def add_title(self, title, notes=[], space_before=SPACING,
                   style='Title', note_style='Title-Note'):
         """ Adds a title. The title flowable is composed of a text inside two
-        separators.  A title note also can be inserted, in this case an extra
+        separators.  Title notes also can be inserted, in this case an extra
         text will be put below the title.
 
         @param title:        The title text.
         @type title:         str
-        @param note:         The title note.
-        @type note:          str
+        @param note:         The title notes.
+        @type note:          list
         @param space_before: How much space (in mm) must be given before the
                              title can be drawed? Defaults to the SPACING constant
                              defined on default_style module
@@ -283,7 +283,7 @@ class BaseReportTemplate(BaseDocTemplate):
         self.start_group()
         self.add_line(v_margins=1)
         self.add_paragraph(title, style=style)
-        if note:
+        for note in notes:
             self.add_paragraph(note, style=note_style)
         self.add_line(v_margins=1)
         self.end_group(1)

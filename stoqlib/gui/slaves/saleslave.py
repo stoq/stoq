@@ -183,6 +183,7 @@ class SaleListToolbar(GladeSlaveDelegate):
                             "list is supported on this slave")
         self.sales = sales
         self.parent = parent
+        self._report_filters = []
 
         GladeSlaveDelegate.__init__(self)
 
@@ -201,6 +202,9 @@ class SaleListToolbar(GladeSlaveDelegate):
         self.details_button.set_sensitive(bool(sale_view))
         can_return = bool(sale_view and sale_view.sale.can_return())
         self.return_sale_button.set_sensitive(can_return)
+
+    def set_report_filters(self, filters):
+        self._report_filters = filters
 
     #
     # Private
@@ -247,7 +251,7 @@ class SaleListToolbar(GladeSlaveDelegate):
         self._show_details(self.sales.get_selected())
 
     def on_print_button__clicked(self, button):
-        print_report(SalesReport, self.sales)
+        print_report(SalesReport, self.sales, filters=self._report_filters)
 
 class SaleReturnSlave(BaseEditorSlave):
     """A slave for sale return data """
