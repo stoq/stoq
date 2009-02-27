@@ -140,6 +140,7 @@ class Product(Domain):
 
     suppliers = MultipleJoin('ProductSupplierInfo')
     image = BLOBCol(default='')
+    location = UnicodeCol(default='')
     sellable = ForeignKey('Sellable')
 
     #
