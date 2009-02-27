@@ -43,7 +43,6 @@ from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
 from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
-from stoqlib.gui.printing import print_report
 from stoqlib.lib.message import yesno
 from stoqlib.reporting.product import ProductCountingReport
 
@@ -215,4 +214,4 @@ class InventoryApp(SearchableAppWindow):
         selected = self.results.get_selected_rows()[0]
         sellables = list(self._get_sellables_by_inventory(selected))
         if sellables:
-            print_report(ProductCountingReport, sellables)
+            self.print_report(ProductCountingReport, sellables)

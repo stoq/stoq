@@ -36,8 +36,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
-from kiwi.ui.search import (DateSearchFilter, ComboSearchFilter,
-                            DateSearchOption)
+from kiwi.ui.search import ComboSearchFilter, DateSearchOption
 from kiwi.ui.objectlist import SearchColumn, Column
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
@@ -327,7 +326,7 @@ class ReceivableApp(SearchableAppWindow):
         self._receive(self.results.get_selected_rows())
 
     def on_print_button__clicked(self, button):
-        print_report(ReceivablePaymentReport, list(self.results))
+        self.print_report(ReceivablePaymentReport, list(self.results))
 
     def on_Receipt__activate(self, action):
         receivable_views = self.results.get_selected_rows()

@@ -209,6 +209,10 @@ class AppWindow(BaseAppWindow):
         self.uimanager.add_ui_from_string(ui_string)
 
     def print_report(self, report_class, *args, **kwargs):
+        filters = self.search.get_search_filters()
+        if filters:
+            kwargs['filters'] = filters
+
         print_report(report_class, *args, **kwargs)
 
     #
