@@ -32,7 +32,7 @@ import pango
 import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
+from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.database.runtime import get_current_branch, get_current_station
@@ -136,6 +136,7 @@ class SalesApp(SearchableAppWindow):
         else:
             can_return = bool(sale_view and sale_view.sale.can_return())
         self.sale_toolbar.return_sale_button.set_sensitive(can_return)
+        self.sale_toolbar.set_report_filters(self.search.get_search_filters())
 
     def _print_invoice(self):
         sale_view = self._klist.get_selected()
