@@ -271,9 +271,8 @@ class ColumnTableBuilder(ReportTableBuilder):
             header = self._get_header()
         else:
             header = None
-        if extra_row:
-            extra_row = self.get_row_data(extra_row)
-        elif summary_row:
+        # Both paramenters are not allowed.
+        if summary_row and extra_row is None:
             extra_row = summary_row
         self.has_summary_row = summary_row is not None
         ReportTableBuilder.__init__(self, self.build_data(data), style,
