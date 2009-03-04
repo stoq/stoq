@@ -31,12 +31,13 @@ from kiwi.decorators import signal_block
 from kiwi.datatypes import ValidationError
 from kiwi.ui.delegates import GladeSlaveDelegate
 
-from stoqlib.database.runtime import finish_transaction
+from stoqlib.database.runtime import finish_transaction, new_transaction
 from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.exceptions import StoqlibError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.message import yesno
 from stoqlib.lib.validators import get_price_format_str
@@ -175,6 +176,7 @@ class SaleListToolbar(GladeSlaveDelegate):
     """
     gladefile = "SaleListToolbar"
     gsignal('sale-returned', object)
+    gsignal('sale-edited', object)
 
     def __init__(self, conn, sales, parent=None):
         self.conn = conn
@@ -188,20 +190,19 @@ class SaleListToolbar(GladeSlaveDelegate):
         GladeSlaveDelegate.__init__(self)
 
         self._update_print_button(False)
-        self._update_buttons(False)
-        self.edit_button.hide()
+        self.update_buttons()
 
     #
     # Public API
     #
 
-    def disable_editing(self):
-        """Disables editing of the sales
-        """
+    def update_buttons(self):
         sale_view = self.sales.get_selected()
         self.details_button.set_sensitive(bool(sale_view))
         can_return = bool(sale_view and sale_view.sale.can_return())
+        can_edit = bool(sale_view and sale_view.sale.status == Sale.STATUS_QUOTE)
         self.return_sale_button.set_sensitive(can_return)
+        self.edit_button.set_sensitive(can_edit)
 
     def set_report_filters(self, filters):
         self._report_filters = filters
@@ -210,17 +211,21 @@ class SaleListToolbar(GladeSlaveDelegate):
     # Private
     #
 
-    def _update_buttons(self, enabled):
-        if self.disable_editing():
-            for w in (self.return_sale_button,
-                      self.details_button):
-                w.set_sensitive(enabled)
-
     def _update_print_button(self, enabled):
         self.print_button.set_sensitive(enabled)
 
     def _show_details(self, sale_view):
         run_dialog(SaleDetailsDialog, self.parent, self.conn, sale_view)
+
+    def _edit_sale(self, sale_view):
+        trans = new_transaction()
+        sale = trans.get(sale_view.sale)
+        model = run_dialog(SaleQuoteWizard, self.parent, trans, sale)
+        retval = finish_transaction(trans, model)
+        trans.close()
+
+        if retval:
+            self.emit('sale-edited', retval)
 
     #
     # Kiwi callbacks
@@ -230,10 +235,13 @@ class SaleListToolbar(GladeSlaveDelegate):
         self._update_print_button(enabled)
 
     def on_sales__selection_changed(self, sales, sale):
-        self._update_buttons(sale != None)
+        self.update_buttons()
 
     def on_sales__row_activated(self, sales, sale):
-        self._show_details(sale)
+        if sale.status == Sale.STATUS_QUOTE:
+            self._edit_sale(sale)
+        else:
+            self._show_details(sale)
 
     def on_return_sale_button__clicked(self, button):
         sale = self.sales.get_selected()
@@ -244,8 +252,8 @@ class SaleListToolbar(GladeSlaveDelegate):
             self.emit('sale-returned', retval)
 
     def on_edit_button__clicked(self, button):
-        # TODO: this method will be implemented on bug #2189
-        pass
+        sale = self.sales.get_selected()
+        self._edit_sale(sale)
 
     def on_details_button__clicked(self, button):
         self._show_details(self.sales.get_selected())

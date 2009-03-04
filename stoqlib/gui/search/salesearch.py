@@ -83,7 +83,7 @@ class SaleSearch(SearchDialog):
     def setup_widgets(self):
         self._sale_toolbar = SaleListToolbar(self.conn, self.results, self)
         self._sale_toolbar.connect('sale-returned', self._on_sale__returned)
-        self._sale_toolbar.disable_editing()
+        self._sale_toolbar.update_buttons()
         self.attach_slave("extra_holder", self._sale_toolbar)
         self.results.connect(
             'selection-changed', self._on_results__selection_changed)

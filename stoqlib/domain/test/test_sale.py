@@ -651,6 +651,17 @@ class TestSale(DomainTest):
 
         self.failIf(sale.only_paid_with_money())
 
+    def testQuoteSale(self):
+        sale = self.create_sale()
+        sale.status = Sale.STATUS_QUOTE
+        self.add_product(sale)
+
+        self.failUnless(sale.can_confirm())
+        self.add_payments(sale)
+        sale.confirm()
+        self.failIf(sale.can_confirm())
+        self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
+
 
 class TestSaleItem(DomainTest):
     def testGetTotal(self):
