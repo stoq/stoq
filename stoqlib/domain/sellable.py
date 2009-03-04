@@ -336,6 +336,14 @@ class Sellable(Domain):
 
     price = property(_get_price, _set_price)
 
+    def _get_max_discount(self):
+        return self.base_sellable_info.max_discount
+
+    def _set_max_discount(self, discount):
+        self.base_sellable_info.max_discount = discount
+
+    max_discount = property(_get_max_discount, _set_max_discount)
+
     def _get_commission(self):
         return self.base_sellable_info.get_commission()
 
