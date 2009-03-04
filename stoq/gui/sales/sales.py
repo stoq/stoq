@@ -35,7 +35,9 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 
-from stoqlib.database.runtime import get_current_branch, get_current_station
+from stoqlib.database.runtime import (get_current_branch, get_current_station,
+                                      new_transaction, rollback_and_begin,
+                                      finish_transaction)
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
@@ -45,6 +47,7 @@ from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
+from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.invoice import SaleInvoice
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.message import info
@@ -67,6 +70,7 @@ class SalesApp(SearchableAppWindow):
                  Sale.STATUS_CONFIRMED: ('confirm_date', _("Confirm Date")),
                  Sale.STATUS_PAID: ('close_date', _("Close Date")),
                  Sale.STATUS_CANCELLED: ('cancel_date', _("Cancel Date")),
+                 Sale.STATUS_QUOTE: ('open_date', _("Date Started")),
                  Sale.STATUS_RETURNED: ('return_data', _('Return Date')),}
 
     def __init__(self, app):
@@ -117,6 +121,8 @@ class SalesApp(SearchableAppWindow):
         self.sale_toolbar = SaleListToolbar(self.conn, self.results)
         self.sale_toolbar.connect('sale-returned',
                                   self._on_sale_toolbar__sale_returned)
+        self.sale_toolbar.connect('sale-edited',
+                                  self._on_sale_toolbar__sale_edited)
         self.attach_slave("list_toolbar_holder", self.sale_toolbar)
         self._klist.connect("selection-changed",
                             self._update_toolbar)
@@ -208,3 +214,15 @@ class SalesApp(SearchableAppWindow):
 
     def _on_sale_toolbar__sale_returned(self, toolbar, sale):
         self.search.refresh()
+
+    def _on_sale_toolbar__sale_edited(self, toolbar, sale):
+        self.search.refresh()
+
+    def on_quote_menu__activate(self, action):
+        trans = new_transaction()
+        model = self.run_dialog(SaleQuoteWizard, trans)
+        rv = finish_transaction(trans, model)
+        trans.close()
+
+        return model
+
