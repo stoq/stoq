@@ -633,7 +633,7 @@ class TableColumnGroup:
 class TableColumn:
     def __init__(self, name=None, width=None, format_string=None,
                  format_func=None, truncate=False, expand=False, align=LEFT,
-                 virtual=False):
+                 virtual=False, style='TableCell'):
         """ Column class for ColumnTable
 
         @param name:   The column name
@@ -661,6 +661,8 @@ class TableColumn:
                        last column and its header will be expanded with the one
                        of last column.
         @type:         bool
+        @param style:  The cell style, defaults to 'TableCell'.
+        @type:         str
         """
         self.name = name
         self.width = width
@@ -670,6 +672,7 @@ class TableColumn:
         self._align = align
         self.expand = expand
         self.virtual = virtual
+        self._style = style
 
     def get_translated_alignment(self):
         if self._align == LEFT:
@@ -691,7 +694,7 @@ class TableColumn:
             value = self.format_string % value
         if not isinstance(value, basestring):
             value = str(value)
-        return Paragraph(value, style="TableCell", ellipsize=self.truncate,
+        return Paragraph(value, style=self._style, ellipsize=self.truncate,
                          align=self.get_translated_alignment())
 
     def __repr__(self):
@@ -710,8 +713,8 @@ class TableColumn:
 class ObjectTableColumn(TableColumn):
     def __init__(self, name, data_source, expand_factor=0, align=LEFT,
                  truncate=False, width=None, format_string=None,
-                 format_func=None, expand=False, virtual=False, *args,
-                 **kwargs):
+                 format_func=None, expand=False, virtual=False,
+                 style=None, *args, **kwargs):
         """ Creates a new ObjectTableColumn object
 
         @param name:   The column name
@@ -765,11 +768,13 @@ class GroupingTableColumn(ObjectTableColumn):
     objects that needs more than one line to represents its data.
     """
     def __init__(self, data_source, colspan=1, format_string=None, align=LEFT,
-                 truncate=False, width=None, virtual=False, format_func=None):
+                 truncate=False, width=None, virtual=False, format_func=None,
+                 style=None):
         self.colspan = colspan
         # We don't have a name atribute for this class. So, we just use as None
         ObjectTableColumn.__init__(self, None, data_source, truncate=truncate,
                                    align=align, width=width,
                                    format_string=format_string,
-                                   format_func=format_func, virtual=virtual)
+                                   format_func=format_func, virtual=virtual,
+                                   style=style)
 

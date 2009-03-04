@@ -30,7 +30,9 @@ from kiwi.datatypes import currency
 from stoqlib.database.runtime import get_connection, get_current_branch
 from stoqlib.domain.commission import CommissionView
 from stoqlib.domain.sale import SaleView
-from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
+from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
+from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
+                                           TableColumn as TC, HIGHLIGHT_NEVER)
 from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.lib.validators import (get_formatted_price, format_quantity,
                                     format_phone_number,
@@ -53,15 +55,25 @@ class SaleOrderReport(BaseStoqReport):
         self._setup_items_table()
 
     def _identify_client(self):
-        if not self.sale.client:
-            return
-        person = self.sale.client.person
-        text = "<b>%s:</b> %s" % (_("Client"), person.name)
-        if person.phone_number:
-            phone_str = ("<b>%s:</b> %s" %
-                         (_("Phone"), format_phone_number(person.phone_number)))
-            text += " %s" % phone_str
-        self.add_paragraph(text)
+        if self.sale.client:
+            person = self.sale.client.person
+            client = person.name
+        else:
+            person = None
+            client = _(u'No client')
+
+        if person is not None:
+            phone_number = format_phone_number(person.phone_number)
+        else:
+            phone_number = _(u'No phone number')
+
+        cols = [TC('', style='Normal-Bold', width=80),
+                TC('', expand=True, truncate=True),
+                TC('', style='Normal-Bold', width=130), TC('', expand=True)]
+        data = [[_(u'Client:'), client, _(u'Phone number:'), phone_number]]
+        self.add_column_table(data, cols, do_header=False,
+                              highlight=HIGHLIGHT_NEVER,
+                              table_line=TABLE_LINE_BLANK)
 
     def _get_table_columns(self):
         # XXX Bug #2430 will improve this part
@@ -71,7 +83,7 @@ class SaleOrderReport(BaseStoqReport):
                     lambda obj: obj.sellable.base_sellable_info.description,
                     truncate=True, expand=True),
                 OTC(_("Quantity"), lambda obj: obj.get_quantity_unit_string(),
-                    width=70, align=RIGHT),
+                    width=80, align=RIGHT),
                 OTC(_("Price"), lambda obj: get_formatted_price(obj.price),
                     width=90, align=RIGHT),
                 OTC(_("Total"),
