@@ -267,14 +267,16 @@ class Sale(ValidatableDomain):
      STATUS_PAID,
      STATUS_CANCELLED,
      STATUS_ORDERED,
-     STATUS_RETURNED) = range(6)
+     STATUS_RETURNED,
+     STATUS_QUOTE) = range(7)
 
     statuses = {STATUS_INITIAL:     _(u"Opened"),
                 STATUS_CONFIRMED:   _(u"Confirmed"),
                 STATUS_PAID:        _(u"Paid"),
                 STATUS_CANCELLED:   _(u"Cancelled"),
                 STATUS_ORDERED:     _(u"Ordered"),
-                STATUS_RETURNED:    _(u"Returned")}
+                STATUS_RETURNED:    _(u"Returned"),
+                STATUS_QUOTE:       _(u"Quoting"),}
 
     status = IntCol(default=STATUS_INITIAL)
     coupon_id = IntCol()
@@ -354,7 +356,8 @@ class Sale(ValidatableDomain):
         """Only ordered sales can be confirmed
         @returns: True if the sale can be confirmed, otherwise False
         """
-        return self.status == Sale.STATUS_ORDERED
+        return (self.status == Sale.STATUS_ORDERED or
+                self.status == Sale.STATUS_QUOTE)
 
     def can_set_paid(self):
         """Only confirmed sales can be paid
