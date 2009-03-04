@@ -39,9 +39,10 @@ from kiwi.ui.objectlist import SearchColumn
 from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       rollback_and_begin, finish_transaction)
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
@@ -152,6 +153,25 @@ class TillApp(SearchableAppWindow):
         selected = self.results.get_selected()
         sale = Sale.get(selected.id, connection=self.conn)
         title = _('Confirm Sale')
+
+        # Lets confirm that we can create the sale, before opening the coupon
+        prod_sold = dict()
+        prod_desc = dict()
+        for sale_item in sale.get_items():
+            storable = IStorable(sale_item.sellable.product, None)
+            prod_sold.setdefault(storable, 0)
+            prod_sold[storable] += sale_item.quantity
+            prod_desc[storable] = sale_item.sellable.get_description()
+
+        branch = get_current_branch(self.conn)
+        for storable in prod_sold.keys():
+            stock = storable.get_full_balance(branch)
+            if stock < prod_sold[storable]:
+                warning(_(u'There is only %d items of "%s" and this sale '
+                           'has %d items.') % (stock,
+                                    prod_desc[storable], prod_sold[storable]))
+                return
+
         coupon = self._open_coupon()
         if not coupon:
             return
