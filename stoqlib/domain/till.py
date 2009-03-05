@@ -33,10 +33,11 @@ from kiwi.log import Logger
 
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import IntCol, DateTimeCol, ForeignKey, UnicodeCol
-from stoqlib.database.orm import AND, const
+from stoqlib.database.orm import AND, const, OR, LEFTJOINOn
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IOutPayment, IInPayment
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.exceptions import TillError
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -179,6 +180,9 @@ class Till(Domain):
         if self.status == Till.STATUS_CLOSED:
             raise TillError(_("Till is already closed"))
 
+        # Save the cash amount value before we add a debit entry.
+        cash_amount = self.get_cash_amount()
+
         if removed:
             if removed > self.get_balance():
                 raise ValueError("The cash amount that you want to send is "
@@ -188,7 +192,12 @@ class Till(Domain):
                                  _(u'Amount removed from Till on %s' %
                                    self.opening_date.strftime('%x')))
 
-        self.final_cash_amount = self.get_balance()
+        balance = self.get_balance()
+        if balance > cash_amount:
+            raise TillError("The remaining value on the till is greater than "
+                            "the cash amount.")
+
+        self.final_cash_amount = balance
 
         self.closing_date = const.NOW()
         self.status = Till.STATUS_CLOSED
@@ -246,17 +255,34 @@ class Till(Domain):
         return True
 
     def get_balance(self):
-        """Gets the total of all "extra" payments (like cash
-        advance, till complement, ...) associated to this till
-        operation *plus* all the payments, which payment method is
-        money, of all the sales associated with this operation
-        *plus* the initial cash amount.
+        """Returns the balance of all till operations plus the initial amount
+        cash amount.
         @returns: the balance
         @rtype: currency
         """
-        results = TillEntry.selectBy(
-            till=self, connection=self.get_connection())
-        return currency(self.initial_cash_amount + (results.sum('value') or 0))
+        total = self.get_entries().sum('value') or 0
+        return currency(self.initial_cash_amount + total)
+
+    def get_cash_amount(self):
+        """Returns the total cash amount on the till. That includes "extra"
+        payments (like cash advance, till complement and so on), the money
+        payments and the initial cash amount.
+        @returns: the cash amount on the till
+        @rtype: currency
+        """
+        from stoqlib.domain.payment.method import PaymentMethod
+        conn = self.get_connection()
+        money = PaymentMethod.get_by_name(conn, 'money')
+
+        results = TillEntry.select(
+            join=LEFTJOINOn(None, Payment, Payment.q.id==TillEntry.q.paymentID),
+            clause=AND(OR(TillEntry.q.paymentID==None,
+                          Payment.q.methodID==money.id),
+                       TillEntry.q.tillID==self.id),
+            connection=conn)
+
+        return currency(self.initial_cash_amount +
+                        (results.sum('till_entry.value') or 0))
 
     def get_entries(self):
         """Fetches all the entries related to this till

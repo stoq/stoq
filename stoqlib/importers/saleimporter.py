@@ -107,7 +107,8 @@ class SaleImporter(CSVImporter):
         # it's run, so we can open/close the till in the tests, which uses
         # the examples.
         till = Till.get_current(trans)
-        till.close_till()
+        # Do not leave anything in the till.
+        till.close_till(removed=till.get_balance())
         yesterday = datetime.date.today() - datetime.timedelta(1)
         till.opening_date = yesterday
         till.closing_date = yesterday

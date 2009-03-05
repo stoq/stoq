@@ -7,13 +7,14 @@
         <property name="title" context="yes" translatable="yes">Till Closing</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
+                <property name="spacing">6</property>
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkTable" id="table2">
                         <property name="border_width">6</property>
                         <property name="column_spacing">6</property>
                         <property name="n_columns">2</property>
-                        <property name="n_rows">7</property>
+                        <property name="n_rows">2</property>
                         <property name="row_spacing">6</property>
                         <property name="visible">True</property>
                         <child>
@@ -25,37 +26,81 @@
                             </widget>
                         </child>
                         <child>
-                            <widget class="GtkLabel" id="label11">
-                                <property name="label" context="yes" translatable="yes">Open Date:</property>
+                            <widget class="GtkHBox" id="hbox1">
+                                <property name="spacing">6</property>
                                 <property name="visible">True</property>
-                                <property name="xalign">1.0</property>
+                                <child>
+                                    <widget class="GtkLabel" id="label11">
+                                        <property name="label" context="yes" translatable="yes">Open Date:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="ProxyLabel" id="opening_date">
+                                        <property name="data_type">date</property>
+                                        <property name="model_attribute">opening_date</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">2</property>
                                 <property name="top_attach">1</property>
+                                <property name="x_options">fill</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkLabel" id="label13">
-                                <property name="label" context="yes" translatable="yes">Total Balance:</property>
-                                <property name="visible">True</property>
-                                <property name="xalign">1.0</property>
-                            </widget>
+                            <placeholder/>
                             <packing>
-                                <property name="bottom_attach">3</property>
-                                <property name="top_attach">2</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkLabel" id="label14">
-                                <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
-                            </widget>
+                            <placeholder/>
                             <packing>
-                                <property name="bottom_attach">4</property>
-                                <property name="top_attach">3</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
                             </packing>
                         </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkVBox" id="day_history_box">
+                        <property name="spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="ObjectList" id="day_history">
+                                <property name="border_width">6</property>
+                                <property name="visible">True</property>
+                                <property name="vscrollbar_policy">automatic</property>
+                            </widget>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkTable" id="table1">
+                        <property name="column_spacing">6</property>
+                        <property name="n_columns">2</property>
+                        <property name="n_rows">4</property>
+                        <property name="row_spacing">6</property>
+                        <property name="visible">True</property>
                         <child>
                             <widget class="GtkLabel" id="label15">
                                 <property name="label" context="yes" translatable="yes">&lt;b&gt;Cash Amounts:&lt;/b&gt;</property>
@@ -63,9 +108,16 @@
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
                             </widget>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label2">
+                                <property name="label" context="yes" translatable="yes">Minimal Remove:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
                             <packing>
-                                <property name="bottom_attach">5</property>
-                                <property name="top_attach">4</property>
+                                <property name="bottom_attach">2</property>
+                                <property name="top_attach">1</property>
                             </packing>
                         </child>
                         <child>
@@ -75,19 +127,20 @@
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">6</property>
-                                <property name="top_attach">5</property>
+                                <property name="bottom_attach">3</property>
+                                <property name="top_attach">2</property>
                             </packing>
                         </child>
                         <child>
                             <widget class="ProxyLabel" id="label17">
                                 <property name="label" context="yes" translatable="yes">Amount Removed ($CURRENCY):</property>
+                                <property name="model_attribute">label17</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">7</property>
-                                <property name="top_attach">6</property>
+                                <property name="bottom_attach">4</property>
+                                <property name="top_attach">3</property>
                             </packing>
                         </child>
                         <child>
@@ -98,9 +151,9 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyLabel" id="opening_date">
-                                <property name="data_type">date</property>
-                                <property name="model_attribute">opening_date</property>
+                            <widget class="ProxyLabel" id="minimum_value">
+                                <property name="data_type">currency</property>
+                                <property name="model_attribute">minimum_value</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -109,39 +162,6 @@
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
                                 <property name="top_attach">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="ProxyLabel" id="total_balance">
-                                <property name="data_type">currency</property>
-                                <property name="model_attribute">total_balance</property>
-                                <property name="visible">True</property>
-                                <property name="xalign">1.0</property>
-                                <property name="yalign">0.0</property>
-                            </widget>
-                            <packing>
-                                <property name="bottom_attach">3</property>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">2</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">4</property>
-                                <property name="bottom_attach">5</property>
                             </packing>
                         </child>
                         <child>
@@ -152,10 +172,10 @@
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">6</property>
+                                <property name="bottom_attach">3</property>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
-                                <property name="top_attach">5</property>
+                                <property name="top_attach">2</property>
                             </packing>
                         </child>
                         <child>
@@ -168,15 +188,16 @@
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">7</property>
+                                <property name="bottom_attach">4</property>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
-                                <property name="top_attach">6</property>
+                                <property name="top_attach">3</property>
                             </packing>
                         </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>
+                        <property name="position">2</property>
                     </packing>
                 </child>
             </widget>
