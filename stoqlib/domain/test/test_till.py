@@ -31,7 +31,7 @@ from kiwi.datatypes import currency
 from stoqlib.exceptions import TillError
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.till import Till
+from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
 
 class TestTill(DomainTest):
@@ -100,6 +100,17 @@ class TestTill(DomainTest):
         till.open_till()
         self.assertRaises(ValueError, till.close_till, 20)
 
+    def testTillCloseWithoutRemoveValues(self):
+        station = self.create_station()
+        till = Till(connection=self.trans, station=station)
+        till.open_till()
+        payment = self._create_inpayment()
+        till.add_entry(payment)
+        self.assertRaises(TillError, till.close_till)
+
+        till.close_till(removed=payment.value)
+        self.assertEqual(till.status, Till.STATUS_CLOSED)
+
     def testGetBalance(self):
         till = Till(connection=self.trans,
                     station=self.create_station())
@@ -110,6 +121,33 @@ class TestTill(DomainTest):
         self.assertEqual(till.get_balance(), old + 10)
         till.add_debit_entry(currency(5), u"")
         self.assertEqual(till.get_balance(), old + 5)
+
+    def testGetCashAmount(self):
+        till = Till(connection=self.trans,
+                    station=self.create_station())
+        till.open_till()
+
+        old = till.get_cash_amount()
+        # money operations
+        till.add_credit_entry(currency(10), u"")
+        self.assertEqual(till.get_cash_amount(), old + 10)
+        till.add_debit_entry(currency(5), u"")
+        self.assertEqual(till.get_cash_amount(), old + 5)
+        # non-money operations
+        payment1 = self._create_inpayment()
+        till.add_entry(payment1)
+        self.assertEqual(till.get_cash_amount(), old + 5)
+        payment2 = self._create_outpayment()
+        till.add_entry(payment2)
+        self.assertEqual(till.get_cash_amount(), old + 5)
+        # money payment method operation
+        payment = self.create_payment()
+        payment.till = till
+        payment.set_pending()
+        entry = TillEntry(description='test', value=payment.value, till=till,
+                          payment=payment, connection=self.trans)
+        payment.pay()
+        self.assertEqual(till.get_cash_amount(), old + 5 + payment.value)
 
     def testGetCreditsTotal(self):
         till = Till(connection=self.trans,

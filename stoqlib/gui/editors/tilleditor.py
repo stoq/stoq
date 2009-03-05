@@ -31,6 +31,7 @@ import datetime
 from kiwi import ValueUnset
 from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
+from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
@@ -64,11 +65,14 @@ class _TillClosingModel(object):
     def get_opening_date(self):
         return self.till.opening_date
 
+    def get_cash_amount(self):
+        return currency(self.till.get_cash_amount() - self.value)
+
     def get_balance(self):
         return currency(self.till.get_balance() - self.value)
 
-    def get_total_balance(self):
-        return self.till.get_balance()
+    def get_minimum_value(self):
+        return currency(self.get_balance() - self.get_cash_amount())
 
 
 class _BaseCashModel(object):
@@ -151,12 +155,13 @@ class TillOpeningEditor(BaseEditor):
 
 
 class TillClosingEditor(BaseEditor):
+    size = (500, 440)
     title = _(u'Closing Opened Till')
     model_type = _TillClosingModel
     gladefile = 'TillClosing'
     proxy_widgets = ('value',
+                     'minimum_value',
                      'balance',
-                     'total_balance',
                      'opening_date')
 
     def __init__(self, conn, model=None, previous_day=False):
@@ -168,10 +173,50 @@ class TillClosingEditor(BaseEditor):
         self.till = Till.get_last_opened(conn)
         assert self.till
         BaseEditor.__init__(self, conn, model)
+        self._setup_widgets()
 
+    def _setup_widgets(self):
         self.set_confirm_widget(self.value)
+        self.value.set_sensitive(self._previous_day)
+        value = self.model.get_minimum_value()
+        self.value.update(value)
 
-        self.value.set_sensitive(previous_day)
+        self.day_history.set_columns(self._get_columns())
+        self.day_history.add_list(self._get_day_history())
+        summary_day_history = SummaryLabel(
+                klist=self.day_history,
+                column='value',
+                label='<b>%s</b>' % _(u'Total balance:'))
+        summary_day_history.show()
+        self.day_history_box.pack_start(summary_day_history, False)
+
+    def _get_day_history(self):
+        day_history = {}
+        day_history[_(u'Initial Amount')] = self.till.initial_cash_amount
+
+        for entry in self.till.get_entries():
+            payment = entry.payment
+            if payment is not None:
+                desc = payment.method.get_description()
+            else:
+                if entry.value > 0:
+                    desc = _(u'Cash In')
+                else:
+                    desc = _(u'Cash Out')
+
+            if desc in day_history.keys():
+                day_history[desc] += entry.value
+            else:
+                day_history[desc] = entry.value
+
+        for description, value in day_history.iteritems():
+            yield Settable(description=description, value=value)
+
+    def _get_columns(self):
+        return [Column('description', title=_('Description'), data_type=str,
+                        expand=True, sorted=True),
+                ColoredColumn('value', title=_('Amount'), data_type=currency,
+                               color='red', data_func=lambda x: x < 0),]
 
     #
     # BaseEditorSlave
@@ -214,6 +259,9 @@ class TillClosingEditor(BaseEditor):
             return ValidationError(_("You can not specify an amount "
                                      "removed greater than the "
                                      "till balance."))
+        minimum = self.model.get_minimum_value()
+        if value < minimum:
+            return ValidationError(_(u'You can leave only cash on the till.'))
 
     def after_value__content_changed(self, entry):
         self.proxy.update('balance')

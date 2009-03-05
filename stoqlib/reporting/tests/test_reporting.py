@@ -194,7 +194,12 @@ class TestReport(DomainTest):
                   connection=self.trans)
 
         till_entry = list(TillEntry.select(connection=self.trans))
+        today = datetime.date.today().strftime('%x')
         for item in till_entry:
+            if today in item.description:
+                date = datetime.date(2007, 1, 1).strftime('%x')
+                item.description = item.description.replace(today, date)
+
             item.date = datetime.date(2007, 1, 1)
         self.checkPDF(TillHistoryReport, till_entries=till_entry,
                       date=datetime.date(2007, 1, 1))
