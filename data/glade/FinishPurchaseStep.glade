@@ -126,7 +126,7 @@
                             <widget class="GtkHBox" id="hbox1">
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="ProxyDateEntry" id="receival_date">
+                                    <widget class="ProxyDateEntry" id="expected_receival_date">
                                         <property name="data_type">date</property>
                                         <property name="mandatory">True</property>
                                         <property name="model_attribute">expected_receival_date</property>
