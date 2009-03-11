@@ -31,6 +31,7 @@
 from kiwi.datatypes import ValidationError
 
 from stoqlib.database.orm import const
+from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.person import EmployeeRole, Person
 from stoqlib.domain.interfaces import IEmployee, ISalesPerson, IUser
@@ -146,6 +147,13 @@ class PasswordEditor(BaseEditor):
     def _setup_widgets(self):
         self.password_slave.set_password_labels(_('New Password:'),
                                                 _('Retype New Password:'))
+        if not self._needs_password_confirmation():
+            self.current_password.hide()
+            self.current_password_lbl.hide()
+
+    def _needs_password_confirmation(self):
+        current_user = get_current_user(self.conn)
+        return current_user.profile.id != 1
 
     #
     # BaseEditorSlave Hooks
@@ -168,6 +176,8 @@ class PasswordEditor(BaseEditor):
                                     PasswordEditor.proxy_widgets)
 
     def validate_confirm(self):
+        if not self._needs_password_confirmation():
+            return True
         if self.model.current_password != self.old_password:
             msg = _(u"Password doesn't match with the stored one")
             self.current_password.set_invalid(msg)
