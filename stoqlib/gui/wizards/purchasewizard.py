@@ -380,7 +380,7 @@ class FinishPurchaseStep(WizardEditorStep):
     gladefile = 'FinishPurchaseStep'
     model_type = PurchaseOrder
     proxy_widgets = ('salesperson_name',
-                     'receival_date',
+                     'expected_receival_date',
                      'transporter',
                      'notes')
 
@@ -397,7 +397,7 @@ class FinishPurchaseStep(WizardEditorStep):
     def _set_receival_date_suggestion(self):
         receival_date = self.model.get_items().max('expected_receival_date')
         if receival_date:
-            self.model.expected_receival_date = receival_date
+            self.expected_receival_date.update(receival_date)
 
     def _setup_focus(self):
         self.salesperson_name.grab_focus()
@@ -461,7 +461,7 @@ class FinishPurchaseStep(WizardEditorStep):
     # Kiwi callbacks
     #
 
-    def on_receival_date__validate(self, widget, date):
+    def on_expected_receival_date__validate(self, widget, date):
         if date < datetime.date.today():
             return ValidationError(_("Expected receival date must be set to a future date"))
 
