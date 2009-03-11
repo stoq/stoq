@@ -201,7 +201,7 @@ class SalesApp(SearchableAppWindow):
 
     def _on_products_action__clicked(self, button):
         self.run_dialog(ProductSearch, self.conn, hide_footer=True,
-                        hide_toolbar=True)
+                        hide_toolbar=True, hide_cost_column=True)
 
     def _on_commission_action__clicked(self, button):
         self.run_dialog(CommissionSearch, self.conn)
