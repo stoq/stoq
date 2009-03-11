@@ -79,14 +79,12 @@ class ProductSearch(SearchEditor):
                                   column 'price'
         """
         self.use_product_statuses = use_product_statuses
+        self.hide_cost_column = hide_cost_column
+        self.hide_price_column = hide_price_column
         SearchEditor.__init__(self, conn, hide_footer=hide_footer,
                               hide_toolbar=hide_toolbar,
                               selection_mode=selection_mode)
         self.set_searchbar_labels(_('matching'))
-        if hide_cost_column:
-            self._hide_column('cost')
-        if hide_price_column:
-            self._hide_column('price')
         self.set_edit_button_sensitive(False)
         self.results.connect('selection-changed', self.on_selection_changed)
         self._setup_print_slave()
@@ -99,11 +97,6 @@ class ProductSearch(SearchEditor):
         self._print_slave.connect('print', self.on_print_price_button_clicked)
         self._print_slave.print_price_button.set_sensitive(False)
         self.results.connect('has-rows', self._has_rows)
-
-    def _hide_column(self, colname):
-        column = self.results.get_column_by_name(colname)
-        col_index = self.results.get_columns().index(column)
-        self.results.set_column_visibility(col_index, False)
 
     def on_print_button_clicked(self, button):
         print_report(ProductReport, list(self.results),
@@ -150,21 +143,26 @@ class ProductSearch(SearchEditor):
         return product_full_stock_view.product
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('Code'), data_type=int, sorted=True,
+        cols = [SearchColumn('id', title=_('Code'), data_type=int, sorted=True,
                              format='%03d', width=70),
                 SearchColumn('barcode', title=_('Barcode'), data_type=str,
                              width=130),
                 Column('product_and_category_description',
                         title=_('Description'), data_type=str),
                 SearchColumn('location', title=_('Location'), data_type=str,
-                              visible=False),
-                SearchColumn('cost', _('Cost'), data_type=currency,
-                             width=90),
-                SearchColumn('price', title=_('Price'), data_type=currency,
-                             width=90),
-                SearchColumn('stock', title=_('Stock Total'),
-                             format_func=format_quantity,
-                             data_type=Decimal, width=100)]
+                              visible=False)]
+
+        if not self.hide_cost_column:
+            cols.append(SearchColumn('cost', _('Cost'), data_type=currency,
+                                     width=90))
+        if not self.hide_price_column:
+            cols.append(SearchColumn('price', title=_('Price'),
+                                     data_type=currency, width=90))
+
+        cols.append(SearchColumn('stock', title=_('Stock Total'),
+                                 format_func=format_quantity,
+                                 data_type=Decimal, width=100))
+        return cols
 
     def _executer_query(self, query, having, conn):
         branch = self.branch_filter.get_state().value
