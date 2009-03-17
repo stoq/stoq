@@ -482,9 +482,9 @@ class ProductAdaptToStorable(ModelAdapter):
     def get_full_balance(self, branch=None):
         """ Get the stock balance and the logic balance."""
         stocks = self._get_stocks(branch)
-        if not stocks:
-            raise StockError, 'Invalid stock references for %s' % self
         value = Decimal(0)
+        if not stocks:
+            return value
         has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
         for stock_item in stocks:
             value += stock_item.quantity
