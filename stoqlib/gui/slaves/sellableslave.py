@@ -27,7 +27,8 @@
 from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.domain.sellable import OnSaleInfo
+from stoqlib.gui.slaves.imageslaveslave import ImageSlave
+from stoqlib.domain.sellable import OnSaleInfo, Sellable
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -96,3 +97,22 @@ class TributarySituationSlave(BaseEditorSlave):
 
     def on_tax_constant__changed(self, combo):
         self._update_tax_value()
+
+
+class SellableDetailsSlave(BaseEditorSlave):
+    """This is base slave for product or service details."""
+    gladefile = 'SellableDetailsSlave'
+    proxy_widgets = ['notes',]
+    model_type = Sellable
+    image_model = None
+
+    def __init__(self, conn, model=None):
+        BaseEditorSlave.__init__(self, conn, model)
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model,
+                                    SellableDetailsSlave.proxy_widgets)
+
+    def setup_image_slave(self, image_model):
+        slave = ImageSlave(self.conn, image_model)
+        self.attach_slave('sellable_image_holder', slave)
