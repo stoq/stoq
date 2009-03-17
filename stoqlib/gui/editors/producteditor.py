@@ -33,16 +33,19 @@ import gtk
 from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 
+from stoqdrivers.enum import TaxType
+
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.person import PersonAdaptToSupplier
 from stoqlib.domain.product import ProductSupplierInfo, Product, ProductComponent
-from stoqlib.domain.sellable import BaseSellableInfo, Sellable
+from stoqlib.domain.sellable import (BaseSellableInfo, Sellable,
+                                     SellableTaxConstant)
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import (BaseEditor, BaseEditorSlave,
                                             BaseRelationshipEditorSlave)
 from stoqlib.gui.editors.sellableeditor import SellableEditor
-from stoqlib.gui.slaves.productslave import ProductTributarySituationSlave
+from stoqlib.gui.slaves.productslave import ProductDetailsSlave
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -435,39 +438,34 @@ class ProductComponentEditor(BaseEditor):
 class ProductEditor(SellableEditor):
     model_name = _('Product')
     model_type = Product
-    product_widgets = ['location',]
 
     def __init__(self, conn, model=None):
         self._has_composed_product = sysparam(conn).ENABLE_COMPOSED_PRODUCT
         SellableEditor.__init__(self, conn, model)
+
+    def get_taxes(self):
+        constants = SellableTaxConstant.select(connection=self.conn)
+        return [(c.description, c) for c in constants
+                                   if c.tax_type != TaxType.SERVICE]
 
     #
     # BaseEditor
     #
 
     def setup_slaves(self):
+        details_slave = ProductDetailsSlave(self.conn, self.model.sellable)
+        self.add_extra_tab(_(u'Details'), details_slave)
+
         self._suppliers_slave = ProductSupplierSlave(self.conn, self.model)
         self.add_extra_tab(_(u'Suppliers'), self._suppliers_slave)
-
-        # XXX: tax_holder is a Brazil-specifc area
-        tax_slave = ProductTributarySituationSlave(self.conn,
-                                                   self.model.sellable)
-        self.attach_slave("tax_holder", tax_slave)
 
         if self._has_composed_product:
             self._component_slave = ProductComponentSlave(self.conn, self.model)
             self.add_extra_tab(_(u'Components'), self._component_slave)
 
     def setup_widgets(self):
-        self.notes_lbl.set_text(_('Product details'))
         self.stock_total_lbl.show()
         self.stock_lbl.show()
-        self.location_label.show()
-        self.location.show()
-
-    def setup_proxies(self):
-        super(ProductEditor, self).setup_proxies()
-        self.add_proxy(self.model, ProductEditor.product_widgets)
 
     def create_model(self, conn):
         sellable_info = BaseSellableInfo(connection=conn)

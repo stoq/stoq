@@ -47,7 +47,6 @@ from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
-from stoqlib.gui.slaves.imageslaveslave import ImageSlave
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_price_format_str
@@ -207,15 +206,15 @@ class SellableEditor(BaseEditor):
     gladefile = 'SellableEditor'
     sellable_unit_widgets = ("unit_combo",
                              "unit_entry")
+    sellable_tax_widgets = ('tax_constant', 'tax_value',)
     barcode_widgets = 'barcode',
     sellable_widgets = ('code',
                         'description',
                         'category_combo',
                         'cost',
                         'price',
-                        'notes',
                         'statuses_combo')
-    proxy_widgets = (sellable_unit_widgets +
+    proxy_widgets = (sellable_unit_widgets + sellable_tax_widgets +
                      sellable_widgets + barcode_widgets)
 
     storable_widgets = ('stock_total_lbl',)
@@ -227,10 +226,6 @@ class SellableEditor(BaseEditor):
                                             "weighing"))
         BaseEditor.__init__(self, conn, model)
         self.enable_window_controls()
-
-        # image slave for sellables
-        image_slave = ImageSlave(self.conn, self.model)
-        self.attach_slave("sellable_image_holder", image_slave)
 
         self._original_barcode = self._sellable.barcode
         self.setup_widgets()
@@ -288,6 +283,21 @@ class SellableEditor(BaseEditor):
         else:
             self.requires_weighing_label.set_text("")
 
+    def _update_tax_value(self):
+        if not hasattr(self, 'tax_proxy'):
+            return
+        constant = self.tax_constant.get_selected_data()
+        self.tax_proxy.update('tax_constant.tax_value')
+
+    def get_taxes(self):
+        """Subclasses may override this method to provide a custom
+        tax selection.
+
+        @returns: a list of tuples containing the tax description and a
+            L{stoqlib.domain.sellable.SellableTaxConstant} object.
+        """
+        return []
+
     #
     # BaseEditor hooks
     #
@@ -314,11 +324,18 @@ class SellableEditor(BaseEditor):
         items.append((_("Specify:"), int(UnitType.CUSTOM)))
         self.unit_combo.prefill(items)
 
+    def setup_tax_constants(self):
+        taxes = self.get_taxes()
+        self.tax_constant.prefill(taxes)
+
     def setup_proxies(self):
         self.set_widget_formats()
         self._sellable = self.model.sellable
 
         self.setup_sellable_combos()
+        self.setup_tax_constants()
+        self.tax_proxy = self.add_proxy(self._sellable,
+                                        SellableEditor.sellable_tax_widgets)
         barcode = self._sellable.barcode
         self.barcode_proxy = self.add_proxy(Settable(barcode=barcode),
                                             SellableEditor.barcode_widgets)
@@ -348,6 +365,9 @@ class SellableEditor(BaseEditor):
     #
     # Kiwi handlers
     #
+
+    def on_tax_constant__changed(self, combo):
+        self._update_tax_value()
 
     def on_unit_combo__changed(self, combo):
         self.update_requires_weighing_label()

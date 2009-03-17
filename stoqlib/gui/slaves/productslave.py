@@ -25,15 +25,28 @@
 ##
 """ Slaves for products """
 
-from stoqdrivers.enum import TaxType
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
+from stoqlib.domain.product import Product
+from stoqlib.domain.sellable import Sellable
 
-from stoqlib.gui.slaves.sellableslave import TributarySituationSlave
-from stoqlib.domain.sellable import Sellable, SellableTaxConstant
 
-class ProductTributarySituationSlave(TributarySituationSlave):
-    model_type = Sellable
+class ProductInformationSlave(BaseEditorSlave):
+    gladefile = 'ProductInformationSlave'
+    model_type = Product
+    proxy_widgets = ['location', 'part_number', 'manufacturer',]
 
-    def setup_combos(self):
-        constants = SellableTaxConstant.select(connection=self.trans)
-        self.tax_constant.prefill([(c.description, c) for c in constants
-                                    if c.tax_type != TaxType.SERVICE])
+    def __init__(self, conn, model):
+        BaseEditorSlave.__init__(self, conn, model)
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(
+            self.model, ProductInformationSlave.proxy_widgets)
+
+
+class ProductDetailsSlave(SellableDetailsSlave):
+
+    def setup_slaves(self):
+        self.setup_image_slave(self.model.product)
+        info_slave = ProductInformationSlave(self.conn, self.model.product)
+        self.attach_slave('details_holder', info_slave)

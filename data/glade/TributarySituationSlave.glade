@@ -6,14 +6,13 @@
         <property name="default_width">440</property>
         <child>
             <widget class="GtkHBox" id="hbox1">
-                <property name="border_width">5</property>
-                <property name="spacing">5</property>
+                <property name="spacing">6</property>
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkLabel" id="label1">
                         <property name="label" context="yes" translatable="yes">Tributary Situation:</property>
                         <property name="visible">True</property>
-                        <property name="xalign">0.0</property>
+                        <property name="xalign">1.0</property>
                     </widget>
                     <packing>
                         <property name="expand">False</property>
@@ -26,6 +25,7 @@
                         <property name="visible">True</property>
                     </widget>
                     <packing>
+                        <property name="expand">False</property>
                         <property name="position">1</property>
                     </packing>
                 </child>
@@ -38,10 +38,11 @@
                                 <property name="data_type">Decimal</property>
                                 <property name="model_attribute">tax_value</property>
                                 <property name="visible">True</property>
-                                <property name="width_chars">5</property>
+                                <property name="width_chars">0</property>
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
+                                <property name="expand">False</property>
                                 <property name="fill">False</property>
                             </packing>
                         </child>
@@ -49,10 +50,11 @@
                             <widget class="GtkLabel" id="label_percent">
                                 <property name="label" context="yes" translatable="yes">%</property>
                                 <property name="visible">True</property>
-                                <property name="width_chars">2</property>
-                                <property name="xalign">0.0</property>
+                                <property name="width_chars">0</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
+                                <property name="expand">False</property>
                                 <property name="position">1</property>
                             </packing>
                         </child>
