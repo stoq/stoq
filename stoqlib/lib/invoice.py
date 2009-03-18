@@ -718,6 +718,32 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
+    name = "PRODUCT_ITEM_DESCRIPTION"
+    description = _('Product item description')
+    length =  30
+    field_type = [str]
+
+    def fetch(self):
+        for sale_item in self.sale.products:
+            yield '%s' % sale_item.get_description()
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "PRODUCT_ITEM_CODE"
+    description = _('Product item code')
+    length =  5
+    field_type = [str]
+
+    def fetch(self):
+        for sale_item in self.sale.products:
+            yield '%05d' % sale_item.sellable.get_code()
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
     name = "PRODUCT_ITEM_CODE_SITUATION"
     description = _('Product item situation')
     length =  1
