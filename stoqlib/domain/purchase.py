@@ -330,22 +330,18 @@ class PurchaseOrder(ValidatableDomain):
             raise StoqlibError('The quantity that you want to receive '
                                'is greater than the total quantity of '
                                'this item %r' % item)
-        self.increase_quantity_received(item.sellable,
-                                        quantity_to_receive)
+        self.increase_quantity_received(item, quantity_to_receive)
 
-    def increase_quantity_received(self, sellable, quantity_received):
+    def increase_quantity_received(self, purchase_item, quantity_received):
+        sellable = purchase_item.sellable
         items = [item for item in self.get_items()
                     if item.sellable.id == sellable.id]
         qty = len(items)
         if not qty:
             raise ValueError('There is no purchase item for '
                              'sellable %r' % sellable)
-        if qty > 1:
-            raise DatabaseInconsistency('It should have only one item for '
-                                        'this sellable, got %d instead'
-                                        % qty)
-        item = items[0]
-        item.quantity_received += quantity_received
+
+        purchase_item.quantity_received += quantity_received
 
     def get_status_str(self):
         return PurchaseOrder.translate_status(self.status)
