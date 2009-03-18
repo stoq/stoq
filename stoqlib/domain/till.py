@@ -193,9 +193,10 @@ class Till(Domain):
                                    self.opening_date.strftime('%x')))
 
         balance = self.get_balance()
-        if balance > cash_amount:
-            raise TillError("The remaining value on the till is greater than "
-                            "the cash amount.")
+        if not self.needs_closing():
+            if balance > cash_amount:
+                raise TillError("The remaining value on the till is greater "
+                                "than the cash amount.")
 
         self.final_cash_amount = balance
 
