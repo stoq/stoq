@@ -378,7 +378,7 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
 
     def create_model(self):
         product = self._product
-        supplier = self.target_combo.read()
+        supplier = self.target_combo.get_selected_data()
 
         if product.is_supplied_by(supplier):
             product_desc = self._product.sellable.get_description()
