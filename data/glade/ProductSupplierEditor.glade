@@ -2,7 +2,6 @@
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
     <widget class="GtkWindow" id="ProductSupplierEditor">
-        <property name="border_width">6</property>
         <property name="destroy_with_parent">True</property>
         <property name="modal">True</property>
         <property name="window_position">center-on-parent</property>
@@ -11,7 +10,7 @@
                 <property name="border_width">6</property>
                 <property name="column_spacing">6</property>
                 <property name="n_columns">4</property>
-                <property name="n_rows">2</property>
+                <property name="n_rows">3</property>
                 <property name="row_spacing">6</property>
                 <property name="visible">True</property>
                 <child>
@@ -21,8 +20,19 @@
                         <property name="xalign">1.0</property>
                     </widget>
                     <packing>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
+                        <property name="y_options"></property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label1">
+                        <property name="label" context="yes" translatable="yes">Lead Time:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="y_options"></property>
                     </packing>
                 </child>
                 <child>
@@ -36,90 +46,41 @@ Information:</property>
                         <property name="yalign">0.0</property>
                     </widget>
                     <packing>
-                        <property name="bottom_attach">2</property>
-                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">3</property>
+                        <property name="top_attach">2</property>
                         <property name="x_options">fill</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkHBox" id="hbox1">
+                    <widget class="ProxyEntry" id="base_cost">
+                        <property name="data_type">currency</property>
+                        <property name="is_focus">True</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">base_cost</property>
+                        <property name="visible">True</property>
+                        <property name="width_chars">8</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="y_options"></property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHBox" id="hbox2">
                         <property name="spacing">6</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="ProxyEntry" id="base_cost">
-                                <property name="data_type">currency</property>
+                            <widget class="ProxySpinButton" id="lead_time">
+                                <property name="adjustment">1 0 100 1 10 0</property>
+                                <property name="data_type">int</property>
                                 <property name="is_focus">True</property>
                                 <property name="mandatory">True</property>
-                                <property name="model_attribute">base_cost</property>
-                                <property name="visible">True</property>
-                                <property name="width_chars">8</property>
-                                <property name="xalign">1.0</property>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="ProxyLabel" id="label10">
-                                <property name="label" context="yes" translatable="yes">ICMS:</property>
-                                <property name="model_attribute"></property>
-                                <property name="visible">True</property>
-                                <property name="xalign">1.0</property>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="position">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="ProxyEntry" id="icms">
-                                <property name="data_type">Decimal</property>
-                                <property name="model_attribute">icms</property>
-                                <property name="visible">True</property>
-                                <property name="width_chars">8</property>
-                                <property name="xalign">1.0</property>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="position">2</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="ProxyLabel" id="kiwilabel1">
-                                <property name="label" context="yes" translatable="yes">%</property>
-                                <property name="model_attribute"></property>
-                                <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="position">3</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="GtkLabel" id="label1">
-                                <property name="label" context="yes" translatable="yes">Lead Time:</property>
-                                <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="position">4</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="ProxySpinButton" id="lead_time">
-                                <property name="adjustment">1 1 365 1 10 0</property>
-                                <property name="data_type">int</property>
-                                <property name="mandatory">True</property>
                                 <property name="model_attribute">lead_time</property>
-                                <property name="text" context="yes" translatable="yes">0</property>
+                                <property name="text" context="yes" translatable="yes">1</property>
                                 <property name="visible">True</property>
                             </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="position">5</property>
-                            </packing>
                         </child>
                         <child>
                             <widget class="GtkLabel" id="label4">
@@ -129,13 +90,15 @@ Information:</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
-                                <property name="position">6</property>
+                                <property name="position">1</property>
                             </packing>
                         </child>
                     </widget>
                     <packing>
+                        <property name="bottom_attach">2</property>
                         <property name="left_attach">1</property>
-                        <property name="right_attach">4</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
                         <property name="y_options">fill</property>
                     </packing>
                 </child>
@@ -159,10 +122,106 @@ Information:</property>
                         </child>
                     </widget>
                     <packing>
-                        <property name="bottom_attach">2</property>
+                        <property name="bottom_attach">3</property>
                         <property name="left_attach">1</property>
                         <property name="right_attach">4</property>
+                        <property name="top_attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyLabel" id="label10">
+                        <property name="label" context="yes" translatable="yes">ICMS:</property>
+                        <property name="model_attribute"></property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label5">
+                        <property name="label" context="yes" translatable="yes">Minimum Purchase:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
                         <property name="top_attach">1</property>
+                        <property name="y_options"></property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHBox" id="hbox3">
+                        <property name="spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="ProxyEntry" id="icms">
+                                <property name="data_type">Decimal</property>
+                                <property name="model_attribute">icms</property>
+                                <property name="visible">True</property>
+                                <property name="width_chars">8</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel1">
+                                <property name="label" context="yes" translatable="yes">%</property>
+                                <property name="model_attribute">kiwilabel1</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHBox" id="hbox1">
+                        <property name="spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="ProxySpinButton" id="minimum_purchase">
+                                <property name="adjustment">1 0 100 1 10 0</property>
+                                <property name="data_type">Decimal</property>
+                                <property name="digits">2</property>
+                                <property name="is_focus">True</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">minimum_purchase</property>
+                                <property name="text" context="yes" translatable="yes">1.00</property>
+                                <property name="visible">True</property>
+                            </widget>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="unit_label">
+                                <property name="model_attribute">unit_label</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">1</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options">fill</property>
                     </packing>
                 </child>
             </widget>

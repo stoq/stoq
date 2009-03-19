@@ -320,10 +320,20 @@ class ProductSupplierEditor(BaseEditor):
     model_type = ProductSupplierInfo
     gladefile = 'ProductSupplierEditor'
 
-    proxy_widgets = ('base_cost', 'icms', 'notes', 'lead_time')
+    proxy_widgets = ('base_cost', 'icms', 'notes', 'lead_time',
+                     'minimum_purchase',)
 
     def __init__(self, conn, model=None):
         BaseEditor.__init__(self, conn, model)
+        self._setup_widgets()
+
+    def _setup_widgets(self):
+        unit = self.model.product.sellable.unit
+        if unit is None:
+            description = _(u'Unit(s)')
+        else:
+            description = unit.description
+        self.unit_label.set_text(description)
 
     #
     # BaseEditor hooks
@@ -338,6 +348,11 @@ class ProductSupplierEditor(BaseEditor):
     #
     # Kiwi handlers
     #
+
+    def on_minimum_purchase__validate(self, entry, value):
+        if not value or value <= Decimal(0):
+            return ValidationError("Minimum purchase must be greater than zero.")
+
     def on_base_cost__validate(self, entry, value):
         if not value or value <= currency(0):
             return ValidationError("Value must be greater than zero.")
@@ -373,6 +388,8 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
         return [Column('name', title=_(u'Supplier'),
                         data_type=str, expand=True, sorted=True),
                 Column('lead_time_str', title=_(u'Lead time'), data_type=str),
+                Column('minimum_purchase', title=_(u'Minimum Purchase'),
+                        data_type=Decimal),
                 Column('base_cost', title=_(u'Cost'),
                         data_type=currency),]
 

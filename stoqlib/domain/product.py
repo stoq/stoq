@@ -74,12 +74,15 @@ class ProductSupplierInfo(Domain):
                    'de servicos'
         - I{lead_time}: the number of days needed to deliver the product to
                         purchaser.
+        - I{minimum_purchase}: the minimum amount that we can buy from this
+                               supplier.
     """
 
     base_cost = PriceCol(default=0)
     notes = UnicodeCol(default='')
     is_main_supplier = BoolCol(default=False)
     lead_time = IntCol(default=1)
+    minimum_purchase = DecimalCol(default=Decimal(1))
     # This is Brazil-specific information
     icms = DecimalCol(default=0)
     supplier =  ForeignKey('PersonAdaptToSupplier', notNone=True)

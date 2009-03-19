@@ -176,14 +176,14 @@ class PurchaseItemStep(SellableItemStep):
 
     def _set_expected_receival_date(self, item):
         supplier = self.model.supplier
-        sellable = item.sellable
-        for supplier_info in ProductSupplierInfo.get_info_by_supplier(
-            self.conn, supplier):
-            if supplier_info.product.sellable is sellable:
-                delta = datetime.timedelta(days=supplier_info.lead_time)
-                expected_receival = self.model.open_date + delta
-                item.expected_receival_date = expected_receival
-                break
+        product = item.sellable.product
+        supplier_info = ProductSupplierInfo.selectOneBy(product=product,
+                                                        supplier=supplier,
+                                                        connection=self.conn)
+        if supplier_info is not None:
+            delta = datetime.timedelta(days=supplier_info.lead_time)
+            expected_receival = self.model.open_date + delta
+            item.expected_receival_date = expected_receival
 
     #
     # Helper methods
@@ -207,6 +207,7 @@ class PurchaseItemStep(SellableItemStep):
             'content-changed', self._on_sellable__content_changed)
         self.cost.set_editable(True)
         self.cost.connect('validate', self._on_cost__validate)
+        self.quantity.connect('validate', self._on_quantity__validate)
 
     #
     # SellableItemStep virtual methods
@@ -271,6 +272,19 @@ class PurchaseItemStep(SellableItemStep):
 
         self.cost.set_editable(True)
 
+    def _get_supplier_minimum_quantity(self):
+        sellable = self.sellable.get_selected_data()
+        if sellable is None:
+            return Decimal(0)
+
+        product = sellable.product
+        supplier = self.model.supplier
+        supplier_info = ProductSupplierInfo.selectOneBy(product=product,
+                                                        supplier=supplier,
+                                                        connection=self.conn)
+        if supplier_info is not None:
+            return supplier_info.minimum_purchase
+
     #
     # Callbacks
     #
@@ -281,6 +295,15 @@ class PurchaseItemStep(SellableItemStep):
     def _on_cost__validate(self, widget, value):
         if value <= Decimal(0):
             return ValidationError(_(u"The cost must be greater than zero."))
+
+    def _on_quantity__validate(self, widget, value):
+        if not value or value <= Decimal(0):
+            return ValidationError(_(u'Quantity must be greater than zero'))
+
+        supplier_minimum = self._get_supplier_minimum_quantity()
+        if value < supplier_minimum:
+            return ValidationError(_(u'Quantity below the minimum required '
+                                      'by the supplier'))
 
 
 class PurchasePaymentStep(WizardEditorStep):
