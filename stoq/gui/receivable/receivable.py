@@ -41,7 +41,7 @@ from kiwi.ui.objectlist import SearchColumn, Column
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
-from stoqlib.domain.sale import SaleView
+from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.printing import print_report
@@ -52,8 +52,10 @@ from stoqlib.gui.dialogs.paymentadditiondialog import (InPaymentAdditionDialog,
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
+from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -102,6 +104,7 @@ class ReceivableApp(SearchableAppWindow):
         selected = self.results.get_selected_rows()
         self.receive_button.set_sensitive(self._can_receive(selected))
         self.details_button.set_sensitive(self._can_show_details(selected))
+        self.Renegotiate.set_sensitive(self._can_renegotiate(selected))
         self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
         self.Receipt.set_sensitive(self._can_emit_receipt(selected))
         self.SetNotPaid.set_sensitive(
@@ -155,13 +158,16 @@ class ReceivableApp(SearchableAppWindow):
     #
 
     def _show_details(self, receivable_view):
-        if receivable_view.sale_id is None:
-            payment = receivable_view.payment
-            run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
-        else:
+        if receivable_view.sale_id is not None:
             sale_view = SaleView.select(
                     SaleView.q.id == receivable_view.sale_id)[0]
             run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+        elif receivable_view.renegotiation_id is not None:
+            run_dialog(RenegotiationDetailsDialog, self, self.conn,
+                       receivable_view.renegotiation)
+        else:
+            payment = receivable_view.payment
+            run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
 
 
     def _receive(self, receivable_views):
@@ -191,7 +197,7 @@ class ReceivableApp(SearchableAppWindow):
         trans = new_transaction()
         retval = self.run_dialog(InPaymentAdditionDialog, trans)
         if finish_transaction(trans, retval):
-            self.results.refresh()
+            self.search.refresh()
 
     def _change_due_date(self, receivable_view):
         """ Receives a receivable_view and change the payment due date
@@ -264,6 +270,27 @@ class ReceivableApp(SearchableAppWindow):
             return False
         return all(view.sale == sale and
                    view.status == Payment.STATUS_PENDING
+                   for view in receivable_views)
+
+    def _can_renegotiate(self, receivable_views):
+        """whether or not we can renegotiate this payments"""
+        if not len(receivable_views):
+            return False
+
+        # Parent is a Sale or a PaymentRenegotiation
+        parent = receivable_views[0].get_parent()
+
+        if not parent:
+            return False
+
+        client = parent.client
+
+        if not client:
+            return False
+
+        return all(view.get_parent() and
+                   view.get_parent().client is client and
+                   view.get_parent().can_set_renegotiated()
                    for view in receivable_views)
 
     def _can_change_payment_status(self, receivable_views):
@@ -347,3 +374,12 @@ class ReceivableApp(SearchableAppWindow):
 
     def on_BillCheckSearch__activate(self, action):
         self._run_bill_check_search()
+
+    def on_Renegotiate__activate(self, action):
+        receivable_views = self.results.get_selected_rows()
+        trans = new_transaction()
+        groups = list(set([trans.get(v.group) for v in receivable_views]))
+        retval = run_dialog(PaymentRenegotiationWizard, self, trans,
+                            groups)
+        if finish_transaction(trans, retval):
+            self.search.refresh()
