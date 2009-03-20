@@ -84,8 +84,8 @@ class StockApp(SearchableAppWindow):
         self.add_filter(self.branch_filter, position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('Code'), sorted=True,
-                             data_type=int, format='%03d', width=80),
+        return [SearchColumn('code', title=_('Code'), sorted=True,
+                             data_type=str, width=130),
                 SearchColumn('barcode', title=_("Barcode"), data_type=str,
                              width=100),
                 SearchColumn('description', title=_("Description"),
