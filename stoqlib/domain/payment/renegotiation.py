@@ -111,7 +111,12 @@ class PaymentRenegotiation(Domain):
     #   IContainer Implementation
     #
 
-    def add_item(self):
+    def add_item(self, payment):
+        #TODO:
+        pass
+
+    def remove_item(self, payment):
+        #TODO:
         pass
 
     def get_items(self):
