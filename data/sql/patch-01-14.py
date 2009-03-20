@@ -9,9 +9,10 @@ def apply_patch(trans):
 
    # data migration
    for sellable in Sellable.select(connection=trans):
-       #old_code = sellable.id
        sellable.code = u'%d' % sellable.id
        barcode = u'%014s' % sellable.barcode
-       sellable.barcode = barcode.replace(' ', '0')
+       # Update barcode only if we already have one.
+       if barcode.strip():
+           sellable.barcode = barcode.replace(' ', '0')
 
    trans.commit()
