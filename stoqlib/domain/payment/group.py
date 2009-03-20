@@ -68,9 +68,16 @@ class PaymentGroup(Domain):
     status = IntCol(default=STATUS_INITIAL)
     payer = ForeignKey('Person', default=None)
     recipient = ForeignKey('Person', default=None)
+    # This is where this payment group was renegotiated, ie, this payments
+    # wore renegotiated in this renegotaition.
+    # XXX: Rename to renegotiated
+    renegotiation = ForeignKey('PaymentRenegotiation', default=None)
 
     sale = SingleJoin('Sale', joinColumn='group_id')
     purchase = SingleJoin('PurchaseOrder', joinColumn='group_id')
+    # This is the payment group's renegotiation, ie, this payments are part
+    # of this renegotiation.
+    _renegotiation = SingleJoin('PaymentRenegotiation', joinColumn='group_id')
 
     #
     # IContainer implementation
@@ -168,7 +175,7 @@ class PaymentGroup(Domain):
         """
         assert self.can_cancel(), self.get_status_string()
 
-        for payment in self._get_pending_payments():
+        for payment in self.get_pending_payments():
             payment.cancel()
 
         self.status = PaymentGroup.STATUS_CANCELLED
@@ -199,17 +206,26 @@ class PaymentGroup(Domain):
             return _(u'sale %s') % self.sale.get_order_number_str()
         elif self.purchase:
             return _(u'order %s') % self.purchase.id
+        elif self._renegotiation:
+            return _(u'renegotiation %s') % self._renegotiation.id
+        else:
+            raise AssertionError
 
-    #
-    # Private
-    #
-
-    def _get_pending_payments(self):
+    def get_pending_payments(self):
         return Payment.selectBy(group=self,
                                 status=Payment.STATUS_PENDING,
                                 connection=self.get_connection())
 
-
+    def get_parent(self):
+        """Return the sale, purchase or renegotiation this group is part of"""
+        if self.sale:
+            return self.sale
+        elif self.purchase:
+            return self.purchase
+        elif self._renegotiation:
+            return self._renegotiation
+        else:
+            raise AssertionError
     #
     # Accessors
     #

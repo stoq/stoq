@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,8 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Bruno Rafael Garcia             <brg@async.com.br>
-##              Evandro Vale Miquelito          <evandro@async.com.br>
+## Author(s):   Ronaldo Maia                <romaia@async.com.br>
 ##
 ##
 """ Classes for sale details """
@@ -39,61 +38,48 @@ from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.domain.interfaces import IClient, IOutPayment
 from stoqlib.domain.person import Person
 from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
-from stoqlib.domain.renegotiation import RenegotiationData
+from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.reporting.sale import SaleOrderReport
 
 _ = stoqlib_gettext
 
+class _RenegotiationItem(object):
+    def __init__(self, payment_group):
+        parent = payment_group.get_parent()
+        self.parent_id = parent.id
+        self.open_date = parent.open_date
+
+        if isinstance(parent, Sale):
+            desc = "Sale %04d" % (parent.id)
+            self.total_amount = parent.total_amount
+        elif isinstance(parent, PaymentRenegotiation):
+            desc = "Renegotiation %04d" % (parent.id)
+            self.total_amount = parent.total
+
+        self.description = desc
 
 
-# A workaround to show negative values in the interface
-class _TemporaryOutPayment(object):
-
-    class method:
-        description = None
-
-    def __init__(self, payment):
-        self.id = payment.id
-        self.description = payment.description
-        self.method.description = payment.method.description
-        self.due_date = payment.due_date
-        self.paid_date = payment.paid_date
-        self.status_str = payment.get_status_str()
-        self.base_value = -payment.base_value
-        self.paid_value = -payment.paid_value
-
-
-class SaleDetailsDialog(BaseEditor):
-    gladefile = "SaleDetailsDialog"
-    model_type = SaleView
-    title = _(u"Sale Details")
+class RenegotiationDetailsDialog(BaseEditor):
+    gladefile = "RenegotiationDetailsDialog"
+    model_type = PaymentRenegotiation
+    title = _(u"Renegotiation Details")
     size = (750, 460)
     hide_footer = True
     proxy_widgets = ('status_lbl',
                      'client_lbl',
-                     'salesperson_lbl',
+                     'responsible_name',
                      'open_date_lbl',
                      'total_lbl',
                      'notes',
-                     'order_number',
+                     'id',
                      'subtotal_lbl',
                      'surcharge_lbl',
                      'discount_lbl')
-
-    def __init__(self, conn, model=None, visual_mode=False):
-        """ Creates a new SaleDetailsDialog object
-
-        @param conn: a database connection
-        @param model: a L{stoqlib.domain.sale.Sale} object
-        """
-        BaseEditor.__init__(self, conn, model,
-                            visual_mode=visual_mode)
 
     def _setup_columns(self):
         self.items_list.set_columns(self._get_items_columns())
@@ -108,31 +94,24 @@ class SaleDetailsDialog(BaseEditor):
         summary_label.show()
         self.payments_vbox.pack_start(summary_label, False)
 
-    def _get_payments(self, sale):
-        for payment in sale.payments:
-            if IOutPayment(payment, None):
-                yield _TemporaryOutPayment(payment)
-            else:
-                yield payment
+    def _get_renegotiation_items(self):
+        for item in self.model.get_items():
+            yield _RenegotiationItem(item)
 
     def _setup_widgets(self):
-        if not self.model.client_id:
+        if not self.model.client:
             self.details_button.set_sensitive(False)
         self._setup_columns()
 
-        self.sale_order = Sale.get(self.model.id, connection=self.conn)
-
-        if (self.sale_order.status == Sale.STATUS_RETURNED or
-            self.sale_order.status == Sale.STATUS_RENEGOTIATED):
+        if self.model.status == PaymentRenegotiation.STATUS_RENEGOTIATED:
             self.status_details_button.show()
         else:
             self.status_details_button.hide()
 
-        self.items_list.add_list(self.sale_order.get_items())
-        self.payments_list.add_list(self._get_payments(self.sale_order))
+        self.items_list.add_list(self._get_renegotiation_items())
+        self.payments_list.add_list(self.model.payments)
         changes = PaymentChangeHistoryView.select_by_group(
-            self.sale_order.group,
-            connection=self.conn)
+            self.model.group, connection=self.conn)
         self.payments_info_list.add_list(changes)
 
         self._setup_summary_labels()
@@ -160,15 +139,11 @@ class SaleDetailsDialog(BaseEditor):
                               data_func=payment_value_colorize)]
 
     def _get_items_columns(self):
-        return [Column('sellable.id', _("Code"), sorted=True,
-                       data_type=int, width=80, format='%04d'),
-                Column('sellable.base_sellable_info.description',
-                       _("Description"), data_type=str, expand=True,
-                       width=200),
-                Column('quantity_unit_string', _("Quantity"), data_type=str,
-                       width=100, justify=gtk.JUSTIFY_RIGHT),
-                Column('price', _("Price"), data_type=currency, width=100),
-                Column('total', _("Total"), data_type=currency, width=100)]
+        return [Column('description', _("Description"), sorted=True,
+                       data_type=unicode, expand=True),
+                Column('open_date', _("Open Date"), data_type=datetime.date,
+                       width=90),
+                Column('total_amount', _("Total"), data_type=currency, width=100)]
 
     def _get_payments_info_columns(self):
         return [Column('change_date', _(u"When"),
@@ -191,53 +166,16 @@ class SaleDetailsDialog(BaseEditor):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.add_proxy(self.model, SaleDetailsDialog.proxy_widgets)
+        self.add_proxy(self.model, RenegotiationDetailsDialog.proxy_widgets)
 
     #
     # Kiwi handlers
     #
 
-    def on_print_button__clicked(self, button):
-        print_report(SaleOrderReport,
-                     Sale.get(self.model.id, connection=self.conn))
-
     def on_details_button__clicked(self, button):
-        if not self.model.client_id:
-            raise StoqlibError("You should never call ClientDetailsDialog "
-                               "for sales which clients were not specified")
-        client = Person.iget(IClient, self.model.client_id,
-                             connection=self.conn)
-        run_dialog(ClientDetailsDialog, self, self.conn, client)
+        run_dialog(ClientDetailsDialog, self, self.conn, self.model.client)
 
     def on_status_details_button__clicked(self, button):
-        if self.sale_order.status == Sale.STATUS_RETURNED:
-            run_dialog(SaleReturnDetailsDialog, self, self.conn,
-                       self.sale_order)
-        elif self.sale_order.status == Sale.STATUS_RENEGOTIATED:
-            # XXX: Rename to renegotiated
-            run_dialog(RenegotiationDetailsDialog, self, self.conn,
-                       self.sale_order.group.renegotiation)
+        run_dialog(RenegotiationDetailsDialog, self, self.conn,
+                   self.model.group.renegotiation)
 
-
-class SaleReturnDetailsDialog(BaseEditor):
-    gladefile = "HolderTemplate"
-    model_type = Sale
-    title = _(u"Sale Cancellation Details")
-    size = (650, 350)
-    hide_footer = True
-
-    def setup_slaves(self):
-        from stoqlib.gui.slaves.saleslave import SaleReturnSlave
-        if self.model.status != Sale.STATUS_RETURNED:
-            raise StoqlibError("Invalid status for sale order, it should be "
-                               "cancelled")
-
-        renegotiation = RenegotiationData.selectOneBy(sale=self.model,
-                                                      connection=self.conn)
-        if renegotiation is None:
-            raise StoqlibError("Returned sales must have the renegotiation "
-                               "information.")
-
-        self.slave = SaleReturnSlave(self.conn, self.model, renegotiation,
-                                     visual_mode=True)
-        self.attach_slave("place_holder", self.slave)

@@ -512,6 +512,38 @@ class TestSale(DomainTest):
         final_quantity = storable.get_full_balance()
         self.assertEquals(initial_quantity, final_quantity)
 
+    def testCanSetRenegotiated(self):
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+
+        self.add_payments(sale, method_type='check')
+        sale.confirm()
+
+        self.failUnless(sale.can_set_renegotiated())
+
+        for payment in sale.payments:
+            payment.pay()
+
+        self.failIf(sale.can_set_renegotiated())
+
+    def testSetRenegotiated(self):
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+
+        self.add_payments(sale, method_type='check')
+        sale.confirm()
+
+        self.failUnless(sale.can_set_renegotiated())
+        sale.set_renegotiated()
+        self.assertEqual(sale.status, Sale.STATUS_RENEGOTIATED)
+
+        for payment in sale.payments:
+            payment.cancel()
+
+        self.failIf(sale.can_set_renegotiated())
+
     def testProducts(self):
         sale = self.create_sale()
         self.failIf(sale.products)

@@ -27,6 +27,7 @@ from kiwi import ValueUnset
 from kiwi.datatypes import currency, ValidationError
 
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext
@@ -38,7 +39,7 @@ class CashChangeSlave(BaseEditorSlave):
     """This slave is responsible to calculate paybacks"""
 
     gladefile = 'CashChangeSlave'
-    model_type = Sale
+    model_type = object
 
     def __init__(self, conn, model):
         BaseEditorSlave.__init__(self, conn, model)
@@ -48,6 +49,14 @@ class CashChangeSlave(BaseEditorSlave):
         self.title_lbl.set_underline(True)
         self.change_value_lbl.set_bold(True)
         self.update_total_sale_amount()
+
+    def _get_total_amount(self):
+        if isinstance(self.model, Sale):
+            return self.model.get_total_sale_amount()
+        elif isinstance(self.model, PaymentRenegotiation):
+            return self.model.total
+        else:
+            raise TypeError
 
     #
     # Public API
@@ -62,7 +71,7 @@ class CashChangeSlave(BaseEditorSlave):
         self.received_value.set_sensitive(False)
 
     def update_total_sale_amount(self):
-        value = self.model.get_total_sale_amount()
+        value = self._get_total_amount()
         self.received_value.set_text(get_formatted_price(value))
 
     def get_received_value(self):
@@ -76,7 +85,7 @@ class CashChangeSlave(BaseEditorSlave):
     #
 
     def on_received_value__validate(self, widget, value):
-        sale_amount = self.model.get_total_sale_amount()
+        sale_amount = self._get_total_amount()
         if value < sale_amount:
             return ValidationError(_(u"The received value must be greater "
                                       "or equal than the sale value."))
@@ -89,6 +98,6 @@ class CashChangeSlave(BaseEditorSlave):
         if value is ValueUnset:
             value = '0.0'
 
-        sale_amount = self.model.get_total_sale_amount()
+        sale_amount = self._get_total_amount()
         change_value = currency(value) - sale_amount
         self.change_value_lbl.set_text(get_formatted_price(change_value))
