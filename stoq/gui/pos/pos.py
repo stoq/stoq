@@ -144,8 +144,7 @@ class POSApp(AppWindow):
 
     def get_columns(self):
         return [Column('code', title=_('Reference'),
-                       data_type=int, width=95, justify=gtk.JUSTIFY_RIGHT,
-                       format='%05d'),
+                       data_type=str, width=130, justify=gtk.JUSTIFY_RIGHT),
                 Column('description',
                        title=_('Description'), data_type=str, expand=True,
                        searchable=True, ellipsize=pango.ELLIPSIZE_END),
