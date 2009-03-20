@@ -52,8 +52,7 @@ class ServiceReport(SearchResultsReport):
 
     def _get_columns(self):
         return [
-            OTC(_("Code"), lambda obj: '%03d' % obj.id, width=60,
-                truncate=True),
+            OTC(_("Code"), lambda obj: obj.code, width=100, truncate=True),
             OTC(_("Description"), lambda obj: obj.description, truncate=True),
             OTC(_("Cost"), lambda obj: obj.cost, width=90, truncate=True),
             OTC(_("Price"), lambda obj: obj.price, width=90, truncate=True),

@@ -69,6 +69,7 @@ class ServiceView(Viewable):
 
     columns = dict(
         id=Sellable.q.id,
+        code=Sellable.q.code,
         barcode=Sellable.q.barcode,
         status=Sellable.q.status,
         cost=Sellable.q.cost,

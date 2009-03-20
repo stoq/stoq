@@ -99,7 +99,7 @@
     <blockTable style="6cols_grid_tableStyle"
                 colWidths="4.5cm, 0cm, 12cm, 0cm, 0cm, 3.1cm">
       <tr>
-        <td>${item.sellable.id}</td>
+        <td>${item.sellable.code}</td>
         <td></td>
         <td><para style="para_style">${item.sellable.get_description()}</para></td>
         <td></td>

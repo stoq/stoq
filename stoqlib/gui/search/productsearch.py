@@ -143,8 +143,8 @@ class ProductSearch(SearchEditor):
         return product_full_stock_view.product
 
     def get_columns(self):
-        cols = [SearchColumn('id', title=_('Code'), data_type=int, sorted=True,
-                             format='%03d', width=70),
+        cols = [SearchColumn('code', title=_('Code'), data_type=str,
+                              sorted=True, width=130),
                 SearchColumn('barcode', title=_('Barcode'), data_type=str,
                              width=130),
                 Column('product_and_category_description',
@@ -217,8 +217,8 @@ class ProductSearchQuantity(SearchDialog):
     #
 
     def get_columns(self):
-        return [Column('id', title=_('Code'), data_type=int,
-                       sorted=True, format='%03d', width=70),
+        return [Column('code', title=_('Code'), data_type=str,
+                       sorted=True, width=130),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
                 Column('quantity_sold', title=_('Sold'),

@@ -103,8 +103,8 @@ class ServiceSearch(SearchEditor):
         return Service.get(model.service_id, connection=self.conn)
 
     def get_columns(self):
-        columns = [SearchColumn('id', title=_('Code'), data_type=int, sorted=True,
-                                format="%03d", width=80),
+        columns = [SearchColumn('code', title=_('Code'), data_type=int, sorted=True,
+                                width=130),
                    SearchColumn('barcode', title=_('Barcode'), data_type=str,
                                 visible=True, width=130),
                    SearchColumn('description', title=_('Description'), data_type=str,
@@ -125,7 +125,7 @@ class ServiceSearch(SearchEditor):
 
     def on_print_button_clicked(self, button):
         print_report(ServiceReport, list(self.results),
-                     filters=self.search.get_filters())
+                     filters=self.search.get_search_filters())
 
     def on_print_price_button_clicked(self, button):
         print_report(ServicePriceReport, list(self.results),

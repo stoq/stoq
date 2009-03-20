@@ -96,11 +96,12 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="ProxyLabel" id="code">
+                                    <widget class="ProxyEntry" id="code">
                                         <property name="data_type">unicode</property>
-                                        <property name="model_attribute">code_str</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="model_attribute">code</property>
                                         <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
+                                        <property name="width_chars">12</property>
                                     </widget>
                                     <packing>
                                         <property name="left_attach">1</property>
@@ -165,8 +166,7 @@
                                         <child>
                                             <widget class="ProxyLabel" id="stock_total_lbl">
                                                 <property name="data_type">currency</property>
-                                                <property
-                                                name="model_attribute">average_stock_price</property>
+                                                <property name="model_attribute">average_stock_price</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>

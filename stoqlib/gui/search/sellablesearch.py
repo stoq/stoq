@@ -115,8 +115,8 @@ class SellableSearch(SearchEditor):
 
     def get_columns(self):
         """Hook called by SearchEditor"""
-        return [SearchColumn('id', title=_('Code'), data_type=int, format="%03d",
-                              sorted=True, width=90, justify=gtk.JUSTIFY_RIGHT),
+        return [SearchColumn('code', title=_('Code'), data_type=int,
+                              sorted=True, width=90),
                 SearchColumn('barcode', title=_('Barcode'), data_type=str, width=90,
                               visible=False),
                 SearchColumn('description', title= _('Description'), data_type=str,

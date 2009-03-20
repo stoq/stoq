@@ -56,6 +56,7 @@ class ProductFullStockView(Viewable):
 
     columns = dict(
         id=Sellable.q.id,
+        code=Sellable.q.code,
         barcode=Sellable.q.barcode,
         status=Sellable.q.status,
         cost=Sellable.q.cost,
@@ -166,6 +167,7 @@ class ProductQuantityView(Viewable):
 
     columns = dict(
         id=ProductHistory.q.sellableID,
+        code=Sellable.q.code,
         description=BaseSellableInfo.q.description,
         branch=ProductHistory.q.branchID,
         sold_date=ProductHistory.q.sold_date,
@@ -204,6 +206,7 @@ class SellableFullStockView(Viewable):
 
     columns = dict(
         id=Sellable.q.id,
+        code=Sellable.q.code,
         barcode=Sellable.q.barcode,
         status=Sellable.q.status,
         cost=Sellable.q.cost,

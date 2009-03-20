@@ -55,6 +55,7 @@ class ServiceImporter(CSVImporter):
                             base_sellable_info=sellable_info,
                             tax_constant=self.tax_constant,
                             cost=data.cost,
+                            code=data.barcode,
                             barcode=data.barcode)
         service = Service(sellable=sellable,
                           connection=trans)

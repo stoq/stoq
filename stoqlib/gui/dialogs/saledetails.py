@@ -160,8 +160,8 @@ class SaleDetailsDialog(BaseEditor):
                               data_func=payment_value_colorize)]
 
     def _get_items_columns(self):
-        return [Column('sellable.id', _("Code"), sorted=True,
-                       data_type=int, width=80, format='%04d'),
+        return [Column('sellable.code', _("Code"), sorted=True,
+                       data_type=str, width=130),
                 Column('sellable.base_sellable_info.description',
                        _("Description"), data_type=str, expand=True,
                        width=200),

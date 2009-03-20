@@ -107,6 +107,7 @@ class ProductImporter(CSVImporter):
             unit = None
         sellable = Sellable(connection=trans,
                             cost=data.cost,
+                            code=data.barcode,
                             barcode=data.barcode,
                             category=category,
                             base_sellable_info=sellable_info,

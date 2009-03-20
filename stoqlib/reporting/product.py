@@ -59,8 +59,7 @@ class ProductReport(SearchResultsReport):
 
     def _get_columns(self):
         return [
-            OTC(_("Code"), lambda obj: '%03d' % obj.id, width=60,
-                truncate=True),
+            OTC(_("Code"), lambda obj: obj.code, width=100, truncate=True),
             OTC(_("Description"), lambda obj: obj.description, truncate=True),
             OTC(_("Cost"), lambda obj: obj.cost, width=60, truncate=True),
             OTC(_("Price"), lambda obj: obj.price, width=60, truncate=True),
@@ -122,8 +121,7 @@ class ProductQuantityReport(SearchResultsReport):
 
     def _get_columns(self):
         return [
-            OTC(_("Code"), lambda obj: '%03d' % obj.id, width=90,
-                truncate=True),
+            OTC(_("Code"), lambda obj: obj.code, width=100, truncate=True),
             OTC(_("Description"), lambda obj: obj.description, truncate=True),
             OTC(_("Quantity Sold"), lambda obj:
                 format_data(obj.quantity_sold), width=100,
@@ -174,8 +172,7 @@ class ProductCountingReport(SearchResultsReport):
 
     def _get_columns(self):
         return [
-            OTC(_("Code"), lambda obj: '%03d' % obj.id, width=60,
-                truncate=True),
+            OTC(_("Code"), lambda obj: obj.code, width=100, truncate=True),
             OTC(_("Description"), lambda obj:
                 obj.base_sellable_info.description, truncate=True),
             OTC(_("Fiscal Class"), lambda obj: obj.tax_constant.description,

@@ -81,9 +81,9 @@ class ClientDetailsDialog(BaseEditor):
                 qty_str = '%s %s' % (qty, unit)
                 product_codes = [item.code for item in product_dict.values()]
                 sellable = product.sellable
-                if not sellable.id in product_codes:
+                if not sellable.code in product_codes:
                     desc = sellable.base_sellable_info.description
-                    obj = Settable(code=sellable.id, description=desc,
+                    obj = Settable(code=sellable.code, description=desc,
                                    _total_qty=qty, total_value=total_value,
                                    qty_str=qty_str, unit=unit, price=price)
                     product_dict[sellable] = obj
@@ -132,9 +132,8 @@ class ClientDetailsDialog(BaseEditor):
                        data_type=currency, width=100)]
 
     def _get_product_columns(self):
-        return [Column("code", title=_("Code"), data_type=int,
-                       format='%04d', justify=gtk.JUSTIFY_RIGHT,
-                       width=90, sorted=True),
+        return [Column("code", title=_("Code"), data_type=str,
+                       justify=gtk.JUSTIFY_RIGHT, width=130, sorted=True),
                 Column("description", title=_("Description"), data_type=str,
                        expand=True, searchable=True),
                 Column("qty_str", title=_("Total Quantity"),
@@ -143,7 +142,7 @@ class ClientDetailsDialog(BaseEditor):
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT,)]
 
     def _get_services_columns(self):
-        return [Column("sellable.id", title=_("Code"), data_type=int,
+        return [Column("sellable.code", title=_("Code"), data_type=str,
                        justify=gtk.JUSTIFY_RIGHT, width=120, sorted=True),
                 Column("sellable.base_sellable_info.description",
                        title=_("Description"), data_type=str, expand=True,
