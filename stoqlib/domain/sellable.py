@@ -246,6 +246,7 @@ class Sellable(Domain):
                 STATUS_CLOSED:      _(u"Closed"),
                 STATUS_BLOCKED:     _(u"Blocked")}
 
+    code = UnicodeCol(default='')
     barcode = UnicodeCol(default='')
     # This default status is used when a new sellable is created,
     # so it must be *always* SOLD (that means no stock for it).
@@ -290,8 +291,13 @@ class Sellable(Domain):
     # ORMObject setters
     #
 
+    def _set_code(self, code):
+        if self.check_code_exists(code):
+            raise SellableError("The code %s already exists" % code)
+        self._SO_set_code(code)
+
     def _set_barcode(self, barcode):
-        if Sellable.check_barcode_exists(barcode):
+        if self.check_barcode_exists(barcode):
             raise SellableError("The barcode %s already exists" % barcode)
         self._SO_set_barcode(barcode)
 
@@ -352,13 +358,6 @@ class Sellable(Domain):
 
     commission = property(_get_commission, _set_commission)
 
-    @property
-    def code(self):
-        return self.id
-
-    def get_code(self):
-        return self.id
-
     def can_be_sold(self):
         """Whether the sellable is available and can be sold.
         @returns: if the item can be sold
@@ -393,13 +392,6 @@ class Sellable(Domain):
         # Identical implementation to cancel(), but it has a very different
         # use case, so we keep another method
         self.status = self.STATUS_AVAILABLE
-
-    def get_code_str(self):
-        """Fetches the current code represented as a string.
-        @returns: code
-        @rtype: string
-        """
-        return u"%05d" % self.id
 
     def get_short_description(self):
         """Returns a short description of the current sale
@@ -441,6 +433,34 @@ class Sellable(Domain):
         if self.category:
             return self.category.get_tax_constant()
 
+    def _check_unique_value_exists(self, attribute, value):
+        """Returns True if we already have a sellable with the given attribute
+        and value in the database, but ignoring myself.
+        """
+        if not value:
+            return False
+        kwargs = {}
+        kwargs[attribute] = value
+        kwargs['connection'] = self.get_connection()
+        # XXX Do not use cls instead of Sellable here since ORMObject
+        # can deal properly with queries in inherited tables in this case
+        result = Sellable.selectOneBy(**kwargs)
+        if result is not None:
+            return result is not self
+        return False
+
+    def check_code_exists(self, code):
+        """Returns True if we already have a sellable with the given code
+        in the database.
+        """
+        return self._check_unique_value_exists('code', code)
+
+    def check_barcode_exists(self, barcode):
+        """Returns True if we already have a sellable with the given barcode
+        in the database.
+        """
+        return self._check_unique_value_exists('barcode', barcode)
+
     #
     # IDescribable implementation
     #
@@ -456,18 +476,6 @@ class Sellable(Domain):
     # Classmethods
     #
 
-    @classmethod
-    def check_barcode_exists(cls, barcode):
-        """Returns True if we already have a sellable with the given barcode
-        in the database.
-        """
-        if not barcode:
-            return False
-        conn = get_connection()
-        # XXX Do not use cls instead of Sellable here since ORMObject
-        # can deal properly with queries in inherited tables in this case
-        results = Sellable.selectBy(barcode=barcode, connection=conn)
-        return results.count()
 
     @classmethod
     def get_available_sellables_query(cls, conn):

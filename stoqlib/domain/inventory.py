@@ -104,7 +104,7 @@ class InventoryItem(Domain):
     def get_code(self):
         """Returns the product code"""
         sellable = self.product.sellable
-        return sellable.get_code_str()
+        return sellable.code
 
     def get_description(self):
         """Returns the product description"""

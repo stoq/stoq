@@ -46,7 +46,7 @@ class _TemporaryStorableItem(object):
     def __init__(self, item):
         self.obj = item
         sellable = item.product.sellable
-        self.code = sellable.get_code_str()
+        self.code = sellable.code
         self.description = sellable.get_description()
         self.initial_stock = 0
 

@@ -276,7 +276,7 @@ class Coupon(object):
                 unit_desc = sellable.unit.description
             unit = sellable.unit.unit_index or UnitType.EMPTY
         max_len = self._get_capability("item_code").max_len
-        code = sellable.get_code_str()[:max_len]
+        code = sellable.code[:max_len]
 
         try:
             tax_constant = self._printer.get_tax_constant_for_device(sellable)

@@ -298,7 +298,7 @@ class CATFile(object):
             coo=fiscal_data.coo,
             document_counter=fiscal_data.document_counter,
             item_number=sequence,
-            item_code=item.sellable.get_code_str(),
+            item_code=item.sellable.code,
             item_description=item.get_description(),
             # precision = 2
             item_amount=item.quantity * 100,

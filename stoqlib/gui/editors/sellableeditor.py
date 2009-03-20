@@ -207,15 +207,15 @@ class SellableEditor(BaseEditor):
     sellable_unit_widgets = ("unit_combo",
                              "unit_entry")
     sellable_tax_widgets = ('tax_constant', 'tax_value',)
-    barcode_widgets = 'barcode',
     sellable_widgets = ('code',
+                        'barcode',
                         'description',
                         'category_combo',
                         'cost',
                         'price',
                         'statuses_combo')
     proxy_widgets = (sellable_unit_widgets + sellable_tax_widgets +
-                     sellable_widgets + barcode_widgets)
+                     sellable_widgets)
 
     storable_widgets = ('stock_total_lbl',)
 
@@ -227,7 +227,10 @@ class SellableEditor(BaseEditor):
         BaseEditor.__init__(self, conn, model)
         self.enable_window_controls()
 
-        self._original_barcode = self._sellable.barcode
+        # code suggestion
+        if not self.code.read():
+            code = u'%d' % self._sellable.id
+            self.code.update(code)
         self.setup_widgets()
 
         self.set_description(
@@ -336,9 +339,6 @@ class SellableEditor(BaseEditor):
         self.setup_tax_constants()
         self.tax_proxy = self.add_proxy(self._sellable,
                                         SellableEditor.sellable_tax_widgets)
-        barcode = self._sellable.barcode
-        self.barcode_proxy = self.add_proxy(Settable(barcode=barcode),
-                                            SellableEditor.barcode_widgets)
 
         self.sellable_proxy = self.add_proxy(self._sellable,
                                              SellableEditor.sellable_widgets)
@@ -377,15 +377,20 @@ class SellableEditor(BaseEditor):
         self.edit_sale_price()
 
     def validate_confirm(self, *args):
-        barcode = self.barcode_proxy.model.barcode
-        if barcode != self._original_barcode:
-            if Sellable.check_barcode_exists(barcode):
-                msg = _('The barcode %s already exists') % barcode
-                self.barcode.set_invalid(msg)
-                return False
-            self._sellable.barcode = barcode
         self.ensure_sellable_unit()
         return True
+
+    def on_code__validate(self, widget, value):
+        if not value:
+            return ValidationError(_(u'The code can not be empty.'))
+        if self.model.sellable.check_code_exists(value):
+            return ValidationError(_(u'The code %s already exists.') % value)
+
+    def on_barcode__validate(self, widget, value):
+        if value and len(value) != 14:
+            return ValidationError(_(u'Barcode must have 14 digits.'))
+        if self.model.sellable.check_barcode_exists(value):
+            return ValidationError(_('The barcode %s already exists') % value)
 
     def on_price__validate(self, entry, value):
         if value <= 0:

@@ -77,8 +77,8 @@ class SaleOrderReport(BaseStoqReport):
 
     def _get_table_columns(self):
         # XXX Bug #2430 will improve this part
-        return [OTC(_("Code"), lambda obj: obj.sellable.get_code_str(),
-                    truncate=True, width=80),
+        return [OTC(_("Code"), lambda obj: obj.sellable.code,
+                    truncate=True, width=100),
                 OTC(_("Item"),
                     lambda obj: obj.sellable.base_sellable_info.description,
                     truncate=True, expand=True),
