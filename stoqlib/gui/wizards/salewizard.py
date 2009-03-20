@@ -31,7 +31,6 @@ from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
 from kiwi.datatypes import currency
 from kiwi.python import Settable
-from kiwi.ui.wizard import WizardStep
 from kiwi.utils import gsignal
 
 from stoqlib.database.runtime import (StoqlibTransaction, finish_transaction,
@@ -43,7 +42,7 @@ from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.parameters import sysparam
-from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
+from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard, BaseWizardStep
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -57,6 +56,7 @@ from stoqlib.domain.person import Person, ClientView
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
+from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.interfaces import ISalesPerson
@@ -68,20 +68,20 @@ N_ = _ = stoqlib_gettext
 # Wizard Steps
 #
 
-class PaymentMethodStep(WizardEditorStep):
+class PaymentMethodStep(BaseWizardStep):
     gladefile = 'HolderTemplate'
-    model_type = Sale
     slave_holder = 'place_holder'
 
     def __init__(self, wizard, previous, conn, model, method, outstanding_value=None):
         self._method_name = method
         self._method_slave = None
+        self.model = model
 
         if outstanding_value is None:
             outstanding_value = currency(0)
         self._outstanding_value = outstanding_value
 
-        WizardEditorStep.__init__(self, conn, wizard, model, previous)
+        BaseWizardStep.__init__(self, conn, wizard, previous)
 
         register_payment_slaves()
         self._create_ui()
@@ -120,137 +120,16 @@ class PaymentMethodStep(WizardEditorStep):
         self._method_slave.update_view()
 
 
-class _AbstractSalesPersonStep(WizardEditorStep):
-    """ An abstract step which allows to define a salesperson, the sale's
-    discount and surcharge, when it is needed.
+class BaseMethodSelectionStep(object):
+    """Base class for method selection when doing client sales
+
+    Classes using this base class should have a select_method_holder EventBox
+    and a cash_change_holder EventBox in the glade file
     """
-    gladefile = 'SalesPersonStep'
-    model_type = Sale
-    proxy_widgets = ('total_lbl',
-                     'subtotal_lbl',
-                     'salesperson_combo',
-                     'client')
-
-    @argcheck(BaseWizard, StoqlibTransaction, Sale, PaymentGroup)
-    def __init__(self, wizard, conn, model, payment_group):
-        self.payment_group = payment_group
-        WizardEditorStep.__init__(self, conn, wizard, model)
-        self.update_discount_and_surcharge()
-
-    def _update_totals(self):
-        for field_name in ('total_sale_amount', 'sale_subtotal'):
-            self.proxy.update(field_name)
-        self.cash_change_slave.update_total_sale_amount()
-
-    def setup_widgets(self):
-        salespersons = Person.iselect(ISalesPerson, connection=self.conn)
-        items = [(s.person.name, s) for s in salespersons]
-        self.salesperson_combo.prefill(items)
-        if not sysparam(self.conn).ACCEPT_CHANGE_SALESPERSON:
-            self.salesperson_combo.set_sensitive(False)
-        else:
-            self.salesperson_combo.grab_focus()
-        self._fill_clients_combo()
-
-    def _fill_clients_combo(self):
-        clients = ClientView.get_active_clients(self.conn)
-        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        clients = clients[:max_results]
-        items = [(c.name, c.client) for c in clients]
-        self.client.prefill(sorted(items))
-
-    def _create_client(self):
-        trans = new_transaction()
-        client = run_person_role_dialog(ClientEditor, self, trans, None)
-        if not finish_transaction(trans, client):
-            return
-        if len(self.client) == 0:
-            self._fill_clients_combo()
-        else:
-            self.client.append_item(client.person.name, client)
-        self.client.select(client)
-
-    def _get_selected_payment_method(self):
-        return self.pm_slave.get_selected_method()
 
     #
-    # Hooks
+    #   Private API
     #
-
-    def update_discount_and_surcharge(self):
-        """Update discount and surcharge values when it's needed"""
-
-    def on_payment_method_changed(self, slave, method_iface):
-        """Overwrite this method when controling the status of finish button
-        is a required task when changing payment methods
-        """
-
-    def on_next_step(self):
-        raise NotImplementedError("Overwrite on child to return the "
-                                  "proper next step or None for finish")
-
-    #
-    # WizardStep hooks
-    #
-
-    def next_step(self):
-        return self.on_next_step()
-
-    #
-    # BaseEditorSlave hooks
-    #
-
-    def setup_slaves(self):
-        self.discsurcharge_slave = DiscountSurchargeSlave(self.conn, self.model,
-                                                          self.model_type)
-        self.discsurcharge_slave.connect('discount-changed',
-                                         self.on_discsurcharge_slave_changed)
-        slave_holder = 'discount_surcharge_slave'
-        if self.get_slave(slave_holder):
-            self.detach_slave(slave_holder)
-        self.attach_slave('discount_surcharge_slave', self.discsurcharge_slave)
-
-
-        self.pm_slave = SelectPaymentMethodSlave()
-        self.pm_slave.connect('method-changed', self.on_payment_method_changed)
-        self.attach_slave('select_method_holder', self.pm_slave)
-
-        self.pm_slave.method_set_sensitive('store_credit',
-                                           bool(self.client.read()))
-        self.pm_slave.method_set_sensitive('bill',
-                                           bool(self.client.read()))
-
-        self.cash_change_slave = CashChangeSlave(self.conn, self.model)
-        self.attach_slave('cash_change_holder', self.cash_change_slave)
-
-    def setup_proxies(self):
-        self.setup_widgets()
-        self.proxy = self.add_proxy(self.model,
-                                    _AbstractSalesPersonStep.proxy_widgets)
-        if self.model.client:
-            self.client.set_sensitive(False)
-            self.create_client.set_sensitive(False)
-
-    #
-    # Callbacks
-    #
-
-    def on_client__changed(self, entry):
-        self.pm_slave.method_set_sensitive('store_credit', bool(entry.read()))
-        self.pm_slave.method_set_sensitive('bill', bool(entry.read()))
-
-    def on_create_client__clicked(self, button):
-        self._create_client()
-
-    def on_discsurcharge_slave_changed(self, slave):
-        self._update_totals()
-
-    def on_notes_button__clicked(self, *args):
-        run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
-                   title=_("Additional Information"))
-
-class SalesPersonStep(_AbstractSalesPersonStep):
-    """A wizard step used when confirming a sale order """
 
     @argcheck(PaymentMethod)
     def _update_next_step(self, method):
@@ -261,34 +140,40 @@ class SalesPersonStep(_AbstractSalesPersonStep):
             self.wizard.disable_finish()
             self.cash_change_slave.disable_cash_change()
 
+    def _get_total_amount(self):
+        if isinstance(self.model, Sale):
+            return self.model.get_total_sale_amount()
+        elif isinstance(self.model, PaymentRenegotiation):
+            return self.model.total
+        else:
+            raise TypeError
+
     #
-    # AbstractSalesPersonStep hooks
+    #   Public API
     #
 
-    def update_discount_and_surcharge(self):
-        # Here we need avoid to reset sale data defined when creating the
-        # Sale in the POS application, i.e, we should not reset the
-        # discount and surcharge if they are already set (this is the
-        # case when CONFIRM_SALES_ON_TILL parameter is enabled).
-        if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
-            self.model.discount_value = currency(0)
-            self.model.surcharge_value = currency(0)
+    def get_selected_method(self):
+        return self.pm_slave.get_selected_method()
 
-    def on_payment_method_changed(self, slave, method_name):
-        self._update_next_step(method_name)
+    def setup_cash_payment(self, total=None):
+        money_method = PaymentMethod.get_by_name(self.conn, 'money')
+        total = total or self._get_total_amount()
+        return money_method.create_inpayment(self.model.group, total)
 
     #
     # WizardStep hooks
     #
 
-    def post_init(self):
-        self.wizard.payment_group.clear_unused()
-        self.register_validate_function(self.wizard.refresh_next)
-        self._update_next_step(self._get_selected_payment_method())
-        self.force_validation()
+    def setup_slaves(self):
+        self.pm_slave = SelectPaymentMethodSlave()
+        self.pm_slave.connect('method-changed', self.on_payment_method_changed)
+        self.attach_slave('select_method_holder', self.pm_slave)
 
-    def on_next_step(self):
-        selected_method = self._get_selected_payment_method()
+        self.cash_change_slave = CashChangeSlave(self.conn, self.model)
+        self.attach_slave('cash_change_holder', self.cash_change_slave)
+
+    def next_step(self):
+        selected_method = self.get_selected_method()
         if selected_method.method_name == 'money':
             if not self.cash_change_slave.can_finish():
                 warning(_(u"Invalid value, please verify if it was "
@@ -297,7 +182,7 @@ class SalesPersonStep(_AbstractSalesPersonStep):
 
             # We have to modify the payment, so the fiscal printer can
             # calculate and print the payback, if necessary.
-            payment = self.wizard.setup_cash_payment().get_adapted()
+            payment = self.setup_cash_payment().get_adapted()
             total = self.cash_change_slave.get_received_value()
             payment.base_value = total
 
@@ -307,7 +192,7 @@ class SalesPersonStep(_AbstractSalesPersonStep):
         elif selected_method.method_name == 'store_credit':
             client = self.client.read()
             credit = client.remaining_store_credit
-            total = self.model.get_total_sale_amount()
+            total = self._get_total_amount()
 
             if credit < total:
                 warning(_(u"Client %s does not have enought credit left.") % \
@@ -331,16 +216,145 @@ class SalesPersonStep(_AbstractSalesPersonStep):
         # returning self to stay on this step
         return self
 
+    #
+    #   Callbacks
+    #
+
+    def on_payment_method_changed(self, slave, method_name):
+        self._update_next_step(method_name)
+
+
+class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
+    """ An abstract step which allows to define a salesperson, the sale's
+    discount and surcharge, when it is needed.
+    """
+    gladefile = 'SalesPersonStep'
+    model_type = Sale
+    proxy_widgets = ('total_lbl',
+                     'subtotal_lbl',
+                     'salesperson_combo',
+                     'client')
+
+    def __init__(self, wizard, conn, model, payment_group):
+        self.payment_group = payment_group
+        WizardEditorStep.__init__(self, conn, wizard, model)
+        BaseMethodSelectionStep.__init__(self)
+        self.update_discount_and_surcharge()
+
+    #
+    # Private API
+    #
+
+    def _update_totals(self):
+        for field_name in ('total_sale_amount', 'sale_subtotal'):
+            self.proxy.update(field_name)
+        self.cash_change_slave.update_total_sale_amount()
+
+    def _fill_clients_combo(self):
+        clients = ClientView.get_active_clients(self.conn)
+        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
+        clients = clients[:max_results]
+        items = [(c.name, c.client) for c in clients]
+        self.client.prefill(sorted(items))
+
+    def _create_client(self):
+        trans = new_transaction()
+        client = run_person_role_dialog(ClientEditor, self, trans, None)
+        if not finish_transaction(trans, client):
+            return
+        if len(self.client) == 0:
+            self._fill_clients_combo()
+        else:
+            self.client.append_item(client.person.name, client)
+        self.client.select(client)
+
+    #
+    # Public API
+    #
+
+    def update_discount_and_surcharge(self):
+        # Here we need avoid to reset sale data defined when creating the
+        # Sale in the POS application, i.e, we should not reset the
+        # discount and surcharge if they are already set (this is the
+        # case when CONFIRM_SALES_ON_TILL parameter is enabled).
+        if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
+            self.model.discount_value = currency(0)
+            self.model.surcharge_value = currency(0)
+
+    def setup_widgets(self):
+        salespersons = Person.iselect(ISalesPerson, connection=self.conn)
+        items = [(s.person.name, s) for s in salespersons]
+        self.salesperson_combo.prefill(items)
+        if not sysparam(self.conn).ACCEPT_CHANGE_SALESPERSON:
+            self.salesperson_combo.set_sensitive(False)
+        else:
+            self.salesperson_combo.grab_focus()
+        self._fill_clients_combo()
+
+
+    #
+    # WizardStep hooks
+    #
+
+    def post_init(self):
+        self.wizard.payment_group.clear_unused()
+        self.register_validate_function(self.wizard.refresh_next)
+        self._update_next_step(self.get_selected_method())
+        self.force_validation()
+
+    def setup_slaves(self):
+        BaseMethodSelectionStep.setup_slaves(self)
+        self.pm_slave.method_set_sensitive('store_credit',
+                                           bool(self.client.read()))
+        self.pm_slave.method_set_sensitive('bill',
+                                           bool(self.client.read()))
+
+        self.discsurcharge_slave = DiscountSurchargeSlave(self.conn, self.model,
+                                                          self.model_type)
+        self.discsurcharge_slave.connect('discount-changed',
+                                         self.on_discsurcharge_slave_changed)
+        slave_holder = 'discount_surcharge_slave'
+        if self.get_slave(slave_holder):
+            self.detach_slave(slave_holder)
+        self.attach_slave(slave_holder, self.discsurcharge_slave)
+
+    def setup_proxies(self):
+        self.setup_widgets()
+        self.proxy = self.add_proxy(self.model,
+                                    SalesPersonStep.proxy_widgets)
+        if self.model.client:
+            self.client.set_sensitive(False)
+            self.create_client.set_sensitive(False)
+
+    #
+    # Callbacks
+    #
+
+    def on_client__changed(self, entry):
+        self.pm_slave.method_set_sensitive('store_credit', bool(entry.read()))
+        self.pm_slave.method_set_sensitive('bill', bool(entry.read()))
+
+    def on_create_client__clicked(self, button):
+        self._create_client()
+
+    def on_discsurcharge_slave_changed(self, slave):
+        self._update_totals()
+
+    def on_notes_button__clicked(self, *args):
+        run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
+                   title=_("Additional Information"))
 
 #
 # Wizards for sales
 #
 
-class _AbstractSaleWizard(BaseWizard):
-    """An abstract wizard for sale orders"""
+class ConfirmSaleWizard(BaseWizard):
+    """A wizard used when confirming a sale order. It means generate
+    payments, fiscal data and update stock
+    """
     size = (600, 400)
-    first_step = None
-    title = None
+    first_step = SalesPersonStep
+    title = _("Sale Checkout")
 
     def __init__(self, conn, model):
         self._check_payment_group(model, conn)
@@ -350,35 +364,6 @@ class _AbstractSaleWizard(BaseWizard):
         first_step = self.first_step(self, conn, model, self.payment_group)
         BaseWizard.__init__(self, conn, first_step, model)
 
-    def _check_payment_group(self, model, conn):
-        if not isinstance(model, Sale):
-            raise StoqlibError("Invalid datatype for model, it should be "
-                               "of type Sale, got %s instead" % model)
-        self.payment_group = model.group
-
-    #
-    # Public API
-    #
-
-    def setup_cash_payment(self, total=None):
-        money_method = PaymentMethod.get_by_name(self.conn, 'money')
-        total = total or self.model.get_total_sale_amount()
-        return money_method.create_inpayment(self.payment_group, total)
-
-
-class ConfirmSaleWizard(_AbstractSaleWizard):
-    """A wizard used when confirming a sale order. It means generate
-    payments, fiscal data and update stock
-    """
-    first_step = SalesPersonStep
-    title = _("Sale Checkout")
-
-    #
-    # BaseWizard hooks
-    #
-
-    def __init__(self, conn, model):
-        _AbstractSaleWizard.__init__(self, conn, model)
         register_payment_operations()
         if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
             # This was added to allow us to work even if an error
@@ -387,6 +372,18 @@ class ConfirmSaleWizard(_AbstractSaleWizard):
             # POS interface
             if self.model.can_order():
                 self.model.order()
+
+
+    def _check_payment_group(self, model, conn):
+        if not isinstance(model, Sale):
+            raise StoqlibError("Invalid datatype for model, it should be "
+                               "of type Sale, got %s instead" % model)
+        self.payment_group = model.group
+
+
+    #
+    # BaseWizard hooks
+    #
 
     def finish(self):
         self.retval = True

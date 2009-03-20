@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
-    <widget class="GtkWindow" id="SaleDetailsDialog">
+    <widget class="GtkWindow" id="RenegotiationDetailsDialog">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
         <child>
@@ -18,7 +18,7 @@
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkLabel" id="label9">
-                                <property name="label" context="yes" translatable="yes">&lt;b&gt;Sale Number:&lt;/b&gt;</property>
+                                <property name="label" context="yes" translatable="yes">&lt;b&gt;Renegotiation Number:&lt;/b&gt;</property>
                                 <property name="use_markup">True</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
@@ -43,7 +43,7 @@
                         </child>
                         <child>
                             <widget class="GtkLabel" id="label2">
-                                <property name="label" context="yes" translatable="yes">Salesperson:</property>
+                                <property name="label" context="yes" translatable="yes">Responsible:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
                             </widget>
@@ -53,9 +53,9 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyLabel" id="order_number">
-                                <property name="data_type">unicode</property>
-                                <property name="model_attribute">order_number_str</property>
+                            <widget class="ProxyLabel" id="id">
+                                <property name="data_type">int</property>
+                                <property name="model_attribute">id</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
                             </widget>
@@ -81,9 +81,9 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyLabel" id="salesperson_lbl">
+                            <widget class="ProxyLabel" id="responsible_name">
                                 <property name="data_type">unicode</property>
-                                <property name="model_attribute">salesperson_name</property>
+                                <property name="model_attribute">responsible_name</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
                             </widget>
@@ -496,18 +496,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkAlignment" id="alignment1">
-                        <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
-                        <property name="xscale">0.0</property>
-                        <child>
-                            <widget class="GtkButton" id="print_button">
-                                <property name="label">gtk-print</property>
-                                <property name="use_stock">True</property>
-                                <property name="visible">True</property>
-                            </widget>
-                        </child>
-                    </widget>
+                    <placeholder/>
                     <packing>
                         <property name="expand">False</property>
                         <property name="position">2</property>

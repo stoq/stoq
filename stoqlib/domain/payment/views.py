@@ -37,6 +37,7 @@ from stoqlib.domain.payment.method import CheckData, PaymentMethod
 from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
                                             PaymentAdaptToOutPayment,
                                             PaymentChangeHistory)
+from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale, SaleView
@@ -59,7 +60,10 @@ class InPaymentView(Viewable):
         color=PaymentCategory.q.color,
         payment_number=Payment.q.payment_number,
         person_id=Person.q.id,
-        method_name=PaymentMethod.q.method_name
+        group_id=Payment.q.groupID,
+        method_name=PaymentMethod.q.method_name,
+        renegotiation_id=PaymentRenegotiation.q.id,
+        renegotiated_id=PaymentGroup.q.renegotiationID,
         )
 
     joins = [
@@ -71,6 +75,8 @@ class InPaymentView(Viewable):
                     PaymentGroup.q.payerID == Person.q.id),
         LEFTJOINOn(None, Sale,
                    Sale.q.groupID == PaymentGroup.q.id),
+        LEFTJOINOn(None, PaymentRenegotiation,
+                   PaymentRenegotiation.q.groupID == PaymentGroup.q.id),
         LEFTJOINOn(None, PaymentCategory,
                    PaymentCategory.q.id == Payment.q.categoryID),
         INNERJOINOn(None, PaymentMethod,
@@ -96,6 +102,25 @@ class InPaymentView(Viewable):
     @property
     def payment(self):
         return Payment.get(self.id, connection=self.get_connection())
+
+    @property
+    def group(self):
+        return PaymentGroup.get(self.group_id, connection=self.get_connection())
+
+    @property
+    def renegotiation(self):
+        if self.renegotiation_id:
+            return PaymentRenegotiation.get(self.renegotiation_id,
+                                            connection=self.get_connection())
+
+    @property
+    def renegotiated(self):
+        if self.renegotiated_id:
+            return PaymentRenegotiation.get(self.renegotiated_id,
+                                            connection=self.get_connection())
+
+    def get_parent(self):
+        return self.sale or self.renegotiation
 
 
 class OutPaymentView(Viewable):

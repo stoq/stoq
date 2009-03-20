@@ -268,7 +268,8 @@ class Sale(ValidatableDomain):
      STATUS_CANCELLED,
      STATUS_ORDERED,
      STATUS_RETURNED,
-     STATUS_QUOTE) = range(7)
+     STATUS_QUOTE,
+     STATUS_RENEGOTIATED) = range(8)
 
     statuses = {STATUS_INITIAL:     _(u"Opened"),
                 STATUS_CONFIRMED:   _(u"Confirmed"),
@@ -276,6 +277,7 @@ class Sale(ValidatableDomain):
                 STATUS_CANCELLED:   _(u"Cancelled"),
                 STATUS_ORDERED:     _(u"Ordered"),
                 STATUS_RETURNED:    _(u"Returned"),
+                STATUS_RENEGOTIATED: _(u"Renegotiated"),
                 STATUS_QUOTE:       _(u"Quoting"),}
 
     status = IntCol(default=STATUS_INITIAL)
@@ -365,6 +367,16 @@ class Sale(ValidatableDomain):
         """
         return self.status == Sale.STATUS_CONFIRMED
 
+    def can_set_renegotiated(self):
+        """Only sales with status confirmed can be renegotiated.
+        @returns: True if the sale can be renegotiated, False otherwise.
+        """
+        # This should be as simple as:
+        # return self.status == Sale.STATUS_CONFIRMED
+        # But due to bug 3890 we have to check every payment.
+        return any([payment.status == Payment.STATUS_PENDING
+                    for payment in self.payments])
+
     def can_cancel(self):
         """Only ordered, confirmed and paid sales can be cancelled.
         @returns: True if the sale can be cancelled, otherwise False
@@ -444,6 +456,14 @@ class Sale(ValidatableDomain):
 
         self.close_date = const.NOW()
         self.status = Sale.STATUS_PAID
+
+    def set_renegotiated(self):
+        """Set the sale as renegotiated. The sale payments have been
+        renegotiated and the operations will be done in other payment group."""
+        assert self.can_set_renegotiated()
+
+        self.close_date = const.NOW()
+        self.status = Sale.STATUS_RENEGOTIATED
 
     def cancel(self):
         """Cancel the sale

@@ -48,7 +48,9 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import (CheckData, PaymentMethod,
                                            CreditCardData)
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.person import PersonAdaptToCreditProvider
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.drivers.cheque import get_current_cheque_printer_settings
 from stoqlib.enums import CreatePaymentStatus
@@ -445,22 +447,26 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                         connection=self.conn):
             yield self.method_iface(payment, None)
 
-    def _is_sale(self):
-        """Returns if our order object is a Sale instance"""
-        return isinstance(self.order, Sale)
-
     def _get_total_amount(self):
         """Returns the order total amount """
-        if self._is_sale():
+        if isinstance(self.order, Sale):
             return self.order.get_total_sale_amount()
-        # else self.order is purchase order object
-        return self.order.get_purchase_total()
+        elif isinstance(self.order, PurchaseOrder):
+            return self.order.get_purchase_total()
+        elif isinstance(self.order, PaymentRenegotiation):
+            return self.order.total
+        else:
+            raise TypeError
 
     def _get_payment_method_iface(self):
-        if self._is_sale():
+        if isinstance(self.order, Sale):
+            return IInPayment
+        elif isinstance(self.order, PurchaseOrder):
+            return IOutPayment
+        elif isinstance(self.order, PaymentRenegotiation):
             return IInPayment
         else:
-            return IOutPayment
+            raise TypeError
 
     #
     # General methods
@@ -754,12 +760,12 @@ class CardMethodSlave(BaseEditorSlave):
 
     def __init__(self, wizard, parent, conn, sale_obj, payment_method,
                  outstanding_value=currency(0)):
-        self.sale = sale_obj
+        self.model = sale_obj
         self.wizard = wizard
         self.method = payment_method
-        self._payment_group = self.sale.group
+        self._payment_group = self.model.group
         self.total_value = (outstanding_value or
-                            self.sale.get_total_sale_amount())
+                            self._get_total_amount())
         self.providers = self._get_credit_providers()
         self._selected_type = CreditCardData.TYPE_CREDIT
         BaseEditorSlave.__init__(self, conn)
@@ -801,6 +807,14 @@ class CardMethodSlave(BaseEditorSlave):
             provider=None)
 
     # Private
+
+    def _get_total_amount(self):
+        if isinstance(self.model, Sale):
+            return self.model.get_total_sale_amount()
+        elif isinstance(self.model, PaymentRenegotiation):
+            return self.model.total
+        else:
+            raise TypeError
 
     def _setup_widgets(self):
         provider_items = [(p.short_name, p) for p in self.providers]
@@ -929,7 +943,7 @@ class _MultipleMethodEditor(BaseEditor):
 class MultipleMethodSlave(BaseEditorSlave):
     """A base payment method slave for multiple payments."""
     gladefile = 'MultipleMethodSlave'
-    model_type = Sale
+    model_type = object
 
     def __init__(self, wizard, parent, conn, sale_obj, payment_method,
                  outstanding_value=currency(0)):
@@ -968,6 +982,14 @@ class MultipleMethodSlave(BaseEditorSlave):
     # Private
     #
 
+    def _get_total_amount(self):
+        if isinstance(self.model, Sale):
+            return self.model.get_total_sale_amount()
+        elif isinstance(self.model, PaymentRenegotiation):
+            return self.model.total
+        else:
+            raise TypeError
+
     def _setup_widgets(self):
         self.cash_radio.connect('toggled', self._on_method__toggled)
         self.cash_radio.set_data('method', self._method)
@@ -979,11 +1001,11 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.total_value.set_bold(True)
         self.received_value.set_bold(True)
         self.missing_value.set_bold(True)
-        self.total_value.update(self.model.get_total_sale_amount())
+        self.total_value.update(self._get_total_amount())
         self._update_values()
 
     def _update_values(self):
-        total = self.model.get_total_sale_amount()
+        total = self._get_total_amount()
         payments = self.model.group.get_items()
         total_payments = payments.sum('base_value') or Decimal(0)
         self._outstanding_value = total - total_payments
@@ -1100,9 +1122,8 @@ class MultipleMethodSlave(BaseEditorSlave):
         npayments = payments.count()
 
         for i, payment in enumerate(payments.orderBy('id')):
-            method_description = payment.method.description
-            description = _(u'%d/%d - %s for sale %05d') % (
-                            i+1, npayments, method_description, self.model.id)
+            description = payment.method.describe_payment(payment_group, i+1,
+                                                          npayments)
             payment.description = description
             self.payments.append(payment)
 
