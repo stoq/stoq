@@ -34,11 +34,12 @@ from kiwi.environ import environ
 from kiwi.ui.search import SearchSlaveDelegate
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_user, new_transaction,
-                                      get_connection)
+                                      finish_transaction, get_connection)
 from stoqlib.lib.interfaces import ICookieFile
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
+from stoqlib.gui.slaves.userslave import PasswordEditor
 
 import stoq
 
@@ -99,6 +100,12 @@ class AppWindow(BaseAppWindow):
         get_utility(ICookieFile).clear()
         if hasattr(self, 'user_menu'):
             self._reset_user_menu()
+
+    def _change_password(self):
+        trans = new_transaction()
+        user = get_current_user(trans)
+        retval = self.run_dialog(PasswordEditor, trans, user)
+        finish_transaction(trans, retval)
 
     def _reset_user_menu(self):
         assert self.user_menu
@@ -161,6 +168,7 @@ class AppWindow(BaseAppWindow):
             <menu action="UserMenu">
               <menuitem action="StoreCookie"/>
               <menuitem action="ClearCookie"/>
+              <menuitem action="ChangePassword"/>
               <separator/>
               <menuitem action="ChangeUser"/>
               <menuitem action="ChangeApplication"/>
@@ -173,6 +181,9 @@ class AppWindow(BaseAppWindow):
              _('Store a cookie'), self.on_StoreCookie__activate),
             ('ClearCookie',     gtk.STOCK_CLEAR, _('_Clear'), '<control>e',
              _('Clear the cookie'), self.on_ClearCookie__activate),
+            ('ChangePassword', gtk.STOCK_REFRESH, _('Chan_ge Password'),
+              '<control>g', _('Change the password'),
+              self.on_ChangePassword__activate),
             ('ChangeUser',    gtk.STOCK_REFRESH, _('C_hange User'), '<control>h',
              _('Change user'), self.on_ChangeUser__activate),
             ('ChangeApplication',    gtk.STOCK_REFRESH, _('Change Application'),
@@ -242,6 +253,9 @@ class AppWindow(BaseAppWindow):
 
     def on_ClearCookie__activate(self, action):
         self._clear_cookie()
+
+    def on_ChangePassword__activate(self, action):
+        self._change_password()
 
     def on_ChangeUser__activate(self, action):
         self.app.runner.relogin()
