@@ -106,6 +106,8 @@ class PurchaseOrderReport(BaseStoqReport):
                                 landscape=True)
         self._setup_order_details_table()
         self.add_blank_space(10)
+        self._setup_payment_group_data()
+        self.add_blank_space(10)
         self._setup_items_table()
 
     def _get_items_table_columns(self):
@@ -166,13 +168,30 @@ class PurchaseOrderReport(BaseStoqReport):
         return freight_line
 
     def _setup_payment_group_data(self):
-        installments_number = self._order.payments.count()
+        payments = self._order.payments
+        installments_number = payments.count()
         if installments_number > 1:
-            msg = (_("Paid in %d installments")
+            msg = (_("Payments: %d installments")
                    % (installments_number,))
         else:
-            msg = _("Paid in 1 installment")
-        self.add_paragraph(msg, style="Normal-Bold")
+            msg = _("Payments: 1 installment")
+        self.add_paragraph(msg, style="Title")
+        self._add_payment_table(payments)
+
+    def _add_payment_table(self, payments):
+        payment_columns = [OTC(_("#"), lambda obj: obj.id, width=40,
+                               align=RIGHT),
+                           OTC(_("Method"), lambda obj:
+                               obj.method.get_description(), width=70),
+                           OTC(_("Description"), lambda obj: obj.description,
+                               expand=True),
+                           OTC(_("Due date"), lambda obj:
+                               obj.due_date.strftime("%x"), width=140),
+                           OTC(_("Value"), lambda obj:
+                               get_formatted_price(obj.value), width=100,
+                               align=RIGHT)]
+
+        self.add_object_table(list(payments), payment_columns)
 
     def _setup_order_details_table(self):
         cols = [TC("", width=100), TC("", width=285, expand=True,
@@ -193,8 +212,6 @@ class PurchaseOrderReport(BaseStoqReport):
         else:
             expected_date = _("Not Specified")
         self.add_paragraph(_("Expected Receival Date: %s") % expected_date)
-        self.add_blank_space(5)
-        self._setup_payment_group_data()
 
     def _setup_items_table(self):
         items = self._order.get_items()
