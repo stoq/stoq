@@ -35,6 +35,7 @@ from trml2pdf.trml2pdf import parseString
 
 from stoqlib.database.runtime import (new_transaction,
                                 get_current_branch, get_connection)
+from stoqlib.domain.interfaces import ICompany
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -121,7 +122,21 @@ class BaseStoqReport(ReportTemplate):
             fax_str = _("Fax: %s") % format_phone_number(person.fax_number)
             contact_string += " - %s" % fax_str
 
-        for text in (address_string1, address_string2, contact_string):
+        company = ICompany(person, None)
+        company_details_string = ''
+        if company is not None:
+            if company.get_cnpj_number():
+                company_details_string = (_("CNPJ: %s") % company.cnpj)
+            if company.get_state_registry_number():
+                state_registry_string =  (_("State Registry: %s" %
+                                            company.state_registry,))
+                if company_details_string:
+                    company_details_string += ' - %s' % state_registry_string
+                else:
+                    company_details_string = state_registry_string
+
+        for text in (address_string1, address_string2, contact_string,
+                     company_details_string):
             text_y -= TEXT_HEIGHT
             canvas.drawString(text_x, text_y, text)
         canvas.restoreState()
