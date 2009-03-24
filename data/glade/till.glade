@@ -25,6 +25,14 @@
                         <property name="accelerator">&lt;Control&gt;h</property>
                     </widget>
                 </child>
+              <child>
+                    <widget class="GtkAction" id="ChangePassword">
+                        <property name="name">ChangePassword</property>
+                        <property name="label" translatable="yes">Chan_ge Password</property>
+                        <signal handler="_change_password" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;g</property>
+                    </widget>
+                </child>
                 <child>
                     <widget class="GtkAction" id="ClearCookie">
                         <property name="name">ClearCookie</property>
