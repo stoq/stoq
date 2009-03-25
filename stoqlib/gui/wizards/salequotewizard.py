@@ -25,6 +25,7 @@
 """ Sale quote wizard"""
 
 from decimal import Decimal
+import datetime
 
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
@@ -60,7 +61,7 @@ _ = stoqlib_gettext
 class StartSaleQuoteStep(WizardEditorStep):
     gladefile = 'SalesPersonStep'
     model_type = Sale
-    proxy_widgets = ('client', 'salesperson_combo')
+    proxy_widgets = ('client', 'salesperson_combo', 'expire_date')
 
     def _setup_widgets(self):
         # Hide total and subtotal
@@ -117,6 +118,10 @@ class StartSaleQuoteStep(WizardEditorStep):
             self.client.append_item(client.person.name, client)
         self.client.select(client)
 
+    def on_expire_date__validate(self, widget, value):
+        if value < datetime.date.today():
+            msg = _(u"The expire date must be set to today or a future date.")
+            return ValidationError(msg)
 
     def on_notes_button__clicked(self, *args):
         run_dialog(NoteEditor, self.wizard, self.conn, self.model, 'notes',

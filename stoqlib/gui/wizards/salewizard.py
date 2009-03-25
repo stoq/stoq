@@ -282,6 +282,10 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.model.surcharge_value = currency(0)
 
     def setup_widgets(self):
+        # Only quotes have expire date.
+        self.expire_date.hide()
+        self.expire_label.hide()
+
         salespersons = Person.iselect(ISalesPerson, connection=self.conn)
         items = [(s.person.name, s) for s in salespersons]
         self.salesperson_combo.prefill(items)
