@@ -379,11 +379,11 @@ class Sale(ValidatableDomain):
                     for payment in self.payments])
 
     def can_cancel(self):
-        """Only ordered, confirmed and paid sales can be cancelled.
+        """Only ordered, confirmed, paid and quoting sales can be cancelled.
         @returns: True if the sale can be cancelled, otherwise False
         """
         return self.status in (Sale.STATUS_CONFIRMED, Sale.STATUS_PAID,
-                               Sale.STATUS_ORDERED)
+                               Sale.STATUS_ORDERED, Sale.STATUS_QUOTE)
 
     def can_return(self):
         """Only confirmed or paid sales can be returned
@@ -472,8 +472,9 @@ class Sale(ValidatableDomain):
         """
         assert self.can_cancel()
 
-        # ordered sale items did not change the stock of such items
-        if self.status != Sale.STATUS_ORDERED:
+        # ordered and quote sale items did not change the stock of such items
+        if (self.status != Sale.STATUS_ORDERED and
+            self.status != Sale.STATUS_QUOTE):
             branch = get_current_branch(self.get_connection())
             for item in self.get_items():
                 item.cancel(branch)

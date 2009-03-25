@@ -448,6 +448,9 @@ class TestSale(DomainTest):
         sale.order()
         self.failUnless(sale.can_cancel())
 
+        sale.status = Sale.STATUS_QUOTE
+        self.failUnless(sale.can_cancel())
+
         self.add_payments(sale)
         sale.confirm()
         self.failUnless(sale.can_cancel())
@@ -511,6 +514,17 @@ class TestSale(DomainTest):
 
         final_quantity = storable.get_full_balance()
         self.assertEquals(initial_quantity, final_quantity)
+
+    def testCancelQuote(self):
+        sale = self.create_sale()
+        sellable = self.add_product(sale)
+        storable = IStorable(sellable.product)
+        inital_quantity = storable.get_full_balance()
+        sale.status = Sale.STATUS_QUOTE
+        sale.cancel()
+        self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
+        final_quantity = storable.get_full_balance()
+        self.assertEquals(inital_quantity, final_quantity)
 
     def testCanSetRenegotiated(self):
         sale = self.create_sale()
