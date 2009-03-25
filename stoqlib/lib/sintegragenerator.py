@@ -259,7 +259,7 @@ class StoqlibSintegraGenerator(object):
             tax_value = sellable.tax_constant.tax_value or 0
             self.sintegra.add_products_summarized(
                 date=int(date),
-                product_code=sellable.get_code(),
+                product_code=sellable.code,
                 product_quantity=quantity,
                 total_liquido_produto=cost,
                 total_icms_base=cost,
@@ -289,7 +289,7 @@ class StoqlibSintegraGenerator(object):
                 receiving_order.get_cfop_code(),
                 '000',
                 i+1,
-                item.sellable.get_code(),
+                item.sellable.code,
                 item.quantity,
                 item_total,
                 receiving_order.discount_value / no_items,
@@ -319,7 +319,7 @@ class StoqlibSintegraGenerator(object):
         if sellable.unit:
             unit = str(sellable.unit.description or 'un')
         self.sintegra.add_product(self.start,
-                                  self.end, sellable.get_code(),
+                                  self.end, sellable.code,
                                   0, sellable.get_description(),
                                   unit,
                                   0, 0, 0, 0)
@@ -336,7 +336,7 @@ class StoqlibSintegraGenerator(object):
 
             self.sintegra.add_inventory_item(
                 inventory.close_date,
-                product_code=sellable.get_code(),
+                product_code=sellable.code,
                 product_quantity=item.actual_quantity,
                 total_product_value=total_product_value,
                 # we are assuming that the main company owns all the products
