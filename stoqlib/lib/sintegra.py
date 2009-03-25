@@ -148,7 +148,8 @@ class SintegraFile(object):
                                 total_liquido_produto,
                                 total_icms_base,
                                 icms_aliquota):
-        product_code = "%014d" % (product_code)
+        code = "%014s" % product_code
+        product_code = code.replace(' ', '0')
         icms_aliquota = '%04d' % (icms_aliquota)
         if icms_aliquota == '0000':
             icms_aliquota = "I"
@@ -187,7 +188,8 @@ class SintegraFile(object):
         if product_code is None:
             product_code = " " * 14
         else:
-            product_code = '%014d' % (product_code,)
+            code = '%014s' % (product_code,)
+            product_code = code.replace(' ', '0')
         if cst is None:
             cst = ' ' * 3
         self.add(SintegraRegister54(cnpj, modelo, serial, numero, cfop_int,
@@ -204,7 +206,8 @@ class SintegraFile(object):
                            total_product_value, owner_code, owner_cnpj,
                            owner_state_registry, state):
         inventory_date = int(start.strftime("%Y%m%d"))
-        product_code = '%014d' % (int(product_code))
+        code = '%014s' % product_code
+        product_code = code.replace(' ', '0')
         blank = ' ' * 45
         # When the actual company owns the products, the owner_cnpj and
         # owner_state_registry fields must be filled with pre-defined values.

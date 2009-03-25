@@ -56,8 +56,8 @@ class TestSintegraGenerator(DomainTest):
         order.set_valid()
         order.confirm()
 
-        sellable.get_code = lambda : 9999
-        sellable2.get_code = lambda : 10000
+        sellable.code = '9999'
+        sellable2.code = '10000'
 
         sale = self.create_sale()
         sale.open_date = datetime.date(2007, 6, 10)
@@ -85,7 +85,7 @@ class TestSintegraGenerator(DomainTest):
         sale.set_paid()
         sale.close_date = datetime.date(2007, 6, 10)
         sale.confirm_date = datetime.date(2007, 6, 10)
-        sellable3.get_code = lambda : 9999
+        sellable3.code = '09999'
 
         inventory = Inventory(branch=branch, connection=self.trans)
         inventory.open_date = datetime.date(2007, 6, 15)

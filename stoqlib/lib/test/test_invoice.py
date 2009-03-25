@@ -90,8 +90,7 @@ class InvoiceTest(DomainTest):
         invoice.today = datetime.datetime(2007, 1, 1, 10, 20, 30)
 
         for n, sale_item in enumerate(sale.products.orderBy('price')):
-            # Ugly, look away
-            sale_item.sellable.get_code = lambda n=n : 1000 + n
+            sale_item.sellable.code = '100' + str(n)
             sale_item.sellable.base_sellable_info.get_description = \
                  lambda : 'DESCRIPTION'
         compare_invoice_file(invoice, 'sale-invoice')
