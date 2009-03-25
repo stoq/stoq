@@ -190,6 +190,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="cancel_menu">
+                        <property name="name">cancel_menu</property>
+                        <property name="label" translatable="yes">Cancel Quote</property>
+                        <property name="accelerator">&lt;Control&gt;c</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="about_menu">
                         <property name="name">about_menu</property>
                         <property name="label" translatable="yes">About</property>
@@ -233,6 +240,7 @@
 	  <menubar action="menubar">
 	    <menu action="TillMenu">
 	      <menuitem action="quote_menu"/>
+	      <menuitem action="cancel_menu"/>
 	      <separator/>
 	      <menuitem action="print_invoice"/>
 	      <separator/>

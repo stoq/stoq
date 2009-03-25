@@ -131,11 +131,17 @@ class SalesApp(SearchableAppWindow):
         if Inventory.has_open(self.conn, get_current_branch(self.conn)):
             show_inventory_process_message()
 
+    def _can_cancel(self, view):
+        # Here we want to cancel only quoting sales. This is why we don't use
+        # Sale.can_cancel here.
+        return bool(view and view.status == Sale.STATUS_QUOTE)
+
     def _update_toolbar(self, *args):
         sale_view = self._klist.get_selected()
         can_print_invoice = bool(sale_view and
                                  sale_view.client_name is not None)
         self.print_invoice.set_sensitive(can_print_invoice)
+        self.cancel_menu.set_sensitive(self._can_cancel(sale_view))
 
         if Inventory.has_open(self.conn, get_current_branch(self.conn)):
             can_return = False
@@ -225,4 +231,12 @@ class SalesApp(SearchableAppWindow):
         trans.close()
 
         return model
+
+    def on_cancel_menu__activate(self, action):
+        trans = new_transaction()
+        sale_view = self._klist.get_selected()
+        sale = trans.get(sale_view.sale)
+        sale.cancel()
+        finish_transaction(trans, True)
+        self.search.refresh()
 
