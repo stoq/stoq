@@ -152,7 +152,12 @@ class TillApp(SearchableAppWindow):
         rollback_and_begin(self.conn)
         selected = self.results.get_selected()
         sale = Sale.get(selected.id, connection=self.conn)
-        title = _('Confirm Sale')
+
+        if (sale.status == Sale.STATUS_QUOTE and
+            sale.expire_date.date() < date.today() and
+            not yesno(_(u"This quote has expired. Confirm it anyway?"),
+                      gtk.RESPONSE_YES, _(u"Yes"), _(u"No"))):
+            return
 
         # Lets confirm that we can create the sale, before opening the coupon
         prod_sold = dict()
