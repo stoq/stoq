@@ -289,6 +289,7 @@ class Sale(ValidatableDomain):
     close_date = DateTimeCol(default=None)
     cancel_date = DateTimeCol(default=None)
     return_date = DateTimeCol(default=None)
+    expire_date = DateTimeCol(default=None)
     discount_value = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     total_amount = PriceCol(default=0)

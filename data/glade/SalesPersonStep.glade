@@ -1,9 +1,6 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
-    <widget class="GtkSizeGroup" id="sizegroup1">
-        <property name="mode">horizontal</property>
-    </widget>
     <widget class="GtkWindow" id="SalesPersonStep">
         <property name="border_width">6</property>
         <property name="default_height">250</property>
@@ -14,51 +11,45 @@
                 <property name="spacing">6</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="GtkHBox" id="hbox1">
-                        <property name="spacing">6</property>
+                    <widget class="GtkTable" id="table2">
+                        <property name="column_spacing">5</property>
+                        <property name="n_columns">5</property>
+                        <property name="n_rows">2</property>
+                        <property name="row_spacing">5</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="ProxyLabel" id="kiwilabel1">
                                 <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Salesperson:</property>
                                 <property name="model_attribute">kiwilabel1</property>
-                                <property name="sizegroup">sizegroup1</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="expand">False</property>
+                                <property name="x_options">fill</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label1">
+                                <property name="label" context="yes" translatable="yes">Client:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="top_attach">1</property>
+                                <property name="x_options">fill</property>
                             </packing>
                         </child>
                         <child>
                             <widget class="ProxyComboEntry" id="salesperson_combo">
                                 <property name="data_type">object</property>
-                                <property name="model_attribute">salesperson</property>
+                                <property name="model_attribute">salesperson_combo</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
-                                <property name="expand">False</property>
-                                <property name="position">1</property>
-                            </packing>
-                        </child>
-                    </widget>
-                    <packing>
-                        <property name="expand">False</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="GtkHBox" id="hbox3">
-                        <property name="spacing">6</property>
-                        <property name="visible">True</property>
-                        <child>
-                            <widget class="GtkLabel" id="label1">
-                                <property name="label" context="yes" translatable="yes">Client:</property>
-                                <property name="sizegroup">sizegroup1</property>
-                                <property name="visible">True</property>
-                                <property name="xalign">1.0</property>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
                             </packing>
                         </child>
                         <child>
@@ -68,31 +59,78 @@
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
-                                <property name="expand">False</property>
-                                <property name="position">1</property>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkHButtonBox" id="hbuttonbox2">
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkButton" id="create_client">
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes">Create...</property>
                                 <property name="visible">True</property>
-                                <child>
-                                    <widget class="GtkButton" id="create_client">
-                                        <property name="is_focus">True</property>
-                                        <property name="label" context="yes" translatable="yes">Create...</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                </child>
                             </widget>
                             <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">2</property>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">1</property>
+                                <property name="x_options">fill</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="expire_label">
+                                <property name="label" context="yes" translatable="yes">Expire</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                                <property name="top_attach">1</property>
+                                <property name="x_options">fill</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">4</property>
+                                <property name="right_attach">5</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyDateEntry" id="expire_date">
+                                <property name="data_type">date</property>
+                                <property name="model_attribute">expire_date</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">4</property>
+                                <property name="right_attach">5</property>
+                                <property name="top_attach">1</property>
+                                <property name="x_options">fill</property>
                             </packing>
                         </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>
-                        <property name="position">1</property>
                     </packing>
                 </child>
                 <child>
@@ -101,7 +139,7 @@
                     </widget>
                     <packing>
                         <property name="expand">False</property>
-                        <property name="position">2</property>
+                        <property name="position">1</property>
                     </packing>
                 </child>
                 <child>
@@ -249,7 +287,7 @@
                     </widget>
                     <packing>
                         <property name="expand">False</property>
-                        <property name="position">3</property>
+                        <property name="position">2</property>
                     </packing>
                 </child>
                 <child>
@@ -262,7 +300,7 @@
                     <packing>
                         <property name="expand">False</property>
                         <property name="pack_type">end</property>
-                        <property name="position">4</property>
+                        <property name="position">3</property>
                     </packing>
                 </child>
             </widget>
