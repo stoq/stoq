@@ -94,7 +94,8 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         return self._selected_method
 
     def method_set_sensitive(self, method_name, sensitive):
-        self._options[method_name].set_sensitive(sensitive)
+        if method_name in self._options.keys():
+            self._options[method_name].set_sensitive(sensitive)
 
     #
     # Kiwi callbacks

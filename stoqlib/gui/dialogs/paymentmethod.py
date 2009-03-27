@@ -77,7 +77,6 @@ class PaymentMethodsDialog(BasicDialog):
         return [Column('description', title=_('Payment Method'), data_type=str,
                        expand=True, sorted=True),
                 Column('is_active', title=_('Active'), data_type=bool,
-                       editable_attribute='active_editable',
                        editable=True)]
 
     def _get_dialog(self, method):
@@ -122,8 +121,13 @@ class PaymentMethodsDialog(BasicDialog):
     #
 
     def on_cell_edited(self, klist, obj, attr):
-        conn = obj.get_connection()
-        conn.commit()
+        # All the payment methods could be (de)activate, except the 'money'
+        # payment method.
+        if obj.method_name != 'money':
+            conn = obj.get_connection()
+            conn.commit()
+        else:
+            obj.is_active = True
 
     def _on_klist__selection_changed(self, list, data):
         self._toolbar_slave.edit_button.set_sensitive(data is not None)

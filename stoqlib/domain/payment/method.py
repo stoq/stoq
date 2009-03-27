@@ -140,7 +140,7 @@ class PaymentMethod(Domain):
 
     def activate(self):
         assert not self.is_active, ('This provider is already active')
-        self.active = True
+        self.is_active = True
 
     def get_status_string(self):
         if self.is_active:
