@@ -739,8 +739,8 @@ class F(InvoiceFieldDescription):
 
     def fetch(self):
         for sale_item in self.sale.products:
-            code = '%014s' % sale_item.sellable.code
-            yield code.replace(' ', '0')
+            code = '%05s' % sale_item.sellable.code
+            yield code[-5:]
 
 _add_invoice_field(F)
 
