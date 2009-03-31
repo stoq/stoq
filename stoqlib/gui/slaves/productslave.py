@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,26 +22,73 @@
 ## Author(s):   Henrique Romano      <henrique@async.com.br>
 ##              Lincoln Molica       <lincoln@async.com.br>
 ##              Johan Dahlin         <jdahlin@async.com.br>
+##              George Y. Kussumoto  <george@async.com.br>
 ##
 """ Slaves for products """
 
+from kiwi.datatypes import ValidationError
+
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.product import Product
-from stoqlib.domain.sellable import Sellable
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
 
 
 class ProductInformationSlave(BaseEditorSlave):
     gladefile = 'ProductInformationSlave'
     model_type = Product
     proxy_widgets = ['location', 'part_number', 'manufacturer',]
+    storable_widgets = ['minimum_quantity', 'maximum_quantity',]
 
     def __init__(self, conn, model):
         BaseEditorSlave.__init__(self, conn, model)
+        self._setup_unit_labels()
+
+    def _setup_unit_labels(self):
+        unit = self.model.sellable.unit
+        if unit is None:
+            unit_desc = _(u'Unit(s)')
+        else:
+            unit_desc = unit.description
+
+        for label in [self.min_unit, self.max_unit]:
+            label.set_text(unit_desc)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(
             self.model, ProductInformationSlave.proxy_widgets)
+
+        storable = IStorable(self.model, None)
+        if storable is not None:
+            self.storable_proxy = self.add_proxy(
+                storable, ProductInformationSlave.storable_widgets)
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_minimum_quantity__validate(self, widget, value):
+        if value and value < 0:
+            return ValidationError(_(u'Minimum value must be a positive value.'))
+
+        maximum = self.maximum_quantity.read()
+        if maximum and value > maximum:
+            return ValidationError(_(u'Minimum must be lower than the '
+                                      'maximum value.'))
+
+    def on_maximum_quantity__validate(self, widget, value):
+        if not value:
+            return
+        if value and value < 0:
+            return ValidationError(_(u'Maximum value must be a positive value.'))
+
+        minimum = self.minimum_quantity.read()
+        if minimum and minimum > value:
+            return ValidationError(_(u'Maximum must be greater than the '
+                                      'minimum value.'))
 
 
 class ProductDetailsSlave(SellableDetailsSlave):

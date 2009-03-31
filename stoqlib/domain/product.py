@@ -345,6 +345,9 @@ class ProductStockItem(Domain):
 class ProductAdaptToStorable(ModelAdapter):
     """A product implementation as a storable facet."""
 
+    minimum_quantity = DecimalCol(default=0)
+    maximum_quantity = DecimalCol(default=0)
+
     implements(IStorable, IContainer)
 
     retention = MultipleJoin('ProductRetentionHistory')
