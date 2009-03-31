@@ -31,6 +31,9 @@ instead signals and interfaces for that.
 """
 
 from decimal import Decimal
+from sys import maxint as MAXINT
+
+import gtk
 
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import SummaryLabel
@@ -82,6 +85,7 @@ class SellableItemStep(WizardEditorStep):
     def __init__(self, wizard, previous, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
         self.unit_label.set_bold(True)
+        self.quantity.set_adjustment(gtk.Adjustment(lower=1, upper=MAXINT))
         self._reset_sellable()
 
     # Public API

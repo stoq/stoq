@@ -25,6 +25,9 @@
 
 
 import datetime
+from sys import maxint as MAXINT
+
+import gtk
 
 from kiwi.datatypes import ValidationError
 
@@ -46,14 +49,13 @@ class PurchaseItemEditor(BaseEditor):
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
-        self._setup_widgets()
-
         order = self.model.order
         if order.status == PurchaseOrder.ORDER_CONFIRMED:
             self._set_not_editable()
 
     def _setup_widgets(self):
         self.order.set_text("%04d" %  self.model.order.id)
+        self.quantity.set_adjustment(gtk.Adjustment(lower=1, upper=MAXINT))
         self.description.set_text(self.model.sellable.get_description())
 
     def _set_not_editable(self):
@@ -61,6 +63,7 @@ class PurchaseItemEditor(BaseEditor):
         self.quantity.set_sensitive(False)
 
     def setup_proxies(self):
+        self._setup_widgets()
         self.add_proxy(self.model, PurchaseItemEditor.proxy_widgets)
 
     #
