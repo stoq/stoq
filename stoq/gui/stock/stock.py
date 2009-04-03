@@ -44,7 +44,8 @@ from stoqlib.lib.message import warning
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
-from stoqlib.gui.search.productsearch import ProductSearchQuantity
+from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
+                                              ProductStockSearch)
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
@@ -199,6 +200,9 @@ class StockApp(SearchableAppWindow):
 
     def on_PurchasedItemsSearch__activate(self, action):
         self.run_dialog(PurchasedItemsSearch, self.conn)
+
+    def on_SearchStockItems__activate(self, action):
+        self.run_dialog(ProductStockSearch, self.conn)
 
     def on_retention_button__clicked(self, button):
         sellable_view = self.results.get_selected_rows()[0]
