@@ -25,7 +25,7 @@
 
 
 import datetime
-from sys import maxint as MAXINT
+import sys
 
 import gtk
 
@@ -55,7 +55,8 @@ class PurchaseItemEditor(BaseEditor):
 
     def _setup_widgets(self):
         self.order.set_text("%04d" %  self.model.order.id)
-        self.quantity.set_adjustment(gtk.Adjustment(lower=1, upper=MAXINT))
+        self.quantity.set_adjustment(gtk.Adjustment(lower=1, upper=sys.maxint,
+                                                    step_incr=1))
         self.description.set_text(self.model.sellable.get_description())
 
     def _set_not_editable(self):
