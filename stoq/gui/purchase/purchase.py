@@ -49,7 +49,7 @@ from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
                                                      ReceiveQuoteWizard)
 from stoqlib.gui.search.categorysearch import (SellableCategorySearch,
                                                BaseSellableCatSearch)
-from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.productsearch import ProductSearch, ProductStockSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.reporting.purchase import PurchaseReport
@@ -303,6 +303,9 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_SearchPurchasedItems__activate(self, action):
         self.run_dialog(PurchasedItemsSearch, self.conn)
+
+    def on_SearchStockItems__activate(self, action):
+        self.run_dialog(ProductStockSearch, self.conn)
 
     # FIXME: Kiwi autoconnection OR rename, see #2323
 
