@@ -32,12 +32,13 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter, Today
-from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
 
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
-from stoqlib.domain.views import ProductFullStockView, ProductQuantityView
+from stoqlib.domain.views import (ProductFullStockView, ProductQuantityView,
+                                  ProductFullStockItemView)
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.search import (SearchDialog, SearchEditor,
                                      SearchDialogPrintSlave)
@@ -46,7 +47,7 @@ from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
 from stoqlib.reporting.product import (ProductReport, ProductQuantityReport,
-                                       ProductPriceReport)
+                                       ProductPriceReport, ProductStockReport)
 
 _ = stoqlib_gettext
 
@@ -231,3 +232,45 @@ class ProductSearchQuantity(SearchDialog):
                 Column('quantity_received', title=_('Received'),
                        format_func=format_data,
                        data_type=Decimal)]
+
+
+class ProductStockSearch(SearchDialog):
+    title = _('Product Stock Search')
+    size = (800, 450)
+    table = search_table = ProductFullStockItemView
+    advanced_search = True
+
+    #
+    # SearchDialog Hooks
+    #
+
+    def create_filters(self):
+        self.set_text_field_columns(['description', 'category_description'])
+
+    def on_print_button_clicked(self, widget):
+        print_report(ProductStockReport, list(self.results),
+                     filters=self.search.get_search_filters())
+
+    #
+    # SearchEditor Hooks
+    #
+
+    def get_columns(self):
+        return [SearchColumn('code', title=_('Code'), data_type=str,
+                             width=80),
+                SearchColumn('category_description', title=_('Category'),
+                             data_type=str, width=120),
+                SearchColumn('description', title=_('Description'), data_type=str,
+                             expand=True, sorted=True),
+                SearchColumn('maximum_quantity', title=_('Maximum'),
+                             visible=False, format_func=format_data,
+                             data_type=Decimal),
+                SearchColumn('minimum_quantity', title=_('Minimum'),
+                             format_func=format_data, data_type=Decimal),
+                SearchColumn('stock', title=_('In Stock'),
+                             format_func=format_data, data_type=Decimal),
+                SearchColumn('to_receive_quantity', title=_('To Receive'),
+                              format_func=format_data, data_type=Decimal),
+                ColoredColumn('difference', title=_('Difference'), color='red',
+                              format_func=format_data, data_type=Decimal,
+                              data_func=lambda x: x <= Decimal(0)),]

@@ -151,6 +151,22 @@ class ProductWithStockView(ProductFullStockView):
     ProductFullStockView.joins
 
 
+class ProductFullStockItemView(ProductFullStockView):
+    columns = ProductFullStockView.columns.copy()
+    columns.update(dict(
+        minimum_quantity=ProductAdaptToStorable.q.minimum_quantity,
+        maximum_quantity=ProductAdaptToStorable.q.maximum_quantity,
+        to_receive_quantity=const.SUM(PurchaseItem.q.quantity -
+                                      PurchaseItem.q.quantity_received),
+        difference=(const.SUM(
+            ProductStockItem.q.quantity + ProductStockItem.q.logic_quantity) -
+            ProductAdaptToStorable.q.minimum_quantity)))
+
+    joins = ProductFullStockView.joins[:]
+    joins.append(LEFTJOINOn(None, PurchaseItem,
+                            PurchaseItem.q.sellableID == Sellable.q.id))
+
+
 class ProductQuantityView(Viewable):
     """Stores information about products solded and received.
 
