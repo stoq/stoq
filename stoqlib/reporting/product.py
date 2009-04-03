@@ -35,7 +35,8 @@ from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.domain.product import ProductHistory
-from stoqlib.domain.views import ProductFullStockView
+from stoqlib.domain.views import ProductFullStockView, ProductFullStockItemView
+
 
 class ProductReport(SearchResultsReport):
     """ This report show a list of all products returned by a SearchBar,
@@ -192,3 +193,38 @@ def format_data(data):
     if data is None:
         return 0
     return format_quantity(data)
+
+
+class ProductStockReport(SearchResultsReport):
+    report_name = _("Product Stock Report")
+    main_object_name = _("products")
+    obj_type = ProductFullStockItemView
+
+    def __init__(self, filename, objects, *args, **kwargs):
+        self._objects = objects
+        SearchResultsReport.__init__(self, filename, objects,
+                                     ProductStockReport.report_name,
+                                     landscape=1, *args, **kwargs)
+        self._setup_table()
+
+    def _get_columns(self):
+        return [OTC(_("Code"), lambda obj: obj.code, width=90, align=RIGHT),
+                OTC(_("Category"), lambda obj: obj.category_description,
+                    width=90),
+                OTC(_("Description"), lambda obj: obj.description,
+                    expand=True, truncate=True),
+                OTC(_("Minimum"),
+                    lambda obj: format_quantity(obj.minimum_quantity),
+                    width=90, align=RIGHT),
+                OTC(_("In Stock"),
+                    lambda obj: format_quantity(obj.stock),
+                    width=90, align=RIGHT),
+                OTC(_("To Receive"),
+                    lambda obj: format_quantity(obj.to_receive_quantity),
+                    width=85, align=RIGHT),
+                OTC(_("Difference"),
+                    lambda obj: format_quantity(obj.difference),
+                    width=85, align=RIGHT),]
+
+    def _setup_table(self):
+        self.add_object_table(self._objects, self._get_columns())
