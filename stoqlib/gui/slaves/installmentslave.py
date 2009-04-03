@@ -70,6 +70,10 @@ class _ConfirmationModel(object):
                         self.get_interest() -
                         self.discount)
 
+    def confirm(self):
+        """A hook that will be called after we pay the payments."""
+        pass
+
 
 class _SaleConfirmationModel(_ConfirmationModel):
     def __init__(self, payments, sale):
@@ -107,6 +111,11 @@ class _SaleConfirmationModel(_ConfirmationModel):
     def get_person_name(self):
         if self._sale.client:
             return self._sale.client.person.name
+
+    def confirm(self):
+        paid = [p.is_paid() for p in self._sale.group.get_items()]
+        if all(paid):
+            self._sale.set_paid()
 
 
 class _PurchaseConfirmationModel(_ConfirmationModel):
@@ -266,6 +275,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
         pay_date = self.close_date.get_date()
         for payment in self._payments:
             payment.pay(pay_date, payment.paid_value)
+        self.model.confirm()
         return True
 
     #
