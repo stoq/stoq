@@ -430,7 +430,7 @@ msgstr "Cancelar"
 #: ../stoq/gui/till/till.py:210 ../stoq/gui/pos/pos.py:215
 #, python-format
 msgid "Total: %s"
-msgstr "Total: %s"
+msgstr "Total do Caixa: %s"
 
 #: ../stoq/gui/till/till.py:274
 msgid "Till Closed"
