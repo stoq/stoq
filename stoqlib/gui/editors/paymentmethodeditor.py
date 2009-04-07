@@ -80,3 +80,9 @@ class CardPaymentMethodEditor(PaymentMethodEditor):
     def _on_edit_buton_clicked(self, button):
         run_dialog(CardProviderSearch, self, self.conn)
 
+
+class MoneyPaymentMethodEditor(PaymentMethodEditor):
+
+    def __init__(self, conn, model):
+        PaymentMethodEditor.__init__(self, conn, model)
+        self.slave_holder.hide()

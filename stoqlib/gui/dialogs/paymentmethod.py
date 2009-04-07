@@ -34,7 +34,8 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.search import SearchEditorToolBar
 from stoqlib.gui.editors.paymentmethodeditor import (PaymentMethodEditor,
-                                                     CardPaymentMethodEditor)
+                                                     CardPaymentMethodEditor,
+                                                     MoneyPaymentMethodEditor,)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning
 
@@ -89,7 +90,7 @@ class PaymentMethodsDialog(BasicDialog):
             'multiple': NotImplementedError,
             'store_credit': NotImplementedError,
             'card': (CardPaymentMethodEditor, method),
-            'money': (PaymentMethodEditor, method),
+            'money': (MoneyPaymentMethodEditor, method),
             'check': (PaymentMethodEditor, method),
             'bill': (PaymentMethodEditor, method),
             }
