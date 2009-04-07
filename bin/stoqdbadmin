@@ -163,6 +163,12 @@ class StoqCommandHandler:
         if verbose:
             print 'Registered a new station: %s' % station.name
 
+    def opt_updateschema(self, parser, group):
+        group.add_option('-b', '--disable-backup',
+                         action='store_false',
+                         default=True,
+                         dest='disable_backup')
+
     def cmd_updateschema(self, options):
         from stoqlib.database.migration import StoqlibSchemaMigration
         from stoqlib.lib.pluginmanager import provide_plugin_manager
@@ -172,7 +178,7 @@ class StoqCommandHandler:
         # This is a little bit tricky to be able to apply the initial
         # plugin infrastructure
         migration = StoqlibSchemaMigration()
-        migration.update(plugins=False)
+        migration.update(plugins=False, backup=options.disable_backup)
         provide_plugin_manager()
         migration.update_plugins()
 
