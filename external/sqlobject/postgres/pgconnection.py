@@ -172,6 +172,15 @@ class PostgresConnection(DBAPI):
 
     viewExists = tableExists
 
+    def renameDatabase(self, src, dest):
+        conn = self.getConnection()
+        cur = conn.cursor()
+        cur.execute('COMMIT')
+        cur.execute('ALTER DATABASE %s RENAME TO %s' % (src, dest))
+        cur.close()
+
+        return True
+
     # Johan 2006-09-24: Add Sequence methods
     def sequenceExists(self, sequence):
         return self.tableExists(sequence)
