@@ -36,7 +36,8 @@ from kiwi.environ import environ
 from kiwi.component import get_utility
 from kiwi.log import Logger
 
-from stoqlib.database.database import execute_sql
+from stoqlib.database.database import (execute_sql, dump_database,
+                                       restore_database)
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.profile import update_profile_applications
@@ -44,7 +45,7 @@ from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.defaults import stoqlib_gettext
 from stoqlib.lib.interfaces import IPluginManager
-from stoqlib.lib.message import error
+from stoqlib.lib.message import error, info
 from stoqlib.lib.parameters import (check_parameter_presence,
                                     ensure_system_parameters)
 
@@ -276,11 +277,29 @@ class StoqlibSchemaMigration(SchemaMigration):
 
         return retval
 
-    def update(self, plugins=True):
-        super(StoqlibSchemaMigration, self).update()
+    def update(self, plugins=True, backup=True):
+        if backup is True:
+            temporary = tempfile.mktemp(prefix="stoq-dump-")
+            dump_database(temporary)
 
-        if plugins:
-            self.update_plugins()
+        try:
+            super(StoqlibSchemaMigration, self).update()
+
+            if plugins:
+                self.update_plugins()
+        except:
+            if backup is True:
+                info(_(u'Stoq update have failed.'),
+                     _(u'We will try to restore the current database, but you '
+                        'will not be able to use Stoq without this update.\n'
+                        'Please, send all the output to Stoq Team as sooner '
+                        'as you can.'))
+
+                restore_database(temporary)
+                info(_(u'\n\nCurrent database was succesfully restored.\n\n'))
+        finally:
+            if backup is True:
+                os.unlink(temporary)
 
     def update_plugins(self):
         for plugin in get_utility(IPluginManager).get_active_plugins():

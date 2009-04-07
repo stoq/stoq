@@ -27,6 +27,7 @@
 
 # FIXME: Refactor this to other files
 
+import os
 import subprocess
 import time
 
@@ -40,13 +41,15 @@ _ = stoqlib_gettext
 
 log = Logger('stoqlib.db.database')
 
-def clean_database(dbname):
-    """Cleans a database
-    @param dbname: name of the database
+
+def drop_database(dbname):
+    """Drops a database.
+    @param dbname: the name of the database to be dropped.
     """
-    log.info("Cleaning database %s" % (dbname,))
+    log.info("Droping database %s" % (dbname,))
     settings = get_utility(IDatabaseSettings)
     conn = settings.get_default_connection()
+
     try:
         # Postgres is lovely, try again a few times
         # before showing an error
@@ -57,10 +60,32 @@ def clean_database(dbname):
             except Exception, e:
                 time.sleep(1)
         else:
-            raise e
-        conn.createDatabase(dbname)
+            if conn.databaseExists(dbname):
+                raise e
     finally:
         conn.close()
+
+
+def clean_database(dbname):
+    """Cleans a database. If the database does not exist, it will be created.
+    @param dbname: name of the database.
+    """
+    log.info("Cleaning database %s" % (dbname,))
+
+    try:
+        drop_database(dbname)
+    except Exception, e:
+        raise e
+
+    settings = get_utility(IDatabaseSettings)
+    if settings.dbname == dbname:
+        conn = settings.get_default_connection()
+    else:
+        conn = settings.get_connection()
+
+    conn.createDatabase(dbname)
+    conn.close()
+
 
 #
 # General routines
@@ -122,7 +147,7 @@ def dump_database(filename):
     log.info("Dumping database to %s" % filename)
 
     if settings.rdbms == 'postgres':
-        cmd = ("pg_dump -E UTF-8 -h %(address)s -U %(username)s "
+        cmd = ("pg_dump -Fc -E UTF-8 -h %(address)s -U %(username)s "
                "-p %(port)s %(dbname)s") % dict(
             address=settings.address,
             username=settings.username,
@@ -137,6 +162,57 @@ def dump_database(filename):
         return proc.wait()
     else:
         raise NotImplementedError(settings.rdbms)
+
+
+def rename_database(src, dest):
+    """Renames a database.
+    @param src: the name of the database we want to rename.
+    @param dest: the new database name.
+    """
+    settings = get_utility(IDatabaseSettings)
+
+    log.info("Renaming %s database to %s" % (src, dest))
+
+    settings.dbname = dest
+    conn = settings.get_default_connection()
+    conn.renameDatabase(src, dest)
+    conn.close()
+
+
+def restore_database(dump):
+    """Restores the current database.
+    @param dump: a database dump file to be used to restore the database.
+    """
+    settings = get_utility(IDatabaseSettings)
+
+    log.info("Restoring database %s using %s" % (settings.dbname, dump))
+
+    if settings.rdbms == 'postgres':
+        # This will create a new database
+        newname = settings.dbname + '__backup'
+        clean_database(newname)
+
+        cmd = ("pg_restore -h %(address)s -U %(username)s "
+               "-p %(port)s -d %(dbname)s %(dump)s") % dict(
+            address=settings.address,
+            username=settings.username,
+            port=settings.port,
+            dbname=newname,
+            dump=dump,)
+
+        # We will recover the created database
+        log.debug('executing %s' % cmd)
+        # Let's ignore the output of pg_restore ...
+        devnull = open(os.devnull, 'w')
+        proc = subprocess.Popen(cmd, shell=True, stderr=devnull)
+        retcode = proc.wait()
+
+        drop_database(settings.dbname)
+        rename_database(newname, settings.dbname)
+        return retcode
+    else:
+        raise NotImplementedError(settings.rdbms)
+
 
 def dump_table(table):
     """Dump the contents of a table.
