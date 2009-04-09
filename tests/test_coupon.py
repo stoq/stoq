@@ -406,10 +406,16 @@ class DarumaFS345(TestCoupon, BaseTest):
     brand = 'daruma'
     model = 'FS345'
 
+# XXX: This tests wore not done with a real printer, we used an emulator
+class BematechMP20(TestCoupon, BaseTest):
+    brand = 'bematech'
+    model = 'MP20'
+
 class BematechMP25FI(TestCoupon, BaseTest):
     brand = 'bematech'
     model = 'MP25'
 
+# XXX: This tests wore not done with a real printer, we used an emulator
 class BematechMP2100(TestCoupon, BaseTest):
     brand = 'bematech'
     model = 'MP2100'

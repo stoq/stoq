@@ -24,6 +24,7 @@
 ## Author(s):   Cleber Rodrigues      <cleber@globalred.com.br>
 ##              Henrique Romano       <henrique@async.com.br>
 ##              Johan Dahlin          <jdahlin@async.com.br>
+##              Ronaldo Maia          <romaia@async.com.br>
 ##
 """
 Bematech MP25 driver
@@ -56,13 +57,15 @@ log = Logger('stoqdrivers.bematech')
 
 CASH_IN_TYPE = "SU"
 CASH_OUT_TYPE = "SA"
-CMD_COUPON_OPEN = 0
+
+# The comment after the commands are comparing the MP25 command with MP20.
+
+CMD_COUPON_OPEN = 0 # MP25 aceita 2 parametros opcionais a mais
 CMD_CLOSE_TILL = 5
 CMD_REDUCE_Z = 5
 CMD_READ_X = 6
 CMD_READ_MEMORY = 8
-CMD_COUPON_CANCEL = 14
-CMD_CANCEL_LAST = 81
+CMD_COUPON_CANCEL = 14 # MP25 aceita 3 parametros opicionais
 CMD_STATUS = 19
 CMD_ADD_VOUCHER = 25
 CMD_READ_TAXCODES = 26
@@ -70,41 +73,65 @@ CMD_READ_TOTALIZERS = 27
 CMD_GET_COUPON_SUBTOTAL = 29
 CMD_GET_COUPON_NUMBER = 30
 CMD_CANCEL_ITEM = 31
-CMD_COUPON_TOTALIZE = 32
+CMD_COUPON_TOTALIZE = 32 # MP 20 Nao permite desconto simultaneo
 CMD_COUPON_CLOSE = 34
-CMD_READ_REGISTER = 35
+CMD_READ_REGISTER = 35 # Registradores diferentes
 CMD_ADD_ITEM = 63
-CMD_ADD_PAYMENT = 72
-CMD_GET_REGISTERS = 88
-CMD_GERENCIAL_REPORT_OPEN = 83
-CMD_PAYMENT_RECEIPT_OPEN = 66
+CMD_PAYMENT_RECEIPT_OPEN = 66 # MP20 suporta somente 3 primeiro parametros
 CMD_PAYMENT_RECEIPT_PRINT = 67
-CMD_PAYMENT_RECEIPT_CLOSE = 21
-CMD_PAYMENT_RECEIPT_PRINT_DUPLICATE = 91
+CMD_PAYMENT_RECEIPT_CLOSE = 21 # Parece o mesmo, mas com nomes diferentes na mp20 e 25
 CMD_PROGRAM_PAYMENT_METHOD = 71
+CMD_ADD_PAYMENT = 72
+# Be carefull with these commands, They are only available for MP25 (not mp20)
+CMD_CANCEL_LAST = 81
+CMD_PAYMENT_RECEIPT_PRINT_DUPLICATE = 91
 
-# Page 51
-REGISTER_LAST_ITEM_ID = 12
-REGISTER_TOTALIZERS = 29
-REGISTER_PAYMENT_METHODS = 32
-REGISTER_SERIAL = 40
-REGISTER_NUMBER_TILL = 14
-REGISTER_EMISSION_DATE = 23
-REGISTER_NUMBER_REDUCTIONS_Z = 9
-REGISTER_TOTAL_CANCELATIONS = 4
-REGISTER_TOTAL_DISCOUNT = 5
-REGISTER_CRO = 10
-REGISTER_TOTAL = 3
-REGISTER_FIRMWARE = 41
-REGISTER_CCF = 55
-REGISTER_COO = 6
-REGISTER_GNF = 7
 
 NAK = 21
 ACK = 6
 STX = 2
 
 RETRIES_BEFORE_TIMEOUT = 5
+
+# Page 51
+class MP25Registers(object):
+    TOTAL = 3
+    TOTAL_CANCELATIONS = 4
+    TOTAL_DISCOUNT = 5
+    COO = 6
+    GNF = 7
+    NUMBER_REDUCTIONS_Z = 9
+    CRO = 10
+    LAST_ITEM_ID = 12
+    NUMBER_TILL = 14
+    EMISSION_DATE = 23
+    TOTALIZERS = 29
+    PAYMENT_METHODS = 32
+    SERIAL = 40
+    FIRMWARE = 41
+    CCF = 55
+
+    # (size, bcd)
+    formats = {
+        TOTAL: ('9s', True),
+        TOTAL_CANCELATIONS: ('7s', True),
+        TOTAL_DISCOUNT: ('7s', True),
+        COO: ('3s', True),
+        GNF: ('3s', True),
+        NUMBER_REDUCTIONS_Z: ('2s', True),
+        CRO: ('2s', True),
+        LAST_ITEM_ID: ('2s', True),
+        NUMBER_TILL: ('2s', True),
+        EMISSION_DATE: ('6s', False),
+        TOTALIZERS: ('2s', False),
+        #  1 + (52 * 16) + (52 * 10) + (52 * 10) + (52 * 1)
+        #  1 + 832 + 520 + 520 + 52: 1925
+        PAYMENT_METHODS: ('b832s520s520s52s', False),
+        SERIAL: ('20s', False),
+        FIRMWARE: ('3s', True),
+        CCF: ('3s', True),
+    }
+
 
 class MP25Constants(BaseDriverConstants):
     _constants = {
@@ -115,13 +142,88 @@ class MP25Constants(BaseDriverConstants):
         }
 
 
-class Status(object):
+class MP25Status(object):
+    st1_codes = {
+        128: (OutofPaperError(_("Printer is out of paper"))),
+        # 64: (AlmostOutofPaper(_("Printer almost out of paper"))),
+        32: (PrinterError(_("Printer clock error"))),
+        16: (PrinterError(_("Printer in error state"))),
+        8: (CommandError(_("First data value in CMD is not ESC (1BH)"))),
+        4: (CommandError(_("Nonexistent command"))),
+        # 2: (CouponOpenError(_("Printer has a coupon currently open"))),
+        1: (CommandError(_("Invalid number of parameters")))}
+
+    st2_codes = {
+        128: (CommandError(_("Invalid CMD parameter"))),
+        64: (HardwareFailure(_("Fiscal memory is full"))),
+        32: (HardwareFailure(_("Error in CMOS memory"))),
+        16: (PrinterError(_("Given tax is not programmed on the printer"))),
+        8: (DriverError(_("No available tax slot"))),
+        4: (CancelItemError(_("The item wasn't added in the coupon or can't "
+                              "be cancelled"))),
+
+        # 2: (PrinterError(_("Owner data (CGC/IE) not programmed on the printer"))),
+        # FIXME: This shouldn't be commented. But it will break the tests.
+        # Need to update the tests for all bematech printers
+        #1: (CommandError(_("Command not executed")))
+        }
+
+    st3_codes = {
+        # 7: (CouponOpenError(_("Coupon already Open"))),
+        # 8: (CouponNotOpenError(_("Coupon is closed"))),
+        13: (PrinterOfflineError(_("Printer is offline"))),
+        16: (DriverError(_("Surcharge or discount greater than coupon total"
+                           "value"))),
+        17: (DriverError(_("Coupon with no items"))),
+        20: (PaymentAdditionError(_("Payment method not recognized"))),
+        22: (PaymentAdditionError(_("Isn't possible add more payments since"
+                                     "the coupon total value already was "
+                                    "reached"))),
+        23: (DriverError(_("Coupon isn't totalized yet"))),
+        43: (CouponNotOpenError(_("Printer not initialized"))),
+        45: (PrinterError(_("Printer without serial number"))),
+        52: (DriverError(_("Invalid start date"))),
+        53: (DriverError(_("Invalid final date"))),
+        85: (DriverError(_("Sale with null value"))),
+        91: (ItemAdditionError(_("Surcharge or discount greater than item"
+                                 "value"))),
+        100: (DriverError(_("Invalid date"))),
+        115: (CancelItemError(_("Item doesn't exists or already was cancelled"))),
+        118: (DriverError(_("Surcharge greater than item value"))),
+        119: (DriverError(_("Discount greater than item value"))),
+        129: (CouponOpenError(_("Invalid month"))),
+        169: (CouponTotalizeError(_("Coupon already totalized"))),
+        170: (PaymentAdditionError(_("Coupon not totalized yet"))),
+        171: (DriverError(_("Surcharge on subtotal already effected"))),
+        172: (DriverError(_("Discount on subtotal already effected"))),
+        176: (DriverError(_("Invalid date")))}
+
     def __init__(self, reply):
         self.st1, self.st2, self.st3 = reply[-3:]
 
     @property
     def open(self):
         return self.st1 & 2
+
+    def _check_error_in_dict(self, error_codes, value):
+        for key in error_codes:
+            if key & value:
+                raise error_codes[key]
+
+    def check_error(self):
+        log.debug("status: st1=%s st2=%s st3=%s" %
+                    (self.st1, self.st2, self.st3))
+
+        if self.st1 != 0:
+            self._check_error_in_dict(self.st1_codes, self.st1)
+
+        if self.st2 != 0:
+            self._check_error_in_dict(self.st2_codes, self.st2)
+
+            # first bit means not executed, look in st3 for more
+            if self.st2 & 1 and self.st3:
+                if self.st3 in self.st3_codes:
+                    raise self.st3_codes[self.st3]
 
 
 #
@@ -157,67 +259,17 @@ def dec2bin(n, trim=-1):
 
 class MP25(SerialBase):
     implements(ICouponPrinter)
-    CMD_PROTO = 0x1C
+    CMD_PROTO = 0x1c
 
     supported = True
     model_name = "Bematech MP25 FI"
     coupon_printer_charset = "cp850"
     supports_duplicate_receipt = True
+    registers = MP25Registers
+    reply_format = '<b%sbbH'
+    status_size = 3
 
     EOL_DELIMIT = '\n'
-
-    st1_codes = {
-        128: (OutofPaperError(_("Printer is out of paper"))),
-        # 64: (AlmostOutofPaper(_("Printer almost out of paper"))),
-        32: (PrinterError(_("Printer clock error"))),
-        16: (PrinterError(_("Printer in error state"))),
-        8: (CommandError(_("First data value in CMD is not ESC (1BH)"))),
-        4: (CommandError(_("Nonexistent command"))),
-        # 2: (CouponOpenError(_("Printer has a coupon currently open"))),
-        1: (CommandError(_("Invalid number of parameters")))}
-
-    st2_codes = {
-        128: (CommandError(_("Invalid CMD parameter"))),
-        64: (HardwareFailure(_("Fiscal memory is full"))),
-        32: (HardwareFailure(_("Error in CMOS memory"))),
-        16: (PrinterError(_("Given tax is not programmed on the printer"))),
-        8: (DriverError(_("No available tax slot"))),
-        4: (CancelItemError(_("The item wasn't added in the coupon or can't "
-                              "be cancelled"))),
-
-        # 2: (PrinterError(_("Owner data (CGC/IE) not programmed on the printer"))),
-        # 1: (CommandError(_("Command not executed")))
-        }
-
-    st3_codes = {
-        # 7: (CouponOpenError(_("Coupon already Open"))),
-        # 8: (CouponNotOpenError(_("Coupon is closed"))),
-        13: (PrinterOfflineError(_("Printer is offline"))),
-        16: (DriverError(_("Surcharge or discount greater than coupon total"
-                           "value"))),
-        17: (DriverError(_("Coupon with no items"))),
-        20: (PaymentAdditionError(_("Payment method not recognized"))),
-        22: (PaymentAdditionError(_("Isn't possible add more payments since"
-                                     "the coupon total value already was "
-                                    "reached"))),
-        23: (DriverError(_("Coupon isn't totalized yet"))),
-        43: (CouponNotOpenError(_("Printer not initialized"))),
-        45: (PrinterError(_("Printer without serial number"))),
-        52: (DriverError(_("Invalid start date"))),
-        53: (DriverError(_("Invalid final date"))),
-        85: (DriverError(_("Sale with null value"))),
-        91: (ItemAdditionError(_("Surcharge or discount greater than item"
-                                 "value"))),
-        100: (DriverError(_("Invalid date"))),
-        115: (CancelItemError(_("Item doesn't exists or already was cancelled"))),
-        118: (DriverError(_("Surcharge greater than item value"))),
-        119: (DriverError(_("Discount greater than item value"))),
-        129: (CouponOpenError(_("Invalid month"))),
-        169: (CouponTotalizeError(_("Coupon already totalized"))),
-        170: (PaymentAdditionError(_("Coupon not totalized yet"))),
-        171: (DriverError(_("Surcharge on subtotal already effected"))),
-        172: (DriverError(_("Discount on subtotal already effected"))),
-        176: (DriverError(_("Invalid date")))}
 
     def __init__(self, port, consts=None):
         self._consts = consts or MP25Constants
@@ -257,7 +309,6 @@ class MP25(SerialBase):
                            sum([ord(i) for i in command]))
 
     def _read_reply(self, size):
-
         a = 0
         data = ''
         while True:
@@ -276,22 +327,9 @@ class MP25(SerialBase):
             log.debug("<<< %r (%d bytes)" % (data, len(data)))
             return data
 
-    def _check_error(self, retval):
-        st1, st2, st3 = retval[-3:]
-        def _check_error_in_dict(error_codes, value):
-            for key in error_codes:
-                if key & value:
-                    raise error_codes[key]
-
-        if st1 != 0:
-            _check_error_in_dict(self.st1_codes, st1)
-
-        if st2 != 0:
-            _check_error_in_dict(self.st2_codes, st2)
-            # first bit means not executed, look in st3 for more
-            if st2 & 1:
-                if st3 in self.st3_codes:
-                    raise self.st3_codes[st3]
+    def _check_error(self, retval=None):
+        status = self.get_status(retval)
+        status.check_error()
 
     def _send_command(self, command, *args, **kwargs):
         fmt = ''
@@ -317,66 +355,24 @@ class MP25(SerialBase):
         data = self._create_packet(cmd)
         self.write(data)
 
-        format = '<b%sbbH' % (fmt,)
+        format = self.reply_format % fmt
         reply = self._read_reply(struct.calcsize(format))
         retval = struct.unpack(format, reply)
+
         if raw:
             return retval
 
         self._check_error(retval)
 
-        response = retval[1:-3]
+        response = retval[1:-self.status_size]
         if len(response) == 1:
             response = response[0]
         return response
 
     def _read_register(self, reg):
-        # Page 51
-        bcd = False
-        if reg == REGISTER_TOTALIZERS:
-            fmt = '2s'
-        elif reg == REGISTER_SERIAL:
-            fmt = '20s'
-        elif reg == REGISTER_LAST_ITEM_ID:
-            fmt = '2s'
-            bcd = True
-        elif reg == REGISTER_NUMBER_TILL:
-            fmt = '2s'
-            bcd = True
-        elif reg == REGISTER_EMISSION_DATE:
-            fmt = '6s'
-        elif reg == REGISTER_NUMBER_REDUCTIONS_Z:
-            fmt = '2s'
-            bcd = True
-        elif reg == REGISTER_TOTAL_CANCELATIONS:
-            fmt = '7s'
-            bcd = True
-        elif reg == REGISTER_TOTAL_DISCOUNT:
-            fmt = '7s'
-            bcd = True
-        elif reg == REGISTER_CRO:
-            fmt = '2s'
-            bcd = True
-        elif reg == REGISTER_TOTAL:
-            fmt = '9s'
-            bcd = True
-        elif reg == REGISTER_PAYMENT_METHODS:
-            #  1 + (52 * 16) + (52 * 10) + (52 * 10) + (52 * 1)
-            #  1 + 832 + 520 + 520 + 52 = 1925
-            fmt = 'b832s520s520s52s'
-        elif reg == REGISTER_FIRMWARE:
-            fmt = '3s'
-            bcd = True
-        elif reg == REGISTER_CCF:
-            fmt = '3s'
-            bcd = True
-        elif reg == REGISTER_COO:
-            fmt = '3s'
-            bcd = True
-        elif reg == REGISTER_GNF:
-            fmt = '3s'
-            bcd = True
-        else:
+        try:
+            fmt, bcd = self.registers.formats[reg]
+        except KeyError:
             raise NotImplementedError(reg)
 
         value = self._send_command(CMD_READ_REGISTER, reg, response=fmt)
@@ -396,19 +392,22 @@ class MP25(SerialBase):
         return Decimal("0.0")
 
     def _get_last_item_id(self):
-        return self._read_register(REGISTER_LAST_ITEM_ID)
+        return self._read_register(self.registers.LAST_ITEM_ID)
 
     def _get_coupon_number(self):
         coupon_number = self._send_command(CMD_GET_COUPON_NUMBER, response='3s')
         return bcd2dec(coupon_number)
 
-    def _get_status(self):
-        return Status(self._send_command(CMD_STATUS, raw=True))
+    def get_status(self, val=None):
+        if val is None:
+            val = self._send_command(CMD_STATUS, raw=True)
+
+        return MP25Status(val)
 
     def _add_voucher(self, type, value):
         assert len(type) == 2
 
-        status = self._get_status()
+        status = self.get_status()
         if status.open:
             self._send_command(CMD_COUPON_CANCEL)
 
@@ -500,6 +499,8 @@ class MP25(SerialBase):
         payments added and totalized is called. It needs to be possible to open
         new coupons after this is called.
         """
+        # FIXME This will break the drivers recorded tests. Record new ones.
+        #self._send_command(CMD_COUPON_CLOSE, message)
         self._send_command(CMD_COUPON_CLOSE)
         self._reset()
         return self._get_coupon_number()
@@ -512,6 +513,7 @@ class MP25(SerialBase):
             unit = unit_desc
         else:
             unit = self._consts.get_value(unit)
+
         data = ("%02s"     # taxcode
                 "%09d"     # value
                 "%07d"     # quantity
@@ -624,29 +626,31 @@ class MP25(SerialBase):
         return self._consts
 
     def query_status(self):
-        return '\x02\x05\x00\x1b#(f\x00'
-        #return self._create_packet(chr(CMD_STATUS))
+        #return '\x02\x05\x00\x1b#(f\x00'
+        query = self._create_packet(chr(CMD_READ_REGISTER) +
+                                    chr(self.registers.SERIAL))
+        return query
 
     def status_reply_complete(self, reply):
         return len(reply) == 23
 
     def get_serial(self):
-        return self._read_register(REGISTER_SERIAL)
+        return self._read_register(self.registers.SERIAL).strip('\x00')
 
     def get_ccf(self):
-        return self._read_register(REGISTER_CCF)
+        return self._read_register(self.registers.CCF)
 
     def get_coo(self):
-        return self._read_register(REGISTER_COO)
+        return self._read_register(self.registers.COO)
 
     def get_gnf(self):
-        return self._read_register(REGISTER_GNF)
+        return self._read_register(self.registers.GNF)
 
     def get_crz(self):
-        return self._read_register(REGISTER_NUMBER_REDUCTIONS_Z)
+        return self._read_register(self.registers.NUMBER_REDUCTIONS_Z)
 
     def get_tax_constants(self):
-        status = self._read_register(REGISTER_TOTALIZERS)
+        status = self._read_register(self.registers.TOTALIZERS)
         status = struct.unpack('>H', status)[0]
 
         length, data = self._send_command(CMD_READ_TAXCODES, response='b32s')
@@ -675,7 +679,7 @@ class MP25(SerialBase):
         return constants
 
     def get_payment_constants(self):
-        status = self._read_register(REGISTER_PAYMENT_METHODS)[1]
+        status = self._read_register(self.registers.PAYMENT_METHODS)[1]
         methods = []
         for i in range(20):
             method = status[i*16:i*16+16]
@@ -684,25 +688,25 @@ class MP25(SerialBase):
         return methods
 
     def get_sintegra(self):
-        opening_date = self._read_register(REGISTER_EMISSION_DATE)
-        cro = self._read_register(REGISTER_CRO)
+        opening_date = self._read_register(self.registers.EMISSION_DATE)
+        cro = self._read_register(self.registers.CRO)
         # FIXME: This is being fetched before the actual reduction, so the value will be wrong by
         # -1
-        crz = self._read_register(REGISTER_NUMBER_REDUCTIONS_Z)
+        crz = self._read_register(self.registers.NUMBER_REDUCTIONS_Z)
         coo = self._get_coupon_number()
-        total_cancelations = self._read_register(REGISTER_TOTAL_CANCELATIONS)
-        total_discount = self._read_register(REGISTER_TOTAL_DISCOUNT)
+        total_cancelations = self._read_register(self.registers.TOTAL_CANCELATIONS)
+        total_discount = self._read_register(self.registers.TOTAL_DISCOUNT)
 
         # Avbr function TACBrECFBematech.GetVendaBruta
         registers = self._send_command(62 , 55, response='308s')
         coupon_end = int(bcd2hex(registers)[568:568+6])
 
-        grande_total = self._read_register(REGISTER_TOTAL)
+        grande_total = self._read_register(self.registers.TOTAL)
         grande_total = grande_total/Decimal(100)
         total_bruto = bcd2dec(registers[1:10])/Decimal(100)
 
         length, names = self._send_command(CMD_READ_TAXCODES, response='b32s')
-        status = self._read_register(REGISTER_TOTALIZERS)
+        status = self._read_register(self.registers.TOTALIZERS)
         status = struct.unpack('>H', status)[0]
         values = self._send_command(CMD_READ_TOTALIZERS, response='219s')
 
@@ -729,7 +733,7 @@ class MP25(SerialBase):
                                         month=int(date[2:4]),
                                         day=int(date[:2])),
              serial=self.get_serial(),
-             serial_id='%03d' % self._read_register(REGISTER_NUMBER_TILL),
+             serial_id='%03d' % self._read_register(self.registers.NUMBER_TILL),
              coupon_start=0,
              coupon_end=coupon_end,
              cro=cro,
@@ -742,7 +746,7 @@ class MP25(SerialBase):
     def get_firmware_version(self):
         """Return the firmware version"""
         # REGISTER IS AN INTEGER: 10000 and shoud be formated as 01.00.00
-        ret = self._read_register(REGISTER_FIRMWARE)
+        ret = self._read_register(self.registers.FIRMWARE)
         ret = '%0*d' % (6, ret)
         firmware = "%s:%s:%s" % (ret[0:2], ret[2:4], ret[4:6])
         return firmware
