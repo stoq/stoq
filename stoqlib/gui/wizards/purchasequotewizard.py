@@ -54,7 +54,7 @@ from stoqlib.gui.wizards.purchasewizard import (PurchaseItemStep,
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.validators import format_quantity, get_formatted_cost
 from stoqlib.reporting.purchase import PurchaseQuoteReport
 
 _ = stoqlib_gettext
@@ -462,7 +462,8 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                 Column('quantity', title=_(u'Quantity'), data_type=Decimal),
                 Column('ordered_quantity', title=_(u'Ordered'),
                         data_type=Decimal),
-                Column('cost', title=_(u'Cost'), data_type=currency),]
+                Column('cost', title=_(u'Cost'), data_type=currency,
+                        format_func=get_formatted_cost),]
 
     def _update_widgets(self):
         if not self.quoted_items:

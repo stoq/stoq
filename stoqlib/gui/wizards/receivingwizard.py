@@ -44,7 +44,7 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.editors.sellableeditor import SellableItemEditor
-from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.validators import format_quantity, get_formatted_cost
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
@@ -242,7 +242,8 @@ class ReceivingOrderProductStep(SellableItemStep):
                    width=110, format_func=format_quantity),
             Column('sellable.unit_description', title=_('Unit'), data_type=str,
                    width=50),
-            Column('cost', title=_('Cost'), data_type=currency, width=90),
+            Column('cost', title=_('Cost'), data_type=currency,
+                   format_func=get_formatted_cost, width=90),
             Column('total', title=_('Total'), data_type=currency, width=100)
             ]
 

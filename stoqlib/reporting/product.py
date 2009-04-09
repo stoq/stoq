@@ -32,7 +32,8 @@ from decimal import Decimal
 from stoqlib.reporting.template import SearchResultsReport, PriceReport
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.reporting.base.flowables import RIGHT
-from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.validators import (format_quantity, get_formatted_price,
+                                    get_formatted_cost)
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.views import ProductFullStockView, ProductFullStockItemView
@@ -62,10 +63,15 @@ class ProductReport(SearchResultsReport):
         return [
             OTC(_("Code"), lambda obj: obj.code, width=100, truncate=True),
             OTC(_("Description"), lambda obj: obj.description, truncate=True),
-            OTC(_("Cost"), lambda obj: obj.cost, width=60, truncate=True),
-            OTC(_("Price"), lambda obj: obj.price, width=60, truncate=True),
-            OTC(_("C.M."), lambda obj: obj.price - obj.cost, width=60,
+            OTC(_("Cost"), lambda obj:
+                get_formatted_cost(obj.cost, symbol=False), width=60,
                 truncate=True),
+            OTC(_("Price"), lambda obj:
+                get_formatted_price(obj.price, symbol=False), width=60,
+                truncate=True),
+            OTC(_("C.M."), lambda obj:
+                get_formatted_price(obj.price - obj.cost, symbol=False),
+                width=60, truncate=True),
             OTC(_("Quantity"), lambda obj: format_data(obj.stock),
                 width=80, align=RIGHT, truncate=True),
             # FIXME: This column should be virtual, waiting for bug #2764

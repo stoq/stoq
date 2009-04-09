@@ -45,7 +45,7 @@ from stoqlib.gui.base.search import (SearchDialog, SearchEditor,
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.validators import format_quantity, get_formatted_cost
 from stoqlib.reporting.product import (ProductReport, ProductQuantityReport,
                                        ProductPriceReport, ProductStockReport)
 
@@ -155,7 +155,7 @@ class ProductSearch(SearchEditor):
 
         if not self.hide_cost_column:
             cols.append(SearchColumn('cost', _('Cost'), data_type=currency,
-                                     width=90))
+                                     format_func=get_formatted_cost, width=90))
         if not self.hide_price_column:
             cols.append(SearchColumn('price', title=_('Price'),
                                      data_type=currency, width=90))

@@ -46,7 +46,7 @@ from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
 from stoqlib.domain.sellable import Sellable
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.validators import format_quantity, get_formatted_cost
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
 from stoqlib.gui.printing import print_report
@@ -213,6 +213,10 @@ class PurchaseItemStep(SellableItemStep):
     # SellableItemStep virtual methods
     #
 
+    def validate(self, value):
+        can_purchase =  self.model.get_purchase_total() > 0
+        self.wizard.refresh_next(can_purchase)
+
     def get_order_item(self, sellable, cost, quantity):
         item = self.model.add_item(sellable, quantity)
         self._set_expected_receival_date(item)
@@ -237,7 +241,8 @@ class PurchaseItemStep(SellableItemStep):
                    data_type=datetime.date, visible=receival_date_visible),
             Column('sellable.unit_description',title=_('Unit'), data_type=str,
                    width=70),
-            Column('cost', title=_('Cost'), data_type=currency, width=90),
+            Column('cost', title=_('Cost'), data_type=currency,
+                   format_func=get_formatted_cost, width=90),
             Column('total', title=_('Total'), data_type=currency, width=100),
             ]
 

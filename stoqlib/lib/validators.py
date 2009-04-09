@@ -26,6 +26,8 @@ import re
 
 from kiwi.datatypes import format_price
 
+from stoqlib.database.runtime import get_connection
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import DECIMAL_PRECISION
 
@@ -59,8 +61,17 @@ def get_formatted_percentage(value):
 def get_price_format_str():
     return '%%.%sf' % DECIMAL_PRECISION
 
-def get_formatted_price(float_value):
-    return format_price(float_value, precision=DECIMAL_PRECISION)
+def get_formatted_price(float_value, symbol=True, precision=DECIMAL_PRECISION):
+    return format_price(float_value, symbol=symbol,
+                        precision=precision)
+
+def get_formatted_cost(float_value, symbol=True):
+    precision = DECIMAL_PRECISION
+    if sysparam(get_connection()).USE_FOUR_PRECISION_DIGITS:
+        precision = 4
+
+    return get_formatted_price(float_value, symbol=symbol,
+                               precision=precision)
 
 #
 # Phone number validators

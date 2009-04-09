@@ -27,6 +27,8 @@
 ##
 """ Editors definitions for sellable"""
 
+import sys
+
 import gtk
 
 from kiwi.datatypes import ValidationError
@@ -246,8 +248,10 @@ class SellableEditor(BaseEditor):
         self.attach_slave(tabname, tabslave, event_box)
 
     def set_widget_formats(self):
-        for widget in (self.cost, self.stock_total_lbl, self.price):
-            widget.set_data_format('%.02f')
+        for widget in (self.cost, self.price):
+            widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
+                                                 step_incr=1))
+        self.stock_total_lbl.set_data_format('%.02f')
         self.requires_weighing_label.set_size("small")
         self.requires_weighing_label.set_text("")
 

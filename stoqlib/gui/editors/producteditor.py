@@ -27,6 +27,7 @@
 """ Editors definitions for products"""
 
 from decimal import Decimal
+import sys
 
 import gtk
 
@@ -49,7 +50,7 @@ from stoqlib.gui.slaves.productslave import ProductDetailsSlave
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import get_formatted_price
+from stoqlib.lib.validators import get_formatted_price, get_formatted_cost
 
 _ = stoqlib_gettext
 
@@ -124,7 +125,7 @@ class ProductComponentSlave(BaseEditorSlave):
                         data_type=str, expand=True),
                 Column('category', title=_(u'Category'), data_type=str),
                 Column('production_cost', title=_(u'Production Cost'),
-                        data_type=currency),
+                        format_func=get_formatted_cost, data_type=currency),
                 ]
 
     def _setup_widgets(self):
@@ -323,10 +324,6 @@ class ProductSupplierEditor(BaseEditor):
     proxy_widgets = ('base_cost', 'icms', 'notes', 'lead_time',
                      'minimum_purchase',)
 
-    def __init__(self, conn, model=None):
-        BaseEditor.__init__(self, conn, model)
-        self._setup_widgets()
-
     def _setup_widgets(self):
         unit = self.model.product.sellable.unit
         if unit is None:
@@ -334,12 +331,17 @@ class ProductSupplierEditor(BaseEditor):
         else:
             description = unit.description
         self.unit_label.set_text(description)
+        if sysparam(self.conn).USE_FOUR_PRECISION_DIGITS:
+            self.base_cost.set_digits(4)
+        self.base_cost.set_adjustment(
+            gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
 
     #
     # BaseEditor hooks
     #
 
     def setup_proxies(self):
+        self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def validate_confirm(self):
@@ -390,8 +392,8 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
                 Column('lead_time_str', title=_(u'Lead time'), data_type=str),
                 Column('minimum_purchase', title=_(u'Minimum Purchase'),
                         data_type=Decimal),
-                Column('base_cost', title=_(u'Cost'),
-                        data_type=currency),]
+                Column('base_cost', title=_(u'Cost'), data_type=currency,
+                        format_func=get_formatted_cost),]
 
     def create_model(self):
         product = self._product
@@ -483,6 +485,8 @@ class ProductEditor(SellableEditor):
     def setup_widgets(self):
         self.stock_total_lbl.show()
         self.stock_lbl.show()
+        if sysparam(self.conn).USE_FOUR_PRECISION_DIGITS:
+            self.cost.set_digits(4)
 
     def create_model(self, conn):
         sellable_info = BaseSellableInfo(connection=conn)

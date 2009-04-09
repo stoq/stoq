@@ -46,7 +46,7 @@ from stoqlib.domain.sellable import Sellable, BaseSellableInfo, SellableUnit
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.validators import format_quantity, get_formatted_price
 
 
 _ = stoqlib_gettext
@@ -391,7 +391,12 @@ class PurchaseOrder(ValidatableDomain):
         total = subtotal - self.discount_value + self.surcharge_value
         if total < 0:
             raise ValueError('Purchase total can not be lesser than zero')
-        return currency(total)
+        #XXX: Since the purchase_total value must have two digits
+        # (at the moment) we need to format the value to a 2-digit number and
+        # then convert it to currency data type, because the subtotal value
+        # may return a 4-digit value,  if the USE_FOUR_PRECISION_DIGITS
+        # parameters is set.
+        return currency(get_formatted_price(total))
 
     def get_received_total(self):
         """Like {get_purchase_subtotal} but only takes into account the

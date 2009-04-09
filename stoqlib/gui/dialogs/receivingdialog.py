@@ -34,6 +34,7 @@ from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.datatypes import currency
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import get_formatted_cost
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
 from stoqlib.domain.receiving import (ReceivingOrderItem,
@@ -85,7 +86,8 @@ class ReceivingOrderDetailsDialog(BaseEditor):
                        data_type=str, width=90,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column("cost", title=_("Cost"), width=80,
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT),
+                       format_func=get_formatted_cost, data_type=currency,
+                       justify=gtk.JUSTIFY_RIGHT),
                 Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
                        data_type=currency, width=100)]
 
