@@ -106,7 +106,7 @@ class BasePaymentAddition(BaseEditor):
     def on_confirm(self):
         self.model.set_pending()
         self.model.base_value = self.model.value
-        person = self.person.get_selected()
+        person = self.person.get_selected_data()
         if person is not None:
             setattr(self.model.group,
                     self.person_attribute,
