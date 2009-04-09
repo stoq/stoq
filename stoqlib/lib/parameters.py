@@ -266,6 +266,12 @@ _parameter_info = dict(
     _(u'Cat 52 destination directory'),
     _(u'Where the file generated after a Z-reduction should be saved.')),
 
+    USE_FOUR_PRECISION_DIGITS=ParameterDetails(
+    _(u'General'),
+    _(u'Use four precision digits'),
+    _(u'Once this parameter is set, the products cost will be expressed '
+       'using four precision digits.')),
+
     )
 
 class ParameterAttr:
@@ -315,6 +321,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('ENABLE_COMPOSED_PRODUCT', bool, initial=False),
         ParameterAttr('CAT52_DEST_DIR', DirectoryParameter, initial='~/.stoq/cat52'),
         ParameterAttr('ALLOW_OUTDATED_PURCHASES', bool, initial=False),
+        ParameterAttr('USE_FOUR_PRECISION_DIGITS', bool, initial=False),
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
         ParameterAttr('DEFAULT_SALES_CFOP', u'fiscal.CfopData'),

@@ -34,7 +34,8 @@ from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
                                            HIGHLIGHT_NEVER)
 from stoqlib.reporting.base.flowables import RIGHT, LEFT
 from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
-from stoqlib.lib.validators import get_formatted_price, format_quantity
+from stoqlib.lib.validators import (get_formatted_price, get_formatted_cost,
+                                    format_quantity)
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.template import SearchResultsReport, BaseStoqReport
@@ -119,7 +120,7 @@ class PurchaseOrderReport(BaseStoqReport):
             # FIXME: This column should be virtual, waiting for bug #2764
             OTC("Unit", lambda obj: obj.sellable.get_unit_description(),
                 virtual=False, width=50, align=LEFT),
-            OTC(_("Cost"), lambda obj: get_formatted_price(obj.cost),
+            OTC(_("Cost"), lambda obj: get_formatted_cost(obj.cost),
                 width=70, align=RIGHT),
             OTC(_("Quantity"), lambda obj: format_quantity(obj.quantity),
                 width=70, align=RIGHT),

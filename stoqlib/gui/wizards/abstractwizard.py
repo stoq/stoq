@@ -39,6 +39,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.python import Settable
 
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep
 from stoqlib.gui.base.lists import AdditionListSlave
@@ -88,6 +89,8 @@ class SellableItemStep(WizardEditorStep):
         self.quantity.set_adjustment(gtk.Adjustment(lower=1, upper=sys.maxint,
                                                     step_incr=1))
         self._reset_sellable()
+        if sysparam(conn).USE_FOUR_PRECISION_DIGITS:
+            self.cost.set_digits(4)
 
     # Public API
 
@@ -160,6 +163,10 @@ class SellableItemStep(WizardEditorStep):
         self.quantity.set_sensitive(has_sellable)
         self.cost.set_sensitive(has_sellable)
 
+    def validate(self, value):
+        self.add_sellable_button.set_sensitive(value and bool(self.sellable.read()))
+        self.wizard.refresh_next(value and bool(len(self.slave.klist)))
+
     #
     # WizardStep hooks
     #
@@ -173,7 +180,7 @@ class SellableItemStep(WizardEditorStep):
                                         self.quantity, self.cost,
                                         self.add_sellable_button,
                                         self.product_button])
-        self.register_validate_function(self._validate)
+        self.register_validate_function(self.validate)
         self.force_validation()
 
     def setup_proxies(self):
@@ -240,10 +247,6 @@ class SellableItemStep(WizardEditorStep):
             self.summary.update_total()
         self._refresh_next()
         self.force_validation()
-
-    def _validate(self, value):
-        self.add_sellable_button.set_sensitive(value and bool(self.sellable.read()))
-        self.wizard.refresh_next(value and bool(len(self.slave.klist)))
 
     #
     # callbacks

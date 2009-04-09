@@ -35,6 +35,7 @@ from stoqlib.database.orm import AND, OR, LEFTJOINOn
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import get_formatted_cost
 
 _ = stoqlib_gettext
 
@@ -92,10 +93,11 @@ class QuoteFillingDialog(BaseEditor):
                 Column("quantity", title=_(u"Quantity"), data_type=Decimal,
                         editable=True),
                 Column("cost", title=_(u"Cost"), data_type=currency,
-                        editable=True),
-                Column("last_cost", title=_(u"Last Cost"), data_type=currency),
+                        format_func=get_formatted_cost, editable=True),
+                Column("last_cost", title=_(u"Last Cost"), data_type=currency,
+                        format_func=get_formatted_cost),
                 Column("average_cost", title=_(u"Average Cost"),
-                        data_type=currency),
+                        data_type=currency, format_func=get_formatted_cost),
                 ]
 
     def _get_quote_items(self):

@@ -33,6 +33,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel, ListLabel, ColoredColumn
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import get_formatted_cost
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.domain.interfaces import IInPayment
@@ -160,7 +161,7 @@ class PurchaseDetailsDialog(BaseEditor):
                        data_type=str, width=90, editable=True,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('cost', title=_('Cost'), data_type=currency,
-                       width=90),
+                       format_func=get_formatted_cost, width=90),
                 Column('total', title=_('Total'), data_type=currency,
                        width=100)]
 
@@ -174,7 +175,8 @@ class PurchaseDetailsDialog(BaseEditor):
                        data_type=str, width=150, editable=True,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('cost', title=_('Cost'), data_type=currency,
-                       editable=True, width=90),
+                       format_func=get_formatted_cost, editable=True,
+                       width=90),
                 Column('total_received', title=_('Total'),
                        data_type=currency, width=100)]
 

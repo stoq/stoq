@@ -33,6 +33,7 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -55,9 +56,12 @@ class PurchaseItemEditor(BaseEditor):
 
     def _setup_widgets(self):
         self.order.set_text("%04d" %  self.model.order.id)
-        self.quantity.set_adjustment(gtk.Adjustment(lower=1, upper=sys.maxint,
-                                                    step_incr=1))
+        for widget in [self.quantity, self.cost]:
+            widget.set_adjustment(gtk.Adjustment(lower=1, upper=sys.maxint,
+                                                 step_incr=1))
         self.description.set_text(self.model.sellable.get_description())
+        if sysparam(self.conn).USE_FOUR_PRECISION_DIGITS:
+            self.cost.set_digits(4)
 
     def _set_not_editable(self):
         self.cost.set_sensitive(False)
