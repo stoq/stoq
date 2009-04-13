@@ -26,13 +26,13 @@
 """
 Bematech MP20 driver
 
-The MP20 is compatible with the MP25 command set (actually its the orther way
-arrund ;) until a certain command (85, I think). Commands above that are just
+The MP20 is compatible with the MP25 command set (actually its the other way
+around ;) until a certain command (85, I think). Commands above that are just
 not executed.
 
 There are some differences on the Registers numbering as well.
 
-Also, some commands have different parameters size. These are:
+Also, some commands have different parameter sizes. These are:
 
     CMD             MP 20                MP 25
     00              29                  28+30+80 (abertura de cupom)
@@ -48,7 +48,7 @@ from decimal import Decimal
 from stoqdrivers.printers.bematech.MP25 import (MP25, MP25Status, CMD_STATUS,
                                                 CMD_COUPON_OPEN)
 
-log = Logger('stoqdrivers.bematech')
+log = Logger('stoqdrivers.bematech.MP20')
 
 CMD_ADD_ITEM_SIMPLE = 9
 

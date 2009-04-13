@@ -53,7 +53,7 @@ from stoqdrivers.translation import stoqdrivers_gettext
 
 _ = stoqdrivers_gettext
 
-log = Logger('stoqdrivers.bematech')
+log = Logger('stoqdrivers.bematech.MP25')
 
 CASH_IN_TYPE = "SU"
 CASH_OUT_TYPE = "SA"
