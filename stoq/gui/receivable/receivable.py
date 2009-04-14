@@ -262,6 +262,11 @@ class ReceivableApp(SearchableAppWindow):
         if not receivable_views:
             return False
 
+        # Until we fix bug 3703, don't allow receiving store credit payments
+        if any(view.method_name == 'store_credit'
+               for view in receivable_views):
+            return False
+
         if len(receivable_views) == 1:
             return receivable_views[0].status == Payment.STATUS_PENDING
 
