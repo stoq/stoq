@@ -86,8 +86,9 @@ class SellableItemStep(WizardEditorStep):
     def __init__(self, wizard, previous, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
         self.unit_label.set_bold(True)
-        self.quantity.set_adjustment(gtk.Adjustment(lower=1, upper=sys.maxint,
-                                                    step_incr=1))
+        for widget in [self.quantity, self.cost]:
+            widget.set_adjustment(gtk.Adjustment(lower=1, upper=sys.maxint,
+                                                 step_incr=1))
         self._reset_sellable()
         if sysparam(conn).USE_FOUR_PRECISION_DIGITS:
             self.cost.set_digits(4)
