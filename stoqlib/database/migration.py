@@ -281,22 +281,23 @@ class StoqlibSchemaMigration(SchemaMigration):
         if backup is True:
             temporary = tempfile.mktemp(prefix="stoq-dump-")
             dump_database(temporary)
-
+        # We have to wrap a try/except statement inside a try/finally to
+        # support python previous to 2.5 version.
         try:
-            super(StoqlibSchemaMigration, self).update()
-
-            if plugins:
-                self.update_plugins()
-        except:
-            if backup is True:
-                info(_(u'Stoq update have failed.'),
+            try:
+                super(StoqlibSchemaMigration, self).update()
+                if plugins:
+                    self.update_plugins()
+            except:
+                if backup is True:
+                    info(_(u'Stoq update have failed.'),
                      _(u'We will try to restore the current database, but you '
                         'will not be able to use Stoq without this update.\n'
                         'Please, send all the output to Stoq Team as sooner '
                         'as you can.'))
 
-                restore_database(temporary)
-                info(_(u'\n\nCurrent database was succesfully restored.\n\n'))
+                    restore_database(temporary)
+                    info(_(u'\n\nCurrent database was succesfully restored.\n\n'))
         finally:
             if backup is True:
                 os.unlink(temporary)
