@@ -1,3 +1,7 @@
+Release 0.9.7 - 15/04/2009:
+    * Added support for bematech MP20 printer.
+    * Fixed invoice translations (#3873)
+
 Release 0.9.6 - 27/01/2009:
     * Bug 2161: Multiple payment method
     * Fixed Daruma FS600 (use the same commands as FS2100)

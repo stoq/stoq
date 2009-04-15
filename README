@@ -10,7 +10,7 @@ Requirements
 ------------
 
 	* Python 2.4 (http://www.python.org/)
-	* Kiwi 1.9.24 (http://www.async.com.br/projects/kiwi/)
+	* Kiwi 1.9.25 (http://www.async.com.br/projects/kiwi/)
 	* pySerial 1.3 (http://pyserial.sourceforge.net/)
 	* Zope interfaces 3.0 (http://www.zope.org/Products/ZopeInterface/)
 

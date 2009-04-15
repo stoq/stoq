@@ -1,3 +1,63 @@
+=== 0.9.7 ===
+2009-04-15 George Kussumoto <george@async.com.br>
+
+	* New Release
+
+2009-04-13 14:51  Ronaldo Maia <romaia@async.com.br>
+
+	* [r8015] stoqdrivers/printers/bematech/MP20.py,
+	  stoqdrivers/printers/bematech/MP25.py: Fix comments and Logger
+	  domain for bematech printers
+
+2009-04-09 21:56  Ronaldo Maia <romaia@async.com.br>
+
+	* [r8014] tests/data/bematech-MP20-add-item.txt,
+	  tests/data/bematech-MP20-add-payment.txt,
+	  tests/data/bematech-MP20-cancel-coupon.txt,
+	  tests/data/bematech-MP20-cancel-item.txt,
+	  tests/data/bematech-MP20-close-coupon.txt,
+	  tests/data/bematech-MP20-coupon-open.txt,
+	  tests/data/bematech-MP20-payment-receipt.txt,
+	  tests/data/bematech-MP20-till-add-cash.txt,
+	  tests/data/bematech-MP20-till-remove-cash.txt,
+	  tests/data/bematech-MP20-totalize.txt: Fix MP20 tests.
+
+2009-04-09 21:48  Ronaldo Maia <romaia@async.com.br>
+
+	* [r8013] stoqdrivers/printers/bematech/MP20.py,
+	  stoqdrivers/printers/bematech/MP25.py,
+	  tests/data/bematech-MP20-add-item.txt,
+	  tests/data/bematech-MP20-add-payment.txt,
+	  tests/data/bematech-MP20-cancel-coupon.txt,
+	  tests/data/bematech-MP20-cancel-item.txt,
+	  tests/data/bematech-MP20-close-coupon.txt,
+	  tests/data/bematech-MP20-coupon-open.txt,
+	  tests/data/bematech-MP20-payment-receipt.txt,
+	  tests/data/bematech-MP20-till-add-cash.txt,
+	  tests/data/bematech-MP20-till-remove-cash.txt,
+	  tests/data/bematech-MP20-totalize.txt, tests/test_coupon.py: Bug
+	  3921 - Adicionar suporte para bematech MP20
+
+2009-02-11 14:58  Silvio Rangel <silvio@async.com.br>
+
+	* [r7940] po/es_ES.po, po/pt_BR.po, po/stoqdrivers.pot: Atualizacao
+	  e revisao de traducao
+
+2009-02-11 14:33  George Kussumoto <george@async.com.br>
+
+	* [r7938] po/es_ES.po, po/pt_BR.po, po/stoqdrivers.pot,
+	  stoqdrivers/base.py, stoqdrivers/configparser.py,
+	  stoqdrivers/constants.py, stoqdrivers/printers/base.py,
+	  stoqdrivers/printers/bematech/MP25.py,
+	  stoqdrivers/printers/cheque.py,
+	  stoqdrivers/printers/daruma/FS345.py,
+	  stoqdrivers/printers/dataregis/EP375.py,
+	  stoqdrivers/printers/fiscal.py,
+	  stoqdrivers/printers/perto/Pay2023.py,
+	  stoqdrivers/printers/sweda/IFS9000I.py,
+	  stoqdrivers/printers/virtual/Simple.py: #3873: Traduzir os
+	  componentes da nota fiscal. (stoqdrivers part)
+
 === 0.9.6 ===
 2009-01-27 George Kussumoto <george@async.com.br>
 

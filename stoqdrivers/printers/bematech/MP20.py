@@ -34,12 +34,11 @@ There are some differences on the Registers numbering as well.
 
 Also, some commands have different parameter sizes. These are:
 
-    CMD             MP 20                MP 25
-    00              29                  28+30+80 (abertura de cupom)
-    14              -                   28+30+80 (cancelamento de cupom)
-    32                                           (inicia fechamento cupom)
-    73              Algumas diferenças no funcionamento. Ver manual
-
+CMD             MP 20                MP 25
+00              29                  28+30+80 (abertura de cupom)
+14              -                   28+30+80 (cancelamento de cupom)
+32                                           (inicia fechamento cupom)
+73              Algumas diferencas no funcionamento. Ver manual.
 """
 
 from kiwi.log import Logger
@@ -110,7 +109,7 @@ class MP20(MP25):
     #
 
     def coupon_open(self):
-        """ This needs to be called before anything else """
+        """ This needs to be called before anything else. """
         self._send_command(CMD_COUPON_OPEN,
                            "%-29s" % (self._customer_document))
 
@@ -144,7 +143,7 @@ class MP20(MP25):
         return MP20Status(val)
 
     def cancel_last_coupon(self):
-        """Cancel the last non fiscal coupon or the last sale"""
+        """Cancel the last non fiscal coupon or the last sale."""
         #XXX MP20 does not support this
         self.coupon_cancel()
 
