@@ -144,6 +144,10 @@ class QuoteItemsStep(PurchaseItemStep):
     # WizardStep
     #
 
+    def validate(self, value):
+        can_quote = bool(self.model.get_items())
+        self.wizard.refresh_next(can_quote)
+
     def post_init(self):
         PurchaseItemStep.post_init(self)
         if not self.has_next_step():
@@ -222,6 +226,9 @@ class QuoteSupplierStep(WizardEditorStep):
     def _generate_quote(self, selected):
         # we use our model as a template to create new quotes
         quote = self.model.clone()
+        # we need to overwrite some values:
+        quote.group = PaymentGroup(connection=self.conn)
+
         include_all = self.include_all_products.get_active()
         for item in self.model.get_items():
             if item.sellable in selected.items or include_all:
