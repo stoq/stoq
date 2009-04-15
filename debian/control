@@ -3,12 +3,12 @@ Section: python
 Priority: optional
 Maintainer: George Y. Kussumoto <george@async.com.br>
 Build-Depends: debhelper (>= 4.2.28), cdbs, python-dev (>= 2.4), python-support
-Build-Depends-Indep: python-kiwi (>= 1.9.23), stoqlib (>= 0.9.7)
+Build-Depends-Indep: python-kiwi (>= 1.9.24), stoqlib (>= 0.9.8)
 Standards-Version: 3.8.0
 
 Package: stoq
 Architecture: all
-Depends: ${misc:Depends}, python, stoqlib (>= 0.9.8.4), postgresql-client-common
+Depends: ${misc:Depends}, python, stoqlib (>= 0.9.9), postgresql-client-common
 Replaces: stoq
 Conflicts: stoq
 Description: An advanced retail system
