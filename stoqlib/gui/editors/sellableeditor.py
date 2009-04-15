@@ -259,7 +259,7 @@ class SellableEditor(BaseEditor):
         sellable = self.model.sellable
         result = run_dialog(SellablePriceEditor, self, self.conn, sellable)
         if result:
-            self.sellable_proxy.update('base_sellable_info.price')
+            self.sellable_proxy.update('price')
 
     def setup_widgets(self):
         raise NotImplementedError
