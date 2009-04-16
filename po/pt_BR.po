@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-15 15:45-0300\n"
+"POT-Creation-Date: 2009-04-16 17:18-0300\n"
 "PO-Revision-Date: 2008-05-28 17:56-0300\n"
 "Last-Translator: Silvio Rangel <silvio@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -3097,39 +3097,45 @@ msgid "The code %s already exists."
 msgstr "O código %s já existe!"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:395
-msgid "Barcode must have 14 digits."
-msgstr "O código de barras deve ter 14 dígitos."
+#, fuzzy
+msgid "Barcode must have more than one digit."
+msgstr "O código de barras deve ter mais de um dígito."
 
 #: ../stoqlib/gui/editors/sellableeditor.py:397
+#, fuzzy
+msgid "Barcode must have 14 digits or less."
+msgstr "O código de barras deve ter 14 dígitos ou menos."
+
+#: ../stoqlib/gui/editors/sellableeditor.py:399
 #, python-format
 msgid "The barcode %s already exists"
 msgstr "O código de barras %s já existe!"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:401
+#: ../stoqlib/gui/editors/sellableeditor.py:403
 msgid "Price cannot be zero or negative"
 msgstr "Preço não pode ser zero ou negativo."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:405
+#: ../stoqlib/gui/editors/sellableeditor.py:407
 msgid "Cost cannot be zero or negative"
 msgstr "Custo não pode ser zero ou negativo."
 
-#: ../stoqlib/gui/editors/sellableeditor.py:410
+#: ../stoqlib/gui/editors/sellableeditor.py:412
 msgid "Unit must have a description"
 msgstr "Unidade de possuir uma descrição"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:423
+#: ../stoqlib/gui/editors/sellableeditor.py:425
 msgid "Receiving Item"
 msgstr "Itens Recebidos"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:424
+#: ../stoqlib/gui/editors/sellableeditor.py:426
 msgid "Sale Item"
 msgstr "Item da venda"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:425
+#: ../stoqlib/gui/editors/sellableeditor.py:427
 msgid "Delivery Item"
 msgstr "Item de Entrega"
 
-#: ../stoqlib/gui/editors/sellableeditor.py:426
+#: ../stoqlib/gui/editors/sellableeditor.py:428
 #: ../stoqlib/gui/editors/purchaseeditor.py:45
 msgid "Purchase Item"
 msgstr "Itens de Compra"
@@ -5083,11 +5089,11 @@ msgstr "Detalhes de Renegociação"
 msgid "System Administrator"
 msgstr "Administrador de Sistemas"
 
-#: ../stoqlib/database/migration.py:292
+#: ../stoqlib/database/migration.py:293
 msgid "Stoq update have failed."
 msgstr "A atualização do Stoq falhou."
 
-#: ../stoqlib/database/migration.py:293
+#: ../stoqlib/database/migration.py:294
 msgid ""
 "We will try to restore the current database, but you will not be able to use "
 "Stoq without this update.\n"
@@ -5097,7 +5103,7 @@ msgstr ""
 "realizar esta restauração.\n"
 "Por favor, mande todas as mensagens geradas para a equipe do stoq."
 
-#: ../stoqlib/database/migration.py:299
+#: ../stoqlib/database/migration.py:300
 msgid ""
 "\n"
 "\n"
@@ -5109,7 +5115,7 @@ msgstr ""
 "A base de dados atual foi restaurada com sucesso.\n"
 "\n"
 
-#: ../stoqlib/database/migration.py:333
+#: ../stoqlib/database/migration.py:334
 msgid "Unsupported database version, you need to reinstall"
 msgstr "Versão da base de dados na suportada, você precisa reinstala-la"
 
