@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-15 15:53-0300\n"
+"POT-Creation-Date: 2009-04-16 17:21-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -102,7 +102,7 @@ msgid ""
 "version."
 msgstr ""
 
-#: ../stoq/gui/runner.py:156
+#: ../stoq/gui/runner.py:155
 #, python-format
 msgid ""
 "This user lacks credentials \n"

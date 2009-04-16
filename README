@@ -18,7 +18,7 @@ Please select the product name Stoq
 Requirements
 ============
 
-Stoqlib 0.9.9 or higher
+Stoqlib 0.9.9.2 or higher
 Python 2.4 or higher
 PyGTK 2.8.1 or higher, 2.10 highly recommended
 PostgresSQL 8.1 or higher
