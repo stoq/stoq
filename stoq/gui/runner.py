@@ -146,7 +146,6 @@ class ApplicationRunner(object):
         return run_dialog(SelectApplicationsDialog(self._appname,
                                                    available_applications))
 
-
     def run(self, appdesc):
         """
         Runs an application
@@ -208,6 +207,9 @@ class ApplicationRunner(object):
             self._current_app):
             self._current_app.show()
             return
+
+        # clear the cache, since we switched users
+        self._application_cache.clear()
 
         appname = self.choose()
         if not appname:
