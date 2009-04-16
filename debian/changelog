@@ -1,3 +1,9 @@
+stoq (0.9.9.2) jaunty; urgency=low
+
+  * Bugfix Release. 
+
+ -- George Y. Kussumoto <george@async.com.br>  Thu, 16 Apr 2009 18:13:05 -0300
+
 stoq (0.9.9) jaunty; urgency=low
 
   * New Release

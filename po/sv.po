@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-15 15:53-0300\n"
+"POT-Creation-Date: 2009-04-16 17:21-0300\n"
 "PO-Revision-Date: 2007-07-18 11:50-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -104,7 +104,7 @@ msgid ""
 "version."
 msgstr ""
 
-#: ../stoq/gui/runner.py:156
+#: ../stoq/gui/runner.py:155
 #, python-format
 msgid ""
 "This user lacks credentials \n"
