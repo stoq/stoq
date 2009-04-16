@@ -128,8 +128,8 @@ class BaseStoqReport(ReportTemplate):
             if company.get_cnpj_number():
                 company_details_string = (_("CNPJ: %s") % company.cnpj)
             if company.get_state_registry_number():
-                state_registry_string =  (_("State Registry: %s" %
-                                            company.state_registry,))
+                state_registry_string =  (_("State Registry: %s") %
+                                            company.state_registry,)
                 if company_details_string:
                     company_details_string += ' - %s' % state_registry_string
                 else:
