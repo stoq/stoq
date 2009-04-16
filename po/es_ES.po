@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-16 17:18-0300\n"
+"POT-Creation-Date: 2009-04-16 17:43-0300\n"
 "PO-Revision-Date: 2007-04-09 10:04-0300\n"
 "Last-Translator: Rafael Villar Burke <pachi@rvburke.com>\n"
 "Language-Team: Spanish <es_ES@li.org>\n"
@@ -3150,8 +3150,9 @@ msgid "The code %s already exists."
 msgstr "¡El código de barras %s ya existe!"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:395
-msgid "Barcode must have more than one digit."
-msgstr ""
+#, fuzzy
+msgid "Barcode must have at least one digit."
+msgstr "Las contraseñas deben tener al menos %d caracteres"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:397
 msgid "Barcode must have 14 digits or less."
