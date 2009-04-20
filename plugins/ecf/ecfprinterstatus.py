@@ -57,6 +57,7 @@ class ECFAsyncPrinterStatus(gobject.GObject):
             printer = printer_class(port)
         else:
             port = printer.get_port()
+        self._port = port
         self.printer = printer
 
         self._add_timeout()
