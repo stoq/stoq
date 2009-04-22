@@ -4281,7 +4281,7 @@ msgstr "Você não pode adicionar mais pagamentos, utilizando o método %s."
 #: ../stoqlib/gui/wizards/salewizard.py:198
 #, python-format
 msgid "Client %s does not have enought credit left."
-msgstr "Cliente % excedeu o limite de crédito."
+msgstr "Cliente %s excedeu o limite de crédito."
 
 #: ../stoqlib/gui/slaves/paymentslave.py:1155
 #: ../stoqlib/gui/dialogs/paymentadditiondialog.py:122
