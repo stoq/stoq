@@ -473,13 +473,13 @@ class PersonAdaptToCompany(PersonAdapter):
 
     def get_state_registry_number(self):
         """Returns the state registry number without any non-numeric characters
-        @returns: the state registry number as a number
+        @returns: the state registry number as a number or zero if there is
+                  no state registry.
         @rtype: integer
         """
-        if not self.state_registry:
-            return 0
-        return int(''.join([c for c in self.state_registry
-                                  if c in '1234567890']))
+        numbers = ''.join([c for c in self.state_registry
+                                    if c in '1234567890'])
+        return int(numbers or 0)
 
 Person.registerFacet(PersonAdaptToCompany, ICompany)
 
