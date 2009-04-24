@@ -285,6 +285,12 @@ class Payment(Domain):
         """
         return self.status == Payment.STATUS_PREVIEW
 
+    def is_cancelled(self):
+        """Check if the payment was cancelled.
+        @returns: True if the payment was cancelled, otherwise False.
+        """
+        return self.status == Payment.STATUS_CANCELLED
+
     def get_paid_date_string(self):
         """Get a paid date string
         @returns: the paid date string or PAID DATE if the payment isn't

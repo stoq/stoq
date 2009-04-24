@@ -84,7 +84,7 @@ class InPaymentView(Viewable):
         ]
 
     def can_change_due_date(self):
-        return not self.payment.is_paid()
+        return not (self.payment.is_paid() or self.payment.is_cancelled())
 
     def can_change_payment_status(self):
         # cash receivings can't be changed
@@ -163,7 +163,7 @@ class OutPaymentView(Viewable):
         return Payment.statuses[self.status]
 
     def can_change_due_date(self):
-        return not self.payment.is_paid()
+        return not (self.payment.is_paid() or self.payment.is_cancelled())
 
     @property
     def purchase(self):

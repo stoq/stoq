@@ -138,6 +138,24 @@ class TestPayment(DomainTest):
         payment.pay()
         self.failUnless(payment.is_paid())
 
+    def testIsCancelled(self):
+        method = PaymentMethod.get_by_name(self.trans, 'check')
+        payment = Payment(value=currency(100),
+                          due_date=datetime.datetime.now(),
+                          method=method,
+                          group=None,
+                          till=None,
+                          destination=None,
+                          category=None,
+                          connection=self.trans)
+        self.failIf(payment.is_cancelled())
+        payment.set_pending()
+        self.failIf(payment.is_cancelled())
+        payment.pay()
+        self.failIf(payment.is_cancelled())
+        payment.cancel()
+        self.failUnless(payment.is_cancelled())
+
     def testGetPaidDateString(self):
         method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = Payment(value=currency(100),
