@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007,2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -84,12 +84,13 @@ class InPaymentView(Viewable):
         ]
 
     def can_change_due_date(self):
-        return not (self.payment.is_paid() or self.payment.is_cancelled())
+        return self.status not in [Payment.STATUS_PAID,
+                                   Payment.STATUS_CANCELLED]
 
     def can_change_payment_status(self):
         # cash receivings can't be changed
-        return (self.payment.method.method_name != 'money' and
-                self.payment.is_paid())
+        return (self.method_name != 'money' and
+                self.status == Payment.STATUS_PAID)
 
     def get_status_str(self):
         return Payment.statuses[self.status]
@@ -163,7 +164,8 @@ class OutPaymentView(Viewable):
         return Payment.statuses[self.status]
 
     def can_change_due_date(self):
-        return not (self.payment.is_paid() or self.payment.is_cancelled())
+        return self.status not in [Payment.STATUS_PAID,
+                                   Payment.STATUS_CANCELLED]
 
     @property
     def purchase(self):
@@ -272,4 +274,3 @@ class PaymentChangeHistoryView(Viewable):
             return converter.as_string(datetime.date, self.new_due_date)
         elif self.new_status:
             return Payment.statuses[self.new_status]
-
