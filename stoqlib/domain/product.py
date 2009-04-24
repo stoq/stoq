@@ -463,8 +463,10 @@ class ProductAdaptToStorable(ModelAdapter):
         if stock_item.quantity < 0:
             raise ValueError("Quantity cannot be negative")
 
-        # If we emptied the entire stock change the status of the sellable
-        if not stock_item.quantity:
+        # We emptied the entire stock, we need to change the status of the
+        # sellable, but only if there is no stock in any other branch.
+        has_stock = any([s.quantity > 0 for s in self.get_stock_items()])
+        if not has_stock:
             sellable = self.product.sellable
             if sellable:
                 # FIXME: rename sell() to something more useful which is not
