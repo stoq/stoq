@@ -632,7 +632,7 @@ class MP25(SerialBase):
         return query
 
     def status_reply_complete(self, reply):
-        return len(reply) == 23
+        return len(reply) == 25
 
     def get_serial(self):
         return self._read_register(self.registers.SERIAL).strip('\x00')
