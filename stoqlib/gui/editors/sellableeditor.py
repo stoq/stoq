@@ -392,7 +392,7 @@ class SellableEditor(BaseEditor):
 
     def on_barcode__validate(self, widget, value):
         if not value:
-            return ValidationError(_(u'Barcode must have at least one digit.'))
+            return
         if value and len(value) > 14:
             return ValidationError(_(u'Barcode must have 14 digits or less.'))
         if self.model.sellable.check_barcode_exists(value):
