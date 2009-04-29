@@ -57,6 +57,7 @@ from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.defaults import quantize
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
@@ -89,7 +90,9 @@ class _SaleItem(object):
 
     @property
     def total(self):
-        return currency(self.price * self.quantity)
+        # Sale items are suposed to have only 2 digits, but the value price
+        # * quantity may have more than 2, so we need to round it.
+        return quantize(currency(self.price * self.quantity))
 
 
 class POSApp(AppWindow):
