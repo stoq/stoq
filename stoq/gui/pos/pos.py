@@ -119,6 +119,22 @@ class POSApp(AppWindow):
     # AppWindow Hooks
     #
 
+    def can_change_application(self):
+        # Block POS application if we are in the middle of a sale.
+        can_change_application = self._coupon is None
+        if not can_change_application:
+            info(_(u'You must finish the current sale before you change to '
+                    'another application.'))
+
+        return can_change_application
+
+    def can_close_application(self):
+        can_close_application = self._coupon is None
+        if not can_close_application:
+            info(_(u'You must finish or cancel the current sale before you '
+                    'leave the POS application.'))
+        return can_close_application
+
     def setup_focus(self):
         # Setting up the widget groups
         self.main_vbox.set_focus_chain([self.pos_vbox])
@@ -292,7 +308,8 @@ class POSApp(AppWindow):
         self.set_sensitive((self.checkout_button, self.remove_item_button,
                             self.NewDelivery,
                             self.OrderCheckout), has_sale_items)
-        self.CancelOrder.set_sensitive(has_sale_items)
+        # We can cancel an order whenever we have a coupon opened.
+        self.CancelOrder.set_sensitive(self._coupon is not None)
         has_products = False
         has_services = False
         for sale_item in self.sale_items:
