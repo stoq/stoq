@@ -59,7 +59,7 @@ from stoqlib.domain.service import Service
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
                                 StoqlibError)
-from stoqlib.lib.defaults import quantize
+from stoqlib.lib.defaults import quantize, DECIMAL_PRECISION
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -525,9 +525,11 @@ class Sale(ValidatableDomain):
         prices for of all items
         @returns: subtotal
         """
+        # Sale items are suposed to have only 2 digits, but the value price
+        # * quantity may have more than 2, so we need to round it.
         return currency(self.get_items().sum(
-            SaleItem.q.price *
-            SaleItem.q.quantity) or 0)
+            const.ROUND(SaleItem.q.price * SaleItem.q.quantity,
+                        DECIMAL_PRECISION)) or 0)
 
     def get_items_total_quantity(self):
         """Fetches the total number of items in the sale
