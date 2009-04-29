@@ -250,6 +250,11 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.proxy.update(field_name)
         self.cash_change_slave.update_total_sale_amount()
 
+    def _update_widgets(self):
+        has_client = bool(self.client.read())
+        self.pm_slave.method_set_sensitive('store_credit', has_client)
+        self.pm_slave.method_set_sensitive('bill', has_client)
+
     def _fill_clients_combo(self):
         clients = ClientView.get_active_clients(self.conn)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
@@ -267,6 +272,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         else:
             self.client.append_item(client.person.name, client)
         self.client.select(client)
+        self._update_widgets()
 
     #
     # Public API
@@ -335,8 +341,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     #
 
     def on_client__changed(self, entry):
-        self.pm_slave.method_set_sensitive('store_credit', bool(entry.read()))
-        self.pm_slave.method_set_sensitive('bill', bool(entry.read()))
+        self._update_widgets()
 
     def on_create_client__clicked(self, button):
         self._create_client()
