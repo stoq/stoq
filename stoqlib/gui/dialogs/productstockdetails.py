@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -37,10 +37,10 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.product import ProductRetentionHistory
-from stoqlib.domain.receiving import ReceivingOrderItem
 from stoqlib.domain.sale import SaleItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrderItem
+from stoqlib.domain.views import ReceivingItemView
 from stoqlib.lib.message import yesno
 
 _ = stoqlib_gettext
@@ -69,8 +69,10 @@ class ProductStockHistoryDialog(BaseEditor):
         self.transfer_list.set_columns(self._get_transfer_columns())
         self.retention_list.set_columns(self._get_retention_columns())
 
-        items = ReceivingOrderItem.selectBy(sellableID=self.model.id,
-                                            connection=self.conn)
+        items = ReceivingItemView.select(
+            ReceivingItemView.q.sellable_id==self.model.id,
+            connection=self.conn)
+
         self.receiving_list.add_list(list(items))
 
         items = SaleItem.selectBy(sellable=self.model, connection=self.conn)
@@ -122,20 +124,17 @@ class ProductStockHistoryDialog(BaseEditor):
         self.cancel_retention_button.set_sensitive(has_selected and has_branch)
 
     def _get_receiving_columns(self):
-        return [Column("receiving_order.id",
-                       title=_("#"), data_type=int, sorted=True,
+        return [Column("order_id", title=_("#"), data_type=int, sorted=True,
                        justify=gtk.JUSTIFY_RIGHT),
-                Column("receiving_order.receival_date", title=_("Date"),
+                Column("receival_date", title=_("Date"),
                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                Column("receiving_order.id",
-                       title=_("Purchase Order"), data_type=str,
+                Column("purchase_id", title=_("Purchase Order"), data_type=str,
                        justify=gtk.JUSTIFY_RIGHT),
-                Column("receiving_order.supplier_name",
-                       title=_("Supplier"), expand=True, data_type=str),
-                Column("receiving_order.invoice_number", title=_("Invoice"),
-                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
-                Column("quantity", title=_("Quantity"),
-                       data_type=Decimal,
+                Column("supplier_name", title=_("Supplier"), expand=True,
+                       data_type=str),
+                Column("invoice_number", title=_("Invoice"), data_type=str,
+                       justify=gtk.JUSTIFY_RIGHT),
+                Column("quantity", title=_("Quantity"), data_type=Decimal,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column("unit_description", title=_("Unit"), data_type=str)]
 

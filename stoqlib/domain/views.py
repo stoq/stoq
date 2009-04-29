@@ -33,6 +33,7 @@ from stoqlib.domain.product import (Product,
                                     ProductHistory)
 from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
                                      PurchaseItem)
+from stoqlib.domain.receiving import ReceivingOrderItem, ReceivingOrder
 from stoqlib.domain.sellable import (Sellable, SellableUnit,
                                      BaseSellableInfo, SellableCategory,
                                      SellableTaxConstant)
@@ -409,3 +410,48 @@ class PurchasedItemAndStockView(Viewable):
     @property
     def purchase_item(self):
         return PurchaseItem.get(self.id, connection=self.get_connection())
+
+
+class ReceivingItemView(Viewable):
+    """Stores information about receiving items.
+    This view is used to query products that are going to be received or was
+    already received and the information related to that process.
+
+    @cvar id: the id of the receiving item
+    @cvar order_id: the id of the receiving order
+    @cvar purchase_id: the id of the purchase order
+    @cvar purchase_item_id: the id of the purchase item
+    @cvar sellable_id: the id of the sellable related to the received item
+    @cvar invoice_number: the invoice number of the receiving order
+    @cvar receival_date: the date when the item was received
+    @cvar quantity: the received quantity
+    @cvar cost: the product cost
+    @cvar unit_description: the product unit description
+    @cvar supplier_name: the product supplier name
+    """
+    columns = dict(
+        id=ReceivingOrderItem.q.id,
+        order_id=ReceivingOrder.q.id,
+        purchase_id=ReceivingOrder.q.purchaseID,
+        purchase_item_id=ReceivingOrderItem.q.purchase_itemID,
+        sellable_id=ReceivingOrderItem.q.sellableID,
+        invoice_number=ReceivingOrder.q.invoice_number,
+        receival_date=ReceivingOrder.q.receival_date,
+        quantity=ReceivingOrderItem.q.quantity,
+        cost=ReceivingOrderItem.q.cost,
+        unit_description=SellableUnit.q.description,
+        supplier_name=Person.q.name,
+    )
+
+    joins = [
+        LEFTJOINOn(None, ReceivingOrder,
+                   ReceivingOrderItem.q.receiving_orderID == ReceivingOrder.q.id),
+        LEFTJOINOn(None, Sellable,
+                   ReceivingOrderItem.q.sellableID == Sellable.q.id),
+        LEFTJOINOn(None, SellableUnit,
+                   Sellable.q.unitID == SellableUnit.q.id),
+        LEFTJOINOn(None, PersonAdaptToSupplier,
+                   ReceivingOrder.q.supplierID == PersonAdaptToSupplier.q.id),
+        LEFTJOINOn(None, Person,
+                   PersonAdaptToSupplier.q._originalID == Person.q.id),
+    ]
