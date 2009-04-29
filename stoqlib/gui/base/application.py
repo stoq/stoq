@@ -77,7 +77,7 @@ class BaseAppWindow(GladeDelegate):
     @argcheck(BaseApp, object)
     def __init__(self, app, keyactions=None):
         self.app = app
-        GladeDelegate.__init__(self, delete_handler=app.shutdown,
+        GladeDelegate.__init__(self, delete_handler=self.shutdown_application,
                           keyactions=keyactions,
                           gladefile=self.gladefile,
                           toplevel_name=self.toplevel_name)
@@ -116,6 +116,9 @@ class BaseAppWindow(GladeDelegate):
     def run_dialog(self, dialog_class, *args, **kwargs):
         """ Encapsuled method for running dialogs. """
         return run_dialog(dialog_class, self, *args, **kwargs)
+
+    def shutdown_application(self, *args):
+        self.app.shutdown()
 
     #
     # Callbacks
