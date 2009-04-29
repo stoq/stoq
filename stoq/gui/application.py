@@ -241,12 +241,36 @@ class AppWindow(BaseAppWindow):
         # This method must be redefined in child when it's needed
         return _('Stoq - %s') % self.app_name
 
+    def can_change_application(self):
+        """Define if we can change the current application or not.
+
+        @returns: True if we can change the application, False otherwise.
+        """
+        return True
+
+    def can_close_application(self):
+        """Define if we can close the current application or not.
+
+        @returns: True if we can close the application, False otherwise.
+        """
+        return True
+
+    #
+    # BaseAppWindow
+    #
+
+    def shutdown_application(self, *args):
+        if self.can_close_application():
+            self.app.shutdown()
+        # We must return True here or the window will be hidden.
+        return True
+
     #
     # Callbacks
     #
 
     def _on_quit_action__clicked(self, *args):
-        self.app.shutdown()
+        self.shutdown_application()
 
     def on_StoreCookie__activate(self, action):
         self._store_cookie()
@@ -261,6 +285,9 @@ class AppWindow(BaseAppWindow):
         self.app.runner.relogin()
 
     def _on_ChangeApplication__activate(self, action):
+        if not self.can_change_application():
+            return
+
         runner = self.app.runner
         appname = runner.choose()
         if appname:
