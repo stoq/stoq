@@ -1,3 +1,9 @@
+stoqlib (0.9.9.4) jaunty; urgency=low
+
+  * Bugfix Release
+
+ -- George Y. Kussumoto <george@async.com.br>  Thu, 30 Apr 2009 17:18:06 -0300
+
 stoqlib (0.9.9.2) jaunty; urgency=low
 
   * Bugfix Release
