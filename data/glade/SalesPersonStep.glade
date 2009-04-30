@@ -42,9 +42,10 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyComboEntry" id="salesperson_combo">
+                            <widget class="ProxyComboEntry" id="salesperson">
                                 <property name="data_type">object</property>
-                                <property name="model_attribute">salesperson_combo</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">salesperson</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
