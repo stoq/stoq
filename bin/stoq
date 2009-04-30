@@ -47,12 +47,16 @@ basedir = os.path.abspath(os.path.join(currentdir, '..'))
 
 # Add the base directory where the application is installed in to sys.path
 if os.path.exists(os.path.join(basedir, 'lib')):
+    if sys.version_info < (2, 6):
+        site = 'site-packages'
+    else:
+        site = 'dist-packages'
+
     if sys.platform == 'win32':
-        pythondir = os.path.join(basedir, 'Lib', 'site-packages')
+        pythondir = os.path.join(basedir, 'Lib', site)
     else:
         pythondir = os.path.join(basedir, 'lib',
-                                 'python%d.%d' % sys.version_info[:2],
-                                 'site-packages')
+                                 'python%d.%d' % sys.version_info[:2], site)
     if not os.path.exists(pythondir):
         raise SystemExit("ERROR: Could not find required directory: %s" %
                          pythondir)

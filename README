@@ -18,7 +18,7 @@ Please select the product name Stoq
 Requirements
 ============
 
-Stoqlib 0.9.9.2 or higher
+Stoqlib 0.9.9.4 or higher
 Python 2.4 or higher
 PyGTK 2.8.1 or higher, 2.10 highly recommended
 PostgresSQL 8.1 or higher
@@ -26,7 +26,7 @@ Psycopg 2.0.5 or higher
 zope.interface 3.0.0 or higher
 Kiwi 1.9.25
 Gazpacho 0.6.6
-Stoqdrivers 0.9.7
+Stoqdrivers 0.9.7.2
 Python Imaging Library (PIL) 1.1.5 or higher
 Reportlab 1.20
 
