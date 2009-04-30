@@ -1,3 +1,9 @@
+2009-04-27 18:01  Ronaldo Maia <romaia@async.com.br>
+
+	* [r8049] stoqdrivers/printers/bematech/MP25.py: Fix: the new
+	  query_status command returns a 25 byte string
+
+
 === 0.9.7 ===
 2009-04-15 George Kussumoto <george@async.com.br>
 

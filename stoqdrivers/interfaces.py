@@ -365,28 +365,28 @@ class ICouponPrinter(IDevice):
     def get_ccf():
         """Fiscal Coupon Counter
 
-        @retval: the last document ccf
+        @returns: the last document ccf
         @rtype: integer
         """
 
     def get_coo():
         """Operation Order Counter
 
-        @retval: the last document coo
+        @returns: the last document coo
         @rtype: integer
         """
 
     def get_gnf():
         """Nonfiscal Operation General Counter
 
-        @retval: gnf
+        @returns: gnf
         @rtype: integer
         """
 
     def get_crz():
         """Z Reduction Counter
 
-        @retval: the last document crz
+        @returns: the last document crz
         @rtype: integer
         """
 

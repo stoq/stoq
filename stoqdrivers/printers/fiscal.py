@@ -311,7 +311,7 @@ class FiscalPrinter(BasePrinter):
     def get_ccf(self):
         """Fiscal Coupon Counter
 
-        @retval: the last document ccf
+        @returns: the last document ccf
         @rtype: integer
         """
         log.info('get_ccf()')
@@ -321,7 +321,7 @@ class FiscalPrinter(BasePrinter):
     def get_coo(self):
         """Operation Order Counter
 
-        @retval: the last document coo
+        @returns: the last document coo
         @rtype: integer
         """
         log.info('get_coo()')
@@ -331,7 +331,7 @@ class FiscalPrinter(BasePrinter):
     def get_gnf(self):
         """Nonfiscal Operation General Counter
 
-        @retval: gnf
+        @returns: gnf
         @rtype: integer
         """
         log.info('get_gnf()')
@@ -341,7 +341,7 @@ class FiscalPrinter(BasePrinter):
     def get_crz(self):
         """Z Reduction Counter
 
-        @retval: the last document crz
+        @returns: the last document crz
         @rtype: integer
         """
         log.info('get_crz()')

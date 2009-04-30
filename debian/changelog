@@ -1,3 +1,9 @@
+stoqdrivers (1:0.9.7.2) jaunty; urgency=low
+
+  * Bugfix Release
+
+ -- George Y. Kussumoto <george@async.com.br>  Thu, 30 Apr 2009 17:11:41 -0300
+
 stoqdrivers (1:0.9.7) jaunty; urgency=low
 
   * New Release
