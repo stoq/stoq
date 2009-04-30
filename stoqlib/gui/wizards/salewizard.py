@@ -25,22 +25,17 @@
 ##
 """ Sale wizard definition """
 
-from decimal import Decimal
 
 from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
 from kiwi.datatypes import currency
-from kiwi.python import Settable
-from kiwi.utils import gsignal
 
-from stoqlib.database.runtime import (StoqlibTransaction, finish_transaction,
-                                      new_transaction)
+from stoqlib.database.runtime import finish_transaction, new_transaction
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard, BaseWizardStep
 from stoqlib.gui.base.dialogs import run_dialog
@@ -53,12 +48,10 @@ from stoqlib.gui.slaves.paymentslave import register_payment_slaves
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.domain.person import Person, ClientView
-from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.interfaces import ISalesPerson
 
 N_ = _ = stoqlib_gettext
@@ -232,7 +225,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     model_type = Sale
     proxy_widgets = ('total_lbl',
                      'subtotal_lbl',
-                     'salesperson_combo',
+                     'salesperson',
                      'client')
 
     def __init__(self, wizard, conn, model, payment_group):
@@ -294,11 +287,11 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
         salespersons = Person.iselect(ISalesPerson, connection=self.conn)
         items = [(s.person.name, s) for s in salespersons]
-        self.salesperson_combo.prefill(items)
+        self.salesperson.prefill(items)
         if not sysparam(self.conn).ACCEPT_CHANGE_SALESPERSON:
-            self.salesperson_combo.set_sensitive(False)
+            self.salesperson.set_sensitive(False)
         else:
-            self.salesperson_combo.grab_focus()
+            self.salesperson.grab_focus()
         self._fill_clients_combo()
 
 

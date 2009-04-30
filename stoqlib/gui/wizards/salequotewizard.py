@@ -61,7 +61,7 @@ _ = stoqlib_gettext
 class StartSaleQuoteStep(WizardEditorStep):
     gladefile = 'SalesPersonStep'
     model_type = Sale
-    proxy_widgets = ('client', 'salesperson_combo', 'expire_date')
+    proxy_widgets = ('client', 'salesperson', 'expire_date')
 
     def _setup_widgets(self):
         # Hide total and subtotal
@@ -71,11 +71,11 @@ class StartSaleQuoteStep(WizardEditorStep):
         # Salesperson combo
         salespersons = Person.iselect(ISalesPerson, connection=self.conn)
         items = [(s.person.name, s) for s in salespersons]
-        self.salesperson_combo.prefill(items)
+        self.salesperson.prefill(items)
         if not sysparam(self.conn).ACCEPT_CHANGE_SALESPERSON:
-            self.salesperson_combo.set_sensitive(False)
+            self.salesperson.set_sensitive(False)
         else:
-            self.salesperson_combo.grab_focus()
+            self.salesperson.grab_focus()
 
         # Clients combo
         clients = ClientView.get_active_clients(self.conn)
