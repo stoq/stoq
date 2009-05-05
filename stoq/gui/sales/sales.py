@@ -66,17 +66,19 @@ class SalesApp(SearchableAppWindow):
     search_table = SaleView
     search_label = _('matching:')
 
-    cols_info = {Sale.STATUS_INITIAL: ('open_date', _("Date Started")),
-                 Sale.STATUS_CONFIRMED: ('confirm_date', _("Confirm Date")),
-                 Sale.STATUS_PAID: ('close_date', _("Close Date")),
-                 Sale.STATUS_CANCELLED: ('cancel_date', _("Cancel Date")),
-                 Sale.STATUS_QUOTE: ('open_date', _("Date Started")),
-                 Sale.STATUS_RETURNED: ('return_data', _('Return Date')),}
+    cols_info = {Sale.STATUS_INITIAL: 'open_date',
+                 Sale.STATUS_CONFIRMED: 'confirm_date',
+                 Sale.STATUS_PAID: 'close_date',
+                 Sale.STATUS_CANCELLED: 'cancel_date',
+                 Sale.STATUS_QUOTE: 'open_date',
+                 Sale.STATUS_RETURNED: 'return_date',
+                 Sale.STATUS_RENEGOTIATED: 'close_date',}
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
         self.summary_label = None
-        self._columns_set = False
+        self._visible_date_col = None
+        self._columns = self.get_columns()
         self._setup_columns()
         self._setup_slaves()
 
@@ -94,19 +96,42 @@ class SalesApp(SearchableAppWindow):
         self.add_filter(status_filter, position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('Number'), width=80,
+        self._status_col = Column('status_name', title=_('Status'),
+                                  data_type=str, width=80, visible=False)
+
+        cols = [SearchColumn('id', title=_('Number'), width=80,
                              format='%05d', data_type=int, sorted=True),
+                SearchColumn('open_date', title=_('Open Date'), width=120,
+                             data_type=date, justify=gtk.JUSTIFY_RIGHT,
+                             visible=False),
+                SearchColumn('close_date', title=_('Close Date'), width=120,
+                             data_type=date, justify=gtk.JUSTIFY_RIGHT,
+                             visible=False),
+                SearchColumn('confirm_date', title=_('Confirm Date'),
+                             data_type=date, justify=gtk.JUSTIFY_RIGHT,
+                             visible=False, width=120),
+                SearchColumn('cancel_date', title=_('Cancel Date'), width=120,
+                             data_type=date, justify=gtk.JUSTIFY_RIGHT,
+                             visible=False),
+                SearchColumn('return_date', title=_('Return Date'), width=120,
+                             data_type=date, justify=gtk.JUSTIFY_RIGHT,
+                             visible=False),
+                SearchColumn('expire_date', title=_('Expire Date'), width=120,
+                             data_type=date, justify=gtk.JUSTIFY_RIGHT,
+                             visible=False),
+                self._status_col,
                 SearchColumn('client_name', title=_('Client'),
                              data_type=str, width=140, expand=True,
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('salesperson_name', title=_('Salesperson'),
                               data_type=str, width=130,
                               ellipsize=pango.ELLIPSIZE_END),
-                SearchColumn('total_quantity', title=_('Items Quantity'),
-                              data_type=decimal.Decimal, width=140,
+                SearchColumn('total_quantity', title=_('Items'),
+                              data_type=decimal.Decimal, width=60,
                               format_func=format_quantity),
                 SearchColumn('total', title=_('Total'), data_type=currency,
                              width=120)]
+        return cols
 
     #
     # Private
@@ -164,24 +189,27 @@ class SalesApp(SearchableAppWindow):
         invoice.send_to_printer(printer.device_name)
 
     def _setup_columns(self, sale_status=Sale.STATUS_CONFIRMED):
+        self._status_col.visible = False
+
         if sale_status is None:
             # When there is no filter for sale status, show the
             # 'date started' column by default
             sale_status = Sale.STATUS_INITIAL
+            self._status_col.visible = True
 
-        cols = self.get_columns()
-        if not sale_status in self.cols_info.keys():
-            raise ValueError("Invalid Sale status, got %d" % sale_status)
+        if self._visible_date_col:
+            self._visible_date_col.visible = False
 
-        attr_name, title = self.cols_info[sale_status]
-        date_col = Column(attr_name, title=title, width=120,
-                          data_type=date, justify=gtk.JUSTIFY_RIGHT)
-        cols.insert(1, date_col)
-        self._klist.set_columns(cols)
+        for col in self._columns:
+            if col.attribute == self.cols_info[sale_status]:
+                self._visible_date_col = col
+                col.visible = True
+                break
+
+        self._klist.set_columns(self._columns)
         # Adding summary label again and make it properly aligned with the
         # new columns setup
         self._create_summary_label()
-        #self.set_searchbar_columns(cols)
 
     def _get_status_values(self):
         items = [(value, key) for key, value in Sale.statuses.items()
@@ -191,9 +219,7 @@ class SalesApp(SearchableAppWindow):
         return items
 
     def _get_status_query(self, state):
-        if not self._columns_set:
-            self._setup_columns(state.value)
-            self._columns_set = True
+        self._setup_columns(state.value)
         if state.value is None:
             return SaleView.q.status != Sale.STATUS_ORDERED
         return SaleView.q.status == state.value
