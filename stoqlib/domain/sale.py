@@ -978,6 +978,8 @@ class SaleView(Viewable):
         close_date = Sale.q.close_date,
         confirm_date = Sale.q.confirm_date,
         cancel_date = Sale.q.cancel_date,
+        return_date = Sale.q.return_date,
+        expire_date = Sale.q.expire_date,
         status = Sale.q.status,
         notes = Sale.q.notes,
         surcharge_value = Sale.q.surcharge_value,
