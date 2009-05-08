@@ -265,6 +265,7 @@ class MP25(SerialBase):
     model_name = "Bematech MP25 FI"
     coupon_printer_charset = "cp850"
     supports_duplicate_receipt = True
+    identify_customer_at_end = False
     registers = MP25Registers
     reply_format = '<b%sbbH'
     status_size = 3

@@ -146,6 +146,7 @@ class FS345(SerialBase):
     model_name = "Daruma FS 345"
     coupon_printer_charset = "abicomp"
     supports_duplicate_receipt = False
+    identify_customer_at_end = True
 
     def __init__(self, port, consts=None):
         self._consts = consts or FS345Constants

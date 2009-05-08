@@ -362,5 +362,10 @@ class FiscalPrinter(BasePrinter):
 
         return self._driver.get_user_registration_info()
 
+    @property
     def supports_duplicate_receipt(self):
         return self._driver.supports_duplicate_receipt
+
+    @property
+    def identify_customer_at_end(self):
+        return self._driver.identify_customer_at_end

@@ -104,6 +104,10 @@ class ICouponPrinter(IDevice):
                                 "Wheater or not the printer can print a "
                                 "duplicate payment receipt")
 
+    identify_customer_at_end = Attribute(
+                               "True if the customer is identified at the"
+                               "end of the sale. False if at the beginning")
+
     #
     # Common API
     #
