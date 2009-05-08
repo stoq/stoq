@@ -274,7 +274,7 @@ class FiscalCoupon(gobject.GObject):
         model = run_dialog(ConfirmSaleWizard, self, trans, sale)
         if not finish_transaction(trans, model):
             return False
-        if sale.client:
+        if sale.client and not self.is_customer_identified():
             self.identify_customer(sale.client.person)
 
         if not self.totalize(sale):
