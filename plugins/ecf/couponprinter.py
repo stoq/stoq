@@ -38,8 +38,7 @@ from stoqdrivers.exceptions import (DriverError, CouponNotOpenError,
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.orm import const
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
-from stoqlib.domain.interfaces import (IIndividual, ICompany,
-                                       IContainer)
+from stoqlib.domain.interfaces import IContainer
 from stoqlib.exceptions import DeviceError
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
@@ -251,6 +250,9 @@ class Coupon(object):
         self._driver = driver
         self._item_ids = {}
 
+        self._customer_document = None
+        self._customer_document_type = None
+
     def _get_capability(self, name):
         return self._driver.get_capabilities()[name]
 
@@ -297,23 +299,16 @@ class Coupon(object):
     # Fiscal coupon related functions
     #
 
-    def identify_customer(self, person):
-        max_len = self._get_capability("customer_id").max_len
-        if IIndividual(person, None):
-            individual = IIndividual(person)
-            document = individual.cpf[:max_len]
-        elif ICompany(person, None):
-            company = ICompany(person)
-            document = company.cnpj[:max_len]
-        else:
-            raise TypeError(
-                "identify_customer needs an object implementing "
-                "IIndividual or ICompany")
-        max_len = self._get_capability("customer_name").max_len
-        name = person.name[:max_len]
-        max_len = self._get_capability("customer_address").max_len
-        address = person.get_address_string()[:max_len]
-        self._driver.identify_customer(name, address, document)
+    def identify_customer(self, name, address, document, document_type):
+        max_id = self._get_capability("customer_id").max_len
+        max_name = self._get_capability("customer_name").max_len
+        max_addr = self._get_capability("customer_address").max_len
+
+        self._customer_document = document
+        self._customer_document_type = document_type
+
+        self._driver.identify_customer(name[:max_name], address[:max_addr],
+                                       document[:max_id])
 
     def is_customer_identified(self):
         return self._driver.coupon_is_customer_identified()
@@ -352,29 +347,19 @@ class Coupon(object):
 
         return True
 
-    def close(self, sale, document, document_type):
-        self._create_fiscal_sale_data(sale, document, document_type)
-        message = self._get_coupon_message(document)
-        coupon_id = self._driver.close(message)
+    def close(self, sale):
+        self._create_fiscal_sale_data(sale)
+        coupon_id = self._driver.close()
         return coupon_id
 
-    def _get_coupon_message(self, document):
-        msg = u""
-        # If the customer is already identified, The document will be printed and there is no
-        # need to add this message
-        if document and not self.is_customer_identified():
-            msg += _(u'Customer CPF/CNPJ: ') + document
-
-        return msg
-
-    def _create_fiscal_sale_data(self, sale, document, document_type):
+    def _create_fiscal_sale_data(self, sale):
         trans = new_transaction()
         FiscalSaleHistory(sale=sale,
-                       document_type=document_type,
-                       document=document,
-                       coo=self.get_coo(),
-                       document_counter=self.get_ccf(),
-                       connection=trans)
+                          document_type=self._customer_document_type,
+                          document=self._customer_document,
+                          coo=self.get_coo(),
+                          document_counter=self.get_ccf(),
+                          connection=trans)
         trans.commit(close=True)
 
     def get_ccf(self):
@@ -383,8 +368,13 @@ class Coupon(object):
     def get_coo(self):
         return self._driver.get_coo()
 
-    def get_supports_duplicate_receipt(self):
-        return self._driver.supports_duplicate_receipt()
+    @property
+    def supports_duplicate_receipt(self):
+        return self._driver.supports_duplicate_receipt
+
+    @property
+    def identify_customer_at_end(self):
+        return self._driver.identify_customer_at_end
 
     def print_payment_receipt(self, coo, payment, receipt):
         """Print a payment receipt for a payment in a coupon

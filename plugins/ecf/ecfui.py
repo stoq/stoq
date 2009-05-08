@@ -36,6 +36,7 @@ from stoqlib.database.runtime import (get_current_station, get_connection,
 from stoqlib.domain.events import (SaleConfirmEvent, TillAddCashEvent,
                                    TillRemoveCashEvent, TillOpenEvent,
                                    TillCloseEvent, TillAddTillEntryEvent)
+from stoqlib.domain.interfaces import IIndividual, ICompany
 from stoqlib.domain.person import PersonAdaptToIndividual, PersonAdaptToCompany
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
@@ -443,7 +444,19 @@ class ECFUI(object):
 
         if document:
             return Settable(document_type=document_type,
-                            document=document, sale=sale)
+                            document=document)
+
+    def _identify_customer(self, coupon, sale=None):
+        model = None
+        if sale:
+            model = self._get_client_document(sale)
+
+        if sysparam(self.conn).ENABLE_PAULISTA_INVOICE and not model:
+            model = run_dialog(PaulistaInvoiceDialog, self, self.conn)
+
+        if model:
+            coupon.identify_customer('-', '-', model.document,
+                                     model.document_type)
 
     #
     # Events
@@ -481,10 +494,27 @@ class ECFUI(object):
 
     def _on_coupon__open(self, coupon):
         self._validate_printer()
+        if not coupon.identify_customer_at_end:
+            self._identify_customer(coupon)
         coupon.open()
 
     def _on_coupon__identify_customer(self, coupon, person):
-        coupon.identify_customer(person)
+        if IIndividual(person, None):
+            individual = IIndividual(person)
+            document_type = FiscalSaleHistory.TYPE_CPF
+            document = individual.cpf
+        elif ICompany(person, None):
+            company = ICompany(person)
+            document_type = FiscalSaleHistory.TYPE_CNPJ
+            document = company.cnpj
+        else:
+            raise TypeError(
+                "identify_customer needs an object implementing "
+                "IIndividual or ICompany")
+        name = person.name
+        address = person.get_address_string()
+
+        coupon.identify_customer(name, address, document, document_type)
 
     def _on_coupon__customer_identified(self, coupon):
         return coupon.is_customer_identified()
@@ -503,17 +533,10 @@ class ECFUI(object):
         coupon.totalize(sale)
 
     def _on_coupon__close(self, coupon, sale):
-        model = self._get_client_document(sale)
+        if coupon.identify_customer_at_end:
+            self._identify_customer(coupon, sale)
 
-        if sysparam(self.conn).ENABLE_PAULISTA_INVOICE and not model:
-            model = run_dialog(PaulistaInvoiceDialog, self, self.conn, sale)
-
-        document = document_type = None
-        if model:
-            document = model.document
-            document_type = model.document_type
-
-        return coupon.close(sale, document, document_type)
+        return coupon.close(sale)
 
     def _on_coupon__cancel(self, coupon):
         coupon.cancel()
@@ -522,7 +545,7 @@ class ECFUI(object):
         return coupon.get_coo()
 
     def _on_coupon__get_supports_duplicate(self, coupon):
-        return coupon.get_supports_duplicate_receipt()
+        return coupon.supports_duplicate_receipt
 
     def _on_coupon__print_payment_receipt(self, coupon, coo, payment, receipt):
         coupon.print_payment_receipt(coo, payment, receipt)
