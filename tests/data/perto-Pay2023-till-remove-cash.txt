@@ -1,8 +1,0 @@
-W {0;LeInteiro;NomeInteiro="Indicadores";}
-R {0;0;ValorInteiro=14400;}
-W {0;AbreCupomNaoFiscal;;}
-R {0;0;;}
-W {0;EmiteItemNaoFiscal;NomeNaoFiscal="Sangria" Valor=10,000;}
-R {0;0;;}
-W {0;EncerraDocumento;;}
-R {0;0;;}

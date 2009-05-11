@@ -1,0 +1,106 @@
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=0;}
+R {0;0;CodMeioPagamentoProgram=0 DescricaoMeioPagamento="Cheque" NomeMeioPagamento="Cheque" PermiteVinculado=N;}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=1;}
+R {0;0;CodMeioPagamentoProgram=1 DescricaoMeioPagamento="Cartao de Credito" NomeMeioPagamento="Cartao Credito" PermiteVinculado=Y;}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=2;}
+R {0;0;CodMeioPagamentoProgram=2 DescricaoMeioPagamento="Cartao de Debito" NomeMeioPagamento="Cartao Debito" PermiteVinculado=Y;}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=3;}
+R {0;8014;NomeErro="ErroCMDFormaPagamentoIndefinida" Circunstancia="Meio de pagamento nao carregado";}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=4;}
+R {0;8014;NomeErro="ErroCMDFormaPagamentoIndefinida" Circunstancia="Meio de pagamento nao carregado";}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=5;}
+R {0;8014;NomeErro="ErroCMDFormaPagamentoIndefinida" Circunstancia="Meio de pagamento nao carregado";}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=6;}
+R {0;8014;NomeErro="ErroCMDFormaPagamentoIndefinida" Circunstancia="Meio de pagamento nao carregado";}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=7;}
+R {0;8014;NomeErro="ErroCMDFormaPagamentoIndefinida" Circunstancia="Meio de pagamento nao carregado";}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=8;}
+R {0;8014;NomeErro="ErroCMDFormaPagamentoIndefinida" Circunstancia="Meio de pagamento nao carregado";}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=9;}
+R {0;8014;NomeErro="ErroCMDFormaPagamentoIndefinida" Circunstancia="Meio de pagamento nao carregado";}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=10;}
+R {0;8014;NomeErro="ErroCMDFormaPagamentoIndefinida" Circunstancia="Meio de pagamento nao carregado";}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=11;}
+R {0;8014;NomeErro="ErroCMDFormaPagamentoIndefinida" Circunstancia="Meio de pagamento nao carregado";}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=12;}
+R {0;8014;NomeErro="ErroCMDFormaPagamentoIndefinida" Circunstancia="Meio de pagamento nao carregado";}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=13;}
+R {0;8014;NomeErro="ErroCMDFormaPagamentoIndefinida" Circunstancia="Meio de pagamento nao carregado";}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=14;}
+R {0;8014;NomeErro="ErroCMDFormaPagamentoIndefinida" Circunstancia="Meio de pagamento nao carregado";}
+W {0;LeMeioPagamento;CodMeioPagamentoProgram=15;}
+R {0;8014;NomeErro="ErroCMDFormaPagamentoIndefinida" Circunstancia="Meio de pagamento invalido (fora da faixa).";}
+W {0;LeAliquota;CodAliquotaProgramavel=0;}
+R {0;0;AliquotaICMS=Y CodAliquotaProgramavel=0 DescricaoAliquota="T00" PercentualAliquota=2,16;}
+W {0;LeAliquota;CodAliquotaProgramavel=1;}
+R {0;0;AliquotaICMS=Y CodAliquotaProgramavel=1 DescricaoAliquota="T01" PercentualAliquota=3,20;}
+W {0;LeAliquota;CodAliquotaProgramavel=2;}
+R {0;0;AliquotaICMS=Y CodAliquotaProgramavel=2 DescricaoAliquota="T02" PercentualAliquota=7,00;}
+W {0;LeAliquota;CodAliquotaProgramavel=3;}
+R {0;0;AliquotaICMS=Y CodAliquotaProgramavel=3 DescricaoAliquota="T03" PercentualAliquota=12,00;}
+W {0;LeAliquota;CodAliquotaProgramavel=4;}
+R {0;0;AliquotaICMS=Y CodAliquotaProgramavel=4 DescricaoAliquota="T04" PercentualAliquota=18,00;}
+W {0;LeAliquota;CodAliquotaProgramavel=5;}
+R {0;0;AliquotaICMS=Y CodAliquotaProgramavel=5 DescricaoAliquota="T05" PercentualAliquota=25,00;}
+W {0;LeAliquota;CodAliquotaProgramavel=6;}
+R {0;8005;NomeErro="ErroCMDAliquotaNaoCarregada" Circunstancia="Aliquota nao carregada";}
+W {0;LeAliquota;CodAliquotaProgramavel=7;}
+R {0;8005;NomeErro="ErroCMDAliquotaNaoCarregada" Circunstancia="Aliquota nao carregada";}
+W {0;LeAliquota;CodAliquotaProgramavel=8;}
+R {0;8005;NomeErro="ErroCMDAliquotaNaoCarregada" Circunstancia="Aliquota nao carregada";}
+W {0;LeAliquota;CodAliquotaProgramavel=9;}
+R {0;8005;NomeErro="ErroCMDAliquotaNaoCarregada" Circunstancia="Aliquota nao carregada";}
+W {0;LeAliquota;CodAliquotaProgramavel=10;}
+R {0;8005;NomeErro="ErroCMDAliquotaNaoCarregada" Circunstancia="Aliquota nao carregada";}
+W {0;LeAliquota;CodAliquotaProgramavel=11;}
+R {0;8005;NomeErro="ErroCMDAliquotaNaoCarregada" Circunstancia="Aliquota nao carregada";}
+W {0;LeAliquota;CodAliquotaProgramavel=12;}
+R {0;8005;NomeErro="ErroCMDAliquotaNaoCarregada" Circunstancia="Aliquota nao carregada";}
+W {0;LeAliquota;CodAliquotaProgramavel=13;}
+R {0;8005;NomeErro="ErroCMDAliquotaNaoCarregada" Circunstancia="Aliquota nao carregada";}
+W {0;LeAliquota;CodAliquotaProgramavel=14;}
+R {0;8005;NomeErro="ErroCMDAliquotaNaoCarregada" Circunstancia="Aliquota nao carregada";}
+W {0;LeAliquota;CodAliquotaProgramavel=15;}
+R {0;8005;NomeErro="ErroCMDAliquotaNaoCarregada" Circunstancia="Aliquota nao carregada";}
+W {0;LeInteiro;NomeInteiro="Indicadores";}
+R {0;0;ValorInteiro=6208;}
+W {0;AbreCupomFiscal;EnderecoConsumidor="Async" NomeConsumidor="Henrique Romano" IdConsumidor="1234567890";}
+R {0;0;;}
+W {0;LeInteiro;NomeInteiro="Indicadores";}
+R {0;0;ValorInteiro=7232;}
+W {0;VendeItem;CodProduto="ABCDEF" Quantidade=2,000 CodAliquota=-4 PrecoUnitario=10,000 Unidade="  " NomeProduto="Monitor LG 775N";}
+R {0;0;;}
+W {0;LeInteiro;NomeInteiro="ContadorDocUltimoItemVendido";}
+R {0;0;ValorInteiro=1;}
+W {0;LeInteiro;NomeInteiro="Indicadores";}
+R {0;0;ValorInteiro=7232;}
+W {0;VendeItem;CodProduto="987654" Quantidade=1,000 CodAliquota=-4 PrecoUnitario=10,000 Unidade="  " NomeProduto="Monitor LG 775N";}
+R {0;0;;}
+W {0;LeInteiro;NomeInteiro="ContadorDocUltimoItemVendido";}
+R {0;0;ValorInteiro=2;}
+W {0;LeInteiro;NomeInteiro="Indicadores";}
+R {0;0;ValorInteiro=7232;}
+W {0;VendeItem;CodProduto="123456" Quantidade=1,000 CodAliquota=-4 PrecoUnitario=10,000 Unidade="Tx" NomeProduto="Monitor LG 775N";}
+R {0;0;;}
+W {0;LeInteiro;NomeInteiro="ContadorDocUltimoItemVendido";}
+R {0;0;ValorInteiro=3;}
+W {0;LeInteiro;NomeInteiro="Indicadores";}
+R {0;0;ValorInteiro=7232;}
+W {0;VendeItem;CodProduto="123456" Quantidade=1,000 CodAliquota=-4 PrecoUnitario=10,000 Unidade="  " NomeProduto="Monitor LG 775N";}
+R {0;0;;}
+W {0;LeInteiro;NomeInteiro="ContadorDocUltimoItemVendido";}
+R {0;0;ValorInteiro=4;}
+W {0;LeMoeda;NomeDadoMonetario="TotalDocLiquido";}
+R {0;0;ValorMoeda=50,0000;}
+W {0;PagaCupom;CodMeioPagamento=-2 TextoAdicional="" Valor=100,000;}
+R {0;0;;}
+W {0;LeMoeda;NomeDadoMonetario="TotalDocValorPago";}
+R {0;0;ValorMoeda=100,0000;}
+W {0;LeMoeda;NomeDadoMonetario="TotalDocLiquido";}
+R {0;0;ValorMoeda=50,0000;}
+W {0;EncerraDocumento;TextoPromocional="";}
+R {0;0;;}
+W {0;LeInteiro;NomeInteiro="COO";}
+R {0;0;ValorInteiro=112;}
+W {0;LeInteiro;NomeInteiro="Indicadores";}
+R {0;0;ValorInteiro=6208;}

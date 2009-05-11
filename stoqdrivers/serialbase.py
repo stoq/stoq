@@ -75,7 +75,7 @@ class SerialPort(Serial):
         self.setTimeout(read_timeout)
         self.setWriteTimeout(write_timeout)
 
-class SerialBase:
+class SerialBase(object):
 
     # All commands will have this prefixed
     CMD_PREFIX = '\x1b'

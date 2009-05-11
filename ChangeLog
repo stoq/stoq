@@ -1,3 +1,33 @@
+2009-05-11  Ronaldo Maia  <romaia@async.com.br>
+
+	reviewed by: george
+
+	* stoqdrivers/printers/dataregis/Quick.py:
+	* stoqdrivers/printers/fiscnet/FiscNetECF.py:
+	* stoqdrivers/printers/perto/Pay2023.py:
+	* stoqdrivers/serialbase.py:
+	* tests/data/fiscnet-FiscNetECF-add-item.txt:
+	* tests/data/fiscnet-FiscNetECF-add-payment.txt:
+	* tests/data/fiscnet-FiscNetECF-cancel-coupon.txt:
+	* tests/data/fiscnet-FiscNetECF-cancel-item.txt:
+	* tests/data/fiscnet-FiscNetECF-close-coupon.txt:
+	* tests/data/fiscnet-FiscNetECF-coupon-open.txt:
+	* tests/data/fiscnet-FiscNetECF-payment-receipt.txt:
+	* tests/data/fiscnet-FiscNetECF-till-add-cash.txt:
+	* tests/data/fiscnet-FiscNetECF-till-remove-cash.txt:
+	* tests/data/fiscnet-FiscNetECF-totalize.txt:
+	* tests/data/perto-Pay2023-add-item.txt:
+	* tests/data/perto-Pay2023-add-payment.txt:
+	* tests/data/perto-Pay2023-cancel-coupon.txt:
+	* tests/data/perto-Pay2023-cancel-item.txt:
+	* tests/data/perto-Pay2023-close-coupon.txt:
+	* tests/data/perto-Pay2023-coupon-open.txt:
+	* tests/data/perto-Pay2023-till-add-cash.txt:
+	* tests/data/perto-Pay2023-till-remove-cash.txt:
+	* tests/data/perto-Pay2023-totalize.txt:
+	* tests/test_coupon.py:
+	Adicionando suporte para impressora Dataregis Quick (fiscnet)
+
 2009-04-27 18:01  Ronaldo Maia <romaia@async.com.br>
 
 	* [r8049] stoqdrivers/printers/bematech/MP25.py: Fix: the new

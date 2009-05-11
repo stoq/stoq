@@ -1,8 +1,0 @@
-W {0;LeInteiro;NomeInteiro="Indicadores";}
-R {0;0;ValorInteiro=14400;}
-W {0;AbreCupomFiscal;EnderecoConsumidor="Async" NomeConsumidor="Henrique Romano" IdConsumidor="1234567890";}
-R {0;0;;}
-W {0;LeInteiro;NomeInteiro="Indicadores";}
-R {0;0;ValorInteiro=15424;}
-W {0;CancelaCupom;;}
-R {0;0;;}

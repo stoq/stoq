@@ -3,7 +3,7 @@
 
 ##
 ## Stoqdrivers
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,22 +21,21 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s):   Henrique Romano <henrique@async.com.br>
-##              Johan Dahlin <henrique@async.com.br>
+## Author(s):   Ronaldo Maia            <romaia@async.com.br>
 ##
 """
-PertoPay 2023 driver implementation.
+Dataregis Quick driver implementation.
 """
 
-from stoqdrivers.printers.fiscnet.FiscNetECF import FiscNetChequePrinter
+from stoqdrivers.printers.fiscnet.FiscNetECF import FiscNetECF
 from stoqdrivers.translation import stoqdrivers_gettext
 
 _ = stoqdrivers_gettext
 
 
-class Pay2023(FiscNetChequePrinter):
-    log_domain = 'PertoPay2023'
+class Quick(FiscNetECF):
+    log_domain = 'DataregisQuick'
     supported = True
 
-    model_name = "Pertopay Fiscal 2023"
+    model_name = "Dataregis ECF-IF 3202DT (Quick)"
 

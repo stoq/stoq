@@ -420,6 +420,10 @@ class BematechMP2100(TestCoupon, BaseTest):
     brand = 'bematech'
     model = 'MP2100'
 
+class FiscNet(TestCoupon, BaseTest):
+    brand = "fiscnet"
+    model = "FiscNetECF"
+
 # class DataregisEP375(TestCoupon, BaseTest):
 #     brand = "dataregis"
 #     model = "EP375"
@@ -427,8 +431,4 @@ class BematechMP2100(TestCoupon, BaseTest):
 # class SwedaIFS9000I(TestCoupon, BaseTest):
 #     brand = "sweda"
 #     model = "IFS9000I"
-
-# class PertoPay2023(TestCoupon, BaseTest):
-#     brand = "perto"
-#     model = "Pay2023"
 
