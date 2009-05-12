@@ -26,7 +26,7 @@ BaseSellableInfo
 Commission is initially set to 0:
 
     >>> info.get_commission()
-    Decimal("0.00")
+    Decimal('0.00')
 
     >>> info.get_description()
     u'Sellable'
@@ -59,7 +59,7 @@ Properties: Markup, Price and Commission
 Markup is initially set to 0, since we haven't defined price or cost:
 
     >>> sellable.markup
-    Decimal("0")
+    Decimal('0')
 
 Let's say that the initial price is 20 and the cost to 10
 
@@ -69,7 +69,7 @@ Let's say that the initial price is 20 and the cost to 10
 Then we will have a markup of 100%:
 
     >>> sellable.markup
-    Decimal("100")
+    Decimal('100')
 
 If we modify markup directly, the price will be updated:
 
@@ -85,14 +85,14 @@ But the cost will stay the same:
 The default commission is 0
 
     >>> sellable.commission
-    Decimal("0.00")
+    Decimal('0.00')
 
 It can be modified:
 
     >>> sellable.commission = 10
 
     >>> sellable.commission
-    Decimal("10.00")
+    Decimal('10.00')
 
 Querying sellable status
 ========================
