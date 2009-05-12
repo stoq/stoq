@@ -29,7 +29,6 @@
 import datetime
 from decimal import Decimal
 
-import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.search import SearchSlaveDelegate, DateSearchFilter
 from kiwi.ui.widgets.list import Column
@@ -40,15 +39,13 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
-from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
-from stoqlib.gui.editors.sellableeditor import SellableItemEditor
+from stoqlib.gui.editors.receivingeditor import ReceivingItemEditor
 from stoqlib.lib.validators import format_quantity, get_formatted_cost
-from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView, PurchaseItem
+from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
-from stoqlib.domain.sellable import Sellable
 
 _ = stoqlib_gettext
 
@@ -204,18 +201,19 @@ class ReceivingOrderProductStep(SellableItemStep):
     item_table = ReceivingOrderItem
     summary_label_text = "<b>%s</b>" % _('Total Received:')
 
+    def _validate(self, value):
+        has_receivings = self.model.get_total() > 0
+        self.wizard.refresh_next(has_receivings)
+        return has_receivings
+
     #
     # SellableItemStep overrides
     #
 
     def setup_sellable_entry(self):
-        purchase = self.model.purchase
-        if purchase:
-            sellables = [i.sellable for i in purchase.get_pending_items()]
-        else:
-            sellables = Sellable.get_unblocked_sellables(self.conn)
-        self.sellable.prefill([(sellable.get_description(), sellable)
-                                 for sellable in sellables])
+        # We do not use the sellable entry in this step, so no action needs to
+        # be performed here.
+        pass
 
     #
     # WizardStep hooks
@@ -226,10 +224,17 @@ class ReceivingOrderProductStep(SellableItemStep):
         # items to a receivable order.
         self.item_hbox.hide()
         self.slave.hide_add_button()
-        self.slave.set_editor(SellableItemEditor)
+        self.slave.hide_del_button()
+        self.slave.set_editor(ReceivingItemEditor)
         self._refresh_next()
+        self.register_validate_function(self._validate)
 
     def next_step(self):
+        # Remove the items that will not be received now.
+        for item in self.model.get_items():
+            if item.quantity == 0:
+                ReceivingOrderItem.delete(item.id, connection=self.conn)
+
         return ReceivingInvoiceStep(self.conn, self.wizard, self.model, self)
 
     def get_columns(self):
@@ -248,45 +253,15 @@ class ReceivingOrderProductStep(SellableItemStep):
             ]
 
 
-    def get_order_item(self, sellable, cost, total_quantity):
-        item = self.get_model_item_by_sellable(sellable)
-        if item is not None:
-            item.quantity += quantity
-            return item
-
-        purchase_item = PurchaseItem.selectBy(
-            sellable=sellable,
-            order=self.model.purchase,
-            connection=self.conn)
-        quantity = total_quantity - purchase_item.quantity_received
-        return ReceivingOrderItem(connection=self.conn, sellable=sellable,
-                                  receiving_order=self.model,
-                                  purchase_item=purchase_item,
-                                  cost=cost, quantity=quantity)
+    def get_order_item(self, sellable, cost, quantity):
+        # Never called in this wizard.
+        return
 
     def get_saved_items(self):
         if not self.model.purchase:
             return []
         return get_receiving_items_by_purchase_order(self.model.purchase,
                                                      self.model)
-
-    #
-    # callbacks
-    #
-
-    def on_product_button__clicked(self, *args):
-        # We are going to call a SearchEditor subclass which means
-        # database synchronization... Outch, time to commit !
-        self.conn.commit()
-        item_statuses = [Sellable.STATUS_AVAILABLE,
-                         Sellable.STATUS_SOLD]
-        items = run_dialog(ProductSearch, self, self.conn,
-                           hide_footer=False, hide_toolbar=True,
-                           hide_price_column=True,
-                           selection_mode=gtk.SELECTION_MULTIPLE,
-                           use_product_statuses=item_statuses)
-        for item in items:
-            self._update_list(item)
 
 
 class ReceivingInvoiceStep(WizardEditorStep):

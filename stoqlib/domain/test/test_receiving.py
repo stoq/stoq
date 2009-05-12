@@ -197,10 +197,3 @@ class TestReceivingOrderItem(DomainTest):
         self.assertEqual(order_item.get_remaining_quantity(), 0)
         self.assertNotEqual(order_item.get_remaining_quantity(), 1)
         self.assertNotEqual(order_item.get_remaining_quantity(), 8)
-
-    def testGetPrice(self):
-        order_item = self.create_receiving_order_item()
-        order_item.purchase_item.cost = 100
-        self.assertEqual(order_item.get_price(), currency(100))
-        self.assertNotEqual(order_item.get_price(), currency(50))
-        self.assertNotEqual(order_item.get_price(), currency(150))

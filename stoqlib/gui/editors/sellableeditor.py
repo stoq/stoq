@@ -32,15 +32,11 @@ import sys
 import gtk
 
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
 from kiwi.ui.objectlist import Column
 from stoqdrivers.enum import TaxType, UnitType
 
 from stoqlib.database.orm import LIKE, const
 from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.purchase import PurchaseItem
-from stoqlib.domain.receiving import ReceivingOrderItem
-from stoqlib.domain.sale import SaleItem, DeliveryItem
 from stoqlib.domain.sellable import (SellableCategory, Sellable,
                                      SellableUnit,
                                      SellableTaxConstant)
@@ -416,56 +412,3 @@ class SellableEditor(BaseEditor):
         category = SellableCategory.selectOneBy(description=category_cb,
                                                 connection=self.conn)
         self.model.category = category
-
-class SellableItemEditor(BaseEditor):
-    gladefile = 'SellableItemEditor'
-    proxy_widgets = ('quantity',
-                     'price',
-                     'total')
-    model_names = {ReceivingOrderItem: _('Receiving Item'),
-                   SaleItem: _('Sale Item'),
-                   DeliveryItem: _('Delivery Item'),
-                   PurchaseItem: _('Purchase Item')}
-
-    def __init__(self, conn, model_type=ReceivingOrderItem, model=None,
-                 restrict_increase_qty=True):
-        self.model_name = self._get_model_name(model_type)
-        self.model_type = model_type
-        BaseEditor.__init__(self, conn, model)
-        if restrict_increase_qty:
-            if isinstance(self.model, ReceivingOrderItem):
-                quantity = self.model.get_remaining_quantity()
-            else:
-                quantity = self.model.quantity
-            self.quantity.set_range(1, quantity)
-        self.set_description(
-            self.model.sellable.base_sellable_info.description)
-
-
-    def _get_model_name(self, model_type):
-        if not self.model_names.has_key(model_type):
-            raise ValueError('Invalid model type for SellableItemEditor, '
-                             'got %s' % model_type)
-        return self.model_names[model_type]
-
-    #
-    # BaseEditor hooks
-    #
-
-    def setup_proxies(self):
-        # We need to setup the widgets format before the proxy fill them
-        # with the values.
-        self.setup_widgets()
-        self.proxy = self.add_proxy(self.model,
-                                    SellableItemEditor.proxy_widgets)
-
-    def setup_widgets(self):
-        sellable = self.model.sellable
-        self.sellable_name.set_text(sellable.base_sellable_info.description)
-
-    #
-    # Callbacks
-    #
-
-    def after_quantity__value_changed(self, spinbutton):
-        self.proxy.update('total')
