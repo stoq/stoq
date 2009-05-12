@@ -93,7 +93,7 @@ class SyncTest(unittest.TestCase):
                                  'Async Open Source')
 
     @classmethod
-    def tearDownClass(cls):
+    def tearDown(cls):
         _provide_original_settings()
 
 #
@@ -144,8 +144,18 @@ def _register_shop_station(trans):
     station.activate()
 
 def terminate_server(proc):
-    SyncTestData.client.quit()
-    proc.wait()
+    import xmlrpclib
+
+    try:
+        SyncTestData.client.quit()
+        proc.wait()
+    #XXX: This is needed due to the changes done in python 2.5 to 2.6. Since,
+    #     this seems to not compromise the test results, let's ignore this
+    #     exception until this issue be fixed. Some related problems:
+    #     http://bugs.python.org/issue1690840 and
+    #     http://lists.supervisord.org/pipermail/supervisor-users/2009-March/000312.html
+    except xmlrpclib.ProtocolError, e:
+        print e
 
 def _initialize_server():
     server_path = os.path.join(os.path.dirname(__file__), "syncd")
