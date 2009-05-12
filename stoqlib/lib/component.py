@@ -76,11 +76,11 @@ If we try to register the same facet twice we'll receive an exception:
 Now, if you want to listen the adapter types for a specific interface you
 can call getFacetTypes():
 
-    >>> Bike.getFacetTypes()
+    >>> Bike.getFacetTypes() # doctest:+ELLIPSIS
     [<class '...BikeAdaptToSuspension'>]
 
     >>> bike = Bike()
-    >>> ISuspension(bike)
+    >>> ISuspension(bike) # doctest:+ELLIPSIS
     Traceback (most recent call last):
         ...
     TypeError: ('Could not adapt', ...)
@@ -95,7 +95,7 @@ default object as the second argument to the interface "casting":
 To attach an adapter to an object, we use addFacet, which will return
 the adapted object, which will return the adapter.
 
-    >>> bike.addFacet(ISuspension)
+    >>> bike.addFacet(ISuspension) # doctest:+ELLIPSIS
     <...BikeAdaptToSuspension object at ...>
 
 Call addFacet with the same interface again raises a
@@ -108,7 +108,7 @@ Call addFacet with the same interface again raises a
 We can now adapt the object:
 
     >>> suspension = ISuspension(bike)
-    >>> suspension
+    >>> suspension # doctest:+ELLIPSIS
     <...BikeAdaptToSuspension object at ...>
 
 And we can call methods on the object, which are part of the interface:
@@ -121,7 +121,7 @@ And we can call methods on the object, which are part of the interface:
 
 To fetch the adaptable/adapted object call get_adapted():
 
-    >>> suspension.get_adapted()
+    >>> suspension.get_adapted() # doctest:+ELLIPSIS
     <...Bike object at ...>
 
 """
@@ -329,3 +329,8 @@ def _adapter_hook(iface, obj):
     if is_adaptable:
         return obj._adapterCache.get(qual(iface))
 adapter_hooks.append(_adapter_hook)
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
