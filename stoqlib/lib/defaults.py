@@ -178,9 +178,9 @@ def quantize(dec):
     the last two decimals will be removed
 
     >>> quantize(Decimal("10.123"))
-    Decimal("10.12")
+    Decimal('10.12')
 
     >>> quantize(Decimal("10.678"))
-    Decimal("10.68")
+    Decimal('10.68')
     """
     return dec.quantize(_format)
