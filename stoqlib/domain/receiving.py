@@ -72,18 +72,11 @@ class ReceivingOrderItem(Domain):
         """
         return self.purchase_item.get_pending_quantity()
 
-    def get_price(self):
-        """Get the price of this item. It's used by the SellableItemEditor.
-        @returns: the price
-        """
-        # In SellableItemEditor we have to show the item's price, but it
-        # does not make sense for a receiving item, then we return
-        # the item cost. This cost is related to the cost in the moment
-        # of purchase and may not bet current cost.
-        return self.purchase_item.cost
-
     def get_total(self):
-        return currency(self.quantity * self.get_price())
+        # We need to use the the purchase_item cost, since the current cost
+        # might be different.
+        cost = self.purchase_item.cost
+        return currency(self.quantity * cost)
 
     def get_quantity_unit_string(self):
         unit = self.sellable.unit
