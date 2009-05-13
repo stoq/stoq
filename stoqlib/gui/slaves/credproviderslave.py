@@ -25,10 +25,13 @@
 """Credit Provider editor
 """
 
+from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-
 from stoqlib.domain.interfaces import ICreditProvider
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
 
 
 class CreditProviderDetailsSlave(BaseEditorSlave):
@@ -39,8 +42,20 @@ class CreditProviderDetailsSlave(BaseEditorSlave):
                      'open_contract_date',
                      'max_installments',
                      'payment_day',
+                     'provider_fee',
                      'closing_day')
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
                                     CreditProviderDetailsSlave.proxy_widgets)
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_provider_fee__validate(self, widget, value):
+        if value >= 100:
+            return ValidationError(_(u'The provider fee can not be greater '
+                                      'or equal to 100%.'))
+        if value < 0:
+            return ValidationError(_(u'The provider fee must be positive.'))
