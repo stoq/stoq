@@ -45,7 +45,7 @@ from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.gui.slaves.cashchangeslave import CashChangeSlave
 from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.paymentslave import register_payment_slaves
-from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
+from stoqlib.gui.slaves.saleslave import SaleDiscountSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.domain.person import Person, ClientView
 from stoqlib.domain.payment.method import PaymentMethod
@@ -312,14 +312,14 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.pm_slave.method_set_sensitive('bill',
                                            bool(self.client.read()))
 
-        self.discsurcharge_slave = DiscountSurchargeSlave(self.conn, self.model,
-                                                          self.model_type)
-        self.discsurcharge_slave.connect('discount-changed',
-                                         self.on_discsurcharge_slave_changed)
+        self.discount_slave = SaleDiscountSlave(self.conn, self.model,
+                                                self.model_type)
+        self.discount_slave.connect('discount-changed',
+                                    self.on_discount_slave_changed)
         slave_holder = 'discount_surcharge_slave'
         if self.get_slave(slave_holder):
             self.detach_slave(slave_holder)
-        self.attach_slave(slave_holder, self.discsurcharge_slave)
+        self.attach_slave(slave_holder, self.discount_slave)
 
     def setup_proxies(self):
         self.setup_widgets()
@@ -339,7 +339,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     def on_create_client__clicked(self, button):
         self._create_client()
 
-    def on_discsurcharge_slave_changed(self, slave):
+    def on_discount_slave_changed(self, slave):
         self._update_totals()
 
     def on_notes_button__clicked(self, *args):
