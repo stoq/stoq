@@ -48,49 +48,45 @@ from stoqlib.reporting.sale import SalesReport
 _ = stoqlib_gettext
 
 
-class DiscountSurchargeSlave(BaseEditorSlave):
-    """A slave for discounts and surcharge management
+class SaleDiscountSlave(BaseEditorSlave):
+    """A slave for discounts management
     """
-    gladefile = 'DiscountChargeSlave'
+    gladefile = 'SaleDiscountSlave'
     proxy_widgets = ('discount_value',
-                     'surcharge_value',
-                     'discount_perc',
-                     'surcharge_perc')
+                     'discount_perc',)
     gsignal('discount-changed')
 
     def __init__(self, conn, model, model_type, visual_mode=False):
+        self._proxy = None
         self.model_type = model_type
         self.max_discount = sysparam(conn).MAX_SALE_DISCOUNT
         BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
     def setup_widgets(self):
         format_str = get_price_format_str()
-        for widget in (self.discount_perc, self.surcharge_perc):
-            widget.set_data_format(format_str)
+        self.discount_perc.set_data_format(format_str)
         self.update_widget_status()
 
     def update_widget_status(self):
-        surcharge_by_value = not self.surcharge_perc_ck.get_active()
-        self.surcharge_value.set_sensitive(surcharge_by_value)
-        self.surcharge_perc.set_sensitive(not surcharge_by_value)
-
         discount_by_value = not self.discount_perc_ck.get_active()
         self.discount_value.set_sensitive(discount_by_value)
         self.discount_perc.set_sensitive(not discount_by_value)
 
-    def setup_discount_surcharge(self):
+    def update_sale_discount(self):
+        if self._proxy is None:
+            return
         if self.discount_perc_ck.get_active():
-            self.proxy.update('discount_value')
+            self._proxy.update('discount_value')
         else:
-            self.proxy.update('discount_percentage')
+            self._proxy.update('discount_percentage')
 
-        if self.surcharge_perc_ck.get_active():
-            self.proxy.update('surcharge_value')
-        else:
-            self.proxy.update('surcharge_percentage')
         self.emit('discount-changed')
 
     def _validate_percentage(self, value, type_text):
+        if value >= 100:
+            self.model.discount_percentage = 0
+            return ValidationError(_(u'%s can not be greater or equal '
+                                      'to 100%%.') % type_text)
         if value > self.max_discount:
             self.model.discount_percentage = 0
             return ValidationError(_("%s can not be greater then %d%%")
@@ -99,6 +95,7 @@ class DiscountSurchargeSlave(BaseEditorSlave):
             self.model.discount_percentage = 0
             return ValidationError(_("%s can not be less then 0")
                                     % type_text)
+        self.update_sale_discount()
 
     def set_max_discount(self, discount):
         """Set the maximum percentage value for a discount.
@@ -113,60 +110,29 @@ class DiscountSurchargeSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         self.update_widget_status()
-        self.proxy = self.add_proxy(self.model,
-                                    DiscountSurchargeSlave.proxy_widgets)
+        self._proxy = self.add_proxy(self.model,
+                                     SaleDiscountSlave.proxy_widgets)
 
     #
     # Kiwi callbacks
     #
 
-    def on_surcharge_perc__validate(self, entry, value):
-        return self._validate_percentage(value, _('Surcharge'))
-
     def on_discount_perc__validate(self, entry, value):
         return self._validate_percentage(value, _('Discount'))
 
     def on_discount_value__validate(self, entry, value):
-        if value < 0:
-            return self._validate_percentage(value, _('Discount'))
+        percentage = value * 100 / self.model.get_total_sale_amount()
+        return self._validate_percentage(percentage, _(u'Discount'))
 
     @signal_block('discount_value.changed')
     def after_discount_perc__changed(self, *args):
-        self.setup_discount_surcharge()
+        self.update_sale_discount()
 
     @signal_block('discount_perc.changed')
     def after_discount_value__changed(self, *args):
-        percentage = self.model.discount_percentage
-        if percentage > self.max_discount:
-            msg = _("Discount can not be greater then %d%%" \
-                    % self.max_discount)
-            self.discount_value.set_invalid(msg)
-            self.model.discount_percentage = 0
-
-        self.setup_discount_surcharge()
-
-    @signal_block('surcharge_value.changed')
-    def after_surcharge_perc__changed(self, *args):
-        self.setup_discount_surcharge()
-
-    @signal_block('surcharge_perc.changed')
-    def after_surcharge_value__changed(self, *args):
-        self.setup_discount_surcharge()
-
-    def on_surcharge_perc_ck__toggled(self, *args):
-        self.setup_discount_surcharge()
-        self.update_widget_status()
-
-    def on_surcharge_value_ck__toggled(self, *args):
-        self.setup_discount_surcharge()
-        self.update_widget_status()
-
-    def on_discount_perc_ck__toggled(self, *args):
-        self.setup_discount_surcharge()
-        self.update_widget_status()
+        self.update_sale_discount()
 
     def on_discount_value_ck__toggled(self, *args):
-        self.setup_discount_surcharge()
         self.update_widget_status()
 
 
