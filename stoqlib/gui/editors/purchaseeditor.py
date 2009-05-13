@@ -58,7 +58,7 @@ class PurchaseItemEditor(BaseEditor):
     def _setup_widgets(self):
         self.order.set_text("%04d" %  self.model.order.id)
         for widget in [self.quantity, self.cost]:
-            widget.set_adjustment(gtk.Adjustment(lower=1, upper=sys.maxint,
+            widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
                                                  step_incr=1))
         self.description.set_text(self.model.sellable.get_description())
         if sysparam(self.conn).USE_FOUR_PRECISION_DIGITS:
