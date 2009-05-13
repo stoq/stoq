@@ -779,6 +779,7 @@ class PersonAdaptToCreditProvider(PersonAdapter):
     closing_day = IntCol(default=10)
     payment_day = IntCol(default=10)
     max_installments = IntCol(default=12)
+    provider_fee = DecimalCol(default=0)
 
     #
     # ICreditProvider implementation
