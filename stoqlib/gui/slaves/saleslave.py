@@ -33,13 +33,14 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 
 from stoqlib.database.runtime import finish_transaction, new_transaction
 from stoqlib.domain.sale import SaleView, Sale
+from stoqlib.domain.till import Till
 from stoqlib.exceptions import StoqlibError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.gui.printing import print_report
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import yesno, info
 from stoqlib.lib.validators import get_price_format_str
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -210,6 +211,9 @@ class SaleListToolbar(GladeSlaveDelegate):
             self._show_details(sale)
 
     def on_return_sale_button__clicked(self, button):
+        till = Till.get_current(self.conn)
+        if till is None:
+            return info(_(u'You must open the till first.'))
         sale = self.sales.get_selected()
         retval = return_sale(self.get_parent(), sale, self.conn)
         finish_transaction(self.conn, retval)
