@@ -88,6 +88,9 @@ class SaleSearch(SearchDialog):
         self.results.connect(
             'selection-changed', self._on_results__selection_changed)
 
+        self.search.set_summary_label('total', label=_(u'Total:'),
+                                      format='<b>%s</b>')
+
     def _update_widgets(self, sale_view):
         if sale_view is None:
             return
