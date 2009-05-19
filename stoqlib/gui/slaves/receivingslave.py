@@ -110,7 +110,6 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                 self.model.freight_total = freight_value
                 self.proxy.update('freight_total')
 
-
     #
     # Callbacks
     #
@@ -123,6 +122,14 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         if value < 1 or value > 999999:
             return ValidationError(_("Receving order number must be "
                                      "between 1 and 999999"))
+
+        order_count = ReceivingOrder.selectBy(invoice_number=value,
+                                              supplier=self.model.supplier,
+                                              connection=self.conn).count()
+        if order_count > 0:
+            supplier_name = self.model.supplier.person.name
+            return ValidationError(_(u'Invoice %d already exists for '
+                                     'supplier %s.' % (value, supplier_name,)))
 
     def _positive_validator(self, widget, value):
         if value < 0:
