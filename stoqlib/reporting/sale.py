@@ -86,7 +86,7 @@ class SaleOrderReport(BaseStoqReport):
                     width=80, align=RIGHT),
                 OTC(_("Price"), lambda obj: get_formatted_price(obj.price),
                     width=90, align=RIGHT),
-                OTC(_("Total"),
+                OTC(_("Sub-Total"),
                     lambda obj: get_formatted_price(obj.get_total()),
                     width=100, align=RIGHT)]
 
@@ -101,6 +101,17 @@ class SaleOrderReport(BaseStoqReport):
         summary = ["", "", items_text, "", total_value]
         self.add_object_table(list(self.sale.get_items()),
                               self._get_table_columns(), summary_row=summary)
+        # sale details
+        cols = [TC('', expand=True), TC('', width=100, align='RIGHT'),
+                TC('', width=100, style='Normal-Bold', align='RIGHT')]
+
+        discount = get_formatted_price(self.sale.discount_value)
+        total = get_formatted_price(self.sale.get_total_sale_amount())
+        data = [['', _(u'Discount:'), discount], ['', _(u'Total:'), total]]
+
+        self.add_column_table(data, cols, do_header=False,
+                              highlight=HIGHLIGHT_NEVER,
+                              table_line=TABLE_LINE_BLANK)
 
     #
     # BaseReportTemplate hooks
