@@ -166,6 +166,11 @@ class SellableCategory(Domain):
                     % (self.category.get_description(), self.description))
         return self.description
 
+    def check_category_description_exists(self, description, conn):
+        category = SellableCategory.selectOneBy(description=description,
+                                                connection=conn)
+        return category is None or category is self
+
     #
     # Classmethods
     #

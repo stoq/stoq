@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -24,6 +24,8 @@
 ##
 """ Sellable category editors implementation"""
 
+from kiwi.datatypes import ValidationError
+
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.categoryslave import CategoryTributarySituationSlave
@@ -33,6 +35,19 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.sellable import SellableCategory, SellableTaxConstant
 
 _ = stoqlib_gettext
+
+#
+# Helper functions
+#
+
+def _validate_category_description(category, description, conn):
+        retval = category.check_category_description_exists(description, conn)
+        if not retval:
+            return ValidationError(_(u'Category category already exists.'))
+
+#
+# Main editors
+#
 
 class BaseSellableCategoryEditor(BaseEditor):
     gladefile = 'BaseSellableCategoryDataSlave'
@@ -68,6 +83,10 @@ class BaseSellableCategoryEditor(BaseEditor):
         slave = self.get_slave('on_commission_data_holder')
         slave.confirm()
         return self.model
+
+    def on_description__validate(self, widget, value):
+        return _validate_category_description(self.model, value, self.conn)
+
 
 class SellableCategoryEditor(BaseEditor):
     gladefile = 'SellableCategoryDataSlave'
@@ -121,3 +140,6 @@ class SellableCategoryEditor(BaseEditor):
         slave = self.get_slave('on_commission_data_holder')
         slave.confirm()
         return self.model
+
+    def on_description__validate(self, widget, value):
+        return _validate_category_description(self.model, value, self.conn)
