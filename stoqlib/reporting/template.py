@@ -27,7 +27,12 @@
 
 from decimal import Decimal
 
+import gtk
+import pango
+
+from kiwi.accessor import kgetattr
 from kiwi.environ import environ
+from kiwi.ui.objectlist import ObjectList
 from mako.lookup import TemplateLookup
 from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
@@ -200,6 +205,95 @@ class SearchResultsReport(BaseStoqReport):
             elif filter_string:
                 notes.append(filter_string)
         return (title, notes)
+
+
+class ObjectListReport(SearchResultsReport):
+    def __init__(self, filename, data, report_name, blocked_records=None,
+                 status_name=None, filter_strings=[], status=None, *args,
+                 **kwargs):
+        self._columns = []
+        self._summary_row = {}
+        SearchResultsReport.__init__(self, filename, data, report_name,
+                                     blocked_records=None, status_name=None,
+                                     filter_strings=[], status=None, *args,
+                                     **kwargs)
+
+    def _convert_column(self, column):
+        # Converts objectlist.Column to ObjectTableColumn
+        if column.ellipsize == pango.ELLIPSIZE_NONE:
+            truncate = False
+        else:
+            truncate = True
+
+        if column.justify == gtk.JUSTIFY_RIGHT:
+            align = 'RIGHT'
+        elif column.justify == gtk.JUSTIFY_CENTER:
+            align = 'CENTER'
+        else:
+            align = 'LEFT'
+
+        width = column.width or column.treeview_column.get_width()
+        # Ignore width when expand parameter is set or the column will not be
+        # expanded.
+        if column.expand:
+            width = None
+        # Avoid the use of format_string and format_func by using the data
+        # already formatted.
+        data_source = lambda obj: column.as_string(
+                                    kgetattr(obj, column.attribute, None))
+        return OTC(name=column.title, data_source=data_source, align=align,
+                   truncate=truncate, width=width, expand=column.expand)
+
+    def _setup_columns_from_list(self):
+        assert isinstance(self._data, ObjectList)
+
+        report_columns = []
+        for column in self._data.get_columns():
+            if not column.treeview_column.get_visible():
+                continue
+            # Not supported columns.
+            if column.data_type in [bool, gtk.gdk.Pixbuf,]:
+                continue
+
+            report_columns.append(self._convert_column(column))
+        return report_columns
+
+    #
+    # Public API
+    #
+
+    def get_columns(self):
+        """Returns the report columns.
+
+        @returns: a list of ObjectTableColumns.
+        """
+        if not self._columns:
+            self._columns = self._setup_columns_from_list()
+        return self._columns
+
+    def add_summary_by_column(self, column_name, value):
+        """Includes the summary of a certain column in the summary row.
+
+        @param column_name: the name of the summarized column.
+        @param value: the summary value.
+        """
+        self._summary_row.update({column_name:value})
+
+    def get_summary_row(self):
+        """Returns the row used to summarize data.
+
+        @returns: the summary row.
+        """
+        row = []
+        for column in self.get_columns():
+            if self._summary_row.has_key(column.name):
+                row.append(self._summary_row[column.name])
+            else:
+                row.append('')
+        if any(row) and row[0] == '':
+            row[0] = _(u'Totals:')
+
+        return row
 
 
 class PriceReport(SearchResultsReport):
