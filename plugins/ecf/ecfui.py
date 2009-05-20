@@ -263,6 +263,7 @@ class ECFUI(object):
                 day = till.opening_date
 
             dir = sysparam(self.conn).CAT52_DEST_DIR.path
+            dir = os.path.expanduser(dir)
             if not os.path.exists(dir):
                 os.mkdir(dir)
 
