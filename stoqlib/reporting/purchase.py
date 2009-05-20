@@ -27,8 +27,6 @@
 
 from decimal import Decimal
 
-from kiwi.datatypes import currency
-
 from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
                                            TableColumn as TC,
                                            HIGHLIGHT_NEVER)
@@ -38,13 +36,13 @@ from stoqlib.lib.validators import (get_formatted_price, get_formatted_cost,
                                     format_quantity)
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.template import SearchResultsReport, BaseStoqReport
+from stoqlib.reporting.template import BaseStoqReport, ObjectListReport
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 
 _ = stoqlib_gettext
 
 
-class PurchaseReport(SearchResultsReport):
+class PurchaseReport(ObjectListReport):
     report_name = _("Purchase Order Report")
     main_object_name = _("orders")
     filter_format_string = _("with status <u>%s</u>")
@@ -55,48 +53,29 @@ class PurchaseReport(SearchResultsReport):
     def __init__(self, filename, purchases, status, *args, **kwargs):
         self.show_status_column = status == ALL_ITEMS_INDEX
         self._purchases = purchases
-        SearchResultsReport.__init__(self, filename, purchases,
-                                     PurchaseReport.report_name,
-                                     landscape=1, *args, **kwargs)
+        ObjectListReport.__init__(self, filename, purchases,
+                                  PurchaseReport.report_name,
+                                  landscape=1, *args, **kwargs)
         self._setup_table()
-
-    def _get_columns(self):
-        # XXX Bug #2430 will improve this part
-        columns = [OTC(_("Number"), lambda obj: obj.id,
-                       width=60, align=RIGHT),
-                   OTC(_("Date"), lambda obj: obj.get_open_date_as_string(),
-                       width=70),
-                   OTC(_("Supplier"), lambda obj: obj.supplier_name,
-                       width=250, truncate=True),
-                   OTC(_("Qty Ordered"),
-                       lambda obj: format_quantity(obj.ordered_quantity),
-                       width=90, align=RIGHT),
-                   OTC(_("Qty Received"),
-                       lambda obj: format_quantity(obj.received_quantity),
-                       width=120, align=RIGHT),
-                   OTC(_("Total"),
-                       lambda obj: get_formatted_price(obj.total),
-                       width=85, align=RIGHT)]
-        if self.show_status_column:
-            columns.insert(-4, OTC(_("Status"),
-                                   lambda obj: obj.get_status_str(), width=80))
-        return columns
 
     def _setup_table(self):
         totals = [(purchase.ordered_quantity, purchase.received_quantity,
-                   purchase.total)
-                      for purchase in self._purchases]
+                   purchase.total) for purchase in self._purchases]
         ordered, received , total = zip(*totals)
-        total_ordered, total_received, total = (sum(ordered, Decimal(0)),
-                                                sum(received, Decimal(0)),
-                                                sum(total, currency(0)))
-        summary_row = ["", "", _("Totals:"), format_quantity(total_ordered),
-                       format_quantity(total_received),
-                       get_formatted_price(total)]
+        self.add_summary_by_column(
+            _(u'Ordered'), format_quantity(sum(ordered, Decimal(0))))
+        self.add_summary_by_column(
+            _(u'Received'), format_quantity(sum(received, Decimal(0))))
+        self.add_summary_by_column(
+            _(u'Total'), get_formatted_price(sum(total, Decimal(0))))
+
+        summary_row = self.get_summary_row()
         if self.show_status_column:
             summary_row.insert(0, "")
-        self.add_object_table(self._purchases, self._get_columns(),
+
+        self.add_object_table(self._purchases, self.get_columns(),
                               summary_row=summary_row)
+
 
 class PurchaseOrderReport(BaseStoqReport):
     report_name = _("Purchase Order")
