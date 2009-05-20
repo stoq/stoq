@@ -28,6 +28,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="ExportCSV">
+                        <property name="name">ExportCSV</property>
+                        <property name="label" translatable="yes">Export CSV...</property>
+                        <property name="stock_id">gtk-save-as</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="ChangeDueDate">
                         <property name="name">ChangeDueDate</property>
                         <property name="label" translatable="yes">Change Due Date...</property>
@@ -216,6 +223,7 @@
 	    <menuitem action="ChangeDueDate"/>
 	    <menuitem action="Renegotiate"/>
 	    <menuitem action="Receipt"/>
+	    <menuitem action="ExportCSV"/>
 	    <menuitem action="quit_action"/>
 	  </menu>
       <menu action="SearchMenu">

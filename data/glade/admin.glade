@@ -180,6 +180,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="ExportCSV">
+                        <property name="name">ExportCSV</property>
+                        <property name="label" translatable="yes">Export CSV...</property>
+                        <property name="stock_id">gtk-save-as</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
                         <property name="label" translatable="yes">_Search</property>
@@ -280,6 +287,7 @@
           <menubar action="menubar">
             <menu action="SalesMenu">
 	      <menuitem action="NewUser"/>
+              <menuitem action="ExportCSV"/>
               <menuitem action="Quit"/>
             </menu>
             <menu action="SearchMenu">

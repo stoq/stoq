@@ -144,6 +144,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="ExportCSV">
+                        <property name="name">ExportCSV</property>
+                        <property name="label" translatable="yes">Export CSV...</property>
+                        <property name="stock_id">gtk-save-as</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="SaveAs">
                         <property name="name">SaveAs</property>
                         <property name="tooltip" translatable="yes">Save with a different name</property>
@@ -229,6 +236,7 @@
 	      <menuitem action="AddCash"/>
 	      <menuitem action="RemoveCash"/>
 	      <separator name="sep"/>
+	      <menuitem action="ExportCSV"/>
 	      <menuitem action="quit_action"/>
 	    </menu>
 	      <menu action="Actions">
