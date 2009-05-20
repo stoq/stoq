@@ -37,6 +37,7 @@ from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       finish_transaction, get_connection)
 from stoqlib.lib.interfaces import ICookieFile
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
+from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.gui.slaves.userslave import PasswordEditor
@@ -373,10 +374,21 @@ class SearchableAppWindow(AppWindow):
         """
         self.search.clear()
 
+    def export_csv(self):
+        """Runs a dialog to export the current search results to a CSV file.
+        """
+        self.run_dialog(CSVExporterDialog, self, self.search_table,
+                        self.results)
+
     #
     # Hooks
     #
 
     def create_filters(self):
         pass
+    #
+    # Callbacks
+    #
 
+    def on_ExportCSV__activate(self, action):
+        self.export_csv()
