@@ -63,6 +63,13 @@ STYLE_SHEET.add(ParagraphStyle(
     fontName='Vera'))
 
 STYLE_SHEET.add(ParagraphStyle(
+    'Normal-Notes',
+    parent=STYLE_SHEET['Normal'],
+    fontName='Vera',
+    alignment=TA_LEFT,
+    leftIndent=18,))
+
+STYLE_SHEET.add(ParagraphStyle(
     'Normal-Bold',
     parent=STYLE_SHEET['Normal'],
     fontName='Vera-B'))

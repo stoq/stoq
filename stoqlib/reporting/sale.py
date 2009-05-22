@@ -30,6 +30,7 @@ from kiwi.datatypes import currency
 from stoqlib.database.runtime import get_connection, get_current_branch
 from stoqlib.domain.commission import CommissionView
 from stoqlib.domain.sale import SaleView
+from stoqlib.domain.interfaces import IDelivery
 from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
 from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
                                            TableColumn as TC, HIGHLIGHT_NEVER)
@@ -112,6 +113,30 @@ class SaleOrderReport(BaseStoqReport):
         self.add_column_table(data, cols, do_header=False,
                               highlight=HIGHLIGHT_NEVER,
                               table_line=TABLE_LINE_BLANK)
+        self._add_sale_notes()
+
+    def _add_sale_notes(self):
+        delivery = self.sale.get_delivery_item()
+        delivery_notes = ''
+        if delivery is not None:
+            delivery_notes = delivery.notes
+
+        if delivery_notes:
+            self.add_paragraph(_(u'Additional Instructions:'), style='Normal-Bold')
+            self.add_preformatted_text(delivery_notes, style='Normal-Notes')
+
+        delivery_address = ''
+        for sale_item in self.sale.get_items():
+            delivery_item = IDelivery(sale_item, None)
+            if delivery_item is not None:
+                # At the moment, the delivery items should be delivered at only
+                # one address, so we take the first address that we find.
+                delivery_address = delivery_item.address
+                break
+
+        if delivery_address:
+            self.add_paragraph(_(u'Delivery Address:'), style='Normal-Bold')
+            self.add_preformatted_text(delivery_address, style='Normal-Notes')
 
     #
     # BaseReportTemplate hooks

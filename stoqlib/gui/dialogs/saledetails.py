@@ -80,7 +80,6 @@ class SaleDetailsDialog(BaseEditor):
                      'salesperson_lbl',
                      'open_date_lbl',
                      'total_lbl',
-                     'notes',
                      'order_number',
                      'subtotal_lbl',
                      'surcharge_lbl',
@@ -128,7 +127,15 @@ class SaleDetailsDialog(BaseEditor):
         else:
             self.status_details_button.hide()
 
-        self.items_list.add_list(self.sale_order.get_items())
+        sale_items = self.sale_order.get_items()
+        self.items_list.add_list(sale_items)
+
+        notes = [self.sale_order.notes]
+        notes.extend([s.notes for s in sale_items if s.notes])
+        buffer = gtk.TextBuffer()
+        buffer.set_text(u'\n'.join(notes))
+        self.notes.set_buffer(buffer)
+
         self.payments_list.add_list(self._get_payments(self.sale_order))
         changes = PaymentChangeHistoryView.select_by_group(
             self.sale_order.group,

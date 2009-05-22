@@ -537,6 +537,17 @@ class Sale(ValidatableDomain):
         """
         return self.get_items().sum('quantity') or Decimal(0)
 
+    def get_delivery_item(self):
+        """Returns the delivery item of the sale, if any.
+
+        @returns: The sale item that represents the delivery or None if there
+                  is no delivery service in the sale.
+        """
+        conn = self.get_connection()
+        delivery_service = sysparam(conn).DELIVERY_SERVICE
+        return SaleItem.selectOneBy(sellable=delivery_service, sale=self,
+                                    connection=conn)
+
     def get_order_number_str(self):
         return u'%05d' % self.id
 
