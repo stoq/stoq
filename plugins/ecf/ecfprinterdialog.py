@@ -62,9 +62,8 @@ class ECFEditor(BaseEditor):
     gladefile = 'FiscalPrinterDialog'
     model_type = ECFPrinter
     model_name = _('Fiscal Printer')
-    proxy_widgets = ['device_name',
-                     'device_serial',
-                     'is_active']
+    proxy_widgets = ['device_name', 'device_serial', 'is_active',
+                     'user_number', 'register_date', 'register_cro']
 
     def __init__(self, conn, model=None):
         self._device_manager = DeviceManager()
