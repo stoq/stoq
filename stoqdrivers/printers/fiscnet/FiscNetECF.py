@@ -721,13 +721,6 @@ class FiscNetECF(SerialBase):
 
         return data
 
-    def get_user_registration_info(self):
-        # TEST ME: This should go away after bug 3939 is fixed
-        return Settable(
-                user_number=self._read_register('ContadorProprietarios', int),
-                register_date=datetime.datetime.today(),
-                cro=self.get_cro());
-
     def get_payment_receipt_identifier(self, method_name):
         # We don't need an identifier. Just return None
         return None

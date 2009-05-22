@@ -354,14 +354,6 @@ class FiscalPrinter(BasePrinter):
 
         return self._driver.get_sintegra()
 
-    def get_user_info(self):
-        """Returns current ecf user registration date and time,
-        id in the printer and cro relative to the user registration
-        """
-        log.info('get_user_info()')
-
-        return self._driver.get_user_registration_info()
-
     @property
     def supports_duplicate_receipt(self):
         return self._driver.supports_duplicate_receipt

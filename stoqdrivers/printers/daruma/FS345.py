@@ -734,26 +734,3 @@ class FS345(SerialBase):
              period_total=period_total,
              total=period_total + old_total,
              taxes=taxes)
-
-    def get_user_registration_info(self):
-        """Returns current ecf user registration date and time,
-        id in the printer and cro relative to the user registration
-        """
-        (coo, data) = self._till_read_memory_to_serial(datetime.date.today(),
-                                                      datetime.date.today())
-
-        pos = data.index(u'Relação dos Usuários')
-        data = data[pos:].split('\n')
-
-        date_parts = data[2][0:10].split('/')
-        time_parts = data[2][11:16].split(':')
-
-        return Settable(
-                user_number=int(data[1][7:]),
-                register_date=datetime.datetime(int(date_parts[2]),
-                                                int(date_parts[1]),
-                                                int(date_parts[0]),
-                                                int(time_parts[0]),
-                                                int(time_parts[1])),
-                cro=int(data[2][29:33]))
-

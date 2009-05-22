@@ -394,10 +394,6 @@ class ICouponPrinter(IDevice):
         @rtype: integer
         """
 
-    def get_user_registration_info():
-        """Returns current ecf user registration date and time,
-        id in the printer and cro relative to the user registration
-        """
 
 class IChequePrinter(IDevice):
     """ Interface specification for cheque printers. """

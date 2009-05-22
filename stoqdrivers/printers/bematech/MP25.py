@@ -751,36 +751,3 @@ class MP25(SerialBase):
         ret = '%0*d' % (6, ret)
         firmware = "%s:%s:%s" % (ret[0:2], ret[2:4], ret[4:6])
         return firmware
-
-
-    def get_user_registration_info(self):
-        # http://partners.bematech.com.br/flashtip/2007/06/
-        data = self._till_read_memory_to_serial(datetime.date.today(), datetime.date.today())
-
-        pos = data.index('--------USUÁRIOS--------')
-        end = data.index('----REDUÇõES DIÁRIAS----')
-        data = data[pos:end].split('\n')
-
-        user_number = 0
-        cro = 0
-        register_date = datetime.date.today()
-        register_time = datetime.time(0,0,0)
-        for i in data:
-            if not i.startswith('Usuário:'):
-                continue
-
-            user_number = int(i[8:12])
-            cro = int(i[20:24])
-
-            date_parts = i[28:38].split('/')
-            time_parts = i[39:].split(':')
-            register_date = datetime.datetime(int(date_parts[2]),
-                                              int(date_parts[1]),
-                                              int(date_parts[0]),
-                                              int(time_parts[0]),
-                                              int(time_parts[1]))
-
-        return Settable(
-                user_number=user_number,
-                register_date=register_date,
-                cro=cro)
