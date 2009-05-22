@@ -604,6 +604,26 @@ class TestSale(DomainTest):
         self.add_payments(sale)
         sale.confirm()
 
+    def testGetDeliveryItem(self):
+        # Without delivery
+        sale = self.create_sale()
+        self.failIf(sale.can_set_paid())
+
+        self.add_product(sale)
+        delivery = sale.get_delivery_item()
+        self.failUnless(delivery is None)
+
+        # With delivery
+        sale = self.create_sale()
+        self.failIf(sale.can_set_paid())
+
+        self.add_product(sale)
+        sellable = sysparam(self.trans).DELIVERY_SERVICE
+        sale.add_sellable(sellable, quantity=1)
+        delivery = sale.get_delivery_item()
+        self.failIf(delivery is None)
+        self.failIf(delivery.sellable is not sellable)
+
     def testCommissionAmount(self):
         sale = self.create_sale()
         sellable = self.add_product(sale, price=200)
