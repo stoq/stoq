@@ -234,11 +234,16 @@ class TillClosingEditor(BaseEditor):
     def on_confirm(self):
         till = self.model.till
         try:
-            TillCloseEvent.emit(till=till,
-                                previous_day=self._previous_day)
+            retval = TillCloseEvent.emit(till=till,
+                                         previous_day=self._previous_day)
         except (TillError, DeviceError), e:
             warning(str(e))
             return None
+
+        # If the event was captured and its return value is False, then we
+        # should not close the till.
+        if retval is False:
+            return False
 
         till.close_till(self.model.value)
 

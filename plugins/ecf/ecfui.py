@@ -224,15 +224,16 @@ class ECFUI(object):
         printer = self._printer.get_printer()
         driver = printer.get_fiscal_driver()
 
-        # Closing the till is a async operation. So, we need to call get_user_info
-        # before we close it, as the printer will not respond for a few seconds
-        # while printing.
-        if sysparam(self.conn).ENABLE_PAULISTA_INVOICE and not printer.user_number:
-            trans = new_transaction()
-            printer = trans.get(printer)
-            user_info = driver.get_user_info()
-            printer.set_user_info(user_info)
-            trans.commit()
+        if (sysparam(self.conn).ENABLE_PAULISTA_INVOICE and not
+            (printer.user_number and printer.register_date and
+             printer.register_cro)):
+            response = warning(
+                short=_(u"You need to set some details about your ECF "
+                         "if you want to save the paulista invoice file. "
+                         "Go to the admin application and fill the "
+                         "required information for the ECF."),
+                buttons=((_(u"Cancel Close Till"), gtk.RESPONSE_CANCEL),))
+            return False
 
         retval = True
         while True:
