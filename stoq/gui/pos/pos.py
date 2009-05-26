@@ -75,7 +75,7 @@ _ = gettext.gettext
 log = Logger('stoq.pos')
 
 class _SaleItem(object):
-    def __init__(self, sellable, quantity, price=None):
+    def __init__(self, sellable, quantity, price=None, notes=None):
         self.sellable = sellable
         self.description = sellable.base_sellable_info.description
         self.unit = sellable.get_unit_description()
@@ -86,7 +86,7 @@ class _SaleItem(object):
         self.price = price
         self.deliver = False
         self.estimated_fix_date = None
-        self.notes = None
+        self.notes = notes
 
     @property
     def total(self):
@@ -497,12 +497,14 @@ class POSApp(AppWindow):
         for sale_item in self.sale_items:
             if sale_item.sellable == delivery_service:
                 sale_item.price = delivery.price
+                sale_item.notes = delivery.notes
                 delivery_item = sale_item
                 new_item = False
                 break
         else:
             delivery_item = _SaleItem(sellable=delivery_service,
                                       quantity=1,
+                                      notes=delivery.notes,
                                       price=delivery.price)
             new_item = True
 
@@ -558,7 +560,7 @@ class POSApp(AppWindow):
 
             if self._delivery and fake_sale_item.deliver:
                 item = sale_item.addFacet(IDelivery,
-                                          connection=sale.get_connection())
+                                          connection=trans)
                 item.address = address_string
 
         return sale
