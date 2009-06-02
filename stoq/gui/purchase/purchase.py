@@ -85,7 +85,7 @@ class PurchaseApp(SearchableAppWindow):
 
     def get_columns(self):
         return [SearchColumn('id', title=_('Number'), sorted=True,
-                             data_type=str, justify=gtk.JUSTIFY_RIGHT,
+                             data_type=int, justify=gtk.JUSTIFY_RIGHT,
                              width=80),
                 SearchColumn('open_date', title=_('Opened'),
                               long_title='Date Opened',
