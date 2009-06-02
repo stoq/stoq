@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -157,7 +157,7 @@ class SaleDetailsDialog(BaseEditor):
                 Column('paid_date', _("Paid Date"),
                        data_type=datetime.date, width=90),
                 Column('status_str', _("Status"), data_type=str, width=80),
-                ColoredColumn('base_value', _("Value"), data_type=currency,
+                ColoredColumn('value', _("Value"), data_type=currency,
                               width=90, color='red',
                               justify=gtk.JUSTIFY_RIGHT,
                               data_func=payment_value_colorize),
