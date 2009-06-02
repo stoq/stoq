@@ -176,6 +176,8 @@ class ECFEditor(BaseEditor):
         values = []
         for device in self._device_manager.get_serial_devices():
             values.append(device.device_name)
+        if not self.model.device_name in values:
+            values.append(self.model.device_name)
         self.device_name.prefill(values)
 
     def _populate_ecf_printer(self, status):
