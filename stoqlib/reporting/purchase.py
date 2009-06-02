@@ -93,7 +93,7 @@ class PurchaseOrderReport(BaseStoqReport):
     def _get_items_table_columns(self):
         return [
             OTC(_("Item"),
-                lambda obj: ("%s - %s" % (obj.sellable.id,
+                lambda obj: ("%s - %s" % (obj.sellable.code,
                                           obj.sellable.get_description())),
                 expand=True, truncate=True),
             # FIXME: This column should be virtual, waiting for bug #2764
