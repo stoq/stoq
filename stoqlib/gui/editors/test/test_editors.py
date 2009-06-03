@@ -23,6 +23,7 @@
 ##
 
 import inspect
+import gc
 
 from kiwi.python import Settable
 from kiwi.ui.wizard import WizardStep
@@ -151,5 +152,9 @@ def _create_slave_test():
         namespace[name] = func
 
     return type('TestSlaves', (DomainTest,), namespace)
+
+# Speculative fix: collect the garbage before we run the tests, since there is
+# a strange (and random) segmentation fault, due to memory violation.
+gc.collect()
 
 TestSlaves = _create_slave_test()
