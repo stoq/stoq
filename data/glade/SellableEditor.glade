@@ -289,7 +289,7 @@
                                 <child>
                                     <widget class="ProxyComboBox" id="statuses_combo">
                                         <property name="data_type">int</property>
-                                        <property name="model_attribute">statuses_combo</property>
+                                        <property name="model_attribute">status</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
