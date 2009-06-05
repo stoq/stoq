@@ -100,17 +100,6 @@ class TestTill(DomainTest):
         till.open_till()
         self.assertRaises(ValueError, till.close_till, 20)
 
-    def testTillCloseWithoutRemoveValues(self):
-        station = self.create_station()
-        till = Till(connection=self.trans, station=station)
-        till.open_till()
-        payment = self._create_inpayment()
-        till.add_entry(payment)
-        self.assertRaises(TillError, till.close_till)
-
-        till.close_till(removed=payment.value)
-        self.assertEqual(till.status, Till.STATUS_CLOSED)
-
     def testGetBalance(self):
         till = Till(connection=self.trans,
                     station=self.create_station())

@@ -71,9 +71,6 @@ class _TillClosingModel(object):
     def get_balance(self):
         return currency(self.till.get_balance() - self.value)
 
-    def get_minimum_value(self):
-        return currency(self.get_balance() - self.get_cash_amount())
-
 
 class _BaseCashModel(object):
     def __init__(self, model):
@@ -160,7 +157,6 @@ class TillClosingEditor(BaseEditor):
     model_type = _TillClosingModel
     gladefile = 'TillClosing'
     proxy_widgets = ('value',
-                     'minimum_value',
                      'balance',
                      'opening_date')
 
@@ -178,7 +174,7 @@ class TillClosingEditor(BaseEditor):
     def _setup_widgets(self):
         self.set_confirm_widget(self.value)
         self.value.set_sensitive(self._previous_day)
-        value = self.model.get_minimum_value()
+        value = self.model.get_balance()
         self.value.update(value)
 
         self.day_history.set_columns(self._get_columns())
@@ -264,9 +260,6 @@ class TillClosingEditor(BaseEditor):
             return ValidationError(_("You can not specify an amount "
                                      "removed greater than the "
                                      "till balance."))
-        minimum = self.model.get_minimum_value()
-        if value < minimum:
-            return ValidationError(_(u'You can leave only cash on the till.'))
 
     def after_value__content_changed(self, entry):
         self.proxy.update('balance')
