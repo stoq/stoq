@@ -180,9 +180,6 @@ class Till(Domain):
         if self.status == Till.STATUS_CLOSED:
             raise TillError(_("Till is already closed"))
 
-        # Save the cash amount value before we add a debit entry.
-        cash_amount = self.get_cash_amount()
-
         if removed:
             if removed > self.get_balance():
                 raise ValueError("The cash amount that you want to send is "
@@ -192,14 +189,7 @@ class Till(Domain):
                                  _(u'Amount removed from Till on %s' %
                                    self.opening_date.strftime('%x')))
 
-        balance = self.get_balance()
-        if not self.needs_closing():
-            if balance > cash_amount:
-                raise TillError("The remaining value on the till is greater "
-                                "than the cash amount.")
-
-        self.final_cash_amount = balance
-
+        self.final_cash_amount = self.get_balance()
         self.closing_date = const.NOW()
         self.status = Till.STATUS_CLOSED
 
