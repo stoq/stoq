@@ -568,8 +568,8 @@ class Sellable(Domain):
         return cls._get_sellables_by_barcode(conn, barcode,
                                              IN(cls.q.status, statuses))
     @classmethod
-    def get_availables_by_categories(cls, conn, categories,
-                                     include_uncategorized=True):
+    def get_unblocked_by_categories(cls, conn, categories,
+                                    include_uncategorized=True):
         """Returns the available sellables by a list of categories.
 
         @param conn: a orm Transaction instance
@@ -581,6 +581,6 @@ class Sellable(Domain):
 
         if include_uncategorized:
             categories.append(None)
-        for sellable in cls.get_available_sellables(conn):
+        for sellable in cls.get_unblocked_sellables(conn):
             if sellable.category in categories:
                 yield sellable
