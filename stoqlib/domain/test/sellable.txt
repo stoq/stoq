@@ -157,7 +157,7 @@ Also, we can get a list of available sellable by a list of categories:
     >>> category = SellableCategory(description='Battery', connection=trans)
     >>> sellable.category = category
     >>> sellable.can_sell()
-    >>> sellable in Sellable.get_availables_by_categories(trans, [category])
+    >>> sellable in Sellable.get_unblocked_by_categories(trans, [category])
     True
 
 Unblocked means available or sold:
