@@ -164,8 +164,8 @@ class OpenInventoryDialog(BaseEditor):
             return []
 
         include_uncategorized = self.include_uncategorized_check.get_active()
-        return Sellable.get_availables_by_categories(self.conn, selected,
-                                                     include_uncategorized)
+        return Sellable.get_unblocked_by_categories(self.conn, selected,
+                                                    include_uncategorized)
 
     def _select(self, categories, select_value):
         for category in categories:
