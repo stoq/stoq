@@ -29,17 +29,16 @@
 
 from decimal import Decimal
 
-from stoqlib.reporting.template import SearchResultsReport, PriceReport
+from stoqlib.reporting.template import (SearchResultsReport, PriceReport,
+                                        ObjectListReport)
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
-from stoqlib.reporting.base.flowables import RIGHT
-from stoqlib.lib.validators import (format_quantity, get_formatted_price,
-                                    get_formatted_cost)
+from stoqlib.lib.validators import format_quantity, get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.views import ProductFullStockView, ProductFullStockItemView
 
 
-class ProductReport(SearchResultsReport):
+class ProductReport(ObjectListReport):
     """ This report show a list of all products returned by a SearchBar,
     listing both its description and its balance in the stock selected.
     """
@@ -53,45 +52,47 @@ class ProductReport(SearchResultsReport):
         self._products = products
         ProductReport.main_object_name = _("products from branch %s") % \
             (kwargs['branch_name'],)
-        SearchResultsReport.__init__(self, filename, products,
-                                     ProductReport.report_name,
-                                     landscape=True,
-                                     *args, **kwargs)
+        ObjectListReport.__init__(self, filename, products,
+                                  ProductReport.report_name,
+                                  landscape=True,
+                                  *args, **kwargs)
         self._setup_items_table()
 
-    def _get_columns(self):
-        return [
-            OTC(_("Code"), lambda obj: obj.code, width=100, truncate=True),
-            OTC(_("Description"), lambda obj: obj.description, truncate=True),
-            OTC(_("Cost"), lambda obj:
-                get_formatted_cost(obj.cost, symbol=False), width=60,
-                truncate=True),
-            OTC(_("Price"), lambda obj:
-                get_formatted_price(obj.price, symbol=False), width=60,
-                truncate=True),
-            OTC(_("C.M."), lambda obj:
-                get_formatted_price(obj.price - obj.cost, symbol=False),
-                width=60, truncate=True),
-            OTC(_("Quantity"), lambda obj: format_data(obj.stock),
-                width=80, align=RIGHT, truncate=True),
-            # FIXME: This column should be virtual, waiting for bug #2764
-            OTC(_("Unit"), lambda obj: obj.get_unit_description(),
-                width=60, virtual=False),
-            ]
+    def _setup_items_table(self):
+        totals = [(p.cost, p.price, p.stock) for p in self._products]
+        cost, price, stock = zip(*totals)
+        self.add_summary_by_column(_(u'Cost'),
+                                   get_formatted_price(sum(cost, Decimal(0))))
+        self.add_summary_by_column(_(u'Price'),
+                                   get_formatted_price(sum(price, Decimal(0))))
+        self.add_summary_by_column(_(u'Stock Total'),
+                                   format_data(sum(stock, Decimal(0))))
+
+        self.add_object_table(self._products, self.get_columns(),
+                              summary_row=self.get_summary_row())
+
+
+class SimpleProductReport(ObjectListReport):
+    obj_type = ProductFullStockView
+    report_name = _("Product Listing")
+    filter_format_string = _("on branch <u>%s</u>")
+
+    def __init__(self, filename, products, *args, **kwargs):
+        self._products = products
+        SimpleProductReport.main_object_name = _("products from branch %s") % \
+            (kwargs['branch_name'],)
+        ObjectListReport.__init__(self, filename, products,
+                                  ProductReport.report_name,
+                                  landscape=True,
+                                  *args, **kwargs)
+        self._setup_items_table()
 
     def _setup_items_table(self):
-        total_cost = total_price = total_cm = total_qty = 0
-        for item in self._products:
-            total_cost += item.cost or Decimal(0)
-            total_price += item.price or Decimal(0)
-            total_cm += item.price - item.cost or Decimal(0)
-            total_qty += item.stock or Decimal(0)
-        summary_row = ["",  _("Total:"), format_quantity(total_cost),
-                       format_quantity(total_price),
-                       format_quantity(total_cm),
-                       format_quantity(total_qty), ""]
-        self.add_object_table(self._products, self._get_columns(),
-                              summary_row=summary_row)
+        products = self._products.get_selected_rows() or self._products
+        total = sum([p.stock for p in products], Decimal(0))
+        self.add_summary_by_column(_(u'Quantity'), format_quantity(total))
+        self.add_object_table(products, self.get_columns(),
+                              summary_row=self.get_summary_row())
 
 
 class ProductPriceReport(PriceReport):
@@ -108,7 +109,7 @@ class ProductPriceReport(PriceReport):
         PriceReport.__init__(self, filename, products, *args, **kwargs)
 
 
-class ProductQuantityReport(SearchResultsReport):
+class ProductQuantityReport(ObjectListReport):
     """ This report show a list of all products returned by a SearchBar,
     listing both its description, quantity solded and quantity received.
     """
@@ -120,44 +121,27 @@ class ProductQuantityReport(SearchResultsReport):
 
     def __init__(self, filename, products, *args, **kwargs):
         self._products = products
-        SearchResultsReport.__init__(self, filename, products,
-                                     ProductReport.report_name,
-                                     landscape=True,
-                                     *args, **kwargs)
+        ObjectListReport.__init__(self, filename, products,
+                                  ProductReport.report_name,
+                                  landscape=True,
+                                  *args, **kwargs)
         self._setup_items_table()
 
-    def _get_columns(self):
-        return [
-            OTC(_("Code"), lambda obj: obj.code, width=100, truncate=True),
-            OTC(_("Description"), lambda obj: obj.description, truncate=True),
-            OTC(_("Quantity Sold"), lambda obj:
-                format_data(obj.quantity_sold), width=100,
-                align=RIGHT, truncate=True),
-            OTC(_("Quantity Transfered"), lambda obj:
-                format_data(obj.quantity_transfered), width=100,
-                align=RIGHT, truncate=True),
-            OTC(_("Quantity retained"), lambda obj:
-                format_data(obj.quantity_retained), width=100,
-                align=RIGHT, truncate=True),
-            OTC(_("Quantity Received"), lambda obj:
-                format_data(obj.quantity_received), width=100,
-                align=RIGHT, truncate=True)
-            ]
-
     def _setup_items_table(self):
-        qty_sold = qty_received = qty_transfered = qty_retained = 0
-        for item in self._products:
-            qty_sold += item.quantity_sold or Decimal(0)
-            qty_received += item.quantity_received or Decimal(0)
-            qty_transfered += item.quantity_transfered or Decimal(0)
-            qty_retained += item.quantity_retained or Decimal(0)
+        totals = [(p.quantity_sold or Decimal(0),
+                   p.quantity_received or Decimal(0),
+                   p.quantity_transfered or Decimal(0),
+                   p.quantity_retained or Decimal(0)) for p in self._products]
+        sold, received, transfered, retained = zip(*totals)
 
-        summary_row = ["", _("Total:"), format_data(qty_sold),
-                       format_data(qty_transfered),
-                       format_data(qty_retained),
-                       format_data(qty_received)]
-        self.add_object_table(self._products, self._get_columns(),
-                              summary_row=summary_row)
+        self.add_summary_by_column(_(u'Sold'), format_data(sum(sold)))
+        self.add_summary_by_column(_(u'Received'), format_data(sum(received)))
+        self.add_summary_by_column(_(u'Transfered'),
+                                   format_data(sum(transfered)))
+        self.add_summary_by_column(_(u'Retained'), format_data(sum(retained)))
+
+        self.add_object_table(self._products, self.get_columns(),
+                              summary_row=self.get_summary_row())
 
 
 class ProductCountingReport(SearchResultsReport):
@@ -201,36 +185,33 @@ def format_data(data):
     return format_quantity(data)
 
 
-class ProductStockReport(SearchResultsReport):
+class ProductStockReport(ObjectListReport):
     report_name = _("Product Stock Report")
     main_object_name = _("products")
     obj_type = ProductFullStockItemView
 
-    def __init__(self, filename, objects, *args, **kwargs):
-        self._objects = objects
-        SearchResultsReport.__init__(self, filename, objects,
-                                     ProductStockReport.report_name,
-                                     landscape=1, *args, **kwargs)
+    def __init__(self, filename, stock_products, *args, **kwargs):
+        self._stock_products = stock_products
+        ObjectListReport.__init__(self, filename, stock_products,
+                                  ProductStockReport.report_name,
+                                  landscape=1, *args, **kwargs)
         self._setup_table()
 
-    def _get_columns(self):
-        return [OTC(_("Code"), lambda obj: obj.code, width=90, align=RIGHT),
-                OTC(_("Category"), lambda obj: obj.category_description,
-                    width=90),
-                OTC(_("Description"), lambda obj: obj.description,
-                    expand=True, truncate=True),
-                OTC(_("Minimum"),
-                    lambda obj: format_quantity(obj.minimum_quantity),
-                    width=90, align=RIGHT),
-                OTC(_("In Stock"),
-                    lambda obj: format_quantity(obj.stock),
-                    width=90, align=RIGHT),
-                OTC(_("To Receive"),
-                    lambda obj: format_quantity(obj.to_receive_quantity),
-                    width=85, align=RIGHT),
-                OTC(_("Difference"),
-                    lambda obj: format_quantity(obj.difference),
-                    width=85, align=RIGHT),]
-
     def _setup_table(self):
-        self.add_object_table(self._objects, self._get_columns())
+        totals = [(p.maximum_quantity or Decimal(0),
+                   p.minimum_quantity or Decimal(0),
+                   p.stock or Decimal(0),
+                   p.to_receive_quantity or Decimal(0))
+                       for p in self._stock_products]
+
+        maximum, minimum, stocked, to_receive = zip(*totals)
+
+        self.add_summary_by_column(_(u'Maximum'), format_quantity(sum(maximum)))
+        self.add_summary_by_column(_(u'Minimum'), format_quantity(sum(minimum)))
+        self.add_summary_by_column(_(u'In Stock'),
+                                   format_quantity(sum(stocked)))
+        self.add_summary_by_column(_(u'To Receive'),
+                                   format_quantity(sum(to_receive)))
+
+        self.add_object_table(self._stock_products, self.get_columns(),
+                              summary_row=self.get_summary_row())
