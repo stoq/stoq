@@ -157,11 +157,14 @@ class TestReport(DomainTest):
         self.checkPDF(TransferOrderReceipt, orders[0], items)
 
     def testProductReport(self):
+        from stoqlib.gui.search.productsearch import ProductSearch
+        search = ProductSearch(self.trans)
         # the orderBy clause is only needed by the test
         products = ProductFullStockView.select(connection=self.trans)\
                                        .orderBy('id')
+        search.results.add_list(products, clear=True)
         branch_name = self.create_branch('Any').person.name
-        self.checkPDF(ProductReport, list(products),
+        self.checkPDF(ProductReport, search.results,
                       branch_name=branch_name,
                       date=datetime.date(2007, 1, 1))
 

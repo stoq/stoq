@@ -100,7 +100,7 @@ class ProductSearch(SearchEditor):
         self.results.connect('has-rows', self._has_rows)
 
     def on_print_button_clicked(self, button):
-        print_report(ProductReport, list(self.results),
+        print_report(ProductReport, self.results,
                      filters=self.search.get_search_filters(),
                      branch_name=self.branch_filter.combo.get_active_text())
 
@@ -148,11 +148,16 @@ class ProductSearch(SearchEditor):
                               sorted=True, width=130),
                 SearchColumn('barcode', title=_('Barcode'), data_type=str,
                              width=130),
-                Column('product_and_category_description',
-                        title=_('Description'), data_type=str),
+                SearchColumn('category_description', title=_(u'Category'),
+                             data_type=str, width=100),
+                SearchColumn('description', title=_(u'Description'),
+                             expand=True, data_type=str),
                 SearchColumn('location', title=_('Location'), data_type=str,
                               visible=False)]
-
+        # The price/cost columns must be controlled by hide_cost_column and
+        # hide_price_column. Since the product search will be available across
+        # the applications, it's important to restrict such columns depending
+        # of the context.
         if not self.hide_cost_column:
             cols.append(SearchColumn('cost', _('Cost'), data_type=currency,
                                      format_func=get_formatted_cost, width=90))
@@ -191,7 +196,7 @@ class ProductSearchQuantity(SearchDialog):
     advanced_search = False
 
     def on_print_button_clicked(self, button):
-        print_report(ProductQuantityReport, list(self.results),
+        print_report(ProductQuantityReport, self.results,
                      filters=self.search.get_search_filters())
 
     #
@@ -248,7 +253,7 @@ class ProductStockSearch(SearchDialog):
         self.set_text_field_columns(['description', 'category_description'])
 
     def on_print_button_clicked(self, widget):
-        print_report(ProductStockReport, list(self.results),
+        print_report(ProductStockReport, self.results,
                      filters=self.search.get_search_filters())
 
     #
