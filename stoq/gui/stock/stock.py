@@ -52,7 +52,7 @@ from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.productretention import ProductRetentionDialog
-from stoqlib.reporting.product import ProductReport
+from stoqlib.reporting.product import SimpleProductReport
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -219,9 +219,9 @@ class StockApp(SearchableAppWindow):
         self.run_dialog(PurchaseReceivingSearch, self.conn)
 
     def on_print_button__clicked(self, button):
-        results = self.results.get_selected_rows() or self.results
         branch_name = self.branch_filter.combo.get_active_text()
-        self.print_report(ProductReport, results, branch_name=branch_name)
+        self.print_report(SimpleProductReport, self.results,
+                          branch_name=branch_name)
 
     def on_history_button__clicked(self, button):
         selected = self._klist.get_selected_rows()
