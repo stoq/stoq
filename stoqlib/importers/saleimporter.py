@@ -108,7 +108,10 @@ class SaleImporter(CSVImporter):
         # the examples.
         till = Till.get_current(trans)
         # Do not leave anything in the till.
-        till.close_till(removed=till.get_balance())
+        till.add_debit_entry(till.get_balance(),
+                             _(u'Amount removed from Till on %s' %
+                               till.opening_date.strftime('%x')))
+        till.close_till()
         yesterday = datetime.date.today() - datetime.timedelta(1)
         till.opening_date = yesterday
         till.closing_date = yesterday

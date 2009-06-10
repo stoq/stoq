@@ -98,7 +98,8 @@ class TestTill(DomainTest):
         station = self.create_station()
         till = Till(connection=self.trans, station=station)
         till.open_till()
-        self.assertRaises(ValueError, till.close_till, 20)
+        till.add_debit_entry(currency(20), u"")
+        self.assertRaises(ValueError, till.close_till)
 
     def testGetBalance(self):
         till = Till(connection=self.trans,

@@ -169,7 +169,7 @@ class Till(Domain):
         self.opening_date = const.NOW()
         self.status = Till.STATUS_OPEN
 
-    def close_till(self, removed=0):
+    def close_till(self):
         """This method close the current till operation with the confirmed
         sales associated. If there is a sale with a differente status than
         SALE_CONFIRMED, a new 'pending' till operation is created and
@@ -180,14 +180,8 @@ class Till(Domain):
         if self.status == Till.STATUS_CLOSED:
             raise TillError(_("Till is already closed"))
 
-        if removed:
-            if removed > self.get_balance():
-                raise ValueError("The cash amount that you want to send is "
-                                 "greater than the current balance.")
-
-            self.add_debit_entry(removed,
-                                 _(u'Amount removed from Till on %s' %
-                                   self.opening_date.strftime('%x')))
+        if self.get_balance() < 0:
+            raise ValueError(_("Till balance is negative"))
 
         self.final_cash_amount = self.get_balance()
         self.closing_date = const.NOW()

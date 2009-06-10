@@ -229,6 +229,17 @@ class TillClosingEditor(BaseEditor):
 
     def on_confirm(self):
         till = self.model.till
+        removed = abs(self.model.value)
+        if removed:
+            if removed > till.get_balance():
+                raise ValueError("The amount that you want to remove is "
+                                 "greater than the current balance.")
+
+            TillRemoveCashEvent.emit(till=till, value=removed)
+            till.add_debit_entry(removed,
+                                 _(u'Amount removed from Till on %s' %
+                                   till.opening_date.strftime('%x')))
+
         try:
             retval = TillCloseEvent.emit(till=till,
                                          previous_day=self._previous_day)
@@ -241,7 +252,7 @@ class TillClosingEditor(BaseEditor):
         if retval is False:
             return False
 
-        till.close_till(self.model.value)
+        till.close_till()
 
         # The callsite is responsible for interacting with
         # the fiscal printer
