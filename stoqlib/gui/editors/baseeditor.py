@@ -221,7 +221,7 @@ class BaseEditor(BaseEditorSlave):
 
     def enable_window_controls(self):
         """Enables the window controls
-        See L{stoqlib.gui.base.dialogs.BasicDialog.enable_window_controls}.
+        See L{kiwi.ui.views.BaseView.enable_window_controls}.
         """
         self.main_dialog.enable_window_controls()
 
