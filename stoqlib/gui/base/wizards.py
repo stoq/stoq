@@ -66,6 +66,7 @@ class BaseWizard(PluggableWizard, RunnableView):
             raise ValueError('A title argument is required')
         PluggableWizard.__init__(self, title=title, first_step=first_step,
                                  size=size, edit_mode=edit_mode)
+        self.enable_window_controls()
 
     def cancel(self):
         PluggableWizard.cancel(self)
