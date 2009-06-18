@@ -256,15 +256,27 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.client.prefill(sorted(items))
 
     def _create_client(self):
-        trans = new_transaction()
-        client = run_person_role_dialog(ClientEditor, self, trans, None)
-        if not finish_transaction(trans, client):
+        client = run_person_role_dialog(ClientEditor, self, self.conn, None)
+        if not client:
             return
         if len(self.client) == 0:
             self._fill_clients_combo()
-        else:
+            return
+        clients = self.client.get_model_items().values()
+        if client in clients:
+            if client.is_active:
+               self.client.update(client)
+            else:
+                # remove client from combo
+                self.client.select_item_by_data(client)
+                iter = self.client.get_active_iter()
+                model = self.client.get_model()
+                model.remove(iter)
+                # just in case the inactive client was selected before.
+                self.client.select_item_by_position(0)
+        elif client.is_active:
             self.client.append_item(client.person.name, client)
-        self.client.select(client)
+            self.client.select(client)
         self._update_widgets()
 
     #
