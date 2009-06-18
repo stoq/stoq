@@ -59,14 +59,13 @@ class ProductReport(ObjectListReport):
         self._setup_items_table()
 
     def _setup_items_table(self):
-        totals = [(p.cost, p.price, p.stock) for p in self._products]
+        totals = [(p.cost or Decimal(0),
+                   p.price or Decimal(0),
+                   p.stock or Decimal(0)) for p in self._products]
         cost, price, stock = zip(*totals)
-        self.add_summary_by_column(_(u'Cost'),
-                                   get_formatted_price(sum(cost, Decimal(0))))
-        self.add_summary_by_column(_(u'Price'),
-                                   get_formatted_price(sum(price, Decimal(0))))
-        self.add_summary_by_column(_(u'Stock Total'),
-                                   format_data(sum(stock, Decimal(0))))
+        self.add_summary_by_column(_(u'Cost'), get_formatted_price(sum(cost)))
+        self.add_summary_by_column(_(u'Price'), get_formatted_price(sum(price)))
+        self.add_summary_by_column(_(u'Stock Total'), format_data(sum(stock)))
 
         self.add_object_table(self._products, self.get_columns(),
                               summary_row=self.get_summary_row())
