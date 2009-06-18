@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -251,6 +251,7 @@ class SaleReturnSlave(BaseEditorSlave):
 
     def __init__(self, conn, model, return_data, visual_mode=False):
         self._return_data = return_data
+        self._till = Till.get_current(conn)
         BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
     def _hide_status_widgets(self):
@@ -301,6 +302,9 @@ class SaleReturnSlave(BaseEditorSlave):
         if value > self._return_data.paid_total:
             return ValidationError(_(u"Deduction value can not be greater "
                                       "then the paid value"))
+        till_balance = self._till.get_balance()
+        if self._return_data.paid_total > till_balance:
+            return ValidationError(_(u'You do not have this value on till.'))
 
     def after_penalty_value__changed(self, *args):
         model = self.adaptable_proxy.model
