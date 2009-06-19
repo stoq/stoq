@@ -30,8 +30,8 @@ import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import currency
+from kiwi.ui.objectlist import Column, SearchColumn
 from kiwi.ui.search import SearchSlaveDelegate, DateSearchFilter
-from kiwi.ui.widgets.list import Column
 
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import get_current_user
@@ -73,6 +73,7 @@ class PurchaseSelectionStep(WizardEditorStep):
 
     def _create_search(self):
         self.search = SearchSlaveDelegate(self._get_columns())
+        self.search.enable_advanced_search()
         self.attach_slave('searchbar_holder', self.search)
         self.executer = ORMObjectQueryExecuter()
         self.search.set_query_executer(self.executer)
@@ -87,28 +88,28 @@ class PurchaseSelectionStep(WizardEditorStep):
 
     def _create_filters(self):
         self.search.set_text_field_columns(['supplier_name'])
-        date_filter = DateSearchFilter(_('Date:'))
-        self.search.add_filter(date_filter, columns=['open_date'])
 
     def _get_extra_query(self, states):
         return PurchaseOrderView.q.status == PurchaseOrder.ORDER_CONFIRMED
 
     def _get_columns(self):
-        return [Column('id', title=_('Number'), sorted=True,
-                       data_type=str, width=80),
-                Column('open_date', title=_('Date Started'),
-                       data_type=datetime.date, width=100),
-                Column('supplier_name', title=_('Supplier'),
-                       data_type=str, searchable=True, width=130,
-                       expand=True),
-                Column('ordered_quantity', title=_('Qty Ordered'),
-                       data_type=Decimal, width=110,
-                       format_func=format_quantity),
-                Column('received_quantity', title=_('Qty Received'),
-                       data_type=Decimal, width=145,
-                       format_func=format_quantity),
-                Column('total', title=_('Order Total'),
-                       data_type=currency, width=120)]
+        return [SearchColumn('id', title=_('Number'), sorted=True,
+                             data_type=str, width=80),
+                SearchColumn('open_date', title=_('Date Started'),
+                             data_type=datetime.date, width=100),
+                SearchColumn('expected_receival_date', data_type=datetime.date,
+                             title=_('Expected Receival'),  visible=False),
+                SearchColumn('supplier_name', title=_('Supplier'),
+                             data_type=str, searchable=True, width=130,
+                             expand=True),
+                SearchColumn('ordered_quantity', title=_('Qty Ordered'),
+                             data_type=Decimal, width=110,
+                             format_func=format_quantity),
+                SearchColumn('received_quantity', title=_('Qty Received'),
+                             data_type=Decimal, width=145,
+                             format_func=format_quantity),
+                SearchColumn('total', title=_('Order Total'),
+                             data_type=currency, width=120)]
 
     def _update_view(self):
         has_selection = self.search.results.get_selected() is not None
