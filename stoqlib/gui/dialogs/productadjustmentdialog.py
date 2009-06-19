@@ -201,6 +201,7 @@ class AdjustmentDialog(BaseEditor):
             self.adjustment_quantity.set_range(1, adjustment_qty)
         else:
             self.adjustment_quantity.set_range(adjustment_qty, -1)
+        self.adjustment_quantity.set_value(adjustment_qty)
 
     def _setup_combo(self):
         cfops = [(cfop.get_description(), cfop) for cfop in
