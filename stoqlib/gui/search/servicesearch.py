@@ -103,7 +103,7 @@ class ServiceSearch(SearchEditor):
         return Service.get(model.service_id, connection=self.conn)
 
     def get_columns(self):
-        columns = [SearchColumn('code', title=_('Code'), data_type=int, sorted=True,
+        columns = [SearchColumn('code', title=_('Code'), data_type=str, sorted=True,
                                 width=130),
                    SearchColumn('barcode', title=_('Barcode'), data_type=str,
                                 visible=True, width=130),
