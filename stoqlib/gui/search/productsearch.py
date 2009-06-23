@@ -42,7 +42,8 @@ from stoqlib.domain.views import (ProductFullStockView, ProductQuantityView,
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.search import (SearchDialog, SearchEditor,
                                      SearchDialogPrintSlave)
-from stoqlib.gui.editors.producteditor import ProductEditor
+from stoqlib.gui.editors.producteditor import (ProductEditor,
+                                               ProductStockEditor)
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity, get_formatted_cost
@@ -239,10 +240,13 @@ class ProductSearchQuantity(SearchDialog):
                        data_type=Decimal)]
 
 
-class ProductStockSearch(SearchDialog):
+class ProductStockSearch(SearchEditor):
     title = _('Product Stock Search')
     size = (800, 450)
     table = search_table = ProductFullStockItemView
+    editor_class = ProductStockEditor
+    has_new_button = False
+    searchbar_result_strings = (_('product'), _('products'))
     advanced_search = True
 
     #
@@ -260,6 +264,9 @@ class ProductStockSearch(SearchDialog):
     # SearchEditor Hooks
     #
 
+    def get_editor_model(self, model):
+        return model.product
+
     def get_columns(self):
         return [SearchColumn('code', title=_('Code'), data_type=str,
                              width=80),
@@ -267,6 +274,8 @@ class ProductStockSearch(SearchDialog):
                              data_type=str, width=120),
                 SearchColumn('description', title=_('Description'), data_type=str,
                              expand=True, sorted=True),
+                SearchColumn('location', title=_('Location'), data_type=str,
+                             visible=False),
                 SearchColumn('maximum_quantity', title=_('Maximum'),
                              visible=False, format_func=format_data,
                              data_type=Decimal),

@@ -66,6 +66,13 @@ class ProductInformationSlave(BaseEditorSlave):
             self.storable_proxy = self.add_proxy(
                 storable, ProductInformationSlave.storable_widgets)
 
+    def hide_stock_details(self):
+        self.stock.hide()
+        self.part_number_lbl.hide()
+        self.part_number.hide()
+        self.manufacturer_lbl.hide()
+        self.manufacturer.hide()
+
     #
     # Kiwi Callbacks
     #
@@ -95,5 +102,8 @@ class ProductDetailsSlave(SellableDetailsSlave):
 
     def setup_slaves(self):
         self.setup_image_slave(self.model.product)
-        info_slave = ProductInformationSlave(self.conn, self.model.product)
-        self.attach_slave('details_holder', info_slave)
+        self.info_slave = ProductInformationSlave(self.conn, self.model.product)
+        self.attach_slave('details_holder', self.info_slave)
+
+    def hide_stock_details(self):
+        self.info_slave.hide_stock_details()
