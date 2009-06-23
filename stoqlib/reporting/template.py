@@ -208,15 +208,11 @@ class SearchResultsReport(BaseStoqReport):
 
 
 class ObjectListReport(SearchResultsReport):
-    def __init__(self, filename, data, report_name, blocked_records=None,
-                 status_name=None, filter_strings=[], status=None, *args,
-                 **kwargs):
+    def __init__(self, filename, data, report_name, *args, **kwargs):
         self._columns = []
         self._summary_row = {}
         SearchResultsReport.__init__(self, filename, data, report_name,
-                                     blocked_records=None, status_name=None,
-                                     filter_strings=[], status=None, *args,
-                                     **kwargs)
+                                     *args, **kwargs)
 
     def _convert_column(self, column):
         # Converts objectlist.Column to ObjectTableColumn
