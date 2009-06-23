@@ -504,3 +504,14 @@ class ProductEditor(SellableEditor):
 
         return self.model
 
+
+class ProductStockEditor(BaseEditor):
+    model_name = _('Product')
+    model_type = Product
+    size = (500, 201)
+    gladefile = 'HolderTemplate'
+
+    def setup_slaves(self):
+        details_slave = ProductDetailsSlave(self.conn, self.model.sellable)
+        details_slave.hide_stock_details()
+        self.attach_slave('place_holder', details_slave)
