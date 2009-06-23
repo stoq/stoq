@@ -231,6 +231,7 @@ class PurchaseItemStep(SellableItemStep):
         #     receival column should not be visible in normal cases
         receival_date_visible = sysparam(self.conn).ENABLE_COMPOSED_PRODUCT
         return [
+            Column('sellable.code', title=_('Code'), width=100, data_type=str),
             Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),
             Column('sellable.category_description', title=_('Category'),
