@@ -33,15 +33,13 @@ from kiwi.datatypes import currency
 from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
-from stoqlib.database.orm import ORMObject
 from stoqlib.database.orm import ForeignKey, UnicodeCol, DateTimeCol, IntCol
 from stoqlib.database.orm import AND, const
 from stoqlib.database.orm import PriceCol, DecimalCol
 from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn, INNERJOINOn
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
-from stoqlib.domain.base import (Domain, ValidatableDomain, BaseSQLView,
-                                 ModelAdapter)
+from stoqlib.domain.base import Domain, ValidatableDomain, ModelAdapter
 from stoqlib.domain.events import SaleConfirmEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import (IContainer, IOutPayment,
@@ -54,7 +52,7 @@ from stoqlib.domain.person import (Person, PersonAdaptToClient,
                                    PersonAdaptToSalesPerson)
 from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.renegotiation import RenegotiationData
-from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.sellable import Sellable, BaseSellableInfo
 from stoqlib.domain.service import Service
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
@@ -1057,3 +1055,48 @@ class SaleView(Viewable):
 
     def get_status_name(self):
         return Sale.get_status_name(self.status)
+
+
+class DeliveryView(Viewable):
+    """Stores general informatios items that will be delivered.
+
+    @cvar id: the id of the sale item
+    @cvar sale_id: the id of the sale
+    @cvar quantity: the quantity of items that will be delivered
+    @cvar price: the sale item price
+    @cvar notes: sale item notes
+    @cvar estimated_fix_date: the estimated delivery date
+    @cvar completion_date: the real delivery date
+    @cvar address: the address where the item should be delivered
+    @cvar description: the sale item description
+    @cvar client_name: the sale client name
+    """
+
+    columns=dict(
+        id=SaleItem.q.id,
+        sale_id=SaleItem.q.saleID,
+        quantity=SaleItem.q.quantity,
+        price=SaleItem.q.price,
+        notes=SaleItem.q.notes,
+        estimated_fix_date=SaleItem.q.estimated_fix_date,
+        completion_date=SaleItem.q.completion_date,
+        address=SaleItemAdaptToDelivery.q.address,
+        description=BaseSellableInfo.q.description,
+        client_name=Person.q.name,
+    )
+
+    joins = [LEFTJOINOn(None, Sellable,
+                        SaleItem.q.sellableID==Sellable.q.id),
+             LEFTJOINOn(None, BaseSellableInfo,
+                        BaseSellableInfo.q.id==Sellable.q.base_sellable_infoID),
+             LEFTJOINOn(None, DeliveryItem,
+                        Sellable.q.id==DeliveryItem.q.sellableID),
+             LEFTJOINOn(None, Sale, SaleItem.q.saleID==Sale.q.id),
+             LEFTJOINOn(None, PersonAdaptToClient,
+                        Sale.q.clientID==PersonAdaptToClient.q.id),
+             LEFTJOINOn(None, Person,
+                        PersonAdaptToClient.q._originalID==Person.q.id),
+    ]
+
+    clause = AND(SaleItemAdaptToDelivery.q._originalID == SaleItem.q.id,
+                 SaleItemAdaptToDelivery.q.id == DeliveryItem.q.deliveryID,)

@@ -35,6 +35,7 @@ def register_iconsets():
                  ("stoq-searchtool-icon3", "searchtool-animation3.png"),
                  ("stoq-searchtool-icon4", "searchtool-animation4.png"),
                  ("stoq-products", "products_24.png"),
+                 ("stoq-deliveries", "delivery24px.png"),
                  ("stoq-suppliers", "kuser48px.png"),
                  ("stoq-bills", "gnome-money48px.png"),
                  ("stoq-conference", "gtk-stock-book48px.png"),
