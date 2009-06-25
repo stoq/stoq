@@ -317,8 +317,7 @@ class PayableApp(SearchableAppWindow):
         self._update_widgets()
 
     def on_print_button__clicked(self, button):
-        self.print_report(PayablePaymentReport, list(self.results),
-                          do_footer=False)
+        self.print_report(PayablePaymentReport, self.results, do_footer=False)
 
     def on_Receipt__activate(self, action):
         payment_views = self.results.get_selected_rows()
