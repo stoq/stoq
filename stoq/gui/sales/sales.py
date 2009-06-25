@@ -45,6 +45,7 @@ from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_messa
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.salesearch import DeliverySearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
@@ -266,3 +267,8 @@ class SalesApp(SearchableAppWindow):
         finish_transaction(trans, True)
         self.search.refresh()
 
+    def on_DeliverySearch__activate(self, action):
+        self.run_dialog(DeliverySearch, self.conn)
+
+    def on_Deliveries__activate(self, action):
+        self.run_dialog(DeliverySearch, self.conn)

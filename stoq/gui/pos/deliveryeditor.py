@@ -73,19 +73,19 @@ class DeliveryEditor(BaseEditor):
 
     def __init__(self, conn, model=None, sale_items=None):
         self.sale_items = sale_items
-        can_edit_price = model is None
         for sale_item in sale_items:
             sale_item.deliver = True
+        self._can_edit_price = model is None
         BaseEditor.__init__(self, conn, model)
+        self._setup_widgets()
+
+    def _setup_widgets(self):
         self.additional_info_label.set_size('small')
         self.additional_info_label.set_color('Red')
         self.register_validate_function(self._validate_widgets)
         self._update_widgets()
-        self._disable_price(can_edit_price)
+        self.price.set_sensitive(self._can_edit_price)
         self.set_description(self.model_name)
-
-    def _disable_price(self, can_edit_price):
-        self.price.set_sensitive(can_edit_price)
 
     def _validate_widgets(self, validation_value):
         if validation_value:
@@ -191,3 +191,9 @@ class DeliveryEditor(BaseEditor):
     def on_cancel(self):
         for sale_item in self.sale_items:
             sale_item.deliver = False
+
+    def on_confirm(self):
+        for sale_item in self.sale_items:
+            sale_item.estimated_fix_date = self.delivery_date.read()
+
+        return self.model

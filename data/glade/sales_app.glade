@@ -158,12 +158,27 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="DeliverySearch">
+                        <property name="name">DeliverySearch</property>
+                        <property name="label" translatable="yes">Deliveries...</property>
+                        <property name="stock_id">stoq-deliveries</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;e</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Services">
                         <property name="name">Services</property>
                         <property name="label" translatable="yes">Services</property>
                         <property name="stock_id">stoq-services</property>
                         <signal handler="_on_services_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;s</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="Deliveries">
+                        <property name="name">Deliveries</property>
+                        <property name="label" translatable="yes">Deliveries</property>
+                        <property name="stock_id">stoq-deliveries</property>
                     </widget>
                 </child>
                 <child>
@@ -257,6 +272,7 @@
 	    <menu action="SearchMenu">
 	      <menuitem action="ProductSearch"/>
 	      <menuitem action="ServiceSearch"/>
+	      <menuitem action="DeliverySearch"/>
 	      <menuitem action="ClientSearch"/>
 	      <menuitem action="CommissionSearch"/>
 	    </menu>
@@ -268,6 +284,7 @@
 	    <toolitem action="Clients"/>
 	    <toolitem action="Products"/>
 	    <toolitem action="Services"/>
+	    <toolitem action="Deliveries"/>
           </toolbar>
 	</ui>]]></ui>
     </widget>
