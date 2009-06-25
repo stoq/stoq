@@ -49,7 +49,7 @@ from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.product import IStorable
 from stoqlib.domain.person import PersonAdaptToClient
-from stoqlib.domain.sale import Sale
+from stoqlib.domain.sale import Sale, DeliveryItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import Till
 from stoqlib.drivers.scale import read_scale_info
@@ -64,7 +64,7 @@ from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.salesearch import SaleSearch
+from stoqlib.gui.search.salesearch import SaleSearch, DeliverySearch
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 
@@ -562,7 +562,10 @@ class POSApp(AppWindow):
                 item = sale_item.addFacet(IDelivery,
                                           connection=trans)
                 item.address = address_string
-
+                DeliveryItem(sellable=fake_sale_item.sellable,
+                             quantity=fake_sale_item.quantity,
+                             delivery=item,
+                             connection=trans)
         return sale
 
     def _checkout(self):
@@ -662,6 +665,9 @@ class POSApp(AppWindow):
     def on_ServiceSearch__activate(self, action):
         self.run_dialog(ServiceSearch, self.conn, hide_toolbar=True,
                         hide_cost_column=True)
+
+    def on_DeliverySearch__activate(self, action):
+        self.run_dialog(DeliverySearch, self.conn)
 
     def on_OrderCheckout__activate(self, action):
         self._checkout()

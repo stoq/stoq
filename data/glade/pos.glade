@@ -187,6 +187,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="DeliverySearch">
+                        <property name="name">DeliverySearch</property>
+                        <property name="label" translatable="yes">Deliveries...</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;e</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="StoreCookie">
                         <property name="name">StoreCookie</property>
                         <property name="label" translatable="yes">Store Coo_kie</property>
@@ -244,6 +251,7 @@
                 <menuitem action="Clients"/>
                 <menuitem action="ProductSearch"/>
                 <menuitem action="ServiceSearch"/>
+                <menuitem action="DeliverySearch"/>
               </menu>
               <menu action="TillMenu">
                 <menuitem action="TillOpen"/>
