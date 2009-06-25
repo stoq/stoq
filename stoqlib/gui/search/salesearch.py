@@ -34,12 +34,12 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.search import SearchDialog
-from stoqlib.domain.sale import Sale, SaleView
+from stoqlib.domain.sale import Sale, SaleView, DeliveryView
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 
 _ = stoqlib_gettext
@@ -109,3 +109,29 @@ class SaleSearch(SearchDialog):
     def _on_sale__returned(self, slave, sale_returned):
         if sale_returned:
             self._update_widgets(self.results.get_selected())
+
+
+class DeliverySearch(SearchDialog):
+    title = _(u'Delivery Search')
+    table = search_table = DeliveryView
+    searching_by_date = True
+    size = (750, 450)
+
+    def create_filters(self):
+        self.set_text_field_columns(['description',])
+        self.set_searchbar_labels(_('Items matching:'))
+
+    def get_columns(self):
+        return [SearchColumn('id', title=_('# '), data_type=int, sorted=True,
+                             order=gtk.SORT_DESCENDING),
+                SearchColumn('description', title=_('Item'),
+                             data_type=str, expand=True),
+                SearchColumn('client_name', title=_('Client'),
+                             data_type=str, expand=True,
+                             ellipsize=pango.ELLIPSIZE_END),
+                SearchColumn('estimated_fix_date', title=_('Estimated Date'),
+                             data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                SearchColumn('completion_date', title=_('Completion Date'),
+                             data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                SearchColumn('quantity', title=_('Quantity'), data_type=Decimal,
+                             format_func=format_quantity),]
