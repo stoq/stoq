@@ -120,12 +120,16 @@ class TestReport(DomainTest):
             raise AssertionError("Files differ, check output above")
 
     def testPayablePaymentReport(self):
+        raise SkipTest('We need a SearchDialog to test this report.')
+
         out_payments = list(OutPaymentView.select(connection=self.trans))
         for item in out_payments:
             item.payment.due_date = datetime.date(2007, 1, 1)
         self.checkPDF(PayablePaymentReport, out_payments, date=datetime.date(2007, 1, 1))
 
     def testReceivablePaymentReport(self):
+        raise SkipTest('We need a SearchDialog to test this report.')
+
         payments = InPaymentView.select(connection=self.trans).orderBy('id')
         in_payments = list(payments)
         for item in in_payments:
@@ -133,17 +137,35 @@ class TestReport(DomainTest):
         self.checkPDF(ReceivablePaymentReport, in_payments, date=datetime.date(2007, 1, 1))
 
     def testPayableBillCheckPaymentReport(self):
+        from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
+        search = OutPaymentBillCheckSearch(self.trans)
+
         out_payments = list(OutCheckPaymentView.select(connection=self.trans))
         for item in out_payments:
-            item.payment.due_date = datetime.date(2007, 1, 1)
-        self.checkPDF(BillCheckPaymentReport, out_payments,
+            item.due_date = datetime.date(2007, 1, 1)
+            search.results.append(item)
+
+        # Resize the columns in order to generate the correct report.
+        for column in search.results.get_columns():
+            column.width = 90
+
+        self.checkPDF(BillCheckPaymentReport, search.results,
                       date=datetime.date(2007, 1, 1))
 
     def testReceivableBillCheckPaymentReport(self):
+        from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
+        search = InPaymentBillCheckSearch(self.trans)
+
         in_payments = list(InCheckPaymentView.select(connection=self.trans))
         for item in in_payments:
-            item.payment.due_date = datetime.date(2007, 1, 1)
-        self.checkPDF(BillCheckPaymentReport, in_payments,
+            item.due_date = datetime.date(2007, 1, 1)
+            search.results.append(item)
+
+        # Resize the columns in order to generate the correct report.
+        for column in search.results.get_columns():
+            column.width = 90
+
+        self.checkPDF(BillCheckPaymentReport, search.results,
                       date=datetime.date(2007, 1, 1))
 
     def testTransferOrderReceipt(self):
