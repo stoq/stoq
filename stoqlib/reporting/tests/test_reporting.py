@@ -191,6 +191,9 @@ class TestReport(DomainTest):
                       date=datetime.date(2007, 1, 1))
 
     def testTillHistoryReport(self):
+        from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
+        dialog = TillHistoryDialog(self.trans)
+
         till = Till(station=get_current_station(self.trans),
                     connection=self.trans)
         till.open_till()
@@ -229,8 +232,9 @@ class TestReport(DomainTest):
                 item.description = item.description.replace(today, date)
 
             item.date = datetime.date(2007, 1, 1)
+            dialog.results.append(item)
 
-        self.checkPDF(TillHistoryReport, till_entries=till_entry,
+        self.checkPDF(TillHistoryReport, till_entries=dialog.results,
                       date=datetime.date(2007, 1, 1))
 
     def testSalesPersonReport(self):

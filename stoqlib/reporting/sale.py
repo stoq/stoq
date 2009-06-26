@@ -38,8 +38,8 @@ from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.lib.validators import (get_formatted_price, format_quantity,
                                     format_phone_number,
                                     get_formatted_percentage)
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.reporting.template import BaseStoqReport, SearchResultsReport
+from stoqlib.reporting.template import (BaseStoqReport, SearchResultsReport,
+                                        ObjectListReport)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -145,7 +145,7 @@ class SaleOrderReport(BaseStoqReport):
     def get_title(self):
         return (_("Sale Order on %s") % self.sale.open_date.strftime("%x"))
 
-class SalesReport(SearchResultsReport):
+class SalesReport(ObjectListReport):
     # This should be properly verified on BaseStoqReport. Waiting for
     # bug 2517
     obj_type = SaleView
@@ -153,46 +153,19 @@ class SalesReport(SearchResultsReport):
     main_object_name = _("sales")
     filter_format_string = _("with status <u>%s</u>")
 
-    def __init__(self, filename, sale_list, status=None, *args, **kwargs):
+    def __init__(self, filename, sale_list, *args, **kwargs):
         self.sale_list = sale_list
-        self._landscape_mode = bool(status and status == ALL_ITEMS_INDEX)
-        SearchResultsReport.__init__(self, filename, sale_list,
-                                     SalesReport.report_name,
-                                     landscape=self._landscape_mode,
-                                     *args, **kwargs)
+        ObjectListReport.__init__(self, filename, sale_list,
+                                  SalesReport.report_name,
+                                  landscape=True,
+                                  *args, **kwargs)
         self._setup_sales_table()
 
-    def _get_columns(self):
-        # XXX Bug #2430 will improve this part
-        person_col_width = 140
-        if self._landscape_mode:
-            person_col_width += 84
-        columns = [OTC(_("Number"), lambda obj: obj.id, width=50,
-                       align=RIGHT),
-                   OTC(_("Date"), lambda obj: obj.get_open_date_as_string(),
-                       width=70, align=RIGHT),
-                   OTC(_("Client"),
-                       data_source=lambda obj: obj.get_client_name(),
-                       width=person_col_width),
-                   OTC(_("Salesperson"), lambda obj: obj.salesperson_name,
-                       width=person_col_width, truncate=True),
-                   OTC(_("Total"), lambda obj: get_formatted_price(obj.total),
-                       width=80, align=RIGHT)]
-        if self._landscape_mode:
-            columns.insert(-1, OTC(_("Status"),
-                                   lambda obj: (obj.get_status_name()),
-                                   width=80))
-        return columns
-
     def _setup_sales_table(self):
-        total = sum([sale.total
-                         for sale in self.sale_list], currency(0))
-        total_str = _("Total %s") % get_formatted_price(total)
-        summary_row = ["", "", "", "", total_str]
-        if self._landscape_mode:
-            summary_row.insert(-1, "")
-        self.add_object_table(self.sale_list, self._get_columns(),
-                              summary_row=summary_row)
+        total = sum([sale.total or currency(0) for sale in self.sale_list])
+        self.add_summary_by_column(_(u'Total'),get_formatted_price(total))
+        self.add_object_table(self.sale_list, self.get_columns(),
+                              summary_row=self.get_summary_row())
 
 
 class SalesPersonReport(SearchResultsReport):

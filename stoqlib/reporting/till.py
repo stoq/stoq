@@ -27,10 +27,9 @@
 from stoqlib.domain.till import TillEntry
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.validators import get_formatted_price
-from stoqlib.reporting.template import SearchResultsReport
-from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
+from stoqlib.reporting.template import ObjectListReport
 
-class TillHistoryReport(SearchResultsReport):
+class TillHistoryReport(ObjectListReport):
     """This report show a list of the till history returned by a SearchBar,
     listing both its description, date and value.
     """
@@ -40,27 +39,13 @@ class TillHistoryReport(SearchResultsReport):
 
     def __init__(self, filename, till_entries, *args, **kwargs):
         self._till_entries = till_entries
-        SearchResultsReport.__init__(self, filename, till_entries,
-                                     TillHistoryReport.report_name,
-                                     *args, **kwargs)
+        ObjectListReport.__init__(self, filename, till_entries,
+                                  TillHistoryReport.report_name,
+                                  *args, **kwargs)
         self._setup_items_table()
 
-    def _get_columns(self):
-        return [
-            OTC(_("Code"), lambda obj: '%03d' % obj.id, width=60,
-                truncate=True),
-            OTC(_("Description"), lambda obj: obj.description, width=255,
-                truncate=True, expand=True),
-            OTC(_("Date"), lambda obj: obj.date.strftime("%x"),
-                truncate=True, expand=True),
-            OTC(_("Value"), lambda obj: get_formatted_price(obj.value),
-                truncate=True, expand=True),
-            ]
-
     def _setup_items_table(self):
-        total_price  = 0
-        for till_entry in self._till_entries:
-            total_price += till_entry.value
-        summary_row = ["", "", _("Total:"), get_formatted_price(total_price)]
-        self.add_object_table(self._till_entries, self._get_columns(),
-                              summary_row=summary_row)
+        total  = sum([te.value or 0 for te in self._till_entries])
+        self.add_summary_by_column(_(u'Value'), get_formatted_price(total))
+        self.add_object_table(self._till_entries, self.get_columns(),
+                              summary_row=self.get_summary_row())
