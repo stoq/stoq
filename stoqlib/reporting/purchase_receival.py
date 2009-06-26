@@ -26,41 +26,25 @@
 
 from decimal import Decimal
 
-from stoqlib.reporting.template import SearchResultsReport
-from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
+from stoqlib.reporting.template import ObjectListReport
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.validators import get_formatted_price
 
-class PurchaseReceivalReport(SearchResultsReport):
+class PurchaseReceivalReport(ObjectListReport):
     report_name = _("Purchase Receival Report")
     main_object_name = _("purchase receivals")
 
-    def __init__(self, filename, data, *args, **kwargs):
-        self._data = data
-        SearchResultsReport.__init__(self, filename, data,
-                                     PurchaseReceivalReport.report_name,
-                                     landscape=True, *args, **kwargs)
+    def __init__(self, filename, receivings, *args, **kwargs):
+        self._receivings = receivings
+        ObjectListReport.__init__(self, filename, receivings,
+                                  PurchaseReceivalReport.report_name,
+                                  landscape=True, *args, **kwargs)
         self._setup_table()
 
-    def get_columns(self):
-        return [OTC(_("Received Date"),
-                    lambda obj: obj.receival_date.strftime("%x"), width=120),
-                OTC(_("Purchase Order"), lambda obj:  obj.get_order_number(),
-                    width=110, truncate=True),
-                OTC(_("Supplier"), lambda obj: obj.get_supplier_name(),
-                    width=180, truncate=True, expand=True, expand_factor=1),
-                OTC(_("Branch"), lambda obj: obj.get_branch_name(),
-                    width=150, truncate=True, expand=True, expand_factor=1),
-                OTC(_("Invoice #"), lambda obj: obj.invoice_number, width=80),
-                OTC(_("Invoice Total"),
-                    lambda obj: get_formatted_price(obj.invoice_total),
-                    width=100)
-                ]
-
     def _setup_table(self):
-        total_value = sum([item.invoice_total for item in self._data],
-                          Decimal(0))
-        summary_row = ["", "", "", "", _("Total:"),
-                       get_formatted_price(total_value)]
-        self.add_object_table(self._data, self.get_columns(), width=745,
-                              summary_row=summary_row)
+        total_value = sum([item.invoice_total or Decimal(0)
+                                for item in self._receivings])
+        self.add_summary_by_column(_(u'Invoice Total'),
+                                   get_formatted_price(total_value))
+        self.add_object_table(self._receivings, self.get_columns(),
+                              summary_row=self.get_summary_row())

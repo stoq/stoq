@@ -26,16 +26,16 @@
 
 from decimal import Decimal
 
-from kiwi.currency import format_price
 
 from stoqlib.domain.service import ServiceView
-from stoqlib.reporting.template import SearchResultsReport, PriceReport
-from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
+from stoqlib.reporting.template import PriceReport, ObjectListReport
 from stoqlib.lib.translation import stoqlib_gettext as _
+from stoqlib.lib.validators import get_formatted_price
 
-class ServiceReport(SearchResultsReport):
+
+class ServiceReport(ObjectListReport):
     """This report show a list of services returned by a SearchBar,
-    listing both its description, cost, price and contribution margin.
+    listing both its description, cost and price.
     """
     obj_type = ServiceView
     report_name = _("Service Listing")
@@ -44,36 +44,18 @@ class ServiceReport(SearchResultsReport):
 
     def __init__(self, filename, services, *args, **kwargs):
         self._services = services
-        SearchResultsReport.__init__(self, filename, services,
-                                     ServiceReport.report_name,
-                                     landscape=True,
-                                     *args, **kwargs)
+        ObjectListReport.__init__(self, filename, services,
+                                  ServiceReport.report_name,
+                                  landscape=True,
+                                  *args, **kwargs)
         self._setup_items_table()
 
-    def _get_columns(self):
-        return [
-            OTC(_("Code"), lambda obj: obj.code, width=100, truncate=True),
-            OTC(_("Description"), lambda obj: obj.description, truncate=True),
-            OTC(_("Cost"), lambda obj: obj.cost, width=90, truncate=True),
-            OTC(_("Price"), lambda obj: obj.price, width=90, truncate=True),
-            OTC(_("C.M."), lambda obj: obj.price - obj.cost, width=90,
-                truncate=True),
-            # FIXME: This column should be virtual, waiting for bug #2764
-            OTC(_("Unit"), lambda obj: obj.get_unit(),
-                width=60, virtual=False),
-            ]
-
     def _setup_items_table(self):
-        total_cost = total_price = total_cm = 0
-        for item in self._services:
-            total_cost += item.cost or Decimal(0)
-            total_price += item.price or Decimal(0)
-            total_cm += item.price - item.cost or Decimal(0)
-        summary_row = ["",  _("Total:"), format_price(total_cost, False, 2),
-                       format_price(total_price, False, 2),
-                       format_price(total_cm, False, 2), ""]
-        self.add_object_table(self._services, self._get_columns(),
-                              summary_row=summary_row)
+        cost = sum([s.cost or Decimal(0) for s in self._services])
+        self.add_summary_by_column(_(u'Cost'), get_formatted_price(cost))
+
+        self.add_object_table(self._services, self.get_columns(),
+                              summary_row=self.get_summary_row())
 
 
 class ServicePriceReport(PriceReport):
