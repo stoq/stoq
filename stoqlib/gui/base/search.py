@@ -25,6 +25,9 @@
 """ Implementation of basic dialogs for searching data """
 
 from dateutil.relativedelta import relativedelta
+import os
+import pickle
+
 import gtk
 from kiwi.argcheck import argcheck
 from kiwi.enums import SearchFilterPosition
@@ -63,6 +66,45 @@ class _SearchDialogDetailsSlave(GladeSlaveDelegate):
 
     def on_print_button__clicked(self, button):
         self.emit('print')
+
+
+class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
+    def __init__(self, columns, restore_name=None):
+        self.restore_name = restore_name
+        self._columns = columns
+        if restore_name:
+            self.restore_columns()
+        SearchSlaveDelegate.__init__(self, self._columns)
+
+    def save_columns(self):
+        if not self.restore_name:
+            return
+
+        d = {}
+        for col in self._columns:
+            d[col.title] = (col.treeview_column.get_visible(),
+                            col.treeview_column.get_width())
+
+        file_name = os.path.join(os.getenv('HOME'), '.stoq', 'columns',
+                                 '%s.pickle' % self.restore_name)
+        f = file(file_name, 'w')
+        pickle.dump(d, f)
+        f.close()
+
+    def restore_columns(self):
+        file_name = os.path.join(os.getenv('HOME'), '.stoq', 'columns',
+                                 '%s.pickle' % self.restore_name)
+        try:
+            f = file(file_name)
+            saved = pickle.load(f)
+        except IOError, EOFError:
+            saved = {}
+
+        for col in self._columns:
+            props = saved.get(col.title)
+            if props:
+                col.visible = props[0]
+                col.width = props[1]
 
 
 class SearchDialogPrintSlave(GladeSlaveDelegate):
@@ -181,7 +223,8 @@ class SearchDialog(BasicDialog):
         return selection_mode
 
     def _setup_search(self):
-        self.search = SearchSlaveDelegate(self.get_columns())
+        self.search = StoqlibSearchSlaveDelegate(self.get_columns(),
+                                         restore_name=self.__class__.__name__)
         self.search.set_query_executer(self.executer)
         if self.advanced_search:
             self.search.enable_advanced_search()
@@ -236,10 +279,12 @@ class SearchDialog(BasicDialog):
 
     def confirm(self):
         self.retval = self.get_selection()
+        self.search.save_columns()
         self.close()
 
     def cancel(self, *args):
         self.retval = []
+        self.search.save_columns()
         self.close()
 
     def set_table(self, table):
