@@ -31,12 +31,12 @@ import gtk
 from kiwi.component import get_utility
 from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
-from kiwi.ui.search import SearchSlaveDelegate
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       finish_transaction, get_connection)
 from stoqlib.lib.interfaces import ICookieFile
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
+from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
@@ -83,7 +83,8 @@ class AppWindow(BaseAppWindow):
         self.user_menu_label = get_current_user(self.conn
                                     ).username.capitalize()
         self._klist = getattr(self, self.klist_name)
-        self._klist.set_columns(self.get_columns())
+        if not len(self._klist.get_columns()):
+            self._klist.set_columns(self.get_columns())
         self._klist.set_selection_mode(self.klist_selection_mode)
         if app.options.debug:
             self._create_debug_menu()
@@ -262,6 +263,7 @@ class AppWindow(BaseAppWindow):
 
     def shutdown_application(self, *args):
         if self.can_close_application():
+            self.search.save_columns()
             self.app.shutdown()
         # We must return True here or the window will be hidden.
         return True
@@ -317,7 +319,8 @@ class SearchableAppWindow(AppWindow):
         self.executer = ORMObjectQueryExecuter(get_connection())
         self.executer.set_table(self.search_table)
 
-        self.search = SearchSlaveDelegate(self.get_columns())
+        self.search = StoqlibSearchSlaveDelegate(self.get_columns(),
+                                     restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.search.set_query_executer(self.executer)
         self.results = self.search.search.results
