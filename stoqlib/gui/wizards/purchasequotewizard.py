@@ -31,7 +31,7 @@ import gtk
 
 from kiwi.datatypes import currency, ValidationError
 from kiwi.python import Settable
-from kiwi.ui.search import SearchSlaveDelegate, DateSearchFilter
+from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.database.orm import ORMObjectQueryExecuter
@@ -45,6 +45,7 @@ from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.views import QuotationView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import SimpleListDialog
+from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.dialogs.quotedialog import QuoteFillingDialog
@@ -322,7 +323,8 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         self._setup_slaves()
 
     def _setup_slaves(self):
-        self.search = SearchSlaveDelegate(self._get_columns())
+        self.search = StoqlibSearchSlaveDelegate(self._get_columns(),
+                                     restore_name=self.__class__.__name__)
         self.attach_slave('search_group_holder', self.search)
 
         executer = ORMObjectQueryExecuter()
@@ -405,6 +407,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
     #
 
     def next_step(self):
+        self.search.save_columns()
         selected = self.search.results.get_selected()
         if selected is None:
             return
