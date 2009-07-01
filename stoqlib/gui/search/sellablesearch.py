@@ -39,6 +39,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.search import SearchEditor
+from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
@@ -115,7 +116,8 @@ class SellableSearch(SearchEditor):
 
     def get_columns(self):
         """Hook called by SearchEditor"""
-        return [SearchColumn('code', title=_('Code'), data_type=int,
+        return [SearchColumn('code', title=_('Code'), data_type=str,
+                              sort_func=sort_sellable_code,
                               sorted=True, width=90),
                 SearchColumn('barcode', title=_('Barcode'), data_type=str, width=90,
                               visible=False),

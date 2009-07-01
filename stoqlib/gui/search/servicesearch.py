@@ -32,6 +32,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import ComboSearchFilter
 
+from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service, ServiceView
@@ -104,7 +105,7 @@ class ServiceSearch(SearchEditor):
 
     def get_columns(self):
         columns = [SearchColumn('code', title=_('Code'), data_type=str, sorted=True,
-                                width=130),
+                                sort_func=sort_sellable_code, width=130),
                    SearchColumn('barcode', title=_('Barcode'), data_type=str,
                                 visible=True, width=130),
                    SearchColumn('description', title=_('Description'), data_type=str,
