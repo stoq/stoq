@@ -227,6 +227,9 @@ def _initialize(options):
     config = StoqConfig()
     config.load(options.filename)
     config_dir = config.get_config_directory()
+    columns_dir = os.path.join(config_dir, 'columns')
+    if not os.path.exists(columns_dir):
+        os.mkdir(columns_dir)
 
     wizard = False
     if (options.wizard or
