@@ -45,6 +45,7 @@ from stoqlib.gui.base.search import (SearchDialog, SearchEditor,
 from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductStockEditor)
 from stoqlib.gui.printing import print_report
+from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity, get_formatted_cost
 from stoqlib.reporting.product import (ProductReport, ProductQuantityReport,
@@ -146,6 +147,7 @@ class ProductSearch(SearchEditor):
 
     def get_columns(self):
         cols = [SearchColumn('code', title=_('Code'), data_type=str,
+                              sort_func=sort_sellable_code,
                               sorted=True, width=130),
                 SearchColumn('barcode', title=_('Barcode'), data_type=str,
                              width=130),

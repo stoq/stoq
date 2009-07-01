@@ -27,6 +27,7 @@
 
 import ctypes
 from ctypes.util import find_library
+import re
 
 from decimal import Decimal
 
@@ -163,6 +164,17 @@ def get_country_states():
     return [ 'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
              'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
              'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO' ]
+
+
+def _split_parts(a):
+    parts = re.findall('(\d+|\D+)', a)
+    for i in xrange(len(parts)):
+        try: parts[i] = int(parts[i])
+        except: pass
+    return parts
+
+def sort_sellable_code(a, b):
+    return cmp(_split_parts(a), _split_parts(b))
 
 
 #
