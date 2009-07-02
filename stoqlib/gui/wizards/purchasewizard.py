@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -73,7 +73,7 @@ class StartPurchaseStep(WizardEditorStep):
                      'order_number',
                      'supplier',
                      'branch',
-                     'freight')
+                     'expected_freight')
     def __init__(self, wizard, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model)
 
@@ -100,10 +100,10 @@ class StartPurchaseStep(WizardEditorStep):
 
     def _update_widgets(self):
         has_freight = self.fob_radio.get_active()
-        self.freight.set_sensitive(has_freight)
-        self._update_freight()
+        self.expected_freight.set_sensitive(has_freight)
+        self._update_freight_type()
 
-    def _update_freight(self):
+    def _update_freight_type(self):
         if self.cif_radio.get_active():
             self.model.freight_type = self.model_type.FREIGHT_CIF
         else:
@@ -117,7 +117,7 @@ class StartPurchaseStep(WizardEditorStep):
         self.open_date.grab_focus()
         self.table.set_focus_chain([self.open_date, self.order_number,
                                     self.branch, self.supplier,
-                                    self.radio_hbox, self.freight])
+                                    self.radio_hbox, self.expected_freight])
         self.radio_hbox.set_focus_chain([self.cif_radio, self.fob_radio])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
@@ -167,6 +167,12 @@ class StartPurchaseStep(WizardEditorStep):
             return ValidationError(
                 _("Expected receival date must be set to today or "
                   "a future date"))
+
+    def on_expected_freight__validate(self, widget, value):
+        if value < 0:
+            return ValidationError(_(u'The expected freight value must be a '
+                                      'positive number.'))
+
 
 class PurchaseItemStep(SellableItemStep):
     """ Wizard step for purchase order's items selection """
@@ -433,6 +439,10 @@ class FinishPurchaseStep(WizardEditorStep):
         self.notes.set_accepts_tab(False)
 
     def _create_receiving_order(self):
+        # since we will create a new receiving order, we should confirm the
+        # purchase first.
+        self.model.confirm()
+
         receiving_model = ReceivingOrder(
             responsible=get_current_user(self.conn),
             purchase=self.model,
@@ -462,7 +472,7 @@ class FinishPurchaseStep(WizardEditorStep):
 
         self._create_receiving_order()
         return ReceivingInvoiceStep(self.conn, self.wizard,
-                                    self.wizard.receiving_model, self)
+                                    self.wizard.receiving_model)
 
     def post_init(self):
         # A receiving model was created. We should remove it (and its items),
@@ -564,7 +574,6 @@ class PurchaseWizard(BaseWizard):
         if self.receiving_model:
             if not self.receiving_model.get_valid():
                 self.receiving_model.set_valid()
-            self.model.confirm()
             # Confirming the receiving will close the purchase
             self.receiving_model.confirm()
 

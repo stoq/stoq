@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005, 2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -76,6 +76,12 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         if not self.model.purchase:
             for widget in purchase_widgets:
                 widget.hide()
+        if self.model.purchase.is_paid():
+            for widget in [self.ipi, self.discount_value, self.icms_total,
+                           self.secure_value, self.expense_value,
+                           self.freight_in_installments]:
+                widget.set_sensitive(False)
+
         self._setup_transporter_entry()
         cfop_items = [(item.get_description(), item)
                         for item in CfopData.select(connection=self.conn)]
@@ -84,6 +90,9 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         # if it's already set.
         if self.model.transporter:
             self.transporter.set_sensitive(False)
+
+    def create_freight_payment(self):
+        return self.freight_in_payment.get_active()
 
     #
     # BaseEditorSlave hooks
@@ -104,11 +113,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             self.model.transporter = transporter
             self.proxy.update('transporter')
             self.model.supplier = purchase.supplier
-            if purchase.freight:
-                freight_value = (self.model.get_products_total() *
-                                 purchase.freight / 100)
-                self.model.freight_total = freight_value
-                self.proxy.update('freight_total')
+            self.model.freight_total = purchase.expected_freight
+            self.proxy.update('freight_total')
 
     #
     # Callbacks

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -171,11 +171,42 @@ class TestReceivingOrder(DomainTest):
         order.freight_total = 10
         order.secure_value = 15
         order.expense_value = 5
-        order.confirm()
+        order.update_payments()
 
         for pay in order.payments:
             self.assertEqual(pay.value, order.get_total()/installment_count)
             self.failIf(pay.value <= payment_dict[pay])
+
+    def testUpdatePaymentValuesWithFreightPayment(self):
+        order = self.create_receiving_order()
+        order_item = self.create_receiving_order_item(order)
+        self.assertEqual(order.get_total(), currency(1000))
+
+        for item in order.purchase.get_items():
+            item.quantity_received = 0
+        order.purchase.status = order.purchase.ORDER_PENDING
+        total = order.get_total()
+        order.purchase.confirm()
+
+        installment_count = order.payments.count()
+        payment_dict = {}
+        for pay in order.payments:
+            self.assertEqual(pay.value,
+                order.get_total()/installment_count)
+            payment_dict[pay] = pay.value
+
+        order.discount_value = 20
+        order.surcharge_value = 100
+        order.freight_total = 10
+        order.secure_value = 15
+        order.expense_value = 5
+        order.update_payments(create_freight_payment=True)
+
+        for pay in order.payments:
+            if pay not in payment_dict.keys():
+                self.assertEqual(pay.value, order.freight_total)
+            else:
+                self.failIf(pay.value <= payment_dict[pay])
 
 
 class TestReceivingOrderItem(DomainTest):

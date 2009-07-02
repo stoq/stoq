@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -31,7 +31,6 @@ from decimal import Decimal
 
 from kiwi.datatypes import currency
 from kiwi.ui.objectlist import Column, SearchColumn
-from kiwi.ui.search import DateSearchFilter
 
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import get_current_user
@@ -284,6 +283,12 @@ class ReceivingInvoiceStep(WizardEditorStep):
         self.attach_slave("place_holder", self.invoice_slave)
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
+
+    def validate_step(self):
+        create_freight_payment = self.invoice_slave.create_freight_payment()
+        self.model.update_payments(create_freight_payment)
+
+        return self.model
 
 
 #

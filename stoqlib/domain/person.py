@@ -865,6 +865,7 @@ class PersonAdaptToTransporter(PersonAdapter):
 
     is_active = BoolCol(default=True)
     open_contract_date = DateTimeCol(default=datetime.datetime.now)
+    #FIXME: not used in purchases.
     freight_percentage = DecimalCol(default=0)
 
     #
