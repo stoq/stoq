@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -24,9 +24,6 @@
 ##
 """ This module test all class in stoq/domain/purchase.py """
 
-from decimal import Decimal
-
-from kiwi.datatypes import currency
 
 from stoqlib.domain.interfaces import IInPayment
 from stoqlib.domain.payment.payment import Payment
@@ -128,22 +125,6 @@ class TestPurchaseOrder(DomainTest):
         sellable = self.create_sellable()
         purchase_item = order.add_item(sellable, 2)
 
-    def testGetFreight(self):
-        order = self.create_purchase_order()
-        sellable = self.create_sellable()
-        purchase_item = order.add_item(sellable, 1)
-        order.freight = Decimal(10)
-        self.assertEqual(order.get_freight(), Decimal(10))
-
-        order.freight_type = order.FREIGHT_CIF
-        self.assertEqual(order.get_freight(), currency(0))
-
-        transporter = self.create_transporter()
-        order.transporter = transporter
-        self.assertEqual(order.get_freight(), currency(0))
-        transporter.freight_percentage = Decimal(7)
-        self.assertEqual(order.get_freight(), Decimal(7))
-
     def testConfirmSupplier(self):
         order = self.create_purchase_order()
         self.assertRaises(ValueError, order.confirm)
@@ -153,6 +134,19 @@ class TestPurchaseOrder(DomainTest):
         order.confirm()
         self.assertEquals(order.group.recipient, order.supplier.person)
 
+    def testIsPaid(self):
+        order = self.create_purchase_order()
+        order.status = PurchaseOrder.ORDER_PENDING
+        order.add_item(self.create_sellable(), 1)
+        self.add_payments(order)
+        order.confirm()
+
+        self.assertEqual(order.is_paid(), False)
+
+        for payment in order.payments:
+            payment.pay()
+
+        self.assertEqual(order.is_paid(), True)
 
 class TestQuoteGroup(DomainTest):
 

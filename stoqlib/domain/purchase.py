@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -33,9 +33,9 @@ from zope.interface import implements
 
 from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn, const
-from stoqlib.database.orm import ORMObject, Viewable, Alias
+from stoqlib.database.orm import Viewable, Alias
 from stoqlib.database.orm import PriceCol, DecimalCol
-from stoqlib.domain.base import ValidatableDomain, Domain, BaseSQLView
+from stoqlib.domain.base import ValidatableDomain, Domain
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,
@@ -160,7 +160,7 @@ class PurchaseOrder(ValidatableDomain):
     notes = UnicodeCol(default='')
     salesperson_name = UnicodeCol(default='')
     freight_type = IntCol(default=FREIGHT_FOB)
-    freight = DecimalCol(default=0)
+    expected_freight = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     discount_value = PriceCol(default=0)
     supplier = ForeignKey('PersonAdaptToSupplier')
@@ -259,6 +259,12 @@ class PurchaseOrder(ValidatableDomain):
     # Public API
     #
 
+    def is_paid(self):
+        for payment in self.group.get_items():
+            if not payment.is_paid():
+                return False
+        return True
+
     def can_cancel(self):
         """Find out if it's possible to cancel the order
         @returns: True if it's possible to cancel the order, otherwise False
@@ -351,19 +357,6 @@ class PurchaseOrder(ValidatableDomain):
             raise DatabaseInconsistency('Invalid freight_type, got %d'
                                         % self.freight_type)
         return self.freight_types[self.freight_type]
-
-    def get_freight(self):
-        """
-        Gets the percentage value of freight in agreement of freight's type.
-        @returns: the percentage value of freight.
-        """
-        type_freight = self.get_freight_type_name()
-        if type_freight == "FOB":
-            return self.freight
-        elif type_freight == "CIF" and self.transporter:
-            return self.transporter.freight_percentage or currency(0)
-        else:
-            return currency(0)
 
     def get_branch_name(self):
         return self.branch.get_description()
@@ -649,7 +642,7 @@ class PurchaseOrderView(Viewable):
     @cvar receival_date: the date when the products were received
     @cvar confirm_date: the date when the order was confirmed
     @cvar salesperson_name: the name of supplier's salesperson
-    @cvar freight: the freight value
+    @cvar expected_freight: the expected freight value
     @cvar surcharge_value: the surcharge value for the order total
     @cvar discount_value: the discount_value for the order total
     @cvar supplier_name: the supplier name
@@ -675,7 +668,7 @@ class PurchaseOrderView(Viewable):
         receival_date = PurchaseOrder.q.receival_date,
         confirm_date = PurchaseOrder.q.confirm_date,
         salesperson_name = PurchaseOrder.q.salesperson_name,
-        freight = PurchaseOrder.q.freight,
+        expected_freight = PurchaseOrder.q.expected_freight,
         surcharge_value = PurchaseOrder.q.surcharge_value,
         discount_value = PurchaseOrder.q.discount_value,
 

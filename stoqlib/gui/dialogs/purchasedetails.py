@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -92,7 +92,7 @@ class PurchaseDetailsDialog(BaseEditor):
                      'salesperson',
                      'receival_date',
                      'freight_type',
-                     'freight',
+                     'expected_freight',
                      'notes')
     payment_proxy = ('payment_method',
                      'installments_number')

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -37,7 +37,9 @@ from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.domain.base import Domain, ValidatableDomain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.group import PaymentGroup
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.lib.defaults import quantize
@@ -167,25 +169,57 @@ class ReceivingOrder(ValidatableDomain):
             self.get_connection(),
             self.purchase.group, self.cfop, self.invoice_number,
             self.icms_total, self.ipi_total)
-        self._update_payment_values(self.purchase.group)
         self.invoice_total = self.get_total()
         if self.purchase.can_close():
             self.purchase.close()
 
-    def _update_payment_values(self, group):
+    def update_payments(self, create_freight_payment=False):
         """Updates the payment value of all payments realated to this
-        receiving.
+        receiving. If create_freight_payment is set, a new payment will be
+        created with the freight value. The other value as the surcharges and
+        discounts will be included in the installments.
+
+        @param create_freight_payment: True if we should create a new payment
+                                       with the freight value, False otherwise.
         """
+        group = self.purchase.group
         difference = self.get_total() - self.get_products_total()
+        if create_freight_payment:
+            difference -= self.freight_total
+
         if difference != 0:
-            query = dict(group=group, status=Payment.STATUS_PENDING)
-            payments = Payment.selectBy(connection=self.get_connection(),
-                                        **query)
+            payments = group.get_pending_payments()
             payments_number = payments.count()
             if payments_number > 0:
                 per_installments_value = difference/payments_number
                 for payment in payments:
                     payment.value += per_installments_value
+
+        if self.freight_total and create_freight_payment:
+            self._create_freight_payment()
+
+    def _create_freight_payment(self):
+        register_payment_operations()
+
+        conn = self.get_connection()
+        money_method = PaymentMethod.get_by_name(conn, 'money')
+        # If we have a transporter, the freight payment will be for him
+        # (and in another payment group).
+        if self.transporter is not None:
+            group = PaymentGroup(connection=conn)
+            group.recipient = self.transporter.person
+        else:
+            group = self.purchase.group
+
+        description = _(u'Freight for purchase %s' %
+                                self.purchase.get_order_number_str())
+        out_payment = money_method.create_outpayment(
+            group, self.freight_total,
+            due_date=datetime.datetime.today(),
+            description=description)
+        payment = out_payment.get_adapted()
+        payment.set_pending()
+        return payment
 
     def get_items(self):
         conn = self.get_connection()

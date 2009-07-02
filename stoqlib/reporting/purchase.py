@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -138,13 +138,12 @@ class PurchaseOrderReport(BaseStoqReport):
         transporter = self._order.get_transporter_name() or _("Not Specified")
         freight_line.extend([_("Transporter:"), transporter, _("Freight:")])
         if self._order.freight_type == PurchaseOrder.FREIGHT_FOB:
-            freight_line.append("FOB (%.2f %%)" % self._order.freight)
+            freight_desc = "FOB (%.2f)"
         else:
-            # transporter may be None
-            freight_percentage = 0
-            if self._order.transporter:
-                freight_percentage = self._order.transporter.freight_percentage
-            freight_line.append("CIF (%.2f %%)" % (freight_percentage,))
+            freight_desc = "CIF (%.2f)"
+
+        expected_freight_desc = freight_desc % self._order.expected_freight
+        freight_line.append(expected_freight_desc)
         return freight_line
 
     def _setup_payment_group_data(self):

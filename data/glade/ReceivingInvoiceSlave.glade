@@ -14,7 +14,7 @@
                         <property name="border_width">2</property>
                         <property name="column_spacing">6</property>
                         <property name="n_columns">4</property>
-                        <property name="n_rows">8</property>
+                        <property name="n_rows">9</property>
                         <property name="row_spacing">6</property>
                         <property name="visible">True</property>
                         <child>
@@ -106,12 +106,23 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="GtkLabel" id="label3">
+                                <property name="label" context="yes" translatable="yes">Freight:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
                             <packing>
-                                <property name="top_attach">7</property>
                                 <property name="bottom_attach">8</property>
+                                <property name="top_attach">7</property>
                                 <property name="x_options">fill</property>
                                 <property name="y_options"></property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="top_attach">8</property>
+                                <property name="bottom_attach">9</property>
                             </packing>
                         </child>
                         <child>
@@ -259,14 +270,38 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="ProxyRadioButton" id="freight_in_installments">
+                                <property name="active">False</property>
+                                <property name="data_type">bool</property>
+                                <property name="group">freight_in_payment</property>
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes">Include freight value in installments</property>
+                                <property name="model_attribute">freight_in_installments</property>
+                                <property name="visible">True</property>
+                            </widget>
                             <packing>
+                                <property name="bottom_attach">8</property>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
                                 <property name="top_attach">7</property>
-                                <property name="bottom_attach">8</property>
                                 <property name="x_options">fill</property>
                                 <property name="y_options"></property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyRadioButton" id="freight_in_payment">
+                                <property name="data_type">bool</property>
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes">Create a separate payment for freight</property>
+                                <property name="model_attribute">freight_in_payment</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">9</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">8</property>
+                                <property name="x_options">fill</property>
                             </packing>
                         </child>
                         <child>
@@ -390,10 +425,20 @@
                             </packing>
                         </child>
                         <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">8</property>
+                                <property name="bottom_attach">9</property>
+                            </packing>
+                        </child>
+                        <child>
                             <widget class="ProxyLabel" id="products_total">
                                 <property name="data_type">currency</property>
                                 <property name="model_attribute">products_total</property>
                                 <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="left_attach">3</property>
@@ -514,6 +559,15 @@
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
                                 <property name="top_attach">7</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                                <property name="top_attach">8</property>
+                                <property name="bottom_attach">9</property>
                             </packing>
                         </child>
                     </widget>

@@ -598,7 +598,7 @@
                                         </child>
                                         <child>
                                             <widget class="ProxyLabel" id="kiwilabel11">
-                                                <property name="label" context="yes" translatable="yes">Freight:</property>
+                                                <property name="label" context="yes" translatable="yes">Expected Freight:</property>
                                                 <property name="model_attribute">kiwilabel11</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
@@ -657,33 +657,11 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="GtkHBox" id="hbox1">
+                                            <widget class="ProxyLabel" id="expected_freight">
+                                                <property name="data_type">currency</property>
+                                                <property name="model_attribute">expected_freight</property>
                                                 <property name="visible">True</property>
-                                                <child>
-                                                    <widget class="ProxyLabel" id="freight">
-                                                        <property name="data_type">Decimal</property>
-                                                        <property name="model_attribute">freight</property>
-                                                        <property name="visible">True</property>
-                                                        <property name="xalign">0.0</property>
-                                                    </widget>
-                                                    <packing>
-                                                        <property name="expand">False</property>
-                                                    </packing>
-                                                </child>
-                                                <child>
-                                                    <widget class="ProxyLabel" id="kiwilabel13">
-                                                        <property name="justify">right</property>
-                                                        <property name="label" context="yes" translatable="yes">%</property>
-                                                        <property name="model_attribute">kiwilabel13</property>
-                                                        <property name="visible">True</property>
-                                                        <property name="xalign">0.0</property>
-                                                    </widget>
-                                                    <packing>
-                                                        <property name="expand">False</property>
-                                                        <property name="padding">6</property>
-                                                        <property name="position">1</property>
-                                                    </packing>
-                                                </child>
+                                                <property name="xalign">0.0</property>
                                             </widget>
                                             <packing>
                                                 <property name="bottom_attach">5</property>
