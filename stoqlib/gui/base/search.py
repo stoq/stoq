@@ -38,7 +38,7 @@ from kiwi.utils import gsignal
 
 from stoqlib.database.orm import ORMObject, ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_connection, new_transaction,
-                                      finish_transaction)
+                                      finish_transaction, get_current_user)
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -85,15 +85,20 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
             d[col.title] = (col.treeview_column.get_visible(),
                             col.treeview_column.get_width())
 
-        file_name = os.path.join(os.getenv('HOME'), '.stoq', 'columns',
-                                 '%s.pickle' % self.restore_name)
+        uname = get_current_user(get_connection()).username
+        dir = os.path.join(os.getenv('HOME'), '.stoq', 'columns-%s' % uname)
+        if not os.path.exists(dir):
+            os.mkdir(dir)
+
+        file_name = os.path.join(dir, '%s.pickle' % self.restore_name)
         f = file(file_name, 'w')
         pickle.dump(d, f)
         f.close()
 
     def restore_columns(self):
-        file_name = os.path.join(os.getenv('HOME'), '.stoq', 'columns',
-                                 '%s.pickle' % self.restore_name)
+        uname = get_current_user(get_connection()).username
+        dir = os.path.join(os.getenv('HOME'), '.stoq', 'columns-%s' % uname)
+        file_name = os.path.join(dir, '%s.pickle' % self.restore_name)
         try:
             f = file(file_name)
             saved = pickle.load(f)
