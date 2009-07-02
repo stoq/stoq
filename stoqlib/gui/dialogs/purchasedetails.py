@@ -95,39 +95,22 @@ class PurchaseDetailsDialog(BaseEditor):
                      'expected_freight',
                      'notes')
     payment_proxy = ('payment_method',
-                     'installments_number')
+                     'installments_number',
+                     'total_paid',
+                     'total_interest',
+                     'total_discount',
+                     'total_penalty',
+                     'total_value')
     receiving_proxy = ('total_discounts',
                        'total_surcharges',
                        'receiving_subtotal',
                        'receiving_total')
 
     def _setup_summary_labels(self):
-        value_format = '<b>%s</b>'
-
-        payment_summary_label = ListLabel(klist=self.payments_list,
-                                          column='value',
-                                          label='<b>%s</b>' % _(u"Total:"),
-                                          value_format=value_format)
-
-        total = 0
-        for p in self.model.payments:
-            if p.status == Payment.STATUS_CANCELLED:
-                continue
-
-            if IInPayment(p, None):
-                total -= p.value
-            else:
-                total += p.value
-
-        payment_summary_label.set_value(total)
-        payment_summary_label.show()
-
-        self.payments_vbox.pack_start(payment_summary_label, False)
-
         order_summary_label = SummaryLabel(klist=self.ordered_items,
-                                              column='total',
-                                              label='<b>%s</b>' % _(u"Total"),
-                                              value_format=value_format)
+                                           column='total',
+                                           label='<b>%s</b>' % _(u"Total"),
+                                           value_format='<b>%s</b>')
         order_summary_label.show()
         self.ordered_vbox.pack_start(order_summary_label, False)
 
@@ -239,7 +222,6 @@ class PurchaseDetailsDialog(BaseEditor):
         receiving_details = _TemporaryReceivingDetails(receiving_orders)
         self.add_proxy(receiving_details,
                        PurchaseDetailsDialog.receiving_proxy)
-
 
     #
     # Kiwi callbacks

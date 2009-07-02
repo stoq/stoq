@@ -49,6 +49,8 @@ class Payment(Domain):
                        this payment.
         - I{discount}: the absolute value for the discount associated with
                        this payment.
+        - I{penalty}: the absolute value for the penalty associated with
+                       this payment.
     """
 
     # Status description
@@ -86,6 +88,7 @@ class Payment(Domain):
     value = PriceCol()
     interest = PriceCol(default=0)
     discount = PriceCol(default=0)
+    penalty = PriceCol(default=0)
     description = UnicodeCol(default=None)
     payment_number = UnicodeCol(default=None)
     method = ForeignKey('PaymentMethod')

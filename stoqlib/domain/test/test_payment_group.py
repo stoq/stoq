@@ -160,3 +160,77 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(value, Decimal(0))
         self.assertEqual(commissions.count(), 4)
         self.failIf(commissions[-1].value >= 0)
+
+    def testGetTotalValue(self):
+        sale = self.create_sale()
+        group = sale.group
+        self.assertEqual(group.get_total_value(), 0)
+
+        sellable = self.create_sellable()
+        sale.add_sellable(sellable, quantity=3, price=300)
+        product = sellable.product
+        product.addFacet(IStorable, connection=self.trans)
+        storable = IStorable(sellable.product)
+        storable.increase_stock(100, get_current_branch(self.trans))
+        sale.order()
+        method = PaymentMethod.get_by_name(self.trans, 'check')
+        payment = method.create_inpayment(sale.group, Decimal(900))
+        sale.confirm()
+        self.assertEqual(group.get_total_value(), 3 * 300)
+
+    def testGetTotalDiscount(self):
+        sale = self.create_sale()
+        group = sale.group
+        self.assertEqual(group.get_total_discount(), 0)
+
+        sellable = self.create_sellable()
+        sale.add_sellable(sellable, quantity=3, price=300)
+        product = sellable.product
+        product.addFacet(IStorable, connection=self.trans)
+        storable = IStorable(sellable.product)
+        storable.increase_stock(100, get_current_branch(self.trans))
+        sale.order()
+        method = PaymentMethod.get_by_name(self.trans, 'check')
+        inpayment = method.create_inpayment(sale.group, Decimal(900))
+        payment = inpayment.get_adapted()
+        payment.discount = 10
+        sale.confirm()
+        self.assertEqual(group.get_total_discount(), 10)
+
+    def testGetTotalInterest(self):
+        sale = self.create_sale()
+        group = sale.group
+        self.assertEqual(group.get_total_interest(), 0)
+
+        sellable = self.create_sellable()
+        sale.add_sellable(sellable, quantity=3, price=300)
+        product = sellable.product
+        product.addFacet(IStorable, connection=self.trans)
+        storable = IStorable(sellable.product)
+        storable.increase_stock(100, get_current_branch(self.trans))
+        sale.order()
+        method = PaymentMethod.get_by_name(self.trans, 'check')
+        inpayment = method.create_inpayment(sale.group, Decimal(900))
+        payment = inpayment.get_adapted()
+        payment.interest = 15
+        sale.confirm()
+        self.assertEqual(group.get_total_interest(), 15)
+
+    def testGetTotalPenalty(self):
+        sale = self.create_sale()
+        group = sale.group
+        self.assertEqual(group.get_total_penalty(), 0)
+
+        sellable = self.create_sellable()
+        sale.add_sellable(sellable, quantity=3, price=300)
+        product = sellable.product
+        product.addFacet(IStorable, connection=self.trans)
+        storable = IStorable(sellable.product)
+        storable.increase_stock(100, get_current_branch(self.trans))
+        sale.order()
+        method = PaymentMethod.get_by_name(self.trans, 'check')
+        inpayment = method.create_inpayment(sale.group, Decimal(900))
+        payment = inpayment.get_adapted()
+        payment.penalty = 25
+        sale.confirm()
+        self.assertEqual(group.get_total_penalty(), 25)

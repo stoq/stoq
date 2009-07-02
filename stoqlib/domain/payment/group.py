@@ -183,6 +183,12 @@ class PaymentGroup(Domain):
     def get_total_paid(self):
         return currency(self._get_paid_payments().sum('value') or 0)
 
+    def get_total_value(self):
+        """Returns the sum of all payment values.
+        @returns: the total payment value or zero.
+        """
+        return currency(self.get_items().sum('value') or 0)
+
     def clear_unused(self):
         """Delete payments of preview status associated to the current
         payment_group. It can happen if user open and cancel this wizard.
@@ -236,3 +242,30 @@ class PaymentGroup(Domain):
             raise DatabaseInconsistency("Invalid status, got %d"
                                         % self.status)
         return self.statuses[self.status]
+
+    def get_total_discount(self):
+        """Returns the sum of all payment discounts.
+        @returns: the total payment discount or zero.
+        """
+        discount = Payment.selectBy(
+            group=self, connection=self.get_connection()).sum('discount')
+
+        return currency(discount or 0)
+
+    def get_total_interest(self):
+        """Returns the sum of all payment interests.
+        @returns: the total payment interest or zero.
+        """
+        interest = Payment.selectBy(
+            group=self, connection=self.get_connection()).sum('interest')
+
+        return currency(interest or 0)
+
+    def get_total_penalty(self):
+        """Returns the sum of all payment penalties.
+        @returns: the total payment penalty or zero.
+        """
+        penalty = Payment.selectBy(
+            group=self, connection=self.get_connection()).sum('penalty')
+
+        return currency(penalty or 0)

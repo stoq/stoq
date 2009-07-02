@@ -84,6 +84,11 @@ class SaleDetailsDialog(BaseEditor):
                      'subtotal_lbl',
                      'surcharge_lbl',
                      'discount_lbl')
+    payment_widgets = ('total_discount',
+                       'total_interest',
+                       'total_penalty',
+                       'total_paid',
+                       'total_value',)
 
     def __init__(self, conn, model=None, visual_mode=False):
         """ Creates a new SaleDetailsDialog object
@@ -98,14 +103,6 @@ class SaleDetailsDialog(BaseEditor):
         self.items_list.set_columns(self._get_items_columns())
         self.payments_list.set_columns(self._get_payments_columns())
         self.payments_info_list.set_columns(self._get_payments_info_columns())
-
-    def _setup_summary_labels(self):
-        summary_label = SummaryLabel(klist=self.payments_list,
-                                     column='paid_value',
-                                     label='<b>%s</b>' % _(u"Total:"),
-                                     value_format='<b>%s</b>')
-        summary_label.show()
-        self.payments_vbox.pack_start(summary_label, False)
 
     def _get_payments(self, sale):
         for payment in sale.payments:
@@ -141,8 +138,6 @@ class SaleDetailsDialog(BaseEditor):
             self.sale_order.group,
             connection=self.conn)
         self.payments_info_list.add_list(changes)
-
-        self._setup_summary_labels()
 
     def _get_payments_columns(self):
         return [Column('id', "#", data_type=int, width=50,
@@ -199,6 +194,8 @@ class SaleDetailsDialog(BaseEditor):
     def setup_proxies(self):
         self._setup_widgets()
         self.add_proxy(self.model, SaleDetailsDialog.proxy_widgets)
+        self.add_proxy(self.model.sale.group,
+                       SaleDetailsDialog.payment_widgets)
 
     #
     # Kiwi handlers
