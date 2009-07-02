@@ -76,6 +76,7 @@ class AppWindow(BaseAppWindow):
     app_icon_name = None
     klist_name = 'klist'
     klist_selection_mode = gtk.SELECTION_BROWSE
+    search = None
 
     def __init__(self, app):
         self.conn = new_transaction()
@@ -263,7 +264,8 @@ class AppWindow(BaseAppWindow):
 
     def shutdown_application(self, *args):
         if self.can_close_application():
-            self.search.save_columns()
+            if self.search:
+                self.search.save_columns()
             self.app.shutdown()
         # We must return True here or the window will be hidden.
         return True
