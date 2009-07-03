@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 ##
 ## Author(s):     Lincoln Molica <lincoln@async.com.br>
 ##                Johan Dahlin <jdahlin@async.com.br>
+##                George Kussumoto <george@async.com.br>
 ##
 
 import datetime
@@ -31,8 +32,7 @@ from kiwi.datatypes import currency
 from stoqlib.database.orm import AND
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
-from stoqlib.domain.interfaces import (IStorable,
-                                       IOutPayment)
+from stoqlib.domain.interfaces import IStorable, IOutPayment
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentAdaptToOutPayment
@@ -604,26 +604,6 @@ class TestSale(DomainTest):
         self.add_payments(sale)
         sale.confirm()
 
-    def testGetDeliveryItem(self):
-        # Without delivery
-        sale = self.create_sale()
-        self.failIf(sale.can_set_paid())
-
-        self.add_product(sale)
-        delivery = sale.get_delivery_item()
-        self.failUnless(delivery is None)
-
-        # With delivery
-        sale = self.create_sale()
-        self.failIf(sale.can_set_paid())
-
-        self.add_product(sale)
-        sellable = sysparam(self.trans).DELIVERY_SERVICE
-        sale.add_sellable(sellable, quantity=1)
-        delivery = sale.get_delivery_item()
-        self.failIf(delivery is None)
-        self.failIf(delivery.sellable is not sellable)
-
     def testCommissionAmount(self):
         sale = self.create_sale()
         sellable = self.add_product(sale, price=200)
@@ -742,3 +722,13 @@ class TestSaleItem(DomainTest):
         product = self.create_product()
         sale_item = sale.add_sellable(product.sellable)
         self.assertEqual(sale_item.get_description(), 'Description')
+
+    def testIsService(self):
+        sale = self.create_sale()
+        product = self.create_product(price=10)
+        sale_item = sale.add_sellable(product.sellable, quantity=5)
+        self.failIf(sale_item.is_service() is True)
+
+        service = self.create_service()
+        sale_item = sale.add_sellable(service.sellable, quantity=2)
+        self.failIf(sale_item.is_service() is False)

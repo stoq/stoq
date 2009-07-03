@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -149,6 +149,11 @@ class SaleItem(Domain):
     def get_description(self):
         return self.sellable.base_sellable_info.get_description()
 
+    def is_service(self):
+        service = Service.selectOneBy(sellable=self.sellable,
+                                      connection=self.get_connection())
+        return service is not None
+
 
 class DeliveryItem(Domain):
     """Class responsible to store all the products for a certain delivery"""
@@ -202,7 +207,6 @@ class SaleItemAdaptToDelivery(ModelAdapter):
     @argcheck(DeliveryItem)
     def remove_item(self, item):
         DeliveryItem.delete(item.id, connection=item.get_connection())
-
 
     #
     # General methods
@@ -535,16 +539,33 @@ class Sale(ValidatableDomain):
         """
         return self.get_items().sum('quantity') or Decimal(0)
 
-    def get_delivery_item(self):
-        """Returns the delivery item of the sale, if any.
-
-        @returns: The sale item that represents the delivery or None if there
-                  is no delivery service in the sale.
+    def get_details_str(self):
+        """Returns the sale details. The details are composed by the sale
+        notes, the items notes, the delivery address and the estimated fix
+        date.
+        @returns: the sale details string.
         """
-        conn = self.get_connection()
-        delivery_service = sysparam(conn).DELIVERY_SERVICE
-        return SaleItem.selectOneBy(sellable=delivery_service, sale=self,
-                                    connection=conn)
+        details = []
+        if self.notes:
+            self.details.append(_(u'Sale Details: %s') % self.notes)
+        delivery_added = False
+        for sale_item in self.get_items():
+            if delivery_added is False:
+                delivery = IDelivery(sale_item, None)
+            if delivery is not None:
+                details.append(_(u'Delivery Address: %s' % delivery.address))
+                # At the moment, we just support only one delivery per sale.
+                delivery_added = True
+                delivery = None
+            else:
+                if sale_item.notes:
+                    details.append(_(u'"%s" Notes: %s' % (
+                        sale_item.get_description(), sale_item.notes)))
+            if sale_item.is_service() and sale_item.estimated_fix_date:
+                details.append(_(u'"%s" Estimated Fix Date: %s') % (
+                                 sale_item.get_description(),
+                                 sale_item.estimated_fix_date.strftime('%x')))
+        return u'\n'.join(details)
 
     def get_order_number_str(self):
         return u'%05d' % self.id
