@@ -66,7 +66,7 @@
                         <child>
                             <widget class="GtkLabel" id="label1">
                                 <property name="label" context="yes" translatable="yes">Estimated Delivery _Date:</property>
-                                <property name="mnemonic_widget">delivery_date</property>
+                                <property name="mnemonic_widget">estimated_fix_date</property>
                                 <property name="sizegroup">sizegroup1</property>
                                 <property name="use_underline">True</property>
                                 <property name="visible">True</property>
@@ -77,7 +77,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyDateEntry" id="delivery_date">
+                            <widget class="ProxyDateEntry" id="estimated_fix_date">
                                 <property name="data_type">date</property>
                                 <property name="model_attribute">estimated_fix_date</property>
                                 <property name="visible">True</property>

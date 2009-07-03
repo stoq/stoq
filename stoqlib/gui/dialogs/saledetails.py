@@ -31,7 +31,7 @@ import datetime
 import pango
 import gtk
 from kiwi.datatypes import currency
-from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
+from kiwi.ui.widgets.list import Column, ColoredColumn
 
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
@@ -127,10 +127,8 @@ class SaleDetailsDialog(BaseEditor):
         sale_items = self.sale_order.get_items()
         self.items_list.add_list(sale_items)
 
-        notes = [self.sale_order.notes]
-        notes.extend([s.notes for s in sale_items if s.notes])
         buffer = gtk.TextBuffer()
-        buffer.set_text(u'\n'.join(notes))
+        buffer.set_text(self.sale_order.get_details_str())
         self.notes.set_buffer(buffer)
 
         self.payments_list.add_list(self._get_payments(self.sale_order))
