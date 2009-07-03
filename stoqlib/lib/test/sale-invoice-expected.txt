@@ -9,14 +9,14 @@
 SALE                   5.102                                                    
                                                                                 
                                                                                 
-CLIENT                                                                2007-01-01
+CLIENT                                                                01-01-2007
                                                                                 
-MAINSTREET 138, CIDADE ARACI        CIDADE ARACI          12345-678   2007-01-01
+MAINSTREET 138, CIDADE ARACI        CIDADE ARACI          12345-678   01-01-2007
                                                                                 
 ACAPULCO                  /                    WI                      10:30    
                                                                                 
                                                                                 
-1          2000-01-01                                       545.00              
+1          01-01-2000                                       545.00              
                                                                                 
                                                                                 
                                                                                 
@@ -71,14 +71,14 @@ ACAPULCO                  /                    WI                      10:30
 SALE                   5.102                                                    
                                                                                 
                                                                                 
-CLIENT                                                                2007-01-01
+CLIENT                                                                01-01-2007
                                                                                 
-MAINSTREET 138, CIDADE ARACI        CIDADE ARACI          12345-678   2007-01-01
+MAINSTREET 138, CIDADE ARACI        CIDADE ARACI          12345-678   01-01-2007
                                                                                 
 ACAPULCO                  /                    WI                      10:30    
                                                                                 
                                                                                 
-1          2000-01-01                                       545.00              
+1          01-01-2000                                       545.00              
                                                                                 
                                                                                 
                                                                                 
