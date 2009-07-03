@@ -136,6 +136,8 @@ class InvoicePage(object):
 
 
 class _Invoice(object):
+    date_format = '%d-%m-%Y'
+
     def __init__(self, layout):
         self.layout = layout
         self.header_fields = []
@@ -491,7 +493,7 @@ class F(InvoiceFieldDescription):
     description = _('Emission date')
     length =  10
     def fetch(self, width, height):
-        return str(self.invoice.today.date())
+        return self.invoice.today.strftime(self.invoice.date_format)
 
 _add_invoice_field(F)
 
@@ -501,7 +503,7 @@ class F(InvoiceFieldDescription):
     description = _('Creation date')
     length =  10
     def fetch(self, width, height):
-        return str(self.invoice.today.date())
+        return self.invoice.today.strftime(self.invoice.date_format)
 
 _add_invoice_field(F)
 
@@ -511,7 +513,7 @@ class F(InvoiceFieldDescription):
     description = _('Creation time')
     length =  8
     def fetch(self, width, height):
-        return str(self.invoice.today.strftime('%H:%S'))
+        return self.invoice.today.strftime('%H:%S')
 
 _add_invoice_field(F)
 
@@ -531,7 +533,8 @@ class F(InvoiceFieldDescription):
     description = _('Payment due dates')
     length =  1
     def fetch(self, width, height):
-        dates = [str(p.due_date.date()) for p in self.sale.payments]
+        dates = [p.due_date.strftime(self.invoice.date_format)
+                                    for p in self.sale.payments]
         return ', '.join(dates)
 
 _add_invoice_field(F)
