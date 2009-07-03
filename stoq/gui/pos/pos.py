@@ -506,6 +506,7 @@ class POSApp(AppWindow):
                                       quantity=1,
                                       notes=delivery.notes,
                                       price=delivery.price)
+            delivery_item.estimated_fix_date = delivery.estimated_fix_date
             new_item = True
 
         self._update_added_item(delivery_item,

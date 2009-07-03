@@ -49,7 +49,6 @@ _ = stoqlib_gettext
 class Delivery(object):
     def __init__(self):
         self.price = None
-        self.delivery_date = None
         self.estimated_fix_date = None
         self.notes = None
         self.client = None
@@ -67,7 +66,7 @@ class DeliveryEditor(BaseEditor):
     proxy_widgets = [
         'client',
         'delivery_address',
-        'delivery_date',
+        'estimated_fix_date',
         'price'
         ]
 
@@ -140,7 +139,7 @@ class DeliveryEditor(BaseEditor):
                       title=_('Delivery Instructions')):
             self._update_widgets()
 
-    def on_delivery_date__validate(self, widget, date):
+    def on_estimated_fix_date__validate(self, widget, date):
         if date < datetime.date.today():
             return ValidationError(_("Expected delivery date must "
                  "be set to a future date"))
@@ -194,6 +193,6 @@ class DeliveryEditor(BaseEditor):
 
     def on_confirm(self):
         for sale_item in self.sale_items:
-            sale_item.estimated_fix_date = self.delivery_date.read()
+            sale_item.estimated_fix_date = self.estimated_fix_date.read()
 
         return self.model
