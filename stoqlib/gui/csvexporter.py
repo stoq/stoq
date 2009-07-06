@@ -23,7 +23,10 @@
 ##
 """CSV Exporter Utilities"""
 
+from kiwi.datatypes import number
 from kiwi.ui.objectlist import Column, ObjectList
+
+from stoqlib.lib.validators import get_formatted_price as format_number
 
 
 def objectlist2csv(objectlist, encoding):
@@ -41,24 +44,35 @@ def objectlist2csv(objectlist, encoding):
                         objectlist.__class__.__name__)
 
     attributes = []
-    title = ''
+    title = []
     for column in objectlist.get_treeview().get_columns():
         if not column.get_visible():
             continue
 
         header_widget = column.get_widget()
         if header_widget:
-            title += header_widget.get_text() + ','
+            title.append(header_widget.get_text())
             attributes.append(column.attribute)
 
     # the header must be the first line of the CSV
     csv_lines = [title]
 
     for item in objectlist:
-        csv_line = ','.join(
-            [str(Column.get_attribute(item, attr, '')) for attr in attributes])
-        csv_line = csv_line.replace('None', '')
-        csv_line += ','
-        csv_lines.append(csv_line.encode(encoding, 'replace'))
+        csv_line = []
+        csv_line.extend(
+            [_get_field_string(item, attr).encode(encoding, 'replace')
+                                                    for attr in attributes])
+        csv_lines.append(csv_line)
 
-    return '\n'.join(csv_lines)
+    return csv_lines
+
+
+def _get_field_string(item, field):
+    field_value = Column.get_attribute(item, field, '')
+    field_value_as_str = str(field_value)
+    if not field_value_as_str or field_value_as_str == 'None':
+        return ''
+    if isinstance(field_value, number):
+        #XXX: workaround to not handle locale differences directly.
+        return format_number(field_value, symbol=False)
+    return field_value_as_str

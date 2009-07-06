@@ -24,6 +24,8 @@
 """CSV Exporter Dialog"""
 
 
+import csv
+
 import gtk
 
 from kiwi.python import Settable
@@ -120,10 +122,12 @@ class CSVExporterDialog(BaseEditor):
 
         content = export_csv(self.model.klass, select=results,
                              connection=self.conn)
-        return content.encode(encoding, 'replace')
+        content = content.encode(encoding, 'replace')
+        return content.split('\n')
 
     def _save(self, filename):
         encoding = self.encoding.get_selected()
-        writer = open(filename, 'w')
-        writer.write(self._get_csv_content(encoding))
-        writer.close()
+        csv_file = open(filename, 'w')
+        writer = csv.writer(csv_file, doublequote=True, quoting=csv.QUOTE_ALL)
+        writer.writerows(self._get_csv_content(encoding))
+        csv_file.close()
