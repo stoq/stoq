@@ -49,6 +49,26 @@ class TestServiceSellableItem(DomainTest):
         delivery.add_item(delivery_item)
         self.assertEquals(list(delivery.get_items()), [delivery_item])
 
+class TestService(DomainTest):
+    def test_remove(self):
+        service = self.create_service()
+        service_id = service.id
+
+        total = Service.selectBy(id=service_id, connection=self.trans).count()
+        self.assertEquals(total, 1)
+
+        service.remove()
+        total = Service.selectBy(id=service_id, connection=self.trans).count()
+        self.assertEquals(total, 0)
+
+    def test_can_remove(self):
+        service = self.create_service()
+        self.assertTrue(service.can_remove())
+
+        sale = self.create_sale()
+        service_item = sale.add_sellable(service.sellable, quantity=1,
+                                         price=10)
+        self.assertFalse(service.can_remove())
 
 class TestServiceView(DomainTest):
 
@@ -57,3 +77,4 @@ class TestServiceView(DomainTest):
         services = [s.service_id for s in
                     ServiceView.select(connection=self.trans)]
         self.failIf(service not in services)
+

@@ -45,7 +45,7 @@ from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
-from stoqlib.lib.message import info
+from stoqlib.lib.message import info, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_price_format_str
 
@@ -230,9 +230,22 @@ class SellableEditor(BaseEditor):
             code = u'%d' % self._sellable.id
             self.code.update(code)
         self.setup_widgets()
+        if model and self._sellable.can_remove():
+            button = self.add_button('Remove', 'gtk-delete')
+            button.connect('clicked', self._on_delete_button__activate)
 
         self.set_description(
             self.model.sellable.base_sellable_info.description)
+
+    def _on_delete_button__activate(self, button):
+        msg = _(u'Do you really want to delete?')
+        if not yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _(u'No')):
+            return
+
+        self._sellable.remove()
+        # We don't call self.confirm since it will call validate_confirm
+        self.cancel()
+        self.main_dialog.retval = True
 
     def add_extra_tab(self, tabname, tabslave):
         self.sellable_notebook.set_show_tabs(True)

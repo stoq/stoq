@@ -37,10 +37,8 @@ from stoqlib.database.orm import PriceCol, DecimalCol
 from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol, ForeignKey
 from stoqlib.database.orm import SingleJoin
 from stoqlib.database.orm import AND, IN, OR
-from stoqlib.database.runtime import get_connection
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.base import Domain
-from stoqlib.domain.person import PersonAdaptToSupplier
 from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
                                 BarcodeDoesNotExists)
 from stoqlib.lib.parameters import sysparam
@@ -398,6 +396,17 @@ class Sellable(Domain):
         # use case, so we keep another method
         self.status = self.STATUS_AVAILABLE
 
+    def can_remove(self):
+        """Whether we can delete this sellable from the database.
+
+        False if the product/service was never sold or received. True
+        otherwise.
+        """
+        if self.product:
+            return self.product.can_remove()
+        else:
+            return self.service.can_remove()
+
     def get_short_description(self):
         """Returns a short description of the current sale
         @returns: description
@@ -481,6 +490,21 @@ class Sellable(Domain):
     # Classmethods
     #
 
+    def remove(self):
+        """Remove this sellable from the database (including the product or
+        service).
+        """
+        if self.product:
+            self.product.remove()
+        elif self.service:
+            self.service.remove()
+        info = self.base_sellable_info
+        on_sale = self.on_sale_info
+        conn = self.get_connection()
+
+        self.delete(self.id, conn)
+        info.delete(info.id, conn)
+        on_sale.delete(sale.id, conn)
 
     @classmethod
     def get_available_sellables_query(cls, conn):

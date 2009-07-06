@@ -30,6 +30,7 @@
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductHistory, ProductComponent,
                                     ProductRetentionHistory)
@@ -162,6 +163,37 @@ class TestProduct(DomainTest):
         self.assertEqual(info in suppliers, True)
 
         self.assertEqual(product.is_supplied_by(supplier), True)
+
+    def test_can_remove(self):
+        product = self.create_product()
+        storable = product.addFacet(IStorable, connection=self.trans)
+        self.assertTrue(product.can_remove())
+
+        storable.increase_stock(1, get_current_branch(self.trans))
+        self.assertFalse(product.can_remove())
+
+        sale = self.create_sale()
+        sale.add_sellable(product.sellable, quantity=1, price=10)
+
+        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method.create_inpayment(sale.group, sale.get_sale_subtotal())
+
+        sale.order()
+        sale.confirm()
+
+        self.assertFalse(product.can_remove())
+
+    def test_remove(self):
+        product = self.create_product()
+        storable = product.addFacet(IStorable, connection=self.trans)
+        product_id = product.id
+
+        total = Product.selectBy(id=product_id, connection=self.trans).count()
+        self.assertEquals(total, 1)
+
+        product.remove()
+        total = Product.selectBy(id=product_id, connection=self.trans).count()
+        self.assertEquals(total, 0)
 
 
 class TestProductSellableItem(DomainTest):
