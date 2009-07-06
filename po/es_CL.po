@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.9.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-06-18 11:23-0300\n"
+"POT-Creation-Date: 2009-07-06 15:38-0300\n"
 "PO-Revision-Date: 2008-03-03 17:22+0100\n"
 "Last-Translator: Gabriel Felipe Cornejo Salas <gnomeusr@gmail.com>\n"
 "Language-Team: Español/Chile <es@li.org>\n"
@@ -124,23 +124,23 @@ msgstr ""
 "actualizada. Ejecute 'stoqdbadmin updateschema` para actualizar el esquema a "
 "la última versión disponible"
 
-#: ../stoq/gui/application.py:181
+#: ../stoq/gui/application.py:183
 msgid "_Store"
 msgstr "Guardar"
 
-#: ../stoq/gui/application.py:182
+#: ../stoq/gui/application.py:184
 msgid "Store a cookie"
 msgstr "Guardar Cookie"
 
-#: ../stoq/gui/application.py:183
+#: ../stoq/gui/application.py:185
 msgid "_Clear"
 msgstr "Limpiar"
 
-#: ../stoq/gui/application.py:184
+#: ../stoq/gui/application.py:186
 msgid "Clear the cookie"
 msgstr "Limpiar Cookie"
 
-#: ../stoq/gui/application.py:185 ../data/glade/payable.glade.h:5
+#: ../stoq/gui/application.py:187 ../data/glade/payable.glade.h:5
 #: ../data/glade/pos.glade.h:10 ../data/glade/inventory.glade.h:3
 #: ../data/glade/receivable.glade.h:5 ../data/glade/sales_app.glade.h:3
 #: ../data/glade/admin.glade.h:7 ../data/glade/stock.glade.h:3
@@ -149,42 +149,42 @@ msgstr "Limpiar Cookie"
 msgid "Chan_ge Password"
 msgstr "Cambiar de usuario"
 
-#: ../stoq/gui/application.py:186
+#: ../stoq/gui/application.py:188
 #, fuzzy
 msgid "Change the password"
 msgstr "Necesitas la contraseña:"
 
-#: ../stoq/gui/application.py:188
+#: ../stoq/gui/application.py:190
 msgid "C_hange User"
 msgstr "Cambiar de Usuario"
 
-#: ../stoq/gui/application.py:189
+#: ../stoq/gui/application.py:191
 msgid "Change user"
 msgstr "Cambiar de usuario"
 
-#: ../stoq/gui/application.py:190
+#: ../stoq/gui/application.py:192
 msgid "Change Application"
 msgstr "Cambiar aplicación"
 
-#: ../stoq/gui/application.py:191
+#: ../stoq/gui/application.py:193
 msgid "Change application"
 msgstr "Cambiar aplicación"
 
-#: ../stoq/gui/application.py:213
+#: ../stoq/gui/application.py:215
 msgid "Debug"
 msgstr "Depurar"
 
-#: ../stoq/gui/application.py:214
+#: ../stoq/gui/application.py:216
 msgid "Introspect slaves"
 msgstr "Realizar introspección de esclavos"
 
 #. This method must be redefined in child when it's needed
-#: ../stoq/gui/application.py:243
+#: ../stoq/gui/application.py:245
 #, python-format
 msgid "Stoq - %s"
 msgstr "Stoq - %s"
 
-#: ../stoq/gui/application.py:310
+#: ../stoq/gui/application.py:314
 msgid "Search:"
 msgstr "Buscar:"
 
@@ -347,7 +347,7 @@ msgid "Accounts Payable"
 msgstr "Cuentas por Pagar"
 
 #: ../stoq/gui/payable/payable.py:68 ../stoq/gui/admin/admin.py:72
-#: ../stoq/gui/sales/sales.py:67 ../stoq/gui/purchase/purchase.py:67
+#: ../stoq/gui/sales/sales.py:68 ../stoq/gui/purchase/purchase.py:67
 #: ../stoq/gui/till/till.py:70 ../stoq/gui/receivable/receivable.py:90
 msgid "matching:"
 msgstr "incluyendo:"
@@ -361,7 +361,7 @@ msgid "#"
 msgstr "#"
 
 #: ../stoq/gui/payable/payable.py:97 ../stoq/gui/payable/payable.py:99
-#: ../stoq/gui/pos/pos.py:168 ../stoq/gui/pos/deliveryeditor.py:104
+#: ../stoq/gui/pos/pos.py:168 ../stoq/gui/pos/deliveryeditor.py:103
 #: ../stoq/gui/stock/stock.py:94 ../stoq/gui/receivable/receivable.py:136
 #: ../stoq/gui/receivable/receivable.py:138
 msgid "Description"
@@ -380,7 +380,7 @@ msgid "Paid Date"
 msgstr "Fecha de pago"
 
 #: ../stoq/gui/payable/payable.py:109 ../stoq/gui/admin/admin.py:97
-#: ../stoq/gui/inventory/inventory.py:80 ../stoq/gui/sales/sales.py:99
+#: ../stoq/gui/inventory/inventory.py:80 ../stoq/gui/sales/sales.py:100
 #: ../stoq/gui/receivable/receivable.py:147
 msgid "Status"
 msgstr "Situación"
@@ -395,7 +395,7 @@ msgid "Paid"
 msgstr "Fecha de pago"
 
 #: ../stoq/gui/payable/payable.py:295 ../stoq/gui/admin/admin.py:105
-#: ../stoq/gui/inventory/inventory.py:99 ../stoq/gui/sales/sales.py:218
+#: ../stoq/gui/inventory/inventory.py:99 ../stoq/gui/sales/sales.py:219
 #: ../stoq/gui/purchase/purchase.py:233 ../stoq/gui/till/till.py:148
 #: ../stoq/gui/receivable/receivable.py:118
 msgid "Any"
@@ -428,7 +428,7 @@ msgstr "Referencia"
 msgid "Price"
 msgstr "Precio"
 
-#: ../stoq/gui/pos/pos.py:172 ../stoq/gui/pos/deliveryeditor.py:106
+#: ../stoq/gui/pos/pos.py:172 ../stoq/gui/pos/deliveryeditor.py:105
 #: ../stoq/gui/stock/stock.py:99 ../stoq/gui/till/till.py:117
 msgid "Quantity"
 msgstr "Cantidad"
@@ -437,7 +437,7 @@ msgstr "Cantidad"
 msgid "Unit"
 msgstr "Unidad"
 
-#: ../stoq/gui/pos/pos.py:178 ../stoq/gui/sales/sales.py:132
+#: ../stoq/gui/pos/pos.py:178 ../stoq/gui/sales/sales.py:133
 #: ../stoq/gui/purchase/purchase.py:102 ../stoq/gui/till/till.py:120
 msgid "Total"
 msgstr "Total"
@@ -486,21 +486,21 @@ msgstr "Volver"
 msgid "Cancel Order"
 msgstr "Cancelar Pedido"
 
-#: ../stoq/gui/pos/pos.py:611
+#: ../stoq/gui/pos/pos.py:615
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr "No es posible iniciar una nueva venta si no se puede abrir factura."
 
-#: ../stoq/gui/pos/pos.py:613 ../stoq/gui/till/till.py:196
+#: ../stoq/gui/pos/pos.py:617 ../stoq/gui/till/till.py:196
 msgid "Try Again"
 msgstr "Intente de nuevo"
 
-#: ../stoq/gui/pos/pos.py:613 ../stoq/gui/till/till.py:196
+#: ../stoq/gui/pos/pos.py:617 ../stoq/gui/till/till.py:196
 #: ../data/glade/inventory.glade.h:2
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: ../stoq/gui/pos/pos.py:673 ../stoq/gui/till/till.py:313
+#: ../stoq/gui/pos/pos.py:680 ../stoq/gui/till/till.py:313
 msgid ""
 "You can only close the till once per day. \n"
 "\n"
@@ -510,11 +510,11 @@ msgstr ""
 "\n"
 "¿Cerrar la caja?"
 
-#: ../stoq/gui/pos/pos.py:675 ../stoq/gui/till/till.py:315
+#: ../stoq/gui/pos/pos.py:682 ../stoq/gui/till/till.py:315
 msgid "Not now"
 msgstr "Ahora no"
 
-#: ../stoq/gui/pos/pos.py:675 ../stoq/gui/till/till.py:315
+#: ../stoq/gui/pos/pos.py:682 ../stoq/gui/till/till.py:315
 msgid "Close Till"
 msgstr "Cerrar la caja..."
 
@@ -524,33 +524,33 @@ msgstr ""
 "Aplicación para registro de venta de\n"
 "productos y emisión de recibo."
 
-#: ../stoq/gui/pos/deliveryeditor.py:57 ../stoq/gui/pos/deliveryeditor.py:61
+#: ../stoq/gui/pos/deliveryeditor.py:56 ../stoq/gui/pos/deliveryeditor.py:60
 msgid "Delivery"
 msgstr "Entrega"
 
-#: ../stoq/gui/pos/deliveryeditor.py:64
+#: ../stoq/gui/pos/deliveryeditor.py:63
 msgid "New Delivery"
 msgstr "Nueva Entrega..."
 
-#: ../stoq/gui/pos/deliveryeditor.py:102 ../stoq/gui/inventory/inventory.py:77
+#: ../stoq/gui/pos/deliveryeditor.py:101 ../stoq/gui/inventory/inventory.py:77
 #: ../stoq/gui/stock/stock.py:88
 msgid "Code"
 msgstr "Código"
 
-#: ../stoq/gui/pos/deliveryeditor.py:108
+#: ../stoq/gui/pos/deliveryeditor.py:107
 msgid "Deliver"
 msgstr "Entrega"
 
-#: ../stoq/gui/pos/deliveryeditor.py:140
+#: ../stoq/gui/pos/deliveryeditor.py:139
 msgid "Delivery Instructions"
 msgstr "Instrucciones de entregas"
 
-#: ../stoq/gui/pos/deliveryeditor.py:145
+#: ../stoq/gui/pos/deliveryeditor.py:144
 msgid "Expected delivery date must be set to a future date"
 msgstr ""
 "La fecha esperada de entrega debe estar configurada para una fecha futura"
 
-#: ../stoq/gui/pos/deliveryeditor.py:151
+#: ../stoq/gui/pos/deliveryeditor.py:150
 msgid "The Delivery cost must be a positive value."
 msgstr "El costo de entrega debe ser un valor positivo."
 
@@ -640,7 +640,7 @@ msgstr "No"
 msgid "Cancel Inventory"
 msgstr "Nuevo"
 
-#: ../stoq/gui/sales/__init__.py:29 ../stoq/gui/sales/sales.py:63
+#: ../stoq/gui/sales/__init__.py:29 ../stoq/gui/sales/sales.py:64
 msgid "Sales"
 msgstr "Ventas"
 
@@ -650,55 +650,55 @@ msgstr ""
 "Aplicación para la gestión y registro de\n"
 "comprobantes e impresión de facturas."
 
-#: ../stoq/gui/sales/sales.py:91
+#: ../stoq/gui/sales/sales.py:92
 msgid "Show sales with status"
 msgstr "Mostrar ventas en situación"
 
-#: ../stoq/gui/sales/sales.py:102 ../stoq/gui/purchase/purchase.py:87
+#: ../stoq/gui/sales/sales.py:103 ../stoq/gui/purchase/purchase.py:87
 #: ../stoq/gui/till/till.py:107
 msgid "Number"
 msgstr "Número"
 
-#: ../stoq/gui/sales/sales.py:104
+#: ../stoq/gui/sales/sales.py:105
 #, fuzzy
 msgid "Open Date"
 msgstr "Fecha de apertura:"
 
-#: ../stoq/gui/sales/sales.py:107
+#: ../stoq/gui/sales/sales.py:108
 msgid "Close Date"
 msgstr "Fecha de cierre:"
 
-#: ../stoq/gui/sales/sales.py:110
+#: ../stoq/gui/sales/sales.py:111
 msgid "Confirm Date"
 msgstr "Fecha de confirmación"
 
-#: ../stoq/gui/sales/sales.py:113
+#: ../stoq/gui/sales/sales.py:114
 msgid "Cancel Date"
 msgstr "Fecha de cancelación"
 
-#: ../stoq/gui/sales/sales.py:116
+#: ../stoq/gui/sales/sales.py:117
 #, fuzzy
 msgid "Return Date"
 msgstr "Fecha de apertura:"
 
-#: ../stoq/gui/sales/sales.py:119
+#: ../stoq/gui/sales/sales.py:120
 #, fuzzy
 msgid "Expire Date"
 msgstr "Fecha de vencimiento"
 
-#: ../stoq/gui/sales/sales.py:123 ../stoq/gui/till/till.py:111
+#: ../stoq/gui/sales/sales.py:124 ../stoq/gui/till/till.py:111
 msgid "Client"
 msgstr "Cliente"
 
-#: ../stoq/gui/sales/sales.py:126 ../stoq/gui/till/till.py:114
+#: ../stoq/gui/sales/sales.py:127 ../stoq/gui/till/till.py:114
 msgid "Salesperson"
 msgstr "Vendedor"
 
-#: ../stoq/gui/sales/sales.py:129
+#: ../stoq/gui/sales/sales.py:130
 msgid "Items"
 msgstr ""
 
-#: ../stoq/gui/sales/sales.py:185
+#: ../stoq/gui/sales/sales.py:186
 msgid "There are no invoice printer configured for this station"
 msgstr "No hay una impresora configurada en esta estación"
 
@@ -924,14 +924,14 @@ msgid "Cut selected object into the clipboard"
 msgstr "Recortar objeto selecionado en el portapapeles"
 
 #: ../data/glade/payable.glade.h:12 ../data/glade/inventory.glade.h:7
-#: ../data/glade/receivable.glade.h:12 ../data/glade/sales_app.glade.h:12
+#: ../data/glade/receivable.glade.h:12 ../data/glade/sales_app.glade.h:14
 #: ../data/glade/admin.glade.h:20 ../data/glade/stock.glade.h:9
 #: ../data/glade/till.glade.h:12 ../data/glade/purchase.glade.h:14
 msgid "Export CSV..."
 msgstr ""
 
-#: ../data/glade/payable.glade.h:13 ../data/glade/pos.glade.h:20
-#: ../data/glade/receivable.glade.h:13 ../data/glade/sales_app.glade.h:14
+#: ../data/glade/payable.glade.h:13 ../data/glade/pos.glade.h:21
+#: ../data/glade/receivable.glade.h:13 ../data/glade/sales_app.glade.h:16
 #: ../data/glade/admin.glade.h:24 ../data/glade/stock.glade.h:11
 #: ../data/glade/till.glade.h:15 ../data/glade/purchase.glade.h:16
 msgid "Open a file"
@@ -941,38 +941,38 @@ msgstr "Abrir Archivo"
 msgid "P_ay order"
 msgstr "P_agar pedido"
 
-#: ../data/glade/payable.glade.h:15 ../data/glade/pos.glade.h:22
-#: ../data/glade/receivable.glade.h:14 ../data/glade/sales_app.glade.h:15
+#: ../data/glade/payable.glade.h:15 ../data/glade/pos.glade.h:23
+#: ../data/glade/receivable.glade.h:14 ../data/glade/sales_app.glade.h:17
 #: ../data/glade/admin.glade.h:25 ../data/glade/stock.glade.h:12
 #: ../data/glade/till.glade.h:16 ../data/glade/purchase.glade.h:17
 msgid "Paste object from the Clipboard"
 msgstr "Pegar objeto del portapapeles"
 
-#: ../data/glade/payable.glade.h:16 ../data/glade/pos.glade.h:25
+#: ../data/glade/payable.glade.h:16 ../data/glade/pos.glade.h:26
 #: ../data/glade/inventory.glade.h:9 ../data/glade/receivable.glade.h:15
-#: ../data/glade/sales_app.glade.h:18 ../data/glade/admin.glade.h:28
+#: ../data/glade/sales_app.glade.h:20 ../data/glade/admin.glade.h:28
 #: ../data/glade/stock.glade.h:16 ../data/glade/till.glade.h:17
 #: ../data/glade/purchase.glade.h:21
 msgid "Quit"
 msgstr "Salir"
 
-#: ../data/glade/payable.glade.h:17 ../data/glade/pos.glade.h:26
+#: ../data/glade/payable.glade.h:17 ../data/glade/pos.glade.h:27
 #: ../data/glade/inventory.glade.h:10 ../data/glade/receivable.glade.h:16
-#: ../data/glade/sales_app.glade.h:19 ../data/glade/admin.glade.h:29
+#: ../data/glade/sales_app.glade.h:21 ../data/glade/admin.glade.h:29
 #: ../data/glade/stock.glade.h:17 ../data/glade/till.glade.h:18
 #: ../data/glade/purchase.glade.h:22
 msgid "Quit the program"
 msgstr "Salir del programa"
 
-#: ../data/glade/payable.glade.h:18 ../data/glade/pos.glade.h:32
-#: ../data/glade/receivable.glade.h:20 ../data/glade/sales_app.glade.h:21
+#: ../data/glade/payable.glade.h:18 ../data/glade/pos.glade.h:33
+#: ../data/glade/receivable.glade.h:20 ../data/glade/sales_app.glade.h:23
 #: ../data/glade/admin.glade.h:33 ../data/glade/stock.glade.h:21
 #: ../data/glade/till.glade.h:22 ../data/glade/purchase.glade.h:27
 msgid "Save a file"
 msgstr "Guardar Archivo"
 
 #: ../data/glade/payable.glade.h:19 ../data/glade/receivable.glade.h:21
-#: ../data/glade/sales_app.glade.h:22 ../data/glade/till.glade.h:23
+#: ../data/glade/sales_app.glade.h:24 ../data/glade/till.glade.h:23
 msgid "Save with a different name"
 msgstr "Guardar como"
 
@@ -982,7 +982,7 @@ msgid "Set as not paid..."
 msgstr "El Código de operación contable: proporcionado no es correcto."
 
 #: ../data/glade/payable.glade.h:21 ../data/glade/receivable.glade.h:23
-#: ../data/glade/sales_app.glade.h:25 ../data/glade/till.glade.h:24
+#: ../data/glade/sales_app.glade.h:27 ../data/glade/till.glade.h:24
 msgid "Store Cookie"
 msgstr "Guardar Cookie"
 
@@ -995,23 +995,23 @@ msgstr "_Conferencia"
 msgid "_Details"
 msgstr "_Detalles"
 
-#: ../data/glade/payable.glade.h:24 ../data/glade/pos.glade.h:39
-#: ../data/glade/receivable.glade.h:26 ../data/glade/sales_app.glade.h:26
+#: ../data/glade/payable.glade.h:24 ../data/glade/pos.glade.h:40
+#: ../data/glade/receivable.glade.h:26 ../data/glade/sales_app.glade.h:28
 #: ../data/glade/admin.glade.h:39 ../data/glade/stock.glade.h:26
 #: ../data/glade/till.glade.h:29 ../data/glade/purchase.glade.h:38
 msgid "_Edit"
 msgstr "_Editar"
 
-#: ../data/glade/payable.glade.h:25 ../data/glade/pos.glade.h:40
-#: ../data/glade/receivable.glade.h:27 ../data/glade/sales_app.glade.h:27
+#: ../data/glade/payable.glade.h:25 ../data/glade/pos.glade.h:41
+#: ../data/glade/receivable.glade.h:27 ../data/glade/sales_app.glade.h:29
 #: ../data/glade/stock.glade.h:27 ../data/glade/till.glade.h:30
 #: ../data/glade/purchase.glade.h:39
 msgid "_File"
 msgstr "_Archivo"
 
-#: ../data/glade/payable.glade.h:26 ../data/glade/pos.glade.h:41
+#: ../data/glade/payable.glade.h:26 ../data/glade/pos.glade.h:42
 #: ../data/glade/inventory.glade.h:14 ../data/glade/receivable.glade.h:28
-#: ../data/glade/sales_app.glade.h:28 ../data/glade/admin.glade.h:40
+#: ../data/glade/sales_app.glade.h:30 ../data/glade/admin.glade.h:40
 #: ../data/glade/stock.glade.h:28 ../data/glade/till.glade.h:31
 #: ../data/glade/purchase.glade.h:40
 msgid "_Help"
@@ -1025,16 +1025,16 @@ msgstr "Cuentas por _Pagar"
 msgid "_Receipt"
 msgstr "_Recibo"
 
-#: ../data/glade/payable.glade.h:29 ../data/glade/pos.glade.h:43
+#: ../data/glade/payable.glade.h:29 ../data/glade/pos.glade.h:44
 #: ../data/glade/inventory.glade.h:16 ../data/glade/receivable.glade.h:30
-#: ../data/glade/sales_app.glade.h:30 ../data/glade/admin.glade.h:44
+#: ../data/glade/sales_app.glade.h:32 ../data/glade/admin.glade.h:44
 #: ../data/glade/stock.glade.h:32 ../data/glade/till.glade.h:33
 #: ../data/glade/purchase.glade.h:43
 msgid "_Search"
 msgstr "Buscar"
 
-#: ../data/glade/payable.glade.h:30 ../data/glade/pos.glade.h:45
-#: ../data/glade/receivable.glade.h:31 ../data/glade/sales_app.glade.h:31
+#: ../data/glade/payable.glade.h:30 ../data/glade/pos.glade.h:46
+#: ../data/glade/receivable.glade.h:31 ../data/glade/sales_app.glade.h:33
 #: ../data/glade/admin.glade.h:46 ../data/glade/stock.glade.h:35
 #: ../data/glade/till.glade.h:35 ../data/glade/purchase.glade.h:45
 msgid "_User"
@@ -1130,83 +1130,88 @@ msgstr "Clientes..."
 msgid "Close Till..."
 msgstr "Cerrar Caja..."
 
-#: ../data/glade/pos.glade.h:17
+#: ../data/glade/pos.glade.h:17 ../data/glade/sales_app.glade.h:13
+#, fuzzy
+msgid "Deliveries..."
+msgstr "Nueva Entrega..."
+
+#: ../data/glade/pos.glade.h:18
 msgid "Ed_it"
 msgstr "Ed_itar"
 
-#: ../data/glade/pos.glade.h:18
+#: ../data/glade/pos.glade.h:19
 msgid "New Delivery..."
 msgstr "Nueva Entrega..."
 
-#: ../data/glade/pos.glade.h:19 ../data/glade/till.glade.h:14
+#: ../data/glade/pos.glade.h:20 ../data/glade/till.glade.h:14
 msgid "Open Till..."
 msgstr "Abrir Caja..."
 
-#: ../data/glade/pos.glade.h:21
+#: ../data/glade/pos.glade.h:22
 msgid "Order Checkout..."
 msgstr "Validar Pedido..."
 
-#: ../data/glade/pos.glade.h:23 ../data/glade/sales_app.glade.h:17
+#: ../data/glade/pos.glade.h:24 ../data/glade/sales_app.glade.h:19
 #: ../data/glade/purchase.glade.h:19
 msgid "Products..."
 msgstr "Productos..."
 
-#: ../data/glade/pos.glade.h:24
+#: ../data/glade/pos.glade.h:25
 msgid "Quantity:"
 msgstr "Cantidad:"
 
-#: ../data/glade/pos.glade.h:27 ../data/glade/admin.glade.h:30
+#: ../data/glade/pos.glade.h:28 ../data/glade/admin.glade.h:30
 msgid "Recortar"
 msgstr "Recortar"
 
-#: ../data/glade/pos.glade.h:28
+#: ../data/glade/pos.glade.h:29
 msgid "STOQ - POS Application"
 msgstr "STOQ - Aplicación de PDV"
 
-#: ../data/glade/pos.glade.h:29 ../data/glade/sales_app.glade.h:20
+#: ../data/glade/pos.glade.h:30 ../data/glade/sales_app.glade.h:22
 msgid "Sal_es"
 msgstr "V_entas"
 
-#: ../data/glade/pos.glade.h:30 ../data/glade/till.glade.h:21
+#: ../data/glade/pos.glade.h:31 ../data/glade/till.glade.h:21
 msgid "Sales..."
 msgstr "Ventas..."
 
-#: ../data/glade/pos.glade.h:31 ../data/glade/admin.glade.h:32
+#: ../data/glade/pos.glade.h:32 ../data/glade/admin.glade.h:32
 #: ../data/glade/stock.glade.h:20 ../data/glade/purchase.glade.h:26
 msgid "Save _as"
 msgstr "Guardar como"
 
-#: ../data/glade/pos.glade.h:33 ../data/glade/admin.glade.h:34
+#: ../data/glade/pos.glade.h:34 ../data/glade/admin.glade.h:34
 #: ../data/glade/stock.glade.h:22 ../data/glade/purchase.glade.h:28
 msgid "Save with a differente name"
 msgstr "Guardar con un nombre distinto"
 
-#: ../data/glade/pos.glade.h:34 ../data/glade/sales_app.glade.h:24
+#: ../data/glade/pos.glade.h:35 ../data/glade/sales_app.glade.h:26
 #: ../data/glade/purchase.glade.h:31
 msgid "Services..."
 msgstr "Servicios..."
 
-#: ../data/glade/pos.glade.h:35
+#: ../data/glade/pos.glade.h:36
 msgid "Store Coo_kie"
 msgstr "Guardar Coo_kie"
 
-#: ../data/glade/pos.glade.h:36
+#: ../data/glade/pos.glade.h:37
 msgid "_Checkout"
 msgstr "_Confirmar"
 
-#: ../data/glade/pos.glade.h:37
+#: ../data/glade/pos.glade.h:38
 msgid "_Confirm Order"
 msgstr "Confirmar Pedido"
 
-#: ../data/glade/pos.glade.h:38
+#: ../data/glade/pos.glade.h:39
 msgid "_Delivery"
 msgstr "_Entrega"
 
-#: ../data/glade/pos.glade.h:42
+#: ../data/glade/pos.glade.h:43
 msgid "_Remove"
 msgstr "_Eliminar"
 
-#: ../data/glade/pos.glade.h:44 ../data/glade/till.glade.h:34
+#: ../data/glade/pos.glade.h:45 ../data/glade/till.glade.h:34
 msgid "_Till"
 msgstr "Caja"
 
@@ -1285,23 +1290,28 @@ msgstr "Clientes"
 msgid "Commissions..."
 msgstr "Comisión..."
 
-#: ../data/glade/sales_app.glade.h:13
+#: ../data/glade/sales_app.glade.h:12
+#, fuzzy
+msgid "Deliveries"
+msgstr "Entrega"
+
+#: ../data/glade/sales_app.glade.h:15
 msgid "New Quote"
 msgstr ""
 
-#: ../data/glade/sales_app.glade.h:16 ../data/glade/purchase.glade.h:18
+#: ../data/glade/sales_app.glade.h:18 ../data/glade/purchase.glade.h:18
 msgid "Products"
 msgstr "Productos"
 
-#: ../data/glade/sales_app.glade.h:23
+#: ../data/glade/sales_app.glade.h:25
 msgid "Services"
 msgstr "Servicios"
 
-#: ../data/glade/sales_app.glade.h:29
+#: ../data/glade/sales_app.glade.h:31
 msgid "_Print Invoice"
 msgstr "Im_primir Factura"
 
-#: ../data/glade/sales_app.glade.h:32
+#: ../data/glade/sales_app.glade.h:34
 msgid "sales"
 msgstr "ventas"
 
