@@ -48,6 +48,15 @@ class Service(Domain):
     image = BLOBCol(default='')
     sellable = ForeignKey('Sellable')
 
+    def remove(self):
+        """Removes this service from the database."""
+        self.delete(self.id, self.get_connection())
+
+    def can_remove(self):
+        from stoqlib.domain.sale import SaleItem
+        return SaleItem.selectBy(sellable=self.sellable,
+                             connection=self.get_connection()).count() == 0
+
 
 #
 # Views

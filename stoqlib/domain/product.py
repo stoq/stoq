@@ -159,6 +159,29 @@ class Product(Domain):
     # General Methods
     #
 
+    def remove(self):
+        """Deletes this product from the database.
+        """
+        storable = IStorable(self)
+        storable.delete(storable.id, self.get_connection())
+        for i in self.get_suppliers_info():
+            i.delete(i.id, self.get_connection())
+        for i in self.get_components():
+            i.delete(i.id, self.get_connection())
+        self.delete(self.id, self.get_connection())
+
+    def can_remove(self):
+        """Whether we can delete this sellable from the database.
+
+        False if the product/service was never sold or received. True
+        otherwise.
+        """
+        if self.get_history().count():
+            return False
+        elif IStorable(self).get_stock_items().count():
+            return False
+        return True
+
     def retain(self, quantity, branch, reason, product, cfop=None):
         storable = IStorable(self)
         storable.decrease_stock(quantity, branch)
@@ -176,6 +199,12 @@ class Product(Domain):
     #
     # Acessors
     #
+
+    def get_history(self):
+        """Returns the list of L{ProductHistory} for this product.
+        """
+        return ProductHistory.selectBy(sellable=self.sellable,
+                                       connection=self.get_connection())
 
     def get_main_supplier_name(self):
         supplier_info = self.get_main_supplier_info()

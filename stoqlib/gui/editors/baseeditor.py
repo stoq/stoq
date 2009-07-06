@@ -256,6 +256,12 @@ class BaseEditor(BaseEditorSlave):
         button.show()
         return button
 
+    def cancel(self):
+        """
+        Cancel the dialog.
+        """
+        self.main_dialog.cancel()
+
     def confirm(self):
         """
         Confirm the dialog.
