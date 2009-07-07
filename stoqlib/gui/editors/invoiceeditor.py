@@ -38,7 +38,8 @@ from stoqlib.domain.station import BranchStation
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.fieldgrid import FieldGrid
-from stoqlib.lib.invoice import get_invoice_fields, SaleInvoice
+from stoqlib.lib.invoice import (get_invoice_fields, SaleInvoice,
+                                 print_sale_invoice, validate_invoice_number)
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -289,3 +290,37 @@ class InvoicePrinterDialog(ModelListDialog):
         Column('station.name', _('Station'), data_type=str),
         Column('layout.description', _('Layout'), data_type=str),
     ]
+
+
+class SaleInvoicePrinterDialog(BaseEditor):
+    model_type = Sale
+    model_name = _(u'Sale Invoice')
+    gladefile = 'SaleInvoicePrinterDialog'
+    proxy_widgets = ('invoice_number',)
+    title = _(u'Sale Invoice Dialog')
+    size = (250, 100)
+
+    def __init__(self, conn, model, printer):
+        self._printer = printer
+        BaseEditor.__init__(self, conn, model)
+        self._setup_widgets()
+
+    def _setup_widgets(self):
+        self.main_dialog.ok_button.set_label(gtk.STOCK_PRINT)
+
+        if self.model.invoice_number is not None:
+            self.invoice_number.set_sensitive(False)
+        else:
+            last_invoice_number = Sale.get_last_invoice_number(self.conn) or 0
+            self.invoice_number.update(last_invoice_number + 1)
+
+    def setup_proxies(self):
+        self.add_proxy(self.model, SaleInvoicePrinterDialog.proxy_widgets)
+
+    def on_confirm(self):
+        invoice = SaleInvoice(self.model, self._printer.layout)
+        print_sale_invoice(invoice, self._printer)
+        return self.model
+
+    def on_invoice_number__validate(self, widget, value):
+        return validate_invoice_number(value, self.conn)

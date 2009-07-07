@@ -83,7 +83,8 @@ class SaleDetailsDialog(BaseEditor):
                      'order_number',
                      'subtotal_lbl',
                      'surcharge_lbl',
-                     'discount_lbl')
+                     'discount_lbl',
+                     'invoice_number',)
     payment_widgets = ('total_discount',
                        'total_interest',
                        'total_penalty',

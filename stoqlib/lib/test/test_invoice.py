@@ -27,7 +27,7 @@ from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.invoice import InvoiceLayout
+from stoqlib.domain.invoice import InvoiceLayout, InvoiceField
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
@@ -94,3 +94,31 @@ class InvoiceTest(DomainTest):
             sale_item.sellable.base_sellable_info.get_description = \
                  lambda : 'DESCRIPTION'
         compare_invoice_file(invoice, 'sale-invoice')
+
+    def testHasInvoiceNumber(self):
+        sale = self.create_sale()
+        for i in range(10):
+            self._add_product(sale, tax=18, price=50+i)
+
+        sale.order()
+        self._add_payments(sale)
+        sale.confirm()
+        sale.client = self.create_client()
+        address = self.create_address()
+        address.person = sale.client.person
+
+        layout = InvoiceLayout.selectOne(connection=self.trans)
+        invoice = SaleInvoice(sale, layout)
+        self.assertFalse(invoice.has_invoice_number())
+
+        field = InvoiceField.selectOneBy(field_name='INVOICE_NUMBER',
+                                         connection=self.trans)
+        if field is None:
+            field = InvoiceField(x=0, y=0, width=6, height=1, layout=layout,
+                                 field_name='INVOICE_NUMBER',
+                                 connection=self.trans)
+        else:
+            field.layout = layout
+
+        new_invoice = SaleInvoice(sale, layout)
+        self.assertTrue(new_invoice.has_invoice_number())

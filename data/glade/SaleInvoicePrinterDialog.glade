@@ -1,0 +1,37 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface domain="stoqlib">
+    <widget class="GtkWindow" id="SaleInvoicePrinterDialog">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkHBox" id="hbox1">
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkLabel" id="label1">
+                        <property name="label" context="yes" translatable="yes">&lt;b&gt;Invoice Number:&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="ProxySpinButton" id="invoice_number">
+                        <property name="adjustment">1 0 100 1 10 0</property>
+                        <property name="data_type">int</property>
+                        <property name="is_focus">True</property>
+                        <property name="model_attribute">invoice_number</property>
+                        <property name="text" context="yes" translatable="yes">1</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

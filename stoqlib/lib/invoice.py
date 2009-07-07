@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -28,10 +28,14 @@ import array
 import datetime
 from decimal import Decimal
 
+from kiwi.datatypes import ValidationError
+
 from stoqdrivers.enum import TaxType
 from stoqdrivers.escp import EscPPrinter
 
+from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.interfaces import ICompany, IIndividual
+from stoqlib.domain.sale import Sale
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -268,6 +272,16 @@ class _Invoice(object):
 
         return pages
 
+    def has_invoice_number(self):
+        """Returns if the invoice has an invoice number field or not.
+
+        @returns: True if there is an invoice field, False otherwise
+        """
+        for field in self.header_fields:
+            if field.field_name == 'INVOICE_NUMBER':
+                return True
+        return False
+
     def send_to_printer(self, device):
         """Send the printer invoice to the printer
         @param device: device name of the printer
@@ -303,6 +317,27 @@ class PurchaseInvoice(_Invoice):
         self.purchase = purchase
         self.type = _('Purchase')
         self.today = datetime.datetime.today()
+
+
+def print_sale_invoice(sale_invoice, invoice_printer):
+    """Utility function to print a sale invoice.
+
+    @param sale: a L{stoqlib.domain.sale.Sale} instance
+    @param invoice_printer: L{stoqlib.domain.invoice.InvoicePrinter} instance
+    """
+    sale_invoice.send_to_printer(invoice_printer.device_name)
+
+
+def validate_invoice_number(invoice_number, conn):
+    if not invoice_number or invoice_number < 1:
+        return ValidationError(
+            _(u'Invoice number should be a positive number.'))
+    if invoice_number > 999999:
+        return ValidationError(
+            _(u'Invoice number must be lesser than 999999.'))
+    sale = Sale.selectOneBy(invoice_number=invoice_number, connection=conn)
+    if sale is not None:
+        return ValidationError(_(u'Invoice number already used.'))
 
 
 class InvoiceFieldDescription(object):
@@ -868,4 +903,27 @@ class F(InvoiceFieldDescription):
     length = 4
     def fetch(self, width, height):
         return ''
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "INVOICE_NUMBER"
+    description = _(u"Invoice number")
+    length = 6
+
+    def fetch(self, width, height):
+        return '%06d' % self._get_invoice_number()
+
+    def _get_invoice_number(self):
+        sale_invoice_number = self.sale.invoice_number
+        if sale_invoice_number:
+            return sale_invoice_number
+
+        trans = new_transaction()
+        sale = trans.get(self.sale)
+        last_invoice_number = Sale.get_last_invoice_number(trans)
+        sale.invoice_number = last_invoice_number + 1
+        finish_transaction(trans, True)
+        return sale.invoice_number
+
 _add_invoice_field(F)

@@ -40,6 +40,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.gui.printing import print_report
+from stoqlib.lib.invoice import validate_invoice_number
 from stoqlib.lib.message import yesno, info
 from stoqlib.lib.validators import get_price_format_str
 from stoqlib.lib.parameters import sysparam
@@ -291,6 +292,9 @@ class SaleReturnSlave(BaseEditorSlave):
         widgets = SaleReturnSlave.salereturn_widgets
         self.return_proxy = self.add_proxy(self._return_data, widgets)
 
+        invoice_number = Sale.get_last_invoice_number(self.conn)
+        self.invoice_number.update(invoice_number + 1)
+
     #
     # Kiwi callbacks
     #
@@ -324,6 +328,8 @@ class SaleReturnSlave(BaseEditorSlave):
                                     connection=self.conn)[0]
         run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
 
+    def on_invoice_number__validate(self, widget, value):
+        return validate_invoice_number(value, self.conn)
 
 # helper functions
 

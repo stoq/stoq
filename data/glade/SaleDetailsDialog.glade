@@ -95,11 +95,15 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="GtkLabel" id="label14">
+                                <property name="label" context="yes" translatable="yes">Invoice Number:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
                             <packing>
                                 <property name="left_attach">2</property>
                                 <property name="right_attach">3</property>
-                                <property name="x_options"></property>
+                                <property name="x_options">fill</property>
                                 <property name="y_options"></property>
                             </packing>
                         </child>
@@ -132,11 +136,16 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="ProxyLabel" id="invoice_number">
+                                <property name="data_type">int</property>
+                                <property name="model_attribute">invoice_number</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
                             <packing>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
-                                <property name="x_options"></property>
+                                <property name="x_options">fill</property>
                                 <property name="y_options"></property>
                             </packing>
                         </child>
