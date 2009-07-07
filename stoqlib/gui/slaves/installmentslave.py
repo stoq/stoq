@@ -47,7 +47,7 @@ class _ConfirmationModel(object):
         self.close_date = datetime.date.today()
 
     def get_interest(self):
-        return currency(sum(p.interest for p in self.payments))
+        return currency(sum(p.interest or 0 for p in self.payments))
 
     def set_interest(self, interest):
         installments = len(self.payments)
@@ -55,7 +55,7 @@ class _ConfirmationModel(object):
             payment.interest = interest/installments
 
     def get_penalty(self):
-        return currency(sum(p.penalty for p in self.payments))
+        return currency(sum(p.penalty or 0 for p in self.payments))
 
     def set_penalty(self, penalty):
         installments = len(self.payments)
@@ -63,7 +63,7 @@ class _ConfirmationModel(object):
             payment.penalty = penalty/installments
 
     def get_discount(self):
-        return currency(sum(p.discount for p in self.payments))
+        return currency(sum(p.discount or 0 for p in self.payments))
 
     def set_discount(self, discount):
         installments = len(self.payments)
