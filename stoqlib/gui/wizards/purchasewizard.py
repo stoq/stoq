@@ -28,6 +28,9 @@
 
 import datetime
 from decimal import Decimal
+import sys
+
+import gtk
 
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
@@ -231,6 +234,15 @@ class PurchaseItemStep(SellableItemStep):
 
     def get_saved_items(self):
         return list(self.model.get_items())
+
+    def sellable_selected(self, sellable):
+        super(PurchaseItemStep, self).sellable_selected(sellable)
+        minimum = self._get_supplier_minimum_quantity()
+        self.quantity.set_adjustment(gtk.Adjustment(lower=minimum,
+                                                    upper=sys.maxint,
+                                                    step_incr=1))
+        self.quantity.set_value(minimum)
+
 
     def get_columns(self):
         #XXX: This is a workaround for a specific Ideale requirement, then the
