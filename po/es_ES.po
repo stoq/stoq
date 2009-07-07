@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-06 15:38-0300\n"
+"POT-Creation-Date: 2009-07-07 15:06-0300\n"
 "PO-Revision-Date: 2007-02-08 17:26-0200\n"
 "Last-Translator: Rafael Villar Burke <pachi@rvburke.com>\n"
 "Language-Team: Spanish <es_ES@li.org>\n"
@@ -396,7 +396,7 @@ msgid "Paid"
 msgstr "Fecha de pago"
 
 #: ../stoq/gui/payable/payable.py:295 ../stoq/gui/admin/admin.py:105
-#: ../stoq/gui/inventory/inventory.py:99 ../stoq/gui/sales/sales.py:219
+#: ../stoq/gui/inventory/inventory.py:99 ../stoq/gui/sales/sales.py:230
 #: ../stoq/gui/purchase/purchase.py:233 ../stoq/gui/till/till.py:148
 #: ../stoq/gui/receivable/receivable.py:118
 msgid "Any"
@@ -709,7 +709,7 @@ msgstr "Vendedor"
 msgid "Items"
 msgstr ""
 
-#: ../stoq/gui/sales/sales.py:186
+#: ../stoq/gui/sales/sales.py:189
 msgid "There are no invoice printer configured for this station"
 msgstr ""
 
@@ -1334,7 +1334,8 @@ msgid "Services"
 msgstr "Servicios"
 
 #: ../data/glade/sales_app.glade.h:31
-msgid "_Print Invoice"
+#, fuzzy
+msgid "_Print Invoice ..."
 msgstr "Im_primir Factura"
 
 #: ../data/glade/sales_app.glade.h:34
