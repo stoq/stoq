@@ -260,6 +260,7 @@ class Sale(ValidatableDomain):
     @ivar coupon_id:
     @ivar service_invoice_number:
     @ivar cfop:
+    @ivar invoice_number: the sale invoice number.
     """
 
     implements(IContainer)
@@ -295,6 +296,7 @@ class Sale(ValidatableDomain):
     discount_value = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     total_amount = PriceCol(default=0)
+    invoice_number= IntCol(default=None)
     cfop = ForeignKey("CfopData")
     client = ForeignKey('PersonAdaptToClient', default=None)
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
@@ -332,6 +334,16 @@ class Sale(ValidatableDomain):
                              connection=conn).limit(1)
         if results:
             return results[0]
+
+    @classmethod
+    def get_last_invoice_number(cls, conn):
+        """Returns the last sale invoice number. If there is not an invoice
+        number used, the returned value will be zero.
+
+        @param conn: a database connection
+        @returns: an integer representing the last sale invoice number
+        """
+        return cls.select(connection=conn).max('invoice_number') or 0
 
     #
     # IContainer implementation
@@ -996,6 +1008,7 @@ class SaleView(Viewable):
     @cvar discount_value: the sale discount value
     @cvar total: the subtotal - discount + charge
     @cvar total_quantity: the items total quantity for the sale
+    @cvar invoice_number: the sale invoice number
     """
 
     Person_Client = Alias(Person, 'person_client')
@@ -1003,6 +1016,7 @@ class SaleView(Viewable):
 
     columns = dict(
         id = Sale.q.id,
+        invoice_number = Sale.q.invoice_number,
         coupon_id = Sale.q.coupon_id,
         open_date = Sale.q.open_date,
         close_date = Sale.q.close_date,
