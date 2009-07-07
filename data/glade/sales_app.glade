@@ -228,7 +228,7 @@
                 <child>
                     <widget class="GtkAction" id="print_invoice">
                         <property name="name">print_invoice</property>
-                        <property name="label" translatable="yes">_Print Invoice</property>
+                        <property name="label" translatable="yes">_Print Invoice ...</property>
                         <property name="stock_id">gtk-print</property>
                         <signal handler="_on_print_invoice__activate" name="activate"/>
                     </widget>

@@ -36,11 +36,11 @@ from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.database.runtime import (get_current_branch, get_current_station,
-                                      new_transaction, rollback_and_begin,
-                                      finish_transaction)
+                                      new_transaction, finish_transaction)
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
+from stoqlib.gui.editors.invoiceeditor import SaleInvoicePrinterDialog
 from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -49,7 +49,7 @@ from stoqlib.gui.search.salesearch import DeliverySearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
-from stoqlib.lib.invoice import SaleInvoice
+from stoqlib.lib.invoice import SaleInvoice, print_sale_invoice
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.message import info
 
@@ -164,8 +164,11 @@ class SalesApp(SearchableAppWindow):
 
     def _update_toolbar(self, *args):
         sale_view = self._klist.get_selected()
+        #FIXME: Disable invoice printing if the sale was returned. Remove this
+        #       when we add proper support for returned sales invoice.
         can_print_invoice = bool(sale_view and
-                                 sale_view.client_name is not None)
+                                 sale_view.client_name is not None and
+                                 sale_view.status != Sale.STATUS_RETURNED)
         self.print_invoice.set_sensitive(can_print_invoice)
         self.cancel_menu.set_sensitive(self._can_cancel(sale_view))
 
@@ -186,8 +189,16 @@ class SalesApp(SearchableAppWindow):
             info(_("There are no invoice printer configured for this station"))
             return
         assert printer.layout
+
         invoice = SaleInvoice(sale, printer.layout)
-        invoice.send_to_printer(printer.device_name)
+        if not invoice.has_invoice_number() or sale.invoice_number:
+            print_sale_invoice(invoice, printer)
+        else:
+            trans = new_transaction()
+            retval = self.run_dialog(SaleInvoicePrinterDialog, trans,
+                                     trans.get(sale), printer)
+            finish_transaction(trans, retval)
+            trans.close()
 
     def _setup_columns(self, sale_status=Sale.STATUS_CONFIRMED):
         self._status_col.visible = False
