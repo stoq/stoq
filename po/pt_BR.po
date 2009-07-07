@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-06 15:38-0300\n"
+"POT-Creation-Date: 2009-07-07 15:06-0300\n"
 "PO-Revision-Date: 2008-05-28 17:51-0300\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -392,7 +392,7 @@ msgid "Paid"
 msgstr "Pago"
 
 #: ../stoq/gui/payable/payable.py:295 ../stoq/gui/admin/admin.py:105
-#: ../stoq/gui/inventory/inventory.py:99 ../stoq/gui/sales/sales.py:219
+#: ../stoq/gui/inventory/inventory.py:99 ../stoq/gui/sales/sales.py:230
 #: ../stoq/gui/purchase/purchase.py:233 ../stoq/gui/till/till.py:148
 #: ../stoq/gui/receivable/receivable.py:118
 msgid "Any"
@@ -699,7 +699,7 @@ msgstr "Vendedor"
 msgid "Items"
 msgstr "Ítens"
 
-#: ../stoq/gui/sales/sales.py:186
+#: ../stoq/gui/sales/sales.py:189
 msgid "There are no invoice printer configured for this station"
 msgstr "Não há impressora configurada para esta estação"
 
@@ -1296,8 +1296,8 @@ msgid "Services"
 msgstr "Serviços"
 
 #: ../data/glade/sales_app.glade.h:31
-msgid "_Print Invoice"
-msgstr "Im_primir Nota Fiscal"
+msgid "_Print Invoice ..."
+msgstr "Im_primir Nota Fiscal..."
 
 #: ../data/glade/sales_app.glade.h:34
 msgid "sales"

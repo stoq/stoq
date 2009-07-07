@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-06 15:38-0300\n"
+"POT-Creation-Date: 2009-07-07 15:06-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -351,7 +351,7 @@ msgid "Paid"
 msgstr ""
 
 #: ../stoq/gui/payable/payable.py:295 ../stoq/gui/admin/admin.py:105
-#: ../stoq/gui/inventory/inventory.py:99 ../stoq/gui/sales/sales.py:219
+#: ../stoq/gui/inventory/inventory.py:99 ../stoq/gui/sales/sales.py:230
 #: ../stoq/gui/purchase/purchase.py:233 ../stoq/gui/till/till.py:148
 #: ../stoq/gui/receivable/receivable.py:118
 msgid "Any"
@@ -635,7 +635,7 @@ msgstr ""
 msgid "Items"
 msgstr ""
 
-#: ../stoq/gui/sales/sales.py:186
+#: ../stoq/gui/sales/sales.py:189
 msgid "There are no invoice printer configured for this station"
 msgstr ""
 
@@ -1223,7 +1223,7 @@ msgid "Services"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:31
-msgid "_Print Invoice"
+msgid "_Print Invoice ..."
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:34
