@@ -42,6 +42,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import (PurchaseOrder, PurchaseItem, QuoteGroup,
                                      Quotation)
 from stoqlib.domain.interfaces import IBranch
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import QuotationView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import SimpleListDialog
@@ -113,6 +114,13 @@ class StartQuoteStep(WizardEditorStep):
 
 
 class QuoteItemsStep(PurchaseItemStep):
+
+    def setup_sellable_entry(self):
+        sellables = Sellable.get_unblocked_sellables(self.conn, storable=True)
+        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
+        self.sellable.prefill([
+            (sellable.get_description(full_description=True), sellable)
+                               for sellable in sellables[:max_results]])
 
     def setup_slaves(self):
         PurchaseItemStep.setup_slaves(self)
@@ -361,23 +369,21 @@ class QuoteGroupSelectionStep(BaseWizardStep):
     def _can_purchase(self, item):
         return item.cost > currency(0) and item.quantity > Decimal(0)
 
-    def _can_order(self):
-        # return if the quote group contain items that can be ordered
-        quotation_view = self.search.results.get_selected()
-        if quotation_view is None:
+    def _can_order(self, quotation):
+        if quotation is None:
             return False
 
-        for quote in quotation_view.group.get_items():
-            for item in quote.purchase.get_items():
-                if self._can_purchase(item):
-                    return True
-        return False
+        for item in quotation.purchase.get_items():
+            if not self._can_purchase(item):
+                return False
+        return True
 
     def _update_view(self):
-        has_selected = self.search.results.get_selected() is not None
+        selected = self.search.results.get_selected()
+        has_selected = selected is None
         self.edit_button.set_sensitive(has_selected)
         self.remove_button.set_sensitive(has_selected)
-        self.wizard.refresh_next(self._can_order())
+        self.wizard.refresh_next(self._can_order(selected))
 
     def _run_quote_editor(self):
         trans = new_transaction()

@@ -237,6 +237,7 @@ class PurchaseItemStep(SellableItemStep):
 
     def sellable_selected(self, sellable):
         super(PurchaseItemStep, self).sellable_selected(sellable)
+
         minimum = self._get_supplier_minimum_quantity()
         self.quantity.set_adjustment(gtk.Adjustment(lower=minimum,
                                                     upper=sys.maxint,
@@ -308,6 +309,10 @@ class PurchaseItemStep(SellableItemStep):
                                                         connection=self.conn)
         if supplier_info is not None:
             return supplier_info.minimum_purchase
+        #XXX: This is a workaround to avoid errors in subclasses where the
+        #     supplier_info might not exist for a given purchase item.
+        #     In such cases we are just returning a safe value for it.
+        return Decimal(1)
 
     #
     # Callbacks
