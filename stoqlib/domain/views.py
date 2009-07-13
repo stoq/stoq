@@ -24,7 +24,7 @@
 ##
 
 from stoqlib.database.orm import const, AND, INNERJOINOn, LEFTJOINOn, OR
-from stoqlib.database.orm import Viewable
+from stoqlib.database.orm import Viewable, Field
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.domain.product import (Product,
@@ -152,20 +152,37 @@ class ProductWithStockView(ProductFullStockView):
     ProductFullStockView.joins
 
 
+class _PurchaseItemTotal(Viewable):
+    columns = dict(
+        id=PurchaseItem.q.sellableID,
+        to_receive=const.SUM(PurchaseItem.q.quantity-
+                             PurchaseItem.q.quantity_received)
+    )
+
+    joins = []
+
+
 class ProductFullStockItemView(ProductFullStockView):
+    # ProductFullStockView already joins with a 1 to Many table (Sellable
+    # with ProductStockItem).
+    #
+    # This is why we must join PurchaseItem (another 1 to many table) in a
+    # subquery
+
+    _purchase_total = "(%s) AS _purchase_total" % str(_PurchaseItemTotal.select())
+
     columns = ProductFullStockView.columns.copy()
     columns.update(dict(
         minimum_quantity=ProductAdaptToStorable.q.minimum_quantity,
         maximum_quantity=ProductAdaptToStorable.q.maximum_quantity,
-        to_receive_quantity=const.SUM(PurchaseItem.q.quantity -
-                                      PurchaseItem.q.quantity_received),
+        to_receive_quantity=Field('_purchase_total', 'to_receive'),
         difference=(const.SUM(
             ProductStockItem.q.quantity + ProductStockItem.q.logic_quantity) -
             ProductAdaptToStorable.q.minimum_quantity)))
 
     joins = ProductFullStockView.joins[:]
-    joins.append(LEFTJOINOn(None, PurchaseItem,
-                            PurchaseItem.q.sellableID == Sellable.q.id))
+    joins.append(LEFTJOINOn(None, _purchase_total,
+                            Field('_purchase_total', 'id') == Sellable.q.id))
 
 
 class ProductQuantityView(Viewable):
