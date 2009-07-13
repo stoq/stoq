@@ -34,6 +34,7 @@ from kiwi.python import Settable
 from stoqlib.database.runtime import (get_current_branch, get_current_user,
                                       new_transaction, finish_transaction)
 from stoqlib.domain.interfaces import ISalesPerson
+from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.person import Person, ClientView
@@ -44,6 +45,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
+from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor
@@ -62,6 +64,7 @@ class StartSaleQuoteStep(WizardEditorStep):
     gladefile = 'SalesPersonStep'
     model_type = Sale
     proxy_widgets = ('client', 'salesperson', 'expire_date')
+    cfop_widgets = ('cfop',)
 
     def _setup_widgets(self):
         # Hide total and subtotal
@@ -84,6 +87,16 @@ class StartSaleQuoteStep(WizardEditorStep):
         items = [(c.name, c.client) for c in clients]
         self.client.prefill(sorted(items))
 
+        # CFOP combo
+        if sysparam(self.conn).ASK_SALES_CFOP:
+            cfops = [(cfop.get_description(), cfop)
+                        for cfop in CfopData.select(connection=self.conn)]
+            self.cfop.prefill(cfops)
+        else:
+            self.cfop_lbl.hide()
+            self.cfop.hide
+            self.create_cfop.hide()
+
     #
     # WizardStep hooks
     #
@@ -102,6 +115,8 @@ class StartSaleQuoteStep(WizardEditorStep):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     StartSaleQuoteStep.proxy_widgets)
+        if sysparam(self.conn).ASK_SALES_CFOP:
+            self.add_proxy(self.model, StartSaleQuoteStep.cfop_widgets)
 
     #
     #   Callbacks
@@ -126,6 +141,12 @@ class StartSaleQuoteStep(WizardEditorStep):
     def on_notes_button__clicked(self, *args):
         run_dialog(NoteEditor, self.wizard, self.conn, self.model, 'notes',
                    title=_("Additional Information"))
+
+    def on_create_cfop__clicked(self, widget):
+        cfop = run_dialog(CfopEditor, self, self.conn, None)
+        if cfop:
+            self.cfop.append_item(cfop.get_description(), cfop)
+            self.cfop.select_item_by_data(cfop)
 
 
 class SaleQuoteItemStep(SellableItemStep):

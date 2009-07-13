@@ -14,7 +14,7 @@
                     <widget class="GtkTable" id="table2">
                         <property name="column_spacing">5</property>
                         <property name="n_columns">5</property>
-                        <property name="n_rows">2</property>
+                        <property name="n_rows">3</property>
                         <property name="row_spacing">5</property>
                         <property name="visible">True</property>
                         <child>
@@ -38,6 +38,18 @@
                             <packing>
                                 <property name="bottom_attach">2</property>
                                 <property name="top_attach">1</property>
+                                <property name="x_options">fill</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="cfop_lbl">
+                                <property name="label" context="yes" translatable="yes">CFOP:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="top_attach">2</property>
                                 <property name="x_options">fill</property>
                             </packing>
                         </child>
@@ -67,6 +79,20 @@
                             </packing>
                         </child>
                         <child>
+                            <widget class="ProxyComboEntry" id="cfop">
+                                <property name="data_type">object</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">cfop</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
                             <placeholder/>
                             <packing>
                                 <property name="left_attach">2</property>
@@ -84,6 +110,20 @@
                                 <property name="left_attach">2</property>
                                 <property name="right_attach">3</property>
                                 <property name="top_attach">1</property>
+                                <property name="x_options">fill</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkButton" id="create_cfop">
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes">Create...</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">2</property>
                                 <property name="x_options">fill</property>
                             </packing>
                         </child>
@@ -111,6 +151,15 @@
                         <child>
                             <placeholder/>
                             <packing>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
                                 <property name="left_attach">4</property>
                                 <property name="right_attach">5</property>
                             </packing>
@@ -127,6 +176,15 @@
                                 <property name="right_attach">5</property>
                                 <property name="top_attach">1</property>
                                 <property name="x_options">fill</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">4</property>
+                                <property name="right_attach">5</property>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
                             </packing>
                         </child>
                     </widget>

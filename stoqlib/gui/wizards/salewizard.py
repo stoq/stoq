@@ -39,6 +39,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard, BaseWizardStep
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.interfaces import IDomainSlaveMapper
@@ -47,6 +48,7 @@ from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.paymentslave import register_payment_slaves
 from stoqlib.gui.slaves.saleslave import SaleDiscountSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import Person, ClientView
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
@@ -226,7 +228,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     proxy_widgets = ('total_lbl',
                      'subtotal_lbl',
                      'salesperson',
-                     'client')
+                     'client',)
+    cfop_widgets = ('cfop',)
 
     def __init__(self, wizard, conn, model, payment_group):
         self.payment_group = payment_group
@@ -254,6 +257,11 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         clients = clients[:max_results]
         items = [(c.name, c.client) for c in clients]
         self.client.prefill(sorted(items))
+
+    def _fill_cfop_combo(self):
+        cfops = [(cfop.get_description(), cfop)
+                    for cfop in CfopData.select(connection=self.conn)]
+        self.cfop.prefill(cfops)
 
     def _create_client(self):
         client = run_person_role_dialog(ClientEditor, self, self.conn, None)
@@ -305,7 +313,12 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         else:
             self.salesperson.grab_focus()
         self._fill_clients_combo()
-
+        if sysparam(self.conn).ASK_SALES_CFOP:
+            self._fill_cfop_combo()
+        else:
+            self.cfop_lbl.hide()
+            self.cfop.hide()
+            self.create_cfop.hide()
 
     #
     # WizardStep hooks
@@ -340,6 +353,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         if self.model.client:
             self.client.set_sensitive(False)
             self.create_client.set_sensitive(False)
+        if sysparam(self.conn).ASK_SALES_CFOP:
+            self.add_proxy(self.model, SalesPersonStep.cfop_widgets)
 
     #
     # Callbacks
@@ -357,6 +372,12 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     def on_notes_button__clicked(self, *args):
         run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
                    title=_("Additional Information"))
+
+    def on_create_cfop__clicked(self, widget):
+        cfop = run_dialog(CfopEditor, self, self.conn, None)
+        if cfop:
+            self.cfop.append_item(cfop.get_description(), cfop)
+            self.cfop.select_item_by_data(cfop)
 
 #
 # Wizards for sales
