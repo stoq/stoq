@@ -152,9 +152,10 @@ class TillApp(SearchableAppWindow):
         rollback_and_begin(self.conn)
         selected = self.results.get_selected()
         sale = Sale.get(selected.id, connection=self.conn)
+        expire_date = sale.expire_date
 
         if (sale.status == Sale.STATUS_QUOTE and
-            sale.expire_date.date() < date.today() and
+            expire_date and expire_date.date() < date.today() and
             not yesno(_(u"This quote has expired. Confirm it anyway?"),
                       gtk.RESPONSE_YES, _(u"Yes"), _(u"No"))):
             return
