@@ -1,3 +1,19 @@
+=== 0.9.8 ===
+2009-07-14 George Kussumoto <george@async.com.br>
+
+	* New Release
+
+2009-05-22  Ronaldo Maia  <romaia@async.com.br>
+
+	reviewed by: george
+
+	* stoqdrivers/interfaces.py:
+	* stoqdrivers/printers/bematech/MP25.py:
+	* stoqdrivers/printers/daruma/FS345.py:
+	* stoqdrivers/printers/fiscal.py:
+	* stoqdrivers/printers/fiscnet/FiscNetECF.py:
+	Adicionar campos ao editor de impressora fiscal
+
 2009-05-11  Ronaldo Maia  <romaia@async.com.br>
 
 	reviewed by: george
