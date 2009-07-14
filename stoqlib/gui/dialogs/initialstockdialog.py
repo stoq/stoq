@@ -67,8 +67,9 @@ class InitialStockDialog(BaseEditor):
 
     def _setup_widgets(self):
         # XXX: the branch should be in bold font
-        self.branch_label.set_text(_(u"Registering initial stock for products "
-                                      "in %s" % self._branch.person.name))
+        self.branch_label.set_text(
+            _(u"Registering initial stock for products in %s") %
+                                            self._branch.person.name)
 
         self._storables = [_TemporaryStorableItem(s)
             for s in ProductAdaptToStorable.select(connection=self.conn)
