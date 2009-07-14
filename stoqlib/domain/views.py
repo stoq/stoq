@@ -25,6 +25,7 @@
 
 from stoqlib.database.orm import const, AND, INNERJOINOn, LEFTJOINOn, OR
 from stoqlib.database.orm import Viewable, Field
+from stoqlib.database.runtime import get_connection
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.domain.product import (Product,
@@ -169,7 +170,8 @@ class ProductFullStockItemView(ProductFullStockView):
     # This is why we must join PurchaseItem (another 1 to many table) in a
     # subquery
 
-    _purchase_total = "(%s) AS _purchase_total" % str(_PurchaseItemTotal.select())
+    _purchase_total = "(%s) AS _purchase_total" % str(
+                    _PurchaseItemTotal.select(connection=get_connection()))
 
     columns = ProductFullStockView.columns.copy()
     columns.update(dict(
