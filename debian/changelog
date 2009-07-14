@@ -1,3 +1,9 @@
+stoqlib (0.9.10) karmic; urgency=low
+
+  * New Release
+
+ -- George Y. Kussumoto <george@async.com.br>  Tue, 14 Jul 2009 15:20:37 -0300
+
 stoqlib (0.9.9.4) jaunty; urgency=low
 
   * Bugfix Release
