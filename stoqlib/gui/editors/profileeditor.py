@@ -30,7 +30,7 @@ from kiwi.ui.widgets.checkbutton import ProxyCheckButton
 
 from stoqlib.database.orm import const, AND
 from stoqlib.database.runtime import get_connection
-from stoqlib.domain.profile import UserProfile
+from stoqlib.domain.profile import UserProfile, ProfileSettings
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.translation import stoqlib_gettext
@@ -85,9 +85,12 @@ class UserProfileEditor(BaseEditor):
 
             self.applications_vbox.pack_start(box, False)
 
-            if not name in settings:
-                raise AssertionError("Unknown application: %s" % name)
-            model = settings[name]
+            model = settings.get(name)
+            if model is None:
+                model = ProfileSettings(connection=self.conn,
+                                        has_permission=False,
+                                        app_dir_name=name,
+                                        user_profile=self.model)
 
             setattr(self, name, button)
             self.add_proxy(model, [name])
