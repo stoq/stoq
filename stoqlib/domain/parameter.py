@@ -27,6 +27,7 @@
 
 from stoqlib.database.orm import UnicodeCol, BoolCol, StringCol
 from stoqlib.domain.base import Domain
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 
 class ParameterData(Domain):
@@ -47,3 +48,8 @@ class ParameterData(Domain):
     def get_short_description(self):
         from stoqlib.lib.parameters import get_parameter_details
         return get_parameter_details(self.field_name).short_desc
+
+    def get_field_value(self):
+        #FIXME: This is a workaround to handle some parameters which are
+        #       locale specific.
+        return _(self.field_value)

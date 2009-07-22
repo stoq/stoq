@@ -305,7 +305,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
         ParameterAttr('CITY_SUGGESTED', unicode, initial=u'Sao Carlos'),
         ParameterAttr('STATE_SUGGESTED', unicode, initial=u'SP'),
-        ParameterAttr('COUNTRY_SUGGESTED', unicode, initial=u'Brazil'),
+        ParameterAttr('COUNTRY_SUGGESTED', unicode, initial=_(u'Brazil')),
         ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
         ParameterAttr('RETURN_MONEY_ON_SALES', bool, initial=True),
         ParameterAttr('ASK_SALES_CFOP', bool, initial=False),
