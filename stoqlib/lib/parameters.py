@@ -255,12 +255,6 @@ _parameter_info = dict(
     _(u'This is the default tax constant which will be used '
       'when adding new products to the system')),
 
-    ENABLE_COMPOSED_PRODUCT=ParameterDetails(
-    _(u'General'),
-    _(u'Enable composed products'),
-    _(u'When this parameter is set, a product will be able to compose '
-       'or be composed by other products.')),
-
     CAT52_DEST_DIR=ParameterDetails(
     _(u'General'),
     _(u'Cat 52 destination directory'),
@@ -318,7 +312,6 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('SALE_PAY_COMMISSION_WHEN_CONFIRMED', bool,
                        initial=False),
         ParameterAttr('CUSTOM_LOGO_FOR_REPORTS', ImageHelper, initial=''),
-        ParameterAttr('ENABLE_COMPOSED_PRODUCT', bool, initial=False),
         ParameterAttr('CAT52_DEST_DIR', DirectoryParameter, initial='~/.stoq/cat52'),
         ParameterAttr('ALLOW_OUTDATED_PURCHASES', bool, initial=False),
         ParameterAttr('USE_FOUR_PRECISION_DIGITS', bool, initial=False),
