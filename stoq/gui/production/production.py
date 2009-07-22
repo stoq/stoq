@@ -32,7 +32,7 @@ from kiwi.ui.objectlist import SearchColumn, Column
 from kiwi.ui.search import ComboSearchFilter, SearchFilterPosition
 
 from stoqlib.domain.production import ProductionOrder
-from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.productionsearch import ProductionProductSearch
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -80,7 +80,7 @@ class ProductionApp(SearchableAppWindow):
     #
 
     def on_Products__activate(self, action):
-        self.run_dialog(ProductSearch, self.conn)
+        self.run_dialog(ProductionProductSearch, self.conn)
 
     def on_MenuNewProduction__activate(self, action):
         pass
