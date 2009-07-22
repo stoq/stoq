@@ -122,7 +122,7 @@ class ProductSearch(SearchEditor):
     def create_filters(self):
         self.set_text_field_columns(['description', 'barcode',
                                      'category_description'])
-        self.executer.set_query(self._executer_query)
+        self.executer.set_query(self.executer_query)
 
         # Branch
         branch_filter = self.create_branch_filter(_('In branch:'))
@@ -173,7 +173,7 @@ class ProductSearch(SearchEditor):
                                  data_type=Decimal, width=100))
         return cols
 
-    def _executer_query(self, query, having, conn):
+    def executer_query(self, query, having, conn):
         branch = self.branch_filter.get_state().value
         if branch is not None:
             branch = PersonAdaptToBranch.get(branch, connection=conn)

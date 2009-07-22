@@ -31,7 +31,8 @@ from stoqlib.domain.person import Person, PersonAdaptToSupplier
 from stoqlib.domain.product import (Product,
                                     ProductAdaptToStorable,
                                     ProductStockItem,
-                                    ProductHistory)
+                                    ProductHistory,
+                                    ProductComponent)
 from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
                                      PurchaseItem)
 from stoqlib.domain.receiving import ReceivingOrderItem, ReceivingOrder
@@ -126,6 +127,12 @@ class ProductFullStockView(Viewable):
     @property
     def product(self):
         return Product.get(self.product_id, connection=self.get_connection())
+
+
+class ProductComponentView(ProductFullStockView):
+    columns = ProductFullStockView.columns
+    clause = AND(ProductFullStockView.clause,
+                 ProductComponent.q.productID == Product.q.id,)
 
 
 class ProductWithStockView(ProductFullStockView):

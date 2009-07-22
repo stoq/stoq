@@ -504,7 +504,7 @@ class Sellable(Domain):
 
         self.delete(self.id, conn)
         info.delete(info.id, conn)
-        on_sale.delete(sale.id, conn)
+        on_sale.delete(on_sale.id, conn)
 
     @classmethod
     def get_available_sellables_query(cls, conn):

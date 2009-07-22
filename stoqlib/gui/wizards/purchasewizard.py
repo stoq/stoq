@@ -246,9 +246,6 @@ class PurchaseItemStep(SellableItemStep):
 
 
     def get_columns(self):
-        #XXX: This is a workaround for a specific Ideale requirement, then the
-        #     receival column should not be visible in normal cases
-        receival_date_visible = sysparam(self.conn).ENABLE_COMPOSED_PRODUCT
         return [
             Column('sellable.code', title=_('Code'), width=100, data_type=str),
             Column('sellable.description', title=_('Description'),
@@ -258,7 +255,7 @@ class PurchaseItemStep(SellableItemStep):
             Column('quantity', title=_('Quantity'), data_type=float, width=90,
                    format_func=format_quantity),
             Column('expected_receival_date', title=_('Expected Receival'),
-                   data_type=datetime.date, visible=receival_date_visible),
+                   data_type=datetime.date, visible=False),
             Column('sellable.unit_description',title=_('Unit'), data_type=str,
                    width=70),
             Column('cost', title=_('Cost'), data_type=currency,

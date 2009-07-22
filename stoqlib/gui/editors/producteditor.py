@@ -284,6 +284,9 @@ class ProductComponentSlave(BaseEditorSlave):
 
         return self.model
 
+    def validate_confirm(self):
+        return len(self.component_tree) > 0
+
     #
     # Kiwi Callbacks
     #
@@ -458,10 +461,6 @@ class ProductEditor(SellableEditor):
     model_name = _('Product')
     model_type = Product
 
-    def __init__(self, conn, model=None):
-        self._has_composed_product = sysparam(conn).ENABLE_COMPOSED_PRODUCT
-        SellableEditor.__init__(self, conn, model)
-
     def get_taxes(self):
         constants = SellableTaxConstant.select(connection=self.conn)
         return [(c.description, c) for c in constants
@@ -475,12 +474,12 @@ class ProductEditor(SellableEditor):
         details_slave = ProductDetailsSlave(self.conn, self.model.sellable)
         self.add_extra_tab(_(u'Details'), details_slave)
 
-        self._suppliers_slave = ProductSupplierSlave(self.conn, self.model)
-        self.add_extra_tab(_(u'Suppliers'), self._suppliers_slave)
+        for tabname, tabslave in self.get_extra_tabs():
+            self.add_extra_tab(tabname, tabslave)
 
-        if self._has_composed_product:
-            self._component_slave = ProductComponentSlave(self.conn, self.model)
-            self.add_extra_tab(_(u'Components'), self._component_slave)
+    def get_extra_tabs(self):
+        suppliers_slave = ProductSupplierSlave(self.conn, self.model)
+        return [(_(u'Suppliers'), suppliers_slave),]
 
     def setup_widgets(self):
         self.stock_total_lbl.show()
@@ -498,10 +497,21 @@ class ProductEditor(SellableEditor):
         model.addFacet(IStorable, connection=conn)
         return model
 
-    def on_confirm(self):
-        if self._has_composed_product:
-            return self._component_slave.on_confirm()
 
+class ProductionProductEditor(ProductEditor):
+
+    def get_extra_tabs(self):
+        self._component_slave = ProductComponentSlave(self.conn, self.model)
+        return [(_(u'Components'), self._component_slave),]
+
+    def validate_confirm(self):
+        confirm = self._component_slave.validate_confirm()
+        if not confirm:
+            info(_(u'There is no component in this product.'))
+        return confirm
+
+    def on_confirm(self):
+        self._component_slave.on_confirm()
         return self.model
 
 
