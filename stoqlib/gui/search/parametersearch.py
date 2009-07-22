@@ -90,6 +90,9 @@ class ParameterSearch(BaseEditor):
             return data.path
         elif isinstance(data, bool):
             return [_("No"), _("Yes")][data]
+        elif isinstance(data, unicode):
+            #FIXME: workaround to handle locale specific data
+            return _(data)
         return data
 
     def _edit_item(self, item):
