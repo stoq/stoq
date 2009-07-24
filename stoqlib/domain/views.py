@@ -98,7 +98,9 @@ class ProductFullStockView(Viewable):
     @classmethod
     def select_by_branch(cls, query, branch, having=None, connection=None):
         if branch:
-            branch_query = ProductStockItem.q.branchID == branch.id
+            # Also show products that were never purchased.
+            branch_query = OR(ProductStockItem.q.branchID == branch.id,
+                              ProductStockItem.q.branchID == None)
             if query:
                 query = AND(query, branch_query)
             else:
