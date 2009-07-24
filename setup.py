@@ -73,7 +73,8 @@ from stoq import version
 
 scripts = [
     'bin/stoq',
-    'bin/stoqdbadmin']
+    'bin/stoqdbadmin',
+    'bin/stoqruncmd',]
 data_files = [
     ('$datadir/pixmaps',
      listfiles('data/pixmaps', '*.*')),
