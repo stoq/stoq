@@ -263,7 +263,6 @@ class _InstallmentConfirmationSlave(BaseEditor):
             interest = currency(0)
 
         self.model.set_interest(interest)
-        print 'updated proxy'
         self._proxy.update('interest')
 
     def _update_penalty(self, pay_penalty):
