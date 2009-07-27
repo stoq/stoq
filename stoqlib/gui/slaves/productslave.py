@@ -26,6 +26,10 @@
 ##
 """ Slaves for products """
 
+import sys
+
+import gtk
+
 from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
@@ -45,7 +49,6 @@ class ProductInformationSlave(BaseEditorSlave):
 
     def __init__(self, conn, model):
         BaseEditorSlave.__init__(self, conn, model)
-        self._setup_unit_labels()
 
     def _setup_unit_labels(self):
         unit = self.model.sellable.unit
@@ -57,7 +60,15 @@ class ProductInformationSlave(BaseEditorSlave):
         for label in [self.min_unit, self.max_unit]:
             label.set_text(unit_desc)
 
+    def _setup_widgets(self):
+        self._setup_unit_labels()
+
+        for widget in [self.minimum_quantity, self.maximum_quantity]:
+            widget.set_adjustment(
+                gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
+
     def setup_proxies(self):
+        self._setup_widgets()
         self.proxy = self.add_proxy(
             self.model, ProductInformationSlave.proxy_widgets)
 
