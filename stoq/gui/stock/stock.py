@@ -39,7 +39,8 @@ from stoqlib.domain.interfaces import IBranch, IStorable
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Person
 from stoqlib.domain.sellable import Sellable
-from stoqlib.domain.views import ProductWithStockView
+from stoqlib.domain.views import ProductFullStockView
+from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.message import warning
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
@@ -63,7 +64,7 @@ class StockApp(SearchableAppWindow):
     app_name = _('Stock')
     app_icon_name = 'stoq-stock-app'
     gladefile = "stock"
-    search_table = ProductWithStockView
+    search_table = ProductFullStockView
     search_labels = _('Matching:')
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
@@ -86,6 +87,7 @@ class StockApp(SearchableAppWindow):
 
     def get_columns(self):
         return [SearchColumn('code', title=_('Code'), sorted=True,
+                             sort_func=sort_sellable_code,
                              data_type=str, width=130),
                 SearchColumn('barcode', title=_("Barcode"), data_type=str,
                              width=100),
