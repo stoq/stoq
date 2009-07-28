@@ -111,5 +111,6 @@ class ServiceEditor(SellableEditor):
                             tax_constant=tax_constant,
                             status=Sellable.STATUS_AVAILABLE,
                             connection=conn)
+        sellable.unit = sysparam(self.conn).SUGGESTED_UNIT
         model = Service(sellable=sellable, connection=conn)
         return model

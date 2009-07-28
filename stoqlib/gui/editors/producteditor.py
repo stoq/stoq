@@ -493,6 +493,7 @@ class ProductEditor(SellableEditor):
         sellable = Sellable(base_sellable_info=sellable_info,
                             tax_constant=tax_constant,
                             connection=conn)
+        sellable.unit = sysparam(self.conn).SUGGESTED_UNIT
         model = Product(connection=conn, sellable=sellable)
         model.addFacet(IStorable, connection=conn)
         return model

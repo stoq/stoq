@@ -63,9 +63,16 @@ class SellableUnit(Domain):
       a description (using CUSTOM_PM constant) or as an index (using UNIT_*).
       Also, this is directly related to the DeviceSettings editor.
     """
+    implements(IDescribable)
+
     _inheritable = False
     description = UnicodeCol()
     unit_index = IntCol()
+
+    # IDescribable
+
+    def get_description(self):
+        return self.description
 
 class SellableTaxConstant(Domain):
     """A tax constant tied to a sellable
