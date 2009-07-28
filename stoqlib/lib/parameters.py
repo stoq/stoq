@@ -79,6 +79,12 @@ _parameter_info = dict(
     _(u'The supplier suggested when we are adding a new product in the '
       'system')),
 
+    SUGGESTED_UNIT=ParameterDetails(
+    _(u'Purchase'),
+    _(u'Suggested Unit'),
+    _(u'The unit suggested when we are adding a new product in the '
+      'system')),
+
     DEFAULT_BASE_CATEGORY=ParameterDetails(
     _(u'Purchase'),
     _(u'Default Base Sellable Category'),
@@ -322,6 +328,8 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('DEFAULT_RECEIVING_CFOP', u'fiscal.CfopData'),
         ParameterAttr('SUGGESTED_SUPPLIER',
                       u'person.PersonAdaptToSupplier'),
+        ParameterAttr('SUGGESTED_UNIT',
+                      u'sellable.SellableUnit'),
         ParameterAttr('MAIN_COMPANY',
                       u'person.PersonAdaptToBranch'),
         ParameterAttr('DEFAULT_BASE_CATEGORY',
@@ -482,6 +490,7 @@ class ParameterAccess(ClassInittableObject):
         self.ensure_default_return_sales_cfop()
         self.ensure_default_receiving_cfop()
         self.ensure_suggested_supplier()
+        self.ensure_suggested_unit()
         self.ensure_default_base_category()
         self.ensure_default_salesperson_role()
         self.ensure_main_company()
@@ -497,6 +506,13 @@ class ParameterAccess(ClassInittableObject):
         key = "SUGGESTED_SUPPLIER"
         from stoqlib.domain.person import Person
         if self.get_parameter_by_field(key, Person.getAdapterClass(ISupplier)):
+            return
+        self._set_schema(key, None)
+
+    def ensure_suggested_unit(self):
+        key = "SUGGESTED_UNIT"
+        from stoqlib.domain.sellable import SellableUnit
+        if self.get_parameter_by_field(key, SellableUnit):
             return
         self._set_schema(key, None)
 
