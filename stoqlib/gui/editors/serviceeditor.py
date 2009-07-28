@@ -32,6 +32,7 @@ from kiwi.datatypes import currency, ValidationError
 from stoqdrivers.enum import TaxType
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
