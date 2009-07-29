@@ -559,7 +559,7 @@ class Sale(ValidatableDomain):
         """
         details = []
         if self.notes:
-            self.details.append(_(u'Sale Details: %s') % self.notes)
+            details.append(_(u'Sale Details: %s') % self.notes)
         delivery_added = False
         for sale_item in self.get_items():
             if delivery_added is False:
