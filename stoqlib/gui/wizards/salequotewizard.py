@@ -94,7 +94,7 @@ class StartSaleQuoteStep(WizardEditorStep):
             self.cfop.prefill(cfops)
         else:
             self.cfop_lbl.hide()
-            self.cfop.hide
+            self.cfop.hide()
             self.create_cfop.hide()
 
     #
