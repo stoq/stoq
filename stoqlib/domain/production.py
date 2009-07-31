@@ -28,9 +28,10 @@ from decimal import Decimal
 
 from zope.interface import implements
 
-from stoqlib.database.orm import UnicodeCol, ForeignKey, DateTimeCol, IntCol
+from stoqlib.database.orm import (UnicodeCol, ForeignKey, DateTimeCol, IntCol,
+                                  DecimalCol)
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IContainer, IDescribable
+from stoqlib.domain.interfaces import IContainer, IDescribable, IStorable
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -66,25 +67,69 @@ class ProductionOrder(Domain):
 
     status = IntCol(default=ORDER_OPENED)
     open_date = DateTimeCol(default=datetime.datetime.now)
+    expected_start_date = DateTimeCol(default=None)
+    start_date = DateTimeCol(default=None)
     close_date = DateTimeCol(default=None)
     description = UnicodeCol(default='')
-    responsible = ForeignKey('PersonAdaptToEmployee')
+    responsible = ForeignKey('PersonAdaptToEmployee', default=None)
     branch = ForeignKey('PersonAdaptToBranch')
 
     #
     # IContainer implmentation
     #
 
-    #TODO: when implement ProductionItem.
-
     def get_items(self):
-        return []
+        return ProductionItem.selectBy(order=self,
+                                       connection=self.get_connection())
 
     def add_item(self, sellable, quantity=Decimal(1)):
-        return
+        return ProductionItem(order=self, product=sellable.product,
+                              quantity=quantity,
+                              connection=self.get_connection())
 
     def remove_item(self, item):
-        return
+        if item.order is not self:
+            raise ValueError('Argument item must have an order attribute '
+                             'associated with the current production '
+                             'order instance.')
+        ProductionItem.delete(item.id, connection=self.get_connection())
+
+    #
+    # Public API
+    #
+
+    def get_service_items(self):
+        """Returns all the services needed by this production.
+
+        @returns: a sequence of L{ProductionService} instances.
+        """
+        return ProductionService.selectBy(order=self,
+                                          connection=self.get_connection())
+
+    def get_material_items(self):
+        """Returns all the material needed by this production.
+
+        @returns: a sequence of L{ProductionMaterial} instances.
+        """
+        return ProductionMaterial.selectBy(order=self,
+                                           connection=self.get_connection())
+
+    def start_production(self):
+        """Start the production by allocating all the material needed.
+        """
+        assert self.status in [ProductionOrder.ORDER_OPENED,
+                               ProductionOrder.ORDER_WAITING]
+
+        for material in self.get_material_items():
+            material.allocate()
+
+        self.start_date = datetime.date.today()
+        self.status = ProductionOrder.ORDER_PRODUCING
+
+    def set_production_waiting(self):
+        assert self.status == ProductionOrder.ORDER_OPENED
+
+        self.status = ProductionOrder.ORDER_WAITING
 
     #
     # IDescribable implementation
@@ -92,3 +137,122 @@ class ProductionOrder(Domain):
 
     def get_description(self):
         return self.description
+
+
+class ProductionItem(Domain):
+    """Production Item object implementation.
+
+    @ivar order: The L{ProductionOrder} of this item.
+    @ivar product: The product that will be manufactured.
+    @ivar quantity: The product's quantity that will be manufactured.
+    """
+    implements(IDescribable)
+
+    quantity = DecimalCol(default=1)
+    order = ForeignKey('ProductionOrder')
+    product = ForeignKey('Product')
+
+    #
+    # IDescribable Implementation
+    #
+
+    def get_description(self):
+        return self.product.sellable.get_description()
+
+    #
+    # Public API
+    #
+
+    def get_unit_description(self):
+        return self.product.sellable.get_unit_description()
+
+    def get_components(self):
+        return self.product.get_components()
+
+
+class ProductionMaterial(Domain):
+    """Production Material object implementation.
+
+    @ivar order: The L{ProductionOrder} that will consume this material.
+    @ivar product: The product that will be consumed.
+    @ivar needed: The quantity needed of this material.
+    @ivar consumed: The quantity already used of this material.
+    @ivar lost: The quantity lost of this material.
+    @ivar to_purchase: The quantity to purchase of this material.
+    @ivar to_make: The quantity to manufacture of this material.
+    """
+    implements(IDescribable)
+
+    needed = DecimalCol(default=1)
+    allocated = DecimalCol(default=0)
+    consumed = DecimalCol(default=0)
+    lost = DecimalCol(default=0)
+    to_purchase = DecimalCol(default=0)
+    to_make = DecimalCol(default=0)
+    order = ForeignKey('ProductionOrder')
+    product = ForeignKey('Product')
+
+    #
+    # Public API
+    #
+
+    def allocate(self):
+        """Allocates the needed quantity of this material by decreasing the
+        stock quantity. If the available quantity is not enough, then it will
+        allocate all the stock available.
+        """
+        stock = self.get_stock_quantity()
+        storable = IStorable(self.product, None)
+        assert storable is not None
+
+        if stock > self.needed:
+            quantity = self.needed
+        else:
+            quantity = stock
+
+        if quantity > 0:
+            self.allocated = quantity
+            storable.decrease_stock(quantity, self.order.branch)
+
+    #
+    # IDescribable Implementation
+    #
+
+    def get_description(self):
+        return self.product.sellable.get_description()
+
+    # Accessors
+
+    def get_unit_description(self):
+        return self.product.sellable.get_unit_description()
+
+    def get_stock_quantity(self):
+        storable = IStorable(self.product, None)
+        assert storable is not None
+        return storable.get_full_balance(self.order.branch)
+
+
+class ProductionService(Domain):
+    """Production Service object implementation.
+
+    @ivar order: The L{ProductionOrder} of this service.
+    @ivar service: The service that will be used by the production.
+    @ivar quantity: The service's quantity.
+    """
+    implements(IDescribable)
+
+    quantity = DecimalCol(default=1)
+    order = ForeignKey('ProductionOrder')
+    service = ForeignKey('Service')
+
+    #
+    # IDescribable Implementation
+    #
+
+    def get_description(self):
+        return self.service.sellable.get_description()
+
+    # Accessors
+
+    def get_unit_description(self):
+        return self.service.sellable.get_unit_description()

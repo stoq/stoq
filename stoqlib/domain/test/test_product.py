@@ -87,6 +87,15 @@ class TestProduct(DomainTest):
         self.assertEqual(list(self.product.get_components()),
                         components)
 
+    def testHasComponents(self):
+        self.assertFalse(self.product.has_components())
+
+        component = self.create_product()
+        ProductComponent(product=self.product,
+                         component=component,
+                         connection=self.trans)
+        self.assertTrue(self.product.has_components())
+
     def testGetProductionCost(self):
         product = self.create_product()
         sellable = product.sellable

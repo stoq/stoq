@@ -14,12 +14,12 @@
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="ProxyLabel" id="kiwilabel1">
+                            <widget class="ProxyLabel" id="item_lbl">
                                 <property name="can_focus">True</property>
                                 <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>
                                 <property name="label" context="yes" translatable="yes">Item:</property>
-                                <property name="model_attribute">kiwilabel1</property>
+                                <property name="model_attribute">item_lbl</property>
                                 <property name="selectable">True</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -112,7 +112,7 @@
                                 <property name="digits">2</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">cost</property>
-                                <property name="text" context="yes" translatable="yes">0.0</property>
+                                <property name="text" context="yes" translatable="yes">0.00</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -158,9 +158,6 @@
                                             </widget>
                                         </child>
                                     </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                    </packing>
                                 </child>
                                 <child>
                                     <widget class="GtkButton" id="product_button">
@@ -198,7 +195,6 @@
                                         </child>
                                     </widget>
                                     <packing>
-                                        <property name="expand">False</property>
                                         <property name="position">1</property>
                                     </packing>
                                 </child>

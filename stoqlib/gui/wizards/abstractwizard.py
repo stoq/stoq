@@ -82,6 +82,7 @@ class SellableItemStep(WizardEditorStep):
     table = Sellable
     item_table = None
     summary_label_text = None
+    summary_label_column = 'total'
 
     def __init__(self, wizard, previous, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
@@ -209,7 +210,8 @@ class SellableItemStep(WizardEditorStep):
 
     def _setup_summary(self):
         # FIXME: Move this into AdditionListSlave
-        self.summary = SummaryLabel(klist=self.slave.klist, column='total',
+        self.summary = SummaryLabel(klist=self.slave.klist,
+                                    column=self.summary_label_column,
                                     label=self.summary_label_text,
                                     value_format='<b>%s</b>')
         self.summary.show()

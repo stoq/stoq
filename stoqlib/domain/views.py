@@ -136,6 +136,10 @@ class ProductComponentView(ProductFullStockView):
     clause = AND(ProductFullStockView.clause,
                  ProductComponent.q.productID == Product.q.id,)
 
+    @property
+    def sellable(self):
+        return Sellable.get(self.id, connection=self.get_connection())
+
 
 class ProductWithStockView(ProductFullStockView):
     """Stores information about products, since product has a purchase or sale.
