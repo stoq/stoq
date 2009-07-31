@@ -98,6 +98,19 @@ def get_station(trans):
 def get_location(trans):
     return ExampleCreator.create(trans, 'CityLocation')
 
+def create_production_order(trans):
+    return ExampleCreator.create(trans, 'ProductionOrder')
+
+def create_production_item(trans):
+    return ExampleCreator.create(trans, 'ProductionItem')
+
+def create_production_material(trans):
+    return ExampleCreator.create(trans, 'ProductionMaterial')
+
+def create_production_service(trans):
+    return ExampleCreator.create(trans, 'ProductionService')
+
+
 class ExampleCreator(object):
     def __init__(self, trans):
         self.trans = trans
@@ -158,6 +171,10 @@ class ExampleCreator(object):
             'Service': self.create_service,
             'Till': self.create_till,
             'UserProfile': self.create_user_profile,
+            'ProductionOrder': self.create_production_order,
+            'ProductionItem': self.create_production_item,
+            'ProductionMaterial': self.create_production_material,
+            'ProductionService': self.create_production_service,
             }
         if isinstance(model_type, basestring):
             model_name = model_type
@@ -329,6 +346,41 @@ class ExampleCreator(object):
                             cost=125, base_cost=125,
                             sellable=self.create_sellable(),
                             order=self.create_purchase_order())
+
+    def create_production_order(self):
+        from stoqlib.domain.production import ProductionOrder
+        return ProductionOrder(branch=self.create_branch(),
+                               responsible=self.create_employee(),
+                               description='production',
+                               connection=self.trans)
+
+    def create_production_item(self):
+        from stoqlib.domain.product import ProductComponent
+        from stoqlib.domain.production import ProductionItem
+        product = self.create_product(10)
+        component = self.create_product(5)
+        ProductComponent(product=product,
+                         component=component,
+                         connection=self.trans)
+        return ProductionItem(product=product,
+                              order=self.create_production_order(),
+                              connection=self.trans)
+
+    def create_production_material(self):
+        from stoqlib.domain.production import ProductionMaterial
+        production_item = self.create_production_item()
+        component = list(production_item.get_components())[0]
+        return ProductionMaterial(product=component.component,
+                                  order=self.create_production_order(),
+                                  connection=self.trans)
+
+
+    def create_production_service(self):
+        from stoqlib.domain.production import ProductionService
+        service = self.create_service()
+        return ProductionService(service=service,
+                                 order=self.create_production_order(),
+                                 connection=self.trans)
 
     def create_cfop_data(self):
         from stoqlib.domain.fiscal import CfopData

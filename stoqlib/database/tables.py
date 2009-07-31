@@ -106,6 +106,10 @@ _tables = [
      ('commission', ["CommissionSource", "Commission"]),
      ('transfer', ["TransferOrder", "TransferOrderItem"]),
      ('inventory', ["Inventory", "InventoryItem"]),
+     ('production', ["ProductionOrder",
+                     "ProductionItem",
+                     "ProductionMaterial",
+                     "ProductionService"]),
 
 ]
 

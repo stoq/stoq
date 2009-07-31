@@ -101,3 +101,7 @@ class ServiceView(Viewable):
 
     def get_unit(self):
         return self.unit or u""
+
+    @property
+    def sellable(self):
+        return Sellable.get(self.id, connection=self.get_connection())

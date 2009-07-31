@@ -235,11 +235,17 @@ class Product(Domain):
     def get_components(self):
         """Returns the products which are our components.
 
-        @returns: a sequence of Product instances
+        @returns: a sequence of ProductComponent instances
         """
-        for component in ProductComponent.selectBy(
-            product=self, connection=self.get_connection()):
-            yield component
+        return ProductComponent.selectBy(product=self,
+                                         connection=self.get_connection())
+
+    def has_components(self):
+        """Returns if this product has components or not.
+
+        @returns: True if this product has components, False otherwise.
+        """
+        return self.get_components().count() > 0
 
     def get_production_cost(self):
         """ Return the production cost of a Product. The production cost
