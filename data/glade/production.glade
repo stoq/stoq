@@ -118,6 +118,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="Services">
+                        <property name="name">Services</property>
+                        <property name="label" translatable="yes">Services...</property>
+                        <property name="accelerator">&lt;Control&gt;s</property>
+                    </widget>
+                </child> 
+                <child>
                     <widget class="GtkAction" id="about_menu">
                         <property name="name">about_menu</property>
                         <property name="label" translatable="yes">About</property>
@@ -158,6 +165,7 @@
 	  </menu>
          <menu action="SearchMenu">
 	     <menuitem action="Products"/>
+	     <menuitem action="Services"/>
 	  </menu>
         <menu action="help_menu">
 	    <menuitem action="about_menu"/>
@@ -268,7 +276,7 @@
                                         <child>
                                             <widget class="GtkButton" id="edit_button">
                                                 <property name="is_focus">True</property>
-                                                <property name="visible">False</property>
+                                                <property name="visible">True</property>
                                                 <child>
                                                     <widget class="GtkAlignment" id="alignment4">
                                                         <property name="visible">True</property>

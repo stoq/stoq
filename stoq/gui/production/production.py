@@ -31,8 +31,11 @@ import gtk
 from kiwi.ui.objectlist import SearchColumn, Column
 from kiwi.ui.search import ComboSearchFilter, SearchFilterPosition
 
+from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.gui.search.productionsearch import ProductionProductSearch
+from stoqlib.gui.search.servicesearch import ServiceSearch
+from stoqlib.gui.wizards.productionwizard import ProductionWizard
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -47,11 +50,31 @@ class ProductionApp(SearchableAppWindow):
     search_label = _(u'matching:')
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
+    def __init__(self, app):
+        SearchableAppWindow.__init__(self, app)
+        self._update_widgets()
+
+    def _update_widgets(self):
+        selection = self.results.get_selected_rows()
+        can_edit = False
+        if len(selection) == 1:
+            selected = selection[0]
+            can_edit = (selected.status == ProductionOrder.ORDER_OPENED or
+                        selected.status == ProductionOrder.ORDER_WAITING)
+        self.edit_button.set_sensitive(can_edit)
+
     def _get_status_values(self):
         items = [(text, value)
                  for value, text in ProductionOrder.statuses.items()]
         items.insert(0, (_(u'Any'), None))
         return items
+
+    def _open_production_order(self, order=None):
+        trans = new_transaction()
+        order = trans.get(order)
+        retval = self.run_dialog(ProductionWizard, trans, order)
+        finish_transaction(trans, retval)
+        trans.close()
 
     #
     # SearchableAppWindow
@@ -82,8 +105,19 @@ class ProductionApp(SearchableAppWindow):
     def on_Products__activate(self, action):
         self.run_dialog(ProductionProductSearch, self.conn)
 
+    def on_Services__activate(self, action):
+        self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)
+
     def on_MenuNewProduction__activate(self, action):
-        pass
+        self._open_production_order()
 
     def on_ToolbarNewProduction__activate(self, action):
-        pass
+        self._open_production_order()
+
+    def on_edit_button__clicked(self, widget):
+        order = self.results.get_selected_rows()[0]
+        assert order is not None
+        self._open_production_order(order)
+
+    def on_results__selection_changed(self, results, selected):
+        self._update_widgets()
