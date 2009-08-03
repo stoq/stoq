@@ -24,58 +24,42 @@ import os
 import subprocess
 import sys
 
-# SVN_USER or None for anonymous
-SVN_USER = None
-
-def geturl(project):
-    if SVN_USER:
-        return 'svn+ssh://svn.async.com.br/pub/%s' % (project,)
-    else:
-        return 'svn://svn.async.com.br/%s' % (project,)
-
 class Project(object):
     name = None
     env = {}
     repo = ''
 
-class SVNProject(Project):
+class BzrProject(Project):
     def checkout(self):
-        cmd = 'svn co -q %s/trunk %s' % (self.repo, self.name)
-        os.system(cmd)
-
-        if SVN_USER is None:
-            return
-        cmd = ('cd %s/common && '
-               'svn switch --relocate svn://svn.async.com.br/common '
-               'svn+ssh://svn.async.com.br/common') % (self.name)
+        cmd = 'bzr branch %s %s' % (self.repo, self.name)
         os.system(cmd)
 
     def update(self):
-        cmd = 'svn update'
+        cmd = 'bzr pull'
         os.system(cmd)
 
-class Stoq(SVNProject):
+class Stoq(BzrProject):
     name = 'stoq'
     env = {'PYTHONPATH': '$tree',
            'PATH': '$tree/bin'}
-    repo = geturl('stoq')
+    repo = 'lp:stoq'
 
-class Stoqlib(SVNProject):
+class Stoqlib(BzrProject):
     name = 'stoqlib'
     env = {'PYTHONPATH': '$tree'}
-    repo = geturl('stoqlib')
+    repo = 'lp:stoqlib'
 
-class Stoqdrivers(SVNProject):
+class Stoqdrivers(BzrProject):
     name = 'stoqdrivers'
     env = {'PYTHONPATH': '$tree'}
-    repo = geturl('stoqdrivers')
+    repo = 'lp:stoqdrivers'
 
-class Kiwi(SVNProject):
+class Kiwi(BzrProject):
     name = 'kiwi'
     env = {'PYTHONPATH': '$tree',
            'GAZPACHO_PATH': '$tree/gazpacho-plugin',
            'PATH': '$tree/bin'}
-    repo = geturl('kiwi')
+    repo = 'lp:kiwi'
 
 PROJECTS = {
     'stoqlib': Stoqlib(),
