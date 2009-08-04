@@ -43,5 +43,8 @@ class NFePlugin(object):
     def get_migration(self):
         pass
 
+    def activate(self):
+        pass
+
 
 register_plugin(NFePlugin)
