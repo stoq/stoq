@@ -30,7 +30,7 @@
 # UF code definition taken from IBGE
 
 _uf_code = dict(# Norte
-                RN=11,
+                RO=11,
                 AC=12,
                 AM=13,
                 RR=14,
@@ -40,7 +40,8 @@ _uf_code = dict(# Norte
                 # Nordeste
                 MA=21,
                 PI=22,
-                CE=24,
+                CE=23,
+                RN=24,
                 PB=25,
                 PE=26,
                 AL=27,
