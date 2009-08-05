@@ -69,4 +69,4 @@ _uf_code = dict(# Norte
 def get_uf_code_from_state_name(state_name):
     state = state_name.upper()
     if _uf_code.has_key(state):
-        return _uf_code(state)
+        return _uf_code[state]
