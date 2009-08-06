@@ -318,19 +318,40 @@ class NFeProduct(BaseNFeField):
 class NFeProductDetails(BaseNFeField):
     """
     - Attributes:
-        - cProd:
-        - cEAN:
-        - xProd:
-        - NCM:
-        - CFOP:
-        - uCom:
-        - qCom:
-        - vUnCom:
-        - vProd:
-        - cEANTrib:
-        - uTrib:
-        - qTrib:
-        - vUnTrib:
+        - cProd: Código do produto ou serviço. Preencher com CFOP caso se
+                 trate de itens não relacionados com mercadorias/produtos e
+                 que o contribuinte não possua codificação própria.
+
+        - cEAN: GTIN (Global Trade Item Number) do produto, antigo código EAN
+                ou código de barras.
+
+        - xProd: Descrição do produto ou serviço.
+
+        - NCM: Código NCM. Preencher de acordo com a tabela de capítulos da
+                NCM. EM caso de serviço, não incluir a tag.
+
+        - CFOP: Código fiscal de operações e prestações. Serviço, não incluir
+                a tag.
+
+        - uCom: Unidade comercial. Informar a unidade de comercialização do
+                produto.
+
+        - qCom: Quantidade comercial. Informar a quantidade de comercialização
+                do produto.
+
+        - vUnCom: Valor unitário de comercialização. Informar o valor unitário
+                  de comercialização do produto.
+
+        - vProd: Valor total bruto dos produtos ou serviços.
+
+        - cEANTrib: GTIN da unidade tributável, antigo código EAN ou código de
+                    barras.
+
+        - uTrib: Unidade tributável.
+
+        - qTrib: Quantidade tributável.
+
+        - vUnTrib: Valor unitário de tributação.
     """
     tag = u'prod'
     attributes = dict(
@@ -374,12 +395,98 @@ class NFeTax(BaseNFeField):
 
 class NFeICMS(BaseNFeField):
     tag = 'ICMS'
-    attributes = dict(ICMS00='',
-                      orig='',
-                      CST='',
-                      modBC='',
+
+class NFeICMS00(BaseNFeField):
+    """Tributada integralmente (CST=00).
+
+    - Attributes:
+
+        - orig: Origem da mercadoria.
+                0 – Nacional
+                1 – Estrangeira – Importação direta
+                2 – Estrangeira – Adquirida no mercado interno
+
+        - CST: Tributação do ICMS - 00 Tributada integralmente.
+
+        - modBC: Modalidade de determinação da BC do ICMS.
+                 0 - Margem Valor Agregado (%) (default)
+                 1 - Pauta (Valor)
+                 2 - Preço Tabelado Máx. (valor)
+                 3 - Valor da operação
+
+        - vBC: Valor da BC do ICMS.
+
+        - pICMS: Alíquota do imposto.
+
+        - vICMS: Valor do ICMS
+    """
+    tag = 'ICMS00'
+    attributes = dict(orig='0',
+                      CST='00',
+                      modBC='0',
                       vBC='',
                       pICMS='',
-                      vICMS='',
+                      vICMS='',)
 
-                      ICMS10='')
+
+class NFeICMS10(NFeICMS00):
+    """Tributada com cobrança do ICMS por substituição tributária (CST=10).
+    - Attributes:
+
+        - modBCST: Modalidade de determinação da BC do ICMS ST.
+                   0 - Preço tabelado ou máximo sugerido
+                   1 - Lista negativa (valor)
+                   2 - Lista positiva (valor)
+                   3 - Lista neutra (valor)
+                   4 - Margem valor agregado (%)
+                   5 - Pauta (valor)
+
+        - pMVAST: Percentual da margem de valor adicionado do ICMS ST.
+
+        - pRedBCST: Percentual da redução de BC do ICMS ST.
+
+        - vBCST: Valor da BC do ICMS ST.
+
+        - pICMSST: Alíquota do imposto do ICMS ST.
+
+        - vICMSST: Valor do ICMS ST.
+    """
+    tag = 'ICMS10'
+    attributes = NFeICMS00.attributes.copy()
+    attributes.update(dict(CST='10',
+                           modBCST='',
+                           pMVAST='',
+                           pRedBCST='',
+                           vBCST='',
+                           pICMSST='',
+                           vICMSST='',))
+
+
+class NFeICMS20(NFeICMS00):
+    """Tributada com redução de base de cálcull (CST=20).
+
+    - Attributes:
+
+        - pRedBC: Percentual de Redução de BC.
+    """
+    tag = 'ICMS20'
+    attributes = NFeICMS00.attributes.copy()
+    attributes.update(dict(CST='20',
+                           pRedBC='',))
+
+
+class NFeICMS30(NFeICMS10):
+    """Isenta ou não tributada e com cobrança do ICMS por substituição
+    tributária (CST=30).
+    """
+    tag = 'ICMS30'
+    attributes = NFeICMS00.attributes.copy()
+    attributes.update(dict(CST='30'))
+
+
+class NFeICMS40(NFeICMS00):
+    """Isenta (CST=40), Não tributada (CST=41), Suspensão (CST=50).
+    """
+    tag = 'ICMS40'
+    attributes = NFeICMS00.attributes.copy()
+    attributes.update(dict(CST='40'))
