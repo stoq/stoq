@@ -519,6 +519,33 @@ class NFePISAliq(BaseNFeField):
                       vPIS='')
 
 
+# Pg. 120, 121
+class NFeCOFINS(BaseNFeField):
+    tag = u'COFINS'
+
+
+# Pg. 121
+class NFeCOFINSAliq(BaseNFeField):
+    """
+    - Attributes:
+        - CST: Código de situação tributária do COFINS.
+               01 - Operação tributável (base de cálculo = valor da operação
+               alíquota normal (cumulativo/não cumulativo).
+
+               02 - Operação tributável (base de cálculo = valor da operação
+               (alíquota diferenciada)).
+
+        - vBC: Valor da base do cálculo da COFINS.
+        - pCOFINS: Alíquota do COFINS (em percentual).
+        - vCOFINS: Valor do COFINS.
+    """
+    tag = u'COFINSAliq'
+    attributes = dict(CST='',
+                      vBC='',
+                      pCOFINS='',
+                      vCOFINS='')
+
+
 # Pg. 123
 class NFeTotal(BaseNFeField):
     tag = u'total'
