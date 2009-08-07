@@ -244,7 +244,6 @@ class NFeAddress(BaseNFeField):
         - xMun: nome do município.
         - UF: sigla da UF. Informar EX para operações com o exterior.
     """
-    tag = u''
     attributes = dict(
                     # xCpl='',
                     # CEP='',
@@ -490,3 +489,113 @@ class NFeICMS40(NFeICMS00):
     tag = 'ICMS40'
     attributes = NFeICMS00.attributes.copy()
     attributes.update(dict(CST='40'))
+
+
+# Pg. 117
+class NFePIS(BaseNFeField):
+    tag = u'PIS'
+
+
+# Pg. 117, 118
+class NFePISAliq(BaseNFeField):
+    """
+    - Attributes:
+        - CST: Código de Situação tributária do PIS.
+               01 - operação tributável (base de cáculo - valor da operação
+               normal (cumulativo/não cumulativo))
+               02 - operação tributável (base de cálculo = valor da operação
+               (alíquota diferenciada))
+
+        - vBC: Valor da base de cálculo do PIS.
+
+        - pPIS: Alíquota do PIS (em percentual).
+
+        - vPIS: Valor do PIS.
+    """
+    tag = u'PISAliq'
+    attributes = dict(CST='',
+                      vBC='',
+                      pPIS='',
+                      vPIS='')
+
+
+# Pg. 123
+class NFeTotal(BaseNFeField):
+    tag = u'total'
+
+
+# Pg. 123
+class NFeICMSTotal(BaseNFeField):
+    """
+    - Attributes:
+
+        - vBC: Base de Cálculo do ICMS.
+        - vICMS: Valor Total do ICMS.
+        - vBCST: Base de Cálculo do ICMS ST.
+        - vST: Valor Total do ICMS ST.
+        - vProd    Valor Total dos produtos e serviços.
+        - vFrete: Valor Total do Frete.
+        - vSeg: Valor Total do Seguro.
+        - vDesc: Valor Total do Desconto.
+        - vII Valor Total do II.
+        - vIPI: Valor Total do IPI.
+        - vPIS: Valor do PIS.
+        - vCOFINS Valor do COFINS.
+        - vOutro: Outras Despesas acessórias.
+        - vNF: Valor Total da NF-e.
+    """
+    tag = u'ICMSTot'
+    attributes = dict(vBC='',
+                      vICMS='',
+                      vBCST='',
+                      vST='',
+                      vProd='',
+                      vFrete='',
+                      vSeg='',
+                      vDesc='',
+                      vII='',
+                      vIPI='',
+                      vCOFINS='',
+                      vOutro='',
+                      vNF='')
+
+
+# Pg. 124
+class NFeTransport(BaseNFeField):
+    """
+    - Attributes:
+        - modFrete: Modalidade do frete.
+                    0 - por conta do emitente (padrão)
+                    1 - por conta do destinatário
+    """
+    tag = u'transp'
+    attributes = dict(modFrete='0')
+
+
+# Pg. 124 (optional)
+class NFeTransporter(BaseNFeField):
+    """
+    - Attributes:
+        - CNPJ: Informar o CNPJ ou o CPF do transportador.
+        - CPF: Informar o CNPJ ou o CPF do transportador.
+        - xNome: Razão social ou nome.
+        - IE: Inscrição estadual.
+        - xEnder: Endereço completo.
+        - xMun: Nome do município.
+        - UF: Sigla da UF.
+    """
+    tag = u'transporta'
+    attributes = dict(CNPJ='',
+                      CPF='',
+                      xNome='',
+                      IE='',
+                      xEnder='',
+                      xMun='',
+                      UF='',)
+
+
+# Pg. 127
+class NFeSignature(BaseNFeField):
+    """Assinatura XML da NF-e segundo o padrão XML Digital Signature.
+    """
+    tag = u'Signature'
