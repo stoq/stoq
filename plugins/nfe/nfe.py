@@ -24,19 +24,21 @@
 """ NF-e XML document generation
 """
 
+import datetime
 import random
 from xml.etree.ElementTree import ElementTree, Element, tostring
 
 from utils import get_uf_code_from_state_name
 
 import stoqlib
+from stoqlib.domain.interfaces import ICompany
 
 
 class NFeGenerator(object):
 
-    def __init__(self):
-        #self._sale = sale
-        #self.conn = conn
+    def __init__(self, sale, conn):
+        self._sale = sale
+        self.conn = conn
         self.root = Element('NFe', xmlns='http://www.portalfiscal.inf.br/nfe')
 
     def __str__(self):
@@ -63,11 +65,43 @@ class NFeGenerator(object):
             return 0
         return 11 - dv_mod
 
-    def add_nfe_data(self, key):
+    def _get_nfe_number(self):
+        return '%09d' % 1
+
+    def _add_nfe_data(self):
+        # Pg. 71
+        branch_person = self._sale.branch.person
+        branch_location = person.get_main_address().city_location
+        cuf = get_uf_code_from_state_name(branch_location.state)
+
+        today = datetime.date.today()
+        aamm = today.strftime('%y%m')
+
+        company = ICompany(branch_person, None)
+        assert company is not None
+        cnpj = company.cnpj
+        assert len(cnpj) == 14
+
+        nnf = self._get_nfe_number()
+        nfe_idenfitication = NFeIdentification(cuf, location.city, nnf, today)
+
+        mod = nfe_idenfitication.attributes['mod']
+        serie = nfe_idenfitication.attributes['serie']
+        cnf = nfe_idenfitication.attributes['cNF']
+        # Key:
+        # cUF + AAMM + CNPJ + mod + serie + nNF + cNF + (cDV) 
+        key = cuf + aamm + cnpj + mod + serie + nnf + cnf
+        cdv = self._calculate_dv(key)
+        key += cdv
+
+        nfe_idenfitication.attributes['cDV'] = cdv
+        self._nfe_identification = nfe_idenfitication
+
         self._nfe_data = NFeData(key)
+        self._nfe_data.append(nfe_idenfitication.element)
         self.root.append(self._nfe_data.element)
 
-    def add_nfe_branch(self, branch):
+    def _get_nfe_issuer(self, branch):
         person = branch.get_adapted()
         address = person.get_main_address()
         city_location = address.city_location
@@ -218,18 +252,17 @@ class NFeIdentification(BaseNFeField):
                       procEmi='0',
                       verProc='stoq-%s' % stoqlib.version,)
 
-    def __init__(self, state, city, payment_type, fiscal_document_number,
-                 emission_date, cdv):
+    def __init__(self, cUF, city, nnf, emission_date):
         BaseNFeField.__init__(self)
 
         uf_code = get_uf_code_from_state_name(state)
         self.attributes['cUF'] = uf_code
         # Pg. 92: Random number of 9-digits
         self.attributes['cNF'] = str(random.randint(100000000, 999999999))
-        self.attributes['indPag'] = payment_type
-        self.attributes['nNF'] = fiscal_document_number
+        #self.attributes['indPag'] = payment_type
+        self.attributes['nNF'] = nnf
         self.attributes['dEmi'] = self.format_nfe_date(emission_date)
-        self.attributes['cDV'] = cdv
+        #self.attributes['cDV'] = cdv
         #TODO: get city code
         # self.attributes['cMunFG'] = city_code
 
