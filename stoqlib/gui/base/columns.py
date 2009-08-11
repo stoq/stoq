@@ -28,35 +28,6 @@ from kiwi.accessor import kgetattr
 from kiwi.ui.widgets.list import Column
 
 
-class ForeignKeyColumn(Column):
-    """ForeignKeyColumn is a special column which is normally used together
-    with a foreign key, for an sql table.
-    """
-    def __init__(self, table, *args, **kwargs):
-        """Need an obj_field or adapted argument.
-        See L{kiwi.ui.widgets.list.Column} for other arguments
-        """
-        if not 'obj_field' in kwargs and not 'adapted' in kwargs:
-            raise TypeError(
-                'ForeigKeyColumn needs an obj_field or adapted argument')
-
-        self._table = table
-        self._obj_field = kwargs.pop('obj_field', None)
-        self._adapted = kwargs.pop('adapted', False)
-        Column.__init__(self, *args, **kwargs)
-
-    def get_attribute(self, instance, name, default=None):
-        if self._obj_field:
-            value = kgetattr(instance, self._obj_field, default)
-            if value is None:
-                return
-        else:
-            value = instance
-
-        if self._adapted:
-            value = value.get_adapted()
-        return kgetattr(value, name, default)
-
 class AccessorColumn(Column):
     def __init__(self, attribute, accessor, *args, **kwargs):
         if not accessor:
