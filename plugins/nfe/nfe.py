@@ -63,7 +63,7 @@ class NFeGenerator(object):
         dv_mod = dv_sum % 11
         if dv_mod == 0 or dv_mod == 1:
             return 0
-        return 11 - dv_mod
+        return str(11 - dv_mod)
 
     def _get_nfe_number(self):
         return '%09d' % 1
@@ -71,25 +71,27 @@ class NFeGenerator(object):
     def _add_nfe_data(self):
         # Pg. 71
         branch_person = self._sale.branch.person
-        branch_location = person.get_main_address().city_location
-        cuf = get_uf_code_from_state_name(branch_location.state)
+        branch_location = branch_person.get_main_address().city_location
+        cuf = str(get_uf_code_from_state_name(branch_location.state))
 
         today = datetime.date.today()
         aamm = today.strftime('%y%m')
 
         company = ICompany(branch_person, None)
         assert company is not None
-        cnpj = company.cnpj
+        #FIXME: fix get_cnpj_number method
+        cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
         assert len(cnpj) == 14
 
         nnf = self._get_nfe_number()
-        nfe_idenfitication = NFeIdentification(cuf, location.city, nnf, today)
+        nfe_idenfitication = NFeIdentification(cuf, branch_location.city,
+                                               nnf, today)
 
         mod = nfe_idenfitication.attributes['mod']
         serie = nfe_idenfitication.attributes['serie']
         cnf = nfe_idenfitication.attributes['cNF']
         # Key:
-        # cUF + AAMM + CNPJ + mod + serie + nNF + cNF + (cDV) 
+        # cUF + AAMM + CNPJ + mod + serie + nNF + cNF + (cDV)
         key = cuf + aamm + cnpj + mod + serie + nnf + cnf
         cdv = self._calculate_dv(key)
         key += cdv
@@ -98,7 +100,7 @@ class NFeGenerator(object):
         self._nfe_identification = nfe_idenfitication
 
         self._nfe_data = NFeData(key)
-        self._nfe_data.append(nfe_idenfitication.element)
+        self._nfe_data.element.append(nfe_idenfitication.element)
         self.root.append(self._nfe_data.element)
 
     def _get_nfe_issuer(self, branch):
@@ -106,6 +108,9 @@ class NFeGenerator(object):
         address = person.get_main_address()
         city_location = address.city_location
         state = city_location.state
+
+    def generate(self):
+        self._add_nfe_data()
 
 
 class BaseNFeField(object):
@@ -237,7 +242,7 @@ class NFeIdentification(BaseNFeField):
                       natOp='venda',
                       indPag='0',
                       mod='55',
-                      serie='0',
+                      serie='000',
                       nNF='',
                       dEmi='',
                       tpNF='1',
@@ -255,8 +260,7 @@ class NFeIdentification(BaseNFeField):
     def __init__(self, cUF, city, nnf, emission_date):
         BaseNFeField.__init__(self)
 
-        uf_code = get_uf_code_from_state_name(state)
-        self.attributes['cUF'] = uf_code
+        self.attributes['cUF'] = cUF
         # Pg. 92: Random number of 9-digits
         self.attributes['cNF'] = str(random.randint(100000000, 999999999))
         #self.attributes['indPag'] = payment_type
