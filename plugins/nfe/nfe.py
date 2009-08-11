@@ -66,7 +66,7 @@ class NFeGenerator(object):
         return str(11 - dv_mod)
 
     def _get_nfe_number(self):
-        return '%09d' % 1
+        return 1
 
     def _add_nfe_data(self):
         # Pg. 71
@@ -86,17 +86,19 @@ class NFeGenerator(object):
         nnf = self._get_nfe_number()
         nfe_idenfitication = NFeIdentification(cuf, branch_location.city,
                                                nnf, today)
-
-        mod = nfe_idenfitication.attributes['mod']
-        serie = nfe_idenfitication.attributes['serie']
-        cnf = nfe_idenfitication.attributes['cNF']
-        # Key:
+        # The nfe-key requires all the "zeros", so we should format the
+        # values properly.
+        mod = str('%02d' % nfe_idenfitication.get_attr('mod'))
+        serie = str('%03d' % nfe_idenfitication.get_attr('serie'))
+        cnf = str('%09d' % nfe_idenfitication.get_attr('cNF'))
+        nnf_str = '%09d' % nnf
+        # Key format (Pg. 71):
         # cUF + AAMM + CNPJ + mod + serie + nNF + cNF + (cDV)
-        key = cuf + aamm + cnpj + mod + serie + nnf + cnf
+        key = cuf + aamm + cnpj + mod + serie + nnf_str + cnf
         cdv = self._calculate_dv(key)
         key += cdv
 
-        nfe_idenfitication.attributes['cDV'] = cdv
+        nfe_idenfitication.set_attr('cDV', cdv)
         self._nfe_identification = nfe_idenfitication
 
         self._nfe_data = NFeData(key)
@@ -115,10 +117,12 @@ class NFeGenerator(object):
 
 class BaseNFeField(object):
     tag = u''
-    attributes = dict()
+    # key, default value
+    attributes = []
 
     def __init__(self):
         self._element = None
+        self._data = dict(self.attributes)
 
     @property
     def element(self):
@@ -126,12 +130,19 @@ class BaseNFeField(object):
             return self._element
 
         self._element = Element(self.tag)
-        for key, value in self.attributes.items():
+        for key, value in self.attributes:
             sub_element = Element(key)
-            sub_element.text = str(value)
+            element_value = self._data[key] or value
+            sub_element.text = str(element_value)
             self._element.append(sub_element)
 
         return self._element
+
+    def get_attr(self, attr):
+        return self._data[attr]
+
+    def set_attr(self, attr, value):
+        self._data[attr] = value
 
     def format_nfe_date(self, nfe_date):
         # Pg. 93 (and others)
@@ -229,46 +240,37 @@ class NFeIdentification(BaseNFeField):
                    aplicativo emissor de NF-e)
     """
     tag = u'ide'
-    # The commented attributes are optional and not implemented yet.
-    attributes = dict(
-                    # dSaiEnt='',
-                    # NFref='',
-                    # refNFe='',
-                    # refNF='',
-                    # AAMM='',
-                    # CNPJ='',
-                      cUF='',
-                      cNF='',
-                      natOp='venda',
-                      indPag='0',
-                      mod='55',
-                      serie='000',
-                      nNF='',
-                      dEmi='',
-                      tpNF='1',
-                      cMunFG='',
-
-                      tpImp='2',
-                      tpEmis='1',
-                      cDV='',
-                    #TODO: Change tpAmb=1 in the final version.
-                      tpAmb='2',
-                      finNFe='1',
-                      procEmi='0',
-                      verProc='stoq-%s' % stoqlib.version,)
+    attributes = [(u'cUF', ''),
+                  (u'cNF', ''),
+                  (u'natOp', 'venda'),
+                  (u'indPag', '0'),
+                  (u'mod', 55),
+                  (u'serie', 0),
+                  (u'nNF', ''),
+                  (u'dEmi', ''),
+                  (u'tpNF', '1'),
+                  (u'cMunFG', ''),
+                  (u'tpImp', '2'),
+                  (u'tpEmis', '1'),
+                  (u'cDV', ''),
+                  #TODO: Change tpAmb=1 in the final version.
+                  (u'tpAmb', '2'),
+                  (u'finNFe', '1'),
+                  (u'procEmi', '0'),
+                  (u'verProc', 'stoq-%s' % stoqlib.version)]
 
     def __init__(self, cUF, city, nnf, emission_date):
         BaseNFeField.__init__(self)
 
-        self.attributes['cUF'] = cUF
+        self.set_attr('cUF', cUF)
         # Pg. 92: Random number of 9-digits
-        self.attributes['cNF'] = str(random.randint(100000000, 999999999))
+        self.set_attr('cNF', random.randint(100000000, 999999999))
         #self.attributes['indPag'] = payment_type
-        self.attributes['nNF'] = nnf
-        self.attributes['dEmi'] = self.format_nfe_date(emission_date)
+        self.set_attr('nNF', nnf)
+        self.set_attr('dEmi', self.format_nfe_date(emission_date))
         #self.attributes['cDV'] = cdv
         #TODO: get city code
-        # self.attributes['cMunFG'] = city_code
+        self.set_attr('cMunFG', '1234567')
 
 
 class NFeAddress(BaseNFeField):
