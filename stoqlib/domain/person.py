@@ -1064,6 +1064,18 @@ class BranchView(Viewable):
 
 
 class UserView(Viewable):
+    """
+    Retrieves information about user in the system.
+
+    @cvar id: the id of person table
+    @cvar name: the user full name
+    @cvar is_active: the current status of the transporter
+    @cvar username: the username (login)
+    @cvar user_id: the id of PersonAdaptToUser table
+    @cvar profile_id: the id of the user profile
+    @cvar profile_name: the name of the user profile (eg: Salesperson)
+    """
+
     columns = dict(
         id=Person.q.id,
         name=Person.q.name,
