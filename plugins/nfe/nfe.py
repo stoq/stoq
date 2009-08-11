@@ -62,26 +62,30 @@ class NFeGenerator(object):
 
         dv_mod = dv_sum % 11
         if dv_mod == 0 or dv_mod == 1:
-            return 0
+            return '0'
         return str(11 - dv_mod)
 
     def _get_nfe_number(self):
         return 1
 
-    def _add_nfe_data(self):
-        # Pg. 71
-        branch_person = self._sale.branch.person
-        branch_location = branch_person.get_main_address().city_location
-        cuf = str(get_uf_code_from_state_name(branch_location.state))
+    def _get_company(self,  person):
+        return ICompany(person, None)
 
-        today = datetime.date.today()
-        aamm = today.strftime('%y%m')
-
-        company = ICompany(branch_person, None)
+    def _get_cnpj(self, person):
+        company = self._get_company(person)
         assert company is not None
         #FIXME: fix get_cnpj_number method
         cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
         assert len(cnpj) == 14
+        return cnpj
+
+    def _add_identification(self, branch):
+        # Pg. 71
+        branch_location = branch.person.get_main_address().city_location
+        cuf = str(get_uf_code_from_state_name(branch_location.state))
+
+        today = datetime.date.today()
+        aamm = today.strftime('%y%m')
 
         nnf = self._get_nfe_number()
         nfe_idenfitication = NFeIdentification(cuf, branch_location.city,
@@ -92,6 +96,7 @@ class NFeGenerator(object):
         serie = str('%03d' % nfe_idenfitication.get_attr('serie'))
         cnf = str('%09d' % nfe_idenfitication.get_attr('cNF'))
         nnf_str = '%09d' % nnf
+        cnpj = self._get_cnpj(branch)
         # Key format (Pg. 71):
         # cUF + AAMM + CNPJ + mod + serie + nNF + cNF + (cDV)
         key = cuf + aamm + cnpj + mod + serie + nnf_str + cnf
@@ -105,14 +110,24 @@ class NFeGenerator(object):
         self._nfe_data.element.append(nfe_idenfitication.element)
         self.root.append(self._nfe_data.element)
 
-    def _get_nfe_issuer(self, branch):
-        person = branch.get_adapted()
+    def _add_issuer(self, issuer):
+        cnpj = self._get_cnpj(issuer)
+        person = issuer.person
+        name = person.name
+        company = self._get_company(issuer)
+        state_registry = company.state_registry
+        self._nfe_issuer = NFeIssuer(cnpj, name, state_registry)
         address = person.get_main_address()
-        city_location = address.city_location
-        state = city_location.state
+        location = address.city_location
+        self._nfe_issuer.set_address(address.street, address.streetnumber,
+                                     address.district, location.city,
+                                     location.state)
+        self._nfe_data.element.append(self._nfe_issuer.element)
 
     def generate(self):
-        self._add_nfe_data()
+        branch = self._sale.branch
+        self._add_identification(branch)
+        self._add_issuer(branch)
 
 
 class BaseNFeField(object):
@@ -265,10 +280,10 @@ class NFeIdentification(BaseNFeField):
         self.set_attr('cUF', cUF)
         # Pg. 92: Random number of 9-digits
         self.set_attr('cNF', random.randint(100000000, 999999999))
+        #TODO: add payment type
         #self.attributes['indPag'] = payment_type
         self.set_attr('nNF', nnf)
         self.set_attr('dEmi', self.format_nfe_date(emission_date))
-        #self.attributes['cDV'] = cdv
         #TODO: get city code
         self.set_attr('cMunFG', '1234567')
 
@@ -283,29 +298,23 @@ class NFeAddress(BaseNFeField):
         - xMun: nome do município.
         - UF: sigla da UF. Informar EX para operações com o exterior.
     """
-    attributes = dict(
-                    # xCpl='',
-                    # CEP='',
-                    # cPais='',
-                    # xPais='',
-                    # fone='',
-                      xLgr='',
-                      nro='',
-                      xBairro='',
-                      cMun='',
-                      xMun='',
-                      UF='')
+    attributes = [(u'xLgr', ''),
+                  (u'nro', ''),
+                  (u'xBairro', ''),
+                  (u'cMun', ''),
+                  (u'xMun', ''),
+                  (u'UF', '')]
 
     def __init__(self, tag, rua, numero, bairro, cidade, estado):
         self.tag = tag
         BaseNFeField.__init__(self)
-        self.attributes['xLgr'] = rua
-        self.attributes['nro'] = numero
-        self.attributes['xBairro'] = bairro
-        self.attributes['xMun'] = cidade
+        self.set_attr('xLgr', rua)
+        self.set_attr('nro', numero)
+        self.set_attr('xBairro', bairro)
+        self.set_attr('xMun', cidade)
         #TODO: add city code
-        self.attributes['cMun'] = '123123'
-        self.attributes['UF'] = estado
+        self.set_attr('cMun', '1234567')
+        self.set_attr('UF', estado)
 
 
 class NFeIssuer(BaseNFeField):
@@ -316,28 +325,28 @@ class NFeIssuer(BaseNFeField):
         - IE: inscrição estadual
     """
     tag = u'emit'
-    #TODO: enderEmit should be added later
-    attributes = dict(
-                    # CPF='',
-                    # xFant='',
-                    # IEST='',
-                    # IM='',
-                    # CNAE='',
-                      CNPJ='',
-                      xNome='',
-                      IE='')
+    attributes = [(u'CNPJ', ''),
+                  (u'xNome', ''),]
 
     def __init__(self, cnpj, nome, ie):
         BaseNFeField.__init__(self)
-        self.attributes['CNPJ'] = cnpj
-        self.attributes['xNome'] = nome
-        self.attributes['IE'] = ie
-        #TODO: add address
+        self.set_attr('CNPJ', cnpj)
+        self.set_attr('xNome', nome)
+        self._ie = ie
+
+    def set_address(self, street, number, district, city, state):
+        address = NFeAddress(
+            u'enderEmit', street, number, district, city, state)
+        self.element.append(address.element)
+        # If we set IE in the attributes, the order not be correct. :(
+        ie_element = Element(u'IE')
+        ie_element.text = self._ie
+        self.element.append(ie_element)
 
 
 class NFeRecipient(NFeIssuer):
     tag = 'dest'
-    attributes = NFeIssuer.attributes.copy()
+    attributes = NFeIssuer.attributes
 
 
 class NFeProduct(BaseNFeField):
