@@ -35,7 +35,7 @@ from kiwi.ui.search import ComboSearchFilter
 from stoqlib.database.orm import AND
 from stoqlib.database.runtime import (new_transaction, finish_transaction,
                                       get_current_branch)
-from stoqlib.domain.person import Person, PersonAdaptToUser
+from stoqlib.domain.person import Person, PersonAdaptToUser, UserView
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.invoice import InvoiceLayout
 from stoqlib.gui.base.columns import ForeignKeyColumn
@@ -68,7 +68,7 @@ class AdminApp(SearchableAppWindow):
     app_name = _('Administrative')
     app_icon_name = 'stoq-admin-app'
     gladefile = "admin"
-    search_table = PersonAdaptToUser
+    search_table = UserView
     search_label = _('matching:')
 
     def __init__(self, app):
@@ -87,13 +87,11 @@ class AdminApp(SearchableAppWindow):
     def get_columns(self):
         return [SearchColumn('username', title=_('Login Name'), sorted=True,
                               data_type=str, width=150, searchable=True),
-                ForeignKeyColumn(UserProfile, 'name', title=_('Profile'),
-                                 obj_field='profile', data_type=str,
-                                 width=150, expand=True,
-                                 ellipsize=pango.ELLIPSIZE_END),
-                ForeignKeyColumn(Person, 'name', title=_('Name'),
-                                 data_type=str, adapted=True,
-                                 width=300),
+                SearchColumn('profile_name', title=_('Profile'),
+                             data_type=str, width=150, expand=True,
+                             ellipsize=pango.ELLIPSIZE_END),
+                SearchColumn('name', title=_('Name'), data_type=str,
+                             width=300),
                 Column('status_str', title=_('Status'), data_type=str)]
 
     #
@@ -106,12 +104,11 @@ class AdminApp(SearchableAppWindow):
         return items
 
     def _get_status_query(self, state):
-        query = AND(PersonAdaptToUser.q._originalID == Person.q.id,
-                    UserProfile.q.id == PersonAdaptToUser.q.profileID)
+        query = None
         if state.value == PersonAdaptToUser.STATUS_ACTIVE:
-            query = AND(query, PersonAdaptToUser.q.is_active == True)
+            query = PersonAdaptToUser.q.is_active == True
         elif state.value == PersonAdaptToUser.STATUS_INACTIVE:
-            query = AND(query, PersonAdaptToUser.q.is_active == False)
+            query = PersonAdaptToUser.q.is_active == False
 
         return query
 
@@ -121,7 +118,7 @@ class AdminApp(SearchableAppWindow):
 
     def _edit_user(self):
         trans = new_transaction()
-        user = trans.get(self.results.get_selected())
+        user = trans.get(self.results.get_selected().user)
         model =  run_person_role_dialog(UserEditor, self, trans, user)
         finish_transaction(trans, model)
         trans.close()
