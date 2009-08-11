@@ -114,7 +114,6 @@ def create_production_service(trans):
 class ExampleCreator(object):
     def __init__(self, trans):
         self.trans = trans
-        self._role = None
 
     # Public API
 
@@ -205,17 +204,15 @@ class ExampleCreator(object):
         return person.addFacet(ISupplier, connection=self.trans)
 
     def create_employee_role(self):
-        if not self._role:
-            from stoqlib.domain.person import EmployeeRole
-            self._role = EmployeeRole(name='Role', connection=self.trans)
-        return self._role
+        from stoqlib.domain.person import EmployeeRole
+        return EmployeeRole(name='Role', connection=self.trans)
 
     def create_employee(self, name="SalesPerson"):
         from stoqlib.domain.person import Person
         person = Person(name=name, connection=self.trans)
         person.addFacet(IIndividual, connection=self.trans)
         return person.addFacet(IEmployee,
-                               role=self.create_employee_role(),
+                               role=self.create_employee,
                                connection=self.trans)
 
     def create_sales_person(self):
