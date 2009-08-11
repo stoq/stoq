@@ -73,7 +73,7 @@ First import the function from the right path...
 ...and them use it !
 
     >>> new_profile = UserProfile(connection=trans, name='assistant')
-    >>> len(new_profile.profile_settings) == 0
+    >>> new_profile.profile_settings.count() == 0
     True
     >>> update_profile_applications(trans)
     >>> trans.commit()
