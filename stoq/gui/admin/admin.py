@@ -38,7 +38,6 @@ from stoqlib.database.runtime import (new_transaction, finish_transaction,
 from stoqlib.domain.person import Person, PersonAdaptToUser, UserView
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.invoice import InvoiceLayout
-from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
 from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
