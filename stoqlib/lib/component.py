@@ -165,9 +165,6 @@ class Adaptable(object):
     """Adapter base class, everything you want to adapt must subclass this.
     """
 
-    def __init__(self):
-        self._adapterCache = {}
-
     #
     # Class methods
     #
@@ -250,6 +247,9 @@ class Adaptable(object):
         if not isinstance(iface, InterfaceClass):
             raise TypeError('iface must be an Interface')
 
+        if not hasattr(self, '_adapterCache'):
+            self._adapterCache = {}
+
         k = qual(iface)
         if k in self._adapterCache:
             raise AdapterError('%s already has a facet for interface %s' %
@@ -326,7 +326,7 @@ def _adapter_hook(iface, obj):
     except TypeError:
         is_adaptable = False
 
-    if is_adaptable:
+    if is_adaptable and hasattr(obj, '_adapterCache'):
         return obj._adapterCache.get(qual(iface))
 adapter_hooks.append(_adapter_hook)
 
