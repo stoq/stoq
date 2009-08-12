@@ -31,7 +31,7 @@ from xml.etree.ElementTree import ElementTree, Element, tostring
 from utils import get_uf_code_from_state_name
 
 import stoqlib
-from stoqlib.domain.interfaces import ICompany
+from stoqlib.domain.interfaces import ICompany, IIndividual
 
 
 class NFeGenerator(object):
@@ -79,6 +79,15 @@ class NFeGenerator(object):
         assert len(cnpj) == 14
         return cnpj
 
+    def _get_address_data(self, person):
+        """Returns a tuple in the following format:
+        (street, streetnumber, district, city, state)
+        """
+        address = person.get_main_address()
+        location = address.city_location    
+        return (address.street, address.streetnumber, address.district,
+                location.city, location.state)
+
     def _add_identification(self, branch):
         # Pg. 71
         branch_location = branch.person.get_main_address().city_location
@@ -116,18 +125,30 @@ class NFeGenerator(object):
         name = person.name
         company = self._get_company(issuer)
         state_registry = company.state_registry
-        self._nfe_issuer = NFeIssuer(cnpj, name, state_registry)
-        address = person.get_main_address()
-        location = address.city_location
-        self._nfe_issuer.set_address(address.street, address.streetnumber,
-                                     address.district, location.city,
-                                     location.state)
+        self._nfe_issuer = NFeIssuer(name, cnpj=cnpj,
+                                     state_registry=state_registry)
+        self._nfe_issuer.set_address(*self._get_address_data(person))
         self._nfe_data.element.append(self._nfe_issuer.element)
+
+    def _add_recipient(self, recipient):
+        person = recipient.person
+        name = person.name
+        individual = IIndividual(person, None)
+        if individual is not None:
+            cpf = ''.join([c for c in individual.cpf if c in '1234567890'])
+            self._nfe_recipient = NFeRecipient(name, cpf=cpf)
+        else:
+            cnpj = self._get_cnpj(recipient)
+            self._nfe_recipient = NFeRecipient(name, cnpj=cnpj)
+
+        self._nfe_recipient.set_address(*self._get_address_data(person))
+        self._nfe_data.element.append(self._nfe_recipient.element)
 
     def generate(self):
         branch = self._sale.branch
         self._add_identification(branch)
         self._add_issuer(branch)
+        self._add_recipient(self._sale.client)
 
 
 class BaseNFeField(object):
@@ -148,6 +169,9 @@ class BaseNFeField(object):
         for key, value in self.attributes:
             sub_element = Element(key)
             element_value = self._data[key] or value
+            # ignore empty values
+            if element_value == '' or element_value is None:
+                continue
             sub_element.text = str(element_value)
             self._element.append(sub_element)
 
@@ -305,16 +329,16 @@ class NFeAddress(BaseNFeField):
                   (u'xMun', ''),
                   (u'UF', '')]
 
-    def __init__(self, tag, rua, numero, bairro, cidade, estado):
+    def __init__(self, tag, street, number, district, city, state):
         self.tag = tag
         BaseNFeField.__init__(self)
-        self.set_attr('xLgr', rua)
-        self.set_attr('nro', numero)
-        self.set_attr('xBairro', bairro)
-        self.set_attr('xMun', cidade)
+        self.set_attr('xLgr', street)
+        self.set_attr('nro', number)
+        self.set_attr('xBairro', district)
+        self.set_attr('xMun', city)
         #TODO: add city code
         self.set_attr('cMun', '1234567')
-        self.set_attr('UF', estado)
+        self.set_attr('UF', state)
 
 
 class NFeIssuer(BaseNFeField):
@@ -325,18 +349,24 @@ class NFeIssuer(BaseNFeField):
         - IE: inscrição estadual
     """
     tag = u'emit'
+    address_tag = u'enderEmit'
     attributes = [(u'CNPJ', ''),
+                  (u'CPF', ''), 
                   (u'xNome', ''),]
 
-    def __init__(self, cnpj, nome, ie):
+    def __init__(self, nome, cpf=None, cnpj=None, state_registry=None):
         BaseNFeField.__init__(self)
-        self.set_attr('CNPJ', cnpj)
+        if cnpj is not None:
+            self.set_attr('CNPJ', cnpj)
+        else:
+            self.set_attr('CPF', cpf)
+
         self.set_attr('xNome', nome)
-        self._ie = ie
+        self._ie = state_registry
 
     def set_address(self, street, number, district, city, state):
         address = NFeAddress(
-            u'enderEmit', street, number, district, city, state)
+            self.address_tag, street, number, district, city, state)
         self.element.append(address.element)
         # If we set IE in the attributes, the order not be correct. :(
         ie_element = Element(u'IE')
@@ -346,6 +376,7 @@ class NFeIssuer(BaseNFeField):
 
 class NFeRecipient(NFeIssuer):
     tag = 'dest'
+    address_tag = u'enderDest'
     attributes = NFeIssuer.attributes
 
 
