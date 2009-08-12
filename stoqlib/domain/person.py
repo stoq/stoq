@@ -90,6 +90,7 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.transaction import TransactionEntry
+from stoqlib.domain.profile import UserProfile
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.validators import raw_phone_number, format_phone_number
 from stoqlib.lib.translation import stoqlib_gettext
@@ -1053,6 +1054,48 @@ class BranchView(Viewable):
     @property
     def branch(self):
         return PersonAdaptToBranch.get(self.branch_id,
+                                       connection=self.get_connection())
+
+    def get_status_str(self):
+        if self.is_active:
+            return _('Active')
+
+        return _('Inactive')
+
+
+class UserView(Viewable):
+    """
+    Retrieves information about user in the system.
+
+    @cvar id: the id of person table
+    @cvar name: the user full name
+    @cvar is_active: the current status of the transporter
+    @cvar username: the username (login)
+    @cvar user_id: the id of PersonAdaptToUser table
+    @cvar profile_id: the id of the user profile
+    @cvar profile_name: the name of the user profile (eg: Salesperson)
+    """
+
+    columns = dict(
+        id=Person.q.id,
+        name=Person.q.name,
+        is_active=PersonAdaptToUser.q.is_active,
+        username=PersonAdaptToUser.q.username,
+        user_id=PersonAdaptToUser.q.id,
+        profile_id=PersonAdaptToUser.q.profileID,
+        profile_name=UserProfile.q.name,
+        )
+
+    joins = [
+        INNERJOINOn(None, PersonAdaptToUser,
+                   Person.q.id == PersonAdaptToUser.q._originalID),
+        LEFTJOINOn(None, UserProfile,
+               PersonAdaptToUser.q.profileID == UserProfile.q.id),
+        ]
+
+    @property
+    def user(self):
+        return PersonAdaptToUser.get(self.user_id,
                                        connection=self.get_connection())
 
     def get_status_str(self):
