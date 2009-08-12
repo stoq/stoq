@@ -32,6 +32,7 @@ from utils import get_uf_code_from_state_name
 
 import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
+from stoqlib.lib.validators import format_quantity
 
 
 class NFeGenerator(object):
@@ -66,6 +67,7 @@ class NFeGenerator(object):
         return str(11 - dv_mod)
 
     def _get_nfe_number(self):
+        #TODO: retrieve the fiscal invoice number
         return 1
 
     def _get_company(self,  person):
@@ -144,11 +146,28 @@ class NFeGenerator(object):
         self._nfe_recipient.set_address(*self._get_address_data(person))
         self._nfe_data.element.append(self._nfe_recipient.element)
 
+    def _add_sale_items(self, sale_items):
+        for item_number, sale_item in enumerate(sale_items):
+            sellable = sale_item.sellable
+            # item_number should start from 1, not zero.
+            item_number += 1
+            nfe_item = NFeProduct(item_number)
+            # cfop code without dot.
+            cfop_code = self._sale.cfop.code.replace('.', '')
+            nfe_item.add_product_details(sellable.code,
+                                         sellable.get_description(),
+                                         cfop_code,
+                                         sale_item.quantity,
+                                         sale_item.price,
+                                         sellable.get_unit_description())
+            self._nfe_data.element.append(nfe_item.element)
+
     def generate(self):
         branch = self._sale.branch
         self._add_identification(branch)
         self._add_issuer(branch)
         self._add_recipient(self._sale.client)
+        self._add_sale_items(self._sale.get_items())
 
 
 class BaseNFeField(object):
@@ -170,7 +189,7 @@ class BaseNFeField(object):
             sub_element = Element(key)
             element_value = self._data[key] or value
             # ignore empty values
-            if element_value == '' or element_value is None:
+            if element_value is None:
                 continue
             sub_element.text = str(element_value)
             self._element.append(sub_element)
@@ -186,6 +205,9 @@ class BaseNFeField(object):
     def format_nfe_date(self, nfe_date):
         # Pg. 93 (and others)
         return nfe_date.strftime('%Y-%m-%d')
+
+    def format_value(self, value):
+        return format_quantity(value)
 
     def __str__(self):
         return tostring(self.element)
@@ -350,8 +372,8 @@ class NFeIssuer(BaseNFeField):
     """
     tag = u'emit'
     address_tag = u'enderEmit'
-    attributes = [(u'CNPJ', ''),
-                  (u'CPF', ''), 
+    attributes = [(u'CNPJ', None),
+                  (u'CPF', None), 
                   (u'xNome', ''),]
 
     def __init__(self, nome, cpf=None, cnpj=None, state_registry=None):
@@ -368,7 +390,7 @@ class NFeIssuer(BaseNFeField):
         address = NFeAddress(
             self.address_tag, street, number, district, city, state)
         self.element.append(address.element)
-        # If we set IE in the attributes, the order not be correct. :(
+        # If we set IE in the attributes, the order will not be correct. :(
         ie_element = Element(u'IE')
         ie_element.text = self._ie
         self.element.append(ie_element)
@@ -387,10 +409,18 @@ class NFeProduct(BaseNFeField):
     """
     tag = u'det'
 
-    def __init__(self, number, ):
+    def __init__(self, number):
         BaseNFeField.__init__(self)
         self.element.set('nItem', str(number))
-        #TODO: add product details
+
+    def add_product_details(self, code, description, cfop, quantity, price,
+                            unit):
+        details = NFeProductDetails(code, description, cfop, quantity, price,
+                                    unit)
+        self.element.append(details.element)
+
+    def add_tax_details(self):
+        pass
 
 
 class NFeProductDetails(BaseNFeField):
@@ -432,39 +462,29 @@ class NFeProductDetails(BaseNFeField):
         - vUnTrib: Valor unitário de tributação.
     """
     tag = u'prod'
-    attributes = dict(
-                      #NCM='',
-                      #EXTIPI='',
-                      #genero='',
-                      #vFrete='',
-                      #vSeg='',
-                      #vDesc='',
+    attributes = [(u'cProd', ''),
+                  (u'cEAN', ''),
+                  (u'xProd', ''),
+                  (u'CFOP', ''),
+                  (u'uCom', u'un'),
+                  (u'qCom', ''),
+                  (u'vUnCom', u'un'),
+                  (u'vProd', ''),
+                  (u'cEANTrib', ''),
+                  (u'uTrib', u'un'),
+                  (u'qTrib', ''),
+                  (u'vUnTrib', '')]
 
-                      #DI='',
-                      #    nDI='',
-                      #    dDI='',
-                      #    xLocDesemb='',
-                      #    UFDesemb='',
-                      #    dDesemb='',
-                      #    cExportador='',
-
-                      #adi='',
-                      #    nAdicao='',
-                      #    nSeqAdic='',
-                      #    cFabricante='',
-                      #    #vDescDI='',
-                      cProd='',
-                      cEAN='',
-                      xProd='',
-                      CFOP='',
-                      uCom='',
-                      qCom='',
-                      vUnCom='',
-                      vProd='',
-                      cEANTrib='',
-                      uTrib='',
-                      qTrib='',
-                      vUnTrib='')
+    def __init__(self, code, description, cfop, quantity, price, unit):
+        BaseNFeField.__init__(self)
+        self.set_attr('cProd', code)
+        self.set_attr('xProd', description)
+        self.set_attr('CFOP', cfop)
+        self.set_attr('vUnCom', self.format_value(price))
+        self.set_attr('vUnTrib', self.format_value(price))
+        self.set_attr('vProd', self.format_value(quantity * price))
+        self.set_attr('qCom', self.format_value(quantity))
+        self.set_attr('qTrib', self.format_value(quantity))
 
 
 class NFeTax(BaseNFeField):
