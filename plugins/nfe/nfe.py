@@ -28,11 +28,13 @@ import datetime
 import random
 from xml.etree.ElementTree import ElementTree, Element, tostring
 
-from utils import get_uf_code_from_state_name
+from stoqdrivers.enum import TaxType
 
 import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.lib.validators import format_quantity
+
+from utils import get_uf_code_from_state_name
 
 
 class NFeGenerator(object):
@@ -160,6 +162,8 @@ class NFeGenerator(object):
                                          sale_item.quantity,
                                          sale_item.price,
                                          sellable.get_unit_description())
+
+            nfe_item.add_tax_details(sellable)
             self._nfe_data.element.append(nfe_item.element)
 
     def generate(self):
@@ -419,8 +423,26 @@ class NFeProduct(BaseNFeField):
                                     unit)
         self.element.append(details.element)
 
-    def add_tax_details(self):
-        pass
+    def add_tax_details(self, sellable):
+        nfe_tax = NFeTax()
+        nfe_icms = NFeICMS()
+
+        tax_constant = sellable.get_tax_constant()
+        tax_type = tax_constant.tax_type
+        if tax_type == TaxType.SUBSTITUTION:
+            # Substituição Tributária/ICMS
+            pass
+        elif tax_type == TaxType.SERVICE:
+            # ISS
+            pass
+        else:
+            # Não tributado ou Isento/ICMS
+            icms = NFeICMS40(tax_type)
+            nfe_icms.element.append(icms.element)
+
+        nfe_tax.element.append(nfe_icms.element)
+        self.element.append(nfe_tax.element)
+
 
 
 class NFeProductDetails(BaseNFeField):
@@ -494,6 +516,7 @@ class NFeTax(BaseNFeField):
 class NFeICMS(BaseNFeField):
     tag = 'ICMS'
 
+
 class NFeICMS00(BaseNFeField):
     """Tributada integralmente (CST=00).
 
@@ -519,12 +542,12 @@ class NFeICMS00(BaseNFeField):
         - vICMS: Valor do ICMS
     """
     tag = 'ICMS00'
-    attributes = dict(orig='0',
-                      CST='00',
-                      modBC='0',
-                      vBC='',
-                      pICMS='',
-                      vICMS='',)
+    attributes = [(u'orig', '0'),
+                  (u'CST', '00'),
+                  (u'modBC', None),
+                  (u'vBC', None),
+                  (u'pICMS', None),
+                  (u'vICMS', None),]
 
 
 class NFeICMS10(NFeICMS00):
@@ -550,27 +573,25 @@ class NFeICMS10(NFeICMS00):
         - vICMSST: Valor do ICMS ST.
     """
     tag = 'ICMS10'
-    attributes = NFeICMS00.attributes.copy()
-    attributes.update(dict(CST='10',
-                           modBCST='',
-                           pMVAST='',
-                           pRedBCST='',
-                           vBCST='',
-                           pICMSST='',
-                           vICMSST='',))
+    attributes = NFeICMS00.attributes
+    attributes.extend([(u'modBCST', ''),
+                       (u'pMVAST', ''),
+                       (u'pRedBCST', ''),
+                       (u'vBCST', ''),
+                       (u'pICMSST', ''),
+                       (u'vICMSST', '',)])
 
 
 class NFeICMS20(NFeICMS00):
-    """Tributada com redução de base de cálcull (CST=20).
+    """Tributada com redução de base de cálculo (CST=20).
 
     - Attributes:
 
         - pRedBC: Percentual de Redução de BC.
     """
     tag = 'ICMS20'
-    attributes = NFeICMS00.attributes.copy()
-    attributes.update(dict(CST='20',
-                           pRedBC='',))
+    attributes = NFeICMS00.attributes
+    attributes.append(('pRedBC', ''))
 
 
 class NFeICMS30(NFeICMS10):
@@ -578,16 +599,25 @@ class NFeICMS30(NFeICMS10):
     tributária (CST=30).
     """
     tag = 'ICMS30'
-    attributes = NFeICMS00.attributes.copy()
-    attributes.update(dict(CST='30'))
+    attributes = NFeICMS00.attributes
 
 
-class NFeICMS40(NFeICMS00):
+class NFeICMS40(BaseNFeField):
     """Isenta (CST=40), Não tributada (CST=41), Suspensão (CST=50).
     """
     tag = 'ICMS40'
-    attributes = NFeICMS00.attributes.copy()
-    attributes.update(dict(CST='40'))
+    attributes = [('orig', ''), (u'CST', 40)]
+
+    def __init__(self, tax_type):
+        BaseNFeField.__init__(self)
+
+        if tax_type == TaxType.EXEMPTION:
+            cst = 40
+        elif tax_type == TaxType.NONE:
+            cst = 41
+
+        self.set_attr('CST', cst)
+        self.set_attr('orig', '0')
 
 
 # Pg. 117
