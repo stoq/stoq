@@ -67,6 +67,13 @@ _parameter_info = dict(
       'the image will be resized. In order to use the default logotype '
       'leave this field blank')),
 
+    DISABLE_COOKIES=ParameterDetails(
+    _(u'General'),
+    _(u'Disable Cookies'),
+    _(u'Disable the ability to use cookies in order to automatic log in '
+      'the system. If so, all the users will have to provide the password '
+      'everytime they log in. Requires restart to take effect.')),
+
     DEFAULT_SALESPERSON_ROLE=ParameterDetails(
     _(u'Sales'),
     _(u'Default Salesperson Role'),
@@ -321,6 +328,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('CAT52_DEST_DIR', DirectoryParameter, initial='~/.stoq/cat52'),
         ParameterAttr('ALLOW_OUTDATED_PURCHASES', bool, initial=False),
         ParameterAttr('USE_FOUR_PRECISION_DIGITS', bool, initial=False),
+        ParameterAttr('DISABLE_COOKIES', bool, initial=False),
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
         ParameterAttr('DEFAULT_SALES_CFOP', u'fiscal.CfopData'),
