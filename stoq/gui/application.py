@@ -35,6 +35,7 @@ from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       finish_transaction, get_connection)
 from stoqlib.lib.interfaces import ICookieFile
+from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
@@ -202,6 +203,13 @@ class AppWindow(BaseAppWindow):
         menubar = self._ui.get_widget('/Menubar')
         self.menu_hbox.pack_start(menubar, expand=False)
         menubar.show_all()
+
+        if sysparam(self.conn).DISABLE_COOKIES:
+            self._clear_cookie()
+            store_cookie = self._ui.get_widget('/Menubar/UserMenu/StoreCookie')
+            store_cookie.hide()
+            clear_cookie = self._ui.get_widget('/Menubar/UserMenu/ClearCookie')
+            clear_cookie.hide()
 
     def _create_debug_menu(self):
         ui_string = """<ui>
