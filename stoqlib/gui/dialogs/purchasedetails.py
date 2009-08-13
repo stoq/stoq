@@ -89,6 +89,7 @@ class PurchaseDetailsDialog(BaseEditor):
                      'open_date',
                      'status',
                      'transporter',
+                     'responsible_name',
                      'salesperson',
                      'receival_date',
                      'freight_type',
