@@ -41,11 +41,15 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="GtkLabel" id="label9">
+                                <property name="label" context="yes" translatable="yes">Responsible:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
                             <packing>
-                                <property name="top_attach">2</property>
                                 <property name="bottom_attach">3</property>
-                                <property name="x_options"></property>
+                                <property name="top_attach">2</property>
+                                <property name="x_options">fill</property>
                                 <property name="y_options"></property>
                             </packing>
                         </child>
@@ -78,12 +82,17 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="ProxyLabel" id="responsible_name">
+                                <property name="data_type">unicode</property>
+                                <property name="model_attribute">responsible_name</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
                             <packing>
+                                <property name="bottom_attach">3</property>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
                                 <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
                             </packing>
                         </child>
                         <child>
