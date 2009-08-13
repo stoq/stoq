@@ -24,10 +24,11 @@
 ##
 
 from stoqlib.database.orm import const, AND, INNERJOINOn, LEFTJOINOn, OR
-from stoqlib.database.orm import Viewable, Field
+from stoqlib.database.orm import Viewable, Field, Alias
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.commission import CommissionSource
-from stoqlib.domain.person import Person, PersonAdaptToSupplier
+from stoqlib.domain.person import (Person, PersonAdaptToSupplier,
+                                   PersonAdaptToUser)
 from stoqlib.domain.product import (Product,
                                     ProductAdaptToStorable,
                                     ProductStockItem,
@@ -442,6 +443,54 @@ class PurchasedItemAndStockView(Viewable):
     @property
     def purchase_item(self):
         return PurchaseItem.get(self.id, connection=self.get_connection())
+
+
+class PurchaseReceivingView(Viewable):
+    """Stores information about received orders.
+
+    @cvar id: the id of the receiving order
+    @cvar receival_date: the date when the receiving order was closed
+    @cvar invoice_number: the number of the order that was received
+    @cvar invoice_total: the total value of the received order
+    @cvar purchase_id: the id of the received order
+    @cvar branch_id: the id branch where the order was received
+    @cvar purchase_responsible_name: the one who have confirmed the purchase
+    @cvar responsible_name: the one who has received the order
+    @cvar supplier_name: the supplier name
+    """
+    _Responsible = Alias(Person, "responsible")
+    _Supplier = Alias(Person, "supplier")
+    _PurchaseUser = Alias(PersonAdaptToUser, "purchase_user")
+    _PurchaseResponsible = Alias(Person, "purchase_responsible")
+
+    columns = dict(
+        id=ReceivingOrder.q.id,
+        receival_date=ReceivingOrder.q.receival_date,
+        invoice_number=ReceivingOrder.q.invoice_number,
+        invoice_total=ReceivingOrder.q.invoice_total,
+        purchase_id=PurchaseOrder.q.id,
+        branch_id=ReceivingOrder.q.branchID,
+        purchase_responsible_name=_PurchaseResponsible.q.name,
+        responsible_name=_Responsible.q.name,
+        supplier_name=_Supplier.q.name,
+        )
+
+    joins = [
+        LEFTJOINOn(None, PurchaseOrder,
+                   ReceivingOrder.q.purchaseID == PurchaseOrder.q.id),
+        LEFTJOINOn(None, _PurchaseUser,
+                   PurchaseOrder.q.responsibleID == _PurchaseUser.q.id),
+        LEFTJOINOn(None, _PurchaseResponsible,
+                   _PurchaseUser.q._originalID == _PurchaseResponsible.q.id),
+        LEFTJOINOn(None, PersonAdaptToSupplier,
+                   ReceivingOrder.q.supplierID == PersonAdaptToSupplier.q.id),
+        LEFTJOINOn(None, _Supplier,
+                   PersonAdaptToSupplier.q._originalID == _Supplier.q.id),
+        LEFTJOINOn(None, PersonAdaptToUser,
+                   ReceivingOrder.q.responsibleID == PersonAdaptToUser.q.id),
+        LEFTJOINOn(None, _Responsible,
+                   PersonAdaptToUser.q._originalID == _Responsible.q.id),
+    ]
 
 
 class ReceivingItemView(Viewable):
