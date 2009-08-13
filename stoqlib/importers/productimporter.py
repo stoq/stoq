@@ -76,28 +76,28 @@ class ProductImporter(CSVImporter):
     def process_one(self, data, fields, trans):
         base_category = self._get_or_create(
             SellableCategory, trans,
-            suggested_markup=data.markup,
-            salesperson_commission=data.commission,
+            suggested_markup=int(data.markup),
+            salesperson_commission=int(data.commission),
             category=None,
             description=data.base_category)
 
         # create a commission source
         self._get_or_create(
             CommissionSource, trans,
-            direct_value=data.commission,
-            installments_value=data.commission2,
+            direct_value=int(data.commission),
+            installments_value=int(data.commission2),
             category=base_category)
 
         category = self._get_or_create(
             SellableCategory, trans,
             description=data.category,
-            suggested_markup=data.markup2,
+            suggested_markup=int(data.markup2),
             category=base_category)
 
         sellable_info = BaseSellableInfo(
             connection=trans,
             description=data.description,
-            price=data.price)
+            price=int(data.price))
 
         if 'unit' in fields:
             if not data.unit in self.units:
@@ -106,7 +106,7 @@ class ProductImporter(CSVImporter):
         else:
             unit = None
         sellable = Sellable(connection=trans,
-                            cost=data.cost,
+                            cost=int(data.cost),
                             code=data.barcode,
                             barcode=data.barcode,
                             category=category,

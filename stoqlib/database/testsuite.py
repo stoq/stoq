@@ -197,7 +197,9 @@ def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
         if quick and not empty:
             provide_utilities(station_name)
         else:
-            sysparam(get_connection()).clear_cache()
+            # XXX: Why clearing_cache if initialize_system will drop the
+            # database?!
+            #sysparam(get_connection()).clear_cache()
             initialize_system()
             ensure_admin_user("")
             create(utilities=True)

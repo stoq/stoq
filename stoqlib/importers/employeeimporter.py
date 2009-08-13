@@ -68,7 +68,7 @@ class EmployeeImporter(CSVImporter):
         employee = person.addFacet(IEmployee,
                                    connection=trans,
                                    role=role,
-                                   salary=data.salary,
+                                   salary=int(data.salary),
                                    registry_number=data.employee_number)
 
         start = self.parse_date(data.start)
@@ -77,7 +77,7 @@ class EmployeeImporter(CSVImporter):
             employee=employee,
             is_active=True,
             began=start,
-            salary=data.salary)
+            salary=int(data.salary))
 
         ctloc = CityLocation.get_or_create(trans=trans,
                                            city=data.city,
