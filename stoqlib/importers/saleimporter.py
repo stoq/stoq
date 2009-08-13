@@ -74,7 +74,6 @@ class SaleImporter(CSVImporter):
                     cfop=sysparam(trans).DEFAULT_SALES_CFOP,
                     group=group,
                     connection=trans)
-        sale.set_valid()
 
         total_price = 0
         for product in self.parse_multi(Product, data.product_list, trans):

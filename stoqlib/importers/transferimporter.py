@@ -80,7 +80,7 @@ class TransferImporter(CSVImporter):
             if not sellable.product:
                 continue
             transfer_item = TransferOrderItem(connection=trans,
-                                              quantity=data.quantity,
+                                              quantity=int(data.quantity),
                                               sellable=sellable,
                                               transfer_order=order)
             ProductHistory.add_transfered_item(trans,
