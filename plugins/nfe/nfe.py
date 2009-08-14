@@ -88,7 +88,7 @@ class NFeGenerator(object):
         (street, streetnumber, district, city, state)
         """
         address = person.get_main_address()
-        location = address.city_location    
+        location = address.city_location
         return (address.street, address.streetnumber, address.district,
                 location.city, location.state)
 
@@ -163,7 +163,7 @@ class NFeGenerator(object):
                                          sale_item.price,
                                          sellable.get_unit_description())
 
-            nfe_item.add_tax_details(sellable)
+            nfe_item.add_tax_details(sellable.get_tax_constant())
             self._nfe_data.element.append(nfe_item.element)
 
     def generate(self):
@@ -423,12 +423,13 @@ class NFeProduct(BaseNFeField):
                                     unit)
         self.element.append(details.element)
 
-    def add_tax_details(self, sellable):
+    def add_tax_details(self, sellable_tax):
         nfe_tax = NFeTax()
         nfe_icms = NFeICMS()
+        nfe_pis = NFePIS()
+        nfe_cofins = NFeCOFINS()
 
-        tax_constant = sellable.get_tax_constant()
-        tax_type = tax_constant.tax_type
+        tax_type = sellable_tax.tax_type
         if tax_type == TaxType.SUBSTITUTION:
             # Substituição Tributária/ICMS
             pass
@@ -439,8 +440,14 @@ class NFeProduct(BaseNFeField):
             # Não tributado ou Isento/ICMS
             icms = NFeICMS40(tax_type)
             nfe_icms.element.append(icms.element)
+            pis = NFePISOutr()
+            nfe_pis.element.append(pis.element)
+            cofins = NFeCOFINSOutr()
+            nfe_cofins.element.append(cofins.element)
 
         nfe_tax.element.append(nfe_icms.element)
+        nfe_tax.element.append(nfe_pis.element)
+        nfe_tax.element.append(nfe_cofins.element)
         self.element.append(nfe_tax.element)
 
 
@@ -642,10 +649,25 @@ class NFePISAliq(BaseNFeField):
         - vPIS: Valor do PIS.
     """
     tag = u'PISAliq'
-    attributes = dict(CST='',
-                      vBC='',
-                      pPIS='',
-                      vPIS='')
+    attributes = [(u'CST', ''),
+                  (u'vBC', '0'),
+                  (u'pPIS', '0'),
+                  (u'vPIS', '0')]
+
+
+# Pg. 118
+class NFePISOutr(NFePISAliq):
+    """
+    - Attributes:
+        - CST: Código da situação tributária do PIS.
+            99 - Operação tributável (tributação monofásica (alíquota zero))
+    """
+    tag = u'PISOutr'
+    attributes = NFePISAliq.attributes
+
+    def __init__(self):
+        NFePISAliq.__init__(self)
+        self.set_attr('CST', '99')
 
 
 # Pg. 120, 121
@@ -669,10 +691,26 @@ class NFeCOFINSAliq(BaseNFeField):
         - vCOFINS: Valor do COFINS.
     """
     tag = u'COFINSAliq'
-    attributes = dict(CST='',
-                      vBC='',
-                      pCOFINS='',
-                      vCOFINS='')
+    attributes = [(u'CST', ''),
+                  (u'vBC', '0'),
+                  (u'pCOFINS', '0'),
+                  (u'vCOFINS', '0')]
+
+
+# Pg. 121
+class NFeCOFINSOutr(NFeCOFINSAliq):
+    """
+    - Attributes:
+        - CST: Código da situação tributária do COFINS.
+            99 - Outras operações
+
+    """
+    tag = u'COFINSOutr'
+    attributes = NFeCOFINSAliq.attributes
+
+    def __init__(self):
+        NFeCOFINSAliq.__init__(self)
+        self.set_attr('CST', '99')
 
 
 # Pg. 123
