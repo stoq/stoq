@@ -571,6 +571,7 @@ class PurchaseWizard(BaseWizard):
         group = PaymentGroup(connection=conn)
         status = PurchaseOrder.ORDER_PENDING
         return PurchaseOrder(supplier=supplier,
+                             responsible=get_current_user(conn),
                              branch=branch,
                              status=status,
                              group=group,

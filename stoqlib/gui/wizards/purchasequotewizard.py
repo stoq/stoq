@@ -36,7 +36,7 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_branch, new_transaction,
-                                      finish_transaction)
+                                      finish_transaction, get_current_user)
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import (PurchaseOrder, PurchaseItem, QuoteGroup,
@@ -628,6 +628,7 @@ class QuotePurchaseWizard(BaseWizard):
         group = PaymentGroup(connection=conn)
         return PurchaseOrder(supplier=supplier, branch=branch, status=status,
                              expected_receival_date=None,
+                             responsible=get_current_user(conn),
                              group=group,
                              connection=conn)
 

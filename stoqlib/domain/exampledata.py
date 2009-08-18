@@ -30,7 +30,8 @@ from stoqdrivers.enum import TaxType
 
 from stoqlib.database.orm import const
 from stoqlib.database.runtime import (get_current_station,
-                                      get_current_branch)
+                                      get_current_branch,
+                                      get_current_user)
 from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
                                        IIndividual, ISupplier,
                                        IStorable, ISalesPerson,
@@ -341,6 +342,7 @@ class ExampleCreator(object):
         return PurchaseOrder(supplier=self.create_supplier(),
                               branch=self.create_branch(),
                               group=group,
+                              responsible=get_current_user(self.trans),
                               connection=self.trans)
 
     def create_purchase_order_item(self):

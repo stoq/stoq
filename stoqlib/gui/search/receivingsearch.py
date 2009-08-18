@@ -30,10 +30,10 @@ import datetime
 import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.domain.receiving import ReceivingOrder
+from stoqlib.domain.views import PurchaseReceivingView
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
@@ -47,7 +47,7 @@ _ = stoqlib_gettext
 class PurchaseReceivingSearch(SearchDialog):
     title = _('Purchase Receiving Search')
     size = (750, 500)
-    table = ReceivingOrder
+    table = PurchaseReceivingView
     selection_mode = gtk.SELECTION_MULTIPLE
     searchbar_result_strings = _('receiving order'), _('receiving orders')
 
@@ -56,9 +56,9 @@ class PurchaseReceivingSearch(SearchDialog):
                               title=self.title)
         self._setup_widgets()
 
-    def _show_receiving_order(self, receiving_order):
-        run_dialog(ReceivingOrderDetailsDialog, self, self.conn,
-                   receiving_order)
+    def _show_receiving_order(self, receiving_order_view):
+        order = ReceivingOrder.get(receiving_order_view.id, connection=self.conn)
+        run_dialog(ReceivingOrderDetailsDialog, self, self.conn, order)
 
     #
     # SearchDialog Hooks
@@ -70,16 +70,20 @@ class PurchaseReceivingSearch(SearchDialog):
 
         # Branch
         branch_filter = self.create_branch_filter(_(u"In branch"))
-        self.add_filter(branch_filter, columns=['branchID'],
+        self.add_filter(branch_filter, columns=['branch_id'],
                         position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [SearchColumn('purchase.id', _('Purchase Order #'),
+        return [SearchColumn('purchase_id', _('Purchase Order #'),
                              data_type=int, width=120),
                 SearchColumn('receival_date', _('Receival Date'),
                              data_type=datetime.date, sorted=True, width=110),
-                SearchColumn('supplier_name', _('Supplier'), data_type=unicode,
+                SearchColumn('supplier_name', _('Supplier'), data_type=str,
                              expand=True),
+                SearchColumn('responsible_name', _('Responsible'),
+                             data_type=str, visible=False, expand=True),
+                SearchColumn('purchase_responsible_name', _('Purchaser'),
+                             data_type=str, visible=False, expand=True),
                 SearchColumn('invoice_number', _('Invoice #'), data_type=int,
                              width=80),
                 SearchColumn('invoice_total', _('Invoice Total'),
@@ -110,8 +114,7 @@ class PurchaseReceivingSearch(SearchDialog):
             raise ValueError("You should have only one item selected at "
                              "this point ")
         selected = items[0]
-        order = ReceivingOrder.get(selected.id, connection=self.conn)
-        self._show_receiving_order(order)
+        self._show_receiving_order(selected)
 
     def update_widgets(self, *args):
         items = self.results.get_selected_rows()

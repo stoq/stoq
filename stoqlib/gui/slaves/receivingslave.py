@@ -41,6 +41,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     model_type = ReceivingOrder
     gladefile = 'ReceivingInvoiceSlave'
     proxy_widgets = ('transporter',
+                     'responsible_name',
                      'products_total',
                      'freight',
                      'ipi',
@@ -100,6 +101,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
     def update_visual_mode(self):
         self.notes_button.hide()
+        self.freight_in_installments.set_sensitive(False)
+        self.freight_in_payment.set_sensitive(False)
 
     def setup_proxies(self):
         self._setup_widgets()
