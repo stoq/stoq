@@ -105,8 +105,8 @@ class NFeGenerator(object):
                                                nnf, today)
         # The nfe-key requires all the "zeros", so we should format the
         # values properly.
-        mod = str('%02d' % nfe_idenfitication.get_attr('mod'))
-        serie = str('%03d' % nfe_idenfitication.get_attr('serie'))
+        mod = str('%02d' % int(nfe_idenfitication.get_attr('mod')))
+        serie = str('%03d' % int(nfe_idenfitication.get_attr('serie')))
         cnf = str('%09d' % nfe_idenfitication.get_attr('cNF'))
         nnf_str = '%09d' % nnf
         cnpj = self._get_cnpj(branch)
@@ -166,12 +166,30 @@ class NFeGenerator(object):
             nfe_item.add_tax_details(sellable.get_tax_constant())
             self._nfe_data.element.append(nfe_item.element)
 
+    def _add_totals(self):
+        sale_total = self._sale.get_total_sale_amount()
+        items_total = self._sale.get_sale_subtotal()
+        nfe_total = NFeTotal()
+        nfe_total.add_icms_total(sale_total, items_total)
+        self._nfe_data.element.append(nfe_total.element)
+
+    def _add_transport_data(self):
+        nfe_transport = NFeTransport()
+        self._nfe_data.element.append(nfe_transport.element)
+
+    def _add_additional_information(self):
+        nfe_info = NFeSimplesNacionalInfo()
+        self._nfe_data.element.append(nfe_info.element)
+
     def generate(self):
         branch = self._sale.branch
         self._add_identification(branch)
         self._add_issuer(branch)
         self._add_recipient(self._sale.client)
         self._add_sale_items(self._sale.get_items())
+        self._add_totals()
+        self._add_transport_data()
+        self._add_additional_information()
 
 
 class BaseNFeField(object):
@@ -309,8 +327,8 @@ class NFeIdentification(BaseNFeField):
                   (u'cNF', ''),
                   (u'natOp', 'venda'),
                   (u'indPag', '0'),
-                  (u'mod', 55),
-                  (u'serie', 0),
+                  (u'mod', '55'),
+                  (u'serie', '0'),
                   (u'nNF', ''),
                   (u'dEmi', ''),
                   (u'tpNF', '1'),
@@ -717,6 +735,10 @@ class NFeCOFINSOutr(NFeCOFINSAliq):
 class NFeTotal(BaseNFeField):
     tag = u'total'
 
+    def add_icms_total(self, sale_total, items_total):
+        icms_total = NFeICMSTotal(sale_total, items_total)
+        self.element.append(icms_total.element)
+
 
 # Pg. 123
 class NFeICMSTotal(BaseNFeField):
@@ -739,19 +761,26 @@ class NFeICMSTotal(BaseNFeField):
         - vNF: Valor Total da NF-e.
     """
     tag = u'ICMSTot'
-    attributes = dict(vBC='',
-                      vICMS='',
-                      vBCST='',
-                      vST='',
-                      vProd='',
-                      vFrete='',
-                      vSeg='',
-                      vDesc='',
-                      vII='',
-                      vIPI='',
-                      vCOFINS='',
-                      vOutro='',
-                      vNF='')
+    attributes = [(u'vBC', ''),
+                  (u'vICMS', '0.00'),
+                  (u'vBCST', '0'),
+                  (u'vST', '0'),
+                  (u'vProd', ''),
+                  (u'vFrete', '0'),
+                  (u'vSeg', '0'),
+                  (u'vDesc', '0'),
+                  (u'vII', '0'),
+                  (u'vIPI', '0'),
+                  (u'vPIS', '0'),
+                  (u'vCOFINS', '0'),
+                  (u'vOutro', '0'),
+                  (u'vNF', ''),]
+
+    def __init__(self, sale_total, items_total):
+        BaseNFeField.__init__(self)
+        self.set_attr('vBC', self.format_value(sale_total))
+        self.set_attr('vNF', self.format_value(sale_total))
+        self.set_attr('vProd', self.format_value(items_total))
 
 
 # Pg. 124
@@ -763,7 +792,7 @@ class NFeTransport(BaseNFeField):
                     1 - por conta do destinatário
     """
     tag = u'transp'
-    attributes = dict(modFrete='0')
+    attributes = [('modFrete', '0'),]
 
 
 # Pg. 124 (optional)
@@ -779,13 +808,28 @@ class NFeTransporter(BaseNFeField):
         - UF: Sigla da UF.
     """
     tag = u'transporta'
-    attributes = dict(CNPJ='',
-                      CPF='',
-                      xNome='',
-                      IE='',
-                      xEnder='',
-                      xMun='',
-                      UF='',)
+    attributes = [(u'CNPJ', None),
+                  (u'CPF', None),
+                  (u'xNome', ''),
+                  (u'IE', ''),
+                  (u'xEnder', ''),
+                  (u'xMun', ''),
+                  (u'UF', ''),]
+
+
+class NFeAdditionalInformation(BaseNFeField):
+    tag = u'infAdic'
+    attributes = [(u'infAdFisco', None),
+                  (u'infCpl', None)]
+
+
+class NFeSimplesNacionalInfo(NFeAdditionalInformation):
+    def __init__(self):
+        NFeAdditionalInformation.__init__(self)
+        msg = u'Documento emitido por ME ou EPP optante pelo SIMPLES' \
+               'NACIONAL.\nNao gera Direito a Credito Fiscal de ICMS ' \
+               'e de ISS. Conforme Lei Complementar 123 de 14/12/2006.'
+        self.set_attr('infCpl', msg)
 
 
 # Pg. 127
