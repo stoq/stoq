@@ -23,6 +23,7 @@
 ##
 ##
 
+from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.interfaces import (IBranch, ISupplier,
                                        ITransporter, IUser)
 from stoqlib.domain.person import Person
@@ -75,6 +76,7 @@ class PurchaseImporter(CSVImporter):
                                  supplier=supplier,
                                  transporter=transporter,
                                  group=group,
+                                 responsible=get_current_user(trans),
                                  branch=branch)
         purchase.set_valid()
 

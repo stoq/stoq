@@ -35,6 +35,7 @@ from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn, const
 from stoqlib.database.orm import Viewable, Alias
 from stoqlib.database.orm import PriceCol, DecimalCol
+from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.base import ValidatableDomain, Domain
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
@@ -166,6 +167,7 @@ class PurchaseOrder(ValidatableDomain):
     supplier = ForeignKey('PersonAdaptToSupplier')
     branch = ForeignKey('PersonAdaptToBranch')
     transporter = ForeignKey('PersonAdaptToTransporter', default=None)
+    responsible = ForeignKey('PersonAdaptToUser')
     group = ForeignKey('PaymentGroup')
 
     #
@@ -305,6 +307,7 @@ class PurchaseOrder(ValidatableDomain):
         if self.supplier:
             self.group.recipient = self.supplier.person
 
+        self.responsible = get_current_user(self.get_connection())
         self.status = PurchaseOrder.ORDER_CONFIRMED
         self.confirm_date = confirm_date
 
@@ -368,6 +371,9 @@ class PurchaseOrder(ValidatableDomain):
         if not self.transporter:
             return u""
         return self.transporter.get_description()
+
+    def get_responsible_name(self):
+        return self.responsible.get_description()
 
     def get_order_number_str(self):
         return u'%05d' % self.id
