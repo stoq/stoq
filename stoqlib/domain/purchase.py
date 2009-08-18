@@ -42,7 +42,9 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,
                                        IDescribable)
 from stoqlib.domain.person import (Person, PersonAdaptToBranch,
-                                   PersonAdaptToSupplier, PersonAdaptToTransporter)
+                                   PersonAdaptToSupplier,
+                                   PersonAdaptToTransporter,
+                                   PersonAdaptToUser)
 from stoqlib.domain.sellable import Sellable, BaseSellableInfo, SellableUnit
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.defaults import quantize
@@ -663,6 +665,7 @@ class PurchaseOrderView(Viewable):
     Person_Supplier = Alias(Person, 'person_supplier')
     Person_Transporter = Alias(Person, 'person_transporter')
     Person_Branch = Alias(Person, 'person_branch')
+    Person_Responsible = Alias(Person, 'person_responsible')
 
     columns = dict(
         id = PurchaseOrder.q.id,
@@ -681,6 +684,7 @@ class PurchaseOrderView(Viewable):
         supplier_name = Person_Supplier.q.name,
         transporter_name = Person_Transporter.q.name,
         branch_name = Person_Branch.q.name,
+        responsible_name = Person_Responsible.q.name,
 
         ordered_quantity = const.SUM(PurchaseItem.q.quantity),
         received_quantity = const.SUM(PurchaseItem.q.quantity_received),
@@ -699,6 +703,8 @@ class PurchaseOrderView(Viewable):
                    PurchaseOrder.q.transporterID == PersonAdaptToTransporter.q.id),
         LEFTJOINOn(None, PersonAdaptToBranch,
                    PurchaseOrder.q.branchID == PersonAdaptToBranch.q.id),
+        LEFTJOINOn(None, PersonAdaptToUser,
+                   PurchaseOrder.q.responsibleID == PersonAdaptToUser.q.id),
 
         LEFTJOINOn(None, Person_Supplier,
                    PersonAdaptToSupplier.q._originalID == Person_Supplier.q.id),
@@ -706,6 +712,8 @@ class PurchaseOrderView(Viewable):
                    PersonAdaptToTransporter.q._originalID == Person_Transporter.q.id),
         LEFTJOINOn(None, Person_Branch,
                    PersonAdaptToBranch.q._originalID == Person_Branch.q.id),
+       LEFTJOINOn(None, Person_Responsible,
+                   PersonAdaptToUser.q._originalID == Person_Responsible.q.id),
     ]
 
     clause = AND(PurchaseOrder.q._is_valid_model == True)
