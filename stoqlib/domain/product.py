@@ -371,6 +371,17 @@ class ProductStockItem(Domain):
     branch =  ForeignKey('PersonAdaptToBranch')
     storable = ForeignKey('ProductAdaptToStorable')
 
+    def update_cost(self, new_quantity, new_cost):
+        """Update the stock_item according to new quantity and cost.
+        @param new_quantity: The new quantity added to stock.
+        @param new_cost: The cost of one unit of the added stock.
+        """
+
+        total_cost = self.quantity * self.stock_cost
+        total_cost += new_quantity * new_cost
+        total_items = self.quantity + new_quantity
+        self.stock_cost = total_cost / total_items
+
 
 #
 # Adapters
@@ -457,7 +468,7 @@ class ProductAdaptToStorable(ModelAdapter):
     # IStorable implementation
     #
 
-    def increase_stock(self, quantity, branch):
+    def increase_stock(self, quantity, branch, cost=None):
         if quantity <= 0:
             raise ValueError("quantity must be a positive number")
 
@@ -475,6 +486,10 @@ class ProductAdaptToStorable(ModelAdapter):
             if sellable:
                 # Rename see bug 2669
                 sellable.can_sell()
+
+        if cost is not None:
+            stock_item.update_cost(quantity, cost)
+
         stock_item.quantity += quantity
 
     def decrease_stock(self, quantity, branch):
@@ -507,6 +522,8 @@ class ProductAdaptToStorable(ModelAdapter):
                 # FIXME: rename sell() to something more useful which is not
                 #        confusing a sale and a sellable, Bug 2669
                 sellable.sell()
+
+        return stock_item.stock_cost
 
     def increase_logic_stock(self, quantity, branch=None):
         self._check_logic_quantity()
