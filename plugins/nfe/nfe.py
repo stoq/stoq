@@ -879,3 +879,74 @@ class NFeSignature(BaseNFeXMLGroup):
     """Assinatura XML da NF-e segundo o padrão XML Digital Signature.
     """
     tag = u'Signature'
+
+    def __init__(self):
+        BaseNFeXMLGroup.__init__(self)
+        self.element.set('xmlns', 'http://www.w3.org/2000/09/xmldsig#')
+
+        signature_info = NFeSignatureInfo()
+        self.element.append(signature_info.element)
+
+        signature_value = Element(u'SignatureValue')
+        signature_value.text = 'assinatura'
+        self.element.append(signature_value)
+
+        key_info = NFeKeyInfo()
+        self.element.append(key_info.element)
+
+
+class NFeSignatureInfo(BaseNFeXMLGroup):
+    tag = u'SignedInfo'
+
+    def __init__(self):
+        BaseNFeXMLGroup.__init__(self)
+
+        canonicalization = Element(u'CanonicalizationMethod',
+            dict(Algorithm='http://www.w3.org/TR/2001/REC-xml-c14n-20010315'))
+        self.element.append(canonicalization)
+
+        method = Element(u'SignatureMethod',
+            dict(Algorithm='http://www.w3.org/2000/09/xmldsig#rsa-sha1'))
+        self.element.append(method)
+
+        reference = Element(u'Reference', dict(URI='#%s' % 'NFe123123'))
+
+        transforms = NFeTransforms()
+        reference.append(transforms.element)
+
+        digest_method = Element(u'DigestMethod',
+            dict(Algorithm='http://www.w3.org/2000/09/xmldsig#sha1'))
+        reference.append(digest_method)
+
+        digest_value = Element(u'DigestValue')
+        digest_value.text = 'valor digest'
+        reference.append(digest_value)
+        self.element.append(reference)
+
+
+class NFeTransforms(BaseNFeXMLGroup):
+    tag = u'Transforms'
+
+    def __init__(self):
+        BaseNFeXMLGroup.__init__(self)
+        enveloped = 'http://www.w3.org/2000/09/xmldsig#enveloped-signature'
+        transform_enveloped = Element(u'Transform', dict(Algorithm=enveloped))
+        self.element.append(transform_enveloped)
+
+        c14n = 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315'
+        transform_c14n = Element(u'Transform', dict(Algorithm=c14n))
+        self.element.append(transform_c14n) 
+
+
+class NFeKeyInfo(BaseNFeXMLGroup):
+    tag = u'KeyInfo'
+
+    def __init__(self):
+        BaseNFeXMLGroup.__init__(self)
+
+        x509_data = Element(u'X509Data')
+        x509_certificate = Element(u'X509Certificate')
+        x509_certificate.text = 'certificado'
+
+        x509_data.append(x509_certificate)
+        self.element.append(x509_data)
