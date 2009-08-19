@@ -83,6 +83,6 @@ class TransferImporter(CSVImporter):
                                               quantity=int(data.quantity),
                                               sellable=sellable,
                                               transfer_order=order)
-            ProductHistory.add_transfered_item(trans,
-                                               order.source_branch,
-                                               transfer_item)
+            order.send_item(transfer_item)
+
+        order.receive()
