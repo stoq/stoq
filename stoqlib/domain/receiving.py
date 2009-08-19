@@ -104,7 +104,7 @@ class ReceivingOrderItem(Domain):
         branch = self.receiving_order.branch
         storable = IStorable(self.sellable.product, None)
         if storable is not None:
-            storable.increase_stock(self.quantity, branch)
+            storable.increase_stock(self.quantity, branch, self.cost)
         purchase = self.purchase_item.order
         purchase.increase_quantity_received(self.purchase_item, self.quantity)
         ProductHistory.add_received_item(conn, branch, self)
