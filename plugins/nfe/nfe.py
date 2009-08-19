@@ -203,14 +203,28 @@ class NFeGenerator(object):
 
 
 
-class BaseNFeField(object):
+class BaseNFeXMLGroup(object):
+    """Base XML group class.
+    A XML group is a helper interface to xml.etree.Element hierarchy of
+    several elements. Example:
+    <root>
+        <child1>default</child1>
+    </root>
+
+    @cvar tag: the root element of the hierarchy.
+    @cvar attributes: a list of tuples containing the child name and the
+                      default value.
+    """
     tag = u''
-    # key, default value
     attributes = []
 
     def __init__(self):
         self._element = None
         self._data = dict(self.attributes)
+
+    #
+    # Properties
+    #
 
     @property
     def element(self):
@@ -229,15 +243,19 @@ class BaseNFeField(object):
 
         return self._element
 
+    #
+    # Public API
+    #
+
     def get_attr(self, attr):
         return self._data[attr]
 
     def set_attr(self, attr, value):
         self._data[attr] = value
 
-    def format_nfe_date(self, nfe_date):
+    def format_date(self, date):
         # Pg. 93 (and others)
-        return nfe_date.strftime('%Y-%m-%d')
+        return date.strftime('%Y-%m-%d')
 
     def format_value(self, value):
         return format_quantity(value)
@@ -253,18 +271,17 @@ class BaseNFeField(object):
 # NF-e XML groups
 #
 
-class NFeData(BaseNFeField):
+class NFeData(BaseNFeXMLGroup):
     """
     - Attributes:
 
         - versao: Versao do leiaute.
-
         - Id: Chave de acesso da NF-e precedida do literal 'NFe'.
     """
     tag = 'infNFe'
 
     def __init__(self, key):
-        BaseNFeField.__init__(self)
+        BaseNFeXMLGroup.__init__(self)
         self.element.set('versao', u'1.10')
 
         # Pg. 92
@@ -274,7 +291,7 @@ class NFeData(BaseNFeField):
         self.element.set('Id', value)
 
 
-class NFeIdentification(BaseNFeField):
+class NFeIdentification(BaseNFeXMLGroup):
     """
     - Attributes:
 
@@ -361,7 +378,7 @@ class NFeIdentification(BaseNFeField):
                   (u'verProc', 'stoq-%s' % stoqlib.version)]
 
     def __init__(self, cUF, city, nnf, emission_date, payments):
-        BaseNFeField.__init__(self)
+        BaseNFeXMLGroup.__init__(self)
 
         self.set_attr('cUF', cUF)
         # Pg. 92: Random number of 9-digits
@@ -376,12 +393,12 @@ class NFeIdentification(BaseNFeField):
         self.set_attr('indPag', payment_type)
 
         self.set_attr('nNF', nnf)
-        self.set_attr('dEmi', self.format_nfe_date(emission_date))
+        self.set_attr('dEmi', self.format_date(emission_date))
         #TODO: get city code
         self.set_attr('cMunFG', '1234567')
 
 
-class NFeAddress(BaseNFeField):
+class NFeAddress(BaseNFeXMLGroup):
     """
     - Attributes:
         - xLgr: logradouro.
@@ -400,7 +417,7 @@ class NFeAddress(BaseNFeField):
 
     def __init__(self, tag, street, number, district, city, state):
         self.tag = tag
-        BaseNFeField.__init__(self)
+        BaseNFeXMLGroup.__init__(self)
         self.set_attr('xLgr', street)
         self.set_attr('nro', number)
         self.set_attr('xBairro', district)
@@ -410,7 +427,7 @@ class NFeAddress(BaseNFeField):
         self.set_attr('UF', state)
 
 
-class NFeIssuer(BaseNFeField):
+class NFeIssuer(BaseNFeXMLGroup):
     """
     - Attributes:
         - CNPJ: CNPJ do emitente.
@@ -423,21 +440,21 @@ class NFeIssuer(BaseNFeField):
                   (u'CPF', None),
                   (u'xNome', ''),]
 
-    def __init__(self, nome, cpf=None, cnpj=None, state_registry=None):
-        BaseNFeField.__init__(self)
+    def __init__(self, name, cpf=None, cnpj=None, state_registry=None):
+        BaseNFeXMLGroup.__init__(self)
         if cnpj is not None:
             self.set_attr('CNPJ', cnpj)
         else:
             self.set_attr('CPF', cpf)
 
-        self.set_attr('xNome', nome)
+        self.set_attr('xNome', name)
         self._ie = state_registry
 
     def set_address(self, street, number, district, city, state):
         address = NFeAddress(
             self.address_tag, street, number, district, city, state)
         self.element.append(address.element)
-        # If we set IE in the attributes, the order will not be correct. :(
+        # If we set IE in the __init__, the order will not be correct. :(
         ie_element = Element(u'IE')
         ie_element.text = self._ie
         self.element.append(ie_element)
@@ -449,7 +466,7 @@ class NFeRecipient(NFeIssuer):
     attributes = NFeIssuer.attributes
 
 
-class NFeProduct(BaseNFeField):
+class NFeProduct(BaseNFeXMLGroup):
     """
     - Attributes:
         - nItem: número do item
@@ -457,7 +474,9 @@ class NFeProduct(BaseNFeField):
     tag = u'det'
 
     def __init__(self, number):
-        BaseNFeField.__init__(self)
+        BaseNFeXMLGroup.__init__(self)
+        # "nItem" is part of "det", not a regular attribute. So we need to
+        # ensure it is a string.
         self.element.set('nItem', str(number))
 
     def add_product_details(self, code, description, cfop, quantity, price,
@@ -474,13 +493,14 @@ class NFeProduct(BaseNFeField):
 
         tax_type = sellable_tax.tax_type
         if tax_type == TaxType.SUBSTITUTION:
-            # Substituição Tributária/ICMS
+            # TODO: Substituição Tributária/ICMS
             pass
         elif tax_type == TaxType.SERVICE:
-            # ISS
+            # TODO: ISS
             pass
         else:
-            # Não tributado ou Isento/ICMS
+            # Não tributado ou Isento/ICMS. Atualmente, apenas consideramos
+            # que a empresa esteja enquadrada no simples nacional.
             icms = NFeICMS40(tax_type)
             nfe_icms.element.append(icms.element)
             pis = NFePISOutr()
@@ -494,8 +514,7 @@ class NFeProduct(BaseNFeField):
         self.element.append(nfe_tax.element)
 
 
-
-class NFeProductDetails(BaseNFeField):
+class NFeProductDetails(BaseNFeXMLGroup):
     """
     - Attributes:
         - cProd: Código do produto ou serviço. Preencher com CFOP caso se
@@ -548,7 +567,7 @@ class NFeProductDetails(BaseNFeField):
                   (u'vUnTrib', '')]
 
     def __init__(self, code, description, cfop, quantity, price, unit):
-        BaseNFeField.__init__(self)
+        BaseNFeXMLGroup.__init__(self)
         self.set_attr('cProd', code)
         self.set_attr('xProd', description)
         self.set_attr('CFOP', cfop)
@@ -559,15 +578,15 @@ class NFeProductDetails(BaseNFeField):
         self.set_attr('qTrib', self.format_value(quantity))
 
 
-class NFeTax(BaseNFeField):
+class NFeTax(BaseNFeXMLGroup):
     tag = 'imposto'
 
 
-class NFeICMS(BaseNFeField):
+class NFeICMS(BaseNFeXMLGroup):
     tag = 'ICMS'
 
 
-class NFeICMS00(BaseNFeField):
+class NFeICMS00(BaseNFeXMLGroup):
     """Tributada integralmente (CST=00).
 
     - Attributes:
@@ -636,7 +655,6 @@ class NFeICMS20(NFeICMS00):
     """Tributada com redução de base de cálculo (CST=20).
 
     - Attributes:
-
         - pRedBC: Percentual de Redução de BC.
     """
     tag = 'ICMS20'
@@ -652,14 +670,14 @@ class NFeICMS30(NFeICMS10):
     attributes = NFeICMS00.attributes
 
 
-class NFeICMS40(BaseNFeField):
+class NFeICMS40(BaseNFeXMLGroup):
     """Isenta (CST=40), Não tributada (CST=41), Suspensão (CST=50).
     """
     tag = 'ICMS40'
     attributes = [('orig', ''), (u'CST', 40)]
 
     def __init__(self, tax_type):
-        BaseNFeField.__init__(self)
+        BaseNFeXMLGroup.__init__(self)
 
         if tax_type == TaxType.EXEMPTION:
             cst = 40
@@ -671,12 +689,12 @@ class NFeICMS40(BaseNFeField):
 
 
 # Pg. 117
-class NFePIS(BaseNFeField):
+class NFePIS(BaseNFeXMLGroup):
     tag = u'PIS'
 
 
 # Pg. 117, 118
-class NFePISAliq(BaseNFeField):
+class NFePISAliq(BaseNFeXMLGroup):
     """
     - Attributes:
         - CST: Código de Situação tributária do PIS.
@@ -714,12 +732,12 @@ class NFePISOutr(NFePISAliq):
 
 
 # Pg. 120, 121
-class NFeCOFINS(BaseNFeField):
+class NFeCOFINS(BaseNFeXMLGroup):
     tag = u'COFINS'
 
 
 # Pg. 121
-class NFeCOFINSAliq(BaseNFeField):
+class NFeCOFINSAliq(BaseNFeXMLGroup):
     """
     - Attributes:
         - CST: Código de situação tributária do COFINS.
@@ -746,7 +764,6 @@ class NFeCOFINSOutr(NFeCOFINSAliq):
     - Attributes:
         - CST: Código da situação tributária do COFINS.
             99 - Outras operações
-
     """
     tag = u'COFINSOutr'
     attributes = NFeCOFINSAliq.attributes
@@ -757,7 +774,7 @@ class NFeCOFINSOutr(NFeCOFINSAliq):
 
 
 # Pg. 123
-class NFeTotal(BaseNFeField):
+class NFeTotal(BaseNFeXMLGroup):
     tag = u'total'
 
     def add_icms_total(self, sale_total, items_total):
@@ -766,10 +783,9 @@ class NFeTotal(BaseNFeField):
 
 
 # Pg. 123
-class NFeICMSTotal(BaseNFeField):
+class NFeICMSTotal(BaseNFeXMLGroup):
     """
     - Attributes:
-
         - vBC: Base de Cálculo do ICMS.
         - vICMS: Valor Total do ICMS.
         - vBCST: Base de Cálculo do ICMS ST.
@@ -802,14 +818,14 @@ class NFeICMSTotal(BaseNFeField):
                   (u'vNF', ''),]
 
     def __init__(self, sale_total, items_total):
-        BaseNFeField.__init__(self)
+        BaseNFeXMLGroup.__init__(self)
         self.set_attr('vBC', self.format_value(sale_total))
         self.set_attr('vNF', self.format_value(sale_total))
         self.set_attr('vProd', self.format_value(items_total))
 
 
 # Pg. 124
-class NFeTransport(BaseNFeField):
+class NFeTransport(BaseNFeXMLGroup):
     """
     - Attributes:
         - modFrete: Modalidade do frete.
@@ -821,7 +837,7 @@ class NFeTransport(BaseNFeField):
 
 
 # Pg. 124 (optional)
-class NFeTransporter(BaseNFeField):
+class NFeTransporter(BaseNFeXMLGroup):
     """
     - Attributes:
         - CNPJ: Informar o CNPJ ou o CPF do transportador.
@@ -842,7 +858,7 @@ class NFeTransporter(BaseNFeField):
                   (u'UF', ''),]
 
 
-class NFeAdditionalInformation(BaseNFeField):
+class NFeAdditionalInformation(BaseNFeXMLGroup):
     tag = u'infAdic'
     attributes = [(u'infAdFisco', None),
                   (u'infCpl', None)]
@@ -859,7 +875,7 @@ Lei Complementar 123 de 14/12/2006.'''
 
 
 # Pg. 127
-class NFeSignature(BaseNFeField):
+class NFeSignature(BaseNFeXMLGroup):
     """Assinatura XML da NF-e segundo o padrão XML Digital Signature.
     """
     tag = u'Signature'
