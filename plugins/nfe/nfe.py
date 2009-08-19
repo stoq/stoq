@@ -27,6 +27,7 @@
 import datetime
 import random
 from xml.etree.ElementTree import ElementTree, Element, tostring
+from xml.sax.saxutils import escape
 
 from stoqdrivers.enum import TaxType
 
@@ -44,8 +45,26 @@ class NFeGenerator(object):
         self.conn = conn
         self.root = Element('NFe', xmlns='http://www.portalfiscal.inf.br/nfe')
 
+    #
+    # Public API
+    #
+
+    def generate(self):
+        branch = self._sale.branch
+        self._add_identification(branch)
+        self._add_issuer(branch)
+        self._add_recipient(self._sale.client)
+        self._add_sale_items(self._sale.get_items())
+        self._add_totals()
+        self._add_transport_data()
+        self._add_additional_information()
+
+    #
+    # Private API
+    #
+
     def __str__(self):
-        return tostring(self.root)
+        return tostring(self.root, 'utf8')
 
     def _calculate_dv(self, key):
         # Pg. 72
@@ -181,15 +200,6 @@ class NFeGenerator(object):
         nfe_info = NFeSimplesNacionalInfo()
         self._nfe_data.element.append(nfe_info.element)
 
-    def generate(self):
-        branch = self._sale.branch
-        self._add_identification(branch)
-        self._add_issuer(branch)
-        self._add_recipient(self._sale.client)
-        self._add_sale_items(self._sale.get_items())
-        self._add_totals()
-        self._add_transport_data()
-        self._add_additional_information()
 
 
 class BaseNFeField(object):
@@ -213,7 +223,7 @@ class BaseNFeField(object):
             # ignore empty values
             if element_value is None:
                 continue
-            sub_element.text = str(element_value)
+            sub_element.text = self.escape(str(element_value))
             self._element.append(sub_element)
 
         return self._element
@@ -231,9 +241,16 @@ class BaseNFeField(object):
     def format_value(self, value):
         return format_quantity(value)
 
+    def escape(self, string):
+        # Pg. 71
+        return escape(string)
+
     def __str__(self):
         return tostring(self.element)
 
+#
+# NF-e XML groups
+#
 
 class NFeData(BaseNFeField):
     """
@@ -395,7 +412,7 @@ class NFeIssuer(BaseNFeField):
     tag = u'emit'
     address_tag = u'enderEmit'
     attributes = [(u'CNPJ', None),
-                  (u'CPF', None), 
+                  (u'CPF', None),
                   (u'xNome', ''),]
 
     def __init__(self, nome, cpf=None, cnpj=None, state_registry=None):
@@ -788,11 +805,11 @@ class NFeTransport(BaseNFeField):
     """
     - Attributes:
         - modFrete: Modalidade do frete.
-                    0 - por conta do emitente (padrão)
-                    1 - por conta do destinatário
+                    0 - por conta do emitente
+                    1 - por conta do destinatário (default)
     """
     tag = u'transp'
-    attributes = [('modFrete', '0'),]
+    attributes = [('modFrete', '1'),]
 
 
 # Pg. 124 (optional)
@@ -826,9 +843,10 @@ class NFeAdditionalInformation(BaseNFeField):
 class NFeSimplesNacionalInfo(NFeAdditionalInformation):
     def __init__(self):
         NFeAdditionalInformation.__init__(self)
-        msg = u'Documento emitido por ME ou EPP optante pelo SIMPLES' \
-               'NACIONAL.\nNao gera Direito a Credito Fiscal de ICMS ' \
-               'e de ISS. Conforme Lei Complementar 123 de 14/12/2006.'
+        msg = u'''Documento emitido por ME ou EPP optante pelo SIMPLES \
+NACIONAL. Não gera Direito a Crédito Fiscal de ICMS e de ISS. Conforme \
+Lei Complementar 123 de 14/12/2006.'''
+
         self.set_attr('infCpl', msg)
 
 
