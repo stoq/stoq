@@ -120,8 +120,9 @@ class NFeGenerator(object):
         aamm = today.strftime('%y%m')
 
         nnf = self._get_nfe_number()
+        payments = self._sale.group.get_items()
         nfe_idenfitication = NFeIdentification(cuf, branch_location.city,
-                                               nnf, today)
+                                               nnf, today, list(payments))
         # The nfe-key requires all the "zeros", so we should format the
         # values properly.
         mod = str('%02d' % int(nfe_idenfitication.get_attr('mod')))
@@ -359,14 +360,21 @@ class NFeIdentification(BaseNFeField):
                   (u'procEmi', '0'),
                   (u'verProc', 'stoq-%s' % stoqlib.version)]
 
-    def __init__(self, cUF, city, nnf, emission_date):
+    def __init__(self, cUF, city, nnf, emission_date, payments):
         BaseNFeField.__init__(self)
 
         self.set_attr('cUF', cUF)
         # Pg. 92: Random number of 9-digits
         self.set_attr('cNF', random.randint(100000000, 999999999))
-        #TODO: add payment type
-        #self.attributes['indPag'] = payment_type
+
+        payment_type = 1
+        installments = len(payments)
+        if installments == 1:
+            payment = payments[0]
+            if payment.paid_date == datetime.datetime.today():
+                payment_type = 0
+        self.set_attr('indPag', payment_type)
+
         self.set_attr('nNF', nnf)
         self.set_attr('dEmi', self.format_nfe_date(emission_date))
         #TODO: get city code
