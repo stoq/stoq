@@ -69,6 +69,9 @@ class ProductFullStockView(Viewable):
         location=Product.q.location,
         tax_description=SellableTaxConstant.q.description,
         category_description=SellableCategory.q.description,
+        stock_cost = const.SUM(
+                ProductStockItem.q.stock_cost*ProductStockItem.q.quantity) /
+                const.SUM(ProductStockItem.q.quantity),
         stock=const.SUM(ProductStockItem.q.quantity +
                         ProductStockItem.q.logic_quantity),
         )
