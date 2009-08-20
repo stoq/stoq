@@ -32,6 +32,7 @@ import gtk
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.datatypes import currency
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       finish_transaction)
@@ -88,20 +89,23 @@ class StockApp(SearchableAppWindow):
     def get_columns(self):
         return [SearchColumn('code', title=_('Code'), sorted=True,
                              sort_func=sort_sellable_code,
-                             data_type=str, width=130),
+                             data_type=str, width=100),
                 SearchColumn('barcode', title=_("Barcode"), data_type=str,
                              width=100),
                 SearchColumn('category_description', title=_("Category"),
-                             data_type=str, width=120, visible=False),
+                             data_type=str, width=100, visible=False),
                 SearchColumn('description', title=_("Description"),
                              data_type=str, expand=True,
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('location', title=_("Location"), data_type=str,
-                             width=120, visible=False),
+                             width=100, visible=False),
                 SearchColumn('stock', title=_('Quantity'),
-                             data_type=decimal.Decimal, width=100),
+                             data_type=decimal.Decimal, width=80),
                 SearchColumn('unit', title=_("Unit"), data_type=str,
-                             width=80)]
+                             width=40),
+                SearchColumn('stock_cost', title=_("Avg. Stock Cost"),
+                             visible=False, data_type=currency, width=60)
+                 ]
 
     def query(self, query, having, conn):
         branch = self.branch_filter.get_state().value
