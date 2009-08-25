@@ -23,6 +23,11 @@
 ##
 
 
+import StringIO
+from xml.etree.ElementTree import tostring
+
+import lxml.etree as ET
+
 #
 # Data
 #
@@ -67,6 +72,35 @@ _uf_code = dict(# Norte
 #
 
 def get_uf_code_from_state_name(state_name):
+    """Returns the UF code of a certain state. The UF code is Brazil specific.
+
+    @param state_name: the state name in the short form (using two letters).
+    @returns: a integer representing the uf code or None if we not find any
+              uf code for the given state.
+    """
     state = state_name.upper()
     if _uf_code.has_key(state):
         return _uf_code[state]
+
+
+def nfe_tostring(element):
+    """Returns the canonical XML string of a certain element with line feeds
+    and carriage return stripped.  
+
+    @param element: a xml.etree.Element instance.
+    @returns: a XML string of the element.
+    """
+    message = tostring(element, 'utf8')
+    node = ET.fromstring(message)
+    tree = ET.ElementTree(node)
+    # The transformation of the XML to its canonical form is required along
+    # all the NF-e specification and its not supported by the xml.etree module
+    # of the standard python library. See http://www.w3.org/TR/xml-c14n for
+    # details.
+    xml = StringIO.StringIO()
+    tree.write_c14n(xml)
+
+    xml_str = xml.getvalue()
+    xml_str = xml_str.replace('\r', '')
+    xml_str = xml_str.replace('\n', '')
+    return xml_str
