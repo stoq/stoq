@@ -25,8 +25,10 @@
 import os
 import sys
 
+from kiwi.environ import environ
 from zope.interface import implements
 
+from stoqlib.database.migration import PluginSchemaMigration
 from stoqlib.lib.interfaces import IPlugin
 from stoqlib.lib.pluginmanager import register_plugin
 
@@ -41,7 +43,11 @@ class NFePlugin(object):
     #TODO: implement nfe domain first
 
     def get_migration(self):
-        pass
+        environ.add_resource('nfecsv', os.path.join(plugin_root, 'csv'))
+        environ.add_resource('nfetemplates',
+                             os.path.join(plugin_root, 'templates'))
+        environ.add_resource('nfesql', os.path.join(plugin_root, 'sql'))
+        return PluginSchemaMigration(self.name, 'nfesql', ['*.sql', '*.py',])
 
     def activate(self):
         pass

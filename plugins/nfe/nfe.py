@@ -43,8 +43,15 @@ import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.lib.validators import format_quantity
 
-from utils import get_uf_code_from_state_name, nfe_tostring
+from utils import (get_uf_code_from_state_name, get_city_code,
+                   nfe_tostring)
 
+
+#
+# the page numbers refers to the "Manual de integração do contribuinte v3.00"
+# and could be found at http://www.nfe.fazenda.gov.br/portal/integracao.aspx
+# (brazilian portuguese only).
+#
 
 class NFeGenerator(object):
     """NF-e Generator class.
@@ -124,13 +131,10 @@ class NFeGenerator(object):
         #TODO: retrieve the fiscal invoice number
         return 1
 
-    def _get_company(self,  person):
-        return ICompany(person, None)
-
     def _get_cnpj(self, person):
-        company = self._get_company(person)
+        company = ICompany(person, None)
         assert company is not None
-        #FIXME: fix get_cnpj_number method
+        #FIXME: fix get_cnpj_number method (fails if start with zero).
         cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
         assert len(cnpj) == 14
         return cnpj
@@ -180,7 +184,7 @@ class NFeGenerator(object):
         cnpj = self._get_cnpj(issuer)
         person = issuer.person
         name = person.name
-        company = self._get_company(issuer)
+        company = ICompany(issuer, None)
         state_registry = company.state_registry
         self._nfe_issuer = NFeIssuer(name, cnpj=cnpj,
                                      state_registry=state_registry)
@@ -513,8 +517,7 @@ class NFeAddress(BaseNFeXMLGroup):
         self.set_attr('nro', number)
         self.set_attr('xBairro', district)
         self.set_attr('xMun', city)
-        #TODO: add city code
-        self.set_attr('cMun', '1234567')
+        self.set_attr('cMun', str(get_city_code(city, state)))
         self.set_attr('UF', state)
 
 
