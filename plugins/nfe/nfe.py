@@ -27,14 +27,12 @@
 import base64
 import datetime
 import hashlib
+import os.path
 import random
-import StringIO
-from xml.etree.ElementTree import ElementTree, Element, tostring
+from xml.etree.ElementTree import Element
 from xml.sax.saxutils import escape
 
 from OpenSSL import crypto
-
-import lxml.etree as _ET
 
 from ncrypt.digest import Digest, DigestType
 from ncrypt.rsa import RSAKey
@@ -45,67 +43,25 @@ import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.lib.validators import format_quantity
 
-from utils import get_uf_code_from_state_name
-
-
-def nfe_tostring(element):
-    message = tostring(element, 'utf8')
-    node = _ET.fromstring(message)
-    tree = _ET.ElementTree(node)
-    xml = StringIO.StringIO()
-    tree.write_c14n(xml)
-    return xml.getvalue() 
-
+from utils import get_uf_code_from_state_name, nfe_tostring
 
 
 class NFeGenerator(object):
-
+    """NF-e Generator class.
+    The NF-e generator is responsible to create a NF-e XML document for a
+    given sale.
+    """
     def __init__(self, sale, conn):
         self._sale = sale
         self.conn = conn
         self.root = Element('NFe', xmlns='http://www.portalfiscal.inf.br/nfe')
-
-    def _add_signature(self, certificate, passphrase):
-        # Pg. 16
-        data_str = nfe_tostring(self._nfe_data.element)
-        data_str = self._clean_xml(data_str)
-
-        hash = hashlib.sha1()
-        hash.update(data_str)
-        digest = base64.b64encode(hash.digest())
-
-        certificate = self._get_certicate_string(certificate, passphrase)
-        uri = self._nfe_data.get_id_value()
-        signature = NFeSignature(certificate, digest, uri)
-        signature_info_str = nfe_tostring(signature.signature_info.element)
-        signature_info_str = self._clean_xml(signature_info_str)
-        signature_value = self._get_signature_value(signature_info_str)
-        signature.add_signature_value(signature_value)
-
-        self.root.append(signature.element)
-
-    def _get_certicate_string(self, certificate, passphrase):
-        pkcs12 = crypto.load_pkcs12(open(certificate, 'rb').read(),
-                                    passphrase)
-        cert = crypto.dump_certificate(crypto.FILETYPE_PEM,
-                                       pkcs12.get_certificate())
-        # remove header and footer.
-        return u''.join([c for c in cert.split('\n')
-                                     if not c.startswith('-----')])
-
-    def _get_signature_value(self, message):
-        key = RSAKey()
-        key.fromPEM_PrivateKey(open('key.ptm').read())
-        digest_type = DigestType('SHA1')
-        digest = Digest(digest_type).digest(message)
-        signature = key.sign(digest, digest_type)
-        return base64.b64encode(signature)
 
     #
     # Public API
     #
 
     def generate(self):
+        """Generates the NF-e."""
         branch = self._sale.branch
         self._add_identification(branch)
         self._add_issuer(branch)
@@ -116,20 +72,32 @@ class NFeGenerator(object):
         self._add_additional_information()
 
     def sign(self, certificate, passphrase=''):
+        """Signs the NF-e.
+        @param certificate: the path of the certificate file.
+        @param passphrase: the passphrase needed to access the certificate
+                           content.
+        """
         self._add_signature(certificate, passphrase)
+
+    def save(self, location=''):
+        """Saves the NF-e.
+        @param location: the path to save the NF-e.
+        """
+        # a string like: NFe35090803852995000107550000000000018859747268
+        data_id = self._nfe_data.get_id_value()
+        # ignore the NFe prefix
+        name = "%s-nfe.xml" % data_id[3:]
+        filename = os.path.join(location, name)
+        fp = open(filename, 'w')
+        fp.write(nfe_tostring(self.root))
+        fp.close()
 
     #
     # Private API
     #
 
     def __str__(self):
-        message = nfe_tostring(self.root)
-        return self._clean_xml(message)
-
-    def _clean_xml(self, xml_str):
-        xml_str = xml_str.replace('\r', '')
-        xml_str = xml_str.replace('\n', '')
-        return xml_str
+        return nfe_tostring(self.root)
 
     def _calculate_dv(self, key):
         # Pg. 72
@@ -266,7 +234,64 @@ class NFeGenerator(object):
         nfe_info = NFeSimplesNacionalInfo()
         self._nfe_data.element.append(nfe_info.element)
 
+    def _add_signature(self, certificate, passphrase):
+        # Pg. 16
+        data_str = nfe_tostring(self._nfe_data.element)
+        uri = self._nfe_data.get_id_value()
+        signature = add_nfe_signature(data_str, uri, certificate, passphrase)
+        self.root.append(signature.element) 
 
+#
+# Helper functions
+#
+
+def add_nfe_signature(xml_str, uri, certificate, passphrase):
+    """Returns the signature element for a given XML document.
+
+    @param xml_str: the XML document string.
+    @param uri: the URI value of the reference tag.
+    @param certificate: the path of the certificate file.
+    @param passphrase: the passphrase to access the certificate file.
+
+    @returns: a L{NFeSignature} instance.
+    """
+    # compute hash value
+    hash = hashlib.sha1()
+    hash.update(xml_str)
+    digest = base64.b64encode(hash.digest())
+    # create the signature element
+    certificate_str = _get_certicate_string(certificate, passphrase)
+    signature = NFeSignature(certificate_str, digest, uri)
+    # sign
+    info_str = nfe_tostring(signature.signature_info.element)
+    signature_value = _get_signature_value(info_str, certificate, passphrase)
+    signature.add_signature_value(signature_value)
+
+    return signature
+
+def _get_certicate_string(certificate, passphrase):
+    pkcs12 = crypto.load_pkcs12(open(certificate, 'rb').read(), passphrase)
+    cert = crypto.dump_certificate(crypto.FILETYPE_PEM,
+                                   pkcs12.get_certificate())
+    # remove header and footer.
+    return u''.join([c for c in cert.split('\n') if not c.startswith('-----')])
+
+def _get_certificate_private_key_string(certificate, passphrase):
+    pkcs12 = crypto.load_pkcs12(open(certificate, 'rb').read(), passphrase)
+    return crypto.dump_privatekey(crypto.FILETYPE_PEM,
+                                   pkcs12.get_privatekey())
+
+def _get_signature_value(xml_str, certificate, passphrase):
+    key = RSAKey()
+    private_key = _get_certificate_private_key_string(certificate, passphrase)
+    key.fromPEM_PrivateKey(private_key)
+    digest_type = DigestType('SHA1')
+    digest = Digest(digest_type).digest(xml_str)
+    signature = key.sign(digest, digest_type)
+    return base64.b64encode(signature) 
+#
+# NF-e XML Groups
+#
 
 class BaseNFeXMLGroup(object):
     """Base XML group class.
@@ -330,11 +355,8 @@ class BaseNFeXMLGroup(object):
         return escape(string)
 
     def __str__(self):
-        return tostring(self.element, 'utf8')
+        return nfe_tostring(self.element, 'utf8')
 
-#
-# NF-e XML groups
-#
 
 class NFeData(BaseNFeXMLGroup):
     """
