@@ -24,10 +24,20 @@
 """ NF-e XML document generation
 """
 
+import base64
 import datetime
+import hashlib
 import random
+import StringIO
 from xml.etree.ElementTree import ElementTree, Element, tostring
 from xml.sax.saxutils import escape
+
+from OpenSSL import crypto
+
+import lxml.etree as _ET
+
+from ncrypt.digest import Digest, DigestType
+from ncrypt.rsa import RSAKey
 
 from stoqdrivers.enum import TaxType
 
@@ -38,12 +48,58 @@ from stoqlib.lib.validators import format_quantity
 from utils import get_uf_code_from_state_name
 
 
+def nfe_tostring(element):
+    message = tostring(element, 'utf8')
+    node = _ET.fromstring(message)
+    tree = _ET.ElementTree(node)
+    xml = StringIO.StringIO()
+    tree.write_c14n(xml)
+    return xml.getvalue() 
+
+
+
 class NFeGenerator(object):
 
     def __init__(self, sale, conn):
         self._sale = sale
         self.conn = conn
         self.root = Element('NFe', xmlns='http://www.portalfiscal.inf.br/nfe')
+
+    def _add_signature(self, certificate, passphrase):
+        # Pg. 16
+        data_str = nfe_tostring(self._nfe_data.element)
+        data_str = self._clean_xml(data_str)
+
+        hash = hashlib.sha1()
+        hash.update(data_str)
+        digest = base64.b64encode(hash.digest())
+
+        certificate = self._get_certicate_string(certificate, passphrase)
+        uri = self._nfe_data.get_id_value()
+        signature = NFeSignature(certificate, digest, uri)
+        signature_info_str = nfe_tostring(signature.signature_info.element)
+        signature_info_str = self._clean_xml(signature_info_str)
+        signature_value = self._get_signature_value(signature_info_str)
+        signature.add_signature_value(signature_value)
+
+        self.root.append(signature.element)
+
+    def _get_certicate_string(self, certificate, passphrase):
+        pkcs12 = crypto.load_pkcs12(open(certificate, 'rb').read(),
+                                    passphrase)
+        cert = crypto.dump_certificate(crypto.FILETYPE_PEM,
+                                       pkcs12.get_certificate())
+        # remove header and footer.
+        return u''.join([c for c in cert.split('\n')
+                                     if not c.startswith('-----')])
+
+    def _get_signature_value(self, message):
+        key = RSAKey()
+        key.fromPEM_PrivateKey(open('key.ptm').read())
+        digest_type = DigestType('SHA1')
+        digest = Digest(digest_type).digest(message)
+        signature = key.sign(digest, digest_type)
+        return base64.b64encode(signature)
 
     #
     # Public API
@@ -59,12 +115,21 @@ class NFeGenerator(object):
         self._add_transport_data()
         self._add_additional_information()
 
+    def sign(self, certificate, passphrase=''):
+        self._add_signature(certificate, passphrase)
+
     #
     # Private API
     #
 
     def __str__(self):
-        return tostring(self.root, 'utf8')
+        message = nfe_tostring(self.root)
+        return self._clean_xml(message)
+
+    def _clean_xml(self, xml_str):
+        xml_str = xml_str.replace('\r', '')
+        xml_str = xml_str.replace('\n', '')
+        return xml_str
 
     def _calculate_dv(self, key):
         # Pg. 72
@@ -265,7 +330,7 @@ class BaseNFeXMLGroup(object):
         return escape(string)
 
     def __str__(self):
-        return tostring(self.element)
+        return tostring(self.element, 'utf8')
 
 #
 # NF-e XML groups
@@ -282,6 +347,7 @@ class NFeData(BaseNFeXMLGroup):
 
     def __init__(self, key):
         BaseNFeXMLGroup.__init__(self)
+        self.element.set('xmlns', 'http://www.portalfiscal.inf.br/nfe')
         self.element.set('versao', u'1.10')
 
         # Pg. 92
@@ -289,6 +355,9 @@ class NFeData(BaseNFeXMLGroup):
 
         value = u'NFe%s' % key
         self.element.set('Id', value)
+
+    def get_id_value(self):
+        return self.element.get('Id')
 
 
 class NFeIdentification(BaseNFeXMLGroup):
@@ -880,26 +949,31 @@ class NFeSignature(BaseNFeXMLGroup):
     """
     tag = u'Signature'
 
-    def __init__(self):
+    def __init__(self, certificate, digest, uri):
         BaseNFeXMLGroup.__init__(self)
         self.element.set('xmlns', 'http://www.w3.org/2000/09/xmldsig#')
 
-        signature_info = NFeSignatureInfo()
-        self.element.append(signature_info.element)
+        self._certificate = certificate
+        self.signature_info = NFeSignatureInfo(digest, uri)
+        self.element.append(self.signature_info.element)
 
-        signature_value = Element(u'SignatureValue')
-        signature_value.text = 'assinatura'
-        self.element.append(signature_value)
+    def add_signature_value(self, signature_value):
+        signature = Element(u'SignatureValue')
+        signature.text = signature_value
+        self.element.append(signature)
 
-        key_info = NFeKeyInfo()
+        key_info = NFeKeyInfo(self._certificate)
         self.element.append(key_info.element)
+        self.key_info = key_info
 
 
+# Pg. 16 (yes, 16)
 class NFeSignatureInfo(BaseNFeXMLGroup):
     tag = u'SignedInfo'
 
-    def __init__(self):
+    def __init__(self, digest, uri):
         BaseNFeXMLGroup.__init__(self)
+        self.element.set('xmlns', 'http://www.w3.org/2000/09/xmldsig#')
 
         canonicalization = Element(u'CanonicalizationMethod',
             dict(Algorithm='http://www.w3.org/TR/2001/REC-xml-c14n-20010315'))
@@ -909,7 +983,7 @@ class NFeSignatureInfo(BaseNFeXMLGroup):
             dict(Algorithm='http://www.w3.org/2000/09/xmldsig#rsa-sha1'))
         self.element.append(method)
 
-        reference = Element(u'Reference', dict(URI='#%s' % 'NFe123123'))
+        reference = Element(u'Reference', dict(URI='#%s' % uri))
 
         transforms = NFeTransforms()
         reference.append(transforms.element)
@@ -919,11 +993,12 @@ class NFeSignatureInfo(BaseNFeXMLGroup):
         reference.append(digest_method)
 
         digest_value = Element(u'DigestValue')
-        digest_value.text = 'valor digest'
+        digest_value.text = digest
         reference.append(digest_value)
         self.element.append(reference)
 
 
+# Pg. 16
 class NFeTransforms(BaseNFeXMLGroup):
     tag = u'Transforms'
 
@@ -935,18 +1010,19 @@ class NFeTransforms(BaseNFeXMLGroup):
 
         c14n = 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315'
         transform_c14n = Element(u'Transform', dict(Algorithm=c14n))
-        self.element.append(transform_c14n) 
+        self.element.append(transform_c14n)
 
 
+# Pg. 16
 class NFeKeyInfo(BaseNFeXMLGroup):
     tag = u'KeyInfo'
 
-    def __init__(self):
+    def __init__(self, certificate):
         BaseNFeXMLGroup.__init__(self)
 
         x509_data = Element(u'X509Data')
         x509_certificate = Element(u'X509Certificate')
-        x509_certificate.text = 'certificado'
+        x509_certificate.text = certificate
 
         x509_data.append(x509_certificate)
         self.element.append(x509_data)
