@@ -24,9 +24,14 @@
 
 
 import StringIO
+from unicodedata import normalize
 from xml.etree.ElementTree import tostring
 
 import lxml.etree as ET
+
+from stoqlib.database.runtime import get_connection
+
+from nfedomain import NFeCityData
 
 #
 # Data
@@ -82,10 +87,32 @@ def get_uf_code_from_state_name(state_name):
     if _uf_code.has_key(state):
         return _uf_code[state]
 
+def get_city_code(city_name, state):
+    """Returns the city code of a certain city. The city code is Brazil
+    specific.
+    @param city_name: the name of the city.
+    @param state_name: the state name in the short form (using two letters).
+    @returns: a integer representing the city code or None if we not find any
+              city code for the given city.
+    """
+    uf_code = get_uf_code_from_state_name(state)
+    city_name = remove_accentuation(city_name)
+    city_data = NFeCityData.selectOneBy(city_name=city_name,
+                                        uf_code=uf_code,
+                                        connection=get_connection())
+    if city_name is not None:
+        return city_data.city_code
+
+def remove_accentuation(string):
+    """Remove the accentuantion of a string.
+    @returns: the string without accentuantion.
+    """
+    # Taken from http://www.python.org.br/wiki/RemovedorDeAcentos
+    return normalize('NFKD', string.decode('utf-8')).encode('ASCII', 'ignore')
 
 def nfe_tostring(element):
     """Returns the canonical XML string of a certain element with line feeds
-    and carriage return stripped.  
+    and carriage return stripped.
 
     @param element: a xml.etree.Element instance.
     @returns: a XML string of the element.
