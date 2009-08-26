@@ -87,7 +87,7 @@ def get_uf_code_from_state_name(state_name):
     if _uf_code.has_key(state):
         return _uf_code[state]
 
-def get_city_code(city_name, state):
+def get_city_code(city_name, state=None, code=None):
     """Returns the city code of a certain city. The city code is Brazil
     specific.
     @param city_name: the name of the city.
@@ -95,12 +95,15 @@ def get_city_code(city_name, state):
     @returns: a integer representing the city code or None if we not find any
               city code for the given city.
     """
-    uf_code = get_uf_code_from_state_name(state)
+    if code is None and state:
+        uf_code = get_uf_code_from_state_name(state)
+    else:
+        uf_code = code
     city_name = remove_accentuation(city_name)
     city_data = NFeCityData.selectOneBy(city_name=city_name,
                                         uf_code=uf_code,
                                         connection=get_connection())
-    if city_name is not None:
+    if city_data is not None:
         return city_data.city_code
 
 def remove_accentuation(string):

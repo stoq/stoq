@@ -21,8 +21,7 @@
 ##
 ## Author(s):   George Y. Kussumoto     <george@async.com.br>
 ##
-""" NF-e XML document generation
-"""
+""" NF-e XML document generation """
 
 import base64
 import datetime
@@ -45,7 +44,6 @@ from stoqlib.lib.validators import format_quantity
 
 from utils import (get_uf_code_from_state_name, get_city_code,
                    nfe_tostring)
-
 
 #
 # the page numbers refers to the "Manual de integração do contribuinte v3.00"
@@ -128,7 +126,7 @@ class NFeGenerator(object):
         return str(11 - dv_mod)
 
     def _get_nfe_number(self):
-        #TODO: retrieve the fiscal invoice number
+        #TODO: retrieve the fiscal invoice number.
         return 1
 
     def _get_cnpj(self, person):
@@ -243,7 +241,7 @@ class NFeGenerator(object):
         data_str = nfe_tostring(self._nfe_data.element)
         uri = self._nfe_data.get_id_value()
         signature = add_nfe_signature(data_str, uri, certificate, passphrase)
-        self.root.append(signature.element) 
+        self.root.append(signature.element)
 
 #
 # Helper functions
@@ -292,7 +290,8 @@ def _get_signature_value(xml_str, certificate, passphrase):
     digest_type = DigestType('SHA1')
     digest = Digest(digest_type).digest(xml_str)
     signature = key.sign(digest, digest_type)
-    return base64.b64encode(signature) 
+    return base64.b64encode(signature)
+
 #
 # NF-e XML Groups
 #
@@ -362,6 +361,7 @@ class BaseNFeXMLGroup(object):
         return nfe_tostring(self.element, 'utf8')
 
 
+# Pg. 92
 class NFeData(BaseNFeXMLGroup):
     """
     - Attributes:
@@ -386,6 +386,7 @@ class NFeData(BaseNFeXMLGroup):
         return self.element.get('Id')
 
 
+# Pg. 92
 class NFeIdentification(BaseNFeXMLGroup):
     """
     - Attributes:
@@ -489,8 +490,7 @@ class NFeIdentification(BaseNFeXMLGroup):
 
         self.set_attr('nNF', nnf)
         self.set_attr('dEmi', self.format_date(emission_date))
-        #TODO: get city code
-        self.set_attr('cMunFG', '1234567')
+        self.set_attr('cMunFG', get_city_code(city, code=cUF))
 
 
 class NFeAddress(BaseNFeXMLGroup):
@@ -521,6 +521,7 @@ class NFeAddress(BaseNFeXMLGroup):
         self.set_attr('UF', state)
 
 
+# Pg. 96
 class NFeIssuer(BaseNFeXMLGroup):
     """
     - Attributes:
@@ -554,12 +555,14 @@ class NFeIssuer(BaseNFeXMLGroup):
         self.element.append(ie_element)
 
 
+# Pg. 99
 class NFeRecipient(NFeIssuer):
     tag = 'dest'
     address_tag = u'enderDest'
     attributes = NFeIssuer.attributes
 
 
+# Pg. 102
 class NFeProduct(BaseNFeXMLGroup):
     """
     - Attributes:
@@ -608,6 +611,7 @@ class NFeProduct(BaseNFeXMLGroup):
         self.element.append(nfe_tax.element)
 
 
+# Pg. 102
 class NFeProductDetails(BaseNFeXMLGroup):
     """
     - Attributes:
@@ -672,14 +676,17 @@ class NFeProductDetails(BaseNFeXMLGroup):
         self.set_attr('qTrib', self.format_value(quantity))
 
 
+# Pg. 107
 class NFeTax(BaseNFeXMLGroup):
     tag = 'imposto'
 
 
+# Pg. 107
 class NFeICMS(BaseNFeXMLGroup):
     tag = 'ICMS'
 
 
+# Pg. 108
 class NFeICMS00(BaseNFeXMLGroup):
     """Tributada integralmente (CST=00).
 
@@ -713,6 +720,7 @@ class NFeICMS00(BaseNFeXMLGroup):
                   (u'vICMS', None),]
 
 
+# Pg. 108
 class NFeICMS10(NFeICMS00):
     """Tributada com cobrança do ICMS por substituição tributária (CST=10).
     - Attributes:
@@ -745,6 +753,7 @@ class NFeICMS10(NFeICMS00):
                        (u'vICMSST', '',)])
 
 
+# Pg. 108
 class NFeICMS20(NFeICMS00):
     """Tributada com redução de base de cálculo (CST=20).
 
@@ -756,6 +765,7 @@ class NFeICMS20(NFeICMS00):
     attributes.append(('pRedBC', ''))
 
 
+# Pg. 109
 class NFeICMS30(NFeICMS10):
     """Isenta ou não tributada e com cobrança do ICMS por substituição
     tributária (CST=30).
@@ -764,6 +774,7 @@ class NFeICMS30(NFeICMS10):
     attributes = NFeICMS00.attributes
 
 
+# Pg. 111
 class NFeICMS40(BaseNFeXMLGroup):
     """Isenta (CST=40), Não tributada (CST=41), Suspensão (CST=50).
     """
@@ -992,7 +1003,7 @@ class NFeSignature(BaseNFeXMLGroup):
         self.key_info = key_info
 
 
-# Pg. 16 (yes, 16)
+# Pg. 16
 class NFeSignatureInfo(BaseNFeXMLGroup):
     tag = u'SignedInfo'
 
