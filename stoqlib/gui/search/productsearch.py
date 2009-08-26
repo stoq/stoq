@@ -227,6 +227,7 @@ class ProductSearchQuantity(SearchDialog):
 
     def get_columns(self):
         return [Column('code', title=_('Code'), data_type=str,
+                       sort_func=sort_sellable_code,
                        sorted=True, width=130),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
@@ -271,6 +272,7 @@ class ProductStockSearch(SearchEditor):
 
     def get_columns(self):
         return [SearchColumn('code', title=_('Code'), data_type=str,
+                             sort_func=sort_sellable_code,
                              width=80),
                 SearchColumn('category_description', title=_('Category'),
                              data_type=str, width=120),
