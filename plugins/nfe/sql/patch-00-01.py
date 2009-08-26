@@ -18,7 +18,7 @@ def apply_patch(trans):
                         city_name text);
     """)
 
-    csv = environ.find_resource('nfecsv', 'dtb_brazillian_city_codes.csv')
+    csv = environ.find_resource('nfecsv', 'dtb_brazilian_city_codes.csv')
     for line in open(csv, 'r').readlines():
         uf, uf_name, city_code, city_name = line.split(',')
         # the first line contain the titles, lets ignore it.
