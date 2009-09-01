@@ -35,7 +35,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 from stoqdrivers.enum import TaxType, UnitType
 
-from stoqlib.database.orm import LIKE, const
+from stoqlib.database.orm import AND, const
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sellable import (SellableCategory, Sellable,
                                      SellableUnit,
@@ -278,8 +278,8 @@ class SellableEditor(BaseEditor):
             self._sellable.unit = None
         else:
             if self._unit.unit_index == UnitType.CUSTOM:
-                query = LIKE(const.UPPER(SellableUnit.q.description),
-                             "%%%s%%" % self._unit.description.upper())
+                query = AND(const.UPPER(SellableUnit.q.description) ==
+                            self._unit.description.upper())
             else:
                 query = SellableUnit.q.unit_index == self._unit.unit_index
 
