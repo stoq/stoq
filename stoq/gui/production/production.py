@@ -57,11 +57,15 @@ class ProductionApp(SearchableAppWindow):
     def _update_widgets(self):
         selection = self.results.get_selected_rows()
         can_edit = False
+        can_start = False
         if len(selection) == 1:
             selected = selection[0]
             can_edit = (selected.status == ProductionOrder.ORDER_OPENED or
                         selected.status == ProductionOrder.ORDER_WAITING)
+            can_start = can_edit
         self.edit_button.set_sensitive(can_edit)
+        self.MenuStartProduction.set_sensitive(can_start)
+        self.ToolbarStartProduction.set_sensitive(can_start)
 
     def _get_status_values(self):
         items = [(text, value)
@@ -74,6 +78,13 @@ class ProductionApp(SearchableAppWindow):
         order = trans.get(order)
         retval = self.run_dialog(ProductionWizard, trans, order)
         finish_transaction(trans, retval)
+        trans.close()
+
+    def _start_production(self):
+        trans = new_transaction()
+        order = trans.get(self.results.get_selected_rows()[0])
+        order.start_production()
+        finish_transaction(trans, True)
         trans.close()
 
     #
@@ -111,8 +122,14 @@ class ProductionApp(SearchableAppWindow):
     def on_MenuNewProduction__activate(self, action):
         self._open_production_order()
 
+    def on_MenuStartProduction__activate(self, action):
+        self._start_production_order()
+
     def on_ToolbarNewProduction__activate(self, action):
         self._open_production_order()
+
+    def on_ToolbarStartProduction__activate(self, action):
+        self._start_production(order)
 
     def on_edit_button__clicked(self, widget):
         order = self.results.get_selected_rows()[0]
