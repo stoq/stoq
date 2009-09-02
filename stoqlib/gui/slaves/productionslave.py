@@ -147,7 +147,6 @@ class ProductionMaterialListSlave(BaseEditorSlave):
 
     def _setup_widgets(self):
         self.edit_button.set_sensitive(False)
-        print self.visual_mode
         if not self.visual_mode:
             self.start_production_check.hide()
 
@@ -202,7 +201,9 @@ class ProductionMaterialListSlave(BaseEditorSlave):
         for material in self.materials:
             material.create()
 
-        if self.start_production_check.get_active():
+        # In visual mode the user can choose if we start the production now or
+        # later. If not in visual mode, we start the production now.
+        if self.start_production_check.get_active() or not self.visual_mode:
             self.model.start_production()
         elif self.model.status != ProductionOrder.ORDER_WAITING:
             for material in self.materials:
