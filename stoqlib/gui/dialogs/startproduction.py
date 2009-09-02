@@ -44,7 +44,7 @@ class StartProductionDialog(BaseEditor):
 
     def _setup_widgets(self):
         self.enable_window_controls()
-        self.main_dialog.ok_button.set_label(_(u'Start Production'))
+        self.main_dialog.ok_button.set_label(_(u'_Start Production'))
 
     #
     # BaseEditor
