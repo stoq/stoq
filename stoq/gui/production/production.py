@@ -33,7 +33,6 @@ from kiwi.ui.search import ComboSearchFilter, SearchFilterPosition
 
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.production import ProductionOrder
-from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.startproduction import StartProductionDialog
 from stoqlib.gui.search.productionsearch import ProductionProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
@@ -87,7 +86,7 @@ class ProductionApp(SearchableAppWindow):
         order = trans.get(self.results.get_selected_rows()[0])
         assert order is not None
 
-        retval = run_dialog(StartProductionDialog, self, trans, order)
+        retval = self.run_dialog(StartProductionDialog, trans, order)
         finish_transaction(trans, retval)
         trans.close()
 
