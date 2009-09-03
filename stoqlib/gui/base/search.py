@@ -31,6 +31,7 @@ import pickle
 import gtk
 from kiwi.argcheck import argcheck
 from kiwi.enums import SearchFilterPosition
+from kiwi.environ import environ
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.search import (ComboSearchFilter, SearchSlaveDelegate,
                             DateSearchOption)
@@ -267,6 +268,24 @@ class SearchDialog(BasicDialog):
     #
     # Public API
     #
+
+    def add_button(self, label, stock=None, image=None):
+        """Adds a button in the bottom of the dialog.
+
+        @param label: the text that will be displayed by the button.
+        @param stock: the gtk stock id to be used in the button.
+        @param image: the image filename.
+        """
+        button = gtk.Button(label=label, stock=stock)
+        if image:
+            image_widget = gtk.Image()
+            image_widget.set_from_file(
+                environ.find_resource('pixmaps', image))
+            image_widget.show()
+            button.set_image(image_widget)
+        self.action_area.set_layout(gtk.BUTTONBOX_START)
+        self.action_area.pack_start(button, False, False, 6)
+        return button
 
     @argcheck(bool)
     def set_details_button_sensitive(self, value):
