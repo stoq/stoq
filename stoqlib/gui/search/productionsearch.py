@@ -23,9 +23,18 @@
 ##
 """ Search dialogs for production objects """
 
+
+from decimal import Decimal
+
+from kiwi.enums import SearchFilterPosition
+from kiwi.ui.objectlist import SearchColumn
+from kiwi.ui.search import ComboSearchFilter
+
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import ProductComponent
-from stoqlib.domain.views import ProductComponentView
+from stoqlib.domain.production import ProductionOrder
+from stoqlib.domain.views import ProductComponentView, ProductionItemView
+from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.editors.producteditor import ProductionProductEditor
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.lib.translation import stoqlib_gettext
@@ -51,3 +60,35 @@ class ProductionProductSearch(ProductSearch):
 
     def get_editor_model(self, product_component):
         return product_component.product
+
+
+class ProductionItemsSearch(SearchDialog):
+    title = _(u'Production Items')
+    table = search_table = ProductionItemView
+    size = (750, 450)
+
+    #
+    # SearchDialog
+    #
+
+    def create_filters(self):
+        self.set_text_field_columns(['description',])
+        self.set_searchbar_labels(_(u'matching:'))
+
+        statuses = [(desc, i) for i, desc in ProductionOrder.statuses.items()]
+        statuses.insert(0, (_(u'Any'), None))
+        status_filter = ComboSearchFilter(_('order status:'), statuses)
+        self.add_filter(status_filter, columns=['order_status'],
+                        position=SearchFilterPosition.TOP)
+
+    def get_columns(self):
+        return [SearchColumn('order_id', title=_(u'Order'), data_type=int,
+                              sorted=True, format='%04d'),
+                SearchColumn('category_description', title=_(u'Category'),
+                              data_type=str, expand=True),
+                SearchColumn('description', title=_(u'Description'),
+                              data_type=str, expand=True),
+                SearchColumn('unit_description', title=_(u'Unit'),
+                              data_type=str),
+                SearchColumn('quantity', title=_(u'Production'),
+                              data_type=Decimal),]
