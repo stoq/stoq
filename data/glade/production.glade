@@ -74,6 +74,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="ToolbarProductionItemsSearch">
+                        <property name="name">ToolbarProductionItemsSearch</property>
+                        <property name="label" translatable="yes">Production Items</property>
+                        <property name="stock_id">stoq-products</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="ProductionMenu">
                         <property name="name">ProductionMenu</property>
                         <property name="label" translatable="yes">_Production</property>
@@ -123,7 +130,7 @@
                         <property name="label" translatable="yes">Services...</property>
                         <property name="accelerator">&lt;Control&gt;s</property>
                     </widget>
-                </child> 
+                </child>
                 <child>
                     <widget class="GtkAction" id="about_menu">
                         <property name="name">about_menu</property>
@@ -173,6 +180,7 @@
 	  </menubar>
 	  <toolbar action="toolbar1">
 	    <toolitem action="ToolbarNewProduction"/>
+	    <toolitem action="ToolbarProductionItemsSearch"/>
 	  </toolbar>
 	</ui>]]></ui>
     </widget>
