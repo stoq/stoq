@@ -80,6 +80,7 @@ class ProductionApp(SearchableAppWindow):
         retval = self.run_dialog(ProductionWizard, trans, order)
         finish_transaction(trans, retval)
         trans.close()
+        self.refresh()
 
     def _start_production_order(self):
         trans = new_transaction()
@@ -89,6 +90,7 @@ class ProductionApp(SearchableAppWindow):
         retval = self.run_dialog(StartProductionDialog, trans, order)
         finish_transaction(trans, retval)
         trans.close()
+        self.refresh()
 
     #
     # SearchableAppWindow
@@ -109,7 +111,7 @@ class ProductionApp(SearchableAppWindow):
                        data_type=str, expand=True),
                 SearchColumn('open_date', title=_(u'Opened'),
                              data_type=datetime.date),
-                SearchColumn('closed_date', title=_(u'Closed'),
+                SearchColumn('close_date', title=_(u'Closed'),
                              data_type=datetime.date),]
 
     #
