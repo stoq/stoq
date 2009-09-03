@@ -544,6 +544,7 @@ class ProductionItemView(Viewable):
                    order_id=ProductionOrder.q.id,
                    order_status=ProductionOrder.q.status,
                    quantity=ProductionItem.q.quantity,
+                   produced=ProductionItem.q.produced,
                    category_description=SellableCategory.q.description,
                    unit_description=SellableUnit.q.description,
                    description=BaseSellableInfo.q.description,)

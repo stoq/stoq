@@ -149,6 +149,7 @@ class ProductionItem(Domain):
     implements(IDescribable)
 
     quantity = DecimalCol(default=1)
+    produced = DecimalCol(default=0)
     order = ForeignKey('ProductionOrder')
     product = ForeignKey('Product')
 

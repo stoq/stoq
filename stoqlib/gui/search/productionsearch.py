@@ -91,4 +91,6 @@ class ProductionItemsSearch(SearchDialog):
                 SearchColumn('unit_description', title=_(u'Unit'),
                               data_type=str),
                 SearchColumn('quantity', title=_(u'Production'),
+                              data_type=Decimal),
+                SearchColumn('produced', title=_(u'Produced'),
                               data_type=Decimal),]
