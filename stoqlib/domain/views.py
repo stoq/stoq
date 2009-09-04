@@ -69,9 +69,8 @@ class ProductFullStockView(Viewable):
         location=Product.q.location,
         tax_description=SellableTaxConstant.q.description,
         category_description=SellableCategory.q.description,
-        stock_cost = const.SUM(
-                ProductStockItem.q.stock_cost*ProductStockItem.q.quantity) /
-                const.SUM(ProductStockItem.q.quantity),
+        total_stock_cost = const.SUM(
+                ProductStockItem.q.stock_cost*ProductStockItem.q.quantity),
         stock=const.SUM(ProductStockItem.q.quantity +
                         ProductStockItem.q.logic_quantity),
         )
@@ -132,6 +131,13 @@ class ProductFullStockView(Viewable):
     @property
     def product(self):
         return Product.get(self.product_id, connection=self.get_connection())
+
+    @property
+    def stock_cost(self):
+        if self.quantity:
+            return self.total_stock_cost / self.quantity
+
+        return 0
 
 
 class ProductComponentView(ProductFullStockView):
@@ -391,6 +397,67 @@ class QuotationView(Viewable):
     def purchase(self):
         return PurchaseOrder.get(self.purchase_id,
                                  connection=self.get_connection())
+
+
+from stoqlib.domain.sale import SaleItem, Sale
+
+class SoldItemView(Viewable):
+    """Gets all sold items, includin the average cost of the sold items.
+    """
+
+    columns = dict(
+        id=Sellable.q.id,
+        code=Sellable.q.code,
+        description=BaseSellableInfo.q.description,
+        sold=const.SUM(SaleItem.q.quantity),
+        total_cost=const.SUM(SaleItem.q.quantity * SaleItem.q.average_cost),
+    )
+
+    joins = [
+        LEFTJOINOn(None, SaleItem,
+                    Sellable.q.id == SaleItem.q.sellableID),
+        LEFTJOINOn(None, Sale,
+                   SaleItem.q.saleID == Sale.q.id),
+        INNERJOINOn(None, BaseSellableInfo,
+                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
+    ]
+
+    clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+                Sale.q.status == Sale.STATUS_PAID,
+                Sale.q.status == Sale.STATUS_ORDERED,
+                Sale.q.status == Sale.STATUS_PAID,
+                )
+
+    @classmethod
+    def select_by_branch_date(cls, query, branch, date,
+                              having=None, connection=None):
+        if branch:
+            branch_query = Sale.q.branchID == branch.id
+            if query:
+                query = AND(query, branch_query)
+            else:
+                query = branch_query
+
+        if date:
+            if isinstance(date, tuple):
+                date_query = AND(const.DATE(Sale.q.confirm_date) >= date[0],
+                                 const.DATE(Sale.q.confirm_date) <= date[1])
+            else:
+                date_query = const.DATE(Sale.q.confirm_date) == date
+
+            if query:
+                query = AND(query, date_query)
+            else:
+                query = date_query
+
+        return cls.select(query, having=having, connection=connection)
+
+    @property
+    def average_cost(self):
+        if self.sold:
+            return self.total_cost / self.sold
+
+        return 0
 
 
 class PurchasedItemAndStockView(Viewable):

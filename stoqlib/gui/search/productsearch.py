@@ -31,6 +31,7 @@ from decimal import Decimal
 import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
+from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter, Today
 from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
 
@@ -38,7 +39,7 @@ from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import (ProductFullStockView, ProductQuantityView,
-                                  ProductFullStockItemView)
+                                  ProductFullStockItemView, SoldItemView)
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.search import (SearchDialog, SearchEditor,
                                      SearchDialogPrintSlave)
@@ -49,7 +50,9 @@ from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity, get_formatted_cost
 from stoqlib.reporting.product import (ProductReport, ProductQuantityReport,
-                                       ProductPriceReport, ProductStockReport)
+                                       ProductPriceReport,
+                                       ProductStockReport,
+                                       ProductsSoldReport)
 
 _ = stoqlib_gettext
 
@@ -240,6 +243,69 @@ class ProductSearchQuantity(SearchDialog):
                 Column('quantity_received', title=_('Received'),
                        format_func=format_data,
                        data_type=Decimal)]
+
+
+class ProductsSoldSearch(SearchDialog):
+    title = _('Products Sold Search')
+    size = (775, 450)
+    table = search_table = SoldItemView
+    advanced_search = False
+
+    def on_print_button_clicked(self, button):
+        print_report(ProductsSoldReport, self.results,
+                     filters=self.search.get_search_filters())
+
+    #
+    # SearchDialog Hooks
+    #
+
+    def create_filters(self):
+        self.set_text_field_columns(['description'])
+        self.executer.set_query(self.executer_query)
+
+        # Date
+        date_filter = DateSearchFilter(_('Date:'))
+        date_filter.select(Today)
+        self.add_filter(date_filter)
+        self.date_filter = date_filter
+
+        # Branch
+        branch_filter = self.create_branch_filter(_('In branch:'))
+        branch_filter.select(None)
+        self.add_filter(branch_filter, columns=[],
+                        position=SearchFilterPosition.TOP)
+        self.branch_filter = branch_filter
+
+
+    def executer_query(self, query, having, conn):
+        branch = self.branch_filter.get_state().value
+        if branch is not None:
+            branch = PersonAdaptToBranch.get(branch, connection=conn)
+
+        date = self.date_filter.get_state()
+        if isinstance(date, DateQueryState):
+            date = date.date
+        elif isinstance(date, DateIntervalQueryState):
+            date = (date.start, date.end)
+
+        return self.table.select_by_branch_date(query, branch, date,
+                                           connection=conn)
+    #
+    # SearchEditor Hooks
+    #
+
+    def get_columns(self):
+        return [Column('code', title=_('Code'), data_type=str,
+                       sorted=True, width=130),
+                Column('description', title=_('Description'), data_type=str,
+                       expand=True),
+                Column('sold', title=_('Sold'),
+                       format_func=format_data,
+                       data_type=Decimal),
+                Column('average_cost', title=_('Avg. Cost'),
+                       format_func=format_data,
+                       data_type=Decimal),
+               ]
 
 
 class ProductStockSearch(SearchEditor):
