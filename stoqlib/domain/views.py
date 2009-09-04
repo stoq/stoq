@@ -545,6 +545,7 @@ class ProductionItemView(Viewable):
                    order_status=ProductionOrder.q.status,
                    quantity=ProductionItem.q.quantity,
                    produced=ProductionItem.q.produced,
+                   lost=ProductionItem.q.lost,
                    category_description=SellableCategory.q.description,
                    unit_description=SellableUnit.q.description,
                    description=BaseSellableInfo.q.description,)
@@ -562,3 +563,7 @@ class ProductionItemView(Viewable):
                    Sellable.q.unitID == SellableUnit.q.id),
         INNERJOINOn(None, BaseSellableInfo,
                     Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),]
+
+    @property
+    def production_item(self):
+        return ProductionItem.get(self.id, connection=self.get_connection())

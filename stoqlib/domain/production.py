@@ -145,11 +145,14 @@ class ProductionItem(Domain):
     @ivar order: The L{ProductionOrder} of this item.
     @ivar product: The product that will be manufactured.
     @ivar quantity: The product's quantity that will be manufactured.
+    @ivar produced: The product's quantity that was manufactured.
+    @ivar lost: The product's quantity that was lost.
     """
     implements(IDescribable)
 
     quantity = DecimalCol(default=1)
     produced = DecimalCol(default=0)
+    lost = DecimalCol(default=0)
     order = ForeignKey('ProductionOrder')
     product = ForeignKey('Product')
 
@@ -169,6 +172,36 @@ class ProductionItem(Domain):
 
     def get_components(self):
         return self.product.get_components()
+
+    def can_produce(self, quantity):
+        """Sets a quantity to be produced. We can set a quantity to be
+        produced until we reach the total quantity that will be manufactured
+        minus the quantity that was lost.
+
+        @param quantity: the quantity that will be produced.
+        """
+        return self.produced + quantity - self.lost <= self.quantity
+
+    def produce(self, quantity):
+        assert self.can_produce(quantity)
+
+        storable = IStorable(self.product, None)
+        assert storable is not None
+
+        storable.increase_stock(quantity, self.order.branch)
+        self.produced += quantity
+
+    def set_lost(self, quantity):
+        """Sets a quantity that was lost. The maximum quantity that can be
+        lost is the total quantity minus the quantity already produced.
+
+        @param quantity: the quantity that was lost.
+        """
+        if self.lost + quantity > self.quantity - self.produced:
+            raise ValueError(
+                u'Can not lost more items than the total production quantity.')
+
+        self.lost += quantity
 
 
 class ProductionMaterial(Domain):
