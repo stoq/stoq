@@ -114,7 +114,8 @@ class SaleItem(Domain):
 
         storable = IStorable(self.sellable.product, None)
         if storable:
-            self.average_cost = storable.decrease_stock(self.quantity, branch)
+            item = storable.decrease_stock(self.quantity, branch)
+            self.average_cost = item.stock_cost
 
     def cancel(self, branch):
         storable = IStorable(self.sellable.product, None)

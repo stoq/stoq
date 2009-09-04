@@ -376,7 +376,6 @@ class ProductStockItem(Domain):
         @param new_quantity: The new quantity added to stock.
         @param new_cost: The cost of one unit of the added stock.
         """
-
         total_cost = self.quantity * self.stock_cost
         total_cost += new_quantity * new_cost
         total_items = self.quantity + new_quantity
@@ -523,7 +522,7 @@ class ProductAdaptToStorable(ModelAdapter):
                 #        confusing a sale and a sellable, Bug 2669
                 sellable.sell()
 
-        return stock_item.stock_cost
+        return stock_item
 
     def increase_logic_stock(self, quantity, branch=None):
         self._check_logic_quantity()
