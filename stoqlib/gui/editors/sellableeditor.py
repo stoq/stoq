@@ -278,8 +278,8 @@ class SellableEditor(BaseEditor):
             self._sellable.unit = None
         else:
             if self._unit.unit_index == UnitType.CUSTOM:
-                query = AND(const.UPPER(SellableUnit.q.description) ==
-                            self._unit.description.upper())
+                query = const.UPPER(SellableUnit.q.description) == \
+                        self._unit.description.upper()
             else:
                 query = SellableUnit.q.unit_index == self._unit.unit_index
 
