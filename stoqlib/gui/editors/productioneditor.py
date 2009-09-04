@@ -79,15 +79,17 @@ class ProductionItemEditor(BaseEditor):
 class ProductionItemProducedEditor(ProductionItemEditor):
     title = _(u'Produce Items')
 
+    quantity_title = _(u'Produced:')
+    quantity_attribute = 'produced'
+
     def __init__(self, conn, model):
         ProductionItemEditor.__init__(self, conn, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
-        self.quantity_lbl.set_text(_(u'Produced:'))
+        self.quantity_lbl.set_text(self.quantity_title)
         self.proxy.remove_widget('quantity')
-        self.quantity.set_property('model-attribute', 'produced')
-        self.produced = Decimal(0)
+        self.quantity.set_property('model-attribute', self.quantity_attribute)
         self._quantity_proxy = self.add_proxy(self, ['quantity',])
 
     def validate_confirm(self):
@@ -100,6 +102,24 @@ class ProductionItemProducedEditor(ProductionItemEditor):
                 _(u'Produced value should be greater than zero.'))
         if not self.model.can_produce(value):
             return ValidationError(_(u'Can not produce this quantity.'))
+
+
+class ProductionItemLostEditor(ProductionItemProducedEditor):
+    title = _(u'Lost Items')
+    quantity_title = _(u'Lost:')
+    quantity_attribute = 'lost'
+
+    def validate_confirm(self):
+        self.model.lost += self.lost
+        return True
+
+    def on_quantity__validate(self, widget, value):
+        if value <= 0:
+            return ValidationError(
+                _(u'Produced value should be greater than zero.'))
+        balance = self.model.lost + value + self.model.produced
+        if balance > self.model.quantity:
+            return ValidationError(_(u'Can not lost this quantity.'))
 
 
 class ProductionServiceEditor(ProductionItemEditor):

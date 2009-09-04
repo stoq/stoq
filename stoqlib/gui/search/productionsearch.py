@@ -38,7 +38,8 @@ from stoqlib.domain.views import ProductComponentView, ProductionItemView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.editors.producteditor import ProductionProductEditor
-from stoqlib.gui.editors.productioneditor import ProductionItemProducedEditor
+from stoqlib.gui.editors.productioneditor import (ProductionItemProducedEditor,
+                                                  ProductionItemLostEditor)
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -127,9 +128,13 @@ class ProductionItemsSearch(SearchDialog):
         self._lost_button.set_sensitive(has_selected)
         if has_selected:
             can_produce = view.quantity - view.lost > view.produced
+            # the same situation
+            can_lose = can_produce
         else:
             can_produce = False
+            can_lose = False
         self._produced_button.set_sensitive(can_produce)
+        self._lost_button.set_sensitive(can_lose)
 
     #
     # Callbacks
@@ -139,4 +144,4 @@ class ProductionItemsSearch(SearchDialog):
         self._run_editor(ProductionItemProducedEditor)
 
     def _on_lost_button__clicked(self, widget):
-        pass
+        self._run_editor(ProductionItemLostEditor)
