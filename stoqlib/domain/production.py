@@ -180,7 +180,7 @@ class ProductionItem(Domain):
 
         @param quantity: the quantity that will be produced.
         """
-        return self.produced + quantity - self.lost <= self.quantity
+        return self.produced + quantity + self.lost <= self.quantity
 
     def produce(self, quantity):
         assert self.can_produce(quantity)
