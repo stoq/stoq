@@ -35,6 +35,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.production import (ProductionItem, ProductionMaterial,
                                        ProductionService)
 from stoqlib.lib.defaults import DECIMAL_PRECISION
+from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -93,7 +94,11 @@ class ProductionItemProducedEditor(ProductionItemEditor):
         self._quantity_proxy = self.add_proxy(self, ['quantity',])
 
     def validate_confirm(self):
-        self.model.produce(self.produced)
+        try:
+            self.model.produce(self.produced)
+        except ValueError, msg:
+            info(msg)
+            return False
         return True
 
     def on_quantity__validate(self, widget, value):
