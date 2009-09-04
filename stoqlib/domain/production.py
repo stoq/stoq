@@ -183,11 +183,29 @@ class ProductionItem(Domain):
         return self.produced + quantity + self.lost <= self.quantity
 
     def produce(self, quantity):
+        """Sets a certain quantity as produced. The quantity will be marked as
+        produced only if there are enough materials allocated, otherwise a
+        ValueError exception will be raised.
+
+        @param quantity: the quantity that will be produced.
+        """
         assert self.can_produce(quantity)
 
-        storable = IStorable(self.product, None)
-        assert storable is not None
+        conn = self.get_connection()
+        for component in self.product.get_components():
+            material = ProductionMaterial.selectOneBy(
+                product=component.component,
+                order=self.order,
+                connection=conn)
 
+            material_quantity = quantity * component.quantity
+            if material.allocated >= material_quantity:
+                material.consumed += material_quantity
+            else:
+                raise ValueError(_(u'Not enough material are allocated to '
+                                    'produce %s.' % self.get_description()))
+
+        storable = IStorable(self.product, None)
         storable.increase_stock(quantity, self.order.branch)
         self.produced += quantity
 
