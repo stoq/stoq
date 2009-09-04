@@ -143,6 +143,27 @@ class ProductQuantityReport(ObjectListReport):
                               summary_row=self.get_summary_row())
 
 
+
+from stoqlib.domain.views import SoldItemView
+class ProductsSoldReport(ObjectListReport):
+    """ This report lists all products sold with the average stock cost for
+    a given period of time.
+    """
+    obj_type = SoldItemView
+    report_name = _("Products Sold Listing")
+    main_object_name = _("products sold")
+
+    def __init__(self, filename, products, *args, **kwargs):
+        self._products = products
+        ObjectListReport.__init__(self, filename, products,
+                                  self.report_name,
+                                  landscape=True,
+                                  *args, **kwargs)
+
+        self.add_object_table(self._products, self.get_columns(),
+                              summary_row=self.get_summary_row())
+
+
 class ProductCountingReport(SearchResultsReport):
     """This report shows a list of all products returned by a Searchbar
     and it leaves several fields in blank, like quantity, partial value
