@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -136,26 +136,34 @@ class StockTransferProductStep(SellableItemStep):
     def _setup_summary(self):
         self.summary = None
 
+    def _get_stock_balance(self, sellable):
+        storable = IStorable(sellable.product)
+        quantity = storable.get_full_balance(self.branch) or Decimal(0)
+        # do not count the added quantity
+        for item in self.slave.klist:
+            if item.sellable == sellable:
+                quantity -= item.quantity
+                break
+
+        return quantity
+
     def sellable_selected(self, sellable):
         SellableItemStep.sellable_selected(self, sellable)
 
         if sellable is None:
             return
 
-        storable = IStorable(sellable.product)
-        quantity = storable.get_full_balance(self.branch)
-        for item in self.slave.klist:
-            if item.sellable == sellable:
-                quantity -= item.quantity
-                break
-
+        quantity = self._get_stock_balance(sellable)
         has_quantity = quantity > 0
         self.quantity.set_sensitive(has_quantity)
         self.cost.set_sensitive(has_quantity)
         self.add_sellable_button.set_sensitive(has_quantity)
-
         if has_quantity:
             self.quantity.set_range(1, quantity)
+
+    def setup_slaves(self):
+        SellableItemStep.setup_slaves(self)
+        self.quantity.connect('validate', self._on_quantity__validate)
 
     #
     # WizardStep hooks
@@ -169,6 +177,16 @@ class StockTransferProductStep(SellableItemStep):
     def next_step(self):
         return StockTransferFinishStep(self.conn, self.wizard,
                                        self.model, self)
+
+    def _on_quantity__validate(self, widget, value):
+        if not value or value <= 0:
+            return ValidationError(_(u'Quantity should be a positive number.'))
+
+        sellable = self.sellable.get_selected()
+        balance = self._get_stock_balance(sellable)
+        if value > balance:
+            return ValidationError(
+                _(u'Quantity is greater than the quantity in stock.'))
 
 
 class StockTransferFinishStep(BaseWizardStep):
