@@ -30,6 +30,12 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="ProductsSoldSearch">
+                        <property name="name">ProductsSoldSearch</property>
+                        <property name="label" translatable="yes">Products Sold...</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="ChangePassword">
                         <property name="name">ChangePassword</property>
                         <property name="label" translatable="yes">Chan_ge Password</property>
@@ -275,6 +281,7 @@
 	      <menuitem action="DeliverySearch"/>
 	      <menuitem action="ClientSearch"/>
 	      <menuitem action="CommissionSearch"/>
+	      <menuitem action="ProductsSoldSearch"/>
 	    </menu>
 	    <menu action="help_menu">
 	      <menuitem action="about_menu"/>
