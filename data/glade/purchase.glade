@@ -290,6 +290,18 @@
                         <property name="accelerator">&lt;Control&gt;u</property>
                     </widget>
                 </child>
+                <child>
+                    <widget class="GtkAction" id="stock_cost_action">
+                        <property name="name">stock_cost_action</property>
+                        <property name="label" translatable="yes">_Stock Cost...</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="ProductsSoldSearch">
+                        <property name="name">ProductsSoldSearch</property>
+                        <property name="label" translatable="yes">Products Sold...</property>
+                    </widget>
+                </child>
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui>
@@ -299,6 +311,7 @@
 	    <menuitem action="QuoteOrder"/>
 	    <menuitem action="FinishOrder"/>
 	    <menuitem action="SendToSupplier"/>
+	    <menuitem action="stock_cost_action"/>
 	    <separator name="sep"/>
 	    <menuitem action="ExportCSV"/>
 	    <menuitem action="Quit"/>
@@ -313,6 +326,7 @@
 	    <menuitem action="Transporter"/>
 	    <menuitem action="SearchQuotes"/>
 	    <menuitem action="SearchPurchasedItems"/>
+        <menuitem action="ProductsSoldSearch"/>
 	  </menu>
           <menu action="help_menu">
 	    <menuitem action="about_menu"/>
