@@ -51,7 +51,6 @@ from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
-from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
 from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.productretention import ProductRetentionDialog
@@ -103,9 +102,7 @@ class StockApp(SearchableAppWindow):
                 SearchColumn('stock', title=_('Quantity'),
                              data_type=decimal.Decimal, width=80),
                 SearchColumn('unit', title=_("Unit"), data_type=str,
-                             width=40),
-                Column('stock_cost', title=_("Avg. Stock Cost"),
-                       visible=False, data_type=currency, width=60)
+                             width=40)
                  ]
 
     def query(self, query, having, conn):
@@ -221,10 +218,6 @@ class StockApp(SearchableAppWindow):
     def on_initial_stock_action__activate(self, action):
         branch = self.branch_filter.get_state().value
         self.run_dialog(InitialStockDialog, self.conn, branch)
-
-    def on_stock_cost_action__activate(self, action):
-        branch = self.branch_filter.get_state().value
-        self.run_dialog(StockCostDialog, self.conn, branch)
 
     def on_receiving_search_action_clicked(self, button):
         self.run_dialog(PurchaseReceivingSearch, self.conn)

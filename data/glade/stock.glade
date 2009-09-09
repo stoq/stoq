@@ -197,12 +197,6 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="stock_cost_action">
-                        <property name="name">stock_cost_action</property>
-                        <property name="label" translatable="yes">_Stock Cost...</property>
-                    </widget>
-                </child>
-                <child>
                     <widget class="GtkAction" id="transfer_action">
                         <property name="name">transfer_action</property>
                         <property name="label" translatable="yes">Transfer</property>
@@ -232,7 +226,6 @@
 	      <menuitem action="receive_action"/>
           <menuitem action="transfer_action"/>
           <menuitem action="initial_stock_action"/>
-          <menuitem action="stock_cost_action"/>
       <separator name="sep"/>
           <menuitem action="ExportCSV"/>
 	      <menuitem action="Quit"/>
