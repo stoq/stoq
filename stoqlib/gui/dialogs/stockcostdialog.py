@@ -70,7 +70,7 @@ class StockCostDialog(BaseEditor):
     def _setup_widgets(self):
         # XXX: the branch should be in bold font
         self.branch_label.set_text(
-            _(u"Registering initial stock for products in %s") %
+            _(u"Fixing stock cost for products in %s") %
                                             self._branch.person.name)
 
         items = ProductFullStockView.select_by_branch(None, branch=self._branch,
@@ -79,14 +79,13 @@ class StockCostDialog(BaseEditor):
         self.slave.listcontainer.add_items(self._storables)
 
     def _get_columns(self):
-        adj = gtk.Adjustment(upper=MAXINT, step_incr=1)
         return [Column("code", title=_(u"Code"), data_type=str,
                         sorted=True),
                 Column("description", title=_(u"Description"),
                         data_type=str, expand=True),
                 Column("stock_cost", title=_(u"Stock Cost"), width=100,
                         data_type=currency, format_func=self._format_func,
-                        editable=True, spin_adjustment=adj)]
+                        editable=True)]
 
     def _format_func(self, quantity):
         if quantity is ValueUnset:
