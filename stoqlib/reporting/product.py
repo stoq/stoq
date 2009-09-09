@@ -35,7 +35,9 @@ from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.lib.validators import format_quantity, get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.domain.product import ProductHistory
-from stoqlib.domain.views import ProductFullStockView, ProductFullStockItemView
+from stoqlib.domain.views import (ProductFullStockView,
+                                  ProductFullStockItemView,
+                                  SoldItemView)
 
 
 class ProductReport(ObjectListReport):
@@ -143,8 +145,6 @@ class ProductQuantityReport(ObjectListReport):
                               summary_row=self.get_summary_row())
 
 
-
-from stoqlib.domain.views import SoldItemView
 class ProductsSoldReport(ObjectListReport):
     """ This report lists all products sold with the average stock cost for
     a given period of time.
