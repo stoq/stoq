@@ -191,9 +191,15 @@
                 <child>
                     <widget class="GtkAction" id="initial_stock_action">
                         <property name="name">initial_stock_action</property>
-                        <property name="label" translatable="yes">_Initial Stock</property>
+                        <property name="label" translatable="yes">_Initial Stock...</property>
                         <property name="stock_id">gtk-go-up</property>
                         <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;I</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="stock_cost_action">
+                        <property name="name">stock_cost_action</property>
+                        <property name="label" translatable="yes">_Stock Cost...</property>
                     </widget>
                 </child>
                 <child>
@@ -226,6 +232,7 @@
 	      <menuitem action="receive_action"/>
           <menuitem action="transfer_action"/>
           <menuitem action="initial_stock_action"/>
+          <menuitem action="stock_cost_action"/>
       <separator name="sep"/>
           <menuitem action="ExportCSV"/>
 	      <menuitem action="Quit"/>
