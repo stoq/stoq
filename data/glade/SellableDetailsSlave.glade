@@ -74,11 +74,16 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkEventBox" id="sellable_image_holder">
-                                <property name="border_width">1</property>
+                            <widget class="GtkVBox" id="vbox2">
                                 <property name="visible">True</property>
                                 <child>
-                                    <placeholder/>
+                                    <widget class="GtkEventBox" id="sellable_image_holder">
+                                        <property name="border_width">1</property>
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <placeholder/>
+                                        </child>
+                                    </widget>
                                 </child>
                             </widget>
                             <packing>
@@ -91,6 +96,18 @@
                             </packing>
                         </child>
                     </widget>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label1">
+                        <property name="label" context="yes" translatable="yes">Right-click image for more options</property>
+                        <property name="visible">True</property>
+                        <property name="wrap">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="position">1</property>
+                    </packing>
                 </child>
             </widget>
         </child>
