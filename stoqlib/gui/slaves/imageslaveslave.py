@@ -24,6 +24,7 @@
 
 """ Implementation of a generic slave for including images."""
 
+import os
 import gtk
 
 from kiwi.ui.dialogs import open
@@ -63,21 +64,37 @@ class ImageSlave(BaseEditorSlave):
 
     def _setup_menu(self):
         """ Create popup """
-        self.edit_item = gtk.MenuItem(_("Edit"))
+        self.edit_item = gtk.MenuItem(_("Change"))
+        self.view_item = gtk.MenuItem(_("View"))
         self.erase_item = gtk.MenuItem(_("Erase"))
         self.popmenu = gtk.Menu()
         self.popmenu.append(self.edit_item)
+        self.popmenu.append(self.view_item)
         self.popmenu.append(self.erase_item)
         self.edit_item.connect("activate", self._on_popup_edit__activate)
+        self.view_item.connect("activate", self._on_popup_view__activate)
         self.erase_item.connect("activate", self._on_popup_erase__activate)
-        self.edit_item.show()
-        self.erase_item.show()
+        self.popmenu.show_all()
+
+    def _view_image(self):
+        pixbuf = self.pixbuf_converter.from_string(self.model.image)
+        filename = '/tmp/stoq-product-%s.png' % self.model.id
+        pixbuf.save(filename, "png")
+
+        if not os.fork():
+            os.system("gnome-open %s" % filename)
+            # See http://www.gtk.org/faq/#AEN505 -- _exit()
+            # keeps file descriptors open, which avoids X async
+            # errors after we close the child window.
+            os._exit(-1)
+        return
 
     def _show_image(self, filename, sensitive):
         """Show an image from filename"""
         pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(filename, 64, 64)
         self.image.set_from_pixbuf(pixbuf)
         self.erase_item.set_sensitive(sensitive)
+        self.view_item.set_sensitive(sensitive)
 
     def _edit_image(self):
         """Opens a dialog to load and save a new image"""
@@ -103,6 +120,9 @@ class ImageSlave(BaseEditorSlave):
 
     def _on_popup_edit__activate(self, menu):
         self._edit_image()
+
+    def _on_popup_view__activate(self, menu):
+        self._view_image()
 
     def _on_popup_erase__activate(self, menu):
         self.model.image = ''
