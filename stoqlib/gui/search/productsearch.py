@@ -303,8 +303,7 @@ class ProductsSoldSearch(SearchDialog):
                        format_func=format_data,
                        data_type=Decimal),
                 Column('average_cost', title=_('Avg. Cost'),
-                       format_func=format_data,
-                       data_type=Decimal),
+                       data_type=currency),
                ]
 
 

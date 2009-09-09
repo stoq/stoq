@@ -134,8 +134,8 @@ class ProductFullStockView(Viewable):
 
     @property
     def stock_cost(self):
-        if self.quantity:
-            return self.total_stock_cost / self.quantity
+        if self.stock:
+            return self.total_stock_cost / self.stock
 
         return 0
 
