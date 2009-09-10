@@ -173,8 +173,6 @@ class StockApp(SearchableAppWindow):
         if pixbuf:
             self.image.set_from_pixbuf(pixbuf)
         else:
-            #self.image_button.set_use_stock(True)
-            #self.image_button.set_label(gtk.STOCK_EDIT)
             self.image.set_from_stock(gtk.STOCK_EDIT, gtk.ICON_SIZE_DIALOG)
 
         self.image_button.set_sensitive(one_selected)
