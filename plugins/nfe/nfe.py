@@ -23,18 +23,11 @@
 ##
 """ NF-e XML document generation """
 
-import base64
 import datetime
-import hashlib
 import os.path
 import random
 from xml.etree.ElementTree import Element
 from xml.sax.saxutils import escape
-
-from OpenSSL import crypto
-
-from ncrypt.digest import Digest, DigestType
-from ncrypt.rsa import RSAKey
 
 from stoqdrivers.enum import TaxType
 
@@ -75,14 +68,6 @@ class NFeGenerator(object):
         self._add_totals()
         self._add_transport_data()
         self._add_additional_information()
-
-    def sign(self, certificate, passphrase=''):
-        """Signs the NF-e.
-        @param certificate: the path of the certificate file.
-        @param passphrase: the passphrase needed to access the certificate
-                           content.
-        """
-        self._add_signature(certificate, passphrase)
 
     def save(self, location=''):
         """Saves the NF-e.
@@ -235,62 +220,6 @@ class NFeGenerator(object):
     def _add_additional_information(self):
         nfe_info = NFeSimplesNacionalInfo()
         self._nfe_data.element.append(nfe_info.element)
-
-    def _add_signature(self, certificate, passphrase):
-        # Pg. 16
-        data_str = nfe_tostring(self._nfe_data.element)
-        uri = self._nfe_data.get_id_value()
-        signature = add_nfe_signature(data_str, uri, certificate, passphrase)
-        self.root.append(signature.element)
-
-#
-# Helper functions
-#
-
-def add_nfe_signature(xml_str, uri, certificate, passphrase):
-    """Returns the signature element for a given XML document.
-
-    @param xml_str: the XML document string.
-    @param uri: the URI value of the reference tag.
-    @param certificate: the path of the certificate file.
-    @param passphrase: the passphrase to access the certificate file.
-
-    @returns: a L{NFeSignature} instance.
-    """
-    # compute hash value
-    hash = hashlib.sha1()
-    hash.update(xml_str)
-    digest = base64.b64encode(hash.digest())
-    # create the signature element
-    certificate_str = _get_certicate_string(certificate, passphrase)
-    signature = NFeSignature(certificate_str, digest, uri)
-    # sign
-    info_str = nfe_tostring(signature.signature_info.element)
-    signature_value = _get_signature_value(info_str, certificate, passphrase)
-    signature.add_signature_value(signature_value)
-
-    return signature
-
-def _get_certicate_string(certificate, passphrase):
-    pkcs12 = crypto.load_pkcs12(open(certificate, 'rb').read(), passphrase)
-    cert = crypto.dump_certificate(crypto.FILETYPE_PEM,
-                                   pkcs12.get_certificate())
-    # remove header and footer.
-    return u''.join([c for c in cert.split('\n') if not c.startswith('-----')])
-
-def _get_certificate_private_key_string(certificate, passphrase):
-    pkcs12 = crypto.load_pkcs12(open(certificate, 'rb').read(), passphrase)
-    return crypto.dump_privatekey(crypto.FILETYPE_PEM,
-                                   pkcs12.get_privatekey())
-
-def _get_signature_value(xml_str, certificate, passphrase):
-    key = RSAKey()
-    private_key = _get_certificate_private_key_string(certificate, passphrase)
-    key.fromPEM_PrivateKey(private_key)
-    digest_type = DigestType('SHA1')
-    digest = Digest(digest_type).digest(xml_str)
-    signature = key.sign(digest, digest_type)
-    return base64.b64encode(signature)
 
 #
 # NF-e XML Groups
@@ -977,88 +906,3 @@ NACIONAL. Não gera Direito a Crédito Fiscal de ICMS e de ISS. Conforme \
 Lei Complementar 123 de 14/12/2006.'''
 
         self.set_attr('infCpl', msg)
-
-
-# Pg. 127
-class NFeSignature(BaseNFeXMLGroup):
-    """Assinatura XML da NF-e segundo o padrão XML Digital Signature.
-    """
-    tag = u'Signature'
-
-    def __init__(self, certificate, digest, uri):
-        BaseNFeXMLGroup.__init__(self)
-        self.element.set('xmlns', 'http://www.w3.org/2000/09/xmldsig#')
-
-        self._certificate = certificate
-        self.signature_info = NFeSignatureInfo(digest, uri)
-        self.element.append(self.signature_info.element)
-
-    def add_signature_value(self, signature_value):
-        signature = Element(u'SignatureValue')
-        signature.text = signature_value
-        self.element.append(signature)
-
-        key_info = NFeKeyInfo(self._certificate)
-        self.element.append(key_info.element)
-        self.key_info = key_info
-
-
-# Pg. 16
-class NFeSignatureInfo(BaseNFeXMLGroup):
-    tag = u'SignedInfo'
-
-    def __init__(self, digest, uri):
-        BaseNFeXMLGroup.__init__(self)
-        self.element.set('xmlns', 'http://www.w3.org/2000/09/xmldsig#')
-
-        canonicalization = Element(u'CanonicalizationMethod',
-            dict(Algorithm='http://www.w3.org/TR/2001/REC-xml-c14n-20010315'))
-        self.element.append(canonicalization)
-
-        method = Element(u'SignatureMethod',
-            dict(Algorithm='http://www.w3.org/2000/09/xmldsig#rsa-sha1'))
-        self.element.append(method)
-
-        reference = Element(u'Reference', dict(URI='#%s' % uri))
-
-        transforms = NFeTransforms()
-        reference.append(transforms.element)
-
-        digest_method = Element(u'DigestMethod',
-            dict(Algorithm='http://www.w3.org/2000/09/xmldsig#sha1'))
-        reference.append(digest_method)
-
-        digest_value = Element(u'DigestValue')
-        digest_value.text = digest
-        reference.append(digest_value)
-        self.element.append(reference)
-
-
-# Pg. 16
-class NFeTransforms(BaseNFeXMLGroup):
-    tag = u'Transforms'
-
-    def __init__(self):
-        BaseNFeXMLGroup.__init__(self)
-        enveloped = 'http://www.w3.org/2000/09/xmldsig#enveloped-signature'
-        transform_enveloped = Element(u'Transform', dict(Algorithm=enveloped))
-        self.element.append(transform_enveloped)
-
-        c14n = 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315'
-        transform_c14n = Element(u'Transform', dict(Algorithm=c14n))
-        self.element.append(transform_c14n)
-
-
-# Pg. 16
-class NFeKeyInfo(BaseNFeXMLGroup):
-    tag = u'KeyInfo'
-
-    def __init__(self, certificate):
-        BaseNFeXMLGroup.__init__(self)
-
-        x509_data = Element(u'X509Data')
-        x509_certificate = Element(u'X509Certificate')
-        x509_certificate.text = certificate
-
-        x509_data.append(x509_certificate)
-        self.element.append(x509_data)
