@@ -295,7 +295,6 @@ class ProductionItemStep(SellableItemStep):
 
 
 class FinishOpenProductionOrderStep(BaseWizardStep):
-#    gladefile = 'FinishOpenProductionOrderStep'
     gladefile = 'HolderTemplate'
     model_type = ProductionOrder
     proxy_widgets = []
@@ -319,6 +318,9 @@ class FinishOpenProductionOrderStep(BaseWizardStep):
     def post_init(self):
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
+        # Reload materials, so if we go back and forward, the materials are
+        # updated properly,
+        self._slave.reload_materials()
 
     def validate_step(self):
         return self._slave.validate_confirm()

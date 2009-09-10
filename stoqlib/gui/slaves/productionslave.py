@@ -95,12 +95,18 @@ class _TemporaryMaterial(object):
     def add_quantity(self, quantity):
         assert quantity > 0
         self.needed += quantity
+        self.update_quantities()
+
+    def update_quantities(self):
         missing_quantity = self.needed - self.stock_quantity
-        if missing_quantity > 0:
-            if self.product.has_components():
-                self.to_make = missing_quantity
-            else:
-                self.to_purchase = missing_quantity
+        if missing_quantity < 0:
+            missing_quantity = 0
+
+        if self.product.has_components():
+            self.to_make = missing_quantity
+        else:
+            self.to_purchase = missing_quantity
+
         if self._material is not None:
             self._material.needed = self.needed
             self._material.to_make = self.to_make
@@ -211,6 +217,18 @@ class ProductionMaterialListSlave(BaseEditorSlave):
                     self.model.set_production_waiting()
                     break
         return True
+
+    def reload_materials(self):
+        """Reloads the material list if needed."""
+        if len(self.materials) == 0:
+            return
+
+        self.materials.clear()
+        # will trigger the material re-population.
+        self._setup_widgets()
+
+        for material in self.materials:
+            material.update_quantities()
 
     #
     # Kiwi Callbacks
