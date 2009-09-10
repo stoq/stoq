@@ -34,23 +34,25 @@ from stoqlib.lib.pluginmanager import register_plugin
 
 plugin_root = os.path.dirname(__file__)
 sys.path.append(plugin_root)
+from nfeui import NFeUI
 
 
 class NFePlugin(object):
     implements(IPlugin)
     name = 'nfe'
 
-    #TODO: implement nfe domain first
+    def __init__(self):
+        self.ui = None
 
     def get_migration(self):
         environ.add_resource('nfecsv', os.path.join(plugin_root, 'csv'))
-        environ.add_resource('nfetemplates',
-                             os.path.join(plugin_root, 'templates'))
         environ.add_resource('nfesql', os.path.join(plugin_root, 'sql'))
         return PluginSchemaMigration(self.name, 'nfesql', ['*.sql', '*.py',])
 
-    def activate(self):
-        pass
+    def get_tables(self):
+        return [('nfedomain', ['NFeCityData',])]
 
+    def activate(self):
+        self.ui = NFeUI()
 
 register_plugin(NFePlugin)
