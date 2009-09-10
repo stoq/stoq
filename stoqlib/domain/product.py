@@ -143,6 +143,7 @@ class Product(Domain):
 
     suppliers = MultipleJoin('ProductSupplierInfo')
     image = BLOBCol(default='')
+    full_image = BLOBCol(default='')
     location = UnicodeCol(default='')
     manufacturer = UnicodeCol(default='')
     part_number = UnicodeCol(default='')

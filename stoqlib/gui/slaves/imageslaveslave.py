@@ -77,7 +77,7 @@ class ImageSlave(BaseEditorSlave):
         self.popmenu.show_all()
 
     def _view_image(self):
-        pixbuf = self.pixbuf_converter.from_string(self.model.image)
+        pixbuf = self.pixbuf_converter.from_string(self.model.full_image)
         filename = '/tmp/stoq-product-%s.png' % self.model.id
         pixbuf.save(filename, "png")
 
@@ -113,6 +113,8 @@ class ImageSlave(BaseEditorSlave):
         self._show_image(filename, sensitive=True)
         self.model.image = self.pixbuf_converter.as_string(
             self.image.get_pixbuf())
+        self.model.full_image = self.pixbuf_converter.as_string(
+            gtk.gdk.pixbuf_new_from_file(filename))
 
     #
     # Gtk Callbacks, for the popup menu
@@ -126,6 +128,7 @@ class ImageSlave(BaseEditorSlave):
 
     def _on_popup_erase__activate(self, menu):
         self.model.image = ''
+        self.model.full_image = ''
         self._show_image(default_filename, sensitive=False)
 
     #
