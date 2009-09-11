@@ -111,8 +111,12 @@ class NFeGenerator(object):
         return str(11 - dv_mod)
 
     def _get_nfe_number(self):
-        #TODO: retrieve the fiscal invoice number.
-        return 1
+        if self._sale.invoice_number:
+            return self._sale.invoice_number
+        # XXX: This is bug and should be fixed when we disable the invoice
+        # printing in the sales application, which will change the invoice
+        # number setting.
+        return self._sale.id
 
     def _get_cnpj(self, person):
         company = ICompany(person, None)
@@ -518,13 +522,7 @@ class NFeProduct(BaseNFeXMLGroup):
         nfe_cofins = NFeCOFINS()
 
         tax_type = sellable_tax.tax_type
-        if tax_type == TaxType.SUBSTITUTION:
-            # TODO: Substituição Tributária/ICMS
-            pass
-        elif tax_type == TaxType.SERVICE:
-            # TODO: ISS
-            pass
-        else:
+        if tax_type in [TaxType.EXEMPTION, TaxType.NONE]:
             # Não tributado ou Isento/ICMS. Atualmente, apenas consideramos
             # que a empresa esteja enquadrada no simples nacional.
             icms = NFeICMS40(tax_type)
@@ -533,6 +531,8 @@ class NFeProduct(BaseNFeXMLGroup):
             nfe_pis.element.append(pis.element)
             cofins = NFeCOFINSOutr()
             nfe_cofins.element.append(cofins.element)
+
+        # TODO: handle service tax (ISS) and ICMS.
 
         nfe_tax.element.append(nfe_icms.element)
         nfe_tax.element.append(nfe_pis.element)
