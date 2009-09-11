@@ -22,6 +22,7 @@
 ## Author(s):   George Y. Kussumoto      <george@async.com.br>
 ##
 
+import os, os.path
 import sys
 
 import gtk
@@ -43,41 +44,20 @@ class NFeUI(object):
         self.conn = get_connection()
 
         SaleConfirmEvent.connect(self._on_SaleConfirm)
-        StartApplicationEvent.connect(self._on_StartApplicationEvent)
 
     #
     # Private
     #
 
-    def _add_ui_menus(self, appname, uimanager):
-        if appname == 'sales':
-            self._add_sales_menus(uimanager)
-        elif appname == 'admin':
-            self._add_admin_menus(uimanager)
+    def _get_save_location(self):
+        stoq_dir = os.path.join(os.environ['HOME'], '.stoq')
+        if not os.path.isdir(stoq_dir):
+            os.mkdir(stoq_dir)
+        nfe_dir = os.path.join(stoq_dir, 'generated_nfe')
+        if not os.path.isdir(nfe_dir):
+            os.mkdir(nfe_dir)
 
-    def _add_admin_menus(self, uimanager):
-        ui_string = """<ui>
-          <menubar name="menubar">
-            <menu action="settings_menu" name="settings_menu">
-            <placeholder name="PluginSettings">
-              <menuitem action="ConfigureNFe"/>
-            </placeholder>
-            </menu>
-          </menubar>
-        </ui>"""
-
-        ag = gtk.ActionGroup('NFeMenuActions')
-        ag.add_actions([
-            ('NFeMenu', None, _('NFe')),
-            ('ConfigureNFe', None, _('Configure NF-e plugin...'),
-             None, None, self._on_ConfigureNFe__activate),
-            ])
-        uimanager.insert_action_group(ag, 0)
-        uimanager.add_ui_from_string(ui_string)
-
-    def _add_sales_menus(self, uimanager):
-        #TODO: implementation
-        pass
+        return nfe_dir
 
     def _can_create_nfe(self, sale):
         # Improve!
@@ -87,7 +67,7 @@ class NFeUI(object):
         if self._can_create_nfe(sale):
             generator = NFeGenerator(sale, trans)
             generator.generate()
-            generator.save()
+            generator.save(location=self._get_save_location())
 
     #
     # Events
@@ -98,11 +78,3 @@ class NFeUI(object):
 
     def _on_SaleConfirm(self, sale, trans):
         self._create_nfe(sale, trans)
-
-    #
-    # Callbacks
-    #
-
-    def _on_ConfigureNFe__activate(self, action):
-        #TODO: implementation
-        pass
