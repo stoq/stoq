@@ -23,8 +23,6 @@
 ##
 """ Production editors """
 
-
-from decimal import Decimal
 import sys
 
 import gtk
