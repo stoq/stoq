@@ -85,13 +85,15 @@ class ProductionItemsSearch(SearchDialog):
     #
 
     def setup_widgets(self):
-        self._produced_button = self.add_button('_Produced...', image='add24px.png')
+        self._produced_button = self.add_button(_(u'_Produced...'),
+                                                image='add24px.png')
         self._produced_button.connect('clicked',
                                       self._on_produced_button__clicked)
         self._produced_button.set_sensitive(False)
         self._produced_button.show()
 
-        self._lost_button = self.add_button('_Lost...', image='remove24px.png')
+        self._lost_button = self.add_button(_(u'_Lost...'),
+                                            image='remove24px.png')
         self._lost_button.connect('clicked', self._on_lost_button__clicked)
         self._lost_button.set_sensitive(False)
         self._lost_button.show()
