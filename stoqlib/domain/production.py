@@ -164,6 +164,15 @@ class ProductionItem(Domain):
         return self.product.sellable.get_description()
 
     #
+    # Private API
+    #
+
+    def _get_material_from_component(self, component):
+        return ProductionMaterial.selectOneBy(product=component.component,
+                                              order=self.order,
+                                              connection=self.get_connection())
+
+    #
     # Public API
     #
 
@@ -180,6 +189,8 @@ class ProductionItem(Domain):
 
         @param quantity: the quantity that will be produced.
         """
+        assert quantity > 0
+
         return self.produced + quantity + self.lost <= self.quantity
 
     def produce(self, quantity):
@@ -192,25 +203,24 @@ class ProductionItem(Domain):
         assert self.can_produce(quantity)
 
         conn = self.get_connection()
-        for component in self.product.get_components():
-            material = ProductionMaterial.selectOneBy(
-                product=component.component,
-                order=self.order,
-                connection=conn)
+        conn.savepoint('before_produce')
 
+        for component in self.get_components():
+            material = self._get_material_from_component(component)
             material_quantity = quantity * component.quantity
-            if material.allocated >= material_quantity:
-                material.consumed += material_quantity
-            else:
-                raise ValueError(_(u'Not enough material are allocated to '
-                                    'produce %s.' % self.get_description()))
+            
+            try:
+                material.consume(material_quantity)
+            except ValueError:
+                conn.rollback_to_savepoint('before_produce')
+                raise
 
         storable = IStorable(self.product, None)
         storable.increase_stock(quantity, self.order.branch)
         self.produced += quantity
 
-    def set_lost(self, quantity):
-        """Sets a quantity that was lost. The maximum quantity that can be
+    def add_lost(self, quantity):
+        """Adds a quantity that was lost. The maximum quantity that can be
         lost is the total quantity minus the quantity already produced.
 
         @param quantity: the quantity that was lost.
@@ -218,6 +228,17 @@ class ProductionItem(Domain):
         if self.lost + quantity > self.quantity - self.produced:
             raise ValueError(
                 u'Can not lost more items than the total production quantity.')
+
+        conn = self.get_connection()
+        conn.savepoint('before_lose')
+
+        for component in self.get_components():
+            material = self._get_material_from_component(component)
+            try:
+                material.add_lost(quantity * component.quantity)
+            except ValueError:
+                conn.rollback_to_savepoint('before_lose')
+                raise
 
         self.lost += quantity
 
@@ -248,23 +269,68 @@ class ProductionMaterial(Domain):
     # Public API
     #
 
-    def allocate(self):
+    def allocate(self, quantity=None):
         """Allocates the needed quantity of this material by decreasing the
-        stock quantity. If the available quantity is not enough, then it will
-        allocate all the stock available.
+        stock quantity. If no quantity was specified, it will decrease all the
+        stock needed or the maximum quantity available. Otherwise, allocate the
+        quantity specified or raise a ValueError exception, if the quantity is
+        not available.
+
+        @param quantity: the quantity to be allocated or None to allocate the
+                         maximum quantity possible.
         """
         stock = self.get_stock_quantity()
         storable = IStorable(self.product, None)
         assert storable is not None
 
-        if stock > self.needed:
-            quantity = self.needed
-        else:
-            quantity = stock
+        if quantity is None:
+            required = self.needed - self.allocated
+            if stock > required:
+                quantity = required
+            else:
+                quantity = stock
+        elif quantity > stock:
+            raise ValueError('Can not allocate this quantity.')
 
         if quantity > 0:
-            self.allocated = quantity
+            self.allocated += quantity
             storable.decrease_stock(quantity, self.order.branch)
+
+    def add_lost(self, quantity):
+        """Adds the quantity lost of this material. The maximum quantity that
+        can be lost is given by the formula: 
+            max_lost(quantity) = needed - consumed - lost - quantity
+
+        @param quantity: the quantity that was lost.
+        """
+        assert quantity > 0
+
+        if self.lost + quantity > self.needed - self.consumed:
+            raise ValueError(u'Can not lost this quantity.')
+
+        required = self.consumed + self.lost + quantity
+        if required > self.allocated:
+            self.allocate(required - self.allocated)
+
+        self.lost += quantity
+
+    def consume(self, quantity):
+        """Consumes a certain quantity of material. The maximum quantity
+        allowed to be consumed is given by the following formula:
+            max_consumed(quantity) = needed - consumed - lost - quantity
+
+        @param quantity: the quantity to be consumed.
+        """
+        assert quantity > 0
+
+        if self.consumed + quantity > self.needed - self.lost:
+            raise ValueError(u'Can not consume this quantity.')
+
+        required = self.consumed + self.lost + quantity
+        if required > self.allocated:
+            self.allocate(required - self.allocated)
+
+        self.consumed += quantity
 
     #
     # IDescribable Implementation
