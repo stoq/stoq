@@ -183,9 +183,9 @@ class ProductionItem(Domain):
         return self.product.get_components()
 
     def can_produce(self, quantity):
-        """Sets a quantity to be produced. We can set a quantity to be
-        produced until we reach the total quantity that will be manufactured
-        minus the quantity that was lost.
+        """Returns if we can produce a certain quantity.  We can produce a 
+        quantity items until we reach the total quantity that will be
+        manufactured minus the quantity that was lost.
 
         @param quantity: the quantity that will be produced.
         """
@@ -207,10 +207,10 @@ class ProductionItem(Domain):
 
         for component in self.get_components():
             material = self._get_material_from_component(component)
-            material_quantity = quantity * component.quantity
+            needed_material = quantity * component.quantity
             
             try:
-                material.consume(material_quantity)
+                material.consume(needed_material)
             except ValueError:
                 conn.rollback_to_savepoint('before_produce')
                 raise
