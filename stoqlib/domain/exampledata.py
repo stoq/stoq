@@ -362,24 +362,32 @@ class ExampleCreator(object):
 
     def create_production_item(self):
         from stoqlib.domain.product import ProductComponent
-        from stoqlib.domain.production import ProductionItem
+        from stoqlib.domain.production import (ProductionItem,
+                                               ProductionMaterial)
         product = self.create_product(10)
         component = self.create_product(5)
         ProductComponent(product=product,
                          component=component,
                          connection=self.trans)
+
+        order = self.create_production_order()
+        component = list(product.get_components())[0]
+        ProductionMaterial(product=component.component,
+                           order=order,
+                           connection=self.trans)
+ 
         return ProductionItem(product=product,
-                              order=self.create_production_order(),
+                              order=order,
                               connection=self.trans)
 
     def create_production_material(self):
         from stoqlib.domain.production import ProductionMaterial
         production_item = self.create_production_item()
+        order = production_item.order
         component = list(production_item.get_components())[0]
-        return ProductionMaterial(product=component.component,
-                                  order=self.create_production_order(),
-                                  connection=self.trans)
-
+        return ProductionMaterial.selectOneBy(product=component.component,
+                                              order=order,
+                                              connection=self.trans)
 
     def create_production_service(self):
         from stoqlib.domain.production import ProductionService
