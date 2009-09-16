@@ -129,7 +129,7 @@ class StockApp(SearchableAppWindow):
     def _setup_widgets(self):
         space = gtk.EventBox()
         space.show()
-        self.hbox7.pack_start(space)
+        self.button_box.pack_start(space)
 
         self.image = gtk.Image()
 
@@ -139,9 +139,8 @@ class StockApp(SearchableAppWindow):
         button.set_relief(gtk.RELIEF_NONE)
         button.show()
         button.connect('clicked', self._on_image_button__clicked)
-        self.hbox7.pack_start(button, False, False)
+        self.button_box.pack_start(button, False, False)
         self.image_button = button
-
 
         self.search.set_summary_label(column='stock',
                                       label=_('<b>Stock Total:</b>'),
