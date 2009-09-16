@@ -56,9 +56,14 @@ class ProductionItemEditor(BaseEditor):
 
     def setup_editor_widgets(self):
         self.order_number.set_text("%04d" %  self.model.order.id)
-        self.quantity.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
-                                                    step_incr=1))
+        self.quantity.set_adjustment(
+            gtk.Adjustment(lower=0, upper=self.get_max_quantity(), step_incr=1))
         self.quantity.set_digits(DECIMAL_PRECISION)
+
+    def get_max_quantity(self):
+        """Returns the maximum quantity allowed in the quantity spinbutton.
+        """
+        return sys.maxint
 
     def setup_proxies(self):
         self.setup_editor_widgets()
@@ -91,11 +96,15 @@ class ProductionItemProducedEditor(ProductionItemEditor):
         self.quantity.set_property('model-attribute', self.quantity_attribute)
         self._quantity_proxy = self.add_proxy(self, ['quantity',])
 
+    def get_max_quantity(self):
+        return self.model.quantity - self.model.lost - self.model.produced
+
     def validate_confirm(self):
         try:
             self.model.produce(self.produced)
-        except ValueError, msg:
-            info(msg)
+        except (ValueError, AssertionError):
+            info(_(u'Can not produce this quantity. Not enough materials '
+                    'can be allocated to produce this item.'))
             return False
         return True
 
@@ -103,8 +112,6 @@ class ProductionItemProducedEditor(ProductionItemEditor):
         if value <= 0:
             return ValidationError(
                 _(u'Produced value should be greater than zero.'))
-        if not self.model.can_produce(value):
-            return ValidationError(_(u'Can not produce this quantity.'))
 
 
 class ProductionItemLostEditor(ProductionItemProducedEditor):
@@ -112,17 +119,22 @@ class ProductionItemLostEditor(ProductionItemProducedEditor):
     quantity_title = _(u'Lost:')
     quantity_attribute = 'lost'
 
+    def get_max_quantity(self):
+        return self.model.quantity - self.model.lost - self.model.produced
+
     def validate_confirm(self):
-        self.model.lost += self.lost
+        try:
+            self.model.add_lost(self.lost)
+        except (ValueError, AssertionError):
+            info(_(u'Can not lost this quantity. Not enough materials can '
+                    'be allocated to this item.'))
+            return False
         return True
 
     def on_quantity__validate(self, widget, value):
         if value <= 0:
             return ValidationError(
                 _(u'Produced value should be greater than zero.'))
-        balance = self.model.lost + value + self.model.produced
-        if balance > self.model.quantity:
-            return ValidationError(_(u'Can not lost this quantity.'))
 
 
 class ProductionServiceEditor(ProductionItemEditor):
