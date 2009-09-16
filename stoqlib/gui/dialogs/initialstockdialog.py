@@ -116,6 +116,7 @@ class InitialStockDialog(BaseEditor):
             self._validate_initial_stock_quantity(item, trans)
 
         finish_transaction(trans, True)
+        trans.close()
         return True
 
     #

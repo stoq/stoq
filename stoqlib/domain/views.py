@@ -36,6 +36,7 @@ from stoqlib.domain.product import (Product,
 from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
                                      PurchaseItem)
 from stoqlib.domain.receiving import ReceivingOrderItem, ReceivingOrder
+from stoqlib.domain.sale import SaleItem, Sale
 from stoqlib.domain.sellable import (Sellable, SellableUnit,
                                      BaseSellableInfo, SellableCategory,
                                      SellableTaxConstant)
@@ -399,10 +400,9 @@ class QuotationView(Viewable):
                                  connection=self.get_connection())
 
 
-from stoqlib.domain.sale import SaleItem, Sale
-
 class SoldItemView(Viewable):
-    """Gets all sold items, includin the average cost of the sold items.
+    """Stores information about all sold items, includinf the average cost
+    of the sold items.
     """
 
     columns = dict(
