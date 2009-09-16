@@ -25,7 +25,7 @@
 
 
 from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.production import ProductionOrder
+from stoqlib.domain.production import ProductionOrder, ProductionMaterial
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -60,9 +60,67 @@ class TestProductionOrder(DomainTest):
         self.assertEqual(order.status, ProductionOrder.ORDER_WAITING)
 
 
+class TestProductionItem(DomainTest):
+
+    def testCanProduce(self):
+        item = self.create_production_item()
+        # quantity defaults to 1
+        self.assertRaises(AssertionError, item.can_produce, 0)
+        self.assertTrue(item.can_produce(1))
+        self.assertFalse(item.can_produce(2))
+        # if we lost one product we can not produce more items
+        item.lost = 1
+        self.assertFalse(item.can_produce(1))
+        self.assertFalse(item.can_produce(2))
+        # reset to test other conditions
+        item.lost = 0
+        # if we already have produced the item, we can not produce more items
+        item.produced = 1
+        self.assertFalse(item.can_produce(1))
+        self.assertFalse(item.can_produce(2))
+
+    def testProduce(self):
+        item = self.create_production_item()
+        branch = item.order.branch
+        item.product.addFacet(IStorable, connection=self.trans)
+        for material in item.order.get_material_items():
+            storable = material.product.addFacet(IStorable,
+                                                 connection=self.trans)
+            storable.increase_stock(10, branch)
+
+        item.produce(1)
+        self.assertEqual(item.produced, 1)
+
+    def testAddLost(self):
+        item = self.create_production_item()
+        order = item.order
+        branch = order.branch
+        item.product.addFacet(IStorable, connection=self.trans)
+        for component in item.get_components():
+            storable = component.component.addFacet(IStorable,
+                                                    connection=self.trans)
+            storable.increase_stock(1, branch)
+
+        order.start_production()
+
+        self.assertRaises(AssertionError, item.add_lost, 0)
+
+        item.add_lost(1)
+        self.assertEqual(item.lost, 1)
+        self.assertRaises(ValueError, item.add_lost, 1)
+
+        item = self.create_production_item()
+        invalid_qty = item.quantity + 1
+        self.assertRaises(ValueError, item.add_lost, invalid_qty)
+
+        item = self.create_production_item()
+        item.produced = 1
+        self.assertRaises(ValueError, item.add_lost, 1)
+
+
 class TestProductionMaterial(DomainTest):
 
-    def testAllocate(self):
+    def testAllocateAll(self):
         material = self.create_production_material()
         branch = material.order.branch
         product = material.product
@@ -70,12 +128,78 @@ class TestProductionMaterial(DomainTest):
         if storable is None:
             storable = product.addFacet(IStorable, connection=self.trans)
         storable.increase_stock(10, branch)
-        material.needed = 10
-        stock_qty = material.get_stock_quantity()
-        self.assertEqual(stock_qty, 10)
+        material.needed = 20
+        self.assertEqual(material.get_stock_quantity(), 10)
 
         material.allocate()
-        stock_qty = material.get_stock_quantity()
-        self.assertEqual(stock_qty, 0)
+        self.assertEqual(material.get_stock_quantity(), 0)
+        self.assertEqual(material.allocated, 10)
+        # try to allocate, but without any stock
         material.allocate()
-        self.assertEqual(stock_qty, 0)
+        self.assertEqual(material.get_stock_quantity(), 0)
+        self.assertEqual(material.allocated, 10)
+        # try to allocate, with more stock than we need
+        storable.increase_stock(25, branch)
+        material.allocate()
+        self.assertEqual(material.get_stock_quantity(), 15)
+        self.assertEqual(material.allocated, 20)
+
+    def testAllocatePartial(self):
+        material = self.create_production_material()
+        branch = material.order.branch
+        product = material.product
+        storable = product.addFacet(IStorable, connection=self.trans)
+        storable.increase_stock(10, branch) 
+        self.assertEqual(material.get_stock_quantity(), 10) 
+
+        material.allocate(5)
+        self.assertEqual(material.allocated, 5)
+        self.assertEqual(material.get_stock_quantity(), 5)
+
+        material.allocate(5)
+        self.assertEqual(material.allocated, 10)
+        self.assertEqual(material.get_stock_quantity(), 0)
+
+        self.assertRaises(ValueError, material.allocate, 1)
+        
+    def testAddLost(self):
+        item = self.create_production_item()
+        order = item.order
+        branch = order.branch
+        item.product.addFacet(IStorable, connection=self.trans)
+        for component in item.get_components():
+            storable = component.component.addFacet(IStorable,
+                                                    connection=self.trans)
+            storable.increase_stock(1, branch)
+
+        order.start_production()
+        self.assertRaises(AssertionError, item.add_lost, 0)
+
+        # Trigger the lost of materials
+        item.add_lost(1) 
+
+        for component in item.get_components():
+            material = ProductionMaterial.selectOneBy(order=order,
+                          product=component.component, connection=self.trans) 
+            lost = component.quantity
+            self.assertEqual(material.lost, lost)
+
+    def testConsume(self):
+        item = self.create_production_item()
+        order = item.order
+        branch = order.branch
+        item.product.addFacet(IStorable, connection=self.trans)
+        for material in item.order.get_material_items():
+            storable = material.product.addFacet(IStorable,
+                                                 connection=self.trans)
+            storable.increase_stock(10, branch)
+
+        # Trigger the consume of materials
+        item.produce(1)
+        self.assertEqual(item.produced, 1) 
+
+        for component in item.get_components():
+            material = ProductionMaterial.selectOneBy(order=order,
+                          product=component.component, connection=self.trans) 
+            lost = component.quantity
+            self.assertEqual(material.consumed, lost) 
