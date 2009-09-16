@@ -26,6 +26,7 @@
 
 import os
 import gtk
+import tempfile
 
 from kiwi.ui.dialogs import open
 from kiwi.datatypes import converter
@@ -78,7 +79,7 @@ class ImageSlave(BaseEditorSlave):
 
     def _view_image(self):
         pixbuf = self.pixbuf_converter.from_string(self.model.full_image)
-        filename = '/tmp/stoq-product-%s.png' % self.model.id
+        filename = tempfile.mktemp(prefix='stoq-product-%s-' % self.model.id)
         pixbuf.save(filename, "png")
 
         if not os.fork():
