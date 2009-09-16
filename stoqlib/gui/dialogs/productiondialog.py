@@ -79,7 +79,9 @@ class _TemporaryProductionItemComponent(object):
     def __init__(self, product_component):
         self.product = product_component.component
         sellable = self.product.sellable
+        self.code = sellable.code
         self.description = sellable.get_description()
+        self.location = self.product.location
         if sellable.category:
             self.category = sellable.category.description
         else:
@@ -303,9 +305,11 @@ class ProductionComponentSlave(GladeSlaveDelegate):
     def _get_columns(self):
         adj = gtk.Adjustment(upper=MAXINT, step_incr=1)
         return [Column('industrialized_str', title=_(u'Ind.'), data_type=str),
+                Column('code', title=_(u'code'), data_type=str),
                 Column('category', title=_(u'Category'), data_type=str,
                         sorted=True),
                 Column('description', title=_(u'Description'), data_type=str),
+                Column('location', title=_(u'Location'), data_type=str),
                 Column('needed_quantity', title=_(u'Needed'),
                         data_type=Decimal),
                 Column('stock_quantity', _(u'In Stock'), data_type=Decimal),
