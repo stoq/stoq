@@ -112,12 +112,12 @@ class ProductionItemsSearch(SearchDialog):
         return [SearchColumn('order_id', title=_(u'Order'), data_type=int,
                               sorted=True, format='%04d'),
                 SearchColumn('category_description', title=_(u'Category'),
-                              data_type=str, expand=True),
+                              data_type=str),
                 SearchColumn('description', title=_(u'Description'),
                               data_type=str, expand=True),
                 SearchColumn('unit_description', title=_(u'Unit'),
                               data_type=str),
-                SearchColumn('quantity', title=_(u'Production'),
+                SearchColumn('quantity', title=_(u'To Produce'),
                               data_type=Decimal),
                 SearchColumn('produced', title=_(u'Produced'),
                               data_type=Decimal),
@@ -127,7 +127,6 @@ class ProductionItemsSearch(SearchDialog):
     def update_widgets(self):
         view = self.results.get_selected()
         has_selected = view is not None
-        self._lost_button.set_sensitive(has_selected)
         if has_selected:
             can_produce = view.quantity - view.lost > view.produced
             # the same situation
