@@ -276,8 +276,10 @@ class ProductsSoldSearch(SearchDialog):
                         position=SearchFilterPosition.TOP)
         self.branch_filter = branch_filter
 
-
     def executer_query(self, query, having, conn):
+        # We have to do this manual filter since adding this columns to the
+        # view would also group the results by those fields, leading to
+        # duplicate values in the results.
         branch = self.branch_filter.get_state().value
         if branch is not None:
             branch = PersonAdaptToBranch.get(branch, connection=conn)

@@ -23,10 +23,6 @@
 ##
 """ Dialog to edit the stock average cost for products on a certain branch """
 
-from sys import maxint as MAXINT
-
-import gtk
-
 from kiwi import ValueUnset
 from kiwi.datatypes import currency
 from kiwi.enums import ListType
@@ -35,7 +31,6 @@ from kiwi.ui.listdialog import ListSlave
 
 from stoqlib.database.runtime import (new_transaction, finish_transaction,
                                       get_current_branch)
-from stoqlib.domain.product import ProductAdaptToStorable
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -117,6 +112,7 @@ class StockCostDialog(BaseEditor):
             self._validate_confirm(item, trans)
 
         finish_transaction(trans, True)
+        trans.close()
         return True
 
     #
