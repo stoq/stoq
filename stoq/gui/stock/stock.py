@@ -29,6 +29,7 @@ import decimal
 
 import pango
 import gtk
+from kiwi.datatypes import converter
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
@@ -42,6 +43,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.message import warning
+from stoqlib.gui.editors.producteditor import ProductStockEditor
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
@@ -67,6 +69,7 @@ class StockApp(SearchableAppWindow):
     search_table = ProductFullStockView
     search_labels = _('Matching:')
     klist_selection_mode = gtk.SELECTION_MULTIPLE
+    pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
@@ -113,14 +116,6 @@ class StockApp(SearchableAppWindow):
     # Private API
     #
 
-    def _setup_widgets(self):
-        self.search.set_summary_label(column='stock',
-                                      label=_('<b>Stock Total:</b>'),
-                                      format='<b>%s</b>')
-
-        if Inventory.has_open(self.conn, get_current_branch(self.conn)):
-            show_inventory_process_message()
-
     def _get_branches(self):
         items = [(b.person.name, b)
                   for b in Person.iselect(IBranch, connection=self.conn)]
@@ -130,6 +125,29 @@ class StockApp(SearchableAppWindow):
                                         'Found zero')
         items.insert(0, [_('All branches'), None])
         return items
+
+    def _setup_widgets(self):
+        space = gtk.EventBox()
+        space.show()
+        self.button_box.pack_start(space)
+
+        self.image = gtk.Image()
+
+        button = gtk.Button()
+        button.set_size_request(74, 64)
+        button.set_image(self.image)
+        button.set_relief(gtk.RELIEF_NONE)
+        button.show()
+        button.connect('clicked', self._on_image_button__clicked)
+        self.button_box.pack_start(button, False, False)
+        self.image_button = button
+
+        self.search.set_summary_label(column='stock',
+                                      label=_('<b>Stock Total:</b>'),
+                                      format='<b>%s</b>')
+
+        if Inventory.has_open(self.conn, get_current_branch(self.conn)):
+            show_inventory_process_message()
 
     def _update_widgets(self):
         branch = get_current_branch(self.conn)
@@ -142,7 +160,21 @@ class StockApp(SearchableAppWindow):
 
         is_main_branch = self.branch_filter.get_state().value is branch
         has_stock = len(self.results) > 0
-        one_selected = len(self.results.get_selected_rows()) == 1
+
+        selected = self.results.get_selected_rows()
+        one_selected = len(selected) == 1
+
+        pixbuf = None
+        if one_selected:
+            item = selected[0]
+            pixbuf = self.pixbuf_converter.from_string(item.product.image)
+
+        if pixbuf:
+            self.image.set_from_pixbuf(pixbuf)
+        else:
+            self.image.set_from_stock(gtk.STOCK_EDIT, gtk.ICON_SIZE_DIALOG)
+
+        self.image_button.set_sensitive(one_selected)
         self.history_button.set_sensitive(one_selected and is_main_branch)
         self.retention_button.set_sensitive(one_selected and is_main_branch)
         self.print_button.set_sensitive(has_stock)
@@ -233,3 +265,17 @@ class StockApp(SearchableAppWindow):
         sellable = Sellable.get(selected[0].id, connection=self.conn)
         self.run_dialog(ProductStockHistoryDialog, self.conn, sellable,
                         branch=self.branch_filter.combo.get_selected())
+
+    def _on_image_button__clicked(self, button):
+        selected = self.results.get_selected_rows()
+        one_selected = len(selected) == 1
+
+        if not one_selected:
+            return
+
+        trans = new_transaction()
+        product = trans.get(selected[0].product)
+
+        model = self.run_dialog(ProductStockEditor, trans, product)
+        finish_transaction(trans, model)
+        trans.close()
