@@ -205,6 +205,33 @@ class TestProduct(DomainTest):
         self.assertEquals(total, 0)
 
 
+    def test_increase_decrease_stock(self):
+        branch = get_current_branch(self.trans)
+        product = self.create_product()
+        storable = product.addFacet(IStorable, connection=self.trans)
+        stock_item = storable.get_stock_item(branch)
+        self.failIf(stock_item is not None)
+
+        storable.increase_stock(1, branch)
+        stock_item = storable.get_stock_item(branch)
+        self.assertEquals(stock_item.stock_cost, 0)
+
+        storable.increase_stock(1, branch, unit_cost=10)
+        stock_item = storable.get_stock_item(branch)
+        self.assertEquals(stock_item.stock_cost, 5)
+
+        stock_item = storable.decrease_stock(1, branch)
+        self.assertEquals(stock_item.stock_cost, 5)
+
+        storable.increase_stock(1, branch)
+        stock_item = storable.get_stock_item(branch)
+        self.assertEquals(stock_item.stock_cost, 5)
+
+        storable.increase_stock(2, branch, unit_cost=15)
+        stock_item = storable.get_stock_item(branch)
+        self.assertEquals(stock_item.stock_cost, 10)
+
+
 class TestProductSellableItem(DomainTest):
 
     def testSell(self):

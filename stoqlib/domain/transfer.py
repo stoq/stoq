@@ -137,8 +137,10 @@ class TransferOrder(Domain):
 
         for item in self.get_items():
             storable = IStorable(item.sellable.product)
+            from_stock = storable.get_stock_item(self.source_branch)
             storable.increase_stock(item.quantity,
-                                    self.destination_branch)
+                                    self.destination_branch,
+                                    from_stock.stock_cost)
         self.status = TransferOrder.STATUS_CLOSED
 
     def get_source_branch_name(self):
