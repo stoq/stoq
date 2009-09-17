@@ -467,7 +467,7 @@ class ProductAdaptToStorable(ModelAdapter):
     # IStorable implementation
     #
 
-    def increase_stock(self, quantity, branch, cost=None):
+    def increase_stock(self, quantity, branch, unit_cost=None):
         if quantity <= 0:
             raise ValueError("quantity must be a positive number")
 
@@ -486,8 +486,8 @@ class ProductAdaptToStorable(ModelAdapter):
                 # Rename see bug 2669
                 sellable.can_sell()
 
-        if cost is not None:
-            stock_item.update_cost(quantity, cost)
+        if unit_cost is not None:
+            stock_item.update_cost(quantity, unit_cost)
 
         stock_item.quantity += quantity
 
