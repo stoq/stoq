@@ -119,9 +119,6 @@ class ProductionItemLostEditor(ProductionItemProducedEditor):
     quantity_title = _(u'Lost:')
     quantity_attribute = 'lost'
 
-    def get_max_quantity(self):
-        return self.model.quantity - self.model.lost - self.model.produced
-
     def validate_confirm(self):
         try:
             self.model.add_lost(self.lost)

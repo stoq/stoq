@@ -375,7 +375,7 @@ class ExampleCreator(object):
         ProductionMaterial(product=component.component,
                            order=order,
                            connection=self.trans)
- 
+
         return ProductionItem(product=product,
                               order=order,
                               connection=self.trans)

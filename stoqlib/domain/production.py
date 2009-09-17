@@ -183,7 +183,7 @@ class ProductionItem(Domain):
         return self.product.get_components()
 
     def can_produce(self, quantity):
-        """Returns if we can produce a certain quantity.  We can produce a 
+        """Returns if we can produce a certain quantity.  We can produce a
         quantity items until we reach the total quantity that will be
         manufactured minus the quantity that was lost.
 
@@ -208,7 +208,7 @@ class ProductionItem(Domain):
         for component in self.get_components():
             material = self._get_material_from_component(component)
             needed_material = quantity * component.quantity
-            
+
             try:
                 material.consume(needed_material)
             except ValueError:
@@ -298,7 +298,7 @@ class ProductionMaterial(Domain):
 
     def add_lost(self, quantity):
         """Adds the quantity lost of this material. The maximum quantity that
-        can be lost is given by the formula: 
+        can be lost is given by the formula:
             max_lost(quantity) = needed - consumed - lost - quantity
 
         @param quantity: the quantity that was lost.
