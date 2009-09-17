@@ -78,8 +78,8 @@ class IStorable(Interface):
         item on a specific branch company.
         @param quantity: amount to increase
         @param branch: an object implement IBranch
-        @param cost: optional parameter indicating the cost of the new stock
-                     items
+        @param cost: optional parameter indicating the unit cost of the new
+                     stock items
         """
 
     def decrease_stock(quantity, branch):

@@ -216,7 +216,7 @@ class TestProduct(DomainTest):
         stock_item = storable.get_stock_item(branch)
         self.assertEquals(stock_item.stock_cost, 0)
 
-        storable.increase_stock(1, branch, cost=10)
+        storable.increase_stock(1, branch, unit_cost=10)
         stock_item = storable.get_stock_item(branch)
         self.assertEquals(stock_item.stock_cost, 5)
 
@@ -227,7 +227,7 @@ class TestProduct(DomainTest):
         stock_item = storable.get_stock_item(branch)
         self.assertEquals(stock_item.stock_cost, 5)
 
-        storable.increase_stock(2, branch, cost=15)
+        storable.increase_stock(2, branch, unit_cost=15)
         stock_item = storable.get_stock_item(branch)
         self.assertEquals(stock_item.stock_cost, 10)
 
