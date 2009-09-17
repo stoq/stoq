@@ -49,9 +49,12 @@ from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
                                                      ReceiveQuoteWizard)
 from stoqlib.gui.search.categorysearch import (SellableCategorySearch,
                                                BaseSellableCatSearch)
-from stoqlib.gui.search.productsearch import ProductSearch, ProductStockSearch
+from stoqlib.gui.search.productsearch import (ProductSearch,
+                                              ProductStockSearch,
+                                              ProductsSoldSearch)
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
 from stoqlib.reporting.purchase import PurchaseReport
 from stoqlib.lib.validators import format_quantity
 
@@ -330,3 +333,10 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_cancel_button__clicked(self, button):
         self._cancel_order()
+
+    def on_stock_cost_action__activate(self, action):
+        self.run_dialog(StockCostDialog, self.conn, None)
+
+    def on_ProductsSoldSearch__activate(self, action):
+        self.run_dialog(ProductsSoldSearch, self.conn)
+

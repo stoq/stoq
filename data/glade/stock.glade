@@ -191,7 +191,7 @@
                 <child>
                     <widget class="GtkAction" id="initial_stock_action">
                         <property name="name">initial_stock_action</property>
-                        <property name="label" translatable="yes">_Initial Stock</property>
+                        <property name="label" translatable="yes">_Initial Stock...</property>
                         <property name="stock_id">gtk-go-up</property>
                         <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;I</property>
                     </widget>
