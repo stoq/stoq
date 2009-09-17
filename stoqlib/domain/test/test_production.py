@@ -86,7 +86,7 @@ class TestProductionItem(DomainTest):
         for material in item.order.get_material_items():
             storable = material.product.addFacet(IStorable,
                                                  connection=self.trans)
-            storable.increase_stock(10, branch)
+            storable.increase_stock(1, branch)
 
         item.produce(1)
         self.assertEqual(item.produced, 1)
@@ -149,8 +149,8 @@ class TestProductionMaterial(DomainTest):
         branch = material.order.branch
         product = material.product
         storable = product.addFacet(IStorable, connection=self.trans)
-        storable.increase_stock(10, branch) 
-        self.assertEqual(material.get_stock_quantity(), 10) 
+        storable.increase_stock(10, branch)
+        self.assertEqual(material.get_stock_quantity(), 10)
 
         material.allocate(5)
         self.assertEqual(material.allocated, 5)
@@ -161,7 +161,7 @@ class TestProductionMaterial(DomainTest):
         self.assertEqual(material.get_stock_quantity(), 0)
 
         self.assertRaises(ValueError, material.allocate, 1)
-        
+
     def testAddLost(self):
         item = self.create_production_item()
         order = item.order
@@ -176,11 +176,11 @@ class TestProductionMaterial(DomainTest):
         self.assertRaises(AssertionError, item.add_lost, 0)
 
         # Trigger the lost of materials
-        item.add_lost(1) 
+        item.add_lost(1)
 
         for component in item.get_components():
             material = ProductionMaterial.selectOneBy(order=order,
-                          product=component.component, connection=self.trans) 
+                          product=component.component, connection=self.trans)
             lost = component.quantity
             self.assertEqual(material.lost, lost)
 
@@ -196,10 +196,10 @@ class TestProductionMaterial(DomainTest):
 
         # Trigger the consume of materials
         item.produce(1)
-        self.assertEqual(item.produced, 1) 
+        self.assertEqual(item.produced, 1)
 
         for component in item.get_components():
             material = ProductionMaterial.selectOneBy(order=order,
-                          product=component.component, connection=self.trans) 
-            lost = component.quantity
-            self.assertEqual(material.consumed, lost) 
+                          product=component.component, connection=self.trans)
+            consumed = component.quantity
+            self.assertEqual(material.consumed, consumed)
