@@ -35,7 +35,9 @@ from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.lib.validators import format_quantity, get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.domain.product import ProductHistory
-from stoqlib.domain.views import ProductFullStockView, ProductFullStockItemView
+from stoqlib.domain.views import (ProductFullStockView,
+                                  ProductFullStockItemView,
+                                  SoldItemView)
 
 
 class ProductReport(ObjectListReport):
@@ -138,6 +140,25 @@ class ProductQuantityReport(ObjectListReport):
         self.add_summary_by_column(_(u'Transfered'),
                                    format_data(sum(transfered)))
         self.add_summary_by_column(_(u'Retained'), format_data(sum(retained)))
+
+        self.add_object_table(self._products, self.get_columns(),
+                              summary_row=self.get_summary_row())
+
+
+class ProductsSoldReport(ObjectListReport):
+    """ This report lists all products sold with the average stock cost for
+    a given period of time.
+    """
+    obj_type = SoldItemView
+    report_name = _("Products Sold Listing")
+    main_object_name = _("products sold")
+
+    def __init__(self, filename, products, *args, **kwargs):
+        self._products = products
+        ObjectListReport.__init__(self, filename, products,
+                                  self.report_name,
+                                  landscape=True,
+                                  *args, **kwargs)
 
         self.add_object_table(self._products, self.get_columns(),
                               summary_row=self.get_summary_row())

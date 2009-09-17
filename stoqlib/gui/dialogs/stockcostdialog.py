@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2009 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,42 +19,39 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   George Kussumoto    <george@async.com.br>
+## Author(s):   Ronaldo Maia                <romaia@async.com.br>
 ##
-""" Dialog to register the initial stock of a product in a certain branch """
-
-from decimal import Decimal
-from sys import maxint as MAXINT
-
-import gtk
+""" Dialog to edit the stock average cost for products on a certain branch """
 
 from kiwi import ValueUnset
+from kiwi.datatypes import currency
 from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
 from stoqlib.database.runtime import (new_transaction, finish_transaction,
                                       get_current_branch)
-from stoqlib.domain.product import ProductAdaptToStorable
+from stoqlib.domain.views import ProductFullStockView
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
-class _TemporaryStorableItem(object):
+class _TemporaryItem(object):
     def __init__(self, item):
         self.obj = item
-        sellable = item.product.sellable
-        self.code = sellable.code
-        self.description = sellable.get_description()
-        self.initial_stock = 0
+        self.code = item.code
+        self.description = item.description
+        self.stock_cost = item.stock_cost
 
 
-class InitialStockDialog(BaseEditor):
+# FIXME: Create a generic (spreadsheet like) table editor
+class StockCostDialog(BaseEditor):
     gladefile = "InitialStockDialog"
     model_type = object
-    title = _(u"Product  - Initial Stock")
+    title = _(u"Product - Stock Cost")
     size = (750, 450)
 
     def __init__(self, conn, branch=None):
@@ -68,36 +65,35 @@ class InitialStockDialog(BaseEditor):
     def _setup_widgets(self):
         # XXX: the branch should be in bold font
         self.branch_label.set_text(
-            _(u"Registering initial stock for products in %s") %
+            _(u"Fixing stock cost for products in %s") %
                                             self._branch.person.name)
 
-        self._storables = [_TemporaryStorableItem(s)
-            for s in ProductAdaptToStorable.select(connection=self.conn)
-                if s.get_stock_item(self._branch) is None]
-
+        items = ProductFullStockView.select_by_branch(None, branch=self._branch,
+                                                      connection=self.conn)
+        self._storables = [_TemporaryItem(s) for s in items]
         self.slave.listcontainer.add_items(self._storables)
 
     def _get_columns(self):
-        adj = gtk.Adjustment(upper=MAXINT, step_incr=1)
         return [Column("code", title=_(u"Code"), data_type=str,
                         sorted=True),
                 Column("description", title=_(u"Description"),
                         data_type=str, expand=True),
-                Column("initial_stock", title=_(u"Initial Stock"),
-                        data_type=Decimal, format_func=self._format_qty,
-                        editable=True, spin_adjustment=adj)]
+                Column("stock_cost", title=_(u"Stock Cost"), width=100,
+                        data_type=currency, format_func=self._format_func,
+                        editable=True)]
 
-    def _format_qty(self, quantity):
+    def _format_func(self, quantity):
         if quantity is ValueUnset:
             return None
         if quantity >= 0:
             return quantity
 
-    def _validate_initial_stock_quantity(self, item, trans):
-        positive = item.initial_stock > 0
-        if item.initial_stock is not ValueUnset and positive:
-            storable = trans.get(item.obj)
-            storable.increase_stock(item.initial_stock, self._branch)
+    def _validate_confirm(self, item, trans):
+        if (item.stock_cost is not ValueUnset and
+            item.stock_cost > 0):
+            storable = IStorable(item.obj.product)
+            stock_item = trans.get(storable.get_stock_item(self._branch))
+            stock_item.stock_cost = item.stock_cost
 
     #
     # BaseEditorSlave
@@ -113,7 +109,7 @@ class InitialStockDialog(BaseEditor):
     def on_confirm(self):
         trans = new_transaction()
         for item in self._storables:
-            self._validate_initial_stock_quantity(item, trans)
+            self._validate_confirm(item, trans)
 
         finish_transaction(trans, True)
         trans.close()
