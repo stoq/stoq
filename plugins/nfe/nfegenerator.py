@@ -35,8 +35,7 @@ import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.lib.validators import format_quantity
 
-from utils import (get_uf_code_from_state_name, get_city_code,
-                   nfe_tostring)
+from utils import get_state_code, get_city_code, nfe_tostring
 
 #
 # the page numbers refers to the "Manual de integração do contribuinte v3.00"
@@ -138,7 +137,7 @@ class NFeGenerator(object):
     def _add_identification(self, branch):
         # Pg. 71
         branch_location = branch.person.get_main_address().city_location
-        cuf = str(get_uf_code_from_state_name(branch_location.state))
+        cuf = str(get_state_code(branch_location.state))
 
         today = datetime.date.today()
         aamm = today.strftime('%y%m')

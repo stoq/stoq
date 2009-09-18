@@ -60,7 +60,9 @@ class NFeUI(object):
         return nfe_dir
 
     def _can_create_nfe(self, sale):
-        # Improve!
+        # FIXME: certainly, there is more conditions to check before we create
+        #        the nfe. Maybe the user should have a chance to fix the
+        #        missing information before we create the nfe.
         return sale.client is not None
 
     def _create_nfe(self, sale, trans):
