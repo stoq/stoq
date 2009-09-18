@@ -1,0 +1,8 @@
+[Plugin]
+Module=nfeplugin
+Version=1
+Name=NF-e Plugin
+Name[pt_BR]=Plugin NF-e (Nota Fiscal Eletrônica)
+Authors=George Y. Kussumoto <george@async.com.br>
+Copyright=Copyright © 2009 Async Open Source
+Website=http://www.stoq.com.br/
