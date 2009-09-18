@@ -259,11 +259,12 @@ class BaseNFeXMLGroup(object):
 
         self._element = Element(self.tag)
         for key, value in self.attributes:
-            sub_element = Element(key)
             element_value = self._data[key] or value
             # ignore empty values
             if element_value is None:
                 continue
+
+            sub_element = Element(key)
             sub_element.text = self.escape(str(element_value))
             self._element.append(sub_element)
 
@@ -492,7 +493,6 @@ class NFeIssuer(BaseNFeXMLGroup):
 class NFeRecipient(NFeIssuer):
     tag = 'dest'
     address_tag = u'enderDest'
-    attributes = NFeIssuer.attributes
 
 
 # Pg. 102
@@ -901,8 +901,8 @@ class NFeAdditionalInformation(BaseNFeXMLGroup):
 class NFeSimplesNacionalInfo(NFeAdditionalInformation):
     def __init__(self):
         NFeAdditionalInformation.__init__(self)
-        msg = u'''Documento emitido por ME ou EPP optante pelo SIMPLES \
-NACIONAL. Não gera Direito a Crédito Fiscal de ICMS e de ISS. Conforme \
-Lei Complementar 123 de 14/12/2006.'''
+        msg = u'Documento emitido por ME ou EPP optante pelo SIMPLES' \
+              u' NACIONAL. Não gera Direito a Crédito Fiscal de ICMS e de'\
+              u' ISS. Conforme Lei Complementar 123 de 14/12/2006.'
 
         self.set_attr('infCpl', msg)
