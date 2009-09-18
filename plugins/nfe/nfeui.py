@@ -22,10 +22,7 @@
 ## Author(s):   George Y. Kussumoto      <george@async.com.br>
 ##
 
-import os, os.path
-import sys
-
-import gtk
+import os
 
 from kiwi.log import Logger
 from stoqlib.database.runtime import get_connection
@@ -43,6 +40,7 @@ class NFeUI(object):
     def __init__(self):
         self.conn = get_connection()
 
+        StartApplicationEvent.connect(self._on_StartApplicationEvent)
         SaleConfirmEvent.connect(self._on_SaleConfirm)
 
     #
@@ -71,12 +69,19 @@ class NFeUI(object):
             generator.generate()
             generator.save(location=self._get_save_location())
 
+    def _disable_print_invoice(self, uimanager):
+        # since the nfe plugin was enabled, the user must not be able to print
+        # the regular fiscal invoice (replaced by the nfe).
+        widget = uimanager.get_widget('/menubar/TillMenu/print_invoice')
+        widget.hide()
+
     #
     # Events
     #
 
     def _on_StartApplicationEvent(self, appname, app):
-        self._add_ui_menus(appname, app.main_window.uimanager)
+        if appname == 'sales':
+            self._disable_print_invoice(app.main_window.uimanager)
 
     def _on_SaleConfirm(self, sale, trans):
         self._create_nfe(sale, trans)
