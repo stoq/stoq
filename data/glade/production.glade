@@ -89,6 +89,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="ToolbarProductionItemsSearch">
+                        <property name="name">ToolbarProductionItemsSearch</property>
+                        <property name="label" translatable="yes">Production Items</property>
+                        <property name="stock_id">stoq-products</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="ProductionMenu">
                         <property name="name">ProductionMenu</property>
                         <property name="label" translatable="yes">_Production</property>
@@ -190,6 +197,7 @@
 	  <toolbar action="toolbar1">
 	    <toolitem action="ToolbarNewProduction"/>
 	    <toolitem action="ToolbarStartProduction"/>
+	    <toolitem action="ToolbarProductionItemsSearch"/>
 	  </toolbar>
 	</ui>]]></ui>
     </widget>
