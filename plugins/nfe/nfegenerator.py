@@ -89,26 +89,26 @@ class NFeGenerator(object):
     def __str__(self):
         return nfe_tostring(self.root)
 
-    def _calculate_dv(self, key):
-        # Pg. 72
+    def _calculate_verifier_digit(self, key):
+        # Calculates the verifier digit. The verifier digit is used to
+        # validate the NF-e key, details in page 72 of the manual.
         assert len(key) == 43
 
         weights = [2, 3, 4, 5, 6, 7, 8, 9]
         weights_size = len(weights)
-        key_characters = list(key)
-        key_numbers = [int(k) for k in key_characters]
+        key_numbers = [int(k) for k in key]
         key_numbers.reverse()
 
-        dv_sum = 0
+        key_sum = 0
         for i, key_number in enumerate(key_numbers):
             # cycle though weights
             i = i % weights_size
-            dv_sum += key_number * weights[i]
+            key_sum += key_number * weights[i]
 
-        dv_mod = dv_sum % 11
-        if dv_mod == 0 or dv_mod == 1:
+        remainder = key_sum % 11
+        if remainder == 0 or remainder == 1:
             return '0'
-        return str(11 - dv_mod)
+        return str(11 - remainder)
 
     def _get_nfe_number(self):
         if self._sale.invoice_number:
@@ -157,7 +157,7 @@ class NFeGenerator(object):
         # Key format (Pg. 71):
         # cUF + AAMM + CNPJ + mod + serie + nNF + cNF + (cDV)
         key = cuf + aamm + cnpj + mod + serie + nnf_str + cnf
-        cdv = self._calculate_dv(key)
+        cdv = self._calculate_verifier_digit(key)
         key += cdv
 
         nfe_idenfitication.set_attr('cDV', cdv)
