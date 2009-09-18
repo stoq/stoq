@@ -25,7 +25,7 @@ def apply_patch(trans):
         if state_code == '"UF"':
             continue
 
-        # in *_name attributes we remove the extra spaces and the '"'
+        # in *_name attributes we remove the extra spaces and the double-quote
         # character.
         state_name = unicode(state_name.strip().strip('"'))
         city_name = unicode(city_name.strip().strip('"'))
