@@ -76,32 +76,32 @@ _uf_code = dict(# Norte
 # Functions
 #
 
-def get_uf_code_from_state_name(state_name):
-    """Returns the UF code of a certain state. The UF code is Brazil specific.
+def get_state_code(state):
+    """Returns the state code of a certain state (Brazil specific).
 
-    @param state_name: the state name in the short form (using two letters).
-    @returns: a integer representing the uf code or None if we not find any
-              uf code for the given state.
+    @param state: the state name in the short form (using two letters).
+    @returns: a integer representing the state code or None if we not find any
+              code for the given state.
     """
-    state = state_name.upper()
-    if _uf_code.has_key(state):
-        return _uf_code[state]
+    return _uf_code.get(state.upper())
 
 def get_city_code(city_name, state=None, code=None):
     """Returns the city code of a certain city. The city code is Brazil
     specific.
     @param city_name: the name of the city.
-    @param state_name: the state name in the short form (using two letters).
-    @returns: a integer representing the city code or None if we not find any
-              city code for the given city.
+    @param state: the state name in the short form (using two letters).
+    @returns: a integer representing the city or None if the city was not
+              found.
     """
     if code is None and state:
-        uf_code = get_uf_code_from_state_name(state)
+        state_code = get_state_code(state)
     else:
-        uf_code = code
+        state_code = code
+    assert state_code is not None
+
     city_name = remove_accentuation(city_name)
     city_data = NFeCityData.selectOneBy(city_name=city_name,
-                                        uf_code=uf_code,
+                                        state_code=state_code,
                                         connection=get_connection())
     if city_data is not None:
         return city_data.city_code

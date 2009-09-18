@@ -29,12 +29,12 @@ from stoqlib.domain.base import Domain
 class NFeCityData(Domain):
     """Information about Brazil states and cities.
 
-    @ivar uf_code: the unique code that represents a certain state.
-    @ivar uf_name: the name of the state.
+    @ivar state_code: the unique code that represents a certain state.
+    @ivar state_name: the name of the state.
     @ivar city_code: the unique code that represents a certain city.
     @ivar city_name: the name of the city.
     """
-    uf_code = IntCol()
-    uf_name = UnicodeCol()
+    state_code = IntCol()
+    state_name = UnicodeCol()
     city_code = IntCol()
     city_name = UnicodeCol()
