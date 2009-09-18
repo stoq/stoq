@@ -145,13 +145,13 @@ class NFeGenerator(object):
 
         nnf = self._get_nfe_number()
         payments = self._sale.group.get_items()
-        nfe_idenfitication = NFeIdentification(cuf, branch_location.city,
+        nfe_identification = NFeIdentification(cuf, branch_location.city,
                                                nnf, today, list(payments))
         # The nfe-key requires all the "zeros", so we should format the
         # values properly.
-        mod = str('%02d' % int(nfe_idenfitication.get_attr('mod')))
-        serie = str('%03d' % int(nfe_idenfitication.get_attr('serie')))
-        cnf = str('%09d' % nfe_idenfitication.get_attr('cNF'))
+        mod = '%02d' % int(nfe_identification.get_attr('mod'))
+        serie = '%03d' % int(nfe_identification.get_attr('serie'))
+        cnf = '%09d' % nfe_identification.get_attr('cNF')
         nnf_str = '%09d' % nnf
         cnpj = self._get_cnpj(branch)
         # Key format (Pg. 71):
@@ -160,11 +160,11 @@ class NFeGenerator(object):
         cdv = self._calculate_verifier_digit(key)
         key += cdv
 
-        nfe_idenfitication.set_attr('cDV', cdv)
-        self._nfe_identification = nfe_idenfitication
+        nfe_identification.set_attr('cDV', cdv)
+        self._nfe_identification = nfe_identification
 
         self._nfe_data = NFeData(key)
-        self._nfe_data.element.append(nfe_idenfitication.element)
+        self._nfe_data.element.append(nfe_identification.element)
         self.root.append(self._nfe_data.element)
 
     def _add_issuer(self, issuer):
