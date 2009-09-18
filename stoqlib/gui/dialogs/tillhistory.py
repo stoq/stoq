@@ -28,7 +28,6 @@ import datetime
 
 import gtk
 from kiwi.datatypes import currency
-from kiwi.environ import environ
 from kiwi.ui.search import DateSearchFilter, Today
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
@@ -104,16 +103,9 @@ class TillHistoryDialog(SearchDialog):
     #
 
     def _add_editor_button(self, name, editor_class, filename):
-        image = gtk.Image()
-        image.set_from_file(environ.find_resource('pixmaps', filename))
-        image.show()
-        b = gtk.Button(name)
-        b.connect('clicked', lambda b: self._run_editor(editor_class))
-        b.set_use_underline(True)
-        b.set_image(image)
-        self.action_area.set_layout(gtk.BUTTONBOX_START)
-        self.action_area.pack_start(b, False, False, 6)
-        b.show()
+        button = self.add_button(name, image=filename)
+        button.connect('clicked', lambda b: self._run_editor(editor_class))
+        button.show()
 
     def _print_button_clicked(self, button):
         print_report(TillHistoryReport, self.results,

@@ -34,6 +34,7 @@ from stoqlib.domain.product import (Product,
                                     ProductStockItem,
                                     ProductHistory,
                                     ProductComponent)
+from stoqlib.domain.production import ProductionOrder, ProductionItem
 from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
                                      PurchaseItem)
 from stoqlib.domain.receiving import ReceivingOrderItem, ReceivingOrder
@@ -606,3 +607,33 @@ class ReceivingItemView(Viewable):
         LEFTJOINOn(None, Person,
                    PersonAdaptToSupplier.q._originalID == Person.q.id),
     ]
+
+
+class ProductionItemView(Viewable):
+    columns = dict(id=ProductionItem.q.id,
+                   order_id=ProductionOrder.q.id,
+                   order_status=ProductionOrder.q.status,
+                   quantity=ProductionItem.q.quantity,
+                   produced=ProductionItem.q.produced,
+                   lost=ProductionItem.q.lost,
+                   category_description=SellableCategory.q.description,
+                   unit_description=SellableUnit.q.description,
+                   description=BaseSellableInfo.q.description,)
+
+    joins = [
+        LEFTJOINOn(None, ProductionOrder,
+                   ProductionItem.q.orderID == ProductionOrder.q.id),
+        LEFTJOINOn(None, Product,
+                   ProductionItem.q.productID == Product.q.id),
+        LEFTJOINOn(None, Sellable,
+                    Sellable.q.id == Product.q.sellableID),
+        LEFTJOINOn(None, SellableCategory,
+                   SellableCategory.q.id == Sellable.q.categoryID),
+        LEFTJOINOn(None, SellableUnit,
+                   Sellable.q.unitID == SellableUnit.q.id),
+        INNERJOINOn(None, BaseSellableInfo,
+                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),]
+
+    @property
+    def production_item(self):
+        return ProductionItem.get(self.id, connection=self.get_connection())

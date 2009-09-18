@@ -145,10 +145,14 @@ class ProductionItem(Domain):
     @ivar order: The L{ProductionOrder} of this item.
     @ivar product: The product that will be manufactured.
     @ivar quantity: The product's quantity that will be manufactured.
+    @ivar produced: The product's quantity that was manufactured.
+    @ivar lost: The product's quantity that was lost.
     """
     implements(IDescribable)
 
     quantity = DecimalCol(default=1)
+    produced = DecimalCol(default=0)
+    lost = DecimalCol(default=0)
     order = ForeignKey('ProductionOrder')
     product = ForeignKey('Product')
 
@@ -160,6 +164,15 @@ class ProductionItem(Domain):
         return self.product.sellable.get_description()
 
     #
+    # Private API
+    #
+
+    def _get_material_from_component(self, component):
+        return ProductionMaterial.selectOneBy(product=component.component,
+                                              order=self.order,
+                                              connection=self.get_connection())
+
+    #
     # Public API
     #
 
@@ -168,6 +181,66 @@ class ProductionItem(Domain):
 
     def get_components(self):
         return self.product.get_components()
+
+    def can_produce(self, quantity):
+        """Returns if we can produce a certain quantity.  We can produce a
+        quantity items until we reach the total quantity that will be
+        manufactured minus the quantity that was lost.
+
+        @param quantity: the quantity that will be produced.
+        """
+        assert quantity > 0
+
+        return self.produced + quantity + self.lost <= self.quantity
+
+    def produce(self, quantity):
+        """Sets a certain quantity as produced. The quantity will be marked as
+        produced only if there are enough materials allocated, otherwise a
+        ValueError exception will be raised.
+
+        @param quantity: the quantity that will be produced.
+        """
+        assert self.can_produce(quantity)
+
+        conn = self.get_connection()
+        conn.savepoint('before_produce')
+
+        for component in self.get_components():
+            material = self._get_material_from_component(component)
+            needed_material = quantity * component.quantity
+
+            try:
+                material.consume(needed_material)
+            except ValueError:
+                conn.rollback_to_savepoint('before_produce')
+                raise
+
+        storable = IStorable(self.product, None)
+        storable.increase_stock(quantity, self.order.branch)
+        self.produced += quantity
+
+    def add_lost(self, quantity):
+        """Adds a quantity that was lost. The maximum quantity that can be
+        lost is the total quantity minus the quantity already produced.
+
+        @param quantity: the quantity that was lost.
+        """
+        if self.lost + quantity > self.quantity - self.produced:
+            raise ValueError(
+                u'Can not lost more items than the total production quantity.')
+
+        conn = self.get_connection()
+        conn.savepoint('before_lose')
+
+        for component in self.get_components():
+            material = self._get_material_from_component(component)
+            try:
+                material.add_lost(quantity * component.quantity)
+            except ValueError:
+                conn.rollback_to_savepoint('before_lose')
+                raise
+
+        self.lost += quantity
 
 
 class ProductionMaterial(Domain):
@@ -196,23 +269,68 @@ class ProductionMaterial(Domain):
     # Public API
     #
 
-    def allocate(self):
+    def allocate(self, quantity=None):
         """Allocates the needed quantity of this material by decreasing the
-        stock quantity. If the available quantity is not enough, then it will
-        allocate all the stock available.
+        stock quantity. If no quantity was specified, it will decrease all the
+        stock needed or the maximum quantity available. Otherwise, allocate the
+        quantity specified or raise a ValueError exception, if the quantity is
+        not available.
+
+        @param quantity: the quantity to be allocated or None to allocate the
+                         maximum quantity possible.
         """
         stock = self.get_stock_quantity()
         storable = IStorable(self.product, None)
         assert storable is not None
 
-        if stock > self.needed:
-            quantity = self.needed
-        else:
-            quantity = stock
+        if quantity is None:
+            required = self.needed - self.allocated
+            if stock > required:
+                quantity = required
+            else:
+                quantity = stock
+        elif quantity > stock:
+            raise ValueError('Can not allocate this quantity.')
 
         if quantity > 0:
-            self.allocated = quantity
+            self.allocated += quantity
             storable.decrease_stock(quantity, self.order.branch)
+
+    def add_lost(self, quantity):
+        """Adds the quantity lost of this material. The maximum quantity that
+        can be lost is given by the formula:
+            max_lost(quantity) = needed - consumed - lost - quantity
+
+        @param quantity: the quantity that was lost.
+        """
+        assert quantity > 0
+
+        if self.lost + quantity > self.needed - self.consumed:
+            raise ValueError(u'Can not lost this quantity.')
+
+        required = self.consumed + self.lost + quantity
+        if required > self.allocated:
+            self.allocate(required - self.allocated)
+
+        self.lost += quantity
+
+    def consume(self, quantity):
+        """Consumes a certain quantity of material. The maximum quantity
+        allowed to be consumed is given by the following formula:
+            max_consumed(quantity) = needed - consumed - lost - quantity
+
+        @param quantity: the quantity to be consumed.
+        """
+        assert quantity > 0
+
+        if self.consumed + quantity > self.needed - self.lost:
+            raise ValueError(u'Can not consume this quantity.')
+
+        required = self.consumed + self.lost + quantity
+        if required > self.allocated:
+            self.allocate(required - self.allocated)
+
+        self.consumed += quantity
 
     #
     # IDescribable Implementation
