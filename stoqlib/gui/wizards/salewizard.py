@@ -320,6 +320,15 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.cfop_lbl.hide()
             self.cfop.hide()
             self.create_cfop.hide()
+        if not self.model.invoice_number:
+            # we need to use a new transaction, so any query will not count
+            # the current sale object.
+            trans = new_transaction()
+            new_invoice_number = Sale.get_last_invoice_number(trans) + 1
+            self.model.invoice_number = new_invoice_number
+            trans.close()
+        else:
+            self.invoice_number.set_sensitive(False)
 
     #
     # WizardStep hooks
@@ -356,8 +365,6 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.create_client.set_sensitive(False)
         if sysparam(self.conn).ASK_SALES_CFOP:
             self.add_proxy(self.model, SalesPersonStep.cfop_widgets)
-        if self.model.invoice_number:
-            self.invoice_number.set_sensitive(False)
 
     #
     # Callbacks
@@ -388,9 +395,13 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         if value > 999999999:
             return ValidationError(_(u'Invoice number should be lesser '
                                       'than 999999999.'))
-        exists = Sale.selectOneBy(invoice_number=value, connection=self.conn)
+        # we need to use a new transaction or the selectOneBy will also
+        # include the current object.
+        trans = new_transaction()
+        exists = Sale.selectOneBy(invoice_number=value, connection=trans)
         if exists:
             return ValidationError(_(u'Invoice number already used.'))
+        trans.close()
 
 #
 # Wizards for sales
