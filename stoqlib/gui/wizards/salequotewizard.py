@@ -70,6 +70,9 @@ class StartSaleQuoteStep(WizardEditorStep):
         # Hide total and subtotal
         self.table1.hide()
         self.hbox4.hide()
+        # Hide invoice number details
+        self.invoice_number_label.hide()
+        self.invoice_number.hide()
 
         # Salesperson combo
         salespersons = Person.iselect(ISalesPerson, connection=self.conn)

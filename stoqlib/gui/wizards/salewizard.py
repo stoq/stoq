@@ -28,7 +28,7 @@
 
 from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
-from kiwi.datatypes import currency
+from kiwi.datatypes import currency, ValidationError
 
 from stoqlib.database.runtime import finish_transaction, new_transaction
 from stoqlib.domain.events import CreatePaymentEvent
@@ -228,6 +228,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     proxy_widgets = ('total_lbl',
                      'subtotal_lbl',
                      'salesperson',
+                     'invoice_number',
                      'client',)
     cfop_widgets = ('cfop',)
 
@@ -355,6 +356,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.create_client.set_sensitive(False)
         if sysparam(self.conn).ASK_SALES_CFOP:
             self.add_proxy(self.model, SalesPersonStep.cfop_widgets)
+        if self.model.invoice_number:
+            self.invoice_number.set_sensitive(False)
 
     #
     # Callbacks
@@ -378,6 +381,16 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         if cfop:
             self.cfop.append_item(cfop.get_description(), cfop)
             self.cfop.select_item_by_data(cfop)
+
+    def on_invoice_number__validate(self, widget, value):
+        if value <= 0:
+            return ValidationError(_(u'Invoice number should be positive.'))
+        if value > 999999999:
+            return ValidationError(_(u'Invoice number should be lesser '
+                                      'than 999999999.'))
+        exists = Sale.selectOneBy(invoice_number=value, connection=self.conn)
+        if exists:
+            return ValidationError(_(u'Invoice number already used.'))
 
 #
 # Wizards for sales
