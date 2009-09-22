@@ -912,18 +912,6 @@ class F(InvoiceFieldDescription):
     length = 6
 
     def fetch(self, width, height):
-        return '%06d' % self._get_invoice_number()
-
-    def _get_invoice_number(self):
-        sale_invoice_number = self.sale.invoice_number
-        if sale_invoice_number:
-            return sale_invoice_number
-
-        trans = new_transaction()
-        sale = trans.get(self.sale)
-        last_invoice_number = Sale.get_last_invoice_number(trans)
-        sale.invoice_number = last_invoice_number + 1
-        finish_transaction(trans, True)
-        return sale.invoice_number
+        return '%06d' % self.sale.invoice_number
 
 _add_invoice_field(F)
