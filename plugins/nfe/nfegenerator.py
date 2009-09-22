@@ -109,14 +109,6 @@ class NFeGenerator(object):
             return '0'
         return str(11 - remainder)
 
-    #def _get_nfe_number(self):
-    #    if self._sale.invoice_number:
-    #        return self._sale.invoice_number
-    #    # XXX: This is bug and should be fixed when we disable the invoice
-    #    # printing in the sales application, which will change the invoice
-    #    # number setting.
-    #    return self._sale.id
-
     def _get_cnpj(self, person):
         company = ICompany(person, None)
         assert company is not None
