@@ -26,11 +26,13 @@
 """ Sale wizard definition """
 
 
+import gtk
+
 from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
-from kiwi.datatypes import currency
+from kiwi.datatypes import currency, ValidationError
 
-from stoqlib.database.runtime import finish_transaction, new_transaction
+from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import StoqlibError
@@ -228,6 +230,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     proxy_widgets = ('total_lbl',
                      'subtotal_lbl',
                      'salesperson',
+                     'invoice_number',
                      'client',)
     cfop_widgets = ('cfop',)
 
@@ -319,6 +322,18 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.cfop_lbl.hide()
             self.cfop.hide()
             self.create_cfop.hide()
+        # the maximum number allowed for an invoice is 999999999.
+        self.invoice_number.set_adjustment(
+            gtk.Adjustment(lower=1, upper=999999999, step_incr=1))
+        if not self.model.invoice_number:
+            # we need to use a new transaction, so any query will not count
+            # the current sale object.
+            trans = new_transaction()
+            new_invoice_number = Sale.get_last_invoice_number(trans) + 1
+            self.model.invoice_number = new_invoice_number
+            trans.close()
+        else:
+            self.invoice_number.set_sensitive(False)
 
     #
     # WizardStep hooks
@@ -378,6 +393,20 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         if cfop:
             self.cfop.append_item(cfop.get_description(), cfop)
             self.cfop.select_item_by_data(cfop)
+
+    def on_invoice_number__validate(self, widget, value):
+        if value <= 0:
+            return ValidationError(_(u'Invoice number should be positive.'))
+        if value > 999999999:
+            return ValidationError(_(u'Invoice number should be lesser '
+                                      'than 999999999.'))
+        # we need to use a new transaction or the selectOneBy will also
+        # include the current object.
+        trans = new_transaction()
+        exists = Sale.selectOneBy(invoice_number=value, connection=trans)
+        if exists:
+            return ValidationError(_(u'Invoice number already used.'))
+        trans.close()
 
 #
 # Wizards for sales
