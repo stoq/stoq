@@ -26,11 +26,13 @@
 """ Sale wizard definition """
 
 
+import gtk
+
 from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
 from kiwi.datatypes import currency, ValidationError
 
-from stoqlib.database.runtime import finish_transaction, new_transaction
+from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import StoqlibError
@@ -320,6 +322,9 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.cfop_lbl.hide()
             self.cfop.hide()
             self.create_cfop.hide()
+        # the maximum number allowed for an invoice is 999999999.
+        self.invoice_number.set_adjustment(
+            gtk.Adjustment(lower=1, upper=999999999, step_incr=1))
         if not self.model.invoice_number:
             # we need to use a new transaction, so any query will not count
             # the current sale object.
