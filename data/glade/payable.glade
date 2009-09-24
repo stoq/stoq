@@ -345,6 +345,18 @@
                                             </packing>
                                         </child>
                                         <child>
+                                            <widget class="GtkButton" id="edit_button">
+                                                <property name="image_position">top</property>
+                                                <property name="label">gtk-edit</property>
+                                                <property name="sensitive">False</property>
+                                                <property name="use_stock">True</property>
+                                                <property name="visible">True</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="position">3</property>
+                                            </packing>
+                                        </child>
+                                        <child>
                                             <widget class="GtkButton" id="print_button">
                                                 <property name="image_position">top</property>
                                                 <property name="label">gtk-print</property>
@@ -353,7 +365,7 @@
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
-                                                <property name="position">3</property>
+                                                <property name="position">4</property>
                                             </packing>
                                         </child>
                                     </widget>
