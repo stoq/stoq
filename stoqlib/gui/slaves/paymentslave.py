@@ -1213,10 +1213,8 @@ class MultipleMethodSlave(BaseEditorSlave):
                 self._remove_payment(payment)
 
     def on_payments__selection_changed(self, list, payments):
-        if not len(payments):
-            self.remove_button.set_sensitive(False)
-        else:
-            self.remove_button.set_sensitive(True)
+        has_payments = len(payments) > 0
+        self.remove_button.set_sensitive(has_payments)
 
     def on_base_value__validate(self, entry, value):
         retval = None
