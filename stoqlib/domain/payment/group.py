@@ -146,7 +146,7 @@ class PaymentGroup(Domain):
         """
         assert self.can_confirm(), self.get_status_string()
 
-        for payment in self.get_items():
+        for payment in self.get_valid_payments():
             payment.set_pending()
 
         self.status = PaymentGroup.STATUS_CONFIRMED
@@ -156,7 +156,7 @@ class PaymentGroup(Domain):
         """
         assert self.can_pay(), self.get_status_string()
 
-        for payment in self.get_items():
+        for payment in self.get_valid_payments():
             payment.pay()
 
         self.status = PaymentGroup.STATUS_PAID
@@ -166,7 +166,7 @@ class PaymentGroup(Domain):
         """
         assert self.can_pay(), self.get_status_string()
 
-        for payment in self.get_items():
+        for payment in self.get_valid_payments():
             if payment.method.method_name == 'money':
                 payment.pay()
 
@@ -187,7 +187,7 @@ class PaymentGroup(Domain):
         """Returns the sum of all payment values.
         @returns: the total payment value or zero.
         """
-        return currency(self.get_items().sum('value') or 0)
+        return currency(self.get_valid_payments().sum('value') or 0)
 
     def clear_unused(self):
         """Delete payments of preview status associated to the current
@@ -269,3 +269,11 @@ class PaymentGroup(Domain):
             group=self, connection=self.get_connection()).sum('penalty')
 
         return currency(penalty or 0)
+
+    def get_valid_payments(self):
+        """Returns all payments that are not cancelled.
+        """
+        return Payment.select(AND(Payment.q.groupID == self.id,
+                                  Payment.q.status != Payment.STATUS_CANCELLED),
+                              connection=self.get_connection())
+
