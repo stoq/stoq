@@ -41,6 +41,7 @@ from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import render_pixbuf
 from stoqlib.gui.dialogs.paymentadditiondialog import \
@@ -49,6 +50,7 @@ from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.editors.paymentseditor import PaymentsEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
 from stoqlib.reporting.payment import PayablePaymentReport
@@ -139,6 +141,20 @@ class PayableApp(SearchableAppWindow):
             can_show_details = True
         return can_show_details
 
+    def _can_edit(self, payable_views):
+        """Determines if we can edit the selected payments
+        """
+        if not self._same_purchase(payable_views):
+            return False
+
+        status = payable_views[0].purchase.status
+        if (status == PurchaseOrder.ORDER_CANCELLED or
+            status == PurchaseOrder.ORDER_PENDING):
+            return False
+
+        return True
+
+
     def _change_due_date(self, payable_view):
         """ Receives a payable_view and change the payment due date
         related to the view.
@@ -193,6 +209,13 @@ class PayableApp(SearchableAppWindow):
             return False
 
         return payable_views[0].can_change_due_date()
+
+    def _edit(self, payable_views):
+        trans = new_transaction()
+        order = trans.get(payable_views[0].purchase)
+        model = run_dialog(PaymentsEditor, self, trans, order)
+        rv = finish_transaction(trans, model)
+        trans.close()
 
     def _pay(self, payable_views):
         """
@@ -284,7 +307,7 @@ class PayableApp(SearchableAppWindow):
         selected = self.results.get_selected_rows()
         self.details_button.set_sensitive(self._can_show_details(selected))
         self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
-        self.pay_order_button.set_sensitive(self._same_purchase(selected))
+        self.edit_button.set_sensitive(self._can_edit(selected))
         self.pay_order_button.set_sensitive(self._can_pay(selected))
         self.print_button.set_sensitive(bool(self.results))
         self.Receipt.set_sensitive(self._are_paid(selected, respect_purchase=True))
@@ -312,6 +335,9 @@ class PayableApp(SearchableAppWindow):
 
     def on_pay_order_button__clicked(self, button):
         self._pay(self.results.get_selected_rows())
+
+    def on_edit_button__clicked(self, button):
+        self._edit(self.results.get_selected_rows())
 
     def on_results__selection_changed(self, results, selected):
         self._update_widgets()
