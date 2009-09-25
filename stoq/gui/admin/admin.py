@@ -41,6 +41,7 @@ from stoqlib.domain.invoice import InvoiceLayout
 from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
 from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
+from stoqlib.gui.dialogs.pluginsdialog import PluginManagerDialog
 from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
 from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog,
                                                InvoicePrinterDialog)
@@ -218,3 +219,6 @@ class AdminApp(SearchableAppWindow):
 
     def on_payment_categories__activate(self, action):
         self._run_payment_categories_dialog()
+
+    def on_Plugins__activate(self, action):
+        self.run_dialog(PluginManagerDialog, self.conn)
