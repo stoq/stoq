@@ -130,6 +130,7 @@ def _create_slave_test():
         'TillClosingEditor': 'requires an open till',
         'InvoicePrinterEditor' : '',
         'BasePaymentAddition': ' ',
+        'PaymentsEditor': 'IDomainSlaveMapper missing',
         }
     namespace = dict(_test_slave=_test_slave)
 

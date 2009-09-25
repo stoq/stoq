@@ -139,7 +139,9 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
     if not password:
         password = ""
 
-    # Remove all old utilities pointing to the previous database
+    # Remove all old utilities pointing to the previous database.
+    # FIXME: This is removing some IDomainSlaveMapper (with breakes
+    # PaymentsEditor tests!
     utilities.clean()
     provide_utility(ISystemNotifier, TestsuiteNotifier(), replace=True)
     provide_utility(IApplicationDescriptions, FakeApplicationDescriptions())
