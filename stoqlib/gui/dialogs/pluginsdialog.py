@@ -73,11 +73,15 @@ class PluginManagerDialog(BasicDialog):
         self._initialize(hide_footer=False, size=PluginManagerDialog.size,
                          title=PluginManagerDialog.title)
         self._manager = get_utility(IPluginManager)
+        assert self._manager
+
         self.conn = conn
         self._setup_widgets()
 
     def _update_widgets(self):
         selected = self.klist.get_selected()
+        assert selected
+
         self.ok_button.set_sensitive(selected.can_activate())
 
     def _setup_widgets(self):
@@ -116,8 +120,7 @@ class PluginManagerDialog(BasicDialog):
             self.retval = False
         else:
             self._enable_plugin(self.klist.get_selected())
-            self.retval = True
-        self.close()
+            self.close()
 
     #
     # Callbacks
