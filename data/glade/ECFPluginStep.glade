@@ -27,7 +27,7 @@ Point of Sale application.
                 <child>
                     <widget class="GtkRadioButton" id="yes">
                         <property name="is_focus">True</property>
-                        <property name="label" context="yes" translatable="yes">Yes</property>
+                        <property name="label" context="yes" translatable="yes">Yes (Requires a Fiscal Printer)</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
