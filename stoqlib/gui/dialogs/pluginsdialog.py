@@ -65,13 +65,15 @@ class _PluginModel(object):
 
 
 class PluginManagerDialog(BasicDialog):
-    size = (400, 400)
+    size = (500, 350)
     title = _(u'Plugin Manager')
 
     def __init__(self, conn):
         BasicDialog.__init__(self)
+        header = _(u'Select the plugin you want to activate and click in '
+                    'the apply button.')
         self._initialize(hide_footer=False, size=PluginManagerDialog.size,
-                         title=PluginManagerDialog.title)
+                         title=PluginManagerDialog.title, header_text=header)
         self._manager = get_utility(IPluginManager)
         assert self._manager
 
