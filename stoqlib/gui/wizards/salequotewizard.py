@@ -184,7 +184,7 @@ class SaleQuoteItemStep(SellableItemStep):
 
     def get_order_item(self, sellable, price, quantity):
         price = self.cost.read()
-        retval = self._validate_sellable_discount(price)
+        retval = self._validate_sellable_price(price)
         if retval is None:
             return self.model.add_sellable(sellable, quantity, price)
 
@@ -242,13 +242,11 @@ class SaleQuoteItemStep(SellableItemStep):
     # Private API
     #
 
-    def _validate_sellable_discount(self, price):
-        sellable = self.sellable.get_selected_data()
-        info = sellable.base_sellable_info
-        if price < info.price - (info.price * info.max_discount/100):
+    def _validate_sellable_price(self, price):
+        s = self.sellable.get_selected_data()
+        if not s.is_valid_price(price):
             return ValidationError(
-                        _(u"Max discount for this product is %.2f%%") %
-                            info.max_discount)
+                _(u'Max discount for this product is %.2f%%') % s.max_discount)
 
     #
     # Callbacks
@@ -257,7 +255,7 @@ class SaleQuoteItemStep(SellableItemStep):
     def on_cost__validate(self, widget, value):
         if value <= Decimal(0):
             return ValidationError(_(u"The price must be greater than zero."))
-        return self._validate_sellable_discount(value)
+        return self._validate_sellable_price(value)
 
 
 #
