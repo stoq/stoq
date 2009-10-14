@@ -35,6 +35,7 @@ from stoqlib.lib.pluginmanager import register_plugin
 plugin_root = os.path.dirname(__file__)
 sys.path.append(plugin_root)
 from nfeui import NFeUI
+from utils import get_cities_by_name
 
 
 class NFePlugin(object):
@@ -54,5 +55,13 @@ class NFePlugin(object):
 
     def activate(self):
         self.ui = NFeUI()
+
+    #
+    # Accessors
+    #
+
+    def get_matching_cities(self, city):
+        return get_cities_by_name(city)
+
 
 register_plugin(NFePlugin)
