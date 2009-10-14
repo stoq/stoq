@@ -185,6 +185,29 @@ class TestSellable(DomainTest):
         self.failUnless(sellable.markup == 0,
                         "Expected markup %r, got %r" % (0, sellable.markup))
 
+    def testIsValidPrice(self):
+        sellable_info = BaseSellableInfo(description="Test",
+                                         price=currency(100),
+                                         max_discount=0,
+                                         connection=self.trans)
+        sellable = Sellable(category=self._category, cost=50,
+                            base_sellable_info=sellable_info,
+                            connection=self.trans)
+        self.assertFalse(sellable.is_valid_price(0))
+        self.assertFalse(sellable.is_valid_price(-10))
+        self.assertFalse(sellable.is_valid_price(99))
+        self.assertTrue(sellable.is_valid_price(101))
+        self.assertTrue(sellable.is_valid_price(100))
+
+        sellable.base_sellable_info.max_discount = 10
+        self.assertFalse(sellable.is_valid_price(0))
+        self.assertFalse(sellable.is_valid_price(-1))
+        self.assertFalse(sellable.is_valid_price(89))
+        self.assertTrue(sellable.is_valid_price(90))
+        self.assertTrue(sellable.is_valid_price(95))
+        self.assertTrue(sellable.is_valid_price(99))
+        self.assertTrue(sellable.is_valid_price(101))
+
     def testGetTaxConstant(self):
         base_category = SellableCategory(description="Monitor",
                                          connection=self.trans)
