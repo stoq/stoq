@@ -28,6 +28,7 @@ from kiwi.log import Logger
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.events import SaleConfirmEvent
 from stoqlib.gui.events import StartApplicationEvent
+from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
 from nfegenerator import NFeGenerator
@@ -93,6 +94,11 @@ class NFeUI(object):
             self._disable_print_invoice(app.main_window.uimanager)
         if appname == 'admin':
             self._disable_invoice_configuration(app.main_window.uimanager)
+        # Disable POS application.
+        if appname == 'pos':
+            info(_(u'POS can not be used within NF-e plugin.'))
+            app.hide()
+            app.runner.choose()
 
     def _on_SaleConfirm(self, sale, trans):
         self._create_nfe(sale, trans)
