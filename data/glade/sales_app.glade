@@ -182,6 +182,14 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="NewQuote">
+                        <property name="name">NewQuote</property>
+                        <property name="stock_id">gtk-index</property>
+                        <property name="label" translatable="yes">New Quote</property>
+                        <property name="accelerator">&lt;Control&gt;r</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="StoreCookie">
                         <property name="name">StoreCookie</property>
                         <property name="label" translatable="yes">Store Cookie</property>
@@ -281,6 +289,7 @@
 	    </menu>
 	  </menubar>
 	  <toolbar action="toolbar1">
+	    <toolitem action="NewQuote"/>
 	    <toolitem action="Clients"/>
 	    <toolitem action="Products"/>
 	    <toolitem action="Services"/>

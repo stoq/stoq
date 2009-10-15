@@ -278,6 +278,12 @@ class SalesApp(SearchableAppWindow):
         finish_transaction(trans, True)
         self.search.refresh()
 
+    def on_NewQuote__activate(self, action):
+        trans = new_transaction()
+        model = self.run_dialog(SaleQuoteWizard, trans)
+        rv = finish_transaction(trans, model)
+        trans.close()
+
     def on_DeliverySearch__activate(self, action):
         self.run_dialog(DeliverySearch, self.conn)
 
