@@ -28,6 +28,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="CancelPayment">
+                        <property name="name">CancelPayment</property>
+                        <property name="label" translatable="yes">Cancel payment ...</property>
+                        <property name="stock_id">gtk-remove</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="ExportCSV">
                         <property name="name">ExportCSV</property>
                         <property name="label" translatable="yes">Export CSV...</property>
@@ -219,10 +226,13 @@
 	<menubar action="menubar">
 	  <menu action="TillMenu">
 	    <menuitem action="AddReceiving"/>
+	    <menuitem action="CancelPayment"/>
 	    <menuitem action="SetNotPaid"/>
 	    <menuitem action="ChangeDueDate"/>
+	    <separator name="sep"/>
 	    <menuitem action="Renegotiate"/>
 	    <menuitem action="Receipt"/>
+	    <separator name="sep2"/>
 	    <menuitem action="ExportCSV"/>
 	    <menuitem action="quit_action"/>
 	  </menu>
