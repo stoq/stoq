@@ -183,7 +183,6 @@ class PaymentStatusChangeDialog(BasePaymentChangeDialog):
         items = [(Payment.statuses[id], id) for id in Payment.statuses]
         self.status_combo.prefill(items)
         self.target_status_combo.prefill(items)
-        print self._target_status
 
     def _get_change_status_method(self):
         payment = self.get_payment()
