@@ -204,15 +204,20 @@ class Payment(Domain):
         self.paid_date = paid_date or const.NOW()
         self.status = self.STATUS_PAID
 
-    def cancel(self):
+    def cancel(self, change_entry=None):
         # TODO Check for till entries here and call cancel_till_entry if
         # it's possible. Bug 2598
         if self.status not in [Payment.STATUS_PREVIEW, Payment.STATUS_PENDING,
                                Payment.STATUS_PAID]:
             raise StoqlibError("Invalid status for cancel operation, "
                                 "got %s" % self.get_status_str())
+        old_status = self.status
         self.status = self.STATUS_CANCELLED
         self.cancel_date = const.NOW()
+
+        if change_entry is not None:
+            change_entry.last_status = old_status
+            change_entry.new_status = self.status
 
     def get_payable_value(self):
         """ Returns the calculated payment value with the daily penalty.

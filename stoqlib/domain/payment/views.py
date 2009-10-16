@@ -92,6 +92,12 @@ class InPaymentView(Viewable):
         return (self.method_name != 'money' and
                 self.status == Payment.STATUS_PAID)
 
+    def can_cancel_payment(self):
+        if self.sale:
+            return False
+
+        return self.status == Payment.STATUS_PENDING
+
     def get_status_str(self):
         return Payment.statuses[self.status]
 
@@ -166,6 +172,12 @@ class OutPaymentView(Viewable):
     def can_change_due_date(self):
         return self.status not in [Payment.STATUS_PAID,
                                    Payment.STATUS_CANCELLED]
+
+    def can_cancel_payment(self):
+        if self.sale or self.purchase:
+            return False
+
+        return self.status == Payment.STATUS_PENDING
 
     @property
     def purchase(self):
