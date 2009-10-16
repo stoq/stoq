@@ -32,12 +32,12 @@ Current flow of the database steps:
 
 -> DatabaseSettingsStep
     If Existing DB -> ExistingAdminPasswordStep
-        -> ECFPluginStep
+        -> PluginStep
     If New DB -> AdminPasswordStep
         -> ExampleDatabaseStep
-            If DB is empty -> ECFPluginStep
+            If DB is empty -> PluginStep
             Otherwise      -> BranchSettingsStep
-                -> ECFPluginStep
+                -> PluginStep
 -> FinishInstallationStep
 
 """
@@ -403,7 +403,7 @@ class ExistingAdminPasswordStep(AdminPasswordStep):
         return False
 
     def next_step(self):
-        return ECFPluginStep(self.conn, self.wizard, self._next_model)
+        return PluginStep(self.conn, self.wizard, self._next_model)
 
 
 
@@ -420,7 +420,7 @@ class ExampleDatabaseStep(WizardEditorStep):
             create_examples(utilities=True)
             self.wizard.installed_examples = True
             branch = get_current_branch(self.conn)
-            return ECFPluginStep(self.conn, self.wizard,
+            return PluginStep(self.conn, self.wizard,
                                  branch.person)
 
 
@@ -489,7 +489,7 @@ class BranchSettingsStep(WizardEditorStep):
         self._update_system_parameters(self.model)
         self.wizard.branch = IBranch(self.model)
         conn = self.wizard.get_connection()
-        return ECFPluginStep(conn, self.wizard, self.model)
+        return PluginStep(conn, self.wizard, self.model)
 
     def setup_proxies(self):
         widgets = BranchSettingsStep.person_widgets
@@ -543,8 +543,8 @@ class BranchSettingsStep(WizardEditorStep):
             return ValidationError(_(u'The CNPJ is not valid.'))
 
 
-class ECFPluginStep(BaseWizardStep):
-    gladefile = 'ECFPluginStep'
+class PluginStep(BaseWizardStep):
+    gladefile = 'PluginStep'
 
     def next_step(self):
         return FinishInstallationStep(self.conn, self.wizard, self)
@@ -552,8 +552,11 @@ class ECFPluginStep(BaseWizardStep):
     def post_init(self):
         self.wizard.enable_ecf = True
 
-    def on_yes__toggled(self, radio):
+    def on_enable_ecf__toggled(self, radio):
         self.wizard.enable_ecf = radio.get_active()
+
+    def on_enable_nfe__toggled(self, radio):
+        self.wizard.enable_nfe = radio.get_active()
 
 
 class FinishInstallationStep(BaseWizardStep):
@@ -594,6 +597,7 @@ class FirstTimeConfigWizard(BaseWizard):
         self.installed_examples = False
         self.device_slave = None
         self.enable_ecf = False
+        self.enable_nfe = False
         self.model = Settable(db_settings=None, stoq_user_data=None)
         first_step = DatabaseSettingsStep(self, self.model)
         BaseWizard.__init__(self, None, first_step, self.model,
@@ -630,10 +634,11 @@ class FirstTimeConfigWizard(BaseWizard):
 
         # We need to provide the plugin manager at some point since
         # we're skipping it above
-
         manager = provide_plugin_manager()
         if self.enable_ecf:
             manager.enable_plugin('ecf')
+        elif self.enable_nfe:
+            manager.enable_plugin('nfe')
 
         # Okay, all plugins enabled go on and activate them
         manager.activate_plugins()
