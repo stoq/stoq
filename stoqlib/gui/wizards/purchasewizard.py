@@ -163,6 +163,16 @@ class StartPurchaseStep(WizardEditorStep):
             self._fill_supplier_combo()
             self.supplier.select(model)
 
+    def on_supplier__validate(self, widget, supplier):
+        if not supplier:
+            return
+
+        supplier_infos = ProductSupplierInfo.get_info_by_supplier(self.conn,
+                                                                  supplier)
+        if supplier_infos.count() == 0:
+            return ValidationError(_(u'The supplier does not have any '
+                                      'products associated.'))
+
     def on_open_date__validate(self, widget, date):
         if sysparam(self.conn).ALLOW_OUTDATED_PURCHASES:
             return
