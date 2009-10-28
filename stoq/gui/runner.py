@@ -59,6 +59,7 @@ class ApplicationRunner(object):
         from stoqlib.gui.login import LoginHelper
         self._login = LoginHelper()
         self._user = None
+        self._blocked_apps = []
 
     def _import(self, appname):
         module = __import__("stoq.gui.%s.app" % appname,
@@ -117,7 +118,7 @@ class ApplicationRunner(object):
         # sorting by app_full_name
         for name, full, icon, descr in sorted(descriptions,
                                               key=operator.itemgetter(1)):
-            if permissions.get(name):
+            if permissions.get(name) and name not in self._blocked_apps:
                 available_applications.append(
                     Application(name, full, icon, descr))
 
@@ -166,6 +167,11 @@ class ApplicationRunner(object):
 
         self._current_app = app
         self._appname = appdesc.name
+
+        if appdesc.name in self._blocked_apps:
+            app = self.choose()
+            self.run(app)
+            return
 
         app.run()
 
@@ -236,6 +242,26 @@ class ApplicationRunner(object):
         @rtype: str
         """
         return self._appname
+
+    def block_application(self, appname):
+        """Blocks an application to be loaded.
+        @param appname: the name of the application. Raises ValueError if the
+                        application was already blocked.
+        """
+        if appname not in self._blocked_apps:
+            self._blocked_apps.append(appname)
+        else:
+            raise ValueError('%s was already blocked.' % appname)
+
+    def unblock_application(self, appname):
+        """Unblocks a previously blocked application.
+        @param appname: the name of the blocked application. Raises ValueError
+                        if the application was not previously blocked.
+        """
+        if appname in self._blocked_apps:
+            self._blocked_apps.remove(appname)
+        else:
+            raise ValueError('%s was not blocked.' % appname)
 
 def get_runner():
     """
