@@ -36,6 +36,7 @@ from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import StoqlibError
+from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
@@ -307,6 +308,15 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         # Only quotes have expire date.
         self.expire_date.hide()
         self.expire_label.hide()
+
+        # if the NF-e plugin is active, the client is mandantory in this
+        # wizard (in this situation, we have only quote sales).
+        if self.model.status == Sale.STATUS_QUOTE:
+            manager = get_utility(IPluginManager)
+            assert manager
+
+            mandatory_client = manager.is_active('nfe')
+            self.client.set_property('mandatory', mandatory_client)
 
         salespersons = Person.iselect(ISalesPerson, connection=self.conn)
         items = [(s.person.name, s) for s in salespersons]

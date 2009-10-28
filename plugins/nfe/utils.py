@@ -30,6 +30,7 @@ from xml.etree.ElementTree import tostring
 import lxml.etree as ET
 
 from stoqlib.database.runtime import get_connection
+from stoqlib.database.orm import AND, LIKE
 
 from nfedomain import NFeCityData
 
@@ -105,6 +106,15 @@ def get_city_code(city_name, state=None, code=None):
                                         connection=get_connection())
     if city_data is not None:
         return city_data.city_code
+
+def get_cities_by_name(city, limit=20):
+    """Returns a sequence of {NFeCityData} instances which the city name
+    matches with the given city.
+    """
+    city_name = '%%%s%%' % remove_accentuation(city)
+    results = NFeCityData.select(AND(LIKE(NFeCityData.q.city_name, city_name)),
+                                  connection=get_connection())
+    return results.limit(limit)
 
 def remove_accentuation(string):
     """Remove the accentuantion of a string.
