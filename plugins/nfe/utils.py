@@ -111,7 +111,7 @@ def get_cities_by_name(city, limit=20):
     """Returns a sequence of {NFeCityData} instances which the city name
     matches with the given city.
     """
-    city_name = '%s%%' % remove_accentuation(city)
+    city_name = '%%%s%%' % remove_accentuation(city)
     results = NFeCityData.select(AND(LIKE(NFeCityData.q.city_name, city_name)),
                                   connection=get_connection())
     return results.limit(limit)

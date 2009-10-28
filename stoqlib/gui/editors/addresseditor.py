@@ -167,7 +167,7 @@ class AddressSlave(BaseEditorSlave):
 
         self.streetnumber.set_text(text)
 
-    def _get_plugin(self):
+    def _get_nfe_plugin(self):
         manager = get_utility(IPluginManager)
         assert manager
 
@@ -180,7 +180,10 @@ class AddressSlave(BaseEditorSlave):
         if city and len(city) >= 2:
             # mimic the missing .clear method.
             self.city.prefill([])
-            plugin = self._get_plugin()
+            #FIXME: the city completion is highly attached with the nf-e
+            #       plugin, it should be more generic and avoid the plugin
+            #       dependency.
+            plugin = self._get_nfe_plugin()
             if plugin is None:
                 return
 
