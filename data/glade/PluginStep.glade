@@ -65,7 +65,7 @@ a plugin is activated it will not be possible to disable it.
                                 <property name="active">False</property>
                                 <property name="data_type">bool</property>
                                 <property name="group">enable_ecf</property>
-                                <property name="label" context="yes" translatable="yes">NF-e (Eletronic Invoices)</property>
+                                <property name="label" context="yes" translatable="yes">NF-e (Eletronic Invoices - POS application will be disabled)</property>
                                 <property name="model_attribute">enable_nfe</property>
                                 <property name="visible">True</property>
                             </widget>
