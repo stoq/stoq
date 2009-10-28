@@ -169,6 +169,15 @@ class PluginManager(object):
         """
         return self._plugin_descriptions.keys()
 
+    def is_active(self, pluginname):
+        """Returns if a plugin with a certain name is active or not.
+        @returns: True if the given plugin name is active, False otherwise.
+        """
+        for plugin in self.get_active_plugins():
+            if plugin.name == pluginname:
+                return True
+        return False
+
 
 def register_plugin(plugin_class):
     """Registers a plugin, a convenience function
