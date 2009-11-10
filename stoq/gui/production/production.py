@@ -34,9 +34,9 @@ from kiwi.ui.search import ComboSearchFilter, SearchFilterPosition
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.gui.dialogs.startproduction import StartProductionDialog
+from stoqlib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
 from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
-                                                 ProductionItemsSearch,
-                                                 ProductionQuoteSearch)
+                                                 ProductionItemsSearch)
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.productionwizard import ProductionWizard
 
@@ -133,7 +133,7 @@ class ProductionApp(SearchableAppWindow):
         self._start_production_order()
 
     def on_MenuPurchaseQuote__activate(self, action):
-        self.run_dialog(ProductionQuoteSearch, self.conn)
+        self.run_dialog(ProductionQuoteDialog, self.conn)
 
     def on_ToolbarNewProduction__activate(self, action):
         self._open_production_order()
@@ -142,7 +142,7 @@ class ProductionApp(SearchableAppWindow):
         self.run_dialog(ProductionItemsSearch, self.conn)
 
     def on_ToolbarPurchaseQuote__activate(self, action):
-        self.run_dialog(ProductionQuoteSearch, self.conn)
+        self.run_dialog(ProductionQuoteDialog, self.conn)
 
     def on_start_production_button__clicked(self, widget):
         self._start_production_order()
