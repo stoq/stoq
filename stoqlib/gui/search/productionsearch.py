@@ -127,7 +127,8 @@ class ProductionItemsSearch(SearchDialog):
     def update_widgets(self):
         view = self.results.get_selected()
         has_selected = view is not None
-        if has_selected:
+        producing_status = ProductionOrder.ORDER_PRODUCING
+        if has_selected and view.order_status == producing_status:
             can_produce = view.quantity - view.lost > view.produced
             # the same situation
             can_lose = can_produce
