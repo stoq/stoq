@@ -40,8 +40,10 @@ from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.editors.producteditor import ProductionProductEditor
 from stoqlib.gui.editors.productioneditor import (ProductionItemProducedEditor,
                                                   ProductionItemLostEditor)
+from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.reporting.production import ProductionItemReport
 
 _ = stoqlib_gettext
 
@@ -98,6 +100,11 @@ class ProductionItemsSearch(SearchDialog):
         self._lost_button.set_sensitive(False)
         self._lost_button.show()
 
+        self._print_button = self.add_button('print', stock='gtk-print')
+        self._print_button.connect('clicked', self._on_print_button__clicked)
+        self._print_button.set_sensitive(False)
+        self._print_button.show()
+
     def create_filters(self):
         self.set_text_field_columns(['description',])
         self.set_searchbar_labels(_(u'matching:'))
@@ -136,6 +143,7 @@ class ProductionItemsSearch(SearchDialog):
             can_lose = False
         self._produced_button.set_sensitive(can_produce)
         self._lost_button.set_sensitive(can_lose)
+        self._print_button.set_sensitive(len(self.results) > 0)
 
     #
     # Callbacks
@@ -146,3 +154,7 @@ class ProductionItemsSearch(SearchDialog):
 
     def _on_lost_button__clicked(self, widget):
         self._run_editor(ProductionItemLostEditor)
+
+    def _on_print_button__clicked(self, widget):
+        print_report(ProductionItemReport, self.results,
+                     filters=self.search.get_search_filters(),)
