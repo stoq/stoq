@@ -338,6 +338,8 @@ class ProductSupplierEditor(BaseEditor):
             self.base_cost.set_digits(4)
         self.base_cost.set_adjustment(
             gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
+        self.minimum_purchase.set_adjustment(
+            gtk.Adjustment(lower=1, upper=sys.maxint, step_incr=1))
 
     #
     # BaseEditor hooks
