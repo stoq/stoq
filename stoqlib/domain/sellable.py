@@ -348,6 +348,13 @@ class Sellable(Domain):
         return self.base_sellable_info.price
 
     def _set_price(self, price):
+        if self.on_sale_info.on_sale_price:
+            today = datetime.datetime.today()
+            start_date = self.on_sale_info.on_sale_start_date
+            end_date = self.on_sale_info.on_sale_end_date
+            if is_date_in_interval(today, start_date, end_date):
+                self.on_sale_info.on_sale_price = price
+                return
         self.base_sellable_info.price = price
 
     price = property(_get_price, _set_price)
