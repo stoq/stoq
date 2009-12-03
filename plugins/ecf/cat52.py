@@ -27,7 +27,7 @@ import datetime
 import md5
 import operator
 
-from kiwi.datatypes import number
+from kiwi.datatypes import number, filter_locale
 from stoqdrivers.enum import TaxType
 from stoqlib.lib import latscii
 
@@ -62,8 +62,8 @@ BRAND_FULL_NAME = {
 
 MODEL_FULL_NAME = {
     ('daruma', 'FS345'): 'FS-345',
-    ('bematech', 'MP25'): 'ECF-IF MP-20 FI',
-    ('bematech', 'MP2100'): 'ECF-IF MP-2100 TH FI',
+    ('bematech', 'MP25'): 'MP-20 FI',
+    ('bematech', 'MP2100'): 'MP-2100 TH FI',
 }
 
 DOCUMENT_TYPES = {
@@ -119,8 +119,8 @@ class CATFile(object):
                                 soft_name=software.program_name,
                                 soft_version=(self.software_version or
                                               software.version),
-                                line01="",
-                                line02=""))
+                                line01=" ",
+                                line02=" "))
 
     # E01
     def add_ecf_identification(self, driver, company, initial_crz,
@@ -134,6 +134,7 @@ class CATFile(object):
         @type company: PersonAdaptToCompany
 
         """
+        today = datetime.datetime.today()
         self.add(CATRegisterE01(serial_number=self.printer.device_serial,
                                 # VERIFY
                                 additional_mf='',
@@ -141,8 +142,8 @@ class CATFile(object):
                                 ecf_brand=self.brand,
                                 ecf_model=self.model,
                                 ecf_sb_version=driver.get_firmware_version(),
-                                ecf_sb_date='',
-                                ecf_sb_hour='',
+                                ecf_sb_date=today.date(),
+                                ecf_sb_hour=today.time(),
                                 # VERIFY
                                 ecf_number=self.printer.id,
                                 user_cnpj=company.get_cnpj_number(),
@@ -452,7 +453,14 @@ class CATRegister(object):
             max_value = (10 ** length) - 1
             if value > max_value:
                 value = max_value
-            arg = '%0*d' % (length, value)
+
+            # Remove locale specific marks and replace the decimal digit dot.
+            str_value = filter_locale(str(value))
+            # Return to int again, so in the formatting we add the correct
+            # numbers of zeros.
+            re_value = int(str_value.replace('.', ''))
+
+            arg = '%0*d' % (length, re_value)
         elif argtype == basestring:
             # Accept normal strings, which are assumed to be UTF-8
             if type(value) == str:
@@ -470,7 +478,7 @@ class CATRegister(object):
             arg  = value.strftime("%Y%m%d")
         elif argtype == datetime.time:
             # HHMM
-            arg = value.strftime("%H%M")
+            arg = value.strftime("%H%M%S")
         elif argtype == bool:
             arg = 'N'
             if value:
@@ -517,8 +525,8 @@ class CATRegisterE01(CATRegister):
         ('ecf_brand', 20, basestring),
         ('ecf_model', 20, basestring),
         ('ecf_sb_version', 10, basestring),
-        ('ecf_sb_date', 8, basestring),
-        ('ecf_sb_hour', 6, basestring),
+        ('ecf_sb_date', 8, datetime.date),
+        ('ecf_sb_hour', 6, datetime.time),
         ('ecf_number', 3, number),
         ('user_cnpj', 14, number),
         ('command', 3, basestring),
@@ -672,7 +680,7 @@ class CATRegisterE16(CATRegister):
         ('coo', 6, number),
         ('gnf', 6, number),        # See documentation
         ('grg', 6, number),
-        ('cdc', 6, number),
+        ('cdc', 4, number),
         ('crz', 6, number),
         ('denomination', 2, basestring), # See table
         ('emission_date', 8, datetime.date),
