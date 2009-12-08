@@ -372,7 +372,7 @@ class NFeData(BaseNFeXMLGroup):
                                 self.get_id_value())
         children = self.get_children()
         for child in self.get_children():
-            txt += child.as_text()
+            txt += child.as_txt()
 
         return txt
 
@@ -435,11 +435,11 @@ class NFeIdentification(BaseNFeXMLGroup):
 
         - procEmi: Identificador do processo de emissão da NF-e.
                    0 - emissãp da NF-e com aplicativo do contribuinte
-                       (default)
                    1 - NF-e avulsa pelo fisco
                    2 - NF-e avulsa pelo contribuinte com certificado através
                        do fisco
                    3 - NF-e pelo contribuinte com aplicativo do fisco.
+                       (default).
 
         - verProc: Identificador da versão do processo de emissão (versão do
                    aplicativo emissor de NF-e)
@@ -460,10 +460,10 @@ class NFeIdentification(BaseNFeXMLGroup):
                   (u'tpEmis', '1'),
                   (u'cDV', ''),
                   #TODO: Change tpAmb=1 in the final version.
-                  (u'tpAmb', '2'),
+                  (u'tpAmb', '1'),
                   (u'finNFe', '1'),
-                  (u'procEmi', '0'),
-                  (u'verProc', 'stoq-%s' % stoqlib.version)]
+                  (u'procEmi', '3'),
+                  (u'verProc', '')]
     txttag = 'B'
 
     def __init__(self, cUF, city, nnf, emission_date, payments):
