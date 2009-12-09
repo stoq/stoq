@@ -69,11 +69,10 @@ class SaleQuoteItemEditor(BaseEditor):
             return ValidationError(_(u"The price must be greater than zero."))
 
         sellable = self.model.sellable
-        info = sellable.base_sellable_info
-        if value < info.price - (info.price * info.max_discount/100):
+        if not sellable.is_valid_price(value):
             return ValidationError(
                         _(u"Max discount for this product is %.2f%%") %
-                            info.max_discount)
+                            sellable.max_discount)
 
     def on_quantity__validate(self, widget, value):
         if value <= 0:
