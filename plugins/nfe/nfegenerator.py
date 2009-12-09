@@ -35,7 +35,8 @@ import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.lib.validators import format_quantity
 
-from utils import get_state_code, get_city_code, nfe_tostring
+from utils import (get_state_code, get_city_code, nfe_tostring,
+                   remove_accentuation)
 
 #
 # the page numbers refers to the "Manual de integração do contribuinte v3.00"
@@ -81,12 +82,35 @@ class NFeGenerator(object):
         fp.write(nfe_tostring(self.root))
         fp.close()
 
+    def export_txt(self, location=''):
+        """Exports the NF-e in a text format that can used to import the NF-e
+        by the current NF-e management software provided by the government.
+        More information: http://www.emissornfehom.fazenda.sp.gov.br/.
+
+        @param location: the patch to save the NF-e in text format.
+        """
+        # a string like: NFe35090803852995000107550000000000018859747268
+        data_id = self._nfe_data.get_id_value()
+        # ignore the NFe prefix
+        name = "%s-nfe.txt" % data_id[3:]
+        filename = os.path.join(location, name)
+        fp = open(filename, 'w')
+        # we need to remove the accentuation to avoid import errors from
+        # external applications.
+        fp.write(remove_accentuation(self._as_txt()))
+        fp.close()
+
     #
     # Private API
     #
 
     def __str__(self):
         return nfe_tostring(self.root)
+
+    def _as_txt(self):
+        nfe =  [u'NOTA FISCAL|1|\n',
+               self._nfe_data.as_txt(),]
+        return u''.join(nfe)
 
     def _calculate_verifier_digit(self, key):
         # Calculates the verifier digit. The verifier digit is used to
@@ -157,7 +181,7 @@ class NFeGenerator(object):
         self._nfe_identification = nfe_identification
 
         self._nfe_data = NFeData(key)
-        self._nfe_data.element.append(nfe_identification.element)
+        self._nfe_data.append(nfe_identification)
         self.root.append(self._nfe_data.element)
 
     def _add_issuer(self, issuer):
@@ -169,7 +193,7 @@ class NFeGenerator(object):
         self._nfe_issuer = NFeIssuer(name, cnpj=cnpj,
                                      state_registry=state_registry)
         self._nfe_issuer.set_address(*self._get_address_data(person))
-        self._nfe_data.element.append(self._nfe_issuer.element)
+        self._nfe_data.append(self._nfe_issuer)
 
     def _add_recipient(self, recipient):
         person = recipient.person
@@ -183,7 +207,7 @@ class NFeGenerator(object):
             self._nfe_recipient = NFeRecipient(name, cnpj=cnpj)
 
         self._nfe_recipient.set_address(*self._get_address_data(person))
-        self._nfe_data.element.append(self._nfe_recipient.element)
+        self._nfe_data.append(self._nfe_recipient)
 
     def _add_sale_items(self, sale_items):
         for item_number, sale_item in enumerate(sale_items):
@@ -201,22 +225,22 @@ class NFeGenerator(object):
                                          sellable.get_unit_description())
 
             nfe_item.add_tax_details(sellable.get_tax_constant())
-            self._nfe_data.element.append(nfe_item.element)
+            self._nfe_data.append(nfe_item)
 
     def _add_totals(self):
         sale_total = self._sale.get_total_sale_amount()
         items_total = self._sale.get_sale_subtotal()
         nfe_total = NFeTotal()
         nfe_total.add_icms_total(sale_total, items_total)
-        self._nfe_data.element.append(nfe_total.element)
+        self._nfe_data.append(nfe_total)
 
     def _add_transport_data(self):
         nfe_transport = NFeTransport()
-        self._nfe_data.element.append(nfe_transport.element)
+        self._nfe_data.append(nfe_transport)
 
     def _add_additional_information(self):
         nfe_info = NFeSimplesNacionalInfo()
-        self._nfe_data.element.append(nfe_info.element)
+        self._nfe_data.append(nfe_info)
 
 #
 # NF-e XML Groups
@@ -231,15 +255,19 @@ class BaseNFeXMLGroup(object):
     </root>
 
     @cvar tag: the root element of the hierarchy.
+    @cvar txttag: the root element of the hierarchy used in the text format,
+                  mainly used to export the NF-e.
     @cvar attributes: a list of tuples containing the child name and the
                       default value.
     """
     tag = u''
+    txttag = u''
     attributes = []
 
     def __init__(self):
         self._element = None
         self._data = dict(self.attributes)
+        self._children = []
 
     #
     # Properties
@@ -267,6 +295,13 @@ class BaseNFeXMLGroup(object):
     # Public API
     #
 
+    def append(self, element):
+        self._children.append(element)
+        self.element.append(element.element)
+
+    def get_children(self):
+        return self._children
+
     def get_attr(self, attr):
         return self._data[attr]
 
@@ -284,8 +319,27 @@ class BaseNFeXMLGroup(object):
         # Pg. 71
         return escape(string)
 
+    def as_txt(self):
+        """Returns the group as text, in the format expected to be accepted by
+        the importer of the current NF-e management software provided by the
+        government.
+        If the element do not a txttag attribute value, it will be ignored.
+        Subclasses should might override this method to handle more complex
+        outputs.
+        @returns: a string with the element in text format.
+        """
+        if not self.txttag:
+            return ''
+
+        txt = '%s|' % self.txttag
+        for attr, default in self.attributes:
+            # use the current value, not the default.
+            value = self.get_attr(attr)
+            txt += '%s|' % value
+        return txt + '\n'
+
     def __str__(self):
-        return nfe_tostring(self.element, 'utf8')
+        return nfe_tostring(self.element)
 
 
 # Pg. 92
@@ -297,6 +351,7 @@ class NFeData(BaseNFeXMLGroup):
         - Id: Chave de acesso da NF-e precedida do literal 'NFe'.
     """
     tag = 'infNFe'
+    txttag = 'A'
 
     def __init__(self, key):
         BaseNFeXMLGroup.__init__(self)
@@ -311,6 +366,15 @@ class NFeData(BaseNFeXMLGroup):
 
     def get_id_value(self):
         return self.element.get('Id')
+
+    def as_txt(self):
+        txt = u'%s|%s|%s|\n' % (self.txttag, self.element.get('versao'),
+                                self.get_id_value())
+        children = self.get_children()
+        for child in self.get_children():
+            txt += child.as_txt()
+
+        return txt
 
 
 # Pg. 92
@@ -371,11 +435,11 @@ class NFeIdentification(BaseNFeXMLGroup):
 
         - procEmi: Identificador do processo de emissão da NF-e.
                    0 - emissãp da NF-e com aplicativo do contribuinte
-                       (default)
                    1 - NF-e avulsa pelo fisco
                    2 - NF-e avulsa pelo contribuinte com certificado através
                        do fisco
                    3 - NF-e pelo contribuinte com aplicativo do fisco.
+                       (default).
 
         - verProc: Identificador da versão do processo de emissão (versão do
                    aplicativo emissor de NF-e)
@@ -389,16 +453,18 @@ class NFeIdentification(BaseNFeXMLGroup):
                   (u'serie', '0'),
                   (u'nNF', ''),
                   (u'dEmi', ''),
+                  (u'dSaiEnt', ''),
                   (u'tpNF', '1'),
                   (u'cMunFG', ''),
                   (u'tpImp', '2'),
                   (u'tpEmis', '1'),
                   (u'cDV', ''),
                   #TODO: Change tpAmb=1 in the final version.
-                  (u'tpAmb', '2'),
+                  (u'tpAmb', '1'),
                   (u'finNFe', '1'),
-                  (u'procEmi', '0'),
-                  (u'verProc', 'stoq-%s' % stoqlib.version)]
+                  (u'procEmi', '3'),
+                  (u'verProc', '')]
+    txttag = 'B'
 
     def __init__(self, cUF, city, nnf, emission_date, payments):
         BaseNFeXMLGroup.__init__(self)
@@ -447,6 +513,13 @@ class NFeAddress(BaseNFeXMLGroup):
         self.set_attr('cMun', str(get_city_code(city, state)))
         self.set_attr('UF', state)
 
+    def as_txt(self):
+        return '%s|%s|%s||%s|%s|%s|%s|\n' % (
+                self.txttag, self.get_attr('xLgr'),
+                self.get_attr('nro'), self.get_attr('xBairro'),
+                self.get_attr('cMun'), self.get_attr('xMun'),
+                self.get_attr('UF'))
+
 
 # Pg. 96
 class NFeIssuer(BaseNFeXMLGroup):
@@ -461,6 +534,10 @@ class NFeIssuer(BaseNFeXMLGroup):
     attributes = [(u'CNPJ', None),
                   (u'CPF', None),
                   (u'xNome', ''),]
+    txttag = 'C'
+    address_txt_tag = 'C05'
+    doc_cnpj_tag = 'C02'
+    doc_cpf_tag = 'C02a'
 
     def __init__(self, name, cpf=None, cnpj=None, state_registry=None):
         BaseNFeXMLGroup.__init__(self)
@@ -473,19 +550,38 @@ class NFeIssuer(BaseNFeXMLGroup):
         self._ie = state_registry
 
     def set_address(self, street, number, district, city, state):
-        address = NFeAddress(
+        self._address = NFeAddress(
             self.address_tag, street, number, district, city, state)
-        self.element.append(address.element)
+        self._address.txttag = self.address_txt_tag
+        self.append(self._address)
         # If we set IE in the __init__, the order will not be correct. :(
         ie_element = Element(u'IE')
         ie_element.text = self._ie
         self.element.append(ie_element)
+
+    def as_txt(self):
+        doc_value = self.get_attr('CNPJ')
+        if doc_value:
+            doc_tag = self.doc_cnpj_tag
+            ie = self._ie or 'ISENTO'
+        else:
+            doc_tag = self.doc_cpf_tag
+            doc_value = self.get_attr('CPF')
+            ie = ''
+
+        doc_txt = '%s|%s|\n' % (doc_tag, doc_value,)
+        base = '%s|%s||%s|||\n' % (self.txttag, self.get_attr('xNome'), ie,)
+        return base + doc_txt + self._address.as_txt()
 
 
 # Pg. 99
 class NFeRecipient(NFeIssuer):
     tag = 'dest'
     address_tag = u'enderDest'
+    txttag = 'E'
+    address_txt_tag = 'E05'
+    doc_cnpj_tag = 'E02'
+    doc_cpf_tag = 'E03'
 
 
 # Pg. 102
@@ -495,6 +591,7 @@ class NFeProduct(BaseNFeXMLGroup):
         - nItem: número do item
     """
     tag = u'det'
+    txttag = 'H'
 
     def __init__(self, number):
         BaseNFeXMLGroup.__init__(self)
@@ -506,7 +603,7 @@ class NFeProduct(BaseNFeXMLGroup):
                             unit):
         details = NFeProductDetails(code, description, cfop, quantity, price,
                                     unit)
-        self.element.append(details.element)
+        self.append(details)
 
     def add_tax_details(self, sellable_tax):
         nfe_tax = NFeTax()
@@ -519,18 +616,24 @@ class NFeProduct(BaseNFeXMLGroup):
             # Não tributado ou Isento/ICMS. Atualmente, apenas consideramos
             # que a empresa esteja enquadrada no simples nacional.
             icms = NFeICMS40(tax_type)
-            nfe_icms.element.append(icms.element)
+            nfe_icms.append(icms)
             pis = NFePISOutr()
-            nfe_pis.element.append(pis.element)
+            nfe_pis.append(pis)
             cofins = NFeCOFINSOutr()
-            nfe_cofins.element.append(cofins.element)
+            nfe_cofins.append(cofins)
 
         # TODO: handle service tax (ISS) and ICMS.
 
-        nfe_tax.element.append(nfe_icms.element)
-        nfe_tax.element.append(nfe_pis.element)
-        nfe_tax.element.append(nfe_cofins.element)
-        self.element.append(nfe_tax.element)
+        nfe_tax.append(nfe_icms)
+        nfe_tax.append(nfe_pis)
+        nfe_tax.append(nfe_cofins)
+        self.append(nfe_tax)
+
+    def as_txt(self):
+        base = '%s|%s||\n' % (self.txttag, self.element.get('nItem'),)
+        details, tax = self.get_children()
+        tax_txt = 'M|\nN|\n%s' % tax.as_txt()
+        return base + details.as_txt() + tax_txt
 
 
 # Pg. 102
@@ -585,6 +688,7 @@ class NFeProductDetails(BaseNFeXMLGroup):
                   (u'uTrib', u'un'),
                   (u'qTrib', ''),
                   (u'vUnTrib', '')]
+    txttag = 'I'
 
     def __init__(self, code, description, cfop, quantity, price, unit):
         BaseNFeXMLGroup.__init__(self)
@@ -597,15 +701,33 @@ class NFeProductDetails(BaseNFeXMLGroup):
         self.set_attr('qCom', self.format_value(quantity))
         self.set_attr('qTrib', self.format_value(quantity))
 
+    def as_txt(self):
+        vs = [self.txttag]
+        for attr, value in self.attributes:
+            vs.append(self.get_attr(attr))
+
+        return '%s|%s|%s|%s||||%s|%s|%s|%s|%s|%s|%s|%s|%s||||\n' % tuple(vs)
+
 
 # Pg. 107
 class NFeTax(BaseNFeXMLGroup):
     tag = 'imposto'
+    taxtag = 'M|\nN|\n'
+
+    def as_txt(self):
+        base = '%s' % self.txttag
+        for i in self.get_children():
+            base += i.as_txt()
+        return base
 
 
 # Pg. 107
 class NFeICMS(BaseNFeXMLGroup):
     tag = 'ICMS'
+
+    def as_txt(self):
+        icms = self.get_children()[0]
+        return icms.as_txt()
 
 
 # Pg. 108
@@ -702,6 +824,7 @@ class NFeICMS40(BaseNFeXMLGroup):
     """
     tag = 'ICMS40'
     attributes = [('orig', ''), (u'CST', 40)]
+    txttag = 'N06'
 
     def __init__(self, tax_type):
         BaseNFeXMLGroup.__init__(self)
@@ -718,6 +841,12 @@ class NFeICMS40(BaseNFeXMLGroup):
 # Pg. 117
 class NFePIS(BaseNFeXMLGroup):
     tag = u'PIS'
+    txttag = 'Q'
+
+    def as_txt(self):
+        base = '%s|\n' % (self.txttag)
+        pis = self.get_children()[0]
+        return base + pis.as_txt()
 
 
 # Pg. 117, 118
@@ -752,15 +881,27 @@ class NFePISOutr(NFePISAliq):
     """
     tag = u'PISOutr'
     attributes = NFePISAliq.attributes
+    txttag = 'Q05'
 
     def __init__(self):
         NFePISAliq.__init__(self)
         self.set_attr('CST', '99')
 
+    def as_txt(self):
+        base = '%s|%s|%s|\n' % (self.txttag, self.get_attr('CST'),
+                                self.get_attr('vPIS'))
+        q = '%s|%s|%s|\n' % ('Q07', self.get_attr('vBC'), self.get_attr('pPIS'))
+        return base + q
 
 # Pg. 120, 121
 class NFeCOFINS(BaseNFeXMLGroup):
     tag = u'COFINS'
+    txttag = 'S'
+
+    def as_txt(self):
+        base = '%s|\n' % self.txttag
+        cofins = self.get_children()[0]
+        return base + cofins.as_txt()
 
 
 # Pg. 121
@@ -794,19 +935,33 @@ class NFeCOFINSOutr(NFeCOFINSAliq):
     """
     tag = u'COFINSOutr'
     attributes = NFeCOFINSAliq.attributes
+    txttag = 'S05'
 
     def __init__(self):
         NFeCOFINSAliq.__init__(self)
         self.set_attr('CST', '99')
 
+    def as_txt(self):
+        base = '%s|%s|%s|\n' % (self.txttag, self.get_attr('CST'),
+                                self.get_attr('vCOFINS'))
+        s = '%s|%s|%s|\n' % ('S07', self.get_attr('vBC'),
+                             self.get_attr('pCOFINS'))
+        return base + s
+
 
 # Pg. 123
 class NFeTotal(BaseNFeXMLGroup):
     tag = u'total'
+    txttag = 'W'
 
     def add_icms_total(self, sale_total, items_total):
         icms_total = NFeICMSTotal(sale_total, items_total)
-        self.element.append(icms_total.element)
+        self.append(icms_total)
+
+    def as_txt(self):
+        base = '%s|\n' % self.txttag
+        total = self.get_children()[0]
+        return base + total.as_txt()
 
 
 # Pg. 123
@@ -843,6 +998,7 @@ class NFeICMSTotal(BaseNFeXMLGroup):
                   (u'vCOFINS', '0'),
                   (u'vOutro', '0'),
                   (u'vNF', ''),]
+    txttag = 'W02'
 
     def __init__(self, sale_total, items_total):
         BaseNFeXMLGroup.__init__(self)
@@ -861,6 +1017,7 @@ class NFeTransport(BaseNFeXMLGroup):
     """
     tag = u'transp'
     attributes = [('modFrete', '1'),]
+    txttag = 'X'
 
 
 # Pg. 124 (optional)
@@ -889,6 +1046,7 @@ class NFeAdditionalInformation(BaseNFeXMLGroup):
     tag = u'infAdic'
     attributes = [(u'infAdFisco', None),
                   (u'infCpl', None)]
+    txttag = 'Z'
 
 
 class NFeSimplesNacionalInfo(NFeAdditionalInformation):
@@ -898,4 +1056,5 @@ class NFeSimplesNacionalInfo(NFeAdditionalInformation):
               u' NACIONAL. Não gera Direito a Crédito Fiscal de ICMS e de'\
               u' ISS. Conforme Lei Complementar 123 de 14/12/2006.'
 
+        self.set_attr('infAdFisco', '')
         self.set_attr('infCpl', msg)
