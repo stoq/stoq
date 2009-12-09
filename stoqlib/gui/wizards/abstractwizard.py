@@ -232,6 +232,9 @@ class SellableItemStep(WizardEditorStep):
         quantity = self.get_quantity()
         cost = sellable.cost
         item = self.get_order_item(sellable, cost, quantity)
+        if item is None:
+            return
+
         if item in self.slave.klist:
             self.slave.klist.update(item)
         else:

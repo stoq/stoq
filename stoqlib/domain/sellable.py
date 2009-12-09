@@ -489,6 +489,15 @@ class Sellable(Domain):
         """
         return self._check_unique_value_exists('barcode', barcode)
 
+    def is_valid_price(self, newprice):
+        """Returns True if the new price respects the maximum discount
+        configured for the sellable, otherwise returns False.
+        """
+        info = self.base_sellable_info
+        if newprice < info.price - (info.price * info.max_discount/100):
+            return False
+        return True
+
     #
     # IDescribable implementation
     #
