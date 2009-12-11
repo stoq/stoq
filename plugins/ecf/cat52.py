@@ -24,7 +24,7 @@
 ##
 
 import datetime
-import md5
+from hashlib import md5
 import operator
 
 from kiwi.datatypes import number, filter_locale
@@ -385,7 +385,7 @@ class CATFile(object):
         for register in self._registers:
             data += register.get_string()
 
-        md5sum = md5.new(data).hexdigest()
+        md5sum = md5(data).hexdigest()
         ead = "EAD%s\r\n" % md5sum
 
         fp.write(data.encode('latin1'))
