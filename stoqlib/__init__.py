@@ -31,9 +31,9 @@ from kiwi.environ import Library
 
 program_name    = "Stoqlib"
 website         = 'http://www.stoq.com.br/'
-version         = "0.9.10"
+version         = "0.9.11"
 db_version      = 11
-release_date    = (2009, 07, 14)
+release_date    = (2009, 12, 15)
 
 __all__ = ['library']
 
