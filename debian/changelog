@@ -1,3 +1,9 @@
+stoq (0.9.11) karmic; urgency=low
+
+  * New Release
+
+ -- George Y. Kussumoto <george@async.com.br>  Tue, 15 Dec 2009 12:28:21 -0200
+
 stoq (0.9.10) karmic; urgency=low
 
   * New Release
