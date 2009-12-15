@@ -191,13 +191,39 @@
                                         <property name="visible">True</property>
                                         <child>
                                             <widget class="GtkButton" id="print_button">
-                                                <property name="image_position">top</property>
-                                                <property name="is_focus">True</property>
-                                                <property name="label">gtk-print</property>
-                                                <property name="use_stock">True</property>
                                                 <property name="visible">True</property>
+                                                <child>
+                                                    <widget class="GtkAlignment" id="alignment16">
+                                                        <property name="visible">True</property>
+                                                        <child>
+                                                            <widget class="GtkVBox" id="vbox3">
+                                                                <property name="visible">True</property>
+                                                                <child>
+                                                                    <widget class="GtkImage" id="image1">
+                                                                        <property name="file">document-print.png</property>
+                                                                        <property name="visible">True</property>
+                                                                    </widget>
+                                                                </child>
+                                                                <child>
+                                                                    <widget class="GtkLabel" id="label8">
+                                                                        <property name="label" context="yes" translatable="yes">_Print</property>
+                                                                        <property name="visible">True</property>
+                                                                        <property name="use-underline">True</property>
+                                                                    </widget>
+                                                                    <packing>
+                                                                        <property name="position">1</property>
+                                                                    </packing>
+                                                                </child>
+                                                            </widget>
+                                                        </child>
+                                                    </widget>
+                                                </child>
                                             </widget>
+                                            <packing>
+                                                <property name="position">1</property>
+                                            </packing>
                                         </child>
+
                                         <child>
                                             <widget class="GtkButton" id="cancel_button">
                                                 <property name="visible">True</property>
@@ -219,7 +245,7 @@
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
-                                                                        <property name="position">1</property>
+                                                                        <property name="position">2</property>
                                                                     </packing>
                                                                 </child>
                                                             </widget>
@@ -228,7 +254,7 @@
                                                 </child>
                                             </widget>
                                             <packing>
-                                                <property name="position">1</property>
+                                                <property name="position">2</property>
                                             </packing>
                                         </child>
                                     </widget>
@@ -239,7 +265,7 @@
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
-                                <property name="position">2</property>
+                                <property name="position">3</property>
                             </packing>
                         </child>
                     </widget>
