@@ -10,21 +10,22 @@ Requirements
 ------------
 
 	* Python 2.4 (http://www.python.org/)
-	* Kiwi 1.9.26 (http://www.async.com.br/projects/kiwi/)
+	* Kiwi 1.9.26.2 (http://www.async.com.br/projects/kiwi/)
 	* pySerial 1.3 (http://pyserial.sourceforge.net/)
-	* Zope interfaces 3.0 (http://www.zope.org/Products/ZopeInterface/)
+	* Zope interfaces 3.5.2 (http://www.zope.org/Products/ZopeInterface/)
 
 
 New Versions
 ------------
 
-New versions of the package can be found always by the SVN repository:
+New versions of the package can be found always by the bazaar repository:
 
-	svn://svn.async.com.br/pub/stoqdrivers/trunk/
+    bzr branch lp:stoqdrivers
 
-or at Stoq website:
+or at Stoq website and in Launchpad:
 
 	http://www.stoq.com.br/
+    http://launchpad.net/stoqdrivers
 
 
 Mailing list

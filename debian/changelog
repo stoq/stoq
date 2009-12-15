@@ -1,3 +1,9 @@
+stoqdrivers (1:0.9.8.2) karmic; urgency=low
+
+  * Bugfix Release
+
+ -- George Y. Kussumoto <george@async.com.br>  Tue, 15 Dec 2009 11:49:23 -0200
+
 stoqdrivers (1:0.9.8) karmic; urgency=low
 
   * New Release
