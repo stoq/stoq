@@ -150,6 +150,16 @@ data_files += [
      listfiles('plugins', 'ecf', 'sql', '*.sql')),
     ]
 
+# NFePlugin
+data_files += [
+    ('$prefix/lib/stoqlib/plugins/nfe/csv',
+     listfiles('plugins', 'nfe', 'csv', '*.csv')),
+    ('$prefix/lib/stoqlib/plugins/nfe/sql',
+     listfiles('plugins', 'nfe', 'sql', '*.sql')),
+    ('$prefix/lib/stoqlib/plugins/nfe/sql',
+     listfiles('plugins', 'nfe', 'sql', '*.py')),
+    ]
+
 setup(name='stoqlib',
       version=version,
       author="Async Open Source",
