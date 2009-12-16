@@ -1,3 +1,9 @@
+stoqlib (0.9.11.2) karmic; urgency=low
+
+  * Bugfix Release
+
+ --  <george@async.com.br>  Wed, 16 Dec 2009 15:01:10 -0200
+
 stoqlib (0.9.11) karmic; urgency=low
 
   * New Release
