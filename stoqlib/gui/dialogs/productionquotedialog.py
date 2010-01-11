@@ -160,6 +160,8 @@ class ProductionQuoteDialog(BaseEditor):
             p.start_production()
         finish_transaction(trans, group)
         trans.close()
+        info(_(u'The quote group was succesfully created and it is available '
+                'in the Purchase application.'))
         return True
 
     #
