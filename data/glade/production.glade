@@ -21,6 +21,14 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="MenuPurchaseQuote">
+                        <property name="name">MenuPurchaseQuote</property>
+                        <property name="stock_id">stoq-purchase-quote</property>
+                        <property name="accelerator">&lt;Control&gt;p</property>
+                        <property name="label" translatable="yes">Purchase Quote...</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="FinishOrder">
                         <property name="name">FinishOrder</property>
                         <property name="label" translatable="yes">Finish Order...</property>
@@ -82,17 +90,17 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="ToolbarStartProduction">
-                        <property name="name">ToolbarStartProduction</property>
-                        <property name="label" translatable="yes">Start Production</property>
-                        <property name="stock_id">stoq-transfer</property>
-                    </widget>
-                </child>
-                <child>
                     <widget class="GtkAction" id="ToolbarProductionItemsSearch">
                         <property name="name">ToolbarProductionItemsSearch</property>
                         <property name="label" translatable="yes">Production Items</property>
                         <property name="stock_id">stoq-products</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="ToolbarPurchaseQuote">
+                        <property name="name">ToolbarPurchaseQuote</property>
+                        <property name="label" translatable="yes">Purchase Quote</property>
+                        <property name="stock_id">stoq-purchase-quote</property>
                     </widget>
                 </child>
                 <child>
@@ -182,6 +190,7 @@
         <menu action="ProductionMenu">
 	    <menuitem action="MenuNewProduction"/>
 	    <menuitem action="MenuStartProduction"/>
+	    <menuitem action="MenuPurchaseQuote"/>
 	    <separator name="sep"/>
 	    <menuitem action="ExportCSV"/>
 	    <menuitem action="Quit"/>
@@ -196,7 +205,7 @@
 	  </menubar>
 	  <toolbar action="toolbar1">
 	    <toolitem action="ToolbarNewProduction"/>
-	    <toolitem action="ToolbarStartProduction"/>
+	    <toolitem action="ToolbarPurchaseQuote"/>
 	    <toolitem action="ToolbarProductionItemsSearch"/>
 	  </toolbar>
 	</ui>]]></ui>
@@ -267,9 +276,9 @@
                                         <property name="spacing">5</property>
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="GtkButton" id="cancel_button">
+                                            <widget class="GtkButton" id="start_production_button">
                                                 <property name="is_focus">True</property>
-                                                <property name="visible">False</property>
+                                                <property name="visible">True</property>
                                                 <child>
                                                     <widget class="GtkAlignment" id="alignment4">
                                                         <property name="visible">True</property>
@@ -278,13 +287,13 @@
                                                                 <property name="visible">True</property>
                                                                 <child>
                                                                     <widget class="GtkImage" id="image1">
-                                                                        <property name="file">remove24px.png</property>
+                                                                        <property name="file">a-convert24px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="label2">
-                                                                        <property name="label" context="yes" translatable="yes">_Cancel</property>
+                                                                        <property name="label" context="yes" translatable="yes">Start Production</property>
                                                                         <property name="use-underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
