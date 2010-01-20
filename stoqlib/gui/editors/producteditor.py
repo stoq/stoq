@@ -434,7 +434,7 @@ class ProductComponentEditor(BaseEditor):
     def _setup_widgets(self):
         self.component_description.set_text(self.model.description)
         self.quantity.set_adjustment(
-            gtk.Adjustment(lower=1, upper=sys.maxint, step_incr=1))
+            gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
         # set a default quantity value for new components
         if not self.model.quantity:
             self.quantity.set_value(1)
