@@ -154,10 +154,6 @@ class ProductionQuoteDialog(BaseEditor):
         productions = [p.obj for p in self.productions if p.selected]
         trans = new_transaction()
         group = self.model.create_quote_group(productions, trans)
-
-        for production in productions:
-            p = trans.get(production)
-            p.start_production()
         finish_transaction(trans, group)
         trans.close()
         info(_(u'The quote group was succesfully created and it is available '
