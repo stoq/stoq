@@ -31,10 +31,13 @@ from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import enum
 from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.objectlist import SearchColumn
 
+from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.fiscal import CfopData, IcmsIpiView, IssView
-from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.search import SearchEditor, SearchDialog
+from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.editors.fiscaleditor import (CfopEditor,
                                               FiscalBookEntryEditor)
 from stoqlib.lib.translation import stoqlib_gettext
@@ -73,13 +76,11 @@ class CfopSearch(SearchEditor):
                              searchable=True, expand=True)]
 
 
-class FiscalBookEntrySearch(SearchEditor):
+class FiscalBookEntrySearch(SearchDialog):
     title = _("Search for fiscal entries")
     size = (750, 450)
     search_table = IcmsIpiView
-    editor_class = FiscalBookEntryEditor
     searching_by_date = True
-    has_new_button = False
     searchbar_result_strings = _("fiscal entry"), _("fiscal entries")
 
     def _setup_columns(self, column, table, col_name, summary_label_text):
@@ -145,6 +146,24 @@ class FiscalBookEntrySearch(SearchEditor):
     # SearchDialog Hooks
     #
 
+    def setup_widgets(self):
+        self.edit_button = self.add_button('Edit', stock='gtk-edit')
+        self.edit_button.connect('clicked', self._on_edit_button__clicked)
+        self.edit_button.show()
+        self.edit_button.set_sensitive(False)
+
+        self.csv_button = self.add_button(label=_(u'Export CSV...'))
+        self.csv_button.connect('clicked', self._on_export_csv_button__clicked)
+        self.csv_button.show()
+        self.csv_button.set_sensitive(False)
+
+    def update_widgets(self):
+        can_export_csv = len(self.results) > 0
+        can_edit = bool(self.results.get_selected())
+
+        self.csv_button.set_sensitive(can_export_csv)
+        self.edit_button.set_sensitive(can_edit)
+
     def create_filters(self):
         self.set_text_field_columns([])
 
@@ -158,6 +177,20 @@ class FiscalBookEntrySearch(SearchEditor):
         self.add_filter(entry_type, callback=self._get_entry_type_query,
                         position=SearchFilterPosition.TOP)
 
-    def get_editor_model(self, view_object):
-        return view_object.book_entry
+    #
+    # Callbacks
+    #
 
+    def _on_edit_button__clicked(self, widget):
+        entry = self.results.get_selected()
+        assert entry is not None
+
+        trans = new_transaction()
+        retval = run_dialog(FiscalBookEntryEditor, self, trans,
+                            trans.get(entry.book_entry))
+        finish_transaction(trans, retval)
+        trans.close()
+
+    def _on_export_csv_button__clicked(self, widget):
+        run_dialog(CSVExporterDialog, self, self.conn, self.search_table,
+                   self.results)
