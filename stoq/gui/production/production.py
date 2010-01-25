@@ -34,6 +34,7 @@ from kiwi.ui.search import ComboSearchFilter, SearchFilterPosition
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.gui.dialogs.startproduction import StartProductionDialog
+from stoqlib.gui.dialogs.productiondetails import ProductionDetailsDialog
 from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
                                                  ProductionItemsSearch)
 from stoqlib.gui.search.servicesearch import ServiceSearch
@@ -68,6 +69,7 @@ class ProductionApp(SearchableAppWindow):
         self.edit_button.set_sensitive(can_edit)
         self.MenuStartProduction.set_sensitive(can_start)
         self.ToolbarStartProduction.set_sensitive(can_start)
+        self.details_button.set_sensitive(len(selection) == 1)
 
     def _get_status_values(self):
         items = [(text, value)
@@ -144,6 +146,11 @@ class ProductionApp(SearchableAppWindow):
         order = self.results.get_selected_rows()[0]
         assert order is not None
         self._open_production_order(order)
+
+    def on_details_button__clicked(self, widget):
+        order = self.results.get_selected_rows()[0]
+        assert order is not None
+        self.run_dialog(ProductionDetailsDialog, self.conn, order)
 
     def on_results__selection_changed(self, results, selected):
         self._update_widgets()
