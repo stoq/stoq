@@ -46,6 +46,7 @@ class ProductionDetailsDialog(BaseEditor):
                      'order_number',
                      'open_date',
                      'close_date',
+                     'responsible_name',
                      'status_string',)
 
     def _setup_widgets(self):
