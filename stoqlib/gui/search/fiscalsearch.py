@@ -157,11 +157,10 @@ class FiscalBookEntrySearch(SearchDialog):
         self.csv_button.show()
         self.csv_button.set_sensitive(False)
 
-    def update_widgets(self):
-        can_export_csv = len(self.results) > 0
-        can_edit = bool(self.results.get_selected())
+        self.results.connect('has_rows', self._on_results__has_rows)
 
-        self.csv_button.set_sensitive(can_export_csv)
+    def update_widgets(self):
+        can_edit = bool(self.results.get_selected())
         self.edit_button.set_sensitive(can_edit)
 
     def create_filters(self):
@@ -194,3 +193,6 @@ class FiscalBookEntrySearch(SearchDialog):
     def _on_export_csv_button__clicked(self, widget):
         run_dialog(CSVExporterDialog, self, self.conn, self.search_table,
                    self.results)
+
+    def _on_results__has_rows(self, widget, has_rows):
+        self.csv_button.set_sensitive(has_rows)
