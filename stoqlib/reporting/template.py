@@ -71,7 +71,11 @@ class BaseStoqReport(ReportTemplate):
     report_name_prefix = "Stoq - "
 
     def __init__(self, *args, **kwargs):
-        ReportTemplate.__init__(self, timestamp=True,
+        if kwargs.has_key('do_footer'):
+            timestamp = kwargs['do_footer']
+        else:
+            timestamp = True
+        ReportTemplate.__init__(self, timestamp=timestamp,
                                 username=self.get_username(), *args, **kwargs)
         self.trans = new_transaction()
         logotype_path = _get_logotype_path(self.trans)
