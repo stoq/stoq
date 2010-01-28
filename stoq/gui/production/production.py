@@ -107,6 +107,8 @@ class ProductionApp(SearchableAppWindow):
     def get_columns(self):
         return [SearchColumn('id', title=_(u'# '), sorted=True, data_type=int,
                              format='%04d'),
+                Column('status_str', title=_(u'Status'), data_type=str,
+                        visible=False),
                 SearchColumn('description', title=_(u'Description'),
                              data_type=str, expand=True),
                 Column('responsible.person.name', title=_(u'Responsible'),
