@@ -290,7 +290,7 @@ class ProductComponentSlave(BaseEditorSlave):
         return len(self.component_tree) > 0
 
     def get_component_cost(self):
-        return sum([c.production_cost for c in self.component_tree])
+        return sum([c.get_total_production_cost() for c in self.component_tree])
 
     #
     # Kiwi Callbacks
