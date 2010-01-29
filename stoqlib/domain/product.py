@@ -249,7 +249,7 @@ class Product(Domain):
         return self.get_components().count() > 0
 
     def get_production_cost(self):
-        """ Return the production cost of a Product.
+        """ Return the production cost of one unit of the Product.
         @returns: the production cost
         """
         return self.sellable.cost

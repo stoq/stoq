@@ -126,6 +126,8 @@ class ProductComponentSlave(BaseEditorSlave):
                 Column('category', title=_(u'Category'), data_type=str),
                 Column('production_cost', title=_(u'Production Cost'),
                         format_func=get_formatted_cost, data_type=currency),
+                Column('total_production_cost', title=_(u'Total'),
+                        format_func=get_formatted_cost, data_type=currency),
                 ]
 
     def _setup_widgets(self):
@@ -134,7 +136,7 @@ class ProductComponentSlave(BaseEditorSlave):
         self.component_tree.set_columns(self._get_columns())
         self._populate_component_tree()
         self.component_label = SummaryLabel(klist=self.component_tree,
-                                            column='production_cost',
+                                            column='total_production_cost',
                                             label='<b>%s</b>' % _(u'Total:'),
                                             value_format='<b>%s</b>')
         self.component_label.show()
