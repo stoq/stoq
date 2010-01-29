@@ -287,6 +287,9 @@ class ProductComponentSlave(BaseEditorSlave):
     def validate_confirm(self):
         return len(self.component_tree) > 0
 
+    def get_component_cost(self):
+        return sum([c.production_cost for c in self.component_tree])
+
     #
     # Kiwi Callbacks
     #
@@ -505,11 +508,23 @@ class ProductEditor(SellableEditor):
 
 class ProductionProductEditor(ProductEditor):
 
+    _cost_msg = _(u'Cost must be greater than the sum of the components.')
+
+    def _is_valid_cost(self, cost):
+        if hasattr(self, '_component_slave'):
+            component_cost = self._component_slave.get_component_cost()
+            return cost >= component_cost
+        return True
+
     def get_extra_tabs(self):
         self._component_slave = ProductComponentSlave(self.conn, self.model)
         return [(_(u'Components'), self._component_slave),]
 
     def validate_confirm(self):
+        if not self._is_valid_cost(self.cost.read()):
+            info(self._cost_msg)
+            return False
+
         confirm = self._component_slave.validate_confirm()
         if not confirm:
             info(_(u'There is no component in this product.'))
@@ -518,6 +533,12 @@ class ProductionProductEditor(ProductEditor):
     def on_confirm(self):
         self._component_slave.on_confirm()
         return self.model
+
+    def on_cost__validate(self, widget, value):
+        if value <= 0:
+            return ValidationError(_(u'Cost cannot be zero or negative.'))
+        if not self._is_valid_cost(value):
+            return ValidationError(self._cost_msg)
 
 
 class ProductStockEditor(BaseEditor):
