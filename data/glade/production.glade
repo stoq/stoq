@@ -346,7 +346,7 @@
                                         <child>
                                             <widget class="GtkButton" id="details_button">
                                                 <property name="is_focus">True</property>
-                                                <property name="visible">False</property>
+                                                <property name="visible">True</property>
                                                 <child>
                                                     <widget class="GtkAlignment" id="alignment2">
                                                         <property name="visible">True</property>
