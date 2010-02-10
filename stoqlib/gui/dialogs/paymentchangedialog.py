@@ -75,6 +75,14 @@ class BasePaymentChangeDialog(BaseEditor):
 
         if someone is not None:
             return someone.person.name
+        # Lonely payments case
+        if self._order is None:
+            group = self._payment.group
+            if group.payer is not None:
+                return group.payer.name
+            elif group.recipient is not None:
+                return group.recipient.name
+        # Fallback
         return _(u"No client or supplier")
 
     #
@@ -195,12 +203,14 @@ class PaymentStatusChangeDialog(BasePaymentChangeDialog):
     # BaseEditor Hooks
     #
     def create_model(self, conn):
-        change_entry = BasePaymentChangeDialog.create_model(self, conn)
+        return BasePaymentChangeDialog.create_model(self, conn)
+
+    def on_confirm(self):
         change_status_method = self._get_change_status_method()
         assert change_status_method
 
-        change_status_method(change_entry)
-        return change_entry
+        change_status_method(self.model)
+        return self.model
 
     #
     # BasePaymentChangeDialog
