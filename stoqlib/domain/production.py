@@ -131,6 +131,20 @@ class ProductionOrder(Domain):
 
         self.status = ProductionOrder.ORDER_WAITING
 
+    def get_status_string(self):
+        return ProductionOrder.statuses[self.status]
+
+    def get_order_number(self):
+        return u'%04d' % self.id
+
+    def get_branch_name(self):
+        return self.branch.person.name
+
+    def get_responsible_name(self):
+        if self.responsible is not None:
+            return self.responsible.person.name
+        return u''
+
     #
     # IDescribable implementation
     #
