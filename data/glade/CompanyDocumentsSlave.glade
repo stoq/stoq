@@ -8,7 +8,7 @@
             <widget class="GtkTable" id="table1">
                 <property name="column_spacing">5</property>
                 <property name="n_columns">4</property>
-                <property name="n_rows">2</property>
+                <property name="n_rows">3</property>
                 <property name="row_spacing">5</property>
                 <property name="visible">True</property>
                 <child>
@@ -34,6 +34,18 @@
                     </packing>
                 </child>
                 <child>
+                    <widget class="GtkLabel" id="label4">
+                        <property name="label" context="yes" translatable="yes">City Registry:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
                     <widget class="ProxyEntry" id="fancy_name">
                         <property name="data_type">unicode</property>
                         <property name="is_focus">True</property>
@@ -52,6 +64,7 @@
                         <property name="is_focus">True</property>
                         <property name="mask" context="yes" translatable="yes">00.000.000/0000-00</property>
                         <property name="model_attribute">cnpj</property>
+                        <property name="text" context="yes" translatable="yes">  .   .   /    -  </property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -59,6 +72,21 @@
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyEntry" id="city_registry">
+                        <property name="data_type">unicode</property>
+                        <property name="is_focus">True</property>
+                        <property name="model_attribute">city_registry</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">2</property>
                         <property name="y_options">fill</property>
                     </packing>
                 </child>
@@ -77,6 +105,15 @@
                     </packing>
                 </child>
                 <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
+                    </packing>
+                </child>
+                <child>
                     <widget class="ProxyEntry" id="state_registry">
                         <property name="data_type">unicode</property>
                         <property name="model_attribute">state_registry</property>
@@ -88,6 +125,15 @@
                         <property name="right_attach">4</property>
                         <property name="top_attach">1</property>
                         <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
                     </packing>
                 </child>
             </widget>
