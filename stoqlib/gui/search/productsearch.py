@@ -200,6 +200,7 @@ class ProductSearchQuantity(SearchDialog):
     size = (775, 450)
     table = search_table = ProductQuantityView
     advanced_search = False
+    show_production_columns = False
 
     def on_print_button_clicked(self, button):
         print_report(ProductQuantityReport, self.results,
@@ -215,7 +216,8 @@ class ProductSearchQuantity(SearchDialog):
         # Date
         date_filter = DateSearchFilter(_('Date:'))
         date_filter.select(Today)
-        self.add_filter(date_filter, columns=['sold_date', 'received_date'])
+        self.add_filter(date_filter, columns=['sold_date', 'received_date',
+                                              'production_date'])
 
         # Branch
         branch_filter = self.create_branch_filter(_('In branch:'))
@@ -235,15 +237,26 @@ class ProductSearchQuantity(SearchDialog):
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
                 Column('quantity_sold', title=_('Sold'),
-                       format_func=format_data,
-                       data_type=Decimal),
+                       format_func=format_data, data_type=Decimal,
+                       visible=not self.show_production_columns),
                 Column('quantity_transfered', title=_('Transfered'),
-                       format_func=format_data, data_type=Decimal),
+                       format_func=format_data, data_type=Decimal,
+                       visible=not self.show_production_columns),
                 Column('quantity_retained', title=_('Retained'),
-                       format_func=format_data, data_type=Decimal),
+                       format_func=format_data, data_type=Decimal,
+                       visible=not self.show_production_columns),
                 Column('quantity_received', title=_('Received'),
-                       format_func=format_data,
-                       data_type=Decimal)]
+                       format_func=format_data, data_type=Decimal,
+                       visible=not self.show_production_columns),
+                Column('quantity_produced', title=_('Produced'),
+                       format_func=format_data, data_type=Decimal,
+                       visible=self.show_production_columns),
+                Column('quantity_consumed', title=_('Consumed'),
+                       format_func=format_data, data_type=Decimal,
+                       visible=self.show_production_columns),
+                Column('quantity_lost', title=_('Lost'),
+                       format_func=format_data, data_type=Decimal,
+                       visible=self.show_production_columns,)]
 
 
 class ProductsSoldSearch(SearchDialog):

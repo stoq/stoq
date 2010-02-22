@@ -295,6 +295,10 @@ class ProductHistory(Domain):
     quantity_received = DecimalCol(default=None)
     quantity_transfered = DecimalCol(default=None)
     quantity_retained = DecimalCol(default=None)
+    quantity_produced = DecimalCol(default=None)
+    quantity_consumed = DecimalCol(default=None)
+    quantity_lost = DecimalCol(default=None)
+    production_date = DateTimeCol(default=None)
     sold_date = DateTimeCol(default=None)
     received_date = DateTimeCol(default=None)
     branch = ForeignKey("PersonAdaptToBranch")
@@ -360,6 +364,49 @@ class ProductHistory(Domain):
             quantity_retained=retained_item.quantity,
             received_date=datetime.date.today(),
             connection=conn)
+
+    @classmethod
+    def add_consumed_item(cls, conn, branch, consumed_item):
+        """
+        Adds a consumed_item, populates the ProductHistory table using a
+        production_material item that was used in a production order.
+
+        @param conn: a database connection
+        @param branch: the source branch
+        @param retained_item: a ProductionMaterial instance
+        """
+        cls(branch=branch, sellable=consumed_item.product.sellable,
+            quantity_consumed=consumed_item.consumed,
+            production_date=datetime.date.today(),
+            connection=conn)
+
+    @classmethod
+    def add_produced_item(cls, conn, branch, produced_item):
+        """
+        Adds a produced_item, populates the ProductHistory table using a
+        production_item that was produced in a production order.
+
+        @param conn: a database connection
+        @param branch: the source branch
+        @param retained_item: a ProductionItem instance
+        """
+        cls(branch=branch, sellable=produced_item.product.sellable,
+            quantity_produced=produced_item.produced,
+            production_date=datetime.date.today(), connection=conn)
+
+    @classmethod
+    def add_lost_item(cls, conn, branch, lost_item):
+        """
+        Adds a lost_item, populates the ProductHistory table using a
+        production_item/product_material that was lost in a production order.
+
+        @param conn: a database connection
+        @param branch: the source branch
+        @param lost_item: a ProductionItem or ProductionMaterial instance
+        """
+        cls(branch=branch, sellable=lost_item.product.sellable,
+            quantity_lost=lost_item.lost,
+            production_date=datetime.date.today(), connection=conn)
 
 
 class ProductStockItem(Domain):

@@ -41,7 +41,8 @@ from stoqlib.gui.editors.producteditor import ProductionProductEditor
 from stoqlib.gui.editors.productioneditor import (ProductionItemProducedEditor,
                                                   ProductionItemLostEditor)
 from stoqlib.gui.printing import print_report
-from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.productsearch import (ProductSearch,
+                                              ProductSearchQuantity)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.production import ProductionItemReport
 
@@ -155,6 +156,11 @@ class ProductionItemsSearch(SearchDialog):
 
     def _on_lost_button__clicked(self, widget):
         self._run_editor(ProductionItemLostEditor)
+
+
+class ProductionHistorySearch(ProductSearchQuantity):
+    title = _(u'Production History Search')
+    show_production_columns = True
 
     def _on_print_button__clicked(self, widget):
         print_report(ProductionItemReport, self.results,
