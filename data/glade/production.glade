@@ -83,6 +83,14 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="ProductionHistory">
+                        <property name="name">ProductionHistory</property>
+                        <property name="label" translatable="yes">Production History...</property>
+                        <property name="stock_id">stoq-products</property>
+                        <property name="accelerator">&lt;Control&gt;h</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="ToolbarNewProduction">
                         <property name="name">ToolbarNewProduction</property>
                         <property name="label" translatable="yes">New Production</property>
@@ -198,6 +206,7 @@
          <menu action="SearchMenu">
 	     <menuitem action="Products"/>
 	     <menuitem action="Services"/>
+	     <menuitem action="ProductionHistory"/>
 	  </menu>
         <menu action="help_menu">
 	    <menuitem action="about_menu"/>
