@@ -56,6 +56,8 @@ class BasePaymentChangeDialog(BaseEditor):
     def _setup_widgets(self):
         self.order_number_lbl.set_text(self._get_order_number())
         self.name_lbl.set_text(self._get_person_name())
+        self.status_lbl2.hide()
+        self.target_status_combo.hide()
 
     def _get_order_number(self):
         if self._order:
@@ -73,6 +75,14 @@ class BasePaymentChangeDialog(BaseEditor):
 
         if someone is not None:
             return someone.person.name
+        # Lonely payments case
+        if self._order is None:
+            group = self._payment.group
+            if group.payer is not None:
+                return group.payer.name
+            elif group.recipient is not None:
+                return group.recipient.name
+        # Fallback
         return _(u"No client or supplier")
 
     #
@@ -98,6 +108,9 @@ class BasePaymentChangeDialog(BaseEditor):
     #
     # Public API
     #
+
+    def get_payment(self):
+        return self._payment
 
     def get_validate_message(self):
         """Defines a message to pop out to the user when the
@@ -154,10 +167,21 @@ class PaymentStatusChangeDialog(BasePaymentChangeDialog):
     title = _(u"Change Payment Status")
     payment_widgets = ('status_combo',)
 
+    def __init__(self, conn, payment, target_status, order=None):
+        self._target_status = target_status
+        assert Payment.statuses.has_key(self._target_status)
+
+        BasePaymentChangeDialog.__init__(self, conn, payment, order)
+
     def _setup_widgets(self):
         BasePaymentChangeDialog._setup_widgets(self)
         self.due_date_box.hide()
         self.status_combo.set_sensitive(False)
+
+        self.target_status_combo.select_item_by_data(self._target_status)
+        self.target_status_combo.set_sensitive(False)
+        self.target_status_combo.show()
+        self.status_lbl2.show()
 
     def setup_proxies(self):
         self._setup_combo()
@@ -166,14 +190,27 @@ class PaymentStatusChangeDialog(BasePaymentChangeDialog):
     def _setup_combo(self):
         items = [(Payment.statuses[id], id) for id in Payment.statuses]
         self.status_combo.prefill(items)
+        self.target_status_combo.prefill(items)
+
+    def _get_change_status_method(self):
+        payment = self.get_payment()
+        if self._target_status == Payment.STATUS_CANCELLED:
+            return payment.cancel
+        elif self._target_status == Payment.STATUS_PENDING:
+            return payment.set_not_paid
 
     #
     # BaseEditor Hooks
     #
     def create_model(self, conn):
-        change_entry = BasePaymentChangeDialog.create_model(self, conn)
-        self._payment.set_not_paid(change_entry)
-        return change_entry
+        return BasePaymentChangeDialog.create_model(self, conn)
+
+    def on_confirm(self):
+        change_status_method = self._get_change_status_method()
+        assert change_status_method
+
+        change_status_method(self.model)
+        return self.model
 
     #
     # BasePaymentChangeDialog
