@@ -31,6 +31,7 @@ from zope.interface import implements
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, DateTimeCol, IntCol,
                                   DecimalCol)
 from stoqlib.domain.base import Domain
+from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable, IStorable
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -232,6 +233,7 @@ class ProductionItem(Domain):
         storable = IStorable(self.product, None)
         storable.increase_stock(quantity, self.order.branch)
         self.produced += quantity
+        ProductHistory.add_produced_item(conn, self.order.branch, self)
 
     def add_lost(self, quantity):
         """Adds a quantity that was lost. The maximum quantity that can be
@@ -255,6 +257,7 @@ class ProductionItem(Domain):
                 raise
 
         self.lost += quantity
+        ProductHistory.add_lost_item(conn, self.order.branch, self)
 
 
 class ProductionMaterial(Domain):
@@ -327,6 +330,8 @@ class ProductionMaterial(Domain):
             self.allocate(required - self.allocated)
 
         self.lost += quantity
+        conn = self.get_connection()
+        ProductHistory.add_lost_item(conn, self.order.branch, self)
 
     def consume(self, quantity):
         """Consumes a certain quantity of material. The maximum quantity
@@ -345,6 +350,8 @@ class ProductionMaterial(Domain):
             self.allocate(required - self.allocated)
 
         self.consumed += quantity
+        conn = self.get_connection()
+        ProductHistory.add_consumed_item(conn, self.order.branch, self)
 
     #
     # IDescribable Implementation

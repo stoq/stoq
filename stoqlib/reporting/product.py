@@ -132,14 +132,22 @@ class ProductQuantityReport(ObjectListReport):
         totals = [(p.quantity_sold or Decimal(0),
                    p.quantity_received or Decimal(0),
                    p.quantity_transfered or Decimal(0),
-                   p.quantity_retained or Decimal(0)) for p in self._products]
-        sold, received, transfered, retained = zip(*totals)
+                   p.quantity_retained or Decimal(0),
+                   p.quantity_produced or Decimal(0),
+                   p.quantity_consumed or Decimal(0),
+                   p.quantity_lost or Decimal(0)) for p in self._products]
+
+        (sold, received, transfered, retained, produced, consumed,
+                                                            lost) = zip(*totals)
 
         self.add_summary_by_column(_(u'Sold'), format_data(sum(sold)))
         self.add_summary_by_column(_(u'Received'), format_data(sum(received)))
         self.add_summary_by_column(_(u'Transfered'),
                                    format_data(sum(transfered)))
         self.add_summary_by_column(_(u'Retained'), format_data(sum(retained)))
+        self.add_summary_by_column(_(u'Produced'), format_data(sum(produced)))
+        self.add_summary_by_column(_(u'Consumed'), format_data(sum(consumed)))
+        self.add_summary_by_column(_(u'Lost'), format_data(sum(lost)))
 
         self.add_object_table(self._products, self.get_columns(),
                               summary_row=self.get_summary_row())
