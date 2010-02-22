@@ -37,6 +37,7 @@ from stoqlib.database.runtime import (new_transaction, finish_transaction,
                                       get_current_branch)
 from stoqlib.domain.product import ProductAdaptToStorable
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -47,6 +48,8 @@ class _TemporaryStorableItem(object):
         self.obj = item
         sellable = item.product.sellable
         self.code = sellable.code
+        self.barcode = sellable.barcode
+        self.category_description = sellable.get_category_description()
         self.description = sellable.get_description()
         self.initial_stock = 0
 
@@ -81,6 +84,9 @@ class InitialStockDialog(BaseEditor):
         adj = gtk.Adjustment(upper=MAXINT, step_incr=1)
         return [Column("code", title=_(u"Code"), data_type=str,
                         sorted=True),
+                Column("barcode", title=_(u"Barcode"), data_type=str,),
+                Column("category_description", title=_(u"Category"),
+                        data_type=str),
                 Column("description", title=_(u"Description"),
                         data_type=str, expand=True),
                 Column("initial_stock", title=_(u"Initial Stock"),
@@ -99,6 +105,14 @@ class InitialStockDialog(BaseEditor):
             storable = trans.get(item.obj)
             storable.increase_stock(item.initial_stock, self._branch)
 
+    def _add_initial_stock(self):
+        trans = new_transaction()
+        for item in self._storables:
+            self._validate_initial_stock_quantity(item, trans)
+
+        finish_transaction(trans, True)
+        trans.close()
+
     #
     # BaseEditorSlave
     #
@@ -111,14 +125,15 @@ class InitialStockDialog(BaseEditor):
         self.attach_slave("on_slave_holder" , self.slave)
 
     def on_confirm(self):
-        trans = new_transaction()
-        for item in self._storables:
-            self._validate_initial_stock_quantity(item, trans)
-
-        finish_transaction(trans, True)
-        trans.close()
+        self._add_initial_stock()
         return True
 
+    def on_cancel(self):
+        if self._storables:
+            msg = _(u'Save data before close the dialog ?')
+            if yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _(u'No')):
+                self._add_initial_stock()
+        return False
     #
     # Callbacks
     #
