@@ -37,7 +37,8 @@ from stoqlib.gui.dialogs.productiondetails import ProductionDetailsDialog
 from stoqlib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
 from stoqlib.gui.dialogs.startproduction import StartProductionDialog
 from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
-                                                 ProductionItemsSearch)
+                                                 ProductionItemsSearch,
+                                                 ProductionHistorySearch)
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.productionwizard import ProductionWizard
 
@@ -127,6 +128,9 @@ class ProductionApp(SearchableAppWindow):
 
     def on_Services__activate(self, action):
         self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)
+
+    def on_ProductionHistory__activate(self, action):
+        self.run_dialog(ProductionHistorySearch, self.conn)
 
     def on_MenuNewProduction__activate(self, action):
         self._open_production_order()
