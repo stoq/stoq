@@ -348,6 +348,13 @@ class Sellable(Domain):
         return self.base_sellable_info.price
 
     def _set_price(self, price):
+        if self.on_sale_info.on_sale_price:
+            today = datetime.datetime.today()
+            start_date = self.on_sale_info.on_sale_start_date
+            end_date = self.on_sale_info.on_sale_end_date
+            if is_date_in_interval(today, start_date, end_date):
+                self.on_sale_info.on_sale_price = price
+                return
         self.base_sellable_info.price = price
 
     price = property(_get_price, _set_price)
@@ -481,6 +488,15 @@ class Sellable(Domain):
         in the database.
         """
         return self._check_unique_value_exists('barcode', barcode)
+
+    def is_valid_price(self, newprice):
+        """Returns True if the new price respects the maximum discount
+        configured for the sellable, otherwise returns False.
+        """
+        info = self.base_sellable_info
+        if newprice < info.price - (info.price * info.max_discount/100):
+            return False
+        return True
 
     #
     # IDescribable implementation

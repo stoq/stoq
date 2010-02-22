@@ -66,7 +66,6 @@ class ProductFullStockView(Viewable):
         barcode=Sellable.q.barcode,
         status=Sellable.q.status,
         cost=Sellable.q.cost,
-        price=BaseSellableInfo.q.price,
         description=BaseSellableInfo.q.description,
         product_id=Product.q.id,
         location=Product.q.location,
@@ -141,6 +140,13 @@ class ProductFullStockView(Viewable):
             return self.total_stock_cost / self.stock
 
         return 0
+
+    @property
+    def price(self):
+        # This property is needed because the price value in the view column
+        # might not be the price used (check OnSaleInfo class).
+        sellable = Sellable.get(self.id, connection=self.get_connection())
+        return sellable.price
 
 
 class ProductComponentView(ProductFullStockView):
@@ -275,7 +281,6 @@ class SellableFullStockView(Viewable):
         barcode=Sellable.q.barcode,
         status=Sellable.q.status,
         cost=Sellable.q.cost,
-        price=BaseSellableInfo.q.price,
         description=BaseSellableInfo.q.description,
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
@@ -314,6 +319,14 @@ class SellableFullStockView(Viewable):
                 query = branch_query
 
         return cls.select(query, having=having, connection=connection)
+
+    @property
+    def price(self):
+        # This property is needed because the price value in the view column
+        # might not be the price used (check OnSaleInfo class).
+        sellable = Sellable.get(self.id, connection=self.get_connection())
+        return sellable.price
+
 
 class SellableCategoryView(Viewable):
     """Stores information about categories.

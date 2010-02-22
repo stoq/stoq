@@ -4,8 +4,12 @@ Stoqlib
 Stoqlib's homepage is located at:
 http://www.stoq.com.br
 
-It's sourcecode is avaliable through a subversion repository at:
-svn://svn.async.com.br/stoqlib/trunk
+It's sourcecode is avaliable through a bazaar repository at:
+
+http://launchpad.net/stoqlib
+
+bzr branch lp:stoqlib
+
 
 If you have any enhancements or bug reports, please fill them in Async's
 bugzilla:
@@ -24,10 +28,10 @@ python-dateutil 1.3 or higher
 PyGTK 2.8.1 or higher
 PostgresSQL 8.1 or higher
 Psycopg 2.0.5 or higher
-zope.interface 3.0.0 or higher
-Kiwi 1.9.26
+zope.interface 3.5.2 or higher
+Kiwi 1.9.26.2
 Gazpacho 0.6.6
-Stoqdrivers 0.9.8
+Stoqdrivers 0.9.8.2
 Python Imaging Library (PIL) 1.1.5 or higher
 Reportlab 1.20
 

@@ -53,7 +53,12 @@ class NFeUI(object):
         stoq_dir = os.path.join(os.environ['HOME'], '.stoq')
         if not os.path.isdir(stoq_dir):
             os.mkdir(stoq_dir)
-        nfe_dir = os.path.join(stoq_dir, 'generated_nfe')
+
+        # Until we finish the stoqnfe app, we will only export the nfe, so it
+        # can be imported by an external application.
+        #nfe_dir = os.path.join(stoq_dir, 'generated_nfe')
+        nfe_dir = os.path.join(stoq_dir, 'exported_nfe')
+
         if not os.path.isdir(nfe_dir):
             os.mkdir(nfe_dir)
 
@@ -63,13 +68,17 @@ class NFeUI(object):
         # FIXME: certainly, there is more conditions to check before we create
         #        the nfe. Maybe the user should have a chance to fix the
         #        missing information before we create the nfe.
-        return sale.client is not None
+        # return sale.client is not None
+
+        # Since we are only exporting the nfe there is no problem if there is
+        # some missing information.
+        return True
 
     def _create_nfe(self, sale, trans):
         if self._can_create_nfe(sale):
             generator = NFeGenerator(sale, trans)
             generator.generate()
-            generator.save(location=self._get_save_location())
+            generator.export_txt(location=self._get_save_location())
 
     def _disable_print_invoice(self, uimanager):
         # since the nfe plugin was enabled, the user must not be able to print

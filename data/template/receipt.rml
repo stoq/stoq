@@ -25,9 +25,10 @@
 <%include file="header.rml"/>
 <%
   from stoqlib.lib.cardinal_formatters import get_price_cardinal
+  from stoqlib.lib.translation import stoqlib_gettext as _
   value = sum([payment.value for payment in payments])
   payment_description = ", ".join([payment.description for payment in payments])
-  payment_description += " made in " + payment.get_open_date_string()
+  payment_description += _(u" made in ") + payment.get_open_date_string()
 %>
 <%include file="style.rml"/>
 <story>
