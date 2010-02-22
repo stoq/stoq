@@ -86,7 +86,6 @@
                     <widget class="GtkAction" id="ProductionHistory">
                         <property name="name">ProductionHistory</property>
                         <property name="label" translatable="yes">Production History...</property>
-                        <property name="stock_id">stoq-products</property>
                         <property name="accelerator">&lt;Control&gt;h</property>
                     </widget>
                 </child>
