@@ -13,6 +13,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="CancelPayment">
+                        <property name="name">CancelPayment</property>
+                        <property name="label" translatable="yes">Cancel payment ...</property>
+                        <property name="stock_id">gtk-remove</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="SetNotPaid">
                         <property name="name">SetNotPaid</property>
                         <property name="label" translatable="yes">Set as not paid...</property>
@@ -213,9 +220,12 @@
 	  <menubar action="menubar">
 	    <menu action="PayableMenu">
 	      <menuitem action="AddPayment"/>
+	      <menuitem action="CancelPayment"/>
 	      <menuitem action="SetNotPaid"/>
 	      <menuitem action="ChangeDueDate"/>
+	    <separator name="sep"/>
 	      <menuitem action="Receipt"/>
+	    <separator name="sep2"/>
 	      <menuitem action="ExportCSV"/>
 	      <menuitem action="quit_action"/>
 	    </menu>

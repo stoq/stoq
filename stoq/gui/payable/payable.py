@@ -177,7 +177,7 @@ class PayableApp(SearchableAppWindow):
 
         trans.close()
 
-    def _change_status(self, payable_view):
+    def _change_status(self, payable_view, status):
         """Show a dialog do enter a reason for status change
         @param payable_view: a OutPaymentView instance
         """
@@ -189,7 +189,7 @@ class PayableApp(SearchableAppWindow):
             order = trans.get(payable_view.purchase)
 
         retval = run_dialog(PaymentStatusChangeDialog, self, trans,
-                            payment, order)
+                            payment, status, order)
 
         if finish_transaction(trans, retval):
             payable_view.sync()
@@ -198,6 +198,13 @@ class PayableApp(SearchableAppWindow):
 
         trans.close()
 
+    def _can_cancel_payment(self, payable_views):
+        """whether or not we can cancel the payment.
+        """
+        if len(payable_views) != 1:
+            return False
+
+        return payable_views[0].can_cancel_payment()
 
     def _can_change_due_date(self, payable_views):
         """ Determines if a list of payables_views can have it's due
@@ -307,6 +314,7 @@ class PayableApp(SearchableAppWindow):
         selected = self.results.get_selected_rows()
         self.details_button.set_sensitive(self._can_show_details(selected))
         self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
+        self.CancelPayment.set_sensitive(self._can_cancel_payment(selected))
         self.edit_button.set_sensitive(self._can_edit(selected))
         self.pay_order_button.set_sensitive(self._can_pay(selected))
         self.print_button.set_sensitive(bool(self.results))
@@ -356,10 +364,15 @@ class PayableApp(SearchableAppWindow):
         retval = self.run_dialog(OutPaymentAdditionDialog, trans)
         if finish_transaction(trans, retval):
             self.results.refresh()
+        trans.close()
+
+    def on_CancelPayment__activate(self, action):
+        payable_view = self.results.get_selected_rows()[0]
+        self._change_status(payable_view, Payment.STATUS_CANCELLED)
 
     def on_SetNotPaid__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]
-        self._change_status(payable_view)
+        self._change_status(payable_view, Payment.STATUS_PENDING)
 
     def on_ChangeDueDate__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]

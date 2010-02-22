@@ -41,7 +41,7 @@ from kiwi.ui.objectlist import SearchColumn, Column
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
-from stoqlib.domain.sale import SaleView, Sale
+from stoqlib.domain.sale import SaleView
 from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.printing import print_report
@@ -106,6 +106,7 @@ class ReceivableApp(SearchableAppWindow):
         self.details_button.set_sensitive(self._can_show_details(selected))
         self.Renegotiate.set_sensitive(self._can_renegotiate(selected))
         self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
+        self.CancelPayment.set_sensitive(self._can_cancel_payment(selected))
         self.Receipt.set_sensitive(self._can_emit_receipt(selected))
         self.SetNotPaid.set_sensitive(
             self._can_change_payment_status(selected))
@@ -217,7 +218,7 @@ class ReceivableApp(SearchableAppWindow):
 
         trans.close()
 
-    def _change_status(self, receivable_view):
+    def _change_status(self, receivable_view, status):
         """Show a dialog do enter a reason for status change
         @param receivable_view: a InPaymentView instance
         """
@@ -225,7 +226,7 @@ class ReceivableApp(SearchableAppWindow):
         payment = trans.get(receivable_view.payment)
         order = trans.get(receivable_view.sale)
         retval = run_dialog(PaymentStatusChangeDialog, self, trans,
-                            payment, order)
+                            payment, status, order)
 
         if finish_transaction(trans, retval):
             receivable_view.sync()
@@ -306,6 +307,14 @@ class ReceivableApp(SearchableAppWindow):
 
         return receivable_views[0].can_change_payment_status()
 
+    def _can_cancel_payment(self, receivable_views):
+        """whether or not we can cancel the receiving.
+        """
+        if len(receivable_views) != 1:
+            return False 
+
+        return receivable_views[0].can_cancel_payment()
+
     def _can_change_due_date(self, receivable_views):
         """
         Determines if a list of receivable_views can have it's due date
@@ -369,9 +378,13 @@ class ReceivableApp(SearchableAppWindow):
     def on_AddReceiving__activate(self, action):
         self._add_receiving()
 
+    def on_CancelPayment__activate(self, action):
+        receivable_view = self.results.get_selected_rows()[0]
+        self._change_status(receivable_view, Payment.STATUS_CANCELLED)
+
     def on_SetNotPaid__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]
-        self._change_status(receivable_view)
+        self._change_status(receivable_view, Payment.STATUS_PENDING)
 
     def on_ChangeDueDate__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]
