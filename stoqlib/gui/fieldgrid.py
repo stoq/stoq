@@ -315,26 +315,17 @@ class FieldGrid(gtk.Layout):
 
     def do_realize(self):
         gtk.Layout.do_realize(self)
-        input_window = gdk.Window(
-            self.get_parent_window(),
-            window_type=gdk.WINDOW_CHILD,
-            x=self.allocation.x,
-            y=self.allocation.y,
-            width=self.allocation.width,
-            height=self.allocation.height,
-            wclass=gdk.INPUT_ONLY,
-            visual=self.get_visual(),
-            colormap=self.get_colormap(),
-            event_mask=(self.get_events() |
-                        (gdk.BUTTON_PRESS_MASK |
-                         gdk.BUTTON_RELEASE_MASK |
-                         gdk.KEY_PRESS_MASK |
-                         gdk.KEY_RELEASE_MASK |
-                         gdk.ENTER_NOTIFY_MASK |
-                         gdk.LEAVE_NOTIFY_MASK)))
-        input_window.set_user_data(self)
-        self.window.set_events(self.window.get_events() |
-                               gdk.POINTER_MOTION_MASK)
+
+        # Use the same gdk.window (from gtk.Layout) to capture these events.
+        self.window.set_events(self.get_events() |
+                               gdk.BUTTON_PRESS_MASK |
+                               gdk.BUTTON_RELEASE_MASK |
+                               gdk.KEY_PRESS_MASK |
+                               gdk.KEY_RELEASE_MASK |
+                               gdk.ENTER_NOTIFY_MASK |
+                               gdk.LEAVE_NOTIFY_MASK)
+        # Forward the events to ourselves
+        self.window.set_user_data(self)
 
         self.modify_bg(gtk.STATE_NORMAL, gdk.color_parse('white'))
         gc = gdk.GC(self.window,
