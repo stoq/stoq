@@ -35,7 +35,7 @@ from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
-from kiwi.ui.objectlist import SearchColumn
+from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
                                       finish_transaction)
 from stoqlib.lib.message import warning, yesno
@@ -90,6 +90,8 @@ class PurchaseApp(SearchableAppWindow):
         return [SearchColumn('id', title=_('Number'), sorted=True,
                              data_type=int, justify=gtk.JUSTIFY_RIGHT,
                              width=80),
+                Column('status_str', title=_(u'Status'), data_type=str,
+                       visible=False),
                 SearchColumn('open_date', title=_('Opened'),
                               long_title='Date Opened',
                               data_type=datetime.date),

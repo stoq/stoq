@@ -35,7 +35,7 @@ from kiwi.datatypes import currency, converter
 from kiwi.log import Logger
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
-from kiwi.ui.objectlist import SearchColumn
+from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       rollback_and_begin, finish_transaction)
@@ -106,6 +106,8 @@ class TillApp(SearchableAppWindow):
     def get_columns(self):
         return [SearchColumn('id', title=_('Number'), width=80,
                              data_type=int, format='%05d', sorted=True),
+                Column('status_name', title=_(u'Status'), data_type=str,
+                        visible=False),
                 SearchColumn('open_date', title=_('Date Started'), width=120,
                              data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('client_name', title=_('Client'),
