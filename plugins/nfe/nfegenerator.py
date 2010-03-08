@@ -563,14 +563,16 @@ class NFeIssuer(BaseNFeXMLGroup):
         doc_value = self.get_attr('CNPJ')
         if doc_value:
             doc_tag = self.doc_cnpj_tag
-            ie = self._ie or 'ISENTO'
         else:
             doc_tag = self.doc_cpf_tag
             doc_value = self.get_attr('CPF')
-            ie = ''
         return '%s|%s|\n' % (doc_tag, doc_value,)
 
     def as_txt(self):
+        if self.get_attr('CNPJ'):
+            ie = self._ie or 'ISENTO'
+        else:
+            ie = ''
         base = '%s|%s||%s|||\n' % (self.txttag, self.get_attr('xNome'), ie,)
         return base + self.get_doc_txt() + self._address.as_txt()
 
@@ -585,8 +587,8 @@ class NFeRecipient(NFeIssuer):
     doc_cpf_tag = 'E03'
 
     def as_txt(self):
-        base = '%s|%s||\n' % (self.txttag, self.getattr('xNome'),)
-        return base + self.get_doc_txt(), self._address.as_txt()
+        base = '%s|%s||\n' % (self.txttag, self.get_attr('xNome'),)
+        return base + self.get_doc_txt() + self._address.as_txt()
 
 # Pg. 102
 class NFeProduct(BaseNFeXMLGroup):
