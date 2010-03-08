@@ -28,7 +28,7 @@ import os
 import gtk
 import tempfile
 
-from kiwi.ui.dialogs import open
+from kiwi.ui.dialogs import open, save
 from kiwi.datatypes import converter
 from kiwi.environ import environ
 
@@ -68,20 +68,28 @@ class ImageSlave(BaseEditorSlave):
         self.edit_item = gtk.MenuItem(_("Change"))
         self.view_item = gtk.MenuItem(_("View"))
         self.erase_item = gtk.MenuItem(_("Erase"))
+        self.save_item = gtk.MenuItem(_("Save"))
         self.popmenu = gtk.Menu()
         self.popmenu.append(self.edit_item)
         self.popmenu.append(self.view_item)
         self.popmenu.append(self.erase_item)
+        self.popmenu.append(self.save_item)
         self.edit_item.connect("activate", self._on_popup_edit__activate)
         self.view_item.connect("activate", self._on_popup_view__activate)
         self.erase_item.connect("activate", self._on_popup_erase__activate)
+        self.save_item.connect("activate", self._on_popup_save__activate)
         self.popmenu.show_all()
 
-    def _view_image(self):
-        pixbuf = self.pixbuf_converter.from_string(self.model.full_image)
-        filename = tempfile.mktemp(prefix='stoq-product-%s-' % self.model.id)
-        pixbuf.save(filename, "png")
+    def _save_image(self, filename=None):
+        if filename is None:
+            filename = tempfile.mktemp(prefix='stoq-product-%s-' % self.model.id)
 
+        pixbuf = self.pixbuf_converter.from_string(self.model.full_image)
+        pixbuf.save(filename, "png")
+        return filename
+
+    def _view_image(self):
+        filename = self._save_image()
         if not os.fork():
             os.system("gnome-open %s" % filename)
             # See http://www.gtk.org/faq/#AEN505 -- _exit()
@@ -96,6 +104,7 @@ class ImageSlave(BaseEditorSlave):
         self.image.set_from_pixbuf(pixbuf)
         self.erase_item.set_sensitive(sensitive)
         self.view_item.set_sensitive(sensitive)
+        self.save_item.set_sensitive(sensitive)
 
     def _edit_image(self):
         """Opens a dialog to load and save a new image"""
@@ -131,6 +140,12 @@ class ImageSlave(BaseEditorSlave):
         self.model.image = ''
         self.model.full_image = ''
         self._show_image(default_filename, sensitive=False)
+
+    def _on_popup_save__activate(self, menu):
+         filename = save(current_name='stoq-product-%s.png' % self.model.id,
+                         folder=os.path.expanduser('~/'))
+         if filename:
+             self._save_image(filename)
 
     #
     # Kiwi Callbaks
