@@ -89,6 +89,7 @@ class PurchaseOrderReport(BaseStoqReport):
         self._setup_payment_group_data()
         self.add_blank_space(10)
         self._setup_items_table()
+        self._add_notes()
 
     def _get_items_table_columns(self):
         return [
@@ -198,6 +199,20 @@ class PurchaseOrderReport(BaseStoqReport):
         # Purchase's get_items returns a SelectResult instance (ORMObject)
         # that not supports the len operator.
         self._add_ordered_items_table(list(self._order.get_items()))
+
+    def _add_notes(self):
+        if self._order.notes:
+            self.add_paragraph(_(u'Purchase Notes'), style='Normal-Bold')
+            self.add_preformatted_text(self._order.notes,
+                                       style='Normal-Notes')
+
+        receivings = self._order.get_receiving_orders()
+        receiving_details = u'\n'.join([r.notes for r in receivings])
+        if receiving_details:
+            self.add_blank_space(10)
+            self.add_paragraph(_(u'Receiving Details'), style='Normal-Bold')
+            self.add_preformatted_text(receiving_details,
+                                       style='Normal-Notes')
 
     #
     # BaseStoqReport hooks
