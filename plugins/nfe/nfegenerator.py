@@ -153,7 +153,7 @@ class NFeGenerator(object):
     def _add_identification(self, branch):
         # Pg. 71
         branch_location = branch.person.get_main_address().city_location
-        cuf = str(get_state_code(branch_location.state))
+        cuf = str(get_state_code(branch_location.state) or '')
 
         today = datetime.date.today()
         aamm = today.strftime('%y%m')
@@ -483,7 +483,7 @@ class NFeIdentification(BaseNFeXMLGroup):
 
         self.set_attr('nNF', nnf)
         self.set_attr('dEmi', self.format_date(emission_date))
-        self.set_attr('cMunFG', get_city_code(city, code=cUF))
+        self.set_attr('cMunFG', get_city_code(city, code=cUF) or '')
 
 
 class NFeAddress(BaseNFeXMLGroup):
@@ -510,7 +510,7 @@ class NFeAddress(BaseNFeXMLGroup):
         self.set_attr('nro', number)
         self.set_attr('xBairro', district)
         self.set_attr('xMun', city)
-        self.set_attr('cMun', str(get_city_code(city, state)))
+        self.set_attr('cMun', str(get_city_code(city, state) or ''))
         self.set_attr('UF', state)
 
     def as_txt(self):
@@ -559,7 +559,7 @@ class NFeIssuer(BaseNFeXMLGroup):
         ie_element.text = self._ie
         self.element.append(ie_element)
 
-    def as_txt(self):
+    def get_doc_txt(self):
         doc_value = self.get_attr('CNPJ')
         if doc_value:
             doc_tag = self.doc_cnpj_tag
@@ -568,10 +568,11 @@ class NFeIssuer(BaseNFeXMLGroup):
             doc_tag = self.doc_cpf_tag
             doc_value = self.get_attr('CPF')
             ie = ''
+        return '%s|%s|\n' % (doc_tag, doc_value,)
 
-        doc_txt = '%s|%s|\n' % (doc_tag, doc_value,)
+    def as_txt(self):
         base = '%s|%s||%s|||\n' % (self.txttag, self.get_attr('xNome'), ie,)
-        return base + doc_txt + self._address.as_txt()
+        return base + self.get_doc_txt() + self._address.as_txt()
 
 
 # Pg. 99
@@ -583,6 +584,9 @@ class NFeRecipient(NFeIssuer):
     doc_cnpj_tag = 'E02'
     doc_cpf_tag = 'E03'
 
+    def as_txt(self):
+        base = '%s|%s||\n' % (self.txttag, self.getattr('xNome'),)
+        return base + self.get_doc_txt(), self._address.as_txt()
 
 # Pg. 102
 class NFeProduct(BaseNFeXMLGroup):
