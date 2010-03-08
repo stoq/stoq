@@ -292,9 +292,5 @@ class PurchaseQuoteReport(BaseStoqReport):
         # The supplier name here ?
         self.add_signatures([_(u"Responsible")])
 
-    #
-    # BaseStoqReport
-    #
-
     def get_title(self):
         return self.report_name

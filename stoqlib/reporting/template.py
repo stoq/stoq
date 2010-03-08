@@ -39,7 +39,8 @@ from reportlab.lib.utils import ImageReader
 from trml2pdf.trml2pdf import parseString
 
 from stoqlib.database.runtime import (new_transaction,
-                                get_current_branch, get_connection)
+                                get_current_branch, get_connection,
+                                get_current_user)
 from stoqlib.domain.interfaces import ICompany
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
@@ -70,7 +71,12 @@ class BaseStoqReport(ReportTemplate):
     report_name_prefix = "Stoq - "
 
     def __init__(self, *args, **kwargs):
-        ReportTemplate.__init__(self, *args, **kwargs)
+        if kwargs.has_key('do_footer'):
+            timestamp = kwargs['do_footer']
+        else:
+            timestamp = True
+        ReportTemplate.__init__(self, timestamp=timestamp,
+                                username=self.get_username(), *args, **kwargs)
         self.trans = new_transaction()
         logotype_path = _get_logotype_path(self.trans)
         self._logotype = ImageReader(logotype_path)
@@ -155,6 +161,10 @@ class BaseStoqReport(ReportTemplate):
 
     def get_title(self):
         raise NotImplementedError
+
+    def get_username(self):
+        user = get_current_user(get_connection())
+        return user.person.name[:45]
 
 
 class SearchResultsReport(BaseStoqReport):

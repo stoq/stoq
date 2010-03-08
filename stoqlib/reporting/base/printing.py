@@ -43,7 +43,7 @@ class ReportTemplate(BaseReportTemplate):
     report_name_prefix = ""
 
     def __init__(self, filename, report_name, timestamp=False, do_header=True,
-                 do_footer=True, date=None, **kwargs):
+                 do_footer=True, date=None, username=None, **kwargs):
         """ Common parameters to BaseReportTemplate was ommited, maybe
         you want look at BaseReportTemplate documentation?
         @param timestamp: The time when the report was created must be
@@ -62,6 +62,7 @@ class ReportTemplate(BaseReportTemplate):
                              "you don't have a footer")
         self.timestamp = timestamp
         self.date = date
+        self.username = username
         BaseReportTemplate.__init__(self, filename, report_name,
                                     do_header=do_header, do_footer=do_footer,
                                     **kwargs)
@@ -82,11 +83,10 @@ class ReportTemplate(BaseReportTemplate):
         True (see this class constructor documentation.).
         The footer format is::
 
-            DATE [TIME] Page X
+            [USERNAME]  DATE [TIME] Page X
 
-        Where DATA is the date when the report was created, of course. TIME is
-        optional and drawed if time_stamp  attribute is setted, and X the page
-        number.
+        Where DATE is the date when the report was created, of course. TIME
+        and USERNAME are optional, and X is the page number.
         """
         if self.date is None:
             ts = datetime.datetime.now()
@@ -106,6 +106,10 @@ class ReportTemplate(BaseReportTemplate):
         canvas.setFont(*SMALL_FONT)
         canvas.drawString(self.leftMargin + 0.5 * SPACING, text_y,
                           self.get_report_name())
+
+        if self.username:
+            date_string = '%s  %s' % (self.username, date_string)
+
         canvas.drawRightString(self._rightMargin - 75, text_y, date_string)
         canvas.drawRightString(self._rightMargin - 0.5 * SPACING, text_y,
                                page_number)
