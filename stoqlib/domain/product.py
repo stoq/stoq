@@ -249,17 +249,10 @@ class Product(Domain):
         return self.get_components().count() > 0
 
     def get_production_cost(self):
-        """ Return the production cost of a Product. The production cost
-        is defined as the sum of the product cost plus the costs of its
-        components.
-
+        """ Return the production cost of one unit of the Product.
         @returns: the production cost
         """
-        value = self.sellable.cost
-        for component in self.get_components():
-            value += (component.component.get_production_cost() *
-                      component.quantity)
-        return value
+        return self.sellable.cost
 
     def is_supplied_by(self, supplier):
         """If this product is supplied by the given supplier, returns the
