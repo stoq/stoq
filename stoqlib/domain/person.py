@@ -689,6 +689,22 @@ class PersonAdaptToUser(PersonAdapter):
             return self.statuses[self.STATUS_ACTIVE]
         return self.statuses[self.STATUS_INACTIVE]
 
+    def __repr__(self):
+        if not hasattr(self, 'id'):
+            return repr(self)
+
+        # We need to hide the user password
+        attrs_repr = ''
+        for column in self._columns:
+            if column.name == 'password':
+                value = "'******'"
+            else:
+                value = getattr(self, column.name)
+
+            attrs_repr += '%s=%s ' % (column.name, value)
+
+        return '<%s %r %s>' % (self.__class__.__name__, self.id, attrs_repr)
+
 Person.registerFacet(PersonAdaptToUser, IUser)
 
 class PersonAdaptToBranch(PersonAdapter):
