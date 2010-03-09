@@ -157,6 +157,10 @@ class ProductionItemsSearch(SearchDialog):
     def _on_lost_button__clicked(self, widget):
         self._run_editor(ProductionItemLostEditor)
 
+    def _on_print_button__clicked(self, widget):
+        print_report(ProductionItemReport, self.results,
+                     filters=self.search.get_search_filters(),)
+
 
 class ProductionHistorySearch(ProductSearchQuantity):
     title = _(u'Production History Search')
