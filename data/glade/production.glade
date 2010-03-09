@@ -90,6 +90,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="ProductionItems">
+                        <property name="name">ProductionItems</property>
+                        <property name="label" translatable="yes">Production Items</property>
+                        <property name="accelerator">&lt;Control&gt;r</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="ToolbarNewProduction">
                         <property name="name">ToolbarNewProduction</property>
                         <property name="label" translatable="yes">New Production</property>
@@ -205,6 +212,7 @@
          <menu action="SearchMenu">
 	     <menuitem action="Products"/>
 	     <menuitem action="Services"/>
+	     <menuitem action="ProductionItems"/>
 	     <menuitem action="ProductionHistory"/>
 	  </menu>
         <menu action="help_menu">
