@@ -110,7 +110,7 @@ class ProductionApp(SearchableAppWindow):
     def get_columns(self):
         return [SearchColumn('id', title=_(u'# '), sorted=True, data_type=int,
                              format='%04d'),
-                Column('status_str', title=_(u'Status'), data_type=str,
+                Column('status_string', title=_(u'Status'), data_type=str,
                         visible=False),
                 SearchColumn('description', title=_(u'Description'),
                              data_type=str, expand=True),
@@ -130,6 +130,9 @@ class ProductionApp(SearchableAppWindow):
 
     def on_Services__activate(self, action):
         self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)
+
+    def on_ProductionItems__activate(self, action):
+        self.run_dialog(ProductionItemsSearch, self.conn)
 
     def on_ProductionHistory__activate(self, action):
         self.run_dialog(ProductionHistorySearch, self.conn)
