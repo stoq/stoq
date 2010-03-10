@@ -266,7 +266,7 @@
                             <widget class="GtkButton" id="print_button">
                                 <property name="is_focus">True</property>
                                 <property name="label">gtk-print</property>
-                                <property name="sensitive">False</property>
+                                <property name="sensitive">True</property>
                                 <property name="use_stock">True</property>
                                 <property name="visible">True</property>
                             </widget>
