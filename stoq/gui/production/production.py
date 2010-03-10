@@ -41,6 +41,7 @@ from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
                                                  ProductionHistorySearch)
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.productionwizard import ProductionWizard
+from stoqlib.reporting.production import ProductionReport
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -168,5 +169,16 @@ class ProductionApp(SearchableAppWindow):
         assert order is not None
         self.run_dialog(ProductionDetailsDialog, self.conn, order)
 
+    def on_print_button__clicked(self, widget):
+        items = self.results.get_selected_rows() or self.results
+        self.print_report(ProductionReport, self.results,
+                          self.status_filter.get_state().value)
+
     def on_results__selection_changed(self, results, selected):
         self._update_widgets()
+
+    def on_results__has_rows(self, widget, has_rows):
+        self.print_button.set_sensitive(has_rows)
+
+    def on_results__row_activated(self, widget, order):
+        self.run_dialog(ProductionDetailsDialog, self.conn, order)
