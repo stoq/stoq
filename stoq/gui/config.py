@@ -486,6 +486,7 @@ class BranchSettingsStep(WizardEditorStep):
         self.name.grab_focus()
 
     def next_step(self):
+        self._address_slave.confirm()
         self._update_system_parameters(self.model)
         self.wizard.branch = IBranch(self.model)
         conn = self.wizard.get_connection()
@@ -511,8 +512,8 @@ class BranchSettingsStep(WizardEditorStep):
     def setup_slaves(self):
         from stoqlib.gui.editors.addresseditor import AddressSlave
         address = self.model.get_main_address()
-        slave = AddressSlave(self.conn, self.model, address)
-        self.attach_slave("address_holder", slave)
+        self._address_slave = AddressSlave(self.conn, self.model, address)
+        self.attach_slave("address_holder", self._address_slave)
 
     #
     # Kiwi Callbacks
