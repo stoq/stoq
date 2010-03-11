@@ -33,7 +33,6 @@ from stoqdrivers.enum import TaxType
 
 import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
-from stoqlib.lib.validators import get_formatted_price
 
 from utils import (get_state_code, get_city_code, nfe_tostring,
                    remove_accentuation)
@@ -313,7 +312,7 @@ class BaseNFeXMLGroup(object):
         return date.strftime('%Y-%m-%d')
 
     def format_value(self, value, precision=2):
-        return get_formatted_price(value, symbol=False, precision=precision)
+        return '%.*f' % (precision, value)
 
     def escape(self, string):
         # Pg. 71
