@@ -85,11 +85,11 @@ class ProductionReport(ObjectListReport):
 class ProductionOrderReport(BaseStoqReport):
     report_name = _(u'Production Order')
 
-    def __init__(self, filename, production):
+    def __init__(self, filename, production, *args, **kwargs):
         self._production = production
         BaseStoqReport.__init__(self, filename,
                                 ProductionOrderReport.report_name,
-                                landscape=True)
+                                landscape=True, *args, **kwargs)
         self._setup_production_details_table()
         self.add_blank_space(10)
         self._setup_production_items_table()

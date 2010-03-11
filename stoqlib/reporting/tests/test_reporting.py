@@ -50,6 +50,7 @@ from stoqlib.reporting.payment import (ReceivablePaymentReport,
                                        PayablePaymentReport,
                                        BillCheckPaymentReport)
 from stoqlib.reporting.product import ProductReport, ProductPriceReport
+from stoqlib.reporting.production import ProductionOrderReport
 from stoqlib.reporting.purchase import PurchaseQuoteReport
 from stoqlib.reporting.service import ServicePriceReport
 from stoqlib.reporting.sale import SalesPersonReport
@@ -289,3 +290,11 @@ class TestReport(DomainTest):
         quote.open_date = datetime.date(2007, 1, 1)
         quote.status = PurchaseOrder.ORDER_QUOTING
         self.checkPDF(PurchaseQuoteReport, quote, date=quote.open_date)
+
+    def testProductionOrderReport(self):
+        order_item = self.create_production_item()
+        order = order_item.order
+        service = self.create_production_service()
+        service.order = order
+        order.open_date = datetime.date(2007, 1, 1)
+        self.checkPDF(ProductionOrderReport, order, date=order.open_date)
