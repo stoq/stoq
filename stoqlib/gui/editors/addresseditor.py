@@ -168,8 +168,9 @@ class AddressSlave(BaseEditorSlave):
         self.streetnumber.set_text(text)
 
     def _get_nfe_plugin(self):
-        manager = get_utility(IPluginManager)
-        assert manager
+        manager = get_utility(IPluginManager, None)
+        if manager is None:
+            return
 
         for plugin in manager.get_active_plugins():
             if plugin.name == u'nfe':
