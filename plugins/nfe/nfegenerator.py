@@ -33,7 +33,7 @@ from stoqdrivers.enum import TaxType
 
 import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
-from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.validators import get_formatted_price
 
 from utils import (get_state_code, get_city_code, nfe_tostring,
                    remove_accentuation)
@@ -312,8 +312,8 @@ class BaseNFeXMLGroup(object):
         # Pg. 93 (and others)
         return date.strftime('%Y-%m-%d')
 
-    def format_value(self, value):
-        return format_quantity(value)
+    def format_value(self, value, precision=2):
+        return get_formatted_price(value, symbol=False, precision=precision)
 
     def escape(self, string):
         # Pg. 71
@@ -701,11 +701,11 @@ class NFeProductDetails(BaseNFeXMLGroup):
         self.set_attr('cProd', code)
         self.set_attr('xProd', description)
         self.set_attr('CFOP', cfop)
-        self.set_attr('vUnCom', self.format_value(price))
-        self.set_attr('vUnTrib', self.format_value(price))
+        self.set_attr('vUnCom', self.format_value(price, precision=4))
+        self.set_attr('vUnTrib', self.format_value(price, precision=4))
         self.set_attr('vProd', self.format_value(quantity * price))
-        self.set_attr('qCom', self.format_value(quantity))
-        self.set_attr('qTrib', self.format_value(quantity))
+        self.set_attr('qCom', self.format_value(quantity, precision=4))
+        self.set_attr('qTrib', self.format_value(quantity, precision=4))
 
     def as_txt(self):
         vs = [self.txttag]
