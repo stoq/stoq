@@ -315,7 +315,6 @@ class FieldGrid(gtk.Layout):
 
     def do_realize(self):
         gtk.Layout.do_realize(self)
-
         # Use the same gdk.window (from gtk.Layout) to capture these events.
         self.window.set_events(self.get_events() |
                                gdk.BUTTON_PRESS_MASK |
@@ -324,8 +323,6 @@ class FieldGrid(gtk.Layout):
                                gdk.KEY_RELEASE_MASK |
                                gdk.ENTER_NOTIFY_MASK |
                                gdk.LEAVE_NOTIFY_MASK)
-        # Forward the events to ourselves
-        self.window.set_user_data(self)
 
         self.modify_bg(gtk.STATE_NORMAL, gdk.color_parse('white'))
         gc = gdk.GC(self.window,
