@@ -703,7 +703,7 @@ class F(InvoiceFieldDescription):
     field_type = [str]
 
     def fetch(self, width, height):
-        for sale_item in self.sale.service:
+        for sale_item in self.sale.services:
             yield '%s' % sale_item.get_description()
 
 _add_invoice_field(F)
