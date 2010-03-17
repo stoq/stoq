@@ -31,7 +31,9 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.printing import print_report
 from stoqlib.domain.production import ProductionOrder
+from stoqlib.reporting.production import ProductionOrderReport
 
 _ = stoqlib_gettext
 
@@ -103,3 +105,10 @@ class ProductionDetailsDialog(BaseEditor):
     def setup_proxies(self):
         self._setup_widgets()
         self.add_proxy(self.model, ProductionDetailsDialog.proxy_widgets)
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_print_button__clicked(self, widget):
+        print_report(ProductionOrderReport, self.model)
