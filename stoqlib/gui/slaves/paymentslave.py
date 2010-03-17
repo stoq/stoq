@@ -1212,8 +1212,8 @@ class MultipleMethodSlave(BaseEditorSlave):
             if not payment.is_cancelled():
                 self._remove_payment(payment)
 
-    def on_payments__selection_changed(self, list, payments):
-        has_payments = len(payments) > 0
+    def on_payments__selection_changed(self, objectlist, payment):
+        has_payments = len(objectlist) > 0
         self.remove_button.set_sensitive(has_payments)
 
     def on_base_value__validate(self, entry, value):
