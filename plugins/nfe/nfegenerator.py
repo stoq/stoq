@@ -33,7 +33,6 @@ from stoqdrivers.enum import TaxType
 
 import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
-from stoqlib.lib.validators import format_quantity
 
 from utils import (get_state_code, get_city_code, nfe_tostring,
                    remove_accentuation)
@@ -153,7 +152,7 @@ class NFeGenerator(object):
     def _add_identification(self, branch):
         # Pg. 71
         branch_location = branch.person.get_main_address().city_location
-        cuf = str(get_state_code(branch_location.state))
+        cuf = str(get_state_code(branch_location.state) or '')
 
         today = datetime.date.today()
         aamm = today.strftime('%y%m')
@@ -312,8 +311,8 @@ class BaseNFeXMLGroup(object):
         # Pg. 93 (and others)
         return date.strftime('%Y-%m-%d')
 
-    def format_value(self, value):
-        return format_quantity(value)
+    def format_value(self, value, precision=2):
+        return '%.*f' % (precision, value)
 
     def escape(self, string):
         # Pg. 71
@@ -483,7 +482,7 @@ class NFeIdentification(BaseNFeXMLGroup):
 
         self.set_attr('nNF', nnf)
         self.set_attr('dEmi', self.format_date(emission_date))
-        self.set_attr('cMunFG', get_city_code(city, code=cUF))
+        self.set_attr('cMunFG', get_city_code(city, code=cUF) or '')
 
 
 class NFeAddress(BaseNFeXMLGroup):
@@ -510,7 +509,7 @@ class NFeAddress(BaseNFeXMLGroup):
         self.set_attr('nro', number)
         self.set_attr('xBairro', district)
         self.set_attr('xMun', city)
-        self.set_attr('cMun', str(get_city_code(city, state)))
+        self.set_attr('cMun', str(get_city_code(city, state) or ''))
         self.set_attr('UF', state)
 
     def as_txt(self):
@@ -559,19 +558,22 @@ class NFeIssuer(BaseNFeXMLGroup):
         ie_element.text = self._ie
         self.element.append(ie_element)
 
-    def as_txt(self):
+    def get_doc_txt(self):
         doc_value = self.get_attr('CNPJ')
         if doc_value:
             doc_tag = self.doc_cnpj_tag
-            ie = self._ie or 'ISENTO'
         else:
             doc_tag = self.doc_cpf_tag
             doc_value = self.get_attr('CPF')
-            ie = ''
+        return '%s|%s|\n' % (doc_tag, doc_value,)
 
-        doc_txt = '%s|%s|\n' % (doc_tag, doc_value,)
+    def as_txt(self):
+        if self.get_attr('CNPJ'):
+            ie = self._ie or 'ISENTO'
+        else:
+            ie = ''
         base = '%s|%s||%s|||\n' % (self.txttag, self.get_attr('xNome'), ie,)
-        return base + doc_txt + self._address.as_txt()
+        return base + self.get_doc_txt() + self._address.as_txt()
 
 
 # Pg. 99
@@ -583,6 +585,9 @@ class NFeRecipient(NFeIssuer):
     doc_cnpj_tag = 'E02'
     doc_cpf_tag = 'E03'
 
+    def as_txt(self):
+        base = '%s|%s||\n' % (self.txttag, self.get_attr('xNome'),)
+        return base + self.get_doc_txt() + self._address.as_txt()
 
 # Pg. 102
 class NFeProduct(BaseNFeXMLGroup):
@@ -611,16 +616,23 @@ class NFeProduct(BaseNFeXMLGroup):
         nfe_pis = NFePIS()
         nfe_cofins = NFeCOFINS()
 
+        # Vamos ignorar o TaxType enquanto não temos um bom suporte para todos
+        # eles (em especial, Substituição Tributária). Nesse meio tempo, é
+        # possível que o usuário faça o acerto dos impostos através do
+        # aplicativo emissor da receita como um workaround para essa
+        # limitação.
+
         tax_type = sellable_tax.tax_type
-        if tax_type in [TaxType.EXEMPTION, TaxType.NONE]:
-            # Não tributado ou Isento/ICMS. Atualmente, apenas consideramos
-            # que a empresa esteja enquadrada no simples nacional.
-            icms = NFeICMS40(tax_type)
-            nfe_icms.append(icms)
-            pis = NFePISOutr()
-            nfe_pis.append(pis)
-            cofins = NFeCOFINSOutr()
-            nfe_cofins.append(cofins)
+        #if tax_type in [TaxType.EXEMPTION, TaxType.NONE]:
+
+        # Não tributado ou Isento/ICMS. Atualmente, apenas consideramos
+        # que a empresa esteja enquadrada no simples nacional.
+        icms = NFeICMS40(tax_type)
+        nfe_icms.append(icms)
+        pis = NFePISOutr()
+        nfe_pis.append(pis)
+        cofins = NFeCOFINSOutr()
+        nfe_cofins.append(cofins)
 
         # TODO: handle service tax (ISS) and ICMS.
 
@@ -695,11 +707,11 @@ class NFeProductDetails(BaseNFeXMLGroup):
         self.set_attr('cProd', code)
         self.set_attr('xProd', description)
         self.set_attr('CFOP', cfop)
-        self.set_attr('vUnCom', self.format_value(price))
-        self.set_attr('vUnTrib', self.format_value(price))
+        self.set_attr('vUnCom', self.format_value(price, precision=4))
+        self.set_attr('vUnTrib', self.format_value(price, precision=4))
         self.set_attr('vProd', self.format_value(quantity * price))
-        self.set_attr('qCom', self.format_value(quantity))
-        self.set_attr('qTrib', self.format_value(quantity))
+        self.set_attr('qCom', self.format_value(quantity, precision=4))
+        self.set_attr('qTrib', self.format_value(quantity, precision=4))
 
     def as_txt(self):
         vs = [self.txttag]
@@ -831,7 +843,7 @@ class NFeICMS40(BaseNFeXMLGroup):
 
         if tax_type == TaxType.EXEMPTION:
             cst = 40
-        elif tax_type == TaxType.NONE:
+        else:
             cst = 41
 
         self.set_attr('CST', cst)
@@ -1005,6 +1017,9 @@ class NFeICMSTotal(BaseNFeXMLGroup):
         self.set_attr('vBC', self.format_value(sale_total))
         self.set_attr('vNF', self.format_value(sale_total))
         self.set_attr('vProd', self.format_value(items_total))
+        discount = items_total - sale_total
+        if discount > 0:
+            self.set_attr('vDesc', self.format_value(discount))
 
 
 # Pg. 124
