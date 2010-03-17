@@ -616,16 +616,23 @@ class NFeProduct(BaseNFeXMLGroup):
         nfe_pis = NFePIS()
         nfe_cofins = NFeCOFINS()
 
+        # Vamos ignorar o TaxType enquanto não temos um bom suporte para todos
+        # eles (em especial, Substituição Tributária). Nesse meio tempo, é
+        # possível que o usuário faça o acerto dos impostos através do
+        # aplicativo emissor da receita como um workaround para essa
+        # limitação.
+
         tax_type = sellable_tax.tax_type
-        if tax_type in [TaxType.EXEMPTION, TaxType.NONE]:
-            # Não tributado ou Isento/ICMS. Atualmente, apenas consideramos
-            # que a empresa esteja enquadrada no simples nacional.
-            icms = NFeICMS40(tax_type)
-            nfe_icms.append(icms)
-            pis = NFePISOutr()
-            nfe_pis.append(pis)
-            cofins = NFeCOFINSOutr()
-            nfe_cofins.append(cofins)
+        #if tax_type in [TaxType.EXEMPTION, TaxType.NONE]:
+
+        # Não tributado ou Isento/ICMS. Atualmente, apenas consideramos
+        # que a empresa esteja enquadrada no simples nacional.
+        icms = NFeICMS40(tax_type)
+        nfe_icms.append(icms)
+        pis = NFePISOutr()
+        nfe_pis.append(pis)
+        cofins = NFeCOFINSOutr()
+        nfe_cofins.append(cofins)
 
         # TODO: handle service tax (ISS) and ICMS.
 
@@ -836,7 +843,7 @@ class NFeICMS40(BaseNFeXMLGroup):
 
         if tax_type == TaxType.EXEMPTION:
             cst = 40
-        elif tax_type == TaxType.NONE:
+        else:
             cst = 41
 
         self.set_attr('CST', cst)
