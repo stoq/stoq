@@ -1010,6 +1010,9 @@ class NFeICMSTotal(BaseNFeXMLGroup):
         self.set_attr('vBC', self.format_value(sale_total))
         self.set_attr('vNF', self.format_value(sale_total))
         self.set_attr('vProd', self.format_value(items_total))
+        discount = items_total - sale_total
+        if discount > 0:
+            self.set_attr('vDesc', self.format_value(discount))
 
 
 # Pg. 124
