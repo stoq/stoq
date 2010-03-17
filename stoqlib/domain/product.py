@@ -605,10 +605,6 @@ class ProductAdaptToStorable(ModelAdapter):
             total_cost += stock_item.stock_cost
             total_qty += stock_item.quantity
 
-        if total_cost and not total_qty:
-            raise StockError(
-                '%r has inconsistent stock information: Quantity = 0 '
-                'and TotalCost= %f' % (self, total_cost))
         if not total_qty:
             return currency(0)
         return currency(total_cost / total_qty)
