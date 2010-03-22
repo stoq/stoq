@@ -322,7 +322,8 @@ class FieldGrid(gtk.Layout):
                                gdk.KEY_PRESS_MASK |
                                gdk.KEY_RELEASE_MASK |
                                gdk.ENTER_NOTIFY_MASK |
-                               gdk.LEAVE_NOTIFY_MASK)
+                               gdk.LEAVE_NOTIFY_MASK |
+                               gdk.POINTER_MOTION_MASK)
 
         self.modify_bg(gtk.STATE_NORMAL, gdk.color_parse('white'))
         gc = gdk.GC(self.window,
