@@ -68,7 +68,7 @@ class ProductionItemReport(ObjectListReport):
 
 
 class ProductionReport(ObjectListReport):
-    report_name = _(u'Productoion Order Report')
+    report_name = _(u'Production Order Report')
     main_object_name = _(u'orders')
     filter_format_string = _(u'with status <u>%s</u>')
 
