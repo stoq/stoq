@@ -455,11 +455,11 @@ class PersonAdaptToCompany(PersonAdapter):
     """
     implements(ICompany)
 
-    # Cnpj and state_registry are
-    # Brazil-specific information.
+    # Cnpj, state_registry and city registry are Brazil-specific information.
     cnpj  = UnicodeCol(default='')
     fancy_name = UnicodeCol(default='')
     state_registry = UnicodeCol(default='')
+    city_registry = UnicodeCol(default='')
     is_active = BoolCol(default=True)
 
     def get_cnpj_number(self):
