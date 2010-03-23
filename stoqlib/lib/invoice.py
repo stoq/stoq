@@ -648,6 +648,163 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
+    name = "BASE_DE_CALCULO_ISS"
+    length =  1
+    field_type = Decimal
+    def fetch(self, width, height):
+        total = Decimal(0)
+        for sale_item in self.sale.services:
+            tax = sale_item.sellable.get_tax_constant()
+            if not tax or not tax.tax_value:
+                continue
+            total += sale_item.get_total()
+        return total
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "VALOR_ISS"
+    length = 1
+    field_type = Decimal
+
+    def fetch(self, width, height):
+        total = Decimal(0)
+        tax_value = sysparam(self.conn).ISS_TAX
+        for sale_item in self.sale.services:
+            tax = sale_item.sellable.get_tax_constant()
+            if tax.tax_type == TaxType.SERVICE:
+                total += sale_item.get_total() * (Decimal(tax_value) / 100)
+        return total
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "SERVICE_ITEM_CODE_DESCRIPTION"
+    description = _('Service item code / description')
+    length =  35
+    field_type = [str]
+
+    def fetch(self, width, height):
+        for sale_item in self.sale.services:
+            code = '%014s' % sale_item.sellable.code
+            yield '%s / %s' % (
+                code.replace(' ', '0'),
+                sale_item.get_description())
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "SERVICE_ITEM_DESCRIPTION"
+    description = _('Service item description')
+    length =  30
+    field_type = [str]
+
+    def fetch(self, width, height):
+        for sale_item in self.sale.services:
+            yield '%s' % sale_item.get_description()
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "SERVICE_ITEM_CODE"
+    description = _('Service item code')
+    length =  5
+    field_type = [str]
+
+    def fetch(self, width, height):
+        for sale_item in self.sale.services:
+            code = '%05s' % sale_item.sellable.code
+            yield code[-width:]
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "SERVICE_ITEM_CODE_UNIT"
+    description = _('Service item unit')
+    length =  2
+    field_type = [str]
+
+    def fetch(self, width, height):
+        for sale_item in self.sale.services:
+            yield sale_item.sellable.get_unit_description()
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "SERVICE_ITEM_QUANTITY"
+    description = _('Service item quantity')
+    length =  5
+    field_type = [Decimal]
+
+    def fetch(self, width, height):
+        for sale_item in self.sale.services:
+            yield sale_item.quantity
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "SERVICE_ITEM_PRICE"
+    description = _('Service item price')
+    length =  5
+    field_type = [Decimal]
+
+    def fetch(self, width, height):
+        for sale_item in self.sale.services:
+            yield sale_item.price
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "SERVICE_ITEM_TOTAL"
+    description = _('Service item total (price * quantity)')
+    length =  7
+    field_type = [Decimal]
+
+    def fetch(self, width, height):
+        for sale_item in self.sale.services:
+            yield sale_item.get_total()
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "SERVICE_ITEM_TAX"
+    description = _('Service item tax')
+    length =  2
+    field_type = [int]
+
+    def fetch(self, width, height):
+        for sale_item in self.sale.services:
+            tax = sale_item.sellable.get_tax_constant()
+            if tax and tax.tax_value:
+                value = int(tax.tax_value)
+            else:
+                value = None
+            yield value
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "VALOR_TOTAL_SERVICOS"
+    length =  1
+    field_type = Decimal
+    def fetch(self, width, height):
+        return sum([s.quantity * s.price for s in self.sale.services],
+                   Decimal(0))
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
     name = "VALOR_TOTAL_PRODUTOS"
     length =  1
     field_type = Decimal
@@ -894,6 +1051,16 @@ class F(InvoiceFieldDescription):
     length = 14
     def fetch(self, width, height):
         return ICompany(self.sale.branch).state_registry
+
+_add_invoice_field(F)
+
+
+class F(InvoiceFieldDescription):
+    name = "CITY_REGISTRY"
+    description = _("City registry number")
+    length = 14
+    def fetch(self, width, height):
+        return ICompany(self.sale.branch).city_registry
 
 _add_invoice_field(F)
 

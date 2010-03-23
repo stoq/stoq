@@ -36,7 +36,8 @@ class CompanyDocumentsSlave(BaseEditorSlave):
     gladefile = 'CompanyDocumentsSlave'
     proxy_widgets = ('cnpj',
                      'fancy_name',
-                     'state_registry')
+                     'state_registry',
+                     'city_registry')
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
