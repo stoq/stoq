@@ -316,7 +316,7 @@ class ProductionMaterial(Domain):
     def add_lost(self, quantity):
         """Adds the quantity lost of this material. The maximum quantity that
         can be lost is given by the formula:
-            max_lost(quantity) = needed - consumed - lost - quantity
+            - max_lost(quantity) = needed - consumed - lost - quantity
 
         @param quantity: the quantity that was lost.
         """
@@ -336,7 +336,7 @@ class ProductionMaterial(Domain):
     def consume(self, quantity):
         """Consumes a certain quantity of material. The maximum quantity
         allowed to be consumed is given by the following formula:
-            max_consumed(quantity) = needed - consumed - lost - quantity
+            - max_consumed(quantity) = needed - consumed - lost - quantity
 
         @param quantity: the quantity to be consumed.
         """
