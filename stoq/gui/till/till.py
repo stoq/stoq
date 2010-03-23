@@ -166,6 +166,9 @@ class TillApp(SearchableAppWindow):
         prod_sold = dict()
         prod_desc = dict()
         for sale_item in sale.get_items():
+            # Skip services, since we don't need stock to sell.
+            if sale_item.is_service():
+                continue
             storable = IStorable(sale_item.sellable.product, None)
             prod_sold.setdefault(storable, 0)
             prod_sold[storable] += sale_item.quantity
