@@ -142,12 +142,15 @@ class NFeGenerator(object):
 
     def _get_address_data(self, person):
         """Returns a tuple in the following format:
-        (street, streetnumber, district, city, state)
+        (street, streetnumber, complement, district, city, state, postal_code,
+         phone_number)
         """
         address = person.get_main_address()
         location = address.city_location
-        return (address.street, address.streetnumber, address.district,
-                location.city, location.state)
+        return (address.street, address.streetnumber, address.complement,
+                address.district, location.city, location.state,
+                address.get_postal_code_number(),
+                person.get_phone_number_number())
 
     def _add_identification(self, branch):
         # Pg. 71
@@ -490,34 +493,41 @@ class NFeAddress(BaseNFeXMLGroup):
     - Attributes:
         - xLgr: logradouro.
         - nro: número.
+        - XCpl: complemento
         - xBairro: bairro.
         - cMun: código do município.
         - xMun: nome do município.
         - UF: sigla da UF. Informar EX para operações com o exterior.
+        - CEP: código postal.
+        - CPais: código do país.
+        - XPais: nome do país.
+        - Fone: número do telefone.
     """
     attributes = [(u'xLgr', ''),
                   (u'nro', ''),
+                  (u'XCpl', ''),
                   (u'xBairro', ''),
                   (u'cMun', ''),
                   (u'xMun', ''),
-                  (u'UF', '')]
+                  (u'UF', ''),
+                  (u'CEP',''),
+                  (u'CPais', '1058'),
+                  (u'XPais', 'BRASIL'),
+                  (u'Fone', ''),]
 
-    def __init__(self, tag, street, number, district, city, state):
+    def __init__(self, tag, street, number, complement, district, city, state,
+                 postal_code='', phone_number=''):
         self.tag = tag
         BaseNFeXMLGroup.__init__(self)
         self.set_attr('xLgr', street)
         self.set_attr('nro', number)
+        self.set_attr('xCpl', complement)
         self.set_attr('xBairro', district)
         self.set_attr('xMun', city)
         self.set_attr('cMun', str(get_city_code(city, state) or ''))
         self.set_attr('UF', state)
-
-    def as_txt(self):
-        return '%s|%s|%s||%s|%s|%s|%s|\n' % (
-                self.txttag, self.get_attr('xLgr'),
-                self.get_attr('nro'), self.get_attr('xBairro'),
-                self.get_attr('cMun'), self.get_attr('xMun'),
-                self.get_attr('UF'))
+        self.set_attr('CEP', postal_code)
+        self.set_attr('Fone', phone_number)
 
 
 # Pg. 96
@@ -548,9 +558,11 @@ class NFeIssuer(BaseNFeXMLGroup):
         self.set_attr('xNome', name)
         self._ie = state_registry
 
-    def set_address(self, street, number, district, city, state):
+    def set_address(self, street, number, complement, district, city, state,
+                    postal_code='', phone_number=''):
         self._address = NFeAddress(
-            self.address_tag, street, number, district, city, state)
+            self.address_tag, street, number, complement, district, city,
+            state, postal_code, phone_number)
         self._address.txttag = self.address_txt_tag
         self.append(self._address)
         # If we set IE in the __init__, the order will not be correct. :(
