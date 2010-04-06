@@ -48,6 +48,7 @@ from stoqlib.gui.dialogs.paymentadditiondialog import \
         OutPaymentAdditionDialog, LonelyPaymentDetailsDialog
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
+from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.paymentseditor import PaymentsEditor
@@ -358,6 +359,9 @@ class PayableApp(SearchableAppWindow):
         payments = [v.payment for v in payment_views]
         print_report(PaymentReceipt, payments=payments,
                      purchase=payment_views[0].purchase)
+
+    def on_PaymentFlowHistory__activate(self, action):
+        self.run_dialog(PaymentFlowHistoryDialog, self.conn)
 
     def on_AddPayment__activate(self, action):
         trans = new_transaction()
