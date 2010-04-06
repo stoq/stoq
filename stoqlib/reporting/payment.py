@@ -20,13 +20,15 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s):  Fabio Morbec              <fabio@async.com.br>
+##  Author(s):  George Y. Kussumoto       <george@async.com.br>
 ##
 ##
 """ Payment receival report implementation """
 
 from decimal import Decimal
 
-from stoqlib.reporting.template import ObjectListReport
+from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
+from stoqlib.reporting.template import BaseStoqReport, ObjectListReport
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.validators import get_formatted_price
 
@@ -72,3 +74,59 @@ class BillCheckPaymentReport(_BasePaymentReport):
     branch, the bank account. The field payment_number in the report can be
     the check number or the bill number.
     """
+
+
+class PaymentFlowHistoryReport(BaseStoqReport):
+    report_name = _(u'Payment Flow History')
+
+    def __init__(self, filename, payment_histories, *args, **kwargs):
+        self._payment_histories = payment_histories
+        BaseStoqReport.__init__(self, filename,
+                                PaymentFlowHistoryReport.report_name,
+                                landscape=True, *args, **kwargs)
+        self._setup_payment_histories_table()
+
+    def _setup_payment_histories_table(self):
+        for payment_history in self._payment_histories:
+            history_date = payment_history.history_date.strftime('%x')
+            self.add_paragraph(_(u'Day: %s' % history_date), style='Title')
+            self._add_history_table(payment_history)
+
+    def _add_history_table(self, history):
+        self.add_object_table([history], self._get_payment_history_columns())
+        if (history.to_receive != history.to_pay or
+            history.received != history.paid):
+            payments = list(history.get_divergent_payments())
+            if payments:
+                self.add_object_table(payments, self._get_payment_columns())
+        self.add_blank_space(10)
+
+    def _get_payment_history_columns(self):
+        return [
+            OTC(_(u'Last Balance'), lambda obj:
+                '%s' % get_formatted_price(obj.get_last_day_real_balance())),
+            OTC(_(u'To Receive'), lambda obj:
+                    '%s' % get_formatted_price(obj.to_receive)),
+            OTC(_(u'To Pay'), lambda obj:
+                    '%s' % get_formatted_price(obj.to_pay)),
+            OTC(_(u'Received'), lambda obj:
+                    '%s' % get_formatted_price(obj.received)),
+            OTC(_(u'Paid'), lambda obj: '%s' % get_formatted_price(obj.paid)),
+            OTC(_(u'Balance Expected'), lambda obj:
+                    '%s' % get_formatted_price(obj.balance_expected)),
+            OTC(_(u'Balance Real'), lambda obj:
+                    '%s' % get_formatted_price(obj.balance_real)),]
+
+    def _get_payment_columns(self):
+        return [
+            OTC(_(u'Description'), lambda obj: '%s' % obj.description),
+            OTC(_(u'Value'), lambda obj:
+                                '%s' % get_formatted_price(obj.value)),
+            OTC(_(u'Paid Value'), lambda obj:
+                    '%s' % get_formatted_price(obj.paid_value or Decimal(0))),
+            OTC(_(u'Due Date'), lambda obj: '%s' % obj.due_date.strftime('%x')),
+            OTC(_(u'Paid Date'), lambda obj: '%s' % obj.get_paid_date_string()),
+        ]
+
+    def get_title(self):
+        return self.report_name
