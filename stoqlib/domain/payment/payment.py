@@ -26,13 +26,15 @@
 """ Payment management implementations."""
 
 import datetime
+from decimal import Decimal
 
 from kiwi.datatypes import currency
 from zope.interface import implements
 
-from stoqlib.database.orm import PriceCol
-from stoqlib.database.orm import IntCol, DateTimeCol, UnicodeCol, ForeignKey
-from stoqlib.database.orm import const
+from stoqlib.database.orm import (IntCol, DateTimeCol, UnicodeCol, ForeignKey,
+                                  PriceCol, DecimalCol)
+from stoqlib.database.orm import const, DESC
+from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
@@ -178,6 +180,8 @@ class Payment(Domain):
         self._check_status(self.STATUS_PREVIEW, 'set_pending')
         self.status = self.STATUS_PENDING
 
+        PaymentFlowHistory.add_payment(self.get_connection(), self)
+
     def set_not_paid(self, change_entry):
         """Set a STATUS_PAID payment as STATUS_PENDING. This requires clearing
         paid_date and paid_value
@@ -194,6 +198,8 @@ class Payment(Domain):
         self.paid_date = None
         self.paid_value = None
 
+        PaymentFlowHistory.remove_paid_payment(self.get_connection(), self)
+
     def pay(self, paid_date=None, paid_value=None):
         """Pay the current payment set its status as STATUS_PAID"""
         self._check_status(self.STATUS_PENDING, 'pay')
@@ -203,6 +209,8 @@ class Payment(Domain):
         self.paid_value = paid_value
         self.paid_date = paid_date or const.NOW()
         self.status = self.STATUS_PAID
+
+        PaymentFlowHistory.add_paid_payment(self.get_connection(), self)
 
     def cancel(self, change_entry=None):
         # TODO Check for till entries here and call cancel_till_entry if
@@ -218,6 +226,8 @@ class Payment(Domain):
         if change_entry is not None:
             change_entry.last_status = old_status
             change_entry.new_status = self.status
+
+        PaymentFlowHistory.remove_payment(self.get_connection(), self)
 
     def get_payable_value(self):
         """ Returns the calculated payment value with the daily penalty.
@@ -336,6 +346,87 @@ class PaymentChangeHistory(Domain):
     new_due_date = DateTimeCol(default=None)
     last_status = IntCol(default=None)
     new_status = IntCol(default=None)
+
+
+class PaymentFlowHistory(Domain):
+    """A class to hold information about the financial flow.
+    """
+
+    history_date = DateTimeCol(default=datetime.datetime.now)
+    to_receive = DecimalCol(default=Decimal(0))
+    received = DecimalCol(default=Decimal(0))
+    to_pay = DecimalCol(default=Decimal(0))
+    paid = DecimalCol(default=Decimal(0))
+    balance_expected = DecimalCol(default=Decimal(0))
+    balance_real = DecimalCol(default=Decimal(0))
+
+    def update_balance(self):
+        self.balance_expected = self.to_receive - self.to_pay
+        self.balance_real = self.received - self.paid
+
+    @classmethod
+    def get_last_day(cls, conn):
+        today = datetime.date.today()
+        results = PaymentFlowHistory.select(
+                                PaymentFlowHistory.q.history_date < today,
+                                orderBy=DESC(PaymentFlowHistory.q.history_date),
+                                connection=conn).limit(1)
+        if results:
+            return results[0]
+
+    @classmethod
+    def get_or_create_flow_history(cls, conn, date):
+        day_history = PaymentFlowHistory.selectOneBy(history_date=date,
+                                                     connection=conn)
+        if day_history is not None:
+            return day_history
+        return cls(history_date=date, connection=conn)
+
+    @classmethod
+    def add_payment(cls, conn, payment):
+        assert payment.getFacets()
+
+        day_history = cls.get_or_create_flow_history(conn, payment.due_date)
+        if IOutPayment(payment, None) is not None:
+            day_history.to_pay += payment.value
+        elif IInPayment(payment, None) is not None:
+            day_history.to_receive += payment.value
+        day_history.update_balance()
+
+    @classmethod
+    def add_paid_payment(cls, conn, payment):
+        assert payment.getFacets()
+
+        today = datetime.date.today()
+        day_history = cls.get_or_create_flow_history(conn, today)
+        if IOutPayment(payment, None) is not None:
+            day_history.paid += payment.value
+        elif IInPayment(payment, None) is not None:
+            day_history.received += payment.value
+        day_history.update_balance()
+
+    @classmethod
+    def remove_payment(cls, conn, payment):
+        assert payment.getFacets()
+
+        day_history = cls.get_or_create_flow_history(conn, payment.due_date)
+        if IOutPayment(payment, None) is not None:
+            day_history.paid -= payment.value
+        elif IInPayment(payment, None) is not None:
+            day_history.received -= payment.value
+        day_history.update_balance()
+
+    @classmethod
+    def remove_paid_payment(cls, conn, payment):
+        assert payment.getFacets()
+
+        today = datetime.date.today()
+        day_history = cls.get_or_create_flow_history(conn, today)
+        if IOutPayment(payment, None) is not None:
+            day_history.paid -= payment.paid_value
+        elif IInPayment(payment, None) is not None:
+            day_history.received -= payment.paid_value
+        day_history.update_balance()
 
 
 #
