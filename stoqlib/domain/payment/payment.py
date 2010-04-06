@@ -33,7 +33,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import (IntCol, DateTimeCol, UnicodeCol, ForeignKey,
                                   PriceCol, DecimalCol)
-from stoqlib.database.orm import const, DESC
+from stoqlib.database.orm import const, DESC, AND, OR
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
@@ -363,6 +363,23 @@ class PaymentFlowHistory(Domain):
     def update_balance(self):
         self.balance_expected = self.to_receive - self.to_pay
         self.balance_real = self.received - self.paid
+
+    def get_last_day_real_balance(self):
+        last_day = PaymentFlowHistory.get_last_day(self.get_connection())
+        if last_day:
+            return last_day.balance_real
+        return Decimal(0)
+
+    def get_divergent_payments(self):
+        date = self.history_date
+        query = AND(OR(Payment.q.due_date == date,
+                       Payment.q.paid_date == date,
+                       Payment.q.cancel_date == date),
+                    OR(Payment.q.paid_value == None,
+                       Payment.q.value != Payment.q.paid_value,
+                       Payment.q.paid_date == None,
+                       Payment.q.due_date != Payment.q.paid_date))
+        return Payment.select(query, connection=self.get_connection())
 
     @classmethod
     def get_last_day(cls, conn):
