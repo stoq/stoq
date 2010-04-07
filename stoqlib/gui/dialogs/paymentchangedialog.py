@@ -28,7 +28,8 @@ import datetime
 
 from kiwi.datatypes import ValidationError
 
-from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
+from stoqlib.domain.payment.payment import (Payment, PaymentChangeHistory,
+                                            PaymentFlowHistory)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -149,6 +150,11 @@ class PaymentDueDateChangeDialog(BasePaymentChangeDialog):
 
     def on_confirm(self):
         self.model.new_due_date = self._payment.due_date
+
+        PaymentFlowHistory.remove_payment(self.conn, self._payment,
+                                          self.model.last_due_date)
+        PaymentFlowHistory.add_payment(self.conn, self._payment)
+
         return self.model
 
     #
