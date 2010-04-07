@@ -28,6 +28,7 @@
 from decimal import Decimal
 
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
+from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.reporting.template import BaseStoqReport, ObjectListReport
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.validators import get_formatted_price
@@ -95,8 +96,8 @@ class PaymentFlowHistoryReport(BaseStoqReport):
 
     def _add_history_table(self, history):
         self.add_object_table([history], self._get_payment_history_columns())
-        if (history.to_receive != history.to_pay or
-            history.received != history.paid):
+        if (history.to_receive != history.received or
+            history.to_pay != history.paid):
             payments = list(history.get_divergent_payments())
             if payments:
                 self.add_object_table(payments, self._get_payment_columns())
@@ -105,26 +106,33 @@ class PaymentFlowHistoryReport(BaseStoqReport):
     def _get_payment_history_columns(self):
         return [
             OTC(_(u'Last Balance'), lambda obj:
-                '%s' % get_formatted_price(obj.get_last_day_real_balance())),
+                '%s' % get_formatted_price(obj.get_last_day_real_balance()),
+                align=RIGHT),
             OTC(_(u'To Receive'), lambda obj:
-                    '%s' % get_formatted_price(obj.to_receive)),
+                    '%s' % get_formatted_price(obj.to_receive), align=RIGHT),
             OTC(_(u'To Pay'), lambda obj:
-                    '%s' % get_formatted_price(obj.to_pay)),
+                    '%s' % get_formatted_price(obj.to_pay), align=RIGHT),
             OTC(_(u'Received'), lambda obj:
-                    '%s' % get_formatted_price(obj.received)),
-            OTC(_(u'Paid'), lambda obj: '%s' % get_formatted_price(obj.paid)),
+                    '%s' % get_formatted_price(obj.received), align=RIGHT),
+            OTC(_(u'Paid'), lambda obj: '%s' % get_formatted_price(obj.paid),
+                align=RIGHT),
             OTC(_(u'Bal. Expected'), lambda obj:
-                    '%s' % get_formatted_price(obj.balance_expected)),
+                    '%s' % get_formatted_price(obj.balance_expected),
+                    align=RIGHT),
             OTC(_(u'Bal. Real'), lambda obj:
-                    '%s' % get_formatted_price(obj.balance_real)),]
+                    '%s' % get_formatted_price(obj.balance_real), align=RIGHT)]
 
     def _get_payment_columns(self):
         return [
-            OTC(_(u'Description'), lambda obj: '%s' % obj.description),
+            OTC(_(u'# '), lambda obj: '%04d' % obj.id, width=40),
+            OTC(_(u'Description'), lambda obj: '%s' % obj.description,
+                expand=True, truncate=True),
             OTC(_(u'Value'), lambda obj:
-                                '%s' % get_formatted_price(obj.value)),
-            OTC(_(u'Paid Value'), lambda obj:
-                    '%s' % get_formatted_price(obj.paid_value or Decimal(0))),
+                                '%s' % get_formatted_price(obj.value),
+                                align=RIGHT),
+            OTC(_(u'Paid/Received Value'), lambda obj:
+                    '%s' % get_formatted_price(obj.paid_value or Decimal(0)),
+                    align=RIGHT),
             OTC(_(u'Due Date'), lambda obj: '%s' % obj.due_date.strftime('%x')),
             OTC(_(u'Paid Date'), lambda obj: '%s' % obj.get_paid_date_string()),
         ]
