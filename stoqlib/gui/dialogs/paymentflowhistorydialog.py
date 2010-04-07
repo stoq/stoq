@@ -25,7 +25,8 @@
 
 
 from kiwi.python import Settable
-from kiwi.ui.search import DateSearchFilter
+from kiwi.ui.search import (DateSearchFilter, Today, Yesterday, LastWeek,
+                            LastMonth)
 
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.domain.payment.payment import PaymentFlowHistory
@@ -62,11 +63,11 @@ class PaymentFlowHistoryDialog(BaseEditor):
 
     def validate_confirm(self):
         results = self.model.executer.search([self._date_filter.get_state()])
-        if not results:
-            info(_(u'No payment history found.'))
-        else:
+        if results:
             print_report(PaymentFlowHistoryReport, payment_histories=results)
             return True
+        else:
+            info(_(u'No payment history found.'))
 
     #
     # Private
@@ -76,6 +77,13 @@ class PaymentFlowHistoryDialog(BaseEditor):
         self.main_dialog.ok_button.set_label('gtk-print')
 
         self._date_filter = DateSearchFilter(_(u'Date:'))
+        #FIXME: add a remove_option method in DateSearchFilter.
+        self._date_filter.clear_options()
+        self._date_filter.add_custom_options()
+        for option in [Today, Yesterday, LastWeek, LastMonth]:
+            self._date_filter.add_option(option)
+        self._date_filter.select(position=0)
+
         self.model.executer.set_filter_columns(self._date_filter,
                                                ['history_date'])
         self.date_box.pack_start(self._date_filter, False, False)
