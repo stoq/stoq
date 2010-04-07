@@ -84,6 +84,7 @@ class PaymentFlowHistoryReport(BaseStoqReport):
         BaseStoqReport.__init__(self, filename,
                                 PaymentFlowHistoryReport.report_name,
                                 landscape=True, *args, **kwargs)
+        self.add_blank_space(5)
         self._setup_payment_histories_table()
 
     def _setup_payment_histories_table(self):
@@ -112,9 +113,9 @@ class PaymentFlowHistoryReport(BaseStoqReport):
             OTC(_(u'Received'), lambda obj:
                     '%s' % get_formatted_price(obj.received)),
             OTC(_(u'Paid'), lambda obj: '%s' % get_formatted_price(obj.paid)),
-            OTC(_(u'Balance Expected'), lambda obj:
+            OTC(_(u'Bal. Expected'), lambda obj:
                     '%s' % get_formatted_price(obj.balance_expected)),
-            OTC(_(u'Balance Real'), lambda obj:
+            OTC(_(u'Bal. Real'), lambda obj:
                     '%s' % get_formatted_price(obj.balance_real)),]
 
     def _get_payment_columns(self):
