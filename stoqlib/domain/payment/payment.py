@@ -350,6 +350,17 @@ class PaymentChangeHistory(Domain):
 
 class PaymentFlowHistory(Domain):
     """A class to hold information about the financial flow.
+
+    @param history_date: the date when payments were registered.
+    @param to_receive: the amount scheduled to be received in the
+                       history_date.
+    @param received: the amount received in the history_date.
+    @param to_pay: the amount scheduled to be paid in the history_date.
+    @param paid: the amount paid in the history_date.
+    @param balance_expected: the balance of the last day plus the amount to be
+                             received minus the amount to be paid.
+    @param balance_real: the balance of the last day plus the amount received
+                         minus the amount paid.
     """
 
     history_date = DateTimeCol(default=datetime.datetime.now)
@@ -361,16 +372,34 @@ class PaymentFlowHistory(Domain):
     balance_real = DecimalCol(default=Decimal(0))
 
     def update_balance(self):
-        self.balance_expected = self.to_receive - self.to_pay
-        self.balance_real = self.received - self.paid
+        """Updates the balance_expected and balance_real values following this
+        rule:
+            - balance_expected: last_day_balance + to_receive - to_pay
+            - balance_real: last_day_balance + received - paid
+        """
+        last_day = self.get_last_day_real_balance()
+        self.balance_expected =  last_day + self.to_receive - self.to_pay
+        self.balance_real = last_day + self.received - self.paid
 
     def get_last_day_real_balance(self):
+        """Returns the real balance value of the previous day or zero if
+        there's no previous day.
+        """
         last_day = PaymentFlowHistory.get_last_day(self.get_connection())
         if last_day:
             return last_day.balance_real
         return Decimal(0)
 
     def get_divergent_payments(self):
+        """Returns a L{Payment} sequence that meet to following requirements:
+            - The payment due date, paid date or cancel date is the current
+              PaymentFlowHistory date.
+            - The payment was paid/received with different values (eg with
+              discount or surcharges).
+            - The payment was scheduled to be paid/received in the current,
+              but it was not.
+            - The payment was not expected to be paid/received the current date.
+        """
         date = self.history_date
         query = AND(OR(Payment.q.due_date == date,
                        Payment.q.paid_date == date,
@@ -383,6 +412,11 @@ class PaymentFlowHistory(Domain):
 
     @classmethod
     def get_last_day(cls, conn):
+        """Returns the L{PaymentFlowHistory} instance of the last day
+        registered or None if there is no registry.
+
+        @param conn: a database connection.
+        """
         today = datetime.date.today()
         results = PaymentFlowHistory.select(
                                 PaymentFlowHistory.q.history_date < today,
@@ -393,6 +427,12 @@ class PaymentFlowHistory(Domain):
 
     @classmethod
     def get_or_create_flow_history(cls, conn, date):
+        """Returns a L{PaymentFlowHistory} instance.
+
+        @param conn: a database connection.
+        @param date: the date of the L{PaymentFlowHistory} we want to
+                     retrieve or create.
+        """
         day_history = PaymentFlowHistory.selectOneBy(history_date=date,
                                                      connection=conn)
         if day_history is not None:
@@ -401,6 +441,12 @@ class PaymentFlowHistory(Domain):
 
     @classmethod
     def add_payment(cls, conn, payment):
+        """Adds a payment in the L{PaymentFlowHistory} registry according to
+        the payment due date.
+
+        @param conn: a database connection.
+        @param payment: the payment to be added in the registry.
+        """
         assert payment.getFacets()
 
         day_history = cls.get_or_create_flow_history(conn, payment.due_date)
@@ -412,6 +458,12 @@ class PaymentFlowHistory(Domain):
 
     @classmethod
     def add_paid_payment(cls, conn, payment):
+        """Adds a paid payment in the L{PaymentFlowHistory} registry. The paid
+        payment will be added in the current day registry.
+
+        @param conn: a database connection.
+        @param payment: the paid payment to be added in the registry.
+        """
         assert payment.getFacets()
 
         today = datetime.date.today()
@@ -424,6 +476,12 @@ class PaymentFlowHistory(Domain):
 
     @classmethod
     def remove_payment(cls, conn, payment):
+        """Removes a payment in the L{PaymentFlowHistory} registry. The
+        payment will be deducted from registry according to its due date.
+
+        @param conn: a database connection.
+        @param payment: the payment to be removed in the registry.
+        """
         assert payment.getFacets()
 
         day_history = cls.get_or_create_flow_history(conn, payment.due_date)
@@ -435,6 +493,12 @@ class PaymentFlowHistory(Domain):
 
     @classmethod
     def remove_paid_payment(cls, conn, payment):
+        """Removes a paid payment in the L{PaymentFlowHistory} registry. The paid
+        payment will be removed in the current day registry.
+
+        @param conn: a database connection.
+        @param payment: the paid payment to be removed in the registry.
+        """
         assert payment.getFacets()
 
         today = datetime.date.today()
