@@ -29,18 +29,19 @@ import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import currency
+from kiwi.log import Logger
 from zope.interface import implements
 
 from stoqlib.database.orm import (IntCol, DateTimeCol, UnicodeCol, ForeignKey,
                                   PriceCol, DecimalCol)
 from stoqlib.database.orm import const, DESC, AND, OR
-from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+log = Logger('stoqlib.domain.payment.payment')
 
 
 class Payment(Domain):
@@ -375,6 +376,10 @@ class PaymentFlowHistory(Domain):
     balance_expected = DecimalCol(default=Decimal(0))
     balance_real = DecimalCol(default=Decimal(0))
 
+    #
+    # Public API
+    #
+
     def update_balance(self):
         """Updates the balance_expected and balance_real values following this
         rule:
@@ -414,6 +419,42 @@ class PaymentFlowHistory(Domain):
                        Payment.q.paid_date == None,
                        Payment.q.due_date != Payment.q.paid_date))
         return Payment.select(query, connection=self.get_connection())
+
+    #
+    # Private API
+    #
+
+    def _update_registers(self, payment, value, accomplished=True):
+        """Updates the L{PaymentFlowHistory} attributes according to the
+        payment facet, value and if the payment was accomplished or not.
+
+        @param payment: the payment that will be registered.
+        @param value: the value that will be used to update history
+                      attributes.
+        @param accomplished: indicates if we should update the attributes that
+                             holds information about the accomplished payments
+                             or attributes related to payments that will be
+                             accomplished later.
+        """
+        if not payment.getFacets():
+            log.info('Payment %r will not be registered in %r: missing '
+                     'payment facets.' % (payment, self))
+
+        if IOutPayment(payment, None) is not None:
+            if accomplished:
+                self.paid += value
+            else:
+                self.to_pay += value
+        elif IInPayment(payment, None) is not None:
+            if accomplished:
+                self.received += value
+            else:
+                self.to_receive += value
+        self.update_balance()
+
+    #
+    # Classmethods
+    #
 
     @classmethod
     def get_last_day(cls, conn, reference_date=None):
@@ -459,16 +500,11 @@ class PaymentFlowHistory(Domain):
                                if not specified, the reference will be the
                                payment due date.
         """
-        assert payment.getFacets()
-
         if reference_date is None:
             reference_date = payment.due_date.date()
         day_history = cls.get_or_create_flow_history(conn, reference_date)
-        if IOutPayment(payment, None) is not None:
-            day_history.to_pay += payment.value
-        elif IInPayment(payment, None) is not None:
-            day_history.to_receive += payment.value
-        day_history.update_balance()
+        day_history._update_registers(payment, payment.value,
+                                      accomplished=False)
 
     @classmethod
     def add_paid_payment(cls, conn, payment, reference_date=None):
@@ -481,16 +517,13 @@ class PaymentFlowHistory(Domain):
                                payment, if not specified, the reference will
                                be the current date.
         """
-        assert payment.getFacets()
+        #assert payment.getFacets()
 
         if reference_date is None:
             reference_date = datetime.date.today()
         day_history = cls.get_or_create_flow_history(conn, reference_date)
-        if IOutPayment(payment, None) is not None:
-            day_history.paid += payment.value
-        elif IInPayment(payment, None) is not None:
-            day_history.received += payment.value
-        day_history.update_balance()
+        day_history._update_registers(payment, payment.value,
+                                      accomplished=True)
 
     @classmethod
     def remove_payment(cls, conn, payment, reference_date=None):
@@ -503,16 +536,11 @@ class PaymentFlowHistory(Domain):
                                payment, if not specified, the reference will
                                be the payment due date.
         """
-        assert payment.getFacets()
-
         if reference_date is None:
             reference_date = payment.due_date.date()
         day_history = cls.get_or_create_flow_history(conn, reference_date)
-        if IOutPayment(payment, None) is not None:
-            day_history.to_pay -= payment.value
-        elif IInPayment(payment, None) is not None:
-            day_history.to_receive -= payment.value
-        day_history.update_balance()
+        day_history._update_registers(payment, -payment.value,
+                                      accomplished=False)
 
     @classmethod
     def remove_paid_payment(cls, conn, payment, reference_date=None):
@@ -525,16 +553,11 @@ class PaymentFlowHistory(Domain):
                                payment, if not specified, the reference will
                                be the current date.
         """
-        assert payment.getFacets()
-
         if reference_date is None:
             reference_date = datetime.date.today()
         day_history = cls.get_or_create_flow_history(conn, reference_date)
-        if IOutPayment(payment, None) is not None:
-            day_history.paid -= payment.paid_value
-        elif IInPayment(payment, None) is not None:
-            day_history.received -= payment.paid_value
-        day_history.update_balance()
+        day_history._update_registers(payment, -payment.paid_value,
+                                      accomplished=True)
 
 
 #
