@@ -28,8 +28,9 @@ from decimal import Decimal
 
 from kiwi.datatypes import currency
 
+from stoqlib.domain.intefaces import IInPayment, IOutPayment
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.payment import Payment, PaymentFlowHistory
 from stoqlib.domain.test.domaintest import DomainTest
 
 class TestPayment(DomainTest):
@@ -218,3 +219,106 @@ class TestPayment(DomainTest):
         payment.pay()
         payment.cancel()
         self.assertEqual(payment.status, Payment.STATUS_CANCELLED)
+
+
+class TestPaymentFlowHistory(DomainTest):
+
+    def testGetOrCreateFlowHistory(self):
+        today = datetime.date.today()
+        history = PaymentFlowHistory.get_or_create_flow_history(self.trans,
+                                                                today)
+        history2 = PaymentFlowHistory.get_or_create_flow_history(self.trans,
+                                                                 today)
+        self.failIf(history is not history2)
+
+    def testGetLastDay(self):
+        today = datetime.date.today()
+        yesterday = today + datetime.timedelta(days=-1)
+        tomorrow = today + datetime.timedelta(days=+1)
+
+        today_history = PaymentFlowHistory.get_or_create_flow_history(
+            self.trans, today)
+        yesterday_history = PaymentFlowHistory.get_or_create_flow_history(
+            self.trans, yesterday)
+        tomorrow_history = PaymentFlowHistory.get_or_create_flow_history(
+            self.trans, tomorrow)
+
+        self.failUnless(PaymentFlowHistory.get_last_day(self.trans, today) is
+                        yesterday_history)
+        self.failUnless(PaymentFlowHistory.get_last_day(self.trans) is
+                        yesterday_history)
+        self.failUnless(PaymentFlowHistory.get_last_day(self.trans, tomorrow) is
+                        today_history)
+
+    def testAddPayment(self):
+        today = datetime.date.today()
+        history = PaymentFlowHistory.get_or_create_flow_history(
+            self.trans, today)
+        old_to_receive = history.to_receive
+
+        payment = self.create_payment()
+        payment.value = Decimal(100)
+        payment.due_date = today
+        payment.addFacet(IInPayment, connection=self.trans)
+        payment.set_pending()
+
+        self.assertEqual(old_to_receive + Decimal(100), history.to_receive)
+
+        old_to_pay = history.to_pay
+        payment2 = self.create_payment()
+        payment2.value = Decimal(10)
+        payment2.due_date = today
+        payment2.addFacet(IOutPayment, connection=self.trans)
+        payment2.set_pending()
+        self.assertEqual(old_to_pay + Decimal(10), history.to_pay)
+
+    def testRemovePayment(self):
+        today = datetime.date.today()
+        history = PaymentFlowHistory.get_or_create_flow_history(
+            self.trans, today)
+        old_to_receive = history.to_receive
+
+        payment = self.create_payment()
+        payment.value = Decimal(100)
+        payment.due_date = today
+        payment.addFacet(IInPayment, connection=self.trans)
+        payment.set_pending()
+
+        self.assertEqual(old_to_receive + Decimal(100), history.to_receive)
+        payment.cancel()
+        self.assertEqual(old_to_receive, history.to_receive)
+
+        old_to_pay = history.to_pay
+        payment2 = self.create_payment()
+        payment2.value = Decimal(10)
+        payment2.due_date = today
+        payment2.addFacet(IOutPayment, connection=self.trans)
+        payment2.set_pending()
+
+        self.assertEqual(old_to_pay + Decimal(10), history.to_pay)
+        payment2.cancel()
+        self.assertEqual(old_to_pay + Decimal(1), history.to_pay)
+
+    def testAddPaidPayment(self):
+        today = datetime.date.today()
+        history = PaymentFlowHistory.get_or_create_flow_history(
+            self.trans, today)
+        old_received = history.received
+
+        payment = self.create_payment()
+        payment.value = Decimal(100)
+        payment.due_date = today
+        payment.addFacet(IInPayment, connection=self.trans)
+        payment.set_pending()
+        payment.pay()
+
+        self.assertEqual(old_received+ Decimal(100), history.received)
+
+        old_paid = history.paid
+        payment2 = self.create_payment()
+        payment2.value = Decimal(10)
+        payment2.due_date = today
+        payment2.addFacet(IOutPayment, connection=self.trans)
+        payment2.set_pending()
+        payment2.paid()
+        self.assertEqual(old_paid + Decimal(10), history.paid)
