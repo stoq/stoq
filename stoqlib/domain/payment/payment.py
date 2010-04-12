@@ -223,6 +223,13 @@ class Payment(Domain):
                                Payment.STATUS_PAID]:
             raise StoqlibError("Invalid status for cancel operation, "
                                 "got %s" % self.get_status_str())
+
+        if self.status == Payment.STATUS_PAID:
+             PaymentFlowHistory.remove_paid_payment(self.get_connection(),
+                                                    self)
+        else:
+            PaymentFlowHistory.remove_payment(self.get_connection(), self)
+
         old_status = self.status
         self.status = self.STATUS_CANCELLED
         self.cancel_date = const.NOW()
@@ -230,9 +237,6 @@ class Payment(Domain):
         if change_entry is not None:
             change_entry.last_status = old_status
             change_entry.new_status = self.status
-
-        PaymentFlowHistory.remove_payment(self.get_connection(), self)
-        PaymentFlowHistory.add_payment(self.get_connection(), self)
 
     def get_payable_value(self):
         """ Returns the calculated payment value with the daily penalty.
@@ -380,16 +384,6 @@ class PaymentFlowHistory(Domain):
     # Public API
     #
 
-    def update_balance(self):
-        """Updates the balance_expected and balance_real values following this
-        rule:
-            - balance_expected: last_day_balance + to_receive - to_pay
-            - balance_real: last_day_balance + received - paid
-        """
-        last_day = self.get_last_day_real_balance()
-        self.balance_expected =  last_day + self.to_receive - self.to_pay
-        self.balance_real = last_day + self.received - self.paid
-
     def get_last_day_real_balance(self):
         """Returns the real balance value of the previous day or zero if
         there's no previous day.
@@ -424,6 +418,16 @@ class PaymentFlowHistory(Domain):
     # Private API
     #
 
+    def _update_balance(self):
+        """Updates the balance_expected and balance_real values following this
+        rule:
+            - balance_expected: last_day_balance + to_receive - to_pay
+            - balance_real: last_day_balance + received - paid
+        """
+        last_day = self.get_last_day_real_balance()
+        self.balance_expected =  last_day + self.to_receive - self.to_pay
+        self.balance_real = last_day + self.received - self.paid
+
     def _update_registers(self, payment, value, accomplished=True):
         """Updates the L{PaymentFlowHistory} attributes according to the
         payment facet, value and if the payment was accomplished or not.
@@ -450,7 +454,7 @@ class PaymentFlowHistory(Domain):
                 self.received += value
             else:
                 self.to_receive += value
-        self.update_balance()
+        self._update_balance()
 
     #
     # Classmethods
@@ -517,8 +521,6 @@ class PaymentFlowHistory(Domain):
                                payment, if not specified, the reference will
                                be the current date.
         """
-        #assert payment.getFacets()
-
         if reference_date is None:
             reference_date = datetime.date.today()
         day_history = cls.get_or_create_flow_history(conn, reference_date)
