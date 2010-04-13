@@ -29,7 +29,8 @@ from kiwi.datatypes import currency
 
 from stoqlib.database.runtime import get_connection, get_current_branch
 from stoqlib.domain.commission import CommissionView
-from stoqlib.domain.sale import SaleView
+from stoqlib.domain.interfaces import ICompany, IIndividual
+from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
 from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
                                            TableColumn as TC, HIGHLIGHT_NEVER)
@@ -46,34 +47,49 @@ _ = stoqlib_gettext
 class SaleOrderReport(BaseStoqReport):
     report_name = _("Sale Order")
 
-    def __init__(self, filename, sale_order):
+    def __init__(self, filename, sale_order, *args, **kwargs):
         self.sale = sale_order
         BaseStoqReport.__init__(self, filename, SaleOrderReport.report_name,
-                                do_footer=True, landscape=True)
+                                do_footer=True, landscape=True, *args,
+                                **kwargs)
         self._identify_client()
         self.add_blank_space()
         self._setup_items_table()
 
     def _identify_client(self):
-        if self.sale.client:
-            person = self.sale.client.person
-            client = person.name
-        else:
-            person = None
-            client = _(u'No client')
+        if not self.sale.client:
+            self.add_paragraph(_(u'No Client'), style='Normal-Bold')
+            return
 
-        if person is not None:
-            phone_number = format_phone_number(person.phone_number)
-        else:
-            phone_number = _(u'No phone number')
+        person = self.sale.client.person
+        client = person.name
+
+        phone_number = format_phone_number(person.phone_number)
+        mobile_number = format_phone_number(person.mobile_number)
+        addr = person.get_main_address()
+        address = [addr.get_address_string(), addr.get_details_string()]
+        document = self._get_person_document(person)
 
         cols = [TC('', style='Normal-Bold', width=80),
                 TC('', expand=True, truncate=True),
                 TC('', style='Normal-Bold', width=130), TC('', expand=True)]
-        data = [[_(u'Client:'), client, _(u'Phone number:'), phone_number]]
+
+        data = [[_(u'Client:'), client, _(u'Phone number:'), phone_number],
+                [_(u'CPF/CNPJ:') , document, _(u'Mobile number'),
+                 mobile_number],
+                [_(u'Address:'), address[0], _(u'City/State:'), address[1]]]
+
         self.add_column_table(data, cols, do_header=False,
                               highlight=HIGHLIGHT_NEVER,
                               table_line=TABLE_LINE_BLANK)
+
+    def _get_person_document(self, person):
+        company = ICompany(person, None)
+        if company is not None:
+            return company.cnpj
+        individual = IIndividual(person, None)
+        if individual is not None:
+            return individual.cpf
 
     def _get_table_columns(self):
         # XXX Bug #2430 will improve this part
@@ -121,12 +137,28 @@ class SaleOrderReport(BaseStoqReport):
             self.add_paragraph(_(u'Additional Information'), style='Normal-Bold')
             self.add_preformatted_text(details_str, style='Normal-Notes')
 
+    def _get_status_date(self, status):
+        s = self.sale
+        status_date = {Sale.STATUS_INITIAL: s.open_date,
+                       Sale.STATUS_ORDERED: s.open_date,
+                       Sale.STATUS_CONFIRMED: s.confirm_date,
+                       Sale.STATUS_PAID: s.close_date,
+                       Sale.STATUS_CANCELLED: s.cancel_date,
+                       Sale.STATUS_QUOTE: s.open_date,
+                       Sale.STATUS_RETURNED: s.return_date,
+                       Sale.STATUS_RENEGOTIATED: s.close_date,}
+        return status_date[status]
+
     #
     # BaseReportTemplate hooks
     #
 
     def get_title(self):
-        return (_("Sale Order on %s") % self.sale.open_date.strftime("%x"))
+        return _(u'Number: %s - Sale %s on %s') % (
+                    self.sale.get_order_number_str(),
+                    Sale.get_status_name(self.sale.status),
+                    self._get_status_date(self.sale.status).strftime('%x'))
+
 
 class SalesReport(ObjectListReport):
     # This should be properly verified on BaseStoqReport. Waiting for
