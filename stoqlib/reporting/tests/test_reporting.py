@@ -53,7 +53,7 @@ from stoqlib.reporting.product import ProductReport, ProductPriceReport
 from stoqlib.reporting.production import ProductionOrderReport
 from stoqlib.reporting.purchase import PurchaseQuoteReport
 from stoqlib.reporting.service import ServicePriceReport
-from stoqlib.reporting.sale import SalesPersonReport
+from stoqlib.reporting.sale import SaleOrderReport, SalesPersonReport
 from stoqlib.reporting.till import TillHistoryReport
 from stoqlib.lib.diffutils import diff_files
 
@@ -270,6 +270,21 @@ class TestReport(DomainTest):
         commissions = CommissionView.select(connection=self.trans)
         self.checkPDF(SalesPersonReport, list(commissions), salesperson_name,
                       date=datetime.date(2007, 1, 1))
+
+    def testSaleOrderReport(self):
+        product = self.create_product(price=100)
+        sellable = product.sellable
+        default_date = datetime.date(2007, 1, 1)
+        sale = self.create_sale()
+        sale.open_date = default_date
+        # workaround to make the sale order number constant.
+        sale.get_order_number_str = lambda: '9090'
+
+        sale.add_sellable(sellable, quantity=1)
+        storable = product.addFacet(IStorable, connection=self.trans)
+        storable.increase_stock(100, get_current_branch(self.trans))
+        sale.order()
+        self.checkPDF(SaleOrderReport, sale, date=default_date)
 
     def testProductPriceReport(self):
         # the orderBy clause is only needed by the test
