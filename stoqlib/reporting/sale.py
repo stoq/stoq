@@ -84,12 +84,12 @@ class SaleOrderReport(BaseStoqReport):
                               table_line=TABLE_LINE_BLANK)
 
     def _get_person_document(self, person):
-        company = ICompany(person, None)
-        if company is not None:
-            return company.cnpj
         individual = IIndividual(person, None)
         if individual is not None:
             return individual.cpf
+        company = ICompany(person, None)
+        if company is not None:
+            return company.cnpj
 
     def _get_table_columns(self):
         # XXX Bug #2430 will improve this part
@@ -138,16 +138,15 @@ class SaleOrderReport(BaseStoqReport):
             self.add_preformatted_text(details_str, style='Normal-Notes')
 
     def _get_status_date(self, status):
-        s = self.sale
-        status_date = {Sale.STATUS_INITIAL: s.open_date,
-                       Sale.STATUS_ORDERED: s.open_date,
-                       Sale.STATUS_CONFIRMED: s.confirm_date,
-                       Sale.STATUS_PAID: s.close_date,
-                       Sale.STATUS_CANCELLED: s.cancel_date,
-                       Sale.STATUS_QUOTE: s.open_date,
-                       Sale.STATUS_RETURNED: s.return_date,
-                       Sale.STATUS_RENEGOTIATED: s.close_date,}
-        return status_date[status]
+        status_date = {Sale.STATUS_INITIAL: 'open_date',
+                       Sale.STATUS_ORDERED: 'open_date',
+                       Sale.STATUS_CONFIRMED: 'confirm_date',
+                       Sale.STATUS_PAID: 'close_date',
+                       Sale.STATUS_CANCELLED: 'cancel_date',
+                       Sale.STATUS_QUOTE: 'open_date',
+                       Sale.STATUS_RETURNED: 'return_date',
+                       Sale.STATUS_RENEGOTIATED: 'close_date',}
+        return getattr(self.sale, status_date[status])
 
     #
     # BaseReportTemplate hooks
