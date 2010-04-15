@@ -130,6 +130,8 @@ class Address(Domain):
         @returns: the postal code as a number
         @rtype: integer
         """
+        if not self.postal_code:
+            return 0
         return int(''.join([c for c in self.postal_code
                                   if c in '1234567890']))
 
