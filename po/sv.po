@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-23 11:50-0300\n"
+"POT-Creation-Date: 2010-04-19 13:39-0300\n"
 "PO-Revision-Date: 2007-07-18 11:35-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -15,21 +15,16 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../stoqlib/reporting/sale.py:47
+#: ../stoqlib/reporting/sale.py:48
 msgid "Sale Order"
 msgstr "Försäljningsorder"
 
-#: ../stoqlib/reporting/sale.py:63
+#: ../stoqlib/reporting/sale.py:61
 #, fuzzy
-msgid "No client"
+msgid "No Client"
 msgstr "Sök"
 
-#: ../stoqlib/reporting/sale.py:68
-#, fuzzy
-msgid "No phone number"
-msgstr "Telefonnummer"
-
-#: ../stoqlib/reporting/sale.py:73 ../data/glade/DeliveryEditor.glade.h:4
+#: ../stoqlib/reporting/sale.py:77 ../data/glade/DeliveryEditor.glade.h:4
 #: ../data/glade/PaymentChangeDialog.glade.h:2
 #: ../data/glade/SalesPersonStep.glade.h:4
 #: ../data/glade/ClientDetailsDialog.glade.h:1
@@ -40,13 +35,33 @@ msgstr "Telefonnummer"
 msgid "Client:"
 msgstr "Kund:"
 
-#: ../stoqlib/reporting/sale.py:73
+#: ../stoqlib/reporting/sale.py:77
 #, fuzzy
 msgid "Phone number:"
 msgstr "Telefonnummer:"
 
+#: ../stoqlib/reporting/sale.py:78
+#, fuzzy
+msgid "CPF/CNPJ:"
+msgstr "Personnummer:"
+
+#: ../stoqlib/reporting/sale.py:78
+#, fuzzy
+msgid "Mobile number"
+msgstr "Fakturanummer:"
+
+#: ../stoqlib/reporting/sale.py:80
+#, fuzzy
+msgid "Address:"
+msgstr "Adress"
+
+#: ../stoqlib/reporting/sale.py:80
+#, fuzzy
+msgid "City/State:"
+msgstr "Landskap:"
+
 #. XXX Bug #2430 will improve this part
-#: ../stoqlib/reporting/sale.py:80 ../stoqlib/reporting/sale.py:182
+#: ../stoqlib/reporting/sale.py:96 ../stoqlib/reporting/sale.py:213
 #: ../stoqlib/reporting/product.py:194 ../stoqlib/reporting/template.py:320
 #: ../stoqlib/gui/wizards/purchasewizard.py:260
 #: ../stoqlib/gui/wizards/productionwizard.py:184
@@ -72,13 +87,13 @@ msgstr "Telefonnummer:"
 msgid "Code"
 msgstr "Kod"
 
-#: ../stoqlib/reporting/sale.py:82 ../stoqlib/reporting/purchase.py:96
+#: ../stoqlib/reporting/sale.py:98 ../stoqlib/reporting/purchase.py:96
 #: ../stoqlib/reporting/purchase.py:242
 #: ../stoqlib/gui/search/salesearch.py:127
 msgid "Item"
 msgstr "Föremål"
 
-#: ../stoqlib/reporting/sale.py:85 ../stoqlib/reporting/product.py:94
+#: ../stoqlib/reporting/sale.py:101 ../stoqlib/reporting/product.py:94
 #: ../stoqlib/reporting/product.py:199 ../stoqlib/reporting/production.py:151
 #: ../stoqlib/reporting/production.py:208 ../stoqlib/reporting/purchase.py:105
 #: ../stoqlib/reporting/purchase.py:248
@@ -102,7 +117,7 @@ msgstr "Föremål"
 msgid "Quantity"
 msgstr "Antal"
 
-#: ../stoqlib/reporting/sale.py:87 ../stoqlib/reporting/product.py:69
+#: ../stoqlib/reporting/sale.py:103 ../stoqlib/reporting/product.py:69
 #: ../stoqlib/reporting/template.py:323
 #: ../stoqlib/gui/wizards/salequotewizard.py:204
 #: ../stoqlib/gui/dialogs/saledetails.py:171
@@ -112,22 +127,22 @@ msgstr "Antal"
 msgid "Price"
 msgstr "Pris"
 
-#: ../stoqlib/reporting/sale.py:89
+#: ../stoqlib/reporting/sale.py:105
 #, fuzzy
 msgid "Sub-Total"
 msgstr "Totalt"
 
-#: ../stoqlib/reporting/sale.py:98
+#: ../stoqlib/reporting/sale.py:114
 #, python-format
 msgid "%s items"
 msgstr "%s föremål"
 
-#: ../stoqlib/reporting/sale.py:100
+#: ../stoqlib/reporting/sale.py:116
 #, python-format
 msgid "%s item"
 msgstr "%s föremål"
 
-#: ../stoqlib/reporting/sale.py:110 ../data/glade/SaleDetailsDialog.glade.h:5
+#: ../stoqlib/reporting/sale.py:126 ../data/glade/SaleDetailsDialog.glade.h:5
 #: ../data/glade/PurchaseDetailsDialog.glade.h:4
 #: ../data/glade/RenegotiationDetailsDialog.glade.h:5
 #: ../data/glade/PaymentRenegotiationPaymentListStep.glade.h:3
@@ -136,7 +151,7 @@ msgstr "%s föremål"
 msgid "Discount:"
 msgstr "Rabatt:"
 
-#: ../stoqlib/reporting/sale.py:110 ../stoqlib/reporting/sale.py:211
+#: ../stoqlib/reporting/sale.py:126 ../stoqlib/reporting/sale.py:242
 #: ../stoqlib/reporting/template.py:331
 #: ../stoqlib/gui/wizards/productionwizard.py:128
 #: ../stoqlib/gui/wizards/productionwizard.py:220
@@ -162,32 +177,32 @@ msgstr "Rabatt:"
 msgid "Total:"
 msgstr "Totalt:"
 
-#: ../stoqlib/reporting/sale.py:121 ../stoqlib/gui/wizards/salewizard.py:399
+#: ../stoqlib/reporting/sale.py:137 ../stoqlib/gui/wizards/salewizard.py:399
 #: ../stoqlib/gui/wizards/salequotewizard.py:146
 #: ../stoqlib/gui/slaves/receivingslave.py:128
 msgid "Additional Information"
 msgstr ""
 
-#: ../stoqlib/reporting/sale.py:129
-#, fuzzy, python-format
-msgid "Sale Order on %s"
-msgstr "Försäljningsorder"
+#: ../stoqlib/reporting/sale.py:156
+#, python-format
+msgid "Number: %s - Sale %s on %s"
+msgstr ""
 
-#: ../stoqlib/reporting/sale.py:135
+#: ../stoqlib/reporting/sale.py:166
 msgid "Sales Report"
 msgstr "Försäljningsrapport"
 
-#: ../stoqlib/reporting/sale.py:136
+#: ../stoqlib/reporting/sale.py:167
 msgid "sales"
 msgstr "försäljning"
 
-#: ../stoqlib/reporting/sale.py:137 ../stoqlib/reporting/production.py:73
+#: ../stoqlib/reporting/sale.py:168 ../stoqlib/reporting/production.py:73
 #: ../stoqlib/reporting/purchase.py:48
 #, python-format
 msgid "with status <u>%s</u>"
 msgstr ""
 
-#: ../stoqlib/reporting/sale.py:149 ../stoqlib/reporting/purchase.py:70
+#: ../stoqlib/reporting/sale.py:180 ../stoqlib/reporting/purchase.py:70
 #: ../stoqlib/reporting/purchase.py:107 ../stoqlib/reporting/purchase.py:112
 #: ../stoqlib/reporting/purchase.py:250
 #: ../stoqlib/gui/wizards/purchasewizard.py:273
@@ -208,7 +223,7 @@ msgstr ""
 msgid "Total"
 msgstr "Totalt"
 
-#: ../stoqlib/reporting/sale.py:158 ../stoqlib/lib/parameters.py:78
+#: ../stoqlib/reporting/sale.py:189 ../stoqlib/lib/parameters.py:78
 #: ../stoqlib/lib/parameters.py:115 ../stoqlib/lib/parameters.py:129
 #: ../stoqlib/lib/parameters.py:135 ../stoqlib/lib/parameters.py:143
 #: ../stoqlib/lib/parameters.py:167 ../stoqlib/lib/parameters.py:179
@@ -223,18 +238,18 @@ msgstr "Totalt"
 msgid "Sales"
 msgstr "Försäljning"
 
-#: ../stoqlib/reporting/sale.py:164
+#: ../stoqlib/reporting/sale.py:195
 #, fuzzy, python-format
 msgid "sales on branch %s"
 msgstr "Alla avdelningar"
 
-#: ../stoqlib/reporting/sale.py:167
+#: ../stoqlib/reporting/sale.py:198
 #, python-format
 msgid "sales from %s on branch %s"
 msgstr ""
 
 #. ListDialog
-#: ../stoqlib/reporting/sale.py:179 ../stoqlib/gui/wizards/personwizard.py:107
+#: ../stoqlib/reporting/sale.py:210 ../stoqlib/gui/wizards/personwizard.py:107
 #: ../stoqlib/gui/slaves/liaisonslave.py:50
 #: ../stoqlib/gui/search/stationsearch.py:57
 #: ../stoqlib/gui/search/personsearch.py:111
@@ -247,21 +262,21 @@ msgstr ""
 msgid "Name"
 msgstr "Namn"
 
-#: ../stoqlib/reporting/sale.py:184
+#: ../stoqlib/reporting/sale.py:215
 #, fuzzy
 msgid "Total Amount"
 msgstr "Totalt %s"
 
-#: ../stoqlib/reporting/sale.py:186
+#: ../stoqlib/reporting/sale.py:217
 msgid "P/A"
 msgstr ""
 
-#: ../stoqlib/reporting/sale.py:188
+#: ../stoqlib/reporting/sale.py:219
 #, fuzzy
 msgid "Percentage"
 msgstr "Guernsey"
 
-#: ../stoqlib/reporting/sale.py:191 ../stoqlib/reporting/till.py:49
+#: ../stoqlib/reporting/sale.py:222 ../stoqlib/reporting/till.py:49
 #: ../stoqlib/reporting/purchase.py:170 ../stoqlib/reporting/payment.py:48
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:93
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:134
@@ -279,25 +294,25 @@ msgstr "Guernsey"
 msgid "Value"
 msgstr "Värde"
 
-#: ../stoqlib/reporting/sale.py:193
+#: ../stoqlib/reporting/sale.py:224
 msgid "S/P"
 msgstr ""
 
-#: ../stoqlib/reporting/sale.py:228
+#: ../stoqlib/reporting/sale.py:259
 #, python-format
 msgid "Sold value per sales %s"
 msgstr ""
 
-#: ../stoqlib/reporting/sale.py:235
+#: ../stoqlib/reporting/sale.py:266
 #, fuzzy
 msgid "P/A: Payment Amount"
 msgstr "Betalningsmetod"
 
-#: ../stoqlib/reporting/sale.py:236
+#: ../stoqlib/reporting/sale.py:267
 msgid "S/P: Sellables sold per sale"
 msgstr ""
 
-#: ../stoqlib/reporting/sale.py:239
+#: ../stoqlib/reporting/sale.py:270
 #, fuzzy, python-format
 msgid "Total of sales: %d"
 msgstr "Noteringar:"
@@ -2047,7 +2062,7 @@ msgid "Payments Editor"
 msgstr "Betalningsmetod"
 
 #: ../stoqlib/gui/editors/addresseditor.py:162
-#: ../stoqlib/domain/address.py:141
+#: ../stoqlib/domain/address.py:143
 msgid "N/A"
 msgstr ""
 
@@ -8024,6 +8039,14 @@ msgstr ""
 #: ../data/template/receipt.rml.extracted.h:14
 msgid "VALUE:"
 msgstr "VÄRDE"
+
+#, fuzzy
+#~ msgid "No phone number"
+#~ msgstr "Telefonnummer"
+
+#, fuzzy
+#~ msgid "Sale Order on %s"
+#~ msgstr "Försäljningsorder"
 
 #~ msgid "Edit"
 #~ msgstr "Redigera"
