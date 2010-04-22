@@ -48,6 +48,7 @@ from stoqlib.gui.dialogs.paymentadditiondialog import \
         OutPaymentAdditionDialog, LonelyPaymentDetailsDialog
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
+from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.paymentseditor import PaymentsEditor
@@ -98,6 +99,7 @@ class PayableApp(SearchableAppWindow):
                               format='%04d'),
                 Column('color', title=_('Description'), width=20,
                        data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
+                Column('payment.comments_number', title=_(u'Comments')),
                 SearchColumn('description', title=_('Description'),
                               data_type=str, ellipsize=pango.ELLIPSIZE_END,
                               expand=True, column='color'),
@@ -131,6 +133,12 @@ class PayableApp(SearchableAppWindow):
             payment = payable_view.payment
             run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
 
+    def _show_comments(self, payable_view):
+        trans = new_transaction()
+        retval = run_dialog(PaymentCommentsDialog, self, trans,
+                            payable_view.payment)
+        finish_transaction(trans, retval)
+
     def _can_show_details(self, payable_views):
         """
         Determines if we can show details for a list of payables
@@ -140,6 +148,9 @@ class PayableApp(SearchableAppWindow):
         if not can_show_details and len(payable_views) == 1:
             can_show_details = True
         return can_show_details
+
+    def _can_show_comments(self, payable_views):
+        return len(payable_views) == 1
 
     def _can_edit(self, payable_views):
         """Determines if we can edit the selected payments
@@ -313,6 +324,7 @@ class PayableApp(SearchableAppWindow):
     def _update_widgets(self):
         selected = self.results.get_selected_rows()
         self.details_button.set_sensitive(self._can_show_details(selected))
+        self.Comments.set_sensitive(self._can_show_comments(selected))
         self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
         self.CancelPayment.set_sensitive(self._can_cancel_payment(selected))
         self.edit_button.set_sensitive(self._can_edit(selected))
@@ -336,6 +348,10 @@ class PayableApp(SearchableAppWindow):
     def on_results__row_activated(self, klist, payable_view):
         if self._can_show_details([payable_view]):
             self._show_details(payable_view)
+
+    def on_Comments__activate(self, action):
+        payable_view = self.results.get_selected_rows()[0]
+        self._show_comments(payable_view)
 
     def on_details_button__clicked(self, button):
         payable_view = self.results.get_selected_rows()[0]
