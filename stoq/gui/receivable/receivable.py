@@ -51,6 +51,7 @@ from stoqlib.gui.dialogs.paymentadditiondialog import (InPaymentAdditionDialog,
                                                        LonelyPaymentDetailsDialog)
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
+from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
@@ -104,6 +105,7 @@ class ReceivableApp(SearchableAppWindow):
         selected = self.results.get_selected_rows()
         self.receive_button.set_sensitive(self._can_receive(selected))
         self.details_button.set_sensitive(self._can_show_details(selected))
+        self.Comments.set_sensitive(self._can_show_comments(selected))
         self.Renegotiate.set_sensitive(self._can_renegotiate(selected))
         self.ChangeDueDate.set_sensitive(self._can_change_due_date(selected))
         self.CancelPayment.set_sensitive(self._can_cancel_payment(selected))
@@ -136,6 +138,7 @@ class ReceivableApp(SearchableAppWindow):
                              format='%04d'),
                 Column('color', title=_('Description'), width=20,
                        data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
+                Column('payment.comments_number', title=_(u'Comments')),
                 SearchColumn('description', title=_('Description'),
                               data_type=str, expand=True,
                               ellipsize=pango.ELLIPSIZE_END, column='color'),
@@ -170,6 +173,11 @@ class ReceivableApp(SearchableAppWindow):
             payment = receivable_view.payment
             run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
 
+    def _show_comments(self, receivable_view):
+            trans = new_transaction()
+            retval = run_dialog(PaymentCommentsDialog, self, trans,
+                                receivable_view.payment)
+            finish_transaction(trans, retval)
 
     def _receive(self, receivable_views):
         """
@@ -346,6 +354,9 @@ class ReceivableApp(SearchableAppWindow):
 
         return all(view.sale == sale for view in receivable_views[1:])
 
+    def _can_show_comments(self, receivable_views):
+        return len(receivable_views) == 1
+
     def _run_bill_check_search(self):
         run_dialog(InPaymentBillCheckSearch, self, self.conn)
 
@@ -368,6 +379,10 @@ class ReceivableApp(SearchableAppWindow):
 
     def on_print_button__clicked(self, button):
         self.print_report(ReceivablePaymentReport, self.results)
+
+    def on_Comments__activate(self, action):
+        receivable_view = self.results.get_selected_rows()[0]
+        self._show_details(receivable_view)
 
     def on_Receipt__activate(self, action):
         receivable_views = self.results.get_selected_rows()
