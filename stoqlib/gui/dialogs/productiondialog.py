@@ -35,11 +35,13 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.objectlist import Column, ColoredColumn
 
 from stoqlib.database.runtime import (new_transaction, finish_transaction,
-                                      get_current_branch)
+                                      get_current_branch, get_connection)
 from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.product import Product
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
-from stoqlib.domain.views import ProductFullStockView
+from stoqlib.domain.views import (ProductFullStockView,
+                                  PurchasedItemAndStockView)
 from stoqlib.exceptions import StockError
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
@@ -97,6 +99,13 @@ class _TemporaryProductionItemComponent(object):
         self.stock_quantity = self._get_stock_quantity()
         self.purchase_quantity = self._get_purchase_quantity()
         self.make_quantity = self._get_make_quantity()
+
+        #XXX: workaround!
+        conn = get_connection()
+        items = PurchasedItemAndStockView.select(
+            Product.q.id==self.product.id, connection=conn)
+        self.to_receive = sum(
+            [i.purchased - i.received for i in items], Decimal(0))
 
     def _get_stock_quantity(self):
         """Returns the quantity we have in stock of this component
@@ -313,6 +322,7 @@ class ProductionComponentSlave(GladeSlaveDelegate):
                 Column('needed_quantity', title=_(u'Needed'),
                         data_type=Decimal),
                 Column('stock_quantity', _(u'In Stock'), data_type=Decimal),
+                Column('to_receive', _(u'To Receive'), data_type=Decimal),
                 ColoredColumn('purchase_quantity', _(u'To Purchase'),
                               data_type=Decimal,
                               editable_attribute='not_industrialized',
