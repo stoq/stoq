@@ -228,11 +228,21 @@ class GtkPrintDialog(object):
                                        gtkunixprint.PRINT_CAPABILITY_PAGE_SET)
         button = self._add_preview_button(dialog)
         button.connect('clicked', self._on_preview_button__clicked)
+        button = self._add_mailto_button(dialog)
+        button.connect('clicked', self._on_mailto_button__clicked)
         return dialog
 
     def _add_preview_button(self, dialog):
         # Add a preview button
         button = gtk.Button(stock=gtk.STOCK_PRINT_PREVIEW)
+        dialog.action_area.pack_start(button)
+        dialog.action_area.reorder_child(button, 0)
+        button.show()
+        return button
+
+    def _add_mailto_button(self, dialog):
+        # Add a mailto button
+        button = gtk.Button(label=_('Send PDF by e-mail'))
         dialog.action_area.pack_start(button)
         dialog.action_area.reorder_child(button, 0)
         button.show()
@@ -246,6 +256,11 @@ class GtkPrintDialog(object):
 
     def _print_preview(self):
         print_preview(self._report.filename, keep_file=True)
+
+    def _pdfmailto(self):
+        if not os.path.exists(self._report.filename):
+            raise OSError, "the file does not exist"
+        os.system("/usr/local/bin/pdfmailto %s" % self._report.filename)
 
     #
     # Public API
@@ -272,6 +287,9 @@ class GtkPrintDialog(object):
 
     def _on_preview_button__clicked(self, button):
         self._print_preview()
+
+    def _on_mailto_button__clicked(self, button):
+        self._pdfmailto()
 
     def _on_print_job_complete(self, job, data, error):
         if error:
