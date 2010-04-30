@@ -29,6 +29,7 @@
 import datetime
 from decimal import Decimal
 
+import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.objectlist import Column, SearchColumn
 
@@ -40,8 +41,10 @@ from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
+from stoqlib.gui.slaves.imageslaveslave import ImageSlave
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoqlib.gui.dialogs.productimage import ProductImageViewer
 from stoqlib.gui.editors.receivingeditor import ReceivingItemEditor
 from stoqlib.lib.validators import format_quantity, get_formatted_cost
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
@@ -206,6 +209,29 @@ class ReceivingOrderProductStep(SellableItemStep):
         self.wizard.refresh_next(has_receivings)
         return has_receivings
 
+    def _on_purchase_item_selection_changed(self, klist, items):
+        product = items[0].purchase_item.sellable.product
+        if self._image_viewer:
+            self._image_viewer.set_product(product)
+
+    def _open_image_viewer(self):
+        self._image_viewer = ProductImageViewer()
+        self._image_viewer.toplevel.set_property("visible", True)
+        selected = self.slave.klist.get_selected_rows()
+        if selected:
+            self._image_viewer.set_product(
+                selected[0].purchase_item.sellable.product)
+
+    def _close_image_viewer(self):
+        self._image_viewer.destroy()
+        self._image_viewer = None
+
+    def _on_show_image_toggled(self, *args):
+        if self._image_viewer:
+            self._close_image_viewer()
+        else:
+            self._open_image_viewer()
+
     #
     # SellableItemStep overrides
     #
@@ -219,6 +245,21 @@ class ReceivingOrderProductStep(SellableItemStep):
     # WizardStep hooks
     #
 
+    def on_step_changed(self):
+        if self._image_viewer:
+            self._show_image_button.set_active(False)
+
+    def setup_slaves(self):
+        SellableItemStep.setup_slaves(self)
+        self.slave.klist.connect('selection-changed',
+            self._on_purchase_item_selection_changed)
+        self._image_viewer = None
+        self._show_image_button = gtk.CheckButton(_("Show product image"))
+        self.slave.extra_holder.add(self._show_image_button)
+        self._show_image_button.show()
+        self._show_image_button.connect(
+            "toggled", self._on_show_image_toggled)
+        
     def post_init(self):
         # Hide the search bar, since it does not make sense to add new
         # items to a receivable order.

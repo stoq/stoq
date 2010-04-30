@@ -51,17 +51,27 @@ class ImageSlave(BaseEditorSlave):
     gladefile = 'ImageHolder'
     pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
 
-    def __init__(self, conn, model):
+    def __init__(self, conn, model, can_change=True, can_erase=True):
         self.model_type = type(model)
         BaseEditorSlave.__init__(self, conn, model)
         self._setup_menu()
 
+        self.set_model(model)
+
+        if not can_change:
+            self.edit_item.hide()
+        if not can_erase:
+            self.erase_item.hide()
+
+    def set_model(self, model):
+        self.model = model
         # if the image is not set in the model, show a default image
         if not model.image:
             self._show_image(default_filename, sensitive=False)
         else:
             self.image.set_from_pixbuf(
                 self.pixbuf_converter.from_string(model.image))
+            self.view_item.set_sensitive(True)
 
     def _setup_menu(self):
         """ Create popup """
