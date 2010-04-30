@@ -53,7 +53,7 @@ class _TemporaryMaterial(object):
         sellable = component.sellable
         self.code = sellable.code
         self.description = sellable.get_description()
-        self.category_description = sellable.get_description()
+        self.category_description = sellable.get_category_description()
         self.unit_description = sellable.get_unit_description()
         self.product = component
         self.needed = 0
