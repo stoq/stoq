@@ -173,6 +173,10 @@ class Product(Domain):
     # General Methods
     #
 
+    @property
+    def has_image(self):
+        return self.image != ''
+
     def remove(self):
         """Deletes this product from the database.
         """
