@@ -56,6 +56,7 @@ from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.productretention import ProductRetentionDialog
+from stoqlib.gui.dialogs.productimage import ProductImageViewer
 from stoqlib.reporting.product import SimpleProductReport
 
 from stoq.gui.application import SearchableAppWindow
@@ -105,7 +106,9 @@ class StockApp(SearchableAppWindow):
                 SearchColumn('stock', title=_('Quantity'),
                              data_type=decimal.Decimal, width=80),
                 SearchColumn('unit', title=_("Unit"), data_type=str,
-                             width=40)
+                             width=40),
+                Column('product.has_image', title=_('Picture'),
+                       data_type=bool),
                  ]
 
     def query(self, query, having, conn):
@@ -129,6 +132,7 @@ class StockApp(SearchableAppWindow):
         return items
 
     def _setup_widgets(self):
+        self.image_viewer = None
         space = gtk.EventBox()
         space.show()
         self.button_box.pack_start(space)
@@ -170,7 +174,8 @@ class StockApp(SearchableAppWindow):
         if one_selected:
             item = selected[0]
             pixbuf = self.pixbuf_converter.from_string(item.product.image)
-
+            if self.image_viewer:
+                self.image_viewer.set_product(item.product)
         if pixbuf:
             self.image.set_from_pixbuf(pixbuf)
         else:
@@ -215,6 +220,9 @@ class StockApp(SearchableAppWindow):
     #
     # Callbacks
     #
+
+    def on_image_viewer_closed(self, window, event):
+        self.image_viewer = None
 
     def on_results__selection_changed(self, results, product):
         self._update_widgets()
@@ -267,6 +275,19 @@ class StockApp(SearchableAppWindow):
         sellable = Sellable.get(selected[0].id, connection=self.conn)
         self.run_dialog(ProductStockHistoryDialog, self.conn, sellable,
                         branch=self.branch_filter.combo.get_selected())
+
+    def on_toggle_picture_viewer_action_clicked(self, button):
+        if self.image_viewer:
+            self.image_viewer.destroy()
+            self.image_viewer = None
+        else:
+            self.image_viewer = ProductImageViewer()
+            selected = self.results.get_selected_rows()
+            if len(selected):
+                self.image_viewer.set_product(selected[0].product)
+            self.image_viewer.toplevel.connect(
+                "delete-event", self.on_image_viewer_closed)
+            self.image_viewer.toplevel.set_property("visible", True)
 
     def _on_image_button__clicked(self, button):
         selected = self.results.get_selected_rows()
