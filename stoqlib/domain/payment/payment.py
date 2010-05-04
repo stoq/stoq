@@ -236,6 +236,19 @@ class Payment(Domain):
             change_entry.last_status = old_status
             change_entry.new_status = self.status
 
+    def change_due_date(self, new_due_date):
+        """Changes the payment due date.
+        @param new_due_date: The new due date for the payment.
+        @rtype: datetime.date
+        """
+        if self.status in [Payment.STATUS_PAID, Payment.STATUS_CANCELLED]:
+            raise StoqlibError("Invalid status for change_due_date operation, "
+                                "got %s" % self.get_status_str())
+        conn = self.get_connection()
+        PaymentFlowHistory.remove_payment(conn, self, self.due_date)
+        PaymentFlowHistory.add_payment(conn, self, new_due_date)
+        self.due_date = new_due_date
+
     def get_payable_value(self):
         """ Returns the calculated payment value with the daily penalty.
             Note that the payment group daily_penalty must be
