@@ -49,6 +49,13 @@
                     </widget>
                 </child> 
                 <child>
+                    <widget class="GtkAction" id="Comments">
+                        <property name="name">Comments</property>
+                        <property name="label" translatable="yes">Comments...</property>
+                        <property name="stock_id">gtk-refresh</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Renegotiate">
                         <property name="name">Renegotiate</property>
                         <property name="label" translatable="yes">Renegotiate Payments...</property>
@@ -229,6 +236,7 @@
 	    <menuitem action="CancelPayment"/>
 	    <menuitem action="SetNotPaid"/>
 	    <menuitem action="ChangeDueDate"/>
+            <menuitem action="Comments"/>
 	    <separator name="sep"/>
 	    <menuitem action="Renegotiate"/>
 	    <menuitem action="Receipt"/>
