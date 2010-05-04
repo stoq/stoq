@@ -96,8 +96,8 @@ class PaymentFlowHistoryReport(BaseStoqReport):
 
     def _add_history_table(self, history):
         self.add_object_table([history], self._get_payment_history_columns())
-        if (history.to_receive != history.received or
-            history.to_pay != history.paid):
+        if (history.to_receive_payments != history.received_payments or
+            history.to_pay_payments != history.paid_payments):
             payments = list(history.get_divergent_payments())
             if payments:
                 self.add_object_table(payments, self._get_payment_columns())
@@ -124,17 +124,21 @@ class PaymentFlowHistoryReport(BaseStoqReport):
 
     def _get_payment_columns(self):
         return [
-            OTC(_(u'# '), lambda obj: '%04d' % obj.id, width=40),
+            OTC(_(u'# '), lambda obj: '%04d' % obj.id, width=45),
+            OTC(_(u'Status'), lambda obj: '%s' % obj.get_status_str(),
+                width=75),
             OTC(_(u'Description'), lambda obj: '%s' % obj.description,
                 expand=True, truncate=True),
             OTC(_(u'Value'), lambda obj:
                                 '%s' % get_formatted_price(obj.value),
-                                align=RIGHT),
-            OTC(_(u'Paid/Received Value'), lambda obj:
+                                align=RIGHT, width=120),
+            OTC(_(u'Paid/Received'), lambda obj:
                     '%s' % get_formatted_price(obj.paid_value or Decimal(0)),
-                    align=RIGHT),
-            OTC(_(u'Due Date'), lambda obj: '%s' % obj.due_date.strftime('%x')),
-            OTC(_(u'Paid Date'), lambda obj: '%s' % obj.get_paid_date_string()),
+                    align=RIGHT, width=120),
+            OTC(_(u'Due Date'), lambda obj:
+                    '%s' % obj.due_date.strftime('%x'), width=80),
+            OTC(_(u'Paid Date'), lambda obj:
+                    '%s' % obj.get_paid_date_string(), width=80),
         ]
 
     def get_title(self):
