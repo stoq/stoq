@@ -202,9 +202,6 @@ class Payment(Domain):
         self.paid_date = None
         self.paid_value = None
 
-        today = datetime.date.today()
-        PaymentFlowHistory.add_payment(self.get_connection(), self, today)
-
     def pay(self, paid_date=None, paid_value=None):
         """Pay the current payment set its status as STATUS_PAID"""
         self._check_status(self.STATUS_PENDING, 'pay')
