@@ -384,12 +384,19 @@ class PaymentFlowHistory(Domain):
     """
 
     history_date = DateTimeCol(default=datetime.datetime.now)
+
     to_receive = DecimalCol(default=Decimal(0))
     received = DecimalCol(default=Decimal(0))
     to_pay = DecimalCol(default=Decimal(0))
     paid = DecimalCol(default=Decimal(0))
+
     balance_expected = DecimalCol(default=Decimal(0))
     balance_real = DecimalCol(default=Decimal(0))
+
+    to_receive_payments = IntCol(default=0)
+    received_payments = IntCol(default=0)
+    to_pay_payments = IntCol(default=0)
+    paid_payments = IntCol(default=0)
 
     #
     # Public API
@@ -455,16 +462,25 @@ class PaymentFlowHistory(Domain):
             log.info('Payment %r will not be registered in %r: missing '
                      'payment facets.' % (payment, self))
 
+        if value > 0:
+            payment_qty = 1
+        else:
+            payment_qty = -1
+
         if IOutPayment(payment, None) is not None:
             if accomplished:
                 self.paid += value
+                self.paid_payments += payment_qty
             else:
                 self.to_pay += value
+                self.to_pay_payments += payment_qty
         elif IInPayment(payment, None) is not None:
             if accomplished:
                 self.received += value
+                self.received_payments += payment_qty
             else:
                 self.to_receive += value
+                self.to_receive_payments += payment_qty
         self._update_balance()
 
     #

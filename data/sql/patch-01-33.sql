@@ -12,6 +12,11 @@ CREATE TABLE payment_flow_history (
     to_pay numeric(10, 2) CONSTRAINT positive_value_to_pay CHECK (to_pay >= 0),
     paid numeric(10, 2),
 
+    to_receive_payments integer,
+    received_payments integer,
+    to_pay_payments integer,
+    paid_payments integer,
+
     balance_expected numeric(10, 2),
     balance_real numeric(10, 2)
 );
