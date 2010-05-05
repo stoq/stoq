@@ -24,6 +24,8 @@
 ##
 """ Interfaces definition for all booksdomain classes """
 
+from zope.interface import Interface
+
 from stoqlib.domain.interfaces import IPersonFacet
 
 #
@@ -32,3 +34,7 @@ from stoqlib.domain.interfaces import IPersonFacet
 
 class IPublisher(IPersonFacet):
     """An institution created to publish books"""
+
+
+class IBook(Interface):
+    """ A book facet for products, holding specific data about books  """

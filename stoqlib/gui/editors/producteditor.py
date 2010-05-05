@@ -31,6 +31,7 @@ import sys
 
 import gtk
 
+from kiwi.component import get_utility
 from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 
@@ -47,6 +48,7 @@ from stoqlib.gui.editors.baseeditor import (BaseEditor, BaseEditorSlave,
                                             BaseRelationshipEditorSlave)
 from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.gui.slaves.productslave import ProductDetailsSlave
+from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -475,6 +477,16 @@ class ProductEditor(SellableEditor):
         return [(c.description, c) for c in constants
                                    if c.tax_type != TaxType.SERVICE]
 
+    def _get_plugin_tabs(self):
+        manager = get_utility(IPluginManager, None)
+        if manager:
+            for plugin in manager.get_active_plugins():
+                if plugin.name == 'books':
+                    slave_class = plugin.get_product_slave()
+                    plugin_product_slave = slave_class(self.conn, self.model)
+                    return [(_(u'Book Details'), plugin_product_slave),]
+        return []
+
     #
     # BaseEditor
     #
@@ -487,8 +499,12 @@ class ProductEditor(SellableEditor):
             self.add_extra_tab(tabname, tabslave)
 
     def get_extra_tabs(self):
+        extra_tabs = []
+        extra_tabs.extend(self._get_plugin_tabs())
+
         suppliers_slave = ProductSupplierSlave(self.conn, self.model)
-        return [(_(u'Suppliers'), suppliers_slave),]
+        extra_tabs.append((_(u'Suppliers'), suppliers_slave))
+        return extra_tabs
 
     def setup_widgets(self):
         self.stock_total_lbl.show()
