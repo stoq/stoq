@@ -35,6 +35,8 @@ from stoqlib.lib.pluginmanager import register_plugin
 plugin_root = os.path.dirname(__file__)
 sys.path.append(plugin_root)
 
+from booksui import BooksUI
+
 
 class BooksPlugin(object):
     implements(IPlugin)
@@ -44,13 +46,14 @@ class BooksPlugin(object):
         self.ui = None
 
     def get_migration(self):
-        return
+        environ.add_resource('booksql', os.path.join(plugin_root, 'sql'))
+        return PluginSchemaMigration(self.name, 'booksql', ['*.sql'])
 
     def get_tables(self):
-        return []
+        return [('bookdomain', ['PersonAdaptToPublisher',])]
 
     def activate(self):
-        return
+        self.ui = BooksUI()
 
 
 register_plugin(BooksPlugin)
