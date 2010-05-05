@@ -24,11 +24,14 @@
 
 from zope.interface import implements
 
-from stoqlib.database.orm import IntCol, INNERJOINOn, Viewable
+from stoqlib.database.orm import IntCol, UnicodeCol, ForeignKey
+from stoqlib.database.orm import INNERJOINOn, Viewable
+from stoqlib.domain.base import ModelAdapter
 from stoqlib.domain.person import Person, PersonAdapter
+from stoqlib.domain.product import Product
 from stoqlib.lib.translation import stoqlib_gettext as _
 
-from booksinterfaces import IPublisher
+from booksinterfaces import IPublisher, IBook
 
 #
 # Publisher person facet implementation
@@ -69,3 +72,23 @@ class PublisherView(Viewable):
     def publisher(self):
         return PersonAdaptToPublisher.get(self.publisher_id,
                                           connection=self.get_connection())
+
+
+#
+# Book product facet implementation
+#
+
+class ProductAdaptToBook(ModelAdapter):
+    implements(IBook)
+
+    publisher = ForeignKey('PersonAdaptToPublisher', default=None)
+    author = UnicodeCol(default='')
+    series = UnicodeCol(default='')
+    edition = UnicodeCol(default='')
+    subject = UnicodeCol(default='')
+    isbn = UnicodeCol(default='')
+    language = UnicodeCol(default='')
+    pages = IntCol(default=0)
+    synopsis = UnicodeCol(default='')
+
+Product.registerFacet(ProductAdaptToBook, IBook)

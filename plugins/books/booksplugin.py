@@ -36,6 +36,7 @@ plugin_root = os.path.dirname(__file__)
 sys.path.append(plugin_root)
 
 from booksui import BooksUI
+from bookslave import ProductBookSlave
 
 
 class BooksPlugin(object):
@@ -50,10 +51,18 @@ class BooksPlugin(object):
         return PluginSchemaMigration(self.name, 'booksql', ['*.sql'])
 
     def get_tables(self):
-        return [('bookdomain', ['PersonAdaptToPublisher',])]
+        return [('bookdomain', ['PersonAdaptToPublisher', 'ProductAdaptToBook'])]
 
     def activate(self):
+        environ.add_resource('glade', os.path.join(plugin_root, 'glade'))
         self.ui = BooksUI()
+
+    #
+    # Custom accessors
+    #
+
+    def get_product_slave(self):
+        return ProductBookSlave
 
 
 register_plugin(BooksPlugin)
