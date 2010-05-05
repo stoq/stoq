@@ -1,0 +1,8 @@
+[Plugin]
+Module=booksplugin
+Version=1
+Name=Books Plugin
+Name[pt_BR]=Plugin Livros
+Authors=George Y. Kussumoto <george@async.com.br>
+Copyright=Copyright © 2010 Async Open Source
+Website=http://www.stoq.com.br/
