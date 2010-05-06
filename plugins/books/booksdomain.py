@@ -25,10 +25,11 @@
 from zope.interface import implements
 
 from stoqlib.database.orm import IntCol, UnicodeCol, ForeignKey
-from stoqlib.database.orm import INNERJOINOn, Viewable
+from stoqlib.database.orm import LEFTJOINOn, INNERJOINOn, Viewable
 from stoqlib.domain.base import ModelAdapter
 from stoqlib.domain.person import Person, PersonAdapter
 from stoqlib.domain.product import Product
+from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 from booksinterfaces import IPublisher, IBook
@@ -92,3 +93,25 @@ class ProductAdaptToBook(ModelAdapter):
     synopsis = UnicodeCol(default='')
 
 Product.registerFacet(ProductAdaptToBook, IBook)
+
+
+class ProductBookFullStockView(ProductFullStockView):
+    columns = ProductFullStockView.columns.copy()
+    columns.update(dict(
+        publisher=Person.q.name,
+        author=ProductAdaptToBook.q.author,
+        series=ProductAdaptToBook.q.series,
+        edition=ProductAdaptToBook.q.edition,
+        subject=ProductAdaptToBook.q.subject,
+        isbn=ProductAdaptToBook.q.isbn,
+        language=ProductAdaptToBook.q.language,
+        pages=ProductAdaptToBook.q.pages,
+    ))
+    joins = ProductFullStockView.joins[:]
+    joins.extend([
+        INNERJOINOn(None, ProductAdaptToBook,
+                    ProductAdaptToBook.q._originalID == Product.q.id),
+        LEFTJOINOn(None, Person,
+                   Person.q.id == ProductAdaptToBook.q.publisherID),
+    ])
+    clause = ProductFullStockView.clause

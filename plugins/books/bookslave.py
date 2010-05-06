@@ -54,7 +54,9 @@ class ProductBookSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn, model)
 
     def create_model(self, conn):
-        model = self._product.addFacet(IBook, connection=conn)
+        model = IBook(self._product, None)
+        if model is None:
+            model = self._product.addFacet(IBook, connection=conn)
         return model
 
     def setup_proxies(self):
