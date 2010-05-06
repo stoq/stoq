@@ -34,6 +34,7 @@ from stoqlib.gui.events import StartApplicationEvent
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
+from booksearch import ProductBookSearch
 from publishersearch import PublisherSearch
 
 _ = stoqlib_gettext
@@ -64,9 +65,9 @@ class BooksUI(object):
         ag = gtk.ActionGroup('BooksMenuActions')
         ag.add_actions([
             ('BooksMenu', None, _(u'Books')),
-            ('BookSearch', None, _(u'Book Search'), '<Control>B', None,
+            ('BookSearch', None, _(u'Book Search'), '<Control><Alt>B', None,
              self._on_BookSearch__activate),
-            ('Publishers', None, _(u'Publishers ...'), None, None,
+            ('Publishers', None, _(u'Publishers ...'), '<Control><Alt>P', None,
              self._on_Publishers__activate),
         ])
 
@@ -90,7 +91,7 @@ class BooksUI(object):
     #
 
     def _on_BookSearch__activate(self, action):
-        print self, action
+        run_dialog(ProductBookSearch, None, self.conn, hide_price_column=True)
 
     def _on_Publishers__activate(self, action):
         run_dialog(PublisherSearch, None, self.conn, hide_footer=True)
