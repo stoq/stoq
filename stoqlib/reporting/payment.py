@@ -97,7 +97,9 @@ class PaymentFlowHistoryReport(BaseStoqReport):
     def _add_history_table(self, history):
         self.add_object_table([history], self._get_payment_history_columns())
         if (history.to_receive_payments != history.received_payments or
-            history.to_pay_payments != history.paid_payments):
+            history.to_pay_payments != history.paid_payments or
+            history.to_receive != history.received or
+            history.to_pay != history.to_pay):
             payments = list(history.get_divergent_payments())
             if payments:
                 self.add_object_table(payments, self._get_payment_columns())
