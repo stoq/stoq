@@ -443,8 +443,17 @@ class PaymentFlowHistory(Domain):
             - balance_real: last_day_balance + received - paid
         """
         last_day = self.get_last_day_real_balance()
+        old_balance_real = self.balance_real
         self.balance_expected =  last_day + self.to_receive - self.to_pay
         self.balance_real = last_day + self.received - self.paid
+
+        # balance_real affects the future (last_day real balance)
+        if old_balance_real != self.balance_real:
+            next_day = PaymentFlowHistory.get_next_day(self.get_connection(),
+                                                       self.history_date)
+            if next_day is not None:
+                # this could take a long time update all tuples.
+                next_day._update_balance()
 
     def _update_registers(self, payment, value, accomplished=True):
         """Updates the L{PaymentFlowHistory} attributes according to the
@@ -502,6 +511,25 @@ class PaymentFlowHistory(Domain):
         results = PaymentFlowHistory.select(
                             PaymentFlowHistory.q.history_date < reference_date,
                             orderBy=DESC(PaymentFlowHistory.q.history_date),
+                            connection=conn).limit(1)
+        if results:
+            return results[0]
+
+    @classmethod
+    def get_next_day(cls, conn, reference_date=None):
+        """Returns the L{PaymentFlowHistory} instance of the next day
+        registered or None if there is no registry. If reference_date was not
+        specified, the referente date will be the current date.
+
+        @param reference_date: the reference date to use when querying the
+                               next day.
+        @param conn: a database connection.
+        """
+        if reference_date is None:
+            reference_date = datetime.date.today()
+        results = PaymentFlowHistory.select(
+                            PaymentFlowHistory.q.history_date > reference_date,
+                            orderBy=PaymentFlowHistory.q.history_date,
                             connection=conn).limit(1)
         if results:
             return results[0]
