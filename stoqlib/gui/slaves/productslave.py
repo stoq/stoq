@@ -44,7 +44,8 @@ _ = stoqlib_gettext
 class ProductInformationSlave(BaseEditorSlave):
     gladefile = 'ProductInformationSlave'
     model_type = Product
-    proxy_widgets = ['location', 'part_number', 'manufacturer',]
+    proxy_widgets = ['location', 'part_number', 'manufacturer', 'width',
+                     'height', 'depth', 'weight',]
     storable_widgets = ['minimum_quantity', 'maximum_quantity',]
 
     def __init__(self, conn, model):
@@ -63,7 +64,8 @@ class ProductInformationSlave(BaseEditorSlave):
     def _setup_widgets(self):
         self._setup_unit_labels()
 
-        for widget in [self.minimum_quantity, self.maximum_quantity]:
+        for widget in [self.minimum_quantity, self.maximum_quantity,
+                       self.width, self.height, self.depth, self.weight]:
             widget.set_adjustment(
                 gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
 
@@ -87,6 +89,24 @@ class ProductInformationSlave(BaseEditorSlave):
     #
     # Kiwi Callbacks
     #
+
+    def _positive_validator(self, value):
+        if not value:
+            return
+        if value and value < 0:
+            return ValidationError(_(u'The value must be positive.'))
+
+    def on_width__validate(self, widget, value):
+        return self._positive_validator(value)
+
+    def on_height__validate(self, widget, value):
+        return self._positive_validator(value)
+
+    def on_depth__validate(self, widget, value):
+        return self._positive_validator(value)
+
+    def on_weight__validate(self, widget, value):
+        return self._positive_validator(value)
 
     def on_minimum_quantity__validate(self, widget, value):
         if value and value < 0:

@@ -8,7 +8,7 @@
             <widget class="GtkTable" id="table1">
                 <property name="column_spacing">6</property>
                 <property name="n_columns">4</property>
-                <property name="n_rows">3</property>
+                <property name="n_rows">5</property>
                 <property name="row_spacing">6</property>
                 <property name="visible">True</property>
                 <child>
@@ -31,6 +31,32 @@
                     <packing>
                         <property name="bottom_attach">2</property>
                         <property name="top_attach">1</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label2">
+                        <property name="label" context="yes" translatable="yes">Width:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label4">
+                        <property name="label" context="yes" translatable="yes">Depth:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="top_attach">3</property>
                         <property name="x_options">fill</property>
                         <property name="y_options">fill</property>
                     </packing>
@@ -121,9 +147,10 @@
                         </child>
                     </widget>
                     <packing>
-                        <property name="bottom_attach">3</property>
+                        <property name="bottom_attach">5</property>
                         <property name="right_attach">4</property>
-                        <property name="top_attach">2</property>
+                        <property name="top_attach">4</property>
+                        <property name="x_options">fill</property>
                         <property name="y_options">fill</property>
                     </packing>
                 </child>
@@ -156,6 +183,38 @@
                     </packing>
                 </child>
                 <child>
+                    <widget class="ProxySpinButton" id="width">
+                        <property name="adjustment">0 0 100 1 10 0</property>
+                        <property name="data_type">Decimal</property>
+                        <property name="model_attribute">width</property>
+                        <property name="text" context="yes" translatable="yes">0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">2</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxySpinButton" id="depth">
+                        <property name="adjustment">0 0 100 1 10 0</property>
+                        <property name="data_type">Decimal</property>
+                        <property name="model_attribute">depth</property>
+                        <property name="text" context="yes" translatable="yes">0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">3</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
                     <widget class="GtkLabel" id="manufacturer_lbl">
                         <property name="label" context="yes" translatable="yes">Manufacturer:</property>
                         <property name="visible">True</property>
@@ -166,6 +225,36 @@
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
                         <property name="top_attach">1</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label3">
+                        <property name="label" context="yes" translatable="yes">Height:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label7">
+                        <property name="label" context="yes" translatable="yes">Weight:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">3</property>
                         <property name="x_options">fill</property>
                         <property name="y_options">fill</property>
                     </packing>
@@ -182,6 +271,38 @@
                         <property name="left_attach">3</property>
                         <property name="right_attach">4</property>
                         <property name="top_attach">1</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxySpinButton" id="height">
+                        <property name="adjustment">0 0 100 1 10 0</property>
+                        <property name="data_type">Decimal</property>
+                        <property name="model_attribute">height</property>
+                        <property name="text" context="yes" translatable="yes">0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">2</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxySpinButton" id="weight">
+                        <property name="adjustment">0 0 100 1 10 0</property>
+                        <property name="data_type">Decimal</property>
+                        <property name="model_attribute">weight</property>
+                        <property name="text" context="yes" translatable="yes">0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">3</property>
                         <property name="y_options">fill</property>
                     </packing>
                 </child>

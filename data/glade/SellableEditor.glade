@@ -76,10 +76,14 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <placeholder/>
+                                    <widget class="GtkLabel" id="consignment_lbl">
+                                        <property name="label" context="yes" translatable="yes">Consignment:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
                                     <packing>
-                                        <property name="top_attach">5</property>
                                         <property name="bottom_attach">6</property>
+                                        <property name="top_attach">5</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -149,7 +153,7 @@
                                                 <property name="digits">2</property>
                                                 <property name="is_focus">True</property>
                                                 <property name="model_attribute">cost</property>
-                                                <property name="text" context="yes" translatable="yes">0.0</property>
+                                                <property name="text" context="yes" translatable="yes">0.00</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                         </child>
@@ -192,7 +196,7 @@
                                                 <property name="data_type">currency</property>
                                                 <property name="digits">2</property>
                                                 <property name="model_attribute">price</property>
-                                                <property name="text" context="yes" translatable="yes">0.0</property>
+                                                <property name="text" context="yes" translatable="yes">0.00</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
@@ -219,12 +223,43 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <placeholder/>
+                                    <widget class="GtkHBox" id="consignment_box">
+                                        <property name="spacing">6</property>
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <widget class="ProxyRadioButton" id="consignment_yes_button">
+                                                <property name="active">False</property>
+                                                <property name="data_type">bool</property>
+                                                <property name="group">consignment_no_button</property>
+                                                <property name="label" context="yes" translatable="yes">Yes</property>
+                                                <property name="model_attribute">consignment</property>
+                                                <property name="visible">True</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <widget class="ProxyRadioButton" id="consignment_no_button">
+                                                <property name="data_type">bool</property>
+                                                <property name="is_focus">True</property>
+                                                <property name="label" context="yes" translatable="yes">No</property>
+                                                <property name="model_attribute">consignment</property>
+                                                <property name="visible">True</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">1</property>
+                                            </packing>
+                                        </child>
+                                    </widget>
                                     <packing>
+                                        <property name="bottom_attach">6</property>
                                         <property name="left_attach">1</property>
                                         <property name="right_attach">2</property>
                                         <property name="top_attach">5</property>
-                                        <property name="bottom_attach">6</property>
                                     </packing>
                                 </child>
                                 <child>
