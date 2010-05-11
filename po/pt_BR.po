@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-23 11:50-0300\n"
+"POT-Creation-Date: 2010-05-11 09:36-0300\n"
 "PO-Revision-Date: 2008-05-28 17:56-0300\n"
 "Last-Translator: Silvio Rangel <silvio@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -273,7 +273,8 @@ msgid "Percentage"
 msgstr "Porcentagem"
 
 #: ../stoqlib/reporting/sale.py:191 ../stoqlib/reporting/till.py:49
-#: ../stoqlib/reporting/purchase.py:170 ../stoqlib/reporting/payment.py:48
+#: ../stoqlib/reporting/purchase.py:170 ../stoqlib/reporting/payment.py:51
+#: ../stoqlib/reporting/payment.py:134
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:93
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:134
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:132
@@ -373,6 +374,7 @@ msgid "Sold"
 msgstr "Vendido"
 
 #: ../stoqlib/reporting/product.py:144 ../stoqlib/reporting/purchase.py:68
+#: ../stoqlib/reporting/payment.py:117
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:84
 #: ../stoqlib/gui/search/purchasesearch.py:82
 #: ../stoqlib/gui/search/productsearch.py:248
@@ -435,6 +437,7 @@ msgstr "Inventário de Produtos"
 #: ../stoqlib/reporting/production.py:147
 #: ../stoqlib/reporting/production.py:179
 #: ../stoqlib/reporting/production.py:204 ../stoqlib/reporting/purchase.py:166
+#: ../stoqlib/reporting/payment.py:132
 #: ../stoqlib/gui/wizards/purchasewizard.py:261
 #: ../stoqlib/gui/wizards/productionwizard.py:187
 #: ../stoqlib/gui/wizards/productionwizard.py:269
@@ -544,7 +547,7 @@ msgstr "Mínimo"
 msgid "In Stock"
 msgstr "Em estoque"
 
-#: ../stoqlib/reporting/product.py:241
+#: ../stoqlib/reporting/product.py:241 ../stoqlib/reporting/payment.py:113
 #: ../stoqlib/gui/search/productsearch.py:370
 msgid "To Receive"
 msgstr "A Receber"
@@ -637,7 +640,7 @@ msgstr "Data Prevista para Inicio:"
 msgid "Close Date:"
 msgstr "Data de Fechamento:"
 
-#: ../stoqlib/reporting/production.py:121
+#: ../stoqlib/reporting/production.py:121 ../stoqlib/reporting/payment.py:130
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:92
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:133
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:131
@@ -823,7 +826,7 @@ msgstr "Situação:"
 
 #: ../stoqlib/reporting/purchase.py:183 ../stoqlib/reporting/purchase.py:264
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:344
-#: ../stoqlib/gui/dialogs/paymentchangedialog.py:73
+#: ../stoqlib/gui/dialogs/paymentchangedialog.py:74
 #: ../data/glade/StartPurchaseStep.glade.h:10
 #: ../data/glade/SupplierDetailsDialog.glade.h:7
 #: ../data/glade/PurchaseDetailsDialog.glade.h:22
@@ -907,9 +910,73 @@ msgstr "serviços"
 msgid "Payment receipt"
 msgstr "Recibo de pagamento"
 
-#: ../stoqlib/reporting/payment.py:35
+#: ../stoqlib/reporting/payment.py:38
 msgid "Payment Report"
 msgstr "Relatório de Pagamento"
+
+#: ../stoqlib/reporting/payment.py:81
+msgid "Payment Flow History"
+msgstr "Histórico de Pagamentos"
+
+#: ../stoqlib/reporting/payment.py:94
+#, python-format
+msgid "Day: %s"
+msgstr "Dia: %s"
+
+#: ../stoqlib/reporting/payment.py:110
+msgid "Last Balance"
+msgstr "Último Balanço"
+
+#: ../stoqlib/reporting/payment.py:115 ../stoqlib/domain/payment/payment.py:78
+msgid "To Pay"
+msgstr "A pagar"
+
+#: ../stoqlib/reporting/payment.py:119 ../stoqlib/domain/sale.py:281
+#: ../stoqlib/domain/payment/renegotiation.py:56
+#: ../stoqlib/domain/payment/payment.py:79
+msgid "Paid"
+msgstr "Pago"
+
+#: ../stoqlib/reporting/payment.py:121
+msgid "Bal. Expected"
+msgstr "Bal. Esperado"
+
+#: ../stoqlib/reporting/payment.py:124
+msgid "Bal. Real"
+msgstr "Bal. Real"
+
+#: ../stoqlib/reporting/payment.py:129
+#: ../stoqlib/gui/search/purchasesearch.py:76
+#: ../stoqlib/gui/search/salesearch.py:125
+msgid "# "
+msgstr "# "
+
+#: ../stoqlib/reporting/payment.py:137
+msgid "Paid/Received"
+msgstr "Pago/Recebido"
+
+#: ../stoqlib/reporting/payment.py:140
+#: ../stoqlib/gui/wizards/renegotiationwizard.py:90
+#: ../stoqlib/gui/wizards/purchasefinishwizard.py:128
+#: ../stoqlib/gui/dialogs/renegotiationdetails.py:126
+#: ../stoqlib/gui/dialogs/supplierdetails.py:147
+#: ../stoqlib/gui/dialogs/saledetails.py:148
+#: ../stoqlib/gui/dialogs/clientdetails.py:162
+#: ../stoqlib/gui/dialogs/purchasedetails.py:173
+#: ../stoqlib/gui/slaves/paymentslave.py:1052
+#: ../stoqlib/gui/search/paymentsearch.py:78
+#: ../stoqlib/domain/payment/views.py:272
+msgid "Due Date"
+msgstr "Vencimento"
+
+#: ../stoqlib/reporting/payment.py:142
+#: ../stoqlib/gui/wizards/purchasefinishwizard.py:131
+#: ../stoqlib/gui/dialogs/renegotiationdetails.py:129
+#: ../stoqlib/gui/dialogs/saledetails.py:151
+#: ../stoqlib/gui/dialogs/purchasedetails.py:176
+#: ../stoqlib/gui/search/paymentsearch.py:80
+msgid "Paid Date"
+msgstr "Pagamento"
 
 #: ../stoqlib/reporting/base/printing.py:98
 #, python-format
@@ -1264,6 +1331,7 @@ msgstr "Produtos não cotados"
 #. Date
 #: ../stoqlib/gui/wizards/purchasequotewizard.py:351
 #: ../stoqlib/gui/dialogs/tillhistory.py:74
+#: ../stoqlib/gui/dialogs/paymentflowhistorydialog.py:80
 #: ../stoqlib/gui/search/productsearch.py:217
 #: ../stoqlib/gui/search/productsearch.py:281
 #: ../stoqlib/gui/search/transfersearch.py:85
@@ -1467,19 +1535,6 @@ msgstr "Você gostaria de imprimir o recibo de transferência?"
 msgid "Return Sale Order"
 msgstr "Retornar Pedido de Venda"
 
-#: ../stoqlib/gui/wizards/renegotiationwizard.py:90
-#: ../stoqlib/gui/wizards/purchasefinishwizard.py:128
-#: ../stoqlib/gui/dialogs/renegotiationdetails.py:126
-#: ../stoqlib/gui/dialogs/supplierdetails.py:147
-#: ../stoqlib/gui/dialogs/saledetails.py:148
-#: ../stoqlib/gui/dialogs/clientdetails.py:162
-#: ../stoqlib/gui/dialogs/purchasedetails.py:173
-#: ../stoqlib/gui/slaves/paymentslave.py:1052
-#: ../stoqlib/gui/search/paymentsearch.py:78
-#: ../stoqlib/domain/payment/views.py:272
-msgid "Due Date"
-msgstr "Vencimento"
-
 #: ../stoqlib/gui/wizards/renegotiationwizard.py:140
 msgid "Payments Renegotiation Wizard"
 msgstr "Wizard de Renegociação de Parcelas"
@@ -1488,14 +1543,6 @@ msgstr "Wizard de Renegociação de Parcelas"
 #: ../stoqlib/gui/slaves/paymentslave.py:180
 msgid "Overpaid:"
 msgstr "Pago:"
-
-#: ../stoqlib/gui/wizards/purchasefinishwizard.py:131
-#: ../stoqlib/gui/dialogs/renegotiationdetails.py:129
-#: ../stoqlib/gui/dialogs/saledetails.py:151
-#: ../stoqlib/gui/dialogs/purchasedetails.py:176
-#: ../stoqlib/gui/search/paymentsearch.py:80
-msgid "Paid Date"
-msgstr "Pagamento"
 
 #: ../stoqlib/gui/wizards/purchasefinishwizard.py:138
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:136
@@ -2557,11 +2604,11 @@ msgid "Change Payment"
 msgstr "Alterar Pagamento"
 
 #. Fallback
-#: ../stoqlib/gui/dialogs/paymentchangedialog.py:86
+#: ../stoqlib/gui/dialogs/paymentchangedialog.py:87
 msgid "No client or supplier"
 msgstr "sem cliente ou fornecedor"
 
-#: ../stoqlib/gui/dialogs/paymentchangedialog.py:124
+#: ../stoqlib/gui/dialogs/paymentchangedialog.py:125
 msgid "Change Payment Due Date"
 msgstr "Alterar Vencimento dos Pagamentos"
 
@@ -2574,15 +2621,15 @@ msgstr "Nova data de vencimento (%s) para:"
 msgid "You can not change the due date without a reason!"
 msgstr "você não pode alterar o vencimento sem uma rrazão!"
 
-#: ../stoqlib/gui/dialogs/paymentchangedialog.py:160
+#: ../stoqlib/gui/dialogs/paymentchangedialog.py:161
 msgid "The due date must be set to today or a future date."
 msgstr "O vencimento deve ser a data atual ou uma data futura"
 
-#: ../stoqlib/gui/dialogs/paymentchangedialog.py:167
+#: ../stoqlib/gui/dialogs/paymentchangedialog.py:168
 msgid "Change Payment Status"
 msgstr "Altera Status dos Pagamentos"
 
-#: ../stoqlib/gui/dialogs/paymentchangedialog.py:220
+#: ../stoqlib/gui/dialogs/paymentchangedialog.py:221
 msgid "You can not change the payment status without a reason!"
 msgstr "você não pode alterar o vencimento sem uma razão!"
 
@@ -2612,6 +2659,14 @@ msgid ""
 msgstr ""
 "O grupo de cotações foi criado com sucesso e já é possível acessa-lo no "
 "aplicativo compras."
+
+#: ../stoqlib/gui/dialogs/paymentflowhistorydialog.py:44
+msgid "Payment Flow History Dialog"
+msgstr "Dialogo de Histórico de Pagamentos"
+
+#: ../stoqlib/gui/dialogs/paymentflowhistorydialog.py:71
+msgid "No payment history found."
+msgstr "Histórico de pagamento não encontrado"
 
 #: ../stoqlib/gui/dialogs/productiondetails.py:44
 msgid "Production Details"
@@ -3086,11 +3141,6 @@ msgstr "Pesquisa de Itens Comprados"
 #: ../stoqlib/gui/search/productsearch.py:287
 msgid "In branch:"
 msgstr "Na unidade"
-
-#: ../stoqlib/gui/search/purchasesearch.py:76
-#: ../stoqlib/gui/search/salesearch.py:125
-msgid "# "
-msgstr "# "
 
 #: ../stoqlib/gui/search/purchasesearch.py:80
 msgid "Purchased"
@@ -3639,21 +3689,16 @@ msgstr "Fechado"
 
 #: ../stoqlib/domain/inventory.py:169 ../stoqlib/domain/sale.py:282
 #: ../stoqlib/domain/purchase.py:144 ../stoqlib/domain/payment/group.py:63
-#: ../stoqlib/domain/payment/payment.py:79
+#: ../stoqlib/domain/payment/payment.py:82
 msgid "Cancelled"
 msgstr "Cancelado"
 
 #: ../stoqlib/domain/sale.py:280 ../stoqlib/domain/purchase.py:147
 #: ../stoqlib/domain/payment/group.py:61
 #: ../stoqlib/domain/payment/renegotiation.py:55
-#: ../stoqlib/domain/payment/payment.py:78
+#: ../stoqlib/domain/payment/payment.py:81
 msgid "Confirmed"
 msgstr "Confirmado"
-
-#: ../stoqlib/domain/sale.py:281 ../stoqlib/domain/payment/renegotiation.py:56
-#: ../stoqlib/domain/payment/payment.py:76
-msgid "Paid"
-msgstr "Pago"
 
 #: ../stoqlib/domain/sale.py:284
 msgid "Returned"
@@ -3898,7 +3943,7 @@ msgid "Freight for purchase %s"
 msgstr "Frete para compras %s"
 
 #: ../stoqlib/domain/payment/group.py:60
-#: ../stoqlib/domain/payment/payment.py:74
+#: ../stoqlib/domain/payment/payment.py:77
 msgid "Preview"
 msgstr "Avaliação"
 
@@ -3954,15 +3999,11 @@ msgstr "Cartão de débito Pré-datado"
 msgid "%s/%s %s for %s"
 msgstr "%s/%s %s referente à %s"
 
-#: ../stoqlib/domain/payment/payment.py:75
-msgid "To Pay"
-msgstr "A pagar"
-
-#: ../stoqlib/domain/payment/payment.py:77
+#: ../stoqlib/domain/payment/payment.py:80
 msgid "Reviewing"
 msgstr "Revisão"
 
-#: ../stoqlib/domain/payment/payment.py:309
+#: ../stoqlib/domain/payment/payment.py:339
 msgid "NOT PAID"
 msgstr "A PAGAR"
 
@@ -6838,6 +6879,11 @@ msgstr "Largura:"
 #: ../data/glade/StationEditor.glade.h:1
 msgid "Active:"
 msgstr "Ativo:"
+
+#: ../data/glade/PaymentFlowHistoryDialog.glade.h:1
+msgid "<b>Select a date or a range to be visualised in the report:</b>"
+msgstr ""
+"<b>Selecione uma data ou um intervalo para ser visualizado no relatório:</b>"
 
 #: ../data/glade/PurchaseDetailsDialog.glade.h:1
 msgid "Additional Info"
