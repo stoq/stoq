@@ -32,10 +32,12 @@ from kiwi.datatypes import ValidationError
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
 from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
+from stoqlib.lib.countries import get_countries
 from stoqlib.lib.translation import stoqlib_gettext
 
-from booksinterfaces import IBook
+from booksinterfaces import IBook, IPublisher
 from booksdomain import ProductAdaptToBook
 
 
@@ -46,7 +48,8 @@ class ProductBookSlave(BaseEditorSlave):
     gladefile = 'ProductBookSlave'
     model_type = ProductAdaptToBook
     proxy_widgets = ['author', 'series', 'edition', 'subject', 'isbn',
-                     'language', 'pages', 'synopsis',
+                     'language', 'pages', 'synopsis', 'country_combo',
+                     'decorative_finish',
                     ]
 
     def __init__(self, conn, product, model=None):
@@ -60,20 +63,24 @@ class ProductBookSlave(BaseEditorSlave):
         return model
 
     def setup_proxies(self):
-        #self._setup_widgets()
+        self._setup_widgets()
         self.proxy = self.add_proxy(
             self.model, ProductBookSlave.proxy_widgets)
 
     def _setup_widgets(self):
-        pass
-        #self._setup_unit_labels()
-
-        #for widget in [self.minimum_quantity, self.maximum_quantity]:
-        #    widget.set_adjustment(
-        #        gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
-
-
+        self.country_combo.prefill(get_countries())
+        self.pages.set_adjustment(
+            gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
+        table = Person.getAdapterClass(IPublisher)
+        publishers = table.select(connection=self.conn)
+        self.publisher_combo.prefill([(p.person.name, p) for p in publishers])
 
     #
     # Kiwi Callbacks
     #
+
+    def on_pages__validate(self, widget, value):
+        if not value:
+            return
+        if value < 0:
+            return ValidationError(_(u'The number of pages must be positive.'))
