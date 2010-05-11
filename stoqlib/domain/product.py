@@ -147,6 +147,11 @@ class Product(Domain):
     location = UnicodeCol(default='')
     manufacturer = UnicodeCol(default='')
     part_number = UnicodeCol(default='')
+    width = DecimalCol(default=0)
+    height = DecimalCol(default=0)
+    depth = DecimalCol(default=0)
+    weight = DecimalCol(default=0)
+    consignment = BoolCol(default=False)
     sellable = ForeignKey('Sellable')
 
     #

@@ -98,6 +98,8 @@ class ServiceEditor(SellableEditor):
                                                   _(u'Service'))
         self.stock_total_lbl.hide()
         self.stock_lbl.hide()
+        self.consignment_lbl.hide()
+        self.consignment_box.hide()
         self.statuses_combo.set_sensitive(True)
 
     #

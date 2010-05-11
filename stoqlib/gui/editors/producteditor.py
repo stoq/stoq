@@ -511,6 +511,7 @@ class ProductEditor(SellableEditor):
         self.stock_lbl.show()
         if sysparam(self.conn).USE_FOUR_PRECISION_DIGITS:
             self.cost.set_digits(4)
+        self.consignment_yes_button.set_active(self.model.consignment)
 
     def create_model(self, conn):
         sellable_info = BaseSellableInfo(connection=conn)
@@ -522,6 +523,9 @@ class ProductEditor(SellableEditor):
         model = Product(connection=conn, sellable=sellable)
         model.addFacet(IStorable, connection=conn)
         return model
+
+    def on_consignment_yes_button__toggled(self, widget):
+        self.model.consignment = widget.get_active()
 
 
 class ProductionProductEditor(ProductEditor):
