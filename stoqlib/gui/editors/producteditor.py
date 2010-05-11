@@ -472,6 +472,8 @@ class ProductEditor(SellableEditor):
     model_name = _('Product')
     model_type = Product
 
+    _model_created = False
+
     def get_taxes(self):
         constants = SellableTaxConstant.select(connection=self.conn)
         return [(c.description, c) for c in constants
@@ -512,8 +514,11 @@ class ProductEditor(SellableEditor):
         if sysparam(self.conn).USE_FOUR_PRECISION_DIGITS:
             self.cost.set_digits(4)
         self.consignment_yes_button.set_active(self.model.consignment)
+        self.consignment_yes_button.set_sensitive(self._model_created)
+        self.consignment_no_button.set_sensitive(self._model_created)
 
     def create_model(self, conn):
+        self._model_created = True
         sellable_info = BaseSellableInfo(connection=conn)
         tax_constant = sysparam(conn).DEFAULT_PRODUCT_TAX_CONSTANT
         sellable = Sellable(base_sellable_info=sellable_info,
