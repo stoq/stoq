@@ -89,6 +89,8 @@ class ProductAdaptToBook(ModelAdapter):
     subject = UnicodeCol(default='')
     isbn = UnicodeCol(default='')
     language = UnicodeCol(default='')
+    decorative_finish = UnicodeCol(default='')
+    country = UnicodeCol(default='')
     pages = IntCol(default=0)
     synopsis = UnicodeCol(default='')
 

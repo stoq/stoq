@@ -24,5 +24,7 @@ CREATE TABLE product_adapt_to_book (
     isbn text,
     language text,
     pages integer,
+    decorative_finish text,
+    country text,
     synopsis text
 );
