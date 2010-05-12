@@ -26,19 +26,22 @@
 """ Payment management implementations."""
 
 import datetime
+from decimal import Decimal
 
 from kiwi.datatypes import currency
+from kiwi.log import Logger
 from zope.interface import implements
 
-from stoqlib.database.orm import PriceCol
-from stoqlib.database.orm import IntCol, DateTimeCol, UnicodeCol, ForeignKey
-from stoqlib.database.orm import const, MultipleJoin
+from stoqlib.database.orm import (IntCol, DateTimeCol, UnicodeCol, ForeignKey,
+                                  PriceCol, DecimalCol)
+from stoqlib.database.orm import const, DESC, AND, OR, MultipleJoin
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+log = Logger('stoqlib.domain.payment.payment')
 
 
 class Payment(Domain):
@@ -184,6 +187,8 @@ class Payment(Domain):
         self._check_status(self.STATUS_PREVIEW, 'set_pending')
         self.status = self.STATUS_PENDING
 
+        PaymentFlowHistory.add_payment(self.get_connection(), self)
+
     def set_not_paid(self, change_entry):
         """Set a STATUS_PAID payment as STATUS_PENDING. This requires clearing
         paid_date and paid_value
@@ -195,6 +200,9 @@ class Payment(Domain):
 
         change_entry.last_status = self.STATUS_PAID
         change_entry.new_status = self.STATUS_PENDING
+
+        PaymentFlowHistory.remove_paid_payment(self.get_connection(), self,
+                                               self.paid_date)
 
         self.status = self.STATUS_PENDING
         self.paid_date = None
@@ -210,6 +218,8 @@ class Payment(Domain):
         self.paid_date = paid_date or const.NOW()
         self.status = self.STATUS_PAID
 
+        PaymentFlowHistory.add_paid_payment(self.get_connection(), self)
+
     def cancel(self, change_entry=None):
         # TODO Check for till entries here and call cancel_till_entry if
         # it's possible. Bug 2598
@@ -217,6 +227,13 @@ class Payment(Domain):
                                Payment.STATUS_PAID]:
             raise StoqlibError("Invalid status for cancel operation, "
                                 "got %s" % self.get_status_str())
+
+        if self.status == Payment.STATUS_PAID:
+             PaymentFlowHistory.remove_paid_payment(self.get_connection(),
+                                                    self)
+        else:
+            PaymentFlowHistory.remove_payment(self.get_connection(), self)
+
         old_status = self.status
         self.status = self.STATUS_CANCELLED
         self.cancel_date = const.NOW()
@@ -224,6 +241,19 @@ class Payment(Domain):
         if change_entry is not None:
             change_entry.last_status = old_status
             change_entry.new_status = self.status
+
+    def change_due_date(self, new_due_date):
+        """Changes the payment due date.
+        @param new_due_date: The new due date for the payment.
+        @rtype: datetime.date
+        """
+        if self.status in [Payment.STATUS_PAID, Payment.STATUS_CANCELLED]:
+            raise StoqlibError("Invalid status for change_due_date operation, "
+                                "got %s" % self.get_status_str())
+        conn = self.get_connection()
+        PaymentFlowHistory.remove_payment(conn, self, self.due_date)
+        PaymentFlowHistory.add_payment(conn, self, new_due_date)
+        self.due_date = new_due_date
 
     def get_payable_value(self):
         """ Returns the calculated payment value with the daily penalty.
@@ -342,6 +372,255 @@ class PaymentChangeHistory(Domain):
     new_due_date = DateTimeCol(default=None)
     last_status = IntCol(default=None)
     new_status = IntCol(default=None)
+
+
+class PaymentFlowHistory(Domain):
+    """A class to hold information about the financial flow.
+
+    @param history_date: the date when payments were registered.
+    @param to_receive: the amount scheduled to be received in the
+                       history_date.
+    @param received: the amount received in the history_date.
+    @param to_pay: the amount scheduled to be paid in the history_date.
+    @param paid: the amount paid in the history_date.
+    @param balance_expected: the balance of the last day plus the amount to be
+                             received minus the amount to be paid.
+    @param balance_real: the balance of the last day plus the amount received
+                         minus the amount paid.
+    """
+
+    history_date = DateTimeCol(default=datetime.datetime.now)
+
+    to_receive = DecimalCol(default=Decimal(0))
+    received = DecimalCol(default=Decimal(0))
+    to_pay = DecimalCol(default=Decimal(0))
+    paid = DecimalCol(default=Decimal(0))
+
+    balance_expected = DecimalCol(default=Decimal(0))
+    balance_real = DecimalCol(default=Decimal(0))
+
+    to_receive_payments = IntCol(default=0)
+    received_payments = IntCol(default=0)
+    to_pay_payments = IntCol(default=0)
+    paid_payments = IntCol(default=0)
+
+    #
+    # Public API
+    #
+
+    def get_last_day_real_balance(self):
+        """Returns the real balance value of the previous day or zero if
+        there's no previous day.
+        """
+        last_day = PaymentFlowHistory.get_last_day(self.get_connection(),
+                                                   self.history_date)
+        if last_day:
+            return last_day.balance_real
+        return Decimal(0)
+
+    def get_divergent_payments(self):
+        """Returns a L{Payment} sequence that meet to following requirements:
+            - The payment due date, paid date or cancel date is the current
+              PaymentFlowHistory date.
+            - The payment was paid/received with different values (eg with
+              discount or surcharges).
+            - The payment was scheduled to be paid/received in the current,
+              but it was not.
+            - The payment was not expected to be paid/received the current date.
+        """
+        date = self.history_date
+        query = AND(OR(Payment.q.due_date == date,
+                       Payment.q.paid_date == date,
+                       Payment.q.cancel_date == date),
+                    OR(Payment.q.paid_value == None,
+                       Payment.q.value != Payment.q.paid_value,
+                       Payment.q.paid_date == None,
+                       Payment.q.due_date != Payment.q.paid_date))
+        return Payment.select(query, connection=self.get_connection())
+
+    #
+    # Private API
+    #
+
+    def _update_balance(self):
+        """Updates the balance_expected and balance_real values following this
+        rule:
+            - balance_expected: last_day_balance + to_receive - to_pay
+            - balance_real: last_day_balance + received - paid
+        """
+        last_day = self.get_last_day_real_balance()
+        old_balance_real = self.balance_real
+        self.balance_expected =  last_day + self.to_receive - self.to_pay
+        self.balance_real = last_day + self.received - self.paid
+
+        # balance_real affects the future (last_day real balance)
+        if old_balance_real != self.balance_real:
+            next_day = PaymentFlowHistory.get_next_day(self.get_connection(),
+                                                       self.history_date)
+            if next_day is not None:
+                # this could take a long time update all tuples.
+                next_day._update_balance()
+
+    def _update_registers(self, payment, value, accomplished=True):
+        """Updates the L{PaymentFlowHistory} attributes according to the
+        payment facet, value and if the payment was accomplished or not.
+
+        @param payment: the payment that will be registered.
+        @param value: the value that will be used to update history
+                      attributes.
+        @param accomplished: indicates if we should update the attributes that
+                             holds information about the accomplished payments
+                             or attributes related to payments that will be
+                             accomplished later.
+        """
+        if not payment.getFacets():
+            log.info('Payment %r will not be registered in %r: missing '
+                     'payment facets.' % (payment, self))
+
+        if value > 0:
+            payment_qty = 1
+        else:
+            payment_qty = -1
+
+        if IOutPayment(payment, None) is not None:
+            if accomplished:
+                self.paid += value
+                self.paid_payments += payment_qty
+            else:
+                self.to_pay += value
+                self.to_pay_payments += payment_qty
+        elif IInPayment(payment, None) is not None:
+            if accomplished:
+                self.received += value
+                self.received_payments += payment_qty
+            else:
+                self.to_receive += value
+                self.to_receive_payments += payment_qty
+        self._update_balance()
+
+    #
+    # Classmethods
+    #
+
+    @classmethod
+    def get_last_day(cls, conn, reference_date=None):
+        """Returns the L{PaymentFlowHistory} instance of the last day
+        registered or None if there is no registry. If reference_date was not
+        specified, the referente date will be the current date.
+
+        @param reference_date: the reference date to use when querying the
+                               last day.
+        @param conn: a database connection.
+        """
+        if reference_date is None:
+            reference_date = datetime.date.today()
+        results = PaymentFlowHistory.select(
+                            PaymentFlowHistory.q.history_date < reference_date,
+                            orderBy=DESC(PaymentFlowHistory.q.history_date),
+                            connection=conn).limit(1)
+        if results:
+            return results[0]
+
+    @classmethod
+    def get_next_day(cls, conn, reference_date=None):
+        """Returns the L{PaymentFlowHistory} instance of the next day
+        registered or None if there is no registry. If reference_date was not
+        specified, the referente date will be the current date.
+
+        @param reference_date: the reference date to use when querying the
+                               next day.
+        @param conn: a database connection.
+        """
+        if reference_date is None:
+            reference_date = datetime.date.today()
+        results = PaymentFlowHistory.select(
+                            PaymentFlowHistory.q.history_date > reference_date,
+                            orderBy=PaymentFlowHistory.q.history_date,
+                            connection=conn).limit(1)
+        if results:
+            return results[0]
+
+    @classmethod
+    def get_or_create_flow_history(cls, conn, date):
+        """Returns a L{PaymentFlowHistory} instance.
+
+        @param conn: a database connection.
+        @param date: the date of the L{PaymentFlowHistory} we want to
+                     retrieve or create.
+        """
+        day_history = PaymentFlowHistory.selectOneBy(history_date=date,
+                                                     connection=conn)
+        if day_history is not None:
+            return day_history
+        return cls(history_date=date, connection=conn)
+
+    @classmethod
+    def add_payment(cls, conn, payment, reference_date=None):
+        """Adds a payment in the L{PaymentFlowHistory} registry according to
+        the payment due date.
+
+        @param conn: a database connection.
+        @param payment: the payment to be added in the registry.
+        @param reference_date: the reference date to use when add the payment,
+                               if not specified, the reference will be the
+                               payment due date.
+        """
+        if reference_date is None:
+            reference_date = payment.due_date.date()
+        day_history = cls.get_or_create_flow_history(conn, reference_date)
+        day_history._update_registers(payment, payment.value,
+                                      accomplished=False)
+
+    @classmethod
+    def add_paid_payment(cls, conn, payment, reference_date=None):
+        """Adds a paid payment in the L{PaymentFlowHistory} registry. The paid
+        payment will be added in the current day registry.
+
+        @param conn: a database connection.
+        @param payment: the paid payment to be added in the registry.
+        @param reference_date: the reference date to use when add the paid
+                               payment, if not specified, the reference will
+                               be the current date.
+        """
+        if reference_date is None:
+            reference_date = datetime.date.today()
+        day_history = cls.get_or_create_flow_history(conn, reference_date)
+        day_history._update_registers(payment, payment.value,
+                                      accomplished=True)
+
+    @classmethod
+    def remove_payment(cls, conn, payment, reference_date=None):
+        """Removes a payment in the L{PaymentFlowHistory} registry. The
+        payment will be deducted from registry according to its due date.
+
+        @param conn: a database connection.
+        @param payment: the payment to be removed in the registry.
+        @param reference_date: the reference date to use when remove the
+                               payment, if not specified, the reference will
+                               be the payment due date.
+        """
+        if reference_date is None:
+            reference_date = payment.due_date.date()
+        day_history = cls.get_or_create_flow_history(conn, reference_date)
+        day_history._update_registers(payment, -payment.value,
+                                      accomplished=False)
+
+    @classmethod
+    def remove_paid_payment(cls, conn, payment, reference_date=None):
+        """Removes a paid payment in the L{PaymentFlowHistory} registry. The paid
+        payment will be removed in the current day registry.
+
+        @param conn: a database connection.
+        @param payment: the paid payment to be removed in the registry.
+        @param reference_date: the reference date to use when remove the paid
+                               payment, if not specified, the reference will
+                               be the current date.
+        """
+        if reference_date is None:
+            reference_date = datetime.date.today()
+        day_history = cls.get_or_create_flow_history(conn, reference_date)
+        day_history._update_registers(payment, -payment.paid_value,
+                                      accomplished=True)
 
 
 #

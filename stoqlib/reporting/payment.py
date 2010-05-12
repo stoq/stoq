@@ -20,13 +20,16 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s):  Fabio Morbec              <fabio@async.com.br>
+##  Author(s):  George Y. Kussumoto       <george@async.com.br>
 ##
 ##
 """ Payment receival report implementation """
 
 from decimal import Decimal
 
-from stoqlib.reporting.template import ObjectListReport
+from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
+from stoqlib.reporting.base.flowables import RIGHT
+from stoqlib.reporting.template import BaseStoqReport, ObjectListReport
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.validators import get_formatted_price
 
@@ -72,3 +75,73 @@ class BillCheckPaymentReport(_BasePaymentReport):
     branch, the bank account. The field payment_number in the report can be
     the check number or the bill number.
     """
+
+
+class PaymentFlowHistoryReport(BaseStoqReport):
+    report_name = _(u'Payment Flow History')
+
+    def __init__(self, filename, payment_histories, *args, **kwargs):
+        self._payment_histories = payment_histories
+        BaseStoqReport.__init__(self, filename,
+                                PaymentFlowHistoryReport.report_name,
+                                landscape=True, *args, **kwargs)
+        self.add_blank_space(5)
+        self._setup_payment_histories_table()
+
+    def _setup_payment_histories_table(self):
+        for payment_history in self._payment_histories:
+            history_date = payment_history.history_date.strftime('%x')
+            self.add_paragraph(_(u'Day: %s' % history_date), style='Title')
+            self._add_history_table(payment_history)
+
+    def _add_history_table(self, history):
+        self.add_object_table([history], self._get_payment_history_columns())
+        if (history.to_receive_payments != history.received_payments or
+            history.to_pay_payments != history.paid_payments or
+            history.to_receive != history.received or
+            history.to_pay != history.to_pay):
+            payments = list(history.get_divergent_payments())
+            if payments:
+                self.add_object_table(payments, self._get_payment_columns())
+        self.add_blank_space(10)
+
+    def _get_payment_history_columns(self):
+        return [
+            OTC(_(u'Last Balance'), lambda obj:
+                '%s' % get_formatted_price(obj.get_last_day_real_balance()),
+                align=RIGHT),
+            OTC(_(u'To Receive'), lambda obj:
+                    '%s' % get_formatted_price(obj.to_receive), align=RIGHT),
+            OTC(_(u'To Pay'), lambda obj:
+                    '%s' % get_formatted_price(obj.to_pay), align=RIGHT),
+            OTC(_(u'Received'), lambda obj:
+                    '%s' % get_formatted_price(obj.received), align=RIGHT),
+            OTC(_(u'Paid'), lambda obj: '%s' % get_formatted_price(obj.paid),
+                align=RIGHT),
+            OTC(_(u'Bal. Expected'), lambda obj:
+                    '%s' % get_formatted_price(obj.balance_expected),
+                    align=RIGHT),
+            OTC(_(u'Bal. Real'), lambda obj:
+                    '%s' % get_formatted_price(obj.balance_real), align=RIGHT)]
+
+    def _get_payment_columns(self):
+        return [
+            OTC(_(u'# '), lambda obj: '%04d' % obj.id, width=45),
+            OTC(_(u'Status'), lambda obj: '%s' % obj.get_status_str(),
+                width=75),
+            OTC(_(u'Description'), lambda obj: '%s' % obj.description,
+                expand=True, truncate=True),
+            OTC(_(u'Value'), lambda obj:
+                                '%s' % get_formatted_price(obj.value),
+                                align=RIGHT, width=120),
+            OTC(_(u'Paid/Received'), lambda obj:
+                    '%s' % get_formatted_price(obj.paid_value or Decimal(0)),
+                    align=RIGHT, width=120),
+            OTC(_(u'Due Date'), lambda obj:
+                    '%s' % obj.due_date.strftime('%x'), width=80),
+            OTC(_(u'Paid Date'), lambda obj:
+                    '%s' % obj.get_paid_date_string(), width=80),
+        ]
+
+    def get_title(self):
+        return self.report_name
