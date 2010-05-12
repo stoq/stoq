@@ -36,7 +36,6 @@ plugin_root = os.path.dirname(__file__)
 sys.path.append(plugin_root)
 
 from booksui import BooksUI
-from bookslave import ProductBookSlave
 
 
 class BooksPlugin(object):
@@ -62,7 +61,8 @@ class BooksPlugin(object):
     #
 
     def get_product_slave(self):
-        return ProductBookSlave
+        if self.ui is not None:
+            return self.ui.get_book_slave()
 
 
 register_plugin(BooksPlugin)
