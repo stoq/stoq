@@ -3,8 +3,12 @@
 # Populates PaymentFlowHistory based on the existing payments.
 
 from stoqlib.domain.payment.payment import Payment, PaymentFlowHistory
+from stoqlib.lib.message import info
 
 def apply_patch(trans):
+    info(u'The schema update might take a long time to complete, depending '
+          'the size of your database and your hardware.')
+
     for payment in Payment.select(connection=trans).orderBy(['due_date',
                                                              'paid_date',
                                                              'cancel_date']):
