@@ -51,17 +51,21 @@ class BooksUI(object):
     # Private
     #
 
-    def _add_purchase_menus(self, uimanager):
-        ui_string = """<ui>
+    def _get_menu_ui_string(self):
+        return """<ui>
             <menubar name="menubar">
                 <placeholder name="ExtraMenu">
                     <menu action="BooksMenu">
-                        <menuitem action="BookSearch"/>
-                        <menuitem action="Publishers"/>
+                    %s
                     </menu>
                 </placeholder>
             </menubar>
         </ui>"""
+
+    def _add_purchase_menus(self, uimanager):
+        menu_items_str = '''<menuitem action="BookSearch"/>
+                            <menuitem action="Publishers"/>'''
+        ui_string = self._get_menu_ui_string() % menu_items_str
 
         ag = gtk.ActionGroup('BooksMenuActions')
         ag.add_actions([
@@ -70,6 +74,34 @@ class BooksUI(object):
              self._on_BookSearch__activate),
             ('Publishers', None, _(u'Publishers ...'), '<Control><Alt>P', None,
              self._on_Publishers__activate),
+        ])
+
+        uimanager.insert_action_group(ag, 0)
+        uimanager.add_ui_from_string(ui_string)
+
+    def _add_sale_menus(self, uimanager):
+        menu_items_str = '<menuitem action="BookSearch"/>'
+        ui_string = self._get_menu_ui_string() % menu_items_str
+
+        ag = gtk.ActionGroup('BooksMenuActions')
+        ag.add_actions([
+            ('BooksMenu', None, _(u'Books')),
+            ('BookSearch', None, _(u'Book Search'), '<Control><Alt>B', None,
+             self._on_BookSearchView__activate),
+        ])
+
+        uimanager.insert_action_group(ag, 0)
+        uimanager.add_ui_from_string(ui_string)
+
+    def _add_pos_menus(self, uimanager):
+        menu_items_str = '<menuitem action="BookSearch"/>'
+        ui_string = self._get_menu_ui_string() % menu_items_str
+
+        ag = gtk.ActionGroup('BooksMenuActions')
+        ag.add_actions([
+            ('BooksMenu', None, _(u'Books')),
+            ('BookSearch', None, _(u'Book Search'), '<Control><Alt>B', None,
+             self._on_BookSearchView__activate),
         ])
 
         uimanager.insert_action_group(ag, 0)
@@ -90,6 +122,10 @@ class BooksUI(object):
     def _on_StartApplicationEvent(self, appname, app):
         if appname == 'purchase':
             self._add_purchase_menus(app.main_window.uimanager)
+        elif appname == 'sales':
+            self._add_sale_menus(app.main_window.uimanager)
+        elif appname == 'pos':
+            self._add_pos_menus(app.main_window.uimanager)
 
     #
     # Callbacks
@@ -97,6 +133,10 @@ class BooksUI(object):
 
     def _on_BookSearch__activate(self, action):
         run_dialog(ProductBookSearch, None, self.conn, hide_price_column=True)
+
+    def _on_BookSearchView__activate(self, action):
+        run_dialog(ProductBookSearch, None, self.conn, hide_cost_column=True,
+                   hide_toolbar=True)
 
     def _on_Publishers__activate(self, action):
         run_dialog(PublisherSearch, None, self.conn, hide_footer=True)
