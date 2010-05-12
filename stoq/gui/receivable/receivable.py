@@ -52,6 +52,7 @@ from stoqlib.gui.dialogs.paymentadditiondialog import (InPaymentAdditionDialog,
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
+from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
@@ -390,6 +391,9 @@ class ReceivableApp(SearchableAppWindow):
         payments = [v.payment for v in receivable_views]
         print_report(ReceivalReceipt, payments=payments,
                      sale=receivable_views[0].sale)
+
+    def on_PaymentFlowHistory__activate(self, action):
+        self.run_dialog(PaymentFlowHistoryDialog, self.conn)
 
     def on_AddReceiving__activate(self, action):
         self._add_receiving()
