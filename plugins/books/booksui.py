@@ -34,7 +34,8 @@ from stoqlib.gui.events import StartApplicationEvent
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
-from booksearch import ProductBookSearch
+from bookssearch import ProductBookSearch
+from booksslave import ProductBookSlave
 from publishersearch import PublisherSearch
 
 _ = stoqlib_gettext
@@ -77,6 +78,10 @@ class BooksUI(object):
     #
     # Accessors
     #
+
+    def get_book_slave(self):
+        """Returns the slave class for product book details UI."""
+        return ProductBookSlave
 
     #
     # Events
