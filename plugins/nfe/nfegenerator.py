@@ -146,11 +146,11 @@ class NFeGenerator(object):
          phone_number)
         """
         address = person.get_main_address()
+        postal_code = ''.join([i for i in address.postal_code if i in '1234567890'])
         location = address.city_location
         return (address.street, address.streetnumber, address.complement,
                 address.district, location.city, location.state,
-                address.get_postal_code_number(),
-                person.get_phone_number_number())
+                postal_code, person.get_phone_number_number())
 
     def _add_identification(self, branch):
         # Pg. 71
