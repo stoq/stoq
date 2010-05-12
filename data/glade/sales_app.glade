@@ -284,6 +284,7 @@
 	      <menuitem action="ClientSearch"/>
 	      <menuitem action="CommissionSearch"/>
 	    </menu>
+        <placeholder name="ExtraMenu"/>
 	    <menu action="help_menu">
 	      <menuitem action="about_menu"/>
 	    </menu>
