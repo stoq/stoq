@@ -41,7 +41,7 @@ from sqlobject.joins import MultipleJoin, SingleJoin
 from sqlobject.main import SQLObject
 from sqlobject.sqlbuilder import (AND, Alias, IN, INNERJOINOn, ISNOTNULL,
                                   LEFTJOINOn, LIKE, OR, Update, Field,
-                                  NoDefault, const, sqlIdentifier)
+                                  NoDefault, const, sqlIdentifier, DESC)
 from sqlobject.sresults import SelectResults
 from sqlobject.util.csvexport import export_csv
 from sqlobject.viewable import Viewable
@@ -147,6 +147,7 @@ LIKE = LIKE
 const = const
 OR = OR
 sqlIdentifier = sqlIdentifier
+DESC = DESC
 
 # Connections
 connectionForURI = connectionForURI

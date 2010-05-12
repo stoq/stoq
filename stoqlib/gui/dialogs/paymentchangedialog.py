@@ -46,6 +46,7 @@ class BasePaymentChangeDialog(BaseEditor):
     model_type = PaymentChangeHistory
     gladefile = "PaymentChangeDialog"
     history_widgets = ('change_reason',)
+    payment_widgets = ()
 
     def __init__(self, conn, payment, order=None):
         self._order = order
@@ -122,7 +123,6 @@ class BasePaymentChangeDialog(BaseEditor):
 class PaymentDueDateChangeDialog(BasePaymentChangeDialog):
     """This dialog is responsible to change a payment due date"""
     title = _(u"Change Payment Due Date")
-    payment_widgets = ('due_date',)
 
     def _setup_widgets(self):
         BasePaymentChangeDialog._setup_widgets(self)
@@ -148,6 +148,7 @@ class PaymentDueDateChangeDialog(BasePaymentChangeDialog):
         return model
 
     def on_confirm(self):
+        self._payment.change_due_date(self.due_date.read())
         self.model.new_due_date = self._payment.due_date
         return self.model
 
