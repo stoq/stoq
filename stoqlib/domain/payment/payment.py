@@ -565,7 +565,7 @@ class PaymentFlowHistory(Domain):
                                if not specified, the reference will be the
                                payment due date.
         """
-        if reference_date is None:
+        if reference_date is None and payment.due_date:
             reference_date = payment.due_date.date()
         day_history = cls.get_or_create_flow_history(conn, reference_date)
         day_history._update_registers(payment, payment.value,
