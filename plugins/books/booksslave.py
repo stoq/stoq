@@ -46,6 +46,7 @@ _ = stoqlib_gettext
 
 class ProductBookSlave(BaseEditorSlave):
     gladefile = 'ProductBookSlave'
+    title = _(u'Book Details')
     model_type = ProductAdaptToBook
     proxy_widgets = ['author', 'series', 'edition', 'subject', 'isbn',
                      'language', 'pages', 'synopsis', 'country_combo',
