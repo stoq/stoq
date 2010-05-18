@@ -90,7 +90,7 @@ class ProductBookSearch(ProductSearch):
                               visible=False),
                 SearchColumn('series', title=_(u'Series'), data_type=str,
                               visible=False),
-                SearchColumn('Language', title=_(u'Language'), data_type=str,
+                SearchColumn('language', title=_(u'Language'), data_type=str,
                               visible=False),
         ]
         # The price/cost columns must be controlled by hide_cost_column and
