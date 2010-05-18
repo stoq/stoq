@@ -60,9 +60,16 @@ class BooksPlugin(object):
     # Custom accessors
     #
 
-    def get_product_slave(self):
+    def has_product_slave(self):
+        return True
+
+    def get_product_slave_class(self):
         if self.ui is not None:
             return self.ui.get_book_slave()
+
+    def get_product_slave_title(self):
+        slave = self.get_product_slave_class()
+        return slave.title
 
 
 register_plugin(BooksPlugin)

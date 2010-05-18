@@ -56,6 +56,9 @@ class NFePlugin(object):
     def activate(self):
         self.ui = NFeUI()
 
+    def has_product_slave(self):
+        return False
+
     #
     # Accessors
     #

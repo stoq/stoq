@@ -483,10 +483,11 @@ class ProductEditor(SellableEditor):
         manager = get_utility(IPluginManager, None)
         if manager:
             for plugin in manager.get_active_plugins():
-                if plugin.name == 'books':
-                    slave_class = plugin.get_product_slave()
+                if plugin.has_product_slave():
+                    slave_class = plugin.get_product_slave_class()
+                    slave_title = plugin.get_product_slave_title()
                     plugin_product_slave = slave_class(self.conn, self.model)
-                    return [(_(u'Book Details'), plugin_product_slave),]
+                    return [(slave_title, plugin_product_slave),]
         return []
 
     #
