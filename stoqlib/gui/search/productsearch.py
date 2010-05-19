@@ -180,8 +180,8 @@ class ProductSearch(SearchEditor):
         branch = self.branch_filter.get_state().value
         if branch is not None:
             branch = PersonAdaptToBranch.get(branch, connection=conn)
-        return ProductFullStockView.select_by_branch(query, branch,
-                                                     connection=conn)
+        return self.search_table.select_by_branch(query, branch,
+                                                  connection=conn)
 
     def on_selection_changed(self, results, selected):
         can_edit = bool(selected)

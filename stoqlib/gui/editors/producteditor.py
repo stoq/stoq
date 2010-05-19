@@ -31,6 +31,7 @@ import sys
 
 import gtk
 
+from kiwi.component import get_utility
 from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 
@@ -47,6 +48,7 @@ from stoqlib.gui.editors.baseeditor import (BaseEditor, BaseEditorSlave,
                                             BaseRelationshipEditorSlave)
 from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.gui.slaves.productslave import ProductDetailsSlave
+from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -470,10 +472,22 @@ class ProductEditor(SellableEditor):
     model_name = _('Product')
     model_type = Product
 
+    _model_created = False
+
     def get_taxes(self):
         constants = SellableTaxConstant.select(connection=self.conn)
         return [(c.description, c) for c in constants
                                    if c.tax_type != TaxType.SERVICE]
+
+    def _get_plugin_tabs(self):
+        manager = get_utility(IPluginManager, None)
+        if manager:
+            for plugin in manager.get_active_plugins():
+                if plugin.has_product_slave:
+                    slave_class = plugin.get_product_slave_class()
+                    plugin_product_slave = slave_class(self.conn, self.model)
+                    return [(slave_class.title, plugin_product_slave),]
+        return []
 
     #
     # BaseEditor
@@ -487,16 +501,24 @@ class ProductEditor(SellableEditor):
             self.add_extra_tab(tabname, tabslave)
 
     def get_extra_tabs(self):
+        extra_tabs = []
+        extra_tabs.extend(self._get_plugin_tabs())
+
         suppliers_slave = ProductSupplierSlave(self.conn, self.model)
-        return [(_(u'Suppliers'), suppliers_slave),]
+        extra_tabs.append((_(u'Suppliers'), suppliers_slave))
+        return extra_tabs
 
     def setup_widgets(self):
         self.stock_total_lbl.show()
         self.stock_lbl.show()
         if sysparam(self.conn).USE_FOUR_PRECISION_DIGITS:
             self.cost.set_digits(4)
+        self.consignment_yes_button.set_active(self.model.consignment)
+        self.consignment_yes_button.set_sensitive(self._model_created)
+        self.consignment_no_button.set_sensitive(self._model_created)
 
     def create_model(self, conn):
+        self._model_created = True
         sellable_info = BaseSellableInfo(connection=conn)
         tax_constant = sysparam(conn).DEFAULT_PRODUCT_TAX_CONSTANT
         sellable = Sellable(base_sellable_info=sellable_info,
@@ -506,6 +528,9 @@ class ProductEditor(SellableEditor):
         model = Product(connection=conn, sellable=sellable)
         model.addFacet(IStorable, connection=conn)
         return model
+
+    def on_consignment_yes_button__toggled(self, widget):
+        self.model.consignment = widget.get_active()
 
 
 class ProductionProductEditor(ProductEditor):
