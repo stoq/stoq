@@ -41,6 +41,7 @@ from utils import get_cities_by_name
 class NFePlugin(object):
     implements(IPlugin)
     name = 'nfe'
+    has_product_slave = False
 
     def __init__(self):
         self.ui = None
@@ -55,9 +56,6 @@ class NFePlugin(object):
 
     def activate(self):
         self.ui = NFeUI()
-
-    def has_product_slave(self):
-        return False
 
     #
     # Accessors

@@ -40,6 +40,7 @@ from ecfui import ECFUI
 class ECFPlugin(object):
     implements(IPlugin)
     name = 'ecf'
+    has_product_slave = False
 
     def __init__(self):
         self.ui = None
@@ -55,7 +56,5 @@ class ECFPlugin(object):
         environ.add_resource('glade', os.path.join(plugin_root, 'glade'))
         self.ui = ECFUI()
 
-    def has_product_slave(self):
-        return False
 
 register_plugin(ECFPlugin)

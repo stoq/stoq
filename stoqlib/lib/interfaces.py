@@ -110,23 +110,16 @@ class IPluginManager(Interface):
 
 
 class IPlugin(Interface):
+    has_product_slave = Attribute('has_product_slave')
+
     def install():
         pass
 
     def activate(context):
         pass
 
-    def has_product_slave():
-        """This should return if the plugin provides a product slave or not. A
-        product slave is a UI to be added in tabs of the product registry.
-        """
-
     def get_product_slave_class():
         """This should return the product slave class."""
-        pass
-
-    def get_product_slave_title():
-        """This should return the product slave title."""
         pass
 
 
