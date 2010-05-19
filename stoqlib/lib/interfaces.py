@@ -110,12 +110,17 @@ class IPluginManager(Interface):
 
 
 class IPlugin(Interface):
+    has_product_slave = Attribute('has_product_slave')
+
     def install():
         pass
 
     def activate(context):
         pass
 
+    def get_product_slave_class():
+        """This should return the product slave class."""
+        pass
 
 
 class IPaymentOperation(Interface):

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2010 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
+## Author(s):   George Y. Kussumoto     <george@async.com.br>
 ##
 
 import os
@@ -34,27 +34,36 @@ from stoqlib.lib.pluginmanager import register_plugin
 
 plugin_root = os.path.dirname(__file__)
 sys.path.append(plugin_root)
-from ecfui import ECFUI
+
+from booksui import BooksUI
 
 
-class ECFPlugin(object):
+class BooksPlugin(object):
     implements(IPlugin)
-    name = 'ecf'
-    has_product_slave = False
+    name = 'books'
+    has_product_slave = True
 
     def __init__(self):
         self.ui = None
 
     def get_migration(self):
-        environ.add_resource('ecfsql', os.path.join(plugin_root, 'sql'))
-        return PluginSchemaMigration(self.name, 'ecfsql', ['*.sql'])
+        environ.add_resource('booksql', os.path.join(plugin_root, 'sql'))
+        return PluginSchemaMigration(self.name, 'booksql', ['*.sql'])
 
     def get_tables(self):
-        return [('ecfdomain', ["ECFPrinter", "DeviceConstant"])]
+        return [('bookdomain', ['PersonAdaptToPublisher', 'ProductAdaptToBook'])]
 
     def activate(self):
         environ.add_resource('glade', os.path.join(plugin_root, 'glade'))
-        self.ui = ECFUI()
+        self.ui = BooksUI()
+
+    #
+    # Custom accessors
+    #
+
+    def get_product_slave_class(self):
+        if self.ui is not None:
+            return self.ui.get_book_slave()
 
 
-register_plugin(ECFPlugin)
+register_plugin(BooksPlugin)
