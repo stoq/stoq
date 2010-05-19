@@ -41,6 +41,7 @@ from booksui import BooksUI
 class BooksPlugin(object):
     implements(IPlugin)
     name = 'books'
+    has_product_slave = True
 
     def __init__(self):
         self.ui = None
@@ -60,16 +61,9 @@ class BooksPlugin(object):
     # Custom accessors
     #
 
-    def has_product_slave(self):
-        return True
-
     def get_product_slave_class(self):
         if self.ui is not None:
             return self.ui.get_book_slave()
-
-    def get_product_slave_title(self):
-        slave = self.get_product_slave_class()
-        return slave.title
 
 
 register_plugin(BooksPlugin)
