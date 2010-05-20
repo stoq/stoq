@@ -329,7 +329,12 @@ CREATE TABLE product (
     part_number text,
     manufacturer text,
     full_image bytea,
-    image bytea
+    image bytea,
+    consignment boolean NOT NULL DEFAULT false,
+    width numeric(10, 2) CONSTRAINT positive_width CHECK (width >= 0),
+    height numeric(10, 2) CONSTRAINT positive_height CHECK (height >= 0),
+    depth numeric(10, 2) CONSTRAINT positive_depth CHECK (depth >= 0),
+    weight numeric(10, 2) CONSTRAINT positive_weight CHECK (weight >= 0)
 );
 
 CREATE TABLE product_component (
@@ -996,7 +1001,7 @@ CREATE TABLE installed_plugin (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     plugin_name text UNIQUE NOT NULL,
-    plugin_version integer UNIQUE CONSTRAINT positive_plugin_version
+    plugin_version integer CONSTRAINT positive_plugin_version
                                   CHECK (plugin_version >= 0)
 );
 
