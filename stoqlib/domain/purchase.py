@@ -153,6 +153,9 @@ class PurchaseOrder(ValidatableDomain):
     freight_types = {FREIGHT_FOB    : _(u'FOB'),
                      FREIGHT_CIF    : _(u'CIF')}
 
+    (PRODUCT_NORMAL,
+     PRODUCT_CONSIGNED) = range(2)
+
     status = IntCol(default=ORDER_QUOTING)
     open_date = DateTimeCol(default=datetime.datetime.now)
     quote_deadline = DateTimeCol(default=None)
@@ -166,6 +169,7 @@ class PurchaseOrder(ValidatableDomain):
     expected_freight = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     discount_value = PriceCol(default=0)
+    product_type = IntCol(default=PRODUCT_NORMAL)
     supplier = ForeignKey('PersonAdaptToSupplier')
     branch = ForeignKey('PersonAdaptToBranch')
     transporter = ForeignKey('PersonAdaptToTransporter', default=None)
@@ -285,6 +289,10 @@ class PurchaseOrder(ValidatableDomain):
         """Find out if it's possible to close the order
         @returns: True if it's possible to close the order, otherwise False
         """
+        if self.is_consigned():
+            total_payments = self.group.get_total_value()
+            return total_payments >= self.get_purchase_total()
+
         for item in self.get_items():
             if not item.has_been_received():
                 return False
@@ -438,6 +446,9 @@ class PurchaseOrder(ValidatableDomain):
         from stoqlib.domain.receiving import ReceivingOrder
         return ReceivingOrder.selectBy(purchase=self,
                                        connection=self.get_connection())
+
+    def is_consigned(self):
+        return self.product_type == PurchaseOrder.PRODUCT_CONSIGNED
 
     #
     # Classmethods
