@@ -1,2 +1,6 @@
 ALTER TABLE purchase_order
-    ADD COLUMN product_type integer default 0 CONSTRAINT valid_product_type CHECK (product_type >= 0 and product_type < 2);
+    ADD COLUMN consignment boolean default false;
+
+ALTER TABLE purchase_order DROP CONSTRAINT valid_status;
+ALTER TABLE purchase_order ADD CONSTRAINT valid_status
+    CHECK (status >= 0 AND status < 6);

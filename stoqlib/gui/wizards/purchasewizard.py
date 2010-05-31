@@ -77,7 +77,7 @@ class StartPurchaseStep(WizardEditorStep):
                      'supplier',
                      'branch',
                      'expected_freight',
-                     'product_consigned_radio',)
+                     )
     def __init__(self, wizard, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model)
 
@@ -100,21 +100,12 @@ class StartPurchaseStep(WizardEditorStep):
         self.open_date.set_sensitive(allow_outdated)
         self._fill_supplier_combo()
         self._fill_branch_combo()
-        # FIXME: improve this
-        if self.model.is_consigned():
-            self.product_consigned_radio.set_active(True)
-        if self.model.get_items():
-            self._disable_consignment_option()
         self._update_widgets()
 
     def _update_widgets(self):
         has_freight = self.fob_radio.get_active()
         self.expected_freight.set_sensitive(has_freight)
         self._update_freight_type()
-        if self.product_consigned_radio.get_active():
-            self.model.product_type = PurchaseOrder.PRODUCT_CONSIGNED
-        else:
-            self.model.product_type = PurchaseOrder.PRODUCT_NORMAL
         # trigger supplier validation
         self.supplier.validate()
 
@@ -123,10 +114,6 @@ class StartPurchaseStep(WizardEditorStep):
             self.model.freight_type = self.model_type.FREIGHT_CIF
         else:
             self.model.freight_type = self.model_type.FREIGHT_FOB
-
-    def _disable_consignment_option(self):
-        self.product_consigned_radio.set_sensitive(False)
-        self.product_normal_radio.set_sensitive(False)
 
     #
     # WizardStep hooks
@@ -142,8 +129,6 @@ class StartPurchaseStep(WizardEditorStep):
         self.force_validation()
 
     def next_step(self):
-        # disable consignment option (even if we use the Back button).
-        self._disable_consignment_option()
         return PurchaseItemStep(self.wizard, self, self.conn, self.model)
 
     def has_previous_step(self):
@@ -186,7 +171,7 @@ class StartPurchaseStep(WizardEditorStep):
             return
 
         supplier_infos = ProductSupplierInfo.get_info_by_supplier(
-                    self.conn, supplier, consigned=self.model.is_consigned())
+                    self.conn, supplier, consigned=self.model.consignment)
         if supplier_infos.count() == 0:
             return ValidationError(_(u'The supplier does not have any '
                                       'products associated.'))
@@ -204,8 +189,6 @@ class StartPurchaseStep(WizardEditorStep):
             return ValidationError(_(u'The expected freight value must be a '
                                       'positive number.'))
 
-    def on_product_consigned_radio__toggled(self, widget):
-        self._update_widgets()
 
 
 class PurchaseItemStep(SellableItemStep):
@@ -234,7 +217,7 @@ class PurchaseItemStep(SellableItemStep):
             self.conn,
             storable=True,
             supplier=self.model.supplier,
-            consigned=self.model.is_consigned(),)
+            consigned=self.model.consignment,)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         self.sellable.prefill(
             [(sellable.get_description(full_description=True), sellable)
@@ -255,7 +238,7 @@ class PurchaseItemStep(SellableItemStep):
     #
 
     def validate(self, value):
-        can_purchase =  self.model.get_purchase_total() > 0
+        can_purchase = self.model.get_purchase_total() > 0
         self.wizard.refresh_next(can_purchase)
 
     def get_order_item(self, sellable, cost, quantity):
@@ -306,7 +289,7 @@ class PurchaseItemStep(SellableItemStep):
         self.product_button.hide()
 
     def next_step(self):
-        if self.model.is_consigned():
+        if self.model.consignment:
             return FinishPurchaseStep(self.wizard, self, self.conn, self.model)
         return PurchasePaymentStep(self.wizard, self, self.conn, self.model)
 

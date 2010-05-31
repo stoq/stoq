@@ -34,7 +34,7 @@ from zope.interface import implements
 from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn, const
 from stoqlib.database.orm import Viewable, Alias
-from stoqlib.database.orm import PriceCol, DecimalCol
+from stoqlib.database.orm import PriceCol, DecimalCol, BoolCol
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.base import ValidatableDomain, Domain
 from stoqlib.domain.payment.method import PaymentMethod
@@ -139,13 +139,15 @@ class PurchaseOrder(ValidatableDomain):
      ORDER_QUOTING,
      ORDER_PENDING,
      ORDER_CONFIRMED,
-     ORDER_CLOSED) = range(5)
+     ORDER_CLOSED,
+     ORDER_CONSIGNED) = range(6)
 
     statuses = {ORDER_CANCELLED:    _(u'Cancelled'),
                 ORDER_QUOTING:      _(u'Quoting'),
                 ORDER_PENDING:      _(u'Pending'),
                 ORDER_CONFIRMED:    _(u'Confirmed'),
-                ORDER_CLOSED:       _(u'Closed')}
+                ORDER_CLOSED:       _(u'Closed'),
+                ORDER_CONSIGNED:    _(u'Consigned'),}
 
     (FREIGHT_FOB,
      FREIGHT_CIF) = range(2)
@@ -169,7 +171,7 @@ class PurchaseOrder(ValidatableDomain):
     expected_freight = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     discount_value = PriceCol(default=0)
-    product_type = IntCol(default=PRODUCT_NORMAL)
+    consignment = BoolCol(default=False)
     supplier = ForeignKey('PersonAdaptToSupplier')
     branch = ForeignKey('PersonAdaptToBranch')
     transporter = ForeignKey('PersonAdaptToTransporter', default=None)
@@ -289,9 +291,10 @@ class PurchaseOrder(ValidatableDomain):
         """Find out if it's possible to close the order
         @returns: True if it's possible to close the order, otherwise False
         """
-        if self.is_consigned():
-            total_payments = self.group.get_total_value()
-            return total_payments >= self.get_purchase_total()
+
+        # Consigned orders can be closed only after being confirmed
+        if self.status == self.ORDER_CONSIGNED:
+            return False
 
         for item in self.get_items():
             if not item.has_been_received():
@@ -320,6 +323,15 @@ class PurchaseOrder(ValidatableDomain):
         self.responsible = get_current_user(self.get_connection())
         self.status = PurchaseOrder.ORDER_CONFIRMED
         self.confirm_date = confirm_date
+
+    def set_consigned(self):
+        if self.status != PurchaseOrder.ORDER_PENDING:
+            raise ValueError(
+                'Invalid order status, it should be '
+                'ORDER_PENDING, got %s' % (self.get_status_str(),))
+
+        self.responsible = get_current_user(self.get_connection())
+        self.status = PurchaseOrder.ORDER_CONSIGNED
 
     def close(self):
         """Closes the purchase order
@@ -446,9 +458,6 @@ class PurchaseOrder(ValidatableDomain):
         from stoqlib.domain.receiving import ReceivingOrder
         return ReceivingOrder.selectBy(purchase=self,
                                        connection=self.get_connection())
-
-    def is_consigned(self):
-        return self.product_type == PurchaseOrder.PRODUCT_CONSIGNED
 
     #
     # Classmethods
