@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-25 14:02-0300\n"
+"POT-Creation-Date: 2010-06-01 15:33-0300\n"
 "PO-Revision-Date: 2007-07-18 11:35-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -2558,6 +2558,7 @@ msgstr "Enhetsttyp"
 #: ../stoqlib/domain/test/test_person.py:519
 #: ../plugins/books/booksdomain.py:47 ../plugins/ecf/ecfdomain.py:204
 #: ../plugins/ecf/ecfprinterdialog.py:261
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:2
 #: ../data/glade/BranchDetailsSlave.glade.h:1
 #: ../data/glade/TransporterDataSlave.glade.h:3
 #: ../data/glade/DeviceSettingsEditor.glade.h:1
@@ -3620,6 +3621,7 @@ msgid "Fancy Name"
 msgstr ""
 
 #: ../stoqlib/gui/search/personsearch.py:146
+#: ../plugins/ecf/glade/PaulistaInvoice.glade.h:1
 msgid "CNPJ"
 msgstr ""
 
@@ -3660,6 +3662,7 @@ msgid "Show clients with status"
 msgstr ""
 
 #: ../stoqlib/gui/search/personsearch.py:234
+#: ../plugins/ecf/glade/PaulistaInvoice.glade.h:2
 msgid "CPF"
 msgstr ""
 
@@ -6285,6 +6288,7 @@ msgid "Paulista Invoice"
 msgstr "faktura"
 
 #: ../plugins/ecf/paulistainvoicedialog.py:63
+#: ../plugins/ecf/glade/PaulistaInvoice.glade.h:3
 #: ../data/glade/IndividualDocuments.glade.h:3
 msgid "CPF:"
 msgstr "Personnummer:"
@@ -6351,6 +6355,116 @@ msgstr "Det finns ingen våg konfigurerad"
 #: ../plugins/nfe/nfeui.py:108
 msgid "POS can not be used within NF-e plugin."
 msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:1
+#: ../data/glade/PaymentMethodEditor.glade.h:3
+#: ../data/glade/DebitCardDetailsStep.glade.h:1
+#: ../data/glade/PurchaseItemEditor.glade.h:1
+#: ../data/glade/InvoiceLayoutEditor.glade.h:1
+#: ../data/glade/ProductRetentionDialog.glade.h:1
+#: ../data/glade/CredProviderDetailsSlave.glade.h:3
+#: ../data/glade/PurchasePaymentSlave.glade.h:1
+#: ../data/glade/CreditProviderMethodSlave.glade.h:1
+#: ../data/glade/BillCheckMethodSlave.glade.h:1
+#: ../data/glade/ProductInformationSlave.glade.h:1
+msgid "0"
+msgstr "0"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:2
+#, fuzzy
+msgid "Author:"
+msgstr "Österrike"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:3
+#: ../data/glade/AddressSlave.glade.h:5
+msgid "Country:"
+msgstr "Land:"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:4
+#, fuzzy
+msgid "Decorative Finish:"
+msgstr "köp"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:5
+#, fuzzy
+msgid "Edition:"
+msgstr "Beskrivning:"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:6
+msgid "ISBN:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:7
+#, fuzzy
+msgid "Language:"
+msgstr "Myanmar (Burma)"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:8
+#, fuzzy
+msgid "Pages:"
+msgstr "Betalningar"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:9
+#, fuzzy
+msgid "Publisher:"
+msgstr "Leverantör"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:10
+msgid "Series/Collection:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:11
+msgid "Subject:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:12
+msgid "Synopsis:"
+msgstr ""
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:1
+msgid ""
+"<b>You can get the following information on a fiscal memory read from the "
+"printer</b>"
+msgstr ""
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:3
+#, fuzzy
+msgid "Edit Constants ..."
+msgstr "Ko_ntrakt..."
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:4
+#: ../data/glade/DeviceSettingsEditor.glade.h:7
+msgid "Port:"
+msgstr "Port:"
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:5
+#: ../data/glade/PrintDialogSlave.glade.h:2
+msgid "Printer:"
+msgstr "Skrivare:"
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:6
+msgid "Register CRO:"
+msgstr ""
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:7
+#, fuzzy
+msgid "Register Date:"
+msgstr "Öppningsdatum:"
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:8
+#, fuzzy
+msgid "Serial:"
+msgstr "Syrien"
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:9
+#, fuzzy
+msgid "User Number:"
+msgstr "Ordernummer:"
+
+#: ../plugins/ecf/glade/PaulistaInvoice.glade.h:4
+#, fuzzy
+msgid "Document:"
+msgstr "Rabatt:"
 
 #: ../data/glade/DeliveryEditor.glade.h:1
 msgid "<b>Delivery Address:</b>"
@@ -6748,19 +6862,6 @@ msgstr "Betalningar"
 msgid "_Cash"
 msgstr "_Pengar"
 
-#: ../data/glade/PaymentMethodEditor.glade.h:3
-#: ../data/glade/DebitCardDetailsStep.glade.h:1
-#: ../data/glade/PurchaseItemEditor.glade.h:1
-#: ../data/glade/InvoiceLayoutEditor.glade.h:1
-#: ../data/glade/ProductRetentionDialog.glade.h:1
-#: ../data/glade/CredProviderDetailsSlave.glade.h:3
-#: ../data/glade/PurchasePaymentSlave.glade.h:1
-#: ../data/glade/CreditProviderMethodSlave.glade.h:1
-#: ../data/glade/BillCheckMethodSlave.glade.h:1
-#: ../data/glade/ProductInformationSlave.glade.h:1
-msgid "0"
-msgstr "0"
-
 #: ../data/glade/PaymentMethodEditor.glade.h:5
 msgid "Daily Penalty:"
 msgstr ""
@@ -7019,10 +7120,6 @@ msgstr "Stad:"
 #: ../data/glade/AddressSlave.glade.h:4
 msgid "Complement:"
 msgstr ""
-
-#: ../data/glade/AddressSlave.glade.h:5
-msgid "Country:"
-msgstr "Land:"
 
 #: ../data/glade/AddressSlave.glade.h:6
 msgid "District:"
@@ -7567,10 +7664,6 @@ msgstr "Antal delbetalningar:"
 msgid "Preview..."
 msgstr ""
 
-#: ../data/glade/PrintDialogSlave.glade.h:2
-msgid "Printer:"
-msgstr "Skrivare:"
-
 #: ../data/glade/PrintDialogSlave.glade.h:3
 msgid "Select..."
 msgstr "Välj..."
@@ -7756,10 +7849,6 @@ msgstr "Värd:"
 #: ../data/glade/DeviceSettingsEditor.glade.h:6
 msgid "Model:"
 msgstr "Modell:"
-
-#: ../data/glade/DeviceSettingsEditor.glade.h:7
-msgid "Port:"
-msgstr "Port:"
 
 #: ../data/glade/EmployeeRoleSlave.glade.h:1
 msgid "A_dd/Edit Role..."
