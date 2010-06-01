@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-01 15:33-0300\n"
+"POT-Creation-Date: 2010-06-01 15:44-0300\n"
 "PO-Revision-Date: 2008-05-28 17:56-0300\n"
 "Last-Translator: Silvio Rangel <silvio@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -6193,7 +6193,7 @@ msgstr "ISBN:"
 
 #: ../plugins/books/glade/ProductBookSlave.glade.h:7
 msgid "Language:"
-msgstr "Linguagem"
+msgstr "Idioma:"
 
 #: ../plugins/books/glade/ProductBookSlave.glade.h:8
 msgid "Pages:"
@@ -6205,7 +6205,7 @@ msgstr "Editora:"
 
 #: ../plugins/books/glade/ProductBookSlave.glade.h:10
 msgid "Series/Collection:"
-msgstr "Série/Coleção"
+msgstr "Série/Coleção:"
 
 #: ../plugins/books/glade/ProductBookSlave.glade.h:11
 msgid "Subject:"
