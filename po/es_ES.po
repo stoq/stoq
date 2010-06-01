@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-25 14:02-0300\n"
+"POT-Creation-Date: 2010-06-01 15:33-0300\n"
 "PO-Revision-Date: 2007-04-09 10:04-0300\n"
 "Last-Translator: Rafael Villar Burke <pachi@rvburke.com>\n"
 "Language-Team: Spanish <es_ES@li.org>\n"
@@ -2577,6 +2577,7 @@ msgstr "Tipo de Dispositivo"
 #: ../stoqlib/domain/test/test_person.py:519
 #: ../plugins/books/booksdomain.py:47 ../plugins/ecf/ecfdomain.py:204
 #: ../plugins/ecf/ecfprinterdialog.py:261
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:2
 #: ../data/glade/BranchDetailsSlave.glade.h:1
 #: ../data/glade/TransporterDataSlave.glade.h:3
 #: ../data/glade/DeviceSettingsEditor.glade.h:1
@@ -3624,6 +3625,7 @@ msgid "Fancy Name"
 msgstr "Nombre completo"
 
 #: ../stoqlib/gui/search/personsearch.py:146
+#: ../plugins/ecf/glade/PaulistaInvoice.glade.h:1
 msgid "CNPJ"
 msgstr "CIF"
 
@@ -3662,6 +3664,7 @@ msgid "Show clients with status"
 msgstr "Mostrar clientes con estado"
 
 #: ../stoqlib/gui/search/personsearch.py:234
+#: ../plugins/ecf/glade/PaulistaInvoice.glade.h:2
 msgid "CPF"
 msgstr "CPF"
 
@@ -6358,6 +6361,7 @@ msgid "Paulista Invoice"
 msgstr "Factura"
 
 #: ../plugins/ecf/paulistainvoicedialog.py:63
+#: ../plugins/ecf/glade/PaulistaInvoice.glade.h:3
 #: ../data/glade/IndividualDocuments.glade.h:3
 msgid "CPF:"
 msgstr "CPF:"
@@ -6424,6 +6428,119 @@ msgstr "No hay una balanza configurada"
 #: ../plugins/nfe/nfeui.py:108
 msgid "POS can not be used within NF-e plugin."
 msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:1
+#: ../data/glade/PaymentMethodEditor.glade.h:3
+#: ../data/glade/DebitCardDetailsStep.glade.h:1
+#: ../data/glade/PurchaseItemEditor.glade.h:1
+#: ../data/glade/InvoiceLayoutEditor.glade.h:1
+#: ../data/glade/ProductRetentionDialog.glade.h:1
+#: ../data/glade/CredProviderDetailsSlave.glade.h:3
+#: ../data/glade/PurchasePaymentSlave.glade.h:1
+#: ../data/glade/CreditProviderMethodSlave.glade.h:1
+#: ../data/glade/BillCheckMethodSlave.glade.h:1
+#: ../data/glade/ProductInformationSlave.glade.h:1
+msgid "0"
+msgstr "0"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:2
+#, fuzzy
+msgid "Author:"
+msgstr "Austria"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:3
+#: ../data/glade/AddressSlave.glade.h:5
+msgid "Country:"
+msgstr "País:"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:4
+#, fuzzy
+msgid "Decorative Finish:"
+msgstr "Compras"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:5
+#, fuzzy
+msgid "Edition:"
+msgstr "Descripción:"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:6
+#, fuzzy
+msgid "ISBN:"
+msgstr "IVA:"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:7
+#, fuzzy
+msgid "Language:"
+msgstr "Gerente:"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:8
+#, fuzzy
+msgid "Pages:"
+msgstr "Pago nº:"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:9
+#, fuzzy
+msgid "Publisher:"
+msgstr "suministradores"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:10
+#, fuzzy
+msgid "Series/Collection:"
+msgstr "Operaciones contables de caja"
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:11
+msgid "Subject:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:12
+msgid "Synopsis:"
+msgstr ""
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:1
+msgid ""
+"<b>You can get the following information on a fiscal memory read from the "
+"printer</b>"
+msgstr ""
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:3
+#, fuzzy
+msgid "Edit Constants ..."
+msgstr "Editar Constantes..."
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:4
+#: ../data/glade/DeviceSettingsEditor.glade.h:7
+msgid "Port:"
+msgstr "Puerto:"
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:5
+#: ../data/glade/PrintDialogSlave.glade.h:2
+msgid "Printer:"
+msgstr "Impresora:"
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:6
+#, fuzzy
+msgid "Register CRO:"
+msgstr "Registro:"
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:7
+#, fuzzy
+msgid "Register Date:"
+msgstr "Número de Registro"
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:8
+#, fuzzy
+msgid "Serial:"
+msgstr "Siria"
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:9
+#, fuzzy
+msgid "User Number:"
+msgstr "Número del Pedido:"
+
+#: ../plugins/ecf/glade/PaulistaInvoice.glade.h:4
+#, fuzzy
+msgid "Document:"
+msgstr "Descuento:"
 
 #: ../data/glade/DeliveryEditor.glade.h:1
 msgid "<b>Delivery Address:</b>"
@@ -6823,19 +6940,6 @@ msgstr "Pagos"
 msgid "_Cash"
 msgstr "Dinero"
 
-#: ../data/glade/PaymentMethodEditor.glade.h:3
-#: ../data/glade/DebitCardDetailsStep.glade.h:1
-#: ../data/glade/PurchaseItemEditor.glade.h:1
-#: ../data/glade/InvoiceLayoutEditor.glade.h:1
-#: ../data/glade/ProductRetentionDialog.glade.h:1
-#: ../data/glade/CredProviderDetailsSlave.glade.h:3
-#: ../data/glade/PurchasePaymentSlave.glade.h:1
-#: ../data/glade/CreditProviderMethodSlave.glade.h:1
-#: ../data/glade/BillCheckMethodSlave.glade.h:1
-#: ../data/glade/ProductInformationSlave.glade.h:1
-msgid "0"
-msgstr "0"
-
 #: ../data/glade/PaymentMethodEditor.glade.h:5
 msgid "Daily Penalty:"
 msgstr "Penalización Diaria:"
@@ -7093,10 +7197,6 @@ msgstr "Ciudad:"
 #: ../data/glade/AddressSlave.glade.h:4
 msgid "Complement:"
 msgstr "Complemento:"
-
-#: ../data/glade/AddressSlave.glade.h:5
-msgid "Country:"
-msgstr "País:"
 
 #: ../data/glade/AddressSlave.glade.h:6
 msgid "District:"
@@ -7642,10 +7742,6 @@ msgstr "Número de plazos:"
 msgid "Preview..."
 msgstr "Previsualizar..."
 
-#: ../data/glade/PrintDialogSlave.glade.h:2
-msgid "Printer:"
-msgstr "Impresora:"
-
 #: ../data/glade/PrintDialogSlave.glade.h:3
 msgid "Select..."
 msgstr "Seleccionar..."
@@ -7834,10 +7930,6 @@ msgstr "Host:"
 #: ../data/glade/DeviceSettingsEditor.glade.h:6
 msgid "Model:"
 msgstr "Modelo:"
-
-#: ../data/glade/DeviceSettingsEditor.glade.h:7
-msgid "Port:"
-msgstr "Puerto:"
 
 #: ../data/glade/EmployeeRoleSlave.glade.h:1
 msgid "A_dd/Edit Role..."
@@ -8683,14 +8775,6 @@ msgstr "VALOR:"
 #, fuzzy
 #~ msgid "CAT File Generation"
 #~ msgstr "Operaciones contables de caja"
-
-#, fuzzy
-#~ msgid "File selection"
-#~ msgstr "Operaciones contables de caja"
-
-#, fuzzy
-#~ msgid "Document:"
-#~ msgstr "Descuento:"
 
 #~ msgid "Use Purchase Preview Payments"
 #~ msgstr "Usar Pagos previstos para Compras"

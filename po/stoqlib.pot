@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-25 14:02-0300\n"
+"POT-Creation-Date: 2010-06-01 15:33-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2394,6 +2394,7 @@ msgstr ""
 #: ../stoqlib/domain/test/test_person.py:519
 #: ../plugins/books/booksdomain.py:47 ../plugins/ecf/ecfdomain.py:204
 #: ../plugins/ecf/ecfprinterdialog.py:261
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:2
 #: ../data/glade/BranchDetailsSlave.glade.h:1
 #: ../data/glade/TransporterDataSlave.glade.h:3
 #: ../data/glade/DeviceSettingsEditor.glade.h:1
@@ -3372,6 +3373,7 @@ msgid "Fancy Name"
 msgstr ""
 
 #: ../stoqlib/gui/search/personsearch.py:146
+#: ../plugins/ecf/glade/PaulistaInvoice.glade.h:1
 msgid "CNPJ"
 msgstr ""
 
@@ -3408,6 +3410,7 @@ msgid "Show clients with status"
 msgstr ""
 
 #: ../stoqlib/gui/search/personsearch.py:234
+#: ../plugins/ecf/glade/PaulistaInvoice.glade.h:2
 msgid "CPF"
 msgstr ""
 
@@ -5935,6 +5938,7 @@ msgid "Paulista Invoice"
 msgstr ""
 
 #: ../plugins/ecf/paulistainvoicedialog.py:63
+#: ../plugins/ecf/glade/PaulistaInvoice.glade.h:3
 #: ../data/glade/IndividualDocuments.glade.h:3
 msgid "CPF:"
 msgstr ""
@@ -5995,6 +5999,105 @@ msgstr ""
 
 #: ../plugins/nfe/nfeui.py:108
 msgid "POS can not be used within NF-e plugin."
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:1
+#: ../data/glade/PaymentMethodEditor.glade.h:3
+#: ../data/glade/DebitCardDetailsStep.glade.h:1
+#: ../data/glade/PurchaseItemEditor.glade.h:1
+#: ../data/glade/InvoiceLayoutEditor.glade.h:1
+#: ../data/glade/ProductRetentionDialog.glade.h:1
+#: ../data/glade/CredProviderDetailsSlave.glade.h:3
+#: ../data/glade/PurchasePaymentSlave.glade.h:1
+#: ../data/glade/CreditProviderMethodSlave.glade.h:1
+#: ../data/glade/BillCheckMethodSlave.glade.h:1
+#: ../data/glade/ProductInformationSlave.glade.h:1
+msgid "0"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:2
+msgid "Author:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:3
+#: ../data/glade/AddressSlave.glade.h:5
+msgid "Country:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:4
+msgid "Decorative Finish:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:5
+msgid "Edition:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:6
+msgid "ISBN:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:7
+msgid "Language:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:8
+msgid "Pages:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:9
+msgid "Publisher:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:10
+msgid "Series/Collection:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:11
+msgid "Subject:"
+msgstr ""
+
+#: ../plugins/books/glade/ProductBookSlave.glade.h:12
+msgid "Synopsis:"
+msgstr ""
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:1
+msgid ""
+"<b>You can get the following information on a fiscal memory read from the "
+"printer</b>"
+msgstr ""
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:3
+msgid "Edit Constants ..."
+msgstr ""
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:4
+#: ../data/glade/DeviceSettingsEditor.glade.h:7
+msgid "Port:"
+msgstr ""
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:5
+#: ../data/glade/PrintDialogSlave.glade.h:2
+msgid "Printer:"
+msgstr ""
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:6
+msgid "Register CRO:"
+msgstr ""
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:7
+msgid "Register Date:"
+msgstr ""
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:8
+msgid "Serial:"
+msgstr ""
+
+#: ../plugins/ecf/glade/FiscalPrinterDialog.glade.h:9
+msgid "User Number:"
+msgstr ""
+
+#: ../plugins/ecf/glade/PaulistaInvoice.glade.h:4
+msgid "Document:"
 msgstr ""
 
 #: ../data/glade/DeliveryEditor.glade.h:1
@@ -6377,19 +6480,6 @@ msgstr ""
 msgid "_Cash"
 msgstr ""
 
-#: ../data/glade/PaymentMethodEditor.glade.h:3
-#: ../data/glade/DebitCardDetailsStep.glade.h:1
-#: ../data/glade/PurchaseItemEditor.glade.h:1
-#: ../data/glade/InvoiceLayoutEditor.glade.h:1
-#: ../data/glade/ProductRetentionDialog.glade.h:1
-#: ../data/glade/CredProviderDetailsSlave.glade.h:3
-#: ../data/glade/PurchasePaymentSlave.glade.h:1
-#: ../data/glade/CreditProviderMethodSlave.glade.h:1
-#: ../data/glade/BillCheckMethodSlave.glade.h:1
-#: ../data/glade/ProductInformationSlave.glade.h:1
-msgid "0"
-msgstr ""
-
 #: ../data/glade/PaymentMethodEditor.glade.h:5
 msgid "Daily Penalty:"
 msgstr ""
@@ -6639,10 +6729,6 @@ msgstr ""
 
 #: ../data/glade/AddressSlave.glade.h:4
 msgid "Complement:"
-msgstr ""
-
-#: ../data/glade/AddressSlave.glade.h:5
-msgid "Country:"
 msgstr ""
 
 #: ../data/glade/AddressSlave.glade.h:6
@@ -7153,10 +7239,6 @@ msgstr ""
 msgid "Preview..."
 msgstr ""
 
-#: ../data/glade/PrintDialogSlave.glade.h:2
-msgid "Printer:"
-msgstr ""
-
 #: ../data/glade/PrintDialogSlave.glade.h:3
 msgid "Select..."
 msgstr ""
@@ -7334,10 +7416,6 @@ msgstr ""
 
 #: ../data/glade/DeviceSettingsEditor.glade.h:6
 msgid "Model:"
-msgstr ""
-
-#: ../data/glade/DeviceSettingsEditor.glade.h:7
-msgid "Port:"
 msgstr ""
 
 #: ../data/glade/EmployeeRoleSlave.glade.h:1
