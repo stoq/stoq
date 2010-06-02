@@ -654,3 +654,48 @@ class ProductionItemView(Viewable):
     @property
     def production_item(self):
         return ProductionItem.get(self.id, connection=self.get_connection())
+
+
+
+class InConsignmentsView(Viewable):
+    columns = dict(
+        id=PersonAdaptToSupplier.q.id,
+        supplier_name=Person.q.name,
+        branch_id=PurchaseOrder.q.branchID,
+        open_consignments=const.COUNT(PurchaseOrder.q.id),
+
+    )
+
+    joins = [
+        LEFTJOINOn(None, Person, Person.q.id ==
+                   PersonAdaptToSupplier.q._originalID),
+        INNERJOINOn(None, PurchaseOrder,
+                   PurchaseOrder.q.supplierID == PersonAdaptToSupplier.q.id),
+    ]
+
+    clause = AND(PurchaseOrder.q.consignment == True,
+                 PurchaseOrder.q._is_valid_model == True)
+
+    @property
+    def supplier(self):
+        return PersonAdaptToSupplier.get(self.id,
+                        connection=self.get_connection())
+
+    @property
+    def consignments(self):
+        return PurchaseOrder.selectBy(branchID=self.branch_id,
+                                      supplierID=self.id,
+                                      consignment=True)
+
+    @classmethod
+    def select_by_branch(cls, query, branch, connection=None):
+        if branch:
+            # We need the OR part to be able to list services
+            branch_query = PurchaseOrder.q.branchID == branch.id
+            if query:
+                query = AND(query, branch_query)
+            else:
+                query = branch_query
+
+        return cls.select(query, connection=connection)
+
