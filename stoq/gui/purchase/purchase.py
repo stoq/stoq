@@ -46,6 +46,7 @@ from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.wizards.consignmentwizard import (ConsignmentWizard,
+                                                   CloseInConsignmentWizard,
                                                     )
 from stoqlib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
 from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
@@ -322,11 +323,11 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_CloseInConsignment__activate(self, action):
         print 'close consignment'
-        #trans = new_transaction()
-        #model = self.run_dialog(CloseInConsignmentWizard, trans)
-        #print 'Done', model
-        #rv = finish_transaction(trans, model)
-        #trans.close()
+        trans = new_transaction()
+        model = self.run_dialog(CloseInConsignmentWizard, trans)
+        print 'Done', model
+        rv = finish_transaction(trans, model)
+        trans.close()
 
     def on_SearchInConsignments__activate(self, action):
         print 'search consignment'
