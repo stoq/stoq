@@ -30,7 +30,9 @@ import glob
 import os
 import re
 import shutil
+import sys
 import tempfile
+import traceback
 
 from kiwi.environ import environ
 from kiwi.component import get_utility
@@ -289,15 +291,21 @@ class StoqlibSchemaMigration(SchemaMigration):
                 if plugins:
                     self.update_plugins()
             except:
+                header = _(u'Stoq update have failed.')
+                footer = _(u'Please, send all the output to Stoq Team as '
+                            'sooner as you can.\n')
                 if backup is True:
-                    info(_(u'Stoq update have failed.'),
+                    info(header,
                      _(u'We will try to restore the current database, but you '
-                        'will not be able to use Stoq without this update.\n'
-                        'Please, send all the output to Stoq Team as sooner '
-                        'as you can.'))
+                        'will not be able to use Stoq without this update.\n' +
+                        footer))
 
                     restore_database(temporary)
                     info(_(u'\n\nCurrent database was succesfully restored.\n\n'))
+                else:
+                    tb_str = ''.join(traceback.format_exception(*sys.exc_info()))
+                    info(header,
+                     _(u'The error message is:\n\n%s\n\n' + footer) % tb_str)
         finally:
             if backup is True:
                 os.unlink(temporary)
