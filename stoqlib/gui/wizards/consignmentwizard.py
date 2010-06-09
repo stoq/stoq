@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2010 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,56 +19,34 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
-##              Johan Dahlin                <jdahlin@async.com.br>
-##              George Kussumoto            <george@async.com.br>
+## Author(s):   George Kussumoto            <george@async.com.br>
+##              Ronaldo Maia                <romaia@async.com.br>
 ##
 ##
-""" Purchase wizard definition """
-
-import datetime
-from decimal import Decimal
-import sys
+""" Consignment wizard definition """
 
 import gtk
 
-from kiwi.datatypes import currency, ValidationError
+from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import (get_current_branch, new_transaction,
-                                      finish_transaction, get_current_user)
-from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
-                                       IStorable)
-from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.database.runtime import get_current_branch, get_current_user
+from stoqlib.domain.interfaces import IBranch, IStorable
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.person import Person
-from stoqlib.domain.product import ProductSupplierInfo
-from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
-from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
+from stoqlib.domain.receiving import (ReceivingOrder,
                                       get_receiving_items_by_purchase_order)
-from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import InConsignmentsView
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.validators import format_quantity, get_formatted_cost
-from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
-from stoqlib.gui.printing import print_report
-from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
-from stoqlib.gui.wizards.abstractwizard import SellableItemStep
-from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
-from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave,
-                                             BillMethodSlave, MoneyMethodSlave)
-from stoqlib.reporting.purchase import PurchaseOrderReport
-
+from stoqlib.gui.base.lists import AdditionListSlave
+from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.wizards.purchasewizard import (StartPurchaseStep,
                                                 PurchaseItemStep,
                                                 PurchasePaymentStep,
                                                 FinishPurchaseStep,
-                                                PurchaseWizard
-                                                )
+                                                PurchaseWizard)
+from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import format_quantity, get_formatted_cost
 
 _ = stoqlib_gettext
 
@@ -77,11 +55,8 @@ _ = stoqlib_gettext
 # Wizard Steps
 #
 
-from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
-
-
 class StartConsignmentStep(StartPurchaseStep):
-    pass
+
     def next_step(self):
         return ConsignmentItemStep(self.wizard, self, self.conn, self.model)
 
@@ -112,56 +87,6 @@ class ConsignmentItemStep(PurchaseItemStep):
         self._create_receiving_order()
         return ReceivingInvoiceStep(self.conn, self.wizard,
                                     self.wizard.receiving_model)
-
-
-
-#
-# Main wizard
-#
-
-
-class ConsignmentWizard(PurchaseWizard):
-    title = _("New Consignment")
-
-    def __init__(self, conn):
-        model = self._create_model(conn)
-
-        # If we receive the order right after the purchase.
-        self.receiving_model = None
-        register_payment_operations()
-        first_step = StartConsignmentStep(self, conn, model)
-        BaseWizard.__init__(self, conn, first_step, model)
-
-
-    def _create_model(self, conn):
-        model = PurchaseWizard._create_model(self, conn)
-        model.consignment = True
-        return model
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard, BaseWizardStep
-from stoqlib.gui.base.lists import SimpleListDialog, AdditionListSlave
-
-
 
 
 class SupplierSelectionStep(BaseWizardStep):
@@ -220,9 +145,9 @@ class SupplierSelectionStep(BaseWizardStep):
         has_selected = selected is not None
         self.wizard.refresh_next(has_selected)
 
-    ##
-    ## WizardStep hooks
-    ##
+    #
+    # WizardStep hooks
+    #
 
     def next_step(self):
         selected = self.slave.klist.get_selected()
@@ -232,9 +157,9 @@ class SupplierSelectionStep(BaseWizardStep):
         return ItemSelectionStep(self.wizard, self, self.conn,
                                  supplier, branch, selected.consignments)
 
-    ##
-    ## Callbacks
-    ##
+    #
+    # Callbacks
+    #
 
     def _on_results__selection_changed(self, widget, item):
         self._update_view()
@@ -272,8 +197,6 @@ class _InConsignmentItem(object):
             self.sold_total = currency(self._sold * float(self.cost))
 
     sold = property(get_sold, set_sold)
-
-
 
 
 class ItemSelectionStep(BaseWizardStep):
@@ -379,7 +302,6 @@ class CloseConsignmentPaymentStep(PurchasePaymentStep):
 
         self.wizard.receiving_model = receiving_model
 
-
     def next_step(self):
         # TODO: Create ReceivingOrder
         #return FinishCloseConsignmentStep(self.wizard, self, self.conn,
@@ -388,6 +310,7 @@ class CloseConsignmentPaymentStep(PurchasePaymentStep):
         self._create_receiving_order()
         return ReceivingInvoiceStep(self.conn, self.wizard,
                                     self.wizard.receiving_model)
+
 
 class FinishCloseConsignmentStep(FinishPurchaseStep):
 
@@ -402,6 +325,29 @@ class FinishCloseConsignmentStep(FinishPurchaseStep):
         return ReceivingInvoiceStep(self.conn, self.wizard,
                                     self.wizard.receiving_model)
 
+#
+# Main wizards
+#
+
+
+class ConsignmentWizard(PurchaseWizard):
+    title = _("New Consignment")
+
+    def __init__(self, conn):
+        model = self._create_model(conn)
+
+        # If we receive the order right after the purchase.
+        self.receiving_model = None
+        register_payment_operations()
+        first_step = StartConsignmentStep(self, conn, model)
+        BaseWizard.__init__(self, conn, first_step, model)
+
+
+    def _create_model(self, conn):
+        model = PurchaseWizard._create_model(self, conn)
+        model.consignment = True
+        return model
+
 
 class CloseInConsignmentWizard(BaseWizard):
     title = _('Closing In Consignment')
@@ -414,8 +360,6 @@ class CloseInConsignmentWizard(BaseWizard):
         BaseWizard.__init__(self, conn, first_step, None)
         self.next_button.set_sensitive(False)
 
-
-
     #
     # WizardStep hooks
     #
@@ -427,4 +371,3 @@ class CloseInConsignmentWizard(BaseWizard):
 
         self.retval = False
         self.close()
-
