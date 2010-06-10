@@ -33,13 +33,12 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import get_current_branch, get_current_user
-from stoqlib.domain.interfaces import IBranch, IStorable
+from stoqlib.database.runtime import get_current_user
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.operation import register_payment_operations
-from stoqlib.domain.person import Person
+from stoqlib.domain.purchase import PurchaseOrderView, PurchaseOrder
 from stoqlib.domain.receiving import (ReceivingOrder,
                                       get_receiving_items_by_purchase_order)
-from stoqlib.domain.views import InConsignmentsView
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.wizards.purchasewizard import (StartPurchaseStep,
@@ -47,7 +46,8 @@ from stoqlib.gui.wizards.purchasewizard import (StartPurchaseStep,
                                                 PurchasePaymentStep,
                                                 FinishPurchaseStep,
                                                 PurchaseWizard)
-from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
+from stoqlib.gui.wizards.receivingwizard import (PurchaseSelectionStep,
+                                                 ReceivingInvoiceStep)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity, get_formatted_cost
 
@@ -92,83 +92,17 @@ class ConsignmentItemStep(PurchaseItemStep):
                                     self.wizard.receiving_model)
 
 
-class SupplierSelectionStep(BaseWizardStep):
-    gladefile = 'SupplierSelectionStep'
+class ConsignmentSelectionStep(PurchaseSelectionStep):
 
-    def __init__(self, wizard, conn):
-        BaseWizardStep.__init__(self, conn, wizard)
-        self._setup_slaves()
-
-    def _setup_slaves(self):
-        self.slave = AdditionListSlave(
-            self.conn, self._get_columns(),
-            klist_objects=self._get_supliers())
-        self.slave.hide_add_button()
-        self.slave.hide_edit_button()
-        self.slave.hide_del_button()
-        self.attach_slave('place_holder', self.slave)
-        self.slave.klist.set_selection_mode(gtk.SELECTION_BROWSE)
-        self.slave.klist.connect('selection-changed',
-                        self._on_results__selection_changed)
-
-        current_branch = get_current_branch(self.conn)
-        branches = [(b.person.name, b)
-                    for b in Person.iselect(IBranch, connection=self.conn)]
-        self.branch.prefill(branches)
-        self.branch.set_text(current_branch.person.name)
-
-
-    def _get_supliers(self):
-        branch = self.branch.get_selected()
-        if not branch:
-            return []
-
-        items = []
-        #query = InConsignment.q.status ==  InConsignment.CONSIGNMENT_CONFIRMED
-        query = None
-        items = InConsignmentsView.select_by_branch(
-                                    query,
-                                    branch = branch,
-                                    connection=self.conn)
-        return items
-
-    def _get_columns(self):
-        return [Column('supplier_name', title=_('Supplier'), data_type=str,
-                        expand=True),
-                Column('open_consignments', title=_('Open Consignments'),
-                        data_type=int),
-                ]
-
-    def _update_results(self):
-        self.slave.klist.clear()
-        self.slave.klist.add_list(self._get_supliers())
-
-    def _update_view(self):
-        selected = self.slave.klist.get_selected()
-        has_selected = selected is not None
-        self.wizard.refresh_next(has_selected)
-
-    #
-    # WizardStep hooks
-    #
+    def get_extra_query(self, states):
+        return PurchaseOrderView.q.status == PurchaseOrder.ORDER_CONSIGNED
 
     def next_step(self):
-        selected = self.slave.klist.get_selected()
-        supplier = selected.supplier
-        branch = self.branch.get_selected()
+        self.search.save_columns()
+        selected = self.search.results.get_selected()
+        consignment = selected.purchase
 
-        return ItemSelectionStep(self.wizard, self, self.conn,
-                                 supplier, branch, selected.consignments)
-
-    #
-    # Callbacks
-    #
-
-    def _on_results__selection_changed(self, widget, item):
-        self._update_view()
-
-    def on_branch__content_changed(self, *args):
-        self._update_results()
+        return ItemSelectionStep(self.wizard, self, self.conn, consignment)
 
 
 class _InConsignmentItem(object):
@@ -206,10 +140,8 @@ class _InConsignmentItem(object):
 class ItemSelectionStep(BaseWizardStep):
     gladefile = 'ItemSelectionStep'
 
-    def __init__(self, wizard, previous, conn, supplier, branch, consignments):
-        self.supplier = supplier
-        self.branch = branch
-        self.consignments = consignments
+    def __init__(self, wizard, previous, conn, consignment):
+        self.consignment = consignment
         BaseWizardStep.__init__(self, conn, wizard, previous)
         self.reset_sold_button.set_sensitive(False)
         self._setup_slaves()
@@ -282,9 +214,8 @@ class ItemSelectionStep(BaseWizardStep):
         return format_quantity(0)
 
     def get_saved_items(self):
-        for consig in self.consignments:
-            for i in consig.get_items():
-                yield _InConsignmentItem(i)
+        for item in self.consignment.get_items():
+            yield _InConsignmentItem(item)
 
     def get_columns(self):
         adj = gtk.Adjustment(upper=sys.maxint, step_incr=1)
@@ -325,7 +256,8 @@ class ItemSelectionStep(BaseWizardStep):
         #    c) create new consignment with the remaining items
         #    d) return the remaining items
         if self._is_all_sold():
-            pass # go to the final step
+             return CloseConsignmentPaymentStep(self.wizard, self, self.conn,
+                                                self.consignment)
         if self.new_consignment_radio.is_active():
             pass # go to the new consignment step
         else:
@@ -367,33 +299,8 @@ class ItemSelectionStep(BaseWizardStep):
 
 class CloseConsignmentPaymentStep(PurchasePaymentStep):
 
-    def _create_receiving_order(self):
-        # since we will create a new receiving order, we should confirm the
-        # purchase first.
-        self.order.confirm()
-
-        receiving_model = ReceivingOrder(
-            responsible=get_current_user(self.conn),
-            purchase=self.order,
-            supplier=self.order.supplier,
-            branch=self.order.branch,
-            transporter=self.order.transporter,
-            invoice_number=None,
-            connection=self.conn)
-
-        # Creates ReceivingOrderItem's
-        get_receiving_items_by_purchase_order(self.order, receiving_model)
-
-        self.wizard.receiving_model = receiving_model
-
-    def next_step(self):
-        # TODO: Create ReceivingOrder
-        #return FinishCloseConsignmentStep(self.wizard, self, self.conn,
-        #                                  self.order)
-
-        self._create_receiving_order()
-        return ReceivingInvoiceStep(self.conn, self.wizard,
-                                    self.wizard.receiving_model)
+    def has_next_step(self):
+        return False
 
 
 class FinishCloseConsignmentStep(FinishPurchaseStep):
@@ -403,7 +310,7 @@ class FinishCloseConsignmentStep(FinishPurchaseStep):
         self.receive_now.hide()
 
     def has_next_step(self):
-        return True
+        return False
 
     def next_step(self):
         return ReceivingInvoiceStep(self.conn, self.wizard,
@@ -440,7 +347,7 @@ class CloseInConsignmentWizard(BaseWizard):
     def __init__(self, conn):
         register_payment_operations()
         self.receiving_model = None
-        first_step = SupplierSelectionStep(self, conn)
+        first_step = ConsignmentSelectionStep(self, conn)
         BaseWizard.__init__(self, conn, first_step, None)
         self.next_button.set_sensitive(False)
 
@@ -449,9 +356,5 @@ class CloseInConsignmentWizard(BaseWizard):
     #
 
     def finish(self):
-        #if not self.receiving_model.get_valid():
-        #    self.receiving_model.set_valid()
-        #self.receiving_model.confirm(already_received=True)
-
         self.retval = False
         self.close()
