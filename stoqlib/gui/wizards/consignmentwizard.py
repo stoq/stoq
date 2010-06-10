@@ -25,6 +25,9 @@
 ##
 """ Consignment wizard definition """
 
+from decimal import Decimal
+import sys
+
 import gtk
 
 from kiwi.datatypes import currency
@@ -183,7 +186,7 @@ class _InConsignmentItem(object):
 
         storable = IStorable(item.sellable.product)
         self.stock = storable.get_stock_item(self.branch).quantity
-        self._sold = -1
+        self._sold = 0
         self.sold_total = 0
 
     def get_sold(self):
@@ -192,9 +195,10 @@ class _InConsignmentItem(object):
     def set_sold(self, qtd):
         self._sold = qtd
         if qtd < 0:
+            self._sold = 0
             self.sold_total = 0
         else:
-            self.sold_total = currency(self._sold * float(self.cost))
+            self.sold_total = currency(self._sold * Decimal(self.cost))
 
     sold = property(get_sold, set_sold)
 
@@ -207,6 +211,7 @@ class ItemSelectionStep(BaseWizardStep):
         self.branch = branch
         self.consignments = consignments
         BaseWizardStep.__init__(self, conn, wizard, previous)
+        self.reset_sold_button.set_sensitive(False)
         self._setup_slaves()
 
     def _setup_slaves(self):
@@ -216,9 +221,65 @@ class ItemSelectionStep(BaseWizardStep):
         self.slave.hide_add_button()
         self.slave.hide_edit_button()
         self.slave.hide_del_button()
-        #self.slave.connect('on-edit-item', self._on_list_slave__edit_item)
-
+        self.slave.klist.connect('cell-edited',
+                                 self._on_list_slave__cell_edited)
         self.attach_slave('place_holder', self.slave)
+
+    def _set_all_sold(self):
+        for item in self.slave.klist:
+            item.sold = item.consigned
+        self.slave.klist.refresh()
+        self.new_consignment_radio.set_sensitive(False)
+        self.return_items_radio.set_sensitive(False)
+        self.all_sold_button.set_sensitive(False)
+        self.reset_sold_button.set_sensitive(True)
+        self._validate_step()
+
+    def _unset_all_sold(self):
+        for item in self.slave.klist:
+            item.sold = 0
+        self.slave.klist.refresh()
+        self.new_consignment_radio.set_sensitive(True)
+        self.return_items_radio.set_sensitive(True)
+        self.all_sold_button.set_sensitive(True)
+        self.reset_sold_button.set_sensitive(False)
+        self._validate_step()
+
+    def _is_all_sold(self):
+        return all([i.sold == i.consigned for i in self.slave.klist])
+
+    def _set_error_message(self, msg):
+        if not msg:
+            self.error_label.hide()
+        else:
+            self.error_label.show()
+
+        self.error_label.set_size('small')
+        self.error_label.set_color('red')
+        self.error_label.set_text('<i>%s</i>' % msg)
+
+    def _validate_step(self, validation_value=False):
+        is_valid = True
+        total = 0
+        for item in self.slave.klist:
+            total += item.sold
+            if item.sold > item.consigned:
+                is_valid = False
+
+        if not is_valid:
+            error_msg = _(u'Sold items quantity are greater than the '
+                           'consigned quantity.')
+            self._set_error_message(error_msg)
+        else:
+            self._set_error_message('')
+
+        self.wizard.refresh_next(is_valid and total > 0)
+
+    def _format_qty(self, quantity):
+        # primitive validation
+        if quantity >= 0:
+            return format_quantity(quantity)
+        return format_quantity(0)
 
     def get_saved_items(self):
         for consig in self.consignments:
@@ -226,25 +287,30 @@ class ItemSelectionStep(BaseWizardStep):
                 yield _InConsignmentItem(i)
 
     def get_columns(self):
+        adj = gtk.Adjustment(upper=sys.maxint, step_incr=1)
         return [
             Column('order', title=_('Order'), width=60, data_type=str,
                    sorted=True),
             Column('code', title=_('Code'), width=70, data_type=int),
             Column('description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),
-            Column('stock', title=_('Stock'), data_type=float, width=70,
+            Column('stock', title=_('Stock'), data_type=Decimal,
                    format_func=format_quantity),
-            Column('consigned', title=_('Consigned'), data_type=float, width=90,
+            Column('consigned', title=_('Consigned'), data_type=Decimal,
                    format_func=format_quantity),
-            Column('sold', title=_('Sold'), data_type=float, width=60,
-                   format_func=format_quantity, editable=True),
-            #Column('to_buy', title=_('Buy'), data_type=float,
+            Column('sold', title=_('Sold'), data_type=Decimal,
+                   editable=True, spin_adjustment=adj,
+                   format_func=self._format_qty, width=90),
+            #Column('to_buy', title=_('Buy'), data_type=Decimal,
             #       format_func=format_quantity, width=70, editable=True),
             Column('cost', title=_('Cost'), data_type=currency,
-                   format_func=get_formatted_cost, width=90),
-            Column('sold_total', title=_('Total Sold'), data_type=currency,
-                   width=90),
+                   format_func=get_formatted_cost),
+            Column('sold_total', title=_('Total Sold'), data_type=currency),
             ]
+
+    def post_init(self):
+        self.register_validate_function(self._validate_step)
+        self.force_validation()
 
     def has_previous_step(self):
         return True
@@ -253,9 +319,18 @@ class ItemSelectionStep(BaseWizardStep):
         return True
 
     def next_step(self):
-        for item in self.slave.klist:
-            print item
-            pass
+        # cases:
+        # a) items sold == items consigned: finalize consignment
+        # b) items sold < items consigned:
+        #    c) create new consignment with the remaining items
+        #    d) return the remaining items
+        if self._is_all_sold():
+            pass # go to the final step
+        if self.new_consignment_radio.is_active():
+            pass # go to the new consignment step
+        else:
+            pass # go to the return items step
+
 
         ## Now, we should create a new PurchaseOrder with the items we sold.
         #order = self._create_order()
@@ -279,6 +354,15 @@ class ItemSelectionStep(BaseWizardStep):
 
         ## Next step
         #return CloseConsignmentPaymentStep(self.wizard, self, self.conn, order)
+
+    def _on_list_slave__cell_edited(self, widget, data, attr):
+        self._validate_step()
+
+    def on_all_sold_button__clicked(self, widget):
+        self._set_all_sold()
+
+    def on_reset_sold_button__clicked(self, widget):
+        self._unset_all_sold()
 
 
 class CloseConsignmentPaymentStep(PurchasePaymentStep):
