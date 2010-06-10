@@ -15,7 +15,12 @@ def apply_patch(trans):
         if payment.is_preview():
             continue
 
-        PaymentFlowHistory.add_payment(trans, payment, payment.due_date.date())
+        if payment.due_date:
+            history_date = payment.due_date.date()
+        else:
+            history_date = payment.open_date.date()
+
+        PaymentFlowHistory.add_payment(trans, payment, history_date)
 
         if payment.is_paid():
             PaymentFlowHistory.add_paid_payment(trans, payment,
