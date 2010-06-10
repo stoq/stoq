@@ -92,6 +92,7 @@ class ProductAdaptToBook(ModelAdapter):
     decorative_finish = UnicodeCol(default='')
     country = UnicodeCol(default=u'Brazil')
     pages = IntCol(default=0)
+    year = IntCol(default=0)
     synopsis = UnicodeCol(default='')
 
 Product.registerFacet(ProductAdaptToBook, IBook)

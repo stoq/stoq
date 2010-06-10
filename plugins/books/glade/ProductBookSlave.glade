@@ -9,7 +9,7 @@
                 <property name="border_width">6</property>
                 <property name="column_spacing">6</property>
                 <property name="n_columns">4</property>
-                <property name="n_rows">6</property>
+                <property name="n_rows">7</property>
                 <property name="row_spacing">6</property>
                 <property name="visible">True</property>
                 <child>
@@ -63,14 +63,27 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="label10">
-                        <property name="label" context="yes" translatable="yes">Decorative Finish:</property>
+                    <widget class="GtkLabel" id="label12">
+                        <property name="label" context="yes" translatable="yes">Year:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">5</property>
                         <property name="top_attach">4</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options"></property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label10">
+                        <property name="label" context="yes" translatable="yes">Decorative Finish:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">6</property>
+                        <property name="top_attach">5</property>
                         <property name="x_options">fill</property>
                         <property name="y_options"></property>
                     </packing>
@@ -83,8 +96,8 @@
                         <property name="yalign">0.0</property>
                     </widget>
                     <packing>
-                        <property name="bottom_attach">6</property>
-                        <property name="top_attach">5</property>
+                        <property name="bottom_attach">7</property>
+                        <property name="top_attach">6</property>
                         <property name="x_options">fill</property>
                         <property name="y_options"></property>
                     </packing>
@@ -145,10 +158,12 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyEntry" id="decorative_finish">
-                        <property name="data_type">unicode</property>
+                    <widget class="ProxySpinButton" id="year">
+                        <property name="adjustment">0 0 100 1 10 0</property>
+                        <property name="data_type">int</property>
                         <property name="is_focus">True</property>
-                        <property name="model_attribute">decorative_finish</property>
+                        <property name="model_attribute">year</property>
+                        <property name="text" context="yes" translatable="yes">0</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -156,6 +171,21 @@
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">4</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyEntry" id="decorative_finish">
+                        <property name="data_type">unicode</property>
+                        <property name="is_focus">True</property>
+                        <property name="model_attribute">decorative_finish</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">6</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">5</property>
                         <property name="y_options">fill</property>
                     </packing>
                 </child>
@@ -176,10 +206,10 @@
                         </child>
                     </widget>
                     <packing>
-                        <property name="bottom_attach">6</property>
+                        <property name="bottom_attach">7</property>
                         <property name="left_attach">1</property>
                         <property name="right_attach">4</property>
-                        <property name="top_attach">5</property>
+                        <property name="top_attach">6</property>
                         <property name="x_options">fill</property>
                         <property name="y_options">fill</property>
                     </packing>
@@ -258,6 +288,15 @@
                     </packing>
                 </child>
                 <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">5</property>
+                        <property name="bottom_attach">6</property>
+                    </packing>
+                </child>
+                <child>
                     <widget class="ProxyComboEntry" id="publisher_combo">
                         <property name="model_attribute">publisher</property>
                         <property name="visible">True</property>
@@ -324,6 +363,15 @@
                         <property name="right_attach">4</property>
                         <property name="top_attach">4</property>
                         <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">5</property>
+                        <property name="bottom_attach">6</property>
                     </packing>
                 </child>
             </widget>

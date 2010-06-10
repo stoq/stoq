@@ -43,11 +43,20 @@ class ProductBookSearch(ProductSearch):
     title = _('Book Search')
     search_table = ProductBookFullStockView
 
+    def _setup_widgets(self):
+        if not self.hide_cost_column:
+            column = 'cost'
+        elif not self.hide_price_column:
+            column = 'price'
+        self.search.set_summary_label(
+            column, label=_(u'<b>Total:</b>'), format='<b>%s</b>')
+
     #
     # SearchDialog Hooks
     #
 
     def create_filters(self):
+        self._setup_widgets()
         self.set_text_field_columns(['description', 'barcode',
                                      'category_description', 'author',
                                      'publisher', 'isbn'])

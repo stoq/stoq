@@ -160,6 +160,16 @@ data_files += [
      listfiles('plugins', 'nfe', 'sql', '*.py')),
     ]
 
+# Books Plugin
+data_files += [
+    ('$prefix/lib/stoqlib/plugins/books/glade',
+     listfiles('plugins', 'books', 'glade', '*.glade')),
+    ('$prefix/lib/stoqlib/plugins/books/sql',
+     listfiles('plugins', 'books', 'sql', '*.sql')),
+    ('$prefix/lib/stoqlib/plugins/books/sql',
+     listfiles('plugins', 'books', 'sql', '*.py')),
+    ]
+
 setup(name='stoqlib',
       version=version,
       author="Async Open Source",

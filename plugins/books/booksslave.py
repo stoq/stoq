@@ -50,7 +50,7 @@ class ProductBookSlave(BaseEditorSlave):
     model_type = ProductAdaptToBook
     proxy_widgets = ['author', 'series', 'edition', 'subject', 'isbn',
                      'language', 'pages', 'synopsis', 'country_combo',
-                     'decorative_finish',
+                     'decorative_finish', 'year',
                     ]
 
     def __init__(self, conn, product, model=None):
@@ -70,8 +70,9 @@ class ProductBookSlave(BaseEditorSlave):
 
     def _setup_widgets(self):
         self.country_combo.prefill(get_countries())
-        self.pages.set_adjustment(
-            gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
+        for widget in [self.pages, self.year,]:
+            widget.set_adjustment(
+                gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
         table = Person.getAdapterClass(IPublisher)
         publishers = table.select(connection=self.conn)
         self.publisher_combo.prefill([(p.person.name, p) for p in publishers])
@@ -80,8 +81,14 @@ class ProductBookSlave(BaseEditorSlave):
     # Kiwi Callbacks
     #
 
-    def on_pages__validate(self, widget, value):
-        if not value:
+    def _positive_validator(self, value):
+        if value:
             return
         if value < 0:
-            return ValidationError(_(u'The number of pages must be positive.'))
+            return ValidationError(_(u'The value must be positive.'))
+
+    def on_pages__validate(self, widget, value):
+        return self._positive_validator(value)
+
+    def on_year__validate(self, widget, value):
+        return self._positive_validator(value)
