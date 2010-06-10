@@ -56,6 +56,13 @@ class TestPurchaseOrder(DomainTest):
         order.close()
         self.assertEqual(order.status, PurchaseOrder.ORDER_CLOSED)
 
+    def testCloseConsigned(self):
+        order = self.create_purchase_order()
+        order.consignment = True
+        order.status = PurchaseOrder.ORDER_PENDING
+        order.set_consigned()
+        self.failIf(order.can_close())
+
     def testCancelNotPaid(self):
         order = self.create_purchase_order()
         self.assertRaises(ValueError, order.close)

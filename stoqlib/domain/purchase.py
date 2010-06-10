@@ -155,9 +155,6 @@ class PurchaseOrder(ValidatableDomain):
     freight_types = {FREIGHT_FOB    : _(u'FOB'),
                      FREIGHT_CIF    : _(u'CIF')}
 
-    (PRODUCT_NORMAL,
-     PRODUCT_CONSIGNED) = range(2)
-
     status = IntCol(default=ORDER_QUOTING)
     open_date = DateTimeCol(default=datetime.datetime.now)
     quote_deadline = DateTimeCol(default=None)
