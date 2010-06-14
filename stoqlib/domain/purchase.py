@@ -306,10 +306,12 @@ class PurchaseOrder(ValidatableDomain):
         if confirm_date is None:
             confirm_date = const.NOW()
 
-        if self.status != PurchaseOrder.ORDER_PENDING:
+        if self.status not in [PurchaseOrder.ORDER_PENDING,
+                               PurchaseOrder.ORDER_CONSIGNED]:
             raise ValueError(
                 'Invalid order status, it should be '
-                'ORDER_PENDING, got %s' % (self.get_status_str(),))
+                'ORDER_PENDING or ORDER_CONSIGNED, got %s' % (
+                                            self.get_status_str(),))
 
         transaction = IPaymentTransaction(self)
         transaction.confirm()
@@ -555,6 +557,9 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
     #
 
     def confirm(self):
+        if self.purchase.status == PurchaseOrder.ORDER_CONSIGNED:
+            return
+
         for payment in self.purchase.payments:
             payment.set_pending()
 
