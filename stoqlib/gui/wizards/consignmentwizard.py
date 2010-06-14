@@ -25,6 +25,7 @@
 ##
 """ Consignment wizard definition """
 
+import datetime
 from decimal import Decimal
 import sys
 
@@ -33,12 +34,15 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import get_current_user
+from stoqlib.database.runtime import (get_current_user, new_transaction,
+                                      finish_transaction)
 from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrderView, PurchaseOrder
 from stoqlib.domain.receiving import (ReceivingOrder,
                                       get_receiving_items_by_purchase_order)
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.wizards.purchasewizard import (StartPurchaseStep,
@@ -101,8 +105,9 @@ class ConsignmentSelectionStep(PurchaseSelectionStep):
         self.search.save_columns()
         selected = self.search.results.get_selected()
         consignment = selected.purchase
+        self.wizard.purchase_model = consignment
 
-        return ItemSelectionStep(self.wizard, self, self.conn, consignment)
+        return ConsignmentItemSelectionStep(self.wizard, self, self.conn, consignment)
 
 
 class _InConsignmentItem(object):
@@ -137,8 +142,8 @@ class _InConsignmentItem(object):
     sold = property(get_sold, set_sold)
 
 
-class ItemSelectionStep(BaseWizardStep):
-    gladefile = 'ItemSelectionStep'
+class ConsignmentItemSelectionStep(BaseWizardStep):
+    gladefile = 'ConsignmentItemSelectionStep'
 
     def __init__(self, wizard, previous, conn, consignment):
         self.consignment = consignment
@@ -180,6 +185,9 @@ class ItemSelectionStep(BaseWizardStep):
     def _is_all_sold(self):
         return all([i.sold == i.consigned for i in self.slave.klist])
 
+    def _get_total_charged(self):
+        return sum([i.sold_total for i in self.slave.klist], Decimal(0))
+
     def _set_error_message(self, msg):
         if not msg:
             self.error_label.hide()
@@ -213,6 +221,43 @@ class ItemSelectionStep(BaseWizardStep):
             return format_quantity(quantity)
         return format_quantity(0)
 
+    def _clone_consignment(self, trans):
+        model = trans.get(self.consignment)
+        consignment = model.clone()
+        consignment.status = PurchaseOrder.ORDER_PENDING
+        consignment.group = PaymentGroup(connection=trans)
+        consignment.open_date = datetime.date.today()
+        # since we will receive the remaining items again, we will return all
+        # products remaining now.
+        for item in self.slave.klist:
+            old_item = trans.get(item.item)
+            new_item = old_item.clone()
+            new_item.quantity = item.consigned - item.sold
+            self._return_single_item(new_item.sellable, new_item.quantity)
+            new_item.quantity_received = Decimal(0)
+            new_item.order = consignment
+        return consignment
+
+    def _create_new_consignment(self):
+        #trans = new_transaction()
+        trans = self.conn
+        new_consignment = self._clone_consignment(trans)
+        retval = run_dialog(ConsignmentWizard, self, trans,
+                            new_consignment)
+        #finish_transaction(trans, retval)
+        #trans.close()
+        return retval
+
+    def _return_single_item(self, sellable, quantity):
+        storable = IStorable(sellable.product, None)
+        assert storable
+
+        branch = self.consignment.branch
+        storable.decrease_stock(quantity=quantity, branch=branch)
+
+    def _return_consignment(self):
+        pass
+
     def get_saved_items(self):
         for item in self.consignment.get_items():
             yield _InConsignmentItem(item)
@@ -232,8 +277,6 @@ class ItemSelectionStep(BaseWizardStep):
             Column('sold', title=_('Sold'), data_type=Decimal,
                    editable=True, spin_adjustment=adj,
                    format_func=self._format_qty, width=90),
-            #Column('to_buy', title=_('Buy'), data_type=Decimal,
-            #       format_func=format_quantity, width=70, editable=True),
             Column('cost', title=_('Cost'), data_type=currency,
                    format_func=get_formatted_cost),
             Column('sold_total', title=_('Total Sold'), data_type=currency),
@@ -256,36 +299,20 @@ class ItemSelectionStep(BaseWizardStep):
         #    c) create new consignment with the remaining items
         #    d) return the remaining items
         if self._is_all_sold():
-             return CloseConsignmentPaymentStep(self.wizard, self, self.conn,
-                                                self.consignment)
-        if self.new_consignment_radio.is_active():
-            pass # go to the new consignment step
+            outstanding_value = Decimal(0)
+        elif self.new_consignment_radio.get_active():
+            new_consignment = self._create_new_consignment()
+            # Stay in this step if the new consignment was not created.
+            if not new_consignment:
+                return None
+            outstanding_value = self._get_total_charged()
         else:
-            pass # go to the return items step
+            self._return_consignment()
+            outstanding_value = self._get_total_charged()
 
-
-        ## Now, we should create a new PurchaseOrder with the items we sold.
-        #order = self._create_order()
-        #for consig_item in self.slave.klist:
-        #    # add new sale item
-        #    item = order.add_item(consig_item.sellable, consig_item.sold)
-        #    item.cost = consig_item.avg_cost
-        #    order.receive_item(item, consig_item.sold)
-
-        #order.set_valid()
-
-        ## Close previous consignments
-        #for consig in self.consignments:
-        #    consig = self.conn.get(consig)
-        #    consig.purchase_order = order
-        #    consig.close()
-
-        ## Create a new one with the remaining items
-        #if self.create_new_consignment.get_active():
-        #    print 'Creating new consignment'
-
-        ## Next step
-        #return CloseConsignmentPaymentStep(self.wizard, self, self.conn, order)
+        return CloseConsignmentPaymentStep(self.wizard, self, self.conn,
+                                           self.consignment,
+                                           outstanding_value=outstanding_value)
 
     def _on_list_slave__cell_edited(self, widget, data, attr):
         self._validate_step()
@@ -303,19 +330,6 @@ class CloseConsignmentPaymentStep(PurchasePaymentStep):
         return False
 
 
-class FinishCloseConsignmentStep(FinishPurchaseStep):
-
-    def __init__(self, wizard, previous, conn, model):
-        FinishPurchaseStep.__init__(self, wizard, previous, conn, model)
-        self.receive_now.hide()
-
-    def has_next_step(self):
-        return False
-
-    def next_step(self):
-        return ReceivingInvoiceStep(self.conn, self.wizard,
-                                    self.wizard.receiving_model)
-
 #
 # Main wizards
 #
@@ -324,8 +338,8 @@ class FinishCloseConsignmentStep(FinishPurchaseStep):
 class ConsignmentWizard(PurchaseWizard):
     title = _("New Consignment")
 
-    def __init__(self, conn):
-        model = self._create_model(conn)
+    def __init__(self, conn, model=None):
+        model = model or self._create_model(conn)
 
         # If we receive the order right after the purchase.
         self.receiving_model = None
@@ -346,7 +360,7 @@ class CloseInConsignmentWizard(BaseWizard):
 
     def __init__(self, conn):
         register_payment_operations()
-        self.receiving_model = None
+        self.purchase_model = None
         first_step = ConsignmentSelectionStep(self, conn)
         BaseWizard.__init__(self, conn, first_step, None)
         self.next_button.set_sensitive(False)
@@ -356,5 +370,9 @@ class CloseInConsignmentWizard(BaseWizard):
     #
 
     def finish(self):
-        self.retval = False
+        purchase = self.conn.get(self.purchase_model)
+        purchase.confirm()
+        purchase.close()
+
+        self.retval = self.purchase_model
         self.close()
