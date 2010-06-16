@@ -167,9 +167,9 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="SearchInConsignments">
-                        <property name="name">SearchInConsignments</property>
-                        <property name="label" translatable="yes">Search Consigments...</property>
+                    <widget class="GtkAction" id="SearchInConsignmentItems">
+                        <property name="name">SearchInConsignmentItems</property>
+                        <property name="label" translatable="yes">Search Consigment Items...</property>
                     </widget>
                 </child>
                 <child>
@@ -344,7 +344,7 @@
 	    <menuitem action="NewConsignment"/>
 	    <menuitem action="CloseInConsignment"/>
 	    <separator name="sep2"/>
-	    <menuitem action="SearchInConsignments"/>
+	    <menuitem action="SearchInConsignmentItems"/>
       </menu>
       <menu action="SearchMenu">
 	    <menuitem action="BaseCategories"/>

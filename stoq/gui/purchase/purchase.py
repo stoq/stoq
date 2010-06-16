@@ -41,7 +41,7 @@ from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
-#from stoqlib.gui.search.consigmentsearch import InConsignmentSearch
+from stoqlib.gui.search.consignmentsearch import ConsignmentItemSearch
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
@@ -265,7 +265,6 @@ class PurchaseApp(SearchableAppWindow):
         self.refresh()
 
     def _new_consignment(self):
-        print 'new consignemnt'
         trans = new_transaction()
         model = self.run_dialog(ConsignmentWizard, trans)
         rv = finish_transaction(trans, model)
@@ -322,16 +321,13 @@ class PurchaseApp(SearchableAppWindow):
         self.run_dialog(ReceiveQuoteWizard, self.conn)
 
     def on_CloseInConsignment__activate(self, action):
-        print 'close consignment'
         trans = new_transaction()
         model = self.run_dialog(CloseInConsignmentWizard, trans)
-        print 'Done', model
         rv = finish_transaction(trans, model)
         trans.close()
 
-    def on_SearchInConsignments__activate(self, action):
-        print 'search consignment'
-        #self.run_dialog(InConsignmentSearch, self.conn)
+    def on_SearchInConsignmentItems__activate(self, action):
+        self.run_dialog(ConsignmentItemSearch, self.conn)
 
     def on_SearchPurchasedItems__activate(self, action):
         self.run_dialog(PurchasedItemsSearch, self.conn)
