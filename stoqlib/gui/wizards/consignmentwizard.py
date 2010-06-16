@@ -39,7 +39,8 @@ from stoqlib.database.runtime import (get_current_user, new_transaction,
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.operation import register_payment_operations
-from stoqlib.domain.purchase import PurchaseOrderView, PurchaseOrder
+from stoqlib.domain.purchase import (PurchaseOrderView, PurchaseItemView,
+                                     PurchaseOrder)
 from stoqlib.domain.receiving import (ReceivingOrder,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.gui.base.dialogs import run_dialog
@@ -119,6 +120,7 @@ class _InConsignmentItem(object):
         self.description = item.sellable.get_description()
         self.consigned = item.quantity_received
         self.cost = item.cost
+        self.returned = item.quantity_returned
         self.sellable = item.sellable
 
         self.branch = item.order.branch
@@ -141,6 +143,11 @@ class _InConsignmentItem(object):
 
     sold = property(get_sold, set_sold)
 
+    def sync(self, trans):
+        real_obj = trans.get(self.item)
+        real_obj.quantity_sold = self._sold
+        real_obj.quantity_returned = self.returned
+
 
 class ConsignmentItemSelectionStep(BaseWizardStep):
     gladefile = 'ConsignmentItemSelectionStep'
@@ -149,6 +156,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         self.consignment = consignment
         BaseWizardStep.__init__(self, conn, wizard, previous)
         self.reset_sold_button.set_sensitive(False)
+        self.return_items_radio.hide()
         self._setup_slaves()
 
     def _setup_slaves(self):
@@ -205,10 +213,12 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
             total += item.sold
             if item.sold > item.consigned:
                 is_valid = False
+            if item.returned + item.sold > item.consigned:
+                is_valid = False
 
         if not is_valid:
-            error_msg = _(u'Sold items quantity are greater than the '
-                           'consigned quantity.')
+            error_msg = _(u'Sold and returned items quantity are greater than '
+                           'the consigned quantity.')
             self._set_error_message(error_msg)
         else:
             self._set_error_message('')
@@ -230,22 +240,26 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         # since we will receive the remaining items again, we will return all
         # products remaining now.
         for item in self.slave.klist:
+            item.sync(trans)
             old_item = trans.get(item.item)
             new_item = old_item.clone()
-            new_item.quantity = item.consigned - item.sold
+            new_item.quantity = item.consigned - item.sold - item.returned
             self._return_single_item(new_item.sellable, new_item.quantity)
+
+            new_item.quantity_returned = Decimal(0)
+            new_item.quantity_sold = Decimal(0)
             new_item.quantity_received = Decimal(0)
             new_item.order = consignment
         return consignment
 
     def _create_new_consignment(self):
-        #trans = new_transaction()
-        trans = self.conn
+        trans = new_transaction()
+        #trans = self.conn
         new_consignment = self._clone_consignment(trans)
         retval = run_dialog(ConsignmentWizard, self, trans,
                             new_consignment)
-        #finish_transaction(trans, retval)
-        #trans.close()
+        finish_transaction(trans, retval)
+        trans.close()
         return retval
 
     def _return_single_item(self, sellable, quantity):
@@ -256,7 +270,21 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         storable.decrease_stock(quantity=quantity, branch=branch)
 
     def _return_consignment(self):
-        pass
+        trans = new_transaction()
+        for item in self.slave.klist:
+            item.sync(trans)
+            consignment_item = item.item
+            self._return_single_item(consignment_item.sellable,
+                                     consignment_item.quantity_returned)
+        finish_transaction(trans, True)
+        trans.close()
+
+    def _finish_all_items(self):
+        trans = new_transaction()
+        for item in self.slave.klist:
+            item.sync(trans)
+        finish_transaction(trans, True)
+        trans.close()
 
     def get_saved_items(self):
         for item in self.consignment.get_items():
@@ -267,7 +295,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         return [
             Column('order', title=_('Order'), width=60, data_type=str,
                    sorted=True),
-            Column('code', title=_('Code'), width=70, data_type=int),
+            Column('code', title=_('Code'), width=70, data_type=str),
             Column('description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),
             Column('stock', title=_('Stock'), data_type=Decimal,
@@ -275,6 +303,9 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
             Column('consigned', title=_('Consigned'), data_type=Decimal,
                    format_func=format_quantity),
             Column('sold', title=_('Sold'), data_type=Decimal,
+                   editable=True, spin_adjustment=adj,
+                   format_func=self._format_qty, width=90),
+            Column('returned', title=_('Returned'), data_type=Decimal,
                    editable=True, spin_adjustment=adj,
                    format_func=self._format_qty, width=90),
             Column('cost', title=_('Cost'), data_type=currency,
@@ -293,18 +324,14 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         return True
 
     def next_step(self):
-        # cases:
-        # a) items sold == items consigned: finalize consignment
-        # b) items sold < items consigned:
-        #    c) create new consignment with the remaining items
-        #    d) return the remaining items
         if self._is_all_sold():
+            self._finish_all_items()
             outstanding_value = Decimal(0)
         elif self.new_consignment_radio.get_active():
             new_consignment = self._create_new_consignment()
             # Stay in this step if the new consignment was not created.
             if not new_consignment:
-                return None
+                return self
             outstanding_value = self._get_total_charged()
         else:
             self._return_consignment()
@@ -325,6 +352,9 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
 
 
 class CloseConsignmentPaymentStep(PurchasePaymentStep):
+
+    def has_previous_step(self):
+        return False
 
     def has_next_step(self):
         return False
