@@ -533,6 +533,17 @@ class PurchasedItemAndStockView(Viewable):
         return PurchaseItem.get(self.id, connection=self.get_connection())
 
 
+class ConsignedItemAndStockView(PurchasedItemAndStockView):
+    columns = PurchasedItemAndStockView.columns.copy()
+    columns.update(dict(
+        sold=PurchaseItem.q.quantity_sold,
+        returned=PurchaseItem.q.quantity_returned,
+    ))
+    joins = PurchasedItemAndStockView.joins[:]
+    clause = AND(PurchaseOrder.q.consignment == True,
+                 PurchaseOrder.q.branchID == ProductStockItem.q.branchID)
+
+
 class PurchaseReceivingView(Viewable):
     """Stores information about received orders.
 
