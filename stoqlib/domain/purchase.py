@@ -64,6 +64,8 @@ class PurchaseItem(Domain):
     """
     quantity = DecimalCol(default=1)
     quantity_received = DecimalCol(default=0)
+    quantity_sold = DecimalCol(default=0)
+    quantity_returned = DecimalCol(default=0)
     base_cost = PriceCol()
     cost = PriceCol()
     expected_receival_date = DateTimeCol(default=None)
@@ -619,9 +621,12 @@ class PurchaseItemView(Viewable):
         id=PurchaseItem.q.id,
         purchase_id=PurchaseOrder.q.id,
         sellable=Sellable.q.id,
+        code=Sellable.q.code,
         cost=PurchaseItem.q.cost,
         quantity=PurchaseItem.q.quantity,
         quantity_received=PurchaseItem.q.quantity_received,
+        quantity_sold=PurchaseItem.q.quantity_sold,
+        quantity_returned=PurchaseItem.q.quantity_returned,
         total=PurchaseItem.q.cost * PurchaseItem.q.quantity,
         total_received=PurchaseItem.q.cost * PurchaseItem.q.quantity_received,
         description=BaseSellableInfo.q.description,
