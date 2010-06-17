@@ -11,7 +11,7 @@
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkLabel" id="label1">
-                        <property name="label" context="yes" translatable="yes">&lt;b&gt;Consignment Items - Fill the quantity sold of those items:&lt;/b&gt;</property>
+                        <property name="label" context="yes" translatable="yes">&lt;b&gt;Consignment Items - Fill the quantity sold and returned of those items:&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                         <property name="visible">True</property>
                         <property name="xalign">0.0</property>
@@ -21,49 +21,28 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkEventBox" id="place_holder">
+                    <widget class="ObjectList" id="consignment_items">
                         <property name="visible">True</property>
-                        <child>
-                            <placeholder/>
-                        </child>
+                        <property name="vscrollbar_policy">automatic</property>
                     </widget>
                     <packing>
                         <property name="position">1</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyLabel" id="error_label">
-                        <property name="label" context="yes" translatable="yes">kiwilabel1</property>
-                        <property name="model_attribute">error_label</property>
-                        <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
-                    </widget>
-                    <packing>
-                        <property name="expand">False</property>
-                        <property name="position">2</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="GtkHBox" id="hbox1">
+                    <widget class="GtkHButtonBox" id="hbuttonbox1">
+                        <property name="layout_style">start</property>
                         <property name="spacing">6</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="GtkButton" id="all_sold_button">
-                                <property name="label" context="yes" translatable="yes">_All Sold</property>
-                                <property name="use_underline">True</property>
+                            <widget class="GtkButton" id="edit_button">
+                                <property name="label">gtk-edit</property>
+                                <property name="use_stock">True</property>
                                 <property name="visible">True</property>
                             </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                            </packing>
                         </child>
                         <child>
-                            <widget class="GtkButton" id="reset_sold_button">
-                                <property name="label" context="yes" translatable="yes">_Reset Sold</property>
-                                <property name="use_underline">True</property>
-                                <property name="visible">True</property>
-                            </widget>
+                            <placeholder/>
                             <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">False</property>
@@ -71,30 +50,17 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkRadioButton" id="new_consignment_radio">
-                                <property name="is_focus">True</property>
-                                <property name="label" context="yes" translatable="yes">Create new consignment with the remaining items</property>
-                                <property name="visible">True</property>
-                            </widget>
+                            <placeholder/>
                             <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
                                 <property name="position">2</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="GtkRadioButton" id="return_items_radio">
-                                <property name="active">False</property>
-                                <property name="group">new_consignment_radio</property>
-                                <property name="label" context="yes" translatable="yes">Return the remaining items</property>
-                                <property name="visible">True</property>
-                            </widget>
-                            <packing>
-                                <property name="position">3</property>
                             </packing>
                         </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>
-                        <property name="position">3</property>
+                        <property name="position">2</property>
                     </packing>
                 </child>
             </widget>
