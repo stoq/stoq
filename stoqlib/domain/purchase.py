@@ -629,6 +629,7 @@ class PurchaseItemView(Viewable):
         quantity_returned=PurchaseItem.q.quantity_returned,
         total=PurchaseItem.q.cost * PurchaseItem.q.quantity,
         total_received=PurchaseItem.q.cost * PurchaseItem.q.quantity_received,
+        total_sold=PurchaseItem.q.cost * PurchaseItem.q.quantity_sold,
         description=BaseSellableInfo.q.description,
         unit=SellableUnit.q.description,
         )
@@ -658,6 +659,9 @@ class PurchaseItemView(Viewable):
     def select_by_purchase(cls, purchase, connection):
         return PurchaseItemView.select(PurchaseOrder.q.id == purchase.id,
                                        connection=connection)
+    @property
+    def purchase_item(self):
+        return PurchaseItem.get(self.id)
 
 
 #

@@ -47,17 +47,27 @@ class PurchaseItemEditor(BaseEditor):
     proxy_widgets = ['cost',
                      'expected_receival_date',
                      'quantity',
+                     'quantity_sold',
+                     'quantity_returned',
                      'total',]
 
     def __init__(self, conn, model):
+        self._original_sold_qty = model.quantity_sold
+        self._original_returned_qty = model.quantity_returned
         BaseEditor.__init__(self, conn, model)
         order = self.model.order
         if order.status == PurchaseOrder.ORDER_CONFIRMED:
             self._set_not_editable()
+        if order.status == PurchaseOrder.ORDER_CONSIGNED:
+            self._set_not_editable()
+        else:
+            self._disable_consignment_fields()
+
 
     def _setup_widgets(self):
         self.order.set_text("%04d" %  self.model.order.id)
-        for widget in [self.quantity, self.cost]:
+        for widget in [self.quantity, self.cost, self.quantity_sold,
+                       self.quantity_returned]:
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
                                                  step_incr=1))
         self.description.set_text(self.model.sellable.get_description())
@@ -69,6 +79,12 @@ class PurchaseItemEditor(BaseEditor):
     def _set_not_editable(self):
         self.cost.set_sensitive(False)
         self.quantity.set_sensitive(False)
+
+    def _disable_consignment_fields(self):
+        self.sold_lbl.hide()
+        self.returned_lbl.hide()
+        self.quantity_sold.hide()
+        self.quantity_returned.hide()
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -91,3 +107,17 @@ class PurchaseItemEditor(BaseEditor):
         if value <= 0:
             return ValidationError(_(u'The quantity should be greater than '
                                      'zero.'))
+
+    def on_quantity_sold__validate(self, widget, value):
+        if value < self._original_sold_qty:
+            return ValidationError(_(u'Can not decrease this quantity.'))
+        total = value + self.model.quantity_returned
+        if value and total > self.model.quantity_received:
+            return ValidationError(_(u'Invalid sold quantity.'))
+
+    def on_quantity_returned__validate(self, widget, value):
+        if value < self._original_returned_qty:
+            return ValidationError(_(u'Can not decrease this quantity.'))
+        total = value + self.model.quantity_sold
+        if value and total > self.model.quantity_received:
+            return ValidationError(_(u'Invalid returned quantity'))
