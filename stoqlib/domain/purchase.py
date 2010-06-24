@@ -93,6 +93,9 @@ class PurchaseItem(Domain):
     def get_total(self):
         return currency(self.quantity * self.cost)
 
+    def get_total_sold(self):
+        return currency(self.quantity_sold * self.cost)
+
     def get_received_total(self):
         return currency(self.quantity_received * self.cost)
 
