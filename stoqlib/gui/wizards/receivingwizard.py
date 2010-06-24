@@ -284,6 +284,8 @@ class ReceivingInvoiceStep(WizardEditorStep):
         self.attach_slave("place_holder", self.invoice_slave)
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
+        if not self.has_next_step():
+            self.wizard.enable_finish()
 
     def validate_step(self):
         create_freight_payment = self.invoice_slave.create_freight_payment()
