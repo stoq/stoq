@@ -31,23 +31,24 @@ from kiwi.datatypes import currency
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import (get_current_user, new_transaction,
-                                      finish_transaction)
+from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
-from stoqlib.domain.purchase import (PurchaseOrderView, PurchaseItemView,
-                                     PurchaseOrder)
+from stoqlib.domain.purchase import PurchaseOrderView, PurchaseOrder
 from stoqlib.domain.receiving import (ReceivingOrder,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
+from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
+                                             MultipleMethodSlave)
 from stoqlib.gui.wizards.purchasewizard import (StartPurchaseStep,
                                                 PurchaseItemStep,
-                                                PurchasePaymentStep,
                                                 PurchaseWizard)
 from stoqlib.gui.wizards.receivingwizard import (PurchaseSelectionStep,
                                                  ReceivingInvoiceStep)
+from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity, get_formatted_cost
 
@@ -121,14 +122,12 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         self.edit_button.set_sensitive(False)
 
     def _edit_item(self, item):
-        trans = new_transaction()
-        retval = run_dialog(PurchaseItemEditor, self, trans,
-                            trans.get(item.purchase_item))
+        retval = run_dialog(PurchaseItemEditor, self, self.conn,
+                            self.conn.get(item))
+        # FIXME: this should be automatic
         if retval:
-            finish_transaction(trans, retval)
-            item.sync()
-            self.consignment_items.update(item)
-        trans.close()
+            self.consignment_items.remove(item)
+            self.consignment_items.append(retval)
 
     def _return_single_item(self, sellable, quantity):
         storable = IStorable(sellable.product, None)
@@ -140,8 +139,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
     def get_saved_items(self):
         # we keep a copy of the important data to calculate values when we
         # finish this step
-        for item in PurchaseItemView.select_by_purchase(self.consignment,
-                                                        self.conn):
+        for item in self.consignment.get_items():
             self._original_items.append(Settable(item_id=item.id,
                                              sold=item.quantity_sold,
                                              returned=item.quantity_returned))
@@ -149,10 +147,10 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
 
     def get_columns(self):
         return [
-            Column('purchase_id', title=_('Order'), width=60, data_type=str,
+            Column('order.id', title=_('Order'), width=60, data_type=str,
                    sorted=True),
-            Column('code', title=_('Code'), width=70, data_type=str),
-            Column('description', title=_('Description'),
+            Column('sellable.code', title=_('Code'), width=70, data_type=str),
+            Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),
             Column('quantity_received', title=_('Consigned'), data_type=Decimal,
                    format_func=format_quantity),
@@ -182,18 +180,26 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
                     to_sold = final.quantity_sold - initial.sold
                     to_return = final.quantity_returned - initial.returned
 
-                    item = final.purchase_item
                     if to_return > 0:
-                        self._return_single_item(item.sellable, to_return)
+                        self._return_single_item(final.sellable, to_return)
                     if to_sold > 0:
                         total_charged = item.cost * to_sold
-        print total_charged
+
         if total_charged == 0:
+            info(_(u'No payments was generated.'),
+                 _(u'The changes performed does not require payment creation, '
+                    'so this wizard will be finished.'))
             self.wizard.finish()
 
+        # total_charged plus what was previously charged
+        total_charged += self.consignment.group.get_total_value()
         return CloseConsignmentPaymentStep(self.wizard, self, self.conn,
                                            self.consignment,
                                            outstanding_value=total_charged)
+
+    #
+    # Kiwi Callbacks
+    #
 
     def on_consignment_items__selection_changed(self, widget, item):
         self.edit_button.set_sensitive(bool(item))
@@ -206,14 +212,33 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         self._edit_item(item)
 
 
-class CloseConsignmentPaymentStep(PurchasePaymentStep):
+class CloseConsignmentPaymentStep(BaseWizardStep):
+    gladefile = 'HolderTemplate'
+    slave_holder = 'place_holder'
+
+    def __init__(self, wizard, previous, conn, consignment,
+                 outstanding_value=Decimal(0)):
+        self._method = PaymentMethod.get_by_name(conn, 'money')
+        BaseWizardStep.__init__(self, conn, wizard, previous=None)
+        self._consignment = consignment
+        self._outstanding_value = outstanding_value
+        self._setup_slaves()
+
+    def _setup_slaves(self):
+        self.slave = MultipleMethodSlave(self.wizard, self, self.conn,
+                                         self.conn.get(self._consignment),
+                                         None, self._outstanding_value)
+        self.attach_slave('place_holder', self.slave)
+
+    #
+    # WizardStep hooks
+    #
+
+    def validate_step(self):
+        return True
 
     def post_init(self):
-        PurchasePaymentStep.post_init(self)
         self.wizard.enable_finish()
-
-    def has_previous_step(self):
-        return False
 
     def has_next_step(self):
         return False
@@ -249,6 +274,7 @@ class CloseInConsignmentWizard(BaseWizard):
 
     def __init__(self, conn):
         register_payment_operations()
+        register_payment_slaves()
         self.purchase_model = None
         first_step = ConsignmentSelectionStep(self, conn)
         BaseWizard.__init__(self, conn, first_step, None)
@@ -263,8 +289,13 @@ class CloseInConsignmentWizard(BaseWizard):
         can_close = all([i.quantity_received == i.quantity_sold +
                                                 i.quantity_returned
                          for i in purchase.get_items()])
+        for payment in purchase.group.get_items():
+            if payment.is_preview():
+                payment.set_pending()
+
         if can_close:
             purchase.confirm()
             purchase.close()
+
         self.retval = purchase
         self.close()
