@@ -183,7 +183,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
                     if to_return > 0:
                         self._return_single_item(final.sellable, to_return)
                     if to_sold > 0:
-                        total_charged = item.cost * to_sold
+                        total_charged = final.cost * to_sold
 
         if total_charged == 0:
             info(_(u'No payments was generated.'),
