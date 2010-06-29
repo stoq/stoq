@@ -34,6 +34,7 @@ from kiwi.python import Settable
 from kiwi.ui.dialogs import ask_overwrite, error, save
 from kiwi.ui.search import DateSearchFilter
 
+from stoqlib.database.runtime import get_connection, get_current_user
 from stoqlib.gui.base.dialogs import (BasicDialog, run_dialog,
                                       get_current_toplevel)
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
@@ -260,7 +261,9 @@ class GtkPrintDialog(object):
     def _pdfmailto(self):
         if not os.path.exists(self._report.filename):
             raise OSError, "the file does not exist"
-        os.system("/usr/local/bin/pdfmailto %s" % self._report.filename)
+        user = get_current_user(get_connection())
+        os.system("/usr/local/bin/pdfmailto %s '%s'" % (
+                                self._report.filename, user.person.name))
 
     #
     # Public API
