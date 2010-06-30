@@ -419,16 +419,17 @@ class QuotationView(Viewable):
                                  connection=self.get_connection())
 
 
-class SoldItemView(Viewable):
-    """Stores information about all sold items, includinf the average cost
+
+class SaleItemView(Viewable):
+    """Stores information about all sale items, including the average cost
     of the sold items.
     """
-
     columns = dict(
         id=Sellable.q.id,
         code=Sellable.q.code,
         description=BaseSellableInfo.q.description,
-        sold=const.SUM(SaleItem.q.quantity),
+        quantity=const.SUM(SaleItem.q.quantity),
+        average_cost=SaleItem.q.average_cost,
         total_cost=const.SUM(SaleItem.q.quantity * SaleItem.q.average_cost),
     )
 
@@ -440,12 +441,6 @@ class SoldItemView(Viewable):
         INNERJOINOn(None, BaseSellableInfo,
                     Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
     ]
-
-    clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
-                Sale.q.status == Sale.STATUS_PAID,
-                Sale.q.status == Sale.STATUS_ORDERED,
-                Sale.q.status == Sale.STATUS_PAID,
-                )
 
     @classmethod
     def select_by_branch_date(cls, query, branch, date,
@@ -472,11 +467,24 @@ class SoldItemView(Viewable):
         return cls.select(query, having=having, connection=connection)
 
     @property
-    def average_cost(self):
-        if self.sold:
-            return self.total_cost / self.sold
+    def sale(self):
+        return Sale.get(self.sale_id, connection=self.get_connection())
 
-        return 0
+
+class SoldItemView(SaleItemView):
+    columns = SaleItemView.columns
+    joins = SaleItemView.joins
+
+    clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+                Sale.q.status == Sale.STATUS_PAID,
+                Sale.q.status == Sale.STATUS_ORDERED,
+                Sale.q.status == Sale.STATUS_PAID,)
+
+
+class ReturnedItemView(SaleItemView):
+    columns = SaleItemView.columns
+    joins = SaleItemView.joins
+    clause = OR(Sale.q.status == Sale.STATUS_RETURNED,)
 
 
 class PurchasedItemAndStockView(Viewable):
