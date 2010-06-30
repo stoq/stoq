@@ -121,6 +121,9 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         self.consignment_items.add_list(self.get_saved_items())
         self.edit_button.set_sensitive(False)
 
+    def _validate_step(self, value):
+        self.wizard.refresh_next(value)
+
     def _edit_item(self, item):
         retval = run_dialog(InConsignmentItemEditor, self, self.conn,
                             self.conn.get(item))
@@ -128,6 +131,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         if retval:
             self.consignment_items.remove(item)
             self.consignment_items.append(retval)
+            self._validate_step(True)
 
     def _return_single_item(self, sellable, quantity):
         storable = IStorable(sellable.product, None)
@@ -163,8 +167,14 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
             Column('total_sold', title=_('Total Sold'), data_type=currency),
             ]
 
+    #
+    # WizardStep
+    #
+
     def post_init(self):
+        self.register_validate_function(self._validate_step)
         self.force_validation()
+        self._validate_step(False)
 
     def has_previous_step(self):
         return True
@@ -230,6 +240,11 @@ class CloseConsignmentPaymentStep(BaseWizardStep):
                                          None, self._outstanding_value)
         self.attach_slave('place_holder', self.slave)
 
+    def _validate_step(self,value):
+        can_finish = value and self.slave.can_confirm()
+        self.wizard.refresh_next(can_finish)
+
+
     #
     # WizardStep hooks
     #
@@ -238,6 +253,9 @@ class CloseConsignmentPaymentStep(BaseWizardStep):
         return True
 
     def post_init(self):
+        self.register_validate_function(self._validate_step)
+        self.force_validation()
+        self._validate_step(False)
         self.wizard.enable_finish()
 
     def has_next_step(self):
