@@ -13,7 +13,7 @@
                     <widget class="GtkTable" id="table1">
                         <property name="column_spacing">6</property>
                         <property name="n_columns">4</property>
-                        <property name="n_rows">5</property>
+                        <property name="n_rows">6</property>
                         <property name="row_spacing">6</property>
                         <property name="visible">True</property>
                         <child>
@@ -43,7 +43,6 @@
                         <child>
                             <widget class="GtkLabel" id="sold_lbl">
                                 <property name="label" context="yes" translatable="yes">Sold Quantity:</property>
-                                <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
@@ -54,14 +53,21 @@
                             </packing>
                         </child>
                         <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="top_attach">3</property>
+                                <property name="bottom_attach">4</property>
+                            </packing>
+                        </child>
+                        <child>
                             <widget class="GtkLabel" id="label4">
                                 <property name="label" context="yes" translatable="yes">Cost:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">4</property>
-                                <property name="top_attach">3</property>
+                                <property name="bottom_attach">5</property>
+                                <property name="top_attach">4</property>
                                 <property name="x_options">fill</property>
                                 <property name="y_options">fill</property>
                             </packing>
@@ -73,8 +79,8 @@
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">5</property>
-                                <property name="top_attach">4</property>
+                                <property name="bottom_attach">6</property>
+                                <property name="top_attach">5</property>
                                 <property name="x_options">fill</property>
                                 <property name="y_options">fill</property>
                             </packing>
@@ -112,13 +118,25 @@
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">quantity_sold</property>
                                 <property name="text" context="yes" translatable="yes">0</property>
-                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">3</property>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
                                 <property name="top_attach">2</property>
+                                <property name="x_options">fill</property>
+                                <property name="y_options">fill</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkButton" id="sold_items_button">
+                                <property name="label" context="yes" translatable="yes">Sold Items...</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">4</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">3</property>
                                 <property name="x_options">fill</property>
                                 <property name="y_options">fill</property>
                             </packing>
@@ -133,10 +151,10 @@
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">4</property>
+                                <property name="bottom_attach">5</property>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
-                                <property name="top_attach">3</property>
+                                <property name="top_attach">4</property>
                                 <property name="x_options">fill</property>
                                 <property name="y_options">fill</property>
                             </packing>
@@ -149,16 +167,15 @@
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">5</property>
+                                <property name="bottom_attach">6</property>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
-                                <property name="top_attach">4</property>
+                                <property name="top_attach">5</property>
                             </packing>
                         </child>
                         <child>
                             <widget class="GtkLabel" id="returned_lbl">
                                 <property name="label" context="yes" translatable="yes">Returned Quantity:</property>
-                                <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
@@ -169,16 +186,25 @@
                             </packing>
                         </child>
                         <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">3</property>
+                                <property name="bottom_attach">4</property>
+                            </packing>
+                        </child>
+                        <child>
                             <widget class="GtkLabel" id="label5">
                                 <property name="label" context="yes" translatable="yes">Quantity:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">4</property>
+                                <property name="bottom_attach">5</property>
                                 <property name="left_attach">2</property>
                                 <property name="right_attach">3</property>
-                                <property name="top_attach">3</property>
+                                <property name="top_attach">4</property>
                                 <property name="x_options">fill</property>
                             </packing>
                         </child>
@@ -189,10 +215,10 @@
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">5</property>
+                                <property name="bottom_attach">6</property>
                                 <property name="left_attach">2</property>
                                 <property name="right_attach">3</property>
-                                <property name="top_attach">4</property>
+                                <property name="top_attach">5</property>
                                 <property name="x_options">fill</property>
                             </packing>
                         </child>
@@ -202,13 +228,24 @@
                                 <property name="data_type">Decimal</property>
                                 <property name="model_attribute">quantity_returned</property>
                                 <property name="text" context="yes" translatable="yes">0</property>
-                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">3</property>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
                                 <property name="top_attach">2</property>
+                                <property name="x_options">fill</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkButton" id="returned_items_button">
+                                <property name="label" context="yes" translatable="yes">Returns Items...</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">4</property>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                                <property name="top_attach">3</property>
                                 <property name="x_options">fill</property>
                             </packing>
                         </child>
@@ -224,10 +261,10 @@
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">4</property>
+                                <property name="bottom_attach">5</property>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
-                                <property name="top_attach">3</property>
+                                <property name="top_attach">4</property>
                             </packing>
                         </child>
                         <child>
@@ -238,10 +275,10 @@
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">5</property>
+                                <property name="bottom_attach">6</property>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
-                                <property name="top_attach">4</property>
+                                <property name="top_attach">5</property>
                                 <property name="x_options">fill</property>
                             </packing>
                         </child>
