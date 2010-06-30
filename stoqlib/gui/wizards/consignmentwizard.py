@@ -40,7 +40,7 @@ from stoqlib.domain.receiving import (ReceivingOrder,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
-from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
+from stoqlib.gui.editors.purchaseeditor import InConsignmentItemEditor
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
 from stoqlib.gui.wizards.purchasewizard import (StartPurchaseStep,
@@ -122,7 +122,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         self.edit_button.set_sensitive(False)
 
     def _edit_item(self, item):
-        retval = run_dialog(PurchaseItemEditor, self, self.conn,
+        retval = run_dialog(InConsignmentItemEditor, self, self.conn,
                             self.conn.get(item))
         # FIXME: this should be automatic
         if retval:

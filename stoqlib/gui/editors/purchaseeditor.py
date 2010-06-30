@@ -25,14 +25,22 @@
 
 
 import datetime
+from decimal import Decimal
 import sys
 
 import gtk
 
-from kiwi.datatypes import ValidationError
+from kiwi.datatypes import ValidationError, currency
+from kiwi.enums import ListType
+from kiwi.ui.listdialog import ListDialog
+from kiwi.ui.objectlist import Column
 
+from stoqlib.database.orm import AND
+from stoqlib.database.runtime import get_current_branch
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
+from stoqlib.domain.views import SoldItemView, ReturnedItemView
 from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -52,17 +60,10 @@ class PurchaseItemEditor(BaseEditor):
                      'total',]
 
     def __init__(self, conn, model):
-        self._original_sold_qty = model.quantity_sold
-        self._original_returned_qty = model.quantity_returned
         BaseEditor.__init__(self, conn, model)
         order = self.model.order
         if order.status == PurchaseOrder.ORDER_CONFIRMED:
             self._set_not_editable()
-        if order.status == PurchaseOrder.ORDER_CONSIGNED:
-            self._set_not_editable()
-        else:
-            self._disable_consignment_fields()
-
 
     def _setup_widgets(self):
         self.order.set_text("%04d" %  self.model.order.id)
@@ -79,12 +80,6 @@ class PurchaseItemEditor(BaseEditor):
     def _set_not_editable(self):
         self.cost.set_sensitive(False)
         self.quantity.set_sensitive(False)
-
-    def _disable_consignment_fields(self):
-        self.sold_lbl.hide()
-        self.returned_lbl.hide()
-        self.quantity_sold.hide()
-        self.quantity_returned.hide()
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -108,16 +103,105 @@ class PurchaseItemEditor(BaseEditor):
             return ValidationError(_(u'The quantity should be greater than '
                                      'zero.'))
 
+
+
+class SaleItemsDialog(ListDialog):
+    columns = [
+        Column('code', title=_(u'Code'), data_type=str, sorted=True),
+        #Column('sale_id', title=_(u'Sale #'), data_type=int, format='%05d'),
+        Column('description', title=_(u'Description'), data_type=str,
+                expand=True),
+        Column('quantity', title=_(u'Quantity'), data_type=Decimal),
+        Column('total_cost', title=_(u'Total (avg.)'), data_type=currency),
+    ]
+    list_type = ListType.READONLY
+    size = (650, 300)
+    title = _(u'View Sale Items')
+
+    def __init__(self, items):
+        self._sale_items = items
+        ListDialog.__init__(self)
+        self.set_list_type(self.list_type)
+        self.set_size_request(*self.size)
+        self.set_title(self.title)
+
+    def populate(self):
+        return self._sale_items
+
+
+class InConsignmentItemEditor(PurchaseItemEditor):
+
+    def __init__(self, conn, model):
+        self._original_sold_qty = model.quantity_sold
+        self._original_returned_qty = model.quantity_returned
+        self._allowed_sold = None
+        self._allowed_returned = None
+        PurchaseItemEditor.__init__(self, conn, model)
+        order = self.model.order
+        assert order.status == PurchaseOrder.ORDER_CONSIGNED
+        self._set_not_editable()
+
+        # constraints
+        self._allowed_sold = min(
+            sum([i.quantity for i in self._get_sale_items()]),
+            self.model.quantity_received)
+        returned_items = self._get_sale_items(returned=True)
+        self._allowed_returned = min(
+            sum([i.quantity for i in returned_items], 0),
+            self.model.quantity_received)
+
+        # enable consignment fields
+        self.sold_lbl.show()
+        self.returned_lbl.show()
+        self.quantity_sold.show()
+        self.quantity_returned.show()
+        self.sold_items_button.show()
+        self.returned_items_button.show()
+
+    def _get_sale_items(self, returned=False):
+        if returned:
+            view_class = ReturnedItemView
+        else:
+            view_class = SoldItemView
+
+        branch = get_current_branch(self.conn)
+        sellable = self.model.sellable
+        start_date = self.model.order.open_date
+        end_date = datetime.date.today()
+        query = AND(view_class.q.id == sellable.id)
+
+        return view_class.select_by_branch_date(query, branch=branch,
+                                                date=(start_date, end_date),
+                                                connection=self.conn)
+
+    def _view_sale_items(self, returned=False):
+        retval = run_dialog(SaleItemsDialog, self.get_toplevel(),
+                            self._get_sale_items(returned=returned))
+
+    #
+    # Kiwi Callbacks
+    #
+
     def on_quantity_sold__validate(self, widget, value):
         if value < self._original_sold_qty:
             return ValidationError(_(u'Can not decrease this quantity.'))
-        total = value + self.model.quantity_returned
-        if value and total > self.model.quantity_received:
+        if self._allowed_sold is None:
+            return
+
+        if value and value > self._allowed_sold:
             return ValidationError(_(u'Invalid sold quantity.'))
 
     def on_quantity_returned__validate(self, widget, value):
         if value < self._original_returned_qty:
             return ValidationError(_(u'Can not decrease this quantity.'))
-        total = value + self.model.quantity_sold
-        if value and total > self.model.quantity_received:
+        if self._allowed_returned is None:
+            return
+
+        if value and value > self._allowed_returned:
             return ValidationError(_(u'Invalid returned quantity'))
+
+    def on_sold_items_button__clicked(self, widget):
+        self._view_sale_items()
+
+    def on_returned_items_button__clicked(self, widget):
+        self._view_sale_items(returned=True)
