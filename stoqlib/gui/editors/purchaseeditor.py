@@ -159,14 +159,6 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         if self._allowed_sold < 0:
             self._allowed_sold = 0
 
-        returned_items = self._get_sale_items(returned=True)
-        returned = sum([i.quantity for i in returned_items], 0)
-        returned_consigned = sum([i.returned for i in consigned_items], 0)
-        self._allowed_returned = min(returned - returned_consigned,
-                                     self.model.quantity_received)
-        if self._allowed_returned < 0:
-            self._allowed_returned = 0
-
     def _get_sale_items(self, returned=False):
         if returned:
             view_class = ReturnedItemView
@@ -206,6 +198,11 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         if self._allowed_sold is None:
             return
 
+        total = self.quantity_returned.read() + value
+        if value and total > self.model.quantity_received:
+            return ValidationError(_(u'Sold and returned quantity does '
+                                      'not match.'))
+
         if value and value > self._allowed_sold:
             return ValidationError(_(u'Invalid sold quantity.'))
 
@@ -215,7 +212,8 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         if self._allowed_returned is None:
             return
 
-        if value and value > self._allowed_returned:
+        total = self.quantity_sold.read() + value
+        if value and total > self.model.quantity_received:
             return ValidationError(_(u'Invalid returned quantity'))
 
     def on_sold_items_button__clicked(self, widget):
