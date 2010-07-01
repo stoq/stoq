@@ -175,7 +175,7 @@ class InConsignmentItemEditor(PurchaseItemEditor):
 
         branch = get_current_branch(self.conn)
         sellable = self.model.sellable
-        start_date = self.model.order.open_date
+        start_date = self.model.order.open_date.date()
         end_date = datetime.date.today()
         query = AND(view_class.q.id == sellable.id)
 
@@ -185,7 +185,7 @@ class InConsignmentItemEditor(PurchaseItemEditor):
 
     def _get_consigned_items(self):
         branch = get_current_branch(self.conn)
-        start_date = self.model.order.open_date
+        start_date = self.model.order.open_date.date()
         product = self.model.sellable.product
         query = AND(ConsignedItemAndStockView.q.product_id == product.id,
                     ConsignedItemAndStockView.q.branch==branch.id,
