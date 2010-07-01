@@ -40,7 +40,8 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
-from stoqlib.domain.views import SoldItemView, ReturnedItemView
+from stoqlib.domain.views import (SoldItemView, ReturnedItemView,
+                                  ConsignedItemAndStockView)
 from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -140,16 +141,7 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         order = self.model.order
         assert order.status == PurchaseOrder.ORDER_CONSIGNED
         self._set_not_editable()
-
-        # constraints
-        self._allowed_sold = min(
-            sum([i.quantity for i in self._get_sale_items()]),
-            self.model.quantity_received)
-        returned_items = self._get_sale_items(returned=True)
-        self._allowed_returned = min(
-            sum([i.quantity for i in returned_items], 0),
-            self.model.quantity_received)
-
+        self._set_constraints()
         # enable consignment fields
         self.sold_lbl.show()
         self.returned_lbl.show()
@@ -157,6 +149,23 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         self.quantity_returned.show()
         self.sold_items_button.show()
         self.returned_items_button.show()
+
+    def _set_constraints(self):
+        consigned_items = self._get_consigned_items()
+        sold = sum([i.quantity for i in self._get_sale_items()], 0)
+        sold_consigned = sum([i.sold for i in consigned_items], 0)
+        self._allowed_sold = min(sold - sold_consigned,
+                                 self.model.quantity_received)
+        if self._allowed_sold < 0:
+            self._allowed_sold = 0
+
+        returned_items = self._get_sale_items(returned=True)
+        returned = sum([i.quantity for i in returned_items], 0)
+        returned_consigned = sum([i.returned for i in consigned_items], 0)
+        self._allowed_returned = min(returned - returned_consigned,
+                                     self.model.quantity_received)
+        if self._allowed_returned < 0:
+            self._allowed_returned = 0
 
     def _get_sale_items(self, returned=False):
         if returned:
@@ -173,6 +182,15 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         return view_class.select_by_branch_date(query, branch=branch,
                                                 date=(start_date, end_date),
                                                 connection=self.conn)
+
+    def _get_consigned_items(self):
+        branch = get_current_branch(self.conn)
+        start_date = self.model.order.open_date
+        product = self.model.sellable.product
+        query = AND(ConsignedItemAndStockView.q.product_id == product.id,
+                    ConsignedItemAndStockView.q.branch==branch.id,
+                    ConsignedItemAndStockView.q.purchased_date>=start_date)
+        return ConsignedItemAndStockView.select(query, connection=self.conn)
 
     def _view_sale_items(self, returned=False):
         retval = run_dialog(SaleItemsDialog, self.get_toplevel(),
