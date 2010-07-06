@@ -429,7 +429,6 @@ class SaleItemView(Viewable):
         code=Sellable.q.code,
         description=BaseSellableInfo.q.description,
         quantity=const.SUM(SaleItem.q.quantity),
-        average_cost=SaleItem.q.average_cost,
         total_cost=const.SUM(SaleItem.q.quantity * SaleItem.q.average_cost),
     )
 
@@ -470,6 +469,12 @@ class SaleItemView(Viewable):
     def sale(self):
         return Sale.get(self.sale_id, connection=self.get_connection())
 
+    @property
+    def average_cost(self):
+        if self.quantity:
+            return self.total_cost / self.quantity
+        return 0
+
 
 class SoldItemView(SaleItemView):
     columns = SaleItemView.columns
@@ -479,12 +484,6 @@ class SoldItemView(SaleItemView):
                 Sale.q.status == Sale.STATUS_PAID,
                 Sale.q.status == Sale.STATUS_ORDERED,
                 Sale.q.status == Sale.STATUS_PAID,)
-
-
-class ReturnedItemView(SaleItemView):
-    columns = SaleItemView.columns
-    joins = SaleItemView.joins
-    clause = OR(Sale.q.status == Sale.STATUS_RETURNED,)
 
 
 class PurchasedItemAndStockView(Viewable):
@@ -548,7 +547,7 @@ class ConsignedItemAndStockView(PurchasedItemAndStockView):
         returned=PurchaseItem.q.quantity_returned,
     ))
     joins = PurchasedItemAndStockView.joins[:]
-    clause = AND(PurchaseOrder.q.consignment == True,
+    clause = AND(PurchaseOrder.q.consigned == True,
                  PurchaseOrder.q.branchID == ProductStockItem.q.branchID)
 
 
@@ -673,48 +672,3 @@ class ProductionItemView(Viewable):
     @property
     def production_item(self):
         return ProductionItem.get(self.id, connection=self.get_connection())
-
-
-
-class InConsignmentsView(Viewable):
-    columns = dict(
-        id=PersonAdaptToSupplier.q.id,
-        supplier_name=Person.q.name,
-        branch_id=PurchaseOrder.q.branchID,
-        open_consignments=const.COUNT(PurchaseOrder.q.id),
-
-    )
-
-    joins = [
-        LEFTJOINOn(None, Person, Person.q.id ==
-                   PersonAdaptToSupplier.q._originalID),
-        INNERJOINOn(None, PurchaseOrder,
-                   PurchaseOrder.q.supplierID == PersonAdaptToSupplier.q.id),
-    ]
-
-    clause = AND(PurchaseOrder.q.consignment == True,
-                 PurchaseOrder.q._is_valid_model == True)
-
-    @property
-    def supplier(self):
-        return PersonAdaptToSupplier.get(self.id,
-                        connection=self.get_connection())
-
-    @property
-    def consignments(self):
-        return PurchaseOrder.selectBy(branchID=self.branch_id,
-                                      supplierID=self.id,
-                                      consignment=True)
-
-    @classmethod
-    def select_by_branch(cls, query, branch, connection=None):
-        if branch:
-            # We need the OR part to be able to list services
-            branch_query = PurchaseOrder.q.branchID == branch.id
-            if query:
-                query = AND(query, branch_query)
-            else:
-                query = branch_query
-
-        return cls.select(query, connection=connection)
-

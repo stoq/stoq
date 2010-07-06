@@ -173,7 +173,7 @@ class PurchaseOrder(ValidatableDomain):
     expected_freight = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     discount_value = PriceCol(default=0)
-    consignment = BoolCol(default=False)
+    consigned = BoolCol(default=False)
     supplier = ForeignKey('PersonAdaptToSupplier')
     branch = ForeignKey('PersonAdaptToBranch')
     transporter = ForeignKey('PersonAdaptToTransporter', default=None)
@@ -562,6 +562,7 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
     #
 
     def confirm(self):
+        # In consigned purchases there is no payments at this point.
         if self.purchase.status == PurchaseOrder.ORDER_CONSIGNED:
             return
 

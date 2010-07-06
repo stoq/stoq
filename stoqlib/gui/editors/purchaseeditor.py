@@ -40,8 +40,7 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
-from stoqlib.domain.views import (SoldItemView, ReturnedItemView,
-                                  ConsignedItemAndStockView)
+from stoqlib.domain.views import SoldItemView, ConsignedItemAndStockView
 from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -106,7 +105,7 @@ class PurchaseItemEditor(BaseEditor):
 
 
 
-class SaleItemsDialog(ListDialog):
+class SoldItemsDialog(ListDialog):
     columns = [
         Column('code', title=_(u'Code'), data_type=str, sorted=True),
         #Column('sale_id', title=_(u'Sale #'), data_type=int, format='%05d'),
@@ -120,14 +119,14 @@ class SaleItemsDialog(ListDialog):
     title = _(u'View Sale Items')
 
     def __init__(self, items):
-        self._sale_items = items
+        self._sold_items = items
         ListDialog.__init__(self)
         self.set_list_type(self.list_type)
         self.set_size_request(*self.size)
         self.set_title(self.title)
 
     def populate(self):
-        return self._sale_items
+        return self._sold_items
 
 
 class InConsignmentItemEditor(PurchaseItemEditor):
@@ -136,47 +135,65 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         self._original_sold_qty = model.quantity_sold
         self._original_returned_qty = model.quantity_returned
         self._allowed_sold = None
-        self._allowed_returned = None
         PurchaseItemEditor.__init__(self, conn, model)
         order = self.model.order
         assert order.status == PurchaseOrder.ORDER_CONSIGNED
         self._set_not_editable()
         self._set_constraints()
+        # disable expected_receival_date (the items was already received)
+        self.expected_receival_date.set_sensitive(False)
         # enable consignment fields
         self.sold_lbl.show()
         self.returned_lbl.show()
         self.quantity_sold.show()
         self.quantity_returned.show()
         self.sold_items_button.show()
-        self.returned_items_button.show()
 
     def _set_constraints(self):
+        # the allowed sold value consider:
+        #     the quantity sold of the sellable
+        #     the quantity set as sold in all the consignments opened since
+        #     the current consignment
+        #     the total quantity received in the current consignment
+        #
+        # So, the quantity sold is constrained by:
+        #     the quantity sold of the sellable - the quantity set as sold in
+        #     other consignments, or
+        #     the total quantity received in the current consignment
         consigned_items = self._get_consigned_items()
-        sold = sum([i.quantity for i in self._get_sale_items()], 0)
-        sold_consigned = sum([i.sold for i in consigned_items], 0)
-        self._allowed_sold = min(sold - sold_consigned,
+        consigned_sold = sum([c.sold for c in consigned_items], 0)
+        sold = sum([s.quantity for s in self._get_sold_items()], 0)
+
+        self._allowed_sold = min(sold - consigned_sold,
                                  self.model.quantity_received)
         if self._allowed_sold < 0:
             self._allowed_sold = 0
+        if self.model.quantity_sold > 0:
+            self._allowed_sold += self.model.quantity_sold
 
-    def _get_sale_items(self, returned=False):
-        if returned:
-            view_class = ReturnedItemView
-        else:
-            view_class = SoldItemView
-
+    def _get_sold_items(self):
+        """Returns the sold items of the sellable we are editing (through
+        purchase_item) since the date of the current consignment
+        (purchase_order) was opened. This is usefull because we need to know
+        how many of this item was sold in the meantime.
+        """
         branch = get_current_branch(self.conn)
         sellable = self.model.sellable
         start_date = self.model.order.open_date.date()
         end_date = datetime.date.today()
-        query = AND(view_class.q.id == sellable.id)
-
-        return view_class.select_by_branch_date(query, branch=branch,
-                                                date=(start_date, end_date),
-                                                connection=self.conn)
+        query = AND(SoldItemView.q.id == sellable.id)
+        return SoldItemView.select_by_branch_date(query, branch=branch,
+                                                  date=(start_date, end_date),
+                                                  connection=self.conn)
 
     def _get_consigned_items(self):
+        """Returns the consigned items of the same sellable we are editing
+        (through purchase_item), since date of the current consignment (purchase_order)
+        was opened. This is usefull because we need to know how many of this
+        item was consigned in the meantime.
+        """
         branch = get_current_branch(self.conn)
+        # use date() to ignore the time part of the datetime.
         start_date = self.model.order.open_date.date()
         product = self.model.sellable.product
         query = AND(ConsignedItemAndStockView.q.product_id == product.id,
@@ -184,17 +201,24 @@ class InConsignmentItemEditor(PurchaseItemEditor):
                     ConsignedItemAndStockView.q.purchased_date>=start_date)
         return ConsignedItemAndStockView.select(query, connection=self.conn)
 
-    def _view_sale_items(self, returned=False):
-        retval = run_dialog(SaleItemsDialog, self.get_toplevel(),
-                            self._get_sale_items(returned=returned))
+    def _view_sold_items(self):
+        retval = run_dialog(SoldItemsDialog, self.get_toplevel(),
+                            self._get_sold_items())
 
     #
     # Kiwi Callbacks
     #
 
+    def on_expected_receival_date__validate(self, widget, value):
+        # Override the signal handler in PurchaseItemEditor, this is the
+        # simple way to disable this validation, since we dont have the
+        # handler_id to call self.expected_receival_date.disconnect() method.
+        pass
+
     def on_quantity_sold__validate(self, widget, value):
         if value < self._original_sold_qty:
             return ValidationError(_(u'Can not decrease this quantity.'))
+
         if self._allowed_sold is None:
             return
 
@@ -209,15 +233,10 @@ class InConsignmentItemEditor(PurchaseItemEditor):
     def on_quantity_returned__validate(self, widget, value):
         if value < self._original_returned_qty:
             return ValidationError(_(u'Can not decrease this quantity.'))
-        if self._allowed_returned is None:
-            return
 
-        total = self.quantity_sold.read() + value
-        if value and total > self.model.quantity_received:
+        max_returned = self.model.quantity_received - self.quantity_sold.read()
+        if value and value > max_returned:
             return ValidationError(_(u'Invalid returned quantity'))
 
     def on_sold_items_button__clicked(self, widget):
-        self._view_sale_items()
-
-    def on_returned_items_button__clicked(self, widget):
-        self._view_sale_items(returned=True)
+        self._view_sold_items()

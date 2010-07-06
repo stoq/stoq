@@ -113,7 +113,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
     def __init__(self, wizard, previous, conn, consignment):
         self.consignment = consignment
         BaseWizardStep.__init__(self, conn, wizard, previous)
-        self._original_items = []
+        self._original_items = {}
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -125,12 +125,9 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         self.wizard.refresh_next(value)
 
     def _edit_item(self, item):
-        retval = run_dialog(InConsignmentItemEditor, self, self.conn,
-                            self.conn.get(item))
-        # FIXME: this should be automatic
+        retval = run_dialog(InConsignmentItemEditor, self, self.conn, item)
         if retval:
-            self.consignment_items.remove(item)
-            self.consignment_items.append(retval)
+            self.consignment_items.update(item)
             self._validate_step(True)
 
     def _return_single_item(self, sellable, quantity):
@@ -144,10 +141,11 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         # we keep a copy of the important data to calculate values when we
         # finish this step
         for item in self.consignment.get_items():
-            self._original_items.append(Settable(item_id=item.id,
+            self._original_items[item.id] = Settable(item_id=item.id,
                                              sold=item.quantity_sold,
-                                             returned=item.quantity_returned))
-            yield item
+                                             returned=item.quantity_returned)
+            # self.conn.get: used to bring the objet to this connection.
+            yield self.conn.get(item)
 
     def get_columns(self):
         return [
@@ -185,15 +183,14 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
     def next_step(self):
         total_charged = Decimal(0)
         for final in self.consignment_items:
-            for initial in self._original_items:
-                if final.id == initial.item_id:
-                    to_sold = final.quantity_sold - initial.sold
-                    to_return = final.quantity_returned - initial.returned
+            initial = self._original_items[final.id]
+            to_sold = final.quantity_sold - initial.sold
+            to_return = final.quantity_returned - initial.returned
 
-                    if to_return > 0:
-                        self._return_single_item(final.sellable, to_return)
-                    if to_sold > 0:
-                        total_charged = final.cost * to_sold
+            if to_return > 0:
+                self._return_single_item(final.sellable, to_return)
+            if to_sold > 0:
+                total_charged = final.cost * to_sold
 
         if total_charged == 0:
             info(_(u'No payments was generated.'),
@@ -282,7 +279,7 @@ class ConsignmentWizard(PurchaseWizard):
 
     def _create_model(self, conn):
         model = PurchaseWizard._create_model(self, conn)
-        model.consignment = True
+        model.consigned = True
         return model
 
 
