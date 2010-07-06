@@ -171,7 +171,7 @@ class StartPurchaseStep(WizardEditorStep):
             return
 
         supplier_infos = ProductSupplierInfo.get_info_by_supplier(
-                    self.conn, supplier, consigned=self.model.consignment)
+                    self.conn, supplier, consigned=self.model.consigned)
         if supplier_infos.count() == 0:
             return ValidationError(_(u'The supplier does not have any '
                                       'products associated.'))
@@ -217,7 +217,7 @@ class PurchaseItemStep(SellableItemStep):
             self.conn,
             storable=True,
             supplier=self.model.supplier,
-            consigned=self.model.consignment,)
+            consigned=self.model.consigned,)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         self.sellable.prefill(
             [(sellable.get_description(full_description=True), sellable)
@@ -289,7 +289,7 @@ class PurchaseItemStep(SellableItemStep):
         self.product_button.hide()
 
     def next_step(self):
-        if self.model.consignment:
+        if self.model.consigned:
             return FinishPurchaseStep(self.wizard, self, self.conn, self.model)
         return PurchasePaymentStep(self.wizard, self, self.conn, self.model)
 

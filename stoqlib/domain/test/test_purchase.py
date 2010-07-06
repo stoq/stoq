@@ -58,7 +58,7 @@ class TestPurchaseOrder(DomainTest):
 
     def testCloseConsigned(self):
         order = self.create_purchase_order()
-        order.consignment = True
+        order.consigned = True
         order.status = PurchaseOrder.ORDER_PENDING
         order.set_consigned()
         self.failIf(order.can_close())

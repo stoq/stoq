@@ -51,10 +51,6 @@ from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
 _ = stoqlib_gettext
 
 
-# Workaround, so PurchaseSelectionStep does not complain about empty model
-class _FakeReceivingOrder(object):
-    pass
-
 #
 # Wizard Steps
 #
