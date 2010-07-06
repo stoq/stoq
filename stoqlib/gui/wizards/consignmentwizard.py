@@ -35,7 +35,8 @@ from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
-from stoqlib.domain.purchase import PurchaseOrderView, PurchaseOrder
+from stoqlib.domain.purchase import (PurchaseOrderView, PurchaseOrder,
+                                     PurchaseItem)
 from stoqlib.domain.receiving import (ReceivingOrder,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.gui.base.dialogs import run_dialog
@@ -125,7 +126,16 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         self.wizard.refresh_next(value)
 
     def _edit_item(self, item):
-        retval = run_dialog(InConsignmentItemEditor, self, self.conn, item)
+        to_edit_item = PurchaseItem.get(item.id, connection=self.conn)
+        # Reset the item before we edit, since all the changes are done
+        # using the same transaction if we dont reset the item, the changed
+        # values might lead to an invalid results.
+        original = self._original_items[item.id]
+        to_edit_item.quantity_sold = original.sold
+        to_edit_item.quantity_returned = original.returned
+
+        retval = run_dialog(InConsignmentItemEditor, self, self.conn,
+                            to_edit_item)
         if retval:
             self.consignment_items.update(item)
             self._validate_step(True)

@@ -141,6 +141,7 @@
                 <child>
                     <widget class="ProxyEntry" id="marked_sold">
                         <property name="data_type">Decimal</property>
+                        <property name="editable">False</property>
                         <property name="model_attribute">marked_sold</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
@@ -300,6 +301,7 @@
                     <widget class="ProxyEntry" id="total_sold">
                         <property name="data_type">Decimal</property>
                         <property name="editable">False</property>
+                        <property name="is_focus">True</property>
                         <property name="model_attribute">total_sold</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
@@ -315,6 +317,7 @@
                 <child>
                     <widget class="ProxyEntry" id="stocked">
                         <property name="data_type">Decimal</property>
+                        <property name="editable">False</property>
                         <property name="model_attribute">stocked</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>

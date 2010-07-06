@@ -137,7 +137,7 @@ class InConsignmentItemDetails(BaseEditor):
 
                         current_sold=item.quantity_sold,
                         total_sold=sum([s.quantity for s in
-                                                self.model.sold_items], 0),
+                                        self.model.sold_items], Decimal(0)),
                         total_consigned=total_consigned,
                         consignments_number=int(
                                         self.model.consigned_items.count()),
