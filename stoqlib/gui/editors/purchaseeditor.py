@@ -32,6 +32,7 @@ import gtk
 
 from kiwi.datatypes import ValidationError, currency
 from kiwi.enums import ListType
+from kiwi.python import Settable
 from kiwi.ui.listdialog import ListDialog
 from kiwi.ui.objectlist import Column
 
@@ -104,29 +105,52 @@ class PurchaseItemEditor(BaseEditor):
                                      'zero.'))
 
 
+class InConsignmentItemDetails(BaseEditor):
+    model_type = Settable
+    model_name = _(u'Consignment Item')
+    title = _(u'Consigment Item Details')
+    gladefile = 'InConsignmentItemDetails'
+    proxy_widgets = ['code', 'description',
+                     'from_date', 'to_date',
+                     'current_sold', 'total_sold',
+                     'marked_sold', 'stocked',
+                     'total_consigned', 'consignments_number',
+                     'current_returned', 'to_return',]
 
-class SoldItemsDialog(ListDialog):
-    columns = [
-        Column('code', title=_(u'Code'), data_type=str, sorted=True),
-        #Column('sale_id', title=_(u'Sale #'), data_type=int, format='%05d'),
-        Column('description', title=_(u'Description'), data_type=str,
-                expand=True),
-        Column('quantity', title=_(u'Quantity'), data_type=Decimal),
-        Column('total_cost', title=_(u'Total (avg.)'), data_type=currency),
-    ]
-    list_type = ListType.READONLY
-    size = (650, 300)
-    title = _(u'View Sale Items')
+    def _build_model(self):
+        item = self.model.item
+        sellable = item.sellable
+        order = self.model.item.order
+        total_consigned = 0
+        marked_sold = 0
+        stocked = 0
+        for consigned_item in self.model.consigned_items:
+            total_consigned += consigned_item.received
+            marked_sold += consigned_item.sold
+            stocked = consigned_item.stocked
 
-    def __init__(self, items):
-        self._sold_items = items
-        ListDialog.__init__(self)
-        self.set_list_type(self.list_type)
-        self.set_size_request(*self.size)
-        self.set_title(self.title)
+        return Settable(code=sellable.code,
+                        description=sellable.get_description(),
 
-    def populate(self):
-        return self._sold_items
+                        from_date=order.open_date,
+                        to_date=datetime.date.today(),
+
+                        current_sold=item.quantity_sold,
+                        total_sold=sum([s.quantity for s in
+                                                self.model.sold_items], 0),
+                        total_consigned=total_consigned,
+                        consignments_number=int(
+                                        self.model.consigned_items.count()),
+                        marked_sold=marked_sold,
+                        stocked=stocked,
+
+                        current_returned=item.quantity_returned,
+                        to_return=(item.quantity_received - item.quantity_sold
+                                   - item.quantity_returned))
+
+    def setup_proxies(self):
+        model = self._build_model()
+        self.add_proxy(model, self.proxy_widgets)
 
 
 class InConsignmentItemEditor(PurchaseItemEditor):
@@ -147,7 +171,7 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         self.returned_lbl.show()
         self.quantity_sold.show()
         self.quantity_returned.show()
-        self.sold_items_button.show()
+        self.details_button.show()
 
     def _set_constraints(self):
         # the allowed sold value consider:
@@ -202,8 +226,12 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         return ConsignedItemAndStockView.select(query, connection=self.conn)
 
     def _view_sold_items(self):
-        retval = run_dialog(SoldItemsDialog, self.get_toplevel(),
-                            self._get_sold_items())
+        consignment_details = Settable(item=self.model,
+                                       sold_items=self._get_sold_items(),
+                                       consigned_items=self._get_consigned_items(),)
+
+        retval = run_dialog(InConsignmentItemDetails, self.get_toplevel(),
+                            self.conn, consignment_details)
 
     #
     # Kiwi Callbacks
@@ -238,5 +266,5 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         if value and value > max_returned:
             return ValidationError(_(u'Invalid returned quantity'))
 
-    def on_sold_items_button__clicked(self, widget):
+    def on_details_button__clicked(self, widget):
         self._view_sold_items()

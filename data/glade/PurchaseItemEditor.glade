@@ -131,8 +131,9 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkButton" id="sold_items_button">
-                                <property name="label" context="yes" translatable="yes">Sold Items...</property>
+                            <widget class="GtkButton" id="details_button">
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes">Details...</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
