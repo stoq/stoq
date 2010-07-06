@@ -126,6 +126,9 @@ class ECFEditor(BaseEditor):
         pass
 
     def on_printer__content_changed(self, combo):
+        # Cannot change the model in edit mode!
+        if self.edit_mode:
+            return
         printer = combo.get_selected()
         self.model.model = printer.model
         self.model.brand = printer.brand
