@@ -13,7 +13,7 @@
                     <widget class="GtkTable" id="table1">
                         <property name="column_spacing">6</property>
                         <property name="n_columns">4</property>
-                        <property name="n_rows">6</property>
+                        <property name="n_rows">5</property>
                         <property name="row_spacing">6</property>
                         <property name="visible">True</property>
                         <child>
@@ -54,23 +54,14 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="GtkLabel" id="label4">
                                 <property name="label" context="yes" translatable="yes">Cost:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">5</property>
-                                <property name="top_attach">4</property>
-                                <property name="x_options">fill</property>
-                                <property name="y_options">fill</property>
+                                <property name="bottom_attach">4</property>
+                                <property name="top_attach">3</property>
                             </packing>
                         </child>
                         <child>
@@ -80,8 +71,8 @@
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">6</property>
-                                <property name="top_attach">5</property>
+                                <property name="bottom_attach">5</property>
+                                <property name="top_attach">4</property>
                                 <property name="x_options">fill</property>
                                 <property name="y_options">fill</property>
                             </packing>
@@ -131,9 +122,12 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkButton" id="details_button">
+                            <widget class="ProxySpinButton" id="cost">
+                                <property name="adjustment">0 0 100 1 10 0</property>
+                                <property name="data_type">currency</property>
                                 <property name="is_focus">True</property>
-                                <property name="label" context="yes" translatable="yes">Details...</property>
+                                <property name="model_attribute">cost</property>
+                                <property name="text" context="yes" translatable="yes">0</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -146,12 +140,10 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxySpinButton" id="cost">
-                                <property name="adjustment">0 0 100 1 10 0</property>
-                                <property name="data_type">currency</property>
-                                <property name="is_focus">True</property>
-                                <property name="model_attribute">cost</property>
-                                <property name="text" context="yes" translatable="yes">0</property>
+                            <widget class="ProxyDateEntry" id="expected_receival_date">
+                                <property name="data_type">date</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">expected_receival_date</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -161,20 +153,6 @@
                                 <property name="top_attach">4</property>
                                 <property name="x_options">fill</property>
                                 <property name="y_options">fill</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="ProxyDateEntry" id="expected_receival_date">
-                                <property name="data_type">date</property>
-                                <property name="mandatory">True</property>
-                                <property name="model_attribute">expected_receival_date</property>
-                                <property name="visible">True</property>
-                            </widget>
-                            <packing>
-                                <property name="bottom_attach">6</property>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">5</property>
                             </packing>
                         </child>
                         <child>
@@ -191,26 +169,16 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="GtkLabel" id="label5">
                                 <property name="label" context="yes" translatable="yes">Quantity:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">5</property>
+                                <property name="bottom_attach">4</property>
                                 <property name="left_attach">2</property>
                                 <property name="right_attach">3</property>
-                                <property name="top_attach">4</property>
-                                <property name="x_options">fill</property>
+                                <property name="top_attach">3</property>
                             </packing>
                         </child>
                         <child>
@@ -220,10 +188,10 @@
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">6</property>
+                                <property name="bottom_attach">5</property>
                                 <property name="left_attach">2</property>
                                 <property name="right_attach">3</property>
-                                <property name="top_attach">5</property>
+                                <property name="top_attach">4</property>
                                 <property name="x_options">fill</property>
                             </packing>
                         </child>
@@ -244,18 +212,8 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                                <property name="x_options">fill</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="ProxySpinButton" id="quantity">
-                                <property name="adjustment">1 1 100 1 10 0</property>
+                                <property name="adjustment">1 0 100 1 10 0</property>
                                 <property name="data_type">Decimal</property>
                                 <property name="digits">2</property>
                                 <property name="mandatory">True</property>
@@ -265,10 +223,11 @@
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">5</property>
+                                <property name="bottom_attach">4</property>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
-                                <property name="top_attach">4</property>
+                                <property name="top_attach">3</property>
+                                <property name="x_options">fill</property>
                             </packing>
                         </child>
                         <child>
@@ -279,11 +238,10 @@
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">6</property>
+                                <property name="bottom_attach">5</property>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
-                                <property name="top_attach">5</property>
-                                <property name="x_options">fill</property>
+                                <property name="top_attach">4</property>
                             </packing>
                         </child>
                     </widget>
