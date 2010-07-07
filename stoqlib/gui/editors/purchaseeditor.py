@@ -25,23 +25,14 @@
 
 
 import datetime
-from decimal import Decimal
 import sys
 
 import gtk
 
-from kiwi.datatypes import ValidationError, currency
-from kiwi.enums import ListType
-from kiwi.python import Settable
-from kiwi.ui.listdialog import ListDialog
-from kiwi.ui.objectlist import Column
+from kiwi.datatypes import ValidationError
 
-from stoqlib.database.orm import AND
-from stoqlib.database.runtime import get_current_branch
-from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
-from stoqlib.domain.views import SoldItemView, ConsignedItemAndStockView
 from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -105,54 +96,6 @@ class PurchaseItemEditor(BaseEditor):
                                      'zero.'))
 
 
-class InConsignmentItemDetails(BaseEditor):
-    model_type = Settable
-    model_name = _(u'Consignment Item')
-    title = _(u'Consigment Item Details')
-    gladefile = 'InConsignmentItemDetails'
-    proxy_widgets = ['code', 'description',
-                     'from_date', 'to_date',
-                     'current_sold', 'total_sold',
-                     'marked_sold', 'stocked',
-                     'total_consigned', 'consignments_number',
-                     'current_returned', 'to_return',]
-
-    def _build_model(self):
-        item = self.model.item
-        sellable = item.sellable
-        order = self.model.item.order
-        total_consigned = 0
-        marked_sold = 0
-        stocked = 0
-        for consigned_item in self.model.consigned_items:
-            total_consigned += consigned_item.received
-            marked_sold += consigned_item.sold
-            stocked = consigned_item.stocked
-
-        return Settable(code=sellable.code,
-                        description=sellable.get_description(),
-
-                        from_date=order.open_date,
-                        to_date=datetime.date.today(),
-
-                        current_sold=item.quantity_sold,
-                        total_sold=sum([s.quantity for s in
-                                        self.model.sold_items], Decimal(0)),
-                        total_consigned=total_consigned,
-                        consignments_number=int(
-                                        self.model.consigned_items.count()),
-                        marked_sold=marked_sold,
-                        stocked=stocked,
-
-                        current_returned=item.quantity_returned,
-                        to_return=(item.quantity_received - item.quantity_sold
-                                   - item.quantity_returned))
-
-    def setup_proxies(self):
-        model = self._build_model()
-        self.add_proxy(model, self.proxy_widgets)
-
-
 class InConsignmentItemEditor(PurchaseItemEditor):
 
     def __init__(self, conn, model):
@@ -163,7 +106,6 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         order = self.model.order
         assert order.status == PurchaseOrder.ORDER_CONSIGNED
         self._set_not_editable()
-        self._set_constraints()
         # disable expected_receival_date (the items was already received)
         self.expected_receival_date.set_sensitive(False)
         # enable consignment fields
@@ -171,67 +113,6 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         self.returned_lbl.show()
         self.quantity_sold.show()
         self.quantity_returned.show()
-        self.details_button.show()
-
-    def _set_constraints(self):
-        # the allowed sold value consider:
-        #     the quantity sold of the sellable
-        #     the quantity set as sold in all the consignments opened since
-        #     the current consignment
-        #     the total quantity received in the current consignment
-        #
-        # So, the quantity sold is constrained by:
-        #     the quantity sold of the sellable - the quantity set as sold in
-        #     other consignments, or
-        #     the total quantity received in the current consignment
-        consigned_items = self._get_consigned_items()
-        consigned_sold = sum([c.sold for c in consigned_items], 0)
-        sold = sum([s.quantity for s in self._get_sold_items()], 0)
-
-        self._allowed_sold = min(sold - consigned_sold,
-                                 self.model.quantity_received)
-        if self._allowed_sold < 0:
-            self._allowed_sold = 0
-        if self.model.quantity_sold > 0:
-            self._allowed_sold += self.model.quantity_sold
-
-    def _get_sold_items(self):
-        """Returns the sold items of the sellable we are editing (through
-        purchase_item) since the date of the current consignment
-        (purchase_order) was opened. This is usefull because we need to know
-        how many of this item was sold in the meantime.
-        """
-        branch = get_current_branch(self.conn)
-        sellable = self.model.sellable
-        start_date = self.model.order.open_date.date()
-        end_date = datetime.date.today()
-        query = AND(SoldItemView.q.id == sellable.id)
-        return SoldItemView.select_by_branch_date(query, branch=branch,
-                                                  date=(start_date, end_date),
-                                                  connection=self.conn)
-
-    def _get_consigned_items(self):
-        """Returns the consigned items of the same sellable we are editing
-        (through purchase_item), since date of the current consignment (purchase_order)
-        was opened. This is usefull because we need to know how many of this
-        item was consigned in the meantime.
-        """
-        branch = get_current_branch(self.conn)
-        # use date() to ignore the time part of the datetime.
-        start_date = self.model.order.open_date.date()
-        product = self.model.sellable.product
-        query = AND(ConsignedItemAndStockView.q.product_id == product.id,
-                    ConsignedItemAndStockView.q.branch==branch.id,
-                    ConsignedItemAndStockView.q.purchased_date>=start_date)
-        return ConsignedItemAndStockView.select(query, connection=self.conn)
-
-    def _view_sold_items(self):
-        consignment_details = Settable(item=self.model,
-                                       sold_items=self._get_sold_items(),
-                                       consigned_items=self._get_consigned_items(),)
-
-        retval = run_dialog(InConsignmentItemDetails, self.get_toplevel(),
-                            self.conn, consignment_details)
 
     #
     # Kiwi Callbacks
@@ -247,16 +128,10 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         if value < self._original_sold_qty:
             return ValidationError(_(u'Can not decrease this quantity.'))
 
-        if self._allowed_sold is None:
-            return
-
         total = self.quantity_returned.read() + value
         if value and total > self.model.quantity_received:
             return ValidationError(_(u'Sold and returned quantity does '
                                       'not match.'))
-
-        if value and value > self._allowed_sold:
-            return ValidationError(_(u'Invalid sold quantity.'))
 
     def on_quantity_returned__validate(self, widget, value):
         if value < self._original_returned_qty:
@@ -265,6 +140,3 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         max_returned = self.model.quantity_received - self.quantity_sold.read()
         if value and value > max_returned:
             return ValidationError(_(u'Invalid returned quantity'))
-
-    def on_details_button__clicked(self, widget):
-        self._view_sold_items()
