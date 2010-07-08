@@ -93,6 +93,8 @@ class PurchaseOrderReport(BaseStoqReport):
 
     def _get_items_table_columns(self):
         return [
+            OTC(_("Category"), lambda obj: "%s" %
+                obj.sellable.get_category_description(), width=90),
             OTC(_("Item"),
                 lambda obj: ("%s - %s" % (obj.sellable.code,
                                           obj.sellable.get_description())),
@@ -123,7 +125,7 @@ class PurchaseOrderReport(BaseStoqReport):
             total_qty_received += item.quantity_received
             total_value += item.quantity * item.cost
             total_received += item.quantity_received * item.cost
-        extra_row = ["", "", _("Totals:"), format_quantity(total_quantity),
+        extra_row = ["", "", "", _("Totals:"), format_quantity(total_quantity),
                      get_formatted_price(total_value),
                      format_quantity(total_qty_received),
                      get_formatted_price(total_received)]
@@ -241,6 +243,8 @@ class PurchaseQuoteReport(BaseStoqReport):
 
     def _get_items_columns(self):
         return [
+            OTC(_("Category"), lambda obj: "%s" %
+                obj.sellable.get_category_description(), width=110),
             OTC(_("Item"), lambda obj: "%s" % obj.sellable.get_description(),
                 expand=True, truncate=True),
             # FIXME: This column should be virtual, waiting for bug #2764
