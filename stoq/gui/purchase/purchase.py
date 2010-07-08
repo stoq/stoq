@@ -41,9 +41,12 @@ from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
+from stoqlib.gui.search.consignmentsearch import ConsignmentItemSearch
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
+from stoqlib.gui.wizards.consignmentwizard import (ConsignmentWizard,
+                                                   CloseInConsignmentWizard)
 from stoqlib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
 from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
                                                      ReceiveQuoteWizard)
@@ -259,6 +262,7 @@ class PurchaseApp(SearchableAppWindow):
         trans.close()
 
         self.refresh()
+
     #
     # Kiwi Callbacks
     #
@@ -297,6 +301,12 @@ class PurchaseApp(SearchableAppWindow):
     def on_QuoteOrder__activate(self, action):
         self._quote_order()
 
+    def on_NewConsignment__activate(self, action):
+        trans = new_transaction()
+        model = self.run_dialog(ConsignmentWizard, trans)
+        rv = finish_transaction(trans, model)
+        trans.close()
+
     def on_FinishOrder__activate(self, action):
         self._finish_order()
 
@@ -305,6 +315,15 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_SearchQuotes__activate(self, action):
         self.run_dialog(ReceiveQuoteWizard, self.conn)
+
+    def on_CloseInConsignment__activate(self, action):
+        trans = new_transaction()
+        model = self.run_dialog(CloseInConsignmentWizard, trans)
+        rv = finish_transaction(trans, model)
+        trans.close()
+
+    def on_SearchInConsignmentItems__activate(self, action):
+        self.run_dialog(ConsignmentItemSearch, self.conn)
 
     def on_SearchPurchasedItems__activate(self, action):
         self.run_dialog(PurchasedItemsSearch, self.conn)
