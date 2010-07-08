@@ -76,7 +76,8 @@ class StartPurchaseStep(WizardEditorStep):
                      'order_number',
                      'supplier',
                      'branch',
-                     'expected_freight')
+                     'expected_freight',
+                     )
     def __init__(self, wizard, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model)
 
@@ -105,6 +106,8 @@ class StartPurchaseStep(WizardEditorStep):
         has_freight = self.fob_radio.get_active()
         self.expected_freight.set_sensitive(has_freight)
         self._update_freight_type()
+        # trigger supplier validation
+        self.supplier.validate()
 
     def _update_freight_type(self):
         if self.cif_radio.get_active():
@@ -167,8 +170,8 @@ class StartPurchaseStep(WizardEditorStep):
         if not supplier:
             return
 
-        supplier_infos = ProductSupplierInfo.get_info_by_supplier(self.conn,
-                                                                  supplier)
+        supplier_infos = ProductSupplierInfo.get_info_by_supplier(
+                    self.conn, supplier, consigned=self.model.consigned)
         if supplier_infos.count() == 0:
             return ValidationError(_(u'The supplier does not have any '
                                       'products associated.'))
@@ -185,6 +188,7 @@ class StartPurchaseStep(WizardEditorStep):
         if value < 0:
             return ValidationError(_(u'The expected freight value must be a '
                                       'positive number.'))
+
 
 
 class PurchaseItemStep(SellableItemStep):
@@ -212,7 +216,8 @@ class PurchaseItemStep(SellableItemStep):
         sellables = Sellable.get_unblocked_sellables(
             self.conn,
             storable=True,
-            supplier=self.model.supplier)
+            supplier=self.model.supplier,
+            consigned=self.model.consigned,)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         self.sellable.prefill(
             [(sellable.get_description(full_description=True), sellable)
@@ -233,7 +238,7 @@ class PurchaseItemStep(SellableItemStep):
     #
 
     def validate(self, value):
-        can_purchase =  self.model.get_purchase_total() > 0
+        can_purchase = self.model.get_purchase_total() > 0
         self.wizard.refresh_next(can_purchase)
 
     def get_order_item(self, sellable, cost, quantity):
@@ -284,6 +289,8 @@ class PurchaseItemStep(SellableItemStep):
         self.product_button.hide()
 
     def next_step(self):
+        if self.model.consigned:
+            return FinishPurchaseStep(self.wizard, self, self.conn, self.model)
         return PurchasePaymentStep(self.wizard, self, self.conn, self.model)
 
     #

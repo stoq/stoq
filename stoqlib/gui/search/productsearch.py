@@ -315,7 +315,7 @@ class ProductsSoldSearch(SearchDialog):
                        sorted=True, width=130),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
-                Column('sold', title=_('Sold'),
+                Column('quantity', title=_('Sold'),
                        format_func=format_data,
                        data_type=Decimal),
                 Column('average_cost', title=_('Avg. Cost'),

@@ -956,13 +956,13 @@ class MultipleMethodSlave(BaseEditorSlave):
         # the user. We will set a proxy with this temporary object to help
         # with the validation.
         self._holder = Settable(value=Decimal(0))
-
-        self._outstanding_value = outstanding_value
         self._wizard = wizard
         # 'money' is the default payment method and it is always avaliable.
         self._method = PaymentMethod.get_by_name(conn, 'money')
 
         BaseEditorSlave.__init__(self, conn, order)
+        self._outstanding_value = (outstanding_value or
+                                   self._get_total_amount())
         self._setup_widgets()
 
     def setup_proxies(self):
@@ -1012,15 +1012,14 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.total_value.set_bold(True)
         self.received_value.set_bold(True)
         self.missing_value.set_bold(True)
-        self.total_value.update(self._get_total_amount())
+        self.total_value.update(self._outstanding_value)
         self.remove_button.set_sensitive(False)
         self._update_values()
 
     def _update_values(self):
-        total = self._get_total_amount()
         payments = self.model.group.get_valid_payments()
         total_payments = payments.sum('value') or Decimal(0)
-        self._outstanding_value = total - total_payments
+        self._outstanding_value -= total_payments
 
         if self._outstanding_value > 0:
             self.base_value.update(self._outstanding_value)

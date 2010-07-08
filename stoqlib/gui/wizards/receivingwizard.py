@@ -35,7 +35,8 @@ from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import get_current_user
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
+from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
+                                      BaseWizardStep)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
@@ -50,22 +51,18 @@ from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
 _ = stoqlib_gettext
 
 
-# Workaround, so PurchaseSelectionStep does not complain about empty model
-class _FakeReceivingOrder(object):
-    pass
-
 #
 # Wizard Steps
 #
 
 
-class PurchaseSelectionStep(WizardEditorStep):
+class PurchaseSelectionStep(BaseWizardStep):
     gladefile = 'PurchaseSelectionStep'
-    model_type = _FakeReceivingOrder
 
-    def __init__(self, wizard, conn, model):
+    def __init__(self, wizard, conn):
         self._next_step = None
-        WizardEditorStep.__init__(self, conn, wizard, model)
+        BaseWizardStep.__init__(self, conn, wizard)
+        self.setup_slaves()
 
     def _refresh_next(self, validation_value):
         has_selection = self.search.results.get_selected() is not None
@@ -79,7 +76,7 @@ class PurchaseSelectionStep(WizardEditorStep):
         self.executer = ORMObjectQueryExecuter()
         self.search.set_query_executer(self.executer)
         self.executer.set_table(PurchaseOrderView)
-        self.executer.add_query_callback(self._get_extra_query)
+        self.executer.add_query_callback(self.get_extra_query)
         self._create_filters()
         self.search.results.connect('selection-changed',
                                     self._on_results__selection_changed)
@@ -90,7 +87,7 @@ class PurchaseSelectionStep(WizardEditorStep):
     def _create_filters(self):
         self.search.set_text_field_columns(['supplier_name'])
 
-    def _get_extra_query(self, states):
+    def get_extra_query(self, states):
         return PurchaseOrderView.q.status == PurchaseOrder.ORDER_CONFIRMED
 
     def _get_columns(self):
@@ -283,6 +280,8 @@ class ReceivingInvoiceStep(WizardEditorStep):
         self.attach_slave("place_holder", self.invoice_slave)
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
+        if not self.has_next_step():
+            self.wizard.enable_finish()
 
     def validate_step(self):
         create_freight_payment = self.invoice_slave.create_freight_payment()
@@ -301,8 +300,7 @@ class ReceivingOrderWizard(BaseWizard):
 
     def __init__(self, conn):
         self.model = None
-        first_step = PurchaseSelectionStep(self, conn,
-                                           _FakeReceivingOrder())
+        first_step = PurchaseSelectionStep(self, conn)
         BaseWizard.__init__(self, conn, first_step, self.model)
         self.next_button.set_sensitive(False)
 

@@ -153,8 +153,10 @@ class PurchaseOrderReport(BaseStoqReport):
         if installments_number > 1:
             msg = (_("Payments: %d installments")
                    % (installments_number,))
-        else:
+        elif installments_number == 1:
             msg = _("Payments: 1 installment")
+        else:
+            msg = _(u'There are no payments defined for this order.')
         self.add_paragraph(msg, style="Title")
         self._add_payment_table(payments)
 
@@ -170,8 +172,8 @@ class PurchaseOrderReport(BaseStoqReport):
                            OTC(_("Value"), lambda obj:
                                get_formatted_price(obj.value), width=100,
                                align=RIGHT)]
-
-        self.add_object_table(list(payments), payment_columns)
+        if payments:
+            self.add_object_table(list(payments), payment_columns)
 
     def _setup_order_details_table(self):
         cols = [TC("", width=100), TC("", width=285, expand=True,
