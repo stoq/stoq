@@ -995,7 +995,10 @@ class MultipleMethodSlave(BaseEditorSlave):
         elif isinstance(self.model, PaymentRenegotiation):
             return self.model.total
         elif isinstance(self.model, PurchaseOrder):
-            return self.model.get_purchase_total()
+            # if we have receivings, consider the receiving amount instead.
+            receivings = self.model.get_receiving_orders()
+            total = sum([r.get_total() for r in receivings], 0)
+            return currency(total or self.model.get_purchase_total())
         else:
             raise TypeError
 
