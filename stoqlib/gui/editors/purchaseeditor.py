@@ -47,6 +47,8 @@ class PurchaseItemEditor(BaseEditor):
     proxy_widgets = ['cost',
                      'expected_receival_date',
                      'quantity',
+                     'quantity_sold',
+                     'quantity_returned',
                      'total',]
 
     def __init__(self, conn, model):
@@ -57,7 +59,8 @@ class PurchaseItemEditor(BaseEditor):
 
     def _setup_widgets(self):
         self.order.set_text("%04d" %  self.model.order.id)
-        for widget in [self.quantity, self.cost]:
+        for widget in [self.quantity, self.cost, self.quantity_sold,
+                       self.quantity_returned]:
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
                                                  step_incr=1))
         self.description.set_text(self.model.sellable.get_description())
@@ -91,3 +94,49 @@ class PurchaseItemEditor(BaseEditor):
         if value <= 0:
             return ValidationError(_(u'The quantity should be greater than '
                                      'zero.'))
+
+
+class InConsignmentItemEditor(PurchaseItemEditor):
+
+    def __init__(self, conn, model):
+        self._original_sold_qty = model.quantity_sold
+        self._original_returned_qty = model.quantity_returned
+        self._allowed_sold = None
+        PurchaseItemEditor.__init__(self, conn, model)
+        order = self.model.order
+        assert order.status == PurchaseOrder.ORDER_CONSIGNED
+        self._set_not_editable()
+        # disable expected_receival_date (the items was already received)
+        self.expected_receival_date.set_sensitive(False)
+        # enable consignment fields
+        self.sold_lbl.show()
+        self.returned_lbl.show()
+        self.quantity_sold.show()
+        self.quantity_returned.show()
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_expected_receival_date__validate(self, widget, value):
+        # Override the signal handler in PurchaseItemEditor, this is the
+        # simple way to disable this validation, since we dont have the
+        # handler_id to call self.expected_receival_date.disconnect() method.
+        pass
+
+    def on_quantity_sold__validate(self, widget, value):
+        if value < self._original_sold_qty:
+            return ValidationError(_(u'Can not decrease this quantity.'))
+
+        total = self.quantity_returned.read() + value
+        if value and total > self.model.quantity_received:
+            return ValidationError(_(u'Sold and returned quantity does '
+                                      'not match.'))
+
+    def on_quantity_returned__validate(self, widget, value):
+        if value < self._original_returned_qty:
+            return ValidationError(_(u'Can not decrease this quantity.'))
+
+        max_returned = self.model.quantity_received - self.quantity_sold.read()
+        if value and value > max_returned:
+            return ValidationError(_(u'Invalid returned quantity'))

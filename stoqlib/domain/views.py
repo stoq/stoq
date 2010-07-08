@@ -419,16 +419,16 @@ class QuotationView(Viewable):
                                  connection=self.get_connection())
 
 
-class SoldItemView(Viewable):
-    """Stores information about all sold items, includinf the average cost
+
+class SaleItemView(Viewable):
+    """Stores information about all sale items, including the average cost
     of the sold items.
     """
-
     columns = dict(
         id=Sellable.q.id,
         code=Sellable.q.code,
         description=BaseSellableInfo.q.description,
-        sold=const.SUM(SaleItem.q.quantity),
+        quantity=const.SUM(SaleItem.q.quantity),
         total_cost=const.SUM(SaleItem.q.quantity * SaleItem.q.average_cost),
     )
 
@@ -440,12 +440,6 @@ class SoldItemView(Viewable):
         INNERJOINOn(None, BaseSellableInfo,
                     Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
     ]
-
-    clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
-                Sale.q.status == Sale.STATUS_PAID,
-                Sale.q.status == Sale.STATUS_ORDERED,
-                Sale.q.status == Sale.STATUS_PAID,
-                )
 
     @classmethod
     def select_by_branch_date(cls, query, branch, date,
@@ -472,11 +466,24 @@ class SoldItemView(Viewable):
         return cls.select(query, having=having, connection=connection)
 
     @property
-    def average_cost(self):
-        if self.sold:
-            return self.total_cost / self.sold
+    def sale(self):
+        return Sale.get(self.sale_id, connection=self.get_connection())
 
+    @property
+    def average_cost(self):
+        if self.quantity:
+            return self.total_cost / self.quantity
         return 0
+
+
+class SoldItemView(SaleItemView):
+    columns = SaleItemView.columns
+    joins = SaleItemView.joins
+
+    clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+                Sale.q.status == Sale.STATUS_PAID,
+                Sale.q.status == Sale.STATUS_ORDERED,
+                Sale.q.status == Sale.STATUS_PAID,)
 
 
 class PurchasedItemAndStockView(Viewable):
@@ -531,6 +538,17 @@ class PurchasedItemAndStockView(Viewable):
     @property
     def purchase_item(self):
         return PurchaseItem.get(self.id, connection=self.get_connection())
+
+
+class ConsignedItemAndStockView(PurchasedItemAndStockView):
+    columns = PurchasedItemAndStockView.columns.copy()
+    columns.update(dict(
+        sold=PurchaseItem.q.quantity_sold,
+        returned=PurchaseItem.q.quantity_returned,
+    ))
+    joins = PurchasedItemAndStockView.joins[:]
+    clause = AND(PurchaseOrder.q.consigned == True,
+                 PurchaseOrder.q.branchID == ProductStockItem.q.branchID)
 
 
 class PurchaseReceivingView(Viewable):

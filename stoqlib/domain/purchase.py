@@ -34,7 +34,7 @@ from zope.interface import implements
 from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn, const
 from stoqlib.database.orm import Viewable, Alias
-from stoqlib.database.orm import PriceCol, DecimalCol
+from stoqlib.database.orm import PriceCol, DecimalCol, BoolCol
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.base import ValidatableDomain, Domain
 from stoqlib.domain.payment.method import PaymentMethod
@@ -64,6 +64,8 @@ class PurchaseItem(Domain):
     """
     quantity = DecimalCol(default=1)
     quantity_received = DecimalCol(default=0)
+    quantity_sold = DecimalCol(default=0)
+    quantity_returned = DecimalCol(default=0)
     base_cost = PriceCol()
     cost = PriceCol()
     expected_receival_date = DateTimeCol(default=None)
@@ -90,6 +92,9 @@ class PurchaseItem(Domain):
 
     def get_total(self):
         return currency(self.quantity * self.cost)
+
+    def get_total_sold(self):
+        return currency(self.quantity_sold * self.cost)
 
     def get_received_total(self):
         return currency(self.quantity_received * self.cost)
@@ -139,13 +144,15 @@ class PurchaseOrder(ValidatableDomain):
      ORDER_QUOTING,
      ORDER_PENDING,
      ORDER_CONFIRMED,
-     ORDER_CLOSED) = range(5)
+     ORDER_CLOSED,
+     ORDER_CONSIGNED) = range(6)
 
     statuses = {ORDER_CANCELLED:    _(u'Cancelled'),
                 ORDER_QUOTING:      _(u'Quoting'),
                 ORDER_PENDING:      _(u'Pending'),
                 ORDER_CONFIRMED:    _(u'Confirmed'),
-                ORDER_CLOSED:       _(u'Closed')}
+                ORDER_CLOSED:       _(u'Closed'),
+                ORDER_CONSIGNED:    _(u'Consigned'),}
 
     (FREIGHT_FOB,
      FREIGHT_CIF) = range(2)
@@ -166,6 +173,7 @@ class PurchaseOrder(ValidatableDomain):
     expected_freight = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     discount_value = PriceCol(default=0)
+    consigned = BoolCol(default=False)
     supplier = ForeignKey('PersonAdaptToSupplier')
     branch = ForeignKey('PersonAdaptToBranch')
     transporter = ForeignKey('PersonAdaptToTransporter', default=None)
@@ -285,6 +293,11 @@ class PurchaseOrder(ValidatableDomain):
         """Find out if it's possible to close the order
         @returns: True if it's possible to close the order, otherwise False
         """
+
+        # Consigned orders can be closed only after being confirmed
+        if self.status == self.ORDER_CONSIGNED:
+            return False
+
         for item in self.get_items():
             if not item.has_been_received():
                 return False
@@ -298,10 +311,12 @@ class PurchaseOrder(ValidatableDomain):
         if confirm_date is None:
             confirm_date = const.NOW()
 
-        if self.status != PurchaseOrder.ORDER_PENDING:
+        if self.status not in [PurchaseOrder.ORDER_PENDING,
+                               PurchaseOrder.ORDER_CONSIGNED]:
             raise ValueError(
                 'Invalid order status, it should be '
-                'ORDER_PENDING, got %s' % (self.get_status_str(),))
+                'ORDER_PENDING or ORDER_CONSIGNED, got %s' % (
+                                            self.get_status_str(),))
 
         transaction = IPaymentTransaction(self)
         transaction.confirm()
@@ -312,6 +327,15 @@ class PurchaseOrder(ValidatableDomain):
         self.responsible = get_current_user(self.get_connection())
         self.status = PurchaseOrder.ORDER_CONFIRMED
         self.confirm_date = confirm_date
+
+    def set_consigned(self):
+        if self.status != PurchaseOrder.ORDER_PENDING:
+            raise ValueError(
+                'Invalid order status, it should be '
+                'ORDER_PENDING, got %s' % (self.get_status_str(),))
+
+        self.responsible = get_current_user(self.get_connection())
+        self.status = PurchaseOrder.ORDER_CONSIGNED
 
     def close(self):
         """Closes the purchase order
@@ -538,6 +562,10 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
     #
 
     def confirm(self):
+        # In consigned purchases there is no payments at this point.
+        if self.purchase.status == PurchaseOrder.ORDER_CONSIGNED:
+            return
+
         for payment in self.purchase.payments:
             payment.set_pending()
 
@@ -597,11 +625,15 @@ class PurchaseItemView(Viewable):
         id=PurchaseItem.q.id,
         purchase_id=PurchaseOrder.q.id,
         sellable=Sellable.q.id,
+        code=Sellable.q.code,
         cost=PurchaseItem.q.cost,
         quantity=PurchaseItem.q.quantity,
         quantity_received=PurchaseItem.q.quantity_received,
+        quantity_sold=PurchaseItem.q.quantity_sold,
+        quantity_returned=PurchaseItem.q.quantity_returned,
         total=PurchaseItem.q.cost * PurchaseItem.q.quantity,
         total_received=PurchaseItem.q.cost * PurchaseItem.q.quantity_received,
+        total_sold=PurchaseItem.q.cost * PurchaseItem.q.quantity_sold,
         description=BaseSellableInfo.q.description,
         unit=SellableUnit.q.description,
         )
@@ -631,6 +663,9 @@ class PurchaseItemView(Viewable):
     def select_by_purchase(cls, purchase, connection):
         return PurchaseItemView.select(PurchaseOrder.q.id == purchase.id,
                                        connection=connection)
+    @property
+    def purchase_item(self):
+        return PurchaseItem.get(self.id)
 
 
 #

@@ -34,7 +34,7 @@ from zope.interface import implements
 from stoqlib.database.orm import PriceCol, DecimalCol
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, MultipleJoin, DateTimeCol,
                                   BoolCol, BLOBCol, IntCol)
-from stoqlib.database.orm import const
+from stoqlib.database.orm import const, AND, LEFTJOINOn
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (IStorable, IContainer,
@@ -93,10 +93,18 @@ class ProductSupplierInfo(Domain):
     #
 
     @classmethod
-    def get_info_by_supplier(cls, conn, supplier):
+    def get_info_by_supplier(cls, conn, supplier, consigned=False):
         """Retuns all the products information provided by the given supplier.
         """
-        return cls.selectBy(supplier=supplier, connection=conn)
+        if consigned:
+            join = LEFTJOINOn(None, Product,
+                        ProductSupplierInfo.q.productID == Product.q.id)
+            query = AND(ProductSupplierInfo.q.supplierID == supplier.id,
+                        Product.q.consignment == consigned)
+        else:
+            join = None
+            query = AND(ProductSupplierInfo.q.supplierID == supplier.id)
+        return cls.select(clause=query, join=join, connection=conn)
 
     #
     # Auxiliary methods

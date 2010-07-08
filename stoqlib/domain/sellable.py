@@ -545,7 +545,8 @@ class Sellable(Domain):
         return cls.select(query, connection=conn)
 
     @classmethod
-    def get_unblocked_sellables(cls, conn, storable=False, supplier=None):
+    def get_unblocked_sellables(cls, conn, storable=False, supplier=None,
+                                consigned=False):
         """
         Returns unblocked sellable objects, which means the
         available sellables plus the sold ones.
@@ -554,8 +555,11 @@ class Sellable(Domain):
         @param supplier: a supplier or None, if set limit the returned
           object to this supplier
         """
-        query = OR(cls.get_available_sellables_query(conn),
-                   cls.q.status == cls.STATUS_SOLD)
+        from stoqlib.domain.product import Product, ProductSupplierInfo
+        query = AND(OR(cls.get_available_sellables_query(conn),
+                       cls.q.status == cls.STATUS_SOLD),
+                    cls.q.id == Product.q.sellableID,
+                    Product.q.consignment == consigned)
         if storable:
             from stoqlib.domain.product import Product, ProductAdaptToStorable
             query = AND(query,
@@ -563,7 +567,6 @@ class Sellable(Domain):
                         ProductAdaptToStorable.q._originalID == Product.q.id)
 
         if supplier:
-            from stoqlib.domain.product import Product, ProductSupplierInfo
             query = AND(query,
                         Sellable.q.id == Product.q.sellableID,
                         Product.q.id == ProductSupplierInfo.q.productID,
