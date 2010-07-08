@@ -22,6 +22,12 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="NewConsignment">
+                        <property name="name">NewConsignment</property>
+                        <property name="label" translatable="yes">New Consignment...</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="FinishOrder">
                         <property name="name">FinishOrder</property>
                         <property name="label" translatable="yes">Finish Order...</property>
@@ -155,6 +161,18 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="CloseInConsignment">
+                        <property name="name">CloseInConsignment</property>
+                        <property name="label" translatable="yes">Close Consigment...</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="SearchInConsignmentItems">
+                        <property name="name">SearchInConsignmentItems</property>
+                        <property name="label" translatable="yes">Search Consigment Items...</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="SearchPurchasedItems">
                         <property name="name">SearchPurchasedItems</property>
                         <property name="label" translatable="yes">Purchased Items...</property>
@@ -203,6 +221,12 @@
                         <property name="label" translatable="yes">Save _as</property>
                         <property name="tooltip" translatable="yes">Save with a differente name</property>
                         <property name="stock_id">gtk-save-as</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="ConsignmentMenu">
+                        <property name="name">ConsignmentMenu</property>
+                        <property name="label" translatable="yes">_Consignment</property>
                     </widget>
                 </child>
                 <child>
@@ -306,7 +330,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui>
 	<menubar action="menubar">
-          <menu action="PurchaseMenu">
+      <menu action="PurchaseMenu">
 	    <menuitem action="AddOrder"/>
 	    <menuitem action="QuoteOrder"/>
 	    <menuitem action="FinishOrder"/>
@@ -316,7 +340,13 @@
 	    <menuitem action="ExportCSV"/>
 	    <menuitem action="Quit"/>
 	  </menu>
-          <menu action="SearchMenu">
+      <menu action="ConsignmentMenu">
+	    <menuitem action="NewConsignment"/>
+	    <menuitem action="CloseInConsignment"/>
+	    <separator name="sep2"/>
+	    <menuitem action="SearchInConsignmentItems"/>
+      </menu>
+      <menu action="SearchMenu">
 	    <menuitem action="BaseCategories"/>
 	    <menuitem action="Categories"/>
 	    <menuitem action="Products"/>
