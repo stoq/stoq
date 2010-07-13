@@ -124,7 +124,7 @@
                 <child>
                     <widget class="GtkAction" id="SearchLoan">
                         <property name="name">SearchLoan</property>
-                        <property name="label" translatable="yes">Search Loan</property>
+                        <property name="label" translatable="yes">Search Loan Items...</property>
                     </widget>
                 </child>
                 <child>
