@@ -48,6 +48,7 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import DeliverySearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
+from stoqlib.gui.wizards.loanwizard import NewLoanWizard
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.invoice import SaleInvoice, print_sale_invoice
 from stoqlib.lib.validators import format_quantity
@@ -289,3 +290,16 @@ class SalesApp(SearchableAppWindow):
 
     def on_Deliveries__activate(self, action):
         self.run_dialog(DeliverySearch, self.conn)
+
+    def on_NewLoan__activate(self, action):
+        print 'new loan'
+        trans = new_transaction()
+        model = self.run_dialog(NewLoanWizard, trans)
+        rv = finish_transaction(trans, model)
+        trans.close()
+
+    def on_CloseLoan__activate(self, action):
+        print 'close loan'
+
+    def on_SearchLoan__activate(self, action):
+        print 'search loan'

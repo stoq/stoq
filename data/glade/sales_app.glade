@@ -103,6 +103,31 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="LoanMenu">
+                        <property name="name">LoanMenu</property>
+                        <property name="label" translatable="yes">Loans</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="NewLoan">
+                        <property name="name">NewLoan</property>
+                        <property name="label" translatable="yes">New Loan...</property>
+                        <property name="stock_id">gtk-new</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="CloseLoan">
+                        <property name="name">CloseLoan</property>
+                        <property name="label" translatable="yes">Close Loan...</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="SearchLoan">
+                        <property name="name">SearchLoan</property>
+                        <property name="label" translatable="yes">Search Loan</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="ProductSearch">
                         <property name="name">ProductSearch</property>
                         <property name="label" translatable="yes">Products...</property>
@@ -277,6 +302,12 @@
 	      <menuitem action="ExportCSV"/>
 	      <menuitem action="quit_action"/>
 	    </menu>
+        <menu action="LoanMenu">
+	      <menuitem action="NewLoan"/>
+	      <menuitem action="CloseLoan"/>
+          <separator/>
+          <menuitem action="SearchLoan"/>
+        </menu>
 	    <menu action="SearchMenu">
 	      <menuitem action="ProductSearch"/>
 	      <menuitem action="ServiceSearch"/>
