@@ -51,7 +51,7 @@ from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.invoice import SaleInvoice, print_sale_invoice
 from stoqlib.lib.validators import format_quantity
-from stoqlib.lib.message import info
+from stoqlib.lib.message import info, yesno
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -274,6 +274,10 @@ class SalesApp(SearchableAppWindow):
         trans = new_transaction()
         sale_view = self._klist.get_selected()
         sale = trans.get(sale_view.sale)
+        if yesno(
+            _('The selected quote will be cancelled.'),
+            gtk.RESPONSE_NO, _(u"Don't Cancel"), _(u"Cancel quote")):
+            return        
         sale.cancel()
         finish_transaction(trans, True)
         self.search.refresh()
