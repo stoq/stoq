@@ -28,16 +28,21 @@ from decimal import Decimal
 import datetime
 
 from kiwi.datatypes import ValidationError
+from kiwi.ui.objectlist import SearchColumn
 
+from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_branch, get_current_user,
                                       new_transaction, finish_transaction)
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.person import ClientView, PersonAdaptToUser
 from stoqlib.domain.loan import Loan, LoanItem
+from stoqlib.domain.views import LoanView
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
+from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
+from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
+                                      BaseWizardStep)
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.loaneditor import LoanItemEditor
@@ -78,6 +83,7 @@ class StartNewLoanStep(WizardEditorStep):
         clients = clients[:max_results]
         items = [(c.name, c.client) for c in clients]
         self.client.prefill(sorted(items))
+        self.client.set_property('mandatory', True)
         # CFOP combo
         self.cfop_lbl.hide()
         self.cfop.hide()
@@ -154,6 +160,73 @@ class LoanItemStep(SaleQuoteItemStep):
                 _(u'The quantity is greater than the quantity in stock.'))
 
 
+class LoanSelectionStep(BaseWizardStep):
+    gladefile = 'HolderTemplate'
+
+    def __init__(self, wizard, conn):
+        BaseWizardStep.__init__(self, conn, wizard)
+        self.setup_slaves()
+
+    def _create_filters(self):
+        self.search.set_text_field_columns(['client_name'])
+
+    def _get_columns(self):
+        return [SearchColumn('id', title=_(u'Number'), sorted=True,
+                             data_type=str, width=80),
+                SearchColumn('responsible_name', title=_(u'Responsible'),
+                             data_type=str, expand=True),
+                SearchColumn('client_name', title=_(u'Name'),
+                             data_type=str, expand=True),
+                SearchColumn('open_date', title=_(u'Opened'),
+                             data_type=datetime.date),
+                SearchColumn('expire_date', title=_(u'Expire'),
+                             data_type=datetime.date),
+                SearchColumn('loaned', title=_(u'Loaned'),
+                             data_type=Decimal),
+        ]
+
+    def _refresh_next(self, value=None):
+        has_selected = self.search.results.get_selected() is not None
+        self.wizard.refresh_next(has_selected)
+
+    def get_extra_query(self, states):
+        return LoanView.q.status == Loan.STATUS_OPEN
+
+    def setup_slaves(self):
+        self.search = StoqlibSearchSlaveDelegate(self._get_columns(),
+                                        restore_name=self.__class__.__name__)
+        self.search.enable_advanced_search()
+        self.attach_slave('place_holder', self.search)
+        self.executer = ORMObjectQueryExecuter()
+        self.search.set_query_executer(self.executer)
+        self.executer.set_table(LoanView)
+        self.executer.add_query_callback(self.get_extra_query)
+        self._create_filters()
+        self.search.results.connect('selection-changed',
+                                    self._on_results_selection_changed)
+        self.search.focus_search_entry()
+
+    #
+    # WizardStep
+    #
+
+    def has_previous_step(self):
+        return False
+
+    def post_init(self):
+        self.register_validate_function(self._refresh_next)
+        self.force_validation()
+
+    def next_step(self):
+        pass
+
+    #
+    # Callbacks
+    #
+
+    def _on_results_selection_changed(self, widget, selection):
+        self._refresh_next()
+
 #
 # Main wizard
 #
@@ -191,4 +264,29 @@ class NewLoanWizard(BaseWizard):
         for item in self.model.get_items():
             item.do_loan(branch)
         self.retval = self.model
+        self.close()
+
+
+# select loan
+# set quantities
+# create sales, close or return
+
+class CloseLoanWizard(BaseWizard):
+    size = (775, 400)
+
+    def __init__(self, conn):
+        title = self._get_title()
+        first_step = LoanSelectionStep(self, conn)
+        BaseWizard.__init__(self, conn, first_step, model=None, title=title,
+                            edit_mode=False)
+
+    def _get_title(self):
+        return _('Close Loan Wizard')
+
+    #
+    # WizardStep hooks
+    #
+
+    def finish(self):
+        self.retval = False
         self.close()
