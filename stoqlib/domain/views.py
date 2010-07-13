@@ -29,7 +29,8 @@ from stoqlib.database.runtime import get_connection
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.person import (Person, PersonAdaptToSupplier,
-                                   PersonAdaptToUser)
+                                   PersonAdaptToUser, PersonAdaptToBranch,
+                                   PersonAdaptToClient)
 from stoqlib.domain.product import (Product,
                                     ProductAdaptToStorable,
                                     ProductStockItem,
@@ -673,6 +674,40 @@ class ProductionItemView(Viewable):
     @property
     def production_item(self):
         return ProductionItem.get(self.id, connection=self.get_connection())
+
+
+class LoanView(Viewable):
+    PersonBranch = Alias(Person, 'person_branch')
+    PersonResponsible = Alias(Person, 'person_responsible')
+    PersonClient = Alias(Person, 'person_client')
+
+    columns =  dict(id=Loan.q.id,
+                    status=Loan.q.status,
+                    open_date=Loan.q.open_date,
+                    close_date=Loan.q.close_date,
+                    expire_date=Loan.q.expire_date,
+
+                    branch_name=PersonBranch.q.name,
+                    responsible_name=PersonResponsible.q.name,
+                    client_name=PersonClient.q.name,
+                    loaned=const.SUM(LoanItem.q.quantity),
+                    total=const.SUM(LoanItem.q.quantity * LoanItem.q.price),)
+    joins = [
+        INNERJOINOn(None, LoanItem, Loan.q.id == LoanItem.q.loanID),
+        LEFTJOINOn(None, PersonAdaptToBranch,
+                   Loan.q.branchID == PersonAdaptToBranch.q.id),
+        LEFTJOINOn(None, PersonAdaptToUser,
+                   Loan.q.responsibleID == PersonAdaptToUser.q.id),
+        LEFTJOINOn(None, PersonAdaptToClient,
+                   Loan.q.clientID == PersonAdaptToClient.q.id),
+
+        LEFTJOINOn(None, PersonBranch,
+                   PersonAdaptToBranch.q._originalID == PersonBranch.q.id),
+        LEFTJOINOn(None, PersonResponsible,
+                   PersonAdaptToUser.q._originalID == PersonResponsible.q.id),
+        LEFTJOINOn(None, PersonClient,
+                   PersonAdaptToClient.q._originalID == PersonClient.q.id),
+    ]
 
 
 class LoanItemView(Viewable):
