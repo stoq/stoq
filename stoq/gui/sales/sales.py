@@ -271,13 +271,13 @@ class SalesApp(SearchableAppWindow):
         return model
 
     def on_cancel_menu__activate(self, action):
-        trans = new_transaction()
-        sale_view = self._klist.get_selected()
-        sale = trans.get(sale_view.sale)
         if yesno(
             _('The selected quote will be cancelled.'),
             gtk.RESPONSE_NO, _(u"Don't Cancel"), _(u"Cancel quote")):
-            return        
+            return
+        trans = new_transaction()
+        sale_view = self._klist.get_selected()
+        sale = trans.get(sale_view.sale)        
         sale.cancel()
         finish_transaction(trans, True)
         self.search.refresh()
