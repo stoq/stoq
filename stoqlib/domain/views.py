@@ -27,6 +27,7 @@ from stoqlib.database.orm import const, AND, INNERJOINOn, LEFTJOINOn, OR
 from stoqlib.database.orm import Viewable, Field, Alias
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.commission import CommissionSource
+from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.person import (Person, PersonAdaptToSupplier,
                                    PersonAdaptToUser)
 from stoqlib.domain.product import (Product,
@@ -672,3 +673,28 @@ class ProductionItemView(Viewable):
     @property
     def production_item(self):
         return ProductionItem.get(self.id, connection=self.get_connection())
+
+
+class LoanItemView(Viewable):
+    columns = dict(id=LoanItem.q.id,
+                   loan_id=Loan.q.id,
+                   loan_status=Loan.q.status,
+                   opened=Loan.q.open_date,
+                   closed=Loan.q.close_date,
+                   quantity=LoanItem.q.quantity,
+                   price=LoanItem.q.price,
+                   total=LoanItem.q.quantity * LoanItem.q.price,
+                   category_description=SellableCategory.q.description,
+                   unit_description=SellableUnit.q.description,
+                   description=BaseSellableInfo.q.description,)
+
+    joins = [
+        LEFTJOINOn(None, Loan, LoanItem.q.loanID == Loan.q.id),
+        LEFTJOINOn(None, Sellable,
+                   LoanItem.q.sellableID == Sellable.q.id),
+        LEFTJOINOn(None, SellableUnit,
+                   Sellable.q.unitID == SellableUnit.q.id),
+        LEFTJOINOn(None, SellableCategory,
+                   SellableCategory.q.id == Sellable.q.categoryID),
+        INNERJOINOn(None, BaseSellableInfo,
+                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),]
