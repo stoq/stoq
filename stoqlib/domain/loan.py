@@ -79,10 +79,9 @@ class LoanItem(Domain):
 
     def return_product(self, quantity):
         """Returns a certain quantity of the loan product to stock. The
-        quantity returned should be lesser or equal than the quantity
-        registered as returned.
+        quantity returned should be lesser or equal than the total quantity.
         """
-        assert quantity <= self.return_quantity
+        assert quantity <= self.quantity
         conn = self.get_connection()
         storable = IStorable(self.sellable.product, None)
         if storable is not None:

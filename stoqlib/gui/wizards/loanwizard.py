@@ -264,6 +264,7 @@ class LoanItemSelectionStep(BaseWizardStep):
         user = get_current_user(self.conn)
         sale = Sale(connection=self.conn,
                     branch=self.loan.branch,
+                    client=self.loan.client,
                     salesperson=ISalesPerson(user.person),
                     cfop=sysparam(self.conn).DEFAULT_SALES_CFOP,
                     group=PaymentGroup(connection=self.conn),
@@ -321,6 +322,9 @@ class LoanItemSelectionStep(BaseWizardStep):
             sale_quantity = final.sale_quantity - initial.sale_qty
             if sale_quantity > 0:
                 sale_items.append((final, sale_quantity))
+                # we have to return the product, so it will be available when
+                # the user confirm the created sale.
+                final.return_product(sale_quantity)
 
             return_quantity = final.return_quantity - initial.return_qty
             if return_quantity > 0:
