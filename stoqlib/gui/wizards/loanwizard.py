@@ -27,18 +27,23 @@
 from decimal import Decimal
 import datetime
 
-from kiwi.datatypes import ValidationError
-from kiwi.ui.objectlist import SearchColumn
+from kiwi.datatypes import ValidationError, currency
+from kiwi.python import Settable
+from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_branch, get_current_user,
                                       new_transaction, finish_transaction)
-from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.interfaces import IStorable, ISalesPerson
 from stoqlib.domain.person import ClientView, PersonAdaptToUser
 from stoqlib.domain.loan import Loan, LoanItem
+from stoqlib.domain.payment.group import PaymentGroup
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.views import LoanView
+from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.validators import format_quantity, get_formatted_cost
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
@@ -218,7 +223,10 @@ class LoanSelectionStep(BaseWizardStep):
         self.force_validation()
 
     def next_step(self):
-        pass
+        loan = Loan.get(self.search.results.get_selected().id,
+                        connection=self.conn)
+        self.wizard.model = loan
+        return LoanItemSelectionStep(self.wizard, self, self.conn, loan)
 
     #
     # Callbacks
@@ -226,6 +234,126 @@ class LoanSelectionStep(BaseWizardStep):
 
     def _on_results_selection_changed(self, widget, selection):
         self._refresh_next()
+
+
+class LoanItemSelectionStep(BaseWizardStep):
+    gladefile = 'LoanItemSelectionStep'
+
+    def __init__(self, wizard, previous, conn, loan):
+        self.loan = loan
+        BaseWizardStep.__init__(self, conn, wizard, previous)
+        self._original_items = {}
+        self._setup_widgets()
+
+    def _setup_widgets(self):
+        self.loan_items.set_columns(self.get_columns())
+        self.loan_items.add_list(self.get_saved_items())
+        self.edit_button.set_sensitive(False)
+
+    def _validate_step(self, value):
+        self.wizard.refresh_next(value)
+
+    def _edit_item(self, item):
+        retval = run_dialog(LoanItemEditor, self, self.conn, item,
+                            expanded_edition=True)
+        if retval:
+            self.loan_items.update(item)
+            self._validate_step(True)
+
+    def _create_sale(self, sale_items):
+        user = get_current_user(self.conn)
+        sale = Sale(connection=self.conn,
+                    branch=self.loan.branch,
+                    salesperson=ISalesPerson(user.person),
+                    cfop=sysparam(self.conn).DEFAULT_SALES_CFOP,
+                    group=PaymentGroup(connection=self.conn),
+                    coupon_id=None)
+        for item, quantity in sale_items:
+            sale.add_sellable(item.sellable, price=item.price,
+                               quantity=quantity)
+        sale.order()
+        return sale
+
+    def get_saved_items(self):
+        for item in self.loan.get_items():
+            self._original_items[item.id] = Settable(item_id=item.id,
+                                 sale_qty=item.sale_quantity or Decimal(0),
+                                 return_qty=item.return_quantity or Decimal(0))
+            yield item
+
+    def get_columns(self):
+        return [
+            Column('id', title=_('# '), width=60, data_type=str,
+                   sorted=True),
+            Column('sellable.code', title=_('Code'), width=70, data_type=str),
+            Column('sellable.description', title=_('Description'),
+                   data_type=str, expand=True, searchable=True),
+            Column('quantity', title=_('Loaned'), data_type=Decimal,
+                   format_func=format_quantity),
+            Column('sale_quantity', title=_('Sold'), data_type=Decimal,
+                   format_func=format_quantity),
+            Column('return_quantity', title=_('Returned'), data_type=Decimal,
+                   format_func=format_quantity),
+            Column('price', title=_('Price'), data_type=currency,
+                   format_func=get_formatted_cost),]
+
+    #
+    # WizardStep
+    #
+
+    def post_init(self):
+        self.register_validate_function(self._validate_step)
+        self.force_validation()
+        self._validate_step(False)
+        self.wizard.enable_finish()
+
+    def has_previous_step(self):
+        return True
+
+    def has_next_step(self):
+        return True
+
+    def next_step(self):
+        has_returned = False
+        sale_items = []
+        for final in self.loan_items:
+            initial = self._original_items[final.id]
+            sale_quantity = final.sale_quantity - initial.sale_qty
+            if sale_quantity > 0:
+                sale_items.append((final, sale_quantity))
+
+            return_quantity = final.return_quantity - initial.return_qty
+            if return_quantity > 0:
+                final.return_product(return_quantity)
+                if not has_returned:
+                    has_returned = True
+
+            msg = ''
+            if sale_items:
+                self._create_sale(sale_items)
+                msg = _(u'A sale was created from loan items. You can confirm '
+                         'the sale in the Till application.')
+            if has_returned:
+                msg += _(u'\nSome products have returned to stock. You can '
+                    'check the stock of the items in the Stock application.')
+            if sale_items or has_returned:
+                info(_(u'Close loan details...'), msg)
+                self.wizard.finish()
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_loan_items__selection_changed(self, widget, item):
+        self.edit_button.set_sensitive(bool(item))
+
+    def on_loan_items__row_activated(self, widget, item):
+        self._edit_item(item)
+
+    def on_edit_button__clicked(self, widget):
+        item = self.loan_items.get_selected()
+        self._edit_item(item)
+
 
 #
 # Main wizard
@@ -267,10 +395,6 @@ class NewLoanWizard(BaseWizard):
         self.close()
 
 
-# select loan
-# set quantities
-# create sales, close or return
-
 class CloseLoanWizard(BaseWizard):
     size = (775, 400)
 
@@ -288,5 +412,7 @@ class CloseLoanWizard(BaseWizard):
     #
 
     def finish(self):
-        self.retval = False
+        if self.model.can_close():
+            self.model.close()
+        self.retval = self.model
         self.close()
