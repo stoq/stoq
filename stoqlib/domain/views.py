@@ -717,6 +717,8 @@ class LoanItemView(Viewable):
                    opened=Loan.q.open_date,
                    closed=Loan.q.close_date,
                    quantity=LoanItem.q.quantity,
+                   sale_quantity=LoanItem.q.sale_quantity,
+                   return_quantity=LoanItem.q.return_quantity,
                    price=LoanItem.q.price,
                    total=LoanItem.q.quantity * LoanItem.q.price,
                    category_description=SellableCategory.q.description,

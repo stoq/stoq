@@ -27,6 +27,7 @@
 """ Loan object and related objects implementation """
 
 import datetime
+from decimal import Decimal
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
@@ -55,6 +56,8 @@ class LoanItem(Domain):
     @param price: the price of each individual item
     """
     quantity = DecimalCol()
+    sale_quantity = DecimalCol(default=Decimal(0))
+    return_quantity = DecimalCol(default=Decimal(0))
     price = PriceCol()
     sellable = ForeignKey('Sellable')
     loan = ForeignKey('Loan')
@@ -66,10 +69,25 @@ class LoanItem(Domain):
         Domain._create(self, id, **kw)
 
     def do_loan(self, branch):
+        """Performs the loan of the product. The quantity requested of the
+        product will be out of stock of the given branch.
+        """
         conn = self.get_connection()
         storable = IStorable(self.sellable.product, None)
         if storable is not None:
             item = storable.decrease_stock(self.quantity, branch)
+
+    def return_product(self, quantity):
+        """Returns a certain quantity of the loan product to stock. The
+        quantity returned should be lesser or equal than the quantity
+        registered as returned.
+        """
+        assert quantity <= self.return_quantity
+        conn = self.get_connection()
+        storable = IStorable(self.sellable.product, None)
+        if storable is not None:
+            branch = self.loan.branch
+            item = storable.increase_stock(quantity, branch)
 
     #
     # Accessors
@@ -152,3 +170,26 @@ class Loan(Domain):
                         loan=self,
                         sellable=sellable,
                         price=price)
+
+    #
+    # Public API
+    #
+
+    def can_close(self):
+        """Checks if the loan can be closed. A loan can be closed if it is
+        opened and all the items have been returned or sold.
+        @returns: True if the loan can be closed, False otherwise.
+        """
+        if self.status != Loan.STATUS_OPEN:
+            return False
+        for item in self.get_items():
+            if item.sale_quantity + item.return_quantity != item.quantity:
+                return False
+        return True
+
+    def close(self):
+        """Closes the loan. At this point, all the loan items have been
+        returned to stock or sold."""
+        assert self.can_close()
+        self.close_date = datetime.date.today()
+        self.status = Loan.STATUS_CLOSED

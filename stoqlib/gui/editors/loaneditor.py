@@ -24,6 +24,9 @@
 ##
 """ Loan editors """
 
+import sys
+
+import gtk
 
 from kiwi.datatypes import ValidationError
 
@@ -39,16 +42,38 @@ class LoanItemEditor(BaseEditor):
     model_name = _("Loan Item")
     proxy_widgets = ['price',
                      'quantity',
+                     'sale_quantity',
+                     'return_quantity',
                      'total',]
 
-    def __init__(self, conn, model):
+    def __init__(self, conn, model, expanded_edition=False):
+        self._expanded_edition = expanded_edition
         self._branch = model.loan.branch
+        self._original_sale_qty = model.sale_quantity
+        self._original_return_qty = model.return_quantity
         BaseEditor.__init__(self, conn, model)
-        self._setup_widgets()
 
     def _setup_widgets(self):
         self.sale.set_text("%04d" %  self.model.loan.id)
         self.description.set_text(self.model.sellable.get_description())
+        for widget in [self.sale_quantity, self.return_quantity]:
+            widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
+                                                 step_incr=1))
+        self.quantity.set_adjustment(gtk.Adjustment(lower=1, step_incr=1,
+                                                    upper=sys.maxint))
+        self._configure_expanded_edition()
+
+    def _configure_expanded_edition(self):
+        if self._expanded_edition:
+            self.quantity.set_sensitive(False)
+            self.price.set_sensitive(False)
+
+        for widget in [self.sale_quantity_lbl, self.sale_quantity,
+                       self.return_quantity_lbl, self.return_quantity]:
+            if self._expanded_edition:
+                widget.show()
+            else:
+                widget.hide()
 
     def _has_stock(self, quantity):
         storable = IStorable(self.model.sellable.product, None)
@@ -59,6 +84,7 @@ class LoanItemEditor(BaseEditor):
         return available >= quantity
 
     def setup_proxies(self):
+        self._setup_widgets()
         self.add_proxy(self.model, LoanItemEditor.proxy_widgets)
 
     #
@@ -74,3 +100,19 @@ class LoanItemEditor(BaseEditor):
             return ValidationError(_(u'The quantity should be positive.'))
         if value and not self._has_stock(value):
             return ValidationError(_(u'Quantity not available in stock.'))
+
+    def on_sale_quantity__validate(self, widget, value):
+        if value < self._original_sale_qty:
+            return ValidationError(_(u'Can not decrease this quantity.'))
+        total = value + self.return_quantity.read()
+        if total > self.model.quantity:
+            return ValidationError(_(u'Sale and return quantity is greather '
+                                      'than the total quantity.'))
+
+    def on_return_quantity__validate(self, widget, value):
+        if value < self._original_return_qty:
+            return ValidationError(_(u'Can not decrease this quantity.'))
+        total = value + self.sale_quantity.read()
+        if total > self.model.quantity:
+            return ValidationError(_(u'Sale and return quantity is greather '
+                                      'than the total quantity.'))

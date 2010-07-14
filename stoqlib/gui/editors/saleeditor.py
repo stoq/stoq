@@ -23,6 +23,9 @@
 ##
 """ Sale editors """
 
+import sys
+
+import gtk
 
 from kiwi.datatypes import ValidationError
 
@@ -48,10 +51,17 @@ class SaleQuoteItemEditor(BaseEditor):
         sale = self.model.sale
         if sale.status == Sale.STATUS_CONFIRMED:
             self._set_not_editable()
+        # not used with sale quote items
+        self.sale_quantity_lbl.hide()
+        self.return_quantity_lbl.hide()
+        self.sale_quantity.hide()
+        self.return_quantity()
 
     def _setup_widgets(self):
         self.sale.set_text("%04d" %  self.model.sale.id)
         self.description.set_text(self.model.sellable.get_description())
+        self.quantity.set_adjustment(gtk.Adjustment(lower=1,
+                                                    upper=sys.maxint))
 
     def _set_not_editable(self):
         self.price.set_sensitive(False)

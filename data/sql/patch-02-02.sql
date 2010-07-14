@@ -19,6 +19,8 @@ CREATE TABLE loan_item (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
+    sale_quantity numeric(10,2) CONSTRAINT positive_sale_quantity CHECK (sale_quantity >= 0),
+    return_quantity numeric(10,2) CONSTRAINT positive_return_quantity CHECK (return_quantity >= 0),
     price numeric(10,2) CONSTRAINT positive_price CHECK (price >= 0),
     loan_id bigint REFERENCES loan(id),
     sellable_id bigint REFERENCES sellable(id)
