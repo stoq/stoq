@@ -55,7 +55,7 @@ class SaleQuoteItemEditor(BaseEditor):
         self.sale_quantity_lbl.hide()
         self.return_quantity_lbl.hide()
         self.sale_quantity.hide()
-        self.return_quantity()
+        self.return_quantity.hide()
 
     def _setup_widgets(self):
         self.sale.set_text("%04d" %  self.model.sale.id)

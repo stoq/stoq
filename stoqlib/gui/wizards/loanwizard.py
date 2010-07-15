@@ -332,17 +332,17 @@ class LoanItemSelectionStep(BaseWizardStep):
                 if not has_returned:
                     has_returned = True
 
-            msg = ''
-            if sale_items:
-                self._create_sale(sale_items)
-                msg = _(u'A sale was created from loan items. You can confirm '
-                         'the sale in the Till application.')
-            if has_returned:
-                msg += _(u'\nSome products have returned to stock. You can '
+        msg = ''
+        if sale_items:
+            self._create_sale(sale_items)
+            msg = _(u'A sale was created from loan items. You can confirm '
+                     'the sale in the Till application.')
+        if has_returned:
+            msg += _(u'\nSome products have returned to stock. You can '
                     'check the stock of the items in the Stock application.')
-            if sale_items or has_returned:
-                info(_(u'Close loan details...'), msg)
-                self.wizard.finish()
+        if sale_items or has_returned:
+            info(_(u'Close loan details...'), msg)
+            self.wizard.finish()
 
     #
     # Kiwi Callbacks
@@ -401,15 +401,12 @@ class NewLoanWizard(BaseWizard):
 
 class CloseLoanWizard(BaseWizard):
     size = (775, 400)
+    title = _(u'Close Loan Wizard')
 
     def __init__(self, conn):
-        title = self._get_title()
         first_step = LoanSelectionStep(self, conn)
-        BaseWizard.__init__(self, conn, first_step, model=None, title=title,
-                            edit_mode=False)
-
-    def _get_title(self):
-        return _('Close Loan Wizard')
+        BaseWizard.__init__(self, conn, first_step, model=None,
+                            title=self.title, edit_mode=False)
 
     #
     # WizardStep hooks
