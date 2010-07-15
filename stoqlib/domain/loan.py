@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2010 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2010 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,10 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
-##              Henrique Romano             <henrique@async.com.br>
-##              Johan Dahlin                <jdahlin@async.com.br>
-##              George Y. Kussumoto         <george@async.com.br>
+## Author(s):   George Y. Kussumoto         <george@async.com.br>
 ##
 """ Loan object and related objects implementation """
 
@@ -40,12 +37,8 @@ from stoqlib.domain.interfaces import IContainer, IStorable
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 
-
 _ = stoqlib_gettext
 
-#
-# Base Domain Classes
-#
 
 class LoanItem(Domain):
     """An item in a loan.
