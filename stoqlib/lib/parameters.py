@@ -54,6 +54,11 @@ class ParameterDetails:
         self.long_desc = long_desc
 
 _parameter_info = dict(
+    EDIT_CODE_PRODUCT=ParameterDetails(
+     (u'Products'),
+     (u'Disable edit code products'),
+     (u'Disable edit code products on purchase application')),
+
     MAIN_COMPANY=ParameterDetails(
     _(u'General'),
     _(u'Main Company'),
@@ -304,6 +309,7 @@ class ParameterAccess(ClassInittableObject):
     # New parameters must always be defined here
     constants = [
         # Adding constants
+        ParameterAttr('EDIT_CODE_PRODUCT', bool, initial=False),
         ParameterAttr('USE_LOGIC_QUANTITY', bool, initial=True),
         ParameterAttr('POS_FULL_SCREEN', bool, initial=False),
         ParameterAttr('HAS_DELIVERY_MODE', bool, initial=True),
