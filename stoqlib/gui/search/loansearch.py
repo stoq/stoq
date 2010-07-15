@@ -23,6 +23,7 @@
 ##
 """ Search dialogs for loans and related objects """
 
+import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import currency
@@ -62,9 +63,17 @@ class LoanItemSearch(SearchDialog):
                              format='%03d'),
                 SearchColumn('loan_id', title=_(u'Loan'), data_type=int,
                              format='%03d', sorted=True),
+                SearchColumn('opened', title=_(u'Open Date'),
+                             data_type=datetime.date, visible=False),
+                SearchColumn('closed', title=_(u'Close Date'),
+                             data_type=datetime.date,),
                 SearchColumn('description', title=_(u'Description'),
                              data_type=str, expand=True),
                 SearchColumn('quantity', title=_(u'Quantity'),
+                             data_type=Decimal),
+                SearchColumn('sale_quantity', title=_(u'Sold'),
+                             data_type=Decimal),
+                SearchColumn('return_quantity', title=_(u'Returned'),
                              data_type=Decimal),
                 SearchColumn('price', title=_(u'Price'),
                              data_type=currency),
