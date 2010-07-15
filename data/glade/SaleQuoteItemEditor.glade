@@ -41,10 +41,14 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="GtkLabel" id="sale_quantity_lbl">
+                                <property name="label" context="yes" translatable="yes">Sale Quantity:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
                             <packing>
-                                <property name="top_attach">2</property>
                                 <property name="bottom_attach">3</property>
+                                <property name="top_attach">2</property>
                                 <property name="x_options">fill</property>
                                 <property name="y_options">fill</property>
                             </packing>
@@ -94,13 +98,18 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="ProxySpinButton" id="sale_quantity">
+                                <property name="adjustment">1 0 100 1 10 0</property>
+                                <property name="data_type">Decimal</property>
+                                <property name="model_attribute">sale_quantity</property>
+                                <property name="text" context="yes" translatable="yes">1</property>
+                                <property name="visible">True</property>
+                            </widget>
                             <packing>
+                                <property name="bottom_attach">3</property>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
                                 <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                                <property name="x_options">fill</property>
                             </packing>
                         </child>
                         <child>
@@ -129,12 +138,16 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="GtkLabel" id="return_quantity_lbl">
+                                <property name="label" context="yes" translatable="yes">Return Quantity:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
                             <packing>
+                                <property name="bottom_attach">3</property>
                                 <property name="left_attach">2</property>
                                 <property name="right_attach">3</property>
                                 <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
                                 <property name="x_options">fill</property>
                             </packing>
                         </child>
@@ -166,12 +179,18 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="ProxySpinButton" id="return_quantity">
+                                <property name="adjustment">1 0 100 1 10 0</property>
+                                <property name="data_type">Decimal</property>
+                                <property name="model_attribute">return_quantity</property>
+                                <property name="text" context="yes" translatable="yes">1</property>
+                                <property name="visible">True</property>
+                            </widget>
                             <packing>
+                                <property name="bottom_attach">3</property>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
                                 <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
                                 <property name="x_options">fill</property>
                             </packing>
                         </child>
