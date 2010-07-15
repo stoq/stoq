@@ -111,6 +111,12 @@ def create_production_material(trans):
 def create_production_service(trans):
     return ExampleCreator.create(trans, 'ProductionService')
 
+def create_loan(trans):
+    return ExampleCreator.create(trans, 'Loan')
+
+def create_loan_item(trans):
+    return ExampleCreator.create(trans, 'LoanItem')
+
 
 class ExampleCreator(object):
     _role = None
@@ -178,6 +184,8 @@ class ExampleCreator(object):
             'ProductionItem': self.create_production_item,
             'ProductionMaterial': self.create_production_material,
             'ProductionService': self.create_production_service,
+            'Loan': self.create_loan,
+            'LoanItem': self.create_loan_item,
             }
         if isinstance(model_type, basestring):
             model_name = model_type
@@ -595,6 +603,18 @@ class ExampleCreator(object):
                              recorded_quantity=quantity,
                              inventory=inventory,
                              connection=self.trans)
+
+    def create_loan(self):
+        from stoqlib.domain.loan import Loan
+        user = self.create_user()
+        return Loan(responsible=user, connection=self.trans)
+
+    def create_loan_item(self):
+        from stoqlib.domain.loan import LoanItem
+        loan = self.create_loan()
+        sellable = self.create_sellable()
+        return LoanItem(loan=loan, sellable=sellable, price=10,
+                        quantity=1, connection=self.trans)
 
     def get_payment_method(self, name='money'):
         from stoqlib.domain.payment.method import PaymentMethod
