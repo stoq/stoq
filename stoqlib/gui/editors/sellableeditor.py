@@ -46,6 +46,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
 from stoqlib.lib.message import info, yesno
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_price_format_str
 
@@ -226,6 +227,8 @@ class SellableEditor(BaseEditor):
         self.enable_window_controls()
 
         # code suggestion
+        edit_code_product = sysparam(self.conn).EDIT_CODE_PRODUCT
+        self.code.set_sensitive(not edit_code_product)
         if not self.code.read():
             code = u'%d' % self._sellable.id
             self.code.update(code)
