@@ -229,6 +229,8 @@ class ClientSearch(BasePersonSearch):
     def get_columns(self):
         return [SearchColumn('name', _('Name'), str,
                              sorted=True, width=250, expand=True),
+                SearchColumn('client_category', _('Category'), str,
+                             width=150, visible=False),
                 SearchColumn('phone_number', _('Phone Number'), str,
                              format_func=format_phone_number, width=150),
                 SearchColumn('cpf', _('CPF'), str, width=130),
