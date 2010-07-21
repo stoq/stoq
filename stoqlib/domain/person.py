@@ -484,6 +484,23 @@ class PersonAdaptToCompany(PersonAdapter):
 
 Person.registerFacet(PersonAdaptToCompany, ICompany)
 
+class ClientCategory(Domain):
+    """I am a client category.
+    I contain a name
+    @ivar name: category name
+    """
+
+    implements(IDescribable)
+
+    name = UnicodeCol(unique=True)
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.name
+
 class PersonAdaptToClient(PersonAdapter):
     """A client facet of a person."""
 
@@ -502,6 +519,7 @@ class PersonAdaptToClient(PersonAdapter):
     status = IntCol(default=STATUS_SOLVENT)
     days_late = IntCol(default=0)
     credit_limit = PriceCol(default=0)
+    category = ForeignKey('ClientCategory')
 
     #
     # IActive implementation
@@ -931,6 +949,7 @@ class ClientView(Viewable):
         status=PersonAdaptToClient.q.status,
         cpf=PersonAdaptToIndividual.q.cpf,
         rg_number=PersonAdaptToIndividual.q.rg_number,
+        client_category=ClientCategory.q.name
         )
 
     joins = [
@@ -938,6 +957,8 @@ class ClientView(Viewable):
                    Person.q.id == PersonAdaptToClient.q._originalID),
         LEFTJOINOn(None, PersonAdaptToIndividual,
                    Person.q.id == PersonAdaptToIndividual.q._originalID),
+        LEFTJOINOn(None, ClientCategory,
+                   PersonAdaptToClient.q.categoryID == ClientCategory.q.id),
         ]
 
     @property
