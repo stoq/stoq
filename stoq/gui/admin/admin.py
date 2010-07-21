@@ -38,6 +38,7 @@ from stoqlib.database.runtime import (new_transaction, finish_transaction,
 from stoqlib.domain.person import Person, PersonAdaptToUser, UserView
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.invoice import InvoiceLayout
+from stoqlib.gui.dialogs.clientcategorydialog import ClientCategoryDialog
 from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
 from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
@@ -145,6 +146,12 @@ class AdminApp(SearchableAppWindow):
         finish_transaction(trans, model)
         trans.close()
 
+    def _run_client_categories_dialog(self):
+        trans = new_transaction()
+        model = self.run_dialog(ClientCategoryDialog, trans)
+        finish_transaction(trans, model)
+        trans.close()
+
     #
     # Callbacks
     #
@@ -219,6 +226,9 @@ class AdminApp(SearchableAppWindow):
 
     def on_payment_categories__activate(self, action):
         self._run_payment_categories_dialog()
+
+    def on_client_categories__activate(self, action):
+        self._run_client_categories_dialog()
 
     def on_Plugins__activate(self, action):
         self.run_dialog(PluginManagerDialog, self.conn)
