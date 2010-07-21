@@ -519,7 +519,7 @@ class PersonAdaptToClient(PersonAdapter):
     status = IntCol(default=STATUS_SOLVENT)
     days_late = IntCol(default=0)
     credit_limit = PriceCol(default=0)
-    category = ForeignKey('ClientCategory')
+    category = ForeignKey('ClientCategory', default=None)
 
     #
     # IActive implementation
