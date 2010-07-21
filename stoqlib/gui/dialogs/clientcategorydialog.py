@@ -28,7 +28,6 @@ import gtk
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.person import ClientCategory, PersonAdaptToClient
-from stoqlib.gui.base.gtkadds import render_pixbuf
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.clientcategoryeditor import ClientCategoryEditor
 from stoqlib.lib.translation import stoqlib_gettext

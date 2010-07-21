@@ -45,8 +45,7 @@ class ClientCategoryEditor(BaseEditor):
         return category is not None
 
     def create_model(self, trans):
-        return ClientCategory(name='',
-                              connection=trans)
+        return ClientCategory(name='', connection=trans)
 
     def setup_proxies(self):
         self.name.grab_focus()
