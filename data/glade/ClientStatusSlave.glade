@@ -28,10 +28,14 @@
                             </widget>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="GtkLabel" id="label3">
+                                <property name="label" context="yes" translatable="yes">Category:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
                             <packing>
-                                <property name="top_attach">1</property>
                                 <property name="bottom_attach">2</property>
+                                <property name="top_attach">1</property>
                             </packing>
                         </child>
                         <child>
@@ -46,12 +50,16 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="ProxyComboBox" id="category_combo">
+                                <property name="data_type">object</property>
+                                <property name="model_attribute">category</property>
+                                <property name="visible">True</property>
+                            </widget>
                             <packing>
+                                <property name="bottom_attach">2</property>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
                                 <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
                             </packing>
                         </child>
                         <child>

@@ -28,6 +28,7 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.domain.interfaces import IClient
+from stoqlib.domain.person import ClientCategory
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -38,13 +39,18 @@ class ClientStatusSlave(BaseEditorSlave):
     gladefile = 'ClientStatusSlave'
 
     proxy_widgets = ('statuses_combo', 'credit_limit',
-                     'remaining_store_credit')
+                     'remaining_store_credit', 'category_combo')
 
     #
     # BaseEditorSlave hooks
     #
 
     def setup_proxies(self):
+        category_list = ClientCategory.select(
+            connection=self.conn).orderBy('name')
+        category_items = [(cat.get_description(), cat) for cat in category_list]
+        category_items.insert(0, ('', None))
+        self.category_combo.prefill(category_items)
         table = self.model_type
         items = [(value, constant)
                     for constant, value in table.statuses.items()]
