@@ -104,7 +104,7 @@ class PurchaseOrderReport(BaseStoqReport):
                 virtual=False, width=50, align=LEFT),
             OTC(_("Cost"), lambda obj: get_formatted_cost(obj.cost),
                 width=70, align=RIGHT),
-            OTC(_("Quantity"), lambda obj: format_quantity(obj.quantity),
+            OTC(_("Qty"), lambda obj: format_quantity(obj.quantity),
                 width=70, align=RIGHT),
             OTC(_("Total"),
                 lambda obj: get_formatted_price(obj.get_total()), width=90,
