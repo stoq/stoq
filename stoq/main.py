@@ -223,6 +223,12 @@ def _initialize(options):
     log_file = os.path.join(log_dir, 'stoq_%s.log' %
                                 time.strftime('%Y-%m-%d_%H-%M-%S'))
     _stream = set_log_file(log_file, 'stoq*')
+
+    link_file = os.path.join(stoqdir, 'stoq.log')
+    if os.path.exists(link_file):
+        os.unlink(link_file)
+    os.symlink(log_file, link_file)
+
     if options.debug:
         hook = _debug_hook
     else:
