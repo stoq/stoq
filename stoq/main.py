@@ -213,8 +213,16 @@ def _initialize(options):
     if not os.path.exists(stoqdir):
         os.mkdir(stoqdir)
 
+    import time
+    log_dir = os.path.join(stoqdir, 'logs', time.strftime('%Y'),
+                            time.strftime('%m'))
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+
     from kiwi.log import set_log_file
-    _stream = set_log_file(os.path.join(stoqdir, 'stoq.log'), 'stoq*')
+    log_file = os.path.join(log_dir, 'stoq_%s.log' %
+                                time.strftime('%Y-%m-%d_%H-%M-%S'))
+    _stream = set_log_file(log_file, 'stoq*')
     if options.debug:
         hook = _debug_hook
     else:
