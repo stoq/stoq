@@ -47,6 +47,7 @@ from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
+from cat52 import MODEL_CODES
 from catgenerator import StoqlibCATGenerator
 from couponprinter import CouponPrinter
 from ecfdomain import ECFPrinter, FiscalSaleHistory
@@ -257,7 +258,7 @@ class ECFUI(object):
 
             break
 
-        if sysparam(self.conn).ENABLE_PAULISTA_INVOICE:
+        if self._needs_cat52(printer):
             day = datetime.date.today()
             if previous_day:
                 # XXX: Make sure this is tested
@@ -272,6 +273,22 @@ class ECFUI(object):
             generator.write(dir)
 
         return retval
+
+    def _needs_cat52(self, printer):
+        # If the param is not enabled, we dont need.
+        if not sysparam(self.conn).ENABLE_PAULISTA_INVOICE:
+            return False
+
+        # Even if the parameter is enabled, we can only generate cat52 for
+        # the printer we support, and that dont have MFD:
+        # If the printer has an MFD, it should not be present in the
+        # MODEL_CODES variable
+        model = MODEL_CODES.get((self.printer.brand,
+                                 self.printer.model))
+        if not model:
+            return False
+
+        return True
 
     def _set_last_sale(self, sale, trans):
         printer = trans.get(self._printer._printer)
