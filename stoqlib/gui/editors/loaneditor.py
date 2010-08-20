@@ -114,7 +114,7 @@ class LoanItemEditor(BaseEditor):
             return ValidationError(_(u'Can not decrease this quantity.'))
         total = value + self.return_quantity.read()
         if total > self.model.quantity:
-            return ValidationError(_(u'Sale and return quantity is greather '
+            return ValidationError(_(u'Sale and return quantity is greater '
                                       'than the total quantity.'))
 
     def on_return_quantity__validate(self, widget, value):
@@ -122,5 +122,5 @@ class LoanItemEditor(BaseEditor):
             return ValidationError(_(u'Can not decrease this quantity.'))
         total = value + self.sale_quantity.read()
         if total > self.model.quantity:
-            return ValidationError(_(u'Sale and return quantity is greather '
+            return ValidationError(_(u'Sale and return quantity is greater '
                                       'than the total quantity.'))
