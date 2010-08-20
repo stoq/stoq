@@ -286,10 +286,15 @@ class Coupon(object):
         except DeviceError, e:
             warning(_("Could not print item"), str(e))
             return -1
-        return self._driver.add_item(code, description, item.price,
-                                     tax_constant.device_value,
-                                     item.quantity, unit,
-                                     unit_desc=unit_desc)
+
+        try:
+            return self._driver.add_item(code, description, item.price,
+                                         tax_constant.device_value,
+                                         item.quantity, unit,
+                                         unit_desc=unit_desc)
+        except DriverError, e:
+            warning(_("Could not print item"), str(e))
+            return -1
 
     @argcheck(int)
     def remove_item(self, item_id):
