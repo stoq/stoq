@@ -200,9 +200,12 @@ class ECFEditor(BaseEditor):
             if tax_enum == TaxType.CUSTOM:
                 constant = SellableTaxConstant.selectOneBy(
                     tax_value=value, connection=self.conn)
-                # Do not import constants which are not defined by the system
+                # If the constant is not defined in the system, create it
                 if not constant:
-                    continue
+                    constant = SellableTaxConstant(tax_value=value,
+                                           tax_type=int(TaxType.CUSTOM),
+                                           description='%d %%' % value,
+                                           connection=self.conn)
             elif tax_enum == TaxType.SERVICE:
                 constant = DeviceConstant.selectOneBy(
                     constant_enum=int(tax_enum),
@@ -213,8 +216,17 @@ class ECFEditor(BaseEditor):
                 # service tax
                 if constant is not None:
                     continue
+            else:
+                constant = SellableTaxConstant.selectOneBy(
+                    tax_type=int(tax_enum), connection=self.conn)
+                # Ignore if its unkown tax
+                if not constant:
+                    continue
+
             if value:
                 constant_name = '%d %%' % (value,)
+            elif constant:
+                constant_name = constant.description
             else:
                 constant_name = None
             DeviceConstant(constant_enum=int(tax_enum),
