@@ -284,6 +284,12 @@ _parameter_info = dict(
     _(u'Once this parameter is set, the products cost will be expressed '
        'using four precision digits.')),
 
+    NFE_SERIAL_NUMBER=ParameterDetails(
+    _(u'NF-e'),
+    _(u'Fiscal document serial number'),
+    _(u'Fiscal document serial number. Fill with 0 if the NF-e have no '
+       'series. This parameter only has effect if the nfe plugin is enabled.')),
+
     )
 
 class ParameterAttr:
@@ -356,6 +362,7 @@ class ParameterAccess(ClassInittableObject):
                       u'sellable.Sellable'),
         ParameterAttr('DEFAULT_PRODUCT_TAX_CONSTANT',
                       u'sellable.SellableTaxConstant'),
+        ParameterAttr('NFE_SERIAL_NUMBER', int, initial=1),
         ]
 
     _cache = {}

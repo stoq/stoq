@@ -33,6 +33,8 @@ from stoqdrivers.enum import TaxType
 
 import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
+from stoqlib.lib.parameters import sysparam
+
 
 from utils import (get_state_code, get_city_code, nfe_tostring,
                    remove_accentuation)
@@ -164,8 +166,11 @@ class NFeGenerator(object):
         assert nnf
 
         payments = self._sale.group.get_items()
+        series = sysparam(self.conn).NFE_SERIAL_NUMBER
+
         nfe_identification = NFeIdentification(cuf, branch_location.city,
-                                               nnf, today, list(payments))
+                                               series, nnf, today,
+                                               list(payments))
         # The nfe-key requires all the "zeros", so we should format the
         # values properly.
         mod = '%02d' % int(nfe_identification.get_attr('mod'))
@@ -468,7 +473,7 @@ class NFeIdentification(BaseNFeXMLGroup):
                   (u'verProc', '')]
     txttag = 'B'
 
-    def __init__(self, cUF, city, nnf, emission_date, payments):
+    def __init__(self, cUF, city, series, nnf, emission_date, payments):
         BaseNFeXMLGroup.__init__(self)
 
         self.set_attr('cUF', cUF)
@@ -484,6 +489,7 @@ class NFeIdentification(BaseNFeXMLGroup):
         self.set_attr('indPag', payment_type)
 
         self.set_attr('nNF', nnf)
+        self.set_attr('serie', series)
         self.set_attr('dEmi', self.format_date(emission_date))
         self.set_attr('cMunFG', get_city_code(city, code=cUF) or '')
 
