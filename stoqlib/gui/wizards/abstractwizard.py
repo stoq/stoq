@@ -74,7 +74,6 @@ class SellableItemStep(WizardEditorStep):
     """
     # FIXME: Rename to SellableItemStep
     gladefile = 'AbstractItemStep'
-    sellable_widgets = ('sellable',)
     proxy_widgets = ('quantity',
                      'unit_label',
                      'cost')
@@ -126,8 +125,8 @@ class SellableItemStep(WizardEditorStep):
 
     def setup_sellable_entry(self):
         result = Sellable.get_unblocked_sellables(self.conn)
-        self.sellable.prefill([(sellable.get_description(), sellable)
-                               for sellable in result])
+        #self.sellable.prefill([(sellable.get_description(), sellable)
+        #                       for sellable in result])
 
     def get_order_item(self):
         raise NotImplementedError('This method must be defined on child')
@@ -139,7 +138,7 @@ class SellableItemStep(WizardEditorStep):
         raise NotImplementedError('This method must be defined on child')
 
     def on_product_button__clicked(self, button):
-        raise NotImplementedError('This method must be defined on child')
+        self._run_advanced_search()
 
     def sellable_selected(self, sellable):
         """This will be called when a sellable is selected in the combo.
@@ -148,9 +147,11 @@ class SellableItemStep(WizardEditorStep):
         @param sellable: the selected sellable
         """
         if sellable:
+            self.barcode.set_text(sellable.get_description())
             cost = sellable.cost
             quantity = Decimal(1)
         else:
+            self.barcode.set_text('')
             cost = None
             quantity = None
 
@@ -161,6 +162,7 @@ class SellableItemStep(WizardEditorStep):
         self.proxy.set_model(model)
 
         has_sellable = bool(sellable)
+        self.barcode.set_sensitive(not has_sellable)
         self.add_sellable_button.set_sensitive(has_sellable)
         self.quantity.set_sensitive(has_sellable)
         self.cost.set_sensitive(has_sellable)
@@ -177,8 +179,8 @@ class SellableItemStep(WizardEditorStep):
         raise NotImplementedError('This method must be defined on child')
 
     def post_init(self):
-        self.sellable.grab_focus()
-        self.item_hbox.set_focus_chain([self.sellable,
+        self.barcode.grab_focus()
+        self.item_hbox.set_focus_chain([self.barcode,
                                         self.quantity, self.cost,
                                         self.add_sellable_button,
                                         self.product_button])
@@ -188,11 +190,6 @@ class SellableItemStep(WizardEditorStep):
     def setup_proxies(self):
         self.setup_sellable_entry()
         self.proxy = self.add_proxy(None, SellableItemStep.proxy_widgets)
-        model = Settable(quantity=Decimal(1),
-                         cost=None,
-                         sellable=None)
-        self.sellable_proxy = self.add_proxy(model,
-                                             SellableItemStep.sellable_widgets)
 
     def setup_slaves(self):
         self.slave = AdditionListSlave(
@@ -206,7 +203,9 @@ class SellableItemStep(WizardEditorStep):
         self.slave.connect('on-add-item', self._on_list_slave__add_item)
         self.attach_slave('list_holder', self.slave)
         self._setup_summary()
-        self.sellable.grab_focus()
+        self.quantity.set_sensitive(False)
+        self.cost.set_sensitive(False)
+        self.add_sellable_button.set_sensitive(False)
 
     def _setup_summary(self):
         # FIXME: Move this into AdditionListSlave
@@ -220,13 +219,25 @@ class SellableItemStep(WizardEditorStep):
     def _refresh_next(self):
         self.wizard.refresh_next(len(self.slave.klist))
 
+    def _run_advanced_search(self):
+        print 'running advanced search'
+
+    def _get_sellable(self):
+        barcode = self.barcode.get_text()
+        if not barcode:
+            return None
+
+        return Sellable.selectOneBy(barcode=barcode,
+                                    connection=self.conn)
+
     def _add_sellable(self):
-        sellable = self.sellable.get_selected_data()
+        sellable = self.proxy.model.sellable
         assert sellable
 
         self._update_list(sellable)
         self.proxy.set_model(None)
-        self.sellable.grab_focus()
+        self.sellable_selected(None)
+        self.barcode.grab_focus()
 
     def _update_list(self, sellable):
         quantity = self.get_quantity()
@@ -245,8 +256,8 @@ class SellableItemStep(WizardEditorStep):
 
     def _reset_sellable(self):
         self.proxy.set_model(None)
-        self.sellable.set_text('')
-        self.sellable_selected(None)
+        self.barcode.set_text('')
+        #self.sellable_selected(None)
 
     def _update_total(self):
         if self.summary:
@@ -275,12 +286,15 @@ class SellableItemStep(WizardEditorStep):
     def on_add_sellable_button__clicked(self, button):
         self._add_sellable()
 
-    def on_sellable__activate(self, combo):
-        self.quantity.grab_focus()
+    def on_barcode__activate(self, combo):
+        sellable = self._get_sellable()
 
-    def on_sellable__content_changed(self, combo):
-        sellable = self.sellable.get_selected_data()
+        if not sellable:
+            self._run_advanced_search()
+            return
+
         self.sellable_selected(sellable)
+        self.quantity.grab_focus()
 
     def on_quantity__activate(self, entry):
         self._add_sellable()
