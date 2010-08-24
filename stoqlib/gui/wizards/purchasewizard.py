@@ -219,16 +219,16 @@ class PurchaseItemStep(SellableItemStep):
             supplier=self.model.supplier,
             consigned=self.model.consigned,)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        self.sellable.prefill(
-            [(sellable.get_description(full_description=True), sellable)
-             for sellable in sellables[:max_results]])
+        #self.sellable.prefill(
+        #    [(sellable.get_description(full_description=True), sellable)
+        #     for sellable in sellables[:max_results]])
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
         self.hide_add_button()
 
-        self.sellable.connect(
-            'content-changed', self._on_sellable__content_changed)
+        #self.sellable.connect(
+        #    'content-changed', self._on_sellable__content_changed)
         self.cost.set_editable(True)
         self.cost.connect('validate', self._on_cost__validate)
         self.quantity.connect('validate', self._on_quantity__validate)
@@ -286,7 +286,6 @@ class PurchaseItemStep(SellableItemStep):
         SellableItemStep.post_init(self)
         self.slave.set_editor(PurchaseItemEditor)
         self._refresh_next()
-        self.product_button.hide()
 
     def next_step(self):
         if self.model.consigned:
@@ -298,7 +297,8 @@ class PurchaseItemStep(SellableItemStep):
     #
 
     def _validate_sellable_cost(self):
-        sellable = self.sellable.get_selected_data()
+        #sellable = self.sellable.get_selected_data()
+        sellable = self._get_sellable()
         if sellable is None:
             return
         for item in self.slave.klist:
@@ -312,7 +312,8 @@ class PurchaseItemStep(SellableItemStep):
         self.cost.set_editable(True)
 
     def _get_supplier_minimum_quantity(self):
-        sellable = self.sellable.get_selected_data()
+        #sellable = self.sellable.get_selected_data()
+        sellable = self._get_sellable()
         if sellable is None:
             return Decimal(0)
 
