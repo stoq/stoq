@@ -170,7 +170,7 @@ class StockTransferProductStep(SellableItemStep):
     #
 
     def post_init(self):
-        self.product_button.hide()
+        #self.product_button.hide()
         self.hide_add_button()
         self.hide_edit_button()
 
@@ -182,7 +182,7 @@ class StockTransferProductStep(SellableItemStep):
         if not value or value <= 0:
             return ValidationError(_(u'Quantity should be a positive number.'))
 
-        sellable = self.sellable.get_selected()
+        sellable = self._get_sellable()
         balance = self._get_stock_balance(sellable)
         if value > balance:
             return ValidationError(

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+e -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -233,7 +233,6 @@ class SaleQuoteItemStep(SellableItemStep):
         SellableItemStep.post_init(self)
         self.slave.set_editor(SaleQuoteItemEditor)
         self._refresh_next()
-        self.product_button.hide()
 
     def has_next_step(self):
         return False
@@ -243,7 +242,7 @@ class SaleQuoteItemStep(SellableItemStep):
     #
 
     def _validate_sellable_price(self, price):
-        s = self.sellable.get_selected_data()
+        s = self._get_sellable()
         if not s.is_valid_price(price):
             return ValidationError(
                 _(u'Max discount for this product is %.2f%%') % s.max_discount)
