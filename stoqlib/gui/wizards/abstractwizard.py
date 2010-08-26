@@ -158,7 +158,7 @@ class SellableItemStep(WizardEditorStep):
         stock = Decimal(0)
         cost = None
         quantity = None
-        description = ''
+        description = u''
 
 
         if sellable:
@@ -187,7 +187,8 @@ class SellableItemStep(WizardEditorStep):
         self.cost.set_sensitive(has_sellable)
 
     def validate(self, value):
-        self.add_sellable_button.set_sensitive(value and bool(self.sellable.read()))
+        self.add_sellable_button.set_sensitive(value and
+                                                bool(self.proxy.model.sellable))
         self.wizard.refresh_next(value and bool(len(self.slave.klist)))
 
     #
@@ -328,7 +329,7 @@ class SellableItemStep(WizardEditorStep):
 
         if not sellable:
             search_str = self.barcode.get_text()
-            print self._run_advanced_search(search_str)
+            self._run_advanced_search(search_str)
             return
 
         self.sellable_selected(sellable)
@@ -337,14 +338,14 @@ class SellableItemStep(WizardEditorStep):
     def on_quantity__activate(self, entry):
         self._add_sellable()
 
+    def on_cost__activate(self, entry):
+        self._add_sellable()
+
     def on_quantity__validate(self, entry, value):
         # only support integer quantities
         if value <= 0 or value != int(value):
             return ValidationError(_(u'The quantity must be a positive'
                                      ' integer number'))
-
-    def on_cost__activate(self, entry):
-        self._add_sellable()
 
     def on_cost__validate(self, widget, value):
         if value <= 0:

@@ -146,7 +146,6 @@ class ProductionServiceStep(SellableItemStep):
         SellableItemStep.setup_slaves(self)
         self.item_lbl.set_text(_(u'Services:'))
         self.hide_add_button()
-        self.product_button.hide()
         self.cost_label.hide()
         self.cost.hide()
 
@@ -234,7 +233,6 @@ class ProductionItemStep(SellableItemStep):
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
         self.hide_add_button()
-        self.product_button.hide()
         self.cost_label.hide()
         self.cost.hide()
 

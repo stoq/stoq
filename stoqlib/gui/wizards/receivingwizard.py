@@ -222,7 +222,7 @@ class ReceivingOrderProductStep(SellableItemStep):
     def post_init(self):
         # Hide the search bar, since it does not make sense to add new
         # items to a receivable order.
-        self.item_hbox.hide()
+        self.item_table.hide()
         self.slave.hide_add_button()
         self.slave.hide_del_button()
         self.slave.set_editor(ReceivingItemEditor)
