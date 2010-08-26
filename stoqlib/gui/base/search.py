@@ -167,6 +167,7 @@ class SearchDialog(BasicDialog):
     selection_mode = gtk.SELECTION_BROWSE
     size = ()
     advanced_search = True
+    has_print_button = True
 
     @argcheck(object, object, object, bool, basestring, int, bool)
     def __init__(self, conn, table=None, search_table=None, hide_footer=True,
@@ -247,7 +248,9 @@ class SearchDialog(BasicDialog):
     def _setup_details_slave(self):
         # FIXME: Gross hack
         has_details_btn = hasattr(self, 'on_details_button_clicked')
-        has_print_btn = hasattr(self, 'on_print_button_clicked')
+        has_print_btn = (self.has_print_button
+                         and hasattr(self, 'on_print_button_clicked'))
+
         if not (has_details_btn or has_print_btn):
             self._details_slave = None
             return

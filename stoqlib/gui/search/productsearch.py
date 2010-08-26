@@ -372,3 +372,29 @@ class ProductStockSearch(SearchEditor):
                 ColoredColumn('difference', title=_('Difference'), color='red',
                               format_func=format_data, data_type=Decimal,
                               data_func=lambda x: x <= Decimal(0)),]
+
+
+class ProductPurchaseSearch(ProductStockSearch):
+    has_new_button = False
+    editor_class = None
+    has_print_button = False
+
+    def __init__(self, conn, selection_mode=gtk.SELECTION_BROWSE,
+                 search_str=None, hide_footer=False,
+                 hide_toolbar=True, double_click_confirm=True):
+
+        ProductStockSearch.__init__(self, conn, selection_mode=selection_mode,
+                           hide_footer=hide_footer,
+                           hide_toolbar=hide_toolbar,
+                           double_click_confirm=double_click_confirm)
+        if search_str:
+            self.set_searchbar_search_string(search_str)
+            self.search.refresh()
+
+
+    def update_widgets(self):
+        sellable_view = self.results.get_selected()
+        self.set_edit_button_sensitive(bool(sellable_view))
+        self.ok_button.set_sensitive(bool(sellable_view))
+
+

@@ -39,11 +39,15 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.python import Settable
 
+from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.sellable import Sellable
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.lists import AdditionListSlave
+from stoqlib.gui.base.wizards import WizardEditorStep
+from stoqlib.gui.search.productsearch import ProductPurchaseSearch
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.wizards import WizardEditorStep
-from stoqlib.gui.base.lists import AdditionListSlave
-from stoqlib.domain.sellable import Sellable
+
 
 _ = stoqlib_gettext
 
@@ -76,7 +80,10 @@ class SellableItemStep(WizardEditorStep):
     gladefile = 'AbstractItemStep'
     proxy_widgets = ('quantity',
                      'unit_label',
-                     'cost')
+                     'cost',
+                     'minimum_quantity',
+                     'stock_quantity',
+                     'sellable_description',)
     model_type = None
     table = Sellable
     item_table = None
@@ -146,23 +153,35 @@ class SellableItemStep(WizardEditorStep):
         logic at that point
         @param sellable: the selected sellable
         """
+
+        minimum = Decimal(0)
+        stock = Decimal(0)
+        cost = None
+        quantity = None
+        description = ''
+
+
         if sellable:
-            self.barcode.set_text(sellable.get_description())
+            description = "<b>%s</b>" % sellable.get_description()
             cost = sellable.cost
             quantity = Decimal(1)
+            storable = IStorable(sellable.product, None)
+            if storable:
+                minimum= storable.minimum_quantity
+                stock= storable.get_full_balance(self.model.branch)
         else:
             self.barcode.set_text('')
-            cost = None
-            quantity = None
 
         model = Settable(quantity=quantity,
                          cost=cost,
-                         sellable=sellable)
+                         sellable=sellable,
+                         minimum_quantity=minimum,
+                         stock_quantity=stock,
+                         sellable_description=description)
 
         self.proxy.set_model(model)
 
         has_sellable = bool(sellable)
-        self.barcode.set_sensitive(not has_sellable)
         self.add_sellable_button.set_sensitive(has_sellable)
         self.quantity.set_sensitive(has_sellable)
         self.cost.set_sensitive(has_sellable)
@@ -180,7 +199,7 @@ class SellableItemStep(WizardEditorStep):
 
     def post_init(self):
         self.barcode.grab_focus()
-        self.item_hbox.set_focus_chain([self.barcode,
+        self.item_table.set_focus_chain([self.barcode,
                                         self.quantity, self.cost,
                                         self.add_sellable_button,
                                         self.product_button])
@@ -219,16 +238,34 @@ class SellableItemStep(WizardEditorStep):
     def _refresh_next(self):
         self.wizard.refresh_next(len(self.slave.klist))
 
-    def _run_advanced_search(self):
-        print 'running advanced search'
+    def _run_advanced_search(self, search_str=None):
+        ret = run_dialog(ProductPurchaseSearch, self.wizard,
+                         self.conn,
+                         selection_mode=gtk.SELECTION_BROWSE,
+                         search_str=search_str,
+                         hide_footer=False,
+                         hide_toolbar=True,
+                         double_click_confirm=True,
+            )
+        if not ret:
+            return
+
+        sellable = Sellable.get(ret.id, connection=self.conn)
+        self.barcode.set_text(sellable.barcode)
+        self.sellable_selected(sellable)
+        self.quantity.grab_focus()
 
     def _get_sellable(self):
         barcode = self.barcode.get_text()
         if not barcode:
             return None
 
-        return Sellable.selectOneBy(barcode=barcode,
+        sellable = Sellable.selectOneBy(barcode=barcode,
                                     connection=self.conn)
+        if not sellable or not sellable.product:
+            return None
+
+        return sellable
 
     def _add_sellable(self):
         sellable = self.proxy.model.sellable
@@ -286,11 +323,12 @@ class SellableItemStep(WizardEditorStep):
     def on_add_sellable_button__clicked(self, button):
         self._add_sellable()
 
-    def on_barcode__activate(self, combo):
+    def on_barcode__activate(self, widget):
         sellable = self._get_sellable()
 
         if not sellable:
-            self._run_advanced_search()
+            search_str = self.barcode.get_text()
+            print self._run_advanced_search(search_str)
             return
 
         self.sellable_selected(sellable)
