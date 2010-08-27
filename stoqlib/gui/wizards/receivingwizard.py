@@ -210,7 +210,7 @@ class ReceivingOrderProductStep(SellableItemStep):
     # SellableItemStep overrides
     #
 
-    def setup_sellable_entry(self):
+    def get_sellable_view_query(self):
         # We do not use the sellable entry in this step, so no action needs to
         # be performed here.
         pass

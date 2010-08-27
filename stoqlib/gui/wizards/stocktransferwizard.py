@@ -31,11 +31,14 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.database.orm import AND
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import IBranch, IEmployee, IStorable
 from stoqlib.domain.person import Person
+from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
+from stoqlib.domain.views import ProductWithStockView
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.wizards import (BaseWizard, BaseWizardStep)
 from stoqlib.gui.printing import print_report
@@ -63,6 +66,12 @@ class TemporaryTransferOrder(object):
         self.source_responsible = None
         self.destination_responsible = None
 
+    @property
+    def branch(self):
+        # This method is here because SellableItemStep requires a branch
+        # property
+        return self.source_branch
+
     def add_item(self, item):
         self.items.append(item)
 
@@ -80,6 +89,7 @@ class TemporaryTransferOrderItem(Settable):
 class StockTransferProductStep(SellableItemStep):
     model_type = TemporaryTransferOrder
     item_table = TemporaryTransferOrderItem
+    sellable_view = ProductWithStockView
 
     def __init__(self, wizard, conn, model):
        self.branch = get_current_branch(conn)
@@ -89,12 +99,12 @@ class StockTransferProductStep(SellableItemStep):
     # SellableItemStep hooks
     #
 
-    def setup_sellable_entry(self):
+    def get_sellable_view_query(self):
         branch = get_current_branch(self.conn)
-        sellables = Sellable.get_unblocked_sellables(self.conn,
-                                                     storable=True)
-        self.sellable.prefill([(s.get_description(), s) for s in sellables
-                                if IStorable(s.product).has_stock_by_branch(self.branch)])
+        branch_query = ProductStockItem.q.branchID == branch.id
+        sellable_query = Sellable.get_unblocked_sellables_query(self.conn,
+                                                                storable=True)
+        return AND(branch_query, sellable_query)
 
     def get_saved_items(self):
         return list(self.model.get_items())
@@ -152,6 +162,10 @@ class StockTransferProductStep(SellableItemStep):
 
         if sellable is None:
             return
+
+        storable = IStorable(sellable.product)
+        stock_item = storable.get_stock_item(self.branch)
+        self.stock_quantity.set_label("%s" % stock_item.quantity or 0)
 
         quantity = self._get_stock_balance(sellable)
         has_quantity = quantity > 0

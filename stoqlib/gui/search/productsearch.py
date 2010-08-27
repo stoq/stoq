@@ -35,6 +35,7 @@ from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter, Today
 from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
 
+from stoqlib.database.orm import AND
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
@@ -374,27 +375,63 @@ class ProductStockSearch(SearchEditor):
                               data_func=lambda x: x <= Decimal(0)),]
 
 
-class ProductPurchaseSearch(ProductStockSearch):
+class ProductPurchaseSearch(SearchDialog):
+    title = _('Product Stock Search')
+    size = (800, 450)
     has_new_button = False
-    editor_class = None
-    has_print_button = False
 
     def __init__(self, conn, selection_mode=gtk.SELECTION_BROWSE,
-                 search_str=None, hide_footer=False,
-                 hide_toolbar=True, double_click_confirm=True):
+                 search_str=None, query=None,
+                 hide_footer=False, double_click_confirm=True,
+                 table=None
+                 ):
+        self._query = query
 
-        ProductStockSearch.__init__(self, conn, selection_mode=selection_mode,
-                           hide_footer=hide_footer,
-                           hide_toolbar=hide_toolbar,
+        SearchDialog.__init__(self, conn, selection_mode=selection_mode,
+                           hide_footer=hide_footer, table=table,
                            double_click_confirm=double_click_confirm)
         if search_str:
             self.set_searchbar_search_string(search_str)
             self.search.refresh()
 
+    def get_columns(self):
+        return [SearchColumn('barcode', title=_('Barcode'), data_type=str,
+                             sort_func=sort_sellable_code,
+                             width=80),
+                SearchColumn('category_description', title=_('Category'),
+                             data_type=str, width=120),
+                SearchColumn('description', title=_('Description'), data_type=str,
+                             expand=True, sorted=True),
+              ]
+
 
     def update_widgets(self):
         sellable_view = self.results.get_selected()
-        self.set_edit_button_sensitive(bool(sellable_view))
         self.ok_button.set_sensitive(bool(sellable_view))
 
+    def create_filters(self):
+        self.set_text_field_columns(['description', 'barcode',
+                                     'category_description'])
+        self.executer.set_query(self.executer_query)
+
+        # Branch
+        #branch_filter = self.create_branch_filter(_('In branch:'))
+        #branch_filter.select(None)
+        #self.add_filter(branch_filter, columns=[])
+        #self.branch_filter = branch_filter
+
+        # Status
+        #statuses = [(desc, id) for id, desc in Sellable.statuses.items()]
+        #statuses.insert(0, (_('Any'), None))
+        #status_filter = ComboSearchFilter(_('with status:'), statuses)
+        #status_filter.select(None)
+        #self.add_filter(status_filter, columns=['status'],
+        #                position=SearchFilterPosition.TOP)
+
+    def executer_query(self, query, having, conn):
+        new_query = self._query
+        if query:
+            new_query = AND(query, new_query)
+
+        return self.search_table.select(new_query, connection=conn)
 

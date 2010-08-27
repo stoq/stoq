@@ -212,16 +212,12 @@ class PurchaseItemStep(SellableItemStep):
     # Helper methods
     #
 
-    def setup_sellable_entry(self):
-        sellables = Sellable.get_unblocked_sellables(
+    def get_sellable_view_query(self):
+        return Sellable.get_unblocked_sellables_query(
             self.conn,
             storable=True,
             supplier=self.model.supplier,
             consigned=self.model.consigned,)
-        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        #self.sellable.prefill(
-        #    [(sellable.get_description(full_description=True), sellable)
-        #     for sellable in sellables[:max_results]])
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
