@@ -170,9 +170,7 @@ class SaleQuoteItemStep(SellableItemStep):
         SellableItemStep.setup_slaves(self)
         self.hide_add_button()
         self.cost_label.set_label('Price:')
-        #self.cost.set_property('model-attribute', 'price')
         self.cost.set_editable(True)
-
 
     #
     # SellableItemStep virtual methods
