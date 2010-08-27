@@ -526,7 +526,7 @@ class NFeAddress(BaseNFeXMLGroup):
         self.tag = tag
         BaseNFeXMLGroup.__init__(self)
         self.set_attr('xLgr', street)
-        self.set_attr('nro', number)
+        self.set_attr('nro', number or '')
         self.set_attr('xCpl', complement)
         self.set_attr('xBairro', district)
         self.set_attr('xMun', city)
