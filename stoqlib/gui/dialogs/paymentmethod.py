@@ -100,8 +100,8 @@ class PaymentMethodsDialog(BasicDialog):
                 'Invalid payment method adapter: %s' % (
                 method.method_name,))
         elif dialog is NotImplementedError:
-            warning(_('Editor for %s is not implemented' % (
-                method.method_name)))
+            warning(_('Editor for %s is not implemented') % (
+                method.description))
             return None
 
         return dialog
