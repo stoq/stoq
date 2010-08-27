@@ -267,9 +267,9 @@ class SellableItemStep(WizardEditorStep):
     def post_init(self):
         self.barcode.grab_focus()
         self.item_table.set_focus_chain([self.barcode,
-                                        self.quantity, self.cost,
-                                        self.add_sellable_button,
-                                        self.product_button])
+                                         self.quantity, self.cost,
+                                         self.add_sellable_button,
+                                         self.product_button])
         self.register_validate_function(self.validate)
         self.force_validation()
 

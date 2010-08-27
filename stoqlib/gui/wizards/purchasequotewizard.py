@@ -151,6 +151,7 @@ class QuoteItemsStep(PurchaseItemStep):
     #
 
     def validate(self, value):
+        PurchaseItemStep.validate(self, value)
         can_quote = bool(self.model.get_items())
         self.wizard.refresh_next(can_quote)
 

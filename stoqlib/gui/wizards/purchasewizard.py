@@ -232,6 +232,7 @@ class PurchaseItemStep(SellableItemStep):
     #
 
     def validate(self, value):
+        SellableItemStep.validate(self, value)
         can_purchase = self.model.get_purchase_total() > 0
         self.wizard.refresh_next(can_purchase)
 
