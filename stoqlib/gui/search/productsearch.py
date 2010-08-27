@@ -35,7 +35,6 @@ from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter, Today
 from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
 
-from stoqlib.database.orm import AND
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable

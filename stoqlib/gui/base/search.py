@@ -248,7 +248,6 @@ class SearchDialog(BasicDialog):
         # FIXME: Gross hack
         has_details_btn = hasattr(self, 'on_details_button_clicked')
         has_print_btn = hasattr(self, 'on_print_button_clicked')
-
         if not (has_details_btn or has_print_btn):
             self._details_slave = None
             return

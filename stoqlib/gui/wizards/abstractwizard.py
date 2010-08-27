@@ -37,7 +37,7 @@ import gtk
 
 from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import SummaryLabel
-from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
+from kiwi.ui.objectlist import SearchColumn
 from kiwi.python import Settable
 
 from stoqlib.database.orm import AND
