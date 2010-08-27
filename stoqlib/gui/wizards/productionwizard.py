@@ -29,6 +29,7 @@ from decimal import Decimal
 from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.database.orm import AND
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.person import Person, PersonAdaptToEmployee
@@ -127,26 +128,23 @@ class ProductionServiceStep(SellableItemStep):
     item_table = ProductionService
     summary_label_text = "<b>%s</b>" % _('Total:')
     summary_label_column = 'quantity'
+    sellable_view = ServiceView
 
     #
     # Helper methods
     #
 
-    def setup_sellable_entry(self):
-        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        service_view_items = ServiceView.select(
-            ServiceView.q.status == Sellable.STATUS_AVAILABLE,
-            connection=self.conn,
-            limit=max_results)
+    def get_sellable_view_query(self):
         delivery = sysparam(self.conn).DELIVERY_SERVICE
-        self.sellable.prefill([(s.description, s.sellable)
-            for s in service_view_items if s.id != delivery.id])
+
+        query = AND(ServiceView.q.status == Sellable.STATUS_AVAILABLE,
+                    ServiceView.q.id != delivery.id)
+        return query
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
         self.item_lbl.set_text(_(u'Services:'))
         self.hide_add_button()
-        self.product_button.hide()
         self.cost_label.hide()
         self.cost.hide()
 
@@ -219,22 +217,18 @@ class ProductionItemStep(SellableItemStep):
     item_table = ProductionItem
     summary_label_text = "<b>%s</b>" % _('Total:')
     summary_label_column = 'quantity'
+    sellable_view = ProductComponentView
 
     #
     # Helper methods
     #
 
-    def setup_sellable_entry(self):
-        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        composable_items = ProductComponentView.select(connection=self.conn,
-                                                       limit=max_results)
-        self.sellable.prefill(
-            [(c.description, c.sellable) for c in composable_items])
+    def get_sellable_view_query(self):
+        return None
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
         self.hide_add_button()
-        self.product_button.hide()
         self.cost_label.hide()
         self.cost.hide()
 

@@ -32,7 +32,7 @@ from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.sellable import (BaseSellableInfo, Sellable,
-                                     SellableUnit)
+                                     SellableUnit, SellableCategory)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -84,6 +84,7 @@ class ServiceView(Viewable):
         cost=Sellable.q.cost,
         price=BaseSellableInfo.q.price,
         description=BaseSellableInfo.q.description,
+        category_description=SellableCategory.q.description,
         unit=SellableUnit.q.description,
         service_id=Service.q.id
         )
@@ -93,6 +94,10 @@ class ServiceView(Viewable):
                     Service.q.sellableID == Sellable.q.id),
         LEFTJOINOn(None, SellableUnit,
                    Sellable.q.unitID == SellableUnit.q.id),
+        # Category
+        LEFTJOINOn(None, SellableCategory,
+                   SellableCategory.q.id == Sellable.q.categoryID),
+
         ]
 
     clause = AND(

@@ -115,12 +115,9 @@ class StartQuoteStep(WizardEditorStep):
 
 class QuoteItemsStep(PurchaseItemStep):
 
-    def setup_sellable_entry(self):
-        sellables = Sellable.get_unblocked_sellables(self.conn, storable=True)
-        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        self.sellable.prefill([
-            (sellable.get_description(full_description=True), sellable)
-                               for sellable in sellables[:max_results]])
+    def get_sellable_view_query(self):
+        return Sellable.get_unblocked_sellables_query(self.conn,
+                                                      storable=True)
 
     def setup_slaves(self):
         PurchaseItemStep.setup_slaves(self)
@@ -154,6 +151,7 @@ class QuoteItemsStep(PurchaseItemStep):
     #
 
     def validate(self, value):
+        PurchaseItemStep.validate(self, value)
         can_quote = bool(self.model.get_items())
         self.wizard.refresh_next(can_quote)
 
