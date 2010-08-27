@@ -35,12 +35,14 @@ import sys
 
 import gtk
 
-from kiwi.datatypes import ValidationError
+from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.python import Settable
 
+from stoqlib.database.orm import AND
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.views import ProductFullStockItemView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import WizardEditorStep
@@ -89,6 +91,7 @@ class SellableItemStep(WizardEditorStep):
     item_table = None
     summary_label_text = None
     summary_label_column = 'total'
+    sellable_view = ProductFullStockItemView
 
     def __init__(self, wizard, previous, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
@@ -130,10 +133,8 @@ class SellableItemStep(WizardEditorStep):
     # Hooks
     #
 
-    def setup_sellable_entry(self):
-        result = Sellable.get_unblocked_sellables(self.conn)
-        #self.sellable.prefill([(sellable.get_description(), sellable)
-        #                       for sellable in result])
+    def get_sellable_view_query(self):
+        return Sellable.get_unblocked_sellables_query(self.conn)
 
     def get_order_item(self):
         raise NotImplementedError('This method must be defined on child')
@@ -156,10 +157,9 @@ class SellableItemStep(WizardEditorStep):
 
         minimum = Decimal(0)
         stock = Decimal(0)
-        cost = None
-        quantity = None
+        cost = currency(0)
+        quantity = currency(0)
         description = u''
-
 
         if sellable:
             description = "<b>%s</b>" % sellable.get_description()
@@ -187,8 +187,9 @@ class SellableItemStep(WizardEditorStep):
         self.cost.set_sensitive(has_sellable)
 
     def validate(self, value):
-        self.add_sellable_button.set_sensitive(value and
-                                                bool(self.proxy.model.sellable))
+        self.add_sellable_button.set_sensitive(value
+                                               and bool(self.proxy.model)
+                                               and bool(self.proxy.model.sellable))
         self.wizard.refresh_next(value and bool(len(self.slave.klist)))
 
     #
@@ -208,7 +209,6 @@ class SellableItemStep(WizardEditorStep):
         self.force_validation()
 
     def setup_proxies(self):
-        self.setup_sellable_entry()
         self.proxy = self.add_proxy(None, SellableItemStep.proxy_widgets)
 
     def setup_slaves(self):
@@ -242,11 +242,9 @@ class SellableItemStep(WizardEditorStep):
     def _run_advanced_search(self, search_str=None):
         ret = run_dialog(ProductPurchaseSearch, self.wizard,
                          self.conn,
-                         selection_mode=gtk.SELECTION_BROWSE,
                          search_str=search_str,
-                         hide_footer=False,
-                         hide_toolbar=True,
-                         double_click_confirm=True,
+                         table=self.sellable_view,
+                         query=self.get_sellable_view_query()
             )
         if not ret:
             return
@@ -261,9 +259,20 @@ class SellableItemStep(WizardEditorStep):
         if not barcode:
             return None
 
-        sellable = Sellable.selectOneBy(barcode=barcode,
-                                    connection=self.conn)
-        if not sellable or not sellable.product:
+        query = self.sellable_view.q.barcode == barcode
+        new_query = self.get_sellable_view_query()
+        if new_query:
+            query = AND(query, new_query)
+
+        # FIXME: doing list() here is wrong. But there is a bug in one of
+        # the queries, that len() == 1 but results.count() == 2.
+        results = list(self.sellable_view.select(query, 
+                                                 connection=self.conn))
+        if len(results) != 1:
+            return None
+
+        sellable = results[0].sellable
+        if not sellable:
             return None
 
         return sellable
@@ -295,7 +304,6 @@ class SellableItemStep(WizardEditorStep):
     def _reset_sellable(self):
         self.proxy.set_model(None)
         self.barcode.set_text('')
-        #self.sellable_selected(None)
 
     def _update_total(self):
         if self.summary:

@@ -1,4 +1,4 @@
-e -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -163,20 +163,16 @@ class SaleQuoteItemStep(SellableItemStep):
     # Helper methods
     #
 
-    def setup_sellable_entry(self):
-        sellables = Sellable.get_available_sellables(self.conn)
-        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        self.sellable.prefill(
-            [(sellable.get_description(full_description=True), sellable)
-             for sellable in sellables[:max_results]])
-
-        self.cost_label.set_label('Price:')
-        self.cost.set_property('model-attribute', 'price')
+    def get_sellable_view_query(self):
+        return Sellable.get_available_sellables_query(self.conn)
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
         self.hide_add_button()
+        self.cost_label.set_label('Price:')
+        #self.cost.set_property('model-attribute', 'price')
         self.cost.set_editable(True)
+
 
     #
     # SellableItemStep virtual methods
@@ -207,23 +203,10 @@ class SaleQuoteItemStep(SellableItemStep):
             ]
 
     def sellable_selected(self, sellable):
+        SellableItemStep.sellable_selected(self, sellable)
         if sellable:
-            price = sellable.price
-            quantity = Decimal(1)
-        else:
-            price = None
-            quantity = None
-
-        model = Settable(quantity=quantity,
-                         price=price,
-                         sellable=sellable)
-
-        self.proxy.set_model(model)
-
-        has_sellable = bool(sellable)
-        self.add_sellable_button.set_sensitive(has_sellable)
-        self.quantity.set_sensitive(has_sellable)
-        self.cost.set_sensitive(has_sellable)
+            self.cost.set_text("%s" % sellable.price)
+            self.proxy.update('cost')
 
     #
     # WizardStep hooks

@@ -133,6 +133,10 @@ class ProductFullStockView(Viewable):
         return category_description + self.description
 
     @property
+    def sellable(self):
+        return Sellable.get(self.id, connection=self.get_connection())
+
+    @property
     def product(self):
         return Product.get(self.product_id, connection=self.get_connection())
 
