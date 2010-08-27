@@ -126,7 +126,7 @@ class StockTransferProductStep(SellableItemStep):
             AccessorColumn('stock', title=_(u'Stock'), data_type=Decimal,
                            accessor=self._get_stock_quantity, width=80),
             Column('quantity', title=_(u'Transfer'), data_type=Decimal,
-                   format_func=format_quantity, width=100),
+                   width=100),
             AccessorColumn('total', title=_(u'Total'), data_type=Decimal,
                             accessor=self._get_total_quantity, width=80),
             ]
@@ -170,7 +170,6 @@ class StockTransferProductStep(SellableItemStep):
         quantity = self._get_stock_balance(sellable)
         has_quantity = quantity > 0
         self.quantity.set_sensitive(has_quantity)
-        self.cost.set_sensitive(has_quantity)
         self.add_sellable_button.set_sensitive(has_quantity)
         if has_quantity:
             self.quantity.set_range(1, quantity)
@@ -184,9 +183,10 @@ class StockTransferProductStep(SellableItemStep):
     #
 
     def post_init(self):
-        #self.product_button.hide()
         self.hide_add_button()
         self.hide_edit_button()
+        self.cost.hide()
+        self.cost_label.hide()
 
     def next_step(self):
         return StockTransferFinishStep(self.conn, self.wizard,

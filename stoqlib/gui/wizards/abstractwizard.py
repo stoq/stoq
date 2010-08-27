@@ -37,22 +37,71 @@ import gtk
 
 from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import SummaryLabel
+from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
 from kiwi.python import Settable
 
 from stoqlib.database.orm import AND
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductFullStockItemView
+from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import WizardEditorStep
-from stoqlib.gui.search.productsearch import ProductPurchaseSearch
+from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 
 _ = stoqlib_gettext
 
+
+
+class _ProductSearch(SearchDialog):
+    title = _('Product Stock Search')
+    size = (800, 450)
+    has_new_button = False
+
+    def __init__(self, conn, selection_mode=gtk.SELECTION_BROWSE,
+                 search_str=None, query=None,
+                 hide_footer=False, double_click_confirm=True,
+                 table=None
+                 ):
+        self._query = query
+
+        SearchDialog.__init__(self, conn, selection_mode=selection_mode,
+                           hide_footer=hide_footer, table=table,
+                           double_click_confirm=double_click_confirm)
+        if search_str:
+            self.set_searchbar_search_string(search_str)
+            self.search.refresh()
+
+    def get_columns(self):
+        return [SearchColumn('barcode', title=_('Barcode'), data_type=str,
+                             sort_func=sort_sellable_code,
+                             width=80),
+                SearchColumn('category_description', title=_('Category'),
+                             data_type=str, width=120),
+                SearchColumn('description', title=_('Description'), data_type=str,
+                             expand=True, sorted=True),
+              ]
+
+
+    def update_widgets(self):
+        sellable_view = self.results.get_selected()
+        self.ok_button.set_sensitive(bool(sellable_view))
+
+    def create_filters(self):
+        self.set_text_field_columns(['description', 'barcode',
+                                     'category_description'])
+        self.executer.set_query(self.executer_query)
+
+    def executer_query(self, query, having, conn):
+        new_query = self._query
+        if query:
+            new_query = AND(query, new_query)
+
+        return self.search_table.select(new_query, connection=conn)
 
 
 #
@@ -65,10 +114,11 @@ class SellableItemStep(WizardEditorStep):
 
     It defines the following:
 
-      - sellable combobox
+      - barcode entry
       - quantity spinbutton
       - cost entry
       - add button
+      - find product button
       - sellable objectlist
 
     Optionally buttons to modify the list
@@ -76,6 +126,18 @@ class SellableItemStep(WizardEditorStep):
       - Add
       - Remove
       - Edit
+
+    Subclasses should define a sellable_view property and a
+    get_sellable_view_query, both used to define what sellables can be added
+    to the step.
+
+    The view used should have the following properties:
+
+     - barcode
+     - description
+     - category_description
+
+    and should also provede an acessor that returns the sellable object.
 
     """
     # FIXME: Rename to SellableItemStep
@@ -134,6 +196,9 @@ class SellableItemStep(WizardEditorStep):
     #
 
     def get_sellable_view_query(self):
+        """This method should return a query that should be used when
+        filtering the sellables that can and cannot be added to this step.
+        """
         return Sellable.get_unblocked_sellables_query(self.conn)
 
     def get_order_item(self):
@@ -240,7 +305,7 @@ class SellableItemStep(WizardEditorStep):
         self.wizard.refresh_next(len(self.slave.klist))
 
     def _run_advanced_search(self, search_str=None):
-        ret = run_dialog(ProductPurchaseSearch, self.wizard,
+        ret = run_dialog(_ProductSearch, self.wizard,
                          self.conn,
                          search_str=search_str,
                          table=self.sellable_view,

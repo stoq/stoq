@@ -223,6 +223,7 @@ class PurchaseItemStep(SellableItemStep):
         SellableItemStep.setup_slaves(self)
         self.hide_add_button()
 
+        # FIXME
         #self.sellable.connect(
         #    'content-changed', self._on_sellable__content_changed)
         self.cost.set_editable(True)
@@ -293,7 +294,7 @@ class PurchaseItemStep(SellableItemStep):
     #
 
     def _validate_sellable_cost(self):
-        #sellable = self.sellable.get_selected_data()
+        # FIXME: Make sure this is tested
         sellable = self._get_sellable()
         if sellable is None:
             return
@@ -308,7 +309,8 @@ class PurchaseItemStep(SellableItemStep):
         self.cost.set_editable(True)
 
     def _get_supplier_minimum_quantity(self):
-        #sellable = self.sellable.get_selected_data()
+        # FIXME: Make sure this is tested
+        # FIXME: use self.proxy.model.sellable instead
         sellable = self._get_sellable()
         if sellable is None:
             return Decimal(0)
