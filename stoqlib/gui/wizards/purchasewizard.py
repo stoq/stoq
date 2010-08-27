@@ -223,9 +223,6 @@ class PurchaseItemStep(SellableItemStep):
         SellableItemStep.setup_slaves(self)
         self.hide_add_button()
 
-        # FIXME
-        #self.sellable.connect(
-        #    'content-changed', self._on_sellable__content_changed)
         self.cost.set_editable(True)
         self.cost.connect('validate', self._on_cost__validate)
         self.quantity.connect('validate', self._on_quantity__validate)
@@ -293,25 +290,8 @@ class PurchaseItemStep(SellableItemStep):
     # Private API
     #
 
-    def _validate_sellable_cost(self):
-        # FIXME: Make sure this is tested
-        sellable = self._get_sellable()
-        if sellable is None:
-            return
-        for item in self.slave.klist:
-            if item.sellable == sellable:
-                # set the value in the cost entry only, we don't want to keep
-                # a custom sellable cost outside this purchase
-                self.cost.set_text(str(item.cost))
-                self.cost.set_editable(False)
-                return
-
-        self.cost.set_editable(True)
-
     def _get_supplier_minimum_quantity(self):
-        # FIXME: Make sure this is tested
-        # FIXME: use self.proxy.model.sellable instead
-        sellable = self._get_sellable()
+        sellable = self.proxy.model.sellable
         if sellable is None:
             return Decimal(0)
 
@@ -330,9 +310,6 @@ class PurchaseItemStep(SellableItemStep):
     #
     # Callbacks
     #
-
-    def _on_sellable__content_changed(self, widget):
-        self._validate_sellable_cost()
 
     def _on_cost__validate(self, widget, value):
         if value <= Decimal(0):

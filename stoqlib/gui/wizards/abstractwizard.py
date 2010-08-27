@@ -320,6 +320,11 @@ class SellableItemStep(WizardEditorStep):
         self.quantity.grab_focus()
 
     def _get_sellable(self):
+        """This method always read the barcode and searches de datbase.
+
+        If you only need the currencly selected sellable, use
+        self.proxy.model.sellable
+        """
         barcode = self.barcode.get_text()
         if not barcode:
             return None
