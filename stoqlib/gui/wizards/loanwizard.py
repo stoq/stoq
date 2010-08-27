@@ -159,7 +159,7 @@ class LoanItemStep(SaleQuoteItemStep):
         if value <= 0:
             return ValidationError(_(u'Quantity should be positive.'))
 
-        sellable = self.sellable.get_selected()
+        sellable = self.proxy.model.sellable
         if not self._has_stock(sellable, value):
             return ValidationError(
                 _(u'The quantity is greater than the quantity in stock.'))

@@ -31,11 +31,14 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.database.orm import AND
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import IBranch, IEmployee, IStorable
 from stoqlib.domain.person import Person
+from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
+from stoqlib.domain.views import ProductWithStockView
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.wizards import (BaseWizard, BaseWizardStep)
 from stoqlib.gui.printing import print_report
@@ -63,6 +66,12 @@ class TemporaryTransferOrder(object):
         self.source_responsible = None
         self.destination_responsible = None
 
+    @property
+    def branch(self):
+        # This method is here because SellableItemStep requires a branch
+        # property
+        return self.source_branch
+
     def add_item(self, item):
         self.items.append(item)
 
@@ -80,6 +89,7 @@ class TemporaryTransferOrderItem(Settable):
 class StockTransferProductStep(SellableItemStep):
     model_type = TemporaryTransferOrder
     item_table = TemporaryTransferOrderItem
+    sellable_view = ProductWithStockView
 
     def __init__(self, wizard, conn, model):
        self.branch = get_current_branch(conn)
@@ -89,12 +99,12 @@ class StockTransferProductStep(SellableItemStep):
     # SellableItemStep hooks
     #
 
-    def setup_sellable_entry(self):
+    def get_sellable_view_query(self):
         branch = get_current_branch(self.conn)
-        sellables = Sellable.get_unblocked_sellables(self.conn,
-                                                     storable=True)
-        self.sellable.prefill([(s.get_description(), s) for s in sellables
-                                if IStorable(s.product).has_stock_by_branch(self.branch)])
+        branch_query = ProductStockItem.q.branchID == branch.id
+        sellable_query = Sellable.get_unblocked_sellables_query(self.conn,
+                                                                storable=True)
+        return AND(branch_query, sellable_query)
 
     def get_saved_items(self):
         return list(self.model.get_items())
@@ -116,7 +126,7 @@ class StockTransferProductStep(SellableItemStep):
             AccessorColumn('stock', title=_(u'Stock'), data_type=Decimal,
                            accessor=self._get_stock_quantity, width=80),
             Column('quantity', title=_(u'Transfer'), data_type=Decimal,
-                   format_func=format_quantity, width=100),
+                   width=100),
             AccessorColumn('total', title=_(u'Total'), data_type=Decimal,
                             accessor=self._get_total_quantity, width=80),
             ]
@@ -153,10 +163,13 @@ class StockTransferProductStep(SellableItemStep):
         if sellable is None:
             return
 
+        storable = IStorable(sellable.product)
+        stock_item = storable.get_stock_item(self.branch)
+        self.stock_quantity.set_label("%s" % stock_item.quantity or 0)
+
         quantity = self._get_stock_balance(sellable)
         has_quantity = quantity > 0
         self.quantity.set_sensitive(has_quantity)
-        self.cost.set_sensitive(has_quantity)
         self.add_sellable_button.set_sensitive(has_quantity)
         if has_quantity:
             self.quantity.set_range(1, quantity)
@@ -170,9 +183,10 @@ class StockTransferProductStep(SellableItemStep):
     #
 
     def post_init(self):
-        self.product_button.hide()
         self.hide_add_button()
         self.hide_edit_button()
+        self.cost.hide()
+        self.cost_label.hide()
 
     def next_step(self):
         return StockTransferFinishStep(self.conn, self.wizard,
@@ -182,7 +196,7 @@ class StockTransferProductStep(SellableItemStep):
         if not value or value <= 0:
             return ValidationError(_(u'Quantity should be a positive number.'))
 
-        sellable = self.sellable.get_selected()
+        sellable = self.proxy.model.sellable
         balance = self._get_stock_balance(sellable)
         if value > balance:
             return ValidationError(
