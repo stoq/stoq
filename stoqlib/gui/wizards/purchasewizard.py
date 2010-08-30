@@ -196,6 +196,7 @@ class PurchaseItemStep(SellableItemStep):
     model_type = PurchaseOrder
     item_table = PurchaseItem
     summary_label_text = "<b>%s</b>" % _('Total Ordered:')
+    sellable_editable = True
 
     def _set_expected_receival_date(self, item):
         supplier = self.model.supplier
