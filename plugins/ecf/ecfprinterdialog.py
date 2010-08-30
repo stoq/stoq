@@ -251,6 +251,8 @@ class ECFEditor(BaseEditor):
 
         for device_value, constant_name in driver.get_payment_constants():
             lower = constant_name.lower()
+            lower = lower.replace('é', 'e') # Workaround method names with
+            lower = lower.replace('ã', 'a') # accents
             payment_enum = payment_enums.get(lower)
             if payment_enum is None:
                 continue
