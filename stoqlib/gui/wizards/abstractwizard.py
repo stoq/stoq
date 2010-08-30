@@ -40,14 +40,19 @@ from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.ui.objectlist import SearchColumn
 from kiwi.python import Settable
 
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import AND, ORMObject
+from stoqlib.database.runtime import (new_transaction,
+                                      finish_transaction)
+
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.product import ProductSupplierInfo
 from stoqlib.domain.views import ProductFullStockItemView
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.base.search import SearchDialog, SearchEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import WizardEditorStep
+from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -57,39 +62,31 @@ _ = stoqlib_gettext
 
 
 
-class _ProductSearch(SearchDialog):
+class _ProductSearch(SearchEditor):
     title = _('Product Stock Search')
     size = (800, 450)
-    has_new_button = False
+    has_new_button = True
+    editor_class = ProductEditor
 
     def __init__(self, conn, selection_mode=gtk.SELECTION_BROWSE,
-                 search_str=None, query=None,
+                 search_str=None, query=None, supplier=None,
                  hide_footer=False, double_click_confirm=True,
-                 table=None
+                 table=None, editable=False,
                  ):
         self._query = query
+        self._supplier = supplier
 
-        SearchDialog.__init__(self, conn, selection_mode=selection_mode,
-                           hide_footer=hide_footer, table=table,
-                           double_click_confirm=double_click_confirm)
+        SearchEditor.__init__(self, conn, selection_mode=selection_mode,
+                              hide_footer=hide_footer, table=table,
+                              double_click_confirm=double_click_confirm,
+                              hide_toolbar=not editable)
         if search_str:
             self.set_searchbar_search_string(search_str)
             self.search.refresh()
 
-    def get_columns(self):
-        return [SearchColumn('barcode', title=_('Barcode'), data_type=str,
-                             sort_func=sort_sellable_code,
-                             width=80),
-                SearchColumn('category_description', title=_('Category'),
-                             data_type=str, width=120),
-                SearchColumn('description', title=_('Description'), data_type=str,
-                             expand=True, sorted=True),
-              ]
-
-
-    def update_widgets(self):
-        sellable_view = self.results.get_selected()
-        self.ok_button.set_sensitive(bool(sellable_view))
+    #
+    # SearchDialog Hooks
+    #
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'barcode',
@@ -102,6 +99,51 @@ class _ProductSearch(SearchDialog):
             new_query = AND(query, new_query)
 
         return self.search_table.select(new_query, connection=conn)
+
+    def update_widgets(self):
+        sellable_view = self.results.get_selected()
+        self.ok_button.set_sensitive(bool(sellable_view))
+
+    def get_columns(self):
+        return [SearchColumn('barcode', title=_('Barcode'), data_type=str,
+                             sort_func=sort_sellable_code,
+                             width=80),
+                SearchColumn('category_description', title=_('Category'),
+                             data_type=str, width=120),
+                SearchColumn('description', title=_('Description'), data_type=str,
+                             expand=True, sorted=True),
+              ]
+
+    #
+    # SearchEditor Hooks
+    #
+
+    def get_editor_model(self, model):
+        return model.product
+
+    def run_editor(self, obj=None):
+        trans = new_transaction()
+        product = self.run_dialog(self.editor_class, self, trans,
+                                 trans.get(obj))
+
+        # This means we are creating a new product. After that, add the
+        # current supplier as the supplier for this product
+        if (obj is None and product
+            and not product.is_supplied_by(self._supplier)):
+            ProductSupplierInfo(connection=trans,
+                                supplier=self._supplier,
+                                product=product,
+                                base_cost=product.sellable.cost,
+                                is_main_supplier=True)
+
+        if finish_transaction(trans, product):
+            # If the return value is an ORMObject, fetch it from
+            # the right connection
+            if isinstance(product, ORMObject):
+                product = type(product).get(product.id, connection=self.conn)
+        trans.close()
+        return product
+
 
 
 #
@@ -154,6 +196,7 @@ class SellableItemStep(WizardEditorStep):
     summary_label_text = None
     summary_label_column = 'total'
     sellable_view = ProductFullStockItemView
+    sellable_editable = False
 
     def __init__(self, wizard, previous, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
@@ -305,10 +348,16 @@ class SellableItemStep(WizardEditorStep):
         self.wizard.refresh_next(len(self.slave.klist))
 
     def _run_advanced_search(self, search_str=None):
+        supplier = None
+        has_supplier = hasattr(self.model, 'supplier')
+        if has_supplier:
+            supplier = self.model.supplier
         ret = run_dialog(_ProductSearch, self.wizard,
                          self.conn,
                          search_str=search_str,
                          table=self.sellable_view,
+                         supplier=supplier,
+                         editable=self.sellable_editable,
                          query=self.get_sellable_view_query()
             )
         if not ret:

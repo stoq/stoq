@@ -499,7 +499,9 @@ class SearchEditor(SearchDialog):
         @param selection_mode:
         @param hide_toolbar:
         @param double_click_confirm: If double click a item in the list should
-          automatically confirm
+          automatically confirm. Double click confirms takes precedence over
+          editor_class (ie, if double_click_confirmis is True, it will
+          confirm the dialog, instead of opening the editor).
         """
 
         self.interface = interface
@@ -523,9 +525,6 @@ class SearchEditor(SearchDialog):
                 raise ValueError('An editor_class argument is required')
             if not issubclass(editor_class, BaseEditor):
                 raise TypeError("editor_class must be a BaseEditor subclass")
-            if editor_class and self.double_click_confirm:
-                raise ValueError('Cannot use editor_class and double_click_confirm'
-                                 ' at the same time')
             self.editor_class = editor_class
 
             self.accept_edit_data = self.has_edit_button
@@ -613,10 +612,10 @@ class SearchEditor(SearchDialog):
     def row_activate(self, obj):
         """See L{SearchDialog.row_activate}
         """
-        if self.accept_edit_data:
-            self._edit(obj)
-        elif self.double_click_confirm:
+        if self.double_click_confirm:
             SearchDialog.row_activate(self, obj)
+        elif self.accept_edit_data:
+            self._edit(obj)
 
 
     # Private
