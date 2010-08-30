@@ -67,7 +67,7 @@ class NFeGenerator(object):
         self._add_recipient(self._sale.client)
         self._add_sale_items(self._sale.get_items())
         self._add_totals()
-        self._add_transport_data()
+        self._add_transport_data(self._sale.transporter)
         self._add_additional_information()
 
     def save(self, location=''):
@@ -241,9 +241,11 @@ class NFeGenerator(object):
         nfe_total.add_icms_total(sale_total, items_total)
         self._nfe_data.append(nfe_total)
 
-    def _add_transport_data(self):
+    def _add_transport_data(self, transporter):
         nfe_transport = NFeTransport()
         self._nfe_data.append(nfe_transport)
+        nfe_transporter = NFeTransporter(transporter)
+        self._nfe_data.append(nfe_transporter)
 
     def _add_additional_information(self):
         nfe_info = NFeSimplesNacionalInfo()
@@ -1066,6 +1068,10 @@ class NFeTransporter(BaseNFeXMLGroup):
         - UF: Sigla da UF.
     """
     tag = u'transporta'
+    txttag = 'X03'
+    doc_cnpj_tag = 'X04'
+    doc_cpf_tag = 'X05'
+
     attributes = [(u'CNPJ', None),
                   (u'CPF', None),
                   (u'xNome', ''),
@@ -1073,6 +1079,49 @@ class NFeTransporter(BaseNFeXMLGroup):
                   (u'xEnder', ''),
                   (u'xMun', ''),
                   (u'UF', ''),]
+
+    def __init__(self, transporter):
+        BaseNFeXMLGroup.__init__(self)
+        person = transporter.person
+        name = person.name
+        self.set_attr('xNome', name)
+
+        individual = IIndividual(person, None)
+        if individual is not None:
+            cpf = ''.join([c for c in individual.cpf if c in '1234567890'])
+            self.set_attr('CPF', cpf)
+        else:
+            company = ICompany(person)
+            cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
+            self.set_attr('CNPJ', cnpj)
+            self.set_attr('IE', company.state_registry)
+
+        address = person.get_main_address()
+        if address:
+            postal_code = ''.join([i for i in address.postal_code if i in '1234567890'])
+            self.set_attr('xEnder', address.get_address_string()[:60])
+            self.set_attr('xMun', address.city_location.city[:60])
+            self.set_attr('UF', address.city_location.state)
+
+    def get_doc_txt(self):
+        doc_value = self.get_attr('CNPJ')
+        if doc_value:
+            doc_tag = self.doc_cnpj_tag
+        else:
+            doc_tag = self.doc_cpf_tag
+            doc_value = self.get_attr('CPF')
+        return '%s|%s|\n' % (doc_tag, doc_value or '',)
+
+    def as_txt(self):
+        base_txt = "%s|%s|%s|%s|%s|%s\n" % (self.txttag,
+                                            self.get_attr('xNome') or '',
+                                            self.get_attr('IE') or '',
+                                            self.get_attr('xEnder') or '',
+                                            self.get_attr('UF') or '',
+                                            self.get_attr('xMun') or '',)
+        doc_txt = self.get_doc_txt()
+
+        return base_txt + doc_txt
 
 
 class NFeAdditionalInformation(BaseNFeXMLGroup):
