@@ -32,7 +32,7 @@ from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
 from kiwi.datatypes import currency, ValidationError
 
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import StoqlibError
@@ -44,7 +44,7 @@ from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard, BaseWizardSte
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
-from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.gui.editors.personeditor import ClientEditor, TransporterEditor
 from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.gui.slaves.cashchangeslave import CashChangeSlave
 from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
@@ -57,7 +57,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.interfaces import ISalesPerson
+from stoqlib.domain.interfaces import ISalesPerson, ITransporter
 
 N_ = _ = stoqlib_gettext
 
@@ -232,7 +232,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
                      'subtotal_lbl',
                      'salesperson',
                      'invoice_number',
-                     'client',)
+                     'client',
+                     'transporter',)
     cfop_widgets = ('cfop',)
 
     def __init__(self, wizard, conn, model, payment_group):
@@ -261,6 +262,12 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         clients = clients[:max_results]
         items = [(c.name, c.client) for c in clients]
         self.client.prefill(sorted(items))
+
+    def _fill_transporter_combo(self):
+        table = Person.getAdapterClass(ITransporter)
+        transporters = table.get_active_transporters(self.conn)
+        items = [(t.person.name, t) for t in transporters]
+        self.transporter.prefill(items)
 
     def _fill_cfop_combo(self):
         cfops = [(cfop.get_description(), cfop)
@@ -326,6 +333,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         else:
             self.salesperson.grab_focus()
         self._fill_clients_combo()
+        self._fill_transporter_combo()
         if sysparam(self.conn).ASK_SALES_CFOP:
             self._fill_cfop_combo()
         else:
@@ -390,6 +398,17 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
     def on_create_client__clicked(self, button):
         self._create_client()
+
+    def on_create_transporter__clicked(self, button):
+        trans = new_transaction()
+        transporter = trans.get(self.model.transporter)
+        model =  run_person_role_dialog(TransporterEditor, self, trans,
+                                        transporter)
+        rv = finish_transaction(trans, model)
+        trans.close()
+        if rv:
+            self._setup_transporter_entry()
+            self.transporter.select(model)
 
     def on_discount_slave_changed(self, slave):
         self._update_totals()

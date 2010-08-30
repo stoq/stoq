@@ -100,6 +100,10 @@ class StartSaleQuoteStep(WizardEditorStep):
             self.cfop.hide()
             self.create_cfop.hide()
 
+        self.transporter_lbl.hide()
+        self.transporter.hide()
+        self.create_transporter.hide()
+
     #
     # WizardStep hooks
     #
