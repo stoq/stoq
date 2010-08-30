@@ -303,6 +303,7 @@ class Sale(ValidatableDomain):
     client = ForeignKey('PersonAdaptToClient', default=None)
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
     branch = ForeignKey('PersonAdaptToBranch', default=None)
+    transporter = ForeignKey('PersonAdaptToTransporter', default=None)
     group = ForeignKey('PaymentGroup')
 
     #

@@ -34,8 +34,8 @@ from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_branch, get_current_user,
                                       new_transaction, finish_transaction)
-from stoqlib.domain.interfaces import IStorable, ISalesPerson
-from stoqlib.domain.person import ClientView, PersonAdaptToUser
+from stoqlib.domain.interfaces import IStorable, ISalesPerson, ITransporter
+from stoqlib.domain.person import ClientView, PersonAdaptToUser, Person
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.sale import Sale
@@ -93,6 +93,11 @@ class StartNewLoanStep(WizardEditorStep):
         self.cfop_lbl.hide()
         self.cfop.hide()
         self.create_cfop.hide()
+
+        # Transporter Combo
+        self.transporter_lbl.hide()
+        self.transporter.hide()
+        self.create_transporter.hide()
 
     #
     # WizardStep hooks

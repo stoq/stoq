@@ -5,6 +5,7 @@
         <property name="border_width">6</property>
         <property name="default_height">250</property>
         <property name="default_width">440</property>
+        <property name="mnemonics_visible">False</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
                 <property name="border_width">6</property>
@@ -13,7 +14,7 @@
                 <child>
                     <widget class="GtkTable" id="table2">
                         <property name="column_spacing">5</property>
-                        <property name="n_columns">5</property>
+                        <property name="n_columns">6</property>
                         <property name="n_rows">3</property>
                         <property name="row_spacing">5</property>
                         <property name="visible">True</property>
@@ -42,8 +43,8 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkLabel" id="cfop_lbl">
-                                <property name="label" context="yes" translatable="yes">CFOP:</property>
+                            <widget class="GtkLabel" id="transporter_lbl">
+                                <property name="label" context="yes" translatable="yes">Transporter:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -79,10 +80,9 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyComboEntry" id="cfop">
+                            <widget class="ProxyComboEntry" id="transporter">
                                 <property name="data_type">object</property>
-                                <property name="mandatory">True</property>
-                                <property name="model_attribute">cfop</property>
+                                <property name="model_attribute">transporter</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -114,7 +114,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkButton" id="create_cfop">
+                            <widget class="GtkButton" id="create_transporter">
                                 <property name="is_focus">True</property>
                                 <property name="label" context="yes" translatable="yes">Create...</property>
                                 <property name="visible">True</property>
@@ -153,12 +153,16 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="GtkLabel" id="cfop_lbl">
+                                <property name="label" context="yes" translatable="yes">CFOP:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
                             <packing>
+                                <property name="bottom_attach">3</property>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
                                 <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
                             </packing>
                         </child>
                         <child>
@@ -193,12 +197,46 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="ProxyComboEntry" id="cfop">
+                                <property name="data_type">object</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">cfop</property>
+                                <property name="visible">True</property>
+                            </widget>
                             <packing>
+                                <property name="bottom_attach">3</property>
                                 <property name="left_attach">4</property>
                                 <property name="right_attach">5</property>
                                 <property name="top_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">5</property>
+                                <property name="right_attach">6</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">5</property>
+                                <property name="right_attach">6</property>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkButton" id="create_cfop">
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes">Create...</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
                                 <property name="bottom_attach">3</property>
+                                <property name="left_attach">5</property>
+                                <property name="right_attach">6</property>
+                                <property name="top_attach">2</property>
                             </packing>
                         </child>
                     </widget>
