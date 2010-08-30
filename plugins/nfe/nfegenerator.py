@@ -24,6 +24,7 @@
 """ NF-e XML document generation """
 
 import datetime
+import math
 import os.path
 import random
 from xml.etree.ElementTree import Element
@@ -67,7 +68,8 @@ class NFeGenerator(object):
         self._add_recipient(self._sale.client)
         self._add_sale_items(self._sale.get_items())
         self._add_totals()
-        self._add_transport_data()
+        self._add_transport_data(self._sale.transporter,
+                                 self._sale.get_items())
         self._add_additional_information()
 
     def save(self, location=''):
@@ -241,9 +243,25 @@ class NFeGenerator(object):
         nfe_total.add_icms_total(sale_total, items_total)
         self._nfe_data.append(nfe_total)
 
-    def _add_transport_data(self):
+    def _add_transport_data(self, transporter, sale_items):
         nfe_transport = NFeTransport()
         self._nfe_data.append(nfe_transport)
+        if transporter:
+            nfe_transporter = NFeTransporter(transporter)
+            self._nfe_data.append(nfe_transporter)
+
+        for item_number, sale_item in enumerate(sale_items):
+            sellable = sale_item.sellable
+            product = sellable.product
+            if not product:
+                continue
+
+            unit = sellable.unit and sellable.unit.get_description() or ''
+            unitary_weight = product.weight
+            weight = sale_item.quantity * unitary_weight
+            vol = NFeVolume(quantity=sale_item.quantity, unit=unit,
+                            net_weight=weight, gross_weight=weight)
+            self._nfe_data.append(vol)
 
     def _add_additional_information(self):
         nfe_info = NFeSimplesNacionalInfo()
@@ -526,7 +544,7 @@ class NFeAddress(BaseNFeXMLGroup):
         self.tag = tag
         BaseNFeXMLGroup.__init__(self)
         self.set_attr('xLgr', street)
-        self.set_attr('nro', number)
+        self.set_attr('nro', number or '')
         self.set_attr('xCpl', complement)
         self.set_attr('xBairro', district)
         self.set_attr('xMun', city)
@@ -1066,6 +1084,10 @@ class NFeTransporter(BaseNFeXMLGroup):
         - UF: Sigla da UF.
     """
     tag = u'transporta'
+    txttag = 'X03'
+    doc_cnpj_tag = 'X04'
+    doc_cpf_tag = 'X05'
+
     attributes = [(u'CNPJ', None),
                   (u'CPF', None),
                   (u'xNome', ''),
@@ -1073,6 +1095,81 @@ class NFeTransporter(BaseNFeXMLGroup):
                   (u'xEnder', ''),
                   (u'xMun', ''),
                   (u'UF', ''),]
+
+    def __init__(self, transporter):
+        BaseNFeXMLGroup.__init__(self)
+        person = transporter.person
+        name = person.name
+        self.set_attr('xNome', name)
+
+        individual = IIndividual(person, None)
+        if individual is not None:
+            cpf = ''.join([c for c in individual.cpf if c in '1234567890'])
+            self.set_attr('CPF', cpf)
+        else:
+            company = ICompany(person)
+            cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
+            self.set_attr('CNPJ', cnpj)
+            self.set_attr('IE', company.state_registry)
+
+        address = person.get_main_address()
+        if address:
+            postal_code = ''.join([i for i in address.postal_code if i in '1234567890'])
+            self.set_attr('xEnder', address.get_address_string()[:60])
+            self.set_attr('xMun', address.city_location.city[:60])
+            self.set_attr('UF', address.city_location.state)
+
+    def get_doc_txt(self):
+        doc_value = self.get_attr('CNPJ')
+        if doc_value:
+            doc_tag = self.doc_cnpj_tag
+        else:
+            doc_tag = self.doc_cpf_tag
+            doc_value = self.get_attr('CPF')
+        return '%s|%s|\n' % (doc_tag, doc_value or '',)
+
+    def as_txt(self):
+        base_txt = "%s|%s|%s|%s|%s|%s\n" % (self.txttag,
+                                            self.get_attr('xNome') or '',
+                                            self.get_attr('IE') or '',
+                                            self.get_attr('xEnder') or '',
+                                            self.get_attr('UF') or '',
+                                            self.get_attr('xMun') or '',)
+        doc_txt = self.get_doc_txt()
+
+        return base_txt + doc_txt
+
+
+class NFeVolume(BaseNFeXMLGroup):
+    """
+    - Attributes:
+        - nItem: número do item
+    """
+    tag = u'vol'
+    txttag = 'X26'
+
+    attributes = [(u'qVol', ''),
+                  (u'esp', ''),
+                  (u'marca', ''),
+                  (u'nVol', ''),
+                  (u'pesoL', ''),
+                  (u'pesoB', ''),]
+
+    def __init__(self, quantity=0, unit='', brand='', number='',
+                 net_weight=0.0, gross_weight=0.0):
+        BaseNFeXMLGroup.__init__(self)
+        # XXX: the documentation doesn't really say what quantity is all
+        # about...
+        if quantity:
+            self.set_attr('qVol', int(math.ceil(quantity)))
+        self.set_attr('esp', unit)
+        self.set_attr('marca', brand)
+        self.set_attr('nVol', number)
+        if net_weight:
+            self.set_attr('pesoL', "%.3f" % net_weight)
+        if gross_weight:
+            self.set_attr('pesoB', "%.3f" % gross_weight)
+
 
 
 class NFeAdditionalInformation(BaseNFeXMLGroup):
