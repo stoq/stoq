@@ -1,3 +1,9 @@
+stoqlib (0.9.13) lucid; urgency=low
+
+  * New Release
+
+ -- Ronaldo Francisco Maia <romaia@async.com.br>  Wed, 01 Sep 2010 13:46:13 -0300
+
 stoqlib (0.9.12) karmic; urgency=low
 
   * New Release
