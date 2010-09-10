@@ -488,8 +488,7 @@ class SoldItemView(SaleItemView):
 
     clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
                 Sale.q.status == Sale.STATUS_PAID,
-                Sale.q.status == Sale.STATUS_ORDERED,
-                Sale.q.status == Sale.STATUS_PAID,)
+                Sale.q.status == Sale.STATUS_ORDERED,)
 
 
 class PurchasedItemAndStockView(Viewable):
@@ -605,6 +604,44 @@ class PurchaseReceivingView(Viewable):
     ]
 
 
+class SaleItemsView(Viewable):
+    """Show information about sold items and about the corresponding sale.
+    This is slightlig difrent than SoldItemView that groups sold items from
+    diferent sales.
+    """
+
+    columns = dict(
+        id=Sellable.q.id,
+        code=Sellable.q.code,
+        description=BaseSellableInfo.q.description,
+        sale_id=SaleItem.q.saleID,
+        sale_date = Sale.q.open_date,
+        client_name = Person.q.name,
+        quantity=SaleItem.q.quantity,
+        unit_description=SellableUnit.q.description,
+    )
+
+    joins = [
+        LEFTJOINOn(None, SaleItem,
+                    Sellable.q.id == SaleItem.q.sellableID),
+        LEFTJOINOn(None, Sale,
+                   SaleItem.q.saleID == Sale.q.id),
+        LEFTJOINOn(None, SellableUnit,
+                   Sellable.q.unitID == SellableUnit.q.id),
+        LEFTJOINOn(None, PersonAdaptToClient,
+                   Sale.q.clientID == PersonAdaptToClient.q.id),
+        LEFTJOINOn(None, Person,
+                   PersonAdaptToClient.q._originalID == Person.q.id),
+        INNERJOINOn(None, BaseSellableInfo,
+                    Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
+    ]
+
+    clause = AND(Sale.q._is_valid_model == True,
+                OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+                   Sale.q.status == Sale.STATUS_PAID,
+                   Sale.q.status == Sale.STATUS_ORDERED))
+
+
 class ReceivingItemView(Viewable):
     """Stores information about receiving items.
     This view is used to query products that are going to be received or was
@@ -648,6 +685,10 @@ class ReceivingItemView(Viewable):
         LEFTJOINOn(None, Person,
                    PersonAdaptToSupplier.q._originalID == Person.q.id),
     ]
+
+    # This is to workaround ValidatableDomain issues
+    clause = AND(ReceivingOrderItem.q.receiving_orderID != None,
+                 ReceivingOrder.q._is_valid_model == True)
 
 
 class ProductionItemView(Viewable):

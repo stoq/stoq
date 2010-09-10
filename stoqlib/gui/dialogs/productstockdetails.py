@@ -40,7 +40,7 @@ from stoqlib.domain.product import ProductRetentionHistory
 from stoqlib.domain.sale import SaleItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrderItem
-from stoqlib.domain.views import ReceivingItemView
+from stoqlib.domain.views import ReceivingItemView, SaleItemsView
 from stoqlib.lib.message import yesno
 
 _ = stoqlib_gettext
@@ -75,7 +75,9 @@ class ProductStockHistoryDialog(BaseEditor):
 
         self.receiving_list.add_list(list(items))
 
-        items = SaleItem.selectBy(sellable=self.model, connection=self.conn)
+        items = SaleItemsView.select(
+                    SaleItemsView.q.id == self.model.id,
+                    connection=self.conn)
         self.sales_list.add_list(list(items))
 
         items = TransferOrderItem.selectBy(sellableID=self.model.id,
@@ -139,18 +141,19 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column("unit_description", title=_("Unit"), data_type=str)]
 
     def _get_sale_columns(self):
-        return [Column("sale.id", title=_("#"),
+        return [Column("sale_id", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
                        sorted=True),
-                Column("sale.open_date",
+                Column("sale_date",
                        title=_("Date Started"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT),
-                Column("sale.client_name",
+                Column("client_name",
                        title=_("Client"), expand=True, data_type=str),
                 Column("quantity", title=_("Sold"),
                        data_type=int),
-                Column("sellable.unit_description",
-                       title=_("Unit"), data_type=str)]
+                Column("unit_description",
+                       title=_("Unit"), data_type=str)
+                       ]
 
     def _get_transfer_columns(self):
         return [Column("transfer_order.id", title=_("#"),
