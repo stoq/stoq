@@ -85,7 +85,7 @@ class ProductSupplierInfo(Domain):
     minimum_purchase = DecimalCol(default=Decimal(1))
     # This is Brazil-specific information
     icms = DecimalCol(default=0)
-    supplier =  ForeignKey('PersonAdaptToSupplier', notNone=True)
+    supplier =  ForeignKey('PersonAdaptToSupplier')
     product =  ForeignKey('Product')
 
     #
