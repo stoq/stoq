@@ -138,6 +138,14 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="Production">
+                        <property name="name">Production</property>
+                        <property name="label" translatable="yes">Production...</property>
+                        <property name="accelerator">&lt;Control&gt;r</property>
+                        <property name="stock_id">gtk-justify-fill</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Purchase">
                         <property name="name">Purchase</property>
                         <property name="label" translatable="yes">Add Order</property>
@@ -336,6 +344,7 @@
 	    <menuitem action="FinishOrder"/>
 	    <menuitem action="SendToSupplier"/>
 	    <menuitem action="stock_cost_action"/>
+	    <menuitem action="Production"/>
 	    <separator name="sep"/>
 	    <menuitem action="ExportCSV"/>
 	    <menuitem action="Quit"/>
