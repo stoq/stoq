@@ -1,0 +1,60 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface domain="stoqlib">
+    <widget class="GtkWindow" id="ProductionComponentSlave">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkVBox" id="vbox5">
+                <property name="border_width">6</property>
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkFrame" id="frame1">
+                        <property name="label" context="yes" translatable="yes">Components</property>
+                        <property name="shadow">out</property>
+                        <property name="shadow_type">out</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="ObjectList" id="component_list">
+                                <property name="visible">True</property>
+                                <property name="vscrollbar_policy">automatic</property>
+                            </widget>
+                        </child>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkHButtonBox" id="hbuttonbox2">
+                        <property name="layout_style">start</property>
+                        <property name="spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkButton" id="export_csv_button">
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes">CSV...</property>
+                                <property name="visible">True</property>
+                            </widget>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="position">2</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

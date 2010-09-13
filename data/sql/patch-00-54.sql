@@ -1,5 +1,5 @@
 -- #3802: Remove giftcertificate
-DROP VIEW IF EXISTS gift_certificate_view;
+DROP VIEW gift_certificate_view;
 DROP TABLE gift_certificate_type;
 DROP TABLE gift_certificate_adapt_to_sellable;
 DROP TABLE gift_certificate;
