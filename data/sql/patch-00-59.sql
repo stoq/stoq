@@ -2,7 +2,7 @@
 
 -- last schema adjustments (missing in the other patches)
 
-DROP VIEW IF EXISTS till_fiscal_operations_view;
+DROP VIEW till_fiscal_operations_view;
 
 ALTER TABLE person_adapt_to_transporter
 	ALTER COLUMN freight_percentage SET NOT NULL;

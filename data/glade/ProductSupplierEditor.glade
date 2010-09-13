@@ -5,6 +5,7 @@
         <property name="destroy_with_parent">True</property>
         <property name="modal">True</property>
         <property name="window_position">center-on-parent</property>
+                <property name="visible">False</property>
         <child>
             <widget class="GtkTable" id="table1">
                 <property name="border_width">6</property>
