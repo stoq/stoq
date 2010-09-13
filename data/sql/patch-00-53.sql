@@ -1,14 +1,14 @@
 -- #3795: Redesign Payment methods
 
 -- Financial details is gone
-DROP TABLE finance_p_m;
-DROP TABLE finance_details;
+-- DROP TABLE finance_p_m;
+-- DROP TABLE finance_details;
 -- We can't remove it because there might be payments referecing it, so
 -- just disable it instead.
-UPDATE apayment_method SET is_active = FALSE WHERE child_name = 'FinancePM';
+-- UPDATE apayment_method SET is_active = FALSE WHERE child_name = 'FinancePM';
 
 -- PaymentMethod: Add new columns
-ALTER TABLE apayment_method ADD COLUMN te_created_id bigint REFERENCES transaction_entry(id);
+-- ALTER TABLE apayment_method ADD COLUMN te_created_id bigint REFERENCES transaction_entry(id);
 ALTER TABLE apayment_method ADD COLUMN te_modified_id bigint REFERENCES transaction_entry(id);
 ALTER TABLE apayment_method ADD COLUMN method_name text UNIQUE;
 ALTER TABLE apayment_method ADD COLUMN description text;
@@ -69,6 +69,7 @@ DROP TABLE check_p_m;
 DROP TABLE gift_certificate_p_m;
 DROP TABLE money_p_m;
 DROP TABLE payment_method;
+-- DROP SEQUENCE payment_method_id_seq;
 
 ALTER TABLE apayment_method RENAME TO payment_method;
 ALTER TABLE apayment_method_id_seq RENAME TO payment_method_id_seq;

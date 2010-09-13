@@ -85,7 +85,7 @@ class ProductSupplierInfo(Domain):
     minimum_purchase = DecimalCol(default=Decimal(1))
     # This is Brazil-specific information
     icms = DecimalCol(default=0)
-    supplier =  ForeignKey('PersonAdaptToSupplier', notNone=True)
+    supplier =  ForeignKey('PersonAdaptToSupplier')
     product =  ForeignKey('Product')
 
     #
@@ -172,6 +172,10 @@ class Product(Domain):
     #
     # General Methods
     #
+
+    @property
+    def has_image(self):
+        return self.image != ''
 
     def remove(self):
         """Deletes this product from the database.
