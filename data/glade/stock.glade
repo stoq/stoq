@@ -85,6 +85,14 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="TogglePictureViewer">
+                        <property name="name">TogglePictureViewer</property>
+                        <property name="label" translatable="yes">Toggle picture viewer...</property>
+                        <signal handler="on_toggle_picture_viewer_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;v</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="PurchaseReceiving">
                         <property name="name">PurchaseReceiving</property>
                         <property name="label" translatable="yes">Purchase Receiving...</property>
@@ -226,7 +234,9 @@
 	      <menuitem action="receive_action"/>
           <menuitem action="transfer_action"/>
           <menuitem action="initial_stock_action"/>
-      <separator name="sep"/>
+      <separator name="sep1"/>
+          <menuitem action="TogglePictureViewer"/>
+      <separator name="sep2"/>
           <menuitem action="ExportCSV"/>
 	      <menuitem action="Quit"/>
 	    </menu>

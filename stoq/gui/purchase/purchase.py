@@ -34,8 +34,8 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
-from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.search import ComboSearchFilter
 from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
                                       finish_transaction)
 from stoqlib.lib.message import warning, yesno
@@ -58,6 +58,7 @@ from stoqlib.gui.search.productsearch import (ProductSearch,
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
+from stoqlib.gui.dialogs.productiondialog import ProductionDialog
 from stoqlib.reporting.purchase import PurchaseReport
 from stoqlib.lib.validators import format_quantity
 
@@ -297,6 +298,9 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_SendToSupplier__activate(self, action):
         self._send_selected_items_to_supplier()
+
+    def on_Production__activate(self, action):
+        self.run_dialog(ProductionDialog, self.conn)
 
     def on_QuoteOrder__activate(self, action):
         self._quote_order()
