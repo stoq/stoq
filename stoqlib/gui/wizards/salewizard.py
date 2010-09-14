@@ -454,10 +454,10 @@ class ConfirmSaleWizard(BaseWizard):
         # Saves the initial state of the sale order and allow us to call
         # rollback safely when it's needed
         conn.commit()
+        register_payment_operations()
         first_step = self.first_step(self, conn, model, self.payment_group)
         BaseWizard.__init__(self, conn, first_step, model)
 
-        register_payment_operations()
         if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
             # This was added to allow us to work even if an error
             # happened while adding a payment, where we already order
