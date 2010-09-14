@@ -40,6 +40,7 @@ from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.person import Person, ClientView
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.views import SellableFullStockView
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
@@ -162,6 +163,8 @@ class SaleQuoteItemStep(SellableItemStep):
     item_table = SaleItem
     summary_label_text = "<b>%s</b>" % _('Total Ordered:')
     sellable = None
+    sellable_view = SellableFullStockView
+
 
     #
     # Helper methods

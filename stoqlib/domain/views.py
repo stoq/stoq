@@ -290,6 +290,7 @@ class SellableFullStockView(Viewable):
         description=BaseSellableInfo.q.description,
         unit=SellableUnit.q.description,
         product_id=Product.q.id,
+        category_description=SellableCategory.q.description,
         stock=const.SUM(ProductStockItem.q.quantity +
                        ProductStockItem.q.logic_quantity),
         )
@@ -298,6 +299,9 @@ class SellableFullStockView(Viewable):
         # Sellable unit
         LEFTJOINOn(None, SellableUnit,
                    SellableUnit.q.id == Sellable.q.unitID),
+        # Category
+        LEFTJOINOn(None, SellableCategory,
+                   SellableCategory.q.id == Sellable.q.categoryID),
         # Product
         LEFTJOINOn(None, Product,
                    Product.q.sellableID == Sellable.q.id),
@@ -325,6 +329,10 @@ class SellableFullStockView(Viewable):
                 query = branch_query
 
         return cls.select(query, having=having, connection=connection)
+
+    @property
+    def sellable(self):
+        return Sellable.get(self.id, connection=self.get_connection())
 
     @property
     def price(self):
