@@ -256,8 +256,11 @@ class NFeGenerator(object):
             if not product:
                 continue
 
-            unit = sellable.unit and sellable.unit.get_description() or ''
             unitary_weight = product.weight
+            if not unitary_weight:
+                continue
+
+            unit = sellable.unit and sellable.unit.get_description() or ''
             weight = sale_item.quantity * unitary_weight
             vol = NFeVolume(quantity=sale_item.quantity, unit=unit,
                             net_weight=weight, gross_weight=weight)
