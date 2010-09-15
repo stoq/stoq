@@ -229,8 +229,10 @@ class GtkPrintDialog(object):
                                        gtkunixprint.PRINT_CAPABILITY_PAGE_SET)
         button = self._add_preview_button(dialog)
         button.connect('clicked', self._on_preview_button__clicked)
-        button = self._add_mailto_button(dialog)
-        button.connect('clicked', self._on_mailto_button__clicked)
+
+        # FIXME: Enable before release
+        #button = self._add_mailto_button(dialog)
+        #button.connect('clicked', self._on_mailto_button__clicked)
         return dialog
 
     def _add_preview_button(self, dialog):
