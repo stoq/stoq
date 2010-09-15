@@ -254,12 +254,13 @@ class ReceivingOrderProductStep(SellableItemStep):
         self.slave.klist.connect('selection-changed',
             self._on_purchase_item_selection_changed)
         self._image_viewer = None
-        self._show_image_button = gtk.CheckButton(_("Show product image"))
-        self.slave.extra_holder.add(self._show_image_button)
-        self._show_image_button.show()
-        self._show_image_button.connect(
-            "toggled", self._on_show_image_toggled)
-        
+        # FIXME: Enable before release
+        #self._show_image_button = gtk.CheckButton(_("Show product image"))
+        #self.slave.extra_holder.add(self._show_image_button)
+        #self._show_image_button.show()
+        #self._show_image_button.connect(
+        #    "toggled", self._on_show_image_toggled)
+
     def post_init(self):
         # Hide the search bar, since it does not make sense to add new
         # items to a receivable order.
