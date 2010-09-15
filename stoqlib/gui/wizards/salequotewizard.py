@@ -171,7 +171,7 @@ class SaleQuoteItemStep(SellableItemStep):
     #
 
     def get_sellable_view_query(self):
-        return Sellable.get_available_sellables_query(self.conn)
+        return Sellable.get_available_sellables_for_quote_query(self.conn)
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)

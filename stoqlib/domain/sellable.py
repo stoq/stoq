@@ -530,6 +530,13 @@ class Sellable(Domain):
         on_sale.delete(on_sale.id, conn)
 
     @classmethod
+    def get_available_sellables_for_quote_query(cls, conn):
+        service = sysparam(conn).DELIVERY_SERVICE
+        return AND(cls.q.id != service.id,
+                   OR(cls.q.status == cls.STATUS_AVAILABLE,
+                      cls.q.status == cls.STATUS_SOLD))
+
+    @classmethod
     def get_available_sellables_query(cls, conn):
         service = sysparam(conn).DELIVERY_SERVICE
         return AND(cls.q.id != service.id,
