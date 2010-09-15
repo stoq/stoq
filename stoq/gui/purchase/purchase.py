@@ -120,6 +120,8 @@ class PurchaseApp(SearchableAppWindow):
                                       label=_('<b>Orders Total:</b>'),
                                       format='<b>%s</b>')
         self.SendToSupplier.set_sensitive(False)
+        # FIXME: enable before release
+        self.Production.set_sensitive(False)
 
     def _update_totals(self):
         self._update_view()
