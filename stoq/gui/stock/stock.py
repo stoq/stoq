@@ -47,6 +47,7 @@ from stoqlib.lib.message import warning
 from stoqlib.gui.editors.producteditor import ProductStockEditor
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
+from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
                                               ProductStockSearch)
@@ -264,6 +265,12 @@ class StockApp(SearchableAppWindow):
 
     def on_receiving_search_action_clicked(self, button):
         self.run_dialog(PurchaseReceivingSearch, self.conn)
+
+    def on_stock_decrease_action__activate(self, action):
+        trans = new_transaction()
+        model = self.run_dialog(StockDecreaseWizard, trans)
+        finish_transaction(trans, model)
+        trans.close()
 
     def on_print_button__clicked(self, button):
         branch_name = self.branch_filter.combo.get_active_text()
