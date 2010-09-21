@@ -190,6 +190,12 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="stock_decrease_action">
+                        <property name="name">stock_decrease_action</property>
+                        <property name="label" translatable="yes">Manual Stock Decrease</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="retention_action">
                         <property name="name">retention_action</property>
                         <property name="label" translatable="yes">_Retention</property>
@@ -233,6 +239,7 @@
 	    <menu action="SalesMenu">
 	      <menuitem action="receive_action"/>
           <menuitem action="transfer_action"/>
+          <menuitem action="stock_decrease_action"/>
           <menuitem action="initial_stock_action"/>
       <separator name="sep1"/>
           <menuitem action="TogglePictureViewer"/>
