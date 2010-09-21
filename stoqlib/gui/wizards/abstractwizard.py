@@ -337,6 +337,9 @@ class SellableItemStep(WizardEditorStep):
 
     def _setup_summary(self):
         # FIXME: Move this into AdditionListSlave
+        if not self.summary_label_column:
+            self.summary = None
+            return
         self.summary = SummaryLabel(klist=self.slave.klist,
                                     column=self.summary_label_column,
                                     label=self.summary_label_text,
