@@ -308,9 +308,11 @@ class ProductHistory(Domain):
     quantity_produced = DecimalCol(default=None)
     quantity_consumed = DecimalCol(default=None)
     quantity_lost = DecimalCol(default=None)
+    quantity_decreased = DecimalCol(default=None)
     production_date = DateTimeCol(default=None)
     sold_date = DateTimeCol(default=None)
     received_date = DateTimeCol(default=None)
+    decreased_date = DateTimeCol(default=None)
     branch = ForeignKey("PersonAdaptToBranch")
     sellable = ForeignKey("Sellable")
 
@@ -417,6 +419,20 @@ class ProductHistory(Domain):
         cls(branch=branch, sellable=lost_item.product.sellable,
             quantity_lost=lost_item.lost,
             production_date=datetime.date.today(), connection=conn)
+
+    @classmethod
+    def add_decreased_item(cls, conn, branch, item):
+        """
+        Adds a decreased item, populates the ProductHistory table informing
+        how many items wore manually decreased from stock.
+
+        @param conn: a database connection
+        @param branch: the source branch
+        @param item: a StockDecreaseItem instance
+        """
+        cls(branch=branch, sellable=item.sellable,
+            quantity_decreased=item.quantity,
+            decreased_date=datetime.date.today(), connection=conn)
 
 
 class ProductStockItem(Domain):
