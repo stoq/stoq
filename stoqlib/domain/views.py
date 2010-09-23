@@ -246,6 +246,7 @@ class ProductQuantityView(Viewable):
         sold_date=ProductHistory.q.sold_date,
         received_date=ProductHistory.q.received_date,
         production_date=ProductHistory.q.production_date,
+        decreased_date=ProductHistory.q.decreased_date,
         quantity_sold=const.SUM(ProductHistory.q.quantity_sold),
         quantity_received=const.SUM(ProductHistory.q.quantity_received),
         quantity_transfered=const.SUM(ProductHistory.q.quantity_transfered),
@@ -253,9 +254,11 @@ class ProductQuantityView(Viewable):
         quantity_produced=const.SUM(ProductHistory.q.quantity_produced),
         quantity_consumed=const.SUM(ProductHistory.q.quantity_consumed),
         quantity_lost=const.SUM(ProductHistory.q.quantity_lost),
+        quantity_decreased=const.SUM(ProductHistory.q.quantity_decreased),
         )
 
-    hidden_columns = ['sold_date', 'received_date']
+    hidden_columns = ['sold_date', 'received_date', 'production_date',
+                      'decreased_date']
 
     joins = [
         INNERJOINOn(None, Sellable,
