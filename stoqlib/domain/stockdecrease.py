@@ -174,8 +174,20 @@ class StockDecrease(Domain):
     def get_order_number_str(self):
         return u'%05d' % self.id
 
+    def get_branch_name(self):
+        return self.branch.get_description()
+
     def get_responsible_name(self):
         return self.responsible.get_description()
+
+    def get_removed_by_name(self):
+        if not self.removed_by:
+            return u''
+
+        return self.removed_by.get_description()
+
+    def get_total_items_removed(self):
+        return sum([item.quantity for item in self.get_items()], 0)
 
     # Other methods
 

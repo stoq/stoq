@@ -126,7 +126,7 @@ class DecreaseItemStep(SellableItemStep):
     item_table = StockDecreaseItem
     summary_label_text = "<b>%s</b>" % _('Total Ordered:')
     summary_label_column = None
-    sellable_editable = True
+    sellable_editable = False
 
     #
     # Helper methods
