@@ -466,10 +466,12 @@ class SellableItemStep(WizardEditorStep):
         self.quantity.grab_focus()
 
     def on_quantity__activate(self, entry):
-        self._add_sellable()
+        if self.add_sellable_button.get_sensitive():
+            self._add_sellable()
 
     def on_cost__activate(self, entry):
-        self._add_sellable()
+        if self.add_sellable_button.get_sensitive():
+            self._add_sellable()
 
     def on_quantity__validate(self, entry, value):
         # only support integer quantities
