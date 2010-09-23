@@ -53,6 +53,7 @@ from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
                                               ProductStockSearch)
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
+from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
@@ -245,6 +246,9 @@ class StockApp(SearchableAppWindow):
 
     def on_TransferSearch__activate(self, action):
         self.run_dialog(TransferOrderSearch, self.conn)
+
+    def on_StockDecreaseSearch__activate(self, action):
+        self.run_dialog(StockDecreaseSearch, self.conn)
 
     def on_PurchasedItemsSearch__activate(self, action):
         self.run_dialog(PurchasedItemsSearch, self.conn)
