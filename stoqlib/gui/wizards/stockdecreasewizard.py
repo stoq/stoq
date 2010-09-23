@@ -19,12 +19,10 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
-##              Johan Dahlin                <jdahlin@async.com.br>
-##              George Kussumoto            <george@async.com.br>
+## Author(s):   Ronaldo Maia                <romaia@async.com.br>
 ##
 ##
-""" Purchase wizard definition """
+""" Stock Decrease wizard definition """
 
 import datetime
 from decimal import Decimal
@@ -38,7 +36,7 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.database.runtime import (get_current_branch, new_transaction,
                                       finish_transaction, get_current_user)
 from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
-                                       IStorable)
+                                       IStorable, IEmployee)
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
@@ -75,13 +73,18 @@ class StartStockDecreaseStep(WizardEditorStep):
     proxy_widgets = ('confirm_date',
                      'branch',
                      'reason',
+                     'removed_by',
                      )
 
-    #def __init__(self, wizard, conn, model):
-    #    WizardEditorStep.__init__(self, conn, wizard, model)
+
+    def _fill_employee_combo(self):
+        employees = [(e.person.name, e)
+                     for e in Person.iselect(IEmployee,
+                                             connection=self.conn)]
+        self.removed_by.prefill(sorted(employees))
+
 
     def _fill_branch_combo(self):
-        # FIXME: Implement and use IDescribable on PersonAdaptToBranch
         table = Person.getAdapterClass(IBranch)
         branches = table.get_active_branches(self.conn)
         items = [(s.person.name, s) for s in branches]
@@ -89,6 +92,7 @@ class StartStockDecreaseStep(WizardEditorStep):
 
     def _setup_widgets(self):
         self.confirm_date.set_sensitive(False)
+        self._fill_employee_combo()
         self._fill_branch_combo()
 
     #
@@ -97,12 +101,13 @@ class StartStockDecreaseStep(WizardEditorStep):
 
     def post_init(self):
         self.confirm_date.grab_focus()
-        self.table1.set_focus_chain([self.confirm_date,  self.branch, self.reason])
+        self.table1.set_focus_chain([self.confirm_date, self.branch,
+                                     self.removed_by, self.reason])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
     def next_step(self):
-        return PurchaseItemStep(self.wizard, self, self.conn, self.model)
+        return DecreaseItemStep(self.wizard, self, self.conn, self.model)
 
     def has_previous_step(self):
         return False
@@ -115,7 +120,7 @@ class StartStockDecreaseStep(WizardEditorStep):
 
 
 
-class PurchaseItemStep(SellableItemStep):
+class DecreaseItemStep(SellableItemStep):
     """ Wizard step for purchase order's items selection """
     model_type = StockDecrease
     item_table = StockDecreaseItem
@@ -156,9 +161,6 @@ class PurchaseItemStep(SellableItemStep):
     def get_saved_items(self):
         return list(self.model.get_items())
 
-    def sellable_selected(self, sellable):
-        super(PurchaseItemStep, self).sellable_selected(sellable)
-
     def get_columns(self):
         return [
             Column('sellable.code', title=_('Code'), width=100, data_type=str),
@@ -198,9 +200,12 @@ class PurchaseItemStep(SellableItemStep):
         sellable = self.proxy.model.sellable
         storable = IStorable(sellable.product, None)
         assert storable
-        balance = storable.get_stock_item(self.model.branch)
+        balance = storable.get_stock_item(self.model.branch).quantity
+        for i in self.slave.klist:
+            if i.sellable == sellable:
+                balance -= i.quantity
 
-        if value > balance.quantity:
+        if value > balance:
             return ValidationError(
                 _(u'Quantity is greater than the quantity in stock.'))
 
@@ -225,7 +230,10 @@ class StockDecreaseWizard(BaseWizard):
 
     def _create_model(self, conn):
         branch = get_current_branch(conn)
-        return StockDecrease(responsible=get_current_user(conn),
+        user = get_current_user(conn)
+        employee = IEmployee(user.person, None)
+        return StockDecrease(responsible=user,
+                             removed_by=employee,
                              branch=branch,
                              status=StockDecrease.STATUS_INITIAL,
                              connection=conn)

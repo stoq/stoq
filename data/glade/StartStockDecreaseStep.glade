@@ -9,9 +9,8 @@
             <widget class="GtkTable" id="table1">
                 <property name="border_width">6</property>
                 <property name="column_spacing">6</property>
-                <property name="homogeneous">True</property>
                 <property name="n_columns">4</property>
-                <property name="n_rows">3</property>
+                <property name="n_rows">4</property>
                 <property name="row_spacing">6</property>
                 <property name="visible">True</property>
                 <child>
@@ -39,14 +38,27 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="label2">
-                        <property name="label" context="yes" translatable="yes">Reason:</property>
+                    <widget class="GtkLabel" id="label3">
+                        <property name="label" context="yes" translatable="yes">Removed By:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">3</property>
                         <property name="top_attach">2</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label2">
+                        <property name="label" context="yes" translatable="yes">Reason:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                        <property name="yalign">0.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="top_attach">3</property>
                         <property name="y_options">fill</property>
                     </packing>
                 </child>
@@ -79,21 +91,35 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyEntry" id="reason">
-                        <property name="caps_lock_warning">False</property>
-                        <property name="data_type">unicode</property>
-                        <property name="model_attribute">reason</property>
+                    <widget class="ProxyComboEntry" id="removed_by">
+                        <property name="data_type">object</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">removed_by</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">3</property>
                         <property name="left_attach">1</property>
-                        <property name="right_attach">4</property>
+                        <property name="right_attach">2</property>
                         <property name="top_attach">2</property>
                         <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
+                    <widget class="ProxyTextView" id="reason">
+                        <property name="data_type">unicode</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">reason</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">3</property>
+                    </packing>
+                </child>
+                <child>
                     <placeholder/>
                     <packing>
                         <property name="left_attach">2</property>
@@ -113,6 +139,15 @@
                 <child>
                     <placeholder/>
                     <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
                         <property name="left_attach">3</property>
                         <property name="right_attach">4</property>
                         <property name="y_options">fill</property>
@@ -126,6 +161,15 @@
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
                         <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
                     </packing>
                 </child>
             </widget>

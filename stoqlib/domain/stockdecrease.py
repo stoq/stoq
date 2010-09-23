@@ -64,12 +64,7 @@ class StockDecreaseItem(Domain):
 
     def decrease(self, branch):
         conn = self.get_connection()
-        # FIXME
-        if not (branch and
-                branch.id == get_current_branch(conn).id):
-            raise SellError("Stock still doesn't support sales for "
-                            "branch companies different than the "
-                            "current one")
+        assert branch
 
         storable = IStorable(self.sellable.product, None)
         if storable:
@@ -117,6 +112,7 @@ class StockDecrease(Domain):
     notes = UnicodeCol(default='')
     confirm_date = DateTimeCol(default=datetime.datetime.now)
     responsible = ForeignKey('PersonAdaptToUser')
+    removed_by = ForeignKey('PersonAdaptToEmployee')
     branch = ForeignKey('PersonAdaptToBranch', default=None)
 
     #
