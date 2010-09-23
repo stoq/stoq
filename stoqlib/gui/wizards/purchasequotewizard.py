@@ -378,7 +378,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
 
     def _update_view(self):
         selected = self.search.results.get_selected()
-        has_selected = selected is None
+        has_selected = selected is not None
         self.edit_button.set_sensitive(has_selected)
         self.remove_button.set_sensitive(has_selected)
         self.wizard.refresh_next(self._can_order(selected))
