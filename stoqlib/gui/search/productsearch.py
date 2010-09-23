@@ -217,7 +217,8 @@ class ProductSearchQuantity(SearchDialog):
         date_filter = DateSearchFilter(_('Date:'))
         date_filter.select(Today)
         self.add_filter(date_filter, columns=['sold_date', 'received_date',
-                                              'production_date'])
+                                              'production_date',
+                                              'decreased_date'])
 
         # Branch
         branch_filter = self.create_branch_filter(_('In branch:'))
@@ -252,6 +253,9 @@ class ProductSearchQuantity(SearchDialog):
                        format_func=format_data, data_type=Decimal,
                        visible=self.show_production_columns),
                 Column('quantity_consumed', title=_('Consumed'),
+                       format_func=format_data, data_type=Decimal,
+                       visible=self.show_production_columns),
+                Column('quantity_decreased', title=_('Manualy Decreased'),
                        format_func=format_data, data_type=Decimal,
                        visible=self.show_production_columns),
                 Column('quantity_lost', title=_('Lost'),
