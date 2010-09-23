@@ -9,7 +9,7 @@ CREATE TABLE stock_decrease (
     reason text,
     notes text,
     responsible_id bigint REFERENCES person_adapt_to_user(id),
-    removed_by_id bigint REFERENCES person_adapt_to_emplyee(id),
+    removed_by_id bigint REFERENCES person_adapt_to_employee(id),
     branch_id bigint REFERENCES person_adapt_to_branch(id)
 );
 
