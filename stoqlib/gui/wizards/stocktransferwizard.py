@@ -197,6 +197,9 @@ class StockTransferProductStep(SellableItemStep):
             return ValidationError(_(u'Quantity should be a positive number.'))
 
         sellable = self.proxy.model.sellable
+        if not sellable:
+            return
+
         balance = self._get_stock_balance(sellable)
         if value > balance:
             return ValidationError(

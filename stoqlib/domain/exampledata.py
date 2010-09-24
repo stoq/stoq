@@ -78,6 +78,9 @@ def create_sellable(trans):
 def create_sale(trans):
     return ExampleCreator.create(trans, 'Sale')
 
+def create_stock_decrease(trans):
+    return ExampleCreator.create(trans, 'StockDecrease')
+
 def create_city_location(trans):
     return ExampleCreator.create(trans, 'CityLocation')
 
@@ -178,6 +181,7 @@ class ExampleCreator(object):
             'Sale': self.create_sale,
             'Sellable' : self.create_sellable,
             'Service': self.create_service,
+            'StockDecrease': self.create_stock_decrease,
             'Till': self.create_till,
             'UserProfile': self.create_user_profile,
             'ProductionOrder': self.create_production_order,
@@ -305,6 +309,19 @@ class ExampleCreator(object):
                     cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,
                     group=group,
                     connection=self.trans)
+
+    def create_stock_decrease(self):
+        from stoqlib.domain.stockdecrease import StockDecrease
+
+        branch = self.create_branch()
+        user = self.create_user()
+        employee = self.create_employee()
+
+        return StockDecrease(responsible=user,
+                             removed_by=employee,
+                             branch=branch,
+                             status=StockDecrease.STATUS_INITIAL,
+                             connection=self.trans)
 
     def create_city_location(self):
         from stoqlib.domain.address import CityLocation
