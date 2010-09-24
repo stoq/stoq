@@ -52,7 +52,7 @@ class StockDecreaseReceipt(BaseStoqReport):
         self._add_reason()
         self.add_blank_space()
         self._setup_items_table()
-
+        self._add_signatures()
 
     def _identify_removed_by(self):
         branch = self.order.branch
@@ -102,6 +102,9 @@ class StockDecreaseReceipt(BaseStoqReport):
         self.add_object_table(items,
                               self._get_table_columns(),
                               summary_row=summary)
+
+    def _add_signatures(self):
+        self.add_signatures([_(u"Responsible"), _(u'Removed By')])
 
 
 
