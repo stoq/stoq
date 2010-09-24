@@ -43,7 +43,7 @@ from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.editors.invoiceeditor import SaleInvoicePrinterDialog
 from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.search.commissionsearch import CommissionSearch
-from stoqlib.gui.search.loansearch import LoanItemSearch
+from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import DeliverySearch
@@ -309,4 +309,7 @@ class SalesApp(SearchableAppWindow):
         trans.close()
 
     def on_SearchLoan__activate(self, action):
+        self.run_dialog(LoanSearch, self.conn)
+
+    def on_SearchLoanItems__activate(self, action):
         self.run_dialog(LoanItemSearch, self.conn)

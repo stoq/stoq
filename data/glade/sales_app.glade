@@ -124,6 +124,12 @@
                 <child>
                     <widget class="GtkAction" id="SearchLoan">
                         <property name="name">SearchLoan</property>
+                        <property name="label" translatable="yes">Search Loans...</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="SearchLoanItems">
+                        <property name="name">SearchLoanItems</property>
                         <property name="label" translatable="yes">Search Loan Items...</property>
                     </widget>
                 </child>
@@ -307,6 +313,7 @@
 	      <menuitem action="CloseLoan"/>
           <separator/>
           <menuitem action="SearchLoan"/>
+          <menuitem action="SearchLoanItems"/>
         </menu>
 	    <menu action="SearchMenu">
 	      <menuitem action="ProductSearch"/>
