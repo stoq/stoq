@@ -131,6 +131,7 @@ def _create_slave_test():
         'InvoicePrinterEditor' : '',
         'BasePaymentAddition': ' ',
         'PaymentsEditor': 'IDomainSlaveMapper missing',
+        'InConsignmentItemEditor': ' ',
         }
     namespace = dict(_test_slave=_test_slave)
 

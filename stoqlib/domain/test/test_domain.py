@@ -108,6 +108,7 @@ def _create_domain_test():
         'ReceivingOrder': 'invalid invoice number',
         'CommissionSource': '',
         'Commission': '',
+        'PurchaseItem': 'quantity_return cant be random',
         }
 
     namespace = dict(_test_domain=_test_domain)
