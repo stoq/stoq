@@ -38,7 +38,7 @@ from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.transfer_receipt import TransferOrderReceipt
+from stoqlib.reporting.stockdecreasereceipt import StockDecreaseReceipt
 
 _ = stoqlib_gettext
 
@@ -108,9 +108,7 @@ class StockDecreaseSearch(SearchDialog):
     def on_print_button_clicked(self, button):
         orders = self.results.get_selected_rows()
         if len(orders) == 1:
-            items = StockDecreaseItem.selectBy(stock_decrease=orders[0],
-                                               connection=self.conn)
-            print_report(TransferOrderReceipt, orders[0], items)
+            print_report(StockDecreaseReceipt, orders[0] )
 
     def on_details_button_clicked(self, button):
         orders = self.results.get_selected_rows()

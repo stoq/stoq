@@ -46,8 +46,9 @@ from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity, get_formatted_cost
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
@@ -58,6 +59,7 @@ from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
 from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave,
                                              BillMethodSlave, MoneyMethodSlave)
+from stoqlib.reporting.stockdecreasereceipt import StockDecreaseReceipt
 
 _ = stoqlib_gettext
 
@@ -238,6 +240,12 @@ class StockDecreaseWizard(BaseWizard):
                              status=StockDecrease.STATUS_INITIAL,
                              connection=conn)
 
+    def _receipt_dialog(self):
+        msg = _(u'Would you like to print a receipt?')
+        if yesno(msg, gtk.RESPONSE_YES, _(u'Yes'), _('No')):
+           print_report(StockDecreaseReceipt, self.model)
+        return
+
     #
     # WizardStep hooks
     #
@@ -246,3 +254,4 @@ class StockDecreaseWizard(BaseWizard):
         self.retval = self.model
         self.model.confirm()
         self.close()
+        self._receipt_dialog()
