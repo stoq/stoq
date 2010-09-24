@@ -31,10 +31,11 @@ from kiwi.datatypes import currency
 from zope.interface import implements
 
 from stoqlib.database.orm import ForeignKey, UnicodeCol, DateTimeCol, IntCol
-from stoqlib.database.orm import PriceCol, DecimalCol
+from stoqlib.database.orm import PriceCol, DecimalCol, const
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer, IStorable
 from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -84,6 +85,10 @@ class LoanItem(Domain):
     #
     # Accessors
     #
+
+    def get_quantity_unit_string(self):
+        return "%s %s" % (self.quantity,
+                          self.sellable.get_unit_description())
 
     def get_total(self):
         return currency(self.price * self.quantity)
@@ -162,6 +167,37 @@ class Loan(Domain):
                         loan=self,
                         sellable=sellable,
                         price=price)
+
+    #
+    # Accessors
+    #
+
+    def get_total_amount(self):
+        """
+        Fetches the total value  paid by the client.
+        It can be calculated as::
+
+            Sale total = Sum(product and service prices) + surcharge +
+                             interest - discount
+
+        @returns: the total value
+        """
+        return currency(self.get_items().sum(
+            const.ROUND(LoanItem.q.price * LoanItem.q.quantity,
+                        DECIMAL_PRECISION)) or 0)
+
+
+    def get_client_name(self):
+        return self.client.person.name
+
+    def get_branch_name(self):
+        return self.branch.person.name
+
+    def get_responsible_name(self):
+        return self.responsible.person.name
+
+    def get_order_number_str(self):
+        return u'%05d' % self.id
 
     #
     # Public API
