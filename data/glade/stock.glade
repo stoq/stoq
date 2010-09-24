@@ -153,6 +153,12 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="StockDecreaseSearch">
+                        <property name="name">StockDecreaseSearch</property>
+                        <property name="label" translatable="yes">Manual Stock Decrease...</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="PurchasedItemsSearch">
                         <property name="name">PurchasedItemsSearch</property>
                         <property name="label" translatable="yes">Purchased Items...</property>
@@ -187,6 +193,12 @@
                         <property name="stock_id">stoq-receiving</property>
                         <signal handler="_on_receive_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;r</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="stock_decrease_action">
+                        <property name="name">stock_decrease_action</property>
+                        <property name="label" translatable="yes">Manual Stock Decrease</property>
                     </widget>
                 </child>
                 <child>
@@ -233,6 +245,7 @@
 	    <menu action="SalesMenu">
 	      <menuitem action="receive_action"/>
           <menuitem action="transfer_action"/>
+          <menuitem action="stock_decrease_action"/>
           <menuitem action="initial_stock_action"/>
       <separator name="sep1"/>
           <menuitem action="TogglePictureViewer"/>
@@ -244,6 +257,7 @@
 	      <menuitem action="PurchaseReceiving"/>
 	      <menuitem action="ProductHistory"/>
           <menuitem action="TransferSearch"/>
+          <menuitem action="StockDecreaseSearch"/>
           <menuitem action="PurchasedItemsSearch"/>
           <menuitem action="SearchStockItems"/>
 	    </menu>
