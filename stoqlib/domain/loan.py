@@ -188,10 +188,14 @@ class Loan(Domain):
 
 
     def get_client_name(self):
-        return self.client.person.name
+        if self.client:
+            return self.client.person.name
+        return u''
 
     def get_branch_name(self):
-        return self.branch.person.name
+        if self.branch:
+            return self.branch.person.name
+        return u''
 
     def get_responsible_name(self):
         return self.responsible.person.name
