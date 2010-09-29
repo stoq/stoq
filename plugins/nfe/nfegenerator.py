@@ -215,7 +215,10 @@ class NFeGenerator(object):
             self._nfe_recipient = NFeRecipient(name, cpf=cpf)
         else:
             cnpj = self._get_cnpj(recipient)
-            self._nfe_recipient = NFeRecipient(name, cnpj=cnpj)
+            company = ICompany(person, None)
+            state_registry = company.state_registry
+            self._nfe_recipient = NFeRecipient(name, cnpj=cnpj,
+                                               state_registry=state_registry)
 
         self._nfe_recipient.set_address(*self._get_address_data(person))
         self._nfe_data.append(self._nfe_recipient)
@@ -633,7 +636,11 @@ class NFeRecipient(NFeIssuer):
     doc_cpf_tag = 'E03'
 
     def as_txt(self):
-        base = '%s|%s||\n' % (self.txttag, self.get_attr('xNome'),)
+        if self.get_attr('CNPJ'):
+            ie = self._ie or 'ISENTO'
+        else:
+            ie = ''
+        base = '%s|%s|%s|\n' % (self.txttag, self.get_attr('xNome'), ie)
         return base + self.get_doc_txt() + self._address.as_txt()
 
 # Pg. 102
