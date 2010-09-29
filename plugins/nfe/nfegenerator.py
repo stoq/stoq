@@ -35,6 +35,7 @@ from stoqdrivers.enum import TaxType
 import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.lib.parameters import sysparam
+from stoqlib.enums import NFeDanfeOrientation
 
 
 from utils import (get_state_code, get_city_code, nfe_tostring,
@@ -70,6 +71,7 @@ class NFeGenerator(object):
         self._add_totals()
         self._add_transport_data(self._sale.transporter,
                                  self._sale.get_items())
+        self._add_billing_data()
         self._add_additional_information()
 
     def save(self, location=''):
@@ -169,10 +171,11 @@ class NFeGenerator(object):
 
         payments = self._sale.group.get_items()
         series = sysparam(self.conn).NFE_SERIAL_NUMBER
+        orientation = sysparam(self.conn).NFE_DANFE_ORIENTATION
 
         nfe_identification = NFeIdentification(cuf, branch_location.city,
                                                series, nnf, today,
-                                               list(payments))
+                                               list(payments), orientation)
         # The nfe-key requires all the "zeros", so we should format the
         # values properly.
         mod = '%02d' % int(nfe_identification.get_attr('mod'))
@@ -213,7 +216,10 @@ class NFeGenerator(object):
             self._nfe_recipient = NFeRecipient(name, cpf=cpf)
         else:
             cnpj = self._get_cnpj(recipient)
-            self._nfe_recipient = NFeRecipient(name, cnpj=cnpj)
+            company = ICompany(person, None)
+            state_registry = company.state_registry
+            self._nfe_recipient = NFeRecipient(name, cnpj=cnpj,
+                                               state_registry=state_registry)
 
         self._nfe_recipient.set_address(*self._get_address_data(person))
         self._nfe_data.append(self._nfe_recipient)
@@ -265,6 +271,22 @@ class NFeGenerator(object):
             vol = NFeVolume(quantity=sale_item.quantity, unit=unit,
                             net_weight=weight, gross_weight=weight)
             self._nfe_data.append(vol)
+
+    def _add_billing_data(self):
+        cob = NFeBilling()
+        self._nfe_data.append(cob)
+
+        sale_total = self._sale.get_total_sale_amount()
+        items_total = self._sale.get_sale_subtotal()
+
+        fat = NFeInvoice(self._sale.id, items_total,
+                         self._sale.discount_value, sale_total)
+        self._nfe_data.append(fat)
+
+        payments = self._sale.group.get_items()
+        for p in payments:
+            dup = NFeDuplicata(p.id, p.due_date, p.value)
+            self._nfe_data.append(dup)
 
     def _add_additional_information(self):
         nfe_info = NFeSimplesNacionalInfo()
@@ -493,8 +515,13 @@ class NFeIdentification(BaseNFeXMLGroup):
                   (u'procEmi', '3'),
                   (u'verProc', '')]
     txttag = 'B'
+    danfe_orientation = {
+        NFeDanfeOrientation.PORTRAIT: '1',
+        NFeDanfeOrientation.LANDSCAPE: '2',
+    }
 
-    def __init__(self, cUF, city, series, nnf, emission_date, payments):
+    def __init__(self, cUF, city, series, nnf, emission_date, payments,
+                 orientation):
         BaseNFeXMLGroup.__init__(self)
 
         self.set_attr('cUF', cUF)
@@ -513,6 +540,7 @@ class NFeIdentification(BaseNFeXMLGroup):
         self.set_attr('serie', series)
         self.set_attr('dEmi', self.format_date(emission_date))
         self.set_attr('cMunFG', get_city_code(city, code=cUF) or '')
+        self.set_attr('tpImp', self.danfe_orientation[orientation])
 
 
 class NFeAddress(BaseNFeXMLGroup):
@@ -625,7 +653,11 @@ class NFeRecipient(NFeIssuer):
     doc_cpf_tag = 'E03'
 
     def as_txt(self):
-        base = '%s|%s||\n' % (self.txttag, self.get_attr('xNome'),)
+        if self.get_attr('CNPJ'):
+            ie = self._ie or 'ISENTO'
+        else:
+            ie = ''
+        base = '%s|%s|%s|\n' % (self.txttag, self.get_attr('xNome'), ie)
         return base + self.get_doc_txt() + self._address.as_txt()
 
 # Pg. 102
@@ -733,7 +765,7 @@ class NFeProductDetails(BaseNFeXMLGroup):
                   (u'CFOP', ''),
                   (u'uCom', u'un'),
                   (u'qCom', ''),
-                  (u'vUnCom', u'un'),
+                  (u'vUnCom', ''),
                   (u'vProd', ''),
                   (u'cEANTrib', ''),
                   (u'uTrib', u'un'),
@@ -751,6 +783,8 @@ class NFeProductDetails(BaseNFeXMLGroup):
         self.set_attr('vProd', self.format_value(quantity * price))
         self.set_attr('qCom', self.format_value(quantity, precision=4))
         self.set_attr('qTrib', self.format_value(quantity, precision=4))
+        self.set_attr('uTrib', unit)
+        self.set_attr('uCom', unit)
 
     def as_txt(self):
         vs = [self.txttag]
@@ -1172,6 +1206,58 @@ class NFeVolume(BaseNFeXMLGroup):
             self.set_attr('pesoL', "%.3f" % net_weight)
         if gross_weight:
             self.set_attr('pesoB', "%.3f" % gross_weight)
+
+
+# Pg. 126 - Cobranca
+class NFeBilling(BaseNFeXMLGroup):
+    """
+    """
+    tag = u'cobr'
+    txttag = 'Y'
+
+
+# Fatura
+class NFeInvoice(BaseNFeXMLGroup):
+    """
+    """
+    tag = u'fat'
+    txttag = 'Y02'
+
+    attributes = [(u'nFat', ''),
+                  (u'vOrig', ''),
+                  (u'vDesc', ''),
+                  (u'vLiq', ''),]
+
+    def __init__(self, number, original_value, discount, liquid_value):
+        BaseNFeXMLGroup.__init__(self)
+
+        if discount:
+            discount = self.format_value(discount)
+        else:
+            discount = ''
+
+        self.set_attr('nFat', number)
+        self.set_attr('vOrig', self.format_value(original_value))
+        self.set_attr('vDesc', discount)
+        self.set_attr('vLiq', self.format_value(liquid_value))
+
+
+class NFeDuplicata(BaseNFeXMLGroup):
+    """
+    """
+    tag = u'dup'
+    txttag = 'Y07'
+
+    attributes = [(u'nDup', ''),
+                  (u'dVenc', ''),
+                  (u'vDup', ''),]
+
+    def __init__(self, number, due_date, value):
+        BaseNFeXMLGroup.__init__(self)
+
+        self.set_attr('nDup', number)
+        self.set_attr('dVenc', self.format_date(due_date))
+        self.set_attr('vDup', self.format_value(value))
 
 
 

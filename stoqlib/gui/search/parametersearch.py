@@ -78,12 +78,16 @@ class ParameterSearch(BaseEditor):
         """Given a ParameterData object, returns a string representation of
         its current value.
         """
+        constant = sysparam(self.conn).get_parameter_constant(
+                                                        obj.field_name)
         data = getattr(sysparam(self.conn), obj.field_name)
         if isinstance(data, AbstractModel):
             if not (IDescribable in providedBy(data)):
                 raise TypeError("Parameter `%s' must implement IDescribable "
                                 "interface." % obj.field_name)
             return data.get_description()
+        elif constant.options:
+            return constant.options[int(obj.field_value)]
         elif isinstance(data, ImageHelper):
             return data.image_path
         elif isinstance(data, DirectoryParameter):
