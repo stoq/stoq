@@ -290,13 +290,25 @@ _parameter_info = dict(
     _(u'Fiscal document serial number. Fill with 0 if the NF-e have no '
        'series. This parameter only has effect if the nfe plugin is enabled.')),
 
+    NFE_DANFE_ORIENTATION=ParameterDetails(
+    _(u'NF-e'),
+    _(u'Danfe printing orientation'),
+    _(u'Orientation to use for printing danfe. Portrait or Landscape')),
+
     )
 
 class ParameterAttr:
-    def __init__(self, key, type, initial=None):
+    def __init__(self, key, type, initial=None, options=None):
         self.key = key
         self.type = type
         self.initial = initial
+        self.options = options
+
+    def get_parameter_type(self):
+        if isinstance(self.type, basestring):
+            return namedAny('stoqlib.domain.' + self.type)
+        else:
+            return self.type
 
 
 class ParameterAccess(ClassInittableObject):
@@ -341,6 +353,11 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('ALLOW_OUTDATED_PURCHASES', bool, initial=False),
         ParameterAttr('USE_FOUR_PRECISION_DIGITS', bool, initial=False),
         ParameterAttr('DISABLE_COOKIES', bool, initial=False),
+        ParameterAttr('NFE_SERIAL_NUMBER', int, initial=1),
+        ParameterAttr('NFE_DANFE_ORIENTATION', int, initial=0,
+                      options={0: _(u'Portrait'),
+                               1: _(u'Landscape')}
+                               ),
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
         ParameterAttr('DEFAULT_SALES_CFOP', u'fiscal.CfopData'),
@@ -362,7 +379,6 @@ class ParameterAccess(ClassInittableObject):
                       u'sellable.Sellable'),
         ParameterAttr('DEFAULT_PRODUCT_TAX_CONSTANT',
                       u'sellable.SellableTaxConstant'),
-        ParameterAttr('NFE_SERIAL_NUMBER', int, initial=1),
         ]
 
     _cache = {}
@@ -441,12 +457,15 @@ class ParameterAccess(ClassInittableObject):
         log.info("Clearing cache")
         ParameterAccess._cache = {}
 
-    def get_parameter_type(self, field_name):
+    def get_parameter_constant(self, field_name):
         for constant in ParameterAccess.constants:
             if constant.key == field_name:
-                break
+                return constant
         else:
             raise KeyError("No such a parameter: %s" % (field_name,))
+
+    def get_parameter_type(self, field_name):
+        constant = self.get_parameter_constant(field_name)
 
         if isinstance(constant.type, basestring):
             return namedAny('stoqlib.domain.' + constant.type)
