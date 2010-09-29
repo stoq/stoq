@@ -748,7 +748,7 @@ class NFeProductDetails(BaseNFeXMLGroup):
                   (u'CFOP', ''),
                   (u'uCom', u'un'),
                   (u'qCom', ''),
-                  (u'vUnCom', u'un'),
+                  (u'vUnCom', ''),
                   (u'vProd', ''),
                   (u'cEANTrib', ''),
                   (u'uTrib', u'un'),
@@ -766,6 +766,8 @@ class NFeProductDetails(BaseNFeXMLGroup):
         self.set_attr('vProd', self.format_value(quantity * price))
         self.set_attr('qCom', self.format_value(quantity, precision=4))
         self.set_attr('qTrib', self.format_value(quantity, precision=4))
+        self.set_attr('uTrib', unit)
+        self.set_attr('uCom', unit)
 
     def as_txt(self):
         vs = [self.txttag]
