@@ -35,6 +35,7 @@ from stoqdrivers.enum import TaxType
 import stoqlib
 from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.lib.parameters import sysparam
+from stoqlib.enums import NFeDanfeOrientation
 
 
 from utils import (get_state_code, get_city_code, nfe_tostring,
@@ -169,10 +170,11 @@ class NFeGenerator(object):
 
         payments = self._sale.group.get_items()
         series = sysparam(self.conn).NFE_SERIAL_NUMBER
+        orientation = sysparam(self.conn).NFE_DANFE_ORIENTATION
 
         nfe_identification = NFeIdentification(cuf, branch_location.city,
                                                series, nnf, today,
-                                               list(payments))
+                                               list(payments), orientation)
         # The nfe-key requires all the "zeros", so we should format the
         # values properly.
         mod = '%02d' % int(nfe_identification.get_attr('mod'))
@@ -493,8 +495,13 @@ class NFeIdentification(BaseNFeXMLGroup):
                   (u'procEmi', '3'),
                   (u'verProc', '')]
     txttag = 'B'
+    danfe_orientation = {
+        NFeDanfeOrientation.PORTRAIT: '1',
+        NFeDanfeOrientation.LANDSCAPE: '2',
+    }
 
-    def __init__(self, cUF, city, series, nnf, emission_date, payments):
+    def __init__(self, cUF, city, series, nnf, emission_date, payments,
+                 orientation):
         BaseNFeXMLGroup.__init__(self)
 
         self.set_attr('cUF', cUF)
@@ -513,6 +520,7 @@ class NFeIdentification(BaseNFeXMLGroup):
         self.set_attr('serie', series)
         self.set_attr('dEmi', self.format_date(emission_date))
         self.set_attr('cMunFG', get_city_code(city, code=cUF) or '')
+        self.set_attr('tpImp', self.danfe_orientation[orientation])
 
 
 class NFeAddress(BaseNFeXMLGroup):
