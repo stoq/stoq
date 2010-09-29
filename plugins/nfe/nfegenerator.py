@@ -71,6 +71,7 @@ class NFeGenerator(object):
         self._add_totals()
         self._add_transport_data(self._sale.transporter,
                                  self._sale.get_items())
+        self._add_billing_data()
         self._add_additional_information()
 
     def save(self, location=''):
@@ -270,6 +271,22 @@ class NFeGenerator(object):
             vol = NFeVolume(quantity=sale_item.quantity, unit=unit,
                             net_weight=weight, gross_weight=weight)
             self._nfe_data.append(vol)
+
+    def _add_billing_data(self):
+        cob = NFeBilling()
+        self._nfe_data.append(cob)
+
+        sale_total = self._sale.get_total_sale_amount()
+        items_total = self._sale.get_sale_subtotal()
+
+        fat = NFeInvoice(self._sale.id, items_total,
+                         self._sale.discount_value, sale_total)
+        self._nfe_data.append(fat)
+
+        payments = self._sale.group.get_items()
+        for p in payments:
+            dup = NFeDuplicata(p.id, p.due_date, p.value)
+            self._nfe_data.append(dup)
 
     def _add_additional_information(self):
         nfe_info = NFeSimplesNacionalInfo()
@@ -1189,6 +1206,58 @@ class NFeVolume(BaseNFeXMLGroup):
             self.set_attr('pesoL', "%.3f" % net_weight)
         if gross_weight:
             self.set_attr('pesoB', "%.3f" % gross_weight)
+
+
+# Pg. 126 - Cobranca
+class NFeBilling(BaseNFeXMLGroup):
+    """
+    """
+    tag = u'cobr'
+    txttag = 'Y'
+
+
+# Fatura
+class NFeInvoice(BaseNFeXMLGroup):
+    """
+    """
+    tag = u'fat'
+    txttag = 'Y02'
+
+    attributes = [(u'nFat', ''),
+                  (u'vOrig', ''),
+                  (u'vDesc', ''),
+                  (u'vLiq', ''),]
+
+    def __init__(self, number, original_value, discount, liquid_value):
+        BaseNFeXMLGroup.__init__(self)
+
+        if discount:
+            discount = self.format_value(discount)
+        else:
+            discount = ''
+
+        self.set_attr('nFat', number)
+        self.set_attr('vOrig', self.format_value(original_value))
+        self.set_attr('vDesc', discount)
+        self.set_attr('vLiq', self.format_value(liquid_value))
+
+
+class NFeDuplicata(BaseNFeXMLGroup):
+    """
+    """
+    tag = u'dup'
+    txttag = 'Y07'
+
+    attributes = [(u'nDup', ''),
+                  (u'dVenc', ''),
+                  (u'vDup', ''),]
+
+    def __init__(self, number, due_date, value):
+        BaseNFeXMLGroup.__init__(self)
+
+        self.set_attr('nDup', number)
+        self.set_attr('dVenc', self.format_date(due_date))
+        self.set_attr('vDup', self.format_value(value))
 
 
 
