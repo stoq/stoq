@@ -283,8 +283,8 @@ class ECFUI(object):
         # the printer we support, and that dont have MFD:
         # If the printer has an MFD, it should not be present in the
         # MODEL_CODES variable
-        model = MODEL_CODES.get((self.printer.brand,
-                                 self.printer.model))
+        model = MODEL_CODES.get((printer.brand,
+                                 printer.model))
         if not model:
             return False
 
