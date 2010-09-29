@@ -54,6 +54,10 @@ class _PluginModel(object):
         self.name = plugin_name
         self.is_active = self._get_plugin_is_active(conn)
 
+        # nfe and ecf plugins can't be enabled at the same time
+        if self.name == 'ecf' and self.is_active:
+            self.blacklist.append('nfe')
+
     def _get_plugin_is_active(self, conn):
         return InstalledPlugin.selectOneBy(plugin_name=self.name) is not None
 
