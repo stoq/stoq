@@ -27,7 +27,7 @@
 from decimal import Decimal
 import gtk
 from kiwi.ui.widgets.entry import ProxyEntry
-from kiwi.ui.widgets.combo import ProxyComboEntry
+from kiwi.ui.widgets.combo import ProxyComboEntry, ProxyComboBox
 
 from stoqlib.domain.base import AbstractModel
 from stoqlib.domain.parameter import ParameterData
@@ -120,6 +120,17 @@ class SystemParameterEditor(BaseEditor):
         yes_widget.set_active(self.model.field_value == "1")
         box.show()
 
+    def _setup_options_combo_slave(self, constant):
+        widget = ProxyComboBox()
+        widget.model_attribute = "field_value"
+        widget.data_type = unicode
+
+        data = [(value, str(key)) for key, value in constant.options.items()]
+        widget.prefill(data)
+        self.proxy.add_widget("field_value", widget)
+        self.container.add(widget)
+        widget.show()
+
     #
     # BaseEditor hooks
     #
@@ -134,7 +145,8 @@ class SystemParameterEditor(BaseEditor):
 
     def setup_slaves(self):
         self._slave = None
-        field_type = sysparam(self.conn).get_parameter_type(self.model.field_name)
+        constant = sysparam(self.conn).get_parameter_constant(self.model.field_name)
+        field_type = constant.get_parameter_type()
         if issubclass(field_type, AbstractModel):
             self._setup_comboboxentry_slave()
         elif issubclass(field_type, ImageHelper):
@@ -144,7 +156,10 @@ class SystemParameterEditor(BaseEditor):
         elif issubclass(field_type, bool):
             self._setup_radio_slave()
         elif issubclass(field_type, (int, float)):
-            self._setup_entry_slave()
+            if constant.options:
+                self._setup_options_combo_slave(constant)
+            else:
+                self._setup_entry_slave()
         elif issubclass(field_type, unicode):
             self._setup_entry_slave()
         elif issubclass(field_type, Decimal):
