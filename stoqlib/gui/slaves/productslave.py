@@ -45,7 +45,7 @@ class ProductInformationSlave(BaseEditorSlave):
     gladefile = 'ProductInformationSlave'
     model_type = Product
     proxy_widgets = ['location', 'part_number', 'manufacturer', 'width',
-                     'height', 'depth', 'weight',]
+                     'height', 'depth', 'weight', 'ncm', 'ex_tipi', 'genero']
     storable_widgets = ['minimum_quantity', 'maximum_quantity',]
 
     def __init__(self, conn, model):
@@ -80,7 +80,12 @@ class ProductInformationSlave(BaseEditorSlave):
                 storable, ProductInformationSlave.storable_widgets)
 
     def hide_stock_details(self):
-        self.stock.hide()
+        self.stock_label.hide()
+        self.min_label.hide()
+        self.max_label.hide()
+        self.min_hbox.hide()
+        self.max_hbox.hide()
+
         self.part_number_lbl.hide()
         self.part_number.hide()
         self.manufacturer_lbl.hide()
@@ -107,6 +112,18 @@ class ProductInformationSlave(BaseEditorSlave):
 
     def on_weight__validate(self, widget, value):
         return self._positive_validator(value)
+
+    def on_ncm__validate(self, widget, value):
+        if len(value) not in (0, 8):
+            return ValidationError(_(u'NCM must have 8 digits.'))
+
+    def on_ex_tipi__validate(self, widget, value):
+        if len(value) not in (0, 2, 3):
+            return ValidationError(_(u'EX TIPI must have 2 or 3 digits.'))
+
+    def on_genero__validate(self, widget, value):
+        if len(value) not in (0, 2):
+            return ValidationError(_(u'NCM must have 2 digits.'))
 
     def on_minimum_quantity__validate(self, widget, value):
         if value and value < 0:

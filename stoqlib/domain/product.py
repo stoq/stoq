@@ -162,6 +162,11 @@ class Product(Domain):
     consignment = BoolCol(default=False)
     sellable = ForeignKey('Sellable')
 
+    # Nomenclatura Comum do Mercosul related details
+    ncm = UnicodeCol(default=None)
+    ex_tipi = UnicodeCol(default=None)
+    genero = UnicodeCol(default=None)
+
     #
     # Facet hooks
     #
