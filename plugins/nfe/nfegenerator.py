@@ -225,19 +225,35 @@ class NFeGenerator(object):
         self._nfe_data.append(self._nfe_recipient)
 
     def _add_sale_items(self, sale_items):
+        # cfop code without dot.
+        cfop_code = self._sale.cfop.code.replace('.', '')
+
         for item_number, sale_item in enumerate(sale_items):
-            sellable = sale_item.sellable
             # item_number should start from 1, not zero.
             item_number += 1
             nfe_item = NFeProduct(item_number)
-            # cfop code without dot.
-            cfop_code = self._sale.cfop.code.replace('.', '')
+
+            sellable = sale_item.sellable
+            product = sellable.product
+            if product:
+                ncm = product.ncm
+                ex_tipi = product.ex_tipi
+                genero = product.genero
+            else:
+                ncm = ''
+                ex_tipi = ''
+                genero = ''
+
             nfe_item.add_product_details(sellable.code,
                                          sellable.get_description(),
                                          cfop_code,
                                          sale_item.quantity,
                                          sale_item.price,
-                                         sellable.get_unit_description())
+                                         sellable.get_unit_description(),
+                                         barcode=sellable.barcode,
+                                         ncm=ncm,
+                                         ex_tipi=ex_tipi,
+                                         genero=genero)
 
             nfe_item.add_tax_details(sellable.get_tax_constant())
             self._nfe_data.append(nfe_item)
@@ -676,9 +692,9 @@ class NFeProduct(BaseNFeXMLGroup):
         self.element.set('nItem', str(number))
 
     def add_product_details(self, code, description, cfop, quantity, price,
-                            unit):
+                            unit, barcode, ncm, ex_tipi, genero):
         details = NFeProductDetails(code, description, cfop, quantity, price,
-                                    unit)
+                                    unit, barcode, ncm, ex_tipi, genero)
         self.append(details)
 
     def add_tax_details(self, sellable_tax):
@@ -762,6 +778,9 @@ class NFeProductDetails(BaseNFeXMLGroup):
     attributes = [(u'cProd', ''),
                   (u'cEAN', ''),
                   (u'xProd', ''),
+                  (u'NCM', ''),
+                  (u'EXTIPI', ''),
+                  (u'genero', ''),
                   (u'CFOP', ''),
                   (u'uCom', u'un'),
                   (u'qCom', ''),
@@ -773,10 +792,19 @@ class NFeProductDetails(BaseNFeXMLGroup):
                   (u'vUnTrib', '')]
     txttag = 'I'
 
-    def __init__(self, code, description, cfop, quantity, price, unit):
+    def __init__(self, code, description, cfop, quantity, price, unit,
+                 barcode, ncm, ex_tipi, genero):
         BaseNFeXMLGroup.__init__(self)
         self.set_attr('cProd', code)
+
+        if barcode and len(barcode) in (8, 12, 13, 14):
+            self.set_attr('cEAN', barcode)
+
         self.set_attr('xProd', description)
+        self.set_attr('NCM', ncm)
+        self.set_attr('EXTIPI', ex_tipi)
+        self.set_attr('genero', genero)
+
         self.set_attr('CFOP', cfop)
         self.set_attr('vUnCom', self.format_value(price, precision=4))
         self.set_attr('vUnTrib', self.format_value(price, precision=4))
@@ -791,7 +819,7 @@ class NFeProductDetails(BaseNFeXMLGroup):
         for attr, value in self.attributes:
             vs.append(self.get_attr(attr))
 
-        return '%s|%s|%s|%s||||%s|%s|%s|%s|%s|%s|%s|%s|%s||||\n' % tuple(vs)
+        return '%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s||||\n' % tuple(vs)
 
 
 # Pg. 107
