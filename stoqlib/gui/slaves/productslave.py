@@ -45,7 +45,7 @@ class ProductInformationSlave(BaseEditorSlave):
     gladefile = 'ProductInformationSlave'
     model_type = Product
     proxy_widgets = ['location', 'part_number', 'manufacturer', 'width',
-                     'height', 'depth', 'weight',]
+                     'height', 'depth', 'weight', 'ncm', 'ex_tipi', 'genero']
     storable_widgets = ['minimum_quantity', 'maximum_quantity',]
 
     def __init__(self, conn, model):
@@ -80,7 +80,12 @@ class ProductInformationSlave(BaseEditorSlave):
                 storable, ProductInformationSlave.storable_widgets)
 
     def hide_stock_details(self):
-        self.stock.hide()
+        self.stock_label.hide()
+        self.min_label.hide()
+        self.max_label.hide()
+        self.min_hbox.hide()
+        self.max_hbox.hide()
+
         self.part_number_lbl.hide()
         self.part_number.hide()
         self.manufacturer_lbl.hide()
