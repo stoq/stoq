@@ -305,7 +305,7 @@ class NFeGenerator(object):
             self._nfe_data.append(dup)
 
     def _add_additional_information(self):
-        nfe_info = NFeSimplesNacionalInfo()
+        nfe_info = NFeSimplesNacionalInfo(self._sale.notes)
         self._nfe_data.append(nfe_info)
 
 #
@@ -1297,11 +1297,11 @@ class NFeAdditionalInformation(BaseNFeXMLGroup):
 
 
 class NFeSimplesNacionalInfo(NFeAdditionalInformation):
-    def __init__(self):
+    def __init__(self, sale_notes):
         NFeAdditionalInformation.__init__(self)
         msg = u'Documento emitido por ME ou EPP optante pelo SIMPLES' \
               u' NACIONAL. Não gera Direito a Crédito Fiscal de ICMS e de'\
               u' ISS. Conforme Lei Complementar 123 de 14/12/2006.'
 
-        self.set_attr('infAdFisco', '')
-        self.set_attr('infCpl', msg)
+        self.set_attr('infAdFisco', msg)
+        self.set_attr('infCpl', sale_notes)
