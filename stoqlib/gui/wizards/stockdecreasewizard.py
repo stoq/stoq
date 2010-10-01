@@ -143,8 +143,8 @@ class DecreaseItemStep(SellableItemStep):
         SellableItemStep.setup_slaves(self)
         self.hide_add_button()
 
-        self.cost_label.set_visible(False)
-        self.cost.set_visible(False)
+        self.cost_label.hide()
+        self.cost.hide()
         self.quantity.connect('validate', self._on_quantity__validate)
 
     #
