@@ -42,6 +42,8 @@ from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.sale import SaleView
+from stoqlib.domain.till import Till
+from stoqlib.exceptions import TillError
 from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.printing import print_report
@@ -58,6 +60,7 @@ from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
+from stoqlib.lib.message import warning
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -414,6 +417,11 @@ class ReceivableApp(SearchableAppWindow):
         self._run_bill_check_search()
 
     def on_Renegotiate__activate(self, action):
+        try:        
+            Till.get_current(self.conn)
+        except TillError, e:
+            warning(str(e))
+            return
         receivable_views = self.results.get_selected_rows()
         trans = new_transaction()
         groups = list(set([trans.get(v.group) for v in receivable_views]))
