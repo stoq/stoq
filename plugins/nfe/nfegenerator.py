@@ -801,9 +801,9 @@ class NFeProductDetails(BaseNFeXMLGroup):
             self.set_attr('cEAN', barcode)
 
         self.set_attr('xProd', description)
-        self.set_attr('NCM', ncm)
-        self.set_attr('EXTIPI', ex_tipi)
-        self.set_attr('genero', genero)
+        self.set_attr('NCM', ncm or '')
+        self.set_attr('EXTIPI', ex_tipi or '')
+        self.set_attr('genero', genero or '')
 
         self.set_attr('CFOP', cfop)
         self.set_attr('vUnCom', self.format_value(price, precision=4))
