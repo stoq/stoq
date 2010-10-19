@@ -24,6 +24,8 @@
 ##
 """ Loan wizard"""
 
+import gtk
+
 from decimal import Decimal
 import datetime
 
@@ -40,7 +42,7 @@ from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.views import LoanView
-from stoqlib.lib.message import info
+from stoqlib.lib.message import info, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity, get_formatted_cost
@@ -51,8 +53,10 @@ from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.loaneditor import LoanItemEditor
+from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteItemStep
+from stoqlib.reporting.loanreceipt import LoanReceipt
 
 _ = stoqlib_gettext
 
@@ -170,6 +174,14 @@ class LoanItemStep(SaleQuoteItemStep):
         if not self._has_stock(sellable, value):
             return ValidationError(
                 _(u'The quantity is greater than the quantity in stock.'))
+
+    def validate_step(self):
+        # I am using validate_step as a callback for the finish button, since
+        # we can only print the receipt if the loan was confirmed.
+        if yesno(_(u'Do you want to print the receipt now ?'),
+                 gtk.RESPONSE_YES, _(u'Yes'), _(u'No')):
+            print_report(LoanReceipt, self.model)
+        return True
 
 
 class LoanSelectionStep(BaseWizardStep):
