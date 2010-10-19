@@ -89,6 +89,8 @@ class StartNewLoanStep(WizardEditorStep):
         items = [(c.name, c.client) for c in clients]
         self.client.prefill(sorted(items))
         self.client.set_property('mandatory', True)
+        # expire date combo
+        self.expire_date.set_property('mandatory', True)
         # CFOP combo
         self.cfop_lbl.hide()
         self.cfop.hide()
