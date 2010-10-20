@@ -90,7 +90,7 @@ class _ProductSearch(SearchEditor):
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'barcode',
-                                     'category_description'])
+                                     'category_description', 'code'])
         self.executer.set_query(self.executer_query)
 
     def executer_query(self, query, having, conn):
@@ -105,13 +105,17 @@ class _ProductSearch(SearchEditor):
         self.ok_button.set_sensitive(bool(sellable_view))
 
     def get_columns(self):
-        return [SearchColumn('barcode', title=_('Barcode'), data_type=str,
+        return [SearchColumn('code', title=_(u'Code'), data_type=str),
+                SearchColumn('barcode', title=_('Barcode'), data_type=str,
                              sort_func=sort_sellable_code,
                              width=80),
                 SearchColumn('category_description', title=_('Category'),
                              data_type=str, width=120),
                 SearchColumn('description', title=_('Description'), data_type=str,
                              expand=True, sorted=True),
+                SearchColumn('minimum_quantity', title=_(u'Minimum Qty'),
+                             data_type=Decimal, visible=False),
+                SearchColumn('stock', title=_(u'In Stock'), data_type=Decimal),
               ]
 
     #
