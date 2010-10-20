@@ -54,7 +54,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkLabel" id="label4">
+                            <widget class="GtkLabel" id="cost_lbl">
                                 <property name="label" context="yes" translatable="yes">Cost:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>

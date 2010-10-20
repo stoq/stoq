@@ -47,8 +47,6 @@ class PurchaseItemEditor(BaseEditor):
     proxy_widgets = ['cost',
                      'expected_receival_date',
                      'quantity',
-                     'quantity_sold',
-                     'quantity_returned',
                      'total',]
 
     def __init__(self, conn, model):
@@ -56,6 +54,11 @@ class PurchaseItemEditor(BaseEditor):
         order = self.model.order
         if order.status == PurchaseOrder.ORDER_CONFIRMED:
             self._set_not_editable()
+
+        self.sold_lbl.hide()
+        self.returned_lbl.hide()
+        self.quantity_sold.hide()
+        self.quantity_returned.hide()
 
     def _setup_widgets(self):
         self.order.set_text("%04d" %  self.model.order.id)
@@ -97,6 +100,10 @@ class PurchaseItemEditor(BaseEditor):
 
 
 class InConsignmentItemEditor(PurchaseItemEditor):
+    proxy_widgets = PurchaseItemEditor.proxy_widgets[:]
+    proxy_widgets.extend(['quantity_sold',
+                          'quantity_returned'])
+
 
     def __init__(self, conn, model):
         self._original_sold_qty = model.quantity_sold
@@ -140,3 +147,13 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         max_returned = self.model.quantity_received - self.quantity_sold.read()
         if value and value > max_returned:
             return ValidationError(_(u'Invalid returned quantity'))
+
+
+class PurchaseQuoteItemEditor(PurchaseItemEditor):
+    proxy_widgets = PurchaseItemEditor.proxy_widgets[:]
+    proxy_widgets.remove('cost')
+
+    def __init__(self, conn, model):
+        PurchaseItemEditor.__init__(self, conn, model)
+        self.cost.hide()
+        self.cost_lbl.hide()
