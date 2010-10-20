@@ -31,6 +31,7 @@ import datetime
 
 from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
+from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.database.orm import ORMObjectQueryExecuter
@@ -69,7 +70,7 @@ _ = stoqlib_gettext
 class StartNewLoanStep(WizardEditorStep):
     gladefile = 'SalesPersonStep'
     model_type = Loan
-    proxy_widgets = ('client', 'salesperson', 'expire_date')
+    proxy_widgets = ['client', 'salesperson', 'expire_date']
     cfop_widgets = ('cfop',)
 
     def _setup_widgets(self):
@@ -99,11 +100,22 @@ class StartNewLoanStep(WizardEditorStep):
         self.cfop_lbl.hide()
         self.cfop.hide()
         self.create_cfop.hide()
-
-        # Transporter Combo
-        self.transporter_lbl.hide()
-        self.transporter.hide()
+        # Transporter/RemovedBy Combo
+        self.transporter_lbl.set_text(_(u'Removed By:'))
         self.create_transporter.hide()
+        # retrieve the position, since we will replace two widgets later.
+        top = self.table2.child_get_property(self.transporter, 'top-attach')
+        bottom = self.table2.child_get_property(self.transporter,
+                                                'bottom-attach')
+        left = self.table2.child_get_property(self.transporter, 'left-attach')
+        right = self.table2.child_get_property(self.transporter, 'right-attach')
+        self.table2.remove(self.transporter)
+
+        removed_by = ProxyEntry(unicode)
+        removed_by.set_property('model-attribute', 'removed_by')
+        self.proxy_widgets.append('removed_by')
+        removed_by.show()
+        self.table2.attach(removed_by, left, right, top, bottom)
 
     #
     # WizardStep hooks
@@ -200,7 +212,7 @@ class LoanSelectionStep(BaseWizardStep):
                              data_type=str, width=80),
                 SearchColumn('responsible_name', title=_(u'Responsible'),
                              data_type=str, expand=True),
-                SearchColumn('client_name', title=_(u'Name'),
+                SearchColumn('client_name', title=_(u'Client'),
                              data_type=str, expand=True),
                 SearchColumn('open_date', title=_(u'Opened'),
                              data_type=datetime.date),
