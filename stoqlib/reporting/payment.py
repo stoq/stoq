@@ -77,6 +77,24 @@ class BillCheckPaymentReport(_BasePaymentReport):
     """
 
 
+class CardPaymentReport(_BasePaymentReport):
+    """This report shows a list of information about the card method payment.
+    For each payment it show: payment number, description, drawee,
+    credit provider, due date, value, fee and fee calculation."""
+    
+    def _setup_table(self):
+        total_value = sum([item.value for item in self._payments],
+                          Decimal(0))
+        total_fee_calc = sum([item.fee_calc for item in self._payments],
+                             Decimal(0))
+        self.add_summary_by_column(_(u'Value'),
+                                   get_formatted_price(total_value))
+        self.add_summary_by_column(_(u'Fee'),
+                                   get_formatted_price(total_fee_calc))
+        self.add_object_table(self._payments, self.get_columns(),
+                              summary_row=self.get_summary_row())      
+
+
 class PaymentFlowHistoryReport(BaseStoqReport):
     report_name = _(u'Payment Flow History')
 
