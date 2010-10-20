@@ -50,6 +50,7 @@ from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.dialogs.quotedialog import QuoteFillingDialog
+from stoqlib.gui.editors.purchaseeditor import PurchaseQuoteItemEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.purchasewizard import (PurchaseItemStep,
                                                 PurchaseWizard)
@@ -157,6 +158,8 @@ class QuoteItemsStep(PurchaseItemStep):
 
     def post_init(self):
         PurchaseItemStep.post_init(self)
+        self.slave.set_editor(PurchaseQuoteItemEditor)
+
         if not self.has_next_step():
             self.wizard.enable_finish()
 
