@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007-2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2010 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 ##
 ## Author(s):   Johan Dahlin <jdahlin@async.com.br>
 ##              Fabio Morbec <fabio@async.com.br>
+##              Gabriel Gerga <gerga@async.com.br>
 ##
 
 import datetime
@@ -33,12 +34,13 @@ from stoqlib.database.orm import Viewable
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.payment.method import CheckData, PaymentMethod
+from stoqlib.domain.payment.method import (CheckData, PaymentMethod,
+                                           CreditCardData)
 from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
                                             PaymentAdaptToOutPayment,
                                             PaymentChangeHistory)
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, PersonAdaptToCreditProvider
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.lib.translation import stoqlib_gettext
@@ -193,6 +195,52 @@ class OutPaymentView(Viewable):
     def payment(self):
         return Payment.get(self.id, connection=self.get_connection())
 
+class CardPaymentView(Viewable):
+    """A view for credit providers."""
+    _DraweePerson = Alias(Person, "drawee_person")
+    _ProviderPerson = Alias(Person, "provider_person")
+
+    columns = dict(
+        id=Payment.q.id,
+        description=Payment.q.description,
+        drawee_name=_DraweePerson.q.name,
+        provider_name=_ProviderPerson.q.name,
+        due_date=Payment.q.due_date,
+        paid_date=Payment.q.paid_date,
+        status=Payment.q.status,
+        value=Payment.q.value,
+        fee=PersonAdaptToCreditProvider.q.provider_fee,
+        fee_calc=(PersonAdaptToCreditProvider.q.provider_fee * Payment.q.value)
+                  /100,)
+
+    joins = [
+        INNERJOINOn(None, PaymentMethod,
+                    PaymentMethod.q.id == Payment.q.methodID),
+        INNERJOINOn(None, CreditCardData,
+                    CreditCardData.q.paymentID == Payment.q.id),
+        INNERJOINOn(None, PersonAdaptToCreditProvider,
+              PersonAdaptToCreditProvider.q.id == CreditCardData.q.providerID),
+        INNERJOINOn(None, _ProviderPerson,
+            _ProviderPerson.q.id == PersonAdaptToCreditProvider.q._originalID),
+        LEFTJOINOn(None, PaymentGroup,
+                    PaymentGroup.q.id == Payment.q.groupID),
+        LEFTJOINOn(None, _DraweePerson,
+                    _DraweePerson.q.id == PaymentGroup.q.payerID),
+        ]
+
+    def get_status_str(self):
+        return Payment.statuses[self.status]
+
+    @classmethod
+    def select_by_provider(cls, query, provider, having=None, connection=None):
+        if provider:
+            provider_query = CreditCardData.q.providerID == provider.id
+            if query:
+                query = AND(query, provider_query)
+            else:
+                query = provider_query
+
+        return cls.select(query, having=having, connection=connection)
 
 class _CheckPaymentView(Viewable):
     """A base view for check and bill payments."""
