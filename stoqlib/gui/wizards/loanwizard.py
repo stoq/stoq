@@ -111,11 +111,11 @@ class StartNewLoanStep(WizardEditorStep):
         right = self.table2.child_get_property(self.transporter, 'right-attach')
         self.table2.remove(self.transporter)
 
-        removed_by = ProxyEntry(unicode)
-        removed_by.set_property('model-attribute', 'removed_by')
+        self.removed_by = ProxyEntry(unicode)
+        self.removed_by.set_property('model-attribute', 'removed_by')
         self.proxy_widgets.append('removed_by')
-        removed_by.show()
-        self.table2.attach(removed_by, left, right, top, bottom)
+        self.removed_by.show()
+        self.table2.attach(self.removed_by, left, right, top, bottom)
 
     #
     # WizardStep hooks
