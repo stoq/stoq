@@ -41,7 +41,7 @@ from stoqlib.domain.person import ClientView, PersonAdaptToUser, Person
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.views import LoanView
+from stoqlib.domain.views import LoanView, ProductFullStockItemView
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
@@ -153,6 +153,7 @@ class LoanItemStep(SaleQuoteItemStep):
     """ Wizard step for loan items selection """
     model_type = Loan
     item_table = LoanItem
+    sellable_view = ProductFullStockItemView
 
     def post_init(self):
         SaleQuoteItemStep.post_init(self)
