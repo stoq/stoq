@@ -377,6 +377,18 @@ class SearchDialog(BasicDialog):
 
         return branch_filter
 
+    def create_provider_filter(self, label=None):
+        from stoqlib.domain.person import PersonAdaptToCreditProvider
+        providers = PersonAdaptToCreditProvider.get_active_providers(self.conn)
+        items = [(p.person.name, p) for p in providers]
+        items.insert(0, (_("Any"), None))
+
+        if not label:
+            label = _('Provider')
+        provider_filter = ComboSearchFilter(label, items)
+
+        return provider_filter
+
     #
     # Callbacks
     #

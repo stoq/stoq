@@ -847,6 +847,10 @@ class PersonAdaptToCreditProvider(PersonAdapter):
                                  provider_type=cls.PROVIDER_CARD,
                                  connection=conn).count())
 
+    @classmethod
+    def get_active_providers(cls, conn):
+        return cls.select(cls.q.is_active == True, connection=conn)
+
 
 Person.registerFacet(PersonAdaptToCreditProvider, ICreditProvider)
 
