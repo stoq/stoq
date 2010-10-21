@@ -107,6 +107,12 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="CardPaymentSearch">
+                        <property name="name">CardPaymentSearch</property>
+                        <property name="label" translatable="yes">Card Payment...</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Copy">
                         <property name="name">Copy</property>
                         <property name="tooltip" translatable="yes">Copy selected object into the clipboard</property>
@@ -254,6 +260,7 @@
 	  </menu>
       <menu action="SearchMenu">
         <menuitem action="BillCheckSearch"/>
+        <menuitem action="CardPaymentSearch"/>
       </menu> 
 	  <menu action="help_menu">
 	    <menuitem action="about_menu"/>

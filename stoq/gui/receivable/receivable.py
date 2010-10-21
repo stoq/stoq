@@ -58,6 +58,7 @@ from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialo
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
+from stoqlib.gui.search.paymentsearch import CardPaymentSearch
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
 from stoqlib.lib.message import warning
@@ -362,6 +363,9 @@ class ReceivableApp(SearchableAppWindow):
     def _can_show_comments(self, receivable_views):
         return len(receivable_views) == 1
 
+    def _run_card_payment_search(self):
+        run_dialog(CardPaymentSearch, self, self.conn)
+
     def _run_bill_check_search(self):
         run_dialog(InPaymentBillCheckSearch, self, self.conn)
 
@@ -415,6 +419,9 @@ class ReceivableApp(SearchableAppWindow):
 
     def on_BillCheckSearch__activate(self, action):
         self._run_bill_check_search()
+
+    def on_CardPaymentSearch__activate(self, action):
+        self._run_card_payment_search()
 
     def on_Renegotiate__activate(self, action):
         try:        
