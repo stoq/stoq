@@ -39,7 +39,7 @@ from kiwi.component import get_utility
 from kiwi.log import Logger
 
 from stoqlib.database.database import (execute_sql, dump_database,
-                                       restore_database)
+                                       restore_database, test_connection)
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.profile import update_profile_applications
@@ -280,9 +280,23 @@ class StoqlibSchemaMigration(SchemaMigration):
         return retval
 
     def update(self, plugins=True, backup=True):
+        sucess = test_connection()
+        if not sucess:
+            info(_(u'Could not connect to the database using command line '
+                    'tool! Aborting.'))
+            info(_(u'Please, check if you can connect to the database '
+                    'using:'))
+            info(_(u'psql -l -h <server> -p <port> -U <username>'))
+            return
+
         if backup is True:
             temporary = tempfile.mktemp(prefix="stoq-dump-")
-            dump_database(temporary)
+            sucess = dump_database(temporary)
+            if not sucess:
+                info(_(u'Could not create backup! Aborting.'))
+                info(_(u'Please contact stoq team to inform this problem.\n'))
+                return
+
         # We have to wrap a try/except statement inside a try/finally to
         # support python previous to 2.5 version.
         try:
@@ -291,21 +305,22 @@ class StoqlibSchemaMigration(SchemaMigration):
                 if plugins:
                     self.update_plugins()
             except:
-                header = _(u'Stoq update have failed.')
-                footer = _(u'Please, send all the output to Stoq Team as '
-                            'sooner as you can.\n')
-                if backup is True:
-                    info(header,
-                     _(u'We will try to restore the current database, but you '
-                        'will not be able to use Stoq without this update.\n' +
-                        footer))
+                info(_(u'Stoq update have failed.'))
+                info(_(u'Please, send all the output to Stoq Team as '
+                        'soon as you can.'))
 
-                    restore_database(temporary)
-                    info(_(u'\n\nCurrent database was succesfully restored.\n\n'))
-                else:
-                    tb_str = ''.join(traceback.format_exception(*sys.exc_info()))
-                    info(header,
-                     _(u'The error message is:\n\n%s\n\n' + footer) % tb_str)
+                tb_str = ''.join(traceback.format_exception(*sys.exc_info()))
+                info(_(u'The error message was:\n\n%s\n\n') % tb_str)
+
+                if backup is True:
+                    info(
+                     _(u'We will try to restore the current database, but you '
+                        'will not be able to use Stoq without this update.'))
+                    info(_(u'This may take some time'))
+
+                    new_name = restore_database(temporary)
+                    info(_(u'Database was restored with name %s.\n\n') 
+                            % new_name)
         finally:
             if backup is True:
                 os.unlink(temporary)
