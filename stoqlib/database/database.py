@@ -138,12 +138,42 @@ def execute_sql(filename):
     else:
         raise NotImplementedError(settings.rdbms)
 
+
+def test_connection():
+    """Test database connectivity for using command line tools
+    @returns: True for success, False if connection fails
+    @rtype: bool
+    """
+    settings = get_utility(IDatabaseSettings)
+
+    log.info("Testing database connectivity using command line tools")
+
+    if settings.rdbms == 'postgres':
+        cmd = ("psql -n -h %(address)s -U %(username)s "
+               "-p %(port)s %(dbname)s -q "
+               "--variable ON_ERROR_STOP= -c 'select 1;'") % dict(
+            address=settings.address,
+            username=settings.username,
+            port=settings.port,
+            dbname=settings.dbname,
+            )
+
+        log.debug('executing %s' % cmd)
+        proc = subprocess.Popen(cmd, shell=True,
+                                stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE)
+
+        retval = proc.wait()
+        return retval == 0
+    else:
+        raise NotImplementedError(settings.rdbms)
+
+
 def dump_database(filename):
     """Dump the contents of the current database
     @param filename: filename to write the database dump to
     """
     settings = get_utility(IDatabaseSettings)
-
     log.info("Dumping database to %s" % filename)
 
     if settings.rdbms == 'postgres':
@@ -159,7 +189,7 @@ def dump_database(filename):
 
         log.debug('executing %s' % cmd)
         proc = subprocess.Popen(cmd, shell=True)
-        return proc.wait()
+        return proc.wait() == 0
     else:
         raise NotImplementedError(settings.rdbms)
 
@@ -189,7 +219,8 @@ def restore_database(dump):
 
     if settings.rdbms == 'postgres':
         # This will create a new database
-        newname = settings.dbname + '__backup'
+        newname = "%s__backup_%s" % (settings.dbname,
+                                     time.strftime("%Y%m%d_%H%M"))
         clean_database(newname)
 
         cmd = ("pg_restore -h %(address)s -U %(username)s "
@@ -200,16 +231,11 @@ def restore_database(dump):
             dbname=newname,
             dump=dump,)
 
-        # We will recover the created database
         log.debug('executing %s' % cmd)
-        # Let's ignore the output of pg_restore ...
-        devnull = open(os.devnull, 'w')
-        proc = subprocess.Popen(cmd, shell=True, stderr=devnull)
-        retcode = proc.wait()
 
-        drop_database(settings.dbname)
-        rename_database(newname, settings.dbname)
-        return retcode
+        proc = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
+        retcode = proc.wait()
+        return newname
     else:
         raise NotImplementedError(settings.rdbms)
 
