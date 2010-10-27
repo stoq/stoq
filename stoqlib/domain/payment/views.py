@@ -207,6 +207,8 @@ class CardPaymentView(Viewable):
         provider_name=_ProviderPerson.q.name,
         due_date=Payment.q.due_date,
         paid_date=Payment.q.paid_date,
+        sale_id=Sale.q.id,
+        renegotiation_id=PaymentRenegotiation.q.id,
         status=Payment.q.status,
         value=Payment.q.value,
         fee=PersonAdaptToCreditProvider.q.provider_fee,
@@ -226,10 +228,20 @@ class CardPaymentView(Viewable):
                     PaymentGroup.q.id == Payment.q.groupID),
         LEFTJOINOn(None, _DraweePerson,
                     _DraweePerson.q.id == PaymentGroup.q.payerID),
+        LEFTJOINOn(None, Sale,
+                   Sale.q.groupID == PaymentGroup.q.id),
+        LEFTJOINOn(None, PaymentRenegotiation,
+                   PaymentRenegotiation.q.groupID == PaymentGroup.q.id),
         ]
 
     def get_status_str(self):
         return Payment.statuses[self.status]
+
+    @property
+    def renegotiation(self):
+        if self.renegotiation_id:
+            return PaymentRenegotiation.get(self.renegotiation_id,
+                                            connection=self.get_connection())
 
     @classmethod
     def select_by_provider(cls, query, provider, having=None, connection=None):
