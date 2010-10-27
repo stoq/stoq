@@ -35,12 +35,17 @@ from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.sale import SaleView
 from stoqlib.domain.payment.views import (InCheckPaymentView,
                                           OutCheckPaymentView,
                                           CardPaymentView)
 from stoqlib.domain.person import PersonAdaptToCreditProvider
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.dialogs.paymentadditiondialog import LonelyPaymentDetailsDialog
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.reporting.payment import (BillCheckPaymentReport,
                                        CardPaymentReport)
@@ -116,7 +121,13 @@ class CardPaymentSearch(SearchDialog):
     size = (750,500)
     searching_by_date = True
     search_table = CardPaymentView
-    selection_mode = gtk.SELECTION_MULTIPLE
+    selection_mode = gtk.SELECTION_BROWSE
+
+    def __init__(self, conn):
+        SearchDialog.__init__(self, conn, self.search_table,
+                              title=self.title)       
+        self.set_details_button_sensitive(False)
+        self.results.connect('selection-changed', self.on_selection_changed)
 
     #
     #SearchDialogs Hooks
@@ -168,10 +179,34 @@ class CardPaymentSearch(SearchDialog):
         print_report(CardPaymentReport, self.results,
                      filters=self.search.get_search_filters())
 
+    def on_selection_changed(self, results, selected):
+        can_details = bool(selected)
+        self.set_details_button_sensitive(can_details)
+
+    #
+    #Private
+    #
+
+    def _show_details(self, receivable_view):
+        if receivable_view.sale_id is not None:
+            sale_view = SaleView.select(
+                    SaleView.q.id == receivable_view.sale_id)[0]
+            run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+        elif receivable_view.renegotiation_id is not None:
+            run_dialog(RenegotiationDetailsDialog, self, self.conn,
+                       receivable_view.renegotiation)
+        else:
+            payment = receivable_view.payment
+            run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
+
     #
     #Callbacks
     #
 
     def on_print_button_clicked(self, widget):
         self._print_report()
+
+    def on_details_button_clicked(self, button):
+        selected = self.results.get_selected()
+        self._show_details(selected)
 
