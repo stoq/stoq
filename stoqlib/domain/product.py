@@ -167,6 +167,12 @@ class Product(Domain):
     ex_tipi = UnicodeCol(default=None)
     genero = UnicodeCol(default=None)
 
+    # Tax details
+    #icms_class
+    #ipi_class
+    #pis_class
+    #cofins_class
+
     #
     # Facet hooks
     #
