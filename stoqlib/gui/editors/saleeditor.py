@@ -29,8 +29,9 @@ import gtk
 
 from kiwi.datatypes import ValidationError
 
-from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.sale import Sale, SaleItem
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -51,6 +52,7 @@ class SaleQuoteItemEditor(BaseEditor):
         sale = self.model.sale
         if sale.status == Sale.STATUS_CONFIRMED:
             self._set_not_editable()
+
         # not used with sale quote items
         self.sale_quantity_lbl.hide()
         self.return_quantity_lbl.hide()
@@ -62,6 +64,20 @@ class SaleQuoteItemEditor(BaseEditor):
         self.description.set_text(self.model.sellable.get_description())
         self.quantity.set_adjustment(gtk.Adjustment(lower=1,
                                                     upper=sys.maxint))
+        first_page = self.tabs.get_nth_page(0)
+        self.tabs.set_tab_label_text(first_page, _(u'Basic'))
+
+        self._setup_taxes()
+
+    def _setup_taxes(self):
+        icms_slave = SaleItemICMSSlave(self.conn, self.model.icms_info)
+        self.add_tab(_('ICMS'), icms_slave)
+
+    def add_tab(self, name, slave):
+        event_box = gtk.EventBox()
+        event_box.show()
+        self.tabs.append_page(event_box, gtk.Label(name))
+        self.attach_slave(name, slave, event_box)
 
     def _set_not_editable(self):
         self.price.set_sensitive(False)
