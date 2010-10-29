@@ -113,7 +113,8 @@ class StartNewLoanStep(WizardEditorStep):
 
         self.removed_by = ProxyEntry(unicode)
         self.removed_by.set_property('model-attribute', 'removed_by')
-        self.proxy_widgets.append('removed_by')
+        if 'removed_by' not in self.proxy_widgets:
+            self.proxy_widgets.append('removed_by')
         self.removed_by.show()
         self.table2.attach(self.removed_by, left, right, top, bottom)
 
