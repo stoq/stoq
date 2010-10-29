@@ -49,7 +49,6 @@ class BaseICMS(Domain):
     mod_bc = IntCol(default=None)
     p_icms = DecimalCol(default=None)
 
-
     mod_bc_st = IntCol(default=None)
     p_mva_st = DecimalCol(default=None)
     p_red_bc_st = DecimalCol(default=None)
