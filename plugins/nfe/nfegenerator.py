@@ -255,7 +255,7 @@ class NFeGenerator(object):
                                          ex_tipi=ex_tipi,
                                          genero=genero)
 
-            nfe_item.add_tax_details(sellable.get_tax_constant())
+            nfe_item.add_tax_details(sale_item)
             self._nfe_data.append(nfe_item)
 
     def _add_totals(self):
@@ -697,25 +697,17 @@ class NFeProduct(BaseNFeXMLGroup):
                                     unit, barcode, ncm, ex_tipi, genero)
         self.append(details)
 
-    def add_tax_details(self, sellable_tax):
+    def add_tax_details(self, sale_item):
+        sale_icms = sale_item.icms_info
+        if not sale_icms:
+            return
+
         nfe_tax = NFeTax()
-        nfe_icms = NFeICMS()
+        nfe_icms = NFeICMS(sale_icms)
+
         nfe_pis = NFePIS()
         nfe_cofins = NFeCOFINS()
 
-        # Vamos ignorar o TaxType enquanto não temos um bom suporte para todos
-        # eles (em especial, Substituição Tributária). Nesse meio tempo, é
-        # possível que o usuário faça o acerto dos impostos através do
-        # aplicativo emissor da receita como um workaround para essa
-        # limitação.
-
-        tax_type = sellable_tax.tax_type
-        #if tax_type in [TaxType.EXEMPTION, TaxType.NONE]:
-
-        # Não tributado ou Isento/ICMS. Atualmente, apenas consideramos
-        # que a empresa esteja enquadrada no simples nacional.
-        icms = NFeICMS40(tax_type)
-        nfe_icms.append(icms)
         pis = NFePISOutr()
         nfe_pis.append(pis)
         cofins = NFeCOFINSOutr()
@@ -822,6 +814,12 @@ class NFeProductDetails(BaseNFeXMLGroup):
         return '%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s||||\n' % tuple(vs)
 
 
+
+#
+#   Tax details
+#
+
+
 # Pg. 107
 class NFeTax(BaseNFeXMLGroup):
     tag = 'imposto'
@@ -838,13 +836,50 @@ class NFeTax(BaseNFeXMLGroup):
 class NFeICMS(BaseNFeXMLGroup):
     tag = 'ICMS'
 
+    def __init__(self, sale_icms_info):
+        BaseNFeXMLGroup.__init__(self)
+        icms_tag = NFE_ICMS_CST_MAP[sale_icms_info.cst](sale_icms_info)
+        self.append(icms_tag)
+
     def as_txt(self):
         icms = self.get_children()[0]
         return icms.as_txt()
 
 
+
+class BaseNFeICMS(BaseNFeXMLGroup):
+    INFO_NAME_MAP = {
+        'orig': 'orig',
+        'CST': 'cst',
+        'modBC': 'mod_bc',
+        'modBCST': 'mod_bc_st',
+
+        'vBC': 'v_bc',
+        'vBCST': 'v_bc_st',
+        'vICMS': 'v_icms',
+        'vICMSST': 'v_icms_st',
+
+        'pICMS': 'p_icms',
+        'pMVAST': 'p_mva_st',
+        'pRedBC': 'p_red_bc',
+        'pRedBCST': 'p_red_bc_st',
+        'pICMSST': 'p_icms_st',
+    }
+
+    def __init__(self, sale_icms_info):
+        BaseNFeXMLGroup.__init__(self)
+
+        for (name, default) in self.attributes:
+            info_name = self.INFO_NAME_MAP[name]
+            value = getattr(sale_icms_info, info_name, '')
+            if value is None:
+                value = ''
+            self.set_attr(name, value)
+
+
+
 # Pg. 108
-class NFeICMS00(BaseNFeXMLGroup):
+class NFeICMS00(BaseNFeICMS):
     """Tributada integralmente (CST=00).
 
     - Attributes:
@@ -853,32 +888,33 @@ class NFeICMS00(BaseNFeXMLGroup):
                 0 – Nacional
                 1 – Estrangeira – Importação direta
                 2 – Estrangeira – Adquirida no mercado interno
-
         - CST: Tributação do ICMS - 00 Tributada integralmente.
-
         - modBC: Modalidade de determinação da BC do ICMS.
                  0 - Margem Valor Agregado (%) (default)
                  1 - Pauta (Valor)
                  2 - Preço Tabelado Máx. (valor)
                  3 - Valor da operação
-
         - vBC: Valor da BC do ICMS.
-
         - pICMS: Alíquota do imposto.
-
         - vICMS: Valor do ICMS
     """
     tag = 'ICMS00'
-    attributes = [(u'orig', '0'),
+    txttag = 'N02'
+    attributes = [(u'orig', None),
                   (u'CST', '00'),
                   (u'modBC', None),
                   (u'vBC', None),
                   (u'pICMS', None),
                   (u'vICMS', None),]
 
+    def __init__(self, sale_icms_info):
+        BaseNFeICMS.__init__(self, sale_icms_info)
+        # We should fix cst here, otherwise, it will be just 0 (one zero).
+        self.set_attr(u'CST', '00')
+
 
 # Pg. 108
-class NFeICMS10(NFeICMS00):
+class NFeICMS10(BaseNFeICMS):
     """Tributada com cobrança do ICMS por substituição tributária (CST=10).
     - Attributes:
 
@@ -889,19 +925,15 @@ class NFeICMS10(NFeICMS00):
                    3 - Lista neutra (valor)
                    4 - Margem valor agregado (%)
                    5 - Pauta (valor)
-
         - pMVAST: Percentual da margem de valor adicionado do ICMS ST.
-
         - pRedBCST: Percentual da redução de BC do ICMS ST.
-
         - vBCST: Valor da BC do ICMS ST.
-
         - pICMSST: Alíquota do imposto do ICMS ST.
-
         - vICMSST: Valor do ICMS ST.
     """
     tag = 'ICMS10'
-    attributes = NFeICMS00.attributes
+    txttag = 'N03'
+    attributes = NFeICMS00.attributes[:]
     attributes.extend([(u'modBCST', ''),
                        (u'pMVAST', ''),
                        (u'pRedBCST', ''),
@@ -911,44 +943,114 @@ class NFeICMS10(NFeICMS00):
 
 
 # Pg. 108
-class NFeICMS20(NFeICMS00):
+class NFeICMS20(BaseNFeICMS):
     """Tributada com redução de base de cálculo (CST=20).
 
     - Attributes:
         - pRedBC: Percentual de Redução de BC.
     """
     tag = 'ICMS20'
-    attributes = NFeICMS00.attributes
-    attributes.append(('pRedBC', ''))
+    txttag = 'N04'
+    attributes = NFeICMS00.attributes[:]
+    attributes = [(u'orig', ''),
+                  (u'CST', '00'),
+                  (u'modBC', ''),
+                  (u'pRedBC', ''),
+                  (u'vBC', ''),
+                  (u'pICMS', ''),
+                  (u'vICMS', ''),]
+
 
 
 # Pg. 109
-class NFeICMS30(NFeICMS10):
+class NFeICMS30(BaseNFeICMS):
     """Isenta ou não tributada e com cobrança do ICMS por substituição
     tributária (CST=30).
     """
     tag = 'ICMS30'
-    attributes = NFeICMS00.attributes
+    txttag = 'N05'
+    attributes = [(u'orig', ''),
+                  (u'CST', '00'),
+                  (u'modBCST', ''),
+                  (u'pMVAST', ''),
+                  (u'pRedBCST', ''),
+                  (u'vBCST', ''),
+                  (u'pICMSST', ''),
+                  (u'vICMSST', ''),]
 
 
 # Pg. 111
-class NFeICMS40(BaseNFeXMLGroup):
+class NFeICMS40(BaseNFeICMS):
     """Isenta (CST=40), Não tributada (CST=41), Suspensão (CST=50).
     """
     tag = 'ICMS40'
-    attributes = [('orig', ''), (u'CST', 40)]
     txttag = 'N06'
+    attributes = [(u'orig', ''),
+                  (u'CST', '')] #FIXME
 
-    def __init__(self, tax_type):
-        BaseNFeXMLGroup.__init__(self)
 
-        if tax_type == TaxType.EXEMPTION:
-            cst = 40
-        else:
-            cst = 41
+class NFeICMS51(BaseNFeICMS):
+    tag = 'ICMS51'
+    txttag = 'N07'
+    attributes = [(u'orig', ''),
+                  (u'CST', ''),
+                  (u'modBC', ''),
+                  (u'pRedBC', ''),
+                  (u'vBC', ''),
+                  (u'pICMS', ''),
+                  (u'vICMS', ''),
+                  ]
 
-        self.set_attr('CST', cst)
-        self.set_attr('orig', '0')
+
+class NFeICMS60(BaseNFeICMS):
+    tag = 'ICMS60'
+    txttag = 'N08'
+    attributes = [(u'orig', ''),
+                  (u'CST', ''),
+                  (u'vBCST', ''),
+                  (u'vICMSST', ''),]
+
+
+class NFeICMS70(BaseNFeICMS):
+    tag = 'ICMS70'
+    txttag = 'N09'
+    attributes = [(u'orig', ''),
+                  (u'CST', ''),
+                  (u'modBC', ''),
+                  (u'pRedBC', ''),
+                  (u'vBC', ''),
+                  (u'pICMS', ''),
+                  (u'vICMS', ''),
+                  (u'modBCST', ''),
+                  (u'pMVAST', ''),
+                  (u'pRedBCST', ''),
+                  (u'vBCST', ''),
+                  (u'pICMSST', ''),
+                  (u'vICMSST', ''),]
+
+
+class NFeICMS90(BaseNFeICMS):
+    tag = 'ICMS90'
+    txttag = 'N10'
+    attributes = [(u'orig', ''),
+                  (u'CST', ''),
+                  (u'modBC', ''),
+                  (u'pRedBC', ''), # Note: documentation (1.1) is wrong!
+                  (u'vBC', ''),
+                  (u'pICMS', ''),
+                  (u'vICMS', ''),
+                  (u'modBCST', ''),
+                  (u'pMVAST', ''),
+                  (u'pRedBCST', ''),
+                  (u'vBCST', ''),
+                  (u'pICMSST', ''),
+                  (u'vICMSST', ''),]
+
+
+
+#
+#   End of ICMS
+#
 
 
 # Pg. 117
@@ -1062,6 +1164,15 @@ class NFeCOFINSOutr(NFeCOFINSAliq):
         return base + s
 
 
+#
+#   End of tax details
+#
+#   End of product details
+#
+
+
+
+
 # Pg. 123
 class NFeTotal(BaseNFeXMLGroup):
     tag = u'total'
@@ -1114,6 +1225,8 @@ class NFeICMSTotal(BaseNFeXMLGroup):
     txttag = 'W02'
 
     def __init__(self, sale_total, items_total):
+        # FIXME: Adicionar:
+        # - Frete, icms, ipi
         BaseNFeXMLGroup.__init__(self)
         self.set_attr('vBC', self.format_value(sale_total))
         self.set_attr('vNF', self.format_value(sale_total))
@@ -1305,3 +1418,25 @@ class NFeSimplesNacionalInfo(NFeAdditionalInformation):
 
         self.set_attr('infAdFisco', msg)
         self.set_attr('infCpl', sale_notes)
+
+
+
+
+
+
+
+
+
+NFE_ICMS_CST_MAP = {
+    0: NFeICMS00,
+    10: NFeICMS10,
+    20: NFeICMS20,
+    30: NFeICMS30,
+    40: NFeICMS40,
+    41: NFeICMS40,
+    50: NFeICMS40,
+    51: NFeICMS51,
+    60: NFeICMS60,
+    70: NFeICMS70,
+    90: NFeICMS90,
+}
