@@ -168,10 +168,8 @@ class Product(Domain):
     genero = UnicodeCol(default=None)
 
     # Tax details
-    #icms_class
-    #ipi_class
-    #pis_class
-    #cofins_class
+    icms_template = ForeignKey('ProductIcmsTemplate', default=None)
+    ipi_template = ForeignKey('ProductIpiTemplate', default=None)
 
     #
     # Facet hooks
