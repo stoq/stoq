@@ -36,6 +36,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.product import Product
+from stoqlib.domain.taxes import ProductTaxTemplate
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -155,3 +156,33 @@ class ProductDetailsSlave(SellableDetailsSlave):
 
     def hide_stock_details(self):
         self.info_slave.hide_stock_details()
+
+
+class ProductTaxSlave(BaseEditorSlave):
+    gladefile = 'ProductTaxSlave'
+    model_type = Product
+    proxy_widgets = ['icms_template', 'ipi_template']
+
+    def _fill_combo(self, combo, type):
+        types = [(None, None)]
+        types.extend([(t.name, t.get_tax_model()) for t in
+                        ProductTaxTemplate.selectBy(tax_type=type)])
+        combo.prefill(types)
+
+
+    def _setup_widgets(self):
+        self._fill_combo(self.icms_template, ProductTaxTemplate.TYPE_ICMS)
+        self._fill_combo(self.ipi_template, ProductTaxTemplate.TYPE_IPI)
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    #
+    # Kiwi Callbacks
+    #
+
+    def on_icms_details__clicked(self, widget):
+        print 'foo'
+
+

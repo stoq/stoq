@@ -47,7 +47,8 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import (BaseEditor, BaseEditorSlave,
                                             BaseRelationshipEditorSlave)
 from stoqlib.gui.editors.sellableeditor import SellableEditor
-from stoqlib.gui.slaves.productslave import ProductDetailsSlave
+from stoqlib.gui.slaves.productslave import (ProductDetailsSlave,
+                                             ProductTaxSlave)
 from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
@@ -506,6 +507,9 @@ class ProductEditor(SellableEditor):
 
         suppliers_slave = ProductSupplierSlave(self.conn, self.model)
         extra_tabs.append((_(u'Suppliers'), suppliers_slave))
+
+        tax_slave = ProductTaxSlave(self.conn, self.model)
+        extra_tabs.append((_(u'Taxes'), tax_slave))
         return extra_tabs
 
     def setup_widgets(self):
