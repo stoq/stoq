@@ -169,7 +169,6 @@ class ProductTaxSlave(BaseEditorSlave):
                         ProductTaxTemplate.selectBy(tax_type=type)])
         combo.prefill(types)
 
-
     def _setup_widgets(self):
         self._fill_combo(self.icms_template, ProductTaxTemplate.TYPE_ICMS)
         self._fill_combo(self.ipi_template, ProductTaxTemplate.TYPE_IPI)

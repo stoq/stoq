@@ -39,10 +39,21 @@ from zope.interface import Interface, implements
 #   Base Tax Classes
 #
 
-class BaseICMS(Domain):
+class BaseTax(Domain):
+
+    def set_from_template(self, template):
+        if not template:
+            return
+
+        for column in template.sqlmeta.columnList:
+            value = getattr(template, column.name)
+            setattr(self, column.name, value)
+
+class BaseICMS(BaseTax):
     """NfeProductIcms stores the default values that will be used when
     creating NfeItemIcms objects
     """
+
     orig = IntCol(default=None) # TODOS
     cst = IntCol(default=None) # TODOS
 
@@ -55,7 +66,7 @@ class BaseICMS(Domain):
     p_icms_st = DecimalCol(default=None)
     p_red_bc = DecimalCol(default=None)
 
-class BaseIPI(Domain):
+class BaseIPI(BaseTax):
     cl_enq = UnicodeCol(default='')
     cnpj_prod = UnicodeCol(default='')
     c_selo = UnicodeCol(default='')

@@ -105,6 +105,7 @@ class SaleItem(Domain):
 
             conn = kw.get('connection', self._connection)
             kw['icms_info'] = SaleItemIcms(connection=conn)
+            kw['icms_info'].set_from_template(kw['sellable'].product.icms_template)
         Domain._create(self, id, **kw)
 
     def sell(self, branch):
