@@ -1,6 +1,15 @@
 -- Creation of taxes tables
 
 
+CREATE TABLE product_tax_template (
+    id bigserial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    name text,
+    tax_type integer
+);
+
 
 --
 --  Product Template Classes
@@ -11,7 +20,7 @@ CREATE TABLE product_icms_template (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    name text,
+    product_tax_template_id bigint UNIQUE REFERENCES product_tax_template(id),
 
     orig integer,
     cst integer,
@@ -31,7 +40,7 @@ CREATE TABLE product_ipi_template (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    name text,
+    product_tax_template_id bigint UNIQUE REFERENCES product_tax_template(id),
 
     cl_enq text,
     cnpj_prod text,
@@ -95,6 +104,10 @@ CREATE TABLE sale_item_ipi (
 
 
 
----
 ALTER TABLE sale_item ADD COLUMN icms_info_id bigint REFERENCES
     sale_item_icms(id);
+
+ALTER TABLE product ADD COLUMN icms_template_id bigint REFERENCES
+    product_icms_template(id);
+
+---

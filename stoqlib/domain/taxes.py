@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2010 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,11 +19,11 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   George Y. Kussumoto     <george@async.com.br>
+## Author(s):   Ronaldo Maia            <romaia@async.com.br>
 ##
 
 from stoqlib.database.orm import (IntCol, UnicodeCol, DecimalCol,
-                                  PriceCol)
+                                  PriceCol, ForeignKey)
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.product import Product
 from zope.interface import Interface, implements
@@ -72,12 +72,37 @@ class BaseIPI(Domain):
 #   Product Tax Classes
 #
 
+
 class ProductIcmsTemplate(BaseICMS):
-    name = UnicodeCol(default='')
+    product_tax_template = ForeignKey('ProductTaxTemplate')
 
 
-class ProductIpiTemplate(BaseICMS):
+class ProductIpiTemplate(BaseIPI):
+    product_tax_template = ForeignKey('ProductTaxTemplate')
+
+
+class ProductTaxTemplate(Domain):
+    (TYPE_ICMS,
+     TYPE_IPI) = range(2)
+
+    types = {TYPE_ICMS:     u"ICMS",
+             TYPE_IPI:      u"IPI",}
+
+    type_map = {TYPE_ICMS:     ProductIcmsTemplate,
+                TYPE_IPI:      ProductIpiTemplate}
+
     name = UnicodeCol(default='')
+    tax_type = IntCol()
+
+    def get_tax_model(self):
+        klass = self.type_map[self.tax_type]
+        return klass.selectOneBy(product_tax_template=self,
+                                 connection=self.get_connection())
+
+
+    def get_tax_type_str(self):
+        return self.types[self.tax_type]
+
 
 
 

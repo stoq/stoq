@@ -34,7 +34,8 @@ from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
-from stoqlib.domain.taxes import SaleItemIcms, ProductIcmsTemplate
+from stoqlib.domain.taxes import (SaleItemIcms, ProductIcmsTemplate,
+                                  SaleItemIpi, ProductIpiTemplate)
 from stoqlib.lib.countries import get_countries
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -77,6 +78,9 @@ class BaseTaxSlave(BaseEditorSlave):
                 getattr(self, widget+'_label').set_sensitive(False)
 
 
+#
+#   ICMS
+#
 
 
 class BaseICMSSlave(BaseTaxSlave):
@@ -91,39 +95,39 @@ class BaseICMSSlave(BaseTaxSlave):
     field_options = {
         'cst': (
             (None, None),
-            ('00 - Tributada Integralmente', 0),
-            ('10 - Tributada e com cobrança de ICMS por subst. trib.', 10),
-            ('20 - Com redução de BC', 20),
-            ('30 - Isenta ou não trib. e com cobrança de ICMS por subst. trib.', 30),
-            ('40 - Isenta', 40),
-            ('41 - Não tributada', 41),
-            ('50 - Suspensão', 50),
-            ('51 - Deferimento', 51),
-            ('60 - ICMS cobrado anteriormente por subst. trib.', 60),
-            ('70 - Com redução da BC cobrança do ICMS por subst. trib.', 70),
-            ('90 - Outros', 90),
+            (u'00 - Tributada Integralmente', 0),
+            (u'10 - Tributada e com cobrança de ICMS por subst. trib.', 10),
+            (u'20 - Com redução de BC', 20),
+            (u'30 - Isenta ou não trib. e com cobrança de ICMS por subst. trib.', 30),
+            (u'40 - Isenta', 40),
+            (u'41 - Não tributada', 41),
+            (u'50 - Suspensão', 50),
+            (u'51 - Deferimento', 51),
+            (u'60 - ICMS cobrado anteriormente por subst. trib.', 60),
+            (u'70 - Com redução da BC cobrança do ICMS por subst. trib.', 70),
+            (u'90 - Outros', 90),
         ),
         'orig': (
             (None, None),
-            ('0 - Nacional', 0),
-            ('1 - Estrangeira - importação direta', 1),
-            ('2 - Estrangeira - adquirida no mercado interno', 2),
+            (u'0 - Nacional', 0),
+            (u'1 - Estrangeira - importação direta', 1),
+            (u'2 - Estrangeira - adquirida no mercado interno', 2),
         ),
         'mod_bc': (
             (None, None),
-            ('0 - Margem do valor agregado (%)', 0),
-            ('1 - Pauta (Valor)', 1),
-            ('2 - Preço tabelado máximo (valor)', 2),
-            ('3 - Valor da operação', 3),
+            (u'0 - Margem do valor agregado (%)', 0),
+            (u'1 - Pauta (Valor)', 1),
+            (u'2 - Preço tabelado máximo (valor)', 2),
+            (u'3 - Valor da operação', 3),
         ),
         'mod_bc_st': (
             (None, None),
-            ('0 - Preço tabelado ou máximo sugerido', 0),
-            ('1 - Lista negativa (valor)', 1),
-            ('2 - Lista positiva (valor)', 2),
-            ('3 - Lista neutra (valor)', 3),
-            ('4 - Margem Valor Agregado (%)', 4),
-            ('5 - Pauta (valor)', 5),
+            (u'0 - Preço tabelado ou máximo sugerido', 0),
+            (u'1 - Lista negativa (valor)', 1),
+            (u'2 - Lista positiva (valor)', 2),
+            (u'3 - Lista neutra (valor)', 3),
+            (u'4 - Margem Valor Agregado (%)', 4),
+            (u'5 - Pauta (valor)', 5),
         ),
     }
 
@@ -142,11 +146,10 @@ class BaseICMSSlave(BaseTaxSlave):
         41: ['orig', 'cst'], # Same tag # FIXME
         50: ['orig', 'cst'], #
         51: ['orig', 'cst', 'mod_bc', 'p_red_bc', 'p_icms', 'v_bc', 'v_icms'],
-        60: ['orig', 'cst', 'v_bc_st', 'v_icms_st' ], # FIXME
+        60: ['orig', 'cst', 'v_bc_st', 'v_icms_st'], # FIXME
         70: all_widgets,
         90: all_widgets,
     }
-
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -174,3 +177,85 @@ class SaleItemICMSSlave(BaseICMSSlave):
     proxy_widgets = BaseICMSSlave.all_widgets
 
 
+#
+#   IPI
+#
+
+class BaseIPISlave(BaseTaxSlave):
+    gladefile = 'TaxIPISlave'
+
+    combo_widgets = ['cst', 'calculo']
+    percentage_widgets = ['p_ipi']
+    text_widgets = ['cl_enq', 'cnpj_prod', 'c_selo', 'c_enq']
+    value_widgets = ['v_ipi', 'v_bc', 'v_unid', 'q_selo', 'q_unid']
+    all_widgets = (combo_widgets + percentage_widgets + value_widgets +
+                   text_widgets)
+
+    field_options = {
+        'cst': (
+            (None, None),
+            (u'00 - Entrada com recuperação de crédito', 0),
+            (u'01 - Entrada tributada com alíquota zero', 1),
+            (u'02 - Entrada isenta', 2),
+            (u'03 - Entrada não-tributada', 3),
+            (u'04 - Entrada imune', 4),
+            (u'05 - Entrada com suspensão', 5),
+            (u'49 - Outras entradas', 49),
+            (u'50 - Saída tributada', 50),
+            (u'51 - Saída tributada com alíquota zero', 51),
+            (u'52 - Saída isenta', 52),
+            (u'53 - Saída não-tributada', 53),
+            (u'54 - Saída imune', 54),
+            (u'55 - Saída com suspensão', 55),
+            (u'99 - Outras saídas', 99),
+        ),
+        'calculo': (
+            (None, None),
+            (u'Por alíquota', 0),
+            (u'Valor por unidade', 0),
+        )
+    }
+
+    # This widgets should be enabled when this option is selected.
+    MAP_VALID_WIDGETS = {
+        0: all_widgets,
+        1: ['cst', 'cl_enq', 'cnpj_prod', 'c_selo', 'q_selo', 'c_enq'],
+        2: ['cst', 'cl_enq', 'cnpj_prod', 'c_selo', 'q_selo', 'c_enq'],
+        3: ['cst', 'cl_enq', 'cnpj_prod', 'c_selo', 'q_selo', 'c_enq'],
+        4: ['cst', 'cl_enq', 'cnpj_prod', 'c_selo', 'q_selo', 'c_enq'],
+        5: ['cst', 'cl_enq', 'cnpj_prod', 'c_selo', 'q_selo', 'c_enq'],
+        49: all_widgets,
+        50: all_widgets,
+        51: ['cst', 'cl_enq', 'cnpj_prod', 'c_selo', 'q_selo', 'c_enq'],
+        52: ['cst', 'cl_enq', 'cnpj_prod', 'c_selo', 'q_selo', 'c_enq'],
+        53: ['cst', 'cl_enq', 'cnpj_prod', 'c_selo', 'q_selo', 'c_enq'],
+        54: ['cst', 'cl_enq', 'cnpj_prod', 'c_selo', 'q_selo', 'c_enq'],
+        55: ['cst', 'cl_enq', 'cnpj_prod', 'c_selo', 'q_selo', 'c_enq'],
+        99: all_widgets,
+    }
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self._update_selected_cst()
+
+    def _update_selected_cst(self):
+        cst = self.cst.get_selected_data()
+        valid_widgets = self.MAP_VALID_WIDGETS.get(cst, ('cst', ))
+        self.set_valid_widgets(valid_widgets)
+
+    def on_cst__changed(self, widget):
+        self._update_selected_cst()
+
+
+class IPITemplateSlave(BaseIPISlave):
+    model_type = ProductIpiTemplate
+    proxy_widgets = (BaseIPISlave.combo_widgets +
+                     BaseIPISlave.percentage_widgets+
+                     BaseIPISlave.text_widgets)
+    hide_widgets = BaseIPISlave.value_widgets
+
+
+class SaleItemIPISlave(BaseIPISlave):
+    model_type = SaleItemIpi
+    proxy_widgets = BaseIPISlave.all_widgets
