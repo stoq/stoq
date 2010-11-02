@@ -46,8 +46,8 @@ TYPE_SLAVES = {
 }
 
 
-class ProductTaxEditor(BaseEditor):
-    gladefile = 'ProductTaxEditor'
+class ProductTaxTemplateEditor(BaseEditor):
+    gladefile = 'ProductTaxTemplateEditor'
     model_type = ProductTaxTemplate
     model_name = _('Base Category')
     proxy_widgets = ('name', 'tax_type')
@@ -115,7 +115,7 @@ class TaxTemplatesSearch(SearchEditor):
     searchbar_label = _('Class Matching:')
     result_strings = _('class'), _('classes')
     table = search_table = ProductTaxTemplate
-    editor = ProductTaxEditor
+    editor = ProductTaxTemplateEditor
 
     def __init__(self, conn):
         SearchEditor.__init__(self, conn, self.table, self.editor)
