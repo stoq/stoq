@@ -63,7 +63,7 @@ class ProductTaxTemplateEditor(BaseEditor):
 
     def create_model(self, conn):
         model = ProductTaxTemplate(name=u"",
-                                   tax_type=ProductTaxTemplate.TYPE_IPI,
+                                   tax_type=ProductTaxTemplate.TYPE_ICMS,
                                    connection=conn)
         self._create_slave_model(model)
         return model
@@ -84,25 +84,21 @@ class ProductTaxTemplateEditor(BaseEditor):
         self.add_proxy(model=self.model, widgets=self.proxy_widgets)
 
     def _change_slave(self):
+        # Remove old slave
         if self.get_slave('tax_template_holder'):
             self.detach_slave('tax_template_holder')
 
+        # When creating a new template, after changing the class, we need to
+        # delete the old object. When editing, we cant delete, since the
+        # user cant change the class.
         if not self.edit_mode:
             self.slave_model.delete(self.slave_model.id, self.conn)
             self._create_slave_model(self.model)
 
+        # Attach new slave.
         slave_class = TYPE_SLAVES[self.model.tax_type]
-
         slave = slave_class(self.conn, self.slave_model)
         self.attach_slave('tax_template_holder', slave)
-
-    def on_confirm(self):
-        # If we are creating a new tax template, then the slave_model is 
-        # a Settable. We need copy the properties to the new model.
-        if not self.edit_mode:
-            print 'create new tax template'
-
-        return self.model
 
     def on_tax_type__changed(self, widget):
         self._change_slave()

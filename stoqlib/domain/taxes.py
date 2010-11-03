@@ -49,6 +49,10 @@ class BaseTax(Domain):
             value = getattr(template, column.name)
             setattr(self, column.name, value)
 
+    def update_values(self):
+        pass
+
+
 class BaseICMS(BaseTax):
     """NfeProductIcms stores the default values that will be used when
     creating NfeItemIcms objects
