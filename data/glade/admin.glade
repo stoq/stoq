@@ -19,6 +19,12 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="TaxTemplates">
+                        <property name="name">TaxTemplates</property>
+                        <property name="label" translatable="yes">Tax Classes...</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="CfopSearch">
                         <property name="name">CfopSearch</property>
                         <property name="label" translatable="yes">CFOP...</property>
@@ -312,6 +318,7 @@
               <menuitem action="UserProfile"/>
               <menuitem action="BranchSearch"/>
               <menuitem action="BranchStationSearch"/>
+              <menuitem action="TaxTemplates"/>
             </menu>
             <menu action="settings_menu">
               <menuitem action="devices_setup"/>

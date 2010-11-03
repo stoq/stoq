@@ -55,6 +55,7 @@ from stoqlib.gui.search.personsearch import (EmployeeRoleSearch,
                                              BranchSearch)
 from stoqlib.gui.search.profilesearch import UserProfileSearch
 from stoqlib.gui.search.stationsearch import StationSearch
+from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.message import info
@@ -232,3 +233,6 @@ class AdminApp(SearchableAppWindow):
 
     def on_Plugins__activate(self, action):
         self.run_dialog(PluginManagerDialog, self.conn)
+
+    def on_TaxTemplates__activate(self, action):
+        self.run_dialog(TaxTemplatesSearch, self.conn)
