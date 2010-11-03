@@ -50,6 +50,8 @@ class BaseTaxSlave(BaseEditorSlave):
 
     hide_widgets = ()
 
+    tooltips = {}
+
     field_options = {}
 
     def _setup_widgets(self):
@@ -67,6 +69,14 @@ class BaseTaxSlave(BaseEditorSlave):
         for w in self.hide_widgets:
             getattr(self, w).hide()
             getattr(self, w+'_label').hide()
+
+        for name, tooltip in self.tooltips.items():
+            widget = getattr(self, name)
+            if isinstance(widget, gtk.Entry):
+                widget.set_property('primary-icon-stock', gtk.STOCK_INFO)
+                widget.set_property('primary-icon-tooltip-text', tooltip)
+                widget.set_property('primary-icon-sensitive', True)
+                widget.set_property('primary-icon-activatable', False)
 
     def set_valid_widgets(self, valid_widgets):
         for widget in self.all_widgets:
@@ -91,6 +101,12 @@ class BaseICMSSlave(BaseTaxSlave):
                           'p_red_bc']
     value_widgets = ['v_bc', 'v_icms', 'v_bc_st', 'v_icms_st']
     all_widgets = combo_widgets + percentage_widgets + value_widgets
+
+    tooltips = {
+        'p_icms': u'Aliquota do imposto',
+        'p_mva_st': u'Percentual da margem de valor adicionado do ICMS ST',
+        'p_red_bc_st': u'Percentual da Redução de Base de Cálculo do ICMS ST'
+    }
 
     field_options = {
         'cst': (
@@ -190,6 +206,16 @@ class BaseIPISlave(BaseTaxSlave):
     value_widgets = ['v_ipi', 'v_bc', 'v_unid', 'q_selo', 'q_unid']
     all_widgets = (combo_widgets + percentage_widgets + value_widgets +
                    text_widgets)
+
+    tooltips = {
+        'cl_enq': u'Preenchimento conforme Atos Normativos editados pela '
+                   'Receita Federal (Observação 4)',
+        'cnpj_prod': u'Informar os zeros não significativos',
+        'c_selo': u'Preenchimento conforme Atos Normativos editados pela '
+                   'Receita Federal (Observação 3)',
+        'c_enq': u'Tabela a ser criada pela RFB, informar 999 enquanto a '
+                  'tabela não for criada',
+    }
 
     field_options = {
         'cst': (
