@@ -139,12 +139,13 @@ class SaleItemIcms(BaseICMS):
     v_bc_st = PriceCol(default=None)
     v_icms_st = PriceCol(default=None)
 
+    # FIXME: remove this method
     def set_initial_values(self):
         from stoqlib.domain.sale import SaleItem
         sale_item = SaleItem.selectOneBy(icms_info=self,
                                          connection=self.get_connection())
         self.v_bc = sale_item.price
-        self.v_icms = self.v_bc * self.p_icms /100
+        self.update_values()
 
     def update_values(self):
         from stoqlib.domain.sale import SaleItem
@@ -155,6 +156,21 @@ class SaleItemIcms(BaseICMS):
                 return
 
             self.v_icms = self.v_bc * self.p_icms/100
+
+        elif self.cst == 10:
+            self.v_bc = sale_item.price
+            if self.p_icms:
+                self.v_icms = self.v_bc * self.p_icms/100
+
+            if self.p_red_bc_st is not None and self.p_mva_st is not None:
+                self.v_bc_st = sale_item.price
+                self.v_bc_st -= self.v_bc_st * self.p_red_bc_st / 100
+                self.v_bc_st += self.v_bc_st * self.p_mva_st / 100
+
+            if (self.v_bc_st is not None and self.p_icms_st is not None and
+                self.v_icms is not None):
+                self.v_icms_st = (self.v_bc_st * self.p_icms_st/100
+                                  - self.v_icms)
 
         elif self.cst == 20:
             if self.p_red_bc is None or self.p_icms is None:
