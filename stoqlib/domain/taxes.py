@@ -22,6 +22,8 @@
 ## Author(s):   Ronaldo Maia            <romaia@async.com.br>
 ##
 
+from kiwi.datatypes import currency
+
 from stoqlib.database.orm import (IntCol, UnicodeCol, DecimalCol,
                                   PriceCol, ForeignKey)
 from stoqlib.domain.base import Domain, ModelAdapter
@@ -48,6 +50,11 @@ class BaseTax(Domain):
         for column in template.sqlmeta.columnList:
             value = getattr(template, column.name)
             setattr(self, column.name, value)
+
+        self.set_initial_values()
+
+    def set_initial_values(self):
+        pass
 
     def update_values(self):
         pass
@@ -131,6 +138,29 @@ class SaleItemIcms(BaseICMS):
 
     v_bc_st = PriceCol(default=None)
     v_icms_st = PriceCol(default=None)
+
+    def set_initial_values(self):
+        from stoqlib.domain.sale import SaleItem
+        sale_item = SaleItem.selectOneBy(icms_info=self,
+                                         connection=self.get_connection())
+        self.v_bc = sale_item.price
+        self.v_icms = self.v_bc * self.p_icms /100
+
+    def update_values(self):
+        from stoqlib.domain.sale import SaleItem
+        sale_item = SaleItem.selectOneBy(icms_info=self,
+                                         connection=self.get_connection())
+        if self.cst == 0:
+            if self.p_icms is None:
+                return
+
+            self.v_icms = self.v_bc * self.p_icms/100
+
+        elif self.cst == 20:
+            if self.p_red_bc is None or self.p_icms is None:
+                return
+            self.v_bc = sale_item.price - sale_item.price * self.p_red_bc / 100
+            self.v_icms = self.v_bc * self.p_icms/100
 
 
 class SaleItemIpi(BaseIPI):

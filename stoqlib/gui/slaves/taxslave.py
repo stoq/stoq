@@ -54,6 +54,10 @@ class BaseTaxSlave(BaseEditorSlave):
 
     field_options = {}
 
+    def __init__(self, *args, **kargs):
+        self.proxy = None
+        BaseEditorSlave.__init__(self, *args, **kargs)
+
     def _setup_widgets(self):
         for name, options in self.field_options.items():
             widget = getattr(self, name)
@@ -191,6 +195,30 @@ class ICMSTemplateSlave(BaseICMSSlave):
 class SaleItemICMSSlave(BaseICMSSlave):
     model_type = SaleItemIcms
     proxy_widgets = BaseICMSSlave.all_widgets
+
+    def after_p_icms__changed(self, widget):
+        if not self.proxy:
+            return
+
+        self.model.update_values()
+        for name in self.value_widgets:
+            self.proxy.update(name)
+
+    def after_p_red_bc__changed(self, widget):
+        if not self.proxy:
+            return
+
+        self.model.update_values()
+        for name in self.value_widgets:
+            self.proxy.update(name)
+
+    def after_cst__changed(self, widget):
+        if not self.proxy:
+            return
+
+        self.model.update_values()
+        for name in self.value_widgets:
+            self.proxy.update(name)
 
 
 #

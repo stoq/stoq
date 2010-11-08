@@ -70,6 +70,10 @@ class SaleQuoteItemEditor(BaseEditor):
         self._setup_taxes()
 
     def _setup_taxes(self):
+        # This taxes are only for products, not services
+        if not self.model.sellable.product:
+            return
+
         icms_slave = SaleItemICMSSlave(self.conn, self.model.icms_info)
         self.add_tab(_('ICMS'), icms_slave)
 
