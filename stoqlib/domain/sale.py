@@ -76,7 +76,8 @@ class SaleItem(Domain):
     @param sale: the same
     @param quantity: the quantity of the of sold item in this sale
     @param price: the price of each individual item
-    @param base_price:
+    @param base_price: original value the *product* had when adding the
+                       sale item
     @param notes:
     @param estimated_fix_date:
     @param completion_date:
@@ -105,8 +106,10 @@ class SaleItem(Domain):
 
             conn = kw.get('connection', self._connection)
             kw['icms_info'] = SaleItemIcms(connection=conn)
-            kw['icms_info'].set_from_template(kw['sellable'].product.icms_template)
         Domain._create(self, id, **kw)
+
+        if self.sellable.product:
+            self.icms_info.set_from_template(self.sellable.product.icms_template)
 
     def sell(self, branch):
         conn = self.get_connection()
