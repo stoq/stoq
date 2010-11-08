@@ -204,6 +204,14 @@ class SaleItemICMSSlave(BaseICMSSlave):
         for name in self.value_widgets:
             self.proxy.update(name)
 
+    def after_p_icms_st__changed(self, widget):
+        if not self.proxy:
+            return
+
+        self.model.update_values()
+        for name in self.value_widgets:
+            self.proxy.update(name)
+
     def after_p_red_bc__changed(self, widget):
         if not self.proxy:
             return
@@ -211,6 +219,23 @@ class SaleItemICMSSlave(BaseICMSSlave):
         self.model.update_values()
         for name in self.value_widgets:
             self.proxy.update(name)
+
+    def after_p_red_bc_st__changed(self, widget):
+        if not self.proxy:
+            return
+
+        self.model.update_values()
+        for name in self.value_widgets:
+            self.proxy.update(name)
+
+    def after_p_mva_st__changed(self, widget):
+        if not self.proxy:
+            return
+
+        self.model.update_values()
+        for name in self.value_widgets:
+            self.proxy.update(name)
+
 
     def after_cst__changed(self, widget):
         if not self.proxy:
