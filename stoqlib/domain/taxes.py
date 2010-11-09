@@ -147,36 +147,57 @@ class SaleItemIcms(BaseICMS):
         self.v_bc = sale_item.price
         self.update_values()
 
+    def _calc_st(self, sale_item):
+        # FIXME: Consider ipi in all ST math bellow, once ipi is implemented
+
+        if self.p_red_bc_st is not None and self.p_mva_st is not None:
+            self.v_bc_st = sale_item.price
+            self.v_bc_st -= self.v_bc_st * self.p_red_bc_st / 100
+            self.v_bc_st += self.v_bc_st * self.p_mva_st / 100
+
+        if (self.v_bc_st is not None and self.p_icms_st is not None and
+            self.v_icms is not None):
+            self.v_icms_st = (self.v_bc_st * self.p_icms_st/100
+                              - self.v_icms)
+
+    def _calc_normal(self, sale_item):
+        if self.p_red_bc is not None:
+            self.v_bc = sale_item.price - sale_item.price * self.p_red_bc / 100
+
+        if self.p_icms is not None and self.v_bc is not None:
+            self.v_icms = self.v_bc * self.p_icms/100
+
     def update_values(self):
         from stoqlib.domain.sale import SaleItem
         sale_item = SaleItem.selectOneBy(icms_info=self,
                                          connection=self.get_connection())
-        if self.cst == 0:
-            if self.p_icms is None:
-                return
 
-            self.v_icms = self.v_bc * self.p_icms/100
+
+        if self.cst == 0:
+            self.p_red_bc = 0
+            self._calc_normal(sale_item)
 
         elif self.cst == 10:
-            self.v_bc = sale_item.price
-            if self.p_icms:
-                self.v_icms = self.v_bc * self.p_icms/100
-
-            if self.p_red_bc_st is not None and self.p_mva_st is not None:
-                self.v_bc_st = sale_item.price
-                self.v_bc_st -= self.v_bc_st * self.p_red_bc_st / 100
-                self.v_bc_st += self.v_bc_st * self.p_mva_st / 100
-
-            if (self.v_bc_st is not None and self.p_icms_st is not None and
-                self.v_icms is not None):
-                self.v_icms_st = (self.v_bc_st * self.p_icms_st/100
-                                  - self.v_icms)
+            self.p_red_bc = 0
+            self._calc_normal(sale_item)
+            self._calc_st(sale_item)
 
         elif self.cst == 20:
-            if self.p_red_bc is None or self.p_icms is None:
-                return
-            self.v_bc = sale_item.price - sale_item.price * self.p_red_bc / 100
-            self.v_icms = self.v_bc * self.p_icms/100
+            self._calc_normal(sale_item)
+
+        elif self.cst == 30:
+            selv.v_icms = 0
+            self.v_bc = 0
+
+            self._calc_st(sale_item)
+
+        elif self.cst == 51:
+            self._calc_normal(sale_item)
+
+        elif self.cst == 70 or self.cst == 90:
+            self._calc_normal(sale_item)
+            self._calc_st(sale_item)
+
 
 
 class SaleItemIpi(BaseIPI):
