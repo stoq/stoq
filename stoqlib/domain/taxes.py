@@ -48,6 +48,11 @@ class BaseTax(Domain):
             return
 
         for column in template.sqlmeta.columnList:
+            if column.name in ('te_createdID', 'te_modifiedID',
+                               'product_tax_templateID'):
+                continue
+            print column.name
+
             value = getattr(template, column.name)
             setattr(self, column.name, value)
 
@@ -150,15 +155,16 @@ class SaleItemIcms(BaseICMS):
     def _calc_st(self, sale_item):
         # FIXME: Consider ipi in all ST math bellow, once ipi is implemented
 
-        if self.p_red_bc_st is not None and self.p_mva_st is not None:
-            self.v_bc_st = sale_item.price
+        self.v_bc_st = sale_item.price
+        if self.p_red_bc_st is not None:
             self.v_bc_st -= self.v_bc_st * self.p_red_bc_st / 100
+        if self.p_mva_st is not None:
             self.v_bc_st += self.v_bc_st * self.p_mva_st / 100
 
-        if (self.v_bc_st is not None and self.p_icms_st is not None and
-            self.v_icms is not None):
-            self.v_icms_st = (self.v_bc_st * self.p_icms_st/100
-                              - self.v_icms)
+        if self.v_bc_st is not None and self.p_icms_st is not None:
+            self.v_icms_st = self.v_bc_st * self.p_icms_st/100
+        if self.v_icms is not None:
+            self.v_icms_st -= self.v_icms
 
     def _calc_normal(self, sale_item):
         if self.p_red_bc is not None:
@@ -171,7 +177,6 @@ class SaleItemIcms(BaseICMS):
         from stoqlib.domain.sale import SaleItem
         sale_item = SaleItem.selectOneBy(icms_info=self,
                                          connection=self.get_connection())
-
 
         if self.cst == 0:
             self.p_red_bc = 0
@@ -186,7 +191,7 @@ class SaleItemIcms(BaseICMS):
             self._calc_normal(sale_item)
 
         elif self.cst == 30:
-            selv.v_icms = 0
+            self.v_icms = 0
             self.v_bc = 0
 
             self._calc_st(sale_item)
