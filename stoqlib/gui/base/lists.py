@@ -292,33 +292,13 @@ class AdditionListSlave(GladeSlaveDelegate):
         self.delete_button.set_sensitive(can_delete)
 
     def _edit_model(self, model=None):
-        # Here we need manage objects persistence by our own
-        # hands using clone.
         edit_mode = model
-        if model:
-            # XXX: get_clone() doesn't works with objects that inherits
-            # from InheritableModelAdapter or InheritableModel.
-            # Bug #2633 will fix that.
-            clone = model.clone()
-        else:
-            clone = None
+        result = self.run_editor(model)
 
-        result = self.run_editor(clone)
-
-        if result:
-            if edit_mode:
-                # XXX self.klist.replace()?
-                item_idx = self.klist.index(model)
-                self.klist[item_idx] = clone
-                self.delete_model(model)
-                self.emit('on-edit-item', result)
-                return
-        else:
-            if edit_mode:
-                self.delete_model(clone)
+        if not result:
             return
 
-        if edit_mode and model in self.klist:
+        if edit_mode:
             self.emit('on-edit-item', result)
             self.klist.update(result)
         else:

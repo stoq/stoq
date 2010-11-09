@@ -54,6 +54,7 @@ from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sellable import Sellable, BaseSellableInfo
 from stoqlib.domain.service import Service
+from stoqlib.domain.taxes import SaleItemIcms
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
                                 StoqlibError)
@@ -75,7 +76,8 @@ class SaleItem(Domain):
     @param sale: the same
     @param quantity: the quantity of the of sold item in this sale
     @param price: the price of each individual item
-    @param base_price:
+    @param base_price: original value the *product* had when adding the
+                       sale item
     @param notes:
     @param estimated_fix_date:
     @param completion_date:
@@ -92,13 +94,22 @@ class SaleItem(Domain):
     estimated_fix_date = DateTimeCol(default=datetime.datetime.now)
     completion_date = DateTimeCol(default=None)
 
+    # Taxes
+    icms_info = ForeignKey('SaleItemIcms')
+
     def _create(self, id, **kw):
         if not 'kw' in kw:
             if not 'sellable' in kw:
                 raise TypeError('You must provide a sellable argument')
             base_price = kw['sellable'].price
             kw['base_price'] = base_price
+
+            conn = kw.get('connection', self._connection)
+            kw['icms_info'] = SaleItemIcms(connection=conn)
         Domain._create(self, id, **kw)
+
+        if self.sellable.product:
+            self.icms_info.set_from_template(self.sellable.product.icms_template)
 
     def sell(self, branch):
         conn = self.get_connection()
