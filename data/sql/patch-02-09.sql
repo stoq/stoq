@@ -107,7 +107,6 @@ CREATE TABLE sale_item_ipi (
 ALTER TABLE sale_item ADD COLUMN icms_info_id bigint REFERENCES
     sale_item_icms(id);
 
-ALTER TABLE product ADD COLUMN icms_template_id bigint REFERENCES
-    product_icms_template(id);
-ALTER TABLE product ADD COLUMN ipi_template_id bigint REFERENCES
-    product_ipi_template(id);
+ALTER TABLE product
+    ADD COLUMN icms_template_id bigint REFERENCES product_icms_template(id),
+    ADD COLUMN ipi_template_id bigint REFERENCES product_ipi_template(id);
