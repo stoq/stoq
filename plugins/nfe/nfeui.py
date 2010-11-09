@@ -43,7 +43,6 @@ class NFeUI(object):
 
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         SaleConfirmEvent.connect(self._on_SaleConfirm)
-        self._blocked_pos = False
 
     #
     # Private
@@ -104,13 +103,7 @@ class NFeUI(object):
             self._disable_print_invoice(app.main_window.uimanager)
         if appname == 'admin':
             self._disable_invoice_configuration(app.main_window.uimanager)
-        if appname == 'pos':
-            info(_(u'POS can not be used within NF-e plugin.'))
-        # Disable POS application.
-        if not self._blocked_pos:
-            runner = app.runner
-            runner.block_application('pos')
-            self._blocked_pos = True
+
 
     def _on_SaleConfirm(self, sale, trans):
         self._create_nfe(sale, trans)

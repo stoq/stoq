@@ -51,7 +51,6 @@ class BaseTax(Domain):
             if column.name in ('te_createdID', 'te_modifiedID',
                                'product_tax_templateID'):
                 continue
-            print column.name
 
             value = getattr(template, column.name)
             setattr(self, column.name, value)
