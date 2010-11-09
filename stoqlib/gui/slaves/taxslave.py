@@ -82,6 +82,13 @@ class BaseTaxSlave(BaseEditorSlave):
                 widget.set_property('primary-icon-sensitive', True)
                 widget.set_property('primary-icon-activatable', False)
 
+        self.setup_callbacks()
+
+    def setup_callbacks(self):
+        """Implement this in a child when necessary
+        """
+        pass
+
     def set_valid_widgets(self, valid_widgets):
         for widget in self.all_widgets:
             if widget in valid_widgets:
@@ -196,48 +203,14 @@ class SaleItemICMSSlave(BaseICMSSlave):
     model_type = SaleItemIcms
     proxy_widgets = BaseICMSSlave.all_widgets
 
-    def after_p_icms__changed(self, widget):
-        if not self.proxy:
-            return
+    def setup_callbacks(self):
+        for name in self.percentage_widgets:
+            widget = getattr(self, name)
+            widget.connect_after('changed', self._after_field_changed)
 
-        self.model.update_values()
-        for name in self.value_widgets:
-            self.proxy.update(name)
+        self.cst.connect_after('changed', self._after_field_changed)
 
-    def after_p_icms_st__changed(self, widget):
-        if not self.proxy:
-            return
-
-        self.model.update_values()
-        for name in self.value_widgets:
-            self.proxy.update(name)
-
-    def after_p_red_bc__changed(self, widget):
-        if not self.proxy:
-            return
-
-        self.model.update_values()
-        for name in self.value_widgets:
-            self.proxy.update(name)
-
-    def after_p_red_bc_st__changed(self, widget):
-        if not self.proxy:
-            return
-
-        self.model.update_values()
-        for name in self.value_widgets:
-            self.proxy.update(name)
-
-    def after_p_mva_st__changed(self, widget):
-        if not self.proxy:
-            return
-
-        self.model.update_values()
-        for name in self.value_widgets:
-            self.proxy.update(name)
-
-
-    def after_cst__changed(self, widget):
+    def _after_field_changed(self, widget):
         if not self.proxy:
             return
 
