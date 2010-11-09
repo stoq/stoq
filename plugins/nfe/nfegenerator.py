@@ -113,7 +113,7 @@ class NFeGenerator(object):
         return nfe_tostring(self.root)
 
     def _as_txt(self):
-        nfe =  [u'NOTA FISCAL|1|\n',
+        nfe =  [u'NOTAFISCAL|1|\n',
                self._nfe_data.as_txt(),]
         return u''.join(nfe)
 
@@ -180,12 +180,13 @@ class NFeGenerator(object):
         # values properly.
         mod = '%02d' % int(nfe_identification.get_attr('mod'))
         serie = '%03d' % int(nfe_identification.get_attr('serie'))
-        cnf = '%09d' % nfe_identification.get_attr('cNF')
+        cnf = '%08d' % nfe_identification.get_attr('cNF')
         nnf_str = '%09d' % nnf
         cnpj = self._get_cnpj(branch)
+        tpemis = nfe_identification.get_attr('tpEmis')
         # Key format (Pg. 71):
         # cUF + AAMM + CNPJ + mod + serie + nNF + cNF + (cDV)
-        key = cuf + aamm + cnpj + mod + serie + nnf_str + cnf
+        key = cuf + aamm + cnpj + mod + serie + nnf_str + tpemis + cnf
         cdv = self._calculate_verifier_digit(key)
         key += cdv
 
@@ -422,7 +423,7 @@ class NFeData(BaseNFeXMLGroup):
     def __init__(self, key):
         BaseNFeXMLGroup.__init__(self)
         self.element.set('xmlns', 'http://www.portalfiscal.inf.br/nfe')
-        self.element.set('versao', u'1.10')
+        self.element.set('versao', u'2.00')
 
         # Pg. 92
         assert len(key) == 44
@@ -443,6 +444,7 @@ class NFeData(BaseNFeXMLGroup):
         return txt
 
 
+
 # Pg. 92
 class NFeIdentification(BaseNFeXMLGroup):
     """
@@ -450,55 +452,40 @@ class NFeIdentification(BaseNFeXMLGroup):
 
         - cUF: Código da UF do emitente do Documento Fiscal. Utilizar a Tabela
                do IBGE de código de unidades da federação.
-
         - cNF: Código numérico que compõe a Chave de Acesso. Número aleatório
                gerado pelo emitente para cada NF-e para evitar acessos
                indevidos da NF-e.
-
         - natOp: Natureza da operação
-
         - indPag: 0 - Pagamento a vista (default)
                   1 - Pagamento a prazo
                   2 - outros
-
         - mod: Utilizar código 55 para identificação de NF-e emitida em
                substituição ao modelo 1 ou 1A.
-
         - serie: Série do Documento Fiscal, informar 0 (zero) para série
                  única.
-
         - nNF: Número do documento fiscal.
-
         - dEmi: Data de emissão do documento fiscal.
-
         - tpNF: Tipo de documento fiscal.
                 0 - entrada
                 1 - saída (default)
-
         - cMunFG: Código do município de ocorrência do fato gerador.
-
         - tpImp: Formato de impressão do DANFE.
                  1 - Retrato
                  2 - Paisagem (default)
-
         - tpEmis: Forma de emissão da NF-e
                   1 - Normal (default)
                   2 - Contingência FS
                   3 - Contingência SCAN
                   4 - Contingência DPEC
                   5 - Contingência FS-DA
-
         - cDV: Dígito verificador da chave de acesso da NF-e.
-
         - tpAmb: Identificação do ambiente.
                  1 - Produção
                  2 - Homologação
-
         - finNFe: Finalidade de emissão da NF-e.
                   1 - NF-e normal (default)
                   2 - NF-e complementar
                   3 - NF-e de ajuste
-
         - procEmi: Identificador do processo de emissão da NF-e.
                    0 - emissãp da NF-e com aplicativo do contribuinte
                    1 - NF-e avulsa pelo fisco
@@ -506,7 +493,6 @@ class NFeIdentification(BaseNFeXMLGroup):
                        do fisco
                    3 - NF-e pelo contribuinte com aplicativo do fisco.
                        (default).
-
         - verProc: Identificador da versão do processo de emissão (versão do
                    aplicativo emissor de NF-e)
     """
@@ -520,6 +506,7 @@ class NFeIdentification(BaseNFeXMLGroup):
                   (u'nNF', ''),
                   (u'dEmi', ''),
                   (u'dSaiEnt', ''),
+                  (u'hSaiEnt', ''),
                   (u'tpNF', '1'),
                   (u'cMunFG', ''),
                   (u'tpImp', '2'),
@@ -529,7 +516,9 @@ class NFeIdentification(BaseNFeXMLGroup):
                   (u'tpAmb', '1'),
                   (u'finNFe', '1'),
                   (u'procEmi', '3'),
-                  (u'verProc', '')]
+                  (u'verProc', ''),
+                  (u'dhCont', ''),
+                  (u'xJust', '')]
     txttag = 'B'
     danfe_orientation = {
         NFeDanfeOrientation.PORTRAIT: '1',
@@ -541,8 +530,9 @@ class NFeIdentification(BaseNFeXMLGroup):
         BaseNFeXMLGroup.__init__(self)
 
         self.set_attr('cUF', cUF)
-        # Pg. 92: Random number of 9-digits
-        self.set_attr('cNF', random.randint(100000000, 999999999))
+        # Pg. 92: Random number of 8-digits. (This used to be 9, but was
+        # changed to 8 in nfe 2.0)
+        self.set_attr('cNF', random.randint(10000000, 99999999))
 
         payment_type = 1
         installments = len(payments)
@@ -558,6 +548,8 @@ class NFeIdentification(BaseNFeXMLGroup):
         self.set_attr('cMunFG', get_city_code(city, code=cUF) or '')
         self.set_attr('tpImp', self.danfe_orientation[orientation])
 
+# FIXME
+# We will need to add some other Bxx tags, specially B20j
 
 class NFeAddress(BaseNFeXMLGroup):
     """
@@ -655,7 +647,7 @@ class NFeIssuer(BaseNFeXMLGroup):
             ie = self._ie or 'ISENTO'
         else:
             ie = ''
-        base = '%s|%s||%s|||\n' % (self.txttag, self.get_attr('xNome'), ie,)
+        base = '%s|%s||%s||||\n' % (self.txttag, self.get_attr('xNome'), ie,)
         return base + self.get_doc_txt() + self._address.as_txt()
 
 
@@ -673,7 +665,7 @@ class NFeRecipient(NFeIssuer):
             ie = self._ie or 'ISENTO'
         else:
             ie = ''
-        base = '%s|%s|%s|\n' % (self.txttag, self.get_attr('xNome'), ie)
+        base = '%s|%s|%s||\n' % (self.txttag, self.get_attr('xNome'), ie)
         return base + self.get_doc_txt() + self._address.as_txt()
 
 # Pg. 102
@@ -772,7 +764,6 @@ class NFeProductDetails(BaseNFeXMLGroup):
                   (u'xProd', ''),
                   (u'NCM', ''),
                   (u'EXTIPI', ''),
-                  (u'genero', ''),
                   (u'CFOP', ''),
                   (u'uCom', u'un'),
                   (u'qCom', ''),
@@ -795,7 +786,9 @@ class NFeProductDetails(BaseNFeXMLGroup):
         self.set_attr('xProd', description)
         self.set_attr('NCM', ncm or '')
         self.set_attr('EXTIPI', ex_tipi or '')
-        self.set_attr('genero', genero or '')
+        # XXX: Genero was removed from nfe 2.0. Figure out what to do with
+        # the value from the product
+        #self.set_attr('genero', genero or '')
 
         self.set_attr('CFOP', cfop)
         self.set_attr('vUnCom', self.format_value(price, precision=4))
@@ -811,7 +804,7 @@ class NFeProductDetails(BaseNFeXMLGroup):
         for attr, value in self.attributes:
             vs.append(self.get_attr(attr))
 
-        return '%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s||||\n' % tuple(vs)
+        return '%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s||||||||\n' % tuple(vs)
 
 
 
@@ -870,7 +863,10 @@ class BaseNFeICMS(BaseNFeXMLGroup):
         BaseNFeXMLGroup.__init__(self)
 
         for (name, default) in self.attributes:
-            info_name = self.INFO_NAME_MAP[name]
+            info_name = self.INFO_NAME_MAP.get(name)
+            if not info_name:
+                continue
+
             value = getattr(sale_icms_info, info_name, '')
             if value is None:
                 value = ''
@@ -986,7 +982,9 @@ class NFeICMS40(BaseNFeICMS):
     tag = 'ICMS40'
     txttag = 'N06'
     attributes = [(u'orig', ''),
-                  (u'CST', '')] #FIXME
+                  (u'CST', ''),
+                  (u'vICMS', ''),
+                  (u'motDesICMS', '')]
 
 
 class NFeICMS51(BaseNFeICMS):
@@ -1047,6 +1045,7 @@ class NFeICMS90(BaseNFeICMS):
                   (u'vICMSST', ''),]
 
 
+#FIXME: implement rest of icms tags defined in nfe 2.0
 
 #
 #   End of ICMS
