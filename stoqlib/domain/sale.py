@@ -30,6 +30,7 @@ from decimal import Decimal
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
+from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
@@ -167,6 +168,44 @@ class SaleItem(Domain):
                                       connection=self.get_connection())
         return service is not None
 
+    def get_nfe_icms_info(self):
+        """ICMS details to be used on the NF-e
+
+        If the sale was also printed on a coupon, then we cannot add icms
+        details to the NF-e (or at least, we should modify then accordingly)
+        """
+        # If the sale was printed on a
+        if self.sale.coupon_id:
+            return None
+
+        return self.icms_info
+
+    def get_nfe_cfop_code(self):
+        """Returns the cfop code to be used on the NF-e
+
+        If the sale was also printed on a ECF, then the cfop should be 5.929
+        (if sold to a client in the same state) or 6-929 (if sold to a
+        client on a different state).
+        """
+        if self.sale.coupon_id:
+            # find out if the client is in the same state as we are.
+            client_address = self.sale.client.person.get_main_address()
+            our_address = self.sale.branch.person.get_main_address()
+
+            same_state = True
+            if (our_address.city_location.state !=
+                        client_address.city_location.state):
+                same_state = False
+
+            if same_state:
+                return '5929'
+            else:
+                return '6929'
+
+        # FIXME: add cfop code to the sale item, instead of the sale.
+        return self.sale.cfop.code.replace('.', '')
+
+
 
 class DeliveryItem(Domain):
     """Class responsible to store all the products for a certain delivery"""
@@ -270,7 +309,7 @@ class Sale(ValidatableDomain):
     @ivar surcharge_value:
     @ivar total_amount: the total value of all the items in the same
     @ivar notes: Some optional additional information related to this sale.
-    @ivar coupon_id:
+    @ivar coupon_id: the id of the coupon printed by the ECF.
     @ivar service_invoice_number:
     @ivar cfop:
     @ivar invoice_number: the sale invoice number.
@@ -734,6 +773,21 @@ class Sale(ValidatableDomain):
         factor like 0.97 = 3 % of discount.
         The correct form is 'percentage = 3' for a surcharge of 3 %"""
         ))
+
+    #
+    #   NF-e api
+    #
+
+    def get_nfe_coupon_info(self):
+        """Returns
+        """
+        if not self.coupon_id:
+            return None
+
+        # FIXME: we still dont have the number of the ecf stored in stoq
+        # (note: this is not the serial number)
+        return Settable(number='',
+                        coo=self.coupon_id)
 
     #
     # Private API
