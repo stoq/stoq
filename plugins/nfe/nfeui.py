@@ -70,7 +70,12 @@ class NFeUI(object):
         # return sale.client is not None
 
         # Since we are only exporting the nfe there is no problem if there is
-        # some missing information.
+        # some missing information...
+
+        # ... except the client
+        if not sale.client:
+            return False
+
         return True
 
     def _create_nfe(self, sale, trans):
