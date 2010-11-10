@@ -44,27 +44,18 @@ class _PluginModel(object):
     """Temporary model for plugin objects. This model is a minimal
     representation of the plugin information.
 
-    @cvar blacklist: The list of plugin names that can not be activated.
     @ivar name: The plugin name.
     @ivar is_active: True if the plugin is installed, False otherwise.
     """
-    blacklist = ['ecf',]
 
     def __init__(self, plugin_name, conn):
         self.name = plugin_name
         self.is_active = self._get_plugin_is_active(conn)
 
-        # nfe and ecf plugins can't be enabled at the same time
-        if self.name == 'ecf' and self.is_active:
-            self.blacklist.append('nfe')
-
     def _get_plugin_is_active(self, conn):
         return InstalledPlugin.selectOneBy(plugin_name=self.name) is not None
 
     def can_activate(self):
-        activate = self.name in _PluginModel.blacklist
-        if activate:
-            return False
         return not self.is_active
 
 
@@ -91,7 +82,7 @@ class PluginManagerDialog(BasicDialog):
         self.ok_button.set_sensitive(selected.can_activate())
 
     def _setup_widgets(self):
-        self.ok_button.set_label('gtk-apply')
+        self.set_ok_label(_(u'Activate'), 'gtk-apply')
         self.ok_button.set_sensitive(False)
         plugins = [_PluginModel(p, self.conn)
                             for p in self._manager.get_plugin_names()]
