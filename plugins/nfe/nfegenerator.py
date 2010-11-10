@@ -172,10 +172,12 @@ class NFeGenerator(object):
         payments = self._sale.group.get_items()
         series = sysparam(self.conn).NFE_SERIAL_NUMBER
         orientation = sysparam(self.conn).NFE_DANFE_ORIENTATION
+        ecf_info = self._sale.get_nfe_coupon_info()
 
         nfe_identification = NFeIdentification(cuf, branch_location.city,
                                                series, nnf, today,
-                                               list(payments), orientation)
+                                               list(payments), orientation,
+                                               ecf_info)
         # The nfe-key requires all the "zeros", so we should format the
         # values properly.
         mod = '%02d' % int(nfe_identification.get_attr('mod'))
@@ -227,7 +229,6 @@ class NFeGenerator(object):
 
     def _add_sale_items(self, sale_items):
         # cfop code without dot.
-        cfop_code = self._sale.cfop.code.replace('.', '')
 
         for item_number, sale_item in enumerate(sale_items):
             # item_number should start from 1, not zero.
@@ -247,7 +248,7 @@ class NFeGenerator(object):
 
             nfe_item.add_product_details(sellable.code,
                                          sellable.get_description(),
-                                         cfop_code,
+                                         sale_item.get_nfe_cfop_code(),
                                          sale_item.quantity,
                                          sale_item.price,
                                          sellable.get_unit_description(),
@@ -526,7 +527,7 @@ class NFeIdentification(BaseNFeXMLGroup):
     }
 
     def __init__(self, cUF, city, series, nnf, emission_date, payments,
-                 orientation):
+                 orientation, ecf_info):
         BaseNFeXMLGroup.__init__(self)
 
         self.set_attr('cUF', cUF)
@@ -548,8 +549,34 @@ class NFeIdentification(BaseNFeXMLGroup):
         self.set_attr('cMunFG', get_city_code(city, code=cUF) or '')
         self.set_attr('tpImp', self.danfe_orientation[orientation])
 
-# FIXME
-# We will need to add some other Bxx tags, specially B20j
+        if ecf_info:
+            info = NFeEcfInfo(ecf_info.number, ecf_info.coo)
+            self.append(info)
+
+    def as_txt(self):
+        base = BaseNFeXMLGroup.as_txt(self)
+        children = self.get_children()
+        if children:
+            return base + children[0].as_txt()
+        return base
+
+class NFeEcfInfo(BaseNFeXMLGroup):
+    """
+    - Attributes:
+        - mod: preencher com 2D no caso de cupom fiscal emitido por ecf
+        - nECF: numero de ordem sequencial da ECF
+        - nCOO: numero do coo do cupom impresso
+    """
+    attributes = [(u'mod', '2D'),
+                  (u'nECF', ''),
+                  (u'nCOO', ''),]
+
+    txttag = 'B20j'
+
+    def __init__(self, n_ecf, coo):
+        BaseNFeXMLGroup.__init__(self)
+        self.set_attr('nECF', n_ecf)
+        self.set_attr('nCOO', coo)
 
 class NFeAddress(BaseNFeXMLGroup):
     """
@@ -690,26 +717,28 @@ class NFeProduct(BaseNFeXMLGroup):
         self.append(details)
 
     def add_tax_details(self, sale_item):
-        sale_icms = sale_item.icms_info
-        if not sale_icms:
-            return
-
         nfe_tax = NFeTax()
-        nfe_icms = NFeICMS(sale_icms)
-
-        nfe_pis = NFePIS()
-        nfe_cofins = NFeCOFINS()
-
-        pis = NFePISOutr()
-        nfe_pis.append(pis)
-        cofins = NFeCOFINSOutr()
-        nfe_cofins.append(cofins)
 
         # TODO: handle service tax (ISS) and ICMS.
 
-        nfe_tax.append(nfe_icms)
-        nfe_tax.append(nfe_pis)
-        nfe_tax.append(nfe_cofins)
+        sale_icms = sale_item.get_nfe_icms_info()
+        if sale_icms:
+            nfe_icms = NFeICMS(sale_icms)
+            nfe_tax.append(nfe_icms)
+
+        if True: # if sale_item.pis_info
+            nfe_pis = NFePIS()
+            pis = NFePISOutr()
+            nfe_pis.append(pis)
+            nfe_tax.append(nfe_pis)
+
+        if True: # if sale_item.cofins_info
+            nfe_cofins = NFeCOFINS()
+            cofins = NFeCOFINSOutr()
+            nfe_cofins.append(cofins)
+            nfe_tax.append(nfe_cofins)
+
+
         self.append(nfe_tax)
 
     def as_txt(self):
@@ -831,11 +860,16 @@ class NFeICMS(BaseNFeXMLGroup):
 
     def __init__(self, sale_icms_info):
         BaseNFeXMLGroup.__init__(self)
-        icms_tag = NFE_ICMS_CST_MAP[sale_icms_info.cst](sale_icms_info)
-        self.append(icms_tag)
+        icms_tag_class = NFE_ICMS_CST_MAP.get(sale_icms_info.cst)
+        if icms_tag_class:
+            icms_tag = icms_tag_class(sale_icms_info)
+            self.append(icms_tag)
 
     def as_txt(self):
-        icms = self.get_children()[0]
+        children = self.get_children()
+        if not children:
+            return ''
+        icms = [0]
         return icms.as_txt()
 
 
