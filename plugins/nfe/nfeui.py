@@ -23,6 +23,7 @@
 ##
 
 import os
+import time
 
 from kiwi.log import Logger
 from stoqlib.database.runtime import get_connection
@@ -56,10 +57,11 @@ class NFeUI(object):
         # Until we finish the stoqnfe app, we will only export the nfe, so it
         # can be imported by an external application.
         #nfe_dir = os.path.join(stoq_dir, 'generated_nfe')
-        nfe_dir = os.path.join(stoq_dir, 'exported_nfe')
+        nfe_dir = os.path.join(stoq_dir, 'exported_nfe',
+                               time.strftime('%Y'), time.strftime('%m'))
 
         if not os.path.isdir(nfe_dir):
-            os.mkdir(nfe_dir)
+            os.makedirs(nfe_dir)
 
         return nfe_dir
 
