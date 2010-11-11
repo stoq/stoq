@@ -4,6 +4,7 @@
     <widget class="GtkWindow" id="PluginStep">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
+        <property name="mnemonics_visible">False</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
                 <property name="border_width">6</property>
@@ -50,8 +51,10 @@ a plugin is activated it will not be possible to disable it.
                         <property name="spacing">6</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="ProxyRadioButton" id="enable_ecf">
+                            <widget class="ProxyCheckButton" id="enable_ecf">
+                                <property name="active">True</property>
                                 <property name="data_type">bool</property>
+                                <property name="is_focus">True</property>
                                 <property name="label" context="yes" translatable="yes">ECF (Fiscal Printer support)</property>
                                 <property name="model_attribute">enable_ecf</property>
                                 <property name="visible">True</property>
@@ -61,31 +64,15 @@ a plugin is activated it will not be possible to disable it.
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyRadioButton" id="enable_nfe">
-                                <property name="active">False</property>
+                            <widget class="ProxyCheckButton" id="enable_nfe">
                                 <property name="data_type">bool</property>
-                                <property name="group">enable_ecf</property>
-                                <property name="label" context="yes" translatable="yes">NF-e (Eletronic Invoices - POS application will be disabled)</property>
-                                <property name="model_attribute">enable_nfe</property>
+                                <property name="label" context="yes" translatable="yes">NF-e (Eletronic Invoices)</property>
+                                <property name="model_attribute">enable_ecf</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
                                 <property name="position">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="ProxyRadioButton" id="no_plugins">
-                                <property name="active">False</property>
-                                <property name="data_type">bool</property>
-                                <property name="group">enable_ecf</property>
-                                <property name="label" context="yes" translatable="yes">No plugins</property>
-                                <property name="model_attribute">no_plugins</property>
-                                <property name="visible">True</property>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="position">2</property>
                             </packing>
                         </child>
                         <child>
@@ -95,8 +82,9 @@ a plugin is activated it will not be possible to disable it.
                                 <property name="xalign">0.0</property>
                             </widget>
                             <packing>
+                                <property name="expand">False</property>
                                 <property name="padding">6</property>
-                                <property name="position">3</property>
+                                <property name="position">2</property>
                             </packing>
                         </child>
                     </widget>

@@ -638,7 +638,7 @@ class FirstTimeConfigWizard(BaseWizard):
         manager = provide_plugin_manager()
         if self.enable_ecf:
             manager.enable_plugin('ecf')
-        elif self.enable_nfe:
+        if self.enable_nfe:
             manager.enable_plugin('nfe')
 
         # Okay, all plugins enabled go on and activate them
