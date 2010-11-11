@@ -55,7 +55,7 @@ from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sellable import Sellable, BaseSellableInfo
 from stoqlib.domain.service import Service
-from stoqlib.domain.taxes import SaleItemIcms
+from stoqlib.domain.taxes import SaleItemIcms, SaleItemIpi
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
                                 StoqlibError)
@@ -97,6 +97,7 @@ class SaleItem(Domain):
 
     # Taxes
     icms_info = ForeignKey('SaleItemIcms')
+    ipi_info = ForeignKey('SaleItemIpi')
 
     def _create(self, id, **kw):
         if not 'kw' in kw:
@@ -107,10 +108,12 @@ class SaleItem(Domain):
 
             conn = kw.get('connection', self._connection)
             kw['icms_info'] = SaleItemIcms(connection=conn)
+            kw['ipi_info'] = SaleItemIpi(connection=conn)
         Domain._create(self, id, **kw)
 
         if self.sellable.product:
             self.icms_info.set_from_template(self.sellable.product.icms_template)
+            self.ipi_info.set_from_template(self.sellable.product.ipi_template)
 
     def sell(self, branch):
         conn = self.get_connection()

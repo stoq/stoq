@@ -264,7 +264,7 @@ class BaseIPISlave(BaseTaxSlave):
         'calculo': (
             (None, None),
             (u'Por alíquota', 0),
-            (u'Valor por unidade', 0),
+            (u'Valor por unidade', 1),
         )
     }
 
@@ -290,14 +290,32 @@ class BaseIPISlave(BaseTaxSlave):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
         self._update_selected_cst()
+        self._update_selected_calculo()
 
     def _update_selected_cst(self):
         cst = self.cst.get_selected_data()
         valid_widgets = self.MAP_VALID_WIDGETS.get(cst, ('cst', ))
         self.set_valid_widgets(valid_widgets)
 
+    def _update_selected_calculo(self):
+        calculo = self.calculo.get_selected_data()
+
+        if calculo == 0: # Por aliquota
+            self.p_ipi.set_sensitive(True)
+            self.v_bc.set_sensitive(True)
+            self.v_unid.set_sensitive(False)
+            self.q_unid.set_sensitive(False)
+        elif calculo == 1: # Valor por unidade
+            self.p_ipi.set_sensitive(False)
+            self.v_bc.set_sensitive(False)
+            self.v_unid.set_sensitive(True)
+            self.q_unid.set_sensitive(True)
+
     def on_cst__changed(self, widget):
         self._update_selected_cst()
+
+    def on_calculo__changed(self, widget):
+        self._update_selected_calculo()
 
 
 class IPITemplateSlave(BaseIPISlave):
