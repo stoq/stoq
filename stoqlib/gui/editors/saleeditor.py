@@ -31,7 +31,7 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave
+from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave, SaleItemIPISlave
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -76,6 +76,9 @@ class SaleQuoteItemEditor(BaseEditor):
 
         icms_slave = SaleItemICMSSlave(self.conn, self.model.icms_info)
         self.add_tab(_('ICMS'), icms_slave)
+
+        ipi_slave = SaleItemIPISlave(self.conn, self.model.ipi_info)
+        self.add_tab(_('IPI'), ipi_slave)
 
     def add_tab(self, name, slave):
         event_box = gtk.EventBox()
