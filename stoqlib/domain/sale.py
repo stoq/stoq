@@ -142,6 +142,7 @@ class SaleItem(Domain):
     #
 
     def get_total(self):
+        return currency(self.price * self.quantity + self.ipi_info.v_ipi)
         return currency(self.price * self.quantity)
 
     def get_quantity_unit_string(self):
@@ -597,9 +598,11 @@ class Sale(ValidatableDomain):
         """
         # Sale items are suposed to have only 2 digits, but the value price
         # * quantity may have more than 2, so we need to round it.
-        return currency(self.get_items().sum(
-            const.ROUND(SaleItem.q.price * SaleItem.q.quantity,
-                        DECIMAL_PRECISION)) or 0)
+        total = 0
+        for i in self.get_items():
+            total += i.get_total()
+
+        return currency(total)
 
     def get_items_total_quantity(self):
         """Fetches the total number of items in the sale
@@ -1105,6 +1108,8 @@ class SaleView(Viewable):
         salesperson_name = Person_SalesPerson.q.name,
         client_name = Person_Client.q.name,
 
+        v_ipi = const.SUM(SaleItemIpi.q.v_ipi),
+
         total_quantity = const.SUM(SaleItem.q.quantity),
         subtotal = const.SUM(SaleItem.q.quantity * SaleItem.q.price),
         total = const.SUM(SaleItem.q.price * SaleItem.q.quantity) - \
@@ -1125,6 +1130,9 @@ class SaleView(Viewable):
                    PersonAdaptToClient.q._originalID == Person_Client.q.id),
         LEFTJOINOn(None, Person_SalesPerson,
                    PersonAdaptToSalesPerson.q._originalID == Person_SalesPerson.q.id),
+
+        LEFTJOINOn(None, SaleItemIpi,
+                   SaleItemIpi.q.id == SaleItem.q.ipi_infoID),
     ]
 
     clause = AND(Sale.q._is_valid_model == True)
@@ -1142,9 +1150,15 @@ class SaleView(Viewable):
     #
 
     def get_subtotal(self):
+        if self.v_ipi is not None:
+            return currency(self.subtotal + self.v_ipi)
+
         return currency(self.subtotal)
 
     def get_total(self):
+        if self.v_ipi is not None:
+            return currency(self.total + self.v_ipi)
+
         return currency(self.total)
 
     def get_client_name(self):

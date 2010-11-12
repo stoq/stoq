@@ -46,6 +46,8 @@ class SaleQuoteItemEditor(BaseEditor):
                      'total',]
 
     def __init__(self, conn, model):
+        self.icms_slave = None
+        self.ipi_slave = None
         BaseEditor.__init__(self, conn, model)
         self._setup_widgets()
 
@@ -74,11 +76,11 @@ class SaleQuoteItemEditor(BaseEditor):
         if not self.model.sellable.product:
             return
 
-        icms_slave = SaleItemICMSSlave(self.conn, self.model.icms_info)
-        self.add_tab(_('ICMS'), icms_slave)
+        self.icms_slave = SaleItemICMSSlave(self.conn, self.model.icms_info)
+        self.add_tab(_('ICMS'), self.icms_slave)
 
-        ipi_slave = SaleItemIPISlave(self.conn, self.model.ipi_info)
-        self.add_tab(_('IPI'), ipi_slave)
+        self.ipi_slave = SaleItemIPISlave(self.conn, self.model.ipi_info)
+        self.add_tab(_('IPI'), self.ipi_slave)
 
     def add_tab(self, name, slave):
         event_box = gtk.EventBox()
@@ -96,6 +98,12 @@ class SaleQuoteItemEditor(BaseEditor):
     #
     # Kiwi callbacks
     #
+
+    def after_price__changed(self, widget):
+        if self.model.icms_info:
+            self.icms_slave.update_values()
+        if self.model.ipi_info:
+            self.ipi_slave.update_values()
 
     def on_price__validate(self, widget, value):
         if value <= 0:
