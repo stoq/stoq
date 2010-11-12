@@ -93,10 +93,14 @@ class BaseTaxSlave(BaseEditorSlave):
         for widget in self.all_widgets:
             if widget in valid_widgets:
                 getattr(self, widget).set_sensitive(True)
-                getattr(self, widget+'_label').set_sensitive(True)
+                lbl = getattr(self, widget+'_label', None)
+                if lbl:
+                    lbl.set_sensitive(True)
             else:
                 getattr(self, widget).set_sensitive(False)
-                getattr(self, widget+'_label').set_sensitive(False)
+                lbl = getattr(self, widget+'_label', None)
+                if lbl:
+                    lbl.set_sensitive(True)
 
 
 #
@@ -111,7 +115,9 @@ class BaseICMSSlave(BaseTaxSlave):
     percentage_widgets = ['p_icms', 'p_mva_st', 'p_red_bc_st', 'p_icms_st',
                           'p_red_bc']
     value_widgets = ['v_bc', 'v_icms', 'v_bc_st', 'v_icms_st']
-    all_widgets = combo_widgets + percentage_widgets + value_widgets
+    bool_widgets = ['bc_include_ipi', 'bc_st_include_ipi']
+    all_widgets = (combo_widgets + percentage_widgets + value_widgets +
+                   bool_widgets)
 
     tooltips = {
         'p_icms': u'Aliquota do imposto',
@@ -162,18 +168,21 @@ class BaseICMSSlave(BaseTaxSlave):
 
     # This widgets should be enabled when this option is selected.
     MAP_VALID_WIDGETS = {
-        0: ['orig', 'cst', 'mod_bc', 'p_icms', 'v_bc', 'v_icms'],
+        0: ['orig', 'cst', 'mod_bc', 'p_icms', 'v_bc', 'v_icms',
+            'bc_include_ipi'],
         10: ['orig', 'cst', 'mod_bc', 'p_icms', 'mod_bc_st', 'p_mva_st',
              'p_red_bc_st', 'p_icms_st', 'v_bc', 'v_icms', 'v_bc_st',
-             'v_icms_st'],
-        20: ['orig', 'cst', 'mod_bc', 'p_icms', 'p_red_bc', 'v_bc', 'v_icms'],
+             'v_icms_st', 'bc_include_ipi', 'bc_st_include_ipi'],
+        20: ['orig', 'cst', 'mod_bc', 'p_icms', 'p_red_bc', 'v_bc',
+             'v_icms', 'bc_include_ipi'],
         30: ['orig', 'cst', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
-             'p_icms_st', 'v_bc_st', 'v_icms_st' ],
+             'p_icms_st', 'v_bc_st', 'v_icms_st', 'bc_st_include_ipi' ],
         40: ['orig', 'cst'], #
-        41: ['orig', 'cst'], # Same tag # FIXME
+        41: ['orig', 'cst'], # Same tag
         50: ['orig', 'cst'], #
-        51: ['orig', 'cst', 'mod_bc', 'p_red_bc', 'p_icms', 'v_bc', 'v_icms'],
-        60: ['orig', 'cst', 'v_bc_st', 'v_icms_st'], # FIXME
+        51: ['orig', 'cst', 'mod_bc', 'p_red_bc', 'p_icms', 'v_bc',
+             'v_icms', 'bc_st_include_ipi'],
+        60: ['orig', 'cst', 'v_bc_st', 'v_icms_st'],
         70: all_widgets,
         90: all_widgets,
     }
@@ -208,15 +217,21 @@ class SaleItemICMSSlave(BaseICMSSlave):
             widget = getattr(self, name)
             widget.connect_after('changed', self._after_field_changed)
 
+        self.bc_include_ipi.connect_after('toggled', self._after_field_changed)
+        self.bc_st_include_ipi.connect_after('toggled', self._after_field_changed)
         self.cst.connect_after('changed', self._after_field_changed)
+
+    def update_values(self):
+        self.model.update_values()
+        for name in self.value_widgets:
+            self.proxy.update(name)
 
     def _after_field_changed(self, widget):
         if not self.proxy:
             return
 
-        self.model.update_values()
-        for name in self.value_widgets:
-            self.proxy.update(name)
+        self.update_values()
+
 
 
 #
@@ -300,12 +315,12 @@ class BaseIPISlave(BaseTaxSlave):
     def _update_selected_calculo(self):
         calculo = self.calculo.get_selected_data()
 
-        if calculo == 0: # Por aliquota
+        if calculo == SaleItemIpi.CALC_ALIQUOTA:
             self.p_ipi.set_sensitive(True)
             self.v_bc.set_sensitive(True)
             self.v_unid.set_sensitive(False)
             self.q_unid.set_sensitive(False)
-        elif calculo == 1: # Valor por unidade
+        elif calculo == SaleItemIpi.CALC_UNIDADE:
             self.p_ipi.set_sensitive(False)
             self.v_bc.set_sensitive(False)
             self.v_unid.set_sensitive(True)
@@ -329,3 +344,20 @@ class IPITemplateSlave(BaseIPISlave):
 class SaleItemIPISlave(BaseIPISlave):
     model_type = SaleItemIpi
     proxy_widgets = BaseIPISlave.all_widgets
+
+    def setup_callbacks(self):
+        self.p_ipi.connect_after('changed', self._after_field_changed)
+        self.q_unid.connect_after('changed', self._after_field_changed)
+        self.v_unid.connect_after('changed', self._after_field_changed)
+        self.cst.connect_after('changed', self._after_field_changed)
+
+    def update_values(self):
+        self.model.update_values()
+        self.proxy.update('v_bc')
+        self.proxy.update('v_ipi')
+
+    def _after_field_changed(self, widget):
+        if not self.proxy:
+            return
+
+        self.update_values()
