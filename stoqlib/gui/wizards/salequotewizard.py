@@ -203,7 +203,6 @@ class SaleQuoteItemStep(SellableItemStep):
             Column('sellable.unit_description',title=_('Unit'), data_type=str,
                    width=40),
             Column('price', title=_('Price'), data_type=currency, width=80),
-            Column('base_price', title=_('Base Price'), data_type=currency, width=80),
             Column('icms_info.v_bc', title=_('ICMS BC '), data_type=currency, width=70),
             Column('icms_info.v_icms', title=_('ICMS'), data_type=currency, width=70),
             Column('ipi_info.v_ipi', title=_('IPI'), data_type=currency, width=70),

@@ -49,7 +49,6 @@ class SaleQuoteItemEditor(BaseEditor):
         self.icms_slave = None
         self.ipi_slave = None
         BaseEditor.__init__(self, conn, model)
-        self._setup_widgets()
 
         sale = self.model.sale
         if sale.status == Sale.STATUS_CONFIRMED:
@@ -64,7 +63,7 @@ class SaleQuoteItemEditor(BaseEditor):
     def _setup_widgets(self):
         self.sale.set_text("%04d" %  self.model.sale.id)
         self.description.set_text(self.model.sellable.get_description())
-        self.quantity.set_adjustment(gtk.Adjustment(lower=1,
+        self.quantity.set_adjustment(gtk.Adjustment(lower=1, step_incr=1,
                                                     upper=sys.maxint))
         first_page = self.tabs.get_nth_page(0)
         self.tabs.set_tab_label_text(first_page, _(u'Basic'))
@@ -93,6 +92,7 @@ class SaleQuoteItemEditor(BaseEditor):
         self.quantity.set_sensitive(False)
 
     def setup_proxies(self):
+        self._setup_widgets()
         self.add_proxy(self.model, SaleQuoteItemEditor.proxy_widgets)
 
     #

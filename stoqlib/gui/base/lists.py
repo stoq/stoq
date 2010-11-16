@@ -366,8 +366,12 @@ class AdditionListSlave(GladeSlaveDelegate):
                 "%s cannot create or edit items without the editor_class "
                 "argument set" % (self.__class__.__name__))
 
-        return run_dialog(self._editor_class, None, conn=self.conn,
+        self.conn.savepoint('before_run_editor')
+        retval = run_dialog(self._editor_class, None, conn=self.conn,
                           model=model, **self._editor_kwargs)
+        if not retval:
+            self.conn.rollback_to_savepoint('before_run_editor')
+        return retval
 
     def delete_model(self, model):
         """Deletes a model, can be overridden in subclass
