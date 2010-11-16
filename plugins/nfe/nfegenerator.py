@@ -869,7 +869,7 @@ class NFeICMS(BaseNFeXMLGroup):
         children = self.get_children()
         if not children:
             return ''
-        icms = [0]
+        icms = children[0]
         return icms.as_txt()
 
 

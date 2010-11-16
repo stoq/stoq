@@ -107,13 +107,14 @@ class SaleItem(Domain):
             kw['base_price'] = base_price
 
             conn = kw.get('connection', self._connection)
-            kw['icms_info'] = SaleItemIcms(connection=conn)
             kw['ipi_info'] = SaleItemIpi(connection=conn)
+            kw['icms_info'] = SaleItemIcms(connection=conn)
         Domain._create(self, id, **kw)
 
         if self.sellable.product:
-            self.icms_info.set_from_template(self.sellable.product.icms_template)
+            # Set ipi details before icms, since icms may depend on the ipi
             self.ipi_info.set_from_template(self.sellable.product.ipi_template)
+            self.icms_info.set_from_template(self.sellable.product.icms_template)
 
     def sell(self, branch):
         conn = self.get_connection()
@@ -183,6 +184,9 @@ class SaleItem(Domain):
             return None
 
         return self.icms_info
+
+    def get_nfe_ipi_info(self):
+        return self.ipi_info
 
     def get_nfe_cfop_code(self):
         """Returns the cfop code to be used on the NF-e
