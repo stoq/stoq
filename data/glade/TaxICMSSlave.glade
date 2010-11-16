@@ -164,6 +164,7 @@
                 <child>
                     <widget class="ProxyEntry" id="v_bc">
                         <property name="data_type">currency</property>
+                        <property name="editable">False</property>
                         <property name="model_attribute">v_bc</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
@@ -178,6 +179,7 @@
                 <child>
                     <widget class="ProxyEntry" id="v_icms">
                         <property name="data_type">currency</property>
+                        <property name="editable">False</property>
                         <property name="is_focus">True</property>
                         <property name="model_attribute">v_icms</property>
                         <property name="visible">True</property>
@@ -368,6 +370,7 @@
                 <child>
                     <widget class="ProxyEntry" id="v_bc_st">
                         <property name="data_type">currency</property>
+                        <property name="editable">False</property>
                         <property name="model_attribute">v_bc_st</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
@@ -382,6 +385,8 @@
                 <child>
                     <widget class="ProxyEntry" id="v_icms_st">
                         <property name="data_type">currency</property>
+                        <property name="editable">False</property>
+                        <property name="is_focus">True</property>
                         <property name="model_attribute">v_icms_st</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
