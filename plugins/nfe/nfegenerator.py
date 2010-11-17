@@ -726,6 +726,12 @@ class NFeProduct(BaseNFeXMLGroup):
             nfe_icms = NFeICMS(sale_icms)
             nfe_tax.append(nfe_icms)
 
+        sale_ipi = sale_item.get_nfe_ipi_info()
+        if sale_ipi:
+            nfe_ipi = NFeIPI(sale_ipi)
+            nfe_tax.append(nfe_ipi)
+
+
         if True: # if sale_item.pis_info
             nfe_pis = NFePIS()
             pis = NFePISOutr()
@@ -869,7 +875,7 @@ class NFeICMS(BaseNFeXMLGroup):
         children = self.get_children()
         if not children:
             return ''
-        icms = [0]
+        icms = children[0]
         return icms.as_txt()
 
 
@@ -1084,6 +1090,93 @@ class NFeICMS90(BaseNFeICMS):
 #
 #   End of ICMS
 #
+#   Begin IPI
+#
+
+class NFeIPI(BaseNFeXMLGroup):
+    tag = u'IPI'
+    txttag = 'O'
+
+    attributes = [(u'ClEnq', ''),
+                  (u'CNPJProd', ''),
+                  (u'CSelo', ''),
+                  (u'QSelo', ''),
+                  (u'CEnq', ''),]
+
+    def __init__(self, ipi_info):
+        BaseNFeXMLGroup.__init__(self)
+        self.set_attr('ClEnq', ipi_info.cl_enq)
+        self.set_attr('CNPJProd', ipi_info.cnpj_prod)
+        self.set_attr('CSelo', ipi_info.c_selo)
+        self.set_attr('QSelo', ipi_info.q_selo)
+        self.set_attr('CEnq', ipi_info.c_enq)
+
+        if ipi_info.cst in (0, 49, 50, 99):
+            self.append(NFeIPITrib(ipi_info))
+        else:
+            self.append(NFeIPINT(ipi_info))
+
+    def as_txt(self):
+        base = BaseNFeXMLGroup.as_txt(self)
+        ipi = self.get_children()[0]
+        return base + ipi.as_txt()
+
+
+class NFeIPITrib(BaseNFeXMLGroup):
+    tax = u'IPITrib'
+    txttag = 'O07'
+    attributes = [(u'CST', ''),
+                  (u'VIPI', '')]
+
+    def __init__(self, ipi_info):
+        BaseNFeXMLGroup.__init__(self)
+        self.set_attr('CST', '%02d' % ipi_info.cst)
+        self.set_attr('VIPI', ipi_info.v_ipi)
+
+        if ipi_info.calculo == ipi_info.CALC_ALIQUOTA:
+            self.append(NFeIPITribAliq(ipi_info))
+        else:
+            self.append(NFeIPITribUnid(ipi_info))
+
+
+class NFeIPITribAliq(BaseNFeXMLGroup):
+    tax = u'IPITrib'
+    txttag = 'O10'
+    attributes = [(u'VBC', ''),
+                  (u'PIPI', '')]
+
+    def __init__(self, ipi_info):
+        BaseNFeXMLGroup.__init__(self)
+        self.set_attr('VBC', ipi_info.v_bc)
+        self.set_attr('PIPI', ipi_info.p_ipi)
+
+
+class NFeIPITribUnid(BaseNFeXMLGroup):
+    tax = u'IPITrib'
+    txttag = 'O11'
+    attributes = [(u'QUnid', ''),
+                  (u'VUnid', '')]
+
+    def __init__(self, ipi_info):
+        BaseNFeXMLGroup.__init__(self)
+        self.set_attr('QUnid', ipi_info.q_unid)
+        self.set_attr('VUnid', ipi_info.v_unid)
+
+
+class NFeIPINT(BaseNFeXMLGroup):
+    tax = u'IPINT'
+    txttag = 'O09'
+    attributes = [(u'CST', '')]
+
+    def __init__(self, ipi_info):
+        BaseNFeXMLGroup.__init__(self)
+        self.set_attr('CST', ipi_info.cst)
+
+
+#
+#   End of IPI
+#
+
 
 
 # Pg. 117

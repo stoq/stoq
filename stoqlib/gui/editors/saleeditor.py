@@ -31,7 +31,7 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave
+from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave, SaleItemIPISlave
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -46,8 +46,9 @@ class SaleQuoteItemEditor(BaseEditor):
                      'total',]
 
     def __init__(self, conn, model):
+        self.icms_slave = None
+        self.ipi_slave = None
         BaseEditor.__init__(self, conn, model)
-        self._setup_widgets()
 
         sale = self.model.sale
         if sale.status == Sale.STATUS_CONFIRMED:
@@ -62,7 +63,7 @@ class SaleQuoteItemEditor(BaseEditor):
     def _setup_widgets(self):
         self.sale.set_text("%04d" %  self.model.sale.id)
         self.description.set_text(self.model.sellable.get_description())
-        self.quantity.set_adjustment(gtk.Adjustment(lower=1,
+        self.quantity.set_adjustment(gtk.Adjustment(lower=1, step_incr=1,
                                                     upper=sys.maxint))
         first_page = self.tabs.get_nth_page(0)
         self.tabs.set_tab_label_text(first_page, _(u'Basic'))
@@ -74,8 +75,11 @@ class SaleQuoteItemEditor(BaseEditor):
         if not self.model.sellable.product:
             return
 
-        icms_slave = SaleItemICMSSlave(self.conn, self.model.icms_info)
-        self.add_tab(_('ICMS'), icms_slave)
+        self.icms_slave = SaleItemICMSSlave(self.conn, self.model.icms_info)
+        self.add_tab(_('ICMS'), self.icms_slave)
+
+        self.ipi_slave = SaleItemIPISlave(self.conn, self.model.ipi_info)
+        self.add_tab(_('IPI'), self.ipi_slave)
 
     def add_tab(self, name, slave):
         event_box = gtk.EventBox()
@@ -88,11 +92,18 @@ class SaleQuoteItemEditor(BaseEditor):
         self.quantity.set_sensitive(False)
 
     def setup_proxies(self):
+        self._setup_widgets()
         self.add_proxy(self.model, SaleQuoteItemEditor.proxy_widgets)
 
     #
     # Kiwi callbacks
     #
+
+    def after_price__changed(self, widget):
+        if self.model.icms_info:
+            self.icms_slave.update_values()
+        if self.model.ipi_info:
+            self.ipi_slave.update_values()
 
     def on_price__validate(self, widget, value):
         if value <= 0:

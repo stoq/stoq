@@ -58,7 +58,8 @@ class NFeUI(object):
         # can be imported by an external application.
         #nfe_dir = os.path.join(stoq_dir, 'generated_nfe')
         nfe_dir = os.path.join(stoq_dir, 'exported_nfe',
-                               time.strftime('%Y'), time.strftime('%m'))
+                               time.strftime('%Y'), time.strftime('%m'),
+                               time.strftime('%d'))
 
         if not os.path.isdir(nfe_dir):
             os.makedirs(nfe_dir)

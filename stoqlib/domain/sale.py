@@ -55,7 +55,7 @@ from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sellable import Sellable, BaseSellableInfo
 from stoqlib.domain.service import Service
-from stoqlib.domain.taxes import SaleItemIcms
+from stoqlib.domain.taxes import SaleItemIcms, SaleItemIpi
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
                                 StoqlibError)
@@ -97,6 +97,7 @@ class SaleItem(Domain):
 
     # Taxes
     icms_info = ForeignKey('SaleItemIcms')
+    ipi_info = ForeignKey('SaleItemIpi')
 
     def _create(self, id, **kw):
         if not 'kw' in kw:
@@ -106,10 +107,13 @@ class SaleItem(Domain):
             kw['base_price'] = base_price
 
             conn = kw.get('connection', self._connection)
+            kw['ipi_info'] = SaleItemIpi(connection=conn)
             kw['icms_info'] = SaleItemIcms(connection=conn)
         Domain._create(self, id, **kw)
 
         if self.sellable.product:
+            # Set ipi details before icms, since icms may depend on the ipi
+            self.ipi_info.set_from_template(self.sellable.product.ipi_template)
             self.icms_info.set_from_template(self.sellable.product.icms_template)
 
     def sell(self, branch):
@@ -139,6 +143,7 @@ class SaleItem(Domain):
     #
 
     def get_total(self):
+        return currency(self.price * self.quantity + self.ipi_info.v_ipi)
         return currency(self.price * self.quantity)
 
     def get_quantity_unit_string(self):
@@ -179,6 +184,9 @@ class SaleItem(Domain):
             return None
 
         return self.icms_info
+
+    def get_nfe_ipi_info(self):
+        return self.ipi_info
 
     def get_nfe_cfop_code(self):
         """Returns the cfop code to be used on the NF-e
@@ -594,9 +602,11 @@ class Sale(ValidatableDomain):
         """
         # Sale items are suposed to have only 2 digits, but the value price
         # * quantity may have more than 2, so we need to round it.
-        return currency(self.get_items().sum(
-            const.ROUND(SaleItem.q.price * SaleItem.q.quantity,
-                        DECIMAL_PRECISION)) or 0)
+        total = 0
+        for i in self.get_items():
+            total += i.get_total()
+
+        return currency(total)
 
     def get_items_total_quantity(self):
         """Fetches the total number of items in the sale
@@ -1102,6 +1112,8 @@ class SaleView(Viewable):
         salesperson_name = Person_SalesPerson.q.name,
         client_name = Person_Client.q.name,
 
+        v_ipi = const.SUM(SaleItemIpi.q.v_ipi),
+
         total_quantity = const.SUM(SaleItem.q.quantity),
         subtotal = const.SUM(SaleItem.q.quantity * SaleItem.q.price),
         total = const.SUM(SaleItem.q.price * SaleItem.q.quantity) - \
@@ -1122,6 +1134,9 @@ class SaleView(Viewable):
                    PersonAdaptToClient.q._originalID == Person_Client.q.id),
         LEFTJOINOn(None, Person_SalesPerson,
                    PersonAdaptToSalesPerson.q._originalID == Person_SalesPerson.q.id),
+
+        LEFTJOINOn(None, SaleItemIpi,
+                   SaleItemIpi.q.id == SaleItem.q.ipi_infoID),
     ]
 
     clause = AND(Sale.q._is_valid_model == True)
@@ -1139,9 +1154,15 @@ class SaleView(Viewable):
     #
 
     def get_subtotal(self):
+        if self.v_ipi is not None:
+            return currency(self.subtotal + self.v_ipi)
+
         return currency(self.subtotal)
 
     def get_total(self):
+        if self.v_ipi is not None:
+            return currency(self.total + self.v_ipi)
+
         return currency(self.total)
 
     def get_client_name(self):
