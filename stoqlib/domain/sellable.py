@@ -190,6 +190,12 @@ class SellableCategory(Domain):
 
 
 class OnSaleInfo(Domain):
+    """
+    @ivar on_sale_price: A special price used when we have a "on sale" state
+    @type on_sale_price: float
+    @ivar on_sale_start_date:
+    @ivar on_sale_end_date:
+    """
     on_sale_price = PriceCol(default=0)
     on_sale_start_date = DateTimeCol(default=None)
     on_sale_end_date = DateTimeCol(default=None)
@@ -237,10 +243,6 @@ class Sellable(Domain):
     @type max_discount: float
     @ivar commission: commission to pay after selling this sellable
     @type commission: float
-    @ivar on_sale_price: A special price used when we have a "on sale" state
-    @type on_sale_price: float
-    @ivar on_sale_start_date:
-    @ivar on_sale_end_date:
     """
 
     implements(IDescribable)
@@ -271,6 +273,8 @@ class Sellable(Domain):
 
     product = SingleJoin('Product', joinColumn='sellable_id')
     service = SingleJoin('Service', joinColumn='sellable_id')
+
+    default_sale_cfop = ForeignKey("CfopData", default=None)
 
 
     def _create(self, id, **kw):
