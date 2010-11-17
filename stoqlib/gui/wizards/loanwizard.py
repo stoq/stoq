@@ -103,19 +103,21 @@ class StartNewLoanStep(WizardEditorStep):
         # Transporter/RemovedBy Combo
         self.transporter_lbl.set_text(_(u'Removed By:'))
         self.create_transporter.hide()
-        # retrieve the position, since we will replace two widgets later.
-        top = self.table2.child_get_property(self.transporter, 'top-attach')
-        bottom = self.table2.child_get_property(self.transporter,
-                                                'bottom-attach')
-        left = self.table2.child_get_property(self.transporter, 'left-attach')
-        right = self.table2.child_get_property(self.transporter, 'right-attach')
-        self.table2.remove(self.transporter)
-
+        # removed_by widget
         self.removed_by = ProxyEntry(unicode)
         self.removed_by.set_property('model-attribute', 'removed_by')
         if 'removed_by' not in self.proxy_widgets:
             self.proxy_widgets.append('removed_by')
         self.removed_by.show()
+        self._replace_widget(self.transporter, self.removed_by)
+
+    def _replace_widget(self, old_widget, new_widget):
+        # retrieve the position, since we will replace two widgets later.
+        top = self.table2.child_get_property(old_widget, 'top-attach')
+        bottom = self.table2.child_get_property(old_widget, 'bottom-attach')
+        left = self.table2.child_get_property(old_widget, 'left-attach')
+        right = self.table2.child_get_property(old_widget, 'right-attach')
+        self.table2.remove(old_widget)
         self.table2.attach(self.removed_by, left, right, top, bottom)
 
     #
@@ -188,14 +190,6 @@ class LoanItemStep(SaleQuoteItemStep):
         if not self._has_stock(sellable, value):
             return ValidationError(
                 _(u'The quantity is greater than the quantity in stock.'))
-
-    def validate_step(self):
-        # I am using validate_step as a callback for the finish button, since
-        # we can only print the receipt if the loan was confirmed.
-        if yesno(_(u'Do you want to print the receipt now ?'),
-                 gtk.RESPONSE_YES, _(u'Yes'), _(u'No')):
-            print_report(LoanReceipt, self.model)
-        return True
 
 
 class LoanSelectionStep(BaseWizardStep):
@@ -420,6 +414,12 @@ class NewLoanWizard(BaseWizard):
                     branch=get_current_branch(conn),
                     connection=conn)
 
+    def _print_receipt(self, order):
+        # we can only print the receipt if the loan was confirmed.
+        if yesno(_(u'Do you want to print the receipt now ?'),
+                 gtk.RESPONSE_YES, _(u'Yes'), _(u'No')):
+            print_report(LoanReceipt, order)
+
     #
     # WizardStep hooks
     #
@@ -430,6 +430,7 @@ class NewLoanWizard(BaseWizard):
             item.do_loan(branch)
         self.retval = self.model
         self.close()
+        self._print_receipt(self.model)
 
 
 class CloseLoanWizard(BaseWizard):
