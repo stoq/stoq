@@ -73,10 +73,9 @@ class LoanReceipt(BaseStoqReport):
             date_obj = self.order.open_date.strftime('%x')
 
         # At first, it was an optional field.
+        expire_date = u''
         if self.order.expire_date:
             expire_date = self.order.expire_date.strftime('%x')
-        else:
-            expire_date = u''
 
         data = [
             [date_str, date_obj, _(u'Expire Date:'), expire_date],
@@ -137,9 +136,8 @@ class LoanReceipt(BaseStoqReport):
         loan_notice = _(u'I inform and sign up to receive the items in full '
                          'working order and I am aware of the responsability '
                          'that I have for returning them, as well as the '
-                         'return of the amounts involved, in case of breaks, '
-                         'burns, loss or any event that may happen to make '
-                         'the product unusable.')
+                         'return of the amounts involved, in case of loss, '
+                         'damage or any event that make the product unusable.')
         self.add_paragraph(_(u'Loan Notice'), style='Normal-Bold')
         self.add_paragraph(loan_notice, style='Normal-Notes', ellipsize=False)
 
@@ -160,7 +158,7 @@ class LoanReceipt(BaseStoqReport):
     #
 
     def get_title(self):
-        return _(u'Number: %s - Loan on %s' % (
+        return _(u'Number: %s - Loan on %s') % (
                     self.order.get_order_number_str(),
-                    self.order.open_date.strftime('%x')))
+                    self.order.open_date.strftime('%x'))
 
