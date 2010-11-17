@@ -198,13 +198,15 @@ class SaleQuoteItemStep(SellableItemStep):
                    data_type=str, expand=True, searchable=True),
             Column('sellable.category_description', title=_('Category'),
                    data_type=str, expand=True, searchable=True),
-            Column('quantity', title=_('Quantity'), data_type=float, width=90,
+            Column('quantity', title=_('Quantity'), data_type=float, width=60,
                    format_func=format_quantity),
             Column('sellable.unit_description',title=_('Unit'), data_type=str,
-                   width=70),
-            Column('price', title=_('Price'), data_type=currency, width=90),
-            Column('base_price', title=_('Base Price'), data_type=currency, width=90),
-            Column('total', title=_('Total'), data_type=currency, width=100),
+                   width=40),
+            Column('price', title=_('Price'), data_type=currency, width=80),
+            Column('icms_info.v_bc', title=_('ICMS BC '), data_type=currency, width=70),
+            Column('icms_info.v_icms', title=_('ICMS'), data_type=currency, width=70),
+            Column('ipi_info.v_ipi', title=_('IPI'), data_type=currency, width=70),
+            Column('total', title=_('Total'), data_type=currency, width=90),
             ]
 
     def sellable_selected(self, sellable):

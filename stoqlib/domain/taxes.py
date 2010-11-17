@@ -25,7 +25,7 @@
 from kiwi.datatypes import currency
 
 from stoqlib.database.orm import (IntCol, UnicodeCol, DecimalCol,
-                                  PriceCol, ForeignKey)
+                                  PriceCol, ForeignKey, BoolCol)
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.product import Product
 from zope.interface import Interface, implements
@@ -58,7 +58,9 @@ class BaseTax(Domain):
         self.set_initial_values()
 
     def set_initial_values(self):
-        pass
+        """Use this method to setup the initial values of the fields.
+        """
+        self.update_values()
 
     def update_values(self):
         pass
@@ -81,7 +83,13 @@ class BaseICMS(BaseTax):
     p_icms_st = DecimalCol(default=None)
     p_red_bc = DecimalCol(default=None)
 
+    bc_include_ipi = BoolCol(default=True)
+    bc_st_include_ipi = BoolCol(default=True)
+
 class BaseIPI(BaseTax):
+    (CALC_ALIQUOTA,
+     CALC_UNIDADE) = range(2)
+
     cl_enq = UnicodeCol(default='')
     cnpj_prod = UnicodeCol(default='')
     c_selo = UnicodeCol(default='')
@@ -92,6 +100,8 @@ class BaseIPI(BaseTax):
     p_ipi = DecimalCol(default=None)
 
     q_unid = DecimalCol(default=None)
+
+    calculo = IntCol(default=None)
 
 
 #
@@ -143,18 +153,12 @@ class SaleItemIcms(BaseICMS):
     v_bc_st = PriceCol(default=None)
     v_icms_st = PriceCol(default=None)
 
-    # FIXME: remove this method
-    def set_initial_values(self):
-        from stoqlib.domain.sale import SaleItem
-        sale_item = SaleItem.selectOneBy(icms_info=self,
-                                         connection=self.get_connection())
-        self.v_bc = sale_item.price
-        self.update_values()
-
     def _calc_st(self, sale_item):
-        # FIXME: Consider ipi in all ST math bellow, once ipi is implemented
+        self.v_bc_st = sale_item.price * sale_item.quantity
 
-        self.v_bc_st = sale_item.price
+        if self.bc_st_include_ipi and sale_item.ipi_info:
+            self.v_bc_st += sale_item.ipi_info.v_ipi
+
         if self.p_red_bc_st is not None:
             self.v_bc_st -= self.v_bc_st * self.p_red_bc_st / 100
         if self.p_mva_st is not None:
@@ -162,12 +166,17 @@ class SaleItemIcms(BaseICMS):
 
         if self.v_bc_st is not None and self.p_icms_st is not None:
             self.v_icms_st = self.v_bc_st * self.p_icms_st/100
-        if self.v_icms is not None:
+        if self.v_icms is not None and self.v_icms_st is not None:
             self.v_icms_st -= self.v_icms
 
     def _calc_normal(self, sale_item):
+        self.v_bc = sale_item.price * sale_item.quantity
+
+        if self.bc_include_ipi and sale_item.ipi_info:
+            self.v_bc += sale_item.ipi_info.v_ipi
+
         if self.p_red_bc is not None:
-            self.v_bc = sale_item.price - sale_item.price * self.p_red_bc / 100
+            self.v_bc -= self.v_bc * self.p_red_bc / 100
 
         if self.p_icms is not None and self.v_bc is not None:
             self.v_icms = self.v_bc * self.p_icms/100
@@ -209,9 +218,26 @@ class SaleItemIcms(BaseICMS):
 
 
 class SaleItemIpi(BaseIPI):
-    v_ipi = PriceCol(default=None)
+    v_ipi = PriceCol(default=0)
     v_bc = PriceCol(default=None)
     v_unid = PriceCol(default=None)
 
+    def set_initial_values(self):
+        from stoqlib.domain.sale import SaleItem
+        sale_item = SaleItem.selectOneBy(ipi_info=self,
+                                         connection=self.get_connection())
+        self.q_unid = sale_item.quantity
+        self.update_values()
 
+    def update_values(self):
+        from stoqlib.domain.sale import SaleItem
+        sale_item = SaleItem.selectOneBy(ipi_info=self,
+                                         connection=self.get_connection())
 
+        if self.calculo == self.CALC_ALIQUOTA:
+            self.v_bc = sale_item.price * sale_item.quantity
+            if self.p_ipi is not None:
+                self.v_ipi = self.v_bc * self.p_ipi/100
+        elif self.calculo == self.CALC_UNIDADE:
+            if self.q_unid is not None and self.v_unid is not None:
+                self.v_ipi = self.q_unid * self.v_unid

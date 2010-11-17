@@ -46,8 +46,8 @@ selo de controle:</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="v_ipi_label">
-                        <property name="label" context="yes" translatable="yes">Valor do IPI</property>
+                    <widget class="GtkLabel" id="calculo_label">
+                        <property name="label" context="yes" translatable="yes">Cálculo do IPI:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
@@ -126,11 +126,10 @@ tributável:</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyEntry" id="v_ipi">
-                        <property name="data_type">currency</property>
-                        <property name="model_attribute">v_ipi</property>
+                    <widget class="ProxyComboBox" id="calculo">
+                        <property name="data_type">int</property>
+                        <property name="model_attribute">calculo</property>
                         <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">4</property>
@@ -142,6 +141,7 @@ tributável:</property>
                 <child>
                     <widget class="ProxyEntry" id="v_bc">
                         <property name="data_type">Decimal</property>
+                        <property name="editable">False</property>
                         <property name="model_attribute">v_bc</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
@@ -219,21 +219,17 @@ legal do ipi:</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="calculo_label">
-                        <property name="label" context="yes" translatable="yes">Cálculo do IPI:</property>
-                        <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
-                    </widget>
+                    <placeholder/>
                     <packing>
-                        <property name="bottom_attach">4</property>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
                         <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="q_unid_label">
-                        <property name="label" context="yes" translatable="yes">Quantidade total:</property>
+                    <widget class="GtkLabel" id="p_ipi_label">
+                        <property name="label" context="yes" translatable="yes">Alíquota do IPI:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
@@ -245,8 +241,8 @@ legal do ipi:</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="p_ipi_label">
-                        <property name="label" context="yes" translatable="yes">Alíquota do IPI:</property>
+                    <widget class="GtkLabel" id="q_unid_label">
+                        <property name="label" context="yes" translatable="yes">Quantidade total:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
@@ -258,12 +254,16 @@ legal do ipi:</property>
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
+                    <widget class="GtkLabel" id="v_ipi_label">
+                        <property name="label" context="yes" translatable="yes">Valor do IPI</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
                     <packing>
+                        <property name="bottom_attach">7</property>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
                         <property name="top_attach">6</property>
-                        <property name="bottom_attach">7</property>
                     </packing>
                 </child>
                 <child>
@@ -306,31 +306,12 @@ legal do ipi:</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyComboBox" id="calculo">
-                        <property name="data_type">int</property>
-                        <property name="model_attribute">calculo</property>
-                        <property name="visible">True</property>
-                    </widget>
+                    <placeholder/>
                     <packing>
-                        <property name="bottom_attach">4</property>
                         <property name="left_attach">3</property>
                         <property name="right_attach">4</property>
                         <property name="top_attach">3</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="ProxyEntry" id="q_unid">
-                        <property name="data_type">Decimal</property>
-                        <property name="is_focus">True</property>
-                        <property name="model_attribute">q_unid</property>
-                        <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
-                    </widget>
-                    <packing>
-                        <property name="bottom_attach">5</property>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
-                        <property name="top_attach">4</property>
+                        <property name="bottom_attach">4</property>
                     </packing>
                 </child>
                 <child>
@@ -343,6 +324,21 @@ legal do ipi:</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
+                        <property name="bottom_attach">5</property>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyEntry" id="q_unid">
+                        <property name="data_type">Decimal</property>
+                        <property name="is_focus">True</property>
+                        <property name="model_attribute">q_unid</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
                         <property name="bottom_attach">6</property>
                         <property name="left_attach">3</property>
                         <property name="right_attach">4</property>
@@ -350,12 +346,19 @@ legal do ipi:</property>
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
+                    <widget class="ProxyEntry" id="v_ipi">
+                        <property name="data_type">currency</property>
+                        <property name="editable">False</property>
+                        <property name="is_focus">True</property>
+                        <property name="model_attribute">v_ipi</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
                     <packing>
+                        <property name="bottom_attach">7</property>
                         <property name="left_attach">3</property>
                         <property name="right_attach">4</property>
                         <property name="top_attach">6</property>
-                        <property name="bottom_attach">7</property>
                     </packing>
                 </child>
             </widget>
