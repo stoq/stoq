@@ -37,6 +37,7 @@ from stoqdrivers.enum import TaxType, UnitType
 
 from stoqlib.database.orm import AND, const
 from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.sellable import (SellableCategory, Sellable,
                                      SellableUnit,
                                      SellableTaxConstant)
@@ -212,7 +213,8 @@ class SellableEditor(BaseEditor):
                         'category_combo',
                         'cost',
                         'price',
-                        'statuses_combo')
+                        'statuses_combo',
+                        'default_sale_cfop')
     proxy_widgets = (sellable_unit_widgets + sellable_tax_widgets +
                      sellable_widgets)
 
@@ -332,6 +334,12 @@ class SellableEditor(BaseEditor):
         self.statuses_combo.prefill(
                     [(v, k) for k, v in Sellable.statuses.items()])
         self.statuses_combo.set_sensitive(False)
+
+        cfop_items = [(item.get_description(), item)
+                        for item in CfopData.select(connection=self.conn)]
+        cfop_items.insert(0, ('', None))
+        self.default_sale_cfop.prefill(cfop_items)
+
 
     def setup_unit_combo(self):
         primitive_units = SellableUnit.select(

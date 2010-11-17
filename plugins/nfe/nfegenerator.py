@@ -228,8 +228,6 @@ class NFeGenerator(object):
         self._nfe_data.append(self._nfe_recipient)
 
     def _add_sale_items(self, sale_items):
-        # cfop code without dot.
-
         for item_number, sale_item in enumerate(sale_items):
             # item_number should start from 1, not zero.
             item_number += 1
@@ -1105,11 +1103,11 @@ class NFeIPI(BaseNFeXMLGroup):
 
     def __init__(self, ipi_info):
         BaseNFeXMLGroup.__init__(self)
-        self.set_attr('ClEnq', ipi_info.cl_enq)
-        self.set_attr('CNPJProd', ipi_info.cnpj_prod)
-        self.set_attr('CSelo', ipi_info.c_selo)
-        self.set_attr('QSelo', ipi_info.q_selo)
-        self.set_attr('CEnq', ipi_info.c_enq)
+        self.set_attr('ClEnq', ipi_info.cl_enq or '')
+        self.set_attr('CNPJProd', ipi_info.cnpj_prod or '')
+        self.set_attr('CSelo', ipi_info.c_selo or '')
+        self.set_attr('QSelo', ipi_info.q_selo or '')
+        self.set_attr('CEnq', ipi_info.c_enq or '')
 
         if ipi_info.cst in (0, 49, 50, 99):
             self.append(NFeIPITrib(ipi_info))
@@ -1130,8 +1128,9 @@ class NFeIPITrib(BaseNFeXMLGroup):
 
     def __init__(self, ipi_info):
         BaseNFeXMLGroup.__init__(self)
-        self.set_attr('CST', '%02d' % ipi_info.cst)
-        self.set_attr('VIPI', ipi_info.v_ipi)
+        self.set_attr('VIPI', ipi_info.v_ipi or '')
+        if ipi_info.cst:
+            self.set_attr('CST', '%02d' % ipi_info.cst)
 
         if ipi_info.calculo == ipi_info.CALC_ALIQUOTA:
             self.append(NFeIPITribAliq(ipi_info))
@@ -1147,8 +1146,8 @@ class NFeIPITribAliq(BaseNFeXMLGroup):
 
     def __init__(self, ipi_info):
         BaseNFeXMLGroup.__init__(self)
-        self.set_attr('VBC', ipi_info.v_bc)
-        self.set_attr('PIPI', ipi_info.p_ipi)
+        self.set_attr('VBC', ipi_info.v_bc or '')
+        self.set_attr('PIPI', ipi_info.p_ipi or '')
 
 
 class NFeIPITribUnid(BaseNFeXMLGroup):
@@ -1159,18 +1158,19 @@ class NFeIPITribUnid(BaseNFeXMLGroup):
 
     def __init__(self, ipi_info):
         BaseNFeXMLGroup.__init__(self)
-        self.set_attr('QUnid', ipi_info.q_unid)
-        self.set_attr('VUnid', ipi_info.v_unid)
+        self.set_attr('QUnid', ipi_info.q_unid or '')
+        self.set_attr('VUnid', ipi_info.v_unid or '')
 
 
 class NFeIPINT(BaseNFeXMLGroup):
     tax = u'IPINT'
-    txttag = 'O09'
+    txttag = 'O08'
     attributes = [(u'CST', '')]
 
     def __init__(self, ipi_info):
         BaseNFeXMLGroup.__init__(self)
-        self.set_attr('CST', ipi_info.cst)
+        if ipi_info.cst:
+            self.set_attr('CST', '%02d' % ipi_info.cst)
 
 
 #

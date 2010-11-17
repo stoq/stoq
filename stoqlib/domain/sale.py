@@ -89,6 +89,7 @@ class SaleItem(Domain):
     price = PriceCol()
     sale = ForeignKey('Sale')
     sellable = ForeignKey('Sellable')
+    cfop = ForeignKey('CfopData', default=None)
 
     # This is currently only used by services
     notes = UnicodeCol(default=None)
@@ -105,6 +106,10 @@ class SaleItem(Domain):
                 raise TypeError('You must provide a sellable argument')
             base_price = kw['sellable'].price
             kw['base_price'] = base_price
+            if not kw.get('cfop'):
+                kw['cfop'] = kw['sellable'].default_sale_cfop
+            if not kw.get('cfop'):
+                kw['cfop'] = sysparam(self._connection).DEFAULT_SALES_CFOP
 
             conn = kw.get('connection', self._connection)
             kw['ipi_info'] = SaleItemIpi(connection=conn)
@@ -210,7 +215,10 @@ class SaleItem(Domain):
             else:
                 return '6929'
 
-        # FIXME: add cfop code to the sale item, instead of the sale.
+        if self.cfop:
+            return self.cfop.code.replace('.', '')
+
+        # FIXME: remove sale cfop?
         return self.sale.cfop.code.replace('.', '')
 
 

@@ -7,6 +7,7 @@
         <property name="mnemonics_visible">False</property>
         <child>
             <widget class="GtkNotebook" id="tabs">
+                <property name="is_focus">True</property>
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkVBox" id="vbox1">
@@ -69,10 +70,14 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <placeholder/>
+                                    <widget class="GtkLabel" id="cfop_label">
+                                        <property name="label" context="yes" translatable="yes">CFOP:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
                                     <packing>
-                                        <property name="top_attach">4</property>
                                         <property name="bottom_attach">5</property>
+                                        <property name="top_attach">4</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -133,12 +138,16 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <placeholder/>
+                                    <widget class="ProxyComboEntry" id="cfop">
+                                        <property name="data_type">object</property>
+                                        <property name="model_attribute">cfop</property>
+                                        <property name="visible">True</property>
+                                    </widget>
                                     <packing>
+                                        <property name="bottom_attach">5</property>
                                         <property name="left_attach">1</property>
                                         <property name="right_attach">2</property>
                                         <property name="top_attach">4</property>
-                                        <property name="bottom_attach">5</property>
                                     </packing>
                                 </child>
                                 <child>

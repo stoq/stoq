@@ -70,6 +70,9 @@ class LoanItemEditor(BaseEditor):
         self.quantity.set_adjustment(gtk.Adjustment(lower=1, step_incr=1,
                                                     upper=sys.maxint))
         self._configure_expanded_edition()
+        self.tabs.set_show_tabs(False)
+        self.cfop.hide()
+        self.cfop_label.hide()
 
     def _configure_expanded_edition(self):
         if self._expanded_edition:

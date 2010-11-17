@@ -29,6 +29,7 @@ import gtk
 
 from kiwi.datatypes import ValidationError
 
+from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave, SaleItemIPISlave
@@ -43,6 +44,7 @@ class SaleQuoteItemEditor(BaseEditor):
     model_name = _("Sale Quote Item")
     proxy_widgets = ['price',
                      'quantity',
+                     'cfop',
                      'total',]
 
     def __init__(self, conn, model):
@@ -67,6 +69,10 @@ class SaleQuoteItemEditor(BaseEditor):
                                                     upper=sys.maxint))
         first_page = self.tabs.get_nth_page(0)
         self.tabs.set_tab_label_text(first_page, _(u'Basic'))
+
+        cfop_items = [(item.get_description(), item)
+                        for item in CfopData.select(connection=self.conn)]
+        self.cfop.prefill(cfop_items)
 
         self._setup_taxes()
 

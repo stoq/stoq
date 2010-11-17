@@ -177,11 +177,4 @@ class ProductTaxSlave(BaseEditorSlave):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
-    #
-    # Kiwi Callbacks
-    #
-
-    def on_icms_details__clicked(self, widget):
-        print 'foo'
-
 

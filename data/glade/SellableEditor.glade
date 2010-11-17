@@ -4,6 +4,7 @@
     <widget class="GtkWindow" id="SellableEditor">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
+        <property name="mnemonics_visible">False</property>
         <child>
             <widget class="GtkNotebook" id="sellable_notebook">
                 <property name="can_focus">False</property>
@@ -19,7 +20,7 @@
                             <widget class="GtkTable" id="table2">
                                 <property name="column_spacing">6</property>
                                 <property name="n_columns">4</property>
-                                <property name="n_rows">7</property>
+                                <property name="n_rows">8</property>
                                 <property name="row_spacing">6</property>
                                 <property name="visible">True</property>
                                 <child>
@@ -87,6 +88,17 @@
                                     </packing>
                                 </child>
                                 <child>
+                                    <widget class="GtkLabel" id="label10">
+                                        <property name="label" context="yes" translatable="yes">Default Sale CFOP:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">7</property>
+                                        <property name="top_attach">6</property>
+                                    </packing>
+                                </child>
+                                <child>
                                     <widget class="GtkEventBox" id="slave_holder">
                                         <property name="visible">True</property>
                                         <child>
@@ -94,9 +106,9 @@
                                         </child>
                                     </widget>
                                     <packing>
-                                        <property name="bottom_attach">7</property>
+                                        <property name="bottom_attach">8</property>
                                         <property name="right_attach">4</property>
-                                        <property name="top_attach">6</property>
+                                        <property name="top_attach">7</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -263,6 +275,19 @@
                                     </packing>
                                 </child>
                                 <child>
+                                    <widget class="ProxyComboEntry" id="default_sale_cfop">
+                                        <property name="data_type">object</property>
+                                        <property name="model_attribute">default_sale_cfop</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">7</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">6</property>
+                                    </packing>
+                                </child>
+                                <child>
                                     <widget class="GtkLabel" id="label8">
                                         <property name="label" context="yes" translatable="yes">Status:</property>
                                         <property name="visible">True</property>
@@ -319,6 +344,15 @@
                                         <property name="right_attach">3</property>
                                         <property name="top_attach">5</property>
                                         <property name="bottom_attach">6</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="left_attach">2</property>
+                                        <property name="right_attach">3</property>
+                                        <property name="top_attach">6</property>
+                                        <property name="bottom_attach">7</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -454,6 +488,15 @@
                                         <property name="left_attach">3</property>
                                         <property name="right_attach">4</property>
                                         <property name="top_attach">5</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="left_attach">3</property>
+                                        <property name="right_attach">4</property>
+                                        <property name="top_attach">6</property>
+                                        <property name="bottom_attach">7</property>
                                     </packing>
                                 </child>
                             </widget>
