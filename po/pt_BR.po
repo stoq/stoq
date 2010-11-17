@@ -824,8 +824,8 @@ msgid ""
 msgstr ""
 "Eu informo e assino que recebi os ítens acima em plenas condições de "
 "funconamento e estou ciente da responsabilidade que tenho pela devolução dos "
-"mesmos, bem como pela devolução dos valores envolvidos, caso houver quebra, "
-"queima, perda ou qualquer caso que venha acontecer que torne o produto "
+"mesmos, bem como pela devolução dos valores envolvidos, caso houver perda, "
+"dano ou qualquer caso que venha acontecer que torne o produto "
 "inutilizável."
 
 #: ../stoqlib/reporting/loanreceipt.py:143
@@ -846,7 +846,7 @@ msgstr "CPF:"
 #: ../stoqlib/reporting/loanreceipt.py:163
 #, python-format
 msgid "Number: %s - Loan on %s"
-msgstr "Número: %s - Empréstimo %s em %s"
+msgstr "Número: %s - Empréstimo em %s"
 
 #: ../stoqlib/reporting/product.py:50 ../stoqlib/reporting/product.py:78
 #: ../stoqlib/reporting/product.py:103 ../stoqlib/reporting/product.py:120
