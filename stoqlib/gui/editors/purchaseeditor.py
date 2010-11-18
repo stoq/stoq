@@ -78,7 +78,7 @@ class PurchaseItemEditor(BaseEditor):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.add_proxy(self.model, PurchaseItemEditor.proxy_widgets)
+        self.add_proxy(self.model, self.proxy_widgets)
 
     #
     # Kiwi callbacks
@@ -109,12 +109,15 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         self._original_sold_qty = model.quantity_sold
         self._original_returned_qty = model.quantity_returned
         self._allowed_sold = None
+
         PurchaseItemEditor.__init__(self, conn, model)
         order = self.model.order
         assert order.status == PurchaseOrder.ORDER_CONSIGNED
         self._set_not_editable()
+
         # disable expected_receival_date (the items was already received)
         self.expected_receival_date.set_sensitive(False)
+
         # enable consignment fields
         self.sold_lbl.show()
         self.returned_lbl.show()
