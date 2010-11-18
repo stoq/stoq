@@ -963,6 +963,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn, order)
         self._outstanding_value = (outstanding_value or
                                    self._get_total_amount())
+        self._total_value = self._outstanding_value
         self._setup_widgets()
 
     def setup_proxies(self):
@@ -1015,14 +1016,14 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.total_value.set_bold(True)
         self.received_value.set_bold(True)
         self.missing_value.set_bold(True)
-        self.total_value.update(self._outstanding_value)
+        self.total_value.update(self._total_value)
         self.remove_button.set_sensitive(False)
         self._update_values()
 
     def _update_values(self):
         payments = self.model.group.get_valid_payments()
         total_payments = payments.sum('value') or Decimal(0)
-        self._outstanding_value -= total_payments
+        self._outstanding_value = self._total_value - total_payments
 
         if self._outstanding_value > 0:
             self.base_value.update(self._outstanding_value)
@@ -1038,7 +1039,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         received = self.received_value.read()
         if received == ValueUnset:
             received = currency(0)
-        value = received - self.total_value.read()
+        value = received - self._total_value
         self.missing_value.update(abs(value))
         if value <= 0:
             self.missing_change.set_text(_(u'Missing:'))
