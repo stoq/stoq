@@ -101,7 +101,7 @@ class BaseIPI(BaseTax):
 
     q_unid = DecimalCol(default=None)
 
-    calculo = IntCol(default=None)
+    calculo = IntCol(default=CALC_ALIQUOTA)
 
 
 #
@@ -233,6 +233,10 @@ class SaleItemIpi(BaseIPI):
         from stoqlib.domain.sale import SaleItem
         sale_item = SaleItem.selectOneBy(ipi_info=self,
                                          connection=self.get_connection())
+
+        # IPI is only calculated if cst is one of the following
+        if not self.cst in (0, 49, 50, 99):
+            return
 
         if self.calculo == self.CALC_ALIQUOTA:
             self.v_bc = sale_item.price * sale_item.quantity

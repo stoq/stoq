@@ -277,7 +277,6 @@ class BaseIPISlave(BaseTaxSlave):
             (u'99 - Outras saídas', 99),
         ),
         'calculo': (
-            (None, None),
             (u'Por alíquota', 0),
             (u'Valor por unidade', 1),
         )
@@ -313,6 +312,10 @@ class BaseIPISlave(BaseTaxSlave):
         self.set_valid_widgets(valid_widgets)
 
     def _update_selected_calculo(self):
+        # IPI is only calculated if cst is one of the following
+        if not self.model.cst in (0, 49, 50, 99):
+            return
+
         calculo = self.calculo.get_selected_data()
 
         if calculo == SaleItemIpi.CALC_ALIQUOTA:
