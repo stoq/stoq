@@ -13,6 +13,37 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="LoanMenu">
+                        <property name="name">LoanMenu</property>
+                        <property name="label" translatable="yes">Loans</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="NewLoan">
+                        <property name="name">NewLoan</property>
+                        <property name="label" translatable="yes">New Loan...</property>
+                        <property name="stock_id">gtk-new</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="CloseLoan">
+                        <property name="name">CloseLoan</property>
+                        <property name="label" translatable="yes">Close Loan...</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="SearchLoan">
+                        <property name="name">SearchLoan</property>
+                        <property name="label" translatable="yes">Search Loans...</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="SearchLoanItems">
+                        <property name="name">SearchLoanItems</property>
+                        <property name="label" translatable="yes">Search Loan Items...</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="ClearCookie">
                         <property name="name">ClearCookie</property>
                         <property name="label" translatable="yes">Clear Cookie</property>
@@ -253,6 +284,13 @@
           <menuitem action="ExportCSV"/>
 	      <menuitem action="Quit"/>
 	    </menu>
+        <menu action="LoanMenu">
+	      <menuitem action="NewLoan"/>
+	      <menuitem action="CloseLoan"/>
+          <separator/>
+          <menuitem action="SearchLoan"/>
+          <menuitem action="SearchLoanItems"/>
+        </menu>
 	    <menu action="SearchMenu">
 	      <menuitem action="PurchaseReceiving"/>
 	      <menuitem action="ProductHistory"/>

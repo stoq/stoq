@@ -45,9 +45,11 @@ from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.message import warning
 from stoqlib.gui.editors.producteditor import ProductStockEditor
+from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
+from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
                                               ProductStockSearch)
@@ -316,3 +318,21 @@ class StockApp(SearchableAppWindow):
         model = self.run_dialog(ProductStockEditor, trans, product)
         finish_transaction(trans, model)
         trans.close()
+
+    def on_NewLoan__activate(self, action):
+        trans = new_transaction()
+        model = self.run_dialog(NewLoanWizard, trans)
+        finish_transaction(trans, model)
+        trans.close()
+
+    def on_CloseLoan__activate(self, action):
+        trans = new_transaction()
+        model = self.run_dialog(CloseLoanWizard, trans)
+        finish_transaction(trans, model)
+        trans.close()
+
+    def on_SearchLoan__activate(self, action):
+        self.run_dialog(LoanSearch, self.conn)
+
+    def on_SearchLoanItems__activate(self, action):
+        self.run_dialog(LoanItemSearch, self.conn)
