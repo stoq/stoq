@@ -124,6 +124,7 @@ class Loan(Domain):
     open_date = DateTimeCol(default=datetime.datetime.now)
     close_date = DateTimeCol(default=None)
     expire_date = DateTimeCol(default=None)
+    removed_by = UnicodeCol(default='')
     branch = ForeignKey('PersonAdaptToBranch', default=None)
     responsible = ForeignKey('PersonAdaptToUser')
     client = ForeignKey('PersonAdaptToClient', default=None)
