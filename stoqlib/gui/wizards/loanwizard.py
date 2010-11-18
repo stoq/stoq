@@ -24,11 +24,14 @@
 ##
 """ Loan wizard"""
 
+import gtk
+
 from decimal import Decimal
 import datetime
 
 from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
+from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.database.orm import ORMObjectQueryExecuter
@@ -39,8 +42,8 @@ from stoqlib.domain.person import ClientView, PersonAdaptToUser, Person
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.views import LoanView
-from stoqlib.lib.message import info
+from stoqlib.domain.views import LoanView, ProductFullStockItemView
+from stoqlib.lib.message import info, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity, get_formatted_cost
@@ -51,8 +54,10 @@ from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.loaneditor import LoanItemEditor
+from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteItemStep
+from stoqlib.reporting.loanreceipt import LoanReceipt
 
 _ = stoqlib_gettext
 
@@ -65,7 +70,7 @@ _ = stoqlib_gettext
 class StartNewLoanStep(WizardEditorStep):
     gladefile = 'SalesPersonStep'
     model_type = Loan
-    proxy_widgets = ('client', 'salesperson', 'expire_date')
+    proxy_widgets = ['client', 'salesperson', 'expire_date']
     cfop_widgets = ('cfop',)
 
     def _setup_widgets(self):
@@ -89,15 +94,31 @@ class StartNewLoanStep(WizardEditorStep):
         items = [(c.name, c.client) for c in clients]
         self.client.prefill(sorted(items))
         self.client.set_property('mandatory', True)
+        # expire date combo
+        self.expire_date.set_property('mandatory', True)
         # CFOP combo
         self.cfop_lbl.hide()
         self.cfop.hide()
         self.create_cfop.hide()
-
-        # Transporter Combo
-        self.transporter_lbl.hide()
-        self.transporter.hide()
+        # Transporter/RemovedBy Combo
+        self.transporter_lbl.set_text(_(u'Removed By:'))
         self.create_transporter.hide()
+        # removed_by widget
+        self.removed_by = ProxyEntry(unicode)
+        self.removed_by.set_property('model-attribute', 'removed_by')
+        if 'removed_by' not in self.proxy_widgets:
+            self.proxy_widgets.append('removed_by')
+        self.removed_by.show()
+        self._replace_widget(self.transporter, self.removed_by)
+
+    def _replace_widget(self, old_widget, new_widget):
+        # retrieve the position, since we will replace two widgets later.
+        top = self.table2.child_get_property(old_widget, 'top-attach')
+        bottom = self.table2.child_get_property(old_widget, 'bottom-attach')
+        left = self.table2.child_get_property(old_widget, 'left-attach')
+        right = self.table2.child_get_property(old_widget, 'right-attach')
+        self.table2.remove(old_widget)
+        self.table2.attach(self.removed_by, left, right, top, bottom)
 
     #
     # WizardStep hooks
@@ -147,6 +168,7 @@ class LoanItemStep(SaleQuoteItemStep):
     """ Wizard step for loan items selection """
     model_type = Loan
     item_table = LoanItem
+    sellable_view = ProductFullStockItemView
 
     def post_init(self):
         SaleQuoteItemStep.post_init(self)
@@ -185,7 +207,7 @@ class LoanSelectionStep(BaseWizardStep):
                              data_type=str, width=80),
                 SearchColumn('responsible_name', title=_(u'Responsible'),
                              data_type=str, expand=True),
-                SearchColumn('client_name', title=_(u'Name'),
+                SearchColumn('client_name', title=_(u'Client'),
                              data_type=str, expand=True),
                 SearchColumn('open_date', title=_(u'Opened'),
                              data_type=datetime.date),
@@ -392,6 +414,12 @@ class NewLoanWizard(BaseWizard):
                     branch=get_current_branch(conn),
                     connection=conn)
 
+    def _print_receipt(self, order):
+        # we can only print the receipt if the loan was confirmed.
+        if yesno(_(u'Do you want to print the receipt now ?'),
+                 gtk.RESPONSE_YES, _(u'Yes'), _(u'No')):
+            print_report(LoanReceipt, order)
+
     #
     # WizardStep hooks
     #
@@ -402,6 +430,7 @@ class NewLoanWizard(BaseWizard):
             item.do_loan(branch)
         self.retval = self.model
         self.close()
+        self._print_receipt(self.model)
 
 
 class CloseLoanWizard(BaseWizard):
