@@ -28,7 +28,7 @@ import datetime
 
 from kiwi.datatypes import converter
 
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import AND, OR
 from stoqlib.database.orm import Alias, LEFTJOINOn, INNERJOINOn
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.account import BankAccount
@@ -254,7 +254,7 @@ class CardPaymentView(Viewable):
 
         return cls.select(query, having=having, connection=connection)
 
-class _CheckPaymentView(Viewable):
+class _BillandCheckPaymentView(Viewable):
     """A base view for check and bill payments."""
     columns = dict(
         id=Payment.q.id,
@@ -266,13 +266,19 @@ class _CheckPaymentView(Viewable):
         bank_id=BankAccount.q.bank_id,
         branch=BankAccount.q.branch,
         account=BankAccount.q.account,
+        method_description=PaymentMethod.q.description,
     )
 
     joins = [
         LEFTJOINOn(None, CheckData, Payment.q.id == CheckData.q.paymentID),
+        INNERJOINOn(None, PaymentMethod,
+                    Payment.q.methodID == PaymentMethod.q.id),
         LEFTJOINOn(None, BankAccount,
                    BankAccount.q.id == CheckData.q.bank_dataID),
     ]
+
+    clause = OR(PaymentMethod.q.method_name == 'bill',
+                PaymentMethod.q.method_name == 'check')
 
     def get_status_str(self):
         return Payment.statuses[self.status]
@@ -282,20 +288,22 @@ class _CheckPaymentView(Viewable):
         return Payment.get(self.id, connection=self.get_connection())
 
 
-class InCheckPaymentView(_CheckPaymentView):
+class InCheckPaymentView(_BillandCheckPaymentView):
     """Stores information about bill and check receivings.
     """
-    columns = _CheckPaymentView.columns
-    joins = _CheckPaymentView.joins
-    clause = AND(PaymentAdaptToInPayment.q._originalID == Payment.q.id)
+    columns = _BillandCheckPaymentView.columns
+    joins = _BillandCheckPaymentView.joins
+    clause = AND(_BillandCheckPaymentView.clause,
+                 PaymentAdaptToInPayment.q._originalID == Payment.q.id)
 
 
-class OutCheckPaymentView(_CheckPaymentView):
+class OutCheckPaymentView(_BillandCheckPaymentView):
     """Stores information about bill and check payments.
     """
-    columns = _CheckPaymentView.columns
-    joins = _CheckPaymentView.joins
-    clause = AND(PaymentAdaptToOutPayment.q._originalID == Payment.q.id)
+    columns = _BillandCheckPaymentView.columns
+    joins = _BillandCheckPaymentView.joins
+    clause = AND(_BillandCheckPaymentView.clause,
+                 PaymentAdaptToInPayment.q._originalID == Payment.q.id)
 
 
 class PaymentChangeHistoryView(Viewable):
