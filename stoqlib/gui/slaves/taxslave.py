@@ -250,12 +250,12 @@ class BaseIPISlave(BaseTaxSlave):
 
     tooltips = {
         'cl_enq': u'Preenchimento conforme Atos Normativos editados pela '
-                   'Receita Federal (Observação 4)',
+                  u'Receita Federal (Observação 4)',
         'cnpj_prod': u'Informar os zeros não significativos',
         'c_selo': u'Preenchimento conforme Atos Normativos editados pela '
-                   'Receita Federal (Observação 3)',
+                  u'Receita Federal (Observação 3)',
         'c_enq': u'Tabela a ser criada pela RFB, informar 999 enquanto a '
-                  'tabela não for criada',
+                 u'tabela não for criada',
     }
 
     field_options = {
