@@ -78,6 +78,8 @@ class _BaseBillCheckSearch(SearchDialog):
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), data_type=int,
                              sorted=True, format='%04d', long_title='Id'),
+                SearchColumn('method_description', title=_(u'Method'),
+                             data_type=str),
                 SearchColumn('bank_id', title=_(u'Bank'), data_type=int,
                              format='%03d'),
                 SearchColumn('branch', title=_(u'Branch Number'), data_type=str,
