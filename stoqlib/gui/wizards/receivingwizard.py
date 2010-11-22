@@ -210,8 +210,8 @@ class ReceivingOrderProductStep(SellableItemStep):
         return has_receivings
 
     def _on_purchase_item_selection_changed(self, klist, items):
-        product = items[0].purchase_item.sellable.product
-        if self._image_viewer:
+        if items and self._image_viewer:
+            product = items[0].purchase_item.sellable.product
             self._image_viewer.set_product(product)
 
     def _open_image_viewer(self):
@@ -252,7 +252,7 @@ class ReceivingOrderProductStep(SellableItemStep):
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
         self.slave.klist.connect('selection-changed',
-            self._on_purchase_item_selection_changed)
+                                 self._on_purchase_item_selection_changed)
         self._image_viewer = None
         # FIXME: Enable before release
         #self._show_image_button = gtk.CheckButton(_("Show product image"))
