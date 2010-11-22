@@ -42,7 +42,12 @@ class CreditProviderDetailsSlave(BaseEditorSlave):
                      'open_contract_date',
                      'max_installments',
                      'payment_day',
-                     'provider_fee',
+                     'credit_fee',
+                     'credit_installments_store_fee',
+                     'credit_installments_provider_fee',
+                     'debit_fee',
+                     'debit_pre_dated_fee',
+                     'monthly_fee',
                      'closing_day')
 
     def setup_proxies(self):
@@ -53,9 +58,19 @@ class CreditProviderDetailsSlave(BaseEditorSlave):
     # Kiwi Callbacks
     #
 
-    def on_provider_fee__validate(self, widget, value):
-        if value >= 100:
-            return ValidationError(_(u'The provider fee can not be greater '
-                                      'or equal to 100%.'))
+    def _validate(self, widget, value):
+        if value > 100:
+            return ValidationError(_(u'The fee can not be greater to 100%.'))
         if value < 0:
-            return ValidationError(_(u'The provider fee must be positive.'))
+            return ValidationErrror(_(u'The fee must be positive.'))
+
+    on_credit_fee__validate = _validate
+    on_credit_installments_store_fee__validate = _validate
+    on_credit_installments_provider_fee__validate = _validate
+    on_debit_fee__validate = _validate
+    on_debit_pre_dated_fee__validate = _validate
+
+    def on_monthly_fee__validate(self, widget, value):
+        if value < 0:
+            return ValidationError(_(u'The monthly fee must be positive.'))
+   

@@ -211,9 +211,9 @@ class CardPaymentView(Viewable):
         renegotiation_id=PaymentRenegotiation.q.id,
         status=Payment.q.status,
         value=Payment.q.value,
-        fee=PersonAdaptToCreditProvider.q.provider_fee,
-        fee_calc=(PersonAdaptToCreditProvider.q.provider_fee * Payment.q.value)
-                  /100,)
+        fee=CreditCardData.q.fee,
+        fee_calc=CreditCardData.q.fee_value,)
+
 
     joins = [
         INNERJOINOn(None, PaymentMethod,

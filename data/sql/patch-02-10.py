@@ -1,0 +1,21 @@
+# -*- coding: utf-8 -*-
+
+# bug 4201: Atualizacão de dados existentes na tabela 'credit_card_data'
+
+from stoqlib.domain.payment.method import CreditCardData
+
+def apply_patch(trans):
+    
+    for data in CreditCardData.select(connection=trans):
+        payment = data.payment
+        provider = data.provider
+
+        data.fee = provider.monthly_fee
+        data.fee_value = payment.value * data.fee / 100
+        provider.credit_fee = provider.monthly_fee
+        provider.credit_installments_store_fee = provider.monthly_fee
+        provider.credit_installments_provider_fee = provider.monthly_fee
+        provider.debit_fee = provider.monthly_fee
+        provider.debit_pre_dated_fee = provider.monthly_fee
+        provider.monthly_fee = 0
+    trans.commit()
