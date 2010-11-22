@@ -10,6 +10,9 @@ def apply_patch(trans):
         payment = data.payment
         provider = data.provider
 
+# Before, provider_fee had percentual data type
+# With this change, monthly_fee has monetary data type
+
         data.fee = provider.monthly_fee
         data.fee_value = payment.value * data.fee / 100
         provider.credit_fee = provider.monthly_fee

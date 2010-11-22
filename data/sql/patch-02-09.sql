@@ -1,7 +1,7 @@
 --Create cards_taxes - bug4201
 
 -- Before, provider_fee had percentual data type
--- With the charge, monthly_fee has monetary data type
+-- With this change, monthly_fee has monetary data type
 ALTER TABLE person_adapt_to_credit_provider
     RENAME COLUMN provider_fee TO monthly_fee;
 
