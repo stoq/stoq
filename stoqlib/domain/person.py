@@ -820,8 +820,9 @@ class PersonAdaptToCreditProvider(PersonAdapter):
 
     """Fee columns
     B{Important Attributes}:
-        - I{monthly_fee}: values chargeds from a credit provider
-        - I{*_fee}: cards fee types
+        - I{monthly_fee}: values charged monthly by the credit provider
+        - I{*_fee}: fee applied by the provider for each payment transaction,
+                    depending on the transaction type
     """ 
 
     is_active = BoolCol(default=True)
