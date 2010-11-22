@@ -35,6 +35,8 @@ from stoqlib.gui.base.search import (SearchEditor, ThisWeek, NextWeek,
                                      ThisMonth, NextMonth)
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.printing import print_report
+from stoqlib.reporting.purchase import PurchasedItemsReport
 
 _ = stoqlib_gettext
 
@@ -51,6 +53,10 @@ class PurchasedItemsSearch(SearchEditor):
 
     def _get_date_options(self):
         return [Any, Today, ThisWeek, NextWeek, ThisMonth, NextMonth]
+
+    def on_print_button_clicked(self, button):
+        print_report(PurchasedItemsReport, self.results,
+                     filters = self.search.get_search_filters())
 
     #
     # SearchDialog Hooks

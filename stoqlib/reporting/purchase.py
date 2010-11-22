@@ -37,7 +37,8 @@ from stoqlib.lib.validators import (get_formatted_price, get_formatted_cost,
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.template import BaseStoqReport, ObjectListReport
-from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
+from stoqlib.domain.purchase import (PurchaseOrder, PurchaseOrderView,
+                                     PurchaseItemView)
 
 _ = stoqlib_gettext
 
@@ -75,6 +76,32 @@ class PurchaseReport(ObjectListReport):
 
         self.add_object_table(self._purchases, self.get_columns(),
                               summary_row=summary_row)
+
+
+class PurchasedItemsReport(ObjectListReport):
+    report_name = _("Purchases Items Report")
+    main_object_name = _("purchased items")
+    obj_type = PurchaseItemView
+
+    def __init__(self, filename, purchases, *args, **kwargs):
+        self._purchases = purchases
+        ObjectListReport.__init__(self, filename, purchases, self.report_name,
+                                  landscape=True, *args, **kwargs)
+        self._setup_table()
+
+    def _setup_table(self):
+        totals = [(purchase.purchased, purchase.received, purchase.stocked)
+                  for purchase in self._purchases]
+        purchased, received, stocked = zip(*totals)
+        self.add_summary_by_column(_(u'Purchased'),
+                                   format_quantity(sum(purchased, Decimal(0))))
+        self.add_summary_by_column(_(u'Received'),
+                                   format_quantity(sum(received, Decimal(0))))
+        self.add_summary_by_column(_(u'In Stock'),
+                                   format_quantity(sum(stocked, Decimal(0))))
+
+        self.add_object_table(self._purchases, self.get_columns(),
+                              summary_row=self.get_summary_row())
 
 
 class PurchaseOrderReport(BaseStoqReport):
