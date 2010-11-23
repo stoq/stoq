@@ -132,6 +132,11 @@ def _create_slave_test():
         'BasePaymentAddition': ' ',
         'PaymentsEditor': 'IDomainSlaveMapper missing',
         'InConsignmentItemEditor': ' ',
+        'ICMSTemplateSlave': 'Unkown type',
+        'IPITemplateSlave': 'Unkown type',
+        'ProductTaxSlave': 'Unkown type',
+        'SaleItemICMSSlave': 'Unkown type',
+        'SaleItemIPISlave': 'Unkown type',
         }
     namespace = dict(_test_slave=_test_slave)
 

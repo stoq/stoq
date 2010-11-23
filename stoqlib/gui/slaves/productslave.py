@@ -166,7 +166,8 @@ class ProductTaxSlave(BaseEditorSlave):
     def _fill_combo(self, combo, type):
         types = [(None, None)]
         types.extend([(t.name, t.get_tax_model()) for t in
-                        ProductTaxTemplate.selectBy(tax_type=type)])
+                        ProductTaxTemplate.selectBy(tax_type=type,
+                                                    connection=self.conn)])
         combo.prefill(types)
 
     def _setup_widgets(self):
