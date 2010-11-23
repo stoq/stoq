@@ -76,22 +76,24 @@ class _BaseBillCheckSearch(SearchDialog):
         self.set_searchbar_labels(_(u'Bill or check number:'))
 
     def get_columns(self):
-        return [SearchColumn('id', title=_('#'), data_type=int,
-                             sorted=True, format='%04d', long_title='Id'),
+        return [SearchColumn('id', title=_('#'), data_type=int, sorted=True,
+                             format='%04d', long_title='Id', width=55),
                 SearchColumn('method_description', title=_(u'Method'),
-                             data_type=str),
+                             data_type=str, width=60),
                 SearchColumn('bank_id', title=_(u'Bank'), data_type=int,
-                             format='%03d'),
-                SearchColumn('branch', title=_(u'Branch Number'), data_type=str,
-                             expand=True),
+                             format='%03d', width=50),
+                SearchColumn('branch', title=_(u'Branch Number'),
+                             data_type=str, expand=True),
                 SearchColumn('account', title=_(u'Account'), data_type=str,
                              expand=True),
-                SearchColumn('payment_number', title=_(u'Number'), data_type=str,
-                             expand=True),
+                SearchColumn('payment_number', title=_(u'Number'),
+                             data_type=str, expand=True),
                 SearchColumn('due_date', title=_('Due Date'),
-                             data_type=datetime.date),
+                             data_type=datetime.date,
+                             expand=True),
                 SearchColumn('paid_date', title=_('Paid Date'),
-                             data_type=datetime.date),
+                             data_type=datetime.date,
+                             expand=True),
                 SearchColumn('status_str', title=_('Status'), data_type=str,
                              valid_values=self._get_status_values(),
                              search_attribute='status'),
@@ -144,7 +146,7 @@ class CardPaymentSearch(SearchDialog):
         self.set_text_field_columns(['drawee_name'])
         self.set_searchbar_labels(_(u'Client:'))
         self.executer.set_query(self.executer_query)
-        
+
         #Provider
         provider_filter = self.create_provider_filter(_('Provider:'))
         self.add_filter(provider_filter, columns=[])
