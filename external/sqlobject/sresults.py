@@ -166,7 +166,7 @@ class SelectResults(object):
         # @@: This could be optimized, using a simpler algorithm
         # since we don't have to worry about garbage collection,
         # etc., like we do with .lazyIter()
-        return iter(list(self.lazyIter()))
+        return self.lazyIter()
 
     def lazyIter(self):
         """

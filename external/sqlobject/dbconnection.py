@@ -823,8 +823,8 @@ class Transaction(object):
         # still iterating through the results.
         # @@: But would it be okay for psycopg, with threadsafety
         # level 2?
-        return iter(list(select.IterationClass(self, self._connection,
-                                   select, keepConnection=True)))
+        return select.IterationClass(self, self._connection,
+                                   select, keepConnection=True)
 
     def _SO_delete(self, inst):
         cls = inst.__class__.__name__
