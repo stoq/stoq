@@ -29,6 +29,7 @@
 import gettext
 import socket
 import sys
+import os
 
 from kiwi.component import provide_utility
 from stoqlib.database.admin import ensure_admin_user, initialize_system
@@ -99,7 +100,14 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
             conn = get_connection()
         except DatabaseError, e:
             error(e.short, e.msg)
-        set_current_branch_station(conn, socket.gethostname())
+
+        # For LTSP systems we cannot use the hostname as stoq is run
+        # on a shared serve system. Instead the ip of the client system
+        # is available in the LTSP_CLIENT environment variable
+        station_name = os.environ.get('LTSP_CLIENT_HOSTNAME', None)
+        if station_name is None:
+            station_name = socket.gethostname()
+        set_current_branch_station(conn, station_name)
 
     if check_schema:
         _check_tables()
