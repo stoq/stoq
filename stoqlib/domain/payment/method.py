@@ -31,7 +31,7 @@ from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
 from zope.interface import implements
 
-from stoqlib.database.orm import DecimalCol
+from stoqlib.database.orm import DecimalCol, PriceCol
 from stoqlib.database.orm import IntCol, ForeignKey, BoolCol, StringCol, UnicodeCol
 from stoqlib.database.orm import const, AND
 from stoqlib.domain.base import Domain
@@ -93,6 +93,8 @@ class CreditCardData(Domain):
     payment = ForeignKey('Payment')
     card_type = IntCol(default=TYPE_CREDIT)
     provider = ForeignKey('PersonAdaptToCreditProvider', default=None)
+    fee = DecimalCol(default=0)
+    fee_value = PriceCol(default=0)
 
 
 class PaymentMethod(Domain):

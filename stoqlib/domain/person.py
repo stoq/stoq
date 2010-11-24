@@ -88,6 +88,7 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        ICreditProvider, ITransporter,
                                        IDescribable, IPersonFacet)
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.method import CreditCardData
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.transaction import TransactionEntry
 from stoqlib.domain.profile import UserProfile
@@ -804,7 +805,25 @@ class PersonAdaptToCreditProvider(PersonAdapter):
 
     (PROVIDER_CARD,) = range(1)
 
+    cards_type = {
+        CreditCardData.TYPE_CREDIT: 'credit_fee',
+        CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE: 
+                                                'credit_installments_store_fee',
+        CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER:
+                                             'credit_installments_provider_fee',
+        CreditCardData.TYPE_DEBIT: 'debit_fee',
+        CreditCardData.TYPE_DEBIT_PRE_DATED: 'debit_pre_dated_fee'
+    }
+                                        
+
     provider_types = {PROVIDER_CARD: _(u'Card Provider')}
+
+    """Fee columns
+    B{Important Attributes}:
+        - I{monthly_fee}: values charged monthly by the credit provider
+        - I{*_fee}: fee applied by the provider for each payment transaction,
+                    depending on the transaction type
+    """ 
 
     is_active = BoolCol(default=True)
     provider_type = IntCol(default=PROVIDER_CARD)
@@ -814,7 +833,12 @@ class PersonAdaptToCreditProvider(PersonAdapter):
     closing_day = IntCol(default=10)
     payment_day = IntCol(default=10)
     max_installments = IntCol(default=12)
-    provider_fee = DecimalCol(default=0)
+    monthly_fee = PriceCol(default=0)
+    credit_fee = DecimalCol(default=0)
+    credit_installments_store_fee = DecimalCol(default=0)
+    credit_installments_provider_fee = DecimalCol(default=0)
+    debit_fee = DecimalCol(default=0)
+    debit_pre_dated_fee = DecimalCol(default=0)
 
     #
     # ICreditProvider implementation
@@ -850,6 +874,9 @@ class PersonAdaptToCreditProvider(PersonAdapter):
     @classmethod
     def get_active_providers(cls, conn):
         return cls.select(cls.q.is_active == True, connection=conn)
+
+    def get_fee_for_payment(self,provider, data):
+        return getattr(self, provider.cards_type[data.card_type])
 
 
 Person.registerFacet(PersonAdaptToCreditProvider, ICreditProvider)
@@ -1154,6 +1181,14 @@ class CreditProviderView(Viewable):
         phone_number=Person.q.phone_number,
         short_name=PersonAdaptToCreditProvider.q.short_name,
         is_active=PersonAdaptToCreditProvider.q.is_active,
+        credit_fee=PersonAdaptToCreditProvider.q.credit_fee,
+        debit_fee=PersonAdaptToCreditProvider.q.debit_fee,
+        credit_installments_store_fee=
+            PersonAdaptToCreditProvider.q.credit_installments_store_fee,
+        credit_installments_provider_fee=
+            PersonAdaptToCreditProvider.q.credit_installments_provider_fee,
+        debit_pre_dated_fee=PersonAdaptToCreditProvider.q.debit_pre_dated_fee,
+        monthly_fee=PersonAdaptToCreditProvider.q.monthly_fee
         )
 
     joins = [
