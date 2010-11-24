@@ -360,8 +360,8 @@ class ViewableSelectResults(SelectResults):
 
     def lazyIter(self):
         conn = self._getConnection()
-        return iter(list(ViewableIteration(
-            conn, conn.getConnection(), self, keepConnection=True)))
+        return ViewableIteration(
+            conn, conn.getConnection(), self, keepConnection=True)
 
 
 _cache = {}
