@@ -120,7 +120,9 @@ class PurchaseApp(SearchableAppWindow):
                                       label=_('<b>Orders Total:</b>'),
                                       format='<b>%s</b>')
         self.SendToSupplier.set_sensitive(False)
-        # FIXME: enable before release
+        # FIXME: enable before release.
+        # XXX: Figure out if ideale still needs this. otherwise, remove the
+        # related code
         self.Production.set_sensitive(False)
 
     def _update_totals(self):

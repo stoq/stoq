@@ -141,9 +141,6 @@ class StockApp(SearchableAppWindow):
         space.show()
         self.button_box.pack_start(space)
 
-        # FIXME: enable before release
-        self.TogglePictureViewer.set_sensitive(False)
-
         self.image = gtk.Image()
 
         button = gtk.Button()
