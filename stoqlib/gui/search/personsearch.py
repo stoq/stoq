@@ -26,6 +26,8 @@
 ##
 """ Search dialogs for person objects """
 
+from decimal import Decimal
+
 from kiwi.argcheck import argcheck
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
@@ -183,7 +185,21 @@ class AbstractCreditProviderSearch(BasePersonSearch):
                 SearchColumn('short_name', _('Short Name'), str,
                              width=150),
                 SearchColumn('is_active', _('Active'), data_type=bool,
-                             editable=True)]
+                             editable=True),
+                SearchColumn('credit_fee', _('Credit Fee'), data_type=Decimal,
+                             width=90, visible=False),
+                SearchColumn('debit_fee', _('Debit Fee'), data_type=Decimal,
+                             width=90, visible=False),
+                SearchColumn('credit_installments_store_fee',
+                             _('Credit installments store Fee'), data_type=Decimal,
+                             width=190, expand=True, visible=False),
+                SearchColumn('credit_installments_provider_fee',
+                             _('Credit installments provider Fee'), data_type=Decimal,
+                             width=190, expand=True, visible=False),
+                SearchColumn('debit_pre_dated_fee', _('Debit pre-dated fee'),
+                             data_type=Decimal, width=190, visible=False),
+                SearchColumn('monthly_fee', _('Fixed fee'),
+                             data_type=Decimal, width=100, visible=False),]
 
     def get_editor_model(self, provider_view):
         return provider_view.provider
