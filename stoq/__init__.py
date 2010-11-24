@@ -26,8 +26,8 @@
 
 program_name    = "Stoq"
 website         = 'http://www.stoq.com.br'
-version         = "0.9.13.2"
-release_date    = (2010, 9, 15)
+version         = "0.9.14"
+release_date    = (2010, 11, 24)
 
 try:
     from kiwi.environ import Library
