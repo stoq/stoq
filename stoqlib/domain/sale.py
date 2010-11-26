@@ -148,7 +148,8 @@ class SaleItem(Domain):
     #
 
     def get_total(self):
-        return currency(self.price * self.quantity + self.ipi_info.v_ipi)
+        if self.ipi_info:
+            return currency(self.price * self.quantity + self.ipi_info.v_ipi)
         return currency(self.price * self.quantity)
 
     def get_quantity_unit_string(self):
