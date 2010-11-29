@@ -237,6 +237,7 @@ class SaleListToolbar(GladeSlaveDelegate):
     def on_print_button__clicked(self, button):
         print_report(SalesReport, self.sales, filters=self._report_filters)
 
+
 class SaleReturnSlave(BaseEditorSlave):
     """A slave for sale return data """
     gladefile = 'SaleReturnSlave'
