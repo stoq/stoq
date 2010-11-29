@@ -31,7 +31,9 @@ import gtk
 from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
 from kiwi.datatypes import currency, ValidationError
+from kiwi.python import Settable
 
+from stoqlib.database.exceptions import IntegrityError
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.enums import CreatePaymentStatus
@@ -231,12 +233,16 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     proxy_widgets = ('total_lbl',
                      'subtotal_lbl',
                      'salesperson',
-                     'invoice_number',
                      'client',
                      'transporter',)
+
+    invoice_widgets = ('invoice_number',)
     cfop_widgets = ('cfop',)
 
-    def __init__(self, wizard, conn, model, payment_group):
+    def __init__(self, wizard, conn, model, payment_group,
+                 invoice_model):
+        self.invoice_model = invoice_model
+
         self.payment_group = payment_group
         WizardEditorStep.__init__(self, conn, wizard, model)
         BaseMethodSelectionStep.__init__(self)
@@ -340,18 +346,24 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             self.cfop_lbl.hide()
             self.cfop.hide()
             self.create_cfop.hide()
+
         # the maximum number allowed for an invoice is 999999999.
         self.invoice_number.set_adjustment(
             gtk.Adjustment(lower=1, upper=999999999, step_incr=1))
+
         if not self.model.invoice_number:
             # we need to use a new transaction, so any query will not count
             # the current sale object.
             trans = new_transaction()
             new_invoice_number = Sale.get_last_invoice_number(trans) + 1
-            self.model.invoice_number = new_invoice_number
             trans.close()
+            self.invoice_model.invoice_number = new_invoice_number
         else:
+            new_invoice_number = self.model.invoice_number
+            self.invoice_model.invoice_number = new_invoice_number
             self.invoice_number.set_sensitive(False)
+
+        self.invoice_model.original_invoice = new_invoice_number
 
     #
     # WizardStep hooks
@@ -383,6 +395,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     SalesPersonStep.proxy_widgets)
+        self.invoice_proxy = self.add_proxy(self.invoice_model,
+                                            self.invoice_widgets)
         if self.model.client:
             self.client.set_sensitive(False)
             self.create_client.set_sensitive(False)
@@ -455,7 +469,13 @@ class ConfirmSaleWizard(BaseWizard):
         # rollback safely when it's needed
         conn.commit()
         register_payment_operations()
-        first_step = self.first_step(self, conn, model, self.payment_group)
+
+        # invoice_model is a Settable so avoid bug 4218, where more
+        # than one checkout may try to use the same invoice number.
+        self.invoice_model = Settable(invoice_number=None,
+                                     original_invoice=None)
+        first_step = self.first_step(self, conn, model, self.payment_group,
+                                     self.invoice_model)
         BaseWizard.__init__(self, conn, first_step, model)
 
         if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
@@ -473,6 +493,10 @@ class ConfirmSaleWizard(BaseWizard):
                                "of type Sale, got %s instead" % model)
         self.payment_group = model.group
 
+    def _invoice_changed(self):
+        return (self.invoice_model.invoice_number !=
+                    self.invoice_model.original_invoice)
+
 
     #
     # BaseWizard hooks
@@ -480,4 +504,25 @@ class ConfirmSaleWizard(BaseWizard):
 
     def finish(self):
         self.retval = True
+        invoice_number = self.invoice_model.invoice_number
+
+        # Workaround for bug 4218: If the invoice is was already used by
+        # another transaction (another cashier), try using the next one
+        # available, or show a warning if the number was manually set.
+        while True:
+            try:
+                self.conn.savepoint('before_set_invoice_number')
+                self.model.invoice_number = invoice_number
+            except IntegrityError:
+                self.conn.rollback_to_savepoint('before_set_invoice_number')
+                if self._invoice_changed():
+                    warning(_(u"The invoice number %s is already used. "
+                       "Confirm the sale again to chose another one.") %
+                       invoice_number)
+                    self.retval = False
+                    break
+                else:
+                    invoice_number += 1
+            else:
+                break
         self.close()
