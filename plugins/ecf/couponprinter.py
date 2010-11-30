@@ -348,7 +348,7 @@ class Coupon(object):
         for payment in sale.payments:
             constant = self._get_payment_method_constant(payment)
             self._driver.add_payment(constant.device_value,
-                                     payment.base_value)
+                                     payment.value)
 
         return True
 
