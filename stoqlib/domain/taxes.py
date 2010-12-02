@@ -211,6 +211,10 @@ class SaleItemIcms(BaseICMS):
         elif self.cst == 51:
             self._calc_normal(sale_item)
 
+        elif self.cst == 60:
+            self.v_icms_st = 0
+            self.v_bc_st = 0
+
         elif self.cst in (70, 90):
             self._calc_normal(sale_item)
             self._calc_st(sale_item)
