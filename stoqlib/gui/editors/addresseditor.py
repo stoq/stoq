@@ -42,6 +42,7 @@ from stoqlib.lib.countries import get_countries
 from stoqlib.lib.defaults import get_country_states
 from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import validate_state
 
 _ = stoqlib_gettext
 
@@ -195,6 +196,10 @@ class AddressSlave(BaseEditorSlave):
     #
     # Kiwi callbacks
     #
+
+    def on_state__validate(self, entry, state):
+        if not validate_state(state):
+            return ValidationError(_("The State is not valid"))
 
     def on_streetnumber__validate(self, entry, streetnumber):
         if streetnumber <= 0:
