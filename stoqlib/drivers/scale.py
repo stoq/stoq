@@ -68,6 +68,8 @@ def read_scale_info(conn):
     dlg.set_position(gtk.WIN_POS_CENTER)
     def notifyfunc(scale, dummy):
         dlg.destroy()
+        return False
+
     scale.notify_read(notifyfunc)
     dlg.run()
     return scale.read_data()
