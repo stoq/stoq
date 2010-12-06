@@ -176,3 +176,11 @@ def validate_cnpj(cnpj):
             verification_base.insert(0, 6)
 
     return True
+
+def validate_state(state):
+    state_code = ("RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI",
+                  "CE", "RN", "PB", "PE", "AL", "SE", "BA", "MG", "ES",
+                  "RJ", "SP", "PR", "SC", "RS", "MS", "MT", "GO", "DF")
+    if state.upper() in state_code:
+        return True
+    return False

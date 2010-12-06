@@ -31,6 +31,7 @@ import lxml.etree as ET
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.database.orm import AND, LIKE
+from stoqlib.lib.parameters import sysparam
 
 from nfedomain import NFeCityData
 
@@ -98,6 +99,11 @@ def get_city_code(city_name, state=None, code=None):
         state_code = get_state_code(state)
     else:
         state_code = code
+
+    if state_code is None:
+        conn = get_connection()
+        # if the user informed an invalid state code, use a fallback value
+        state_code = get_state_code(sysparam(conn).STATE_SUGGESTED)
     assert state_code is not None
 
     city_name = remove_accentuation(city_name)
