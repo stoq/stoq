@@ -95,6 +95,16 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     from stoq.lib.applist import ApplicationDescriptions
     provide_utility(IApplicationDescriptions, ApplicationDescriptions())
 
+    if check_schema:
+        _check_tables()
+
+        migration = StoqlibSchemaMigration()
+        if not migration.check_uptodate():
+            error(_("Database schema error"),
+                  _("The database schema has changed, but the database has "
+                    "not been updated. Run 'stoqdbadmin updateschema` to"
+                    "update the schema  to the latest available version."))
+
     if register_station:
         try:
             conn = get_connection()
@@ -108,16 +118,6 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         if station_name is None:
             station_name = socket.gethostname()
         set_current_branch_station(conn, station_name)
-
-    if check_schema:
-        _check_tables()
-
-        migration = StoqlibSchemaMigration()
-        if not migration.check_uptodate():
-            error(_("Database schema error"),
-                  _("The database schema has changed, but the database has "
-                    "not been updated. Run 'stoqdbadmin updateschema` to"
-                    "update the schema  to the latest available version."))
 
     if load_plugins:
         from stoqlib.lib.pluginmanager import provide_plugin_manager
