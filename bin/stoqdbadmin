@@ -173,7 +173,8 @@ class StoqCommandHandler:
         from stoqlib.database.migration import StoqlibSchemaMigration
         from stoqlib.lib.pluginmanager import provide_plugin_manager
 
-        self._read_config(options, check_schema=False, load_plugins=False)
+        self._read_config(options, check_schema=False, load_plugins=False,
+                          register_station=False)
 
         # This is a little bit tricky to be able to apply the initial
         # plugin infrastructure
