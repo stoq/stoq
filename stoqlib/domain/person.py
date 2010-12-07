@@ -727,7 +727,15 @@ class PersonAdaptToUser(PersonAdapter):
 Person.registerFacet(PersonAdaptToUser, IUser)
 
 class PersonAdaptToBranch(PersonAdapter):
-    """A branch facet of a person."""
+    """A branch facet of a person.
+
+    @ivar crt: Código de Regime Tributário
+
+    1 – Simples Nacional
+    2 – Simples Nacional – excesso de sublimite da receita bruta
+    3 – Regime Normal
+
+    """
     implements(IBranch)
 
     (STATUS_ACTIVE,
@@ -738,6 +746,7 @@ class PersonAdaptToBranch(PersonAdapter):
 
     manager = ForeignKey('PersonAdaptToEmployee', default=None)
     is_active = BoolCol(default=True)
+    crt = IntCol(default=1)
 
     #
     # Branch Company methods
