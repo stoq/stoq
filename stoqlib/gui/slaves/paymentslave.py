@@ -769,6 +769,7 @@ class CardMethodSlave(BaseEditorSlave):
         self.providers = self._get_credit_providers()
         self._selected_type = CreditCardData.TYPE_CREDIT
         BaseEditorSlave.__init__(self, conn)
+        self.register_validate_function(self._refresh_next)
         self.parent = parent
         self._order = order
 
@@ -862,6 +863,7 @@ class CardMethodSlave(BaseEditorSlave):
             minimum = 1
 
         self.installments_number.set_range(minimum, maximum)
+        self.installments_number.set_sensitive(maximum != 1)
 
     def _setup_payments(self):
         provider = self.model.provider
@@ -900,6 +902,14 @@ class CardMethodSlave(BaseEditorSlave):
 
     def on_credit_provider__changed(self, combo):
         self._setup_max_installments()
+
+    def on_installments_number__validate(self, entry, installments):
+        max_installments = self.installments_number.get_range()[1]
+        min_installments = self.installments_number.get_range()[0]
+        if not min_installments <= installments <= max_installments:
+            return ValidationError(_(u'Number of installments must be greater'
+                ' than %d and lower than %d')
+                % (min_installments, max_installments))
 
 
 class _MultipleMethodEditor(BaseEditor):
