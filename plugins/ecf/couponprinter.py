@@ -322,7 +322,7 @@ class Coupon(object):
         return self._driver.open()
 
     def totalize(self, sale):
-        return self._driver.totalize(sale.discount_percentage,
+        return self._driver.totalize(sale.discount_value,
                                      Decimal('0'),
                                      TaxType.NONE)
 
