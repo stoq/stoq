@@ -62,15 +62,5 @@ def read_scale_info(conn):
     """ Read informations from the scale configured for this station.
     """
     scale = _get_scale(conn)
-    dlg = gtk.MessageDialog(None, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_NONE)
-    dlg.set_markup("<span size=\"medium\"><b>%s</b></span>"
-                   % _("Waiting Scale Reading..."))
-    dlg.set_position(gtk.WIN_POS_CENTER)
-    def notifyfunc(scale, dummy):
-        dlg.destroy()
-        return False
-
-    scale.notify_read(notifyfunc)
-    dlg.run()
     return scale.read_data()
 
