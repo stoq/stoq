@@ -205,8 +205,9 @@ class NFeGenerator(object):
         name = person.name
         company = ICompany(issuer, None)
         state_registry = company.state_registry
+        crt = self._sale.branch.crt
         self._nfe_issuer = NFeIssuer(name, cnpj=cnpj,
-                                     state_registry=state_registry)
+                                     state_registry=state_registry, crt=crt)
         self._nfe_issuer.set_address(*self._get_address_data(person))
         self._nfe_data.append(self._nfe_issuer)
 
@@ -631,13 +632,16 @@ class NFeIssuer(BaseNFeXMLGroup):
     address_tag = u'enderEmit'
     attributes = [(u'CNPJ', None),
                   (u'CPF', None),
-                  (u'xNome', ''),]
+                  (u'xNome', ''),
+                  (u'CRT', ''),
+                  ]
     txttag = 'C'
     address_txt_tag = 'C05'
     doc_cnpj_tag = 'C02'
     doc_cpf_tag = 'C02a'
 
-    def __init__(self, name, cpf=None, cnpj=None, state_registry=None):
+    def __init__(self, name, cpf=None, cnpj=None, state_registry=None,
+                 crt=None):
         BaseNFeXMLGroup.__init__(self)
         if cnpj is not None:
             self.set_attr('CNPJ', cnpj)
@@ -645,6 +649,7 @@ class NFeIssuer(BaseNFeXMLGroup):
             self.set_attr('CPF', cpf)
 
         self.set_attr('xNome', name)
+        self.set_attr('CRT', crt)
         self._ie = state_registry
 
     def set_address(self, street, number, complement, district, city, state,
@@ -673,7 +678,9 @@ class NFeIssuer(BaseNFeXMLGroup):
             ie = self._ie or 'ISENTO'
         else:
             ie = ''
-        base = '%s|%s||%s||||\n' % (self.txttag, self.get_attr('xNome'), ie,)
+        crt = self.get_attr('CRT') or ''
+        base = '%s|%s||%s|||%s|\n' % (self.txttag, self.get_attr('xNome'),
+                                      ie, crt)
         return base + self.get_doc_txt() + self._address.as_txt()
 
 
@@ -1084,7 +1091,140 @@ class NFeICMS90(BaseNFeICMS):
                   (u'vICMSST', ''),]
 
 
-#FIXME: implement rest of icms tags defined in nfe 2.0
+class NFeICMSPart(BaseNFeICMS):
+    """Partilha do ICMS entre a UF de origem e UF de destino ou a UF
+    definida na legislação.
+    """
+
+    tag = 'ICMSPart'
+    txttag = 'N10a'
+    attributes = [(u'orig', ''),
+                  (u'CST', ''),
+                  (u'modBC', ''),
+                  (u'pRedBC', ''),
+                  (u'vBC', ''),
+                  (u'pICMS', ''),
+                  (u'vICMS', ''),
+                  (u'modBCST', ''),
+                  (u'pMVAST', ''),
+                  (u'pRedBCST', ''),
+                  (u'vBCST', ''),
+                  (u'pICMSST', ''),
+                  (u'vICMSST', ''),
+                  (u'pBCOp', ''),
+                  (u'UFST', '')]
+
+
+class NFeICMSST(BaseNFeICMS):
+    """ICMS ST – repasse de ICMS ST retido anteriormente em operações
+    interestaduais com repasses através do Substituto Tributário.
+    """
+    tag = 'ICMSST'
+    txttag = 'N10b'
+    attributes = [(u'orig', ''),
+                  (u'CST', ''),
+                  (u'vBCSTRet', ''),
+                  (u'vICMSSTRet', ''),
+                  (u'vBCSTDest', ''),
+                  (u'vICMSSTDest', '')]
+
+
+class NFeICMSSN101(BaseNFeICMS):
+    """Grupo CRT=1 – Simples Nacional e CSOSN=101
+    """
+
+    tag = 'ICMSSN101'
+    txttag = 'N10c'
+    attributes = [(u'orig', ''),
+                  (u'CSOSN', ''),
+                  (u'pCredSN', ''),
+                  (u'vCredICMSSN', 'u'),
+                  ]
+
+
+class NFeICMSSN102(BaseNFeICMS):
+    """Grupo CRT=1 – Simples Nacional e CSOSN=102
+    """
+
+    tag = 'ICMSSN102'
+    txttag = 'N10d'
+    attributes = [(u'orig', ''),
+                  (u'CSOSN', ''),
+                  ]
+
+
+class NFeICMSSN201(BaseNFeICMS):
+    """Grupo CRT=1 – Simples Nacional e CSOSN=201
+    """
+
+    tag = 'ICMSSN201'
+    txttag = 'N10e'
+    attributes = [(u'orig', ''),
+                  (u'CSOSN', ''),
+                  (u'modBCST', ''),
+                  (u'pMVAST', ''),
+                  (u'pRedBCST', ''),
+                  (u'vBCST', ''),
+                  (u'pICMSST', ''),
+                  (u'vICMSST', ''),
+                  (u'pCredSN', ''),
+                  (u'vCredICMSSN', ''),
+                  ]
+
+
+class NFeICMSSN202(BaseNFeICMS):
+    """Grupo CRT=1 – Simples Nacional e CSOSN=202
+    """
+
+    tag = 'ICMSSN202'
+    txttag = 'N10f'
+    attributes = [(u'orig', ''),
+                  (u'CSOSN', ''),
+                  (u'modBCST', ''),
+                  (u'pMVAST', ''),
+                  (u'pRedBCST', ''),
+                  (u'vBCST', ''),
+                  (u'pICMSST', ''),
+                  (u'vICMSST', ''),
+                  ]
+
+
+class NFeICMSSN500(BaseNFeICMS):
+    """Grupo CRT=1 – Simples Nacional e CSOSN=500
+    """
+
+    tag = 'ICMSSN500'
+    txttag = 'N10g'
+    attributes = [(u'orig', ''),
+                  (u'CSOSN', ''),
+                  (u'vBCSTRet', ''),
+                  (u'vICMSSTRet', ''),
+                  ]
+
+
+class NFeICMSSN900(BaseNFeICMS):
+    """Grupo CRT=1 – Simples Nacional e CSOSN=900
+    """
+
+    tag = 'ICMSSN900'
+    txttag = 'N10h'
+    attributes = [(u'orig', ''),
+                  (u'CSOSN', ''),
+                  (u'modBC', ''),
+                  (u'vBC', ''),
+                  (u'pRedBC', ''),
+                  (u'pICMS', ''),
+                  (u'vICMS', ''),
+                  (u'modBCST', ''),
+                  (u'pMVAST', ''),
+                  (u'pRedBCST', ''),
+                  (u'vBCST', ''),
+                  (u'pICMSST', ''),
+                  (u'vICMSST', ''),
+                  (u'pCredSN', ''),
+                  (u'vCredICMSSN', ''),
+                  ]
+
 
 #
 #   End of ICMS
