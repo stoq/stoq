@@ -173,11 +173,12 @@ class NFeGenerator(object):
         series = sysparam(self.conn).NFE_SERIAL_NUMBER
         orientation = sysparam(self.conn).NFE_DANFE_ORIENTATION
         ecf_info = self._sale.get_nfe_coupon_info()
+        nat_op = self._sale.operation_nature
 
         nfe_identification = NFeIdentification(cuf, branch_location.city,
                                                series, nnf, today,
                                                list(payments), orientation,
-                                               ecf_info)
+                                               ecf_info, nat_op)
         # The nfe-key requires all the "zeros", so we should format the
         # values properly.
         mod = '%02d' % int(nfe_identification.get_attr('mod'))
@@ -527,7 +528,7 @@ class NFeIdentification(BaseNFeXMLGroup):
     }
 
     def __init__(self, cUF, city, series, nnf, emission_date, payments,
-                 orientation, ecf_info):
+                 orientation, ecf_info, nat_op):
         BaseNFeXMLGroup.__init__(self)
 
         self.set_attr('cUF', cUF)
@@ -548,6 +549,7 @@ class NFeIdentification(BaseNFeXMLGroup):
         self.set_attr('dEmi', self.format_date(emission_date))
         self.set_attr('cMunFG', get_city_code(city, code=cUF) or '')
         self.set_attr('tpImp', self.danfe_orientation[orientation])
+        self.set_attr('natOp', nat_op[:60] or 'Venda')
 
         if ecf_info:
             info = NFeEcfInfo(ecf_info.number, ecf_info.coo)

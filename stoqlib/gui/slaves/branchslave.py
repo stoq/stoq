@@ -39,9 +39,9 @@ class BranchDetailsSlave(BaseEditorSlave):
                      'crt')
 
     crt_options = (
-        ('Simples Nacional', 1),
-        ('Simples Nacional – excesso de sublimite da receita bruta', 2),
-        ('Regime Normal', 3),
+        ('1 - Simples Nacional', 1),
+        ('2 - Simples Nacional – excesso de sublimite da receita bruta', 2),
+        ('3 - Regime Normal', 3),
     )
 
     def _setup_manager_entry(self):
