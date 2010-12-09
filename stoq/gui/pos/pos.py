@@ -55,7 +55,6 @@ from stoqlib.domain.till import Till
 from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.lib.message import info, yesno
-from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import quantize
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
@@ -76,11 +75,13 @@ log = Logger('stoq.pos')
 
 class _SaleItem(object):
     def __init__(self, sellable, quantity, price=None, notes=None):
+        # Use only 3 decimal places for the quantity
+        self.quantity = Decimal('%.3f' % quantity)
         self.sellable = sellable
         self.description = sellable.base_sellable_info.description
         self.unit = sellable.get_unit_description()
         self.code = sellable.code
-        self.quantity = quantity
+
         if not price:
             price = sellable.price
         self.price = price
@@ -93,6 +94,16 @@ class _SaleItem(object):
         # Sale items are suposed to have only 2 digits, but the value price
         # * quantity may have more than 2, so we need to round it.
         return quantize(currency(self.price * self.quantity))
+
+    @property
+    def quantity_unit(self):
+        qtd_string = ''
+        if (self.quantity * 100 % 100) == 0:
+            qtd_string = '%.0f' % self.quantity
+        else:
+            qtd_string = '%s' % self.quantity.normalize()
+
+        return '%s %s' % (qtd_string, self.unit)
 
 
 class POSApp(AppWindow):
@@ -169,12 +180,8 @@ class POSApp(AppWindow):
                        searchable=True, ellipsize=pango.ELLIPSIZE_END),
                 Column('price', title=_('Price'), data_type=currency,
                        width=110, justify=gtk.JUSTIFY_RIGHT),
-                Column('quantity', title=_('Quantity'), data_type=Decimal,
-                       width=110, format_func=format_quantity,
-                       justify=gtk.JUSTIFY_RIGHT),
-                Column('unit', title=_('Unit'),
-                       data_type=str, width=70,
-                       ellipsize=pango.ELLIPSIZE_END),
+                Column('quantity_unit', title=_('Quantity'), data_type=unicode,
+                       width=110, justify=gtk.JUSTIFY_RIGHT),
                 Column('total', title=_('Total'), data_type=currency,
                        justify=gtk.JUSTIFY_RIGHT, width=100)]
 
@@ -210,6 +217,8 @@ class POSApp(AppWindow):
         self.order_total_label.set_size('xx-large')
         self.order_total_label.set_bold(True)
         self._create_context_menu()
+
+        self.quantity.set_digits(3)
 
         if Inventory.has_open(self.conn, get_current_branch(self.conn)):
             show_inventory_process_message()
