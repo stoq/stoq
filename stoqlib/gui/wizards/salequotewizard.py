@@ -64,7 +64,8 @@ _ = stoqlib_gettext
 class StartSaleQuoteStep(WizardEditorStep):
     gladefile = 'SalesPersonStep'
     model_type = Sale
-    proxy_widgets = ('client', 'salesperson', 'expire_date')
+    proxy_widgets = ('client', 'salesperson', 'expire_date',
+                     'operation_nature')
     cfop_widgets = ('cfop',)
 
     def _setup_widgets(self):
@@ -284,6 +285,7 @@ class SaleQuoteWizard(BaseWizard):
                     branch=get_current_branch(conn),
                     group=PaymentGroup(connection=conn),
                     cfop=sysparam(conn).DEFAULT_SALES_CFOP,
+                    operation_nature=_(u'Sale'),
                     connection=conn)
 
     #

@@ -77,9 +77,11 @@ class StartNewLoanStep(WizardEditorStep):
         # Hide total and subtotal
         self.table1.hide()
         self.hbox4.hide()
+
         # Hide invoice number details
         self.invoice_number_label.hide()
         self.invoice_number.hide()
+
         # Responsible combo
         self.salesperson_lbl.set_text(_(u'Responsible:'))
         self.salesperson.set_property('model-attribute', 'responsible')
@@ -87,6 +89,7 @@ class StartNewLoanStep(WizardEditorStep):
         items = [(u.person.name, u) for u in users]
         self.salesperson.prefill(items)
         self.salesperson.set_sensitive(False)
+
         # Clients combo
         clients = ClientView.get_active_clients(self.conn)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
@@ -94,15 +97,18 @@ class StartNewLoanStep(WizardEditorStep):
         items = [(c.name, c.client) for c in clients]
         self.client.prefill(sorted(items))
         self.client.set_property('mandatory', True)
-        # expire date combo
+
         self.expire_date.set_property('mandatory', True)
+
         # CFOP combo
         self.cfop_lbl.hide()
         self.cfop.hide()
         self.create_cfop.hide()
+
         # Transporter/RemovedBy Combo
         self.transporter_lbl.set_text(_(u'Removed By:'))
         self.create_transporter.hide()
+
         # removed_by widget
         self.removed_by = ProxyEntry(unicode)
         self.removed_by.set_property('model-attribute', 'removed_by')
@@ -110,6 +116,10 @@ class StartNewLoanStep(WizardEditorStep):
             self.proxy_widgets.append('removed_by')
         self.removed_by.show()
         self._replace_widget(self.transporter, self.removed_by)
+
+        # Operation Nature widget
+        self.operation_nature.hide()
+        self.nature_lbl.hide()
 
     def _replace_widget(self, old_widget, new_widget):
         # retrieve the position, since we will replace two widgets later.

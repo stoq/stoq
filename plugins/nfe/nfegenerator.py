@@ -173,11 +173,12 @@ class NFeGenerator(object):
         series = sysparam(self.conn).NFE_SERIAL_NUMBER
         orientation = sysparam(self.conn).NFE_DANFE_ORIENTATION
         ecf_info = self._sale.get_nfe_coupon_info()
+        nat_op = self._sale.operation_nature
 
         nfe_identification = NFeIdentification(cuf, branch_location.city,
                                                series, nnf, today,
                                                list(payments), orientation,
-                                               ecf_info)
+                                               ecf_info, nat_op)
         # The nfe-key requires all the "zeros", so we should format the
         # values properly.
         mod = '%02d' % int(nfe_identification.get_attr('mod'))
@@ -205,8 +206,9 @@ class NFeGenerator(object):
         name = person.name
         company = ICompany(issuer, None)
         state_registry = company.state_registry
+        crt = self._sale.branch.crt
         self._nfe_issuer = NFeIssuer(name, cnpj=cnpj,
-                                     state_registry=state_registry)
+                                     state_registry=state_registry, crt=crt)
         self._nfe_issuer.set_address(*self._get_address_data(person))
         self._nfe_data.append(self._nfe_issuer)
 
@@ -305,7 +307,8 @@ class NFeGenerator(object):
             self._nfe_data.append(dup)
 
     def _add_additional_information(self):
-        nfe_info = NFeSimplesNacionalInfo(self._sale.notes)
+        fisco_info = sysparam(self.conn).NFE_FISCO_INFORMATION
+        nfe_info = NFeAdditionalInformation(fisco_info, self._sale.notes)
         self._nfe_data.append(nfe_info)
 
 #
@@ -525,7 +528,7 @@ class NFeIdentification(BaseNFeXMLGroup):
     }
 
     def __init__(self, cUF, city, series, nnf, emission_date, payments,
-                 orientation, ecf_info):
+                 orientation, ecf_info, nat_op):
         BaseNFeXMLGroup.__init__(self)
 
         self.set_attr('cUF', cUF)
@@ -546,6 +549,7 @@ class NFeIdentification(BaseNFeXMLGroup):
         self.set_attr('dEmi', self.format_date(emission_date))
         self.set_attr('cMunFG', get_city_code(city, code=cUF) or '')
         self.set_attr('tpImp', self.danfe_orientation[orientation])
+        self.set_attr('natOp', nat_op[:60] or 'Venda')
 
         if ecf_info:
             info = NFeEcfInfo(ecf_info.number, ecf_info.coo)
@@ -630,13 +634,16 @@ class NFeIssuer(BaseNFeXMLGroup):
     address_tag = u'enderEmit'
     attributes = [(u'CNPJ', None),
                   (u'CPF', None),
-                  (u'xNome', ''),]
+                  (u'xNome', ''),
+                  (u'CRT', ''),
+                  ]
     txttag = 'C'
     address_txt_tag = 'C05'
     doc_cnpj_tag = 'C02'
     doc_cpf_tag = 'C02a'
 
-    def __init__(self, name, cpf=None, cnpj=None, state_registry=None):
+    def __init__(self, name, cpf=None, cnpj=None, state_registry=None,
+                 crt=None):
         BaseNFeXMLGroup.__init__(self)
         if cnpj is not None:
             self.set_attr('CNPJ', cnpj)
@@ -644,6 +651,7 @@ class NFeIssuer(BaseNFeXMLGroup):
             self.set_attr('CPF', cpf)
 
         self.set_attr('xNome', name)
+        self.set_attr('CRT', crt)
         self._ie = state_registry
 
     def set_address(self, street, number, complement, district, city, state,
@@ -672,7 +680,9 @@ class NFeIssuer(BaseNFeXMLGroup):
             ie = self._ie or 'ISENTO'
         else:
             ie = ''
-        base = '%s|%s||%s||||\n' % (self.txttag, self.get_attr('xNome'), ie,)
+        crt = self.get_attr('CRT') or ''
+        base = '%s|%s||%s|||%s|\n' % (self.txttag, self.get_attr('xNome'),
+                                      ie, crt)
         return base + self.get_doc_txt() + self._address.as_txt()
 
 
@@ -1083,7 +1093,140 @@ class NFeICMS90(BaseNFeICMS):
                   (u'vICMSST', ''),]
 
 
-#FIXME: implement rest of icms tags defined in nfe 2.0
+class NFeICMSPart(BaseNFeICMS):
+    """Partilha do ICMS entre a UF de origem e UF de destino ou a UF
+    definida na legislação.
+    """
+
+    tag = 'ICMSPart'
+    txttag = 'N10a'
+    attributes = [(u'orig', ''),
+                  (u'CST', ''),
+                  (u'modBC', ''),
+                  (u'pRedBC', ''),
+                  (u'vBC', ''),
+                  (u'pICMS', ''),
+                  (u'vICMS', ''),
+                  (u'modBCST', ''),
+                  (u'pMVAST', ''),
+                  (u'pRedBCST', ''),
+                  (u'vBCST', ''),
+                  (u'pICMSST', ''),
+                  (u'vICMSST', ''),
+                  (u'pBCOp', ''),
+                  (u'UFST', '')]
+
+
+class NFeICMSST(BaseNFeICMS):
+    """ICMS ST – repasse de ICMS ST retido anteriormente em operações
+    interestaduais com repasses através do Substituto Tributário.
+    """
+    tag = 'ICMSST'
+    txttag = 'N10b'
+    attributes = [(u'orig', ''),
+                  (u'CST', ''),
+                  (u'vBCSTRet', ''),
+                  (u'vICMSSTRet', ''),
+                  (u'vBCSTDest', ''),
+                  (u'vICMSSTDest', '')]
+
+
+class NFeICMSSN101(BaseNFeICMS):
+    """Grupo CRT=1 – Simples Nacional e CSOSN=101
+    """
+
+    tag = 'ICMSSN101'
+    txttag = 'N10c'
+    attributes = [(u'orig', ''),
+                  (u'CSOSN', ''),
+                  (u'pCredSN', ''),
+                  (u'vCredICMSSN', 'u'),
+                  ]
+
+
+class NFeICMSSN102(BaseNFeICMS):
+    """Grupo CRT=1 – Simples Nacional e CSOSN=102
+    """
+
+    tag = 'ICMSSN102'
+    txttag = 'N10d'
+    attributes = [(u'orig', ''),
+                  (u'CSOSN', ''),
+                  ]
+
+
+class NFeICMSSN201(BaseNFeICMS):
+    """Grupo CRT=1 – Simples Nacional e CSOSN=201
+    """
+
+    tag = 'ICMSSN201'
+    txttag = 'N10e'
+    attributes = [(u'orig', ''),
+                  (u'CSOSN', ''),
+                  (u'modBCST', ''),
+                  (u'pMVAST', ''),
+                  (u'pRedBCST', ''),
+                  (u'vBCST', ''),
+                  (u'pICMSST', ''),
+                  (u'vICMSST', ''),
+                  (u'pCredSN', ''),
+                  (u'vCredICMSSN', ''),
+                  ]
+
+
+class NFeICMSSN202(BaseNFeICMS):
+    """Grupo CRT=1 – Simples Nacional e CSOSN=202
+    """
+
+    tag = 'ICMSSN202'
+    txttag = 'N10f'
+    attributes = [(u'orig', ''),
+                  (u'CSOSN', ''),
+                  (u'modBCST', ''),
+                  (u'pMVAST', ''),
+                  (u'pRedBCST', ''),
+                  (u'vBCST', ''),
+                  (u'pICMSST', ''),
+                  (u'vICMSST', ''),
+                  ]
+
+
+class NFeICMSSN500(BaseNFeICMS):
+    """Grupo CRT=1 – Simples Nacional e CSOSN=500
+    """
+
+    tag = 'ICMSSN500'
+    txttag = 'N10g'
+    attributes = [(u'orig', ''),
+                  (u'CSOSN', ''),
+                  (u'vBCSTRet', ''),
+                  (u'vICMSSTRet', ''),
+                  ]
+
+
+class NFeICMSSN900(BaseNFeICMS):
+    """Grupo CRT=1 – Simples Nacional e CSOSN=900
+    """
+
+    tag = 'ICMSSN900'
+    txttag = 'N10h'
+    attributes = [(u'orig', ''),
+                  (u'CSOSN', ''),
+                  (u'modBC', ''),
+                  (u'vBC', ''),
+                  (u'pRedBC', ''),
+                  (u'pICMS', ''),
+                  (u'vICMS', ''),
+                  (u'modBCST', ''),
+                  (u'pMVAST', ''),
+                  (u'pRedBCST', ''),
+                  (u'vBCST', ''),
+                  (u'pICMSST', ''),
+                  (u'vICMSST', ''),
+                  (u'pCredSN', ''),
+                  (u'vCredICMSSN', ''),
+                  ]
+
 
 #
 #   End of ICMS
@@ -1534,15 +1677,10 @@ class NFeAdditionalInformation(BaseNFeXMLGroup):
                   (u'infCpl', None)]
     txttag = 'Z'
 
+    def __init__(self, fisco_notes, sale_notes):
+        BaseNFeXMLGroup.__init__(self)
 
-class NFeSimplesNacionalInfo(NFeAdditionalInformation):
-    def __init__(self, sale_notes):
-        NFeAdditionalInformation.__init__(self)
-        msg = u'Documento emitido por ME ou EPP optante pelo SIMPLES' \
-              u' NACIONAL. Não gera Direito a Crédito Fiscal de ICMS e de'\
-              u' ISS. Conforme Lei Complementar 123 de 14/12/2006.'
-
-        self.set_attr('infAdFisco', msg)
+        self.set_attr('infAdFisco', fisco_notes)
         self.set_attr('infCpl', sale_notes)
 
 
