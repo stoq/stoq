@@ -36,7 +36,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import ForeignKey, UnicodeCol, DateTimeCol, IntCol
 from stoqlib.database.orm import AND, const
-from stoqlib.database.orm import PriceCol, DecimalCol
+from stoqlib.database.orm import PriceCol, QuantityCol
 from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn, INNERJOINOn
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
@@ -83,7 +83,7 @@ class SaleItem(Domain):
     @param estimated_fix_date:
     @param completion_date:
     """
-    quantity = DecimalCol()
+    quantity = QuantityCol()
     base_price = PriceCol()
     average_cost = PriceCol(default=0)
     price = PriceCol()
@@ -230,7 +230,7 @@ class SaleItem(Domain):
 class DeliveryItem(Domain):
     """Class responsible to store all the products for a certain delivery"""
 
-    quantity = DecimalCol()
+    quantity = QuantityCol()
     sellable = ForeignKey('Sellable')
     delivery = ForeignKey('SaleItem', default=None)
 

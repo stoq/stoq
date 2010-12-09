@@ -32,7 +32,7 @@ from decimal import Decimal
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 
-from stoqlib.database.orm import PriceCol, DecimalCol
+from stoqlib.database.orm import PriceCol, QuantityCol
 from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.domain.base import Domain, ValidatableDomain
 from stoqlib.domain.fiscal import FiscalBookEntry
@@ -57,7 +57,7 @@ class ReceivingOrderItem(Domain):
           product
         - I{cost}: the cost for each product received
     """
-    quantity = DecimalCol()
+    quantity = QuantityCol()
     cost = PriceCol()
     purchase_item = ForeignKey('PurchaseItem')
     sellable = ForeignKey('Sellable')

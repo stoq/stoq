@@ -29,7 +29,7 @@ from kiwi.datatypes import format_price
 from stoqlib.database.runtime import get_connection
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import DECIMAL_PRECISION
+from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
 
 _ = stoqlib_gettext
 
@@ -53,7 +53,7 @@ def is_date_in_interval(date, start_date, end_date):
 def format_quantity(quantity):
     if (quantity * 100 % 100) == 0:
         return '%.0f' % quantity
-    return '%.*f' % (DECIMAL_PRECISION, quantity)
+    return '%.*f' % (QUANTITY_PRECISION, quantity)
 
 def get_formatted_percentage(value):
     return "%.*f %%" % (DECIMAL_PRECISION, value)

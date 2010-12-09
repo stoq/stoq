@@ -46,7 +46,7 @@ from sqlobject.sresults import SelectResults
 from sqlobject.util.csvexport import export_csv
 from sqlobject.viewable import Viewable
 
-from stoqlib.lib.defaults import DECIMAL_PRECISION
+from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
 
 
 # Currency
@@ -63,8 +63,18 @@ class AbstractDecimalCol(SODecimalCol):
         kw['precision'] = DECIMAL_PRECISION
         SODecimalCol.__init__(self, **kw)
 
+
+class AbstractQuantityCol(SODecimalCol):
+    def __init__(self, **kw):
+        kw['size'] = 10
+        kw['precision'] = QUANTITY_PRECISION
+        SODecimalCol.__init__(self, **kw)
+
 class DecimalCol(Col):
     baseClass = AbstractDecimalCol
+
+class QuantityCol(DecimalCol):
+    baseClass = AbstractQuantityCol
 
 
 # Price
