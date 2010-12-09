@@ -28,7 +28,8 @@ from decimal import Decimal
 from kiwi.datatypes import currency
 from twisted.trial.unittest import SkipTest
 
-from stoqlib.database.orm import AbstractDecimalCol, SOPriceCol
+from stoqlib.database.orm import (AbstractDecimalCol, SOPriceCol,
+                                  AbstractQuantityCol)
 from stoqlib.database.orm import (SOBoolCol, SODateTimeCol, SOForeignKey, SOIntCol,
                                   SOStringCol, SOUnicodeCol)
 from stoqlib.database.orm import NoDefault
@@ -62,6 +63,8 @@ def get_random(column):
         value = currency(20)
     elif isinstance(column, SOBoolCol):
         value = False
+    elif isinstance(column, AbstractQuantityCol):
+        value = Decimal(1)
     elif isinstance(column, AbstractDecimalCol):
         value = Decimal(1)
     else:
