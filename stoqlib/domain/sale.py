@@ -366,6 +366,7 @@ class Sale(ValidatableDomain):
     surcharge_value = PriceCol(default=0)
     total_amount = PriceCol(default=0)
     invoice_number= IntCol(default=None)
+    operation_nature = UnicodeCol(default='')
     cfop = ForeignKey("CfopData")
     client = ForeignKey('PersonAdaptToClient', default=None)
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
