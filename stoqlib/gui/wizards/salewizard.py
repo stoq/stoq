@@ -322,6 +322,10 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.expire_date.hide()
         self.expire_label.hide()
 
+        # Hide operation nature widgets
+        self.operation_nature.hide()
+        self.nature_lbl.hide()
+
         # if the NF-e plugin is active, the client is mandantory in this
         # wizard (in this situation, we have only quote sales).
         if self.model.status == Sale.STATUS_QUOTE:

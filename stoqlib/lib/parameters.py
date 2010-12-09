@@ -295,14 +295,21 @@ _parameter_info = dict(
     _(u'Danfe printing orientation'),
     _(u'Orientation to use for printing danfe. Portrait or Landscape')),
 
+    NFE_FISCO_INFORMATION=ParameterDetails(
+    _(u'NF-e'),
+    _(u'Additional Information for the Fisco'),
+    _(u'Additional information to add to the NF-e for the Fisco')),
+
     )
 
 class ParameterAttr:
-    def __init__(self, key, type, initial=None, options=None):
+    def __init__(self, key, type, initial=None, options=None,
+                 multiline=False):
         self.key = key
         self.type = type
         self.initial = initial
         self.options = options
+        self.multiline = multiline
 
     def get_parameter_type(self):
         if isinstance(self.type, basestring):
@@ -323,6 +330,11 @@ class ParameterAccess(ClassInittableObject):
     >>> conn = get_connection()
     >>> parameter = sysparam(conn).parameter_name
     """
+
+    default_fisco_message = \
+            u'Documento emitido por ME ou EPP optante pelo SIMPLES' \
+            u' NACIONAL. Não gera Direito a Crédito Fiscal de ICMS e de'\
+            u' ISS. Conforme Lei Complementar 123 de 14/12/2006.'
 
     # New parameters must always be defined here
     constants = [
@@ -354,6 +366,8 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('USE_FOUR_PRECISION_DIGITS', bool, initial=False),
         ParameterAttr('DISABLE_COOKIES', bool, initial=False),
         ParameterAttr('NFE_SERIAL_NUMBER', int, initial=1),
+        ParameterAttr('NFE_FISCO_INFORMATION', unicode,
+                      initial=default_fisco_message, multiline=True),
         ParameterAttr('NFE_DANFE_ORIENTATION', int, initial=0,
                       options={0: _(u'Portrait'),
                                1: _(u'Landscape')}

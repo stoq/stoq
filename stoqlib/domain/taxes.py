@@ -71,8 +71,8 @@ class BaseICMS(BaseTax):
     creating NfeItemIcms objects
     """
 
-    orig = IntCol(default=None) # TODOS
-    cst = IntCol(default=None) # TODOS
+    orig = IntCol(default=None)
+    cst = IntCol(default=None)
 
     mod_bc = IntCol(default=None)
     p_icms = DecimalCol(default=None)
@@ -85,6 +85,11 @@ class BaseICMS(BaseTax):
 
     bc_include_ipi = BoolCol(default=True)
     bc_st_include_ipi = BoolCol(default=True)
+
+    # Simples Nacional
+    #csosn = IntCol(default=None)
+    #p_cred_sn = DecimalCol(default=None)
+
 
 class BaseIPI(BaseTax):
     (CALC_ALIQUOTA,
@@ -152,6 +157,13 @@ class SaleItemIcms(BaseICMS):
 
     v_bc_st = PriceCol(default=None)
     v_icms_st = PriceCol(default=None)
+
+    # Simples Nacional
+    #v_cred_icms_sn = DecimalCol(default=None)
+
+    #v_bc_st_red = DecimalCol(default=None)
+    #v_icms_st_ret = DecimalCol(default=None)
+
 
     def _calc_st(self, sale_item):
         self.v_bc_st = sale_item.price * sale_item.quantity

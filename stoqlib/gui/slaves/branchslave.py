@@ -35,7 +35,14 @@ class BranchDetailsSlave(BaseEditorSlave):
     gladefile = 'BranchDetailsSlave'
     model_iface = IBranch
     proxy_widgets = ('active_check',
-                     'manager')
+                     'manager',
+                     'crt')
+
+    crt_options = (
+        ('1 - Simples Nacional', 1),
+        ('2 - Simples Nacional – excesso de sublimite da receita bruta', 2),
+        ('3 - Regime Normal', 3),
+    )
 
     def _setup_manager_entry(self):
         employees = EmployeeView.get_active_employees(self.conn)
@@ -44,8 +51,12 @@ class BranchDetailsSlave(BaseEditorSlave):
         items = [(e.name, e.employee) for e in employees]
         self.manager.prefill(sorted(items))
 
+    def _setup_crt_combo(self):
+        self.crt.prefill(self.crt_options)
+
     def setup_proxies(self):
         self._setup_manager_entry()
+        self._setup_crt_combo()
         self.proxy = self.add_proxy(self.model,
                                     BranchDetailsSlave.proxy_widgets)
 

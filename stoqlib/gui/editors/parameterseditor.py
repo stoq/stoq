@@ -27,6 +27,7 @@
 from decimal import Decimal
 import gtk
 from kiwi.ui.widgets.entry import ProxyEntry
+from kiwi.ui.widgets.textview import ProxyTextView
 from kiwi.ui.widgets.combo import ProxyComboEntry, ProxyComboBox
 
 from stoqlib.domain.base import AbstractModel
@@ -69,6 +70,17 @@ class SystemParameterEditor(BaseEditor):
             self.container.add(widget)
         else:
             box.pack_start(widget)
+
+        widget.show()
+        self._entry = widget
+
+    def _setup_text_entry_slave(self):
+        widget = ProxyTextView()
+        widget.data_type = unicode
+        widget.model_attribute = "field_value"
+        widget.set_wrap_mode(gtk.WRAP_WORD)
+        self.proxy.add_widget("field_value", widget)
+        self.container.add(widget)
 
         widget.show()
         self._entry = widget
@@ -161,7 +173,10 @@ class SystemParameterEditor(BaseEditor):
             else:
                 self._setup_entry_slave()
         elif issubclass(field_type, unicode):
-            self._setup_entry_slave()
+            if constant.multiline:
+                self._setup_text_entry_slave()
+            else:
+                self._setup_entry_slave()
         elif issubclass(field_type, Decimal):
             self._setup_entry_slave()
         else:
