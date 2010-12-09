@@ -148,9 +148,12 @@ class SaleItem(Domain):
     #
 
     def get_total(self):
+        # Sale items are suposed to have only 2 digits, but the value price
+        # * quantity may have more than 2, so we need to round it.
         if self.ipi_info:
-            return currency(self.price * self.quantity + self.ipi_info.v_ipi)
-        return currency(self.price * self.quantity)
+            return quantize(currency(self.price * self.quantity +
+                                     self.ipi_info.v_ipi))
+        return quantize(currency(self.price * self.quantity))
 
     def get_quantity_unit_string(self):
         return "%s %s" % (self.quantity, self.sellable.get_unit_description())
@@ -610,8 +613,6 @@ class Sale(ValidatableDomain):
         prices for of all items
         @returns: subtotal
         """
-        # Sale items are suposed to have only 2 digits, but the value price
-        # * quantity may have more than 2, so we need to round it.
         total = 0
         for i in self.get_items():
             total += i.get_total()
