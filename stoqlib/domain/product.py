@@ -31,7 +31,7 @@ from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
-from stoqlib.database.orm import PriceCol, DecimalCol
+from stoqlib.database.orm import PriceCol, DecimalCol, QuantityCol
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, MultipleJoin, DateTimeCol,
                                   BoolCol, BLOBCol, IntCol)
 from stoqlib.database.orm import const, AND, LEFTJOINOn
@@ -82,7 +82,7 @@ class ProductSupplierInfo(Domain):
     notes = UnicodeCol(default='')
     is_main_supplier = BoolCol(default=False)
     lead_time = IntCol(default=1)
-    minimum_purchase = DecimalCol(default=Decimal(1))
+    minimum_purchase = QuantityCol(default=Decimal(1))
     # This is Brazil-specific information
     icms = DecimalCol(default=0)
     supplier =  ForeignKey('PersonAdaptToSupplier')
@@ -128,7 +128,7 @@ class ProductSupplierInfo(Domain):
 class ProductRetentionHistory(Domain):
     """Class responsible to store information about product's retention."""
 
-    quantity = DecimalCol(default=0)
+    quantity = QuantityCol(default=0)
     reason = UnicodeCol(default='')
     product = ForeignKey('Product')
     retention_date = DateTimeCol(default=None)
@@ -310,14 +310,14 @@ class ProductHistory(Domain):
     # We keep a reference to Sellable instead of Product because we want to
     # display the sellable id in the interface instead of the product id for
     # consistency with interfaces that display both
-    quantity_sold = DecimalCol(default=None)
-    quantity_received = DecimalCol(default=None)
-    quantity_transfered = DecimalCol(default=None)
-    quantity_retained = DecimalCol(default=None)
-    quantity_produced = DecimalCol(default=None)
-    quantity_consumed = DecimalCol(default=None)
-    quantity_lost = DecimalCol(default=None)
-    quantity_decreased = DecimalCol(default=None)
+    quantity_sold = QuantityCol(default=None)
+    quantity_received = QuantityCol(default=None)
+    quantity_transfered = QuantityCol(default=None)
+    quantity_retained = QuantityCol(default=None)
+    quantity_produced = QuantityCol(default=None)
+    quantity_consumed = QuantityCol(default=None)
+    quantity_lost = QuantityCol(default=None)
+    quantity_decreased = QuantityCol(default=None)
     production_date = DateTimeCol(default=None)
     sold_date = DateTimeCol(default=None)
     received_date = DateTimeCol(default=None)
@@ -449,8 +449,8 @@ class ProductStockItem(Domain):
     certain branch company."""
 
     stock_cost = PriceCol(default=0)
-    quantity = DecimalCol(default=0)
-    logic_quantity = DecimalCol(default=0)
+    quantity = QuantityCol(default=0)
+    logic_quantity = QuantityCol(default=0)
     branch =  ForeignKey('PersonAdaptToBranch')
     storable = ForeignKey('ProductAdaptToStorable')
 
@@ -473,8 +473,8 @@ class ProductStockItem(Domain):
 class ProductAdaptToStorable(ModelAdapter):
     """A product implementation as a storable facet."""
 
-    minimum_quantity = DecimalCol(default=0)
-    maximum_quantity = DecimalCol(default=0)
+    minimum_quantity = QuantityCol(default=0)
+    maximum_quantity = QuantityCol(default=0)
 
     implements(IStorable, IContainer)
 
@@ -679,6 +679,6 @@ Product.registerFacet(ProductAdaptToStorable, IStorable)
 class ProductComponent(Domain):
     """A product and it's related component eg other product
     """
-    quantity = DecimalCol(default=Decimal(1))
+    quantity = QuantityCol(default=Decimal(1))
     product = ForeignKey('Product')
     component = ForeignKey('Product')

@@ -211,6 +211,7 @@ class SellableItemStep(WizardEditorStep):
         self._reset_sellable()
         if sysparam(conn).USE_FOUR_PRECISION_DIGITS:
             self.cost.set_digits(4)
+        self.quantity.set_digits(3)
 
     # Public API
 
@@ -479,9 +480,8 @@ class SellableItemStep(WizardEditorStep):
 
     def on_quantity__validate(self, entry, value):
         # only support integer quantities
-        if value <= 0 or value != int(value):
-            return ValidationError(_(u'The quantity must be a positive'
-                                     ' integer number'))
+        if value <= 0:
+            return ValidationError(_(u'The quantity must be positive'))
 
     def on_cost__validate(self, widget, value):
         if value <= 0:

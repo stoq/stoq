@@ -182,6 +182,7 @@ def sort_sellable_code(a, b):
 #
 
 DECIMAL_PRECISION = 2
+QUANTITY_PRECISION = 3
 _format = Decimal('10e-%d' % DECIMAL_PRECISION)
 
 def quantize(dec):

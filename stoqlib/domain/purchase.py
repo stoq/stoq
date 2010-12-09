@@ -34,7 +34,7 @@ from zope.interface import implements
 from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn, const
 from stoqlib.database.orm import Viewable, Alias
-from stoqlib.database.orm import PriceCol, DecimalCol, BoolCol
+from stoqlib.database.orm import PriceCol, BoolCol, QuantityCol
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.base import ValidatableDomain, Domain
 from stoqlib.domain.payment.method import PaymentMethod
@@ -62,10 +62,10 @@ class PurchaseItem(Domain):
         - I{base_cost}: the cost which helps the purchaser to define the
                         main cost of a certain product.
     """
-    quantity = DecimalCol(default=1)
-    quantity_received = DecimalCol(default=0)
-    quantity_sold = DecimalCol(default=0)
-    quantity_returned = DecimalCol(default=0)
+    quantity = QuantityCol(default=1)
+    quantity_received = QuantityCol(default=0)
+    quantity_sold = QuantityCol(default=0)
+    quantity_returned = QuantityCol(default=0)
     base_cost = PriceCol()
     cost = PriceCol()
     expected_receival_date = DateTimeCol(default=None)
