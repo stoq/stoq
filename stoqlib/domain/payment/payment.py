@@ -548,6 +548,8 @@ class PaymentFlowHistory(Domain):
         @param date: the date of the L{PaymentFlowHistory} we want to
                      retrieve or create.
         """
+        if isinstance(date, datetime.datetime):
+            date = date.date()
         day_history = PaymentFlowHistory.selectOneBy(history_date=date,
                                                      connection=conn)
         if day_history is not None:
@@ -601,6 +603,7 @@ class PaymentFlowHistory(Domain):
         """
         if reference_date is None:
             reference_date = payment.due_date.date()
+
         day_history = cls.get_or_create_flow_history(conn, reference_date)
         day_history._update_registers(payment, -payment.value,
                                       accomplished=False)
