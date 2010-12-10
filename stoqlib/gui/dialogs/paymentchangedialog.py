@@ -120,6 +120,10 @@ class BasePaymentChangeDialog(BaseEditor):
         pass
 
 
+class _TempDateModel(object):
+    due_date = None
+
+
 class PaymentDueDateChangeDialog(BasePaymentChangeDialog):
     """This dialog is responsible to change a payment due date"""
     title = _(u"Change Payment Due Date")
@@ -144,13 +148,19 @@ class PaymentDueDateChangeDialog(BasePaymentChangeDialog):
     # BaseEditor Hooks
     #
 
+    def setup_proxies(self):
+        BasePaymentChangeDialog.setup_proxies(self)
+
+        self._temp_model = _TempDateModel()
+        self._date_proxy = self.add_proxy(self._temp_model, ('due_date',))
+
     def create_model(self, conn):
         model = BasePaymentChangeDialog.create_model(self, conn)
         model.last_due_date = self._payment.due_date
         return model
 
     def on_confirm(self):
-        self._payment.change_due_date(self.due_date.read())
+        self._payment.change_due_date(self._temp_model.due_date)
         self.model.new_due_date = self._payment.due_date
         return self.model
 
