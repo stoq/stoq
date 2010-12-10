@@ -5,10 +5,11 @@ Maintainer: Ronaldo Francisco Maia <romaia@async.com.br>
 Build-Depends: debhelper (>= 5.0.32), cdbs, python-dev (>= 2.4), python-support
 Build-Depends-Indep: python-kiwi (>= 1.9.26), stoqlib (>= 0.9.12)
 Standards-Version: 3.8.3
+Homepage: http://www.stoq.com.br/
 
 Package: stoq
 Architecture: all
-Depends: ${misc:Depends}, python, stoqlib (>= 0.9.14), postgresql-client-common
+Depends: ${misc:Depends}, python, stoqlib (>= 0.9.14.3), postgresql-client-common
 Description: An advanced retail system
  Stoq is a suite of Retail Management System applications.
  It includes the following applications;

@@ -36,7 +36,7 @@ from stoq.lib.options import get_option_parser
 
 PYGTK_REQUIRED = (2, 8, 1)
 KIWI_REQUIRED = (1, 9, 27)
-STOQLIB_REQUIRED = (0, 9, 14)
+STOQLIB_REQUIRED = (0, 9, 14, 3)
 GAZPACHO_REQUIRED = (0, 6, 6)
 REPORTLAB_REQUIRED = (1, 20)
 
