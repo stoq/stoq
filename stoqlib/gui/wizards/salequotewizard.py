@@ -285,7 +285,7 @@ class SaleQuoteWizard(BaseWizard):
                     branch=get_current_branch(conn),
                     group=PaymentGroup(connection=conn),
                     cfop=sysparam(conn).DEFAULT_SALES_CFOP,
-                    operation_nature=_(u'Sale'),
+                    operation_nature=sysparam(conn).DEFAULT_OPERATION_NATURE,
                     connection=conn)
 
     #
