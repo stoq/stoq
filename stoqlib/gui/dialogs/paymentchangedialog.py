@@ -127,7 +127,9 @@ class PaymentDueDateChangeDialog(BasePaymentChangeDialog):
     def _setup_widgets(self):
         BasePaymentChangeDialog._setup_widgets(self)
         self.status_box.hide()
-        due_date_str = self._payment.due_date.strftime("%x")
+        # There was a bug wher payment.due_date was set to None :(
+        if self._payment.due_date:
+            due_date_str = self._payment.due_date.strftime("%x")
         msg = _(u"Set current due date (%s) to:") % due_date_str
         self.due_date_lbl.set_text(msg)
 
