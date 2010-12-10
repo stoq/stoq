@@ -1,3 +1,9 @@
+stoqlib (0.9.14.3) lucid; urgency=low
+
+  * Bugfix Release
+
+ -- Ronaldo Francisco Maia <romaia@async.com.br>  Fri, 10 Dec 2010 14:04:52 -0200
+
 stoqlib (0.9.14.2) lucid; urgency=low
 
   * Bugfix Release
