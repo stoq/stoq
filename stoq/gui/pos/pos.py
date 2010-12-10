@@ -546,7 +546,8 @@ class POSApp(AppWindow):
                     salesperson=salesperson,
                     group=group,
                     cfop=cfop,
-                    coupon_id=None)
+                    coupon_id=None,
+                    operation_nature=sysparam(trans).DEFAULT_OPERATION_NATURE)
 
         if self._delivery:
             address_string = self._delivery.address.get_address_string()
