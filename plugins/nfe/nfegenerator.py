@@ -681,7 +681,7 @@ class NFeIssuer(BaseNFeXMLGroup):
         else:
             ie = ''
         crt = self.get_attr('CRT') or ''
-        base = '%s|%s||%s|||%s|\n' % (self.txttag, self.get_attr('xNome'),
+        base = '%s|%s||%s||||%s|\n' % (self.txttag, self.get_attr('xNome'),
                                       ie, crt)
         return base + self.get_doc_txt() + self._address.as_txt()
 
