@@ -214,6 +214,11 @@ _parameter_info = dict(
        'if False, pay a relative commission for each commission when '
        'the sales payment is paid.')),
 
+    DEFAULT_OPERATION_NATURE=ParameterDetails(
+    _(u'Sales'),
+    _(u'Default operation nature'),
+    _(u'When adding a new sale quote, we will always suggest '
+      'this operation nature')),
 
     # XXX: These parameters are Brazil-specific
     ASK_SALES_CFOP=ParameterDetails(
@@ -360,6 +365,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('DEFAULT_AREA_CODE', int, initial=16),
         ParameterAttr('SALE_PAY_COMMISSION_WHEN_CONFIRMED', bool,
                        initial=False),
+        ParameterAttr('DEFAULT_OPERATION_NATURE', unicode, initial=_(u'Sale')),
         ParameterAttr('CUSTOM_LOGO_FOR_REPORTS', ImageHelper, initial=''),
         ParameterAttr('CAT52_DEST_DIR', DirectoryParameter, initial='~/.stoq/cat52'),
         ParameterAttr('ALLOW_OUTDATED_PURCHASES', bool, initial=False),
