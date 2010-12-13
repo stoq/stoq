@@ -29,7 +29,7 @@ from kiwi.argcheck import argcheck
 from zope.interface import implements
 
 from stoqlib.database.orm import ForeignKey, UnicodeCol, DateTimeCol, IntCol
-from stoqlib.database.orm import DecimalCol
+from stoqlib.database.orm import QuantityCol
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer, IStorable
@@ -54,7 +54,7 @@ class StockDecreaseItem(Domain):
     """
     stock_decrease = ForeignKey('StockDecrease')
     sellable = ForeignKey('Sellable')
-    quantity = DecimalCol()
+    quantity = QuantityCol()
 
     def _create(self, id, **kw):
         if not 'kw' in kw:

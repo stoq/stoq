@@ -816,14 +816,14 @@ class PersonAdaptToCreditProvider(PersonAdapter):
 
     cards_type = {
         CreditCardData.TYPE_CREDIT: 'credit_fee',
-        CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE: 
+        CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE:
                                                 'credit_installments_store_fee',
         CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER:
                                              'credit_installments_provider_fee',
         CreditCardData.TYPE_DEBIT: 'debit_fee',
         CreditCardData.TYPE_DEBIT_PRE_DATED: 'debit_pre_dated_fee'
     }
-                                        
+
 
     provider_types = {PROVIDER_CARD: _(u'Card Provider')}
 
@@ -832,7 +832,7 @@ class PersonAdaptToCreditProvider(PersonAdapter):
         - I{monthly_fee}: values charged monthly by the credit provider
         - I{*_fee}: fee applied by the provider for each payment transaction,
                     depending on the transaction type
-    """ 
+    """
 
     is_active = BoolCol(default=True)
     provider_type = IntCol(default=PROVIDER_CARD)
@@ -884,7 +884,7 @@ class PersonAdaptToCreditProvider(PersonAdapter):
     def get_active_providers(cls, conn):
         return cls.select(cls.q.is_active == True, connection=conn)
 
-    def get_fee_for_payment(self,provider, data):
+    def get_fee_for_payment(self, provider, data):
         return getattr(self, provider.cards_type[data.card_type])
 
 

@@ -26,7 +26,7 @@
 import datetime
 from decimal import Decimal
 
-from stoqlib.database.orm import DecimalCol
+from stoqlib.database.orm import DecimalCol, QuantityCol
 from stoqlib.database.orm import ForeignKey, DateTimeCol, IntCol, UnicodeCol
 from stoqlib.database.orm import const, AND, ISNOTNULL
 from stoqlib.domain.base import Domain
@@ -55,8 +55,8 @@ class InventoryItem(Domain):
     """
 
     product = ForeignKey("Product")
-    recorded_quantity = DecimalCol()
-    actual_quantity = DecimalCol(default=None)
+    recorded_quantity = QuantityCol()
+    actual_quantity = QuantityCol(default=None)
     product_cost = DecimalCol()
     reason = UnicodeCol(default=u"")
     cfop_data = ForeignKey("CfopData", default=None)

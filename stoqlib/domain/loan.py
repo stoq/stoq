@@ -31,7 +31,7 @@ from kiwi.datatypes import currency
 from zope.interface import implements
 
 from stoqlib.database.orm import ForeignKey, UnicodeCol, DateTimeCol, IntCol
-from stoqlib.database.orm import PriceCol, DecimalCol, const
+from stoqlib.database.orm import PriceCol, const, QuantityCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer, IStorable
 from stoqlib.exceptions import DatabaseInconsistency
@@ -49,9 +49,9 @@ class LoanItem(Domain):
     @param quantity: the quantity of the of sold item in this loan
     @param price: the price of each individual item
     """
-    quantity = DecimalCol()
-    sale_quantity = DecimalCol(default=Decimal(0))
-    return_quantity = DecimalCol(default=Decimal(0))
+    quantity = QuantityCol()
+    sale_quantity = QuantityCol(default=Decimal(0))
+    return_quantity = QuantityCol(default=Decimal(0))
     price = PriceCol()
     sellable = ForeignKey('Sellable')
     loan = ForeignKey('Loan')
