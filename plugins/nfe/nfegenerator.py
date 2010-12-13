@@ -815,7 +815,15 @@ class NFeProductDetails(BaseNFeXMLGroup):
                   (u'cEANTrib', ''),
                   (u'uTrib', u'un'),
                   (u'qTrib', ''),
-                  (u'vUnTrib', '')]
+                  (u'vUnTrib', ''),
+                  (u'vFrete', ''),
+                  (u'vSeg', ''),
+                  (u'vDesc', ''),
+                  (u'vOutro', ''),
+                  (u'indTot', '1'),
+                  (u'xPed', ''),
+                  (u'nItemPed', ''),
+                  ]
     txttag = 'I'
 
     def __init__(self, code, description, cfop, quantity, price, unit,
@@ -841,14 +849,6 @@ class NFeProductDetails(BaseNFeXMLGroup):
         self.set_attr('qTrib', self.format_value(quantity, precision=4))
         self.set_attr('uTrib', unit)
         self.set_attr('uCom', unit)
-
-    def as_txt(self):
-        vs = [self.txttag]
-        for attr, value in self.attributes:
-            vs.append(self.get_attr(attr))
-
-        return '%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s||||||||\n' % tuple(vs)
-
 
 
 #
