@@ -29,7 +29,7 @@ from decimal import Decimal
 from zope.interface import implements
 
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, DateTimeCol, IntCol,
-                                  DecimalCol)
+                                  QuantityCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable, IStorable
@@ -165,9 +165,9 @@ class ProductionItem(Domain):
     """
     implements(IDescribable)
 
-    quantity = DecimalCol(default=1)
-    produced = DecimalCol(default=0)
-    lost = DecimalCol(default=0)
+    quantity = QuantityCol(default=1)
+    produced = QuantityCol(default=0)
+    lost = QuantityCol(default=0)
     order = ForeignKey('ProductionOrder')
     product = ForeignKey('Product')
 
@@ -273,12 +273,12 @@ class ProductionMaterial(Domain):
     """
     implements(IDescribable)
 
-    needed = DecimalCol(default=1)
-    allocated = DecimalCol(default=0)
-    consumed = DecimalCol(default=0)
-    lost = DecimalCol(default=0)
-    to_purchase = DecimalCol(default=0)
-    to_make = DecimalCol(default=0)
+    needed = QuantityCol(default=1)
+    allocated = QuantityCol(default=0)
+    consumed = QuantityCol(default=0)
+    lost = QuantityCol(default=0)
+    to_purchase = QuantityCol(default=0)
+    to_make = QuantityCol(default=0)
     order = ForeignKey('ProductionOrder')
     product = ForeignKey('Product')
 
@@ -380,7 +380,7 @@ class ProductionService(Domain):
     """
     implements(IDescribable)
 
-    quantity = DecimalCol(default=1)
+    quantity = QuantityCol(default=1)
     order = ForeignKey('ProductionOrder')
     service = ForeignKey('Service')
 

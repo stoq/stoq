@@ -352,6 +352,9 @@ class ICreditProvider(IPersonFacet):
     def get_card_providers(conn):
         """Return a list of credit card providers"""
 
+    def get_fee_for_payment(provider, data):
+        """Returns the fee value for the payment data provided"""
+
 
 class ITransporter(IPersonFacet):
     """An individual or company engaged in the transportation"""
