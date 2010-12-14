@@ -37,7 +37,7 @@ from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.dialogs.progressdialog import ProgressDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.devicemanager import DeviceManager
-from stoqlib.lib.message import info, yesno
+from stoqlib.lib.message import info, yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 from ecfprinterstatus import ECFAsyncPrinterStatus
@@ -105,6 +105,9 @@ class ECFEditor(BaseEditor):
         self.printer.select_item_by_label(self.model.get_description())
 
     def validate_confirm(self):
+        if not self.can_activate_printer():
+            return False
+
         if self.edit_mode:
             return True
         self._status = ECFAsyncPrinterStatus(self.model.device_name,
@@ -115,6 +118,18 @@ class ECFEditor(BaseEditor):
             self.model.model_name, self._status.get_device_name())))
         self.progress_dialog.start()
         return False
+
+    def can_activate_printer(self):
+        serial = self.model.device_serial
+        printers = ECFPrinter.selectBy(is_active=True,
+                                       station=get_current_station(self.conn))
+        for p in printers:
+            if p.device_serial != serial and self.model.is_active:
+                warning(_(u'The ECF %s is already active for this '
+                          'station. Deactivate that printer before '
+                          'activating this one.') % p.model)
+                return False
+        return True
 
     #
     # Callbacks
