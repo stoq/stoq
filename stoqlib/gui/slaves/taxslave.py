@@ -31,6 +31,7 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
@@ -111,13 +112,24 @@ class BaseTaxSlave(BaseEditorSlave):
 class BaseICMSSlave(BaseTaxSlave):
     gladefile = 'TaxICMSSlave'
 
-    combo_widgets = ['cst', 'orig', 'mod_bc', 'mod_bc_st']
+    combo_widgets = ['cst', 'orig', 'mod_bc', 'mod_bc_st', 'csosn']
     percentage_widgets = ['p_icms', 'p_mva_st', 'p_red_bc_st', 'p_icms_st',
-                          'p_red_bc']
-    value_widgets = ['v_bc', 'v_icms', 'v_bc_st', 'v_icms_st']
+                          'p_red_bc', 'p_cred_sn']
+    value_widgets = ['v_bc', 'v_icms', 'v_bc_st', 'v_icms_st',
+                     'v_cred_icms_sn', 'v_bc_st_ret', 'v_icms_st_ret']
     bool_widgets = ['bc_include_ipi', 'bc_st_include_ipi']
     all_widgets = (combo_widgets + percentage_widgets + value_widgets +
                    bool_widgets)
+
+
+    simples_widgets = ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
+              'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_cred_sn',
+              'v_cred_icms_sn', 'v_bc_st_ret', 'v_icms_st_ret'],
+
+    normal_widgets = ['orig', 'cst', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
+             'p_icms_st', 'v_bc_st', 'v_icms_st', 'bc_st_include_ipi',
+             'mod_bc', 'p_icms', 'v_bc', 'v_icms',  'bc_include_ipi',
+             'bc_st_include_ipi']
 
     tooltips = {
         'p_icms': u'Aliquota do imposto',
@@ -140,6 +152,20 @@ class BaseICMSSlave(BaseTaxSlave):
             (u'70 - Com redução da BC cobrança do ICMS por subst. trib.', 70),
             (u'90 - Outros', 90),
         ),
+
+        'csosn': (
+            (None, None),
+            (u'101 - Tributada com permissão de crédito', 101),
+            (u'102 - Tributada sem permissão de crédito', 102),
+            (u'103 - Isenção do ICMS para faixa de receita bruta', 103),
+            (u'201 - Tributada com permissão de crédito e com cobrança do ICMS por ST', 201),
+            (u'202 - Tributada sem permissão de crédito e com cobrança do ICMS por ST', 202),
+            (u'203 - Isenção do ICMS para faixa de receita bruta e com cobrança do ICMS por ST', 203),
+            (u'300 - Imune', 300),
+            (u'400 - Não tributada', 400),
+            (u'500 - ICMS cobrado anteriormente por ST ou por antecipação', 500),
+        ),
+
         'orig': (
             (None, None),
             (u'0 - Nacional', 0),
@@ -183,23 +209,50 @@ class BaseICMSSlave(BaseTaxSlave):
         51: ['orig', 'cst', 'mod_bc', 'p_red_bc', 'p_icms', 'v_bc',
              'v_icms', 'bc_st_include_ipi'],
         60: ['orig', 'cst', 'v_bc_st', 'v_icms_st'],
-        70: all_widgets,
-        90: all_widgets,
+        70: normal_widgets,
+        90: normal_widgets,
+        # Simples Nacional
+        101: ['orig', 'csosn', 'p_cred_sn', 'v_cred_icms_sn'],
+        102: ['orig', 'csosn',],
+        103: ['orig', 'csosn',],
+        201: ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
+              'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_cred_sn',
+              'v_cred_icms_sn'],
+        202: ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
+              'p_icms_st', 'v_bc_st', 'v_icms_st'],
+        203: ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
+              'p_icms_st', 'v_bc_st', 'v_icms_st'],
+        300: ['orig', 'csosn',],
+        400: ['orig', 'csosn',],
+        500: ['orig', 'csosn', 'v_bc_st_ret', 'v_icms_st_ret'],
     }
 
     def setup_proxies(self):
         self._setup_widgets()
+        self.branch = get_current_branch(self.model.get_connection())
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
-        self._update_selected_cst()
+
+        # Simple Nacional
+        if self.branch.crt in (1,2):
+            self._update_selected_csosn()
+        else:
+            self._update_selected_cst()
 
     def _update_selected_cst(self):
         cst = self.cst.get_selected_data()
         valid_widgets = self.MAP_VALID_WIDGETS.get(cst, ('cst', ))
         self.set_valid_widgets(valid_widgets)
 
+    def _update_selected_csosn(self):
+        csosn = self.csosn.get_selected_data()
+        valid_widgets = self.MAP_VALID_WIDGETS.get(csosn, ('csosn', ))
+        self.set_valid_widgets(valid_widgets)
+
     def on_cst__changed(self, widget):
         self._update_selected_cst()
 
+    def on_csosn__changed(self, widget):
+        self._update_selected_csosn()
 
 class ICMSTemplateSlave(BaseICMSSlave):
     model_type = ProductIcmsTemplate
