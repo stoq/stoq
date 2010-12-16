@@ -257,7 +257,7 @@ class NFeGenerator(object):
                                          ex_tipi=ex_tipi,
                                          genero=genero)
 
-            nfe_item.add_tax_details(sale_item)
+            nfe_item.add_tax_details(sale_item, self._sale.branch.crt)
             self._nfe_data.append(nfe_item)
 
     def _add_totals(self):
@@ -724,14 +724,14 @@ class NFeProduct(BaseNFeXMLGroup):
                                     unit, barcode, ncm, ex_tipi, genero)
         self.append(details)
 
-    def add_tax_details(self, sale_item):
+    def add_tax_details(self, sale_item, crt):
         nfe_tax = NFeTax()
 
         # TODO: handle service tax (ISS) and ICMS.
 
         sale_icms = sale_item.get_nfe_icms_info()
         if sale_icms:
-            nfe_icms = NFeICMS(sale_icms)
+            nfe_icms = NFeICMS(sale_icms, crt)
             nfe_tax.append(nfe_icms)
 
         sale_ipi = sale_item.get_nfe_ipi_info()
@@ -872,9 +872,15 @@ class NFeTax(BaseNFeXMLGroup):
 class NFeICMS(BaseNFeXMLGroup):
     tag = 'ICMS'
 
-    def __init__(self, sale_icms_info):
+    def __init__(self, sale_icms_info, crt):
         BaseNFeXMLGroup.__init__(self)
-        icms_tag_class = NFE_ICMS_CST_MAP.get(sale_icms_info.cst)
+
+        # Simples Nacional
+        if crt in (1,2):
+            icms_tag_class = NFE_ICMS_CSOSN_MAP.get(sale_icms_info.csosn)
+        else: # Regime normal
+            icms_tag_class = NFE_ICMS_CST_MAP.get(sale_icms_info.cst)
+
         if icms_tag_class:
             icms_tag = icms_tag_class(sale_icms_info)
             self.append(icms_tag)
@@ -905,6 +911,13 @@ class BaseNFeICMS(BaseNFeXMLGroup):
         'pRedBC': 'p_red_bc',
         'pRedBCST': 'p_red_bc_st',
         'pICMSST': 'p_icms_st',
+
+        # Simples Nacional
+        'CSOSN': 'csosn',
+        'pCredSN': 'p_cred_sn',
+        'vCredICMSSN': 'v_cred_icms_sn',
+        'vBCSTRet': 'v_bc_st_ret',
+        'vICMSSTRet': 'v_icms_st_ret',
     }
 
     def __init__(self, sale_icms_info):
@@ -1131,6 +1144,10 @@ class NFeICMSST(BaseNFeICMS):
                   (u'vICMSSTDest', '')]
 
 
+#
+# Simples Nacional
+#
+
 class NFeICMSSN101(BaseNFeICMS):
     """Grupo CRT=1 – Simples Nacional e CSOSN=101
     """
@@ -1145,7 +1162,7 @@ class NFeICMSSN101(BaseNFeICMS):
 
 
 class NFeICMSSN102(BaseNFeICMS):
-    """Grupo CRT=1 – Simples Nacional e CSOSN=102
+    """Grupo CRT=1 – Simples Nacional e CSOSN=102, 103, 300, 400
     """
 
     tag = 'ICMSSN102'
@@ -1175,7 +1192,7 @@ class NFeICMSSN201(BaseNFeICMS):
 
 
 class NFeICMSSN202(BaseNFeICMS):
-    """Grupo CRT=1 – Simples Nacional e CSOSN=202
+    """Grupo CRT=1 – Simples Nacional e CSOSN=202, 203
     """
 
     tag = 'ICMSSN202'
@@ -1703,4 +1720,16 @@ NFE_ICMS_CST_MAP = {
     60: NFeICMS60,
     70: NFeICMS70,
     90: NFeICMS90,
+}
+
+NFE_ICMS_CSOSN_MAP = {
+    101: NFeICMSSN101,
+    102: NFeICMSSN102,
+    103: NFeICMSSN102,
+    201: NFeICMSSN101,
+    202: NFeICMSSN102,
+    203: NFeICMSSN102,
+    300: NFeICMSSN102,
+    400: NFeICMSSN102,
+    500: NFeICMSSN500,
 }

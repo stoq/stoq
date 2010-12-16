@@ -151,9 +151,9 @@ class SaleItem(Domain):
         # Sale items are suposed to have only 2 digits, but the value price
         # * quantity may have more than 2, so we need to round it.
         if self.ipi_info:
-            return quantize(currency(self.price * self.quantity +
+            return currency(quantize(self.price * self.quantity +
                                      self.ipi_info.v_ipi))
-        return quantize(currency(self.price * self.quantity))
+        return currency(quantize(self.price * self.quantity))
 
     def get_quantity_unit_string(self):
         return "%s %s" % (self.quantity, self.sellable.get_unit_description())

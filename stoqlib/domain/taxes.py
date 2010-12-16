@@ -87,8 +87,8 @@ class BaseICMS(BaseTax):
     bc_st_include_ipi = BoolCol(default=True)
 
     # Simples Nacional
-    #csosn = IntCol(default=None)
-    #p_cred_sn = DecimalCol(default=None)
+    csosn = IntCol(default=None)
+    p_cred_sn = DecimalCol(default=None)
 
 
 class BaseIPI(BaseTax):
@@ -159,10 +159,10 @@ class SaleItemIcms(BaseICMS):
     v_icms_st = PriceCol(default=None)
 
     # Simples Nacional
-    #v_cred_icms_sn = DecimalCol(default=None)
+    v_cred_icms_sn = PriceCol(default=None)
 
-    #v_bc_st_red = DecimalCol(default=None)
-    #v_icms_st_ret = DecimalCol(default=None)
+    v_bc_st_ret = PriceCol(default=None)
+    v_icms_st_ret = PriceCol(default=None)
 
 
     def _calc_st(self, sale_item):
@@ -193,11 +193,10 @@ class SaleItemIcms(BaseICMS):
         if self.p_icms is not None and self.v_bc is not None:
             self.v_icms = self.v_bc * self.p_icms/100
 
-    def update_values(self):
-        from stoqlib.domain.sale import SaleItem
-        sale_item = SaleItem.selectOneBy(icms_info=self,
-                                         connection=self.get_connection())
-
+    def _update_normal(self, sale_item):
+        """Atualiza os dados de acordo com os calculos do Regime Tributário
+        Normal (Não simples)
+        """
         if self.cst == 0:
             self.p_red_bc = 0
             self._calc_normal(sale_item)
@@ -230,6 +229,19 @@ class SaleItemIcms(BaseICMS):
         elif self.cst in (70, 90):
             self._calc_normal(sale_item)
             self._calc_st(sale_item)
+
+    def update_values(self):
+        from stoqlib.domain.sale import SaleItem
+        sale_item = SaleItem.selectOneBy(icms_info=self,
+                                         connection=self.get_connection())
+        branch = sale_item.sale.branch
+
+        # Simples nacional
+        if branch.crt in (1,2):
+            pass
+        else:
+            self._update_normal(sale_item)
+
 
 
 
