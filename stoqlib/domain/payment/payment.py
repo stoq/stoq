@@ -70,8 +70,8 @@ class Payment(Domain):
     (STATUS_PREVIEW,
      STATUS_PENDING,
      STATUS_PAID,
-     STATUS_REVIEWING,
-     STATUS_CONFIRMED,
+     STATUS_REVIEWING, # Looks like this two statuses are not
+     STATUS_CONFIRMED, # used anymore
      STATUS_CANCELLED) = range(6)
 
     statuses = {STATUS_PREVIEW: _(u'Preview'),
@@ -254,6 +254,12 @@ class Payment(Domain):
         PaymentFlowHistory.remove_payment(conn, self, self.due_date)
         PaymentFlowHistory.add_payment(conn, self, new_due_date)
         self.due_date = new_due_date
+
+    def update_value(self, new_value):
+        conn = self.get_connection()
+        PaymentFlowHistory.remove_payment(conn, self, self.due_date)
+        self.value = new_value
+        PaymentFlowHistory.add_payment(conn, self, self.due_date)
 
     def get_payable_value(self):
         """ Returns the calculated payment value with the daily penalty.
@@ -487,14 +493,24 @@ class PaymentFlowHistory(Domain):
                 self.paid += value
                 self.paid_payments += payment_qty
             else:
-                self.to_pay += value
+                # XXX: Workaround for bug 4241 with PaymentFlowHistory that
+                # the values are not updated correcly.
+                to_pay = self.to_pay + value
+                if to_pay < 0:
+                    to_pay = 0
+                self.to_pay = to_pay
                 self.to_pay_payments += payment_qty
         elif IInPayment(payment, None) is not None:
             if accomplished:
                 self.received += value
                 self.received_payments += payment_qty
             else:
-                self.to_receive += value
+                # XXX: Workaround for bug 4241 with PaymentFlowHistory that
+                # the values are not updated correcly.
+                to_receive = self.to_receive + value
+                if to_receive < 0:
+                    to_receive = 0
+                self.to_receive = to_receive
                 self.to_receive_payments += payment_qty
         self._update_balance()
 
