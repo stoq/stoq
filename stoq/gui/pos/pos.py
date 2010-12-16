@@ -54,6 +54,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import Till
 from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TillError
+from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import quantize
@@ -284,9 +285,27 @@ class POSApp(AppWindow):
         if not barcode:
             raise StoqlibError("_get_sellable needs a barcode")
 
-        return Sellable.selectOneBy(barcode=barcode,
-                                    status=Sellable.STATUS_AVAILABLE,
-                                    connection=self.conn)
+        fmt = sysparam(self.conn).SCALE_BARCODE_FORMAT
+
+        # Check if this barcode is from a scale
+        info = parse_barcode(barcode, fmt)
+        if info:
+            barcode = info.code
+            weight = info.weight
+
+        sellable = Sellable.selectOneBy(barcode=barcode,
+                                        status=Sellable.STATUS_AVAILABLE,
+                                        connection=self.conn)
+
+        # If the barcode has the price information, we need to calculate the
+        # corresponding weight.
+        if info and sellable and info.mode == BarcodeInfo.MODE_PRICE:
+            weight = info.price / sellable.price
+
+        if info and sellable:
+            self.quantity.set_value(weight)
+
+        return sellable
 
     def _select_first_item(self):
         if len(self.sale_items):
