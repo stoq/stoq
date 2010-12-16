@@ -37,6 +37,7 @@ from stoqlib.domain.interfaces import ISupplier, IBranch
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.imageutils import ImageHelper
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.barcode import BarcodeInfo
 
 _ = stoqlib_gettext
 
@@ -289,6 +290,14 @@ _parameter_info = dict(
     _(u'Once this parameter is set, the products cost will be expressed '
        'using four precision digits.')),
 
+    SCALE_BARCODE_FORMAT=ParameterDetails(
+    _(u'Sales'),
+    _(u'Scale Barcode Format'),
+    _(u'Format used by the barcode printed by the scale. This format always'
+       ' starts with 2 followed by 4,5 or 6 digits product code and by a 5'
+       ' digit weight or a 6 digit price. Check or scale documentation and'
+       ' configuration to see the best option.')),
+
     NFE_SERIAL_NUMBER=ParameterDetails(
     _(u'NF-e'),
     _(u'Fiscal document serial number'),
@@ -378,6 +387,8 @@ class ParameterAccess(ClassInittableObject):
                       options={0: _(u'Portrait'),
                                1: _(u'Landscape')}
                                ),
+        ParameterAttr('SCALE_BARCODE_FORMAT', int, initial=0,
+                      options=BarcodeInfo.options),
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
         ParameterAttr('DEFAULT_SALES_CFOP', u'fiscal.CfopData'),
