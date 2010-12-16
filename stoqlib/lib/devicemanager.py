@@ -28,11 +28,15 @@
 import operator
 
 try:
+    import gudev
+except ImportError:
+    gudev = None
+
+try:
     import dbus
     dbus # pyflakes
 except ImportError:
     dbus = None
-
 
 if dbus:
     class _HALDevice(object):
@@ -77,15 +81,42 @@ class DeviceManager(object):
         if dbus:
             self._hal_manager = _HALManager()
 
+    def _get_default_devices(self):
+        return  [SerialDevice('/dev/ttyS0'),
+                 SerialDevice('/dev/ttyS1')]
+
+    def _get_hal_devices(self):
+        devices = []
+        for device in self._hal_manager.find_device(capability='serial'):
+            devices.append(SerialDevice(device.get('serial.device')))
+        return devices
+
+    def _get_gudev_devices(self):
+        client = gudev.Client(["tty", 'usb-serial'])
+        devices = []
+
+        # usb serial devices
+        for dev in client.query_by_subsystem("usb-serial"):
+            devices.append(SerialDevice('/dev/' + dev.get_name()))
+
+        # serial tty devices
+        for dev in client.query_by_subsystem("tty"):
+            parent = dev.get_parent()
+            if parent is None:
+                continue
+            if parent.get_driver() != 'serial':
+                continue
+            devices.append(SerialDevice('/dev/' + dev.get_name()))
+        return devices
+
     def get_serial_devices(self):
         """Get a list of serial devices available on the system
         @returns: a list of L{SerialDevice}
         """
-        devices = []
-        if self._hal_manager:
-            for device in self._hal_manager.find_device(capability='serial'):
-                devices.append(SerialDevice(device.get('serial.device')))
+        if gudev:
+            devices = self._get_gudev_devices()
+        elif dbus:
+            devices = self._get_hal_devices()
         else:
-            devices.append([SerialDevice('/dev/ttyS0'),
-                            SerialDevice('/dev/ttyS1')])
+            devices = self._get_default_devices()
         return sorted(devices, key=operator.attrgetter('device_name'))
