@@ -193,7 +193,8 @@ class ReceivingOrder(ValidatableDomain):
             if payments_number > 0:
                 per_installments_value = difference/payments_number
                 for payment in payments:
-                    payment.value += per_installments_value
+                    new_value = payment.value + per_installments_value
+                    payment.update_value(new_value)
 
         if self.freight_total and create_freight_payment:
             self._create_freight_payment()
