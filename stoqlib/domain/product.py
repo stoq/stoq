@@ -603,7 +603,7 @@ class ProductAdaptToStorable(ModelAdapter):
             if sellable:
                 # FIXME: rename sell() to something more useful which is not
                 #        confusing a sale and a sellable, Bug 2669
-                sellable.sell()
+                sellable.set_unavailable()
 
         return stock_item
 

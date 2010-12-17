@@ -248,21 +248,21 @@ class Sellable(Domain):
     implements(IDescribable)
 
     (STATUS_AVAILABLE,
-     STATUS_SOLD,
+     STATUS_UNAVAILABLE,
      STATUS_CLOSED,
      STATUS_BLOCKED) = range(4)
 
 
     statuses = {STATUS_AVAILABLE:   _(u"Available"),
-                STATUS_SOLD:        _(u"Sold"),
+                STATUS_UNAVAILABLE: _(u"Unavailable"),
                 STATUS_CLOSED:      _(u"Closed"),
                 STATUS_BLOCKED:     _(u"Blocked")}
 
     code = UnicodeCol(default='')
     barcode = UnicodeCol(default='')
     # This default status is used when a new sellable is created,
-    # so it must be *always* SOLD (that means no stock for it).
-    status = IntCol(default=STATUS_SOLD)
+    # so it must be *always* UNAVAILABLE (that means no stock for it).
+    status = IntCol(default=STATUS_UNAVAILABLE)
     cost = PriceCol(default=0)
     notes = UnicodeCol(default='')
     unit = ForeignKey("SellableUnit", default=None)
@@ -389,18 +389,18 @@ class Sellable(Domain):
             return True
         return self.status == self.STATUS_AVAILABLE
 
-    def is_sold(self):
-        """Whether the sellable is sold.
-        @returns: if the item is sold
+    def is_unavailable(self):
+        """Whether the sellable is unavailable.
+        @returns: if the item is unavailable
         @rtype: boolean
         """
-        return self.status == self.STATUS_SOLD
+        return self.status == self.STATUS_UNAVAILABLE
 
-    def sell(self):
-        """Sell the sellable"""
-        if self.is_sold():
-            raise ValueError('This sellable is already sold')
-        self.status = self.STATUS_SOLD
+    def set_unavailable(self):
+        """Mark the sellable as unavailable"""
+        if self.is_unavailable():
+            raise ValueError('This sellable is already unavailable')
+        self.status = self.STATUS_UNAVAILABLE
 
     def cancel(self):
         """Cancel the sellable"""
@@ -538,7 +538,7 @@ class Sellable(Domain):
         service = sysparam(conn).DELIVERY_SERVICE
         return AND(cls.q.id != service.id,
                    OR(cls.q.status == cls.STATUS_AVAILABLE,
-                      cls.q.status == cls.STATUS_SOLD))
+                      cls.q.status == cls.STATUS_UNAVAILABLE))
 
     @classmethod
     def get_available_sellables_query(cls, conn):
@@ -561,7 +561,7 @@ class Sellable(Domain):
         """Helper method for get_unblocked_sellables"""
         from stoqlib.domain.product import Product, ProductSupplierInfo
         query = AND(OR(cls.get_available_sellables_query(conn),
-                       cls.q.status == cls.STATUS_SOLD),
+                       cls.q.status == cls.STATUS_UNAVAILABLE),
                     cls.q.id == Product.q.sellableID,
                     Product.q.consignment == consigned)
         if storable:
@@ -594,12 +594,12 @@ class Sellable(Domain):
         return cls.select(query, connection=conn)
 
     @classmethod
-    def get_sold_sellables(cls, conn):
+    def get_unavailable_sellables(cls, conn):
         """Returns sellable objects which can be added in a sale. By
         default a delivery sellable can not be added manually by users
         since a separated dialog is responsible for that.
         """
-        return cls.selectBy(status=cls.STATUS_SOLD, connection=conn)
+        return cls.selectBy(status=cls.STATUS_UNAVAILABLE, connection=conn)
 
     @classmethod
     def _get_sellables_by_barcode(cls, conn, barcode, extra_query):
@@ -626,15 +626,15 @@ class Sellable(Domain):
             Sellable.q.status == Sellable.STATUS_AVAILABLE)
 
     @classmethod
-    def get_availables_and_sold_by_barcode(cls, conn, barcode):
+    def get_availables_and_unavailable_by_barcode(cls, conn, barcode):
         """Returns a list of avaliable sellables and also sellables that
         can be sold.  Here we will get sellables with the following
-        statuses: STATUS_AVAILABLE, STATUS_SOLD
+        statuses: STATUS_AVAILABLE, STATUS_UNAVAILABLE
 
         @param conn: a orm Transaction instance
         @param barcode: a string representing a sellable barcode
         """
-        statuses = [cls.STATUS_AVAILABLE, cls.STATUS_SOLD]
+        statuses = [cls.STATUS_AVAILABLE, cls.STATUS_UNAVAILABLE]
         return cls._get_sellables_by_barcode(conn, barcode,
                                              IN(cls.q.status, statuses))
     @classmethod

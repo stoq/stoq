@@ -225,6 +225,11 @@ class SellableEditor(BaseEditor):
         self._requires_weighing_text = ("<b>%s</b>"
                                         % _(u"This unit type requires "
                                             "weighing"))
+        self._status_unavailable_text = ("<b>%s</b>"
+                                         % _(u"This status changes "
+                                         "automatically when the\n product is "
+                                         "purchased or an inicial stock is "
+                                         "added."))
         BaseEditor.__init__(self, conn, model)
         self.enable_window_controls()
 
@@ -268,6 +273,8 @@ class SellableEditor(BaseEditor):
         self.stock_total_lbl.set_data_format('%.02f')
         self.requires_weighing_label.set_size("small")
         self.requires_weighing_label.set_text("")
+        self.status_unavailable_label.set_size("small")
+        self.status_unavailable_label.set_text("")
 
     def edit_sale_price(self):
         sellable = self.model.sellable
@@ -303,6 +310,13 @@ class SellableEditor(BaseEditor):
             self.requires_weighing_label.set_text(self._requires_weighing_text)
         else:
             self.requires_weighing_label.set_text("")
+
+    def update_status_unavailable_label(self):
+        if self.statuses_combo.read() == Sellable.STATUS_UNAVAILABLE:
+            self.status_unavailable_label.set_text(
+                                                 self._status_unavailable_text)
+        else:
+            self.status_unavailable_label.set_text("")
 
     def _update_tax_value(self):
         if not hasattr(self, 'tax_proxy'):
@@ -384,6 +398,7 @@ class SellableEditor(BaseEditor):
         self.unit_proxy = self.add_proxy(self._unit,
                                          SellableEditor.sellable_unit_widgets)
         self.update_requires_weighing_label()
+        self.update_status_unavailable_label()
         self.update_unit_entry()
 
     #
