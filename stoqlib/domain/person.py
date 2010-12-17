@@ -987,6 +987,7 @@ class ClientView(Viewable):
         name=Person.q.name,
         phone_number=Person.q.phone_number,
         status=PersonAdaptToClient.q.status,
+        cnpj=PersonAdaptToCompany.q.cnpj,
         cpf=PersonAdaptToIndividual.q.cpf,
         rg_number=PersonAdaptToIndividual.q.rg_number,
         client_category=ClientCategory.q.name
@@ -997,6 +998,8 @@ class ClientView(Viewable):
                    Person.q.id == PersonAdaptToClient.q._originalID),
         LEFTJOINOn(None, PersonAdaptToIndividual,
                    Person.q.id == PersonAdaptToIndividual.q._originalID),
+        LEFTJOINOn(None, PersonAdaptToCompany,
+                   Person.q.id == PersonAdaptToCompany.q._originalID),
         LEFTJOINOn(None, ClientCategory,
                    PersonAdaptToClient.q.categoryID == ClientCategory.q.id),
         ]
@@ -1005,6 +1008,10 @@ class ClientView(Viewable):
     def client(self):
         return PersonAdaptToClient.get(self.client_id,
                                        connection=self._connection)
+
+    @property
+    def cnpj_or_cpf(self):
+        return self.cnpj or self.cpf
 
     @classmethod
     def get_active_clients(cls, conn):
