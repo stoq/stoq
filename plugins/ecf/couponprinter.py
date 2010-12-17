@@ -391,14 +391,12 @@ class Coupon(object):
         constant = self._get_payment_method_constant(payment)
         receipt_id = self._driver.get_payment_receipt_identifier(constant.constant_name)
 
-        supports_duplicate = self._driver.supports_duplicate_receipt()
-
         self._driver.payment_receipt_open(receipt_id, coo, constant.device_value,
                                           payment.value)
         self._driver.payment_receipt_print(receipt)
         self._driver.payment_receipt_close()
 
-        if supports_duplicate:
+        if self.supports_duplicate_receipt:
             self._driver.payment_receipt_print_duplicate()
 
 
