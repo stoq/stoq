@@ -331,7 +331,16 @@ def register_config(config):
     global _config
     _config = config
 
-    provide_utility(IDatabaseSettings, config.get_settings())
+    try:
+        provide_utility(IDatabaseSettings, config.get_settings())
+    except NoConfigurationError:
+        msg = _(u"Error: Stoq configuration is not avaiable. Check that the "
+             "current user has a configuration file (~/.stoq/stoq.conf).")
+        if os.geteuid() == 0:
+            msg += _('\n\nYou are running stoq using sudo. That is not '
+                     'recommended.')
+        raise SystemExit(msg)
+
 
 def get_config():
     global _config
