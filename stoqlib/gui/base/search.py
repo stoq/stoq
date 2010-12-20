@@ -43,8 +43,9 @@ from stoqlib.database.runtime import (get_connection, new_transaction,
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.lib.defaults import get_weekday_start
 from stoqlib.lib.component import Adapter
+from stoqlib.lib.defaults import get_weekday_start
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -198,6 +199,7 @@ class SearchDialog(BasicDialog):
                                 size=self.size)
 
         self.executer = ORMObjectQueryExecuter(get_connection())
+        self.executer.set_limit(sysparam(self.conn).MAX_SEARCH_RESULTS)
         self.set_table(self.search_table)
 
         self.enable_window_controls()
