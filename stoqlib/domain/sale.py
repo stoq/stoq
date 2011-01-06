@@ -456,6 +456,12 @@ class Sale(ValidatableDomain):
         """
         return self.status == Sale.STATUS_CONFIRMED
 
+    def can_set_not_paid(self):
+        """Only confirmed sales can be paid
+        @returns: True if the sale can be set as paid, otherwise False
+        """
+        return self.status == Sale.STATUS_PAID
+
     def can_set_renegotiated(self):
         """Only sales with status confirmed can be renegotiated.
         @returns: True if the sale can be renegotiated, False otherwise.
@@ -545,6 +551,18 @@ class Sale(ValidatableDomain):
 
         self.close_date = const.NOW()
         self.status = Sale.STATUS_PAID
+
+    def set_not_paid(self):
+        """Mark a sale as not paid. This happens when the user sets a
+        previously paid payment as not paid.
+
+        In this case, if the sale status is PAID, it should be set back to
+        CONFIRMED
+        """
+        assert self.can_set_not_paid()
+
+        self.close_date = None
+        self.status = Sale.STATUS_CONFIRMED
 
     def set_renegotiated(self):
         """Set the sale as renegotiated. The sale payments have been

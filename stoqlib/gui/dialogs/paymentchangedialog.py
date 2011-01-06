@@ -223,6 +223,11 @@ class PaymentStatusChangeDialog(BasePaymentChangeDialog):
         assert change_status_method
 
         change_status_method(self.model)
+
+        if (isinstance(self._order, Sale) and
+            self._order.status == Sale.STATUS_PAID):
+            self._order.set_not_paid()
+
         return self.model
 
     #
