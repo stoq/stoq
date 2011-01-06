@@ -230,6 +230,11 @@ class SaleItemIcms(BaseICMS):
             self._calc_normal(sale_item)
             self._calc_st(sale_item)
 
+    def _update_simples(self, sale_item):
+        if self.csosn == 500:
+            self.v_bc_st_ret = 0
+            self.v_icms_st_ret = 0
+
     def update_values(self):
         from stoqlib.domain.sale import SaleItem
         sale_item = SaleItem.selectOneBy(icms_info=self,
@@ -238,7 +243,7 @@ class SaleItemIcms(BaseICMS):
 
         # Simples nacional
         if branch.crt in (1,2):
-            pass
+            self._update_simples(sale_item)
         else:
             self._update_normal(sale_item)
 
