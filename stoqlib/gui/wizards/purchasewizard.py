@@ -105,11 +105,7 @@ class StartPurchaseStep(WizardEditorStep):
     def _update_widgets(self):
         has_freight = self.fob_radio.get_active()
         self.expected_freight.set_sensitive(has_freight)
-        self._update_freight_type()
-        # trigger supplier validation
-        self.supplier.validate()
 
-    def _update_freight_type(self):
         if self.cif_radio.get_active():
             self.model.freight_type = self.model_type.FREIGHT_CIF
         else:
@@ -142,9 +138,6 @@ class StartPurchaseStep(WizardEditorStep):
     #
     # Kiwi callbacks
     #
-
-    def on_cif_radio__toggled(self, *args):
-        self._update_widgets()
 
     def on_fob_radio__toggled(self, *args):
         self._update_widgets()
