@@ -85,8 +85,8 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         options, args = parser.parse_args(sys.argv)
 
     if options.verbose:
-        # FIXME: Set KIWI_LOG
-        pass
+        from kiwi.log import set_log_level
+        set_log_level('stoq*', 0)
 
     config.set_from_options(options)
 
