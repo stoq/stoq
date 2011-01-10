@@ -32,15 +32,22 @@ from decimal import Decimal
 import pango
 import gtk
 from kiwi.datatypes import currency
+from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.objectlist import SearchColumn
+from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
+from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
+from stoqlib.gui.printing import print_report
+from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.sale import Sale, SaleView, DeliveryView
+from stoqlib.domain.views import SoldItemsByBranchView
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
+from stoqlib.reporting.sale import SoldItemsByBranchReport
 
 _ = stoqlib_gettext
 
@@ -135,3 +142,78 @@ class DeliverySearch(SearchDialog):
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('quantity', title=_('Quantity'), data_type=Decimal,
                              format_func=format_quantity),]
+
+
+class SoldItemsByBranchSearch(SearchDialog):
+    title = _(u'Sold Items by Branch')
+    search_table = SoldItemsByBranchView
+    searching_by_date = True
+    size = (750, 450)
+
+    def setup_widgets(self):
+        self.csv_button = self.add_button(label=_(u'Export CSV...'))
+        self.csv_button.connect('clicked', self._on_export_csv_button__clicked)
+        self.csv_button.show()
+        self.csv_button.set_sensitive(False)
+
+        self.results.connect('has_rows', self._on_results__has_rows)
+
+    def create_filters(self):
+        self.set_text_field_columns(['description',])
+        self.set_searchbar_labels(_('Items matching:'))
+        self.executer.set_query(self.executer_query)
+
+        # Date
+        date_filter = DateSearchFilter(_('Date:'))
+        self.search.add_filter(date_filter)
+        self.date_filter = date_filter
+
+        # Branch
+        branch_filter = self.create_branch_filter(_('In Branch:'))
+        branch_filter.select(None)
+        self.add_filter(branch_filter, columns=[])
+        self.branch_filter = branch_filter
+
+    def get_columns(self):
+        return [SearchColumn('code', title=_('Code'), data_type=str,
+                             sorted=True, order=gtk.SORT_DESCENDING),
+                SearchColumn('description', title=_('Product'), data_type=str,
+                             expand=True),
+                SearchColumn('branch_name', title=_('Branch'), data_type=str,
+                             expand=True),
+                Column('quantity', title=_('Quantity'), data_type=Decimal,
+                             format_func=format_quantity),
+                Column('total', title=_('Total'), data_type=currency)
+               ]
+
+    def executer_query(self, query, having, conn):
+        branch = self.branch_filter.get_state().value
+        if branch is not None:
+            branch = PersonAdaptToBranch.get(branch, connection=conn)
+
+        date = self.date_filter.get_state()
+        if isinstance(date, DateQueryState):
+            date = date.date
+        elif isinstance(date, DateIntervalQueryState):
+            date = (date.start, date.end)
+
+        return self.search_table.select_by_branch_date(query, branch, date,
+                                                connection=conn)
+
+    def _print_report(self):
+        print_report(SoldItemsByBranchReport, self.results,
+                     filters=self.search.get_search_filters())
+
+    #
+    #Callbacks
+    #
+
+    def on_print_button_clicked(self, widget):
+        self._print_report()
+
+    def _on_export_csv_button__clicked(self, widget):
+        run_dialog(CSVExporterDialog, self, self.conn, self.search_table,
+                   self.results)
+
+    def _on_results__has_rows(self, widget, has_rows):
+        self.csv_button.set_sensitive(has_rows)
