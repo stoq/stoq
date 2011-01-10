@@ -1216,6 +1216,7 @@ class NFeICMSSN500(BaseNFeICMS):
     txttag = 'N10g'
     attributes = [(u'orig', ''),
                   (u'CSOSN', ''),
+                  (u'modBCST', ''),
                   (u'vBCSTRet', ''),
                   (u'vICMSSTRet', ''),
                   ]
