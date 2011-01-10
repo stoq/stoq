@@ -50,7 +50,7 @@ from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.personsearch import ClientSearch
-from stoqlib.gui.search.salesearch import SaleSearch
+from stoqlib.gui.search.salesearch import SaleSearch, SoldItemsByBranchSearch
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
 from stoqlib.gui.slaves.saleslave import return_sale
 from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
@@ -330,6 +330,9 @@ class TillApp(SearchableAppWindow):
 
     def _on_sale_search_action__clicked(self, button):
         self._run_search_dialog(SaleSearch)
+
+    def on_SoldItemsByBranchSearch__activate(self, button):
+        self._run_search_dialog(SoldItemsByBranchSearch)
 
     def _on_fiscal_till_operations__action_clicked(self, button):
         self._run_search_dialog(TillFiscalOperationsSearch)

@@ -46,7 +46,7 @@ from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.salesearch import DeliverySearch
+from stoqlib.gui.search.salesearch import DeliverySearch, SoldItemsByBranchSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
@@ -248,6 +248,9 @@ class SalesApp(SearchableAppWindow):
     def _on_products_action__clicked(self, button):
         self.run_dialog(ProductSearch, self.conn, hide_footer=True,
                         hide_toolbar=True, hide_cost_column=True)
+
+    def on_SoldItemsByBranchSearch__activate(self, button):
+        self.run_dialog(SoldItemsByBranchSearch, self.conn)
 
     def _on_commission_action__clicked(self, button):
         self.run_dialog(CommissionSearch, self.conn)

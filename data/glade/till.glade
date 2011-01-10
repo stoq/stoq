@@ -137,6 +137,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="SoldItemsByBranchSearch">
+                        <property name="name">SoldItemsByBranchSearch</property>
+                        <property name="label" translatable="yes">Sold Items by Branch...</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;a</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Save">
                         <property name="name">Save</property>
                         <property name="tooltip" translatable="yes">Save a file</property>
@@ -242,6 +249,7 @@
 	      <menu action="Actions">
 	      <menuitem action="ClientSearch"/>
 	      <menuitem action="SaleSearch"/>
+          <menuitem action="SoldItemsByBranchSearch"/>
 	      <separator name="sep2"/>
 	      <menuitem action="TillHistory"/>
 	      <menuitem action="FiscalTillOperations"/>

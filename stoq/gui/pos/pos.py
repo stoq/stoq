@@ -64,7 +64,8 @@ from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.salesearch import SaleSearch, DeliverySearch
+from stoqlib.gui.search.salesearch import (SaleSearch, DeliverySearch,
+                                           SoldItemsByBranchSearch)
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 
@@ -687,6 +688,9 @@ class POSApp(AppWindow):
 
     def on_Sales__activate(self, action):
         self.run_dialog(SaleSearch, self.conn)
+
+    def on_SoldItemsByBranchSearch__activate(self, action):
+        self.run_dialog(SoldItemsByBranchSearch, self.conn)
 
     def on_ProductSearch__activate(self, action):
         self.run_dialog(ProductSearch, self.conn, hide_footer=True,

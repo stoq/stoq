@@ -153,6 +153,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="SoldItemsByBranchSearch">
+                        <property name="name">SoldItemsByBranchSearch</property>
+                        <property name="label" translatable="yes">Sold Items by Branch...</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;a</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="SalesMenu">
                         <property name="name">SalesMenu</property>
                         <property name="label" translatable="yes">Sal_es</property>
@@ -248,6 +255,7 @@
               </menu>
               <menu action="SearchMenu">
                 <menuitem action="Sales"/>
+                <menuitem action="SoldItemsByBranchSearch"/>
                 <menuitem action="Clients"/>
                 <menuitem action="ProductSearch"/>
                 <menuitem action="ServiceSearch"/>
