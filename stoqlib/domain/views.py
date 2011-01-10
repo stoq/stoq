@@ -437,7 +437,7 @@ class QuotationView(Viewable):
 
 
 
-class SaleItemView(Viewable):
+class SoldItemView(Viewable):
     """Stores information about all sale items, including the average cost
     of the sold items.
     """
@@ -457,6 +457,12 @@ class SaleItemView(Viewable):
         INNERJOINOn(None, BaseSellableInfo,
                     Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
     ]
+
+    # No need to check is_valid_model == True since all invalid models have
+    # status = STATUS_INITIAL
+    clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+                Sale.q.status == Sale.STATUS_PAID,
+                Sale.q.status == Sale.STATUS_ORDERED,)
 
     @classmethod
     def select_by_branch_date(cls, query, branch, date,
@@ -493,13 +499,23 @@ class SaleItemView(Viewable):
         return 0
 
 
-class SoldItemView(SaleItemView):
-    columns = SaleItemView.columns
-    joins = SaleItemView.joins
+class SoldItemsByBranchView(SoldItemView):
+    """Store information about the all sold items by branch.
+    """
+    columns = SoldItemView.columns.copy()
+    columns.update(dict(
+        branch_name=Person.q.name,
+        total=const.SUM(SaleItem.q.quantity * SaleItem.q.price),
+    ))
 
-    clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
-                Sale.q.status == Sale.STATUS_PAID,
-                Sale.q.status == Sale.STATUS_ORDERED,)
+    joins = SoldItemView.joins[:]
+    joins.append(LEFTJOINOn(None, PersonAdaptToBranch,
+                   PersonAdaptToBranch.q.id == Sale.q.branchID))
+    joins.append(LEFTJOINOn(None, Person,
+                   PersonAdaptToBranch.q._originalID == Person.q.id))
+
+    clause = OR(SoldItemView.clause,
+                Sale.q.status == Sale.STATUS_RENEGOTIATED)
 
 
 class PurchasedItemAndStockView(Viewable):
