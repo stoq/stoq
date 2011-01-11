@@ -120,7 +120,7 @@ class SupplierDetailsDialog(BaseEditor):
                        format='%04d', width=90, sorted=True),
                 Column("open_date", title=_("Date"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT, width=80),
-                Column("status_name", title=_("Status"), width=80,
+                Column("status_str", title=_("Status"), width=80,
                       data_type=str),
                 Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
                        data_type=currency, width=100)]

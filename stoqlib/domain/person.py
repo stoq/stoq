@@ -619,6 +619,9 @@ class PersonAdaptToSupplier(PersonAdapter):
     # Auxiliar methods
     #
 
+    def get_name(self):
+        return self.person.name
+
     @classmethod
     def get_active_suppliers(cls, conn):
         query = AND(cls.q.status == cls.STATUS_ACTIVE,
@@ -633,6 +636,14 @@ class PersonAdaptToSupplier(PersonAdapter):
             PurchaseOrderView.q.supplier_name == self.person.name,
             connection=self.get_connection(),
             orderBy=PurchaseOrderView.q.open_date)
+
+    def get_last_purchase_date(self):
+        orders = self.get_supplier_purchases()
+        if orders:
+            # The get_client_sales method already returns a sorted list of
+            # sales by open_date column
+            return orders[-1].open_date.date()
+
 
 Person.registerFacet(PersonAdaptToSupplier, ISupplier)
 
