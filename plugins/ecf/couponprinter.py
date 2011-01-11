@@ -347,8 +347,17 @@ class Coupon(object):
         log.info("we have %d payments" % (sale.payments.count()),)
         for payment in sale.payments:
             constant = self._get_payment_method_constant(payment)
-            self._driver.add_payment(constant.device_value,
-                                     payment.value)
+
+            # When adding a money payment, use base_value so that the payback
+            # is show correctly.
+            if payment.method.method_name == 'money':
+                self._driver.add_payment(constant.device_value,
+                                         payment.base_value)
+
+            # In other cases, add the real value of payment.
+            else:
+                self._driver.add_payment(constant.device_value,
+                                         payment.value)
 
         return True
 
