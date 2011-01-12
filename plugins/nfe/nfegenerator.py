@@ -173,7 +173,7 @@ class NFeGenerator(object):
         series = sysparam(self.conn).NFE_SERIAL_NUMBER
         orientation = sysparam(self.conn).NFE_DANFE_ORIENTATION
         ecf_info = self._sale.get_nfe_coupon_info()
-        nat_op = self._sale.operation_nature
+        nat_op = self._sale.operation_nature or ''
 
         nfe_identification = NFeIdentification(cuf, branch_location.city,
                                                series, nnf, today,
