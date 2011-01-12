@@ -36,7 +36,9 @@ from kiwi.log import Logger
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
+
 from stoqlib.exceptions import StoqlibError, TillError
+from stoqlib.database.orm import AND, OR, const
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       rollback_and_begin, finish_transaction)
 from stoqlib.domain.interfaces import IStorable
@@ -73,6 +75,7 @@ class TillApp(SearchableAppWindow):
         SearchableAppWindow.__init__(self, app)
         self._printer = FiscalPrinterHelper(
             self.conn, parent=self.get_toplevel())
+        self.current_branch = get_current_branch(self.conn)
         self._setup_widgets()
         self.refresh()
         self._update_widgets()
@@ -93,12 +96,32 @@ class TillApp(SearchableAppWindow):
                                           self.details_button])
 
     def create_filters(self):
+        self.executer.set_query(self._query_executer)
         self.set_text_field_columns(['client_name', 'salesperson_name'])
         status_filter = ComboSearchFilter(_(u"Show orders with status"),
                                           self._get_status_values())
         status_filter.select(Sale.STATUS_CONFIRMED)
         self.add_filter(status_filter, position=SearchFilterPosition.TOP,
                         columns=['status'])
+
+    def _query_executer(self, query, having, conn):
+        # We should only show Sales that
+        # 1) In the current branch (FIXME: Should be on the same station.
+                                    # See bug 4266)
+        # 2) Are in the status QUOTE or ORDERED.
+        # 3) For the order statuses, the date should be the same as today
+
+        new = AND(Sale.q.branchID == self.current_branch.id,
+                 OR(Sale.q.status == Sale.STATUS_QUOTE,
+                    Sale.q.status == Sale.STATUS_ORDERED,
+                    const.DATE(Sale.q.open_date) == date.today()))
+
+        if query:
+            query = AND(query, new)
+        else:
+            query = new
+
+        return self.search_table.select(query, having=having, connection=conn)
 
     def get_title(self):
         return _('Stoq - Till for Branch %03d') % get_current_branch(self.conn).id
@@ -174,7 +197,7 @@ class TillApp(SearchableAppWindow):
             prod_sold[storable] += sale_item.quantity
             prod_desc[storable] = sale_item.sellable.get_description()
 
-        branch = get_current_branch(self.conn)
+        branch = self.current_branch
         for storable in prod_sold.keys():
             stock = storable.get_full_balance(branch)
             if stock < prod_sold[storable]:
