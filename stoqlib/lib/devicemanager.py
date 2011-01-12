@@ -79,7 +79,10 @@ class DeviceManager(object):
     def __init__(self):
         self._hal_manager = None
         if dbus:
-            self._hal_manager = _HALManager()
+            try:
+                self._hal_manager = _HALManager()
+            except DBusException:
+                pass
 
     def _get_default_devices(self):
         return  [SerialDevice('/dev/ttyS0'),
@@ -115,7 +118,7 @@ class DeviceManager(object):
         """
         if gudev:
             devices = self._get_gudev_devices()
-        elif dbus:
+        elif self._hal_manager:
             devices = self._get_hal_devices()
         else:
             devices = self._get_default_devices()
