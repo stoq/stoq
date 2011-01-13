@@ -100,12 +100,14 @@ class AppWindow(BaseAppWindow):
         async_comp = PersonAdaptToCompany.selectOneBy(
                             cnpj='03.852.995/0001-07',
                             connection=self.conn)
+        if not async_comp:
+            return
+
         async_branch = IBranch(async_comp.person, None)
         if not async_branch:
             return
 
         ebox = gtk.EventBox()
-
         hbox = gtk.HBox()
 
         msg = _(u'<b>You are using the examples database.</b>')
@@ -114,18 +116,15 @@ class AppWindow(BaseAppWindow):
         hbox.pack_start(label)
 
         button = gtk.Button(_(u'Remove examples'))
+        button.connect('clicked', self._on_remove_examples__clicked)
         hbox.pack_start(button, False, False, 6)
 
-
         ebox.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("red"))
-
         ebox.add(hbox)
-
         ebox.show_all()
 
         self.main_vbox.pack_start(ebox, False, False, 0)
         self.main_vbox.reorder_child(ebox, 1)
-        print async_branch
 
     def _store_cookie(self, *args):
         u = get_current_user(self.conn)
@@ -440,3 +439,10 @@ class SearchableAppWindow(AppWindow):
 
     def on_ExportCSV__activate(self, action):
         self.export_csv()
+
+    def _on_remove_examples__clicked(self, button):
+        import os
+        stoqdir = os.path.join(os.environ['HOME'], '.stoq')
+        flag_file = os.path.join(stoqdir, 'remove_examples')
+        open(flag_file, 'w').write('')
+
