@@ -348,7 +348,7 @@
         <property name="width_request">800</property>
         <property name="window_position">center</property>
         <child>
-            <widget class="GtkVBox" id="vbox1">
+            <widget class="GtkVBox" id="main_vbox">
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkHBox" id="menu_hbox">

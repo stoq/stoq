@@ -42,6 +42,8 @@ from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.gui.slaves.userslave import PasswordEditor
+from stoqlib.domain.person import PersonAdaptToCompany
+from stoqlib.domain.interfaces import IBranch
 
 import stoq
 
@@ -92,6 +94,38 @@ class AppWindow(BaseAppWindow):
             self._create_debug_menu()
         self._create_user_menu()
         self.setup_focus()
+        self._check_examples_database()
+
+    def _check_examples_database(self):
+        async_comp = PersonAdaptToCompany.selectOneBy(
+                            cnpj='03.852.995/0001-07',
+                            connection=self.conn)
+        async_branch = IBranch(async_comp.person, None)
+        if not async_branch:
+            return
+
+        ebox = gtk.EventBox()
+
+        hbox = gtk.HBox()
+
+        msg = _(u'<b>You are using the examples database.</b>')
+        label = gtk.Label(msg)
+        label.set_use_markup(True)
+        hbox.pack_start(label)
+
+        button = gtk.Button(_(u'Remove examples'))
+        hbox.pack_start(button, False, False, 6)
+
+
+        ebox.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("red"))
+
+        ebox.add(hbox)
+
+        ebox.show_all()
+
+        self.main_vbox.pack_start(ebox, False, False, 0)
+        self.main_vbox.reorder_child(ebox, 1)
+        print async_branch
 
     def _store_cookie(self, *args):
         u = get_current_user(self.conn)
@@ -309,6 +343,7 @@ class AppWindow(BaseAppWindow):
     def on_Introspect_activate(self, action):
         window = self.get_toplevel()
         introspect_slaves(window)
+
 
 class SearchableAppWindow(AppWindow):
     """
