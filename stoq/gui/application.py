@@ -26,6 +26,7 @@
 
 import datetime
 import gettext
+import os
 
 import gtk
 from kiwi.component import get_utility
@@ -35,6 +36,7 @@ from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       finish_transaction, get_connection)
 from stoqlib.lib.interfaces import ICookieFile
+from stoqlib.lib.message import yesno, info
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
@@ -441,8 +443,19 @@ class SearchableAppWindow(AppWindow):
         self.export_csv()
 
     def _on_remove_examples__clicked(self, button):
-        import os
+        if not self.can_close_application():
+            return
+        if yesno(_(u'This will delete the current database and '
+                    'configuration. Are you sure?'),
+                 gtk.RESPONSE_NO,_(u"Cancel"),  _(u"Remove")):
+             return
+
+        info(_('Please, start stoq again to configure new database'))
+
+
         stoqdir = os.path.join(os.environ['HOME'], '.stoq')
         flag_file = os.path.join(stoqdir, 'remove_examples')
         open(flag_file, 'w').write('')
+
+        self.shutdown_application()
 
