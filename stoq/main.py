@@ -242,9 +242,28 @@ def _initialize(options):
     config.load(options.filename)
     config_dir = config.get_config_directory()
 
+    remove_flag = os.path.join(config_dir, 'remove_examples')
+    config_file = os.path.join(config_dir, 'stoq.conf')
+
+    if os.path.exists(remove_flag):
+        import subprocess
+        log.debug('Removing examples database as requested')
+        settings = config.get_settings()
+        cmd = ("dropdb -h %(address)s -U %(username)s "
+               "-p %(port)s %(dbname)s") % dict(
+            address=settings.address,
+            username=settings.username,
+            port=settings.port,
+            dbname=settings.dbname)
+        subprocess.Popen(cmd, shell=True,
+                         stdout=subprocess.PIPE,
+                         env=dict(LANG='C'))
+
+        os.unlink(remove_flag)
+        os.unlink(config_file)
+
     wizard = False
-    if (options.wizard or
-        not os.path.exists(os.path.join(config_dir, 'stoq.conf'))):
+    if options.wizard or not os.path.exists(config_file):
         _run_first_time_wizard(options)
         wizard = True
 
