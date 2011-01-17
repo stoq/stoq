@@ -35,6 +35,7 @@ from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter, Today
 from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
 
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
@@ -340,8 +341,23 @@ class ProductStockSearch(SearchEditor):
     # SearchDialog Hooks
     #
 
+    def setup_widgets(self):
+        difference_label = gtk.Label()
+        difference_label.set_markup("<small><b>%s</b></small>"
+                                         % _(u"The DIFFERENCE column is equal "
+                                             "IN STOCK minus MINIMUM columns"))
+        difference_label.show()
+        self.search.search.pack_end(difference_label, False, False, 6)
+
     def create_filters(self):
         self.set_text_field_columns(['description', 'category_description'])
+        self.executer.set_query(self.executer_query)
+
+        #Branch
+        branch_filter = self.create_branch_filter(_('In Branch:'))
+        branch_filter.select(get_current_branch(self.conn).id)
+        self.add_filter(branch_filter, columns = [])
+        self.branch_filter = branch_filter
 
     def on_print_button_clicked(self, widget):
         print_report(ProductStockReport, self.results,
@@ -369,10 +385,16 @@ class ProductStockSearch(SearchEditor):
                              data_type=Decimal),
                 SearchColumn('minimum_quantity', title=_('Minimum'),
                              format_func=format_data, data_type=Decimal),
-                SearchColumn('stock', title=_('In Stock'),
-                             format_func=format_data, data_type=Decimal),
-                SearchColumn('to_receive_quantity', title=_('To Receive'),
-                              format_func=format_data, data_type=Decimal),
+                Column('stock', title=_('In Stock'),
+                       format_func=format_data, data_type=Decimal),
+                Column('to_receive_quantity', title=_('To Receive'),
+                       format_func=format_data, data_type=Decimal),
                 ColoredColumn('difference', title=_('Difference'), color='red',
                               format_func=format_data, data_type=Decimal,
                               data_func=lambda x: x <= Decimal(0)),]
+
+    def executer_query(self, query, having, conn):
+        branch = self.branch_filter.get_state().value
+        if branch is not None:
+            branch = PersonAdaptToBranch.get(branch, connection=conn)
+        return self.table.select_by_branch(query, branch, connection=conn)

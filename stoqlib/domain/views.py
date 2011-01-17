@@ -193,11 +193,16 @@ class ProductWithStockView(ProductFullStockView):
 class _PurchaseItemTotal(Viewable):
     columns = dict(
         id=PurchaseItem.q.sellableID,
+        purchase_id=PurchaseOrder.q.id,
         to_receive=const.SUM(PurchaseItem.q.quantity-
                              PurchaseItem.q.quantity_received)
     )
 
-    joins = []
+    joins = [
+        LEFTJOINOn(None, PurchaseOrder,
+                   PurchaseOrder.q.id == PurchaseItem.q.orderID)]
+
+    clause = PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED
 
 
 class ProductFullStockItemView(ProductFullStockView):
