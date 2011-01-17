@@ -308,7 +308,7 @@ class OutCheckPaymentView(_BillandCheckPaymentView):
     columns = _BillandCheckPaymentView.columns
     joins = _BillandCheckPaymentView.joins
     clause = AND(_BillandCheckPaymentView.clause,
-                 PaymentAdaptToInPayment.q._originalID == Payment.q.id)
+                 PaymentAdaptToOutPayment.q._originalID == Payment.q.id)
 
 
 class PaymentChangeHistoryView(Viewable):
