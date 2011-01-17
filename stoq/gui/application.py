@@ -26,6 +26,7 @@
 
 import datetime
 import gettext
+import os
 
 import gtk
 from kiwi.component import get_utility
@@ -35,6 +36,7 @@ from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       finish_transaction, get_connection)
 from stoqlib.lib.interfaces import ICookieFile
+from stoqlib.lib.message import yesno, info
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
@@ -42,6 +44,8 @@ from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.gui.slaves.userslave import PasswordEditor
+from stoqlib.domain.person import PersonAdaptToCompany
+from stoqlib.domain.interfaces import IBranch
 
 import stoq
 
@@ -92,6 +96,46 @@ class AppWindow(BaseAppWindow):
             self._create_debug_menu()
         self._create_user_menu()
         self.setup_focus()
+        self._check_examples_database()
+
+    def _check_examples_database(self):
+        async_comp = PersonAdaptToCompany.selectOneBy(
+                            cnpj='03.852.995/0001-07',
+                            connection=self.conn)
+        if not async_comp:
+            return
+
+        async_branch = IBranch(async_comp.person, None)
+        if not async_branch:
+            return
+
+        msg = _(u'<b>You are using the examples database.</b>')
+        label = gtk.Label(msg)
+        label.set_use_markup(True)
+
+        button = gtk.Button(_(u'Remove examples'))
+        button.connect('clicked', self._on_remove_examples__clicked)
+
+        if hasattr(gtk, 'InfoBar'):
+            bar = gtk.InfoBar()
+            bar.get_content_area().add(label)
+            bar.add_action_widget(button, 0)
+            bar.set_message_type(gtk.MESSAGE_WARNING)
+
+            bar.show_all()
+        else:
+            bar = gtk.EventBox()
+            hbox = gtk.HBox()
+
+            hbox.pack_start(label)
+            hbox.pack_start(button, False, False, 6)
+
+            bar.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("red"))
+            bar.add(hbox)
+            bar.show_all()
+
+        self.main_vbox.pack_start(bar, False, False, 0)
+        self.main_vbox.reorder_child(bar, 1)
 
     def _store_cookie(self, *args):
         u = get_current_user(self.conn)
@@ -310,6 +354,7 @@ class AppWindow(BaseAppWindow):
         window = self.get_toplevel()
         introspect_slaves(window)
 
+
 class SearchableAppWindow(AppWindow):
     """
     Base class for applications which main interface consists of a list
@@ -405,3 +450,21 @@ class SearchableAppWindow(AppWindow):
 
     def on_ExportCSV__activate(self, action):
         self.export_csv()
+
+    def _on_remove_examples__clicked(self, button):
+        if not self.can_close_application():
+            return
+        if yesno(_(u'This will delete the current database and '
+                    'configuration. Are you sure?'),
+                 gtk.RESPONSE_NO,_(u"Cancel"),  _(u"Remove")):
+             return
+
+        info(_('Please, start stoq again to configure new database'))
+
+
+        stoqdir = os.path.join(os.environ['HOME'], '.stoq')
+        flag_file = os.path.join(stoqdir, 'remove_examples')
+        open(flag_file, 'w').write('')
+
+        self.shutdown_application()
+
