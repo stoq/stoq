@@ -109,24 +109,33 @@ class AppWindow(BaseAppWindow):
         if not async_branch:
             return
 
-        ebox = gtk.EventBox()
-        hbox = gtk.HBox()
-
         msg = _(u'<b>You are using the examples database.</b>')
         label = gtk.Label(msg)
         label.set_use_markup(True)
-        hbox.pack_start(label)
 
         button = gtk.Button(_(u'Remove examples'))
         button.connect('clicked', self._on_remove_examples__clicked)
-        hbox.pack_start(button, False, False, 6)
 
-        ebox.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("red"))
-        ebox.add(hbox)
-        ebox.show_all()
+        if hasattr(gtk, 'InfoBar'):
+            bar = gtk.InfoBar()
+            bar.get_content_area().add(label)
+            bar.add_action_widget(button, 0)
+            bar.set_message_type(gtk.MESSAGE_WARNING)
 
-        self.main_vbox.pack_start(ebox, False, False, 0)
-        self.main_vbox.reorder_child(ebox, 1)
+            bar.show_all()
+        else:
+            bar = gtk.EventBox()
+            hbox = gtk.HBox()
+
+            hbox.pack_start(label)
+            hbox.pack_start(button, False, False, 6)
+
+            bar.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("red"))
+            bar.add(hbox)
+            bar.show_all()
+
+        self.main_vbox.pack_start(bar, False, False, 0)
+        self.main_vbox.reorder_child(bar, 1)
 
     def _store_cookie(self, *args):
         u = get_current_user(self.conn)
