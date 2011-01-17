@@ -247,17 +247,11 @@ def _initialize(options):
 
     if os.path.exists(remove_flag):
         import subprocess
+        from stoqlib.database.database import drop_database
         log.debug('Removing examples database as requested')
+
         settings = config.get_settings()
-        cmd = ("dropdb -h %(address)s -U %(username)s "
-               "-p %(port)s %(dbname)s") % dict(
-            address=settings.address,
-            username=settings.username,
-            port=settings.port,
-            dbname=settings.dbname)
-        subprocess.Popen(cmd, shell=True,
-                         stdout=subprocess.PIPE,
-                         env=dict(LANG='C'))
+        drop_database(settings.dbname, settings)
 
         os.unlink(remove_flag)
         os.unlink(config_file)
