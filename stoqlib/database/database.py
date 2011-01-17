@@ -42,12 +42,15 @@ _ = stoqlib_gettext
 log = Logger('stoqlib.db.database')
 
 
-def drop_database(dbname):
+def drop_database(dbname, settings=None):
     """Drops a database.
     @param dbname: the name of the database to be dropped.
+    @param settings: optionally provide seetings, so that you dont have to
+    provide IDatabaseSettings before calling this function.
     """
     log.info("Droping database %s" % (dbname,))
-    settings = get_utility(IDatabaseSettings)
+    if not settings:
+        settings = get_utility(IDatabaseSettings)
     conn = settings.get_default_connection()
 
     try:
