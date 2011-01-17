@@ -41,9 +41,11 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import (ProductFullStockView, ProductQuantityView,
                                   ProductFullStockItemView, SoldItemView)
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.search import (SearchDialog, SearchEditor,
                                      SearchDialogPrintSlave)
+from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductStockEditor)
 from stoqlib.gui.printing import print_report
@@ -123,6 +125,14 @@ class ProductSearch(SearchEditor):
     # SearchDialog Hooks
     #
 
+    def setup_widgets(self):
+        self.csv_button = self.add_button(label=_(u'Export CSV...'))
+        self.csv_button.connect('clicked', self._on_export_csv_button__clicked)
+        self.csv_button.show()
+        self.csv_button.set_sensitive(False)
+
+        self.results.connect('has_rows', self._on_results__has_rows)
+
     def create_filters(self):
         self.set_text_field_columns(['description', 'barcode',
                                      'category_description'])
@@ -184,9 +194,20 @@ class ProductSearch(SearchEditor):
         return self.search_table.select_by_branch(query, branch,
                                                   connection=conn)
 
+    #
+    # Callbacks
+    #
+
+    def _on_export_csv_button__clicked(self, widget):
+        run_dialog(CSVExporterDialog, self, self.conn, self.search_table,
+                   self.results)
+
     def on_selection_changed(self, results, selected):
         can_edit = bool(selected)
         self.set_edit_button_sensitive(can_edit)
+
+    def _on_results__has_rows(self, widget, has_rows):
+        self.csv_button.set_sensitive(has_rows)
 
 
 def format_data(data):
