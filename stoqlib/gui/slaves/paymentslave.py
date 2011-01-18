@@ -59,7 +59,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.lib.defaults import (interval_types, INTERVALTYPE_MONTH,
      DECIMAL_PRECISION, calculate_interval)
-from stoqlib.lib.message import info
+from stoqlib.lib.message import info, warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -549,7 +549,19 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     def finish(self):
         # Since payments are created during this step there is no need to
         # perform tasks here
-        return
+
+        # Validate payment dates before moving on
+        today = datetime.date.today()
+        previous_date = today + datetime.timedelta(days=-1)
+        for slave in self.payment_list.payment_slaves.values():
+            if (slave.due_date.read() < today or 
+                                       slave.due_date.read() <= previous_date):
+                warning(_(u"Payment dates can't repeat or be lower than "
+                           "previous dates."))
+                return False
+            previous_date = slave.due_date.read()
+
+        return True
 
     #
     # BaseEditor Slave hooks
@@ -949,9 +961,8 @@ class _MultipleMethodEditor(BaseEditor):
 
         self.attach_slave('place_holder', self.slave)
 
-    def on_confirm(self):
-        self.slave.finish()
-        return True
+    def validate_confirm(self):
+        return self.slave.finish()
 
     def on_cancel(self):
         self.conn.rollback_to_savepoint('before_payment_creation')

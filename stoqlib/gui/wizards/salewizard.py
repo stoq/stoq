@@ -110,8 +110,7 @@ class PaymentMethodStep(BaseWizardStep):
     #
 
     def validate_step(self):
-        self._method_slave.finish()
-        return True
+        return self._method_slave.finish()
 
     def has_next_step(self):
         return False
