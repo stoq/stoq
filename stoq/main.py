@@ -184,6 +184,14 @@ def _run_first_time_wizard(options):
     if model is False:
         raise SystemExit()
 
+def _run_update_wizard():
+    from stoqlib.gui.base.dialogs import run_dialog
+    from stoq.gui.update import SchemaUpdateWizard
+
+    retval = run_dialog(SchemaUpdateWizard, None)
+    if not retval:
+        raise SystemExit()
+
 def _setup_ui_dialogs():
     # This needs to be here otherwise we can't install the dialog
     if 'STOQ_TEST_MODE' in os.environ:
@@ -246,7 +254,6 @@ def _initialize(options):
     config_file = os.path.join(config_dir, 'stoq.conf')
 
     if os.path.exists(remove_flag):
-        import subprocess
         from stoqlib.database.database import drop_database
         log.debug('Removing examples database as requested')
 
@@ -280,12 +287,14 @@ def _initialize(options):
 
     from stoqlib.exceptions import StoqlibError
     from stoqlib.database.exceptions import PostgreSQLError
-    from stoq.lib.startup import setup
+    from stoq.lib.startup import setup, needs_schema_update
     log.debug('calling setup()')
     # XXX: progress dialog for connecting (if it takes more than
     # 2 seconds) or creating the database
     try:
-        setup(config, options)
+        setup(config, options, check_schema=False, load_plugins=False)
+        if needs_schema_update():
+            _run_update_wizard()
     except (StoqlibError, PostgreSQLError), e:
         error(_('Could not connect to database'),
               'error=%s uri=%s' % (str(e), config.get_connection_uri()))

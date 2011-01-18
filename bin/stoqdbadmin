@@ -179,9 +179,7 @@ class StoqCommandHandler:
         # This is a little bit tricky to be able to apply the initial
         # plugin infrastructure
         migration = StoqlibSchemaMigration()
-        migration.update(plugins=False, backup=options.disable_backup)
-        provide_plugin_manager()
-        migration.update_plugins()
+        migration.update(backup=options.disable_backup)
 
     def cmd_serve(self, options):
         from stoqlib.database.synchronization import SynchronizationService
