@@ -995,6 +995,7 @@ class ClientView(Viewable):
     columns = dict(
         id=Person.q.id,
         client_id=PersonAdaptToClient.q.id,
+        fancy_name=PersonAdaptToCompany.q.fancy_name,
         name=Person.q.name,
         phone_number=Person.q.phone_number,
         status=PersonAdaptToClient.q.status,
