@@ -354,6 +354,23 @@ class AppWindow(BaseAppWindow):
         window = self.get_toplevel()
         introspect_slaves(window)
 
+    def _on_remove_examples__clicked(self, button):
+        if not self.can_close_application():
+            return
+        if yesno(_(u'This will delete the current database and '
+                    'configuration. Are you sure?'),
+                 gtk.RESPONSE_NO,_(u"Cancel"),  _(u"Remove")):
+             return
+
+        info(_('Please, start stoq again to configure new database'))
+
+
+        stoqdir = os.path.join(os.environ['HOME'], '.stoq')
+        flag_file = os.path.join(stoqdir, 'remove_examples')
+        open(flag_file, 'w').write('')
+
+        self.shutdown_application()
+
 
 class SearchableAppWindow(AppWindow):
     """
@@ -450,21 +467,4 @@ class SearchableAppWindow(AppWindow):
 
     def on_ExportCSV__activate(self, action):
         self.export_csv()
-
-    def _on_remove_examples__clicked(self, button):
-        if not self.can_close_application():
-            return
-        if yesno(_(u'This will delete the current database and '
-                    'configuration. Are you sure?'),
-                 gtk.RESPONSE_NO,_(u"Cancel"),  _(u"Remove")):
-             return
-
-        info(_('Please, start stoq again to configure new database'))
-
-
-        stoqdir = os.path.join(os.environ['HOME'], '.stoq')
-        flag_file = os.path.join(stoqdir, 'remove_examples')
-        open(flag_file, 'w').write('')
-
-        self.shutdown_application()
 
