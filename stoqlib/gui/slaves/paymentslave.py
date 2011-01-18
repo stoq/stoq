@@ -581,8 +581,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     # Kiwi callbacks
     #
 
-    def on_installments_number__changed(self, proxyspinbutton):
-        # Call this callback *on* the value changed because we need to
+    def after_installments_number__changed(self, proxyspinbutton):
+        # Call this callback *after* the value changed because we need to
         # have the same value for the length of the payments list and
         # validate the installments_number
         inst_number = self.model.installments_number
