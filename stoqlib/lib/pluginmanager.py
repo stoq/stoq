@@ -190,6 +190,8 @@ def register_plugin(plugin_class):
 def provide_plugin_manager():
     """Provides the plugin manager, this can only be called once
     """
-    manager = PluginManager()
-    provide_utility(IPluginManager, manager)
+    manager = get_utility(IPluginManager, None)
+    if not manager:
+        manager = PluginManager()
+        provide_utility(IPluginManager, manager)
     return manager
