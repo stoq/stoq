@@ -38,7 +38,7 @@ from stoqlib.database.orm import orm_enable_debugging, orm_startup
 from stoqlib.database.runtime import get_connection, set_current_branch_station, new_transaction
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.profile import ProfileSettings
-from stoqlib.exceptions import DatabaseError
+from stoqlib.exceptions import DatabaseError, StoqlibError
 from stoqlib.lib.interfaces import  IApplicationDescriptions
 from stoqlib.lib.message import error
 
@@ -95,11 +95,22 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     from stoq.lib.applist import ApplicationDescriptions
     provide_utility(IApplicationDescriptions, ApplicationDescriptions())
 
+    from stoqlib.lib.pluginmanager import provide_plugin_manager
+    manager = provide_plugin_manager()
+
+    if load_plugins:
+        manager.activate_plugins()
+
     if check_schema:
         _check_tables()
 
         migration = StoqlibSchemaMigration()
         if not migration.check_uptodate():
+            error(_("Database schema error"),
+                  _("The database schema has changed, but the database has "
+                    "not been updated. Run 'stoqdbadmin updateschema` to"
+                    "update the schema  to the latest available version."))
+        if load_plugins and not migration.check_plugins():
             error(_("Database schema error"),
                   _("The database schema has changed, but the database has "
                     "not been updated. Run 'stoqdbadmin updateschema` to"
@@ -119,20 +130,6 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
             station_name = socket.gethostname()
         set_current_branch_station(conn, station_name)
 
-    if load_plugins:
-        from stoqlib.lib.pluginmanager import provide_plugin_manager
-        manager = provide_plugin_manager()
-        manager.activate_plugins()
-
-        if check_schema:
-            migration = StoqlibSchemaMigration()
-            if not migration.check_plugins():
-                error(_("Database schema error"),
-                      _("The database schema has changed, but the database has "
-                        "not been updated. Run 'stoqdbadmin updateschema` to"
-                        "update the schema  to the latest available version."))
-
-
     if options:
         if options.debug:
             from gtk import keysyms
@@ -143,6 +140,19 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         if options.sqldebug:
             orm_enable_debugging()
     orm_startup()
+
+
+def needs_schema_update():
+    try:
+        migration = StoqlibSchemaMigration()
+    except StoqlibError:
+        error(_("Update Error"),
+             _("You need to call setup() before checking the database "
+               "schema."))
+
+    update = not (migration.check_uptodate() and migration.check_plugins())
+    return update
+
 
 def clean_database(config, options=None):
     """Clean the database
