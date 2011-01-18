@@ -89,7 +89,9 @@ class StartSaleQuoteStep(WizardEditorStep):
         clients = ClientView.get_active_clients(self.conn)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         clients = clients[:max_results]
-        items = [(c.name, c.client) for c in clients]
+        items = [(c.name + (c.fancy_name and " (%s)" % c.fancy_name or ""),
+                 c.client) for c in clients]
+
         self.client.prefill(sorted(items))
 
         # CFOP combo
