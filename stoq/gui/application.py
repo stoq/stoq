@@ -212,7 +212,7 @@ class AppWindow(BaseAppWindow):
 
     def _create_user_menu(self):
         ui_string = """<ui>
-          <menubar name="Menubar">
+          <menubar name="menubar">
             <menu action="UserMenu">
               <menuitem action="StoreCookie"/>
               <menuitem action="ClearCookie"/>
@@ -223,8 +223,9 @@ class AppWindow(BaseAppWindow):
             </menu>
           </menubar>
         </ui>"""
+
         actions = [
-            ('UserMenu', None, self.user_menu_label),
+            ('UserMenu', None, _('%s User') % self.user_menu_label),
             ('StoreCookie', gtk.STOCK_SAVE, _('_Store'), '<control>k',
              _('Store a cookie'), self.on_StoreCookie__activate),
             ('ClearCookie',     gtk.STOCK_CLEAR, _('_Clear'), '<control>e',
@@ -237,22 +238,21 @@ class AppWindow(BaseAppWindow):
             ('ChangeApplication',    gtk.STOCK_REFRESH, _('Change Application'),
              'F5', _('Change application'), self._on_ChangeApplication__activate),
             ]
+
         ag = gtk.ActionGroup('UsersMenuActions')
         ag.add_actions(actions)
-        self._ui = gtk.UIManager()
-        self._ui.insert_action_group(ag, 0)
-        self._ui.add_ui_from_string(ui_string)
-        window = self.get_toplevel()
-        window.add_accel_group(self._ui.get_accel_group())
-        menubar = self._ui.get_widget('/Menubar')
-        self.menu_hbox.pack_start(menubar, expand=False)
-        menubar.show_all()
+
+        self.uimanager.insert_action_group(ag, 0)
+        self.uimanager.add_ui_from_string(ui_string)
+
+        user_menu = self.uimanager.get_widget('/menubar/UserMenu')
+        user_menu.set_right_justified(True)
 
         if sysparam(self.conn).DISABLE_COOKIES:
             self._clear_cookie()
-            store_cookie = self._ui.get_widget('/Menubar/UserMenu/StoreCookie')
+            store_cookie = self.uimanager.get_widget('/menubar/UserMenu/StoreCookie')
             store_cookie.hide()
-            clear_cookie = self._ui.get_widget('/Menubar/UserMenu/ClearCookie')
+            clear_cookie = self.uimanager.get_widget('/menubar/UserMenu/ClearCookie')
             clear_cookie.hide()
 
     def _create_debug_menu(self):
