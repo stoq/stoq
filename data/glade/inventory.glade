@@ -120,7 +120,7 @@
 	      <menuitem action="about_menu"/>
 	    </menu>
 	  </menubar>
-	  <toolbar action="toolbar1">
+	  <toolbar action="main_toolbar">
 	      <toolitem action="counting_action"/>
 	      <toolitem action="adjust_action"/>
       </toolbar>
@@ -161,7 +161,7 @@
                         <property name="spacing">2</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget constructor="initial-state" class="GtkToolbar" id="toolbar1">
+                            <widget constructor="initial-state" class="GtkToolbar" id="main_toolbar">
                                 <property name="visible">True</property>
                             </widget>
                             <packing>

@@ -97,6 +97,18 @@ class AppWindow(BaseAppWindow):
         self._create_user_menu()
         self.setup_focus()
         self._check_examples_database()
+        self._usability_hacks()
+
+    def _usability_hacks(self):
+        """Adds some workarounds to improve stoq usability.
+
+        Currently, all it does is change the toolbar style to display both
+        icon and label (ubuntu defaults to show only icons)
+        """
+        if not hasattr(self, 'main_toolbar'):
+            return
+
+        self.main_toolbar.set_style(gtk.TOOLBAR_BOTH)
 
     def _check_examples_database(self):
         async_comp = PersonAdaptToCompany.selectOneBy(
