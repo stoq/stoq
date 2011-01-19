@@ -335,7 +335,7 @@
 	      <menuitem action="about_menu"/>
 	    </menu>
 	  </menubar>
-	  <toolbar action="toolbar1">
+	  <toolbar action="main_toolbar">
 	    <toolitem action="NewQuote"/>
 	    <toolitem action="Clients"/>
 	    <toolitem action="Products"/>
@@ -373,7 +373,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget constructor="initial-state" class="GtkToolbar" id="toolbar1">
+                    <widget constructor="initial-state" class="GtkToolbar" id="main_toolbar">
                         <property name="visible">True</property>
                     </widget>
                     <packing>
