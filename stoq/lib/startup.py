@@ -95,10 +95,10 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     from stoq.lib.applist import ApplicationDescriptions
     provide_utility(IApplicationDescriptions, ApplicationDescriptions())
 
-    from stoqlib.lib.pluginmanager import provide_plugin_manager
-    manager = provide_plugin_manager()
-
     if load_plugins:
+        from stoqlib.lib.pluginmanager import provide_plugin_manager
+        manager = provide_plugin_manager()
+
         manager.activate_plugins()
 
     if check_schema:
