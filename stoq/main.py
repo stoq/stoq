@@ -292,7 +292,7 @@ def _initialize(options):
     # XXX: progress dialog for connecting (if it takes more than
     # 2 seconds) or creating the database
     try:
-        setup(config, options, check_schema=False, load_plugins=False)
+        setup(config, options, check_schema=False)
         if needs_schema_update():
             _run_update_wizard()
     except (StoqlibError, PostgreSQLError), e:
