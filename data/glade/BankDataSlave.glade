@@ -4,18 +4,10 @@
     <widget class="GtkWindow" id="BankDataSlave">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
+        <property name="mnemonics_visible">False</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
-                <child>
-                    <widget class="GtkHSeparator" id="hseparator1">
-                        <property name="visible">True</property>
-                    </widget>
-                    <packing>
-                        <property name="expand">False</property>
-                        <property name="padding">6</property>
-                    </packing>
-                </child>
                 <child>
                     <widget class="GtkHBox" id="hbox1">
                         <property name="spacing">5</property>
@@ -24,9 +16,10 @@
                             <widget class="GtkAlignment" id="alignment1">
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                                    <widget class="ProxyLabel" id="kiwilabel1">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Bank ID:</property>
+                                        <property name="model_attribute"></property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -37,12 +30,13 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="bank">
+                            <widget class="ProxyEntry" id="bank">
                                 <property name="data_type">int</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">bank_id</property>
                                 <property name="visible">True</property>
                                 <property name="width_chars">10</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -50,9 +44,10 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                            <widget class="ProxyLabel" id="kiwilabel2">
                                 <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Branch Number:</property>
+                                <property name="model_attribute"></property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -62,7 +57,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="branch">
+                            <widget class="ProxyEntry" id="branch">
                                 <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">branch</property>
@@ -86,7 +81,6 @@
                     </widget>
                     <packing>
                         <property name="expand">False</property>
-                        <property name="position">1</property>
                     </packing>
                 </child>
             </widget>
