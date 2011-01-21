@@ -26,18 +26,26 @@
 
 import datetime
 import gettext
+import json
 import os
+import platform
+import urllib
 
+from dateutil.parser import parse
+import gio
+import gobject
 import gtk
 from kiwi.component import get_utility
 from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
+from kiwi.log import Logger
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       finish_transaction, get_connection)
 from stoqlib.lib.interfaces import ICookieFile
 from stoqlib.lib.message import yesno, info
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import InstalledPlugin
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
@@ -45,11 +53,11 @@ from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.gui.slaves.userslave import PasswordEditor
 from stoqlib.domain.person import PersonAdaptToCompany
-from stoqlib.domain.interfaces import IBranch
+from stoqlib.domain.interfaces import IBranch, ICompany
 
 import stoq
 
-
+log = Logger('stoq.application')
 _ = gettext.gettext
 
 
@@ -479,4 +487,115 @@ class SearchableAppWindow(AppWindow):
 
     def on_ExportCSV__activate(self, action):
         self.export_csv()
+
+
+class VersionChecker(object):
+    URL = """http://api.stoq.com.br/get_version_number.php"""
+    DAYS_BETWEEN_CHECKS = 7
+
+    #
+    #   Private API
+    #
+
+    def __init__(self, conn, app):
+        self.conn = conn
+        self.app = app
+
+    def _display_new_version_message(self, details):
+        button = gtk.LinkButton(details['url'], _(u'Learn More...'))
+        label = gtk.Label(_('<b>There is a new Stoq version available (%s)</b>') %
+                            details['version'])
+        label.set_use_markup(True)
+
+        bar = gtk.InfoBar()
+        bar.get_content_area().add(label)
+        bar.add_action_widget(button, 0)
+        bar.set_message_type(gtk.MESSAGE_INFO)
+        bar.show_all()
+
+        self.app.main_vbox.pack_start(bar, False, False, 0)
+        self.app.main_vbox.reorder_child(bar, 1)
+
+    def _check_details(self, details):
+        current_version = stoq.version
+        if details['version'] > current_version:
+            self._display_new_version_message(details)
+
+    def _get_send_data(self):
+        details = {}
+
+        # CNPJ
+        branch = sysparam(self.conn).MAIN_COMPANY
+        company = ICompany(branch.person)
+        details['cnpj'] = company.cnpj
+
+        # Plugins
+        plugins = [i.plugin_name for i in
+                            InstalledPlugin.select(connection=self.conn)]
+        details['plugins'] = plugins
+
+        details['version'] = stoq.version
+        details['time'] = datetime.datetime.today().isoformat()
+
+        # Distribution
+        dist = platform.dist()
+        details['dist'] = dist
+
+        return urllib.quote(json.dumps(details))
+
+    def _get_check_filename(self):
+        return os.path.join(os.environ['HOME'], '.stoq', 'last_check')
+
+    def _download_details(self):
+        log.debug('Downloading new version information')
+        url = '%s?q=%s' % (self.URL, self._get_send_data())
+        gfile = gio.File(url)
+        gfile.read_async(self._read_file_callback)
+
+    def _read_file_callback(self, gfile, result):
+        try:
+            stream = gfile.read_finish(result)
+        except gobject.GError, e:
+            log.debug('Error downloading version information (%s)' % e)
+            return
+
+        self.data = ''
+        stream.read_async(4096, self._download_details_callback)
+
+    def _download_details_callback(self, stream, result):
+        data = stream.read_finish(result)
+        if not data:
+            check_file = self._get_check_filename()
+            open(check_file, 'w').write(self.data)
+
+            details = json.loads(self.data)
+            self._check_details(details)
+            return
+
+        self.data += data
+        stream.read_async(4096, self._download_details_callback)
+
+    #
+    #   Public API
+    #
+
+    def check_new_version(self):
+        check_file = self._get_check_filename()
+
+        try:
+            details = json.loads(open(check_file, 'r').read())
+        except IOError:
+            return self._download_details()
+
+        check_date = parse(details['check_date']).date()
+        diff = datetime.date.today() - check_date
+
+        # If the file was downloaded more than a week ago, download again
+        if diff.days >= self.DAYS_BETWEEN_CHECKS:
+            return self._download_details()
+
+        # Otherwise, use the current file for displaying information
+        self._check_details(details)
+
+
 

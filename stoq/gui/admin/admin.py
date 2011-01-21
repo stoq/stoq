@@ -60,7 +60,7 @@ from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.message import info
 
-from stoq.gui.application import SearchableAppWindow
+from stoq.gui.application import SearchableAppWindow, VersionChecker
 
 _ = gettext.gettext
 
@@ -76,6 +76,8 @@ class AdminApp(SearchableAppWindow):
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
         self._update_view()
+        self._version_checker = VersionChecker(self.conn, self)
+        self._version_checker.check_new_version()
 
     def create_filters(self):
         # FIXME: Convert the query to a Viewable so we can add name
