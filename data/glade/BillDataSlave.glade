@@ -28,7 +28,7 @@
                                     <widget class="ProxyLabel" id="kiwilabel1">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Duedate:</property>
-                                        <property name="model_attribute"></property>
+                                        <property name="model_attribute">kiwilabel1</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -99,20 +99,20 @@
                                         <property name="position">6</property>
                                     </packing>
                                 </child>
-                                <child>
-                                    <widget class="GtkEventBox" id="bank_data_slave">
-                                        <property name="visible">True</property>
-                                        <child>
-                                            <placeholder/>
-                                        </child>
-                                    </widget>
-                                    <packing>
-                                        <property name="position">7</property>
-                                    </packing>
-                                </child>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkEventBox" id="bank_data_slave">
+                                <property name="visible">True</property>
+                                <child>
+                                    <placeholder/>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
                             </packing>
                         </child>
                     </widget>
