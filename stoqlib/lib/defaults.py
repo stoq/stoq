@@ -86,23 +86,14 @@ def get_libc():
     return _libc
 
 
-def calculate_interval(interval_type, intervals):
-    """Get the interval type value for a certain INTERVALTYPE_* constant.
-    Intervals are useful modes to calculate payment duedates.
+def calculate_delta_interval(interval_type, intervals):
+    """Get the relativedelta value for a certain INTERVALTYPE_* constant.
+    Intervals are useful modes to calculate payment duedates, just sum
+    them with a L{datetime.datetime} or L{datetime.date} object.
 
-    @param interval_type:
-    @param intervals:
-    @returns:
-
-    >>> calculate_interval(INTERVALTYPE_DAY, 5)
-    5
-
-    >>> calculate_interval(INTERVALTYPE_MONTH, 3)
-    90
-
-    >>> calculate_interval(INTERVALTYPE_YEAR, 10)
-    3650
-
+    @param interval_type: one of the INTERVALTYPE_* above
+    @param intervals: an int representing the number of intervals
+    @returns: a L{relativedelta.relativedelta} object
     """
     if not interval_values.has_key(interval_type):
         raise KeyError('Invalid interval_type %r argument for '
@@ -110,7 +101,22 @@ def calculate_interval(interval_type, intervals):
     if not type(intervals) == int:
         raise TypeError('Invalid type for intervals argument. It must be '
                         'integer, got %s' % type(intervals))
-    return interval_values[interval_type] * intervals
+
+    if interval_type == INTERVALTYPE_DAY:
+        delta = relativedelta.relativedelta(days=intervals)
+    elif interval_type == INTERVALTYPE_WEEK:
+        delta = relativedelta.relativedelta(weeks=intervals)
+        pass
+    elif interval_type == INTERVALTYPE_MONTH:
+        delta = relativedelta.relativedelta(months=intervals)
+        pass
+    elif interval_type == INTERVALTYPE_YEAR:
+        delta = relativedelta.relativedelta(years=intervals)
+        pass
+    else:
+        delta = relativedelta.relativedelta()
+
+    return delta
 
 
 def get_weekday_start():
