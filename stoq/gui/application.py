@@ -490,7 +490,7 @@ class SearchableAppWindow(AppWindow):
 
 
 class VersionChecker(object):
-    URL = """http://api.stoq.com.br/get_version_number.php"""
+    URL = """http://api.stoq.com.br/get_version_number"""
     DAYS_BETWEEN_CHECKS = 7
 
     #
