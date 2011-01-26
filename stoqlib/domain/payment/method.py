@@ -219,9 +219,10 @@ class PaymentMethod(Domain):
     #       They should either go into the group or to a separate payment
     #       factory singleton.
     @argcheck(object, PaymentGroup, Decimal, datetime.datetime,
-              basestring, basestring, Till)
+              basestring, basestring, Till, basestring)
     def create_payment(self, iface, payment_group, value, due_date=None,
-                       description=None, base_value=None, till=None):
+                       description=None, base_value=None, till=None,
+                       payment_number=None):
         """Creates a new payment according to a payment method interface
         @param iface: a payment method interface eg L{IOutPayment} or
         L{IInPayment}
@@ -232,6 +233,7 @@ class PaymentMethod(Domain):
         @param description: optional, description of the payment
         @param base_value: optional
         @param till: optional
+        @param payment_number: optional
         @returns: a L{PaymentAdaptToOutPayment} or L{PaymentAdaptToInPayment}
         """
         conn = self.get_connection()
@@ -277,7 +279,8 @@ class PaymentMethod(Domain):
                           method=self,
                           category=None,
                           till=till,
-                          description=description)
+                          description=description,
+                          payment_number=payment_number)
         facet = payment.addFacet(iface, connection=conn)
         self.operation.payment_create(payment)
         return facet
