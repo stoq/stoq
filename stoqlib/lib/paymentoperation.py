@@ -20,10 +20,15 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s):  Johan Dahlin                <jdahlin@async.com.br>
+##              Thiago Bellini              <hackedbellini@async.com.br>
 ##
+
+import datetime
+from decimal import Decimal
 
 from zope.interface import implements
 
+from stoqlib.lib.defaults import calculate_delta_interval, quantize
 from stoqlib.lib.interfaces import IPaymentOperation, IPaymentOperationManager
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -52,3 +57,55 @@ class PaymentOperationManager(object):
     def get(self, name):
         return self._methods.get(name)
 
+
+def generate_payments_values(value, installments_number,
+                             interest=Decimal(0)):
+    """Calculates the values of payments
+
+    @param value: value of payment
+    @param installments_number: the number of installments
+    @param interest: a L{Decimal} with the interest
+    @returns: a list with the values
+    """
+    if interest:
+        interest_rate = interest / 100 + 1
+        normalized_value = quantize((value / installments_number)
+                                    * interest_rate)
+        interest_total = normalized_value * installments - value
+    else:
+        normalized_value = quantize(value / installments_number)
+        interest_total = Decimal(0)
+
+    payments = []
+    payments_total = Decimal(0)
+    for i in range(installments_number):
+        payments.append(normalized_value)
+        payments_total += normalized_value
+
+    # Adjust the last payment so the total will sum up nicely.
+    difference = -(payments_total - interest_total - value)
+    if difference:
+        payments[-1] += difference
+
+    return payments
+
+
+def generate_payments_due_dates(installments_number, first_due_date,
+                                interval, interval_type):
+    """Calculates the due dates of payments
+
+    @param installments_number: the number of installments
+    @param first_due_date: a L{datetime.datetime} or L{datetime.date}
+    object containing the first due date
+    @param interval: the interval between due_dates
+    @param interval_type: an interval_type from L{stoqlib.lib.defaults}
+    @returns: a list with the due_dates
+    """
+    due_dates = []
+    delta = calculate_delta_interval(interval_type, interval)
+    d = first_due_date
+    for i in range(installments_number):
+        due_dates.append(d)
+        d += delta
+
+    return due_dates
