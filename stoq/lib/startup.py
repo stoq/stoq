@@ -95,6 +95,20 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     from stoq.lib.applist import ApplicationDescriptions
     provide_utility(IApplicationDescriptions, ApplicationDescriptions())
 
+    if register_station:
+        try:
+            conn = get_connection()
+        except DatabaseError, e:
+            error(e.short, e.msg)
+
+        # For LTSP systems we cannot use the hostname as stoq is run
+        # on a shared serve system. Instead the ip of the client system
+        # is available in the LTSP_CLIENT environment variable
+        station_name = os.environ.get('LTSP_CLIENT_HOSTNAME', None)
+        if station_name is None:
+            station_name = socket.gethostname()
+        set_current_branch_station(conn, station_name)
+
     if load_plugins:
         from stoqlib.lib.pluginmanager import provide_plugin_manager
         manager = provide_plugin_manager()
@@ -115,20 +129,6 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
                   _("The database schema has changed, but the database has "
                     "not been updated. Run 'stoqdbadmin updateschema` to"
                     "update the schema  to the latest available version."))
-
-    if register_station:
-        try:
-            conn = get_connection()
-        except DatabaseError, e:
-            error(e.short, e.msg)
-
-        # For LTSP systems we cannot use the hostname as stoq is run
-        # on a shared serve system. Instead the ip of the client system
-        # is available in the LTSP_CLIENT environment variable
-        station_name = os.environ.get('LTSP_CLIENT_HOSTNAME', None)
-        if station_name is None:
-            station_name = socket.gethostname()
-        set_current_branch_station(conn, station_name)
 
     if options:
         if options.debug:
