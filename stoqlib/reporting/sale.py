@@ -183,13 +183,64 @@ class SalesReport(ObjectListReport):
                               summary_row=self.get_summary_row())
 
 
-class SoldItemsByBranchReport(SalesReport):
+class SoldItemsByBranchReport(ObjectListReport):
     """This report show a list of sold items by branch. For each item
     it show: product code, product description, branch name,
     sold quantity and total.
     """
     obj_type = SoldItemsByBranchView
     report_name = _("Sold Items by Branch Report")
+
+    def __init__(self, filename, items, *args, **kwargs):
+        self._items = items
+        ObjectListReport.__init__(self, filename, items,
+                                  SoldItemsByBranchReport.report_name,
+                                  landscape=True,
+                                  *args, **kwargs)
+        self.setup_tables()
+
+    def setup_tables(self):
+        self.total = 0
+        self.quantity = 0
+
+        self.branch_total = {}
+        self.branch_quantity = {}
+
+        for i in self._items:
+            # Sold Items
+            self.total += i.total
+            self.quantity += i.quantity
+
+            # Total by Branch
+            self.branch_total.setdefault(i.branch_name, 0)
+            self.branch_quantity.setdefault(i.branch_name, 0)
+
+            self.branch_total[i.branch_name] += i.total
+            self.branch_quantity[i.branch_name] += i.quantity
+
+        self._setup_items_table()
+
+        # Only show branch table if have more than one branch
+        if len(self.branch_total) > 1:
+            self._setup_branch_table()
+
+    def _setup_items_table(self):
+        self.add_summary_by_column(_(u'Quantity'), format_quantity(self.quantity))
+        self.add_summary_by_column(_(u'Total'), get_formatted_price(self.total))
+        self.add_blank_space(10)
+        self.add_paragraph(_('Total Sold'), style='Normal-Bold')
+        self.add_object_table(self._items, self.get_columns(),
+                              summary_row=self.get_summary_row())
+
+    def _setup_branch_table(self):
+        branches_columns = [OTC(_("Branch"), lambda obj: obj),
+                            OTC(_("Total Quantity"), lambda obj:
+                                  format_quantity(self.branch_quantity[obj])),
+                            OTC(_("Total"), lambda obj:
+                                  get_formatted_price(self.branch_total[obj]))]
+        self.add_blank_space(10)
+        self.add_paragraph(_(u'Totals by Branch'), style='Normal-Bold')
+        self.add_object_table(self.branch_total, branches_columns)
 
 
 class SalesPersonReport(SearchResultsReport):
