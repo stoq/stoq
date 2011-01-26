@@ -795,6 +795,7 @@ class CardMethodSlave(BaseEditorSlave):
 
     def finish(self):
         self._setup_payments()
+        return True
 
     def update_view(self):
         pass
@@ -903,7 +904,7 @@ class CardMethodSlave(BaseEditorSlave):
             data.provider = provider
             data.fee = provider.get_fee_for_payment(provider, data)
             data.fee_value = data.fee * adapted.value /100
-            
+
     def _get_credit_providers(self):
         return PersonAdaptToCreditProvider.get_card_providers(
             self.method.get_connection())
@@ -1007,8 +1008,9 @@ class MultipleMethodSlave(BaseEditorSlave):
             self._wizard.disable_back()
 
     def finish(self):
-        # All the payments are created in slaves.
-        pass
+        # All the payments are created in slaves. We still need to return
+        # True so the wizard can finish
+        return True
 
     #
     # Private
