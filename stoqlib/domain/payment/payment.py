@@ -34,7 +34,8 @@ from zope.interface import implements
 
 from stoqlib.database.orm import (IntCol, DateTimeCol, UnicodeCol, ForeignKey,
                                   PriceCol, DecimalCol)
-from stoqlib.database.orm import const, DESC, AND, OR, MultipleJoin
+from stoqlib.database.orm import (const, DESC, AND, OR, MultipleJoin,
+                                  SingleJoin)
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
@@ -101,6 +102,7 @@ class Payment(Domain):
     category = ForeignKey('PaymentCategory')
 
     comments = MultipleJoin('PaymentComment')
+    check_data = SingleJoin('CheckData', joinColumn='payment_id')
 
     def _check_status(self, status, operation_name):
         assert self.status == status, ('Invalid status for %s '
