@@ -324,8 +324,6 @@ class PurchasePaymentStep(WizardEditorStep):
     gladefile = 'PurchasePaymentStep'
     model_type = PaymentGroup
     payment_widgets = ('method_combo',)
-    order_widgets = ('subtotal_lbl',
-                     'total_lbl')
 
     def __init__(self, wizard, previous, conn, model,
                  outstanding_value=currency(0)):
@@ -398,8 +396,6 @@ class PurchasePaymentStep(WizardEditorStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.order_proxy = self.add_proxy(self.order,
-                                          PurchasePaymentStep.order_widgets)
         self.proxy = self.add_proxy(self.model,
                                     PurchasePaymentStep.payment_widgets)
         # Set the first payment method as default
