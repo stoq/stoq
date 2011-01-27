@@ -70,39 +70,31 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-class _TemporaryBillData(object):
-    def __init__(self, group=None, first_duedate=None):
+class _BaseTemporaryMethodData(object):
+    def __init__(self, first_duedate=None, installments_number=1,
+                 intervals=1, interval_type=INTERVALTYPE_MONTH):
+        self.first_duedate = (first_duedate and
+                              first_duedate or datetime.date.today())
+        self.installments_number = installments_number
+        self.intervals = intervals
+        self.interval_type = interval_type
+
+
+class _TemporaryBillData(_BaseTemporaryMethodData):
+    def __init__(self, group=None):
         self.group = group
-        self.first_duedate = first_duedate
-        self.installments_number = 1
-        self.intervals = 1
-        self.interval_type = INTERVALTYPE_MONTH
+        _BaseTemporaryMethodData.__init__(self)
 
 
-class _TemporaryMoneyData(object):
-    def __init__(self):
-        self.first_duedate = datetime.date.today()
-        self.installments_number = 1
-        self.intervals = 1
-        self.interval_type = INTERVALTYPE_MONTH
-
-
-class _TemporaryStoreCreditData(object):
-    def __init__(self):
-        self.first_duedate = datetime.datetime.today()
-        self.installments_number = 1
-        self.intervals = 1
-        self.interval_type = INTERVALTYPE_MONTH
-
-
-class _TemporaryCreditProviderGroupData(object):
-    def __init__(self, group, provider):
-        self.installments_number = 1
+class _TemporaryCreditProviderGroupData(_BaseTemporaryMethodData):
+    def __init__(self, group=None, provider=None):
+        self.group = group
         self.provider = provider
-        self.group = group
+        _BaseTemporaryMethodData.__init__(self)
+
 
 class _TemporaryBankData(object):
-    def __init__(self, bank, branch):
+    def __init__(self, bank=None, branch=None):
         self.bank = bank
         self.branch = branch
 
@@ -113,8 +105,8 @@ class _TemporaryPaymentData(object):
         self.description = description
         self.value = value
         self.due_date = due_date
-        self.bank_data = bank_data
         self.payment_number = payment_number
+        self.bank_data = bank_data
 
 
 class PaymentListSlave(GladeSlaveDelegate):
@@ -187,7 +179,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         old = deepcopy(payment)
         retval = run_dialog(self.editor_class, self.parent, payment)
         if not retval:
-            # Remove the changes
+            # Remove the changes if dialog was canceled.
             pos = self.payment_list.get_selected_row_number()
             self.payment_list.remove(payment)
             self.payment_list.insert(pos, old)
@@ -310,22 +302,17 @@ class BankDataSlave(BaseEditorSlave):
         self.add_proxy(self.model, BankDataSlave.proxy_widgets)
 
 
-class BillDataEditor(BaseEditor):
-    """An editor to set payment information of bill payment method.
+class BasePaymentDataEditor(BaseEditor):
+    """A base editor to set payment information.
     """
 
-    gladefile = 'BillDataEditor'
+    gladefile = 'BasePaymentDataEditor'
     model_type = _TemporaryPaymentData
     payment_widgets = ('due_date', 'value', 'payment_number')
+    slave_holder = 'bank_data_slave'
 
     def __init__(self, model):
         BaseEditor.__init__(self, None, model)
-
-    def set_frame_label(self, label_name):
-        self.payment_number_label.set_text(label_name)
-
-    def get_payment_value(self):
-        return self.model.value
 
     def get_title(self, model):
         return _(u"Edit '%s'" % model.description)
@@ -334,8 +321,11 @@ class BillDataEditor(BaseEditor):
     # BaseEditorSlave hooks
     #
 
+    def setup_slaves(self):
+        pass
+
     def setup_proxies(self):
-        self.add_proxy(self.model, BillDataEditor.payment_widgets)
+        self.add_proxy(self.model, self.payment_widgets)
 
     #
     # Kiwi callbacks
@@ -347,15 +337,13 @@ class BillDataEditor(BaseEditor):
                                       "must be set to a future date"))
 
 
-class CheckDataEditor(BillDataEditor):
+class CheckDataEditor(BasePaymentDataEditor):
     """An editor to set payment information of check payment method.
     """
 
-    slave_holder = 'bank_data_slave'
-
     def __init__(self, model, default_bank=None):
         self._default_bank = default_bank
-        BillDataEditor.__init__(self, model)
+        BasePaymentDataEditor.__init__(self, model)
 
     #
     # BaseEditorSlave hooks
@@ -370,21 +358,21 @@ class CheckDataEditor(BillDataEditor):
         self.attach_slave(self.slave_holder, bank_data_slave)
 
     def setup_proxies(self):
-        self.add_proxy(self.model, BillDataEditor.payment_widgets)
+        self.add_proxy(self.model, BasePaymentDataEditor.payment_widgets)
 
 
 class BasePaymentMethodSlave(BaseEditorSlave):
     """A base payment method slave for Bill and Check methods."""
 
     gladefile = 'BillCheckMethodSlave'
-    model_type = _TemporaryBillData
+    model_type = _BaseTemporaryMethodData
     slave_holder = 'bill_check_data_list'
     proxy_widgets = ('interval_type_combo',
                      'intervals',
                      'first_duedate',
                      'installments_number')
-    # This attribute must be defined in child. It can assume two
-    # value: CheckDataEditor, BillDataEditor
+    # This attribute must be defined in child.
+    # Use BasePaymentDataEditor or one of it's children.
     _data_slave_class = None
 
     def __init__(self, wizard, parent, conn, order_obj, payment_method,
@@ -527,8 +515,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                     BasePaymentMethodSlave.proxy_widgets)
 
     def create_model(self, conn):
-        return _TemporaryBillData(group=self.payment_group,
-                                  first_duedate=datetime.date.today())
+        return _TemporaryBillData(group=self.payment_group)
 
     #
     # Kiwi callbacks
@@ -591,7 +578,7 @@ class CheckMethodSlave(BasePaymentMethodSlave):
 
 
 class BillMethodSlave(BasePaymentMethodSlave):
-    _data_slave_class = BillDataEditor
+    _data_slave_class = BasePaymentDataEditor
 
     def __init__(self, wizard, parent, conn, sale, payment_method,
                  outstanding_value=currency(0)):
@@ -603,8 +590,8 @@ class BillMethodSlave(BasePaymentMethodSlave):
 
 
 class MoneyMethodSlave(BasePaymentMethodSlave):
-    model_type = _TemporaryMoneyData
-    _data_slave_class = BillDataEditor
+    model_type = _BaseTemporaryMethodData
+    _data_slave_class = BasePaymentDataEditor
 
     def __init__(self, wizard, parent, conn, total_amount,
                  payment_method, outstanding_value=currency(0)):
@@ -622,12 +609,12 @@ class MoneyMethodSlave(BasePaymentMethodSlave):
         self.installments_number.hide()
 
     def create_model(self, conn):
-        return _TemporaryMoneyData()
+        return _BaseTemporaryMethodData()
 
 
 class StoreCreditMethodSlave(BasePaymentMethodSlave):
-    model_type = _TemporaryStoreCreditData
-    _data_slave_class = BillDataEditor
+    model_type = _BaseTemporaryMethodData
+    _data_slave_class = BasePaymentDataEditor
 
     def __init__(self, wizard, parent, conn, total_amount,
                  payment_method, outstanding_value=currency(0)):
@@ -640,7 +627,7 @@ class StoreCreditMethodSlave(BasePaymentMethodSlave):
         self.first_duedate.hide()
 
     def create_model(self, conn):
-        return _TemporaryStoreCreditData()
+        return _BaseTemporaryMethodData()
 
 
 class CardMethodSlave(BaseEditorSlave):
