@@ -380,6 +380,9 @@ class PurchasePaymentStep(WizardEditorStep):
     # WizardStep hooks
     #
 
+    def validate_step(self):
+        return self.slave.finish()
+
     def next_step(self):
         return FinishPurchaseStep(self.wizard, self, self.conn,
                                   self.order)
