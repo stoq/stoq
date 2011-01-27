@@ -280,7 +280,11 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.cfop.prefill(cfops)
 
     def _create_client(self):
-        client = run_person_role_dialog(ClientEditor, self, self.conn, None)
+        trans = new_transaction()
+        client = run_person_role_dialog(ClientEditor, self, trans, None)
+        rv = finish_transaction(trans, client)
+        client = self.conn.get(client)
+        trans.close()
         if not client:
             return
         if len(self.client) == 0:
