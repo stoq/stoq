@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
-    <widget class="GtkWindow" id="BillDataEditor">
+    <widget class="GtkWindow" id="BasePaymentDataEditor">
         <property name="border_width">5</property>
         <property name="default_height">500</property>
         <property name="default_width">500</property>
