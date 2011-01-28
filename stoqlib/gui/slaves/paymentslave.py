@@ -87,12 +87,6 @@ class _TemporaryCreditProviderGroupData(_BaseTemporaryMethodData):
         _BaseTemporaryMethodData.__init__(self)
 
 
-class _TemporaryBankData(object):
-    def __init__(self, bank=None, branch=None):
-        self.bank = bank
-        self.branch = branch
-
-
 class _TemporaryPaymentData(object):
     def __init__(self, description, value, due_date,
                  payment_number=None, bank_data=None):
@@ -101,6 +95,13 @@ class _TemporaryPaymentData(object):
         self.due_date = due_date
         self.payment_number = payment_number
         self.bank_data = bank_data
+
+
+class _TemporaryBankData(object):
+    def __init__(self, bank_id=None, bank_branch=None, bank_account=None):
+        self.bank_id = bank_id
+        self.bank_branch = bank_branch
+        self.bank_account = bank_account
 
 
 class BasePaymentDataEditor(BaseEditor):
@@ -177,14 +178,14 @@ class BankDataSlave(BaseEditorSlave):
 
     gladefile = 'BankDataSlave'
     model_type = _TemporaryBankData
-    proxy_widgets = ('bank', 'branch')
+    proxy_widgets = ('bank_id', 'bank_branch', 'bank_account')
 
     #
     # BaseEditorSlave hooks
     #
 
     def setup_proxies(self):
-        self.add_proxy(self.model, BankDataSlave.proxy_widgets)
+        self.add_proxy(self.model, self.proxy_widgets)
 
 
 class PaymentListSlave(GladeSlaveDelegate):
@@ -215,16 +216,20 @@ class PaymentListSlave(GladeSlaveDelegate):
         return [SequentialColumn(),
                 Column('description', title=_('Description'), expand=True,
                        data_type=str),
-                Column('bank_data.bank', title=_('Bank ID'), data_type=int,
+                Column('bank_data.bank_id', title=_('Bank ID'), data_type=int,
                        visible=with_bank_data,justify=gtk.JUSTIFY_RIGHT),
-                Column('bank_data.branch', title=_('Branch'), data_type=int,
-                       visible=with_bank_data,justify=gtk.JUSTIFY_RIGHT),
-                Column('due_date', title=_('Due Date'),
-                       data_type=datetime.date),
-                Column('value', title=_('Value'), data_type=currency,
+                Column('bank_data.bank_branch', title=_('Bank Branch'),
+                       visible=with_bank_data, data_type=str,
+                       justify=gtk.JUSTIFY_RIGHT),
+                Column('bank_data.bank_account', title=_('Bank Account'),
+                       visible=with_bank_data, data_type=str,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('payment_number', title=_('Number'),
                        visible=with_payment_number, data_type=str,
+                       justify=gtk.JUSTIFY_RIGHT),
+                Column('due_date', title=_('Due Date'),
+                       data_type=datetime.date),
+                Column('value', title=_('Value'), data_type=currency,
                        justify=gtk.JUSTIFY_RIGHT)]
 
 
@@ -272,7 +277,8 @@ class PaymentListSlave(GladeSlaveDelegate):
         self._update_difference_label()
 
     def add_payments(self, group, installments_number, first_due_date,
-                     interval, interval_type, bank=None, branch=None):
+                     interval, interval_type, bank_id=None, bank_branch=None,
+                     bank_account=None):
         self.group = group
         values = generate_payments_values(self.total_value,
                                           installments_number)
@@ -283,7 +289,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         for i in range(installments_number):
             description = self.method.describe_payment(group, i + 1,
                                                        installments_number)
-            bank_data = _TemporaryBankData(bank, branch)
+            bank_data = _TemporaryBankData(bank_id, bank_branch, bank_account)
             payment = _TemporaryPaymentData(description,
                                             currency(values[i]),
                                             due_dates[i],
@@ -310,11 +316,12 @@ class PaymentListSlave(GladeSlaveDelegate):
                                                  due_date=due_date,
                                                  description=p.description,
                                                  payment_number=p.payment_number)
-            if p.bank_data.bank or p.bank_data.branch:
+            if p.bank_data.bank_id:
                 # Add the bank_data into the payment, if any.
                 adapted = payment.get_adapted()
-                adapted.check_data.bank_data.bank_id = p.bank_data.bank
-                adapted.check_data.bank_data.branch = p.bank_data.branch
+                adapted.check_data.bank_data.bank_id = p.bank_data.bank_id
+                adapted.check_data.bank_data.branch = p.bank_data.bank_branch
+                adapted.check_data.bank_data.account = p.bank_data.bank_account
             payments.append(payment)
 
         return payments
