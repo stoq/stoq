@@ -13,8 +13,10 @@
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkTable" id="table1">
+                        <property name="column_spacing">6</property>
                         <property name="n_columns">2</property>
                         <property name="n_rows">3</property>
+                        <property name="row_spacing">6</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="ProxyLabel" id="kiwilabel1">
@@ -69,6 +71,7 @@
                                 <property name="mandatory">True</property>
                                 <property name="model_attribute">value</property>
                                 <property name="visible">True</property>
+                                <property name="width_chars">10</property>
                                 <property name="width_request">90</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -85,6 +88,7 @@
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">payment_number</property>
                                 <property name="visible">True</property>
+                                <property name="width_chars">10</property>
                                 <property name="width_request">90</property>
                                 <property name="xalign">1.0</property>
                             </widget>

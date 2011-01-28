@@ -213,8 +213,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         return not (self.method.method_name == 'money')
 
     def _get_columns(self, with_payment_number=False, with_bank_data=False):
-        return [SequentialColumn(),
-                Column('description', title=_('Description'), expand=True,
+        return [Column('description', title=_('Description'), expand=True,
                        data_type=str),
                 Column('bank_data.bank_id', title=_('Bank ID'), data_type=int,
                        visible=with_bank_data,justify=gtk.JUSTIFY_RIGHT),
