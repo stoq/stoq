@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
-    <widget class="GtkWindow" id="BillCheckMethodSlave">
+    <widget class="GtkWindow" id="BasePaymentMethodSlave">
         <property name="default_height">450</property>
         <property name="default_width">250</property>
         <property name="mnemonics_visible">False</property>
@@ -188,7 +188,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkEventBox" id="bill_check_data_list">
+                            <widget class="GtkEventBox" id="slave_holder">
                                 <property name="visible">True</property>
                                 <child>
                                     <placeholder/>
