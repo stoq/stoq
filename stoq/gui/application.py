@@ -490,7 +490,7 @@ class SearchableAppWindow(AppWindow):
 
 
 class VersionChecker(object):
-    URL = """http://api.stoq.com.br/get_version_number"""
+    URL = """http://api.stoq.com.br/version.json"""
     DAYS_BETWEEN_CHECKS = 7
 
     #
@@ -568,7 +568,12 @@ class VersionChecker(object):
             check_file = self._get_check_filename()
             open(check_file, 'w').write(self.data)
 
-            details = json.loads(self.data)
+            try:
+                details = json.loads(self.data)
+            except ValueError:
+                log.debug('Error parsing json.')
+                return
+
             self._check_details(details)
             return
 
@@ -584,7 +589,7 @@ class VersionChecker(object):
 
         try:
             details = json.loads(open(check_file, 'r').read())
-        except IOError:
+        except (IOError, ValueError):
             return self._download_details()
 
         check_date = parse(details['check_date']).date()
