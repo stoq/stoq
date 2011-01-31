@@ -372,10 +372,6 @@ class PurchasePaymentStep(WizardEditorStep):
         if not self.slave:
             self._set_method_slave()
 
-    def _update_totals(self, *args):
-        for field_name in ['purchase_subtotal', 'purchase_total']:
-            self.order_proxy.update(field_name)
-
     #
     # WizardStep hooks
     #
@@ -388,6 +384,7 @@ class PurchasePaymentStep(WizardEditorStep):
                                   self.order)
 
     def post_init(self):
+        self.model.clear_unused()
         self.method_combo.grab_focus()
         self.main_box.set_focus_chain([self.payment_method_hbox,
                                        self.method_slave_holder])

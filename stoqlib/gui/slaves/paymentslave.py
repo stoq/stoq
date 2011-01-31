@@ -64,18 +64,21 @@ from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.lib.defaults import (interval_types, INTERVALTYPE_MONTH,
                                   DECIMAL_PRECISION)
 from stoqlib.lib.message import info, warning
-from stoqlib.lib.paymentoperation import (generate_payments_values,
+from stoqlib.lib.payment import (generate_payments_values,
                                           generate_payments_due_dates)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+#
+# Temporary Objects
+#
+
 class _BaseTemporaryMethodData(object):
     def __init__(self, group=None, first_duedate=None, installments_number=1,
                  intervals=1, interval_type=INTERVALTYPE_MONTH):
         self.group = group
-        self.first_duedate = (first_duedate and
-                              first_duedate or datetime.date.today())
+        self.first_duedate = first_duedate or datetime.date.today()
         self.installments_number = installments_number
         self.intervals = intervals
         self.interval_type = interval_type
@@ -104,6 +107,10 @@ class _TemporaryBankData(object):
         self.bank_account = bank_account
 
 
+#
+# Editors
+#
+
 class BasePaymentDataEditor(BaseEditor):
     """A base editor to set payment information.
     """
@@ -123,11 +130,6 @@ class BasePaymentDataEditor(BaseEditor):
     # BaseEditorSlave hooks
     #
 
-    def setup_slaves(self):
-        """This method should be implemented on it's children if any
-        wants to attach a slave."""
-        pass
-
     def setup_proxies(self):
         self.add_proxy(self.model, self.payment_widgets)
 
@@ -139,6 +141,11 @@ class BasePaymentDataEditor(BaseEditor):
         if value < datetime.date.today():
             return ValidationError(_(u"Expected installment due date "
                                       "must be set to a future date"))
+
+    def on_value__validate(self, widget, value):
+        if value < currency(0):
+            return ValidationError(_(u"The value to be paid must be "
+                                      "a positive number"))
 
 
 class CheckDataEditor(BasePaymentDataEditor):
@@ -162,9 +169,6 @@ class CheckDataEditor(BasePaymentDataEditor):
             self.detach_slave(self.slave_holder)
         self.attach_slave(self.slave_holder, bank_data_slave)
 
-    def setup_proxies(self):
-        self.add_proxy(self.model, BasePaymentDataEditor.payment_widgets)
-
 
 class BankDataSlave(BaseEditorSlave):
     """A simple slave that contains only a hbox with fields to bank name and
@@ -172,13 +176,13 @@ class BankDataSlave(BaseEditorSlave):
     to a BankAccount object.
     """
 
-    def __init__(self, model):
-        self.model = model
-        BaseEditorSlave.__init__(self, None, self.model)
-
     gladefile = 'BankDataSlave'
     model_type = _TemporaryBankData
     proxy_widgets = ('bank_id', 'bank_branch', 'bank_account')
+
+    def __init__(self, model):
+        self.model = model
+        BaseEditorSlave.__init__(self, None, self.model)
 
     #
     # BaseEditorSlave hooks
@@ -189,18 +193,18 @@ class BankDataSlave(BaseEditorSlave):
 
 
 class PaymentListSlave(GladeSlaveDelegate):
-    """A simple class to manage payments with multiple installments"""
+    """A slave to manage payments with one/multiple installment(s)"""
 
     gladefile = 'PaymentListSlave'
-    gsignal('edit-payment')
+    gsignal('payment-edited')
 
-    def __init__(self, iface, method, total_value, editor_class, parent):
+    def __init__(self, iface, group, method, total_value, editor_class, parent):
         self.parent = parent
         self.iface = iface
+        self.group = group
         self.total_value = total_value
         self.editor_class = editor_class
         self.method = method
-        self.group = None
 
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         self._setup_widgets()
@@ -210,33 +214,38 @@ class PaymentListSlave(GladeSlaveDelegate):
     #
 
     def _can_edit_payments(self):
-        return not (self.method.method_name == 'money')
+        return self.method.method_name != 'money'
 
-    def _get_columns(self, with_payment_number=False, with_bank_data=False):
-        return [Column('description', title=_('Description'), expand=True,
-                       data_type=str),
-                Column('bank_data.bank_id', title=_('Bank ID'), data_type=int,
-                       visible=with_bank_data,justify=gtk.JUSTIFY_RIGHT),
-                Column('bank_data.bank_branch', title=_('Bank Branch'),
-                       visible=with_bank_data, data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT),
-                Column('bank_data.bank_account', title=_('Bank Account'),
-                       visible=with_bank_data, data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT),
-                Column('payment_number', title=_('Number'),
-                       visible=with_payment_number, data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT),
-                Column('due_date', title=_('Due Date'),
-                       data_type=datetime.date),
-                Column('value', title=_('Value'), data_type=currency,
-                       justify=gtk.JUSTIFY_RIGHT)]
+    def _get_columns(self):
+        columns = [Column('description', title=_('Description'),
+                          expand=True, data_type=str)]
+        # Add columns to show bank data when the method needs it (checks for
+        # example.
+        if self.method.method_name == 'check':
+            columns.extend([Column('bank_data.bank_id',
+                                   title=_('Bank ID'),
+                                   data_type=int, justify=gtk.JUSTIFY_RIGHT),
+                            Column('bank_data.bank_branch',
+                                   title=_('Bank Branch'),
+                                   data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                            Column('bank_data.bank_account',
+                                   title=_('Bank Account'),
+                                   data_type=str, justify=gtk.JUSTIFY_RIGHT)])
+        # Money methods doesn't have a payment_number related with it.
+        if self.method.method_name != 'money':
+            columns.append(Column('payment_number', title=_('Number'),
+                                  data_type=str, justify=gtk.JUSTIFY_RIGHT))
+
+        columns.extend([Column('due_date', title=_('Due Date'),
+                               data_type=datetime.date),
+                        Column('value', title=_('Value'), data_type=currency,
+                               justify=gtk.JUSTIFY_RIGHT)])
+
+        return columns
 
 
     def _setup_widgets(self):
-        with_payment_number = not (self.method.method_name == 'money')
-        has_bank_data = self.method.method_name == 'check'
-        self.payment_list.set_columns(self._get_columns(with_payment_number,
-                                                        has_bank_data))
+        self.payment_list.set_columns(self._get_columns())
         self.total_label.set_text(format_price(self.total_value, True,
                                                DECIMAL_PRECISION))
 
@@ -265,7 +274,7 @@ class PaymentListSlave(GladeSlaveDelegate):
             pos = self.payment_list.get_selected_row_number()
             self.payment_list.remove(payment)
             self.payment_list.insert(pos, old)
-        self.emit('edit-payment')
+        self.emit('payment-edited')
 
     #
     # Public API
@@ -275,26 +284,28 @@ class PaymentListSlave(GladeSlaveDelegate):
         self.payment_list.refresh()
         self._update_difference_label()
 
-    def add_payments(self, group, installments_number, first_due_date,
-                     interval, interval_type, bank_id=None, bank_branch=None,
-                     bank_account=None):
-        self.group = group
+    def add_payments(self, installments_number, first_due_date,
+                     interval, interval_type):
         values = generate_payments_values(self.total_value,
                                           installments_number)
         due_dates = generate_payments_due_dates(installments_number,
                                                 first_due_date, interval,
                                                 interval_type)
+        bank_data = None
+
         self.clear_payments()
         for i in range(installments_number):
-            description = self.method.describe_payment(group, i + 1,
+            description = self.method.describe_payment(self.group, i + 1,
                                                        installments_number)
-            bank_data = _TemporaryBankData(bank_id, bank_branch, bank_account)
+            if self.method.method_name == 'check':
+                bank_data = _TemporaryBankData()
             payment = _TemporaryPaymentData(description,
                                             currency(values[i]),
                                             due_dates[i],
                                             None,
                                             bank_data)
             self.payment_list.append(payment)
+
         self.update_view()
 
     def create_payments(self):
@@ -315,12 +326,13 @@ class PaymentListSlave(GladeSlaveDelegate):
                                                  due_date=due_date,
                                                  description=p.description,
                                                  payment_number=p.payment_number)
-            if p.bank_data.bank_id:
+            if p.bank_data:
                 # Add the bank_data into the payment, if any.
                 adapted = payment.get_adapted()
-                adapted.check_data.bank_data.bank_id = p.bank_data.bank_id
-                adapted.check_data.bank_data.branch = p.bank_data.bank_branch
-                adapted.check_data.bank_data.account = p.bank_data.bank_account
+                bank_data = adapted.check_data.bank_data
+                bank_data = p.bank_data.bank_id
+                bank_data = p.bank_data.bank_branch
+                bank_data = p.bank_data.bank_account
             payments.append(payment)
 
         return payments
@@ -364,6 +376,10 @@ class PaymentListSlave(GladeSlaveDelegate):
         self.update_view()
 
 
+#
+# Payment Method Slaves
+#
+
 class BasePaymentMethodSlave(BaseEditorSlave):
     """A base payment method slave for Bill and Check methods."""
 
@@ -377,13 +393,13 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
     # This attribute must be defined in child.
     # Use BasePaymentDataEditor or one of it's children.
-    _data_slave_class = None
+    _data_editor_class = None
 
     def __init__(self, wizard, parent, conn, order_obj, payment_method,
                  outstanding_value=currency(0)):
-        # Note that 'order' may be a Sale or a PurchaseOrder object
         self.wizard = wizard
         self.parent = parent
+        # Note that 'order' may be a Sale or a PurchaseOrder object
         self.order = order_obj
         self.method = payment_method
         self.method_iface = self._get_payment_method_iface()
@@ -411,14 +427,11 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
     def _get_payment_list(self):
         return  PaymentListSlave(self.method_iface,
+                                 self.payment_group,
                                  self.method,
                                  self.total_value,
-                                 self._data_slave_class,
+                                 self._data_editor_class,
                                  self.wizard)
-
-    def _payment_edit_callback(self, *args):
-        """Callback for the 'payment-edit' signal on PaymentListSlave"""
-        self._refresh_next()
 
     def _setup_widgets(self):
         max_installments = self.method.max_installments
@@ -442,9 +455,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.attach_slave(BasePaymentMethodSlave.slave_holder,
                           self.payment_list)
         self.setup_payments()
-        self.payment_list.connect('edit-payment',
-                                  self._payment_edit_callback)
-        self.update_view()
+        self.payment_list.connect('payment-edited',
+                                  self._on_payment_list__edit_payment)
 
     def _get_total_amount(self):
         """Returns the order total amount """
@@ -483,8 +495,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         if not self.model.first_duedate:
             return
         if self.payment_list:
-            self.payment_list.add_payments(self.payment_group,
-                                           self.model.installments_number,
+            self.payment_list.add_payments(self.model.installments_number,
                                            self.model.first_duedate,
                                            self.model.intervals,
                                            self.model.interval_type)
@@ -527,6 +538,10 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     # Kiwi callbacks
     #
 
+    def _on_payment_list__edit_payment(self, *args):
+        """Callback for the 'payment-edited' signal on PaymentListSlave"""
+        self.update_view()
+
     def after_installments_number__changed(self, *args):
         installments_number = self.model.installments_number
         max_installments = self.method.max_installments
@@ -542,33 +557,25 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.interval_type_combo.set_sensitive(has_installments)
         self.intervals.set_sensitive(has_installments)
         self.setup_payments()
-        self.update_view()
 
     def after_intervals__changed(self, *args):
         self.setup_payments()
-        self.update_view()
 
     def after_interval_type_combo__changed(self, *args):
         self.setup_payments()
-        self.update_view()
-        self.finish()
-
 
     def after_first_duedate__changed(self, *args):
         self.setup_payments()
-        self.update_view()
 
     def on_first_duedate__validate(self, widget, value):
         if value < datetime.date.today():
             self.payment_list.clear_payments()
-            self._refresh_next(False)
             return ValidationError(_("Expected first installment date must be "
                                      "set to a future date"))
-        self._refresh_next(True)
 
 
 class BillMethodSlave(BasePaymentMethodSlave):
-    _data_slave_class = BasePaymentDataEditor
+    _data_editor_class = BasePaymentDataEditor
 
     def __init__(self, wizard, parent, conn, sale, payment_method,
                  outstanding_value=currency(0)):
@@ -580,7 +587,7 @@ class BillMethodSlave(BasePaymentMethodSlave):
 
 
 class CheckMethodSlave(BasePaymentMethodSlave):
-    _data_slave_class = CheckDataEditor
+    _data_editor_class = CheckDataEditor
 
     def _setup_widgets(self):
         printer = get_current_cheque_printer_settings(self.conn)
@@ -597,7 +604,7 @@ class CheckMethodSlave(BasePaymentMethodSlave):
 
 class MoneyMethodSlave(BasePaymentMethodSlave):
     model_type = _BaseTemporaryMethodData
-    _data_slave_class = BasePaymentDataEditor
+    _data_editor_class = BasePaymentDataEditor
 
     def __init__(self, wizard, parent, conn, total_amount,
                  payment_method, outstanding_value=currency(0)):
@@ -620,7 +627,7 @@ class MoneyMethodSlave(BasePaymentMethodSlave):
 
 class StoreCreditMethodSlave(BasePaymentMethodSlave):
     model_type = _BaseTemporaryMethodData
-    _data_slave_class = BasePaymentDataEditor
+    _data_editor_class = BasePaymentDataEditor
 
     def __init__(self, wizard, parent, conn, total_amount,
                  payment_method, outstanding_value=currency(0)):

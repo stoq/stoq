@@ -61,11 +61,6 @@ interval_types = {INTERVALTYPE_DAY:      _('Days'),
                   INTERVALTYPE_MONTH:    _('Months'),
                   INTERVALTYPE_YEAR:     _('Years')}
 
-interval_values = {INTERVALTYPE_DAY:        1,
-                   INTERVALTYPE_WEEK:       7,
-                   INTERVALTYPE_MONTH:      30,
-                   INTERVALTYPE_YEAR:       365}
-
 # weekday constants
 
 NL_TIME_WEEK_1STDAY = 131174
@@ -95,28 +90,21 @@ def calculate_delta_interval(interval_type, intervals):
     @param intervals: an int representing the number of intervals
     @returns: a L{relativedelta.relativedelta} object
     """
-    if not interval_values.has_key(interval_type):
+    if not interval_types.has_key(interval_type):
         raise KeyError('Invalid interval_type %r argument for '
                        'calculate_interval function.' % (interval_type,))
     if not type(intervals) == int:
         raise TypeError('Invalid type for intervals argument. It must be '
                         'integer, got %s' % type(intervals))
 
-    if interval_type == INTERVALTYPE_DAY:
-        delta = relativedelta.relativedelta(days=intervals)
-    elif interval_type == INTERVALTYPE_WEEK:
-        delta = relativedelta.relativedelta(weeks=intervals)
-        pass
-    elif interval_type == INTERVALTYPE_MONTH:
-        delta = relativedelta.relativedelta(months=intervals)
-        pass
-    elif interval_type == INTERVALTYPE_YEAR:
-        delta = relativedelta.relativedelta(years=intervals)
-        pass
-    else:
-        delta = relativedelta.relativedelta()
+    interval_name = {INTERVALTYPE_DAY: 'days',
+                     INTERVALTYPE_WEEK: 'weeks',
+                     INTERVALTYPE_MONTH: 'months',
+                     INTERVALTYPE_YEAR: 'years'}
 
-    return delta
+    kargs = {interval_name[interval_type]: intervals}
+
+    return relativedelta.relativedelta(**kargs)
 
 
 def get_weekday_start():
