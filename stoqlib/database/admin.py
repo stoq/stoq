@@ -59,7 +59,7 @@ from stoqlib.exceptions import StoqlibError
 from stoqlib.importers.invoiceimporter import InvoiceImporter
 from stoqlib.lib.interfaces import IPaymentOperationManager
 from stoqlib.lib.message import error
-from stoqlib.lib.paymentoperation import PaymentOperationManager
+from stoqlib.lib.payment import PaymentOperationManager
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
 from stoqlib.lib.translation import stoqlib_gettext
 
