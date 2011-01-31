@@ -347,7 +347,7 @@ class PaymentListSlave(GladeSlaveDelegate):
             total_payments += payment.value
         return (total_payments - self.total_value)
 
-    def is_due_dates_valid(self):
+    def are_due_dates_valid(self):
         previous_date = datetime.date.today() + datetime.timedelta(days=-1)
         for payment in self.payment_list:
             if payment.due_date <= previous_date:
@@ -357,13 +357,13 @@ class PaymentListSlave(GladeSlaveDelegate):
             previous_date = payment.due_date
         return True
 
-    def is_payment_values_valid(self):
+    def are_payment_values_valid(self):
         return not self.get_total_difference()
 
     def is_payment_list_valid(self):
-        if not self.is_due_dates_valid():
+        if not self.are_due_dates_valid():
             return False
-        if not self.is_payment_values_valid():
+        if not self.are_payment_values_valid():
             return False
         return True
 
