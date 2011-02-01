@@ -544,7 +544,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.update_view()
 
     def after_installments_number__changed(self, *args):
-        has_installments =  self.model.installments_number > 1
+        has_installments = self.model.installments_number > 1
 
         self.interval_type_combo.set_sensitive(has_installments)
         self.intervals.set_sensitive(has_installments)
@@ -624,9 +624,6 @@ class MoneyMethodSlave(BasePaymentMethodSlave):
         self.installments_number_lbl.hide()
         self.installments_number.hide()
 
-    def create_model(self, conn):
-        return _BaseTemporaryMethodData()
-
 
 class StoreCreditMethodSlave(BasePaymentMethodSlave):
     model_type = _BaseTemporaryMethodData
@@ -641,9 +638,6 @@ class StoreCreditMethodSlave(BasePaymentMethodSlave):
         self.bank_combo.hide()
         self.first_duedate_lbl.hide()
         self.first_duedate.hide()
-
-    def create_model(self, conn):
-        return _BaseTemporaryMethodData()
 
 
 class CardMethodSlave(BaseEditorSlave):
