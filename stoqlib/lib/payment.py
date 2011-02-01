@@ -71,7 +71,7 @@ def generate_payments_values(value, installments_number,
         interest_rate = interest / 100 + 1
         normalized_value = quantize((value / installments_number)
                                     * interest_rate)
-        interest_total = normalized_value * installments - value
+        interest_total = normalized_value * installments_number - value
     else:
         normalized_value = quantize(value / installments_number)
         interest_total = Decimal(0)

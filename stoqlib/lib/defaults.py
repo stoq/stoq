@@ -61,6 +61,11 @@ interval_types = {INTERVALTYPE_DAY:      _('Days'),
                   INTERVALTYPE_MONTH:    _('Months'),
                   INTERVALTYPE_YEAR:     _('Years')}
 
+interval_name = {INTERVALTYPE_DAY: 'days',
+                 INTERVALTYPE_WEEK: 'weeks',
+                 INTERVALTYPE_MONTH: 'months',
+                 INTERVALTYPE_YEAR: 'years'}
+
 # weekday constants
 
 NL_TIME_WEEK_1STDAY = 131174
@@ -83,6 +88,7 @@ def get_libc():
 
 def calculate_delta_interval(interval_type, intervals):
     """Get the relativedelta value for a certain INTERVALTYPE_* constant.
+
     Intervals are useful modes to calculate payment duedates, just sum
     them with a L{datetime.datetime} or L{datetime.date} object.
 
@@ -96,11 +102,6 @@ def calculate_delta_interval(interval_type, intervals):
     if not type(intervals) == int:
         raise TypeError('Invalid type for intervals argument. It must be '
                         'integer, got %s' % type(intervals))
-
-    interval_name = {INTERVALTYPE_DAY: 'days',
-                     INTERVALTYPE_WEEK: 'weeks',
-                     INTERVALTYPE_MONTH: 'months',
-                     INTERVALTYPE_YEAR: 'years'}
 
     kargs = {interval_name[interval_type]: intervals}
 
