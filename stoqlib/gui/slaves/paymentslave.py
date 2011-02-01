@@ -74,14 +74,16 @@ _ = stoqlib_gettext
 # Temporary Objects
 #
 
+DEFAULT_INSTALLMENTS_NUMBER = 1
+DEFAULT_INTERVALS = 1
+DEFAULT_INTERVAL_TYPE = INTERVALTYPE_MONTH
+
 class _BaseTemporaryMethodData(object):
-    def __init__(self, group=None, first_duedate=None, installments_number=1,
-                 intervals=1, interval_type=INTERVALTYPE_MONTH):
-        self.group = group
-        self.first_duedate = first_duedate or datetime.date.today()
-        self.installments_number = installments_number
-        self.intervals = intervals
-        self.interval_type = interval_type
+    def __init__(self):
+        self.first_duedate = datetime.date.today()
+        self.installments_number = DEFAULT_INSTALLMENTS_NUMBER
+        self.intervals = DEFAULT_INTERVALS
+        self.interval_type = DEFAULT_INTERVAL_TYPE
 
 
 class _TemporaryCreditProviderGroupData(_BaseTemporaryMethodData):
@@ -144,7 +146,7 @@ class BasePaymentDataEditor(BaseEditor):
 
     def on_value__validate(self, widget, value):
         if value < currency(0):
-            return ValidationError(_(u"The value to be paid must be "
+            return ValidationError(_(u"The value must be "
                                       "a positive number"))
 
 
@@ -330,9 +332,9 @@ class PaymentListSlave(GladeSlaveDelegate):
                 # Add the bank_data into the payment, if any.
                 adapted = payment.get_adapted()
                 bank_data = adapted.check_data.bank_data
-                bank_data = p.bank_data.bank_id
-                bank_data = p.bank_data.bank_branch
-                bank_data = p.bank_data.bank_account
+                bank_data.bank_id = p.bank_data.bank_id
+                bank_data.branch = p.bank_data.bank_branch
+                bank_data.account = p.bank_data.bank_account
             payments.append(payment)
 
         return payments
@@ -425,13 +427,21 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
         self.wizard.refresh_next(validation_ok)
 
-    def _get_payment_list(self):
-        return  PaymentListSlave(self.method_iface,
-                                 self.payment_group,
-                                 self.method,
-                                 self.total_value,
-                                 self._data_editor_class,
-                                 self.wizard)
+    def _setup_payment_list(self):
+        self.payment_list = PaymentListSlave(self.method_iface,
+                                             self.payment_group,
+                                             self.method,
+                                             self.total_value,
+                                             self._data_editor_class,
+                                             self.wizard)
+        if self.get_slave(BasePaymentMethodSlave.slave_holder):
+            self.detach_slave(BasePaymentMethodSlave.slave_holder)
+        self.attach_slave(BasePaymentMethodSlave.slave_holder,
+                          self.payment_list)
+        self.setup_payments()
+        self.payment_list.connect('payment-edited',
+                                  self._on_payment_list__edit_payment)
+
 
     def _setup_widgets(self):
         max_installments = self.method.max_installments
@@ -440,7 +450,6 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         # FIXME: Workarround to make intervals never go to 0
         self.intervals.set_range(1, 99)
 
-        self.first_duedate.set_sensitive(False)
         self.intervals.set_sensitive(False)
         items = [(label, constant)
                  for constant, label in interval_types.items()]
@@ -449,14 +458,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.interval_type_combo.set_sensitive(False)
 
         # PaymentListSlave setup
-        self.payment_list = self._get_payment_list()
-        if self.get_slave(BasePaymentMethodSlave.slave_holder):
-            self.detach_slave(BasePaymentMethodSlave.slave_holder)
-        self.attach_slave(BasePaymentMethodSlave.slave_holder,
-                          self.payment_list)
-        self.setup_payments()
-        self.payment_list.connect('payment-edited',
-                                  self._on_payment_list__edit_payment)
+        self._setup_payment_list()
 
     def _get_total_amount(self):
         """Returns the order total amount """
@@ -516,7 +518,6 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         If it returns False, the wizard can't go on."""
         if (not self.payment_list or
             not self.payment_list.is_payment_list_valid()):
-            self._refresh_next(False)
             return False
         self._create_payments()
 
@@ -532,7 +533,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                     BasePaymentMethodSlave.proxy_widgets)
 
     def create_model(self, conn):
-        return _BaseTemporaryMethodData(group=self.payment_group)
+        return _BaseTemporaryMethodData()
 
     #
     # Kiwi callbacks
@@ -543,17 +544,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.update_view()
 
     def after_installments_number__changed(self, *args):
-        installments_number = self.model.installments_number
-        max_installments = self.method.max_installments
-        if installments_number > max_installments:
-            self.installments_number.set_invalid(_("The number of installments "
-                                                   "must be less then %d"
-                                                   % max_installments))
-            self._refresh_next(False)
-            return
+        has_installments =  self.model.installments_number > 1
 
-        has_installments = installments_number > 1
-        self.first_duedate.set_sensitive(has_installments)
         self.interval_type_combo.set_sensitive(has_installments)
         self.intervals.set_sensitive(has_installments)
         self.setup_payments()
@@ -566,6 +558,17 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
     def after_first_duedate__changed(self, *args):
         self.setup_payments()
+
+    def on_installments_number__validate(self, widget, value):
+        if not value:
+            return ValidationError(_("The number of installments "
+                                     "cannot be 0"))
+
+        max_installments = self.method.max_installments
+        if value > max_installments:
+            return ValidationError(_("The number of installments "
+                                     "must be less then %d" %
+                                     max_installments))
 
     def on_first_duedate__validate(self, widget, value):
         if value < datetime.date.today():
