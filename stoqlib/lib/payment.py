@@ -67,6 +67,8 @@ def generate_payments_values(value, installments_number,
     @param interest: a L{Decimal} with the interest
     @returns: a list with the values
     """
+    assert installments_number > 0
+
     if interest:
         interest_rate = interest / 100 + 1
         normalized_value = quantize((value / installments_number)
@@ -101,6 +103,8 @@ def generate_payments_due_dates(installments_number, first_due_date,
     @param interval_type: an interval_type from L{stoqlib.lib.defaults}
     @returns: a list with the due_dates
     """
+    assert installments_number > 0
+
     due_dates = []
     delta = calculate_delta_interval(interval_type, interval)
     d = first_due_date
