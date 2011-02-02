@@ -233,7 +233,7 @@ class MultiplePaymentOperation(object):
 def register_payment_operations():
     pmm = get_utility(IPaymentOperationManager, None)
     if pmm is None:
-        from stoqlib.lib.paymentoperation import PaymentOperationManager
+        from stoqlib.lib.payment import PaymentOperationManager
         pmm = PaymentOperationManager()
         provide_utility(IPaymentOperationManager, pmm)
     pmm.register('money', MoneyPaymentOperation())
