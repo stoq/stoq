@@ -61,10 +61,10 @@ interval_types = {INTERVALTYPE_DAY:      _('Days'),
                   INTERVALTYPE_MONTH:    _('Months'),
                   INTERVALTYPE_YEAR:     _('Years')}
 
-interval_values = {INTERVALTYPE_DAY:        1,
-                   INTERVALTYPE_WEEK:       7,
-                   INTERVALTYPE_MONTH:      30,
-                   INTERVALTYPE_YEAR:       365}
+interval_name = {INTERVALTYPE_DAY: 'days',
+                 INTERVALTYPE_WEEK: 'weeks',
+                 INTERVALTYPE_MONTH: 'months',
+                 INTERVALTYPE_YEAR: 'years'}
 
 # weekday constants
 
@@ -86,31 +86,26 @@ def get_libc():
     return _libc
 
 
-def calculate_interval(interval_type, intervals):
-    """Get the interval type value for a certain INTERVALTYPE_* constant.
-    Intervals are useful modes to calculate payment duedates.
+def calculate_delta_interval(interval_type, intervals):
+    """Get the relativedelta value for a certain INTERVALTYPE_* constant.
 
-    @param interval_type:
-    @param intervals:
-    @returns:
+    Intervals are useful modes to calculate payment duedates, just sum
+    them with a L{datetime.datetime} or L{datetime.date} object.
 
-    >>> calculate_interval(INTERVALTYPE_DAY, 5)
-    5
-
-    >>> calculate_interval(INTERVALTYPE_MONTH, 3)
-    90
-
-    >>> calculate_interval(INTERVALTYPE_YEAR, 10)
-    3650
-
+    @param interval_type: one of the INTERVALTYPE_* above
+    @param intervals: an int representing the number of intervals
+    @returns: a L{relativedelta.relativedelta} object
     """
-    if not interval_values.has_key(interval_type):
+    if not interval_types.has_key(interval_type):
         raise KeyError('Invalid interval_type %r argument for '
                        'calculate_interval function.' % (interval_type,))
     if not type(intervals) == int:
         raise TypeError('Invalid type for intervals argument. It must be '
                         'integer, got %s' % type(intervals))
-    return interval_values[interval_type] * intervals
+
+    kargs = {interval_name[interval_type]: intervals}
+
+    return relativedelta.relativedelta(**kargs)
 
 
 def get_weekday_start():

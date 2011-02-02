@@ -324,8 +324,6 @@ class PurchasePaymentStep(WizardEditorStep):
     gladefile = 'PurchasePaymentStep'
     model_type = PaymentGroup
     payment_widgets = ('method_combo',)
-    order_widgets = ('subtotal_lbl',
-                     'total_lbl')
 
     def __init__(self, wizard, previous, conn, model,
                  outstanding_value=currency(0)):
@@ -374,32 +372,28 @@ class PurchasePaymentStep(WizardEditorStep):
         if not self.slave:
             self._set_method_slave()
 
-    def _update_totals(self, *args):
-        for field_name in ['purchase_subtotal', 'purchase_total']:
-            self.order_proxy.update(field_name)
-
     #
     # WizardStep hooks
     #
+
+    def validate_step(self):
+        return self.slave.finish()
 
     def next_step(self):
         return FinishPurchaseStep(self.wizard, self, self.conn,
                                   self.order)
 
     def post_init(self):
+        self.model.clear_unused()
         self.method_combo.grab_focus()
         self.main_box.set_focus_chain([self.payment_method_hbox,
                                        self.method_slave_holder])
         self.payment_method_hbox.set_focus_chain([self.method_combo])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
-        can_finish = self.slave.payment_list.get_total_difference() == 0
-        self.wizard.refresh_next(can_finish)
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.order_proxy = self.add_proxy(self.order,
-                                          PurchasePaymentStep.order_widgets)
         self.proxy = self.add_proxy(self.model,
                                     PurchasePaymentStep.payment_widgets)
         # Set the first payment method as default

@@ -45,7 +45,7 @@ from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     ISystemNotifier)
 from stoqlib.lib.message import DefaultSystemNotifier
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.paymentoperation import PaymentOperationManager
+from stoqlib.lib.payment import PaymentOperationManager
 
 log = Logger('stoqlib.database.testsuite')
 
