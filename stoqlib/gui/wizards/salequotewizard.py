@@ -196,7 +196,7 @@ class SaleQuoteItemStep(SellableItemStep):
         return list(self.model.get_items())
 
     def get_columns(self):
-        return [
+        columns = [
             Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),
             Column('sellable.category_description', title=_('Category'),
@@ -204,14 +204,22 @@ class SaleQuoteItemStep(SellableItemStep):
             Column('quantity', title=_('Quantity'), data_type=float, width=60,
                    format_func=format_quantity),
             Column('sellable.unit_description',title=_('Unit'), data_type=str,
-                   width=40),
+                   width=40)]
+
+        if sysparam(self.conn).SHOW_COST_COLUMN_IN_SALES:
+            columns.append(Column('sellable.cost',title=_('Cost'), data_type=currency,
+                                   width=80))
+
+        columns.extend([
             Column('price', title=_('Price'), data_type=currency, width=80),
             Column('nfe_cfop_code', title=_('CFOP'), data_type=str, width=40),
             Column('icms_info.v_bc', title=_('ICMS BC '), data_type=currency, width=70),
             Column('icms_info.v_icms', title=_('ICMS'), data_type=currency, width=70),
             Column('ipi_info.v_ipi', title=_('IPI'), data_type=currency, width=70),
             Column('total', title=_('Total'), data_type=currency, width=90),
-            ]
+            ])
+
+        return columns
 
     def sellable_selected(self, sellable):
         SellableItemStep.sellable_selected(self, sellable)

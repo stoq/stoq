@@ -175,6 +175,12 @@ _parameter_info = dict(
     _(u'Does this branch work with delivery service? If not, the '
       'delivery option will be disable on Point of Sales Application.')),
 
+    SHOW_COST_COLUMN_IN_SALES=ParameterDetails(
+    _(u'Sales'),
+    _(u'Show cost column in sales'),
+    _(u'should the cost column be displayed when creating a new sale quote.'
+      )),
+
     MAX_SEARCH_RESULTS=ParameterDetails(
     _(u'General'),
     _(u'Max Search Results'),
@@ -357,6 +363,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('USE_LOGIC_QUANTITY', bool, initial=True),
         ParameterAttr('POS_FULL_SCREEN', bool, initial=False),
         ParameterAttr('HAS_DELIVERY_MODE', bool, initial=True),
+        ParameterAttr('SHOW_COST_COLUMN_IN_SALES', bool, initial=False),
         ParameterAttr('ACCEPT_CHANGE_SALESPERSON', bool, initial=False),
         ParameterAttr('ENABLE_PAULISTA_INVOICE', bool, initial=False),
         ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
