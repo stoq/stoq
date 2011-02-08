@@ -20,7 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s) : Raja Sooriamurthi    <raja@cs.indiana.edu>
-##             George Kussumoto     <george@async.com.br>
+##             Stoq Team <stoq-devel@async.com.br>
 ##
 ## NOTE: This a modified version of cardinals.py
 ## (http://tinyurl.com/2xlrtj) authored by:

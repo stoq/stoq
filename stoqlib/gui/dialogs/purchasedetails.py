@@ -19,8 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Evandro Vale Miquelito  <evandro@async.com.br>
-##              George Kussumoto        <george@async.com.br>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 ##
 """ Purchase details dialogs """

@@ -19,7 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Henrique Romano             <henrique@async.com.br>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ A simple slave implementation for price entry/show"""
 

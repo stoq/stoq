@@ -19,9 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s): Rudá Porto Filgueiras     <rudazz@gmail.com>
-##            Evandro Vale Miquelito    <evandro@async.com.br>
-##            Lincoln Molica            <lincoln@async.com.br>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ Test case for stoq/domain/person.py module.  """
 

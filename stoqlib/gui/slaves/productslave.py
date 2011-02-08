@@ -19,10 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Henrique Romano      <henrique@async.com.br>
-##              Lincoln Molica       <lincoln@async.com.br>
-##              Johan Dahlin         <jdahlin@async.com.br>
-##              George Y. Kussumoto  <george@async.com.br>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ Slaves for products """
 

@@ -19,9 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s): Rudá Porto Filgueir    <rudazz@gmail.com>
-##            Evandro Vale Miquelito    <evandro@async.com.br>
-##            Johan Dahlin              <jdahlin@async.com.br>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
 from stoqlib.domain.address import Address, CityLocation

@@ -19,8 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s): Henrique Romano       <henrique@async.com.br>
-##            George Y. Kussumoto   <george@async.com.br>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ Listing dialog for system parameters """
 

@@ -19,9 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-##  Author(s):      Bruno Rafael Garcia     <brg@async.com.br>
-##                  Evandro Vale Miquelito  <evandro@async.com.br>
-##                  Johan Dahlin            <jdahlin@async.com.br>
+##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
 # TODO: Rename/Move parts to stoqlib/gui/editors/usereditor.py ?

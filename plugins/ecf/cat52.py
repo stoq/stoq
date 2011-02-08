@@ -19,8 +19,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##
-## Author(s):   Fabio Morbec <fabio@async.com.br>
-##              Ronaldo Maia <romaia@async.com.br>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
 import datetime

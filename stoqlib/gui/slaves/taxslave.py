@@ -19,7 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Ronaldo Maia  <romaia@async.com.br>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ Slaves for books """
 

@@ -19,10 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Grazieno Pellegrino         <grazieno1@yahoo.com.br>
-##              Evandro Vale Miquelito      <evandro@async.com.br>
-##              Johan Dahlin                <jdahlin@async.com.br>
-##              Fabio Morbec                <fabio@async.com.br>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ This module test all class in stoqlib/domain/product.py """
 

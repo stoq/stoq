@@ -19,7 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   J. Victor Martins         <jvdm@sdf.lonestar.org>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ Editor dialog for station objects """
 

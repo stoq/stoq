@@ -19,8 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-##  Author(s):  Fabio Morbec              <fabio@async.com.br>
-##  Author(s):  George Y. Kussumoto       <george@async.com.br>
+##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 ##
 """ Payment receival report implementation """
