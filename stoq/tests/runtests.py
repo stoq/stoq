@@ -20,8 +20,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s): Evandro Vale Miquelito    <evandro@async.com.br>
-##            Rudá Porto Filgueiras     <rudazz@gmail.com>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ Run all the domain test suite """
 
