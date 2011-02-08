@@ -423,8 +423,7 @@ class QuotationView(Viewable):
                    PersonAdaptToSupplier.q._originalID),
     ]
 
-    clause = AND(QuoteGroup.q.id == Quotation.q.groupID,
-                 PurchaseOrder.q._is_valid_model == True)
+    clause = QuoteGroup.q.id == Quotation.q.groupID
 
     @property
     def group(self):
@@ -462,8 +461,6 @@ class SoldItemView(Viewable):
                     Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
     ]
 
-    # No need to check is_valid_model == True since all invalid models have
-    # status = STATUS_INITIAL
     clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
                 Sale.q.status == Sale.STATUS_PAID,
                 Sale.q.status == Sale.STATUS_ORDERED,)
@@ -667,10 +664,9 @@ class SaleItemsView(Viewable):
                     Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
     ]
 
-    clause = AND(Sale.q._is_valid_model == True,
-                OR(Sale.q.status == Sale.STATUS_CONFIRMED,
-                   Sale.q.status == Sale.STATUS_PAID,
-                   Sale.q.status == Sale.STATUS_ORDERED))
+    clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+                Sale.q.status == Sale.STATUS_PAID,
+                Sale.q.status == Sale.STATUS_ORDERED)
 
 
 class ReceivingItemView(Viewable):
@@ -716,10 +712,6 @@ class ReceivingItemView(Viewable):
         LEFTJOINOn(None, Person,
                    PersonAdaptToSupplier.q._originalID == Person.q.id),
     ]
-
-    # This is to workaround ValidatableDomain issues
-    clause = AND(ReceivingOrderItem.q.receiving_orderID != None,
-                 ReceivingOrder.q._is_valid_model == True)
 
 
 class ProductionItemView(Viewable):

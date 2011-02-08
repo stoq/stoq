@@ -160,9 +160,24 @@ class TestQuoteGroup(DomainTest):
         quote = QuoteGroup(connection=self.trans)
         order = self.create_purchase_order()
         order.status = PurchaseOrder.ORDER_QUOTING
-        order._is_valid_model = True
         quotation = quote.add_item(order)
 
         self.assertEqual(order.status, PurchaseOrder.ORDER_QUOTING)
         order.cancel()
+        self.assertEqual(order.status, PurchaseOrder.ORDER_CANCELLED)
+
+    def testClose(self):
+        quote = QuoteGroup(connection=self.trans)
+        order = self.create_purchase_order()
+        order.status = PurchaseOrder.ORDER_QUOTING
+        quotation = quote.add_item(order)
+
+        self.assertEqual(order.status, PurchaseOrder.ORDER_QUOTING)
+        quotations = quote.get_items()
+        self.assertEqual(quotations.count(), 1)
+
+        self.assertFalse(quotations[0].is_closed())
+        quotations[0].close()
+        self.assertTrue(quotations[0].is_closed())
+
         self.assertEqual(order.status, PurchaseOrder.ORDER_CANCELLED)

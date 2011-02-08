@@ -35,7 +35,7 @@ from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn, const
 from stoqlib.database.orm import Viewable, Alias
 from stoqlib.database.orm import PriceCol, BoolCol, QuantityCol
 from stoqlib.database.runtime import get_current_user
-from stoqlib.domain.base import ValidatableDomain, Domain
+from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,
@@ -134,7 +134,7 @@ class PurchaseItem(Domain):
         return ordered_items.sum('quantity') or Decimal(0)
 
 
-class PurchaseOrder(ValidatableDomain):
+class PurchaseOrder(Domain):
     """Purchase and order definition."""
 
     implements(IContainer)
@@ -490,16 +490,17 @@ class Quotation(Domain):
 
     def close(self):
         """Closes the quotation"""
-        # we don't have a specific status for closed quotes, so we keep the
-        # current status (quoting) and set it as an invalid model
+        # we don't have a specific status for closed quotes, so we just
+        # cancel it
         if not self.is_closed():
-            self.purchase.set_invalid()
+            self.purchase.cancel()
 
     def is_closed(self):
         """Returns if the quotation is closed or not.
+
         @returns: True if the quotation is closed, False otherwise.
         """
-        return not self.purchase.get_valid()
+        return self.purchase.status == PurchaseOrder.ORDER_CANCELLED
 
 
 class QuoteGroup(Domain):
@@ -546,7 +547,7 @@ class QuoteGroup(Domain):
         """Cancel a quote group."""
         conn = self.get_connection()
         for quote in self.get_items():
-            quote.purchase.cancel()
+            quote.close()
             Quotation.delete(quote.id, connection=conn)
 
 
@@ -749,8 +750,6 @@ class PurchaseOrderView(Viewable):
        LEFTJOINOn(None, Person_Responsible,
                    PersonAdaptToUser.q._originalID == Person_Responsible.q.id),
     ]
-
-    clause = AND(PurchaseOrder.q._is_valid_model == True)
 
     #
     # Properties

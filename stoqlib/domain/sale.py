@@ -38,7 +38,7 @@ from stoqlib.database.orm import PriceCol, QuantityCol
 from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn, INNERJOINOn
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
-from stoqlib.domain.base import Domain, ValidatableDomain, ModelAdapter
+from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.events import SaleConfirmEvent
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import (IContainer, IOutPayment,
@@ -292,7 +292,7 @@ SaleItem.registerFacet(SaleItemAdaptToDelivery, IDelivery)
 
 
 
-class Sale(ValidatableDomain):
+class Sale(Domain):
     """Sale object implementation.
 
     @cvar STATUS_INITIAL: The sale is opened, products or other sellable items
@@ -498,8 +498,6 @@ class Sale(ValidatableDomain):
         if self.client and not self.client.is_active:
             raise SellError('Unable to make sales for clients with status '
                             '%s' % self.client.get_status_string())
-        self.set_valid()
-
         self.status = Sale.STATUS_ORDERED
 
     def confirm(self):
@@ -1165,8 +1163,6 @@ class SaleView(Viewable):
         LEFTJOINOn(None, SaleItemIpi,
                    SaleItemIpi.q.id == SaleItem.q.ipi_infoID),
     ]
-
-    clause = AND(Sale.q._is_valid_model == True)
 
     #
     # Properties

@@ -246,9 +246,6 @@ class QuoteSupplierStep(WizardEditorStep):
                 quote_item.order = quote
 
         quote.supplier = selected.supplier
-        if not quote.get_valid():
-            quote.set_valid()
-
         self.wizard.quote_group.add_item(quote)
 
         self.conn.commit()
@@ -548,6 +545,12 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
         for q in quotes:
             quotation = trans.get(q)
             quotation.close()
+            Quotation.delete(quotation.id, connection=trans)
+
+        group = trans.get(self._group)
+        if not group.get_items():
+            QuoteGroup.delete(group.id, connection=trans)
+
         finish_transaction(trans, True)
 
     def _create_orders(self):

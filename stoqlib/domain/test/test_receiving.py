@@ -115,7 +115,6 @@ class TestReceivingOrder(DomainTest):
         self.failIf(ProductStockItem.selectOneBy(storable=storable,
                                                  connection=self.trans))
         purchase_order = self.create_purchase_order()
-        purchase_order.set_valid()
         purchase_item = purchase_order.add_item(product.sellable, 1)
         purchase_order.status = purchase_order.ORDER_PENDING
         method = PaymentMethod.get_by_name(self.trans, 'money')
@@ -125,7 +124,6 @@ class TestReceivingOrder(DomainTest):
 
         receiving_order = self.create_receiving_order(purchase_order)
         receiving_order.branch = get_current_branch(self.trans)
-        receiving_order.set_valid()
         receiving_order_item = self.create_receiving_order_item(
             receiving_order=receiving_order,
             sellable=product.sellable,

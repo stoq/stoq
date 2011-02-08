@@ -471,9 +471,6 @@ class ConfirmSaleWizard(BaseWizard):
 
     def __init__(self, conn, model):
         self._check_payment_group(model, conn)
-        # Saves the initial state of the sale order and allow us to call
-        # rollback safely when it's needed
-        conn.commit()
         register_payment_operations()
 
         # invoice_model is a Settable so avoid bug 4218, where more

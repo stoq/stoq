@@ -231,7 +231,6 @@ class TestProductHistory(DomainTest):
         order_item = self.create_receiving_order_item()
         order_item.receiving_order.purchase.status = PurchaseOrder.ORDER_PENDING
         order_item.receiving_order.purchase.confirm()
-        order_item.receiving_order.set_valid()
         self.failIf(
             ProductHistory.selectOneBy(connection=self.trans,
                                        sellable=order_item.sellable))

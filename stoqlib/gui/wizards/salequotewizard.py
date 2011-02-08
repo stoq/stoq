@@ -303,8 +303,5 @@ class SaleQuoteWizard(BaseWizard):
     #
 
     def finish(self):
-        if not self.model.get_valid():
-            self.model.set_valid()
         self.retval = self.model
-
         self.close()

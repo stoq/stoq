@@ -53,7 +53,6 @@ class TestSintegraGenerator(DomainTest):
         self.create_receiving_order_item(order, sellable=sellable2)
 
         order.purchase.confirm()
-        order.set_valid()
         order.confirm()
 
         sellable.code = '9999'

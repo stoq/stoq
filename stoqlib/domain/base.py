@@ -265,70 +265,6 @@ class Domain(BaseDomain, AdaptableORMObject):
         return adapter.get(object_id, **kwargs)
 
 
-class ValidatableDomain(Domain):
-
-    _is_valid_model = BoolCol(default=False, forceDBName=True)
-
-    #
-    # Useful methods to deal with transaction isolation problems. See
-    # domain/base docstring for further informations
-    #
-
-    def set_valid(self):
-        if self._is_valid_model:
-            raise ValueError('This model is already valid.')
-        self._is_valid_model = True
-
-    def set_invalid(self):
-        if not self._is_valid_model:
-            raise ValueError('This model is already invalid.')
-        self._is_valid_model = False
-
-    def get_valid(self):
-        return self._is_valid_model
-
-    @classmethod
-    def select(cls, clause=None, connection=None, **kwargs):
-        # This make queries in stoqlib applications consistent
-        query = cls.q._is_valid_model == True
-        if clause:
-            clause = AND(query, clause)
-        else:
-            clause = query
-        return super(AbstractModel, cls).select(clause=clause,
-                                                connection=connection,
-                                                **kwargs)
-
-    @classmethod
-    def selectBy(cls, connection=None, **kw):
-        # This make queries in stoqlib applications consistent
-        kw['_is_valid_model'] = True
-        return super(ValidatableDomain, cls).selectBy(
-            connection=connection, **kw)
-
-    @classmethod
-    def selectOne(cls, clause=None, clauseTables=None, lazyColumns=False,
-                  connection=None):
-        # This make queries in stoqlib applications consistent
-        query = cls.q._is_valid_model == True
-        if clause:
-            clause = AND(query, clause)
-        else:
-            clause = query
-        return super(ValidatableDomain, cls).selectOne(
-            clause=clause,
-            clauseTables=clauseTables,
-            lazyColumns=lazyColumns,
-            connection=connection)
-
-    @classmethod
-    def selectOneBy(cls, clause=None, connection=None, **kw):
-        kw['_is_valid_model'] = True
-        return super(ValidatableDomain, cls).selectOneBy(
-            connection=connection, **kw)
-
-
-
 class BaseSQLView:
     """A base marker class for SQL Views"""
 
@@ -345,7 +281,7 @@ class ModelAdapter(BaseDomain, ORMObjectAdapter):
         BaseDomain.__init__(self, *args, **kwargs)
 
 
-for klass in (ValidatableDomain, Domain, ModelAdapter):
+for klass in (Domain, ModelAdapter):
     sqlmeta = klass.sqlmeta
     sqlmeta.cacheValues = False
     sqlmeta.addColumn(ForeignKey('TransactionEntry', name='te_created',

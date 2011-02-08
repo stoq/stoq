@@ -64,7 +64,6 @@ class InPaymentView(Viewable):
         method_name=PaymentMethod.q.method_name,
         renegotiation_id=PaymentRenegotiation.q.id,
         renegotiated_id=PaymentGroup.q.renegotiationID,
-        sale_is_valid_model=Sale.q._is_valid_model,
         )
 
     joins = [
@@ -83,10 +82,6 @@ class InPaymentView(Viewable):
         INNERJOINOn(None, PaymentMethod,
                     Payment.q.methodID == PaymentMethod.q.id),
         ]
-
-    # We must include the NULL verification for the renegotiation payments
-    clause = OR(Sale.q._is_valid_model == True,
-                Sale.q._is_valid_model == None)
 
     def can_change_due_date(self):
         return self.status not in [Payment.STATUS_PAID,
