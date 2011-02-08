@@ -31,7 +31,7 @@ from kiwi.datatypes import currency
 
 from stoqlib.database.orm import PriceCol, QuantityCol
 from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
-from stoqlib.domain.base import Domain, ValidatableDomain
+from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.group import PaymentGroup
@@ -107,7 +107,7 @@ class ReceivingOrderItem(Domain):
         ProductHistory.add_received_item(conn, branch, self)
 
 
-class ReceivingOrder(ValidatableDomain):
+class ReceivingOrder(Domain):
     """Receiving order definition.
 
     @cvar STATUS_PENDING: Products in the order was not received

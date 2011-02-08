@@ -354,7 +354,6 @@ class TestClient(_PersonFacetTest, DomainTest):
         count_sales = client.get_client_sales().count()
         sale = self.create_sale()
         sale.client = client
-        sale.set_valid()
         products = Product.select(connection=self.trans)
         assert products
         product = products[0]
@@ -397,8 +396,6 @@ class TestSupplier(_PersonFacetTest, DomainTest):
         order.purchase.status = PurchaseOrder.ORDER_PENDING
         order.purchase.confirm()
         order.confirm()
-        order.set_valid()
-        order.purchase.set_valid()
 
         self.failUnless(supplier.get_supplier_purchases())
 

@@ -55,7 +55,6 @@ class _TemporaryQuoteGroup(object):
     def create_quote_group(self, productions, trans):
         group = QuoteGroup(connection=trans)
         order = self._create_purchase_order(trans)
-        order.set_valid()
         to_quote_items = {}
         for production in productions:
             materials = production.get_material_items()

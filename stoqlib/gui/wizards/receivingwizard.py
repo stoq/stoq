@@ -354,8 +354,6 @@ class ReceivingOrderWizard(BaseWizard):
         assert self.model
         assert self.model.branch
 
-        if not self.model.get_valid():
-            self.model.set_valid()
         self.retval = self.model
         self.model.confirm()
         self.close()

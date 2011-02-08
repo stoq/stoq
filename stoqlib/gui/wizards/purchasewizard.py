@@ -562,13 +562,9 @@ class PurchaseWizard(BaseWizard):
     #
 
     def finish(self):
-        if not self.model.get_valid():
-            self.model.set_valid()
         self.retval = self.model
 
         if self.receiving_model:
-            if not self.receiving_model.get_valid():
-                self.receiving_model.set_valid()
             # Confirming the receiving will close the purchase
             self.receiving_model.confirm()
 

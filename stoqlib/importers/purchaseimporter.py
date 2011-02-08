@@ -78,7 +78,6 @@ class PurchaseImporter(CSVImporter):
                                  group=group,
                                  responsible=get_current_user(trans),
                                  branch=branch)
-        purchase.set_valid()
 
         for sellable in self.parse_multi(Sellable, data.sellable_list, trans):
             if not sellable.product:
@@ -101,7 +100,6 @@ class PurchaseImporter(CSVImporter):
                                          transporter=transporter,
                                          branch=branch,
                                          connection=trans)
-        receiving_order.set_valid()
 
         for purchase_item in purchase.get_items():
             receicing_item = ReceivingOrderItem(connection=trans,
