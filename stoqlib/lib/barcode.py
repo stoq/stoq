@@ -19,7 +19,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##
-## Author(s):       Ronaldo Maia            <romaia@async.com.br
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """Parse barcodes containing weight or price information, as those printed
 by scales"""

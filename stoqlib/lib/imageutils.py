@@ -19,7 +19,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##
-## Author(s):   George Kussumoto    <george@async.com.br>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 ##
 """ Utility class and functions for images """

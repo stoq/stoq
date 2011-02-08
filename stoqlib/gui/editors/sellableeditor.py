@@ -19,11 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Henrique Romano             <henrique@async.com.br>
-##              Evandro Vale Miquelito      <evandro@async.com.br>
-##              Bruno Rafael Garcia         <brg@async.com.br>
-##              Fabio Morbec                <fabio@async.com.br>
-##              Gilma Gomes de Souza        <anaiort@gmail.com>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ Editors definitions for sellable"""
 

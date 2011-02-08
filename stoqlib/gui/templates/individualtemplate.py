@@ -19,10 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Daniel Saran R. da Cunha    <daniel@async.com.br>
-##              Henrique Romano             <henrique@async.com.br>
-##              Evandro Vale Miquelito      <evandro@async.com.br>
-##              Johan Dahlin                <jdahlin@async.com.br>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """ Individual edition template slaves implementation.  """
 

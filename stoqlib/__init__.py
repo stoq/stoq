@@ -19,8 +19,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##
-## Author(s):       Johan Dahlin                <jdahlin@async.com.br>
-##                  Evandro Vale Miquelito      <evandro@async.com.br>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 ##
 

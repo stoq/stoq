@@ -19,7 +19,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##
-## Author(s):       André Batosti   <batosti@async.com.br>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
 from stoqlib.lib.translation import stoqlib_gettext as _, N_

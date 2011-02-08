@@ -19,7 +19,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##
-## Author(s):       Henrique Romano             <henrique@async.com.br>
+## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
