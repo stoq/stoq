@@ -29,8 +29,8 @@ import sys
 #
 # Dependency checking
 #
-KIWI_REQUIRED = (1, 9, 26)
-STOQLIB_REQUIRED = (0, 9, 14, 3)
+KIWI_REQUIRED = (1, 9, 27)
+STOQLIB_REQUIRED = (0, 9, 15)
 
 # kiwi is only here because we need to use it in setup.py itself,
 # the rest of the dependency checks should be done in stoqlib.
