@@ -118,6 +118,7 @@ class ReceivingOrder(Domain):
     @ivar receival_date: Date that order has been closed.
     @ivar confirm_date: Date that order was send to Stock application.
     @ivar notes: Some optional additional information related to this order.
+    @ivar freight_type: Type of freight
     @ivar freight_total: Total of freight paid in receiving order.
     @ivar surcharge_value:
     @ivar discount_value: Discount value in receiving order's payment.
@@ -129,10 +130,25 @@ class ReceivingOrder(Domain):
     (STATUS_PENDING,
      STATUS_CLOSED) = range(2)
 
+    (FREIGHT_FOB_PAYMENT,
+     FREIGHT_FOB_INSTALLMENTS,
+     FREIGHT_CIF_UNKNOWN,
+     FREIGHT_CIF_INVOICE) = range(4)
+
+    freight_types = {FREIGHT_FOB_PAYMENT: _("FOB - Freight value "
+                                            "on a new payment"),
+                     FREIGHT_FOB_INSTALLMENTS: _("FOB - Freight value "
+                                                 "on installments"),
+                     FREIGHT_CIF_UNKNOWN: _("CIF - Freight value "
+                                            "is unknown"),
+                     FREIGHT_CIF_INVOICE: _("CIF - Freight value "
+                                            "highlighted on invoice")}
+
     status = IntCol(default=STATUS_PENDING)
     receival_date = DateTimeCol(default=datetime.datetime.now)
     confirm_date = DateTimeCol(default=None)
     notes = UnicodeCol(default='')
+    freight_type = IntCol(default=FREIGHT_FOB_PAYMENT)
     freight_total = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     discount_value = PriceCol(default=0)
@@ -210,7 +226,7 @@ class ReceivingOrder(Domain):
             group = self.purchase.group
 
         description = _(u'Freight for purchase %s' %
-                                self.purchase.get_order_number_str())
+                        self.purchase.get_order_number_str())
         out_payment = money_method.create_outpayment(
             group, self.freight_total,
             due_date=datetime.datetime.today(),
@@ -251,6 +267,28 @@ class ReceivingOrder(Domain):
     #
     # Accessors
     #
+
+    def get_freight_types(self):
+        """Returns a list with available freight types"""
+        return [f for f in (self.FREIGHT_FOB_PAYMENT,
+                            self.FREIGHT_FOB_INSTALLMENTS,
+                            self.FREIGHT_CIF_UNKNOWN,
+                            self.FREIGHT_CIF_INVOICE)]
+
+    def get_freight_type_adapted_from_payment(self):
+        """Returns a freight_type based on the purchase's freight_type"""
+        if self.purchase.freight_type == PurchaseOrder.FREIGHT_FOB:
+            if self.purchase.is_paid():
+                freight_type = ReceivingOrder.FREIGHT_FOB_PAYMENT
+            else:
+                freight_type = ReceivingOrder.FREIGHT_FOB_INSTALLMENTS
+        elif self.purchase.freight_type == PurchaseOrder.FREIGHT_CIF:
+            if self.freight_total or self.purchase.expected_freight:
+                freight_type = ReceivingOrder.FREIGHT_CIF_INVOICE
+            else:
+                freight_type = ReceivingOrder.FREIGHT_CIF_UNKNOWN
+
+        return freight_type
 
     def get_cfop_code(self):
         return self.cfop.code.encode()
@@ -300,7 +338,11 @@ class ReceivingOrder(Domain):
 
         if self.ipi_total:
             total_surcharge += self.ipi_total
-        if self.freight_total:
+
+        # CIF freights doesn't generate payments.
+        if (self.freight_total and
+            self.freight_type != self.FREIGHT_CIF_UNKNOWN and
+            self.freight_type != self.FREIGHT_CIF_INVOICE):
             total_surcharge += self.freight_total
 
         return currency(total_surcharge)
