@@ -81,7 +81,7 @@ class DeviceManager(object):
         if dbus:
             try:
                 self._hal_manager = _HALManager()
-            except DBusException:
+            except dbus.DBusException:
                 pass
 
     def _get_default_devices(self):
