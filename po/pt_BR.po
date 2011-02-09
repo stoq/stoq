@@ -24,12 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-02-08 14:24-0200\n"
-"PO-Revision-Date: 2008-05-28 17:51-0300\n"
-"Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
+"PO-Revision-Date: 2011-02-08 18:54+0000\n"
+"Last-Translator: Silvio Rangel <silvio@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2011-02-09 05:05+0000\n"
+"X-Generator: Launchpad (build 12177)\n"
 "Language: \n"
 
 #: ../stoq/main.py:88
@@ -40,7 +42,8 @@ msgstr "%s não encontrado"
 #: ../stoq/main.py:89
 #, python-format
 msgid "Could not find the required python module %s on your system"
-msgstr "Não foi possível encontrar o módulo python requerido %s em seu sistema"
+msgstr ""
+"Não foi possível encontrar o módulo python requerido %s em seu sistema"
 
 #: ../stoq/main.py:115
 msgid "PyGTK too old"
@@ -49,7 +52,8 @@ msgstr "PyGTK muito antigo"
 #: ../stoq/main.py:116
 #, python-format
 msgid "PyGTK version too old, needs %s but found %s"
-msgstr "A versão do PyGTK é muito antiga, precisa versão %s mas encontrada %s"
+msgstr ""
+"A versão do PyGTK é muito antiga, precisa versão %s mas encontrada %s"
 
 #: ../stoq/main.py:129
 msgid "Kiwi too old"
@@ -103,19 +107,17 @@ msgid "Could not connect to database"
 msgstr "Não foi possível conectar ao banco de dados"
 
 #: ../stoq/gui/application.py:131
-#, fuzzy
 msgid "<b>You are using the examples database.</b>"
-msgstr "Criar uma base de dados de exemplo"
+msgstr "<b>Você está usando a base de exemplos.</b>"
 
 #: ../stoq/gui/application.py:135
-#, fuzzy
 msgid "Remove examples"
-msgstr "Sangria..."
+msgstr "Remove exemplos"
 
 #: ../stoq/gui/application.py:247
-#, fuzzy, python-format
+#, python-format
 msgid "%s User"
-msgstr "_Usuario"
+msgstr "%s Usuário"
 
 #: ../stoq/gui/application.py:248
 msgid "_Store"
@@ -177,8 +179,10 @@ msgid "Stoq - %s"
 msgstr "Stoq - %s"
 
 #: ../stoq/gui/application.py:379
-msgid "This will delete the current database and configuration. Are you sure?"
+msgid ""
+"This will delete the current database and configuration. Are you sure?"
 msgstr ""
+"Isso excluirá o banco de dados atual e configuração. Você tem certeza?"
 
 #: ../stoq/gui/application.py:381 ../stoq/gui/till/till.py:223
 #: ../stoq/gui/pos/pos.py:644 ../data/glade/inventory.glade.h:2
@@ -186,13 +190,12 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #: ../stoq/gui/application.py:381
-#, fuzzy
 msgid "Remove"
-msgstr "_Remover"
+msgstr "Remover"
 
 #: ../stoq/gui/application.py:384
 msgid "Please, start stoq again to configure new database"
-msgstr ""
+msgstr "Por favor, reinicie o Stoq para configurar o novo banco de dados"
 
 #: ../stoq/gui/application.py:403
 msgid "Search:"
@@ -200,12 +203,12 @@ msgstr "Pesquisar:"
 
 #: ../stoq/gui/application.py:504
 msgid "Learn More..."
-msgstr ""
+msgstr "Saiba mais..."
 
 #: ../stoq/gui/application.py:505
 #, python-format
 msgid "<b>There is a new Stoq version available (%s)</b>"
-msgstr ""
+msgstr "<b>Existe uma nova versão do Stoq disponível (%s)</b>"
 
 #: ../stoq/gui/config.py:98
 msgid "Trust"
@@ -354,20 +357,19 @@ msgstr "Configurando o Stoq"
 
 #: ../stoq/gui/update.py:112
 msgid " Done."
-msgstr ""
+msgstr " Feito"
 
 #: ../stoq/gui/update.py:114
 msgid " Fail."
-msgstr ""
+msgstr " Falhou"
 
 #: ../stoq/gui/update.py:147
 msgid "Applying database patches..."
-msgstr ""
+msgstr "Aplicando patches no banco de dados..."
 
 #: ../stoq/gui/update.py:161
-#, fuzzy
 msgid "Updating Stoq"
-msgstr "Configurando o Stoq"
+msgstr "Atualizando Stoq"
 
 #: ../stoq/gui/runner.py:156
 #, python-format
@@ -945,6 +947,8 @@ msgid ""
 "Error: Stoq configuration is not avaiable. Check that the current user has a "
 "configuration file (~/.stoq/stoq.conf)."
 msgstr ""
+"Erro: configuração do Stoq não disponível. Verifique se o usuário possui um "
+"arquivo de configuração (~/.stoq/stoq.conf)."
 
 #: ../stoq/lib/configparser.py:338
 msgid ""
@@ -952,6 +956,9 @@ msgid ""
 "\n"
 "You are running stoq using sudo. That is not recommended."
 msgstr ""
+"\n"
+"\n"
+"Você está executando o Stoq usando sudo. Isso não é recomendado."
 
 #: ../stoq/lib/startup.py:54 ../stoq/lib/startup.py:122
 #: ../stoq/lib/startup.py:127
@@ -978,11 +985,12 @@ msgstr ""
 
 #: ../stoq/lib/startup.py:148
 msgid "Update Error"
-msgstr ""
+msgstr "Erro de atualização"
 
 #: ../stoq/lib/startup.py:149
 msgid "You need to call setup() before checking the database schema."
 msgstr ""
+"Você precisa chamar setup () antes de verificar o esquema do banco de dados."
 
 #: ../data/glade/receivable.glade.h:1 ../data/glade/payable.glade.h:1
 #: ../data/glade/production.glade.h:1 ../data/glade/sales_app.glade.h:1
@@ -998,7 +1006,7 @@ msgstr "Adicionar Recebimento..."
 
 #: ../data/glade/receivable.glade.h:3 ../data/glade/payable.glade.h:3
 msgid "Bill and Check... "
-msgstr "Boletos e Cheques..."
+msgstr "Boletos e Cheques... "
 
 #: ../data/glade/receivable.glade.h:4 ../data/glade/payable.glade.h:4
 msgid "Bills"
@@ -1232,10 +1240,20 @@ msgid ""
 "It is always a good idea to <b>create a backup</b> of your database before "
 "updating."
 msgstr ""
+"Stoq já foi atualizado, mas ainda é preciso atualizar o esquema do banco de "
+"dados.\n"
+"\n"
+"\n"
+"Clique <b>Avançar</ b> para iniciar a atualização do esquema do banco de "
+"dados.\n"
+"\n"
+"\n"
+"É sempre uma boa idéia <b>criar um backup</ b> de seu banco de dados antes "
+"de atualizar."
 
 #: ../data/glade/UpdateWelcomeStep.glade.h:8
 msgid "Update Database"
-msgstr ""
+msgstr "Atualizar Banco de Dados"
 
 #: ../data/glade/production.glade.h:3 ../data/glade/admin.glade.h:8
 #: ../data/glade/stock.glade.h:4 ../data/glade/purchase.glade.h:8
@@ -1378,7 +1396,7 @@ msgstr "Serviços"
 #: ../data/glade/sales_app.glade.h:32 ../data/glade/pos.glade.h:36
 #: ../data/glade/till.glade.h:24
 msgid "Sold Items by Branch..."
-msgstr ""
+msgstr "Itens vendidos pela unidade"
 
 #: ../data/glade/sales_app.glade.h:37
 msgid "_Print Invoice ..."
@@ -2008,7 +2026,7 @@ msgstr "compra"
 
 #: ../data/glade/UpdateSchemaStep.glade.h:1
 msgid "<b>Updating Database Schema</b>"
-msgstr ""
+msgstr "<b>Atualizando o schema do banco de dados</b>"
 
 #: ../data/glade/AdminPasswordStep.glade.h:2
 msgid ""
@@ -2161,18 +2179,6 @@ msgstr "_Inventário"
 #~ msgid "Adjust"
 #~ msgstr "Ajuste"
 
-#, fuzzy
-#~ msgid "Destination:"
-#~ msgstr "Destino:"
-
-#, fuzzy
-#~ msgid "Receival date:"
-#~ msgstr "Contas a _Receber"
-
-#, fuzzy
-#~ msgid "Source:"
-#~ msgstr "Cônjuge:"
-
 #~ msgid "Printing Invoice"
 #~ msgstr "Imprimindo Nota Fiscal"
 
@@ -2307,11 +2313,11 @@ msgstr "_Inventário"
 #~ msgstr "Você precisa abrir o caixa antes de começar as vendas."
 
 #~ msgid ""
-#~ "Warning: there are %d order(s) with status different than pending that "
-#~ "will not be included"
+#~ "Warning: there are %d order(s) with status different than pending that will "
+#~ "not be included"
 #~ msgstr ""
-#~ "Aviso: há %d pedido(s) com situação diferente de 'pendente' que não será"
-#~ "(ão) incluso(s)"
+#~ "Aviso: há %d pedido(s) com situação diferente de 'pendente' que não será(ão) "
+#~ "incluso(s)"
 
 #~ msgid "Confirm"
 #~ msgstr "Confirmar"
@@ -2331,8 +2337,7 @@ msgstr "_Inventário"
 #~ msgstr "O computador <u>%s</u> não está registrado no Stoq"
 
 #~ msgid ""
-#~ "To solve this, open the administrator application and register this "
-#~ "computer."
+#~ "To solve this, open the administrator application and register this computer."
 #~ msgstr ""
 #~ "Para resolver isto, abra a aplicação administrador e registre o computador"
 
@@ -2352,8 +2357,8 @@ msgstr "_Inventário"
 #~ msgstr "Insira a senha do administrador"
 
 #~ msgid ""
-#~ "You need to set an administrator password to continue, an empty password "
-#~ "can be set by just pressing Enter"
+#~ "You need to set an administrator password to continue, an empty password can "
+#~ "be set by just pressing Enter"
 #~ msgstr ""
 #~ "Você precisa escolher uma senha para o administrador, uma senha em branco "
 #~ "pode ser escolhida pressionando Enter"
@@ -2362,11 +2367,11 @@ msgstr "_Inventário"
 #~ "To be able to continue the wizard you need to enter the administrator "
 #~ "password for the database on host %s"
 #~ msgstr ""
-#~ "Para continuar o wizard você deve entrar com a senha de administrador "
-#~ "para o banco de dados no host %s"
+#~ "Para continuar o wizard você deve entrar com a senha de administrador para o "
+#~ "banco de dados no host %s"
 
 #~ msgid "The supplied administrator password does not match"
-#~ msgstr "A senha fornecida para administrador não confere "
+#~ msgstr "A senha fornecida para administrador não confere"
 
 #~ msgid "Hint: this is the first user to start Stoq applications"
 #~ msgstr ""
@@ -2453,15 +2458,15 @@ msgstr "_Inventário"
 #~ msgstr "Não é possível abrir o cupom fiscal"
 
 #~ msgid ""
-#~ "The price supplied by the scale doesn't match the current one registered "
-#~ "in the system and will be ignored"
+#~ "The price supplied by the scale doesn't match the current one registered in "
+#~ "the system and will be ignored"
 #~ msgstr ""
-#~ "O preço fornecido pela balança difere do preço registrado no sistema e "
-#~ "será ignorado."
+#~ "O preço fornecido pela balança difere do preço registrado no sistema e será "
+#~ "ignorado."
 
 #~ msgid ""
-#~ "The price supplied by the scale is different that the current one "
-#~ "registered in the system"
+#~ "The price supplied by the scale is different that the current one registered "
+#~ "in the system"
 #~ msgstr ""
 #~ "O preço fornecido pela balança é diferente do valor registrado no sistema"
 
@@ -2469,8 +2474,7 @@ msgstr "_Inventário"
 #~ msgstr " Confirmar Venda..."
 
 #~ msgid ""
-#~ "Currently, the client that you have selected has two roles on the "
-#~ "system.\n"
+#~ "Currently, the client that you have selected has two roles on the system.\n"
 #~ "Please, select which one must be used:"
 #~ msgstr ""
 #~ "Atualmente o cliente que você selecionou possui dois papéis no sistema.\n"
@@ -2739,18 +2743,16 @@ msgstr "_Inventário"
 #~ msgstr "Não é possível emitir o coupon"
 
 #~ msgid ""
-#~ "The payment type %s isn't supported yet. The default, MONEY_PM, will be "
-#~ "used."
+#~ "The payment type %s isn't supported yet. The default, MONEY_PM, will be used."
 #~ msgstr ""
-#~ "O tipo de pagamento %d ainda não é suportado. O MONEY_PM padrão será "
-#~ "usado."
+#~ "O tipo de pagamento %d ainda não é suportado. O MONEY_PM padrão será usado."
 
 #~ msgid "It's not possible to close the coupon"
 #~ msgstr "Não é possível fechar o coupon"
 
 #~ msgid ""
-#~ "What is the database address used by the client to find the server ? "
-#~ "default is 'localhost'\n"
+#~ "What is the database address used by the client to find the server ? default "
+#~ "is 'localhost'\n"
 #~ "address> "
 #~ msgstr ""
 #~ "Qual é o endereço da base de dados usado pelo cliente para encontrar o "
@@ -2825,16 +2827,16 @@ msgstr "_Inventário"
 #~ "A default payment destination which will be used for all the created "
 #~ "payments until the user change the destination of each payment method."
 #~ msgstr ""
-#~ "O destino de pagamento padrão que será usado por todos os novos "
-#~ "pagamentos criados até que o usuário defina destinos destinos para cada "
-#~ "forma de pagamento."
+#~ "O destino de pagamento padrão que será usado por todos os novos pagamentos "
+#~ "criados até que o usuário defina destinos destinos para cada forma de "
+#~ "pagamento."
 
 #~ msgid "Base Payment Method"
 #~ msgstr "Forma de pagamento de base"
 
 #~ msgid ""
-#~ "The base payment method which can easily be converted to other methods "
-#~ "like check and bill."
+#~ "The base payment method which can easily be converted to other methods like "
+#~ "check and bill."
 #~ msgstr ""
 #~ "A forma de pagamento de base e que pode facilmente ser convertida para "
 #~ "outras formas de pagamento como cheque e boleto."
@@ -2868,8 +2870,8 @@ msgstr "_Inventário"
 #~ msgstr "Usar quantidade lógica"
 
 #~ msgid ""
-#~ "An integer that defines if the company can work or not with logic "
-#~ "quantities during stock operations. See StockItem documentation."
+#~ "An integer that defines if the company can work or not with logic quantities "
+#~ "during stock operations. See StockItem documentation."
 #~ msgstr ""
 #~ "Um inteiro que define se a empresa pode trabalhar ou não com quantidade "
 #~ "logica durante operações de estoque. Veja a documentação de StockItem."
@@ -2878,19 +2880,18 @@ msgstr "_Inventário"
 #~ msgstr "Máximo de dias de atraso de clientes."
 
 #~ msgid ""
-#~ "An integer that represents a maximum number of days which a certain "
-#~ "client can have unpaid payments with normal status."
+#~ "An integer that represents a maximum number of days which a certain client "
+#~ "can have unpaid payments with normal status."
 #~ msgstr ""
-#~ "Um inteiro que representa o número máximo de dias que um determinado "
-#~ "cliente pode ficar com situação financeira normal havendo parcelas em "
-#~ "atraso."
+#~ "Um inteiro que representa o número máximo de dias que um determinado cliente "
+#~ "pode ficar com situação financeira normal havendo parcelas em atraso."
 
 #~ msgid "Accept Order Products"
 #~ msgstr "Aceitar encomenda de produtos"
 
 #~ msgid ""
-#~ "Can this company make sales for products that doesn't actually exist in "
-#~ "the stock ? If this parameter is True we can order products."
+#~ "Can this company make sales for products that doesn't actually exist in the "
+#~ "stock ? If this parameter is True we can order products."
 #~ msgstr ""
 #~ "Esta empresa pode fazer venda de produtos que não existem no estoque? Se "
 #~ "este parâmetro está setado então pode-se encomendar produtos"
@@ -2899,28 +2900,28 @@ msgstr "_Inventário"
 #~ msgstr "Cidade sugerida"
 
 #~ msgid ""
-#~ "When adding a new address for a certain person we will always suggest "
-#~ "this city."
+#~ "When adding a new address for a certain person we will always suggest this "
+#~ "city."
 #~ msgstr ""
-#~ "Quando adicionando novos endereços para uma determinada pessoa essa "
-#~ "cidade será sempre sugerida."
+#~ "Quando adicionando novos endereços para uma determinada pessoa essa cidade "
+#~ "será sempre sugerida."
 
 #~ msgid "State Suggested"
 #~ msgstr "Estado sugerido"
 
 #~ msgid ""
-#~ "When adding a new address for a certain person we will always suggest "
-#~ "this state."
+#~ "When adding a new address for a certain person we will always suggest this "
+#~ "state."
 #~ msgstr ""
-#~ "Quando adicionando um novo endereço para uma determinada pessoa esse "
-#~ "estado será sempre sugerido."
+#~ "Quando adicionando um novo endereço para uma determinada pessoa esse estado "
+#~ "será sempre sugerido."
 
 #~ msgid "Country Suggested"
 #~ msgstr "País sugerido"
 
 #~ msgid ""
-#~ "When adding a new address for a certain person we will always suggest "
-#~ "this country."
+#~ "When adding a new address for a certain person we will always suggest this "
+#~ "country."
 #~ msgstr ""
 #~ "Quando adicionando um novo endereço para uma determinada pessoa esse país "
 #~ "será sempre sugerido"
@@ -2951,8 +2952,7 @@ msgstr "_Inventário"
 #~ "will be disable on Point of Sales Application."
 #~ msgstr ""
 #~ "Esta unidade da empresa pode trabalhar com serviços de entrega? Em caso "
-#~ "negativo, a opção de entrega será desabilitada na aplicação de Ponto de "
-#~ "Venda"
+#~ "negativo, a opção de entrega será desabilitada na aplicação de Ponto de Venda"
 
 #~ msgid "Has Stock Mode"
 #~ msgstr "Possui modo de estoque"
@@ -2961,8 +2961,8 @@ msgstr "_Inventário"
 #~ "Does this branch work with storable items? If the answer is negative, we "
 #~ "will disable stock operations in the system."
 #~ msgstr ""
-#~ "Esta unidade da empresa trabalha com produtos estocáveis? Em caso "
-#~ "negativo, as operações de estoque serão desabilitadas."
+#~ "Esta unidade da empresa trabalha com produtos estocáveis? Em caso negativo, "
+#~ "as operações de estoque serão desabilitadas."
 
 #~ msgid "Edit Sellable Price"
 #~ msgstr "Alterar preço de venda de vendáveis"
@@ -2977,21 +2977,21 @@ msgstr "_Inventário"
 #~ msgid ""
 #~ "The maximum number of results we must show after searching in any dialog."
 #~ msgstr ""
-#~ "O número máximo de resultados que exibiremos após uma pesquisa em "
-#~ "qualquer diálogo"
+#~ "O número máximo de resultados que exibiremos após uma pesquisa em qualquer "
+#~ "diálogo"
 
 #~ msgid "Mandatory Interest Charge"
 #~ msgstr "Cobrança obrigatória de juros"
 
 #~ msgid ""
-#~ "Once this paramter is set, the charge of monthly interest will be "
-#~ "mandatory for every payment"
+#~ "Once this paramter is set, the charge of monthly interest will be mandatory "
+#~ "for every payment"
 #~ msgstr ""
-#~ "Uma vez que este parâmetro esteja definido, a cobrança mensal de juros "
-#~ "será obrigatória para todo pagamento."
+#~ "Uma vez que este parâmetro esteja definido, a cobrança mensal de juros será "
+#~ "obrigatória para todo pagamento."
 
 #~ msgid "Comparison Float Tolerance "
-#~ msgstr "Tolerância para comparação de valores fracionários"
+#~ msgstr "Tolerância para comparação de valores fracionários "
 
 #~ msgid ""
 #~ "This is useful when performing comparison between two float numbers. If "
@@ -3019,44 +3019,43 @@ msgstr "_Inventário"
 
 #~ msgid ""
 #~ "Do not show payment method definitions step on SaleWizard through POS "
-#~ "application if CONFIRM_SALES_ON_TILL is set. This step will only be show "
-#~ "on Till application."
+#~ "application if CONFIRM_SALES_ON_TILL is set. This step will only be show on "
+#~ "Till application."
 #~ msgstr ""
-#~ "Não exiba o passo de definição de formas de pagamento do Wizard de vendas "
-#~ "na aplicação POS caso este parâmetro esteja setado. Este passo será então "
+#~ "Não exiba o passo de definição de formas de pagamento do Wizard de vendas na "
+#~ "aplicação POS caso este parâmetro esteja setado. Este passo será então "
 #~ "exibido na aplicação de caixa."
 
 #~ msgid "Use Purchase Preview Payments"
 #~ msgstr "Usar Pagamentos previstos para Compras"
 
 #~ msgid ""
-#~ "Generate preview payments for new purchases which are not received yet. "
-#~ "Once the order is received the preview payments will be also confirmed as "
-#~ "valid payments with STATUS_TO_PAY"
+#~ "Generate preview payments for new purchases which are not received yet. Once "
+#~ "the order is received the preview payments will be also confirmed as valid "
+#~ "payments with STATUS_TO_PAY"
 #~ msgstr ""
-#~ "Gerar pagamentos previstos para novas compras ainda não recebidas. Uma "
-#~ "vez que o pedido de compra for recebido os pagamentos previstos serão "
-#~ "então marcados com a situação A PAGAR"
+#~ "Gerar pagamentos previstos para novas compras ainda não recebidas. Uma vez "
+#~ "que o pedido de compra for recebido os pagamentos previstos serão então "
+#~ "marcados com a situação A PAGAR"
 
 #~ msgid "Return Money On Sales"
 #~ msgstr "Devolver dinheiro durante a venda"
 
 #~ msgid ""
-#~ "Once this parameter is set the salesperson can return money to clients "
-#~ "when there is overpaid values in sales with gift certificates as payment "
-#~ "method."
+#~ "Once this parameter is set the salesperson can return money to clients when "
+#~ "there is overpaid values in sales with gift certificates as payment method."
 #~ msgstr ""
 #~ "Uma vez que este parâmetro esteja setado será possível devolver dinheiro "
-#~ "para clientes quando houver valores sobrepagos em vendas usando vale "
-#~ "compras como forma de pagamento."
+#~ "para clientes quando houver valores sobrepagos em vendas usando vale compras "
+#~ "como forma de pagamento."
 
 #~ msgid "Receive Products Without Order"
 #~ msgstr "Receber produtos sem pedido de compra"
 
 #~ msgid ""
-#~ "Can we receive products without having a purchase order created for "
-#~ "them ? If yes, the first step of ReceivalWizard will accept going to the "
-#~ "second step with no order selected."
+#~ "Can we receive products without having a purchase order created for them ? "
+#~ "If yes, the first step of ReceivalWizard will accept going to the second "
+#~ "step with no order selected."
 #~ msgstr ""
 #~ "Podemos receber produtos sem haver um pedido de compra para os mesmos? Em "
 #~ "caso positivo, o primeiro passo do Wizard de recebimento de compras irá "
@@ -3216,10 +3215,8 @@ msgstr "_Inventário"
 #~ msgstr "Fechamento do caixa atual"
 
 #~ msgid ""
-#~ "You can not specifiy a final cash amount greater than the calculated "
-#~ "value."
-#~ msgstr ""
-#~ "Você não pode especificar um caixa final maior que o valor calculado"
+#~ "You can not specifiy a final cash amount greater than the calculated value."
+#~ msgstr "Você não pode especificar um caixa final maior que o valor calculado"
 
 #~ msgid "Cash Advance"
 #~ msgstr "Adiantamento de Salário"
@@ -4001,7 +3998,7 @@ msgstr "_Inventário"
 #~ msgstr " Caixa Inicial:"
 
 #~ msgid "  Price:"
-#~ msgstr " Preço:"
+#~ msgstr "  Preço:"
 
 #~ msgid "Estimated Fix Date:"
 #~ msgstr "Data Estimada para Execussão:"
@@ -4043,7 +4040,7 @@ msgstr "_Inventário"
 #~ msgstr "Unidade"
 
 #~ msgid " Delivery _Tax:"
-#~ msgstr "Taxa de Entrega:"
+#~ msgstr " Taxa de Entrega:"
 
 #~ msgid "<b>Delivery Address:</b>"
 #~ msgstr "<b>Endereço de Entrega:</b>"
@@ -4067,7 +4064,7 @@ msgstr "_Inventário"
 #~ msgstr "Endereço Principal"
 
 #~ msgid "Supplied by: "
-#~ msgstr "Fornecido por:"
+#~ msgstr "Fornecido por: "
 
 #~ msgid "How many gift certificates would you like to create ?"
 #~ msgstr "Quantos vale compra deseja criar?"
