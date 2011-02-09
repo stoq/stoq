@@ -8,12 +8,14 @@ msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-02-08 14:24-0200\n"
-"PO-Revision-Date: 2007-07-18 11:50-0300\n"
-"Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
+"PO-Revision-Date: 2010-11-24 20:07+0000\n"
+"Last-Translator: Johan Dahlin <jdahlin.launchpad@gmail.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2011-02-09 05:05+0000\n"
+"X-Generator: Launchpad (build 12177)\n"
 "Language: sv\n"
 
 #: ../stoq/main.py:88
@@ -45,14 +47,13 @@ msgid "kiwi version too old, needs %s but found %s"
 msgstr "kiwiversionen är för gammal, behöver %s men hittade %s"
 
 #: ../stoq/main.py:143
-#, fuzzy
 msgid "Stoqlib too old"
-msgstr "Report för gammal"
+msgstr ""
 
 #: ../stoq/main.py:144
-#, fuzzy, python-format
+#, python-format
 msgid "stoqlib version too old, needs %s but found %s"
-msgstr "kiwiversionen är för gammal, behöver %s men hittade %s"
+msgstr ""
 
 #: ../stoq/main.py:156
 msgid "Gazpacho too old"
@@ -86,19 +87,17 @@ msgid "Could not connect to database"
 msgstr "Kunde inte ansluta till databasen"
 
 #: ../stoq/gui/application.py:131
-#, fuzzy
 msgid "<b>You are using the examples database.</b>"
-msgstr "Skapa en exempeldatabas"
+msgstr ""
 
 #: ../stoq/gui/application.py:135
-#, fuzzy
 msgid "Remove examples"
-msgstr "Ta bort pengar..."
+msgstr ""
 
 #: ../stoq/gui/application.py:247
-#, fuzzy, python-format
+#, python-format
 msgid "%s User"
-msgstr "_Användare"
+msgstr ""
 
 #: ../stoq/gui/application.py:248
 msgid "_Store"
@@ -122,14 +121,12 @@ msgstr "Rensa kakan"
 #: ../data/glade/stock.glade.h:3 ../data/glade/pos.glade.h:10
 #: ../data/glade/till.glade.h:3 ../data/glade/purchase.glade.h:7
 #: ../data/glade/inventory.glade.h:3
-#, fuzzy
 msgid "Chan_ge Password"
-msgstr "Byt användare"
+msgstr ""
 
 #: ../stoq/gui/application.py:253
-#, fuzzy
 msgid "Change the password"
-msgstr "Kräv lösenord"
+msgstr ""
 
 #: ../stoq/gui/application.py:255
 msgid "C_hange User"
@@ -162,19 +159,18 @@ msgid "Stoq - %s"
 msgstr "Stoq - %s"
 
 #: ../stoq/gui/application.py:379
-msgid "This will delete the current database and configuration. Are you sure?"
+msgid ""
+"This will delete the current database and configuration. Are you sure?"
 msgstr ""
 
 #: ../stoq/gui/application.py:381 ../stoq/gui/till/till.py:223
 #: ../stoq/gui/pos/pos.py:644 ../data/glade/inventory.glade.h:2
-#, fuzzy
 msgid "Cancel"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../stoq/gui/application.py:381
-#, fuzzy
 msgid "Remove"
-msgstr "Ta bort"
+msgstr ""
 
 #: ../stoq/gui/application.py:384
 msgid "Please, start stoq again to configure new database"
@@ -224,7 +220,7 @@ msgstr "Skapa"
 #: ../stoq/gui/config.py:141
 #, python-format
 msgid "User <u>%s</u> has insufficient permissions"
-msgstr "Användaren <u>%s</u> har otillräckliga rättigheter "
+msgstr "Användaren <u>%s</u> har otillräckliga rättigheter"
 
 #: ../stoq/gui/config.py:142
 #, python-format
@@ -349,18 +345,16 @@ msgid "Inventory"
 msgstr ""
 
 #: ../stoq/gui/inventory/__init__.py:30
-#, fuzzy
 msgid "Inventory application."
-msgstr "Ändra program"
+msgstr ""
 
 #: ../stoq/gui/inventory/inventory.py:55 ../stoq/gui/stock/stock.py:75
 msgid "Matching:"
 msgstr ""
 
 #: ../stoq/gui/inventory/inventory.py:69
-#, fuzzy
 msgid "Show inventories at:"
-msgstr "Ingen produkt vald"
+msgstr ""
 
 #: ../stoq/gui/inventory/inventory.py:75 ../stoq/gui/pos/deliveryeditor.py:99
 #: ../stoq/gui/stock/stock.py:97
@@ -376,22 +370,19 @@ msgid "Status"
 msgstr "Status"
 
 #: ../stoq/gui/inventory/inventory.py:82
-#, fuzzy
 msgid "Branch"
-msgstr "Pris"
+msgstr ""
 
 #: ../stoq/gui/inventory/inventory.py:84
 #: ../stoq/gui/production/production.py:120
 #: ../stoq/gui/purchase/purchase.py:97
-#, fuzzy
 msgid "Opened"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../stoq/gui/inventory/inventory.py:87
 #: ../stoq/gui/production/production.py:122
-#, fuzzy
 msgid "Closed"
-msgstr "Kod"
+msgstr ""
 
 #: ../stoq/gui/inventory/inventory.py:97 ../stoq/gui/till/till.py:171
 #: ../stoq/gui/production/production.py:80 ../stoq/gui/payable/payable.py:339
@@ -402,9 +393,8 @@ msgid "Any"
 msgstr "Alla"
 
 #: ../stoq/gui/inventory/inventory.py:109 ../stoq/gui/stock/stock.py:134
-#, fuzzy
 msgid "All branches"
-msgstr "Pris"
+msgstr ""
 
 #: ../stoq/gui/inventory/inventory.py:160
 msgid "Are you sure you want to cancel this inventory ?"
@@ -415,9 +405,8 @@ msgid "No"
 msgstr "nej"
 
 #: ../stoq/gui/inventory/inventory.py:161
-#, fuzzy
 msgid "Cancel Inventory"
-msgstr "Skapa en ny fil"
+msgstr ""
 
 #: ../stoq/gui/till/__init__.py:29 ../stoq/gui/till/till.py:66
 msgid "Till"
@@ -435,9 +424,8 @@ msgid "matching:"
 msgstr ""
 
 #: ../stoq/gui/till/till.py:99 ../stoq/gui/purchase/purchase.py:86
-#, fuzzy
 msgid "Show orders with status"
-msgstr "Ingen produkt vald"
+msgstr ""
 
 #: ../stoq/gui/till/till.py:125
 #, python-format
@@ -494,14 +482,13 @@ msgid "Try Again"
 msgstr ""
 
 #: ../stoq/gui/till/till.py:237 ../stoq/gui/pos/pos.py:242
-#, fuzzy, python-format
+#, python-format
 msgid "Total: %s"
-msgstr "Totalt"
+msgstr ""
 
 #: ../stoq/gui/till/till.py:301
-#, fuzzy
 msgid "Till Closed"
-msgstr "Kod"
+msgstr ""
 
 #: ../stoq/gui/till/till.py:305
 #, python-format
@@ -520,25 +507,21 @@ msgid "Not now"
 msgstr ""
 
 #: ../stoq/gui/till/till.py:342 ../stoq/gui/pos/pos.py:712
-#, fuzzy
 msgid "Close Till"
-msgstr "Kod"
+msgstr ""
 
 #: ../stoq/gui/production/__init__.py:30
 #: ../stoq/gui/production/production.py:52
-#, fuzzy
 msgid "Production"
-msgstr "Varor"
+msgstr ""
 
 #: ../stoq/gui/production/__init__.py:31
-#, fuzzy
 msgid "Production application."
-msgstr "Ändra program"
+msgstr ""
 
 #: ../stoq/gui/production/production.py:108
-#, fuzzy
 msgid "Show productions with status"
-msgstr "Ingen produkt vald"
+msgstr ""
 
 #: ../stoq/gui/production/production.py:112
 msgid "# "
@@ -560,18 +543,16 @@ msgid "Accounts Payable"
 msgstr ""
 
 #: ../stoq/gui/payable/payable.py:89 ../stoq/gui/receivable/receivable.py:135
-#, fuzzy
 msgid "Show payments with status"
-msgstr "Ingen produkt vald"
+msgstr ""
 
 #: ../stoq/gui/payable/payable.py:97 ../stoq/gui/receivable/receivable.py:140
 msgid "#"
 msgstr ""
 
 #: ../stoq/gui/payable/payable.py:102 ../stoq/gui/receivable/receivable.py:145
-#, fuzzy
 msgid "Comments"
-msgstr "Klienter"
+msgstr ""
 
 #: ../stoq/gui/payable/payable.py:107 ../stoq/gui/purchase/purchase.py:100
 msgid "Supplier"
@@ -590,9 +571,8 @@ msgid "Value"
 msgstr "Värde"
 
 #: ../stoq/gui/payable/payable.py:119 ../stoq/gui/receivable/receivable.py:161
-#, fuzzy
 msgid "Paid"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../stoq/gui/payable/__init__.py:30
 msgid "Accounts Payable application."
@@ -624,19 +604,16 @@ msgid "Purchase application."
 msgstr ""
 
 #: ../stoq/gui/purchase/purchase.py:103
-#, fuzzy
 msgid "Ordered"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../stoq/gui/purchase/purchase.py:106
-#, fuzzy
 msgid "Received"
-msgstr "Ta bort"
+msgstr ""
 
 #: ../stoq/gui/purchase/purchase.py:118
-#, fuzzy
 msgid "<b>Orders Total:</b>"
-msgstr "Totalt"
+msgstr ""
 
 #: ../stoq/gui/purchase/purchase.py:202
 msgid "There are no orders with status pending in the selection"
@@ -664,32 +641,28 @@ msgid "The selected order(s) will be cancelled."
 msgstr ""
 
 #: ../stoq/gui/purchase/purchase.py:231 ../stoq/gui/sales/sales.py:280
-#, fuzzy
 msgid "Don't Cancel"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../stoq/gui/purchase/purchase.py:231
-#, fuzzy
 msgid "Cancel order(s)"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../stoq/gui/admin/admin.py:68 ../stoq/gui/admin/__init__.py:29
 msgid "Administrative"
 msgstr ""
 
 #: ../stoq/gui/admin/admin.py:83
-#, fuzzy
 msgid "Show users with status"
-msgstr "Ingen produkt vald"
+msgstr ""
 
 #: ../stoq/gui/admin/admin.py:90
 msgid "Login Name"
 msgstr ""
 
 #: ../stoq/gui/admin/admin.py:92
-#, fuzzy
 msgid "Profile"
-msgstr "Pris"
+msgstr ""
 
 #: ../stoq/gui/admin/admin.py:95
 msgid "Name"
@@ -711,52 +684,44 @@ msgid "Administrative application."
 msgstr ""
 
 #: ../stoq/gui/sales/__init__.py:29 ../stoq/gui/sales/sales.py:65
-#, fuzzy
 msgid "Sales"
-msgstr "_Försäljning"
+msgstr ""
 
 #: ../stoq/gui/sales/__init__.py:30
 msgid "Sales application."
 msgstr ""
 
 #: ../stoq/gui/sales/sales.py:93
-#, fuzzy
 msgid "Show sales with status"
-msgstr "Ingen produkt vald"
+msgstr ""
 
 #: ../stoq/gui/sales/sales.py:106
-#, fuzzy
 msgid "Open Date"
-msgstr "Öppna en fil"
+msgstr ""
 
 #: ../stoq/gui/sales/sales.py:109
-#, fuzzy
 msgid "Close Date"
-msgstr "Kod"
+msgstr ""
 
 #: ../stoq/gui/sales/sales.py:112
 msgid "Confirm Date"
 msgstr ""
 
 #: ../stoq/gui/sales/sales.py:115
-#, fuzzy
 msgid "Cancel Date"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../stoq/gui/sales/sales.py:118
-#, fuzzy
 msgid "Return Date"
-msgstr "Öppna en fil"
+msgstr ""
 
 #: ../stoq/gui/sales/sales.py:121
-#, fuzzy
 msgid "Expire Date"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../stoq/gui/sales/sales.py:131
-#, fuzzy
 msgid "Items"
-msgstr "_Försäljning"
+msgstr ""
 
 #: ../stoq/gui/sales/sales.py:190
 msgid "There are no invoice printer configured for this station"
@@ -767,9 +732,8 @@ msgid "The selected quote will be cancelled."
 msgstr ""
 
 #: ../stoq/gui/sales/sales.py:280
-#, fuzzy
 msgid "Cancel quote"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../stoq/gui/pos/__init__.py:29 ../stoq/gui/pos/pos.py:110
 msgid "Point of Sales"
@@ -799,9 +763,8 @@ msgid "Price"
 msgstr "Pris"
 
 #: ../stoq/gui/pos/pos.py:214
-#, fuzzy
 msgid "Close"
-msgstr "Kod"
+msgstr ""
 
 #. It's not a common operation to add more than one item at
 #. a time, it's also problematic since you'd have to show
@@ -833,9 +796,8 @@ msgid "Go Back"
 msgstr ""
 
 #: ../stoq/gui/pos/pos.py:494 ../data/glade/pos.glade.h:9
-#, fuzzy
 msgid "Cancel Order"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../stoq/gui/pos/pos.py:642
 msgid ""
@@ -843,24 +805,20 @@ msgid ""
 msgstr ""
 
 #: ../stoq/gui/pos/deliveryeditor.py:54 ../stoq/gui/pos/deliveryeditor.py:58
-#, fuzzy
 msgid "Delivery"
-msgstr "Utdelning"
+msgstr ""
 
 #: ../stoq/gui/pos/deliveryeditor.py:61
-#, fuzzy
 msgid "New Delivery"
-msgstr "Utdelning"
+msgstr ""
 
 #: ../stoq/gui/pos/deliveryeditor.py:105
-#, fuzzy
 msgid "Deliver"
-msgstr "Utdelning"
+msgstr ""
 
 #: ../stoq/gui/pos/deliveryeditor.py:137
-#, fuzzy
 msgid "Delivery Instructions"
-msgstr "Utdelning"
+msgstr ""
 
 #: ../stoq/gui/pos/deliveryeditor.py:142
 msgid "Expected delivery date must be set to a future date"
@@ -871,29 +829,24 @@ msgid "The Delivery cost must be a positive value."
 msgstr ""
 
 #: ../stoq/gui/stock/__init__.py:29 ../stoq/gui/stock/stock.py:71
-#, fuzzy
 msgid "Stock"
-msgstr "Totalt"
+msgstr ""
 
 #: ../stoq/gui/stock/__init__.py:30
-#, fuzzy
 msgid "Stock application."
-msgstr "Ändra program"
+msgstr ""
 
 #: ../stoq/gui/stock/stock.py:92
-#, fuzzy
 msgid "Show products at:"
-msgstr "Ingen produkt vald"
+msgstr ""
 
 #: ../stoq/gui/stock/stock.py:100
-#, fuzzy
 msgid "Barcode"
-msgstr "Streckkod:"
+msgstr ""
 
 #: ../stoq/gui/stock/stock.py:102
-#, fuzzy
 msgid "Category"
-msgstr "Kategorier..."
+msgstr ""
 
 #: ../stoq/gui/stock/stock.py:107
 msgid "Location"
@@ -977,19 +930,16 @@ msgid "Bills"
 msgstr ""
 
 #: ../data/glade/receivable.glade.h:5 ../data/glade/payable.glade.h:5
-#, fuzzy
 msgid "Cancel payment ..."
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../data/glade/receivable.glade.h:6
-#, fuzzy
 msgid "Card Payment..."
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../data/glade/receivable.glade.h:8 ../data/glade/payable.glade.h:7
-#, fuzzy
 msgid "Change Due Date..."
-msgstr "Byt användare"
+msgstr ""
 
 #: ../data/glade/receivable.glade.h:9 ../data/glade/payable.glade.h:8
 #: ../data/glade/sales_app.glade.h:4 ../data/glade/till.glade.h:4
@@ -1005,9 +955,8 @@ msgid "Clear Cookie"
 msgstr ""
 
 #: ../data/glade/receivable.glade.h:11 ../data/glade/payable.glade.h:10
-#, fuzzy
 msgid "Comments..."
-msgstr "Klienter..."
+msgstr ""
 
 #: ../data/glade/receivable.glade.h:12 ../data/glade/payable.glade.h:11
 #: ../data/glade/sales_app.glade.h:10 ../data/glade/admin.glade.h:12
@@ -1054,9 +1003,8 @@ msgid "Paste object from the Clipboard"
 msgstr ""
 
 #: ../data/glade/receivable.glade.h:18 ../data/glade/payable.glade.h:18
-#, fuzzy
 msgid "Payment _Flow History ..."
-msgstr "Varor..."
+msgstr ""
 
 #: ../data/glade/receivable.glade.h:19 ../data/glade/payable.glade.h:19
 #: ../data/glade/production.glade.h:17 ../data/glade/sales_app.glade.h:23
@@ -1075,19 +1023,16 @@ msgid "Quit the program"
 msgstr "Avsluta programmet"
 
 #: ../data/glade/receivable.glade.h:21
-#, fuzzy
 msgid "R_eceipt"
-msgstr "Ta bort"
+msgstr ""
 
 #: ../data/glade/receivable.glade.h:22
-#, fuzzy
 msgid "R_eceive payment"
-msgstr "Ta bort"
+msgstr ""
 
 #: ../data/glade/receivable.glade.h:23
-#, fuzzy
 msgid "Renegotiate Payments..."
-msgstr "Ta bort"
+msgstr ""
 
 #: ../data/glade/receivable.glade.h:24 ../data/glade/payable.glade.h:21
 #: ../data/glade/production.glade.h:19 ../data/glade/sales_app.glade.h:26
@@ -1146,9 +1091,8 @@ msgstr "_Hjälp"
 #: ../data/glade/receivable.glade.h:33 ../data/glade/payable.glade.h:31
 #: ../data/glade/production.glade.h:25 ../data/glade/stock.glade.h:38
 #: ../data/glade/purchase.glade.h:48 ../data/glade/inventory.glade.h:16
-#, fuzzy
 msgid "_Print"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../data/glade/receivable.glade.h:34
 msgid "_Receivable"
@@ -1185,18 +1129,16 @@ msgid "Add payment..."
 msgstr ""
 
 #: ../data/glade/payable.glade.h:16
-#, fuzzy
 msgid "P_ay order"
-msgstr "order"
+msgstr ""
 
 #: ../data/glade/payable.glade.h:30
 msgid "_Payable"
 msgstr ""
 
 #: ../data/glade/payable.glade.h:32
-#, fuzzy
 msgid "_Receipt"
-msgstr "Ta bort"
+msgstr ""
 
 #: ../data/glade/payable.glade.h:35
 msgid "payable"
@@ -1230,29 +1172,24 @@ msgid "Ed_it..."
 msgstr ""
 
 #: ../data/glade/production.glade.h:8 ../data/glade/purchase.glade.h:16
-#, fuzzy
 msgid "Finish Order..."
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../data/glade/production.glade.h:9
-#, fuzzy
 msgid "New Production"
-msgstr "Varor"
+msgstr ""
 
 #: ../data/glade/production.glade.h:10
-#, fuzzy
 msgid "New Production Order..."
-msgstr "Varor..."
+msgstr ""
 
 #: ../data/glade/production.glade.h:11
-#, fuzzy
 msgid "Production History..."
-msgstr "Varor..."
+msgstr ""
 
 #: ../data/glade/production.glade.h:12
-#, fuzzy
 msgid "Production Items"
-msgstr "Varor"
+msgstr ""
 
 #: ../data/glade/production.glade.h:13 ../data/glade/sales_app.glade.h:21
 #: ../data/glade/purchase.glade.h:21
@@ -1265,14 +1202,12 @@ msgid "Products..."
 msgstr "Varor..."
 
 #: ../data/glade/production.glade.h:15
-#, fuzzy
 msgid "Purchase Quote"
-msgstr "Köp"
+msgstr ""
 
 #: ../data/glade/production.glade.h:16
-#, fuzzy
 msgid "Purchase Quote..."
-msgstr "Pris"
+msgstr ""
 
 #: ../data/glade/production.glade.h:20 ../data/glade/sales_app.glade.h:31
 #: ../data/glade/pos.glade.h:35 ../data/glade/purchase.glade.h:36
@@ -1284,14 +1219,12 @@ msgid "Start Production"
 msgstr ""
 
 #: ../data/glade/production.glade.h:22
-#, fuzzy
 msgid "Start Production..."
-msgstr "Varor..."
+msgstr ""
 
 #: ../data/glade/production.glade.h:26
-#, fuzzy
 msgid "_Production"
-msgstr "Varor"
+msgstr ""
 
 #: ../data/glade/production.glade.h:27 ../data/glade/admin.glade.h:47
 #: ../data/glade/purchase.glade.h:49
@@ -1305,14 +1238,12 @@ msgid "_Store Cookie"
 msgstr ""
 
 #: ../data/glade/production.glade.h:31
-#, fuzzy
 msgid "production"
-msgstr "Varor"
+msgstr ""
 
 #: ../data/glade/sales_app.glade.h:2
-#, fuzzy
 msgid "Cancel Quote"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../data/glade/sales_app.glade.h:6
 msgid "Clients"
@@ -1324,32 +1255,28 @@ msgid "Clients..."
 msgstr "Klienter..."
 
 #: ../data/glade/sales_app.glade.h:8 ../data/glade/stock.glade.h:6
-#, fuzzy
 msgid "Close Loan..."
-msgstr "Stäng kassa..."
+msgstr ""
 
 #: ../data/glade/sales_app.glade.h:9
 msgid "Commissions..."
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:13
-#, fuzzy
 msgid "Deliveries"
-msgstr "Utdelning"
+msgstr ""
 
 #: ../data/glade/sales_app.glade.h:14 ../data/glade/pos.glade.h:17
-#, fuzzy
 msgid "Deliveries..."
-msgstr "Utdelning"
+msgstr ""
 
 #: ../data/glade/sales_app.glade.h:16 ../data/glade/stock.glade.h:12
 msgid "Loans"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:17 ../data/glade/stock.glade.h:15
-#, fuzzy
 msgid "New Loan..."
-msgstr "_Försäljning"
+msgstr ""
 
 #: ../data/glade/sales_app.glade.h:18
 msgid "New Quote"
@@ -1360,14 +1287,12 @@ msgid "Sal_es"
 msgstr "_Försäljning"
 
 #: ../data/glade/sales_app.glade.h:28 ../data/glade/stock.glade.h:28
-#, fuzzy
 msgid "Search Loan Items..."
-msgstr "Pris"
+msgstr ""
 
 #: ../data/glade/sales_app.glade.h:29 ../data/glade/stock.glade.h:29
-#, fuzzy
 msgid "Search Loans..."
-msgstr "Pris"
+msgstr ""
 
 #: ../data/glade/sales_app.glade.h:30
 msgid "Services"
@@ -1379,9 +1304,8 @@ msgid "Sold Items by Branch..."
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:37
-#, fuzzy
 msgid "_Print Invoice ..."
-msgstr "_Skriv ut faktura"
+msgstr ""
 
 #: ../data/glade/sales_app.glade.h:40
 msgid "sales"
@@ -1460,42 +1384,36 @@ msgid "Arquivo"
 msgstr ""
 
 #: ../data/glade/admin.glade.h:4
-#, fuzzy
 msgid "Branch Station..."
-msgstr "Pris"
+msgstr ""
 
 #: ../data/glade/admin.glade.h:5
-#, fuzzy
 msgid "Branches..."
-msgstr "Pris"
+msgstr ""
 
 #: ../data/glade/admin.glade.h:6
 msgid "CFOP..."
 msgstr ""
 
 #: ../data/glade/admin.glade.h:10
-#, fuzzy
 msgid "Client Categories..."
-msgstr "Kategorier..."
+msgstr ""
 
 #: ../data/glade/admin.glade.h:11
-#, fuzzy
 msgid "Configure Taxes..."
-msgstr "_Bekräfta..."
+msgstr ""
 
 #: ../data/glade/admin.glade.h:13
 msgid "Create Sintegra Archive..."
 msgstr "Skapa sintegraarkiv..."
 
 #: ../data/glade/admin.glade.h:16
-#, fuzzy
 msgid "Devices _Settings"
-msgstr "Pris"
+msgstr ""
 
 #: ../data/glade/admin.glade.h:17
-#, fuzzy
 msgid "Devices _Settings..."
-msgstr "Pris"
+msgstr ""
 
 #: ../data/glade/admin.glade.h:19
 msgid "Employee Roles..."
@@ -1510,33 +1428,28 @@ msgid "Fiscal Book..."
 msgstr ""
 
 #: ../data/glade/admin.glade.h:23
-#, fuzzy
 msgid "Invoice Printers..."
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../data/glade/admin.glade.h:24
-#, fuzzy
 msgid "Invoices..."
-msgstr "Tjänster..."
+msgstr ""
 
 #: ../data/glade/admin.glade.h:27
-#, fuzzy
 msgid "Payment Categories..."
-msgstr "Kategorier..."
+msgstr ""
 
 #: ../data/glade/admin.glade.h:28
-#, fuzzy
 msgid "Payment Method Settings..."
-msgstr "Pris"
+msgstr ""
 
 #: ../data/glade/admin.glade.h:29
 msgid "Plugins"
 msgstr ""
 
 #: ../data/glade/admin.glade.h:30
-#, fuzzy
 msgid "Plugins..."
-msgstr "Klienter..."
+msgstr ""
 
 #: ../data/glade/admin.glade.h:33 ../data/glade/pos.glade.h:28
 msgid "Recortar"
@@ -1565,24 +1478,20 @@ msgid "System _Parameters..."
 msgstr ""
 
 #: ../data/glade/admin.glade.h:40
-#, fuzzy
 msgid "Tax Classes..."
-msgstr "Försäljningningar..."
+msgstr ""
 
 #: ../data/glade/admin.glade.h:41
-#, fuzzy
 msgid "Taxes"
-msgstr "_Försäljning"
+msgstr ""
 
 #: ../data/glade/admin.glade.h:42
-#, fuzzy
 msgid "User Profiles..."
-msgstr "Användarprofiler..."
+msgstr ""
 
 #: ../data/glade/admin.glade.h:45
-#, fuzzy
 msgid "_New User..."
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../data/glade/admin.glade.h:46
 msgid "_New..."
@@ -1634,24 +1543,20 @@ msgid "Purchase Receiving..."
 msgstr ""
 
 #: ../data/glade/stock.glade.h:20 ../data/glade/purchase.glade.h:24
-#, fuzzy
 msgid "Purchased Items..."
-msgstr "Pris"
+msgstr ""
 
 #: ../data/glade/stock.glade.h:23
-#, fuzzy
 msgid "Receive"
-msgstr "Ta bort"
+msgstr ""
 
 #: ../data/glade/stock.glade.h:24
-#, fuzzy
 msgid "STOQ - Stock Application"
-msgstr "STOQ - Kassaprogram"
+msgstr ""
 
 #: ../data/glade/stock.glade.h:30 ../data/glade/purchase.glade.h:37
-#, fuzzy
 msgid "Stock Items..."
-msgstr "Pris"
+msgstr ""
 
 #: ../data/glade/stock.glade.h:31
 msgid "Stock Transfer..."
@@ -1666,9 +1571,8 @@ msgid "Transfer"
 msgstr ""
 
 #: ../data/glade/stock.glade.h:37
-#, fuzzy
 msgid "_Initial Stock..."
-msgstr "_Lagra"
+msgstr ""
 
 #: ../data/glade/stock.glade.h:39
 msgid "_Retention"
@@ -1679,9 +1583,8 @@ msgid "_Retention..."
 msgstr ""
 
 #: ../data/glade/stock.glade.h:42
-#, fuzzy
 msgid "_Stock"
-msgstr "_Lagra"
+msgstr ""
 
 #: ../data/glade/BranchSettingsStep.glade.h:1
 msgid "  .   .   /    -  "
@@ -1713,9 +1616,8 @@ msgid "Fax:"
 msgstr "Fax:"
 
 #: ../data/glade/BranchSettingsStep.glade.h:9
-#, fuzzy
 msgid "ICMS:"
-msgstr "Totalt"
+msgstr ""
 
 #: ../data/glade/BranchSettingsStep.glade.h:10
 msgid "ISS:"
@@ -1775,14 +1677,12 @@ msgid "Barcode:"
 msgstr "Streckkod:"
 
 #: ../data/glade/pos.glade.h:6
-#, fuzzy
 msgid "C_hange User..."
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../data/glade/pos.glade.h:8
-#, fuzzy
 msgid "Cancel Last Document"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../data/glade/pos.glade.h:11
 msgid "Cl_ear Cookie"
@@ -1797,18 +1697,16 @@ msgid "Ed_it"
 msgstr "_Redigera"
 
 #: ../data/glade/pos.glade.h:19
-#, fuzzy
 msgid "New Delivery..."
-msgstr "Utdelning"
+msgstr ""
 
 #: ../data/glade/pos.glade.h:20 ../data/glade/till.glade.h:14
 msgid "Open Till..."
 msgstr "Öppna kassa..."
 
 #: ../data/glade/pos.glade.h:22
-#, fuzzy
 msgid "Order Checkout..."
-msgstr "Checkout"
+msgstr ""
 
 #: ../data/glade/pos.glade.h:25
 msgid "Quantity:"
@@ -1827,23 +1725,20 @@ msgid "Store Coo_kie"
 msgstr ""
 
 #: ../data/glade/pos.glade.h:38
-#, fuzzy
 msgid "_Checkout"
-msgstr "Checkout"
+msgstr ""
 
 #: ../data/glade/pos.glade.h:39
 msgid "_Confirm Order"
 msgstr ""
 
 #: ../data/glade/pos.glade.h:40
-#, fuzzy
 msgid "_Delivery"
-msgstr "Utdelning"
+msgstr ""
 
 #: ../data/glade/pos.glade.h:44
-#, fuzzy
 msgid "_Remove"
-msgstr "Ta bort"
+msgstr ""
 
 #: ../data/glade/pos.glade.h:46 ../data/glade/till.glade.h:35
 msgid "_Till"
@@ -1923,9 +1818,8 @@ msgid "_Confirm..."
 msgstr "_Bekräfta..."
 
 #: ../data/glade/till.glade.h:33
-#, fuzzy
 msgid "_Return..."
-msgstr "_Sök"
+msgstr ""
 
 #: ../data/glade/purchase.glade.h:2
 msgid "Add Order"
@@ -1944,44 +1838,36 @@ msgid "Categories..."
 msgstr "Kategorier..."
 
 #: ../data/glade/purchase.glade.h:10
-#, fuzzy
 msgid "Close Consigment..."
-msgstr "Stäng kassa..."
+msgstr ""
 
 #: ../data/glade/purchase.glade.h:17
-#, fuzzy
 msgid "New Consignment..."
-msgstr "Klienter..."
+msgstr ""
 
 #: ../data/glade/purchase.glade.h:20
-#, fuzzy
 msgid "Production..."
-msgstr "Varor"
+msgstr ""
 
 #: ../data/glade/purchase.glade.h:22
-#, fuzzy
 msgid "Products Sold..."
-msgstr "Varor..."
+msgstr ""
 
 #: ../data/glade/purchase.glade.h:27
-#, fuzzy
 msgid "Quote Order"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../data/glade/purchase.glade.h:28
-#, fuzzy
 msgid "Quote Order..."
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../data/glade/purchase.glade.h:29
-#, fuzzy
 msgid "Quotes..."
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../data/glade/purchase.glade.h:33
-#, fuzzy
 msgid "Search Consigment Items..."
-msgstr "Pris"
+msgstr ""
 
 #: ../data/glade/purchase.glade.h:34
 msgid "Send"
@@ -2004,24 +1890,20 @@ msgid "Transporters..."
 msgstr ""
 
 #: ../data/glade/purchase.glade.h:41
-#, fuzzy
 msgid "_Cancel"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../data/glade/purchase.glade.h:42
-#, fuzzy
 msgid "_Consignment"
-msgstr "Klienter"
+msgstr ""
 
 #: ../data/glade/purchase.glade.h:47
-#, fuzzy
 msgid "_Order"
-msgstr "_Nollställ order"
+msgstr ""
 
 #: ../data/glade/purchase.glade.h:51
-#, fuzzy
 msgid "_Stock Cost..."
-msgstr "Pris"
+msgstr ""
 
 #: ../data/glade/purchase.glade.h:54
 msgid "purchase"
@@ -2040,19 +1922,16 @@ msgid ""
 msgstr ""
 
 #: ../data/glade/inventory.glade.h:6
-#, fuzzy
 msgid "Create new Inventory"
-msgstr "Skapa en ny fil"
+msgstr ""
 
 #: ../data/glade/inventory.glade.h:8
-#, fuzzy
 msgid "Open I_nventory..."
-msgstr "Skapa en ny fil"
+msgstr ""
 
 #: ../data/glade/inventory.glade.h:11
-#, fuzzy
 msgid "STOQ - Inventory Application"
-msgstr "STOQ - Kassaprogram"
+msgstr ""
 
 #: ../data/glade/inventory.glade.h:12
 msgid "_Adjust"
@@ -2066,89 +1945,17 @@ msgstr ""
 msgid "_Inventory"
 msgstr ""
 
-#, fuzzy
-#~ msgid "Items Quantity"
-#~ msgstr "Antal"
-
-#, fuzzy
-#~ msgid "Paid or due date:"
-#~ msgstr "_Nollställ order"
-
-#, fuzzy
-#~ msgid "status"
-#~ msgstr "Status"
-
 #~ msgid "Gift Certificates..."
 #~ msgstr "Presentkort..."
 
 #~ msgid "_Warehouse"
 #~ msgstr "_Varuhus"
 
-#, fuzzy
-#~ msgid "Branch:"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "User:"
-#~ msgstr "_Användare"
-
-#, fuzzy
-#~ msgid "Destination:"
-#~ msgstr "Beskrivning"
-
-#, fuzzy
-#~ msgid "Receival date:"
-#~ msgstr "Ta bort"
-
-#, fuzzy
-#~ msgid "Source:"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Preview Model"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Order Total"
-#~ msgstr "Totalt"
-
-#, fuzzy
-#~ msgid "Qty Received"
-#~ msgstr "Antal"
-
 #~ msgid "Tax Constants"
 #~ msgstr "Skattekonstanter"
 
 #~ msgid "This user is inactive"
 #~ msgstr "Den här användaren är inaktiv"
-
-#, fuzzy
-#~ msgid "S_ales"
-#~ msgstr "_Försäljning"
-
-#, fuzzy
-#~ msgid "Searc_h"
-#~ msgstr "_Sök"
-
-#, fuzzy
-#~ msgid "S_earch"
-#~ msgstr "_Sök"
-
-#, fuzzy
-#~ msgid "Se_arch"
-#~ msgstr "_Sök"
-
-#, fuzzy
-#~ msgid "Help"
-#~ msgstr "_Hjälp"
-
-#, fuzzy
-#~ msgid "Sear_ch"
-#~ msgstr "_Sök"
-
-#, fuzzy
-#~ msgid "Cancel Last Order"
-#~ msgstr "_Nollställ order"
 
 #~ msgid "Total:"
 #~ msgstr "Total:"
@@ -2158,246 +1965,6 @@ msgstr ""
 
 #~ msgid "orders"
 #~ msgstr "order"
-
-#, fuzzy
-#~ msgid "user"
-#~ msgstr "_Användare"
-
-#, fuzzy
-#~ msgid "users"
-#~ msgstr "_Användare"
-
-#, fuzzy
-#~ msgid "sale"
-#~ msgstr "_Försäljning"
-
-#, fuzzy
-#~ msgid "Totals:"
-#~ msgstr "Totalt"
-
-#, fuzzy
-#~ msgid "Sea_rch"
-#~ msgstr "_Sök"
-
-#, fuzzy
-#~ msgid "Print Order"
-#~ msgstr "_Nollställ order"
-
-#, fuzzy
-#~ msgid "Solvent"
-#~ msgstr "Välj"
-
-#, fuzzy
-#~ msgid "By Sellable"
-#~ msgstr "_Försäljning"
-
-#, fuzzy
-#~ msgid "No order set"
-#~ msgstr "Kod"
-
-#, fuzzy
-#~ msgid "Scale"
-#~ msgstr "_Försäljning"
-
-#, fuzzy
-#~ msgid "sale %s"
-#~ msgstr "_Försäljning"
-
-#, fuzzy
-#~ msgid "Check"
-#~ msgstr "Checkout"
-
-#, fuzzy
-#~ msgid "Resume"
-#~ msgstr "Ta bort"
-
-#, fuzzy
-#~ msgid "Delivery Service"
-#~ msgstr "Utdelning"
-
-#, fuzzy
-#~ msgid "Use Logic Quantity"
-#~ msgstr "Antal"
-
-#, fuzzy
-#~ msgid "Accept Order Products"
-#~ msgstr "Ingen produkt vald"
-
-#, fuzzy
-#~ msgid "Has Delivery Mode"
-#~ msgstr "Utdelning"
-
-#, fuzzy
-#~ msgid "Edit Sellable Price"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Role"
-#~ msgstr "Ta bort"
-
-#, fuzzy
-#~ msgid "Total Received:"
-#~ msgstr "Ta bort"
-
-#, fuzzy
-#~ msgid "Service"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Service details"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Edit Device for %s"
-#~ msgstr "Utdelning"
-
-#, fuzzy
-#~ msgid "Add Device"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Devices"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Device Type"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Show gift certificate types with status"
-#~ msgstr "Ingen produkt vald"
-
-#, fuzzy
-#~ msgid "On Sale Price"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Show gift certificates with status"
-#~ msgstr "Ingen produkt vald"
-
-#, fuzzy
-#~ msgid "Add products"
-#~ msgstr "Ingen produkt vald"
-
-#, fuzzy
-#~ msgid "Profiles Matching:"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "profile"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "profiles"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Service Search"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Add services"
-#~ msgstr "Ingen produkt vald"
-
-#, fuzzy
-#~ msgid "service"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "services"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Show services with status"
-#~ msgstr "Ingen produkt vald"
-
-#, fuzzy
-#~ msgid "sale item"
-#~ msgstr "_Försäljning"
-
-#, fuzzy
-#~ msgid "Show employees with status"
-#~ msgstr "Ingen produkt vald"
-
-#, fuzzy
-#~ msgid "Show clients with status"
-#~ msgstr "Ingen produkt vald"
-
-#, fuzzy
-#~ msgid "Branch Search"
-#~ msgstr "_Sök"
-
-#, fuzzy
-#~ msgid "Show branches with status"
-#~ msgstr "Ingen produkt vald"
-
-#, fuzzy
-#~ msgid "Edit Order"
-#~ msgstr "_Nollställ order"
-
-#, fuzzy
-#~ msgid "Orders Maching:"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Receiving Order"
-#~ msgstr "_Nollställ order"
-
-#, fuzzy
-#~ msgid "Sale Checkout"
-#~ msgstr "Checkout"
-
-#, fuzzy
-#~ msgid "Profile:"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "To:"
-#~ msgstr "Totalt"
-
-#, fuzzy
-#~ msgid "Device Type:"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Model:"
-#~ msgstr "Kod"
-
-#, fuzzy
-#~ msgid " Delivery _Tax:"
-#~ msgstr "Utdelning"
-
-#, fuzzy
-#~ msgid "Invoice Total:"
-#~ msgstr "Totalt"
-
-#, fuzzy
-#~ msgid "Sellables"
-#~ msgstr "_Försäljning"
-
-#, fuzzy
-#~ msgid "Add to Order"
-#~ msgstr "_Nollställ order"
-
-#, fuzzy
-#~ msgid "sales matching:"
-#~ msgstr "Pris"
-
-#, fuzzy
-#~ msgid "Sa_les"
-#~ msgstr "_Försäljning"
-
-#, fuzzy
-#~ msgid "no description."
-#~ msgstr "beskrivning"
-
-#, fuzzy
-#~ msgid "product/service"
-#~ msgstr "Ingen produkt vald"
-
-#, fuzzy
-#~ msgid "products/services"
-#~ msgstr "Ingen produkt vald"
 
 #~ msgid "quantity"
 #~ msgstr "antal"
