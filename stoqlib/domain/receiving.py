@@ -268,28 +268,6 @@ class ReceivingOrder(Domain):
     # Accessors
     #
 
-    def get_freight_types(self):
-        """Returns a list with available freight types"""
-        return [f for f in (self.FREIGHT_FOB_PAYMENT,
-                            self.FREIGHT_FOB_INSTALLMENTS,
-                            self.FREIGHT_CIF_UNKNOWN,
-                            self.FREIGHT_CIF_INVOICE)]
-
-    def get_freight_type_adapted_from_payment(self):
-        """Returns a freight_type based on the purchase's freight_type"""
-        if self.purchase.freight_type == PurchaseOrder.FREIGHT_FOB:
-            if self.purchase.is_paid():
-                freight_type = ReceivingOrder.FREIGHT_FOB_PAYMENT
-            else:
-                freight_type = ReceivingOrder.FREIGHT_FOB_INSTALLMENTS
-        elif self.purchase.freight_type == PurchaseOrder.FREIGHT_CIF:
-            if self.freight_total or self.purchase.expected_freight:
-                freight_type = ReceivingOrder.FREIGHT_CIF_INVOICE
-            else:
-                freight_type = ReceivingOrder.FREIGHT_CIF_UNKNOWN
-
-        return freight_type
-
     def get_cfop_code(self):
         return self.cfop.code.encode()
 
@@ -339,10 +317,10 @@ class ReceivingOrder(Domain):
         if self.ipi_total:
             total_surcharge += self.ipi_total
 
-        # CIF freights doesn't generate payments.
+        # CIF freights don't generate payments.
         if (self.freight_total and
-            self.freight_type != self.FREIGHT_CIF_UNKNOWN and
-            self.freight_type != self.FREIGHT_CIF_INVOICE):
+            self.freight_type not in (self.FREIGHT_CIF_UNKNOWN,
+                                      self.FREIGHT_CIF_INVOICE)):
             total_surcharge += self.freight_total
 
         return currency(total_surcharge)
@@ -373,6 +351,21 @@ class ReceivingOrder(Domain):
     #
     # General methods
     #
+
+    def guess_freight_type(self):
+        """Returns a freight_type based on the purchase's freight_type"""
+        if self.purchase.freight_type == PurchaseOrder.FREIGHT_FOB:
+            if self.purchase.is_paid():
+                freight_type = ReceivingOrder.FREIGHT_FOB_PAYMENT
+            else:
+                freight_type = ReceivingOrder.FREIGHT_FOB_INSTALLMENTS
+        elif self.purchase.freight_type == PurchaseOrder.FREIGHT_CIF:
+            if not self.purchase.expected_freight:
+                freight_type = ReceivingOrder.FREIGHT_CIF_UNKNOWN
+            else:
+                freight_type = ReceivingOrder.FREIGHT_CIF_INVOICE
+
+        return freight_type
 
     def _get_percentage_value(self, percentage):
         if not percentage:
