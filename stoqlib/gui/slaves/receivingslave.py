@@ -58,10 +58,6 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                      'secure_value',
                      'expense_value')
 
-    def __init__(self, conn, model=None, visual_mode=False):
-        self.proxy = None
-        BaseEditorSlave.__init__(self, conn, model, visual_mode)
-
     #
     # BaseEditorSlave hooks
     #
@@ -73,10 +69,17 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         items = [(t.person.name, t) for t in transporters]
         self.transporter.prefill(items)
 
-        # The user should not be allowed to change the transporter,
-        # if it's already set.
-        if self.model.transporter:
-            self.transporter.set_sensitive(False)
+    def _setup_freight_combo(self):
+        freight_items = [(value, key) for (key, value) in
+                         ReceivingOrder.freight_types.items()]
+
+        # If the purchase's installments are paid, we cannot modify them.
+        if (self.model.purchase.is_paid() and not self.visual_mode):
+            ro = ReceivingOrder
+            freight_items.remove((ro.freight_types[ro.FREIGHT_FOB_INSTALLMENTS],
+                                  ro.FREIGHT_FOB_INSTALLMENTS))
+
+        self.freight_combo.prefill(freight_items)
 
     def _setup_widgets(self):
         self.total.set_bold(True)
@@ -92,22 +95,17 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                            self.secure_value, self.expense_value):
                 widget.set_sensitive(False)
 
-        # Transporter entry setup
         self._setup_transporter_entry()
+        self._setup_freight_combo()
 
         # CFOP entry setup
         cfop_items = [(item.get_description(), item)
                       for item in CfopData.select(connection=self.conn)]
         self.cfop.prefill(cfop_items)
-        
-        # Freight combo setup
-        freight_items = [(self.model.freight_types[item], item)
-                 for item in self.model.get_freight_types()]
-        self.freight_combo.prefill(freight_items)
 
     def create_freight_payment(self):
         """Tells if we should create a separate payment for freight or not
-        
+
         It should return True or False. If True is returned, a separate payment
         will be created for freight. If not, it'll be included on installments.
         """
@@ -137,14 +135,11 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                 # These values are duplicates from the purchase. If we are
                 # visualising the order, the value should be it's own, not the
                 # purchase ones.
-                self.model.freight_type = \
-                        self.model.get_freight_type_adapted_from_payment()
-                self.proxy.update('freight_type')
-                self.model.freight_total = purchase.expected_freight
-                self.proxy.update('freight_total')
+                self.freight_combo.update(self.model.guess_freight_type())
+                self.freight.update(purchase.expected_freight)
+
             self.model.supplier = purchase.supplier
-            self.model.transporter = purchase.transporter
-            self.proxy.update('transporter')
+            self.transporter.update(purchase.transporter)
 
         self.proxy.update('total')
 
@@ -179,29 +174,23 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             return ValidationError(_(u'Invoice %d already exists for '
                                      'supplier %s.' % (value, supplier_name,)))
 
-    def on_freight_combo__validate(self, widget, value):
-        if (not self.visual_mode and
-            self.model.purchase.is_paid() and
-            value == self.FREIGHT_FOB_INSTALLMENTS):
-            return ValidationError(_(u'Cannot include freight value on '
-                                      'an already paid purchase. Select '
-                                      'another freight type.'))
-
-
     def after_freight_combo__content_changed(self, widget):
         value = widget.read()
 
         if value == self.model.FREIGHT_CIF_UNKNOWN:
             self.freight.set_sensitive(False)
-            self.model.freight_total = 0
-            if self.proxy:
-                self.proxy.update('freight_total')
+            self.freight.update(0)
         else:
             if not self.visual_mode:
                 self.freight.set_sensitive(True)
 
-        if self.proxy:
+        try:
             self.proxy.update('total')
+        except AttributeError:
+            # Workarround: This method gets called when we 'prefill' the
+            #              freight_combo. In that specific call we don't
+            #              have a proxy yet.
+            pass
 
     def after_freight__content_changed(self, widget):
         try:
