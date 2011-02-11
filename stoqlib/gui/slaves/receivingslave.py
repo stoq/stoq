@@ -79,7 +79,14 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             freight_items.remove((ro.freight_types[ro.FREIGHT_FOB_INSTALLMENTS],
                                   ro.FREIGHT_FOB_INSTALLMENTS))
 
+        # Disconnect that callback to prevent an AttributeError
+        # caused by the lack of a proxy.
+        handler_func = self.after_freight_combo__content_changed
+        self.freight_combo.handler_block_by_func(handler_func)
+
         self.freight_combo.prefill(freight_items)
+
+        self.freight_combo.handler_unblock_by_func(handler_func)
 
     def _setup_widgets(self):
         self.total.set_bold(True)
@@ -163,7 +170,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
     def on_invoice_number__validate(self, widget, value):
         if value < 1 or value > 999999:
-            return ValidationError(_("Receving order number must be "
+            return ValidationError(_("Receiving order number must be "
                                      "between 1 and 999999"))
 
         order_count = ReceivingOrder.selectBy(invoice_number=value,
@@ -177,20 +184,18 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     def after_freight_combo__content_changed(self, widget):
         value = widget.read()
 
-        if value == self.model.FREIGHT_CIF_UNKNOWN:
-            self.freight.set_sensitive(False)
+        if value == ReceivingOrder.FREIGHT_CIF_UNKNOWN:
             self.freight.update(0)
+            self.freight.set_sensitive(False)
         else:
             if not self.visual_mode:
                 self.freight.set_sensitive(True)
+                if (not self.model.freight_total and
+                    value in ReceivingOrder.FOB_FREIGHTS):
+                    # Restore the freight value to the purchase expected one.
+                    self.freight.update(self.model.purchase.expected_freight)
 
-        try:
-            self.proxy.update('total')
-        except AttributeError:
-            # Workarround: This method gets called when we 'prefill' the
-            #              freight_combo. In that specific call we don't
-            #              have a proxy yet.
-            pass
+        self.proxy.update('total')
 
     def after_freight__content_changed(self, widget):
         try:
