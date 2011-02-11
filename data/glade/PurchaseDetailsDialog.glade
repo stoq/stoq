@@ -4,6 +4,7 @@
     <widget class="GtkWindow" id="PurchaseDetailsDialog">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
+        <property name="mnemonics_visible">False</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
                 <property name="border_width">12</property>
@@ -659,7 +660,7 @@
                                             <widget class="ProxyLabel" id="payment_method">
                                                 <property name="data_type">unicode</property>
                                                 <property name="justify">right</property>
-                                                <property name="model_attribute">default_payment_method_name</property>
+                                                <property name="model_attribute">method_name</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>
