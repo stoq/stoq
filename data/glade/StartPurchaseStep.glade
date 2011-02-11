@@ -5,6 +5,7 @@
         <property name="default_height">250</property>
         <property name="default_width">440</property>
         <property name="height_request">400</property>
+        <property name="mnemonics_visible">False</property>
         <property name="width_request">600</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
@@ -14,10 +15,10 @@
                 <child>
                     <widget class="GtkTable" id="table">
                         <property name="border_width">5</property>
-                        <property name="column_spacing">5</property>
+                        <property name="column_spacing">6</property>
                         <property name="n_columns">5</property>
                         <property name="n_rows">5</property>
-                        <property name="row_spacing">12</property>
+                        <property name="row_spacing">6</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="ProxyLabel" id="kiwilabel1">
@@ -121,17 +122,12 @@
                                 <child>
                                     <widget class="GtkRadioButton" id="cif_radio">
                                         <property name="is_focus">True</property>
-                                        <property name="label" context="yes" translatable="yes">CIF</property>
+                                        <property name="label" context="yes" translatable="yes">CIF (Cost Insurance Freight)</property>
                                         <property name="visible">True</property>
                                     </widget>
                                 </child>
                                 <child>
-                                    <widget class="GtkRadioButton" id="fob_radio">
-                                        <property name="active">False</property>
-                                        <property name="group">cif_radio</property>
-                                        <property name="label" context="yes" translatable="yes">FOB</property>
-                                        <property name="visible">True</property>
-                                    </widget>
+                                    <placeholder/>
                                     <packing>
                                         <property name="position">1</property>
                                     </packing>
@@ -149,8 +145,13 @@
                                 <property name="spacing">6</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <placeholder/>
-                                    <packing/>
+                                    <widget class="GtkRadioButton" id="fob_radio">
+                                        <property name="active">False</property>
+                                        <property name="group">cif_radio</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="label" context="yes" translatable="yes">FOB (Free On Board)</property>
+                                        <property name="visible">True</property>
+                                    </widget>
                                 </child>
                                 <child>
                                     <placeholder/>
@@ -198,6 +199,15 @@
                             </packing>
                         </child>
                         <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">3</property>
+                                <property name="bottom_attach">4</property>
+                            </packing>
+                        </child>
+                        <child>
                             <widget class="ProxyLabel" id="kiwilabel6">
                                 <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Expected Freight:</property>
@@ -206,19 +216,10 @@
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">4</property>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
+                                <property name="bottom_attach">5</property>
                                 <property name="left_attach">2</property>
                                 <property name="right_attach">3</property>
                                 <property name="top_attach">4</property>
-                                <property name="bottom_attach">5</property>
                             </packing>
                         </child>
                         <child>
@@ -262,45 +263,62 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkHBox" id="hbox1">
-                                <property name="spacing">6</property>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                                <property name="top_attach">3</property>
+                                <property name="bottom_attach">4</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkHBox" id="hbox3">
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="ProxyLabel" id="kiwilabel7">
-                                        <property name="data_type">unicode</property>
-                                        <property name="label" context="yes" translatable="yes">$CURRENCY</property>
-                                        <property name="model_attribute">kiwilabel7</property>
+                                    <widget class="GtkHBox" id="hbox1">
+                                        <property name="spacing">6</property>
                                         <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                </child>
-                                <child>
-                                    <widget class="ProxyEntry" id="expected_freight">
-                                        <property name="data_type">Decimal</property>
-                                        <property name="model_attribute">expected_freight</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
+                                        <child>
+                                            <widget class="ProxyLabel" id="kiwilabel7">
+                                                <property name="data_type">unicode</property>
+                                                <property name="label" context="yes" translatable="yes">$CURRENCY</property>
+                                                <property name="model_attribute">kiwilabel7</property>
+                                                <property name="visible">True</property>
+                                                <property name="xalign">1.0</property>
+                                            </widget>
+                                        </child>
+                                        <child>
+                                            <widget class="ProxyEntry" id="expected_freight">
+                                                <property name="data_type">Decimal</property>
+                                                <property name="model_attribute">expected_freight</property>
+                                                <property name="visible">True</property>
+                                                <property name="xalign">1.0</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="expand">False</property>
+                                                <property name="position">1</property>
+                                            </packing>
+                                        </child>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="ProxyLabel" id="kiwilabel8">
+                                        <property name="model_attribute">kiwilabel8</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
                                         <property name="position">1</property>
                                     </packing>
                                 </child>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">4</property>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
+                                <property name="bottom_attach">5</property>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
                                 <property name="top_attach">4</property>
-                                <property name="bottom_attach">5</property>
                             </packing>
                         </child>
                         <child>
@@ -330,7 +348,7 @@
                         <child>
                             <widget class="ProxyLabel" id="kiwilabel13">
                                 <property name="data_type">unicode</property>
-                                <property name="model_attribute"></property>
+                                <property name="model_attribute">kiwilabel13</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
