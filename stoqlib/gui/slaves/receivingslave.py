@@ -38,11 +38,13 @@ _ = stoqlib_gettext
 
 
 class ReceivingInvoiceSlave(BaseEditorSlave):
+
     model_type = ReceivingOrder
     gladefile = 'ReceivingInvoiceSlave'
     proxy_widgets = ('transporter',
                      'responsible_name',
                      'products_total',
+                     'freight_combo',
                      'freight',
                      'ipi',
                      'cfop',
@@ -60,8 +62,6 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     # BaseEditorSlave hooks
     #
 
-    # We will avoid duplicating code like when setting up entry completions
-    # on bug 2275.
     def _setup_transporter_entry(self):
         # FIXME: Implement and use IDescribable on PersonAdaptToTransporter
         table = PersonAdaptToTransporter
@@ -69,31 +69,57 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         items = [(t.person.name, t) for t in transporters]
         self.transporter.prefill(items)
 
+    def _setup_freight_combo(self):
+        freight_items = [(value, key) for (key, value) in
+                         ReceivingOrder.freight_types.items()]
+
+        # If the purchase's installments are paid, we cannot modify them.
+        if (self.model.purchase.is_paid() and not self.visual_mode):
+            ro = ReceivingOrder
+            freight_items.remove((ro.freight_types[ro.FREIGHT_FOB_INSTALLMENTS],
+                                  ro.FREIGHT_FOB_INSTALLMENTS))
+
+        # Disconnect that callback to prevent an AttributeError
+        # caused by the lack of a proxy.
+        handler_func = self.after_freight_combo__content_changed
+        self.freight_combo.handler_block_by_func(handler_func)
+
+        self.freight_combo.prefill(freight_items)
+
+        self.freight_combo.handler_unblock_by_func(handler_func)
+
     def _setup_widgets(self):
         self.total.set_bold(True)
-        purchase_widgets = (self.purchase_number_label,
-                            self.purchase_supplier_label,
-                            self.order_number, self.supplier_label)
-        if not self.model.purchase:
-            for widget in purchase_widgets:
+
+        purchase = self.model.purchase
+        if not purchase:
+            for widget in (self.purchase_number_label,
+                           self.purchase_supplier_label,
+                           self.order_number, self.supplier_label):
                 widget.hide()
-        if self.model.purchase.is_paid():
-            for widget in [self.ipi, self.discount_value, self.icms_total,
-                           self.secure_value, self.expense_value,
-                           self.freight_in_installments]:
+        elif purchase and purchase.is_paid():
+            for widget in (self.ipi, self.discount_value, self.icms_total,
+                           self.secure_value, self.expense_value):
                 widget.set_sensitive(False)
 
         self._setup_transporter_entry()
+        self._setup_freight_combo()
+
+        # CFOP entry setup
         cfop_items = [(item.get_description(), item)
-                        for item in CfopData.select(connection=self.conn)]
+                      for item in CfopData.select(connection=self.conn)]
         self.cfop.prefill(cfop_items)
-        # The user should not be allowed to change the transporter,
-        # if it's already set.
-        if self.model.transporter:
-            self.transporter.set_sensitive(False)
 
     def create_freight_payment(self):
-        return self.freight_in_payment.get_active()
+        """Tells if we should create a separate payment for freight or not
+
+        It should return True or False. If True is returned, a separate payment
+        will be created for freight. If not, it'll be included on installments.
+        """
+        freight_type = self.freight_combo.read()
+        if freight_type == self.model.FREIGHT_FOB_PAYMENT:
+            return True
+        return False
 
     #
     # BaseEditorSlave hooks
@@ -101,44 +127,32 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
     def update_visual_mode(self):
         self.notes_button.hide()
-        self.freight_in_installments.set_sensitive(False)
-        self.freight_in_payment.set_sensitive(False)
+        self.freight_combo.set_sensitive(False)
 
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     ReceivingInvoiceSlave.proxy_widgets)
+
         self.model.invoice_total = self.model.get_products_total()
-        self.proxy.update('total')
+
         purchase = self.model.purchase
         if purchase:
-            transporter = purchase.transporter
-            self.model.transporter = transporter
-            self.proxy.update('transporter')
+            if not self.visual_mode:
+                # These values are duplicates from the purchase. If we are
+                # visualising the order, the value should be it's own, not the
+                # purchase ones.
+                self.freight_combo.update(self.model.guess_freight_type())
+                self.freight.update(purchase.expected_freight)
+
             self.model.supplier = purchase.supplier
-            self.model.freight_total = purchase.expected_freight
-            self.proxy.update('freight_total')
+            self.transporter.update(purchase.transporter)
+
+        self.proxy.update('total')
 
     #
     # Callbacks
     #
-
-    def on_notes_button__clicked(self, *args):
-        run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
-                   title=_('Additional Information'))
-
-    def on_invoice_number__validate(self, widget, value):
-        if value < 1 or value > 999999:
-            return ValidationError(_("Receving order number must be "
-                                     "between 1 and 999999"))
-
-        order_count = ReceivingOrder.selectBy(invoice_number=value,
-                                              supplier=self.model.supplier,
-                                              connection=self.conn).count()
-        if order_count > 0:
-            supplier_name = self.model.supplier.person.name
-            return ValidationError(_(u'Invoice %d already exists for '
-                                     'supplier %s.' % (value, supplier_name,)))
 
     def _positive_validator(self, widget, value):
         if value < 0:
@@ -150,6 +164,39 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     on_secure_value__validate = _positive_validator
     on_expense_value__validate = _positive_validator
 
+    def on_notes_button__clicked(self, *args):
+        run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
+                   title=_('Additional Information'))
+
+    def on_invoice_number__validate(self, widget, value):
+        if value < 1 or value > 999999:
+            return ValidationError(_("Receiving order number must be "
+                                     "between 1 and 999999"))
+
+        order_count = ReceivingOrder.selectBy(invoice_number=value,
+                                              supplier=self.model.supplier,
+                                              connection=self.conn).count()
+        if order_count > 0:
+            supplier_name = self.model.supplier.person.name
+            return ValidationError(_(u'Invoice %d already exists for '
+                                     'supplier %s.' % (value, supplier_name,)))
+
+    def after_freight_combo__content_changed(self, widget):
+        value = widget.read()
+
+        if value == ReceivingOrder.FREIGHT_CIF_UNKNOWN:
+            self.freight.update(0)
+            self.freight.set_sensitive(False)
+        else:
+            if not self.visual_mode:
+                self.freight.set_sensitive(True)
+                if (not self.model.freight_total and
+                    value in ReceivingOrder.FOB_FREIGHTS):
+                    # Restore the freight value to the purchase expected one.
+                    self.freight.update(self.model.purchase.expected_freight)
+
+        self.proxy.update('total')
+
     def after_freight__content_changed(self, widget):
         try:
             value = widget.read()
@@ -157,7 +204,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             value = ValueUnset
 
         if value is ValueUnset:
-            self.model.freight = 0
+            self.model.freight_total = 0
         self.proxy.update('total')
 
     def after_ipi__content_changed(self, widget):
