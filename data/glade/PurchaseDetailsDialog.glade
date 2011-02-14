@@ -590,7 +590,7 @@
                                         </child>
                                         <child>
                                             <widget class="ProxyLabel" id="kiwilabel9">
-                                                <property name="label" context="yes" translatable="yes">Original Freight Type:</property>
+                                                <property name="label" context="yes" translatable="yes">Agreed Freight Type:</property>
                                                 <property name="model_attribute">kiwilabel9</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
@@ -726,7 +726,7 @@
                                         </child>
                                         <child>
                                             <widget class="ProxyLabel" id="kiwilabel11">
-                                                <property name="label" context="yes" translatable="yes">Expected Freight:</property>
+                                                <property name="label" context="yes" translatable="yes">Expected Freight Value:</property>
                                                 <property name="model_attribute">kiwilabel11</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
@@ -740,7 +740,7 @@
                                         </child>
                                         <child>
                                             <widget class="ProxyLabel" id="received_freight_label">
-                                                <property name="label" context="yes" translatable="yes">Freight:</property>
+                                                <property name="label" context="yes" translatable="yes">Received Freight Value:</property>
                                                 <property name="model_attribute">received_freight_label</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
