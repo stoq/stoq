@@ -108,6 +108,7 @@ class PurchaseOrderReport(BaseStoqReport):
 
     def __init__(self, filename, order):
         self._order = order
+        self._receiving_orders = order.get_receiving_orders()
         BaseStoqReport.__init__(self, filename, PurchaseOrderReport.report_name,
                                 landscape=True)
         self._setup_order_details_table()
@@ -162,18 +163,45 @@ class PurchaseOrderReport(BaseStoqReport):
         self.add_paragraph(_("Purchase Ordered Items"), style="Title")
         self._add_items_table(items)
 
-    def _get_freight_line(self):
-        freight_line = []
-        transporter = self._order.get_transporter_name() or _("Not Specified")
-        freight_line.extend([_("Transporter:"), transporter, _("Freight:")])
-        if self._order.freight_type == PurchaseOrder.FREIGHT_FOB:
-            freight_desc = "FOB (%.2f)"
-        else:
-            freight_desc = "CIF (%.2f)"
+    def _get_transporter_freight_lines(self):
+        lines = []
+        freight_types = PurchaseOrder.freight_types
 
-        expected_freight_desc = freight_desc % self._order.expected_freight
-        freight_line.append(expected_freight_desc)
-        return freight_line
+        # First line.
+        transporter = self._order.get_transporter_name() or _(u"Not Specified")
+        agreed_freight = (u"%s (%.2f)" %
+                          (freight_types[self._order.freight_type],
+                           self._order.expected_freight))
+
+        lines.append([_(u"Transporter:"), transporter,
+                      _(u"Agreed Freight:"), agreed_freight])
+
+        # Second line
+        if self._order.expected_receival_date:
+            expected_date = self._order.expected_receival_date.strftime("%x")
+        else:
+            expected_date = _("Not Specified")
+        second_line = [_(u"Expected Receival Date:"), expected_date]
+
+        if self._receiving_orders.count():
+            # If order was received, show it's freight
+            freight = 0
+            for received_order in self._receiving_orders:
+                freight += received_order.freight_total
+
+            if (self._receiving_orders[0].freight_type
+                in self._receiving_orders[0].FOB_FREIGHTS):
+                received_freight = (u"FOB (%.2f)" % freight)
+            elif (self._receiving_orders[0].freight_type
+                  in self._receiving_orders[0].CIF_FREIGHTS):
+                received_freight = (u"CIF (%.2f)" % freight)
+
+            second_line.extend([_("Received Freight:"), received_freight])
+        else:
+            second_line.extend([u'', u''])
+        lines.append(second_line)
+
+        return lines
 
     def _setup_payment_group_data(self):
         payments = self._order.payments
@@ -206,22 +234,19 @@ class PurchaseOrderReport(BaseStoqReport):
     def _setup_order_details_table(self):
         cols = [TC("", width=100), TC("", width=285, expand=True,
                                       truncate=True),
-                TC("", width=50), TC("", width=285, expand=True,
+                TC("", width=120), TC("", width=285, expand=True,
                                      truncate=True)]
         data = [[_("Open Date:"), self._order.get_open_date_as_string(),
                  _("Status:"), self._order.get_status_str()],
                 [_("Supplier:"), self._order.get_supplier_name(),
                  _("Branch:"), self._order.get_branch_name()],
                 ]
-        data.append(self._get_freight_line())
+
+        data.extend(self._get_transporter_freight_lines())
+
         self.add_column_table(data, cols, do_header=False,
                               highlight=HIGHLIGHT_NEVER, margins=2,
                               table_line=TABLE_LINE_BLANK, width=730)
-        if self._order.expected_receival_date:
-            expected_date = self._order.expected_receival_date.strftime("%x")
-        else:
-            expected_date = _("Not Specified")
-        self.add_paragraph(_("Expected Receival Date: %s") % expected_date)
 
     def _setup_items_table(self):
         items = self._order.get_items()
@@ -236,8 +261,8 @@ class PurchaseOrderReport(BaseStoqReport):
             self.add_preformatted_text(self._order.notes,
                                        style='Normal-Notes')
 
-        receivings = self._order.get_receiving_orders()
-        receiving_details = u'\n'.join([r.notes for r in receivings])
+        receiving_details = u'\n'.join([r.notes for r
+                                        in self._receiving_orders])
         if receiving_details:
             self.add_blank_space(10)
             self.add_paragraph(_(u'Receiving Details'), style='Normal-Bold')
