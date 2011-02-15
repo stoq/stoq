@@ -638,7 +638,7 @@
                                             <widget class="ProxyLabel" id="payment_method">
                                                 <property name="data_type">unicode</property>
                                                 <property name="justify">right</property>
-                                                <property name="model_attribute">method_name</property>
+                                                <property name="model_attribute">methods_names</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>
@@ -768,7 +768,7 @@
                                         </child>
                                         <child>
                                             <widget class="ProxyLabel" id="installments_number">
-                                                <property name="data_type">int</property>
+                                                <property name="data_type">long</property>
                                                 <property name="justify">right</property>
                                                 <property name="model_attribute">installments_number</property>
                                                 <property name="visible">True</property>

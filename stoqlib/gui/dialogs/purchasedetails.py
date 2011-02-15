@@ -64,8 +64,16 @@ class _TemporaryReceivingDetails:
     received_freight_type = u''
 
     def __init__(self, orders):
+        (FREIGHT_FOB,
+         FREIGHT_CIF,
+         FREIGHT_MIXED) = range(3)
+        freight_types = {FREIGHT_FOB   : u'FOB',
+                         FREIGHT_CIF   : u'CIF',
+                         FREIGHT_MIXED : u'Mixed Freights'}
+
         if orders.count():
             discount = surcharge = freight = subtotal = total = 0
+            freight_type = None
             for order in orders:
                 discount += order._get_total_discounts()
                 surcharge += order._get_total_surcharges()
@@ -73,16 +81,24 @@ class _TemporaryReceivingDetails:
                 subtotal += order.get_products_total()
                 total += order.get_total()
 
+                if (not freight_type and
+                    order.freight_type in order.FOB_FREIGHTS):
+                    freight_type = FREIGHT_FOB
+                elif (not freight_type and
+                      order.freight_type in order.CIF_FREIGHTS):
+                    freight_type = FREIGHT_CIF
+                elif (freight_type and freight_type != FREIGHT_MIXED and
+                      freight_type != order.freight_type):
+                    freight_type = FREIGHT_MIXED
+
             self.total_discounts = currency(discount)
             self.total_surcharges = currency(surcharge)
             self.received_freight = currency(freight)
             self.receiving_subtotal = currency(subtotal)
             self.receiving_total = currency(total)
 
-            if orders[0].freight_type in orders[0].FOB_FREIGHTS:
-                self.received_freight_type = u'FOB'
-            elif orders[0].freight_type in orders[0].CIF_FREIGHTS:
-                self.received_freight_type = u'CIF'
+            self.received_freight_type = freight_types[freight_type]
+
 
 class PurchaseDetailsDialog(BaseEditor):
     gladefile = "PurchaseDetailsDialog"

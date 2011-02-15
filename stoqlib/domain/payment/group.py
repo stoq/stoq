@@ -106,17 +106,17 @@ class PaymentGroup(Domain):
 
     @property
     def installments_number(self):
-        # FIXME: SqlObject returns count() as a long type.
-        #        This is a problem because we will treat
-        #        this property as an integer always.
-        return int(self.payments.count())
+        return self.payments.count()
 
     @property
-    def method_name(self):
-        # Since all payments have the same method
-        # we only need to check it on the first.
-        first_payment = self.payments[0]
-        return first_payment.method.get_description()
+    def methods_names(self):
+        methods = []
+        for payment in self.payments:
+            description = payment.method.get_description()
+            if description not in methods:
+                methods.append(description)
+
+        return ", ".join(methods)
 
     #
     # Fiscal methods
