@@ -58,7 +58,6 @@ from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
-from stoqlib.gui.dialogs.productretention import ProductRetentionDialog
 from stoqlib.gui.dialogs.productimage import ProductImageViewer
 from stoqlib.reporting.product import SimpleProductReport
 
@@ -161,7 +160,6 @@ class StockApp(SearchableAppWindow):
     def _update_widgets(self):
         branch = get_current_branch(self.conn)
         if Inventory.has_open(self.conn, branch):
-            self.retention_button.set_sensitive(False)
             self.transfer_action.set_sensitive(False)
             self.receive_action.set_sensitive(False)
             self.initial_stock_action.set_sensitive(False)
@@ -186,7 +184,6 @@ class StockApp(SearchableAppWindow):
 
         self.image_button.set_sensitive(one_selected)
         self.history_button.set_sensitive(one_selected and is_main_branch)
-        self.retention_button.set_sensitive(one_selected and is_main_branch)
         self.print_button.set_sensitive(has_stock)
         # We need more than one branch to be able to do transfers
         # Note that 'all branches' is not a real branch
@@ -196,22 +193,6 @@ class StockApp(SearchableAppWindow):
         self.TransferSearch.set_sensitive(has_branches)
 
     def _update_filter_slave(self, slave):
-        self.refresh()
-
-    def _retend_stock(self, sellable_view):
-        storable = IStorable(sellable_view.product, None)
-        warehouse_branch = get_current_branch(self.conn)
-        if (not storable
-            or not storable.get_full_balance(warehouse_branch)):
-            warning(_(u"You must have at least one item "
-                      "in stock to perfom this action."))
-            return
-        trans = new_transaction()
-        product = trans.get(sellable_view.product)
-        model = self.run_dialog(ProductRetentionDialog, trans,
-                                product)
-        if not finish_transaction(trans, model):
-            return
         self.refresh()
 
     def _transfer_stock(self):
@@ -253,10 +234,6 @@ class StockApp(SearchableAppWindow):
 
     def on_SearchStockItems__activate(self, action):
         self.run_dialog(ProductStockSearch, self.conn)
-
-    def on_retention_button__clicked(self, button):
-        sellable_view = self.results.get_selected_rows()[0]
-        self._retend_stock(sellable_view)
 
     def on_ProductHistory__activate(self, action):
         self.run_dialog(ProductSearchQuantity, self.conn)
