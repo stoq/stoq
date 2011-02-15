@@ -39,6 +39,7 @@ from stoqlib.domain.interfaces import IInPayment
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
+from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
 
 _ = stoqlib_gettext
@@ -64,12 +65,14 @@ class _TemporaryReceivingDetails:
     received_freight_type = u''
 
     def __init__(self, orders):
-        (FREIGHT_FOB,
-         FREIGHT_CIF,
-         FREIGHT_MIXED) = range(3)
-        freight_types = {FREIGHT_FOB   : u'FOB',
-                         FREIGHT_CIF   : u'CIF',
-                         FREIGHT_MIXED : u'Mixed Freights'}
+        freight_type_map = {
+            ReceivingOrder.FREIGHT_FOB_PAYMENT:      PurchaseOrder.FREIGHT_FOB,
+            ReceivingOrder.FREIGHT_FOB_INSTALLMENTS: PurchaseOrder.FREIGHT_FOB,
+            ReceivingOrder.FREIGHT_CIF_UNKNOWN:      PurchaseOrder.FREIGHT_CIF,
+            ReceivingOrder.FREIGHT_CIF_INVOICE:      PurchaseOrder.FREIGHT_CIF
+        }
+        freight_names = PurchaseOrder.freight_types
+        freight_types = []
 
         if orders.count():
             discount = surcharge = freight = subtotal = total = 0
@@ -81,15 +84,9 @@ class _TemporaryReceivingDetails:
                 subtotal += order.get_products_total()
                 total += order.get_total()
 
-                if (not freight_type and
-                    order.freight_type in order.FOB_FREIGHTS):
-                    freight_type = FREIGHT_FOB
-                elif (not freight_type and
-                      order.freight_type in order.CIF_FREIGHTS):
-                    freight_type = FREIGHT_CIF
-                elif (freight_type and freight_type != FREIGHT_MIXED and
-                      freight_type != order.freight_type):
-                    freight_type = FREIGHT_MIXED
+                # If first time used, append to the list of used types
+                if freight_type_map[order.freight_type] not in freight_types:
+                   freight_types.append(freight_type_map[order.freight_type])
 
             self.total_discounts = currency(discount)
             self.total_surcharges = currency(surcharge)
@@ -97,7 +94,10 @@ class _TemporaryReceivingDetails:
             self.receiving_subtotal = currency(subtotal)
             self.receiving_total = currency(total)
 
-            self.received_freight_type = freight_types[freight_type]
+            if len(freight_types) == 1:
+                self.received_freight_type = freight_names[freight_types[0]]
+            else:
+                self.received_freight_type = _(u'Mixed Freights')
 
 
 class PurchaseDetailsDialog(BaseEditor):

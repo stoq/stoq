@@ -38,6 +38,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.template import BaseStoqReport, ObjectListReport
 from stoqlib.domain.purchase import (PurchaseOrder, PurchaseOrderView,
                                      PurchaseItemView)
+from stoqlib.domain.receiving import ReceivingOrder
 
 _ = stoqlib_gettext
 
@@ -165,13 +166,22 @@ class PurchaseOrderReport(BaseStoqReport):
 
     def _get_transporter_freight_lines(self):
         lines = []
-        freight_types = PurchaseOrder.freight_types
+
+        freight_type_map = {
+            ReceivingOrder.FREIGHT_FOB_PAYMENT:      PurchaseOrder.FREIGHT_FOB,
+            ReceivingOrder.FREIGHT_FOB_INSTALLMENTS: PurchaseOrder.FREIGHT_FOB,
+            ReceivingOrder.FREIGHT_CIF_UNKNOWN:      PurchaseOrder.FREIGHT_CIF,
+            ReceivingOrder.FREIGHT_CIF_INVOICE:      PurchaseOrder.FREIGHT_CIF
+        }
+        freight_names = PurchaseOrder.freight_types
+        freight_types = []
 
         # First line.
         transporter = self._order.get_transporter_name() or _(u"Not Specified")
-        agreed_freight = (u"%s (%.2f)" %
-                          (freight_types[self._order.freight_type],
-                           self._order.expected_freight))
+        freight = get_formatted_price(self._order.expected_freight)
+        agreed_freight = _(u"%s (%s)" %
+                           (freight_names[self._order.freight_type],
+                            freight))
 
         lines.append([_(u"Transporter:"), transporter,
                       _(u"Agreed Freight:"), agreed_freight])
@@ -186,15 +196,19 @@ class PurchaseOrderReport(BaseStoqReport):
         if self._receiving_orders.count():
             # If order was received, show it's freight
             freight = 0
-            for received_order in self._receiving_orders:
-                freight += received_order.freight_total
+            for order in self._receiving_orders:
+                freight += order.freight_total
+                # If first time used, append to the list of used types
+                if freight_type_map[order.freight_type] not in freight_types:
+                   freight_types.append(freight_type_map[order.freight_type])
 
-            if (self._receiving_orders[0].freight_type
-                in self._receiving_orders[0].FOB_FREIGHTS):
-                received_freight = (u"FOB (%.2f)" % freight)
-            elif (self._receiving_orders[0].freight_type
-                  in self._receiving_orders[0].CIF_FREIGHTS):
-                received_freight = (u"CIF (%.2f)" % freight)
+            freight = get_formatted_price(freight)
+            if len(freight_types) == 1:
+                received_freight = _(u"%s (%s)" %
+                                     (freight_names[freight_types[0]],
+                                      freight))
+            else:
+                self.received_freight_type = _(u'Mixed (%s)' % freight)
 
             second_line.extend([_("Received Freight:"), received_freight])
         else:
