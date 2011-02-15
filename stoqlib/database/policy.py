@@ -64,7 +64,6 @@ class Shop(SynchronizationPolicy):
         ('Product', SyncPolicy.FROM_SOURCE),
         ('ProductSupplierInfo', SyncPolicy.FROM_SOURCE),
         ('ProductStockItem', SyncPolicy.FROM_SOURCE),
-        ('ProductRetentionHistory', SyncPolicy.FROM_SOURCE),
 
         ('Service', SyncPolicy.FROM_SOURCE),
         ('Sale', SyncPolicy.FROM_TARGET),

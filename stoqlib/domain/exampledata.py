@@ -315,11 +315,13 @@ class ExampleCreator(object):
         branch = self.create_branch()
         user = self.create_user()
         employee = self.create_employee()
+        cfop = self.create_cfop_data()
 
         return StockDecrease(responsible=user,
                              removed_by=employee,
                              branch=branch,
                              status=StockDecrease.STATUS_INITIAL,
+                             cfop=cfop,
                              connection=self.trans)
 
     def create_city_location(self):
@@ -594,12 +596,6 @@ class ExampleCreator(object):
                                  transfer_order=order,
                                  quantity=quantity,
                                  connection=self.trans)
-
-    def create_retained_product(self, product, quantity):
-        branch = get_current_branch(self.trans)
-        reason = "Test"
-        return product.retain(quantity=quantity, branch=branch,
-                              reason=reason, product=product)
 
     def create_inventory(self):
         from stoqlib.domain.inventory import Inventory

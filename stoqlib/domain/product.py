@@ -123,28 +123,6 @@ class ProductSupplierInfo(Domain):
 
         return "%d %s" % (lead_time, day_str)
 
-
-class ProductRetentionHistory(Domain):
-    """Class responsible to store information about product's retention."""
-
-    quantity = QuantityCol(default=0)
-    reason = UnicodeCol(default='')
-    product = ForeignKey('Product')
-    retention_date = DateTimeCol(default=None)
-    cfop = ForeignKey('CfopData', default=None)
-
-    def cancel_retention(self, branch):
-        """Remove the ProductRetentionHistory entry and return the
-        product quantity retained to stock again.
-
-        @param branch: the branch containing the stock
-        """
-        storable = IStorable(self.product)
-        storable.increase_stock(self.quantity, branch)
-        ProductRetentionHistory.delete(
-            self.id, connection=self.get_connection())
-
-
 class Product(Domain):
     """Class responsible to store basic products informations."""
 
@@ -207,20 +185,6 @@ class Product(Domain):
         elif IStorable(self).get_stock_items().count():
             return False
         return True
-
-    def retain(self, quantity, branch, reason, product, cfop=None):
-        storable = IStorable(self)
-        storable.decrease_stock(quantity, branch)
-        today = datetime.date.today()
-        conn = self.get_connection()
-        retained_item = ProductRetentionHistory(quantity=quantity,
-                                                retention_date=today,
-                                                product=product,
-                                                reason=reason,
-                                                cfop=cfop,
-                                                connection=conn)
-        ProductHistory.add_retained_item(conn, branch, retained_item)
-        return retained_item
 
     #
     # Acessors
@@ -304,7 +268,7 @@ class Product(Domain):
 
 class ProductHistory(Domain):
     """Stores product history, such as sold, received, transfered and
-    retained quantities.
+    decreased quantities.
     """
     # We keep a reference to Sellable instead of Product because we want to
     # display the sellable id in the interface instead of the product id for
@@ -312,7 +276,6 @@ class ProductHistory(Domain):
     quantity_sold = QuantityCol(default=None)
     quantity_received = QuantityCol(default=None)
     quantity_transfered = QuantityCol(default=None)
-    quantity_retained = QuantityCol(default=None)
     quantity_produced = QuantityCol(default=None)
     quantity_consumed = QuantityCol(default=None)
     quantity_lost = QuantityCol(default=None)
@@ -368,21 +331,6 @@ class ProductHistory(Domain):
         cls(branch=branch, sellable=transfer_order_item.sellable,
             quantity_transfered=transfer_order_item.quantity,
             received_date=transfer_order_item.transfer_order.receival_date,
-            connection=conn)
-
-    @classmethod
-    def add_retained_item(cls, conn, branch, retained_item):
-        """
-        Adds a retained_item, populates the ProductHistory table using a
-        product_retention_history created during a product retention
-
-        @param conn: a database connection
-        @param branch: the source branch
-        @param retained_item: a ProductRetentionHistory instance
-        """
-        cls(branch=branch, sellable=retained_item.product.sellable,
-            quantity_retained=retained_item.quantity,
-            received_date=datetime.date.today(),
             connection=conn)
 
     @classmethod
@@ -476,8 +424,6 @@ class ProductAdaptToStorable(ModelAdapter):
     maximum_quantity = QuantityCol(default=0)
 
     implements(IStorable, IContainer)
-
-    retention = MultipleJoin('ProductRetentionHistory')
 
     #
     # Private

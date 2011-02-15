@@ -34,7 +34,6 @@ from kiwi.ui.widgets.list import SummaryLabel
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.product import ProductRetentionHistory
 from stoqlib.domain.sale import SaleItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrderItem
@@ -65,7 +64,6 @@ class ProductStockHistoryDialog(BaseEditor):
         self.receiving_list.set_columns(self._get_receiving_columns())
         self.sales_list.set_columns(self._get_sale_columns())
         self.transfer_list.set_columns(self._get_transfer_columns())
-        self.retention_list.set_columns(self._get_retention_columns())
 
         items = ReceivingItemView.select(
             ReceivingItemView.q.sellable_id==self.model.id,
@@ -81,11 +79,6 @@ class ProductStockHistoryDialog(BaseEditor):
         items = TransferOrderItem.selectBy(sellableID=self.model.id,
                                             connection=self.conn)
         self.transfer_list.add_list(list(items))
-
-        product = self.model.product
-        items = ProductRetentionHistory.selectBy(product=product,
-                                                 connection=self.conn)
-        self.retention_list.add_list(list(items))
 
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % _("Total:")
@@ -109,19 +102,6 @@ class ProductStockHistoryDialog(BaseEditor):
                                               value_format=value_format)
         transfer_summary_label.show()
         self.transfer_vbox.pack_start(transfer_summary_label, False)
-
-        retention_summary_label = SummaryLabel(klist=self.retention_list,
-                                               column='quantity',
-                                               label=total_label,
-                                               value_format=value_format)
-        retention_summary_label.show()
-        self.retention_vbox.pack_start(retention_summary_label, False)
-        self.retention_vbox.reorder_child(retention_summary_label, 1)
-
-    def _update_widgets(self):
-        has_selected = self.retention_list.get_selected() is not None
-        has_branch = self._branch is not None
-        self.cancel_retention_button.set_sensitive(has_selected and has_branch)
 
     def _get_receiving_columns(self):
         return [Column("order_id", title=_("#"), data_type=int, sorted=True,
@@ -169,25 +149,6 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column("quantity", title=_("Transfered"),
                        data_type=Decimal)]
 
-    def _get_retention_columns(self):
-        return [Column("id", title=_("#"), data_type=int,
-                        justify=gtk.JUSTIFY_RIGHT, sorted=True),
-                Column("retention_date", title=_(u"When"),
-                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                Column("reason", title=_(u"Reason"), data_type=str,
-                        expand=True),
-                Column("quantity", title=_(u"Quantity Retained"),
-                        data_type=Decimal)]
-
-    def _cancel_retention(self, retention):
-        msg = _(u'Do you really want to cancel this retention ?')
-        if yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _(u'No')):
-            self.retention_list.remove(retention)
-            retention.cancel_retention(self._branch)
-            # We need to commit here or the 'cancel' operation will not
-            # take effect
-            self.conn.commit()
-
     #
     # BaseEditor Hooks
     #
@@ -198,13 +159,3 @@ class ProductStockHistoryDialog(BaseEditor):
         storable = IStorable(self.model.product)
         self.add_proxy(storable, ['full_balance'])
 
-    #
-    # Kiwi Callbacks
-    #
-
-    def on_cancel_retention_button__clicked(self, widget):
-        retention = self.retention_list.get_selected()
-        self._cancel_retention(retention)
-
-    def on_retention_list__selection_changed(self, widget, item):
-        self._update_widgets()

@@ -120,7 +120,11 @@
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
+                    <widget class="GtkLabel" id="label5">
+                        <property name="label" context="yes" translatable="yes">Cfop:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
                     <packing>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
@@ -146,7 +150,12 @@
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
+                    <widget class="ProxyComboEntry" id="cfop">
+                        <property name="data_type">object</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">cfop</property>
+                        <property name="visible">True</property>
+                    </widget>
                     <packing>
                         <property name="left_attach">3</property>
                         <property name="right_attach">4</property>
