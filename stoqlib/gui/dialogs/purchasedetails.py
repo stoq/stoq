@@ -114,9 +114,9 @@ class PurchaseDetailsDialog(BaseEditor):
                      'transporter_name',
                      'responsible_name',
                      'salesperson_name',
-                     'receival_date',
-                     'freight_type',
+                     'expected_receival_date',
                      'expected_freight',
+                     'freight_type',
                      'notes')
     payment_proxy = ('total_paid',
                      'total_interest',
