@@ -52,7 +52,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity, get_formatted_cost
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
+from stoqlib.gui.editors.decreaseeditor import DecreaseItemEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
@@ -190,7 +190,8 @@ class DecreaseItemStep(SellableItemStep):
 
     def post_init(self):
         SellableItemStep.post_init(self)
-        self.slave.set_editor(PurchaseItemEditor)
+        self.slave.set_editor(DecreaseItemEditor)
+        self.slave.register_editor_kwargs(all_items=self.slave.klist)
         self._refresh_next()
 
     def has_next_step(self):
