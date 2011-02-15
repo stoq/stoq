@@ -233,13 +233,6 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="retention_action">
-                        <property name="name">retention_action</property>
-                        <property name="label" translatable="yes">_Retention</property>
-                        <property name="stock_id">gtk-go-up</property>
-                    </widget>
-                </child>
-                <child>
                     <widget class="GtkAction" id="initial_stock_action">
                         <property name="name">initial_stock_action</property>
                         <property name="label" translatable="yes">_Initial Stock...</property>
@@ -404,42 +397,6 @@
                                                 </child>
                                             </widget>
                                         </child>
-                                        <child>
-                                            <widget class="GtkButton" id="retention_button">
-                                                <property name="is_focus">True</property>
-                                                <property name="visible">True</property>
-                                                <child>
-                                                    <widget class="GtkAlignment" id="alignment6">
-                                                        <property name="visible">True</property>
-                                                        <child>
-                                                            <widget class="GtkVBox" id="vbox4">
-                                                                <property name="visible">True</property>
-                                                                <child>
-                                                                    <widget class="GtkImage" id="image2">
-                                                                        <property name="file">a-clear16px.png</property>
-                                                                        <property name="visible">True</property>
-                                                                    </widget>
-                                                                </child>
-                                                                <child>
-                                                                    <widget class="GtkLabel" id="label2">
-                                                                        <property name="label" context="yes" translatable="yes">_Retention...</property>
-                                                                        <property name="use-underline">True</property>
-                                                                        <property name="visible">True</property>
-                                                                    </widget>
-                                                                    <packing>
-                                                                        <property name="position">1</property>
-                                                                    </packing>
-                                                                </child>
-                                                            </widget>
-                                                        </child>
-                                                    </widget>
-                                                </child>
-                                            </widget>
-                                            <packing>
-                                                <property name="position">1</property>
-                                            </packing>
-                                        </child>
-
                                         <child>
                                             <widget class="GtkButton" id="print_button">
                                                 <property name="is_focus">True</property>
