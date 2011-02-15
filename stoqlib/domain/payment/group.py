@@ -108,16 +108,6 @@ class PaymentGroup(Domain):
     def installments_number(self):
         return self.payments.count()
 
-    @property
-    def methods_names(self):
-        methods = []
-        for payment in self.payments:
-            description = payment.method.get_description()
-            if description not in methods:
-                methods.append(description)
-
-        return ", ".join(methods)
-
     #
     # Fiscal methods
     #
