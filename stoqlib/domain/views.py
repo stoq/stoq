@@ -254,7 +254,6 @@ class ProductQuantityView(Viewable):
         quantity_sold=const.SUM(ProductHistory.q.quantity_sold),
         quantity_received=const.SUM(ProductHistory.q.quantity_received),
         quantity_transfered=const.SUM(ProductHistory.q.quantity_transfered),
-        quantity_retained=const.SUM(ProductHistory.q.quantity_retained),
         quantity_produced=const.SUM(ProductHistory.q.quantity_produced),
         quantity_consumed=const.SUM(ProductHistory.q.quantity_consumed),
         quantity_lost=const.SUM(ProductHistory.q.quantity_lost),

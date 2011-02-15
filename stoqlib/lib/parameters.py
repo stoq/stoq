@@ -251,6 +251,12 @@ _parameter_info = dict(
     _(u'Default CFOP (Fiscal Code of Operations) used when receiving '
       'products in the stock application.')),
 
+    DEFAULT_STOCK_DECREASE_CFOP=ParameterDetails(
+    _(u'Stock'),
+    _(u'Default CFOP for Stock Decreases'),
+    _(u'Default CFOP (Fiscal Code of Operations) used when performing a '
+      'manual stock decrease.')),
+
     ICMS_TAX=ParameterDetails(
     _(u'Sales'),
     _(u'Default ICMS tax'),
@@ -400,6 +406,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('DEFAULT_SALES_CFOP', u'fiscal.CfopData'),
         ParameterAttr('DEFAULT_RETURN_SALES_CFOP', u'fiscal.CfopData'),
         ParameterAttr('DEFAULT_RECEIVING_CFOP', u'fiscal.CfopData'),
+        ParameterAttr('DEFAULT_STOCK_DECREASE_CFOP', u'fiscal.CfopData'),
         ParameterAttr('SUGGESTED_SUPPLIER',
                       u'person.PersonAdaptToSupplier'),
         ParameterAttr('SUGGESTED_UNIT',
@@ -566,6 +573,7 @@ class ParameterAccess(ClassInittableObject):
         self.ensure_default_sales_cfop()
         self.ensure_default_return_sales_cfop()
         self.ensure_default_receiving_cfop()
+        self.ensure_default_stock_decrease_cfop()
         self.ensure_suggested_supplier()
         self.ensure_suggested_unit()
         self.ensure_default_base_category()
@@ -653,8 +661,10 @@ class ParameterAccess(ClassInittableObject):
         from stoqlib.domain.fiscal import CfopData
         if self.get_parameter_by_field(key, CfopData):
             return
-        data = CfopData(code=code, description=description,
-                        connection=self.conn)
+        data = CfopData.selectOneBy(code=code, connection=self.conn)
+        if not data:
+            data = CfopData(code=code, description=description,
+                            connection=self.conn)
         self._set_schema(key, data.id)
 
     def ensure_default_return_sales_cfop(self):
@@ -671,6 +681,12 @@ class ParameterAccess(ClassInittableObject):
         self._ensure_cfop("DEFAULT_RECEIVING_CFOP",
                           u"Compra para Comercializacao",
                           u"1.102")
+
+    def ensure_default_stock_decrease_cfop(self):
+        self._ensure_cfop("DEFAULT_STOCK_DECREASE_CFOP",
+                          u"Outra saída de mercadoria ou "
+                          u"prestação de serviço não especificado",
+                          u"5.949")
 
     def ensure_product_tax_constant(self):
         from stoqlib.domain.sellable import SellableTaxConstant

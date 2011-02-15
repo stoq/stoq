@@ -95,7 +95,9 @@ class StockDecreaseSearch(SearchDialog):
                 Column('removed_by_name', _('Removed By'),
                        data_type=unicode, width=120),
                 Column('total_items_removed',
-                       _('Items removed'), data_type=Decimal, width=110)
+                       _('Items removed'), data_type=Decimal, width=110),
+                Column('cfop_description', u'CFOP', data_type=unicode,
+                       expand=True)
                        ]
 
     #

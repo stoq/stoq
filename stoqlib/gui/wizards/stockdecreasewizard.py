@@ -35,6 +35,7 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.database.runtime import (get_current_branch, new_transaction,
                                       finish_transaction, get_current_user)
+from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
                                        IStorable, IEmployee)
 from stoqlib.domain.payment.group import PaymentGroup
@@ -76,6 +77,7 @@ class StartStockDecreaseStep(WizardEditorStep):
                      'branch',
                      'reason',
                      'removed_by',
+                     'cfop',
                      )
 
 
@@ -92,10 +94,16 @@ class StartStockDecreaseStep(WizardEditorStep):
         items = [(s.person.name, s) for s in branches]
         self.branch.prefill(sorted(items))
 
+    def _fill_cfop_combo(self):
+        cfops = [(cfop.get_description(), cfop)
+                    for cfop in CfopData.select(connection=self.conn)]
+        self.cfop.prefill(sorted(cfops))
+
     def _setup_widgets(self):
         self.confirm_date.set_sensitive(False)
         self._fill_employee_combo()
         self._fill_branch_combo()
+        self._fill_cfop_combo()
 
     #
     # WizardStep hooks
@@ -104,7 +112,7 @@ class StartStockDecreaseStep(WizardEditorStep):
     def post_init(self):
         self.confirm_date.grab_focus()
         self.table1.set_focus_chain([self.confirm_date, self.branch,
-                                     self.removed_by, self.reason])
+                                     self.removed_by, self.reason, self.cfop])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
@@ -234,10 +242,12 @@ class StockDecreaseWizard(BaseWizard):
         branch = get_current_branch(conn)
         user = get_current_user(conn)
         employee = IEmployee(user.person, None)
+        cfop = sysparam(conn).DEFAULT_STOCK_DECREASE_CFOP
         return StockDecrease(responsible=user,
                              removed_by=employee,
                              branch=branch,
                              status=StockDecrease.STATUS_INITIAL,
+                             cfop=cfop,
                              connection=conn)
 
     def _receipt_dialog(self):

@@ -29,8 +29,7 @@ from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
-                                    ProductHistory, ProductComponent,
-                                    ProductRetentionHistory)
+                                    ProductHistory, ProductComponent)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import BaseSellableInfo, Sellable
 
@@ -278,46 +277,3 @@ class TestProductHistory(DomainTest):
         self.failUnless(prod_hist)
         self.assertEqual(prod_hist.quantity_transfered, qty)
 
-    def testAddRetainedQuantity(self):
-        sellable = self.create_sellable()
-        sellable.status = Sellable.STATUS_AVAILABLE
-        product = sellable.product
-        storable = product.addFacet(IStorable, connection=self.trans)
-        storable.increase_stock(10, get_current_branch(self.trans))
-        self.failIf(ProductHistory.selectOneBy(connection=self.trans,
-                                               sellable=sellable))
-
-        retained_qty = 4
-        retained = self.create_retained_product(product, retained_qty)
-        self.assertEqual(sellable, retained.product.sellable)
-        prod_hist = ProductHistory.selectOneBy(connection=self.trans,
-                                               sellable=sellable)
-        self.failUnless(prod_hist)
-        self.assertEqual(prod_hist.quantity_retained, retained_qty)
-
-
-class TestProductRetentionHistory(DomainTest):
-
-    def testCancelRetention(self):
-        sellable = self.create_sellable()
-        sellable.status = Sellable.STATUS_AVAILABLE
-        product = sellable.product
-        storable = product.addFacet(IStorable, connection=self.trans)
-        branch = get_current_branch(self.trans)
-        quantity = 10
-        storable.increase_stock(quantity, branch)
-        retained_quantity = 3
-        retained = self.create_retained_product(product, retained_quantity)
-        history_entry = ProductRetentionHistory.selectOneBy(product=product,
-            quantity=retained_quantity, connection=self.trans)
-
-        self.failIf(history_entry is None)
-        self.assertEqual(storable.get_full_balance(branch),
-                         quantity - retained_quantity)
-
-        retained.cancel_retention(branch)
-        history_entry = ProductRetentionHistory.selectOneBy(product=product,
-            quantity=retained_quantity, connection=self.trans)
-
-        self.failUnless(history_entry is None)
-        self.assertEqual(storable.get_full_balance(branch), quantity)

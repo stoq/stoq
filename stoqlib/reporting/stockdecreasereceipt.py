@@ -50,6 +50,7 @@ class StockDecreaseReceipt(BaseStoqReport):
 
         self._identify_removed_by()
         self._add_reason()
+        self._add_cfop()
         self.add_blank_space()
         self._setup_items_table()
         self._add_signatures()
@@ -78,6 +79,12 @@ class StockDecreaseReceipt(BaseStoqReport):
         details_str = self.order.reason
 
         self.add_paragraph(_(u'Reason'), style='Normal-Bold')
+        self.add_preformatted_text(details_str, style='Normal-Notes')
+
+    def _add_cfop(self):
+        details_str = self.order.cfop.get_description()
+
+        self.add_paragraph(("Cfop"), style='Normal-Bold')
         self.add_preformatted_text(details_str, style='Normal-Notes')
 
     def _get_table_columns(self):

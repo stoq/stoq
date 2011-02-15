@@ -45,7 +45,8 @@ class StockDecreaseDetailsDialog(BaseEditor):
     proxy_widgets = ('confirm_date',
                      'branch_name',
                      'responsible_name',
-                     'removed_by_name')
+                     'removed_by_name',
+                     'cfop_description')
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)

@@ -52,7 +52,7 @@ class StockDecreaseItem(Domain):
     @param stock_decrease: the same
     @param quantity: the quantity decreased for this item
     """
-    stock_decrease = ForeignKey('StockDecrease')
+    stock_decrease = ForeignKey('StockDecrease', default=None)
     sellable = ForeignKey('Sellable')
     quantity = QuantityCol()
 
@@ -114,6 +114,7 @@ class StockDecrease(Domain):
     responsible = ForeignKey('PersonAdaptToUser')
     removed_by = ForeignKey('PersonAdaptToEmployee')
     branch = ForeignKey('PersonAdaptToBranch', default=None)
+    cfop = ForeignKey('CfopData')
 
     #
     # Classmethods
@@ -188,6 +189,9 @@ class StockDecrease(Domain):
 
     def get_total_items_removed(self):
         return sum([item.quantity for item in self.get_items()], 0)
+
+    def get_cfop_description(self):
+        return self.cfop.get_description()
 
     # Other methods
 
