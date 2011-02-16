@@ -125,6 +125,13 @@ class BasePaymentDataEditor(BaseEditor):
         BaseEditor.__init__(self, None, model)
 
     #
+    # Private Methods
+    #
+
+    def _setup_widgets(self):
+        self.payment_number.grab_focus()
+
+    #
     # BaseEditorSlave hooks
     #
 
@@ -132,6 +139,7 @@ class BasePaymentDataEditor(BaseEditor):
         return _(u"Edit '%s'" % model.description)
 
     def setup_proxies(self):
+        self._setup_widgets()
         self.add_proxy(self.model, self.payment_widgets)
 
     #
