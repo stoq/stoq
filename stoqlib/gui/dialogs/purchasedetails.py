@@ -39,6 +39,7 @@ from stoqlib.domain.interfaces import IInPayment
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
+from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
 
 _ = stoqlib_gettext
@@ -60,20 +61,43 @@ class _TemporaryReceivingDetails:
     total_surcharges = currency(0)
     receiving_subtotal = currency(0)
     receiving_total = currency(0)
+    received_freight = currency(0)
+    received_freight_type = u''
 
     def __init__(self, orders):
-        if not orders.count() == 0:
-            discount = surcharge = subtotal = total = 0
+        freight_type_map = {
+            ReceivingOrder.FREIGHT_FOB_PAYMENT:      PurchaseOrder.FREIGHT_FOB,
+            ReceivingOrder.FREIGHT_FOB_INSTALLMENTS: PurchaseOrder.FREIGHT_FOB,
+            ReceivingOrder.FREIGHT_CIF_UNKNOWN:      PurchaseOrder.FREIGHT_CIF,
+            ReceivingOrder.FREIGHT_CIF_INVOICE:      PurchaseOrder.FREIGHT_CIF
+        }
+        freight_names = PurchaseOrder.freight_types
+        freight_types = []
+
+        if orders.count():
+            discount = surcharge = freight = subtotal = total = 0
+            freight_type = None
             for order in orders:
                 discount += order._get_total_discounts()
                 surcharge += order._get_total_surcharges()
+                freight += order.freight_total
                 subtotal += order.get_products_total()
                 total += order.get_total()
 
+                # If first time used, append to the list of used types
+                if freight_type_map[order.freight_type] not in freight_types:
+                   freight_types.append(freight_type_map[order.freight_type])
+
             self.total_discounts = currency(discount)
             self.total_surcharges = currency(surcharge)
+            self.received_freight = currency(freight)
             self.receiving_subtotal = currency(subtotal)
             self.receiving_total = currency(total)
+
+            if len(freight_types) == 1:
+                self.received_freight_type = freight_names[freight_types[0]]
+            else:
+                self.received_freight_type = _(u'Mixed Freights')
 
 
 class PurchaseDetailsDialog(BaseEditor):
@@ -87,21 +111,21 @@ class PurchaseDetailsDialog(BaseEditor):
                      'supplier',
                      'open_date',
                      'status',
-                     'transporter',
+                     'transporter_name',
                      'responsible_name',
-                     'salesperson',
-                     'receival_date',
-                     'freight_type',
+                     'salesperson_name',
+                     'expected_receival_date',
                      'expected_freight',
+                     'freight_type',
                      'notes')
-    payment_proxy = ('payment_method',
-                     'installments_number',
-                     'total_paid',
+    payment_proxy = ('total_paid',
                      'total_interest',
                      'total_discount',
                      'total_penalty',
                      'total_value')
-    receiving_proxy = ('total_discounts',
+    receiving_proxy = ('received_freight_type',
+                       'received_freight',
+                       'total_discounts',
                        'total_surcharges',
                        'receiving_subtotal',
                        'receiving_total')
@@ -132,6 +156,13 @@ class PurchaseDetailsDialog(BaseEditor):
             self.model.group,
             connection=self.conn)
         self.payments_info_list.add_list(changes)
+
+        if not self._receiving_orders:
+            for widget in (self.received_freight_type_label,
+                           self.received_freight_type,
+                           self.received_freight_label,
+                           self.received_freight):
+                widget.hide()
 
         self._setup_summary_labels()
 
@@ -215,13 +246,15 @@ class PurchaseDetailsDialog(BaseEditor):
     #
 
     def setup_proxies(self):
+        self._receiving_orders = self.model.get_receiving_orders()
+
         self._setup_widgets()
+
         self.add_proxy(self.model, PurchaseDetailsDialog.proxy_widgets)
         self.add_proxy(self.model.group, PurchaseDetailsDialog.payment_proxy)
-        receiving_orders = self.model.get_receiving_orders()
-        receiving_details = _TemporaryReceivingDetails(receiving_orders)
-        self.add_proxy(receiving_details,
+        self.add_proxy(_TemporaryReceivingDetails(self._receiving_orders),
                        PurchaseDetailsDialog.receiving_proxy)
+
 
     #
     # Kiwi callbacks

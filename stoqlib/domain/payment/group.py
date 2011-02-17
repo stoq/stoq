@@ -104,6 +104,10 @@ class PaymentGroup(Domain):
     def payments(self):
         return self.get_items()
 
+    @property
+    def installments_number(self):
+        return self.payments.count()
+
     #
     # Fiscal methods
     #

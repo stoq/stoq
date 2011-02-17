@@ -4,6 +4,7 @@
     <widget class="GtkWindow" id="PurchaseDetailsDialog">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
+        <property name="mnemonics_visible">False</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
                 <property name="border_width">12</property>
@@ -553,22 +554,22 @@
                                     <widget class="GtkTable" id="table3">
                                         <property name="border_width">6</property>
                                         <property name="column_spacing">6</property>
-                                        <property name="n_columns">4</property>
-                                        <property name="n_rows">10</property>
+                                        <property name="n_columns">6</property>
+                                        <property name="n_rows">5</property>
                                         <property name="row_spacing">6</property>
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="ProxyLabel" id="kiwilabel1">
-                                                <property name="label" context="yes" translatable="yes">Payment Method:</property>
-                                                <property name="model_attribute">kiwilabel1</property>
+                                            <widget class="ProxyLabel" id="kiwilabel10">
+                                                <property name="label" context="yes" translatable="yes">Salesperson:</property>
+                                                <property name="model_attribute">kiwilabel10</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
                                         </child>
                                         <child>
-                                            <widget class="ProxyLabel" id="kiwilabel10">
-                                                <property name="label" context="yes" translatable="yes">Salesperson:</property>
-                                                <property name="model_attribute">kiwilabel10</property>
+                                            <widget class="ProxyLabel" id="kiwilabel5">
+                                                <property name="label" context="yes" translatable="yes">Transporter:</property>
+                                                <property name="model_attribute">kiwilabel5</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
@@ -588,9 +589,9 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="ProxyLabel" id="kiwilabel5">
-                                                <property name="label" context="yes" translatable="yes">Transporter:</property>
-                                                <property name="model_attribute">kiwilabel5</property>
+                                            <widget class="ProxyLabel" id="kiwilabel9">
+                                                <property name="label" context="yes" translatable="yes">Agreed Freight Type:</property>
+                                                <property name="model_attribute">kiwilabel9</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
@@ -600,9 +601,9 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="ProxyLabel" id="kiwilabel9">
-                                                <property name="label" context="yes" translatable="yes">Freight Type:</property>
-                                                <property name="model_attribute">kiwilabel9</property>
+                                            <widget class="ProxyLabel" id="received_freight_type_label">
+                                                <property name="label" context="yes" translatable="yes">Received Freight Type:</property>
+                                                <property name="model_attribute">received_freight_type_label</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
@@ -612,54 +613,9 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="GtkHSeparator" id="hseparator2">
-                                                <property name="visible">True</property>
-                                            </widget>
-                                            <packing>
-                                                <property name="bottom_attach">6</property>
-                                                <property name="right_attach">4</property>
-                                                <property name="top_attach">5</property>
-                                            </packing>
-                                        </child>
-                                        <child>
-                                            <widget class="ProxyLabel" id="kiwilabel14">
-                                                <property name="label" context="yes" translatable="yes">Notes:</property>
-                                                <property name="model_attribute"></property>
-                                                <property name="visible">True</property>
-                                                <property name="xalign">1.0</property>
-                                            </widget>
-                                            <packing>
-                                                <property name="bottom_attach">7</property>
-                                                <property name="top_attach">6</property>
-                                            </packing>
-                                        </child>
-                                        <child>
-                                            <widget class="GtkScrolledWindow" id="scrolledwindow1">
-                                                <property name="hscrollbar_policy">automatic</property>
-                                                <property name="shadow_type">etched-in</property>
-                                                <property name="visible">True</property>
-                                                <property name="vscrollbar_policy">automatic</property>
-                                                <child>
-                                                    <widget class="ProxyTextView" id="notes">
-                                                        <property name="cursor_visible">False</property>
-                                                        <property name="data_type">unicode</property>
-                                                        <property name="editable">False</property>
-                                                        <property name="model_attribute">notes</property>
-                                                        <property name="visible">True</property>
-                                                    </widget>
-                                                </child>
-                                            </widget>
-                                            <packing>
-                                                <property name="bottom_attach">10</property>
-                                                <property name="right_attach">4</property>
-                                                <property name="top_attach">7</property>
-                                            </packing>
-                                        </child>
-                                        <child>
-                                            <widget class="ProxyLabel" id="payment_method">
+                                            <widget class="ProxyLabel" id="salesperson_name">
                                                 <property name="data_type">unicode</property>
-                                                <property name="justify">right</property>
-                                                <property name="model_attribute">default_payment_method_name</property>
+                                                <property name="model_attribute">salesperson_name</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>
@@ -669,9 +625,9 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="ProxyLabel" id="salesperson">
+                                            <widget class="ProxyLabel" id="transporter_name">
                                                 <property name="data_type">unicode</property>
-                                                <property name="model_attribute">salesperson_name</property>
+                                                <property name="model_attribute">transporter_name</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>
@@ -680,20 +636,6 @@
                                                 <property name="left_attach">1</property>
                                                 <property name="right_attach">2</property>
                                                 <property name="top_attach">1</property>
-                                            </packing>
-                                        </child>
-                                        <child>
-                                            <widget class="ProxyLabel" id="transporter">
-                                                <property name="data_type">unicode</property>
-                                                <property name="model_attribute">transporter_name</property>
-                                                <property name="visible">True</property>
-                                                <property name="xalign">0.0</property>
-                                            </widget>
-                                            <packing>
-                                                <property name="bottom_attach">4</property>
-                                                <property name="left_attach">1</property>
-                                                <property name="right_attach">2</property>
-                                                <property name="top_attach">3</property>
                                             </packing>
                                         </child>
                                         <child>
@@ -704,6 +646,20 @@
                                                 <property name="xalign">0.0</property>
                                             </widget>
                                             <packing>
+                                                <property name="bottom_attach">4</property>
+                                                <property name="left_attach">1</property>
+                                                <property name="right_attach">2</property>
+                                                <property name="top_attach">3</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <widget class="ProxyLabel" id="received_freight_type">
+                                                <property name="data_type">unicode</property>
+                                                <property name="model_attribute">received_freight_type</property>
+                                                <property name="visible">True</property>
+                                                <property name="xalign">0.0</property>
+                                            </widget>
+                                            <packing>
                                                 <property name="bottom_attach">5</property>
                                                 <property name="left_attach">1</property>
                                                 <property name="right_attach">2</property>
@@ -713,31 +669,8 @@
                                         <child>
                                             <placeholder/>
                                             <packing>
-                                                <property name="left_attach">1</property>
-                                                <property name="right_attach">2</property>
-                                                <property name="top_attach">6</property>
-                                                <property name="bottom_attach">7</property>
-                                            </packing>
-                                        </child>
-                                        <child>
-                                            <widget class="ProxyLabel" id="kiwilabel3">
-                                                <property name="label" context="yes" translatable="yes">Number of Installments:</property>
-                                                <property name="model_attribute">kiwilabel3</property>
-                                                <property name="visible">True</property>
-                                                <property name="xalign">1.0</property>
-                                            </widget>
-                                            <packing>
                                                 <property name="left_attach">2</property>
                                                 <property name="right_attach">3</property>
-                                            </packing>
-                                        </child>
-                                        <child>
-                                            <placeholder/>
-                                            <packing>
-                                                <property name="left_attach">2</property>
-                                                <property name="right_attach">3</property>
-                                                <property name="top_attach">1</property>
-                                                <property name="bottom_attach">2</property>
                                             </packing>
                                         </child>
                                         <child>
@@ -748,6 +681,20 @@
                                                 <property name="xalign">1.0</property>
                                             </widget>
                                             <packing>
+                                                <property name="bottom_attach">2</property>
+                                                <property name="left_attach">2</property>
+                                                <property name="right_attach">3</property>
+                                                <property name="top_attach">1</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <widget class="ProxyLabel" id="kiwilabel11">
+                                                <property name="label" context="yes" translatable="yes">Expected Freight Value:</property>
+                                                <property name="model_attribute">kiwilabel11</property>
+                                                <property name="visible">True</property>
+                                                <property name="xalign">1.0</property>
+                                            </widget>
+                                            <packing>
                                                 <property name="bottom_attach">4</property>
                                                 <property name="left_attach">2</property>
                                                 <property name="right_attach">3</property>
@@ -755,9 +702,9 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="ProxyLabel" id="kiwilabel11">
-                                                <property name="label" context="yes" translatable="yes">Expected Freight:</property>
-                                                <property name="model_attribute">kiwilabel11</property>
+                                            <widget class="ProxyLabel" id="received_freight_label">
+                                                <property name="label" context="yes" translatable="yes">Received Freight Value:</property>
+                                                <property name="model_attribute">received_freight_label</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
@@ -771,39 +718,29 @@
                                         <child>
                                             <placeholder/>
                                             <packing>
-                                                <property name="left_attach">2</property>
-                                                <property name="right_attach">3</property>
-                                                <property name="top_attach">6</property>
-                                                <property name="bottom_attach">7</property>
+                                                <property name="left_attach">3</property>
+                                                <property name="right_attach">4</property>
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="ProxyLabel" id="installments_number">
-                                                <property name="data_type">int</property>
+                                            <widget class="ProxyLabel" id="expected_receival_date">
+                                                <property name="data_type">date</property>
                                                 <property name="justify">right</property>
-                                                <property name="model_attribute">installments_number</property>
+                                                <property name="model_attribute">expected_receival_date</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>
                                             <packing>
-                                                <property name="left_attach">3</property>
-                                                <property name="right_attach">4</property>
-                                            </packing>
-                                        </child>
-                                        <child>
-                                            <placeholder/>
-                                            <packing>
+                                                <property name="bottom_attach">2</property>
                                                 <property name="left_attach">3</property>
                                                 <property name="right_attach">4</property>
                                                 <property name="top_attach">1</property>
-                                                <property name="bottom_attach">2</property>
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="ProxyLabel" id="receival_date">
-                                                <property name="data_type">date</property>
-                                                <property name="justify">right</property>
-                                                <property name="model_attribute">expected_receival_date</property>
+                                            <widget class="ProxyLabel" id="expected_freight">
+                                                <property name="data_type">currency</property>
+                                                <property name="model_attribute">expected_freight</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>
@@ -815,9 +752,9 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="ProxyLabel" id="expected_freight">
+                                            <widget class="ProxyLabel" id="received_freight">
                                                 <property name="data_type">currency</property>
-                                                <property name="model_attribute">expected_freight</property>
+                                                <property name="model_attribute">received_freight</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>
@@ -828,36 +765,47 @@
                                                 <property name="top_attach">4</property>
                                             </packing>
                                         </child>
-                                        <child>
-                                            <placeholder/>
-                                            <packing>
-                                                <property name="left_attach">3</property>
-                                                <property name="right_attach">4</property>
-                                                <property name="top_attach">6</property>
-                                                <property name="bottom_attach">7</property>
-                                            </packing>
-                                        </child>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <placeholder/>
-                                    <packing>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <placeholder/>
-                                    <packing>
-                                        <property name="position">2</property>
                                     </packing>
                                 </child>
                             </widget>
                             <packing>
                                 <property name="position">4</property>
                                 <property name="tab_label" context="yes" translatable="yes">Additional Info</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkVBox" id="vbox2">
+                                <property name="spacing">6</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                                        <property name="border_width">6</property>
+                                        <property name="hscrollbar_policy">automatic</property>
+                                        <property name="shadow_type">etched-in</property>
+                                        <property name="visible">True</property>
+                                        <property name="vscrollbar_policy">automatic</property>
+                                        <child>
+                                            <widget class="ProxyTextView" id="notes">
+                                                <property name="cursor_visible">False</property>
+                                                <property name="data_type">unicode</property>
+                                                <property name="editable">False</property>
+                                                <property name="is_focus">True</property>
+                                                <property name="model_attribute">notes</property>
+                                                <property name="visible">True</property>
+                                            </widget>
+                                        </child>
+                                    </widget>
+                                    <packing>
+                                        <property name="padding">6</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="position">5</property>
+                                <property name="tab_label" context="yes" translatable="yes">Notes</property>
                             </packing>
                         </child>
                     </widget>
