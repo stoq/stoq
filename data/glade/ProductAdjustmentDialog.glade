@@ -74,7 +74,6 @@
                                         <property name="digits">2</property>
                                         <property name="mandatory">True</property>
                                         <property name="model_attribute">adjustment_quantity</property>
-                                        <property name="text" context="yes" translatable="yes">0.00</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>

@@ -60,7 +60,6 @@ Information:</property>
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">base_cost</property>
-                        <property name="text" context="yes" translatable="yes">0.00</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>

@@ -88,7 +88,6 @@
                                 <property name="data_type">Decimal</property>
                                 <property name="digits">2</property>
                                 <property name="model_attribute">suggested_markup</property>
-                                <property name="text" context="yes" translatable="yes">0,00</property>
                                 <property name="visible">True</property>
                                 <property name="width_chars">7</property>
                             </widget>
