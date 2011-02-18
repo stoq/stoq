@@ -74,12 +74,11 @@ _ = stoqlib_gettext
 DEFAULT_INSTALLMENTS_NUMBER = 1
 DEFAULT_INTERVALS = 1
 DEFAULT_INTERVAL_TYPE = INTERVALTYPE_MONTH
-DEFAULT_FIRST_DUE_DATE = datetime.date.today()
 
 class _BaseTemporaryMethodData(object):
-    def __init__(self, first_duedate=DEFAULT_FIRST_DUE_DATE,
+    def __init__(self, first_duedate=None,
                  installments_number=DEFAULT_INSTALLMENTS_NUMBER):
-        self.first_duedate = first_duedate
+        self.first_duedate = first_duedate or datetime.date.today()
         self.installments_number = installments_number
         self.intervals = DEFAULT_INTERVALS
         self.interval_type = DEFAULT_INTERVAL_TYPE
@@ -223,10 +222,10 @@ class PaymentListSlave(GladeSlaveDelegate):
     #
 
     def _can_edit_payments(self):
-        return (self.method.method_name not in ('money',))
+        return self.method.method_name != 'money'
 
     def _has_bank_data(self):
-        return (self.method.method_name in ('check',))
+        return self.method.method_name == 'check'
 
     def _get_columns(self):
         columns = [Column('description', title=_('Description'),
@@ -327,23 +326,6 @@ class PaymentListSlave(GladeSlaveDelegate):
 
             self.add_payment(description, currency(values[i]), due_dates[i],
                              None, bank_data, False)
-
-        self.update_view()
-
-    def add_existing_payments(self, payments):
-        for p in payments:
-            if self._has_bank_data():
-                adapted = payment.get_adapted()
-                p_bank_data = adapted.check_data.bank_data
-
-                bank_data = _TemporaryBankData(p_bank_data.bank_id,
-                                               p_bank_data.branch,
-                                               p_bank_data.account)
-            else:
-                bank_data = None
-
-            self.add_payment(p.description, p.value, p.due_date,
-                             p.payment_number, bank_data, False)
 
         self.update_view()
 
