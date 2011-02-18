@@ -106,7 +106,7 @@ class ProductImporter(CSVImporter):
         else:
             unit = None
         sellable = Sellable(connection=trans,
-                            cost=int(data.cost),
+                            cost=float(data.cost),
                             code=data.barcode,
                             barcode=data.barcode,
                             category=category,
@@ -118,5 +118,6 @@ class ProductImporter(CSVImporter):
         ProductSupplierInfo(connection=trans,
                             supplier=self.supplier,
                             is_main_supplier=True,
+                            base_cost=float(data.cost),
                             product=product)
         product.addFacet(IStorable, connection=trans)

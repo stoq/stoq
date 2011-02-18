@@ -239,12 +239,16 @@ class PurchaseItemStep(SellableItemStep):
 
     def sellable_selected(self, sellable):
         super(PurchaseItemStep, self).sellable_selected(sellable)
+        supplier_info = self._get_supplier_info()
+        if not supplier_info:
+            return
 
-        minimum = self._get_supplier_minimum_quantity()
+        minimum = supplier_info.minimum_purchase
         self.quantity.set_adjustment(gtk.Adjustment(lower=minimum,
                                                     upper=sys.maxint,
                                                     step_incr=1))
         self.quantity.set_value(minimum)
+        self.cost.set_value(supplier_info.base_cost)
 
 
     def get_columns(self):
@@ -283,22 +287,15 @@ class PurchaseItemStep(SellableItemStep):
     # Private API
     #
 
-    def _get_supplier_minimum_quantity(self):
+    def _get_supplier_info(self):
         sellable = self.proxy.model.sellable
-        if sellable is None:
-            return Decimal(0)
-
+        if not sellable:
+            return
         product = sellable.product
         supplier = self.model.supplier
-        supplier_info = ProductSupplierInfo.selectOneBy(product=product,
-                                                        supplier=supplier,
-                                                        connection=self.conn)
-        if supplier_info is not None:
-            return supplier_info.minimum_purchase
-        #XXX: This is a workaround to avoid errors in subclasses where the
-        #     supplier_info might not exist for a given purchase item.
-        #     In such cases we are just returning a safe value for it.
-        return Decimal(1)
+        return ProductSupplierInfo.selectOneBy(product=product,
+                                                supplier=supplier,
+                                                connection=self.conn)
 
     #
     # Callbacks
@@ -312,7 +309,7 @@ class PurchaseItemStep(SellableItemStep):
         if not value or value <= Decimal(0):
             return ValidationError(_(u'Quantity must be greater than zero'))
 
-        supplier_minimum = self._get_supplier_minimum_quantity()
+        supplier_minimum = self._get_supplier_info().minimum_purchase
         if value < supplier_minimum:
             return ValidationError(_(u'Quantity below the minimum required '
                                       'by the supplier'))
