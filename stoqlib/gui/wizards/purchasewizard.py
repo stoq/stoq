@@ -326,6 +326,23 @@ class PurchasePaymentStep(WizardEditorStep):
         self.slave = None
         self.discount_surcharge_slave = None
         self.outstanding_value = outstanding_value
+
+        if not model.payments.count():
+            # Default values
+            self._installments_number = 1
+            self._first_duedate = datetime.date.today()
+            self._method = 'bill'
+        else:
+            # FIXME: SqlObject returns count as long, but we need it as int.
+            self._installments_number = int(model.payments.count())
+            self._method = model.payments[0].method.method_name
+
+            # due_date is datetime.datetime. Converting it to datetime.date
+            due_date = model.payments[0].due_date.date()
+            today_date = datetime.date.today()
+            self._first_duedate = (due_date >= today_date and
+                                   due_date or today_date)
+
         WizardEditorStep.__init__(self, conn, wizard, model.group, previous)
 
     def _setup_widgets(self):
@@ -339,8 +356,9 @@ class PurchasePaymentStep(WizardEditorStep):
     def _set_method_slave(self):
         """Sets the payment method slave"""
         method = self.method_combo.get_selected_data()
-        if method is None:
+        if not method:
             return
+
         slave_classes = {
             'bill': BillMethodSlave,
             'check': CheckMethodSlave,
@@ -351,6 +369,8 @@ class PurchasePaymentStep(WizardEditorStep):
             self.wizard.payment_group = self.model
             self.slave = slave_class(self.wizard, self,
                                      self.conn, self.order, method,
+                                     self._first_duedate,
+                                     self._installments_number,
                                      outstanding_value=self.outstanding_value)
             self.attach_slave('method_slave_holder', self.slave)
 
@@ -391,14 +411,15 @@ class PurchasePaymentStep(WizardEditorStep):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     PurchasePaymentStep.payment_widgets)
-        # Set the first payment method as default
-        self.method_combo.select_item_by_position(0)
+
+        method_data = PaymentMethod.get_by_name(self.conn, self._method)
+        self.method_combo.select_item_by_data(method_data)
 
     #
     # callbacks
     #
 
-    def on_method_combo__content_changed(self, *args):
+    def after_method_combo__content_changed(self, *args):
         self._update_payment_method_slave()
 
 
