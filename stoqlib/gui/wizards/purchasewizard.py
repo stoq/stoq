@@ -337,17 +337,20 @@ class PurchasePaymentStep(WizardEditorStep):
             self._installments_number = int(model.payments.count())
             self._method = model.payments[0].method.method_name
 
-            due_date = datetime.date(model.payments[0].due_date.year,
-                                     model.payments[0].due_date.month,
-                                     model.payments[0].due_date.day)
-            self._first_duedate = due_date
+            # due_date is datetime.datetime. Converting it to datetime.date
+            due_date = model.payments[0].due_date.date()
+            today_date = datetime.date.today()
+            self._first_duedate = (due_date >= today_date and
+                                   due_date or today_date)
 
         WizardEditorStep.__init__(self, conn, wizard, model.group, previous)
 
     def _setup_widgets(self):
-        items = [(_('Bill'), PaymentMethod.get_by_name(self.conn, 'bill')),
-                 (_('Check'), PaymentMethod.get_by_name(self.conn, 'check')),
-                 (_('Money'), PaymentMethod.get_by_name(self.conn, 'money'))]
+        items = [
+            (_('Bill'), PaymentMethod.get_by_name(self.conn, 'bill')),
+            (_('Check'), PaymentMethod.get_by_name(self.conn, 'check')),
+            (_('Money'), PaymentMethod.get_by_name(self.conn, 'money')),
+            ]
         self.method_combo.prefill(items)
 
     def _set_method_slave(self):
@@ -356,9 +359,11 @@ class PurchasePaymentStep(WizardEditorStep):
         if not method:
             return
 
-        slave_classes = {'bill' : BillMethodSlave,
-                         'check': CheckMethodSlave,
-                         'money': MoneyMethodSlave}
+        slave_classes = {
+            'bill': BillMethodSlave,
+            'check': CheckMethodSlave,
+            'money': MoneyMethodSlave,
+            }
         slave_class = slave_classes.get(method.method_name)
         if slave_class:
             self.wizard.payment_group = self.model
@@ -407,10 +412,8 @@ class PurchasePaymentStep(WizardEditorStep):
         self.proxy = self.add_proxy(self.model,
                                     PurchasePaymentStep.payment_widgets)
 
-        methods = {'bill'  : 0,
-                   'check' : 1,
-                   'money' : 2}
-        self.method_combo.select_item_by_position(methods[self._method])
+        method_data = PaymentMethod.get_by_name(self.conn, self._method)
+        self.method_combo.select_item_by_data(method_data)
 
     #
     # callbacks
