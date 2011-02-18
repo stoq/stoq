@@ -76,9 +76,10 @@ DEFAULT_INTERVALS = 1
 DEFAULT_INTERVAL_TYPE = INTERVALTYPE_MONTH
 
 class _BaseTemporaryMethodData(object):
-    def __init__(self):
-        self.first_duedate = datetime.date.today()
-        self.installments_number = DEFAULT_INSTALLMENTS_NUMBER
+    def __init__(self, first_duedate=None,
+                 installments_number=DEFAULT_INSTALLMENTS_NUMBER):
+        self.first_duedate = first_duedate or datetime.date.today()
+        self.installments_number = installments_number
         self.intervals = DEFAULT_INTERVALS
         self.interval_type = DEFAULT_INTERVAL_TYPE
 
@@ -122,14 +123,22 @@ class BasePaymentDataEditor(BaseEditor):
     def __init__(self, model):
         BaseEditor.__init__(self, None, model)
 
-    def get_title(self, model):
-        return _(u"Edit '%s'" % model.description)
+    #
+    # Private Methods
+    #
+
+    def _setup_widgets(self):
+        self.payment_number.grab_focus()
 
     #
     # BaseEditorSlave hooks
     #
 
+    def get_title(self, model):
+        return _(u"Edit '%s'" % model.description)
+
     def setup_proxies(self):
+        self._setup_widgets()
         self.add_proxy(self.model, self.payment_widgets)
 
     #
@@ -215,12 +224,14 @@ class PaymentListSlave(GladeSlaveDelegate):
     def _can_edit_payments(self):
         return self.method.method_name != 'money'
 
+    def _has_bank_data(self):
+        return self.method.method_name == 'check'
+
     def _get_columns(self):
         columns = [Column('description', title=_('Description'),
                           expand=True, data_type=str)]
-        # Add columns to show bank data when the method needs it (checks for
-        # example.
-        if self.method.method_name == 'check':
+
+        if self._has_bank_data():
             columns.extend([Column('bank_data.bank_id',
                                    title=_('Bank ID'),
                                    data_type=int, justify=gtk.JUSTIFY_RIGHT),
@@ -230,6 +241,7 @@ class PaymentListSlave(GladeSlaveDelegate):
                             Column('bank_data.bank_account',
                                    title=_('Bank Account'),
                                    data_type=str, justify=gtk.JUSTIFY_RIGHT)])
+
         # Money methods doesn't have a payment_number related with it.
         if self.method.method_name != 'money':
             columns.append(Column('payment_number', title=_('Number'),
@@ -283,6 +295,19 @@ class PaymentListSlave(GladeSlaveDelegate):
         self.payment_list.refresh()
         self._update_difference_label()
 
+    def add_payment(self, description, value, due_date, payment_number=None,
+                    bank_data=None, refresh=True):
+        """Add a payment to the list"""
+        payment = _TemporaryPaymentData(description,
+                                        value,
+                                        due_date,
+                                        payment_number,
+                                        bank_data)
+        self.payment_list.append(payment)
+
+        if refresh:
+            self.update_view()
+
     def add_payments(self, installments_number, first_due_date,
                      interval, interval_type):
         values = generate_payments_values(self.total_value,
@@ -296,18 +321,16 @@ class PaymentListSlave(GladeSlaveDelegate):
         for i in range(installments_number):
             description = self.method.describe_payment(self.group, i + 1,
                                                        installments_number)
-            if self.method.method_name == 'check':
+            if self._has_bank_data():
                 bank_data = _TemporaryBankData()
-            payment = _TemporaryPaymentData(description,
-                                            currency(values[i]),
-                                            due_dates[i],
-                                            None,
-                                            bank_data)
-            self.payment_list.append(payment)
+
+            self.add_payment(description, currency(values[i]), due_dates[i],
+                             None, bank_data, False)
 
         self.update_view()
 
     def create_payments(self):
+        """Commit the payments on the list to the database"""
         if not self.is_payment_list_valid():
             return []
 
@@ -395,6 +418,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     _data_editor_class = None
 
     def __init__(self, wizard, parent, conn, order_obj, payment_method,
+                 first_duedate, installments_number,
                  outstanding_value=currency(0)):
         self.wizard = wizard
         self.parent = parent
@@ -408,6 +432,9 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         # This is very useful when calculating the total amount outstanding
         # or overpaid of the payments
         self.interest_total = currency(0)
+
+        self._first_duedate = first_duedate
+        self._installments_number = installments_number
 
         BaseEditorSlave.__init__(self, conn)
         self.register_validate_function(self._refresh_next)
@@ -443,16 +470,17 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     def _setup_widgets(self):
         max_installments = self.method.max_installments
         self.installments_number.set_range(1, max_installments)
-        self.installments_number.set_value(1)
+        has_installments = self._installments_number > 1
+
         # FIXME: Workarround to make intervals never go to 0
         self.intervals.set_range(1, 99)
+        self.intervals.set_sensitive(has_installments)
 
-        self.intervals.set_sensitive(False)
         items = [(label, constant)
                  for constant, label in interval_types.items()]
         self.interval_type_combo.prefill(items)
         self.interval_type_combo.select_item_by_data(INTERVALTYPE_MONTH)
-        self.interval_type_combo.set_sensitive(False)
+        self.interval_type_combo.set_sensitive(has_installments)
 
         # PaymentListSlave setup
         self._setup_payment_list()
@@ -530,7 +558,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                     BasePaymentMethodSlave.proxy_widgets)
 
     def create_model(self, conn):
-        return _BaseTemporaryMethodData()
+        return _BaseTemporaryMethodData(self._first_duedate,
+                                        self._installments_number)
 
     #
     # Kiwi callbacks
@@ -578,9 +607,11 @@ class BillMethodSlave(BasePaymentMethodSlave):
     _data_editor_class = BasePaymentDataEditor
 
     def __init__(self, wizard, parent, conn, sale, payment_method,
+                 installments_number, first_duedate,
                  outstanding_value=currency(0)):
         BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
                                         sale, payment_method,
+                                        installments_number, first_duedate,
                                         outstanding_value=outstanding_value)
         self.bank_label.hide()
         self.bank_combo.hide()
@@ -607,9 +638,11 @@ class MoneyMethodSlave(BasePaymentMethodSlave):
     _data_editor_class = BasePaymentDataEditor
 
     def __init__(self, wizard, parent, conn, total_amount,
-                 payment_method, outstanding_value=currency(0)):
+                 payment_method, installments_number, furst_duedate,
+                 outstanding_value=currency(0)):
         BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
                                         total_amount, payment_method,
+                                        installments_number, furst_duedate,
                                         outstanding_value=outstanding_value)
         self.bank_label.hide()
         self.bank_combo.hide()
