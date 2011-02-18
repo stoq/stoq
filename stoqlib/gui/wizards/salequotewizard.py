@@ -24,6 +24,8 @@
 ##
 """ Sale quote wizard"""
 
+import gtk
+
 from decimal import Decimal
 import datetime
 
@@ -41,6 +43,7 @@ from stoqlib.domain.person import Person, ClientView
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
+from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
@@ -50,8 +53,10 @@ from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor
+from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.reporting.sale import SaleOrderReport
 
 _ = stoqlib_gettext
 
@@ -298,6 +303,12 @@ class SaleQuoteWizard(BaseWizard):
                     operation_nature=sysparam(conn).DEFAULT_OPERATION_NATURE,
                     connection=conn)
 
+    def _print_quote_details(self, quote):
+        # We can only print the details if the quote was confirmed.
+        if yesno(_(u'Do you want to print the quote details now ?'),
+                 gtk.RESPONSE_YES, _(u'Yes'), _(u'No')):
+            print_report(SaleOrderReport, self.model)
+
     #
     # WizardStep hooks
     #
@@ -305,3 +316,4 @@ class SaleQuoteWizard(BaseWizard):
     def finish(self):
         self.retval = self.model
         self.close()
+        self._print_quote_details(self.model)
