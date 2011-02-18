@@ -102,7 +102,6 @@
                                         <property name="data_type">Decimal</property>
                                         <property name="digits">2</property>
                                         <property name="model_attribute">interest</property>
-                                        <property name="text" context="yes" translatable="yes">0.00</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
@@ -118,7 +117,6 @@
                                         <property name="data_type">Decimal</property>
                                         <property name="digits">2</property>
                                         <property name="model_attribute">daily_penalty</property>
-                                        <property name="text" context="yes" translatable="yes">0.00</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>

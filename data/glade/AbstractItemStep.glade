@@ -187,7 +187,6 @@
                                 <property name="digits">2</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">cost</property>
-                                <property name="text" context="yes" translatable="yes">0.00</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
