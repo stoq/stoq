@@ -96,9 +96,8 @@ class ProductFullStockView(Viewable):
                    ProductAdaptToStorable.q.id),
         ]
 
-    clause = AND(
-        BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID,
-        )
+    clause = AND(BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID,
+                 Sellable.q.status != Sellable.STATUS_CLOSED)
 
     @classmethod
     def select_by_branch(cls, query, branch, having=None, connection=None):
@@ -187,6 +186,14 @@ class ProductWithStockView(ProductFullStockView):
         ProductStockItem.q.logic_quantity >= 0,
         )
     ProductFullStockView.joins
+
+
+class ProductClosedStockView(ProductFullStockView):
+    """Stores information about products that were closed.
+    """
+
+    clause = AND(BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID,
+                 Sellable.q.status == Sellable.STATUS_CLOSED)
 
 
 class _PurchaseItemTotal(Viewable):
