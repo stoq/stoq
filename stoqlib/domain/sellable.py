@@ -378,6 +378,10 @@ class Sellable(Domain):
 
     commission = property(_get_commission, _set_commission)
 
+    #
+    #  Accessors
+    #
+
     def can_be_sold(self):
         """Whether the sellable is available and can be sold.
         @returns: if the item can be sold
@@ -400,6 +404,19 @@ class Sellable(Domain):
         if self.is_unavailable():
             raise ValueError('This sellable is already unavailable')
         self.status = self.STATUS_UNAVAILABLE
+
+    def is_closed(self):
+        """Whether the sellable is closed or not.
+
+        @returns: True if closed, False otherwise.
+        """
+        return self.status == Sellable.STATUS_CLOSED
+
+    def set_closed(self):
+        """Mark the sellable as closed"""
+        if self.is_closed():
+            raise ValueError('This sellable is already closed')
+        self.status = Sellable.STATUS_CLOSED
 
     def cancel(self):
         """Cancel the sellable"""
