@@ -37,7 +37,8 @@ from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import (ProductFullStockView, ProductQuantityView,
-                                  ProductFullStockItemView, SoldItemView)
+                                  ProductFullStockItemView, SoldItemView,
+                                  ProductClosedStockView)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.search import (SearchDialog, SearchEditor,
@@ -50,8 +51,8 @@ from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity, get_formatted_cost
 from stoqlib.reporting.product import (ProductReport, ProductQuantityReport,
-                                       ProductPriceReport,
-                                       ProductStockReport,
+                                       ProductClosedStockReport,
+                                       ProductPriceReport, ProductStockReport,
                                        ProductsSoldReport)
 
 _ = stoqlib_gettext
@@ -413,3 +414,36 @@ class ProductStockSearch(SearchEditor):
         if branch is not None:
             branch = PersonAdaptToBranch.get(branch, connection=conn)
         return self.table.select_by_branch(query, branch, connection=conn)
+
+
+class ProductClosedStockSearch(ProductStockSearch):
+    """A SearchEditor for Closed Products"""
+
+    title = _('Product Closed Stock Search')
+    size = (600, 350)
+    table = search_table = ProductClosedStockView
+
+    #
+    # SearchDialog Hooks
+    #
+
+    def setup_widgets(self):
+        # Just defining this method to overwrite it's parent one.
+        pass
+
+    def on_print_button_clicked(self, widget):
+        print_report(ProductClosedStockReport, self.results,
+                     filters=self.search.get_search_filters())
+
+    #
+    # SearchEditor Hooks
+    #
+
+    def get_columns(self):
+        return [SearchColumn('code', title=_('Code'), data_type=str,
+                             sort_func=sort_sellable_code, width=100),
+                SearchColumn('category_description', title=_('Category'),
+                             data_type=str, width=120),
+                SearchColumn('description', title=_('Description'),
+                             data_type=str, expand=True, sorted=True)]
+
