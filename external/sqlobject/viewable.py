@@ -149,7 +149,7 @@ class Viewable(object):
 
         setup_attributes(cls, new_attrs)
 
-        columns = new_attrs['columns']
+        columns = new_attrs.get('columns', getattr(cls, 'columns', None))
         if not columns:
             return
 
