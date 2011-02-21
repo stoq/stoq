@@ -184,6 +184,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="SearchClosedStockItems">
+                        <property name="name">SearchClosedStockItems</property>
+                        <property name="label" translatable="yes">Closed Stock Items...</property>
+                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;c</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="StockDecreaseSearch">
                         <property name="name">StockDecreaseSearch</property>
                         <property name="label" translatable="yes">Manual Stock Decrease...</property>
@@ -291,6 +298,7 @@
           <menuitem action="StockDecreaseSearch"/>
           <menuitem action="PurchasedItemsSearch"/>
           <menuitem action="SearchStockItems"/>
+          <menuitem action="SearchClosedStockItems"/>
 	    </menu>
 	    <menu action="help_menu">
 	      <menuitem action="about_menu"/>

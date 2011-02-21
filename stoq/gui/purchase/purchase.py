@@ -52,6 +52,7 @@ from stoqlib.gui.search.categorysearch import (SellableCategorySearch,
                                                BaseSellableCatSearch)
 from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductStockSearch,
+                                              ProductClosedStockSearch,
                                               ProductsSoldSearch)
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
@@ -337,6 +338,9 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_SearchStockItems__activate(self, action):
         self.run_dialog(ProductStockSearch, self.conn)
+
+    def on_SearchClosedStockItems__activate(self, action):
+        self.run_dialog(ProductClosedStockSearch, self.conn)
 
     # FIXME: Kiwi autoconnection OR rename, see #2323
 

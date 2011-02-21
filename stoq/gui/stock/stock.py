@@ -51,7 +51,8 @@ from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
-                                              ProductStockSearch)
+                                              ProductStockSearch,
+                                              ProductClosedStockSearch)
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
@@ -234,6 +235,9 @@ class StockApp(SearchableAppWindow):
 
     def on_SearchStockItems__activate(self, action):
         self.run_dialog(ProductStockSearch, self.conn)
+
+    def on_SearchClosedStockItems__activate(self, action):
+        self.run_dialog(ProductClosedStockSearch, self.conn)
 
     def on_ProductHistory__activate(self, action):
         self.run_dialog(ProductSearchQuantity, self.conn)
