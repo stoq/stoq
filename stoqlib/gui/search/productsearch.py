@@ -38,6 +38,7 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import (ProductFullStockView, ProductQuantityView,
                                   ProductFullStockItemView, SoldItemView,
+                                  ProductFullWithClosedStockView,
                                   ProductClosedStockView)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import change_button_appearance
@@ -62,7 +63,7 @@ class ProductSearch(SearchEditor):
     title = _('Product Search')
     table = Product
     size = (775, 450)
-    search_table = ProductFullStockView
+    search_table = ProductFullWithClosedStockView
     editor_class = ProductEditor
     footer_ok_label = _('Add products')
     searchbar_result_strings = (_('product'), _('products'))

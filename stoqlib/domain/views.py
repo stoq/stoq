@@ -188,11 +188,18 @@ class ProductWithStockView(ProductFullStockView):
     ProductFullStockView.joins
 
 
-class ProductClosedStockView(ProductFullStockView):
+class ProductFullWithClosedStockView(ProductFullStockView):
+    """Stores information about products, showing the closed ones too.
+    """
+
+    clause = AND(BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID)
+
+
+class ProductClosedStockView(ProductFullWithClosedStockView):
     """Stores information about products that were closed.
     """
 
-    clause = AND(BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID,
+    clause = AND(ProductFullWithClosedStockView.clause,
                  Sellable.q.status == Sellable.STATUS_CLOSED)
 
 
