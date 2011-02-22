@@ -236,12 +236,22 @@ class SellableEditor(BaseEditor):
             code = u'%d' % self._sellable.id
             self.code.update(code)
         self.setup_widgets()
-        if model and self._sellable.can_remove():
-            button = self.add_button('Remove', 'gtk-delete')
-            button.connect('clicked', self._on_delete_button__activate)
 
         self.set_description(
             self.model.sellable.base_sellable_info.description)
+
+        self._setup_delete_close_button()
+
+    def _setup_delete_close_button(self):
+        if self.model and self._sellable.can_remove():
+            button = self.add_button('Remove', 'gtk-delete')
+            button.connect('clicked', self._on_delete_button__activate)
+        elif self.model and self._sellable.is_unavailable():
+            button = self.add_button('Close')
+            button.connect('clicked', self._on_close_button__activate)
+        elif self.model and self._sellable.is_closed():
+            button = self.add_button('Unclose')
+            button.connect('clicked', self._on_unclose_button__activate)
 
     def _on_delete_button__activate(self, button):
         msg = _(u"This will delete '%s' from the database. Are you sure?"
@@ -253,6 +263,22 @@ class SellableEditor(BaseEditor):
         # We don't call self.confirm since it will call validate_confirm
         self.cancel()
         self.main_dialog.retval = True
+
+    def _on_close_button__activate(self, button):
+        msg = _(u"Do you really want to close this product?")
+        if not yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _(u'No')):
+            return
+
+        self._sellable.set_closed()
+        self.confirm()
+
+    def _on_unclose_button__activate(self, button):
+        msg = _(u"Do you really want to make this product available?")
+        if not yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _(u'No')):
+            return
+
+        self._sellable.set_unavailable()
+        self.confirm()
 
     def add_extra_tab(self, tabname, tabslave):
         self.sellable_notebook.set_show_tabs(True)
