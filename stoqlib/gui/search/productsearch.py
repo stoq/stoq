@@ -417,34 +417,38 @@ class ProductStockSearch(SearchEditor):
         return self.table.select_by_branch(query, branch, connection=conn)
 
 
-class ProductClosedStockSearch(ProductStockSearch):
+class ProductClosedStockSearch(ProductSearch):
     """A SearchEditor for Closed Products"""
 
-    title = _('Product Closed Stock Search')
-    size = (600, 350)
+    title = _('Closed Product Stock Search')
     table = search_table = ProductClosedStockView
+    has_new_button = False
+
+    def __init__(self, conn, hide_footer=True, hide_toolbar=True,
+                 selection_mode=gtk.SELECTION_BROWSE,
+                 hide_cost_column=False, use_product_statuses=None,
+                 hide_price_column=False):
+        ProductSearch.__init__(self, conn, hide_footer, hide_toolbar,
+                               selection_mode, hide_cost_column,
+                               use_product_statuses, hide_price_column)
+
+    def create_filters(self):
+        self.set_text_field_columns(['description', 'barcode',
+                                     'category_description'])
+        self.executer.set_query(self.executer_query)
+
+        # Branch
+        branch_filter = self.create_branch_filter(_('In branch:'))
+        branch_filter.select(None)
+        self.add_filter(branch_filter, columns=[])
+        self.branch_filter = branch_filter
 
     #
     # SearchDialog Hooks
     #
 
-    def setup_widgets(self):
-        # Just defining this method to overwrite it's parent one.
-        pass
-
     def on_print_button_clicked(self, widget):
         print_report(ProductClosedStockReport, self.results,
-                     filters=self.search.get_search_filters())
-
-    #
-    # SearchEditor Hooks
-    #
-
-    def get_columns(self):
-        return [SearchColumn('code', title=_('Code'), data_type=str,
-                             sort_func=sort_sellable_code, width=100),
-                SearchColumn('category_description', title=_('Category'),
-                             data_type=str, width=120),
-                SearchColumn('description', title=_('Description'),
-                             data_type=str, expand=True, sorted=True)]
+                     filters=self.search.get_search_filters(),
+                     branch_name=self.branch_filter.combo.get_active_text())
 
