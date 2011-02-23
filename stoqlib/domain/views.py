@@ -153,6 +153,21 @@ class ProductFullStockView(Viewable):
         return sellable.price
 
 
+class ProductFullWithClosedStockView(ProductFullStockView):
+    """Stores information about products, showing the closed ones too.
+    """
+
+    clause = (BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID)
+
+
+class ProductClosedStockView(ProductFullWithClosedStockView):
+    """Stores information about products that were closed.
+    """
+
+    clause = AND(ProductFullWithClosedStockView.clause,
+                 Sellable.q.status == Sellable.STATUS_CLOSED)
+
+
 class ProductComponentView(ProductFullStockView):
     columns = ProductFullStockView.columns
     clause = AND(ProductFullStockView.clause,
@@ -186,21 +201,6 @@ class ProductWithStockView(ProductFullStockView):
         ProductStockItem.q.logic_quantity >= 0,
         )
     ProductFullStockView.joins
-
-
-class ProductFullWithClosedStockView(ProductFullStockView):
-    """Stores information about products, showing the closed ones too.
-    """
-
-    clause = AND(BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID)
-
-
-class ProductClosedStockView(ProductFullWithClosedStockView):
-    """Stores information about products that were closed.
-    """
-
-    clause = AND(ProductFullWithClosedStockView.clause,
-                 Sellable.q.status == Sellable.STATUS_CLOSED)
 
 
 class _PurchaseItemTotal(Viewable):
