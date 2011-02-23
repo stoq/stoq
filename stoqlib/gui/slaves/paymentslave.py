@@ -77,9 +77,10 @@ DEFAULT_INTERVAL_TYPE = INTERVALTYPE_MONTH
 
 class _BaseTemporaryMethodData(object):
     def __init__(self, first_duedate=None,
-                 installments_number=DEFAULT_INSTALLMENTS_NUMBER):
+                 installments_number=None):
         self.first_duedate = first_duedate or datetime.date.today()
-        self.installments_number = installments_number
+        self.installments_number = (installments_number or
+                                    DEFAULT_INSTALLMENTS_NUMBER)
         self.intervals = DEFAULT_INTERVALS
         self.interval_type = DEFAULT_INTERVAL_TYPE
 
