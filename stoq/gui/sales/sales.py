@@ -53,6 +53,7 @@ from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.invoice import SaleInvoice, print_sale_invoice
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.message import info, yesno
+from stoqlib.lib.parameters import sysparam
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -245,8 +246,9 @@ class SalesApp(SearchableAppWindow):
         self.run_dialog(ClientSearch, self.conn, hide_footer=True)
 
     def _on_products_action__clicked(self, button):
+        hide_cost_column = not sysparam(self.conn).SHOW_COST_COLUMN_IN_SALES
         self.run_dialog(ProductSearch, self.conn, hide_footer=True,
-                        hide_toolbar=True, hide_cost_column=True)
+                        hide_toolbar=True, hide_cost_column=hide_cost_column)
 
     def on_SoldItemsByBranchSearch__activate(self, button):
         self.run_dialog(SoldItemsByBranchSearch, self.conn)
