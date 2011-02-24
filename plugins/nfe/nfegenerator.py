@@ -540,7 +540,8 @@ class NFeIdentification(BaseNFeXMLGroup):
         installments = len(payments)
         if installments == 1:
             payment = payments[0]
-            if payment.paid_date == datetime.datetime.today():
+            if (payment.paid_date and
+                payment.paid_date.date() == datetime.date.today()):
                 payment_type = 0
         self.set_attr('indPag', payment_type)
 
