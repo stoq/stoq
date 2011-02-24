@@ -419,8 +419,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     _data_editor_class = None
 
     def __init__(self, wizard, parent, conn, order_obj, payment_method,
-                 first_duedate, installments_number,
-                 outstanding_value=currency(0)):
+                 outstanding_value=currency(0), first_duedate=None,
+                 installments_number=None):
         self.wizard = wizard
         self.parent = parent
         # Note that 'order' may be a Sale or a PurchaseOrder object
@@ -471,7 +471,9 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     def _setup_widgets(self):
         max_installments = self.method.max_installments
         self.installments_number.set_range(1, max_installments)
-        has_installments = self._installments_number > 1
+        has_installments = (self._installments_number and
+                            self._installments_number > 1 or False)
+
 
         # FIXME: Workarround to make intervals never go to 0
         self.intervals.set_range(1, 99)
@@ -608,12 +610,13 @@ class BillMethodSlave(BasePaymentMethodSlave):
     _data_editor_class = BasePaymentDataEditor
 
     def __init__(self, wizard, parent, conn, sale, payment_method,
-                 installments_number, first_duedate,
-                 outstanding_value=currency(0)):
+                 outstanding_value=currency(0),
+                 first_duedate=None, installments_number=None):
         BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
                                         sale, payment_method,
-                                        installments_number, first_duedate,
-                                        outstanding_value=outstanding_value)
+                                        outstanding_value=outstanding_value,
+                                        installments_number=installments_number,
+                                        first_duedate=first_duedate)
         self.bank_label.hide()
         self.bank_combo.hide()
 
@@ -638,13 +641,14 @@ class MoneyMethodSlave(BasePaymentMethodSlave):
     model_type = _BaseTemporaryMethodData
     _data_editor_class = BasePaymentDataEditor
 
-    def __init__(self, wizard, parent, conn, total_amount,
-                 payment_method, installments_number, furst_duedate,
-                 outstanding_value=currency(0)):
+    def __init__(self, wizard, parent, conn, sale, payment_method,
+                 outstanding_value=currency(0),
+                 first_duedate=None, installments_number=None):
         BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
-                                        total_amount, payment_method,
-                                        installments_number, furst_duedate,
-                                        outstanding_value=outstanding_value)
+                                        sale, payment_method,
+                                        outstanding_value=outstanding_value,
+                                        installments_number=installments_number,
+                                        first_duedate=first_duedate)
         self.bank_label.hide()
         self.bank_combo.hide()
         self.first_duedate_lbl.hide()
@@ -661,10 +665,13 @@ class StoreCreditMethodSlave(BasePaymentMethodSlave):
     _data_editor_class = BasePaymentDataEditor
 
     def __init__(self, wizard, parent, conn, total_amount,
-                 payment_method, outstanding_value=currency(0)):
+                 payment_method, outstanding_value=currency(0),
+                 first_duedate=None, installments_number=None):
         BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
                                         total_amount, payment_method,
-                                        outstanding_value=outstanding_value)
+                                        outstanding_value=outstanding_value,
+                                        installments_number=installments_number,
+                                        first_duedate=first_duedate)
         self.bank_label.hide()
         self.bank_combo.hide()
         self.first_duedate_lbl.hide()
@@ -681,7 +688,8 @@ class CardMethodSlave(BaseEditorSlave):
     proxy_widgets = ('credit_provider', 'installments_number')
 
     def __init__(self, wizard, parent, conn, order, payment_method,
-                 outstanding_value=currency(0)):
+                 outstanding_value=currency(0), first_duedate=None,
+                 installments_number=None):
         self.model = order
         self.wizard = wizard
         self.method = payment_method
