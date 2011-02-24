@@ -247,11 +247,11 @@ class SellableEditor(BaseEditor):
             button = self.add_button('Remove', 'gtk-delete')
             button.connect('clicked', self._on_delete_button__activate)
         elif self.model and self._sellable.is_unavailable():
-            button = self.add_button('Close')
-            button.connect('clicked', self._on_close_button__activate)
+            button = self.add_button('Set closed')
+            button.connect('clicked', self._on_set_closed_button__activate)
         elif self.model and self._sellable.is_closed():
-            button = self.add_button('Unclose')
-            button.connect('clicked', self._on_unclose_button__activate)
+            button = self.add_button('Unset closed')
+            button.connect('clicked', self._on_unset_closed_button__activate)
 
     def _on_delete_button__activate(self, button):
         msg = _(u"This will delete '%s' from the database. Are you sure?"
@@ -264,7 +264,7 @@ class SellableEditor(BaseEditor):
         self.cancel()
         self.main_dialog.retval = True
 
-    def _on_close_button__activate(self, button):
+    def _on_set_closed_button__activate(self, button):
         msg = _(u"Do you really want to close this product?")
         if not yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _(u'No')):
             return
@@ -272,7 +272,7 @@ class SellableEditor(BaseEditor):
         self._sellable.set_closed()
         self.confirm()
 
-    def _on_unclose_button__activate(self, button):
+    def _on_unset_closed_button__activate(self, button):
         msg = _(u"Do you really want to make this product available?")
         if not yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _(u'No')):
             return
