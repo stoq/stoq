@@ -95,7 +95,7 @@ class PaymentMethodStep(BaseWizardStep):
         assert slave_class
         method = self.conn.get(method)
         slave = slave_class(self.wizard, self, self.conn, self.model,
-                            method, None, None, self._outstanding_value)
+                            method, outstanding_value=self._outstanding_value)
         self._method_slave = slave
         return slave
 

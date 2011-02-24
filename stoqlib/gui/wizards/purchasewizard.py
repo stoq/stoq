@@ -329,8 +329,8 @@ class PurchasePaymentStep(WizardEditorStep):
 
         if not model.payments.count():
             # Default values
-            self._installments_number = 1
-            self._first_duedate = datetime.date.today()
+            self._installments_number = None
+            self._first_duedate = None
             self._method = 'bill'
         else:
             # FIXME: SqlObject returns count as long, but we need it as int.
@@ -339,9 +339,8 @@ class PurchasePaymentStep(WizardEditorStep):
 
             # due_date is datetime.datetime. Converting it to datetime.date
             due_date = model.payments[0].due_date.date()
-            today_date = datetime.date.today()
-            self._first_duedate = (due_date >= today_date and
-                                   due_date or today_date)
+            self._first_duedate = (due_date >= datetime.date.today() and
+                                   due_date or None)
 
         WizardEditorStep.__init__(self, conn, wizard, model.group, previous)
 
@@ -369,9 +368,9 @@ class PurchasePaymentStep(WizardEditorStep):
             self.wizard.payment_group = self.model
             self.slave = slave_class(self.wizard, self,
                                      self.conn, self.order, method,
-                                     self._first_duedate,
-                                     self._installments_number,
-                                     outstanding_value=self.outstanding_value)
+                                     outstanding_value=self.outstanding_value,
+                                     first_duedate=self._first_duedate,
+                                     installments_number=self._installments_number)
             self.attach_slave('method_slave_holder', self.slave)
 
     def _update_payment_method_slave(self):
