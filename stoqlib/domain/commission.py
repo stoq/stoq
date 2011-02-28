@@ -194,11 +194,11 @@ class CommissionView(Viewable):
 
     @property
     def sale(self):
-        return Sale.get(self.id, connection=get_connection())
+        return Sale.get(self.id, connection=self.get_connection())
 
     @property
     def payment(self):
-        return Payment.get(self.payment_id, connection=get_connection())
+        return Payment.get(self.payment_id, connection=self.get_connection())
 
     def quantity_sold(self):
         if self.sale_returned():
