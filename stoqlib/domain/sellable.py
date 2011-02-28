@@ -412,7 +412,7 @@ class Sellable(Domain):
         """
         return self.status == Sellable.STATUS_CLOSED
 
-    def set_closed(self):
+    def close(self):
         """Mark the sellable as closed"""
         if self.is_closed():
             raise ValueError('This sellable is already closed')

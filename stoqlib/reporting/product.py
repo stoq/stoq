@@ -240,7 +240,7 @@ class ProductStockReport(ObjectListReport):
 
 
 class ProductClosedStockReport(ProductStockReport):
-    report_name = _("Product Closed Stock Report")
+    report_name = _("Closed Product Stock Report")
     main_object_name = _("closed products")
     obj_type = ProductClosedStockView
 
