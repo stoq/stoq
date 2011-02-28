@@ -344,6 +344,7 @@ class ViewableIteration(Iteration):
 
 
 class ViewableSelectResults(SelectResults):
+    IterationClass = ViewableIteration
 
     def __init__(self, sourceClass, clause, clauseTables=None,
                  **ops):
@@ -357,11 +358,6 @@ class ViewableSelectResults(SelectResults):
 
     def __str__(self):
         return queryForSelect(self._getConnection(), self)
-
-    def lazyIter(self):
-        conn = self._getConnection()
-        return ViewableIteration(
-            conn, conn.getConnection(), self, keepConnection=True)
 
 
 _cache = {}
