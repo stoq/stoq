@@ -378,7 +378,7 @@ class AppWindow(BaseAppWindow):
             return
         if yesno(_(u'This will delete the current database and '
                     'configuration. Are you sure?'),
-                 gtk.RESPONSE_NO,_(u"Cancel"),  _(u"Remove")):
+                 gtk.RESPONSE_NO,_(u"Don't Remove"),  _(u"Remove Examples")):
              return
 
         info(_('Please, start stoq again to configure new database'))

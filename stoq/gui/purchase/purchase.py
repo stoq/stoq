@@ -206,8 +206,9 @@ class PurchaseApp(SearchableAppWindow):
             msg = (_("The %d selected orders will be marked as sent.")
                    % len(valid_order_views))
         else:
-            msg = _('The selected order will be marked as sent.')
-        if yesno(msg, gtk.RESPONSE_NO, _(u"Don't Send"), _(u"Send to supplier")):
+            msg = _('The selected order will be marked as sent. Are you sure?')
+        if yesno(msg, gtk.RESPONSE_NO,
+                 _(u"Don't Send"), _(u"Send to Supplier")):
             return
 
         trans = new_transaction()
@@ -228,7 +229,7 @@ class PurchaseApp(SearchableAppWindow):
         assert all(ov.purchase.can_cancel() for ov in order_views)
         if yesno(
             _('The selected order(s) will be cancelled.'),
-            gtk.RESPONSE_NO, _(u"Don't Cancel"), _(u"Cancel order(s)")):
+            gtk.RESPONSE_NO, _(u"Don't Cancel"), _(u"Cancel Order(s)")):
             return
         trans = new_transaction()
         for order_view in order_views:

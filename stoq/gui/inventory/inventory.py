@@ -158,7 +158,7 @@ class InventoryApp(SearchableAppWindow):
 
     def _cancel_inventory(self):
         if yesno(_(u'Are you sure you want to cancel this inventory ?'),
-                 gtk.RESPONSE_YES, _(u'No'), _(u'Cancel Inventory')):
+                 gtk.RESPONSE_YES, _(u"Don't Cancel"), _(u"Cancel Inventory")):
             return
 
         trans = new_transaction()

@@ -490,8 +490,8 @@ class POSApp(AppWindow):
         @returns: True if the order was canceled, otherwise false
         """
         if len(self.sale_items):
-            if yesno(_(u'The current order will be canceled, Confirm?'),
-                         gtk.RESPONSE_NO,_(u"Go Back"), _(u"Cancel Order")):
+            if yesno(_(u"This will cancel the current order. Are you sure?"),
+                     gtk.RESPONSE_NO, _(u"Don't Cancel"), _(u"Cancel Order")):
                 return False
 
         self._cancel_coupon()
@@ -708,7 +708,7 @@ class POSApp(AppWindow):
 
     def on_TillClose__activate(self, action):
         if not yesno(_(u"You can only close the till once per day. "
-                       "\n\nClose the till?"),
+                       "\n\nClose the till now?"),
                      gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
             self._close_till(self._till_opened_previously())
 
