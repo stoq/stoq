@@ -261,9 +261,9 @@ class ProductComponentSlave(BaseEditorSlave):
         # that really belongs to the current product
         root_component = self.component_tree.get_root(component)
 
-        msg = _(u'Do you really want to remove the component "%s" ?' %
+        msg = _(u"This will remove the component \"%s\". Are you sure?" %
                 root_component.description)
-        if not yesno(msg, gtk.RESPONSE_NO, _(u'Remove'), _(u'Cancel')):
+        if not yesno(msg, gtk.RESPONSE_NO, _(u"Remove"), _(u"Don't Remove")):
             return
 
         self._remove_component_list.append(root_component)

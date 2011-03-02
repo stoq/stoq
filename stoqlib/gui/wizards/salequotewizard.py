@@ -305,8 +305,8 @@ class SaleQuoteWizard(BaseWizard):
 
     def _print_quote_details(self, quote):
         # We can only print the details if the quote was confirmed.
-        if yesno(_(u'Do you want to print the quote details now ?'),
-                 gtk.RESPONSE_YES, _(u'Yes'), _(u'No')):
+        if yesno(_(u'Would you like to print the quote details now?'),
+                 gtk.RESPONSE_YES, _(u"Print Quote Details"), _(u"Don't Print")):
             print_report(SaleOrderReport, self.model)
 
     #

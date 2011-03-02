@@ -244,8 +244,9 @@ class SellableEditor(BaseEditor):
             self.model.sellable.base_sellable_info.description)
 
     def _on_delete_button__activate(self, button):
-        msg = _(u'Do you really want to delete?')
-        if not yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _(u'No')):
+        msg = _(u"This will delete '%s' from the database. Are you sure?"
+                % self._sellable.get_description()
+        if not yesno(msg, gtk.RESPONSE_NO, _(u"Delete"), _(u"Don't Delete")):
             return
 
         self._sellable.remove()
