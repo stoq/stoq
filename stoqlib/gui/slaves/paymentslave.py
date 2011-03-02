@@ -939,10 +939,11 @@ class MultipleMethodSlave(BaseEditorSlave):
         elif isinstance(self.model, PaymentRenegotiation):
             return self.model.total
         elif isinstance(self.model, PurchaseOrder):
-            # if we have receivings, consider the receiving amount instead.
-            receivings = self.model.get_receiving_orders()
-            total = sum([r.get_total() for r in receivings], 0)
-            return currency(total or self.model.get_purchase_total())
+            # If it is a purchase, consider the total amount as the total of
+            # payments, since it includes surcharges and discounts, and may
+            # include the freight (the freight can also be in a different
+            # payment group - witch should not be considered here.)
+            return self.model.group.get_total_value()
         else:
             raise TypeError
 
