@@ -129,10 +129,9 @@ class DatabaseSettingsStep(WizardEditorStep):
 
         # Secondly, ask the user if he really wants to create the database,
         dbname = db_settings.dbname
-        if yesno(_("The specifed database `%s' does not exist.\n"
+        if yesno(_("The specifed database '%s' does not exist.\n"
                    "Do you want to create it?") % dbname,
-                 gtk.RESPONSE_NO,
-                 _("Don't create"), _("Create")):
+                 gtk.RESPONSE_NO, _("Don't Create"), _("Create Database")):
             return False
 
         # Thirdly, verify that the user has permission to create the database

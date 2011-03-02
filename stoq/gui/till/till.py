@@ -180,7 +180,8 @@ class TillApp(SearchableAppWindow):
         if (sale.status == Sale.STATUS_QUOTE and
             expire_date and expire_date.date() < date.today() and
             not yesno(_(u"This quote has expired. Confirm it anyway?"),
-                      gtk.RESPONSE_YES, _(u"Yes"), _(u"No"))):
+                      gtk.RESPONSE_YES,
+                      _(u"Confirm Quote"), _(u"Don't Confirm"))):
             return
 
         # Lets confirm that we can create the sale, before opening the coupon
