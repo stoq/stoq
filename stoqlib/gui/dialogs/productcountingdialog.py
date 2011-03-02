@@ -109,7 +109,6 @@ class ProductCountingDialog(BaseEditor):
         msg = _(u'You have finished the product counting and none '
                 'of the products need to be adjusted.\n\n'
                 'Would you like to close this inventory now ?')
-
         if yesno(msg, gtk.RESPONSE_NO, _(u'Close Inventory'),
                                        _(u'Continue Counting')):
             trans = new_transaction()

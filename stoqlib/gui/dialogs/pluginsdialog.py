@@ -110,9 +110,11 @@ class PluginManagerDialog(BasicDialog):
     #
 
     def confirm(self):
-        msg = _(u'Are you sure you want activate this plugin ?\nOnce '
-                'activated you will not be able to disable it.')
-        response = yesno(msg, gtk.RESPONSE_NO, _(u'Cancel'), _(u'Activate'))
+        msg = _(u"Are you sure you want activate this plugin?"
+                u"\nPlease note that, once activated you will not "
+                u"be able to disable it.")
+        response = yesno(msg, gtk.RESPONSE_NO,
+                         _(u"Not Now"), _(u"Activate Plugin"))
         if response:
             self.retval = False
         else:

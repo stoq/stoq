@@ -393,7 +393,8 @@ class QuoteGroupSelectionStep(BaseWizardStep):
     def _remove_quote(self):
         q = self.search.results.get_selected().quotation
         msg = _(u'Are you sure you want to remove "%s" ?' % q.get_description())
-        if not yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _('No')):
+        if not yesno(msg, gtk.RESPONSE_NO,
+                     _(u"Remove Quote"), _("Don't Remove")):
             return
 
         trans = new_transaction()
@@ -497,9 +498,10 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
         self._update_widgets()
 
     def _cancel_group(self):
-        msg = _(u'Are you sure you want to cancel this group ? '
-                'If so, note that all the quotes will be cancelled.')
-        if not yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _('No')):
+        msg = _(u"This will cancel the group and related quotes. "
+                u"Are you sure?")
+        if not yesno(msg, gtk.RESPONSE_NO,
+                     _(u"Cancel Group"), _("Don't Cancel")):
             return
 
         trans = new_transaction()
@@ -538,7 +540,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
 
         if not yesno(_(u'Should we close the quotes used to compose the '
                         'purchase order ?'),
-                    gtk.RESPONSE_NO, _(u'Yes'), _('No')):
+                    gtk.RESPONSE_NO, _(u"Close Quotes"), _("Don't Close")):
             return
 
         trans = new_transaction()

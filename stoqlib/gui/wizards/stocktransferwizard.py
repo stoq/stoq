@@ -302,7 +302,7 @@ class StockTransferWizard(BaseWizard):
 
     def _receipt_dialog(self, order):
         msg = _(u'Would you like to print a receipt for this transfer?')
-        if yesno(msg, gtk.RESPONSE_YES, _(u'Yes'), _('No')):
+        if yesno(msg, gtk.RESPONSE_YES, _(u"Print Receipt"), _("Don't Print")):
            items = TransferOrderItem.selectBy(transfer_order=order,
                                               connection=self.conn)
            print_report(TransferOrderReceipt, order, items)

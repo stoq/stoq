@@ -131,7 +131,7 @@ class InitialStockDialog(BaseEditor):
     def on_cancel(self):
         if self._storables:
             msg = _(u'Save data before close the dialog ?')
-            if yesno(msg, gtk.RESPONSE_NO, _(u'Yes'), _(u'No')):
+            if yesno(msg, gtk.RESPONSE_NO, _(u"Save Data"), _(u"Don't Save")):
                 self._add_initial_stock()
         return False
     #
