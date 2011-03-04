@@ -242,18 +242,20 @@ class TestSellable(DomainTest):
                                                          connection=self.trans)
         # Count the already there results. ProductClosedStockView should
         # not have any.
-        count_not_closed = results_not_closed.count()
-        count_with_closed = results_with_closed.count()
-        count_only_closed = results_only_closed.count()
+        # obs. Using len(list(res)) instead of res.count() because of a bug
+        #      on sqlobject that returns wrong count() on that views.
+        count_not_closed = len(list(results_not_closed))
+        count_with_closed = len(list(results_with_closed))
+        count_only_closed = len(list(results_only_closed))
         self.assertEqual(count_only_closed, 0)
 
         # Here we create a sellable. It should show on
         # ProductFullStockView and ProductFullWithClosedStock View,
         # but not on ProductClosedStockView.
         sellable = self.create_sellable()
-        self.assertEqual(results_not_closed.count(), count_not_closed + 1L)
-        self.assertEqual(results_with_closed.count(), count_with_closed + 1L)
-        self.assertEqual(results_only_closed.count(), count_only_closed)
+        self.assertEqual(len(list(results_not_closed)), count_not_closed + 1L)
+        self.assertEqual(len(list(results_with_closed)), count_with_closed + 1L)
+        self.assertEqual(len(list(results_only_closed)), count_only_closed)
         ids = [result.id for result in results_not_closed]
         self.failIf(sellable.id not in ids)
         ids = [result.id for result in results_with_closed]
@@ -267,9 +269,9 @@ class TestSellable(DomainTest):
         sellable.close()
         self.assertEquals(sellable.status, Sellable.STATUS_CLOSED)
         self.assertTrue(sellable.is_closed())
-        self.assertEqual(results_not_closed.count(), count_not_closed)
-        self.assertEqual(results_with_closed.count(), count_with_closed + 1L)
-        self.assertEqual(results_only_closed.count(), count_only_closed + 1L)
+        self.assertEqual(len(list(results_not_closed)), count_not_closed)
+        self.assertEqual(len(list(results_with_closed)), count_with_closed + 1L)
+        self.assertEqual(len(list(results_only_closed)), count_only_closed + 1L)
         ids = [result.id for result in results_not_closed]
         self.failIf(sellable.id in ids)
         ids = [result.id for result in results_with_closed]

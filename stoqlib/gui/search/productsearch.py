@@ -426,8 +426,8 @@ class ProductClosedStockSearch(ProductSearch):
 
     def __init__(self, conn, hide_footer=True, hide_toolbar=True,
                  selection_mode=gtk.SELECTION_BROWSE,
-                 hide_cost_column=False, use_product_statuses=None,
-                 hide_price_column=False):
+                 hide_cost_column=True, use_product_statuses=None,
+                 hide_price_column=True):
         ProductSearch.__init__(self, conn, hide_footer, hide_toolbar,
                                selection_mode, hide_cost_column,
                                use_product_statuses, hide_price_column)
@@ -442,6 +442,12 @@ class ProductClosedStockSearch(ProductSearch):
         branch_filter.select(None)
         self.add_filter(branch_filter, columns=[])
         self.branch_filter = branch_filter
+
+    def _setup_print_slave(self):
+        pass
+
+    def _has_rows(self, results, obj):
+        SearchEditor._has_rows(self, results, obj)
 
     #
     # SearchDialog Hooks

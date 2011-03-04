@@ -240,31 +240,30 @@ class SellableEditor(BaseEditor):
         self.set_description(
             self.model.sellable.base_sellable_info.description)
 
-        self._setup_delete_close_unclose_button()
+        self._setup_delete_close_reopen_button()
 
     def _add_extra_button(self, label, stock=None,
                           callback_func=None, connect_on='clicked'):
-        print "label", label
         button = self.add_button(label, stock)
         if callback_func:
-            button.connect(connect_on, callback_func)
+            button.connect(connect_on, callback_func, label)
 
-    def _setup_delete_close_unclose_button(self):
+    def _setup_delete_close_reopen_button(self):
         if self.model and self._sellable.can_remove():
             self._add_extra_button(_('Remove'), 'gtk-delete',
-                                   _self._on_delete_button__activate)
+                                   self._on_delete_button__clicked)
         elif self.model and self._sellable.is_unavailable():
             label = (self._sellable.product and
                      _('Close Product') or _('Close Service'))
 
             self._add_extra_button(label, None,
-                                   self._on_close_sellable_button__activate)
+                                   self._on_close_sellable_button__clicked)
         elif self.model and self._sellable.is_closed():
             label = (self._sellable.product and
-                     _('Unclose Product') or _('Unclose Service'))
+                     _('Reopen Product') or _('Reopen Service'))
 
             self._add_extra_button(label, None,
-                                   self._on_unclose_sellable_button__activate)
+                                   self._on_reopen_sellable_button__clicked)
 
     def add_extra_tab(self, tabname, tabslave):
         self.sellable_notebook.set_show_tabs(True)
@@ -414,7 +413,7 @@ class SellableEditor(BaseEditor):
     # Kiwi handlers
     #
 
-    def _on_delete_button__activate(self, button):
+    def _on_delete_button__clicked(self, button, parent_button_label=None):
         msg = _(u"This will delete '%s' from the database. Are you sure?"
                 % self._sellable.get_description())
         if not yesno(msg, gtk.RESPONSE_NO, _(u"Delete"), _(u"Don't Delete")):
@@ -425,37 +424,25 @@ class SellableEditor(BaseEditor):
         self.cancel()
         self.main_dialog.retval = True
 
-    def _on_close_sellable_button__activate(self, button):
-        if self._sellable.product:
-            msg = _(u"Do you really want to close this Product?\n"
-                    u"Please note that when it's closed, you won't be "
-                    u"able to buy or sell it anymore.")
-        elif self._sellable.service:
-            msg= _(u"Do you really want to close this Service?\n"
-                   u"Please note that when it's closed, you won't be "
-                   u"able to sell it anymore.")
+    def _on_close_sellable_button__clicked(self, button,
+                                           parent_button_label=None):
+        msg = _(u"Do you really want to close '%s'?\n"
+                u"Please note that when it's closed, you won't be able to "
+                u"commercialize it anymore." % self._sellable.get_description())
         if not yesno(msg, gtk.RESPONSE_NO,
-                     (self._sellable.product and
-                      _(u'Close Product') or _(u'Close Service')),
-                     _(u'Don\'t Close')):
+                      parent_button_label, _(u"Don't Close")):
             return
 
         self._sellable.close()
         self.confirm()
 
-    def _on_unclose_sellable_button__activate(self, button):
-        if self._sellable.product:
-            msg = _(u"Do you really want to unclose this Product?\n"
-                    u"Note that when it's unclosed, you will be "
-                    u"able to buy and sell it again.")
-        elif self._sellable.service:
-            msg= _(u"Do you really want to unclose this Service?\n"
-                   u"Note that when it's unclosed, you will be "
-                   u"able to sell it again.")
+    def _on_reopen_sellable_button__clicked(self, button,
+                                            parent_button_label=None):
+        msg = _(u"Do you really want to reopen '%s'?\n"
+                u"Note that when it's opened, you will be able to "
+                u"commercialize it again." % self._sellable.get_description())
         if not yesno(msg, gtk.RESPONSE_NO,
-                     (self._sellable.product and
-                      _(u'Unclose Product') or _(u'Unclose Service')),
-                     _(u'Don\'t Unclose')):
+                      parent_button_label, _(u"Keep Closed")):
             return
 
         self._sellable.set_unavailable()
