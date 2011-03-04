@@ -2,7 +2,7 @@
 from reportlab.pdfgen import canvas
 from reportlab.graphics.barcode.common import I2of5
 from reportlab.lib.units import mm
-from reportlab.lib import colors, pagesizes
+from reportlab.lib import colors, pagesizes, utils
 
 class BoletoPDF:
 
@@ -121,10 +121,12 @@ class BoletoPDF:
 
         demonstrativo = boletoDados.demonstrativo[0:12]
         for i in range(len(demonstrativo)):
+            parts = utils.simpleSplit(demonstrativo[i], 'Helvetica', 9,
+                                      self.widthCanhoto)
             self.pdfCanvas.drawString(
                 2*self.space,
                 (((linhaInicial - 1)*self.heightLine)) - (i * heighFont),
-                demonstrativo[i][0:55]
+                parts[0]
             )
 
         self.pdfCanvas.restoreState();
@@ -430,12 +432,14 @@ class BoletoPDF:
         )
 
         self.pdfCanvas.setFont('Helvetica', self.fontSizeValue )
-        instrucoes = boletoDados.instrucoes
+        instrucoes = boletoDados.instrucoes[:7]
         for i in range(len(instrucoes)):
+            parts = utils.simpleSplit(instrucoes[i], 'Helvetica', 9,
+                                      self.width - 45*mm )
             self.pdfCanvas.drawString(
                 2*self.space,
                 y - (i * self.deltaFont),
-                instrucoes[i]
+                parts[0]
             )
         self.pdfCanvas.setFont('Helvetica', self.fontSizeTitle )
 
