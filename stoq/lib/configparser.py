@@ -32,6 +32,7 @@ from ConfigParser import SafeConfigParser
 from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from stoqlib.database.interfaces import IDatabaseSettings
+from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.database.settings import DEFAULT_RDBMS, DatabaseSettings
 from stoqlib.exceptions import (FilePermissionError, ConfigError,
                                 NoConfigurationError)
@@ -75,7 +76,8 @@ testdb=%(TESTDB)s
 # The database username in rdbms.
 dbusername=%(DBUSERNAME)s"""
 
-    sections = ['General', 'Database']
+    sections = ['General', 'Database', 'Boleto']
+    required_sections = ['Database']
     # Only Postgresql database is supported right now
     rdbms = DEFAULT_RDBMS
     domain = 'stoq'
@@ -96,7 +98,7 @@ dbusername=%(DBUSERNAME)s"""
             return False
         self._config.read(filename)
 
-        for section in StoqConfig.sections:
+        for section in StoqConfig.required_sections:
             if not self._config.has_section(section):
                 raise ConfigError(
                     "config file does not have section: %s" % section)
@@ -121,10 +123,16 @@ dbusername=%(DBUSERNAME)s"""
         if exception:
             raise FilePermissionError(exception % origin)
 
-    def _has_option(self, name, section='General'):
+    def get_section_items(self, section):
+        return self._config.items(section)
+
+    def has_section(self, section):
+        return self._config.has_section(section)
+
+    def has_option(self, name, section='General'):
         return self._config.has_option(section, name)
 
-    def _get_option(self, name, section='General'):
+    def get_option(self, name, section='General'):
         if not section in StoqConfig.sections:
             raise ConfigError('Invalid section: %s' % section)
 
@@ -135,27 +143,27 @@ dbusername=%(DBUSERNAME)s"""
                                    (self._filename, name))
 
     def _get_rdbms_name(self):
-        if not self._has_option('rdbms', section='Database'):
+        if not self.has_option('rdbms', section='Database'):
             return 'postgres'
-        return self._get_option('rdbms', section='Database')
+        return self.get_option('rdbms', section='Database')
 
     def _get_address(self):
-        return self._get_option('address', section='Database')
+        return self.get_option('address', section='Database')
 
     def _get_port(self):
-        if not self._has_option('port', section='Database'):
+        if not self.has_option('port', section='Database'):
             return '5432'
-        return self._get_option('port', section='Database')
+        return self.get_option('port', section='Database')
 
     def _get_dbname(self):
-        if not self._has_option('dbname', section='Database'):
+        if not self.has_option('dbname', section='Database'):
             return self._get_username()
-        return self._get_option('dbname', section='Database')
+        return self.get_option('dbname', section='Database')
 
     def _get_username(self):
-        if not self._has_option('dbusername', section='Database'):
+        if not self.has_option('dbusername', section='Database'):
             return getlogin()
-        return self._get_option('dbusername', section='Database')
+        return self.get_option('dbusername', section='Database')
 
     #
     # Public API
@@ -234,7 +242,7 @@ dbusername=%(DBUSERNAME)s"""
 
     def use_test_database(self):
         self._config.set('Database', 'dbname',
-                         self._get_option('testdb', section='Database'))
+                         self.get_option('testdb', section='Database'))
 
     def check_connection(self):
         # This will trigger a "check"
@@ -286,10 +294,10 @@ dbusername=%(DBUSERNAME)s"""
     def get_settings(self):
         if not self._settings:
             rdbms = self._get_rdbms_name()
-            dbname = self._get_option('dbname', section='Database')
+            dbname = self.get_option('dbname', section='Database')
 
-            if self._has_option('dbusername', section='Database'):
-                username = self._get_option('dbusername', section='Database')
+            if self.has_option('dbusername', section='Database'):
+                username = self.get_option('dbusername', section='Database')
             else:
                 username = getlogin()
             settings = DatabaseSettings(
@@ -331,6 +339,7 @@ def register_config(config):
 
     try:
         provide_utility(IDatabaseSettings, config.get_settings())
+        provide_utility(IStoqConfig, config)
     except NoConfigurationError:
         msg = _(u"Error: Stoq configuration is not avaiable. Check that the "
              "current user has a configuration file (~/.stoq/stoq.conf).")
