@@ -164,13 +164,6 @@ class BoletoData(object):
         except AttributeError:
             pass
     def _instrucoes_set(self, list_inst):
-        if len(list_inst) > 7:
-            raise BoletoException(
-                u'Número de linhas de instruções maior que 7')
-        for line in list_inst:
-            if len(line) > 90:
-                raise BoletoException(
-                    u'Linha de instruções possui mais que 90 caracteres')
         self._instrucoes = list_inst
     instrucoes = property(_instrucoes_get, _instrucoes_set)
 
@@ -179,14 +172,7 @@ class BoletoData(object):
             return self._demonstrativo
         except AttributeError:
             pass
-    def _demonstrativo_set(self,list_dem):
-        if len(list_dem) > 12:
-            raise BoletoException(
-                u'Número de linhas de demonstrativo maior que 12')
-        for line in list_dem:
-            if len(line) > 90:
-                raise BoletoException(
-                    u'Linha de demonstrativo possui mais que 90 caracteres')
+    def _demonstrativo_set(self, list_dem):
         self._demonstrativo = list_dem
     demonstrativo = property(_demonstrativo_get, _demonstrativo_set)
 
