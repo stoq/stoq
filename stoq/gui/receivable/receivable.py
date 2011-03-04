@@ -60,6 +60,7 @@ from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.search.paymentsearch import CardPaymentSearch
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
+from stoqlib.lib.boleto import BillReport, can_generate_bill
 from stoqlib.lib.message import warning
 
 from stoq.gui.application import SearchableAppWindow
@@ -116,6 +117,7 @@ class ReceivableApp(SearchableAppWindow):
         self.Receipt.set_sensitive(self._can_emit_receipt(selected))
         self.SetNotPaid.set_sensitive(
             self._can_change_payment_status(selected))
+        self.PrintBill.set_sensitive(self._can_print_bill(selected))
 
     def _has_rows(self, result_list, has_rows):
         self.print_button.set_sensitive(has_rows)
@@ -362,6 +364,11 @@ class ReceivableApp(SearchableAppWindow):
     def _can_show_comments(self, receivable_views):
         return len(receivable_views) == 1
 
+    def _can_print_bill(self, receivable_views):
+        return (len(receivable_views) == 1 and
+                receivable_views[0].method_name == 'bill' and
+                receivable_views[0].status == Payment.STATUS_PENDING)
+
     def _run_card_payment_search(self):
         run_dialog(CardPaymentSearch, self, self.conn)
 
@@ -423,7 +430,7 @@ class ReceivableApp(SearchableAppWindow):
         self._run_card_payment_search()
 
     def on_Renegotiate__activate(self, action):
-        try:        
+        try:
             Till.get_current(self.conn)
         except TillError, e:
             warning(str(e))
@@ -435,3 +442,11 @@ class ReceivableApp(SearchableAppWindow):
                             groups)
         if finish_transaction(trans, retval):
             self.search.refresh()
+
+    def on_PrintBill__activate(self, action):
+        if not can_generate_bill():
+            return
+
+        item = self.results.get_selected_rows()[0]
+        payment = item.payment
+        print_report(BillReport, [payment])

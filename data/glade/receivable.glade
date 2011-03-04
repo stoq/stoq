@@ -47,12 +47,19 @@
                         <property name="label" translatable="yes">Change Due Date...</property>
                         <property name="stock_id">gtk-refresh</property>
                     </widget>
-                </child> 
+                </child>
                 <child>
                     <widget class="GtkAction" id="Comments">
                         <property name="name">Comments</property>
                         <property name="label" translatable="yes">Comments...</property>
                         <property name="stock_id">gtk-refresh</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="PrintBill">
+                        <property name="name">PrintBill</property>
+                        <property name="label" translatable="yes">Print Bill...</property>
+                        <property name="stock_id">gtk-print</property>
                     </widget>
                 </child>
                 <child>
@@ -250,6 +257,7 @@
 	    <menuitem action="SetNotPaid"/>
 	    <menuitem action="ChangeDueDate"/>
             <menuitem action="Comments"/>
+            <menuitem action="PrintBill"/>
 	    <separator name="sep"/>
 	    <menuitem action="Renegotiate"/>
 	    <menuitem action="Receipt"/>
