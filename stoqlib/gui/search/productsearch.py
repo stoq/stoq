@@ -37,7 +37,9 @@ from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import (ProductFullStockView, ProductQuantityView,
-                                  ProductFullStockItemView, SoldItemView)
+                                  ProductFullStockItemView, SoldItemView,
+                                  ProductFullWithClosedStockView,
+                                  ProductClosedStockView)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.search import (SearchDialog, SearchEditor,
@@ -50,8 +52,8 @@ from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import format_quantity, get_formatted_cost
 from stoqlib.reporting.product import (ProductReport, ProductQuantityReport,
-                                       ProductPriceReport,
-                                       ProductStockReport,
+                                       ProductClosedStockReport,
+                                       ProductPriceReport, ProductStockReport,
                                        ProductsSoldReport)
 
 _ = stoqlib_gettext
@@ -61,7 +63,7 @@ class ProductSearch(SearchEditor):
     title = _('Product Search')
     table = Product
     size = (775, 450)
-    search_table = ProductFullStockView
+    search_table = ProductFullWithClosedStockView
     editor_class = ProductEditor
     footer_ok_label = _('Add products')
     searchbar_result_strings = (_('product'), _('products'))
@@ -413,3 +415,46 @@ class ProductStockSearch(SearchEditor):
         if branch is not None:
             branch = PersonAdaptToBranch.get(branch, connection=conn)
         return self.table.select_by_branch(query, branch, connection=conn)
+
+
+class ProductClosedStockSearch(ProductSearch):
+    """A SearchEditor for Closed Products"""
+
+    title = _('Closed Product Stock Search')
+    table = search_table = ProductClosedStockView
+    has_new_button = False
+
+    def __init__(self, conn, hide_footer=True, hide_toolbar=True,
+                 selection_mode=gtk.SELECTION_BROWSE,
+                 hide_cost_column=True, use_product_statuses=None,
+                 hide_price_column=True):
+        ProductSearch.__init__(self, conn, hide_footer, hide_toolbar,
+                               selection_mode, hide_cost_column,
+                               use_product_statuses, hide_price_column)
+
+    def create_filters(self):
+        self.set_text_field_columns(['description', 'barcode',
+                                     'category_description'])
+        self.executer.set_query(self.executer_query)
+
+        # Branch
+        branch_filter = self.create_branch_filter(_('In branch:'))
+        branch_filter.select(None)
+        self.add_filter(branch_filter, columns=[])
+        self.branch_filter = branch_filter
+
+    def _setup_print_slave(self):
+        pass
+
+    def _has_rows(self, results, obj):
+        SearchEditor._has_rows(self, results, obj)
+
+    #
+    # SearchDialog Hooks
+    #
+
+    def on_print_button_clicked(self, widget):
+        print_report(ProductClosedStockReport, self.results,
+                     filters=self.search.get_search_filters(),
+                     branch_name=self.branch_filter.combo.get_active_text())
+

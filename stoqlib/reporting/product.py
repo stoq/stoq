@@ -32,9 +32,9 @@ from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.lib.validators import format_quantity, get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.domain.product import ProductHistory
-from stoqlib.domain.views import (ProductFullStockView,
+from stoqlib.domain.views import (SoldItemView, ProductFullStockView,
                                   ProductFullStockItemView,
-                                  SoldItemView)
+                                  ProductClosedStockView)
 
 
 class ProductReport(ObjectListReport):
@@ -235,5 +235,15 @@ class ProductStockReport(ObjectListReport):
         self.add_summary_by_column(_(u'To Receive'),
                                    format_quantity(sum(to_receive)))
 
+        self.add_object_table(self._stock_products, self.get_columns(),
+                              summary_row=self.get_summary_row())
+
+
+class ProductClosedStockReport(ProductStockReport):
+    report_name = _("Closed Product Stock Report")
+    main_object_name = _("closed products")
+    obj_type = ProductClosedStockView
+
+    def _setup_table(self):
         self.add_object_table(self._stock_products, self.get_columns(),
                               summary_row=self.get_summary_row())

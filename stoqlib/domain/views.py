@@ -79,6 +79,8 @@ class ProductFullStockView(Viewable):
         )
 
     joins = [
+        INNERJOINOn(None, BaseSellableInfo,
+                    BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID),
         # Tax Constant
         LEFTJOINOn(None, SellableTaxConstant,
                    SellableTaxConstant.q.id == Sellable.q.tax_constantID),
@@ -96,9 +98,7 @@ class ProductFullStockView(Viewable):
                    ProductAdaptToStorable.q.id),
         ]
 
-    clause = AND(
-        BaseSellableInfo.q.id == Sellable.q.base_sellable_infoID,
-        )
+    clause = Sellable.q.status != Sellable.STATUS_CLOSED
 
     @classmethod
     def select_by_branch(cls, query, branch, having=None, connection=None):
@@ -152,6 +152,19 @@ class ProductFullStockView(Viewable):
         # might not be the price used (check OnSaleInfo class).
         sellable = Sellable.get(self.id, connection=self.get_connection())
         return sellable.price
+
+
+class ProductFullWithClosedStockView(ProductFullStockView):
+    """Stores information about products, showing the closed ones too.
+    """
+
+    clause = None
+
+class ProductClosedStockView(ProductFullWithClosedStockView):
+    """Stores information about products that were closed.
+    """
+
+    clause = Sellable.q.status == Sellable.STATUS_CLOSED
 
 
 class ProductComponentView(ProductFullStockView):
