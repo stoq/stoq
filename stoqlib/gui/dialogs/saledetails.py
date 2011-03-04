@@ -24,7 +24,6 @@
 ##
 """ Classes for sale details """
 
-
 import datetime
 
 import pango
@@ -33,8 +32,9 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
 from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.boleto import BillReport, can_generate_bill
 from stoqlib.lib.defaults import payment_value_colorize
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -137,6 +137,11 @@ class SaleDetailsDialog(BaseEditor):
             connection=self.conn)
         self.payments_info_list.add_list(changes)
 
+        has_bills = any([p.method.method_name == 'bill'
+                                    for p in self.payments_list])
+        if not has_bills:
+            self.print_bills.hide()
+
     def _get_payments_columns(self):
         return [Column('id', "#", data_type=int, width=50,
                        format='%04d', justify=gtk.JUSTIFY_RIGHT),
@@ -202,6 +207,11 @@ class SaleDetailsDialog(BaseEditor):
     def on_print_button__clicked(self, button):
         print_report(SaleOrderReport,
                      Sale.get(self.model.id, connection=self.conn))
+
+    def on_print_bills__clicked(self, button):
+        if not can_generate_bill():
+            return
+        print_report(BillReport, self.payments_list)
 
     def on_details_button__clicked(self, button):
         if not self.model.client_id:

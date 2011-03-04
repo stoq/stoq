@@ -178,4 +178,6 @@ class IPaymentOperationManager(Interface):
         @returns: the operation
         @rtype operation: an object implementing L{IPaymentOperation}
         """
-    
+
+class IStoqConfig(Interface):
+    pass
