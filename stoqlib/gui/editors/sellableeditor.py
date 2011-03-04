@@ -236,23 +236,34 @@ class SellableEditor(BaseEditor):
             code = u'%d' % self._sellable.id
             self.code.update(code)
         self.setup_widgets()
-        if model and self._sellable.can_remove():
-            button = self.add_button('Remove', 'gtk-delete')
-            button.connect('clicked', self._on_delete_button__activate)
 
         self.set_description(
             self.model.sellable.base_sellable_info.description)
 
-    def _on_delete_button__activate(self, button):
-        msg = _(u"This will delete '%s' from the database. Are you sure?"
-                % self._sellable.get_description())
-        if not yesno(msg, gtk.RESPONSE_NO, _(u"Delete"), _(u"Don't Delete")):
-            return
+        self._setup_delete_close_reopen_button()
 
-        self._sellable.remove()
-        # We don't call self.confirm since it will call validate_confirm
-        self.cancel()
-        self.main_dialog.retval = True
+    def _add_extra_button(self, label, stock=None,
+                          callback_func=None, connect_on='clicked'):
+        button = self.add_button(label, stock)
+        if callback_func:
+            button.connect(connect_on, callback_func, label)
+
+    def _setup_delete_close_reopen_button(self):
+        if self.model and self._sellable.can_remove():
+            self._add_extra_button(_('Remove'), 'gtk-delete',
+                                   self._on_delete_button__clicked)
+        elif self.model and self._sellable.is_unavailable():
+            label = (self._sellable.product and
+                     _('Close Product') or _('Close Service'))
+
+            self._add_extra_button(label, None,
+                                   self._on_close_sellable_button__clicked)
+        elif self.model and self._sellable.is_closed():
+            label = (self._sellable.product and
+                     _('Reopen Product') or _('Reopen Service'))
+
+            self._add_extra_button(label, None,
+                                   self._on_reopen_sellable_button__clicked)
 
     def add_extra_tab(self, tabname, tabslave):
         self.sellable_notebook.set_show_tabs(True)
@@ -401,6 +412,41 @@ class SellableEditor(BaseEditor):
     #
     # Kiwi handlers
     #
+
+    def _on_delete_button__clicked(self, button, parent_button_label=None):
+        msg = _(u"This will delete '%s' from the database. Are you sure?"
+                % self._sellable.get_description())
+        if not yesno(msg, gtk.RESPONSE_NO, _(u"Delete"), _(u"Don't Delete")):
+            return
+
+        self._sellable.remove()
+        # We don't call self.confirm since it will call validate_confirm
+        self.cancel()
+        self.main_dialog.retval = True
+
+    def _on_close_sellable_button__clicked(self, button,
+                                           parent_button_label=None):
+        msg = _(u"Do you really want to close '%s'?\n"
+                u"Please note that when it's closed, you won't be able to "
+                u"commercialize it anymore." % self._sellable.get_description())
+        if not yesno(msg, gtk.RESPONSE_NO,
+                      parent_button_label, _(u"Don't Close")):
+            return
+
+        self._sellable.close()
+        self.confirm()
+
+    def _on_reopen_sellable_button__clicked(self, button,
+                                            parent_button_label=None):
+        msg = _(u"Do you really want to reopen '%s'?\n"
+                u"Note that when it's opened, you will be able to "
+                u"commercialize it again." % self._sellable.get_description())
+        if not yesno(msg, gtk.RESPONSE_NO,
+                      parent_button_label, _(u"Keep Closed")):
+            return
+
+        self._sellable.set_unavailable()
+        self.confirm()
 
     def on_tax_constant__changed(self, combo):
         self._update_tax_value()

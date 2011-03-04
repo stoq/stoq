@@ -29,6 +29,9 @@ from stoqlib.domain.sellable import (BaseSellableInfo,
                                      SellableCategory)
 from stoqlib.domain.product import Product
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.domain.views import (ProductFullStockView,
+                                  ProductFullWithClosedStockView,
+                                  ProductClosedStockView)
 
 
 class TestSellableCategory(DomainTest):
@@ -230,3 +233,52 @@ class TestSellable(DomainTest):
         constant3 = self.create_sellable_tax_constant()
         sellable.tax_constant = constant3
         self.assertEquals(sellable.get_tax_constant(), constant3)
+
+    def testClose(self):
+        results_not_closed = ProductFullStockView.select(connection=self.trans)
+        results_with_closed = ProductFullWithClosedStockView.select(
+                                                         connection=self.trans)
+        results_only_closed = ProductClosedStockView.select(
+                                                         connection=self.trans)
+        # Count the already there results. ProductClosedStockView should
+        # not have any.
+        # obs. Using len(list(res)) instead of res.count() because of a bug
+        #      on sqlobject that returns wrong count() on that views.
+        count_not_closed = len(list(results_not_closed))
+        count_with_closed = len(list(results_with_closed))
+        count_only_closed = len(list(results_only_closed))
+        self.assertEqual(count_only_closed, 0)
+
+        # Here we create a sellable. It should show on
+        # ProductFullStockView and ProductFullWithClosedStock View,
+        # but not on ProductClosedStockView.
+        sellable = self.create_sellable()
+        self.assertEqual(len(list(results_not_closed)), count_not_closed + 1L)
+        self.assertEqual(len(list(results_with_closed)), count_with_closed + 1L)
+        self.assertEqual(len(list(results_only_closed)), count_only_closed)
+        ids = [result.id for result in results_not_closed]
+        self.failIf(sellable.id not in ids)
+        ids = [result.id for result in results_with_closed]
+        self.failIf(sellable.id not in ids)
+        ids = [result.id for result in results_only_closed]
+        self.failIf(sellable.id in ids)
+
+        # Here we close that sellable. It should now show on
+        # ProductClosedStockViewand ProductFullWithClosedStock View,
+        # but not on ProductFullStockView.
+        sellable.close()
+        self.assertEquals(sellable.status, Sellable.STATUS_CLOSED)
+        self.assertTrue(sellable.is_closed())
+        self.assertEqual(len(list(results_not_closed)), count_not_closed)
+        self.assertEqual(len(list(results_with_closed)), count_with_closed + 1L)
+        self.assertEqual(len(list(results_only_closed)), count_only_closed + 1L)
+        ids = [result.id for result in results_not_closed]
+        self.failIf(sellable.id in ids)
+        ids = [result.id for result in results_with_closed]
+        self.failIf(sellable.id not in ids)
+        ids = [result.id for result in results_only_closed]
+        self.failIf(sellable.id not in ids)
+
+        # When trying to close an already closed sellable, it should
+        # raise a ValueError.
+        self.assertRaises(ValueError, sellable.close)
