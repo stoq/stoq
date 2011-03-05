@@ -121,6 +121,7 @@ data_files = [
     ('$datadir/sql', listfiles('data', 'sql', '*.sql')),
     ('$datadir/sql', listfiles('data', 'sql', '*.py')),
     ('$datadir/glade', listfiles('data', 'glade', '*.glade')),
+    ('$datadir/glade', listfiles('data', 'glade', '*.ui')),
     ('$datadir/fonts', listfiles('data', 'fonts', '*.ttf')),
     ('$datadir/csv', listfiles('data', 'csv', '*.csv')),
     ('$datadir/template', listfiles('data', 'template', '*.rml')),
