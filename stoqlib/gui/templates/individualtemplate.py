@@ -61,6 +61,9 @@ class _IndividualDocuments(BaseEditorSlave):
         if not validate_cpf(value):
             return ValidationError(_(u'The CPF is not valid.'))
 
+        if self.model.check_cpf_exists(value):
+            return ValidationError(_('A person with this CPF already exists'))
+
 
 class _IndividualDetailsModel(AttributeForwarder):
     attributes = [

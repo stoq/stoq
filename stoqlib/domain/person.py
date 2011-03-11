@@ -439,6 +439,12 @@ class PersonAdaptToIndividual(PersonAdapter):
             return 0
         return int(''.join([c for c in self.cpf if c in '1234567890']))
 
+    def check_cpf_exists(self, cpf):
+        """Returns True if we already have a Individual with the given CPF
+        in the database.
+        """
+        return self._check_unique_value_exists('cpf', cpf)
+
 Person.registerFacet(PersonAdaptToIndividual, IIndividual)
 
 class PersonAdaptToCompany(PersonAdapter):
@@ -477,6 +483,12 @@ class PersonAdaptToCompany(PersonAdapter):
         numbers = ''.join([c for c in self.state_registry
                                     if c in '1234567890'])
         return int(numbers or 0)
+
+    def check_cnpj_exists(self, cnpj):
+        """Returns True if we already have a Company with the given CNPJ
+        in the database.
+        """
+        return self._check_unique_value_exists('cnpj', cnpj)
 
 Person.registerFacet(PersonAdaptToCompany, ICompany)
 
