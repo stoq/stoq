@@ -251,6 +251,19 @@ class ISupplier(IPersonFacet):
                              'this supplier produces')
     status = Attribute('active, inactive, blocked')
 
+    def get_last_purchase_date():
+        """Fetch the date of the last purchased item by this supplier.
+        None is returned if there are no sales yet made by the client.
+
+        @returns: the date of the last purchased item
+        @rtype: datetime.date or None
+        """
+
+    def get_name():
+        """
+        @returns: the supplier's name
+        """
+
     def get_supplier_purchases():
         """
         Gets a list of PurchaseOrderViews representing all purchases done from

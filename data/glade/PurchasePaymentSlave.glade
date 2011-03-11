@@ -44,7 +44,7 @@
                                 <child>
                                     <widget class="ProxySpinButton" id="installments_number">
                                         <property name="adjustment">1 1 100 1 10 0</property>
-                                        <property name="data_type">int</property>
+                                        <property name="data_type">long</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">installments_number</property>
                                         <property name="text" context="yes" translatable="yes">1</property>
