@@ -181,6 +181,21 @@ class AbstractModel(object):
 class BaseDomain(AbstractModel, ORMObject):
     """An abstract mixin class for domain classes"""
 
+    def _check_unique_value_exists(self, attribute, value):
+        """Returns True if we already have the given attribute
+        and value in the database, but ignoring myself.
+        """
+        if not value:
+            return False
+        kwargs = {
+            attribute: value,
+            'connection': self.get_connection(),
+        }
+        result = self.selectOneBy(**kwargs)
+        if result is not None:
+            return result is not self
+        return False
+
 
 #
 # Base classes

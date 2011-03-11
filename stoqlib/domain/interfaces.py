@@ -187,6 +187,11 @@ class IIndividual(IPersonFacet):
         @rtype: integer
         """
 
+    def check_cpf_exists(cpf):
+        """Returns True if we already have a Individual with the given CPF
+        in the database.
+        """
+
 
 class ICompany(IPersonFacet):
     """An institution created to conduct business"""
@@ -206,6 +211,11 @@ class ICompany(IPersonFacet):
         """Returns the state registry number without any non-numeric characters
         @returns: the state registry number as a number
         @rtype: integer
+        """
+
+    def check_cnpj_exists(cnpj):
+        """Returns True if we already have a Company with the given CNPJ
+        in the database.
         """
 
 
@@ -246,6 +256,14 @@ class ISupplier(IPersonFacet):
         Gets a list of PurchaseOrderViews representing all purchases done from
         this supplier.
         @returns: a list of PurchaseOrderViews.
+        """
+
+    def get_last_purchase_date():
+        """Fetch the date of the last purchase order to this supplier.
+        None is returned if there are no order yet made to the supplier.
+
+        @returns: the date of the last order purchase
+        @rtype: datetime.date or None
         """
 
 

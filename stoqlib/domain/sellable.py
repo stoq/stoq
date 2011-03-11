@@ -481,22 +481,6 @@ class Sellable(Domain):
         if self.category:
             return self.category.get_tax_constant()
 
-    def _check_unique_value_exists(self, attribute, value):
-        """Returns True if we already have a sellable with the given attribute
-        and value in the database, but ignoring myself.
-        """
-        if not value:
-            return False
-        kwargs = {}
-        kwargs[attribute] = value
-        kwargs['connection'] = self.get_connection()
-        # XXX Do not use cls instead of Sellable here since ORMObject
-        # can deal properly with queries in inherited tables in this case
-        result = Sellable.selectOneBy(**kwargs)
-        if result is not None:
-            return result is not self
-        return False
-
     def check_code_exists(self, code):
         """Returns True if we already have a sellable with the given code
         in the database.

@@ -51,6 +51,10 @@ class CompanyDocumentsSlave(BaseEditorSlave):
         if not validate_cnpj(value):
             return ValidationError(_(u'The CNPJ is not valid.'))
 
+        if self.model.check_cnpj_exists(value):
+            return ValidationError(_(u'A company with this CNPJ already '
+                                     'exists'))
+
 
 class CompanyEditorTemplate(BaseEditorSlave):
     model_iface = ICompany
