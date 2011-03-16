@@ -47,13 +47,22 @@ class _TemporaryProduct(object):
     """A class to hold information about client's bought products."""
 
     def __init__(self, product):
-        self._products = set()
+        """Initialize the object.
+
+        Note: When creating an instance of this class, you'll have
+              to call update_values even for the same product that
+              were used to create the instance itself. This is
+              done this way so we don't need to wast cpu/ram for
+              finding if the product's values weren't updated on
+              __init__ themselves.
+        """
         self._unit = product.sellable.get_unit_description()
-
+        self.description = product.sellable.get_description()
         self.code = product.sellable.code
-        self.description = product.sellable.base_sellable_info.description
 
-        self.add(product)
+        self._quantity = 0
+        self.avg_value = 0
+        self.total_value = 0
 
     #
     # Properties
@@ -62,35 +71,16 @@ class _TemporaryProduct(object):
     @property
     def qty_str(self):
         """The string representation of the quantities."""
-        return "%s %s" % (sum(self._get_quantities()), self._unit)
-
-    @property
-    def avg_value(self):
-        return sum(self._get_totals()) / sum(self._get_quantities())
-
-    @property
-    def total_value(self):
-        return sum(self._get_totals())
+        return "%s %s" % (self._quantity, self._unit)
 
     #
-    # Private API
+    # Public API
     #
 
-    def _get_quantities(self):
-        return [product.quantity
-                for product in self._products]
-
-    def _get_totals(self):
-        return [product.quantity * product.price
-                for product in self._products]
-
-    #
-    # General API
-    #
-
-    def add(self, product):
-        """Add a product to self._products set."""
-        self._products.add(product)
+    def update_values(self, product):
+        self._quantity += product.quantity
+        self.total_value += product.price * product.quantity
+        self.avg_value = self.total_value / self._quantity
 
 
 class ClientDetailsDialog(BaseEditor):
@@ -122,9 +112,9 @@ class ClientDetailsDialog(BaseEditor):
             self.services.extend(sale.services)
             self.payments.extend(sale.payments)
             for product in sale.products:
-                _product = product_dict.setdefault(product.sellable,
-                                                   _TemporaryProduct(product))
-                _product.add(product)
+                p = product_dict.setdefault(product.sellable,
+                                            _TemporaryProduct(product))
+                p.update_values(product)
 
         self.products = product_dict.values()
 
