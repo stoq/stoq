@@ -43,6 +43,56 @@ from stoqlib.lib.defaults import payment_value_colorize
 
 _ = stoqlib_gettext
 
+class _TemporaryProduct(object):
+    """A class to hold information about client's bought products."""
+
+    def __init__(self, product):
+        self._products = set()
+        self._unit = product.sellable.get_unit_description()
+
+        self.code = product.sellable.code
+        self.description = product.sellable.base_sellable_info.description
+
+        self.add(product)
+
+    #
+    # Properties
+    #
+
+    @property
+    def qty_str(self):
+        """The string representation of the quantities."""
+        return "%s %s" % (sum(self._get_quantities()), self._unit)
+
+    @property
+    def avg_value(self):
+        return sum(self._get_totals()) / sum(self._get_quantities())
+
+    @property
+    def total_value(self):
+        return sum(self._get_totals())
+
+    #
+    # Private API
+    #
+
+    def _get_quantities(self):
+        return [product.quantity
+                for product in self._products]
+
+    def _get_totals(self):
+        return [product.quantity * product.price
+                for product in self._products]
+
+    #
+    # General API
+    #
+
+    def add(self, product):
+        """Add a product to self._products set."""
+        self._products.add(product)
+
+
 class ClientDetailsDialog(BaseEditor):
     """This dialog shows some important details about clients like:
         - history of sales
@@ -72,24 +122,10 @@ class ClientDetailsDialog(BaseEditor):
             self.services.extend(sale.services)
             self.payments.extend(sale.payments)
             for product in sale.products:
-                qty = product.quantity
-                price = product.price
-                total_value = price * qty
-                unit = product.sellable.get_unit_description()
-                qty_str = '%s %s' % (qty, unit)
-                product_codes = [item.code for item in product_dict.values()]
-                sellable = product.sellable
-                if not sellable.code in product_codes:
-                    desc = sellable.base_sellable_info.description
-                    obj = Settable(code=sellable.code, description=desc,
-                                   _total_qty=qty, total_value=total_value,
-                                   qty_str=qty_str, unit=unit, price=price)
-                    product_dict[sellable] = obj
-                else:
-                    product_dict[sellable]._total_qty += qty
-                    table = product_dict[sellable]
-                    table.qty_str = '%s %s' % (table._total_qty, table.unit)
-                    table.total_value  = table._total_qty * table.price
+                _product = product_dict.setdefault(product.sellable,
+                                                   _TemporaryProduct(product))
+                _product.add(product)
+
         self.products = product_dict.values()
 
     def _setup_widgets(self):
@@ -136,6 +172,8 @@ class ClientDetailsDialog(BaseEditor):
                        expand=True, searchable=True),
                 Column("qty_str", title=_("Total Quantity"),
                        data_type=str, width=120, justify=gtk.JUSTIFY_RIGHT),
+                Column("avg_value", title=_("Average Value"),
+                       data_type=currency, justify=gtk.JUSTIFY_RIGHT),
                 Column("total_value", title=_("Total Value"), width=80,
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT,)]
 
