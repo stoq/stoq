@@ -5,7 +5,7 @@ recursive-include data/pixmaps *.png
 recursive-include data/sql *.sql *.py
 recursive-include data/template *.rml
 recursive-include docs *
-recursive-include external *.py
+recursive-include external *.py *jpg *gif
 recursive-include locale stoqlib.mo
 recursive-include po *.po *.pot POTFILES.list
 recursive-include plugins *.csv *.py *.glade *.sql *.plugin

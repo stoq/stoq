@@ -128,6 +128,15 @@ data_files = [
     ('share/doc/stoqlib',
      ('AUTHORS', 'CONTRIBUTORS', 'README'))]
 data_files += listexternal()
+
+# Pyboleto bank logos
+data_files += [
+    ('lib/stoqlib/pyboleto/media',
+     listfiles('external', 'pyboleto', 'media', '*.jpg')),
+    ('lib/stoqlib/pyboleto/media',
+     listfiles('external', 'pyboleto', 'media', '*.gif')),
+    ]
+
 resources = dict(
     locale='$prefix/share/locale',
     plugin='$prefix/lib/stoqlib/plugins',
