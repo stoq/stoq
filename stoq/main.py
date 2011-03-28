@@ -109,6 +109,8 @@ def _check_dependencies():
         GtkTreeView::grid-line-width = 0
     }
     class "GtkTreeView" style "tree-style" """)
+    settings = gtk.settings_get_default()
+    settings.props.gtk_button_images = True
     _setup_ui_dialogs()
 
     if gtk.pygtk_version < PYGTK_REQUIRED:
