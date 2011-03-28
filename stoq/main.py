@@ -110,6 +110,9 @@ def _check_dependencies():
     }
     class "GtkTreeView" style "tree-style" """)
     settings = gtk.settings_get_default()
+    # Creating a button as a temporary workaround for bug
+    # https://bugzilla.gnome.org/show_bug.cgi?id=632538, until gtk 3.0
+    b = gtk.Button()
     settings.props.gtk_button_images = True
     _setup_ui_dialogs()
 
