@@ -46,7 +46,7 @@ from stoqlib.domain.base import AdaptableORMObject
 from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.synchronization import BranchSynchronization
-from stoqlib.domain.transaction import TransactionEntry
+from stoqlib.domain.system import TransactionEntry
 from stoqlib.enums import SyncPolicy
 from stoqlib.lib.xmlrpc import ServerProxy, XMLRPCService
 

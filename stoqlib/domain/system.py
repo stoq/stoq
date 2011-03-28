@@ -51,3 +51,46 @@ class SystemTable(ORMObject, AbstractModel):
 
         return bool(cls.select(connection=conn))
 
+
+class TransactionEntry(ORMObject):
+    """
+    A TransactionEntry keeps track of state associated with a database
+    transaction. It's main use case is to know information about the system when
+    a domain object is created or modified.
+
+    @cvar te_time:
+    @cvar type: if it represents a creation or modification
+    @cvar user_id:
+    @cvar station_id:
+    """
+
+    (CREATED,
+     MODIFIED) = range(2)
+
+    te_time = DateTimeCol(notNone=True)
+
+    # This is used by base classes in Stoq, ORMObject does not allow
+    # us to use circular dependencies so instead we define them
+    # as IntCol and implement our own ForeignKey like wrappers below
+
+    user_id = IntCol(default=None) # ForeignKey('PersonAdaptToUser')
+    station_id = IntCol(default=None) # ForeignKey('BranchStation')
+    type = IntCol()
+
+    @property
+    def user(self):
+        """Returns the user associated with the TransactionEntry"""
+        if not self.user_id:
+            return
+        from stoqlib.domain.interfaces import IUser
+        from stoqlib.domain.person import Person
+        return Person.iget(IUser, self.user_id, connection=self._connection)
+
+    @property
+    def station(self):
+        """Returns the station associated with the TransactionEntry"""
+        if not self.station_id:
+            return
+        from stoqlib.domain.station import BranchStation
+        return BranchStation.get(self.station_id, connection=self._connection)
+
