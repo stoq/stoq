@@ -42,8 +42,7 @@ log = Logger('stoqlib.database.tables')
 
 
 _tables = [
-     ('transaction', ["TransactionEntry"]),
-     ('system', ["SystemTable"]),
+     ('system', ["SystemTable", "TransactionEntry"]),
      ('parameter', ["ParameterData"]),
      ('account', ["BankAccount", "Bank"]),
      ('profile', ["UserProfile", "ProfileSettings"]),
