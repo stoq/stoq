@@ -26,10 +26,9 @@
 
 from stoqlib.database.orm import DateTimeCol, IntCol
 from stoqlib.database.orm import ORMObject
-from stoqlib.domain.base import AbstractModel
 
 
-class SystemTable(ORMObject, AbstractModel):
+class SystemTable(ORMObject):
     """Stores information about database schema migration
 
     I{update}: the date when the database schema was updated
