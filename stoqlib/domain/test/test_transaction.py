@@ -30,7 +30,7 @@ from stoqlib.database.runtime import (get_current_user,
                                       get_current_station,
                                       new_transaction)
 from stoqlib.domain.person import Person
-from stoqlib.domain.transaction import TransactionEntry
+from stoqlib.domain.system import TransactionEntry
 
 from stoqlib.domain.test.domaintest import DomainTest
 

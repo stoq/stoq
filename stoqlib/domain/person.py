@@ -85,7 +85,7 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.method import CreditCardData
 from stoqlib.domain.station import BranchStation
-from stoqlib.domain.transaction import TransactionEntry
+from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.profile import UserProfile
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.validators import raw_phone_number, format_phone_number

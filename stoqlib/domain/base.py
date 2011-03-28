@@ -30,7 +30,7 @@ from stoqlib.database.orm import AND, const
 from stoqlib.database.orm import ORMObject
 from stoqlib.database.runtime import (StoqlibTransaction, get_current_user,
                                       get_current_station)
-from stoqlib.domain.transaction import TransactionEntry
+from stoqlib.domain.system import TransactionEntry
 from stoqlib.lib.component import Adapter, Adaptable
 
 
