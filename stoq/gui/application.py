@@ -92,16 +92,21 @@ class AppWindow(BaseAppWindow):
 
     def __init__(self, app):
         self.conn = new_transaction()
+
+        # This needs to be done before calling BaseAppWindow,
+        # so that all actions are set in the instancea
+        user = get_current_user(self.conn)
+        self.user_menu_label = user.username.capitalize()
+        self._create_user_menu_actions()
+
         BaseAppWindow.__init__(self, app)
-        self.user_menu_label = get_current_user(self.conn
-                                    ).username.capitalize()
+        self._create_user_menu()
         self._klist = getattr(self, self.klist_name)
         if not len(self._klist.get_columns()):
             self._klist.set_columns(self.get_columns())
         self._klist.set_selection_mode(self.klist_selection_mode)
         if app.options.debug:
             self._create_debug_menu()
-        self._create_user_menu()
         self.setup_focus()
         self._check_examples_database()
         self._usability_hacks()
@@ -229,20 +234,7 @@ class AppWindow(BaseAppWindow):
         about.run()
         about.destroy()
 
-    def _create_user_menu(self):
-        ui_string = """<ui>
-          <menubar name="menubar">
-            <menu action="UserMenu">
-              <menuitem action="StoreCookie"/>
-              <menuitem action="ClearCookie"/>
-              <menuitem action="ChangePassword"/>
-              <separator/>
-              <menuitem action="ChangeUser"/>
-              <menuitem action="ChangeApplication"/>
-            </menu>
-          </menubar>
-        </ui>"""
-
+    def _create_user_menu_actions(self):
         actions = [
             ('UserMenu', None, _('%s User') % self.user_menu_label),
             ('StoreCookie', gtk.STOCK_SAVE, _('_Store'), '<control>k',
@@ -257,15 +249,42 @@ class AppWindow(BaseAppWindow):
             ('ChangeApplication',    gtk.STOCK_REFRESH, _('Change Application'),
              'F5', _('Change application'), self._on_ChangeApplication__activate),
             ]
+        self._user_menu_action_group = gtk.ActionGroup('UsersMenuActions')
+        self._user_menu_action_group.add_actions(actions)
+        for action in self._user_menu_action_group.list_actions():
+            setattr(self, action.get_name(), action)
 
-        ag = gtk.ActionGroup('UsersMenuActions')
-        ag.add_actions(actions)
+    def _create_user_menu(self):
+        ui_string = """<ui>
+          <menubar name="menubar">
+            <menu action="UserMenu">
+              <menuitem action="StoreCookie"/>
+              <menuitem action="ClearCookie"/>
+              <menuitem action="ChangePassword"/>
+              <separator/>
+              <menuitem action="ChangeUser"/>
+              <menuitem action="ChangeApplication"/>
+            </menu>
+          </menubar>
+        </ui>"""
 
-        self.uimanager.insert_action_group(ag, 0)
+        # FIXME: Remove when gazpacho is not used any more
+        # Glade3 doesn't create a ui manager for us
+        if not hasattr(self, 'uimanager'):
+            self.uimanager = gtk.UIManager()
+
+        self.uimanager.insert_action_group(self._user_menu_action_group, 0)
         self.uimanager.add_ui_from_string(ui_string)
 
         user_menu = self.uimanager.get_widget('/menubar/UserMenu')
         user_menu.set_right_justified(True)
+
+        menu_bar = user_menu.get_parent()
+        if not menu_bar.get_parent():
+            if not hasattr(self, 'user_menu_bar'):
+                raise AssertionError("%s app needs a user_menu_bar widget" %
+                        (self.app_name, ))
+            user_menu.reparent(self.user_menu_bar)
 
         if sysparam(self.conn).DISABLE_COOKIES:
             self._clear_cookie()
