@@ -83,6 +83,10 @@ class CardPaymentCanceledEvent(Event):
     @param payment: the receipt of this payment
     """
 
+class CardPaymentReprintReceiptEvent(Event):
+    """
+    """
+
 
 
 #

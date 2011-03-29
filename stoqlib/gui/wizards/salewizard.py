@@ -201,7 +201,8 @@ class BaseMethodSelectionStep(object):
         else:
             step_class = PaymentMethodStep
 
-        retval = CreatePaymentEvent.emit(selected_method, self.model)
+        retval = CreatePaymentEvent.emit(selected_method, self.model,
+                                         self.conn)
 
         # None means no one catched this event
         if retval is None or retval == CreatePaymentStatus.UNHANDLED:

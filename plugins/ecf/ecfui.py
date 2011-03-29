@@ -33,7 +33,8 @@ from stoqlib.database.runtime import (get_current_station, get_connection,
                                       new_transaction)
 from stoqlib.domain.events import (SaleConfirmEvent, TillAddCashEvent,
                                    TillRemoveCashEvent, TillOpenEvent,
-                                   TillCloseEvent, TillAddTillEntryEvent)
+                                   TillCloseEvent, TillAddTillEntryEvent,
+                                   CardPaymentReprintReceiptEvent)
 from stoqlib.domain.interfaces import IIndividual, ICompany
 from stoqlib.domain.person import PersonAdaptToIndividual, PersonAdaptToCompany
 from stoqlib.domain.renegotiation import RenegotiationData
@@ -72,6 +73,7 @@ class ECFUI(object):
         TillRemoveCashEvent.connect(self._on_TillRemoveCash)
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         CouponCreatedEvent.connect(self._on_CouponCreatedEvent)
+        CardPaymentReprintReceiptEvent.connect(self._on_CardPaymentReprint)
 
         self._till_summarize_action = gtk.Action(
             'Summary', _('Summary'), None, None)
@@ -578,3 +580,12 @@ class ECFUI(object):
 
     def _on_ConfigurePrinter__activate(self, action):
         run_dialog(ECFListDialog, None)
+
+    def _on_CardPaymentReprint(self, receipt):
+        try:
+            self._validate_printer()
+        except DeviceError, e:
+            warning(e)
+            return
+
+        self._printer.print_report(receipt)
