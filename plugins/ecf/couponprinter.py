@@ -153,6 +153,11 @@ class CouponPrinter(object):
 
         return True
 
+    def print_report(self, report):
+        self._driver.gerencial_report_open()
+        self._driver.gerencial_report_print(report)
+        self._driver.gerencial_report_close()
+
     # Private
     def _register_emitted_document(self, type):
         """Register an emitted document.

@@ -1056,7 +1056,8 @@ class MultipleMethodSlave(BaseEditorSlave):
         # See salewizard.SalesPersonStep.on_next_step for details.
         # (We only emit this event for sales.)
         if not isinstance(self.model, PurchaseOrder):
-            retval = CreatePaymentEvent.emit(self._method, self.model)
+            retval = CreatePaymentEvent.emit(self._method, self.model,
+                                             self.conn)
         else:
             retval = None
 
