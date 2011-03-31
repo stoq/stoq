@@ -35,7 +35,8 @@ from zope.interface import implements
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.events import (CardPaymentReceiptPrepareEvent,
                                    CardPaymentCanceledEvent,
-                                   CardPaymentReceiptPrintedEvent)
+                                   CardPaymentReceiptPrintedEvent,
+                                   CardPaymentReprintReceiptEvent)
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
@@ -160,6 +161,7 @@ class FiscalCoupon(gobject.GObject):
     gsignal('get-supports-duplicate-receipt', retval=bool)
                                    # coo, payment, text
     gsignal('print-payment-receipt', int, object, str)
+    gsignal('reprint-payment-receipt', int, object, str)
     gsignal('cancel-payment-receipt')
 
     def __init__(self, parent):
@@ -298,7 +300,9 @@ class FiscalCoupon(gobject.GObject):
         return True
 
     def _print_receipts(self, sale):
-        supports_duplicate = self.emit('get-supports-duplicate-receipt')
+        #supports_duplicate = self.emit('get-supports-duplicate-receipt')
+        # Vamos sempre imprimir sempre de uma vez, para simplificar
+        supports_duplicate = False
 
         for payment in sale.payments:
             if payment.method.method_name == 'card':
@@ -306,7 +310,16 @@ class FiscalCoupon(gobject.GObject):
                 if receipt is None:
                     continue
 
-                if self.print_payment_receipt(payment, receipt):
+                retval = self.print_payment_receipt(payment, receipt)
+                while not retval:
+                    if not yesno(_(u"Error printing TEF Receipt\n"
+                                "Try again?"),
+                             gtk.RESPONSE_YES,
+                             _("Try Again "), _(u"Cancel Sale")):
+                        break
+                    retval = self.reprint_payment_receipt(receipt)
+
+                if retval:
                     CardPaymentReceiptPrintedEvent.emit(payment)
                 else:
                     CardPaymentCanceledEvent.emit(payment)
@@ -372,6 +385,19 @@ class FiscalCoupon(gobject.GObject):
 
         try:
             self.emit('print-payment-receipt', self._coo, payment, receipt)
+            return True
+        except (DriverError, DeviceError), details:
+            warning(_(u"It is not possible to print the payment receipt"),
+                    str(details))
+
+        return False
+
+    def reprint_payment_receipt(self, receipt):
+        """Re-Print the receipt for the payment.
+        """
+
+        try:
+            CardPaymentReprintReceiptEvent.emit(receipt, True)
             return True
         except (DriverError, DeviceError), details:
             warning(_(u"It is not possible to print the payment receipt"),
