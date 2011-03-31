@@ -581,11 +581,17 @@ class ECFUI(object):
     def _on_ConfigurePrinter__activate(self, action):
         run_dialog(ECFListDialog, None)
 
-    def _on_CardPaymentReprint(self, receipt):
+    def _on_CardPaymentReprint(self, receipt, close_previous=False):
         try:
             self._validate_printer()
         except DeviceError, e:
             warning(e)
             return
+
+        if close_previous:
+            # FIXME: dont call _driver directly
+            # Try closing any previously opened report. This is TEF specific, to
+            # workaround the tests where they turn off the printer
+            self._printer._driver.gerencial_report_close()
 
         self._printer.print_report(receipt)
