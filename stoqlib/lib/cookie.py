@@ -75,7 +75,7 @@ class Base64CookieFile(object):
 
         # obfuscate password to avoid it being easily identified when
         # editing file on screen. this is *NOT* encryption!
-        fd.write("%s:%s" % (username, binascii.b2a_base64(password)))
+        fd.write("%s:%s" % (username, binascii.b2a_base64(password or '')))
         fd.close()
 
         log.info("Saved cookie %s" % self._filename)
