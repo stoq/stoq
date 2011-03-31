@@ -387,10 +387,7 @@ class FiscalCoupon(gobject.GObject):
             self.emit('print-payment-receipt', self._coo, payment, receipt)
             return True
         except (DriverError, DeviceError), details:
-            warning(_(u"It is not possible to print the payment receipt"),
-                    str(details))
-
-        return False
+            return False
 
     def reprint_payment_receipt(self, receipt):
         """Re-Print the receipt for the payment.
@@ -400,7 +397,4 @@ class FiscalCoupon(gobject.GObject):
             CardPaymentReprintReceiptEvent.emit(receipt, True)
             return True
         except (DriverError, DeviceError), details:
-            warning(_(u"It is not possible to print the payment receipt"),
-                    str(details))
-
-        return False
+            return False
