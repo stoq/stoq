@@ -94,6 +94,8 @@ class CreditCardData(Domain):
     provider = ForeignKey('PersonAdaptToCreditProvider', default=None)
     fee = DecimalCol(default=0)
     fee_value = PriceCol(default=0)
+    nsu = IntCol(default=None)
+    auth = IntCol(default=None)
 
 
 class PaymentMethod(Domain):
