@@ -195,6 +195,12 @@ class AddressSlave(BaseEditorSlave):
     #
 
     def on_state__validate(self, entry, state):
+        if self.model.country != _("Brazil"):
+            # FIXME: When the country isn't Brazil, let something else
+            #        than Brazil's states.
+            #        Remove it when we have a list of other countries states.
+            return
+
         if not validate_state(state):
             return ValidationError(_("The State is not valid"))
 
@@ -207,6 +213,9 @@ class AddressSlave(BaseEditorSlave):
 
     def on_city__content_changed(self, widget):
         self._complete_cities()
+
+    def after_country__content_changed(self, widget):
+        self.state.validate(force=True)
 
 
 class AddressEditor(BaseEditor):
