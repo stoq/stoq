@@ -267,6 +267,8 @@ class DatabaseSettingsStep(WizardEditorStep):
         items = [(value, key)
                     for key, value in self.authentication_types.items()]
         self.authentication_type.prefill(items)
+        # Select PASSWORD_AUTHENTICATION as the default authentication type.
+        self.authentication_type.select_item_by_data(PASSWORD_AUTHENTICATION)
         self.authentication_items = items
         self.add_proxy(self.model, DatabaseSettingsStep.proxy_widgets)
         self.wizard_model.stoq_user_data = Settable(password='')
