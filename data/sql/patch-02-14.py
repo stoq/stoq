@@ -5,7 +5,13 @@
 from stoqlib.domain.payment.method import CreditCardData
 
 def apply_patch(trans):
-    
+    # Patch 2-24 introduces these ones
+    try:
+        CreditCardData.sqlmeta.delColumn('nsu')
+        CreditCardData.sqlmeta.delColumn('auth')
+    except KeyError:
+        pass
+
     for data in CreditCardData.select(connection=trans):
         payment = data.payment
         provider = data.provider
