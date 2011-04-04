@@ -26,7 +26,7 @@ from tests.sync.base import SyncTest
 from stoqlib.database.policy import get_policy_by_name
 from stoqlib.database.synchronization import get_tables
 from stoqlib.database.runtime import new_transaction
-from stoqlib.domain.transaction import TransactionEntry
+from stoqlib.domain.system import TransactionEntry
 from stoqlib.enums import SyncPolicy
 
 class TestClone(SyncTest):
