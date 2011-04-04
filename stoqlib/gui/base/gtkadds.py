@@ -32,6 +32,7 @@ def register_iconsets():
                  ("stoq-searchtool-icon2", "searchtool-animation2.png"),
                  ("stoq-searchtool-icon3", "searchtool-animation3.png"),
                  ("stoq-searchtool-icon4", "searchtool-animation4.png"),
+                 ("stoq-money", "money24px.png"),
                  ("stoq-products", "products_24.png"),
                  ("stoq-purchase-quote", "gnome-gnomine24px.png"),
                  ("stoq-deliveries", "delivery24px.png"),
