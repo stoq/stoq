@@ -21,7 +21,7 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-""" This module test all class in stoq/domain/transaction.py """
+""" This module test all class in stoq/domain/system.py """
 
 import datetime
 import time
