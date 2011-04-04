@@ -30,6 +30,7 @@ from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
 from stoqdrivers.enum import TaxType
 
+import stoqlib
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.domain.interfaces import ISupplier, IBranch
@@ -760,3 +761,6 @@ def ensure_system_parameters(update=False):
     param = sysparam(trans)
     param.set_defaults(update)
     trans.commit(close=True)
+
+def is_developer_mode():
+    return stoqlib.uninstalled
