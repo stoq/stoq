@@ -36,7 +36,7 @@ from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.events import (CardPaymentReceiptPrepareEvent,
                                    CardPaymentCanceledEvent,
                                    CardPaymentReceiptPrintedEvent,
-                                   CardPaymentReprintReceiptEvent)
+                                   GerencialReportPrintEvent)
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
@@ -394,7 +394,7 @@ class FiscalCoupon(gobject.GObject):
         """
 
         try:
-            CardPaymentReprintReceiptEvent.emit(receipt, True)
+            GerencialReportPrintEvent.emit(receipt, True)
             return True
         except (DriverError, DeviceError), details:
             return False
