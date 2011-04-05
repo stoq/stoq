@@ -1057,7 +1057,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         # (We only emit this event for sales.)
         if not isinstance(self.model, PurchaseOrder):
             retval = CreatePaymentEvent.emit(self._method, self.model,
-                                             self.conn)
+                                             self.conn, self._holder.value)
         else:
             retval = None
 
