@@ -164,6 +164,9 @@ class SaleItemIcms(BaseICMS):
     v_bc_st_ret = PriceCol(default=None)
     v_icms_st_ret = PriceCol(default=None)
 
+    def _calc_sn(self, sale_item):
+        if self.p_cred_sn:
+            self.v_cred_icms_sn = (self.p_cred_sn / 100) * sale_item.price
 
     def _calc_st(self, sale_item):
         self.v_bc_st = sale_item.price * sale_item.quantity
@@ -234,6 +237,9 @@ class SaleItemIcms(BaseICMS):
         if self.csosn == 500:
             self.v_bc_st_ret = 0
             self.v_icms_st_ret = 0
+
+        if self.csosn == 101:
+            self._calc_sn(sale_item)
 
     def update_values(self):
         from stoqlib.domain.sale import SaleItem

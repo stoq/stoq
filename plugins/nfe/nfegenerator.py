@@ -1158,7 +1158,7 @@ class NFeICMSSN101(BaseNFeICMS):
     attributes = [(u'orig', ''),
                   (u'CSOSN', ''),
                   (u'pCredSN', ''),
-                  (u'vCredICMSSN', 'u'),
+                  (u'vCredICMSSN', ''),
                   ]
 
 
