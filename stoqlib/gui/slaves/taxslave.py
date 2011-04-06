@@ -23,6 +23,7 @@
 ##
 """ Slaves for books """
 
+import datetime
 import sys
 
 import gtk
@@ -118,13 +119,15 @@ class BaseICMSSlave(BaseTaxSlave):
     value_widgets = ['v_bc', 'v_icms', 'v_bc_st', 'v_icms_st',
                      'v_cred_icms_sn', 'v_bc_st_ret', 'v_icms_st_ret']
     bool_widgets = ['bc_include_ipi', 'bc_st_include_ipi']
+    datetime_widgets = ['p_cred_sn_valid_until']
     all_widgets = (combo_widgets + percentage_widgets + value_widgets +
-                   bool_widgets)
+                   bool_widgets + datetime_widgets)
 
 
     simples_widgets = ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
               'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_cred_sn',
-              'v_cred_icms_sn', 'v_bc_st_ret', 'v_icms_st_ret'],
+              'p_cred_sn_valid_until' 'v_cred_icms_sn', 'v_bc_st_ret',
+              'v_icms_st_ret'],
 
     normal_widgets = ['orig', 'cst', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
              'p_icms_st', 'v_bc_st', 'v_icms_st', 'bc_st_include_ipi',
@@ -212,12 +215,13 @@ class BaseICMSSlave(BaseTaxSlave):
         70: normal_widgets,
         90: normal_widgets,
         # Simples Nacional
-        101: ['orig', 'csosn', 'p_cred_sn', 'v_cred_icms_sn'],
+        101: ['orig', 'csosn', 'p_cred_sn', 'p_cred_sn_valid_until',
+              'v_cred_icms_sn'],
         102: ['orig', 'csosn',],
         103: ['orig', 'csosn',],
         201: ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
               'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_cred_sn',
-              'v_cred_icms_sn'],
+              'p_cred_sn_valid_until', 'v_cred_icms_sn'],
         202: ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
               'p_icms_st', 'v_bc_st', 'v_icms_st'],
         203: ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
@@ -254,10 +258,22 @@ class BaseICMSSlave(BaseTaxSlave):
     def on_csosn__changed(self, widget):
         self._update_selected_csosn()
 
+    def after_p_cred_sn__changed(self, widget):
+        self.p_cred_sn_valid_until.set_sensitive(bool(widget.get_value()))
+        self.p_cred_sn_valid_until.validate(force=True)
+
+    def on_p_cred_sn_valid_until__validate(self, widget, value):
+        if not self.p_cred_sn.get_value() or not value:
+            return
+        if value <= datetime.date.today():
+            return ValidationError(_(u"This date must be set in the future."))
+
+
 class ICMSTemplateSlave(BaseICMSSlave):
     model_type = ProductIcmsTemplate
     proxy_widgets = (BaseICMSSlave.combo_widgets +
-                     BaseICMSSlave.percentage_widgets)
+                     BaseICMSSlave.percentage_widgets +
+                     BaseICMSSlave.datetime_widgets)
     hide_widgets = BaseICMSSlave.value_widgets
 
 
