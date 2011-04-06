@@ -9,7 +9,7 @@
             <widget class="GtkTable" id="table1">
                 <property name="column_spacing">6</property>
                 <property name="n_columns">4</property>
-                <property name="n_rows">12</property>
+                <property name="n_rows">13</property>
                 <property name="row_spacing">6</property>
                 <property name="visible">True</property>
                 <child>
@@ -137,14 +137,25 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="v_cred_icms_sn_label">
-                        <property name="label" context="yes" translatable="yes">Valor ICMS SN:</property>
+                    <widget class="GtkLabel" id="p_cred_sn_valid_until_label">
+                        <property name="label" context="yes" translatable="yes">Alíquota válida até:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">12</property>
                         <property name="top_attach">11</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="v_cred_icms_sn_label">
+                        <property name="label" context="yes" translatable="yes">Valor ICMS SN:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">13</property>
+                        <property name="top_attach">12</property>
                     </packing>
                 </child>
                 <child>
@@ -269,6 +280,7 @@
                         <property name="data_type">Decimal</property>
                         <property name="invisible_char"> </property>
                         <property name="invisible_char_set">True</property>
+                        <property name="is_focus">True</property>
                         <property name="model_attribute">p_cred_sn</property>
                         <property name="text" context="yes" translatable="yes">0</property>
                         <property name="visible">True</property>
@@ -281,19 +293,33 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyEntry" id="v_cred_icms_sn">
-                        <property name="data_type">currency</property>
-                        <property name="invisible_char"> </property>
-                        <property name="invisible_char_set">True</property>
-                        <property name="model_attribute">v_cred_icms_sn</property>
+                    <widget class="ProxyDateEntry" id="p_cred_sn_valid_until">
+                        <property name="data_type">date</property>
+                        <property name="model_attribute">p_cred_sn_valid_until</property>
                         <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">12</property>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">11</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyEntry" id="v_cred_icms_sn">
+                        <property name="data_type">currency</property>
+                        <property name="invisible_char"> </property>
+                        <property name="invisible_char_set">True</property>
+                        <property name="is_focus">True</property>
+                        <property name="model_attribute">v_cred_icms_sn</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">13</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">12</property>
                     </packing>
                 </child>
                 <child>
@@ -413,6 +439,15 @@
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
                         <property name="top_attach">11</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">12</property>
+                        <property name="bottom_attach">13</property>
                     </packing>
                 </child>
                 <child>
@@ -539,6 +574,15 @@
                         <property name="left_attach">3</property>
                         <property name="right_attach">4</property>
                         <property name="top_attach">11</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">12</property>
+                        <property name="bottom_attach">13</property>
                     </packing>
                 </child>
             </widget>

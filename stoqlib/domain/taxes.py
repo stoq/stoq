@@ -24,7 +24,7 @@
 
 from kiwi.datatypes import currency
 
-from stoqlib.database.orm import (IntCol, UnicodeCol, DecimalCol,
+from stoqlib.database.orm import (IntCol, UnicodeCol, DecimalCol, DateTimeCol,
                                   PriceCol, ForeignKey, BoolCol)
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.product import Product
@@ -89,6 +89,7 @@ class BaseICMS(BaseTax):
     # Simples Nacional
     csosn = IntCol(default=None)
     p_cred_sn = DecimalCol(default=None)
+    p_cred_sn_valid_until = DateTimeCol(default=None)
 
 
 class BaseIPI(BaseTax):
