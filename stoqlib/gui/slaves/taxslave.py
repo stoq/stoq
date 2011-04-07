@@ -24,6 +24,7 @@
 """ Slaves for books """
 
 import datetime
+from dateutil.relativedelta import relativedelta
 import sys
 
 import gtk
@@ -251,16 +252,8 @@ class BaseICMSSlave(BaseTaxSlave):
         if (self.p_cred_sn.get_value()
             and not self.p_cred_sn_valid_until.get_date()):
                 # Set the default expire date to the 1st day of next month.
-                today = datetime.date.today()
-                if today.month == 12:
-                    # Set expiration to next year.
-                    default_expire_date = datetime.date(year=today.year + 1,
-                                                        month=1,
-                                                        day=1)
-                else:
-                    default_expire_date = datetime.date(year=today.year,
-                                                        month=today.month + 1,
-                                                        day=1)
+                default_expire_date = (datetime.date.today()
+                                       + relativedelta(day=1, months=+1))
                 self.p_cred_sn_valid_until.set_date(default_expire_date)
 
     def _update_selected_cst(self):
