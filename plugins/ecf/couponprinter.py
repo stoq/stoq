@@ -348,6 +348,18 @@ class Coupon(object):
         log.info("setting up payments for %r" % (sale,))
 
         log.info("we have %d payments" % (sale.payments.count()),)
+
+        card_payments = {}
+        # Merge card payments by nsu
+        for payment in sale.payments:
+            if payment.method.method_name != 'card':
+                continue
+            operation = payment.method.operation
+            card_data = operation.get_card_data_by_payment(payment)
+            card_payments.setdefault(card_data.nsu, 0)
+            card_payments[card_data.nsu] += payment.value
+
+
         for payment in sale.payments:
             constant = self._get_payment_method_constant(payment)
 
@@ -357,6 +369,16 @@ class Coupon(object):
                 self._driver.add_payment(constant.device_value,
                                          payment.base_value)
 
+            # Card payments were merged above. Use that instead.
+            elif payment.method.method_name == 'card':
+                operation = payment.method.operation
+                card_data = operation.get_card_data_by_payment(payment)
+                # This payment was already addded
+                if not card_payments.has_key(card_data.nsu):
+                    continue
+                self._driver.add_payment(constant.device_value,
+                                         card_payments[card_data.nsu])
+                del card_payments[card_data.nsu]
             # In other cases, add the real value of payment.
             else:
                 self._driver.add_payment(constant.device_value,
