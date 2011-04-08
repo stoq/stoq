@@ -53,6 +53,13 @@ _ = stoqlib_gettext
 
 log = Logger('stoqlib.fiscalprinter')
 
+def _flush_interface():
+    """ Sometimes we need to 'flush' interface, so that the dialog has some
+    time to disaperar before we send a blocking command to the printer
+    """
+    while gtk.events_pending():
+        gtk.main_iteration()
+
 class FiscalPrinterHelper:
 
     def __init__(self, conn, parent):
@@ -266,7 +273,9 @@ class FiscalCoupon(gobject.GObject):
                 return False
 
         self._coo = self.emit('get-coo')
-
+        self.totalized = False
+        self.coupon_closed = False
+        self.payments_setup = False
         return True
 
     def confirm(self, sale, trans):
@@ -283,13 +292,12 @@ class FiscalCoupon(gobject.GObject):
             return False
         if not self.setup_payments(sale):
             return False
-
         if not self.close(sale, trans):
             return False
 
         sale.confirm()
 
-        self._print_receipts(sale)
+        self.print_receipts(sale)
 
         if sale.only_paid_with_money():
             sale.set_paid()
@@ -299,7 +307,7 @@ class FiscalCoupon(gobject.GObject):
         print_cheques_for_payment_group(trans, sale.group)
         return True
 
-    def _print_receipts(self, sale):
+    def print_receipts(self, sale):
         #supports_duplicate = self.emit('get-supports-duplicate-receipt')
         # Vamos sempre imprimir sempre de uma vez, para simplificar
         supports_duplicate = False
@@ -317,6 +325,7 @@ class FiscalCoupon(gobject.GObject):
                              gtk.RESPONSE_YES,
                              _("Try Again "), _(u"Cancel Sale")):
                         break
+                    _flush_interface()
                     retval = self.reprint_payment_receipt(receipt)
 
                 if retval:
@@ -331,13 +340,24 @@ class FiscalCoupon(gobject.GObject):
         if not self._item_ids:
             return True
 
-        try:
-            self.emit('totalize', sale)
-        except (DriverError, DeviceError), details:
-            warning(_(u"It is not possible to totalize the coupon"),
-                    str(details))
-            return False
-        return True
+        if self.totalized:
+            return True
+
+        while True:
+            try:
+                self.emit('totalize', sale)
+                self.totalized = True
+                return True
+            except (DriverError, DeviceError), details:
+                if not yesno(_(u"Error totalizing coupon\n"
+                                "Try again?"),
+                         gtk.RESPONSE_YES,
+                         _("Try Again "), _(u"Cancel")):
+                    warning(_(u"It is not possible to totalize the coupon"),
+                            str(details))
+                    return False
+                _flush_interface()
+
 
     def cancel(self):
         try:
@@ -355,27 +375,47 @@ class FiscalCoupon(gobject.GObject):
         if not self._item_ids:
             return True
 
-        try:
-            self.emit('add-payments', sale)
-        except DeviceError, e:
-            warning(_(u"It is not possible to add payments to the coupon"),
-                    str(e))
-            return False
+        if self.payments_setup:
+            return True
 
-        return True
+        while True:
+            try:
+                self.emit('add-payments', sale)
+                self.payments_setup = True
+                return True
+            except (DriverError, DeviceError), details:
+                if not yesno(_(u"Error adding payments to the coupon\n"
+                                "Try again?"),
+                         gtk.RESPONSE_YES,
+                         _("Try Again "), _(u"Cancel")):
+                    warning(_(u"It is not possible to add payments to the coupon"),
+                            str(details))
+                    return False
+                _flush_interface()
+
 
     def close(self, sale, trans):
         # XXX: Remove this when bug #2827 is fixed.
         if not self._item_ids:
             return True
-        try:
-            coupon_id = self.emit('close', sale)
-            sale.coupon_id = coupon_id
-            return True
-        except (DeviceError, DriverError), details:
-            warning(_("It's not possible to close the coupon"), str(details))
 
-        return False
+        if self.coupon_closed:
+            return True
+
+        while True:
+            try:
+                coupon_id = self.emit('close', sale)
+                sale.coupon_id = coupon_id
+                self.coupon_closed = True
+                return True
+            except (DeviceError, DriverError), details:
+                if not yesno(_(u"Error closing coupon\n"
+                                "Try again?"),
+                         gtk.RESPONSE_YES,
+                         _("Try Again "), _(u"Cancel")):
+                    warning(_("It's not possible to close the coupon"), str(details))
+                    return False
+                _flush_interface()
 
     def print_payment_receipt(self, payment, receipt):
         """Print the receipt for the payment.
