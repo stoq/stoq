@@ -154,7 +154,8 @@ def start_dbshell():
             port=settings.port,
             dbname=settings.dbname)
 
-        print 'Connecting to %s' % (settings.get_connection_uri(),)
+        print 'Connecting to %s' % (
+            settings.get_connection_uri(filter_password=True),)
         proc = subprocess.Popen(cmd, shell=True)
         proc.wait()
     else:
