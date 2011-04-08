@@ -77,10 +77,11 @@ class DatabaseSettings(object):
 
         if filter_password:
             password = '*****'
+        elif self.password:
+            password = ":" + self.password
         else:
-            password = self.password
-
-        authority = '%s:%s@%s:%s' % (
+            password = ""
+        authority = '%s%s@%s:%s' % (
             self.username, password, self.address, self.port)
         if dbname is None:
             # postgres is a special database which is always present,
