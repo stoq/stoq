@@ -275,6 +275,12 @@ class StoqCommandHandler:
         from stoqlib.lib.sintegragenerator import generate
         generate(filename, start, end)
 
+    def cmd_dbshell(self, options):
+        from stoqlib.database.database import start_dbshell
+        self._read_config(options, register_station=False,
+                          check_schema=False)
+        start_dbshell()
+
 def main(args):
     pname = args[0]
     args = args[1:]
