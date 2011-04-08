@@ -127,12 +127,13 @@ class DatabaseSettings(object):
 
     # Public API
 
-    def get_connection_uri(self):
+    def get_connection_uri(self, filter_password=False):
         """Returns a uri representing the current database settings.
         It's used by the orm to connect to a database.
+        @param filter_password: if the password should be filtered out
         @returns: a string like postgresql://username@localhost/dbname
         """
-        return self._build_uri(self.dbname)
+        return self._build_uri(self.dbname, filter_password=filter_password)
 
     def get_connection(self):
         """Returns a connection to the configured database
