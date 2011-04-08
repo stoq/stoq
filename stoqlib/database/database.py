@@ -141,6 +141,25 @@ def execute_sql(filename):
         raise NotImplementedError(settings.rdbms)
 
 
+def start_dbshell():
+    """Runs a database shell using the current settings
+    """
+    settings = get_utility(IDatabaseSettings)
+
+    if settings.rdbms == 'postgres':
+        cmd = ("psql -n -h %(address)s -U %(username)s "
+               "-p %(port)s %(dbname)s -q ") % dict(
+            address=settings.address,
+            username=settings.username,
+            port=settings.port,
+            dbname=settings.dbname)
+
+        print 'Connecting to %s' % (settings.get_connection_uri(),)
+        proc = subprocess.Popen(cmd, shell=True)
+        proc.wait()
+    else:
+        raise NotImplementedError(settings.rdbms)
+
 def test_connection():
     """Test database connectivity for using command line tools
     @returns: True for success, False if connection fails
