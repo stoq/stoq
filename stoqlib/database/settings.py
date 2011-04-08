@@ -75,10 +75,12 @@ class DatabaseSettings(object):
         if self.rdbms != DEFAULT_RDBMS:
             raise ConfigError("Unsupported database type: %s" % self.rdbms)
 
-        if filter_password:
-            password = '*****'
-        elif self.password:
-            password = ":" + self.password
+        if self.password:
+            password = ":"
+            if filter_password:
+                password += '*****'
+            else:
+                password += self.password
         else:
             password = ""
         authority = '%s%s@%s:%s' % (
