@@ -147,7 +147,7 @@ def start_dbshell():
     settings = get_utility(IDatabaseSettings)
 
     if settings.rdbms == 'postgres':
-        cmd = ("psql -n -h %(address)s -U %(username)s "
+        cmd = ("psql -h %(address)s -U %(username)s "
                "-p %(port)s %(dbname)s -q ") % dict(
             address=settings.address,
             username=settings.username,
