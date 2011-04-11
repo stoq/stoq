@@ -40,6 +40,7 @@ from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.base import Domain
 from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
                                 BarcodeDoesNotExists)
+from stoqlib.lib.message import info
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import is_date_in_interval
@@ -500,6 +501,24 @@ class Sellable(Domain):
         info = self.base_sellable_info
         if newprice < info.price - (info.price * info.max_discount/100):
             return False
+        return True
+
+    def is_icms_taxes_ok(self, info_not_ok=False):
+        icms_template = self.product and self.product.icms_template
+        if (icms_template
+            and icms_template.p_cred_sn
+            and icms_template.p_cred_sn_valid_until):
+            icms_valid_until_date = icms_template.p_cred_sn_valid_until.date()
+            if icms_valid_until_date < datetime.date.today():
+                if info:
+                    # Translators:
+                    # * ICMS tax rate credit = Alíquota de crédito do ICMS
+                    info(_("You cannot sell this item before updating the "
+                           "'ICMS tax rate credit' field on '%s' Tax Class.\n"
+                           "If you don't know what this means, contact the "
+                           "system administrator." %
+                           icms_template.product_tax_template.name))
+                return False
         return True
 
     #

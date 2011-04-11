@@ -236,6 +236,9 @@ class SaleQuoteItemStep(SellableItemStep):
     # WizardStep hooks
     #
 
+    def _can_add_sellable(self, sellable):
+        return sellable.is_icms_taxes_ok(info_not_ok=True)
+
     def post_init(self):
         SellableItemStep.post_init(self)
         self.slave.set_editor(SaleQuoteItemEditor)

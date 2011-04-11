@@ -371,6 +371,8 @@ class SellableItemStep(WizardEditorStep):
             return
 
         sellable = Sellable.get(ret.id, connection=self.conn)
+        if not self._can_add_sellable(sellable):
+            return
         self.barcode.set_text(sellable.barcode)
         self.sellable_selected(sellable)
         self.quantity.grab_focus()
@@ -400,8 +402,14 @@ class SellableItemStep(WizardEditorStep):
         sellable = results[0].sellable
         if not sellable:
             return None
+        elif not self._can_add_sellable(sellable):
+            return
 
         return sellable
+
+    def _can_add_sellable(self, sellable):
+        """This should be rewritten on subclasses for functionality"""
+        return True
 
     def _add_sellable(self):
         sellable = self.proxy.model.sellable
