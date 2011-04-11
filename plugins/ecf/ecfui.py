@@ -566,8 +566,8 @@ class ECFUI(object):
     def _on_coupon__get_supports_duplicate(self, coupon):
         return coupon.supports_duplicate_receipt
 
-    def _on_coupon__print_payment_receipt(self, coupon, coo, payment, receipt):
-        coupon.print_payment_receipt(coo, payment, receipt)
+    def _on_coupon__print_payment_receipt(self, coupon, coo, payment, value, receipt):
+        coupon.print_payment_receipt(coo, payment, value, receipt)
 
     def _on_TillSummary__activate(self, action):
         self._till_summarize()

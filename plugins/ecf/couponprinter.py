@@ -415,7 +415,7 @@ class Coupon(object):
     def identify_customer_at_end(self):
         return self._driver.identify_customer_at_end
 
-    def print_payment_receipt(self, coo, payment, receipt):
+    def print_payment_receipt(self, coo, payment, value, receipt):
         """Print a payment receipt for a payment in a coupon
 
         @param coo: the coo for the coupon
@@ -426,7 +426,7 @@ class Coupon(object):
         receipt_id = self._driver.get_payment_receipt_identifier(constant.constant_name)
 
         self._driver.payment_receipt_open(receipt_id, coo, constant.device_value,
-                                          payment.value)
+                                          value)
         self._driver.payment_receipt_print(receipt)
         self._driver.payment_receipt_close()
 

@@ -166,9 +166,8 @@ class FiscalCoupon(gobject.GObject):
     gsignal('cancel')
     gsignal('get-coo', retval=int)
     gsignal('get-supports-duplicate-receipt', retval=bool)
-                                   # coo, payment, text
-    gsignal('print-payment-receipt', int, object, str)
-    gsignal('reprint-payment-receipt', int, object, str)
+                                   # coo, payment, value, text
+    gsignal('print-payment-receipt', int, object, object, str)
     gsignal('cancel-payment-receipt')
 
     def __init__(self, parent):
@@ -312,28 +311,38 @@ class FiscalCoupon(gobject.GObject):
         # Vamos sempre imprimir sempre de uma vez, para simplificar
         supports_duplicate = False
 
+        card_payments = {}
+        # Merge card payments by nsu
         for payment in sale.payments:
-            if payment.method.method_name == 'card':
-                receipt = CardPaymentReceiptPrepareEvent.emit(payment, supports_duplicate)
-                if receipt is None:
-                    continue
+            if payment.method.method_name != 'card':
+                continue
+            operation = payment.method.operation
+            card_data = operation.get_card_data_by_payment(payment)
+            card_payments.setdefault(card_data.nsu, [])
+            card_payments[card_data.nsu].append(payment)
 
-                retval = self.print_payment_receipt(payment, receipt)
-                while not retval:
-                    if not yesno(_(u"Error printing TEF Receipt\n"
-                                "Try again?"),
-                             gtk.RESPONSE_YES,
-                             _("Try Again "), _(u"Cancel Sale")):
-                        break
-                    _flush_interface()
-                    retval = self.reprint_payment_receipt(receipt)
+        for nsu, payment_list in card_payments.items():
+            receipt = CardPaymentReceiptPrepareEvent.emit(nsu, supports_duplicate)
+            if receipt is None:
+                continue
 
-                if retval:
-                    CardPaymentReceiptPrintedEvent.emit(payment)
-                else:
-                    CardPaymentCanceledEvent.emit(payment)
-                    # If the payment cannot be confirmed, we need to cancel
-                    # the last sale. !!! See bug 2249
+            value = sum([p.value for p in payment_list])
+            retval = self.print_payment_receipt(payment_list[0], value, receipt)
+            while not retval:
+                if not yesno(_(u"Error printing TEF Receipt\n"
+                            "Try again?"),
+                         gtk.RESPONSE_YES,
+                         _("Try Again "), _(u"Cancel Sale")):
+                    break
+                _flush_interface()
+                retval = self.reprint_payment_receipt(receipt)
+
+            if retval:
+                CardPaymentReceiptPrintedEvent.emit(nsu)
+            else:
+                CardPaymentCanceledEvent.emit(nsu)
+                # If the payment cannot be confirmed, we need to cancel
+                # the last sale. !!! See bug 2249
 
     def totalize(self, sale):
         # XXX: Remove this when bug #2827 is fixed.
@@ -417,14 +426,14 @@ class FiscalCoupon(gobject.GObject):
                     return False
                 _flush_interface()
 
-    def print_payment_receipt(self, payment, receipt):
+    def print_payment_receipt(self, payment, value, receipt):
         """Print the receipt for the payment.
 
         This must be called after the coupon is closed.
         """
 
         try:
-            self.emit('print-payment-receipt', self._coo, payment, receipt)
+            self.emit('print-payment-receipt', self._coo, payment, value, receipt)
             return True
         except (DriverError, DeviceError), details:
             return False
