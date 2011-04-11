@@ -281,7 +281,7 @@ class FiscalCoupon(gobject.GObject):
         # Actually, we are confirming the sale here, so the sale
         # confirmation process will be available to others applications
         # like Till and not only to the POS.
-        model = run_dialog(ConfirmSaleWizard, self, trans, sale)
+        model = run_dialog(ConfirmSaleWizard, self._parent, trans, sale)
         if not finish_transaction(trans, model):
             return False
         if sale.client and not self.is_customer_identified():
