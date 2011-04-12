@@ -283,8 +283,8 @@ class FiscalCoupon(gobject.GObject):
         # like Till and not only to the POS.
         model = run_dialog(ConfirmSaleWizard, self._parent, trans, sale)
         if not model:
-            finish_transaction(trans, False)
             CancelPendingPaymentsEvent.emit()
+            finish_transaction(trans, False)
             return False
         if sale.client and not self.is_customer_identified():
             self.identify_customer(sale.client.person)
