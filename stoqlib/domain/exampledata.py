@@ -77,6 +77,9 @@ def create_sellable(trans):
 def create_sale(trans):
     return ExampleCreator.create(trans, 'Sale')
 
+def create_sale_item_icms(trans):
+    return ExampleCreator.create(trans, 'SaleItemIcms')
+
 def create_stock_decrease(trans):
     return ExampleCreator.create(trans, 'StockDecrease')
 
@@ -178,6 +181,7 @@ class ExampleCreator(object):
             'ReceivingOrderItem' : self.create_receiving_order_item,
             'RenegotiationData' : self.create_renegotiation_data,
             'Sale': self.create_sale,
+            'SaleItemIcms': self.create_sale_item_icms,
             'Sellable' : self.create_sellable,
             'Service': self.create_service,
             'StockDecrease': self.create_stock_decrease,
@@ -308,6 +312,10 @@ class ExampleCreator(object):
                     cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,
                     group=group,
                     connection=self.trans)
+
+    def create_sale_item_icms(self):
+        from stoqlib.domain.taxes import SaleItemIcms
+        return SaleItemIcms(connection=self.trans)
 
     def create_stock_decrease(self):
         from stoqlib.domain.stockdecrease import StockDecrease
