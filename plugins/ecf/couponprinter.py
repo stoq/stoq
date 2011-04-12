@@ -392,14 +392,13 @@ class Coupon(object):
         return coupon_id
 
     def _create_fiscal_sale_data(self, sale):
-        trans = new_transaction()
+        trans = sale.get_connection()
         FiscalSaleHistory(sale=sale,
                           document_type=self._customer_document_type,
                           document=self._customer_document,
                           coo=self.get_coo(),
                           document_counter=self.get_ccf(),
                           connection=trans)
-        trans.commit(close=True)
 
     def get_ccf(self):
         return self._driver.get_ccf()

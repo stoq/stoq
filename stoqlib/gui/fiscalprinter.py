@@ -34,9 +34,9 @@ from zope.interface import implements
 
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.events import (CardPaymentReceiptPrepareEvent,
-                                   CardPaymentCanceledEvent,
                                    CardPaymentReceiptPrintedEvent,
-                                   GerencialReportPrintEvent)
+                                   GerencialReportPrintEvent,
+                                   CancelPendingPaymentsEvent)
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
@@ -282,21 +282,30 @@ class FiscalCoupon(gobject.GObject):
         # confirmation process will be available to others applications
         # like Till and not only to the POS.
         model = run_dialog(ConfirmSaleWizard, self._parent, trans, sale)
-        if not finish_transaction(trans, model):
+        if not model:
+            finish_transaction(trans, False)
+            CancelPendingPaymentsEvent.emit()
             return False
         if sale.client and not self.is_customer_identified():
             self.identify_customer(sale.client.person)
 
         if not self.totalize(sale):
+            finish_transaction(trans, False)
             return False
+
         if not self.setup_payments(sale):
+            finish_transaction(trans, False)
             return False
         if not self.close(sale, trans):
+            finish_transaction(trans, False)
             return False
 
         sale.confirm()
 
         self.print_receipts(sale)
+
+        # Only finish the transaction after everything passed above.
+        finish_transaction(trans, model)
 
         if sale.only_paid_with_money():
             sale.set_paid()
@@ -311,8 +320,8 @@ class FiscalCoupon(gobject.GObject):
         # Vamos sempre imprimir sempre de uma vez, para simplificar
         supports_duplicate = False
 
-        card_payments = {}
         # Merge card payments by nsu
+        card_payments = {}
         for payment in sale.payments:
             if payment.method.method_name != 'card':
                 continue
@@ -330,19 +339,20 @@ class FiscalCoupon(gobject.GObject):
             retval = self.print_payment_receipt(payment_list[0], value, receipt)
             while not retval:
                 if not yesno(_(u"Error printing TEF Receipt\n"
-                            "Try again?"),
+                                "Try again?"),
                          gtk.RESPONSE_YES,
                          _("Try Again "), _(u"Cancel Sale")):
-                    break
+                    CancelPendingPaymentsEvent.emit()
+                    return False
                 _flush_interface()
                 retval = self.reprint_payment_receipt(receipt)
 
-            if retval:
-                CardPaymentReceiptPrintedEvent.emit(nsu)
-            else:
-                CardPaymentCanceledEvent.emit(nsu)
-                # If the payment cannot be confirmed, we need to cancel
-                # the last sale. !!! See bug 2249
+        # Only confirm payments receipt printed if *all* receipts wore
+        # printed.
+        for nsu in card_payments.keys():
+            CardPaymentReceiptPrintedEvent.emit(nsu)
+
+        return True
 
     def totalize(self, sale):
         # XXX: Remove this when bug #2827 is fixed.
@@ -364,6 +374,7 @@ class FiscalCoupon(gobject.GObject):
                          _("Try Again "), _(u"Cancel")):
                     warning(_(u"It is not possible to totalize the coupon"),
                             str(details))
+                    CancelPendingPaymentsEvent.emit()
                     return False
                 _flush_interface()
 
@@ -399,6 +410,7 @@ class FiscalCoupon(gobject.GObject):
                          _("Try Again "), _(u"Cancel")):
                     warning(_(u"It is not possible to add payments to the coupon"),
                             str(details))
+                    CancelPendingPaymentsEvent.emit()
                     return False
                 _flush_interface()
 
@@ -423,6 +435,7 @@ class FiscalCoupon(gobject.GObject):
                          gtk.RESPONSE_YES,
                          _("Try Again "), _(u"Cancel")):
                     warning(_("It's not possible to close the coupon"), str(details))
+                    CancelPendingPaymentsEvent.emit()
                     return False
                 _flush_interface()
 
