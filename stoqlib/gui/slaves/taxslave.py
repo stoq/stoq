@@ -251,9 +251,9 @@ class BaseICMSSlave(BaseTaxSlave):
     def _update_p_cred_sn_valid_until(self):
         if (self.p_cred_sn.get_value()
             and not self.p_cred_sn_valid_until.get_date()):
-                # Set the default expire date to the 1st day of next month.
-                default_expire_date = (datetime.date.today()
-                                       + relativedelta(day=1, months=+1))
+                # Set the default expire date to the last day of current month.
+                default_expire_date = (datetime.date.today() +
+                                       relativedelta(day=1, months=+1, days=-1))
                 self.p_cred_sn_valid_until.set_date(default_expire_date)
 
     def _update_selected_cst(self):
@@ -295,7 +295,12 @@ class ICMSTemplateSlave(BaseICMSSlave):
 
 class SaleItemICMSSlave(BaseICMSSlave):
     model_type = SaleItemIcms
-    proxy_widgets = BaseICMSSlave.all_widgets
+    proxy_widgets = (BaseICMSSlave.combo_widgets +
+                     BaseICMSSlave.percentage_widgets +
+                     BaseICMSSlave.bool_widgets +
+                     BaseICMSSlave.value_widgets)
+    hide_widgets = BaseICMSSlave.date_widgets
+
 
     def setup_callbacks(self):
         for name in self.percentage_widgets:
