@@ -75,12 +75,10 @@ class CardPaymentReceiptPrintedEvent(Event):
     @param payment: the receipt of this payment
     """
 
-class CardPaymentCanceledEvent(Event):
+class CancelPendingPaymentsEvent(Event):
     """
     This gets emmited if a card payment receipt fails to be printed, meaning
-    the payment should be cancelled
-
-    @param payment: the receipt of this payment
+    that all payments should be cancelled
     """
 
 class GerencialReportPrintEvent(Event):
