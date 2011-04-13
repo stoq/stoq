@@ -111,6 +111,7 @@ class ECFUI(object):
     def _add_ui_menus(self, appname, uimanager):
         if appname == 'pos':
             self._add_pos_menus(uimanager)
+            self._check_ecf_state()
         elif appname == 'till':
             self._add_till_menus(uimanager)
         elif appname == 'admin':
@@ -185,6 +186,15 @@ class ECFUI(object):
         ag.add_action_with_accel(self._till_summarize_action, '<Control>F11')
         uimanager.insert_action_group(ag, 0)
         uimanager.add_ui_from_string(ui_string)
+
+    def _check_ecf_state(self):
+        log.info('ecfui._check_printer')
+        self._validate_printer()
+
+        has_open = self._printer.has_open_coupon()
+        if has_open:
+            warning(_('The ECF has an open coupon. We will cancel it now.'))
+            self._printer.cancel()
 
     def _open_till(self, till):
         log.info('ECFCouponPrinter.open_till(%r)' % (till,))

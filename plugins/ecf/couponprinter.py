@@ -63,6 +63,9 @@ class CouponPrinter(object):
     # Public API
     #
 
+    def has_open_coupon(self):
+        return self._driver.has_open_coupon()
+
     def open_till(self):
         """
         Opens the till
