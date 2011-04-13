@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<interface>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkWindow" id="SellableUnitEditor">
+    <child>
+      <object class="GtkTable" id="table1">
+        <property name="visible">True</property>
+        <property name="n_rows">2</property>
+        <property name="n_columns">2</property>
+        <property name="column_spacing">6</property>
+        <property name="row_spacing">6</property>
+        <child>
+          <object class="ProxyEntry" id="description">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="max_length">2</property>
+            <property name="invisible_char">&#x25CF;</property>
+            <property name="width_chars">3</property>
+            <property name="model_attribute">description</property>
+            <property name="data_type">unicode</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="description_lbl">
+            <property name="visible">True</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">Description:</property>
+          </object>
+        </child>
+        <child>
+          <object class="ProxyCheckButton" id="allow_fraction">
+            <property name="label" translatable="yes">Allow Fractions (e.g 0.5Kg, 0.75mL)</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="draw_indicator">True</property>
+            <property name="data_type">bool</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">1</property>
+            <property name="bottom_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
