@@ -43,8 +43,8 @@ from stoqlib.domain.person import Person, ClientView
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
-from stoqlib.exceptions import IcmsError
-from stoqlib.lib.message import yesno, info
+from stoqlib.exceptions import TaxError
+from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
@@ -234,18 +234,22 @@ class SaleQuoteItemStep(SellableItemStep):
             self.proxy.update('cost')
 
     #
-    # WizardStep hooks
+    #  SellableWizardStep Hooks
     #
 
-    def _can_add_sellable(self, sellable):
+    def can_add_sellable(self, sellable):
         try:
-            assert sellable.check_icms_taxes_validity()
-        except IcmsError as strerr:
+            sellable.check_taxes_validity()
+        except TaxError as strerr:
             # If the sellable icms taxes are not valid, we cannot sell it.
-            info(strerr)
+            warning(strerr)
             return False
-        else:
-            return True
+
+        return True
+
+    #
+    # WizardStep hooks
+    #
 
     def post_init(self):
         SellableItemStep.post_init(self)

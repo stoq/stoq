@@ -23,9 +23,35 @@
 ##
 
 import datetime
+from dateutil.relativedelta import relativedelta
 
-from stoqlib.domain.taxes import SaleItemIcms
+from stoqlib.domain.taxes import (ProductIcmsTemplate, SaleItemIcms,
+                                  ProductTaxTemplate)
 from stoqlib.domain.test.domaintest import DomainTest
+
+
+class TestProductIcmsTemplate(DomainTest):
+    """Tests for ProductIcmsTemplate class"""
+
+    def testIsPCredSnValid(self):
+        tax_template = ProductTaxTemplate(connection=self.trans,
+                                          tax_type=ProductTaxTemplate.TYPE_ICMS)
+        icms_template = ProductIcmsTemplate(connection=self.trans,
+                                            product_tax_template=tax_template)
+
+        self.assertTrue(icms_template.is_p_cred_sn_valid())
+
+        expire_date = datetime.date.today()
+        icms_template.p_cred_sn_valid_until = expire_date
+        self.assertTrue(icms_template.is_p_cred_sn_valid())
+
+        expire_date = datetime.date.today() + relativedelta(days=+1)
+        icms_template.p_cred_sn_valid_until = expire_date
+        self.assertTrue(icms_template.is_p_cred_sn_valid())
+
+        expire_date = datetime.date.today() + relativedelta(days=-1)
+        icms_template.p_cred_sn_valid_until = expire_date
+        self.assertFalse(icms_template.is_p_cred_sn_valid())
 
 
 class TestSaleItemIcms(DomainTest):
@@ -41,32 +67,38 @@ class TestSaleItemIcms(DomainTest):
 
         return sale_item
 
-    def testVCredIcmsSn(self):
-        # The CSOSN values that should trigger
-        # the calculation of v_cred_icms_sn
-        csosns_calc_yes = (101, 201) 
-        # The CSOSN values that should not trigger
-        # the calculation of v_cred_icms_sn
-        csosns_calc_not = (500,)
-        # Set a value for p_cred_sn for calculations
-        p_cred_sn = 3.10
+    def testVCredIcmsSnCalc(self):
+        """Test for v_cred_icms_sn calculation.
 
-        for csosn in csosns_calc_yes + csosns_calc_not:
-            for (quantity, price) in ((1, 10), (2, 10), (2, 20)):
-                sale_item_icms = self.create_sale_item_icms()
-                sale_item = self._get_sale_item(sale_item_icms,
-                                                quantity,
-                                                price)
-                sale_item_icms.csosn = csosn
-                sale_item_icms.p_cred_sn = p_cred_sn
-                sale_item_icms.update_values()
-                if csosn in csosns_calc_not:
-                    # Fail if it made the calc for a csosn that should't do.
-                    self.failIf(sale_item_icms.v_cred_icms_sn)
-                elif csosn in csosns_calc_yes:
-                    expected_v_cred_icms_sn = (sale_item.get_total() *
-                                               sale_item_icms.p_cred_sn / 100)
-                    self.assertEqual(sale_item_icms.v_cred_icms_sn,
-                                     expected_v_cred_icms_sn)
+        This test should fail if v_cred_icms_sn get calculated wrong or gets
+        calculated for wrong values of csosn
+        """
+        # Test for CSOSN 101. This should get v_cred_icms_sn calculated.
+        sale_item_icms = self.create_sale_item_icms()
+        sale_item = self._get_sale_item(sale_item_icms, 1, 10)
+        sale_item_icms.csosn = 101
+        sale_item_icms.p_cred_sn = 3.10
+        expected_v_cred_icms_sn = (sale_item.get_total() *
+                                   sale_item_icms.p_cred_sn / 100)
+        sale_item_icms.update_values()
+        self.assertEqual(sale_item_icms.v_cred_icms_sn,
+                         expected_v_cred_icms_sn)
 
+        # Test for CSOSN 201. This should get v_cred_icms_sn calculated.
+        sale_item_icms = self.create_sale_item_icms()
+        sale_item = self._get_sale_item(sale_item_icms, 2, 30)
+        sale_item_icms.csosn = 201
+        sale_item_icms.p_cred_sn = 2.90
+        expected_v_cred_icms_sn = (sale_item.get_total() *
+                                   sale_item_icms.p_cred_sn / 100)
+        sale_item_icms.update_values()
+        self.assertEqual(sale_item_icms.v_cred_icms_sn,
+                         expected_v_cred_icms_sn)
 
+        # Test for CSOSN 500. This should not get v_cred_icms_sn calculated.
+        sale_item_icms = self.create_sale_item_icms()
+        sale_item = self._get_sale_item(sale_item_icms, 1, 10)
+        sale_item_icms.csosn = 500
+        sale_item_icms.p_cred_sn = 3.10
+        sale_item_icms.update_values()
+        self.failIf(sale_item_icms.v_cred_icms_sn)
