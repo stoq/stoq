@@ -287,6 +287,7 @@ class SaleItemIpi(BaseIPI):
         sale_item = SaleItem.selectOneBy(ipi_info=self,
                                          connection=self.get_connection())
         self.q_unid = sale_item.quantity
+        self.v_unid = sale_item.price
         self.update_values()
 
     def update_values(self):

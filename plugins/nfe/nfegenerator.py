@@ -1299,6 +1299,11 @@ class NFeIPITrib(BaseNFeXMLGroup):
         else:
             self.append(NFeIPITribUnid(ipi_info))
 
+    def as_txt(self):
+        base = BaseNFeXMLGroup.as_txt(self)
+        ipi_trib = self.get_children()[0]
+        return base + ipi_trib.as_txt()
+
 
 class NFeIPITribAliq(BaseNFeXMLGroup):
     tax = u'IPITrib'
