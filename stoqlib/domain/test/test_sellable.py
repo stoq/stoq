@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from decimal import Decimal
+
 from kiwi.datatypes import currency
 
 from stoqlib.domain.sellable import (BaseSellableInfo,
@@ -186,6 +188,29 @@ class TestSellable(DomainTest):
         sellable.price = currency(0)
         self.failUnless(sellable.markup == 0,
                         "Expected markup %r, got %r" % (0, sellable.markup))
+
+    def testIsValidQuantity(self):
+        sellable = self.create_sellable()
+        unit = self.create_sellable_unit()
+        sellable.unit = unit
+
+        unit.allow_fraction = True
+        self.assertTrue(sellable.is_valid_quantity(0))
+        self.assertTrue(sellable.is_valid_quantity(10))
+        self.assertTrue(sellable.is_valid_quantity(Decimal('0')))
+        self.assertTrue(sellable.is_valid_quantity(Decimal('10')))
+
+        self.assertTrue(sellable.is_valid_quantity(5.5))
+        self.assertTrue(sellable.is_valid_quantity(Decimal('5.5')))
+
+        unit.allow_fraction = False
+        self.assertTrue(sellable.is_valid_quantity(0))
+        self.assertTrue(sellable.is_valid_quantity(10))
+        self.assertTrue(sellable.is_valid_quantity(Decimal('0')))
+        self.assertTrue(sellable.is_valid_quantity(Decimal('10')))
+
+        self.assertFalse(sellable.is_valid_quantity(5.5))
+        self.assertFalse(sellable.is_valid_quantity(Decimal('5.5')))
 
     def testIsValidPrice(self):
         sellable_info = BaseSellableInfo(description="Test",
