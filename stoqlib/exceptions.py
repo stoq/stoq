@@ -126,8 +126,9 @@ class DeviceError(Exception):
     """A problem with a Device such as a fiscal printer"""
 
 
-class IcmsError(Exception):
-    """A problem with icms taxes.
+class TaxError(Exception):
+    """A problem with taxes such as icms, ipi, etc.
 
-    Raise this for, e.g. A tax rate is expired"""
+    For exemple: this might be raised if the tax rate has expired.
+    """
 

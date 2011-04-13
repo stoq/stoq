@@ -259,7 +259,7 @@ class SaleItemIcms(BaseICMS):
             self.v_bc_st_ret = 0
             self.v_icms_st_ret = 0
 
-        if self.csosn in (101, 201):
+        if self.csosn in [101, 201]:
             self._calc_cred_icms_sn(sale_item)
 
     def update_values(self):
