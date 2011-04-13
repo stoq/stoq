@@ -50,9 +50,9 @@ from stoqlib.domain.sale import Sale, DeliveryItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import Till
 from stoqlib.drivers.scale import read_scale_info
-from stoqlib.exceptions import StoqlibError, TillError
+from stoqlib.exceptions import StoqlibError, TillError, TaxError
 from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
-from stoqlib.lib.message import info, yesno
+from stoqlib.lib.message import warning, info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import quantize
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
@@ -260,6 +260,13 @@ class POSApp(AppWindow):
 
     @argcheck(Sellable, bool)
     def _update_list(self, sellable, notify_on_entry=False):
+        try:
+            sellable.check_taxes_validity()
+        except TaxError as strerr:
+            # If the sellable icms taxes are not valid, we cannot sell it.
+            warning(strerr)
+            return
+
         quantity = self.sellableitem_proxy.model.quantity
 
         is_service = sellable.service
