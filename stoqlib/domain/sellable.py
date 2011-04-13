@@ -29,10 +29,10 @@ import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import currency
-from stoqdrivers.enum import TaxType
+from stoqdrivers.enum import TaxType, UnitType
 from zope.interface import implements
 
-from stoqlib.database.orm import PriceCol, DecimalCol
+from stoqlib.database.orm import BoolCol, PriceCol, DecimalCol
 from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol, ForeignKey
 from stoqlib.database.orm import SingleJoin
 from stoqlib.database.orm import AND, IN, OR
@@ -62,17 +62,40 @@ class SellableUnit(Domain):
       an item in a coupon we need to know if its unit must be specified as
       a description (using CUSTOM_PM constant) or as an index (using UNIT_*).
       Also, this is directly related to the DeviceSettings editor.
+    @cvar allow_fraction: If the unit allows to be represented in fractions.
+      e.g. We can have 1 car, 2 cars, but not 1/2 car.
     """
     implements(IDescribable)
 
     _inheritable = False
     description = UnicodeCol()
-    unit_index = IntCol()
+    # Using an int cast on UnitType because
+    # SQLObject doesn't recognize it's type.
+    unit_index = IntCol(default=int(UnitType.CUSTOM))
+    allow_fraction = BoolCol(default=True)
 
     # IDescribable
 
     def get_description(self):
         return self.description
+
+    #
+    #  Classmethods
+    #
+
+    @classmethod
+    def get_system_primitives(cls):
+        """Return a list of primitive units used by the system.
+
+        The values on the list are enums used to fill 'unit_index' column
+        above.
+        That list is useful for many things, e.g. See if the user can delete
+        the unit (it should not be possible to delete a primitive one), etc.
+
+        @returns: a list of L{stoqdrivers.enum.UnitType)
+        """
+        return [UnitType.WEIGHT, UnitType.METERS, UnitType.LITERS]
+
 
 class SellableTaxConstant(Domain):
     """A tax constant tied to a sellable
