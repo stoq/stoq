@@ -39,7 +39,8 @@ from stoqlib.database.orm import AND, IN, OR
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.base import Domain
 from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
-                                BarcodeDoesNotExists)
+                                BarcodeDoesNotExists, TaxError)
+from stoqlib.lib.message import info
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import is_date_in_interval
@@ -492,6 +493,29 @@ class Sellable(Domain):
         in the database.
         """
         return self._check_unique_value_exists('barcode', barcode)
+
+    def check_taxes_validity(self):
+        """Check if icms taxes are valid.
+
+        This check is done because some icms taxes (such as CSOSN 101) have
+        a 'valid until' field on it. If these taxes has expired, we cannot sell
+        the sellable.
+        Check this method using assert inside a try clause. This method will
+        raise TaxError if there are any issues with the sellable taxes.
+        """
+        icms_template = self.product and self.product.icms_template
+        if not icms_template:
+            return
+        elif not icms_template.p_cred_sn:
+            return
+        elif not icms_template.is_p_cred_sn_valid():
+            # Translators: ICMS tax rate credit = Alíquota de crédito do ICMS
+            raise TaxError(_("You cannot sell this item before updating "
+                              "the 'ICMS tax rate credit' field on '%s' "
+                              "Tax Class.\n"
+                              "If you don't know what this means, contact "
+                              "the system administrator."
+                              % icms_template.product_tax_template.name))
 
     def is_valid_price(self, newprice):
         """Returns True if the new price respects the maximum discount

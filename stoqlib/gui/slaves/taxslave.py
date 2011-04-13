@@ -23,6 +23,8 @@
 ##
 """ Slaves for books """
 
+import datetime
+from dateutil.relativedelta import relativedelta
 import sys
 
 import gtk
@@ -118,13 +120,15 @@ class BaseICMSSlave(BaseTaxSlave):
     value_widgets = ['v_bc', 'v_icms', 'v_bc_st', 'v_icms_st',
                      'v_cred_icms_sn', 'v_bc_st_ret', 'v_icms_st_ret']
     bool_widgets = ['bc_include_ipi', 'bc_st_include_ipi']
+    date_widgets = ['p_cred_sn_valid_until']
     all_widgets = (combo_widgets + percentage_widgets + value_widgets +
-                   bool_widgets)
+                   bool_widgets + date_widgets)
 
 
     simples_widgets = ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
               'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_cred_sn',
-              'v_cred_icms_sn', 'v_bc_st_ret', 'v_icms_st_ret'],
+              'p_cred_sn_valid_until' 'v_cred_icms_sn', 'v_bc_st_ret',
+              'v_icms_st_ret'],
 
     normal_widgets = ['orig', 'cst', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
              'p_icms_st', 'v_bc_st', 'v_icms_st', 'bc_st_include_ipi',
@@ -212,12 +216,13 @@ class BaseICMSSlave(BaseTaxSlave):
         70: normal_widgets,
         90: normal_widgets,
         # Simples Nacional
-        101: ['orig', 'csosn', 'p_cred_sn', 'v_cred_icms_sn'],
+        101: ['orig', 'csosn', 'p_cred_sn', 'p_cred_sn_valid_until',
+              'v_cred_icms_sn'],
         102: ['orig', 'csosn',],
         103: ['orig', 'csosn',],
         201: ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
               'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_cred_sn',
-              'v_cred_icms_sn'],
+              'p_cred_sn_valid_until', 'v_cred_icms_sn'],
         202: ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
               'p_icms_st', 'v_bc_st', 'v_icms_st'],
         203: ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
@@ -238,6 +243,19 @@ class BaseICMSSlave(BaseTaxSlave):
         else:
             self._update_selected_cst()
 
+    def _update_widgets(self):
+        has_p_cred_sn = (self.p_cred_sn.get_sensitive()
+                         and bool(self.p_cred_sn.get_value()))
+        self.p_cred_sn_valid_until.set_sensitive(has_p_cred_sn)
+
+    def _update_p_cred_sn_valid_until(self):
+        if (self.p_cred_sn.get_value()
+            and not self.p_cred_sn_valid_until.get_date()):
+                # Set the default expire date to the last day of current month.
+                default_expire_date = (datetime.date.today() +
+                                       relativedelta(day=1, months=+1, days=-1))
+                self.p_cred_sn_valid_until.set_date(default_expire_date)
+
     def _update_selected_cst(self):
         cst = self.cst.get_selected_data()
         valid_widgets = self.MAP_VALID_WIDGETS.get(cst, ('cst', ))
@@ -253,17 +271,36 @@ class BaseICMSSlave(BaseTaxSlave):
 
     def on_csosn__changed(self, widget):
         self._update_selected_csosn()
+        self._update_widgets()
+
+    def after_p_cred_sn__changed(self, widget):
+        self._update_p_cred_sn_valid_until()
+        self.p_cred_sn_valid_until.validate(force=True)
+        self._update_widgets()
+
+    def on_p_cred_sn_valid_until__validate(self, widget, value):
+        if not self.p_cred_sn.get_value():
+            return
+        if value <= datetime.date.today():
+            return ValidationError(_(u"This date must be set in the future."))
+
 
 class ICMSTemplateSlave(BaseICMSSlave):
     model_type = ProductIcmsTemplate
     proxy_widgets = (BaseICMSSlave.combo_widgets +
-                     BaseICMSSlave.percentage_widgets)
+                     BaseICMSSlave.percentage_widgets +
+                     BaseICMSSlave.date_widgets)
     hide_widgets = BaseICMSSlave.value_widgets
 
 
 class SaleItemICMSSlave(BaseICMSSlave):
     model_type = SaleItemIcms
-    proxy_widgets = BaseICMSSlave.all_widgets
+    proxy_widgets = (BaseICMSSlave.combo_widgets +
+                     BaseICMSSlave.percentage_widgets +
+                     BaseICMSSlave.bool_widgets +
+                     BaseICMSSlave.value_widgets)
+    hide_widgets = BaseICMSSlave.date_widgets
+
 
     def setup_callbacks(self):
         for name in self.percentage_widgets:

@@ -124,3 +124,11 @@ class BarcodeDoesNotExists(Exception):
 
 class DeviceError(Exception):
     """A problem with a Device such as a fiscal printer"""
+
+
+class TaxError(Exception):
+    """A problem with taxes such as icms, ipi, etc.
+
+    For exemple: this might be raised if the tax rate has expired.
+    """
+
