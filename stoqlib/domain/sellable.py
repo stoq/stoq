@@ -540,6 +540,23 @@ class Sellable(Domain):
                               "the system administrator."
                               % icms_template.product_tax_template.name))
 
+    def is_valid_quantity(self, new_quantity):
+        """Whether the new quantity is valid for this sellable or not.
+
+        If the new quantity is fractioned, check on this sellable unit if it
+        allows fractioned quantities. If not, this new quantity cannot be used.
+
+        @returns: True if new quantity is Ok, False otherwise.
+        """
+        if self.unit and type(new_quantity) is float:
+            if new_quantity - int(new_quantity):
+                return False
+        elif self.unit and type(new_quantity) is Decimal:
+            if new_quantity - new_quantity.to_integral():
+                return False
+
+        return True
+
     def is_valid_price(self, newprice):
         """Returns True if the new price respects the maximum discount
         configured for the sellable, otherwise returns False.
