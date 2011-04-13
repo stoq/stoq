@@ -260,6 +260,17 @@ class SellableItemStep(WizardEditorStep):
     def on_product_button__clicked(self, button):
         self._run_advanced_search()
 
+    def can_add_sellable(self, sellable):
+        """Whether we can add a sellable to the list or not
+
+        This is a hook method that gets called when trying to add a
+        sellable to the list. It can be rewritten on child classes for
+        extra functionality
+        @param sellable: the selected sellable
+        @returns: True or False (True by default)
+        """
+        return True
+
     def sellable_selected(self, sellable):
         """This will be called when a sellable is selected in the combo.
         It can be overriden in a subclass if they wish to do additional
@@ -371,6 +382,8 @@ class SellableItemStep(WizardEditorStep):
             return
 
         sellable = Sellable.get(ret.id, connection=self.conn)
+        if not self.can_add_sellable(sellable):
+            return
         self.barcode.set_text(sellable.barcode)
         self.sellable_selected(sellable)
         self.quantity.grab_focus()
@@ -400,6 +413,8 @@ class SellableItemStep(WizardEditorStep):
         sellable = results[0].sellable
         if not sellable:
             return None
+        elif not self.can_add_sellable(sellable):
+            return
 
         return sellable
 

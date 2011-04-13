@@ -22,9 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
+
 from kiwi.datatypes import currency
 
-from stoqlib.database.orm import (IntCol, UnicodeCol, DecimalCol,
+from stoqlib.database.orm import (IntCol, UnicodeCol, DecimalCol, DateTimeCol,
                                   PriceCol, ForeignKey, BoolCol)
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.product import Product
@@ -117,6 +119,25 @@ class BaseIPI(BaseTax):
 class ProductIcmsTemplate(BaseICMS):
     product_tax_template = ForeignKey('ProductTaxTemplate')
 
+    # Simples Nacional
+    p_cred_sn_valid_until = DateTimeCol(default=None)
+
+
+    #
+    #  Public API
+    #
+
+    def is_p_cred_sn_valid(self):
+        """Returns if p_cred_sn has expired."""
+        if not self.p_cred_sn_valid_until:
+            # If we don't have a valid_until, means p_cred_sn will never
+            # expire. Therefore, p_cred_sn is valid.
+            return True
+        elif self.p_cred_sn_valid_until.date() < datetime.date.today():
+            return False
+
+        return True
+
 
 class ProductIpiTemplate(BaseIPI):
     product_tax_template = ForeignKey('ProductTaxTemplate')
@@ -164,6 +185,9 @@ class SaleItemIcms(BaseICMS):
     v_bc_st_ret = PriceCol(default=None)
     v_icms_st_ret = PriceCol(default=None)
 
+    def _calc_cred_icms_sn(self, sale_item):
+        if self.p_cred_sn > 0:
+            self.v_cred_icms_sn = sale_item.get_total() * self.p_cred_sn / 100
 
     def _calc_st(self, sale_item):
         self.v_bc_st = sale_item.price * sale_item.quantity
@@ -234,6 +258,9 @@ class SaleItemIcms(BaseICMS):
         if self.csosn == 500:
             self.v_bc_st_ret = 0
             self.v_icms_st_ret = 0
+
+        if self.csosn in [101, 201]:
+            self._calc_cred_icms_sn(sale_item)
 
     def update_values(self):
         from stoqlib.domain.sale import SaleItem
