@@ -86,6 +86,11 @@ class GerencialReportPrintEvent(Event):
     """
 
 
+class CheckECFStateEvent(Event):
+    """After the TEF has initialized, we must check if the printer is
+    responding. TEF plugin will emit this event for the ECF plugin
+    """
+
 
 #
 # Till events

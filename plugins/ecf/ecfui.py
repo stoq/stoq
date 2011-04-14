@@ -34,7 +34,8 @@ from stoqlib.database.runtime import (get_current_station, get_connection,
 from stoqlib.domain.events import (SaleConfirmEvent, TillAddCashEvent,
                                    TillRemoveCashEvent, TillOpenEvent,
                                    TillCloseEvent, TillAddTillEntryEvent,
-                                   GerencialReportPrintEvent)
+                                   GerencialReportPrintEvent,
+                                   CheckECFStateEvent)
 from stoqlib.domain.interfaces import IIndividual, ICompany
 from stoqlib.domain.person import PersonAdaptToIndividual, PersonAdaptToCompany
 from stoqlib.domain.renegotiation import RenegotiationData
@@ -74,6 +75,7 @@ class ECFUI(object):
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         CouponCreatedEvent.connect(self._on_CouponCreatedEvent)
         GerencialReportPrintEvent.connect(self._on_GerencialReportPrintEvent)
+        CheckECFStateEvent.connect(self._on_CheckECFStateEvent)
 
         self._till_summarize_action = gtk.Action(
             'Summary', _('Summary'), None, None)
@@ -111,7 +113,6 @@ class ECFUI(object):
     def _add_ui_menus(self, appname, uimanager):
         if appname == 'pos':
             self._add_pos_menus(uimanager)
-            self._check_ecf_state()
         elif appname == 'till':
             self._add_till_menus(uimanager)
         elif appname == 'admin':
@@ -609,3 +610,6 @@ class ECFUI(object):
             self._printer._driver.gerencial_report_close()
 
         self._printer.print_report(receipt)
+
+    def _on_CheckECFStateEvent(self):
+        self._check_ecf_state()
