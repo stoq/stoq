@@ -36,6 +36,7 @@ from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.events import (CardPaymentReceiptPrepareEvent,
                                    CardPaymentReceiptPrintedEvent,
                                    GerencialReportPrintEvent,
+                                   GerencialReportCancelEvent,
                                    CancelPendingPaymentsEvent)
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.till import Till
@@ -349,6 +350,7 @@ class FiscalCoupon(gobject.GObject):
                          gtk.RESPONSE_YES,
                          _("Tentar novamente"), _(u"Cancelar")):
                     CancelPendingPaymentsEvent.emit()
+                    GerencialReportCancelEvent.emit()
                     return False
                 any_failed = True
                 _flush_interface()

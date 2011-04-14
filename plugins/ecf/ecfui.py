@@ -35,6 +35,7 @@ from stoqlib.domain.events import (SaleConfirmEvent, TillAddCashEvent,
                                    TillRemoveCashEvent, TillOpenEvent,
                                    TillCloseEvent, TillAddTillEntryEvent,
                                    GerencialReportPrintEvent,
+                                   GerencialReportCancelEvent,
                                    CheckECFStateEvent)
 from stoqlib.domain.interfaces import IIndividual, ICompany
 from stoqlib.domain.person import PersonAdaptToIndividual, PersonAdaptToCompany
@@ -75,6 +76,7 @@ class ECFUI(object):
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         CouponCreatedEvent.connect(self._on_CouponCreatedEvent)
         GerencialReportPrintEvent.connect(self._on_GerencialReportPrintEvent)
+        GerencialReportCancelEvent.connect(self._on_GerencialReportCancelEvent)
         CheckECFStateEvent.connect(self._on_CheckECFStateEvent)
 
         self._till_summarize_action = gtk.Action(
@@ -595,6 +597,9 @@ class ECFUI(object):
 
     def _on_ConfigurePrinter__activate(self, action):
         run_dialog(ECFListDialog, None)
+
+    def _on_GerencialReportCancelEvent(self):
+        self._printer._driver.gerencial_report_close()
 
     def _on_GerencialReportPrintEvent(self, receipt, close_previous=False):
         try:

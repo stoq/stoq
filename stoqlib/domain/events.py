@@ -85,6 +85,10 @@ class GerencialReportPrintEvent(Event):
     """
     """
 
+class GerencialReportCancelEvent(Event):
+    """
+    """
+
 
 class CheckECFStateEvent(Event):
     """After the TEF has initialized, we must check if the printer is
