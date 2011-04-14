@@ -330,21 +330,30 @@ class FiscalCoupon(gobject.GObject):
             card_payments.setdefault(card_data.nsu, [])
             card_payments[card_data.nsu].append(payment)
 
+        any_failed = False
         for nsu, payment_list in card_payments.items():
             receipt = CardPaymentReceiptPrepareEvent.emit(nsu, supports_duplicate)
             if receipt is None:
                 continue
 
             value = sum([p.value for p in payment_list])
-            retval = self.print_payment_receipt(payment_list[0], value, receipt)
+
+            # This is BS, but if any receipt failed to print, we must print
+            # the remaining ones in Gerencial Rports
+            if any_failed:
+                retval = self.reprint_payment_receipt(receipt)
+            else:
+                retval = self.print_payment_receipt(payment_list[0], value, receipt)
             while not retval:
                 if not yesno(_(u"Erro na impressão. Deseja tentar novamente?"),
                          gtk.RESPONSE_YES,
                          _("Tentar novamente"), _(u"Cancelar")):
                     CancelPendingPaymentsEvent.emit()
                     return False
+                any_failed = True
                 _flush_interface()
-                retval = self.reprint_payment_receipt(receipt)
+                retval = self.reprint_payment_receipt(receipt,
+                                                      close_previous=True)
 
         # Only confirm payments receipt printed if *all* receipts wore
         # printed.
@@ -452,14 +461,18 @@ class FiscalCoupon(gobject.GObject):
             self.emit('print-payment-receipt', self._coo, payment, value, receipt)
             return True
         except (DriverError, DeviceError), details:
+            log.info("Error printing payment receipt: %s"
+                        % str(details))
             return False
 
-    def reprint_payment_receipt(self, receipt):
+    def reprint_payment_receipt(self, receipt, close_previous=False):
         """Re-Print the receipt for the payment.
         """
 
         try:
-            GerencialReportPrintEvent.emit(receipt, True)
+            GerencialReportPrintEvent.emit(receipt, close_previous)
             return True
         except (DriverError, DeviceError), details:
+            log.info("Error printing gerencial report: %s"
+                        % str(details))
             return False
