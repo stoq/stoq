@@ -22,8 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import commands
 import os
+import platform
 import shutil
 import tempfile
 
@@ -47,6 +47,37 @@ except ImportError:
     gtkunixprint = None
 
 _ = stoqlib_gettext
+_system = platform.system()
+
+def _get_printers_lpstat():
+    import commands
+
+    # TODO check also if cups is running or not and give
+    # proper messages to users
+    func = commands.getoutput
+    if not func("lpstat -v"):
+        return []
+    printers = []
+    res = func("lpstat -d").split(":")
+    if len(res) > 1:
+        printers.append(res[1].strip())
+    for p in func('lpstat -a').split('\n'):
+        printer_name = p.split()[0].strip()
+        if printer_name in printers:
+            continue
+        printers.append(printer_name)
+    return printers
+
+def _get_available_printers():
+    if _system == "Linux":
+        return _get_printers_lpstat()
+    elif _system == "Windows":
+        import win32print
+        printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_NAME)
+        return [p[1] for p in printers]
+    else:
+        raise SystemExit("unknown system: %s" % (system, ))
+
 
 class PrintDialogSlave(BaseEditorSlave):
     gladefile = 'PrintDialogSlave'
@@ -65,6 +96,11 @@ class PrintDialogSlave(BaseEditorSlave):
         if default_filename:
             self.model.filename = default_filename
             self.proxy.update("filename")
+
+        # FIXME: Print previewing on windows
+        if _system == "Windows":
+            self.print_preview_button.set_sensitive(False)
+
         self._report_class = report_class
         self._report_kwargs = kwargs
         self._report_args = args
@@ -85,26 +121,9 @@ class PrintDialogSlave(BaseEditorSlave):
                             **self._report_kwargs)
 
     def _setup_printer_combo(self):
-        self._available_printers = self._get_available_printers()
+        self._available_printers = _get_available_printers()
         if self._available_printers:
             self.printer_combo.prefill(self._available_printers)
-
-    def _get_available_printers(self):
-        #TODO check also if cups is running or not and give
-        # proper messages to users
-        func = commands.getoutput
-        if not func("lpstat -v"):
-            return []
-        printers = []
-        res = func("lpstat -d").split(":")
-        if len(res) > 1:
-            printers.append(res[1].strip())
-        for p in func('lpstat -a').split('\n'):
-            printer_name = p.split()[0].strip()
-            if printer_name in printers:
-                continue
-            printers.append(printer_name)
-        return printers
 
     def _setup_widgets(self):
         self._setup_printer_combo()

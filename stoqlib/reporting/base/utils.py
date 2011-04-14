@@ -25,9 +25,11 @@
 """ Useful functions related to reports building and visualization. """
 
 import os
+import platform
 import tempfile
 
 # a list of programs to be tried when a report needs be viewed
+_system = platform.system()
 PROGRAMS = [('evince', '--preview'), ('xpdf', '-z 100'), 'ggv']
 
 def build_report(report_class, *args, **kwargs):
@@ -64,7 +66,16 @@ def print_file(filename, printer=None, extra_opts=[]):
     options = " ".join(extra_opts)
     if printer:
         options += " -P%s" % printer
-    ret = os.system("lpr %s %s" % (options, filename))
+    if _system == "Linux":
+        ret = os.system("lpr %s %s" % (options, filename))
+    elif _system == "Windows":
+        import win32api
+        import win32print
+        win32api.ShellExecute(0, "print", filename,
+                              '/d:"%s"' % printer, ".", 0)
+    else:
+        raise SystemExit("unknown system: %s" % (system, ))
+
     os.remove(filename)
     return ret
 
