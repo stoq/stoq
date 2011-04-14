@@ -491,12 +491,12 @@ class POSApp(AppWindow):
             # when the user activate a row with product in the sellables list.
             return
 
-    def _cancel_order(self):
+    def _cancel_order(self, show_confirmation=True):
         """
         Cancels the currently opened order.
         @returns: True if the order was canceled, otherwise false
         """
-        if len(self.sale_items):
+        if len(self.sale_items) and show_confirmation:
             if yesno(_(u"This will cancel the current order. Are you sure?"),
                      gtk.RESPONSE_NO, _(u"Don't Cancel"), _(u"Cancel Order")):
                 return False
@@ -616,6 +616,8 @@ class POSApp(AppWindow):
 
             ordered = self._coupon.confirm(sale, trans)
             if not finish_transaction(trans, ordered):
+                # TEF specific. Figure out how to handle it properly after.
+                self._cancel_order(show_confirmation=False)
                 trans.close()
                 return
 
