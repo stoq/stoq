@@ -338,10 +338,9 @@ class FiscalCoupon(gobject.GObject):
             value = sum([p.value for p in payment_list])
             retval = self.print_payment_receipt(payment_list[0], value, receipt)
             while not retval:
-                if not yesno(_(u"Error printing TEF Receipt\n"
-                                "Try again?"),
+                if not yesno(_(u"Erro na impressão. Deseja tentar novamente?"),
                          gtk.RESPONSE_YES,
-                         _("Try Again "), _(u"Cancel Sale")):
+                         _("Tentar novamente"), _(u"Cancelar")):
                     CancelPendingPaymentsEvent.emit()
                     return False
                 _flush_interface()
@@ -368,22 +367,27 @@ class FiscalCoupon(gobject.GObject):
                 self.totalized = True
                 return True
             except (DriverError, DeviceError), details:
-                if not yesno(_(u"Error totalizing coupon\n"
-                                "Try again?"),
+                if not yesno(_(u"Erro na impressão. Deseja tentar novamente?"),
                          gtk.RESPONSE_YES,
-                         _("Try Again "), _(u"Cancel")):
-                    warning(_(u"It is not possible to totalize the coupon"),
-                            str(details))
+                         _("Tentar novamente"), _(u"Cancelar")):
+                    log.info("It is not possible to totalize the coupon: %s"
+                                % str(details))
                     CancelPendingPaymentsEvent.emit()
                     return False
                 _flush_interface()
 
 
     def cancel(self):
-        try:
-            self.emit('cancel')
-        except DriverError:
-            return False
+        while True:
+            try:
+                self.emit('cancel')
+            except (DriverError, DeviceError), details:
+                if not yesno(_(u"Erro cancelando cupom. Deseja tentar novamente?"),
+                         gtk.RESPONSE_YES,
+                         _("Tentar novamente"), _(u"Cancelar")):
+                    log.info("Error canceling coupon: %s" % str(details))
+                    return False
+                _flush_interface()
         return True
 
     # FIXME: Rename to add_payment_group(group)
@@ -404,12 +408,11 @@ class FiscalCoupon(gobject.GObject):
                 self.payments_setup = True
                 return True
             except (DriverError, DeviceError), details:
-                if not yesno(_(u"Error adding payments to the coupon\n"
-                                "Try again?"),
+                if not yesno(_(u"Erro na impressão. Deseja tentar novamente?"),
                          gtk.RESPONSE_YES,
-                         _("Try Again "), _(u"Cancel")):
-                    warning(_(u"It is not possible to add payments to the coupon"),
-                            str(details))
+                         _("Tentar novamente"), _(u"Cancelar")):
+                    log.info("It is not possible to add payments to the coupon: %s"
+                                % str(details))
                     CancelPendingPaymentsEvent.emit()
                     return False
                 _flush_interface()
@@ -430,11 +433,11 @@ class FiscalCoupon(gobject.GObject):
                 self.coupon_closed = True
                 return True
             except (DeviceError, DriverError), details:
-                if not yesno(_(u"Error closing coupon\n"
-                                "Try again?"),
+                if not yesno(_(u"Erro na impressão. Deseja tentar novamente?"),
                          gtk.RESPONSE_YES,
-                         _("Try Again "), _(u"Cancel")):
-                    warning(_("It's not possible to close the coupon"), str(details))
+                         _("Tentar novamente"), _(u"Cancelar")):
+                    log.info("It is not possible to close the coupon: %s"
+                                % str(details))
                     CancelPendingPaymentsEvent.emit()
                     return False
                 _flush_interface()
