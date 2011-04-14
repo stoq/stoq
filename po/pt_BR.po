@@ -1244,11 +1244,11 @@ msgstr ""
 "dados.\n"
 "\n"
 "\n"
-"Clique <b>Avançar</ b> para iniciar a atualização do esquema do banco de "
+"Clique <b>Avançar</b> para iniciar a atualização do esquema do banco de "
 "dados.\n"
 "\n"
 "\n"
-"É sempre uma boa idéia <b>criar um backup</ b> de seu banco de dados antes "
+"É sempre uma boa idéia <b>criar um backup</b> de seu banco de dados antes "
 "de atualizar."
 
 #: ../data/glade/UpdateWelcomeStep.glade.h:8
