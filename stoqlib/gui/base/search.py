@@ -44,6 +44,7 @@ from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.defaults import get_weekday_start
+from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -87,7 +88,7 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
                             col.treeview_column.get_width())
 
         uname = get_current_user(get_connection()).username
-        dir = os.path.join(os.getenv('HOME'), '.stoq', 'columns-%s' % uname)
+        dir = os.path.join(get_application_dir(), 'columns-%s' % uname)
         if not os.path.exists(dir):
             os.mkdir(dir)
 
@@ -98,7 +99,7 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
 
     def restore_columns(self):
         uname = get_current_user(get_connection()).username
-        dir = os.path.join(os.getenv('HOME'), '.stoq', 'columns-%s' % uname)
+        dir = os.path.join(get_application_dir(), 'columns-%s' % uname)
         file_name = os.path.join(dir, '%s.pickle' % self.restore_name)
         try:
             f = file(file_name)

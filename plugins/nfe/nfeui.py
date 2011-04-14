@@ -29,6 +29,7 @@ from kiwi.log import Logger
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.events import SaleConfirmEvent
 from stoqlib.gui.events import StartApplicationEvent
+from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -50,9 +51,7 @@ class NFeUI(object):
     #
 
     def _get_save_location(self):
-        stoq_dir = os.path.join(os.environ['HOME'], '.stoq')
-        if not os.path.isdir(stoq_dir):
-            os.mkdir(stoq_dir)
+        stoq_dir = get_application_dir()
 
         # Until we finish the stoqnfe app, we will only export the nfe, so it
         # can be imported by an external application.
