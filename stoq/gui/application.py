@@ -43,6 +43,7 @@ from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       finish_transaction, get_connection)
 from stoqlib.lib.interfaces import ICookieFile
 from stoqlib.lib.message import yesno, info
+from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import InstalledPlugin
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
@@ -403,7 +404,7 @@ class AppWindow(BaseAppWindow):
         info(_('Please, start stoq again to configure new database'))
 
 
-        stoqdir = os.path.join(os.environ['HOME'], '.stoq')
+        stoqdir = get_application_dir()
         flag_file = os.path.join(stoqdir, 'remove_examples')
         open(flag_file, 'w').write('')
 
@@ -562,7 +563,7 @@ class VersionChecker(object):
         return urllib.quote(json.dumps(details))
 
     def _get_check_filename(self):
-        return os.path.join(os.environ['HOME'], '.stoq', 'last_check')
+        return os.path.join(get_application_dir(), 'last_check')
 
     def _download_details(self):
         log.debug('Downloading new version information')

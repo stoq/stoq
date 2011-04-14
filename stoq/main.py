@@ -30,6 +30,8 @@ import optparse
 import os
 import sys
 
+from stoqlib.lib.osutils import get_application_dir
+
 from stoq.lib.applist import get_application_names
 from stoq.lib.options import get_option_parser
 
@@ -221,9 +223,7 @@ def _initialize(options):
     # Do this as early as possible to get as much as possible into the
     # log file itself, which means we cannot depend on the config or
     # anything else
-    stoqdir = os.path.join(os.environ['HOME'], '.stoq')
-    if not os.path.exists(stoqdir):
-        os.mkdir(stoqdir)
+    stoqdir = get_application_dir()
 
     import time
     log_dir = os.path.join(stoqdir, 'logs', time.strftime('%Y'),
@@ -236,10 +236,11 @@ def _initialize(options):
                                 time.strftime('%Y-%m-%d_%H-%M-%S'))
     _stream = set_log_file(log_file, 'stoq*')
 
-    link_file = os.path.join(stoqdir, 'stoq.log')
-    if os.path.exists(link_file):
-        os.unlink(link_file)
-    os.symlink(log_file, link_file)
+    if hasattr(os, 'symlink'):
+        link_file = os.path.join(stoqdir, 'stoq.log')
+        if os.path.exists(link_file):
+            os.unlink(link_file)
+        os.symlink(log_file, link_file)
 
     if options.debug:
         hook = _debug_hook
