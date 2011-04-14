@@ -67,6 +67,7 @@ from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.importers.stoqlibexamples import create as create_examples
 from stoqlib.lib.message import warning, yesno, error
+from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import provide_plugin_manager
 from stoqlib.lib.validators import validate_cnpj
@@ -193,8 +194,9 @@ class DatabaseSettingsStep(WizardEditorStep):
     def _setup_pgpass(self):
         # There's no way to pass in the password to psql, so we need
         # to setup a ~/.pgpass where we store the password entered here
-        pgpass = os.environ.get('PGPASSFILE', os.path.join(
-            os.environ['HOME'], '.pgpass'))
+        pgpass = os.environ.get(
+            'PGPASSFILE',
+            os.path.join(get_application_dir(), '.pgpass'))
 
         if os.path.exists(pgpass):
             lines = []

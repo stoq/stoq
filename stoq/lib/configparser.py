@@ -33,6 +33,7 @@ from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.lib.interfaces import IStoqConfig
+from stoqlib.lib.osutils import get_application_dir
 from stoqlib.database.settings import DEFAULT_RDBMS, DatabaseSettings
 from stoqlib.exceptions import (FilePermissionError, ConfigError,
                                 NoConfigurationError)
@@ -208,7 +209,7 @@ dbusername=%(DBUSERNAME)s"""
                 self._config.add_section(section)
 
         self._config.set('General', 'logfile',
-                         os.path.join(os.environ['HOME'], StoqConfig.domain,
+                         os.path.join(get_application_dir(StoqConfig.domain),
                                       'application.log'))
         self._config.set('Database', 'rdbms', StoqConfig.rdbms)
         self._config.set('Database', 'address', settings.address)
@@ -238,7 +239,7 @@ dbusername=%(DBUSERNAME)s"""
         os.remove(self._filename)
 
     def get_config_directory(self):
-        return os.path.join(os.getenv('HOME'), '.' + self.domain)
+        return os.path.join(get_application_dir(self.domain))
 
     def use_test_database(self):
         self._config.set('Database', 'dbname',
