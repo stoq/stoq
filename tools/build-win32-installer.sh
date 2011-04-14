@@ -2,14 +2,19 @@
 WINEPREFIX=$1
 DEST=$2
 
+set -e
+
 GTKDIR=$WINEPREFIX/drive_c/Python26/Lib/site-packages/gtk-2.0/runtime
 GTKBIN=$GTKDIR/bin
+export WINEDEBUG=fixme-all
+export WINEPREFIX=$1
 
 ### Create directory structure
 
 echo '= Cleaning target'
 
 rm -fr $DEST
+rm -f StoqInstaller.exe
 mkdir -p $DEST
 mkdir -p $DEST/glade
 mkdir -p $DEST/pixmaps
@@ -32,9 +37,9 @@ mkdir -p $DEST/share/locale
 
 echo '= Installing dependencies'
 
-cd ../kiwi; WINEPREFIX=$1 wine c:/Python26/pythonw.exe setup.py -q install
-cd ../stoqdrivers; WINEPREFIX=$1 wine c:/Python26/pythonw.exe setup.py -q install
-cd ../stoqlib; WINEPREFIX=$1 wine c:/Python26/pythonw.exe setup.py -q install
+cd ../kiwi; wine c:/Python26/pythonw.exe setup.py -q install 2> /dev/null
+cd ../stoqdrivers; wine c:/Python26/pythonw.exe setup.py -q install 2> /dev/null
+cd ../stoqlib; wine c:/Python26/pythonw.exe setup.py -q install 2> /dev/null
 
 cd ../stoq
 
@@ -46,6 +51,21 @@ echo '= Copying dlls & application data'
 cp $WINEPREFIX/drive_c/Python26/python26.dll $DEST
 cp $WINEPREFIX/drive_c/Python26/DLLs/tcl85.dll $DEST
 cp $WINEPREFIX/drive_c/Python26/DLLs/tk85.dll $DEST
+
+# Postgres client libraries, 8.4.7 specific
+PGSQLDIR=$WINEPREFIX/drive_c/pgsql
+cp $PGSQLDIR/bin/comerr32.dll $DEST
+cp $PGSQLDIR/bin/gssapi32.dll $DEST
+cp $PGSQLDIR/bin/krb5_32.dll $DEST
+cp $PGSQLDIR/bin/k5sprt32.dll $DEST
+cp $PGSQLDIR/bin/libeay32.dll $DEST
+cp $PGSQLDIR/bin/libeay32.dll $DEST
+cp $PGSQLDIR/bin/libiconv-2.dll $DEST
+cp $PGSQLDIR/bin/libintl-8.dll $DEST
+cp $PGSQLDIR/bin/libpq.dll $DEST
+cp $PGSQLDIR/bin/msvcr71.dll $DEST
+cp $PGSQLDIR/bin/psql.exe $DEST
+cp $PGSQLDIR/bin/ssleay32.dll $DEST
 
 # Gtk+
 cp $GTKBIN/libglib-2.0-0.dll $DEST
@@ -80,7 +100,9 @@ cp $DEST/../../kiwi/pixmaps/* $DEST/pixmaps
 cp $DEST/../../stoqlib/data/pixmaps/* $DEST/data/pixmaps
 cp $DEST/../../stoqlib/data/glade/* $DEST/data/glade
 cp $DEST/../../stoqlib/data/sql/* $DEST/data/sql
+cp $DEST/../../stoqlib/data/csv/* $DEST/data/csv
 cp $DEST/../../stoqlib/data/fonts/* $DEST/data/fonts
+cp -r $DEST/../../stoqlib/plugins/* $DEST/plugins
 cp $DEST/../../stoq/data/glade/* $DEST/data/glade
 cp $DEST/../../stoq/data/pixmaps/* $DEST/data/pixmaps
 cp $DEST/../../kiwi/glade/* $DEST/data/glade
@@ -92,10 +114,12 @@ echo '= Creating executable via py2exe'
 PYTHONPATH=`pwd`/../stoqlib\;`pwd`/../kiwi\;`pwd`/../stoqdrivers \
   PATH=$GTKBIN\;$PATH \
   WINEPREFIX=$1 \
-  wine c:/Python26/pythonw.exe setup.py -q py2exe
+  wine c:/Python26/pythonw.exe -W ignore::DeprecationWarning setup.py -q py2exe
 
 # This is unneeded, py2exe copies over all of it for some reason
 rm -fr $DEST/tcl
+# Not necessary for now - just documentation
+rm -fr $DEST/plugins/nfe/docs
 
 ### Create the installer
 echo '= Creating installer'
