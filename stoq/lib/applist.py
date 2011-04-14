@@ -24,31 +24,26 @@
 ##
 """ Listing and importing applications """
 
-import glob
-import os
-
 from kiwi.component import implements
 from stoqlib.lib.interfaces import IApplicationDescriptions
 
-import stoq
 
 def get_application_names():
     """Get a list of application names, useful for launcher programs
 
     @returns: application names
     """
-    applications = []
-    expr = os.path.join(os.path.split(stoq.__file__)[0],
-                        'gui', '*', 'app.py')
-    for sub_dir in glob.glob(expr):
-        # sub_dir is stoq/gui/foobar/app.py
-        # dirname is stoq/gui/foobar
-        # appname is foobar
+    return ['admin',
+            'inventory',
+            'payable',
+            'pos',
+            'production',
+            'purchase',
+            'receivable',
+            'sales',
+            'stock',
+            'till']
 
-        dirname = os.path.split(sub_dir)[0]
-        appname = os.path.split(dirname)[1]
-        applications.append(appname)
-    return applications
 
 class ApplicationDescriptions:
 
