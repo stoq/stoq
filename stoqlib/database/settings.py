@@ -26,7 +26,6 @@
 """Settings required to access the database, hostname, username etc
 """
 import os
-import pwd
 import sys
 import socket
 
@@ -37,6 +36,7 @@ from stoqlib.database.exceptions import OperationalError
 from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.database.orm import connectionForURI
 from stoqlib.exceptions import ConfigError, DatabaseError
+from stoqlib.lib.osutils import get_username
 from stoqlib.lib.translation import stoqlib_gettext
 
 DEFAULT_RDBMS = 'postgres'
@@ -65,7 +65,7 @@ class DatabaseSettings(object):
         self.port = port
         self.dbname = dbname
         if not username:
-            username = pwd.getpwuid(os.getuid())[0]
+            username = get_username()
         self.username = username
         self.password = password
 

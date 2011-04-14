@@ -44,6 +44,7 @@ from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     IPaymentOperationManager,
                                     ISystemNotifier)
 from stoqlib.lib.message import DefaultSystemNotifier
+from stoqlib.lib.osutils import get_username
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.payment import PaymentOperationManager
 
@@ -68,7 +69,7 @@ class TestsuiteNotifier(DefaultSystemNotifier):
 
 def _provide_database_settings():
     username = os.environ.get('STOQLIB_TEST_USERNAME',
-                              pwd.getpwuid(os.getuid())[0])
+                              get_username())
     hostname = os.environ.get('PGHOST', 'localhost')
     port = int(os.environ.get('PGPORT', '5432'))
     dbname =  os.environ.get('STOQLIB_TEST_DBNAME',
