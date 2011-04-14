@@ -4,8 +4,6 @@ DEST=$2
 
 set -e
 
-GTKDIR=$WINEPREFIX/drive_c/Python26/Lib/site-packages/gtk-2.0/runtime
-GTKBIN=$GTKDIR/bin
 export WINEDEBUG=fixme-all
 export WINEPREFIX=$1
 
@@ -30,8 +28,11 @@ mkdir -p $DEST/stoqdrivers/conf
 mkdir -p $DEST/catalogs
 mkdir -p $DEST/resources
 mkdir -p $DEST/pixmaps/kiwi
+mkdir -p $DEST/etc
 mkdir -p $DEST/share
 mkdir -p $DEST/share/locale
+mkdir -p $DEST/share/themes
+mkdir -p $DEST/lib/gtk-2.0/2.10.0/engines
 
 ### Run setup.py on kiwi
 
@@ -68,6 +69,8 @@ cp $PGSQLDIR/bin/psql.exe $DEST
 cp $PGSQLDIR/bin/ssleay32.dll $DEST
 
 # Gtk+
+GTKDIR=$WINEPREFIX/drive_c/Python26/Lib/site-packages/gtk-2.0/runtime
+GTKBIN=$GTKDIR/bin
 cp $GTKBIN/libglib-2.0-0.dll $DEST
 cp $GTKBIN/libgthread-2.0-0.dll $DEST
 cp $GTKBIN/libgmodule-2.0-0.dll $DEST
@@ -89,6 +92,10 @@ cp $GTKBIN/libgdk_pixbuf-2.0-0.dll $DEST
 cp $GTKBIN/libgdk-win32-2.0-0.dll $DEST
 cp $GTKBIN/libgtk-win32-2.0-0.dll $DEST
 cp $GTKBIN/intl.dll $DEST
+# Theme
+cp -r $GTKDIR/etc/gtk-2.0/ $DEST/etc
+cp -r $GTKDIR/lib/gtk-2.0/2.10.0/engines/libwimp.dll $DEST/lib/gtk-2.0/2.10.0/engines
+cp -r $GTKDIR/share/themes/MS-Windows $DEST/share/themes
 cp -r $GTKDIR/share/locale/pt_BR/ $DEST/share/locale
 
 # Gazpacho
