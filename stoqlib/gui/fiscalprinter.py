@@ -390,6 +390,7 @@ class FiscalCoupon(gobject.GObject):
         while True:
             try:
                 self.emit('cancel')
+                break
             except (DriverError, DeviceError), details:
                 if not yesno(_(u"Erro cancelando cupom. Deseja tentar novamente?"),
                          gtk.RESPONSE_YES,
