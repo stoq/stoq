@@ -189,7 +189,11 @@ class ECFUI(object):
 
     def _check_ecf_state(self):
         log.info('ecfui._check_printer')
-        self._validate_printer()
+        try:
+            self._validate_printer()
+        except (DriverError, DeviceError), details:
+            warning('Não foi possível comunicar com a impressora.')
+            raise SystemExit
 
         has_open = self._printer.has_open_coupon()
         if has_open:
