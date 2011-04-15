@@ -27,6 +27,7 @@
 # FIXME: Refactor this to other files
 
 import os
+import platform
 import subprocess
 import time
 
@@ -37,7 +38,7 @@ from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-
+_system = platform.system()
 log = Logger('stoqlib.db.database')
 
 
@@ -121,10 +122,14 @@ def execute_sql(filename):
             dbname=settings.dbname,
             schema='-')
 
+        kwargs = {}
+        if _system != 'Windows':
+            kwargs['shell'] = True
         log.debug('executing %s' % cmd)
-        proc = subprocess.Popen(cmd, shell=True,
+        proc = subprocess.Popen(cmd,
                                 stdin=subprocess.PIPE,
-                                stdout=subprocess.PIPE)
+                                stdout=subprocess.PIPE,
+                                **kwargs)
 
         # We don't want to see notices on the output, skip them,
         # this will make all reported line numbers offset by 1
@@ -133,10 +138,8 @@ def execute_sql(filename):
         data = open(filename).read()
         # Rename serial into bigserial, for 64-bit id columns
         data = data.replace('id serial', 'id bigserial')
-        proc.stdin.write(data)
-        proc.stdin.close()
-
-        return proc.wait()
+        proc.communicate(data)
+        return proc.returncode
     else:
         raise NotImplementedError(settings.rdbms)
 
