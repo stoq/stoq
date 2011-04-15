@@ -150,7 +150,7 @@ if platform.system() == "Windows":
 
     options['py2exe'] = {
         'packages': 'encodings',
-        'includes': 'glib, gobject, gio, atk, cairo, pango, pangocairo, gtk, serial, formencode, sqlobject, ' + ','.join(mods) }
+        'includes': 'glib, gobject, gio, atk, cairo, pango, pangocairo, gtk, serial, formencode, sqlobject, _elementtree, xml.etree, ' + ','.join(mods) }
     windows.append({ 'script': 'stoqapp.py',
                      'icon_resources': [(0, 'data/pixmaps/stoq.ico')]})
 

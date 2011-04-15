@@ -9,19 +9,23 @@
   OutFile "StoqInstaller.exe"
   ;Default installation folder
   InstallDir "$PROGRAMFILES\Stoq"
-  Icon "data\pixmaps\stoq.ico"
 
   ;Get installation folder from registry if available
   InstallDirRegKey HKCU "Software\Stoq" ""
 
   ; For debugging only, makes it a lot faster & larger
   ; SetCompress off
-
+  ShowInstDetails show
 
 ;--------------------------------
 ;Interface Settings
   !define MUI_ABORTWARNING
+  !define MUI_ICON "data\pixmaps\stoq.ico"
 
+  !define MUI_FINISHPAGE_NOAUTOCLOSE
+  !define MUI_FINISHPAGE_RUN		"$INSTDIR\stoqapp.exe"
+  !define MUI_FINISHPAGE_LINK		"Visite site do Stoq"
+  !define MUI_FINISHPAGE_LINK_LOCATION	"http://www.stoq.com.br"
 
 ;--------------------------------
 ;Pages
