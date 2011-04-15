@@ -1,6 +1,7 @@
 ;--------------------------------
-;Include Modern UI
+; Includes
   !include "MUI.nsh"
+  !include "WinVer.nsh"
 
 ;--------------------------------
 ;General
@@ -14,8 +15,18 @@
   InstallDirRegKey HKCU "Software\Stoq" ""
 
   ; For debugging only, makes it a lot faster & larger
-  ; SetCompress off
+!ifdef DEBUG
+  SetCompress off
+!endif
   ShowInstDetails show
+
+  VIProductVersion "${VERSION}.0"
+  VIAddVersionKey "ProductName" "Stoq"
+  VIAddVersionKey "ProductVersion" "${VERSION}"
+  VIAddVersionKey "FileVersion" "${VERSION}.${DATE}"
+  VIAddVersionKey "BzrRevision" "${REVISION}"
+  VIAddVersionKey "LegalCopyright" ""
+  VIAddVersionKey "FileDescription" "Installador para Stoq"
 
 ;--------------------------------
 ;Interface Settings
