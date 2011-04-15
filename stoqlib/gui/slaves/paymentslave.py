@@ -1067,6 +1067,8 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         self._update_payment_list()
         self.update_view()
+        if self._outstanding_value == 0:
+            self._wizard.finish()
 
     def _remove_payment(self, payment):
         if payment.is_preview():
@@ -1163,6 +1165,9 @@ class MultipleMethodSlave(BaseEditorSlave):
     def on_payments__selection_changed(self, objectlist, payment):
         has_payments = len(objectlist) > 0
         self.remove_button.set_sensitive(has_payments)
+
+    def on_base_value__activate(self, entry):
+        self._add_payment()
 
     def on_base_value__validate(self, entry, value):
         retval = None
