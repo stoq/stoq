@@ -25,8 +25,11 @@
 
 import os
 # pyserial bug
-import fcntl
-fcntl.O_NONBLOCK = os.O_NONBLOCK
+try:
+    import fcntl
+    fcntl.O_NONBLOCK = os.O_NONBLOCK
+except ImportError:
+    pass
 
 import gobject
 from kiwi.utils import gsignal
