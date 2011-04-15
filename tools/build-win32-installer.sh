@@ -1,29 +1,29 @@
 #!/bin/sh
 set -e
 
-WINEPREFIX=$1
-DEST=$2
+WINEPREFIX=`cat .wine-build-stoq-prefix`
+DEST=dist/
 
 DEBUG=false
 NSISONLY=false
 PY2EXEONLY=false
 QUIET=true
 
-if [ "$3" = "-d" ]; then
+if [ "$1" = "-d" ]; then
    DEBUG=true
 fi
-if [ "$3" = "-n" ]; then
+if [ "$1" = "-n" ]; then
    NSISONLY=true
 fi
-if [ "$3" = "-p" ]; then
+if [ "$1" = "-p" ]; then
    PY2EXEONLY=true
 fi
-if [ "$3" = "-v" ]; then
+if [ "$1" = "-v" ]; then
    QUIET=false
 fi
 
 if [ ! -d "$WINEPREFIX" ]; then
-    echo "ERROR: usage wineprefix destiation"
+    echo "ERROR: wineprefix doesn't exist"
     exit
 fi
 
@@ -39,9 +39,8 @@ do_cleanup() {
     fi
     echo '= Cleaning target'
 
-    rm -fr $DEST
-    rm -f StoqInstaller.exe
-    mkdir -p $DEST
+    rm -fr $DEST/*
+    mkdir -p $DEST/docs
     mkdir -p $DEST/glade
     mkdir -p $DEST/pixmaps
     mkdir -p $DEST/data/pixmaps
@@ -155,6 +154,9 @@ do_copy_data() {
     cp -r $DEST/../../stoqlib/plugins/* $DEST/plugins
     cp $DEST/../../stoq/data/glade/* $DEST/data/glade
     cp $DEST/../../stoq/data/pixmaps/* $DEST/data/pixmaps
+    cp $DEST/../../stoq/AUTHORS $DEST/docs
+    cp $DEST/../../stoq/CONTRIBUTORS $DEST/docs
+    cp $DEST/../../stoq/COPYING $DEST/docs
     cp $DEST/../../kiwi/glade/* $DEST/data/glade
     cp -r $WINEPREFIX/drive_c/Python26/share/locale/* $DEST/share/locale
 }
