@@ -24,15 +24,8 @@
 ##
 """Setup file for Stoq package"""
 
-import fnmatch
 import os
-import platform
 import sys
-
-try:
-    import py2exe
-except ImportError:
-    pass
 
 #
 # Dependency checking
@@ -103,57 +96,6 @@ global_resources = dict(
 
 templates = [
     ('share/applications', ['stoq.desktop'])]
-windows = []
-
-def findmods(path, strip=''):
-    r = []
-    for root, dirnames, filenames in os.walk(path):
-        for filename in fnmatch.filter(filenames, '*.py'):
-             f = os.path.join(root, filename)
-             f = f[len(strip):]
-             if '__init__' in f:
-                 continue
-             if '#' in f:
-                 continue
-             f = f.replace('.py', '')
-             f = f.replace(os.sep, '.')
-             r.append(f)
-    return r
-
-options = {}
-
-if platform.system() == "Windows":
-    sys.path.insert(0, "../stoqlib/external")
-    mods = (findmods('stoq') +
-            findmods('../stoqlib/stoqlib', '../stoqlib/'))
-    mods.append('reportlab.pdfbase._fontdata_enc_macexpert')
-    mods.append('reportlab.pdfbase._fontdata_enc_macroman')
-    mods.append('reportlab.pdfbase._fontdata_enc_pdfdoc')
-    mods.append('reportlab.pdfbase._fontdata_enc_standard')
-    mods.append('reportlab.pdfbase._fontdata_enc_symbol')
-    mods.append('reportlab.pdfbase._fontdata_enc_winansi')
-    mods.append('reportlab.pdfbase._fontdata_enc_zapfdingbats')
-    mods.append('reportlab.pdfbase._fontdata_widths_courier')
-    mods.append('reportlab.pdfbase._fontdata_widths_courierbold')
-    mods.append('reportlab.pdfbase._fontdata_widths_courieroblique')
-    mods.append('reportlab.pdfbase._fontdata_widths_courierboldoblique')
-    mods.append('reportlab.pdfbase._fontdata_widths_helvetica')
-    mods.append('reportlab.pdfbase._fontdata_widths_helveticabold')
-    mods.append('reportlab.pdfbase._fontdata_widths_helveticaoblique')
-    mods.append('reportlab.pdfbase._fontdata_widths_helveticaboldoblique')
-    mods.append('reportlab.pdfbase._fontdata_widths_symbol')
-    mods.append('reportlab.pdfbase._fontdata_widths_timesbold')
-    mods.append('reportlab.pdfbase._fontdata_widths_timesbolditalic')
-    mods.append('reportlab.pdfbase._fontdata_widths_timesitalic')
-    mods.append('reportlab.pdfbase._fontdata_widths_timesroman')
-    mods.append('reportlab.pdfbase._fontdata_widths_zapfdingbats')
-
-    options['py2exe'] = {
-        'packages': 'encodings',
-        'includes': 'glib, gobject, gio, atk, cairo, pango, pangocairo, gtk, serial, formencode, sqlobject, _elementtree, xml.etree, xml.etree.ElementTree, ' + ','.join(mods) }
-    windows.append({ 'script': 'stoqapp.py',
-                     'icon_resources': [(0, 'data/pixmaps/stoq.ico')]})
-
 setup(name='stoq',
       version=version,
       author='Async Open Source',
@@ -170,7 +112,5 @@ setup(name='stoq',
       data_files=data_files,
       resources=resources,
       global_resources=global_resources,
-      templates=templates,
-      windows=windows,
-      options=options)
+      templates=templates)
 

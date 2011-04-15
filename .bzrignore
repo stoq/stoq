@@ -3,3 +3,4 @@ build
 dist
 locale
 .wine-build-stoq-prefix
+data/pixmaps/stoq.ico
