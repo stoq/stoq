@@ -1152,6 +1152,8 @@ class MultipleMethodSlave(BaseEditorSlave):
             return
 
         self._method = radio.get_data('method')
+        self.base_value.validate(force=True)
+        self.base_value.grab_focus()
 
     def on_add_button__clicked(self, widget):
         self._add_payment()
