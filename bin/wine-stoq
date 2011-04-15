@@ -1,0 +1,4 @@
+#!/bin/sh
+export PYTHONPATH=`pwd`/stoqlib\;`pwd`/kiwi\;`pwd`/stoqdrivers
+export WINEPREFIX=`cat .wine-build-stoq-prefix`
+wine c:/Python26/pythonw.exe bin/stoq $@
