@@ -25,9 +25,7 @@
 
 import StringIO
 from unicodedata import normalize
-from xml.etree.ElementTree import tostring
-
-import lxml.etree as ET
+from xml.etree import ElementTree
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.database.orm import AND, LIKE
@@ -136,9 +134,9 @@ def nfe_tostring(element):
     @param element: a xml.etree.Element instance.
     @returns: a XML string of the element.
     """
-    message = tostring(element, 'utf8')
-    node = ET.fromstring(message)
-    tree = ET.ElementTree(node)
+    message = ElementTree.tostring(element, 'utf8')
+    node = ElementTree.XML(message)
+    tree = ElementTree.ElementTree(node)
     # The transformation of the XML to its canonical form is required along
     # all the NF-e specification and its not supported by the xml.etree module
     # of the standard python library. See http://www.w3.org/TR/xml-c14n for
