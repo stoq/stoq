@@ -125,6 +125,11 @@ def execute_sql(filename):
         kwargs = {}
         if _system != 'Windows':
             kwargs['shell'] = True
+        else:
+            # Hide the console window
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
+            kwargs['startupinfo'] = startupinfo
         log.debug('executing %s' % cmd)
         proc = subprocess.Popen(cmd,
                                 stdin=subprocess.PIPE,
