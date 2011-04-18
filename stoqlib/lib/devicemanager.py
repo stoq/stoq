@@ -26,6 +26,7 @@
 """
 
 import operator
+import platform
 
 try:
     import gudev
@@ -85,8 +86,14 @@ class DeviceManager(object):
                 pass
 
     def _get_default_devices(self):
-        return  [SerialDevice('/dev/ttyS0'),
-                 SerialDevice('/dev/ttyS1')]
+        if platform.system() == "Windows":
+            return [SerialDevice("COM1"),
+                    SerialDevice("COM2"),
+                    SerialDevice("COM3"),
+                    SerialDevice("COM4")]
+        else:
+            return [SerialDevice('/dev/ttyS0'),
+                    SerialDevice('/dev/ttyS1')]
 
     def _get_hal_devices(self):
         devices = []
