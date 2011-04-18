@@ -25,6 +25,8 @@
 Domain classes related to stoqdrivers package.
 """
 
+import platform
+
 from zope.interface import implements
 from stoqdrivers.printers.cheque import ChequePrinter
 from stoqdrivers.scales.scales import Scale
@@ -69,6 +71,10 @@ class DeviceSettings(Domain):
     port_names = {DEVICE_SERIAL1: '/dev/ttyS0',
                   DEVICE_SERIAL2: '/dev/ttyS1',
                   DEVICE_PARALLEL: '/dev/parport'}
+    if platform.system() == 'Windows':
+        port_names[DEVICE_SERIAL1] = 'COM1'
+        port_names[DEVICE_SERIAL2] = 'COM2'
+        port_names[DEVICE_PARALLEL] = 'LPT1'
 
     device_types = {SCALE_DEVICE: _('Scale'),
                     CHEQUE_PRINTER_DEVICE: _('Cheque Printer')}

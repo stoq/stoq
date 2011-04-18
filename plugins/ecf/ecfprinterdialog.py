@@ -23,6 +23,8 @@
 ##
 ##
 
+import platform
+
 import gtk
 from kiwi.enums import ListType
 from kiwi.ui.widgets.list import Column
@@ -94,6 +96,8 @@ class ECFEditor(BaseEditor):
                            station=get_current_station(conn),
                            is_active=True,
                            connection=conn)
+        if platform.system() == 'Windows':
+            model.device_name = 'COM1'
         model.model_name = None
         return model
 
