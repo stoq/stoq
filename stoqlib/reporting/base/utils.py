@@ -69,10 +69,14 @@ def print_file(filename, printer=None, extra_opts=[]):
     if _system == "Linux":
         ret = os.system("lpr %s %s" % (options, filename))
     elif _system == "Windows":
-        import win32api
-        import win32print
-        win32api.ShellExecute(0, "print", filename,
-                              '/d:"%s"' % printer, ".", 0)
+        import subprocess
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
+        proc = subprocess.Popen(["gsprint", "-query", "-color", filename],
+                                startupinfo=startupinfo,
+                                stdout=subprocess.PIPE,
+                                stdin=subprocess.PIPE)
+        ret = proc.wait()
     else:
         raise SystemExit("unknown system: %s" % (system, ))
 
