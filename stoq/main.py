@@ -47,6 +47,8 @@ _stream = None
 # To avoid kiwi dependency at startup
 log = logging.getLogger('stoq.main')
 
+_tracebacks = []
+
 def _write_exception_hook(exctype, value, tb):
     global _stream
     import traceback
@@ -71,6 +73,8 @@ def _write_exception_hook(exctype, value, tb):
     traceback.print_exception(exctype, value, tb, file=_stream)
     traceback.print_exception(exctype, value, tb)
 
+    _tracebacks.append((exctype, value, tb))
+
 def _debug_hook(exctype, value, tb):
     import traceback
     _write_exception_hook(exctype, value, tb)
@@ -80,6 +84,16 @@ def _debug_hook(exctype, value, tb):
     print
     import pdb
     pdb.pm()
+
+def _exit_func():
+    from stoqlib.lib.parameters import is_developer_mode
+    if is_developer_mode():
+        return
+    if not _tracebacks:
+        return
+    import stoq
+    from stoqlib.gui.dialogs.crashreportdialog import show_dialog
+    show_dialog('Stoq', stoq.version, _tracebacks)
 
 def _check_dependencies():
     from stoqlib.lib.message import error
@@ -262,6 +276,8 @@ def _initialize(options):
     else:
         hook = _write_exception_hook
     sys.excepthook = hook
+
+    sys.exitfunc = _exit_func
 
     from stoqlib.lib.message import error
     from stoq.lib.configparser import StoqConfig
