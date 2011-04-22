@@ -22,10 +22,24 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import errno
 import os
 import platform
 
 _system = platform.system()
+
+def _get_xdg_dir(envname, default):
+    default = os.path.expanduser(default)
+    filename = os.path.expanduser("~/.config/user-dirs.dirs")
+    try:
+        f = open(filename)
+    except IOError, e:
+        if e.errno == errno.ENOENT:
+            return default
+    for line in f:
+        if line.startswith(envname):
+            return os.path.expandvars(line[len(envname)+2:-2])
+    return default
 
 def get_application_dir(appname="stoq"):
     """Fetches a application specific directory,
@@ -42,6 +56,19 @@ def get_application_dir(appname="stoq"):
     if not os.path.exists(appdir):
         os.makedirs(appdir)
     return appdir
+
+def get_documents_dir():
+    """@returns: the documents dir for the current user"""
+    if _system == 'Linux':
+        return _get_xdg_dir("XDG_DOCUMENTS_DIR", "~/Documents")
+    elif _system == 'Windows':
+        from win32com.shell import shell
+        MY_DOCUMENTS = "::{450d8fba-ad25-11d0-98a8-0800361b1103}"
+        folder = shell.SHGetDesktopFolder()
+        pidl = folder.ParseDisplayName(0, None, MY_DOCUMENTS)[1]
+        return shell.SHGetPathFromIDList(pidl)
+    else:
+        raise SystemExit("unknown system: %s" % (system, ))
 
 def get_username():
     """@returns: the current username"""
