@@ -239,6 +239,18 @@ def _prepare_logfiles():
             os.unlink(link_file)
         os.symlink(log_file, link_file)
 
+    # http://www.py2exe.org/index.cgi/StderrLog
+    if hasattr(sys, 'frozen'):
+        for name in ['stdout', 'stderr']:
+            filename = os.path.join(stoqdir, "logs", name + ".log")
+            try:
+                fp = open(filename, "w")
+            except IOError, e:
+                if e.errno != errno.EACCES:
+                    raise
+                fp = open(os.devnull, "w")
+            setattr(sys, name, fp)
+
 def _initialize(options):
     # Do this as early as possible to get as much as possible into the
     # log file itself, which means we cannot depend on the config or
