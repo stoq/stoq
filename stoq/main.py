@@ -217,12 +217,9 @@ def _setup_cookiefile(config_dir):
     cookiefile = os.path.join(config_dir, "cookie")
     provide_utility(ICookieFile, Base64CookieFile(cookiefile))
 
-def _initialize(options):
+def _prepare_logfiles():
     global _stream
 
-    # Do this as early as possible to get as much as possible into the
-    # log file itself, which means we cannot depend on the config or
-    # anything else
     stoqdir = get_application_dir()
 
     import time
@@ -241,6 +238,12 @@ def _initialize(options):
         if os.path.exists(link_file):
             os.unlink(link_file)
         os.symlink(log_file, link_file)
+
+def _initialize(options):
+    # Do this as early as possible to get as much as possible into the
+    # log file itself, which means we cannot depend on the config or
+    # anything else
+    _prepare_logfiles()
 
     if options.debug:
         hook = _debug_hook
