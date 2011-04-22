@@ -26,18 +26,18 @@
 class AsyncResponse(object):
     def __init__(self):
         self.func = None
-        self.error = None
+        self.error_func = None
 
     def whenDone(self, func):
         self.func = func
 
     def ifError(self, func):
-        self.error = func
+        self.error_func = func
 
     def done(self, *args):
         if self.func:
             self.func(self, *args)
 
     def error(self, *args):
-        if self.error:
-            self.error(self, *args)
+        if self.error_func:
+            self.error_func(self, *args)
