@@ -27,12 +27,8 @@ import datetime
 import gettext
 import json
 import os
-import platform
-import urllib
 
 from dateutil.parser import parse
-import gio
-import gobject
 import gtk
 from kiwi.component import get_utility
 from kiwi.enums import SearchFilterPosition
@@ -45,7 +41,7 @@ from stoqlib.lib.interfaces import ICookieFile
 from stoqlib.lib.message import yesno, info
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.pluginmanager import InstalledPlugin
+from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
@@ -53,7 +49,7 @@ from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.gui.slaves.userslave import PasswordEditor
 from stoqlib.domain.person import PersonAdaptToCompany
-from stoqlib.domain.interfaces import IBranch, ICompany
+from stoqlib.domain.interfaces import IBranch
 
 import stoq
 
@@ -509,7 +505,6 @@ class SearchableAppWindow(AppWindow):
 
 
 class VersionChecker(object):
-    URL = """http://api.stoq.com.br/version.json"""
     DAYS_BETWEEN_CHECKS = 7
 
     #
@@ -539,65 +534,30 @@ class VersionChecker(object):
         current_version = stoq.version
         if details['version'] > current_version:
             self._display_new_version_message(details)
-
-    def _get_send_data(self):
-        details = {}
-
-        # CNPJ
-        branch = sysparam(self.conn).MAIN_COMPANY
-        company = ICompany(branch.person)
-        details['cnpj'] = company.cnpj
-
-        # Plugins
-        plugins = [i.plugin_name for i in
-                            InstalledPlugin.select(connection=self.conn)]
-        details['plugins'] = plugins
-
-        details['version'] = stoq.version
-        details['time'] = datetime.datetime.today().isoformat()
-
-        # Distribution
-        dist = platform.dist()
-        details['dist'] = dist
-
-        return urllib.quote(json.dumps(details))
+        else:
+            log.debug('Using latest version %r, not showing message' % (
+                stoq.version, ))
 
     def _get_check_filename(self):
         return os.path.join(get_application_dir(), 'last_check')
 
     def _download_details(self):
         log.debug('Downloading new version information')
-        url = '%s?q=%s' % (self.URL, self._get_send_data())
-        gfile = gio.File(url)
-        gfile.read_async(self._read_file_callback)
+        api = WebService()
+        response = api.version(self.conn, stoq.version)
+        response.whenDone(self._on_response_done)
 
-    def _read_file_callback(self, gfile, result):
+    def _on_response_done(self, response, data):
+        check_file = self._get_check_filename()
+        open(check_file, 'w').write(data)
+
         try:
-            stream = gfile.read_finish(result)
-        except gobject.GError, e:
-            log.debug('Error downloading version information (%s)' % e)
+            details = json.loads(data)
+        except ValueError:
+            log.debug('Error parsing json.')
             return
 
-        self.data = ''
-        stream.read_async(4096, self._download_details_callback)
-
-    def _download_details_callback(self, stream, result):
-        data = stream.read_finish(result)
-        if not data:
-            check_file = self._get_check_filename()
-            open(check_file, 'w').write(self.data)
-
-            try:
-                details = json.loads(self.data)
-            except ValueError:
-                log.debug('Error parsing json.')
-                return
-
-            self._check_details(details)
-            return
-
-        self.data += data
-        stream.read_async(4096, self._download_details_callback)
+        self._check_details(details)
 
     #
     #   Public API
@@ -620,6 +580,4 @@ class VersionChecker(object):
 
         # Otherwise, use the current file for displaying information
         self._check_details(details)
-
-
 
