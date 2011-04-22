@@ -1,8 +1,8 @@
-# -*- Mode: Python; coding: utf-8 -*-
+# -*- Mode: Python; coding: iso-8859-1 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,28 +19,25 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s): Stoq Team <stoq-devel@async.com.br>
+##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
+""" NIH variant of twisted deferred/GLibs AsyncResult """
 
+class AsyncResponse(object):
+    def __init__(self):
+        self.func = None
+        self.error = None
 
-from stoqlib.domain.base import Domain
-from stoqlib.database.orm import StringCol, IntCol
+    def whenDone(self, func):
+        self.func = func
 
+    def ifError(self, func):
+        self.error = func
 
-class InstalledPlugin(Domain):
-    """This object represent an installed and activated plugin.
+    def done(self, *args):
+        if self.func:
+            self.func(self, *args)
 
-    @cvar plugin_name: name of the plugin
-    @cvar plugin_version: version of the plugin
-    """
-    plugin_name = StringCol()
-    plugin_version = IntCol()
-
-    @classmethod
-    def get_plugin_names(cls, conn):
-        """Fetchs a list of installed plugin names
-        @param conn: a connection
-        @returns: list of strings
-        """
-        return [p.plugin_name for p in cls.select(connection=conn)]
-
+    def error(self, *args):
+        if self.error:
+            self.error(self, *args)
