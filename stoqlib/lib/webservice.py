@@ -48,7 +48,6 @@ class WebService(object):
         try:
             stream = gfile.read_finish(result)
         except gobject.GError, e:
-            log.debug('Error downloading version information (%s)' % e)
             response.error(e)
             return
 
@@ -88,6 +87,14 @@ class WebService(object):
         response = AsyncResponse()
         url = '%s/version.json?q=%s' % (
             self.API_SERVER, urllib.quote(json.dumps(params)))
+        gfile = gio.File(url)
+        gfile.read_async(self._on_file_read_async, user_data=response)
+        return response
+
+    def bug_report(self, report):
+        response = AsyncResponse()
+        url = '%s/bugreport.json?q=%s' % (
+            self.API_SERVER, urllib.quote(json.dumps(report)))
         gfile = gio.File(url)
         gfile.read_async(self._on_file_read_async, user_data=response)
         return response
