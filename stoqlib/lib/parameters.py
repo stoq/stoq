@@ -763,4 +763,4 @@ def ensure_system_parameters(update=False):
     trans.commit(close=True)
 
 def is_developer_mode():
-    return stoqlib.uninstalled
+    return stoqlib.library.uninstalled
