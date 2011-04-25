@@ -117,22 +117,25 @@ def show_dialog(params, tracebacks):
 
     no_button.hide()
     yes_button.set_sensitive(False)
+    yes_button.set_label(_('Sending...'))
     parent.destroy()
+
     api = WebService()
     response = api.bug_report(report)
 
-    if platform.system() != 'Windows':
-        yes_button.set_label(_('Sending...'))
-        def callback(response, data):
-            r = json.loads(data)
-            label = gtk.LinkButton(
-                r['report-url'],
-                _("Report %s successfully opened") % r['report'])
-            d.vbox.pack_start(label)
-            label.show()
-            yes_button.set_label(_("Close"))
-            yes_button.set_sensitive(True)
-        response.whenDone(callback)
-        response.ifError(callback)
-        d.run()
+    def show_report(data):
+        r = json.loads(data)
+        label = gtk.LinkButton(
+            r['report-url'],
+            _("Report %s successfully opened") % r['report'])
+        d.vbox.pack_start(label)
+        label.show()
+        yes_button.set_label(_("Close"))
+        yes_button.set_sensitive(True)
+
+    def callback(response, data):
+        show_report(data)
+    response.whenDone(callback)
+    response.ifError(callback)
+    d.run()
     raise SystemExit
