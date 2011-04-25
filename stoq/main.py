@@ -90,8 +90,10 @@ def _debug_hook(exctype, value, tb):
 
 def _exit_func():
     from stoqlib.lib.parameters import is_developer_mode
-    if is_developer_mode():
-        return
+    # Disable dialog in developer mode eventually, but we
+    # first need to test it properly.
+    #if is_developer_mode():
+    #    return
     if not _tracebacks:
         return
     import stoq
