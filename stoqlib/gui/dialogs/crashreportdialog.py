@@ -39,22 +39,33 @@ import stoqdrivers
 import stoqlib
 
 from stoqlib.database.runtime import get_connection
+from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.webservice import WebService
 
 _ = stoqlib_gettext
 
-def _collect_crash_report(appname, appversion, tracebacks):
+def _collect_crash_report(params, tracebacks):
     text = ""
+    text += "Report generated at %s %s\n" % (
+        datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        ' '.join(time.tzname))
+    text += ('-' * 80) + '\n'
+
     for i, (exctype, value, tb) in enumerate(tracebacks):
         text += '\n'.join(traceback.format_exception(exctype, value, tb))
         if i != len(tracebacks) -1:
             text += '-' * 60
+    text += ('-' * 80) + '\n'
 
-    text += "Report generated at %s %s\n" % (
-        datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        ' '.join(time.tzname))
+    text += 'Content of %s:\n' % (params['log-filename'], )
+    text += open(params['log-filename']).read()
+    text += ('-' * 80) + '\n'
+
+    uptime = params['app-uptime']
+    text += "Application uptime: %dh%dmin\n" % (uptime / 3600,
+                                                (uptime % 3600) / 60)
     text += "System: %r (%s)\n" % (platform.system(),
                                  ' '.join(platform.uname()))
     text += "Distribution: %s\n" % (' '.join(platform.dist()), )
@@ -68,35 +79,42 @@ def _collect_crash_report(appname, appversion, tracebacks):
     text += "Reportlab version: %s\n" % (reportlab.Version, )
     text += "Stoqdrivers version: %s\n" % ('.'.join(map(str, stoqdrivers.__version__)), )
     text += "Stoqlib version: %s\n" % (stoqlib.version, )
-    text += "%s version: %s\n" % (appname, appversion)
+    text += "%s version: %s\n" % (params['app-name'], params['app-version'])
     text += "Psycopg version: %20s\n" % (psycopg2.__version__, )
     conn = get_connection()
     text += "PostgreSQL version: %20s\n" % (conn.queryOne('SELECT version();'))
     conn.close()
-
+    text += ('-' * 80) + '\n'
     return text
 
-def show_dialog(appname, appversion, tracebacks):
-    d = HIGAlertDialog(parent=None,
+def show_dialog(params, tracebacks):
+    parent = get_current_toplevel()
+    d = HIGAlertDialog(parent=parent,
                        flags=gtk.DIALOG_MODAL,
                        type=gtk.MESSAGE_WARNING)
-
-    report = _collect_crash_report(appname, appversion, tracebacks)
+    report = _collect_crash_report(params, tracebacks)
 
     d.set_primary(_('We\'r sorry to inform you that an error occurred while '
                     'running %s. Please help us improving Stoq by sending a '
                     'automatically generated report about the incident.\n'
-                    'Click on details to see the report text.') % appname, bold=False)
+                    'Click on details to see the report text.') % (
+            params['app-name'], ), bold=False)
     d.set_details(report)
     d.add_buttons(_('No thanks'), gtk.RESPONSE_NO)
     d.add_buttons(_('Send report'), gtk.RESPONSE_YES)
 
-    if d.run() == gtk.RESPONSE_YES:
-        api = WebService()
-        response = api.bug_report(report)
-        def foo(response, data):
-            print data
-            gtk.main_quit()
-        response.whenDone(foo)
-        response.ifError(foo)
+    response = d.run()
+    d.destroy()
+    parent.destroy()
+    if response != gtk.RESPONSE_YES:
+        return
+    api = WebService()
+    response = api.bug_report(report)
+
+    if platform.system() != 'Windows':
+        def callback(response, data):
+            os._exit(0)
+        response.whenDone(callback)
+        response.ifError(callback)
         gtk.main()
+    raise SystemExit
