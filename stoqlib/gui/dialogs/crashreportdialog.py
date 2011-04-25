@@ -24,6 +24,7 @@
 """ Crash report dialog """
 
 import datetime
+import json
 import platform
 import os
 import sys
@@ -99,22 +100,39 @@ def show_dialog(params, tracebacks):
                     'automatically generated report about the incident.\n'
                     'Click on details to see the report text.') % (
             params['app-name'], ), bold=False)
-    d.set_details(report)
-    d.add_buttons(_('No thanks'), gtk.RESPONSE_NO)
-    d.add_buttons(_('Send report'), gtk.RESPONSE_YES)
+
+    sw = gtk.ScrolledWindow()
+    view = gtk.TextView()
+    view.set_size_request(500, 350)
+    view.get_buffer().set_text(report)
+    sw.add(view)
+    view.show()
+    d.set_details_widget(sw)
+    no_button = d.add_button(_('No thanks'), gtk.RESPONSE_NO)
+    yes_button = d.add_button(_('Send report'), gtk.RESPONSE_YES)
 
     response = d.run()
-    d.destroy()
-    parent.destroy()
-    if response != gtk.RESPONSE_YES:
+    if response == gtk.RESPONSE_NO:
         return
+
+    no_button.hide()
+    yes_button.set_sensitive(False)
+    parent.destroy()
     api = WebService()
     response = api.bug_report(report)
 
     if platform.system() != 'Windows':
+        yes_button.set_label(_('Sending...'))
         def callback(response, data):
-            os._exit(0)
+            r = json.loads(data)
+            label = gtk.LinkButton(
+                r['report-url'],
+                _("Report %s successfully opened") % r['report'])
+            d.vbox.pack_start(label)
+            label.show()
+            yes_button.set_label(_("Close"))
+            yes_button.set_sensitive(True)
         response.whenDone(callback)
         response.ifError(callback)
-        gtk.main()
+        d.run()
     raise SystemExit
