@@ -29,6 +29,7 @@ import logging
 import optparse
 import os
 import sys
+import time
 
 from stoqlib.lib.osutils import get_application_dir
 
@@ -42,6 +43,8 @@ GAZPACHO_REQUIRED = (0, 6, 6)
 REPORTLAB_REQUIRED = (1, 20)
 
 _ = gettext.gettext
+_log_filename = None
+_start_time = time.time()
 _stream = None
 
 # To avoid kiwi dependency at startup
@@ -93,7 +96,14 @@ def _exit_func():
         return
     import stoq
     from stoqlib.gui.dialogs.crashreportdialog import show_dialog
-    show_dialog('Stoq', stoq.version, _tracebacks)
+    uptime = int(time.time() - _start_time)
+    params = {
+        'app-name': 'Stoq',
+        'app-version': stoq.version,
+        'app-uptime': uptime,
+        'log-filename': _log_filename,
+    }
+    show_dialog(params, _tracebacks)
 
 def _check_dependencies():
     from stoqlib.lib.message import error
@@ -232,7 +242,7 @@ def _setup_cookiefile(config_dir):
     provide_utility(ICookieFile, Base64CookieFile(cookiefile))
 
 def _prepare_logfiles():
-    global _stream
+    global _log_filename, _stream
 
     stoqdir = get_application_dir()
 
@@ -243,27 +253,15 @@ def _prepare_logfiles():
         os.makedirs(log_dir)
 
     from kiwi.log import set_log_file
-    log_file = os.path.join(log_dir, 'stoq_%s.log' %
+    _log_filename = os.path.join(log_dir, 'stoq_%s.log' %
                                 time.strftime('%Y-%m-%d_%H-%M-%S'))
-    _stream = set_log_file(log_file, 'stoq*')
+    _stream = set_log_file(_log_filename, 'stoq*')
 
     if hasattr(os, 'symlink'):
         link_file = os.path.join(stoqdir, 'stoq.log')
         if os.path.exists(link_file):
             os.unlink(link_file)
-        os.symlink(log_file, link_file)
-
-    # http://www.py2exe.org/index.cgi/StderrLog
-    if hasattr(sys, 'frozen'):
-        for name in ['stdout', 'stderr']:
-            filename = os.path.join(stoqdir, "logs", name + ".log")
-            try:
-                fp = open(filename, "w")
-            except IOError, e:
-                if e.errno != errno.EACCES:
-                    raise
-                fp = open(os.devnull, "w")
-            setattr(sys, name, fp)
+        os.symlink(_log_filename, link_file)
 
 def _initialize(options):
     # Do this as early as possible to get as much as possible into the
