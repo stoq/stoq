@@ -72,7 +72,8 @@ class WebService(object):
         if platform.system() == 'Windows':
             import urllib2
             fd = urllib2.urlopen(url)
-            response.done(fd.read())
+            data = fd.read()
+            gobject.idle_add(lambda : response.done(data))
         else:
             gfile = gio.File(url)
             gfile.read_async(self._on_file_read_async, user_data=response)
