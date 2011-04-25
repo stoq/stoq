@@ -1,9 +1,10 @@
 #!/bin/sh
-export PYTHONPATH=`pwd`/../stoqlib\;`pwd`/../kiwi\;`pwd`/../stoqdrivers
+STOQDIR=$(dirname `which stoq`)
+
+export PYTHONPATH=$STOQDIR/../../stoqlib\;$STOQDIR/../../kiwi\;$STOQDIR/../../stoqdrivers
 export WINEDEBUG=fixme-all
-export WINEPREFIX=`cat .wine-build-stoq-prefix`
+export WINEPREFIX=`cat $STOQDIR/../.wine-build-stoq-prefix`
 # To avoid dragging in canberra
 unset GTK_MODULES
 
-STOQ=$(dirname `which stoq`)/stoq
-wine c:/Python26/pythonw.exe $STOQ $@
+wine c:/Python26/pythonw.exe $STOQDIR/stoq $@
