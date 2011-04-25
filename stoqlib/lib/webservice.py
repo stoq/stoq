@@ -38,7 +38,7 @@ from stoqlib.lib.pluginmanager import InstalledPlugin
 
 
 class WebService(object):
-    API_SERVER = "http://api.stoq.com.br/"
+    API_SERVER = "http://api.stoq.com.br"
 
     #
     #   Private API
@@ -63,6 +63,22 @@ class WebService(object):
         self.data += data
         stream.read_async(4096, self._on_stream_read_async, user_data=response)
 
+    def _do_request(self, name, params):
+        response = AsyncResponse()
+        url = '%s/%s?q=%s' % (
+            self.API_SERVER, name, urllib.quote(json.dumps(params)))
+
+        # GWinHttpRequest on Win32 is broken, do it synchronously instead.
+        if platform.system() == 'Windows':
+            import urllib2
+            fd = urllib2.urlopen(url)
+            response.done(fd.read())
+        else:
+            gfile = gio.File(url)
+            gfile.read_async(self._on_file_read_async, user_data=response)
+
+        return response
+
     #
     #   Public API
     #
@@ -84,17 +100,7 @@ class WebService(object):
             'version': app_version,
         }
 
-        response = AsyncResponse()
-        url = '%s/version.json?q=%s' % (
-            self.API_SERVER, urllib.quote(json.dumps(params)))
-        gfile = gio.File(url)
-        gfile.read_async(self._on_file_read_async, user_data=response)
-        return response
+        return self._do_request('version.json', params)
 
     def bug_report(self, report):
-        response = AsyncResponse()
-        url = '%s/bugreport.json?q=%s' % (
-            self.API_SERVER, urllib.quote(json.dumps(report)))
-        gfile = gio.File(url)
-        gfile.read_async(self._on_file_read_async, user_data=response)
-        return response
+        return self._do_request('bugreport.json', report)
