@@ -93,9 +93,14 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
             os.mkdir(dir)
 
         file_name = os.path.join(dir, '%s.pickle' % self.restore_name)
-        f = file(file_name, 'w')
-        pickle.dump(d, f)
-        f.close()
+        try:
+            f = file(file_name, 'w')
+            pickle.dump(d, f)
+        except IOError:
+            # Probably the permission changed. There's nothing we can do..
+            pass
+        else:
+            f.close()
 
     def restore_columns(self):
         uname = get_current_user(get_connection()).username
@@ -104,7 +109,12 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
         try:
             f = file(file_name)
             saved = pickle.load(f)
-        except IOError, EOFError:
+        except IOError:
+            saved = {}
+        except (EOFError, ValueError, IndexError, KeyError):
+            # Corrupted pickles are useless and can raise all these errors.
+            # Since they are not vital components of the system, remove them.
+            os.remove(file_name)
             saved = {}
 
         for col in self._columns:
