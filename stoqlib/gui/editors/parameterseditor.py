@@ -25,6 +25,8 @@
 
 from decimal import Decimal
 import gtk
+
+from kiwi.datatypes import converter, ValidationError
 from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.widgets.textview import ProxyTextView
 from kiwi.ui.widgets.combo import ProxyComboEntry, ProxyComboBox
@@ -71,6 +73,9 @@ class SystemParameterEditor(BaseEditor):
             box.pack_start(widget)
 
         widget.show()
+        widget.connect('validate', self._on_entry__validate)
+        widget.connect('validation-changed',
+                       self._on_entry__validation_changed)
         self._entry = widget
 
     def _setup_text_entry_slave(self):
@@ -131,12 +136,13 @@ class SystemParameterEditor(BaseEditor):
         yes_widget.set_active(self.model.field_value == "1")
         box.show()
 
-    def _setup_options_combo_slave(self, constant):
+    def _setup_options_combo_slave(self):
         widget = ProxyComboBox()
         widget.model_attribute = "field_value"
         widget.data_type = unicode
 
-        data = [(value, str(key)) for key, value in constant.options.items()]
+        data = [(value, str(key))
+                for key, value in self.constant.options.items()]
         widget.prefill(data)
         self.proxy.add_widget("field_value", widget)
         self.container.add(widget)
@@ -156,8 +162,9 @@ class SystemParameterEditor(BaseEditor):
 
     def setup_slaves(self):
         self._slave = None
-        constant = sysparam(self.conn).get_parameter_constant(self.model.field_name)
-        field_type = constant.get_parameter_type()
+        sparam = sysparam(self.conn)
+        self.constant = sparam.get_parameter_constant(self.model.field_name)
+        field_type = self.constant.get_parameter_type()
         if issubclass(field_type, AbstractModel):
             self._setup_comboboxentry_slave()
         elif issubclass(field_type, ImageHelper):
@@ -167,12 +174,12 @@ class SystemParameterEditor(BaseEditor):
         elif issubclass(field_type, bool):
             self._setup_radio_slave()
         elif issubclass(field_type, (int, float)):
-            if constant.options:
-                self._setup_options_combo_slave(constant)
+            if self.constant.options:
+                self._setup_options_combo_slave()
             else:
                 self._setup_entry_slave()
         elif issubclass(field_type, unicode):
-            if constant.multiline:
+            if self.constant.multiline:
                 self._setup_text_entry_slave()
             else:
                 self._setup_entry_slave()
@@ -191,6 +198,19 @@ class SystemParameterEditor(BaseEditor):
     #
     # Callbacks
     #
+
+    def _on_entry__validate(self, widget, value):
+        try:
+            # Just converting to see if any error are raised.
+            converter.from_string(self.constant.get_parameter_type(), value)
+        except ValidationError:
+            return ValidationError((u"Value type not allowed "
+                                    u"for this parameter."))
+
+    def _on_entry__validation_changed(self, widget, value):
+        # FIXME: Why does this only accepts int values? If a bool value
+        #        is passed, it'll raise TypeError.
+        self.refresh_ok(int(value))
 
     def _on_yes_radio__toggled(self, widget):
         self.model.field_value = str(int(widget.get_active()))
