@@ -1169,7 +1169,8 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.remove_button.set_sensitive(has_payments)
 
     def on_base_value__activate(self, entry):
-        self._add_payment()
+        if self.add_button.get_sensitive():
+            self._add_payment()
 
     def on_base_value__validate(self, entry, value):
         retval = None
