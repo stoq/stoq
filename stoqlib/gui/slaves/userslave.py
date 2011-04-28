@@ -253,7 +253,9 @@ class UserDetailsSlave(BaseEditorSlave):
 
         # If the user can access POS then he/she can perform sales too
         can_access_pos = profile.check_app_permission("pos")
-        if  can_access_pos and not ISalesPerson(person, None):
+        can_access_sales = profile.check_app_permission("sales")
+        can_do_sales = can_access_pos or can_access_sales
+        if can_do_sales and not ISalesPerson(person, None):
             person.addFacet(ISalesPerson, connection=self.conn)
 
     #
