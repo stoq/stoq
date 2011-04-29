@@ -40,7 +40,7 @@ from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.invoice import validate_invoice_number
 from stoqlib.lib.message import yesno, info, warning
-from stoqlib.lib.validators import get_price_format_str
+from stoqlib.lib.formaters import get_price_format_str
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.sale import SalesReport

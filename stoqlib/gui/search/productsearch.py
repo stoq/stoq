@@ -50,7 +50,7 @@ from stoqlib.gui.editors.producteditor import (ProductEditor,
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_quantity, get_formatted_cost
+from stoqlib.lib.formaters import format_quantity, get_formatted_cost
 from stoqlib.reporting.product import (ProductReport, ProductQuantityReport,
                                        ProductClosedStockReport,
                                        ProductPriceReport, ProductStockReport,

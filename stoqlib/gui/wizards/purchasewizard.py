@@ -47,7 +47,7 @@ from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
 from stoqlib.domain.sellable import Sellable
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.validators import format_quantity, get_formatted_cost
+from stoqlib.lib.formaters import format_quantity, get_formatted_cost
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
 from stoqlib.gui.printing import print_report

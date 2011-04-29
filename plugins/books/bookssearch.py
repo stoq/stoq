@@ -34,7 +34,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.lib.validators import format_quantity, get_formatted_cost
+from stoqlib.lib.formaters import format_quantity, get_formatted_cost
 
 from booksdomain import ProductBookFullStockView
 
