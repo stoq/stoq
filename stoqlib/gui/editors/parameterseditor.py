@@ -76,6 +76,7 @@ class SystemParameterEditor(BaseEditor):
         widget.connect('validate', self._on_entry__validate)
         widget.connect('validation-changed',
                        self._on_entry__validation_changed)
+
         self._entry = widget
 
     def _setup_text_entry_slave(self):
@@ -200,16 +201,15 @@ class SystemParameterEditor(BaseEditor):
     #
 
     def _on_entry__validate(self, widget, value):
-        try:
-            # Just converting to see if any error are raised.
-            converter.from_string(self.constant.get_parameter_type(), value)
-        except ValidationError:
-            return ValidationError((u"Value type not allowed "
-                                    u"for this parameter."))
+        validate_func = self.constant.get_parameter_validator()
+        if validate_func:
+            return validate_func(value)
 
     def _on_entry__validation_changed(self, widget, value):
-        # FIXME: Why does this only accepts int values? If a bool value
-        #        is passed, it'll raise TypeError.
+        # FIXME: 1- The BaseModel (or one of it's parent classes) should be
+        #           doing the next logic automatically.
+        #        2- Why does refresh_ok only accepts int values?
+        #           If a bool value is passed, it'll raise TypeError.
         self.refresh_ok(int(value))
 
     def _on_yes_radio__toggled(self, widget):

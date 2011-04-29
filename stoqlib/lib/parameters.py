@@ -27,6 +27,8 @@ from decimal import Decimal
 import os
 
 from kiwi.argcheck import argcheck
+from kiwi.decorators import mapper
+from kiwi.datatypes import ValidationError
 from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
 from stoqdrivers.enum import TaxType
@@ -330,19 +332,37 @@ _parameter_info = dict(
     )
 
 class ParameterAttr:
+
+    validation_map = dict()
+
     def __init__(self, key, type, initial=None, options=None,
-                 multiline=False):
+                 multiline=False, validator=None):
         self.key = key
         self.type = type
         self.initial = initial
         self.options = options
         self.multiline = multiline
+        self.validator = validator
+
+    #
+    #  Public API
+    #
 
     def get_parameter_type(self):
         if isinstance(self.type, basestring):
             return namedAny('stoqlib.domain.' + self.type)
         else:
             return self.type
+
+    def get_parameter_validator(self):
+        p_type = self.get_parameter_type()
+
+        if self.validator:
+            return ParameterAttr.validation_map[self.validator]
+        elif issubclass(p_type, int):
+            return ParameterAttr.validation_map['int']
+        elif issubclass(p_type, DirectoryParameter):
+            return ParameterAttr.validation_map['folder']
 
 
 class ParameterAccess(ClassInittableObject):
@@ -375,17 +395,23 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('ENABLE_PAULISTA_INVOICE', bool, initial=False),
         ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
         ParameterAttr('CITY_SUGGESTED', unicode, initial=u'Sao Carlos'),
-        ParameterAttr('STATE_SUGGESTED', unicode, initial=u'SP'),
+        ParameterAttr('STATE_SUGGESTED', unicode, initial=u'SP',
+                      validator='state'),
         ParameterAttr('COUNTRY_SUGGESTED', unicode, initial=u'Brazil'),
         ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
         ParameterAttr('RETURN_MONEY_ON_SALES', bool, initial=True),
         ParameterAttr('ASK_SALES_CFOP', bool, initial=False),
-        ParameterAttr('MAX_SALE_DISCOUNT', int, initial=5),
-        ParameterAttr('ICMS_TAX', Decimal, initial=18),
-        ParameterAttr('ISS_TAX', Decimal, initial=18),
-        ParameterAttr('SUBSTITUTION_TAX', Decimal, initial=18),
+        ParameterAttr('MAX_SALE_DISCOUNT', int, initial=5,
+                      validator='percentage'),
+        ParameterAttr('ICMS_TAX', Decimal, initial=18,
+                      validator='percentage'),
+        ParameterAttr('ISS_TAX', Decimal, initial=18,
+                      validator='percentage'),
+        ParameterAttr('SUBSTITUTION_TAX', Decimal, initial=18,
+                      validator='percentage'),
         ParameterAttr('POS_SEPARATE_CASHIER', bool, initial=False),
-        ParameterAttr('DEFAULT_AREA_CODE', int, initial=16),
+        ParameterAttr('DEFAULT_AREA_CODE', int, initial=16,
+                      validator='area_code'),
         ParameterAttr('SALE_PAY_COMMISSION_WHEN_CONFIRMED', bool,
                        initial=False),
         ParameterAttr('DEFAULT_OPERATION_NATURE', unicode, initial=_(u'Sale')),
