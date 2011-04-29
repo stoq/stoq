@@ -21,20 +21,23 @@
 ##
 """Validators for stoq applications"""
 
+from decimal import Decimal
 import datetime
+import posixpath
 import re
 
-from kiwi.datatypes import format_price, converter, ValidationError
+from kiwi.datatypes import converter, ValidationError
 
-from stoqlib.database.runtime import get_connection
-from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.formaters import raw_phone_number, raw_postal_code
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
 
 _ = stoqlib_gettext
 
 POSTAL_CODE_CHAR_LEN = 8
 
+#
+# Date validatores
+#
 
 def is_date_in_interval(date, start_date, end_date):
     """Check if a certain date is in an interval. The function accepts
@@ -50,29 +53,6 @@ def is_date_in_interval(date, start_date, end_date):
         q2 = date <= end_date
     return q1 and q2
 
-def format_quantity(quantity):
-    if (quantity * 100 % 100) == 0:
-        return '%.0f' % quantity
-    return '%.*f' % (QUANTITY_PRECISION, quantity)
-
-def get_formatted_percentage(value):
-    return "%.*f %%" % (DECIMAL_PRECISION, value)
-
-def get_price_format_str():
-    return '%%.%sf' % DECIMAL_PRECISION
-
-def get_formatted_price(float_value, symbol=True, precision=DECIMAL_PRECISION):
-    return format_price(float_value, symbol=symbol,
-                        precision=precision)
-
-def get_formatted_cost(float_value, symbol=True):
-    precision = DECIMAL_PRECISION
-    if sysparam(get_connection()).USE_FOUR_PRECISION_DIGITS:
-        precision = 4
-
-    return get_formatted_price(float_value, symbol=symbol,
-                               precision=precision)
-
 #
 # Phone number validators
 #
@@ -84,43 +64,14 @@ def validate_phone_number(phone_number):
         return phone_number[:1] == '0'
     return digits in range(7, 11)
 
-def raw_phone_number(phone_number):
-    return re.sub('[^0-9]', '', phone_number)
-
-def _format_phone_number(digits, phone):
-    if digits == 11 and phone[:1] == '0':
-        phone = phone[1:]
-        digits -= 1
-    if digits == 7:
-        return '%s-%s' % (phone[:3], phone[3:7])
-    if digits == 8:
-        return '%s-%s' % (phone[:4], phone[4:8])
-    if digits == 9:
-        return '(%s) %s-%s' % (phone[:2], phone[2:5], phone[5:9])
-    if digits == 10:
-        return '(%s) %s-%s' % (phone[:2], phone[2:6], phone[6:10])
-    return phone
-
-def format_phone_number(phone_number):
-    if validate_phone_number(phone_number):
-        phone_number = raw_phone_number(phone_number)
-        return _format_phone_number(len(phone_number), phone_number)
-    return phone_number
+#
+# Adress validators
+#
 
 def validate_postal_code(postal_code):
     if not postal_code:
         return False
     return len(raw_postal_code(postal_code)) == POSTAL_CODE_CHAR_LEN
-
-def raw_postal_code(postal_code):
-    return re.sub("[^0-9]", '', postal_code)
-
-def format_postal_code(postal_code):
-    if not validate_postal_code(postal_code):
-        return postal_code
-    postal_code = raw_postal_code(postal_code)
-    return "%s-%s" % (postal_code[:5],
-                      postal_code[5:8])
 
 def validate_area_code(code):
     """Validates Brazilian area codes"""
@@ -132,6 +83,14 @@ def validate_area_code(code):
 
     # Valid brazilian codes are on the range of 10-99
     return code in range(10, 100)
+
+def validate_state(state):
+    state_code = ("RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI",
+                  "CE", "RN", "PB", "PE", "AL", "SE", "BA", "MG", "ES",
+                  "RJ", "SP", "PR", "SC", "RS", "MS", "MT", "GO", "DF")
+    if state.upper() in state_code:
+        return True
+    return False
 
 #
 # Document Validators
@@ -188,17 +147,27 @@ def validate_cnpj(cnpj):
 
     return True
 
-def validate_state(state):
-    state_code = ("RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI",
-                  "CE", "RN", "PB", "PE", "AL", "SE", "BA", "MG", "ES",
-                  "RJ", "SP", "PR", "SC", "RS", "MS", "MT", "GO", "DF")
-    if state.upper() in state_code:
-        return True
-    return False
-
 #
 # Misc validators
 #
+
+def _validate_type(type_, value):
+    try:
+        # Just converting to see if any errors are raised.
+        converter.from_string(type_, value)
+    except ValidationError:
+        return False
+
+    return True
+
+def validate_int(value):
+    return _validate_type(int, value)
+
+def validate_decimal(value):
+    return _validate_type(Decimal, value)
+
+def validate_directory(path):
+    return posixpath.exists(posixpath.expanduser(path))
 
 def validate_percentage(value):
     """Se if a given value is a valid percentage.
