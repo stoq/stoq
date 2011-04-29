@@ -173,11 +173,11 @@ def validate_percentage(value):
     """Se if a given value is a valid percentage.
 
     Works for int, float, Decimal and basestring (if it
-    can be converted to float).
+    can be converted to Decimal).
     """
     if issubclass(type(value), basestring):
         try:
-            value = converter.from_string(float, value)
+            value = converter.from_string(Decimal, value)
         except ValidationError:
             return False
 
