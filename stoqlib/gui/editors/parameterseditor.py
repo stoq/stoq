@@ -26,7 +26,6 @@
 from decimal import Decimal
 import gtk
 
-from kiwi.datatypes import converter, ValidationError
 from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.widgets.textview import ProxyTextView
 from kiwi.ui.widgets.combo import ProxyComboEntry, ProxyComboBox
@@ -202,7 +201,7 @@ class SystemParameterEditor(BaseEditor):
 
     def _on_entry__validate(self, widget, value):
         validate_func = self.constant.get_parameter_validator()
-        if validate_func:
+        if validate_func and callable(validate_func):
             return validate_func(value)
 
     def _on_entry__validation_changed(self, widget, value):
