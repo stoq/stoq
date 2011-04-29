@@ -37,7 +37,7 @@ from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.formaters import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog

@@ -31,8 +31,8 @@ from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
                                            HIGHLIGHT_NEVER)
 from stoqlib.reporting.base.flowables import RIGHT, LEFT
 from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
-from stoqlib.lib.validators import (get_formatted_price, get_formatted_cost,
-                                    format_quantity)
+from stoqlib.lib.formaters import (get_formatted_price, get_formatted_cost,
+                                   format_quantity)
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.template import BaseStoqReport, ObjectListReport

@@ -30,7 +30,7 @@ from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.reporting.template import BaseStoqReport, ObjectListReport
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.lib.validators import get_formatted_price
+from stoqlib.lib.formaters import get_formatted_price
 
 class _BasePaymentReport(ObjectListReport):
     """Base report for Payable and Receivable reports"""

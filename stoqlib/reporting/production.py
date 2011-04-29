@@ -31,7 +31,7 @@ from stoqlib.reporting.base.tables import (TableColumn as TC,
                                            ObjectTableColumn as OTC,
                                            HIGHLIGHT_NEVER)
 from stoqlib.reporting.template import BaseStoqReport, ObjectListReport
-from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.formaters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.domain.views import ProductionItemView
 

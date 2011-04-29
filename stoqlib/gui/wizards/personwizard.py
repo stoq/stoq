@@ -41,7 +41,7 @@ from stoqlib.gui.editors.personeditor import (BranchEditor,
                                               UserEditor,
                                               CreditProviderEditor)
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_phone_number, raw_phone_number
+from stoqlib.lib.formaters import format_phone_number, raw_phone_number
 
 
 _ = stoqlib_gettext

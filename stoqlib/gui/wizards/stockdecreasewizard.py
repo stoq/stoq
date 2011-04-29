@@ -50,7 +50,7 @@ from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_quantity, get_formatted_cost
+from stoqlib.lib.formaters import format_quantity, get_formatted_cost
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.editors.decreaseeditor import DecreaseItemEditor
 from stoqlib.gui.printing import print_report

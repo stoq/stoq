@@ -38,7 +38,7 @@ from stoqlib.domain.inventory import Inventory
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.formaters import format_quantity
 
 _ = stoqlib_gettext
 

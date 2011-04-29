@@ -31,7 +31,7 @@ from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_phone_number
+from stoqlib.lib.formaters import format_phone_number
 
 from stoqlib.gui.base.search import SearchEditor, SearchDialog
 from stoqlib.gui.base.dialogs import run_dialog
