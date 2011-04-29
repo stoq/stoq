@@ -24,7 +24,7 @@
 import datetime
 import re
 
-from kiwi.datatypes import format_price
+from kiwi.datatypes import format_price, converter, ValidationError
 
 from stoqlib.database.runtime import get_connection
 from stoqlib.lib.parameters import sysparam
@@ -122,6 +122,17 @@ def format_postal_code(postal_code):
     return "%s-%s" % (postal_code[:5],
                       postal_code[5:8])
 
+def validate_area_code(code):
+    """Validates Brazilian area codes"""
+    if issubclass(type(code), basestring):
+        try:
+            code = converter.from_string(int, code)
+        except ValidationError:
+            return False
+
+    # Valid brazilian codes are on the range of 10-99
+    return code in range(10, 100)
+
 #
 # Document Validators
 #
@@ -184,3 +195,21 @@ def validate_state(state):
     if state.upper() in state_code:
         return True
     return False
+
+#
+# Misc validators
+#
+
+def validate_percentage(value):
+    """Se if a given value is a valid percentage.
+
+    Works for int, float, Decimal and basestring (if it
+    can be converted to float).
+    """
+    if issubclass(type(value), basestring):
+        try:
+            value = converter.from_string(float, value)
+        except ValidationError:
+            return False
+
+    return bool(value >= 0 and value <= 100)
