@@ -27,7 +27,6 @@ from decimal import Decimal
 import os
 
 from kiwi.argcheck import argcheck
-from kiwi.decorators import mapper
 from kiwi.datatypes import ValidationError
 from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
@@ -40,6 +39,12 @@ from stoqlib.domain.interfaces import ISupplier, IBranch
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.imageutils import ImageHelper
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import (validate_int,
+                                    validate_decimal,
+                                    validate_directory,
+                                    validate_area_code,
+                                    validate_percentage,
+                                    validate_state)
 from stoqlib.lib.barcode import BarcodeInfo
 
 _ = stoqlib_gettext
@@ -333,8 +338,6 @@ _parameter_info = dict(
 
 class ParameterAttr:
 
-    validation_map = dict()
-
     def __init__(self, key, type, initial=None, options=None,
                  multiline=False, validator=None):
         self.key = key
@@ -355,14 +358,63 @@ class ParameterAttr:
             return self.type
 
     def get_parameter_validator(self):
+        return (self.validator and
+                self.validator or
+                self._get_generic_parameter_validator())
+
+    #
+    #  Staticmethods
+    #
+
+    @staticmethod
+    def validate_int_(value):
+        if not validate_int(value):
+            return ValidationError(_(u"This parameter only accepts "
+                                     u"integer values."))
+
+    @staticmethod
+    def validate_decimal_(value):
+        if not validate_decimal(value):
+            return ValidationError(_(u"This parameter only accepts "
+                                     u"decimal values."))
+
+    @staticmethod
+    def validate_directory_(path):
+        if not validate_directory(path):
+            return ValidationError(_(u"'%s is not a valid path.'" % path))
+
+    @staticmethod
+    def validate_area_code_(code):
+        if not validate_area_code(code):
+            return ValidationError(_(u"'%s' is not a valid area code.\n"
+                                     u"Valid area codes are on 10-99 range.")
+                                   % code)
+
+    @staticmethod
+    def validate_percentage_(value):
+        if not validate_percentage(value):
+            return ValidationError(_(u"'%s' is not a valid percentage.")
+                                   % value)
+
+    @staticmethod
+    def validate_state_(state):
+        if not validate_state(state):
+            return ValidationError(_(u"'%s' is not a valid state.")
+                                   % state)
+
+    #
+    #  Private API
+    #
+
+    def _get_generic_parameter_validator(self):
         p_type = self.get_parameter_type()
 
-        if self.validator:
-            return ParameterAttr.validation_map[self.validator]
-        elif issubclass(p_type, int):
-            return ParameterAttr.validation_map['int']
+        if issubclass(p_type, int):
+            return ParameterAttr.validate_int_
+        elif issubclass(p_type, Decimal):
+            return ParameterAttr.validate_decimal_
         elif issubclass(p_type, DirectoryParameter):
-            return ParameterAttr.validation_map['folder']
+            return ParameterAttr.validate_directory_
 
 
 class ParameterAccess(ClassInittableObject):
@@ -396,22 +448,22 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
         ParameterAttr('CITY_SUGGESTED', unicode, initial=u'Sao Carlos'),
         ParameterAttr('STATE_SUGGESTED', unicode, initial=u'SP',
-                      validator='state'),
+                      validator=ParameterAttr.validate_state_),
         ParameterAttr('COUNTRY_SUGGESTED', unicode, initial=u'Brazil'),
         ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
         ParameterAttr('RETURN_MONEY_ON_SALES', bool, initial=True),
         ParameterAttr('ASK_SALES_CFOP', bool, initial=False),
         ParameterAttr('MAX_SALE_DISCOUNT', int, initial=5,
-                      validator='percentage'),
+                      validator=ParameterAttr.validate_percentage_),
         ParameterAttr('ICMS_TAX', Decimal, initial=18,
-                      validator='percentage'),
+                      validator=ParameterAttr.validate_percentage_),
         ParameterAttr('ISS_TAX', Decimal, initial=18,
-                      validator='percentage'),
+                      validator=ParameterAttr.validate_percentage_),
         ParameterAttr('SUBSTITUTION_TAX', Decimal, initial=18,
-                      validator='percentage'),
+                      validator=ParameterAttr.validate_percentage_),
         ParameterAttr('POS_SEPARATE_CASHIER', bool, initial=False),
         ParameterAttr('DEFAULT_AREA_CODE', int, initial=16,
-                      validator='area_code'),
+                      validator=ParameterAttr.validate_area_code_),
         ParameterAttr('SALE_PAY_COMMISSION_WHEN_CONFIRMED', bool,
                        initial=False),
         ParameterAttr('DEFAULT_OPERATION_NATURE', unicode, initial=_(u'Sale')),
