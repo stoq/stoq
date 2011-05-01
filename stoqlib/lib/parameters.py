@@ -453,7 +453,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
         ParameterAttr('RETURN_MONEY_ON_SALES', bool, initial=True),
         ParameterAttr('ASK_SALES_CFOP', bool, initial=False),
-        ParameterAttr('MAX_SALE_DISCOUNT', int, initial=5,
+        ParameterAttr('MAX_SALE_DISCOUNT', Decimal, initial=5,
                       validator=ParameterAttr.validate_percentage_),
         ParameterAttr('ICMS_TAX', Decimal, initial=18,
                       validator=ParameterAttr.validate_percentage_),
