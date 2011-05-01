@@ -152,11 +152,15 @@ def validate_cnpj(cnpj):
 #
 
 def _validate_type(type_, value):
-    try:
-        # Just converting to see if any errors are raised.
-        converter.from_string(type_, value)
-    except ValidationError:
-        return False
+    if isinstance(value, basestring):
+        try:
+            # Just converting to see if any errors are raised.
+            converter.from_string(type_, value)
+        except ValidationError:
+            return False
+    else:
+        if not isinstance(value, type_):
+            return False
 
     return True
 
