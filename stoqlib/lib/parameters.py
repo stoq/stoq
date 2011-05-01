@@ -337,7 +337,6 @@ _parameter_info = dict(
     )
 
 class ParameterAttr:
-
     def __init__(self, key, type, initial=None, options=None,
                  multiline=False, validator=None):
         self.key = key
