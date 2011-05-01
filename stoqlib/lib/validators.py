@@ -75,14 +75,14 @@ def validate_postal_code(postal_code):
 
 def validate_area_code(code):
     """Validates Brazilian area codes"""
-    if issubclass(type(code), basestring):
+    if isinstance(code, basestring):
         try:
             code = converter.from_string(int, code)
         except ValidationError:
             return False
 
     # Valid brazilian codes are on the range of 10-99
-    return code in range(10, 100)
+    return 10 <= code <= 99
 
 def validate_state(state):
     state_code = ("RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI",
@@ -175,10 +175,10 @@ def validate_percentage(value):
     Works for int, float, Decimal and basestring (if it
     can be converted to Decimal).
     """
-    if issubclass(type(value), basestring):
+    if isinstance(value, basestring):
         try:
             value = converter.from_string(Decimal, value)
         except ValidationError:
             return False
 
-    return bool(value >= 0 and value <= 100)
+    return 0 <= value <= 100
