@@ -23,6 +23,9 @@
 ##
 """Utils for working with pickle files"""
 
+# This file was forked from giscanner's cachestore file. You can find it here:
+# http://git.gnome.org/browse/gobject-introspection/tree/giscanner/cachestore.py
+
 import errno
 import cPickle
 import os
@@ -102,7 +105,7 @@ class PickleStore(object):
             data = cPickle.load(fd)
         except (AttributeError, EOFError, ValueError, cPickle.BadPickleGet):
             # Broken pickle entry, remove it
-            self.remove()
+            self.clear()
             data = None
 
         return data
