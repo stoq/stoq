@@ -165,12 +165,23 @@ def _validate_type(type_, value):
     return True
 
 def validate_int(value):
+    """Validates an integer.
+
+    Returns if the value is a valid integer, or, in case it's a string,
+    if it can be converted to an integer.
+    """
     return _validate_type(int, value)
 
 def validate_decimal(value):
+    """Validates an Decimal.
+
+    Returns if the value is a valid Decimal, or, in case it's a string,
+    if it can be converted to an Decimal.
+    """
     return _validate_type(Decimal, value)
 
 def validate_directory(path):
+    """Find out if a directory exists"""
     return posixpath.exists(posixpath.expanduser(path))
 
 def validate_percentage(value):
