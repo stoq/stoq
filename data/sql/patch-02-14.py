@@ -9,6 +9,8 @@ def apply_patch(trans):
     try:
         CreditCardData.sqlmeta.delColumn('nsu')
         CreditCardData.sqlmeta.delColumn('auth')
+        CreditCardData.sqlmeta.delColumn('installments')
+        CreditCardData.sqlmeta.delColumn('entrance_value')
     except KeyError:
         pass
 
