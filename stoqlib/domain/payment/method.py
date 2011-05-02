@@ -73,6 +73,11 @@ class CreditCardData(Domain):
     @type card_type: int, > 0, < 3
     @ivar provider:
     @type provider: L{PersonAdaptToCreditProvider}
+    @ivar installments: the installments number
+    @type installments: int, >= 1
+    @ivar entrance_value: the value of the first installment
+                          (when installments > 1)
+    @type entrance_value: currency
     """
     (TYPE_CREDIT,
      TYPE_DEBIT,
@@ -96,6 +101,8 @@ class CreditCardData(Domain):
     fee_value = PriceCol(default=0)
     nsu = IntCol(default=None)
     auth = IntCol(default=None)
+    installments = IntCol(default=1)
+    entrance_value = PriceCol(default=0)
 
 
 class PaymentMethod(Domain):
