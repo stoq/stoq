@@ -25,7 +25,6 @@
 
 from dateutil.relativedelta import relativedelta
 import os
-import pickle
 
 import gtk
 from kiwi.argcheck import argcheck
@@ -39,13 +38,14 @@ from kiwi.utils import gsignal
 from stoqlib.database.orm import ORMObject, ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_connection, new_transaction,
                                       finish_transaction, get_current_user)
-from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.exceptions import DatabaseInconsistency, PickleStoreError
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.defaults import get_weekday_start
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.picklestore import PickleStore
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -72,14 +72,17 @@ class _SearchDialogDetailsSlave(GladeSlaveDelegate):
 
 class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
     def __init__(self, columns, restore_name=None):
-        self.restore_name = restore_name
         self._columns = columns
-        if restore_name:
-            self.restore_columns()
+        self._init_pickle_store(restore_name)
+
         SearchSlaveDelegate.__init__(self, self._columns)
 
+    #
+    #  Public API
+    #
+
     def save_columns(self):
-        if not self.restore_name:
+        if not self._pickle_store:
             return
 
         d = {}
@@ -87,41 +90,42 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
             d[col.title] = (col.treeview_column.get_visible(),
                             col.treeview_column.get_width())
 
-        uname = get_current_user(get_connection()).username
-        dir = os.path.join(get_application_dir(), 'columns-%s' % uname)
-        if not os.path.exists(dir):
-            os.mkdir(dir)
-
-        file_name = os.path.join(dir, '%s.pickle' % self.restore_name)
         try:
-            f = file(file_name, 'w')
-            pickle.dump(d, f)
-        except IOError:
-            # Probably the permission changed. There's nothing we can do..
-            pass
-        else:
-            f.close()
+            self._pickle_store.store(d)
+        except PickleStoreError:
+            return
 
     def restore_columns(self):
-        uname = get_current_user(get_connection()).username
-        dir = os.path.join(get_application_dir(), 'columns-%s' % uname)
-        file_name = os.path.join(dir, '%s.pickle' % self.restore_name)
         try:
-            f = file(file_name)
-            saved = pickle.load(f)
-        except IOError:
-            saved = {}
-        except (EOFError, ValueError, IndexError, KeyError):
-            # Corrupted pickles are useless and can raise all these errors.
-            # Since they are not vital components of the system, remove them.
-            os.remove(file_name)
-            saved = {}
+            saved = self._pickle_store.load()
+        except PickleStoreError:
+            self._pickle_store.clear()
+            return
+        else:
+            if not saved:
+                return
 
         for col in self._columns:
             props = saved.get(col.title)
             if props:
                 col.visible = props[0]
                 col.width = props[1]
+
+    #
+    #  Private API
+    #
+
+    def _init_pickle_store(self, restore_name):
+        uname = get_current_user(get_connection()).username
+        restore_dir = os.path.join(get_application_dir(), 'columns-%s' % uname)
+        restore_name = restore_name or "%s.pickle" % restore_name
+        try:
+            self._pickle_store = PickleStore(restore_dir, restore_name)
+            if restore_name:
+                self.restore_columns()
+        except PickleStoreError:
+            self._pickle_store = None
+
 
 
 class SearchDialogPrintSlave(GladeSlaveDelegate):
