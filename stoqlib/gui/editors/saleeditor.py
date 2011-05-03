@@ -88,6 +88,10 @@ class SaleQuoteItemEditor(BaseEditor):
         self.add_tab(_('IPI'), self.ipi_slave)
 
     def _validate_quantity(self, new_quantity):
+        if new_quantity <= 0:
+            return ValidationError(_(u"The quantity should be "
+                                     u"greater than zero."))
+
         sellable = self.model.sellable
         if not sellable.is_valid_quantity(new_quantity):
             return ValidationError(_(u"This product unit (%s) does not "
@@ -132,7 +136,4 @@ class SaleQuoteItemEditor(BaseEditor):
         return self._validate_quantity(value)
 
     def on_quantity__validate(self, widget, value):
-        if value <= 0:
-            return ValidationError(_(u'The quantity should be greater than '
-                                     'zero.'))
         return self._validate_quantity(value)

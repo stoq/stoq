@@ -539,18 +539,8 @@ class Sellable(Domain):
 
         @returns: True if new quantity is Ok, False otherwise.
         """
-        if not new_quantity:
-            # 0 quantity is a valid quantity.
-            return True
-
         if self.unit and not self.unit.allow_fraction:
-            if (type(new_quantity) is float and
-                new_quantity - int(new_quantity)):
-                return False
-
-            if (type(new_quantity) is Decimal and
-                new_quantity - new_quantity.to_integral()):
-                return False
+            return not bool(new_quantity % 1)
 
         return True
 
