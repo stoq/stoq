@@ -54,14 +54,14 @@ class SellableUnitSearch(SearchEditor):
         if selected:
             # System primitivies should not be edited.
             self.accept_edit_data = not (selected.unit_index in
-                                         SellableUnit.get_system_primitives())
+                                         SellableUnit.SYSTEM_PRIMITIVES)
 
     def _format_is_system_primitive(self, unit_index):
         # See if the unit in question is a system primitive one
         # to show as a "Yes/No" column.
         #
         # obs. Using "Yes/No" instead of bool to make it look nicer.
-        return (unit_index in SellableUnit.get_system_primitives() and
+        return (unit_index in SellableUnit.SYSTEM_PRIMITIVES and
                 _("Yes") or _("No"))
 
     #
