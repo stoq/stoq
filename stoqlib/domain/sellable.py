@@ -54,6 +54,10 @@ _ = stoqlib_gettext
 class SellableUnit(Domain):
     """ A class used to represent the sellable unit.
 
+    @cvar SYSTEM_PRIMITIVES: The values on the list are enums used to fill
+      'unit_index' column above. That list is useful for many things,
+      e.g. See if the user can delete the unit. It should not be possible
+      to delete a primitive one.
     @cvar description: The unit description
     @cvar unit_index:  This column defines if this object represents a custom
       product unit (created by the user through the product editor) or
@@ -67,6 +71,10 @@ class SellableUnit(Domain):
     """
     implements(IDescribable)
 
+    SYSTEM_PRIMITIVES = [UnitType.WEIGHT,
+                         UnitType.METERS,
+                         UnitType.LITERS]
+
     _inheritable = False
     description = UnicodeCol()
     # Using an int cast on UnitType because
@@ -78,23 +86,6 @@ class SellableUnit(Domain):
 
     def get_description(self):
         return self.description
-
-    #
-    #  Classmethods
-    #
-
-    @classmethod
-    def get_system_primitives(cls):
-        """Return a list of primitive units used by the system.
-
-        The values on the list are enums used to fill 'unit_index' column
-        above.
-        That list is useful for many things, e.g. See if the user can delete
-        the unit (it should not be possible to delete a primitive one), etc.
-
-        @returns: a list of L{stoqdrivers.enum.UnitType)
-        """
-        return [UnitType.WEIGHT, UnitType.METERS, UnitType.LITERS]
 
 
 class SellableTaxConstant(Domain):
