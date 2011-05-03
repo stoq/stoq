@@ -235,9 +235,6 @@ class SellableEditor(BaseEditor):
             self.model.sellable.base_sellable_info.description)
 
         self._setup_delete_close_reopen_button()
-        # Add/Edit unit button setup.
-        self.add_edit_units.connect('clicked',
-                                    self._on_add_edit_units__clicked)
 
     #
     #  Private API
@@ -265,12 +262,6 @@ class SellableEditor(BaseEditor):
 
             self._add_extra_button(label, None,
                                    self._on_reopen_sellable_button__clicked)
-
-    def _update_unit_combo(self):
-        selected_value = self.unit_combo.get_selected()
-        # Setup the combo again. There might be new items (or even removed).
-        self.setup_unit_combo()
-        self.unit_combo.select_item_by_data(selected_value)
 
     #
     #  Public API
@@ -425,10 +416,6 @@ class SellableEditor(BaseEditor):
 
         self._sellable.set_unavailable()
         self.confirm()
-
-    def _on_add_edit_units__clicked(self, button):
-        run_dialog(SellableUnitSearch, self, self.conn)
-        self._update_unit_combo()
 
     def on_tax_constant__changed(self, combo):
         self._update_tax_value()
