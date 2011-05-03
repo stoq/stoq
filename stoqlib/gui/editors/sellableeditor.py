@@ -237,7 +237,7 @@ class SellableEditor(BaseEditor):
         self._setup_delete_close_reopen_button()
         # Add/Edit unit button setup.
         self.add_edit_units.connect('clicked',
-                                      self._on_add_edit_units__clicked)
+                                    self._on_add_edit_units__clicked)
 
     #
     #  Private API
