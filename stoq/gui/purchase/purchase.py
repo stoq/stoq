@@ -42,6 +42,7 @@ from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.gui.search.consignmentsearch import ConsignmentItemSearch
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
+from stoqlib.gui.search.sellableunitsearch import SellableUnitSearch
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.wizards.consignmentwizard import (ConsignmentWizard,
                                                    CloseInConsignmentWizard)
@@ -349,6 +350,9 @@ class PurchaseApp(SearchableAppWindow):
 
     def _on_products_action_clicked(self, action):
         self.run_dialog(ProductSearch, self.conn, hide_price_column=True)
+
+    def _on_product_unities_action_clicked(self, action):
+        self.run_dialog(SellableUnitSearch, self.conn)
 
     def _on_order_action_clicked(self, action):
         self._open_order()
