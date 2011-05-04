@@ -288,7 +288,7 @@ class PurchaseItemStep(SellableItemStep):
     #
 
     def _get_supplier_info(self):
-        sellable = self.proxy.model.sellable
+        sellable = self.proxy.model.sellable or self._get_sellable()
         if not sellable:
             return
         product = sellable.product
@@ -309,8 +309,8 @@ class PurchaseItemStep(SellableItemStep):
         if not value or value <= Decimal(0):
             return ValidationError(_(u'Quantity must be greater than zero'))
 
-        supplier_minimum = self._get_supplier_info().minimum_purchase
-        if value < supplier_minimum:
+        supplier_info = self._get_supplier_info()
+        if supplier_info and value < supplier_info.minimum_purchase:
             return ValidationError(_(u'Quantity below the minimum required '
                                       'by the supplier'))
 
