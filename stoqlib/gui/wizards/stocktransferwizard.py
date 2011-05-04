@@ -193,9 +193,6 @@ class StockTransferProductStep(SellableItemStep):
                                        self.model, self)
 
     def _on_quantity__validate(self, widget, value):
-        if not value or value <= 0:
-            return ValidationError(_(u'Quantity should be a positive number.'))
-
         sellable = self.proxy.model.sellable
         if not sellable:
             return
@@ -204,6 +201,9 @@ class StockTransferProductStep(SellableItemStep):
         if value > balance:
             return ValidationError(
                 _(u'Quantity is greater than the quantity in stock.'))
+
+        return super(PurchaseItemStep,
+                     self).on_quantity__validate(widget, value)
 
 
 class StockTransferFinishStep(BaseWizardStep):
