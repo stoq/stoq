@@ -1,3 +1,9 @@
+stoqlib (0.9.15.99) lucid; urgency=low
+
+  * New development series 
+
+ -- Johan <jdahlin@async.com.br>  Thu, 05 May 2011 01:16:22 +1000
+
 stoqlib (0.9.15) lucid; urgency=low
 
   * New Release
