@@ -132,6 +132,3 @@ class TaxError(Exception):
     For exemple: this might be raised if the tax rate has expired.
     """
 
-class PickleStoreError(Exception):
-    """A problem occurred when saving/restoring/deleting a pickle"""
-

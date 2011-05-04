@@ -21,7 +21,7 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-"""Utils for working with pickle files"""
+"""Utils for working with cache files, such as pickle."""
 
 # This file was forked from giscanner's cachestore file. You can find it here:
 # http://git.gnome.org/browse/gobject-introspection/tree/giscanner/cachestore.py
@@ -32,13 +32,12 @@ import os
 import shutil
 import tempfile
 
-from stoqlib.exceptions import PickleStoreError
 
-class PickleStore(object):
-    """A class for (re)storing pickles."""
+class CacheStore(object):
+    """A class for (re)storing caches."""
 
     def __init__(self, directory, filename):
-        """Creates a new PickleStore object.
+        """Creates a new CacheStore object.
 
         @param directory: the directory that the pickle will be saved/loaded.
         @param filename: the name of the file on the directory.
@@ -50,7 +49,7 @@ class PickleStore(object):
             self._directory = directory
         except OSError as e:
             if e.errno != errno.EPERM:
-                raise PickleStoreError
+                raise
             self._directory = None
 
     #
@@ -74,7 +73,7 @@ class PickleStore(object):
                 self._remove_filename(tmp_filename)
                 return
             else:
-                raise PickleStoreError
+                raise
 
         try:
             shutil.move(tmp_filename, self._get_full_file_path())
@@ -83,7 +82,7 @@ class PickleStore(object):
             if e.errno == errno.EACCES:
                 self._remove_filename(tmp_filename)
             else:
-                raise PickleStoreError
+                raise
 
     def load(self):
         """Unpickle a file, returning the object in it, unpickled
@@ -99,7 +98,7 @@ class PickleStore(object):
             if e.errno == errno.ENOENT:
                 return
             else:
-                raise PickleStoreError
+                raise
 
         try:
             data = cPickle.load(fd)
@@ -132,10 +131,10 @@ class PickleStore(object):
             if e.errno == errno.EACCES:
                 return
             else:
-                raise PickleStoreError
+                raise
         except OSError, e:
             # File does not exist
             if e.errno == errno.ENOENT:
                 return
             else:
-                raise PickleStoreError
+                raise
