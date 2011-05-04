@@ -50,26 +50,29 @@ class SellableUnitSearch(SearchEditor):
     #  Private API
     #
 
-    def _update_edit_button_visibility(self, selected):
+    def _update_edit_button_visibility(self):
+        selected = self.get_selection()
         if selected:
             # System primitivies should not be edited.
             self.accept_edit_data = not (selected.unit_index in
                                          SellableUnit.SYSTEM_PRIMITIVES)
+        self.set_edit_button_sensitive(self.accept_edit_data)
 
     def _format_is_system_primitive(self, unit_index):
         # See if the unit in question is a system primitive one
         # to show as a "Yes/No" column.
         #
         # obs. Using "Yes/No" instead of bool to make it look nicer.
-        return (unit_index in SellableUnit.SYSTEM_PRIMITIVES and
-                _("Yes") or _("No"))
+        if unit_index in SellableUnit.SYSTEM_PRIMITIVES:
+            return _("Yes")
+        return _("No")
 
     #
     #  SearchDialog Hooks
     #
 
-    def update_widgets(self, *args):
-        self.set_edit_button_sensitive(self.accept_edit_data)
+    def update_widgets(self):
+        self._update_edit_button_visibility()
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
@@ -82,12 +85,4 @@ class SellableUnitSearch(SearchEditor):
                        data_type=str),
                 SearchColumn('allow_fraction', title=_('Allow Fraction'),
                              data_type=bool)]
-
-    #
-    #  Callbacks
-    #
-
-    def _on_results__selection_changed(self, results, selected):
-        self._update_edit_button_visibility(selected)
-        SearchEditor._on_results__selection_changed(self, results, selected)
 
