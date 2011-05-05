@@ -9,7 +9,7 @@ Homepage: http://www.stoq.com.br/
 
 Package: stoq
 Architecture: all
-Depends: ${misc:Depends}, python, stoqlib (>= 0.9.15), postgresql-client-common
+Depends: ${misc:Depends}, python, stoqlib (>= 0.9.15.99), postgresql-client-common
 Description: An advanced retail system
  Stoq is a suite of Retail Management System applications.
  It includes the following applications;
