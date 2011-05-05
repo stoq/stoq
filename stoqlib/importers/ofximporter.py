@@ -122,6 +122,11 @@ class OFXImporter(object):
         self.tp = OFXTagParser()
         self.tp.feed('\n'.join(data))
 
+    def _parse_number(self, data):
+        data = data.strip()
+        data = data.replace(',', '.')
+        return decimal.Decimal(data)
+
     def _parse_string(self, data):
         return unicode(data, self._headers['CHARSET']).encode('utf-8')
 
@@ -153,7 +158,7 @@ class OFXImporter(object):
                                    account=trans.get(account),
                                    description=self._parse_string(t['memo']),
                                    code=self._parse_string(t['checknum']),
-                                   value=decimal.Decimal(t['trnamt']),
+                                   value=self._parse_number(t['trnamt']),
                                    date=self._parse_date(t['dtposted']),
                                    connection=trans)
 
