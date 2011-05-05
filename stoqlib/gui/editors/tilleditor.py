@@ -31,7 +31,9 @@ from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 
+from stoqlib.database.orm import const
 from stoqlib.database.runtime import get_current_station
+from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
                                    TillAddTillEntryEvent,
                                    TillAddCashEvent, TillRemoveCashEvent)
@@ -40,10 +42,26 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning
 
 _ = stoqlib_gettext
+
+def _create_transaction(conn, till_entry):
+    till = till_entry.till
+    account = Account.get_by_station(conn, till.station)
+    if account is None:
+        account = Account.create_for_station(conn, till.station)
+
+    AccountTransaction(description=till_entry.description,
+                       source_account=sysparam(conn).IMBALANCE_ACCOUNT,
+                       account=account,
+                       value=-till_entry.value,
+                       code=str(till_entry.id),
+                       date=const.NOW(),
+                       connection=conn,
+                       payment=till_entry.payment)
 
 
 class _TillOpeningModel(object):
@@ -131,9 +149,10 @@ class TillOpeningEditor(BaseEditor):
             # it is printing something. We should wait a little bit...
             time.sleep(4)
             TillAddCashEvent.emit(till=till, value=value)
-            till.add_credit_entry(value,
+            till_entry = till.add_credit_entry(value,
                             (_(u'Initial Cash amount of %s')
                              % till.opening_date.strftime('%x')))
+            _create_transaction(self.conn, till_entry)
             # The callsite is responsible for interacting with
             # the fiscal printer
         return self.model
@@ -237,9 +256,10 @@ class TillClosingEditor(BaseEditor):
                                  "greater than the current balance.")
 
             TillRemoveCashEvent.emit(till=till, value=removed)
-            till.add_debit_entry(removed,
+            till_entry = till.add_debit_entry(removed,
                                  _(u'Amount removed from Till on %s' %
                                    till.opening_date.strftime('%x')))
+            _create_transaction(self.conn, till_entry)
             # XXX: this is so ugly, but the printer stops responding while
             # it is printing something. We should wait a little bit...
             time.sleep(4)
@@ -392,6 +412,7 @@ class CashAdvanceEditor(BaseEditor):
                 self._get_employee_name(),)))
 
             TillAddTillEntryEvent.emit(till_entry, self.conn)
+            _create_transaction(self.conn, till_entry)
             return self.model
 
         return valid
@@ -455,6 +476,7 @@ class CashOutEditor(BaseEditor):
 
 
             TillAddTillEntryEvent.emit(till_entry, self.conn)
+            _create_transaction(self.conn, till_entry)
             return till_entry
 
         return valid
@@ -511,6 +533,7 @@ class CashInEditor(BaseEditor):
                 (_(u'Cash in: %s') % (self.reason.get_text(),)))
 
             TillAddTillEntryEvent.emit(till_entry, self.conn)
+            _create_transaction(self.conn, till_entry)
             return till_entry
 
         return valid
