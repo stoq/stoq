@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -101,8 +101,59 @@ NEWFILEUID:NONE
 </BANKMSGSRSV1>
 </OFX>"""
 
+OFX_DATA2 = """OFXHEADER:100DATA:OFXSGMLVERSION:102SECURITY:NONEENCODING:USASCIICHARSET:1252COMPRESSION:NONEOLDFILEUID:NONENEWFILEUID:NONE<OFX>
+   <SIGNONMSGSRSV1>
+      <SONRS>
+         <STATUS>
+            <CODE>0</CODE>
+            <SEVERITY>INFO</SEVERITY>
+         </STATUS>
+         <DTSERVER>20110505120000[-3:BRT]</DTSERVER>
+         <LANGUAGE>POR</LANGUAGE>
+         <FI>
+            <ORG>Banco do Brasil</ORG>
+            <FID>1</FID>
+         </FI>
+      </SONRS>
+   </SIGNONMSGSRSV1>
+   <BANKMSGSRSV1>
+      <STMTTRNRS>
+         <TRNUID>1</TRNUID>
+         <STATUS>
+            <CODE>0</CODE>
+            <SEVERITY>INFO</SEVERITY>
+         </STATUS>
+         <STMTRS>
+            <CURDEF>BRL</CURDEF>
+            <BANKACCTFROM>
+               <BANKID>1</BANKID>
+               <BRANCHID>1234-5</BRANCHID>
+               <ACCTID>67890-X</ACCTID>
+               <ACCTTYPE>CHECKING</ACCTTYPE>
+            </BANKACCTFROM>
+            <BANKTRANLIST>
+               <DTSTART>20110331120000[-3:BRT]</DTSTART>
+               <DTEND>20110430120000[-3:BRT]</DTEND>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20110401120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-35.65</TRNAMT>
+                  <FITID>20110401135650</FITID>
+                  <CHECKNUM>000000104485</CHECKNUM>
+                  <REFNUM>104.485</REFNUM>
+                  <MEMO>Compra com Cart\xe3o - 01/01 01:23 BURRITOS</MEMO>
+               </STMTTRN>
+            <LEDGERBAL>
+               <BALAMT>48.52</BALAMT>
+               <DTASOF>20110430120000[-3:BRT]</DTASOF>
+            </LEDGERBAL>
+         </STMTRS>
+      </STMTTRNRS>
+   </BANKMSGSRSV1>
+</OFX>"""
+
 class OFXImporterTest(DomainTest):
-    def testOFXImport(self):
+    def testOFXImportBBJurdica(self):
         ofx = OFXImporter()
         ofx.parse(StringIO(OFX_DATA))
         imbalance_account = sysparam(self.trans).IMBALANCE_ACCOUNT
@@ -117,3 +168,19 @@ class OFXImporterTest(DomainTest):
         self.assertEquals(t1.code, '90068259')
         self.assertEquals(t2.value, 50)
         self.assertEquals(t2.code, '90068259')
+
+    def testOFXImportBBFisica(self):
+        ofx = OFXImporter()
+        ofx.parse(StringIO(OFX_DATA2))
+        imbalance_account = sysparam(self.trans).IMBALANCE_ACCOUNT
+        trans = new_transaction()
+        account = ofx.import_transactions(trans, imbalance_account)
+        self.failUnless(account)
+        self.assertEquals(account.description, "Banco do Brasil - CHECKING")
+        self.assertEquals(account.code, "67890-X")
+        self.assertEquals(account.transactions.count(), 1)
+        t = account.transactions[0]
+        self.assertEquals(t.value, Decimal("-35.65"))
+        self.assertEquals(t.code, '000000104485')
+        self.assertEquals(t.description,
+                          'Compra com Cartão - 01/01 01:23 BURRITOS')

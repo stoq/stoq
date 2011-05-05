@@ -103,24 +103,40 @@ class OFXImporter(object):
     #
 
     def parse(self, fp):
-        while True:
-            line = fp.readline()
+        data = fp.read()
+        if '\r' in data:
+            data = data.replace('\r\n', '\n')
+            data = data.replace('\r', '\n')
+        lines = data.split('\n')
+        for i, line in enumerate(lines):
+            if not line:
+                continue
             if line.startswith('<OFX>'):
-                self._parse_tags(fp)
+                self._parse_tags(lines[i:])
                 break
             else:
                 header, value = line.split(':', 1)
                 self._headers[header] = value
 
-    def _parse_tags(self, fp):
+    def _parse_tags(self, data):
         self.tp = OFXTagParser()
-        self.tp.feed('<OFX>\n' + fp.read())
+        self.tp.feed('\n'.join(data))
 
     def _parse_string(self, data):
         return unicode(data, self._headers['CHARSET']).encode('utf-8')
 
     def _parse_date(self, data):
-        return datetime.datetime.strptime(data, "%Y%m%d")
+        # BB Juridica: 20110207
+        # BB Fisica:   20110401120000[-3:BRT]
+        for format in ['%Y%m%d%H%M%S',
+                       "%Y%m%d"]:
+            try:
+                return datetime.datetime.strptime(
+                    data[:len(format)], format)
+            except ValueError:
+                continue
+
+        return None
 
     def import_transactions(self, trans, source_account):
         account = Account.selectOneBy(
