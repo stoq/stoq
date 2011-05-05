@@ -152,6 +152,67 @@ OFX_DATA2 = """OFXHEADER:100DATA:OFXSGMLVERSION:102SECURITY:NONEENCODING:USA
    </BANKMSGSRSV1>
 </OFX>"""
 
+OFX_DATA3 = """OFXHEADER:100
+DATA:OFXSGML
+VERSION:102
+SECURITY:NONE
+ENCODING:USASCII
+CHARSET:1252
+COMPRESSION:NONE
+OLDFILEUID:NONE
+NEWFILEUID:NONE
+
+<OFX>
+    <SIGNONMSGSRSV1>
+        <SONRS>
+            <STATUS>
+                <CODE>0
+                <SEVERITY>INFO
+            </STATUS>
+            <DTSERVER>20110505174723[-3:GMT]
+            <LANGUAGE>ENG
+            <FI>
+                <ORG>SANTANDER
+                <FID>SANTANDER
+            </FI>
+        </SONRS>
+    </SIGNONMSGSRSV1>
+    <BANKMSGSRSV1>
+        <STMTTRNRS>
+            <TRNUID>1
+            <STATUS>
+                <CODE>0
+                <SEVERITY>INFO
+            </STATUS>
+            <STMTRS>
+                <CURDEF>BRC
+                <BANKACCTFROM>
+                    <BANKID>033
+                    <ACCTID>012345678
+                    <ACCTTYPE>CHECKING
+                </BANKACCTFROM>
+                <BANKTRANLIST>
+                    <DTSTART>20110505174723[-3:GMT]
+                    <DTEND>20110505174723[-3:GMT]
+                    <STMTTRN>
+                        <TRNTYPE>OTHER
+                        <DTPOSTED>20110425000000[-3:GMT]
+                        <TRNAMT>          -123.67
+                        <FITID>00801000
+                        <CHECKNUM>00801000
+                        <PAYEEID>0
+                        <MEMO>PGTO TITULO OUTRO
+                    </STMTTRN>
+                </BANKTRANLIST>
+                <LEDGERBAL>
+                    <BALAMT>            123.45
+                    <DTASOF>20110505174723[-3:GMT]
+                </LEDGERBAL>
+            </STMTRS>
+        </STMTTRNRS>
+    </BANKMSGSRSV1>
+</OFX>"""
+
 class OFXImporterTest(DomainTest):
     def testOFXImportBBJurdica(self):
         ofx = OFXImporter()
@@ -184,3 +245,21 @@ class OFXImporterTest(DomainTest):
         self.assertEquals(t.code, '000000104485')
         self.assertEquals(t.description,
                           'Compra com Cartão - 01/01 01:23 BURRITOS')
+
+    def testOFXImportSantander(self):
+        ofx = OFXImporter()
+        ofx.parse(StringIO(OFX_DATA3))
+        imbalance_account = sysparam(self.trans).IMBALANCE_ACCOUNT
+        trans = new_transaction()
+        account = ofx.import_transactions(trans, imbalance_account)
+        self.failUnless(account)
+        self.assertEquals(account.description, "SANTANDER - CHECKING")
+        self.assertEquals(account.code, "012345678")
+        self.assertEquals(account.transactions.count(), 1)
+        t = account.transactions[0]
+        self.assertEquals(t.value, Decimal("-123.67"))
+        self.assertEquals(t.code, '00801000')
+        self.assertEquals(t.description,
+                          'PGTO TITULO OUTRO')
+
+#  LocalWords:  Compra
