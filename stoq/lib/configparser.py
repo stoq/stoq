@@ -27,7 +27,7 @@ import binascii
 import gettext
 import os
 import optparse
-from ConfigParser import SafeConfigParser
+from ConfigParser import NoOptionError, SafeConfigParser
 
 from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
@@ -326,6 +326,20 @@ dbusername=%(DBUSERNAME)s"""
         if options.password:
             self.store_password(options.password)
 
+    def set(self, section, option, value):
+        if not self._config.has_section(section):
+            self._config.add_section(section)
+
+        self._config.set(section, option, value)
+
+    def get(self, section, option):
+        if not self._config.has_section(section):
+            return
+
+        if not self._config.has_option(section, option):
+            return
+
+        return self._config.get(section, option)
 
 
 #
