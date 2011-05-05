@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
 # #2301: Financial application
+from stoqlib.database.admin import register_accounts
 from stoqlib.domain.profile import ProfileSettings
 
 def apply_patch(trans):
+    register_accounts()
+
     profiles = ProfileSettings.selectBy(app_dir_name='admin',
                                         connection=trans)
     for profile in profiles:
@@ -11,7 +14,6 @@ def apply_patch(trans):
                        has_permission=profile.has_permission,
                        user_profile=profile.user_profile,
                        connection=trans)
-
     trans.query("""
 CREATE TABLE account (
     id serial NOT NULL PRIMARY KEY,
