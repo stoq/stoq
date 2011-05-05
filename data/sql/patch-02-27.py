@@ -5,8 +5,6 @@ from stoqlib.database.admin import register_accounts
 from stoqlib.domain.profile import ProfileSettings
 
 def apply_patch(trans):
-    register_accounts()
-
     profiles = ProfileSettings.selectBy(app_dir_name='admin',
                                         connection=trans)
     for profile in profiles:
@@ -40,3 +38,5 @@ CREATE TABLE account_transaction (
     date timestamp NOT NULL,
     payment_id bigint REFERENCES payment(id)
 );""")
+
+    register_accounts()
