@@ -160,7 +160,7 @@ def _register_payment_methods():
 
     trans.commit(close=True)
 
-def _register_accounts():
+def register_accounts():
     trans = new_transaction()
 
     for name in [_("Assets"),
@@ -325,7 +325,7 @@ def initialize_system():
     create_base_schema()
     create_log("INIT START")
     _register_payment_methods()
-    _register_accounts()
+    register_accounts()
     ensure_sellable_constants()
     ensure_system_parameters()
     _ensure_card_providers()
