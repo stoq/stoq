@@ -37,10 +37,10 @@ from kiwi.log import Logger
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       finish_transaction, get_connection)
-from stoqlib.lib.interfaces import ICookieFile
+from stoqlib.lib.interfaces import ICookieFile, IStoqConfig
 from stoqlib.lib.message import yesno, info
 from stoqlib.lib.osutils import get_application_dir
-from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
@@ -88,6 +88,7 @@ class AppWindow(BaseAppWindow):
     search = None
 
     def __init__(self, app):
+        self._config = get_utility(IStoqConfig)
         self.conn = new_transaction()
 
         # This needs to be done before calling BaseAppWindow,
@@ -130,19 +131,26 @@ class AppWindow(BaseAppWindow):
         if not async_branch:
             return
 
+        if self._config.get('UI', 'hide_example_warning') == 'True':
+            return
+
         msg = _(u'<b>You are using the examples database.</b>')
         label = gtk.Label(msg)
         label.set_use_markup(True)
 
-        button = gtk.Button(_(u'Remove examples'))
-        button.connect('clicked', self._on_remove_examples__clicked)
+        if is_developer_mode():
+            button = gtk.Button(_(u'Remove examples'))
+            button.connect('clicked', self._on_remove_examples__clicked)
+
+        hide_button = gtk.Button(_('Hide'))
 
         if hasattr(gtk, 'InfoBar'):
             bar = gtk.InfoBar()
             bar.get_content_area().add(label)
             bar.add_action_widget(button, 0)
+            if is_developer_mode():
+                bar.add_action_widget(hide_button, 1)
             bar.set_message_type(gtk.MESSAGE_WARNING)
-
             bar.show_all()
         else:
             bar = gtk.EventBox()
@@ -150,10 +158,14 @@ class AppWindow(BaseAppWindow):
 
             hbox.pack_start(label)
             hbox.pack_start(button, False, False, 6)
+            if is_developer_mode():
+                hbox.pack_start(hide_button, False, False, 6)
 
             bar.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("red"))
             bar.add(hbox)
             bar.show_all()
+
+        hide_button.connect('clicked', self._on_hide__clicked, bar)
 
         self.main_vbox.pack_start(bar, False, False, 0)
         self.main_vbox.reorder_child(bar, 1)
@@ -406,6 +418,11 @@ class AppWindow(BaseAppWindow):
 
         self.shutdown_application()
 
+    def _on_hide__clicked(self, button, bar):
+        bar.parent.remove(bar)
+        bar.destroy()
+        self._config.set('UI', 'hide_example_warning', 'True')
+        self._config.flush()
 
 class SearchableAppWindow(AppWindow):
     """
