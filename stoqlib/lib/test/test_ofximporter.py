@@ -77,8 +77,8 @@ NEWFILEUID:NONE
                                         <TRNTYPE>CREDIT
                                         <DTPOSTED>19991001
                                         <TRNAMT>50.0000
-                                        <FITID>90068259
-                                        <CHECKNUM>90068259
+                                        <FITID>90068258
+                                        <CHECKNUM>90068258
                                         <MEMO>A Transaction
                                 </STMTTRN>
 
@@ -225,9 +225,9 @@ class OFXImporterTest(DomainTest):
         self.assertEquals(account.code, "1234")
         self.assertEquals(account.transactions.count(), 2)
         t1, t2 = sorted(account.transactions)
-        self.assertEquals(t1.value, -5)
-        self.assertEquals(t1.code, '90068259')
-        self.assertEquals(t2.value, 50)
+        self.assertEquals(t1.value, 50)
+        self.assertEquals(t1.code, '90068258')
+        self.assertEquals(t2.value, -5)
         self.assertEquals(t2.code, '90068259')
 
     def testOFXImportBBFisica(self):
