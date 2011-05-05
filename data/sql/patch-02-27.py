@@ -39,4 +39,4 @@ CREATE TABLE account_transaction (
     payment_id bigint REFERENCES payment(id)
 );""")
 
-    register_accounts()
+    register_accounts(trans)

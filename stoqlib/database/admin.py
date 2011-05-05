@@ -160,15 +160,17 @@ def _register_payment_methods():
 
     trans.commit(close=True)
 
-def register_accounts():
-    trans = new_transaction()
-
+def register_accounts(trans):
+    log.info("Creating Accounts")
     for name in [_("Assets"),
                  _("Banks"),
                  _("Expenses"),
                  _("Imbalance"),
                  _("Income"),
                  _("Tills")]:
+        if Account.selectOneBy(connection=trans,
+                             description=name):
+            continue
         Account(connection=trans,
                 description=name,
                 parent=None)
@@ -180,8 +182,6 @@ def register_accounts():
         connection=trans, description=_("Tills")).id
     sparam.IMBALANCE_ACCOUNT = Account.selectOneBy(
         connection=trans, description=_("Imbalance")).id
-
-    trans.commit(close=True)
 
 def _ensure_card_providers():
     """ Creates a list of default card providers """
@@ -325,7 +325,9 @@ def initialize_system():
     create_base_schema()
     create_log("INIT START")
     _register_payment_methods()
-    register_accounts()
+    trans = new_transaction()
+    register_accounts(trans)
+    trans.commit(close=True)
     ensure_sellable_constants()
     ensure_system_parameters()
     _ensure_card_providers()
