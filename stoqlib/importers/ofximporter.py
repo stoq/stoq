@@ -32,11 +32,14 @@ import decimal
 import sgmllib
 
 from kiwi.python import namedAny
+from kiwi.log import Logger
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.lib.parameters import sysparam
 
+
+log = Logger('ofximporter')
 
 class OFXTagParser(sgmllib.SGMLParser):
     def __init__(self):
@@ -133,14 +136,17 @@ class OFXImporter(object):
     def _parse_date(self, data):
         # BB Juridica: 20110207
         # BB Fisica:   20110401120000[-3:BRT]
-        for format in ['%Y%m%d%H%M%S',
-                       "%Y%m%d"]:
+        data = data.strip()
+        for length, format in [(14, '%Y%m%d%H%M%S'),
+                               (8, "%Y%m%d")]:
+            short = data[:length]
             try:
                 return datetime.datetime.strptime(
-                    data[:len(format)], format)
+                    short, format)
             except ValueError:
                 continue
 
+        log.info("Couldn't parse date: %r" % (data, ))
         return None
 
     def import_transactions(self, trans, source_account):
@@ -162,6 +168,7 @@ class OFXImporter(object):
                                    date=self._parse_date(t['dtposted']),
                                    connection=trans)
 
+        log.info("Imported %d transactions" % (len(self.tp.transactions),))
         return account
 
     def get_account_id(self):
