@@ -34,6 +34,7 @@ def get_application_names():
     @returns: application names
     """
     return ['admin',
+            'financial',
             'inventory',
             'payable',
             'pos',
