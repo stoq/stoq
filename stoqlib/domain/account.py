@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,14 +19,23 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-""" Domain classes to manage bank accounts """
+""" Domain classes to manage accounts """
 
-from stoqlib.database.orm import UnicodeCol, IntCol
+import datetime
+
+from zope.interface import implements
+
+from stoqlib.database.orm import PriceCol
+from stoqlib.database.orm import ForeignKey, IntCol, UnicodeCol
+from stoqlib.database.orm import DateTimeCol
+from stoqlib.database.orm import AND, OR
 from stoqlib.domain.base import Domain
+from stoqlib.domain.interfaces import IDescribable
+from stoqlib.domain.station import BranchStation
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 
-#
-# Base Domain Classes
-#
+_ = stoqlib_gettext
 
 class Bank(Domain):
     """A definition of a bank. A bank can have many branches associated with
@@ -42,6 +51,8 @@ class Bank(Domain):
     short_name = UnicodeCol()
     compensation_code = UnicodeCol()
 
+
+# FIXME: Migrate this over to Account
 class BankAccount(Domain):
     """A bank account definition.
 
@@ -54,3 +65,168 @@ class BankAccount(Domain):
     branch = UnicodeCol(default=None)
     account = UnicodeCol(default=None)
 
+
+class Account(Domain):
+    """An account, a collection of transactions
+
+    @ivar description: name of the account in Stoq
+    @ivar code: code which identifies the account
+    @ivar parent: parent account, can be None
+    @ivar station: for accounts connected to a specific station or None
+    """
+
+    implements(IDescribable)
+
+    description = UnicodeCol(default=None)
+    code = UnicodeCol(default=None)
+    parent = ForeignKey('Account', default=None)
+    station = ForeignKey('BranchStation', default=None)
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.long_description
+
+    #
+    # Public API
+    #
+
+    @classmethod
+    def get_by_station(cls, conn, station):
+        """Fetch the account assoicated with a station
+        @param conn: a connection
+        @param station: a BranchStation
+        Returns: the account
+        """
+        if station is None:
+            raise TypeError("station cannot be None")
+        if not isinstance(station, BranchStation):
+            raise TypeError("station must be a BranchStation, not %r" %
+                    (station, ))
+        return cls.selectOneBy(connection=conn, station=station)
+
+    @classmethod
+    def create_for_station(cls, conn, station):
+        """Creates a new till account for a station
+        @param conn: a connnection
+        @param station: a BranchStation
+        Returns: the account
+        """
+        if station is None:
+            raise TypeError("station cannot be None")
+        if not isinstance(station, BranchStation):
+            raise TypeError("station must be a BranchStation, not %r" %
+                    (station, ))
+
+        if cls.get_by_station(conn, station):
+            raise ValueError("Station %r has a till account already" % (
+                station, ))
+
+        return cls(station=station,
+                   description=station.name,
+                   code=_("Till account for %s") % station.name,
+                   parent=sysparam(conn).TILLS_ACCOUNT,
+                   connection=conn)
+
+    @property
+    def long_description(self):
+        """Get a long description, including all the parent accounts,
+        such as Tills:cotovia"""
+        parts = []
+        account = self
+        while account:
+            parts.append(account.description)
+            account = account.parent
+        return ':'.join(reversed(parts))
+
+    @property
+    def transactions(self):
+        """Returns a list of transactions to this account.
+        Returns: list of AccountTransaction
+        """
+        return AccountTransaction.select(
+            OR(self.id == AccountTransaction.q.accountID,
+               self.id == AccountTransaction.q.source_accountID),
+            connection=self.get_connection())
+
+    def can_remove(self):
+        """If the account can be removed.
+        Not all accounts can be removed, some are internal to Stoq
+        and cannot be removed"""
+        # Can't remove accounts that are used in a parameter
+        sparam = sysparam(self.get_connection())
+        if self in [sparam.IMBALANCE_ACCOUNT,
+                    sparam.TILLS_ACCOUNT,
+                    sparam.BANKS_ACCOUNT]:
+            return False
+
+        # Can't remove station accounts
+        if self.station:
+            return False
+
+        # Can't remove an account which has children
+        if self.has_child_accounts():
+            return False
+
+        return True
+
+    def remove(self, trans):
+        """Remove the current account. This updates all transactions which
+        refers to this account and removes them.
+        @param: a transaction
+        """
+        if not self.can_remove():
+            raise TypeError("Account %r cannot be removed" % (self, ))
+
+        imbalance_account = sysparam(trans).IMBALANCE_ACCOUNT
+
+        for transaction in AccountTransaction.selectBy(
+            connection=trans,
+            account=self):
+            transaction.account = imbalance_account
+
+        for transaction in AccountTransaction.selectBy(
+            connection=trans,
+            source_account=self):
+            transaction.source_account = imbalance_account
+
+        self.delete(self.id, connection=trans)
+
+    def has_child_accounts(self):
+        """@returns: True if any other accounts has this account as a parent"""
+        return bool(Account.selectBy(connection=self.get_connection(),
+                                     parent=self))
+
+
+class AccountTransaction(Domain):
+    """Transaction between two accounts
+
+    @ivar account: destination account
+    @ivar source_account: source account
+    @ivar description: short human readable summary of the transaction
+    @ivar code: identifier of this transaction within a account
+    @ivar value: value transfered, positive for credit, negative for debit
+    @ivar date: date the transaction was done
+    @ivar payment: payment this transaction relates to, can be None
+    """
+    account = ForeignKey('Account')
+    source_account = ForeignKey('Account')
+    description = UnicodeCol()
+    code = UnicodeCol()
+    value = PriceCol(default=0)
+    date = DateTimeCol()
+    payment = ForeignKey('Payment', default=None)
+
+    def get_other_account(self, account):
+        """Get the other end of a transaction
+        @param account: a account
+        @returns: the other end
+        """
+        if self.source_account == account:
+            return self.account
+        elif self.account == account:
+            return self.source_account
+        else:
+            raise AssertionError

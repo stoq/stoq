@@ -46,6 +46,7 @@ from stoqlib.database.interfaces import (ICurrentBranch, ICurrentUser,
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.orm import const
 from stoqlib.database.runtime import get_connection, new_transaction
+from stoqlib.domain.account import Account
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
                                        ISalesPerson, ICompany, IBranch,
                                        ICreditProvider)
@@ -156,6 +157,29 @@ def _register_payment_methods():
                                max_installments=1)
         pm.description = operation.description
         pm.max_installments = operation.max_installments
+
+    trans.commit(close=True)
+
+def _register_accounts():
+    trans = new_transaction()
+
+    for name in [_("Assets"),
+                 _("Banks"),
+                 _("Expenses"),
+                 _("Imbalance"),
+                 _("Income"),
+                 _("Tills")]:
+        Account(connection=trans,
+                description=name,
+                parent=None)
+
+    sparam = sysparam(trans)
+    sparam.BANKS_ACCOUNT = Account.selectOneBy(
+        connection=trans, description=_("Banks")).id
+    sparam.TILLS_ACCOUNT = Account.selectOneBy(
+        connection=trans, description=_("Tills")).id
+    sparam.IMBALANCE_ACCOUNT = Account.selectOneBy(
+        connection=trans, description=_("Imbalance")).id
 
     trans.commit(close=True)
 
@@ -301,6 +325,7 @@ def initialize_system():
     create_base_schema()
     create_log("INIT START")
     _register_payment_methods()
+    _register_accounts()
     ensure_sellable_constants()
     ensure_system_parameters()
     _ensure_card_providers()

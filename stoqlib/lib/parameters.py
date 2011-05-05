@@ -334,7 +334,22 @@ _parameter_info = dict(
     _(u'Additional Information for the Fisco'),
     _(u'Additional information to add to the NF-e for the Fisco')),
 
-    )
+    BANKS_ACCOUNT=ParameterDetails(
+    _(u'Accounts'),
+    _(u'Parent Bank Account'),
+    _(u'Newly Bank accounts will be placed under this account, '
+       'for accounts imported via OFX will be created below this')),
+
+    TILLS_ACCOUNT=ParameterDetails(
+    _(u'Accounts'),
+    _(u'Parent Till Account'),
+    _(u'Newly created Till accounts will be placed under this account')),
+
+    IMBALANCE_ACCOUNT=ParameterDetails(
+    _('Accounts'),
+    _('Imbalance Account'),
+    _('Account used for unbalanced transactions')),
+)
 
 class ParameterAttr:
     def __init__(self, key, type, initial=None, options=None,
@@ -500,6 +515,12 @@ class ParameterAccess(ClassInittableObject):
                       u'sellable.Sellable'),
         ParameterAttr('DEFAULT_PRODUCT_TAX_CONSTANT',
                       u'sellable.SellableTaxConstant'),
+        ParameterAttr('BANKS_ACCOUNT',
+                      u'account.Account'),
+        ParameterAttr('TILLS_ACCOUNT',
+                      u'account.Account'),
+        ParameterAttr('IMBALANCE_ACCOUNT',
+                      u'account.Account'),
         ]
 
     _cache = {}

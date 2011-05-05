@@ -193,6 +193,8 @@ class ExampleCreator(object):
             'ProductionService': self.create_production_service,
             'Loan': self.create_loan,
             'LoanItem': self.create_loan_item,
+            'Account': self.create_account,
+            'AccountTransaction': self.create_account_transaction,
             }
         if isinstance(model_type, basestring):
             model_name = model_type
@@ -671,4 +673,17 @@ class ExampleCreator(object):
 
         return payment
 
+    def create_account(self):
+        from stoqlib.domain.account import Account
+        return Account(description="Test Account",
+                       connection=self.trans)
 
+    def create_account_transaction(self, account):
+        from stoqlib.domain.account import AccountTransaction
+        return AccountTransaction(description="Test Account Transaction",
+                                  code="Code",
+                                  date=datetime.datetime.now(),
+                                  value=1,
+                                  account=account,
+                                  source_account=sysparam(self.trans).IMBALANCE_ACCOUNT,
+                                  connection=self.trans)
