@@ -1,6 +1,12 @@
+stoqlib (0.9.15.99ubuntu1) lucid; urgency=low
+
+  * Remove poppler dependency so we can build on karmic
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Fri, 06 May 2011 11:47:37 -0300
+
 stoqlib (0.9.15.99) lucid; urgency=low
 
-  * New development series 
+  * New development series
 
  -- Johan <jdahlin@async.com.br>  Thu, 05 May 2011 01:16:22 +1000
 
