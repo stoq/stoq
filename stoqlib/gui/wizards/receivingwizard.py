@@ -74,7 +74,7 @@ class PurchaseSelectionStep(BaseWizardStep):
                                          restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.attach_slave('searchbar_holder', self.search)
-        self.executer = ORMObjectQueryExecuter()
+        self.executer = ORMObjectQueryExecuter(self.conn)
         self.search.set_query_executer(self.executer)
         self.executer.set_table(PurchaseOrderView)
         self.executer.add_query_callback(self.get_extra_query)
