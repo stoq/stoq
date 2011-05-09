@@ -333,7 +333,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
                                      restore_name=self.__class__.__name__)
         self.attach_slave('search_group_holder', self.search)
 
-        executer = ORMObjectQueryExecuter()
+        executer = ORMObjectQueryExecuter(self.conn)
         executer.set_table(QuotationView)
         self.search.set_query_executer(executer)
 
