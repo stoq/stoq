@@ -176,7 +176,9 @@ class ReceivingOrder(Domain):
     def _create(self, id, **kw):
         conn = self.get_connection()
         if not 'cfop' in kw:
+            conn.block_implicit_flushes()
             kw['cfop'] = sysparam(conn).DEFAULT_RECEIVING_CFOP
+            conn.unblock_implicit_flushes()
         Domain._create(self, id, **kw)
 
     def confirm(self):

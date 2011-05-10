@@ -35,3 +35,6 @@ PostgreSQLError = psycopg2.Error
 IntegrityError = psycopg2.IntegrityError
 ProgrammingError = psycopg2.ProgrammingError
 OperationalError = psycopg2.OperationalError
+
+class ORMTestError(Exception):
+    pass
