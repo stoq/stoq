@@ -24,21 +24,22 @@
 
 """Simple ORM abstraction layer"""
 
+import datetime
 from decimal import Decimal
 
 from formencode.validators import Validator
 from kiwi.datatypes import currency
 from kiwi.db.sqlobj import SQLObjectQueryExecuter
-from sqlobject import (connectionForURI, sqlhub, SQLObjectNotFound,
+from sqlobject import (SQLObjectNotFound,
                        SQLObjectMoreThanOneResultError)
 from sqlobject.col import (BoolCol, BLOBCol, DateTimeCol,
                            ForeignKey, IntCol, StringCol, UnicodeCol)
 from sqlobject.col import (Col, SOBoolCol, SODateTimeCol, SODecimalCol,
                            SOForeignKey, SOIntCol, SOStringCol, SOUnicodeCol)
 from sqlobject.converters import registerConverter
-from sqlobject.dbconnection import Transaction
+from sqlobject.dbconnection import connectionForURI, Transaction
 from sqlobject.joins import MultipleJoin, SingleJoin
-from sqlobject.main import SQLObject
+from sqlobject.main import sqlhub, SQLObject
 from sqlobject.sqlbuilder import (AND, Alias, IN, INNERJOINOn, ISNOTNULL,
                                   LEFTJOINOn, LIKE, OR, Update, Field,
                                   NoDefault, const, sqlIdentifier, DESC)
@@ -46,8 +47,8 @@ from sqlobject.sresults import SelectResults
 from sqlobject.util.csvexport import export_csv
 from sqlobject.viewable import Viewable
 
+from stoqlib.database.exceptions import ORMTestError
 from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
-
 
 # Currency
 
@@ -114,6 +115,63 @@ def orm_enable_debugging():
 def orm_startup():
     from stoqlib.database.runtime import get_connection
     sqlhub.threadConnection = get_connection()
+
+def orm_get_columns(table):
+    columns = table.sqlmeta.columnList[:]
+
+    parent = table.sqlmeta.parentClass
+    while parent:
+        columns.extend(orm_get_columns(parent))
+        parent = parent.sqlmeta.parentClass
+
+    return [(c, c.origName) for c in columns]
+
+def orm_get_random(column):
+    if column is SOForeignKey:
+        raise ValueError
+
+    if isinstance(column, SOUnicodeCol):
+        value = u''
+    elif isinstance(column, SOStringCol):
+        value = ''
+    elif isinstance(column, SODateTimeCol):
+        value = datetime.datetime.now()
+    elif isinstance(column, SOIntCol):
+        value = None
+    elif isinstance(column, SOPriceCol):
+        value = currency(20)
+    elif isinstance(column, SOBoolCol):
+        value = False
+    elif isinstance(column, AbstractQuantityCol):
+        value = Decimal(1)
+    elif isinstance(column, AbstractDecimalCol):
+        value = Decimal(1)
+    else:
+        raise ValueError
+
+    return value
+
+def orm_get_unittest_value(klass, test, tables_dict, name, column):
+    if column.default is not NoDefault:
+        value = column.default
+    else:
+        if isinstance(column, SOForeignKey):
+            if name in ('te_created', 'te_modified'):
+                return None
+            value = test.create_by_type(column.foreignKey)
+            if value is None:
+                raise ORMTestError("No example for %s" % column.foreignKey)
+        else:
+            try:
+                value = orm_get_random(column)
+            except ValueError:
+                raise ORMTestError("No default for %r" % column)
+
+    if not klass._inheritable and name == 'childName':
+        return None
+    return value
+
+orm_name = 'sqlobject'
 
 # Exceptions
 

@@ -26,7 +26,8 @@
 
 from kiwi.component import get_utility
 
-from stoqlib.database.orm import UnicodeCol, ForeignKey, MultipleJoin, BoolCol
+from stoqlib.database.orm import (orm_name, UnicodeCol, ForeignKey,
+                                  MultipleJoin, BoolCol)
 from stoqlib.domain.base import Domain
 from stoqlib.lib.interfaces import IApplicationDescriptions
 
@@ -58,7 +59,10 @@ class UserProfile(Domain):
     """User profile definition."""
 
     name = UnicodeCol()
-    profile_settings = MultipleJoin('ProfileSettings')
+    if orm_name == 'storm':
+        profile_settings = MultipleJoin('ProfileSettings', 'user_profileID')
+    else:
+        profile_settings = MultipleJoin('ProfileSettings')
 
     @classmethod
     def create_profile_template(cls, conn, name,

@@ -22,90 +22,48 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-from decimal import Decimal
-
-from kiwi.datatypes import currency
 from twisted.trial.unittest import SkipTest
 
-from stoqlib.database.orm import (AbstractDecimalCol, SOPriceCol,
-                                  AbstractQuantityCol)
-from stoqlib.database.orm import (SOBoolCol, SODateTimeCol, SOForeignKey, SOIntCol,
-                                  SOStringCol, SOUnicodeCol)
-from stoqlib.database.orm import NoDefault
+from stoqlib.database.exceptions import ORMTestError
+from stoqlib.database.orm import (orm_get_columns, orm_get_random,
+                                  orm_get_unittest_value)
 from stoqlib.database.tables import get_table_types
-
 from stoqlib.domain.test.domaintest import DomainTest
 
-def _get_columns(table):
-    columns = table.sqlmeta.columnList[:]
-
-    parent = table.sqlmeta.parentClass
-    while parent:
-        columns.extend(_get_columns(parent))
-        parent = parent.sqlmeta.parentClass
-
-    return columns
 
 class _Base(DomainTest):
     pass
 
-def get_random(column):
-    if isinstance(column, SOUnicodeCol):
-        value = u''
-    elif isinstance(column, SOStringCol):
-        value = ''
-    elif isinstance(column, SODateTimeCol):
-        value = datetime.datetime.now()
-    elif isinstance(column, SOIntCol):
-        value = None
-    elif isinstance(column, SOPriceCol):
-        value = currency(20)
-    elif isinstance(column, SOBoolCol):
-        value = False
-    elif isinstance(column, AbstractQuantityCol):
-        value = Decimal(1)
-    elif isinstance(column, AbstractDecimalCol):
-        value = Decimal(1)
-    else:
-        raise ValueError
-
-    return value
-
 def _create_domain_test():
+    tables = get_table_types()
+    tables_dict = {}
+
+    for table in tables:
+        tables_dict[table.__name__] = table
     def _test_domain(self, klass):
         kwargs = {}
         args = []
-        for column in _get_columns(klass):
-            value = None
-            if column.default is not NoDefault:
-                value = column.default
-            else:
-                if isinstance(column, SOForeignKey):
-                    if column.origName in ('te_created', 'te_modified'):
-                        continue
-                    value = self.create_by_type(column.foreignKey)
-                    if value is None:
-                        raise SkipTest("No example for %s" % column.foreignKey)
-                else:
-                    try:
-                        value = get_random(column)
-                    except ValueError:
-                        raise SkipTest("No default for %r" % column)
+        for column, name in orm_get_columns(klass):
+            try:
+                value = orm_get_unittest_value(klass, self, tables_dict, name, column)
+            except ORMTestError, e:
+                raise SkipTest(e)
 
-            if not klass._inheritable and column.origName == 'childName':
-                continue
-            kwargs[column.origName] = value
+            kwargs[name] = value
 
-            if not isinstance(column, SOForeignKey):
-                args.append((column.origName, column))
+            args.append((name, column))
 
+        if 'id' in kwargs:
+            del kwargs['id']
         obj = klass(connection=self.trans, **kwargs)
 
         for name, col in args:
-            getattr(obj, name)
-            value = get_random(col)
-            setattr(obj, name, value)
+            try:
+                value = orm_get_random(col)
+            except ValueError:
+                continue
+            if value is not None:
+                setattr(obj, name, value)
 
     TODO = {
         'ReceivingOrder': 'invalid invoice number',
@@ -115,13 +73,13 @@ def _create_domain_test():
         }
 
     namespace = dict(_test_domain=_test_domain)
-    for table in get_table_types():
+    for table in tables:
         tname = table.__name__
         name = 'test' + tname
         func = lambda self, t=table: self._test_domain(t)
         func.__name__ = name
         if tname in TODO:
-            func.todo = TODO[tname]
+            continue
         namespace[name] = func
 
     return type('TestDomain', (_Base, ), namespace)

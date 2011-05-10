@@ -25,11 +25,11 @@
 
 from zope.interface.interface import adapter_hooks
 
-from stoqlib.database.orm import ForeignKey, BoolCol
+from stoqlib.database.orm import orm_name, ForeignKey, BoolCol, IntCol
 from stoqlib.database.orm import AND, const
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.runtime import (StoqlibTransaction, get_current_user,
-                                      get_current_station)
+from stoqlib.database.runtime import (StoqlibTransaction, get_connection,
+                                      get_current_user, get_current_station)
 from stoqlib.domain.system import TransactionEntry
 from stoqlib.lib.component import Adapter, Adaptable
 
@@ -131,9 +131,13 @@ class AbstractModel(object):
     #
 
     def _create(self, *args, **kwargs):
-        conn = kwargs.get('connection', self._connection)
+        # Don't flush right now. The object being created is not complete
+        # yet!
+        conn = self._connection
+        conn.block_implicit_flushes()
         user = get_current_user(conn)
         station = get_current_station(conn)
+        conn.unblock_implicit_flushes()
 
         timestamp = const.NOW()
         for entry, entry_type in [('te_created', TransactionEntry.CREATED),
@@ -219,6 +223,14 @@ class Domain(BaseDomain, AdaptableORMObject):
                    self._connection.__class__.__name__))
         BaseDomain._create(self, id, **kw)
 
+    if orm_name == 'storm':
+        def __repr__(self):
+            return '<%s %r %s>' \
+                   % (self.__class__.__name__,
+                      self.id,
+                      ''
+                      )
+
     @property
     def user(self):
         return self.te_modified.user
@@ -290,6 +302,9 @@ class BaseSQLView:
 
 
 class ModelAdapter(BaseDomain, ORMObjectAdapter):
+
+    if orm_name == 'storm':
+        _originalID = IntCol('original_id')
 
     def __init__(self, _original=None, *args, **kwargs):
         ORMObjectAdapter.__init__(self, _original, kwargs) # Modifies kwargs

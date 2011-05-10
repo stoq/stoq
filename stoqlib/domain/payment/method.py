@@ -38,6 +38,7 @@ from stoqlib.domain.interfaces import (IInPayment, IActive, IOutPayment,
                                        IDescribable)
 from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.domain.payment.group import PaymentGroup
+from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment, PaymentAdaptToInPayment
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DatabaseInconsistency, PaymentMethodError

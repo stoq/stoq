@@ -26,6 +26,6 @@
 import os
 import sys
 
-if os.getenv('USE_STORM'):
+if os.getenv('STOQLIB_USE_STORM'):
     import stormorm
     sys.modules['stoqlib.database.orm'] = stormorm
