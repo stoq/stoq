@@ -23,8 +23,9 @@
 ##
 
 import datetime
-from dateutil.relativedelta import relativedelta
+from decimal import Decimal
 
+from dateutil.relativedelta import relativedelta
 from stoqlib.domain.taxes import (ProductIcmsTemplate, SaleItemIcms,
                                   ProductTaxTemplate)
 from stoqlib.domain.test.domaintest import DomainTest
@@ -77,7 +78,7 @@ class TestSaleItemIcms(DomainTest):
         sale_item_icms = self.create_sale_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item_icms.csosn = 101
-        sale_item_icms.p_cred_sn = 3.10
+        sale_item_icms.p_cred_sn = Decimal("3.10")
         expected_v_cred_icms_sn = (sale_item.get_total() *
                                    sale_item_icms.p_cred_sn / 100)
         sale_item_icms.update_values()
@@ -88,7 +89,7 @@ class TestSaleItemIcms(DomainTest):
         sale_item_icms = self.create_sale_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 2, 30)
         sale_item_icms.csosn = 201
-        sale_item_icms.p_cred_sn = 2.90
+        sale_item_icms.p_cred_sn = Decimal("2.90")
         expected_v_cred_icms_sn = (sale_item.get_total() *
                                    sale_item_icms.p_cred_sn / 100)
         sale_item_icms.update_values()
@@ -99,6 +100,6 @@ class TestSaleItemIcms(DomainTest):
         sale_item_icms = self.create_sale_item_icms()
         sale_item = self._get_sale_item(sale_item_icms, 1, 10)
         sale_item_icms.csosn = 500
-        sale_item_icms.p_cred_sn = 3.10
+        sale_item_icms.p_cred_sn = Decimal("3.10")
         sale_item_icms.update_values()
         self.failIf(sale_item_icms.v_cred_icms_sn)
