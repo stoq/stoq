@@ -41,7 +41,7 @@ class SellableUnitSearch(SearchEditor):
     """A search for L{stoqlib.domain.sellable.SellableUnit}"""
 
     title = _("Search for Units")
-    size = (400, 250)
+    size = (600, 450)
     table = search_table = SellableUnit
     editor_class = SellableUnitEditor
     searchbar_result_strings = _("Unit"), _("Units")
