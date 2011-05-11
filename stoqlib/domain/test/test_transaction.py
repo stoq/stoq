@@ -24,8 +24,10 @@
 """ This module test all class in stoq/domain/system.py """
 
 import datetime
+from decimal import Decimal
 import time
 
+from stoqlib.database.database import query_server_time
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_station,
                                       new_transaction)
@@ -42,14 +44,11 @@ class TestTransaction(DomainTest):
         # might be out of sync, datetime.dateime.now() is client side
         # while te_time is set on the server side, we should ideally move
         # everything to the server side
-        before = datetime.datetime.now()
-        time.sleep(.1)
+        before = query_server_time(self.trans)
 
         person = Person(name='dummy', connection=self.trans)
-        time.sleep(.1)
 
-        created = datetime.datetime.now()
-        time.sleep(.1)
+        created = query_server_time(self.trans)
 
         self.trans.commit()
         self.assertEqual(person.te_created.te_time,
@@ -61,18 +60,21 @@ class TestTransaction(DomainTest):
         self.assertNotEqual(person.te_created.te_time,
                             person.te_modified.te_time)
 
-        time.sleep(.1)
-        updated = datetime.datetime.now()
+        updated = query_server_time(self.trans)
 
-        dates = [(before, 'before create'),
-                 (person.te_created.te_time, 'create'),
-                 (created, 'after create'),
-                 (person.te_modified.te_time, 'modifiy' ),
-                 (updated, 'after modify')]
+        dates = [
+            ('before create', before),
+            ('create', person.te_created.te_time),
+            ('after create', created),
+            ('modifiy', person.te_modified.te_time),
+            ('after modify', updated),
+            ]
         for i in range(len(dates)-1):
-            before, before_name = dates[i]
-            after, after_name = dates[i+1]
-            if before >= after:
+            before_name, before = dates[i]
+            after_name, after = dates[i+1]
+            before_decimal = Decimal(before.strftime('%s.%f'))
+            after_decimal = Decimal(after.strftime('%s.%f'))
+            if before_decimal > after_decimal:
                 raise AssertionError(
                     "'%s' (%s) was expected to be before '%s' (%s)" % (
                     before_name, before, after_name, after))

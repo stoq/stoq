@@ -296,3 +296,13 @@ def dump_table(table):
     else:
         raise NotImplementedError(settings.rdbms)
 
+
+def query_server_time(conn):
+    settings = get_utility(IDatabaseSettings)
+    conn = settings.get_default_connection()
+
+    if settings.rdbms == 'postgres':
+        return conn.queryAll("SELECT NOW();")[0][0]
+    else:
+        raise NotImplementedError
+

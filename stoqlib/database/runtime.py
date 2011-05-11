@@ -28,6 +28,7 @@ import sys
 from kiwi.component import get_utility, provide_utility, implements
 from kiwi.log import Logger
 
+from stoqlib.database.database import query_server_time
 from stoqlib.database.interfaces import (
     IDatabaseSettings, IConnection, ITransaction, ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
@@ -56,7 +57,7 @@ class StoqlibTransaction(Transaction):
         self._modified_object_sets = [dict()]
 
     def _update_transaction_entry(self):
-        fields = dict(te_time=const.NOW())
+        fields = dict(te_time=query_server_time(self))
         user = get_current_user(self)
         if user:
             fields['user_id'] = user.id
