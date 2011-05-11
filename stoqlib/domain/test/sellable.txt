@@ -178,7 +178,7 @@ Blocking the sellable removes from the return value:
 Unavailable means that it cannot be sold (no stock):
 
     >>> Sellable.get_unavailable_sellables(trans).count()
-    10L
+    5L
 
 We can query using a specific barcode:
 
