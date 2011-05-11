@@ -142,7 +142,7 @@ This will return a list of available sellables:
 
     >>> sellable.status == Sellable.STATUS_AVAILABLE
     True
-    
+
     >>> sellable in Sellable.get_available_sellables(trans)
     True
 
@@ -170,21 +170,21 @@ Unblocked means available or sold:
     True
 
 Blocking the sellable removes from the return value:
-    
+
     >>> sellable.status = Sellable.STATUS_BLOCKED
     >>> sellable in Sellable.get_unblocked_sellables(trans)
     False
-    
+
 Unavailable means that it cannot be sold (no stock):
 
     >>> Sellable.get_unavailable_sellables(trans).count()
-    5L
+    10L
 
 We can query using a specific barcode:
 
     >>> sellable.barcode == '1138'
     True
-    
+
     >>> Sellable.get_availables_by_barcode(trans, '1138')
     Traceback (most recent call last):
         ...
@@ -207,7 +207,7 @@ And for sold sellables using a specific barcode:
         ...
     BarcodeDoesNotExists: The sellable with barcode '1138' doesn't exists or is not available to be sold
 
-    
+
 SaleItem
 ============
 
