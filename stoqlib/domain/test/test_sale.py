@@ -30,7 +30,7 @@ from kiwi.datatypes import currency
 from stoqlib.database.orm import AND
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
-from stoqlib.domain.interfaces import IStorable, IOutPayment
+from stoqlib.domain.interfaces import IStorable, IInPayment, IOutPayment
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentAdaptToOutPayment
@@ -400,43 +400,72 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         self.failIf(sale.can_return())
 
+        # Add product of costing 300 to the sale
         self.add_product(sale, price=300)
         sale.order()
         self.failIf(sale.can_return())
 
+        # We start out with an empty till
         till = Till.get_current(self.trans)
         balance_initial = till.get_balance()
+        self.assertEqual(balance_initial, 0)
 
+        # Add 3 check payments of 100 each
         method = PaymentMethod.get_by_name(self.trans, 'check')
         payment1 = method.create_inpayment(sale.group, Decimal(100))
         payment2 = method.create_inpayment(sale.group, Decimal(100))
         payment3 = method.create_inpayment(sale.group, Decimal(100))
         sale.confirm()
+
+        # We should have three payments in the sale
+        self.assertEqual(sale.payments.count(), 3)
+
+        # Pay the first payment
         payment = payment1.get_adapted()
         payment.pay()
         self.failUnless(sale.can_return())
 
-        balance_before_return = till.get_balance()
-        self.failIf(balance_before_return <= balance_initial)
-
+        # Make sure we received the money in the current till
+        self.assertEqual(till.get_balance(), 300)
         self.failUnless(sale.can_return())
+
+        # Return the product, with a 50 penality
+        penalty = 50
         renegotiation = sale.create_sale_return_adapter()
-        renegotiation.penalty_value = currency(50)
+        renegotiation.penalty_value = penalty
         sale.return_(renegotiation)
         self.failIf(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
-
         self.assertEqual(sale.group.status, PaymentGroup.STATUS_CANCELLED)
-        returned_amount = 0
-        for payment in sale.payments:
-            if IOutPayment(payment, None) is not None:
-                returned_amount += payment.value
-        paid_value = payment.value - renegotiation.penalty_value
-        self.assertEqual(paid_value, returned_amount)
 
-        balance_final = till.get_balance()
-        self.failIf(balance_initial >= balance_final)
+        # Penality is still 50
+        self.assertEqual(renegotiation.penalty_value, penalty)
+
+        # We know have four payments in the sale, the outpayment as well
+        self.assertEqual(sale.payments.count(), 4)
+
+        p1, p2, p3, p4 = sale.payments.orderBy('open_date')
+        # First three payments are incoming, one each of 50
+        self.failUnless(IInPayment(p1))
+        self.failIf(IOutPayment(p1, None))
+        self.assertEquals(p1.value, 100)
+
+        self.failUnless(IInPayment(p2))
+        self.failIf(IOutPayment(p2, None))
+        self.assertEquals(p2.value, 100)
+
+        self.failUnless(IInPayment(p3))
+        self.failIf(IOutPayment(p3, None))
+        self.assertEquals(p3.value, 100)
+
+        # Last payment is outgoing and should be the same amount as the penalty
+        self.failIf(IInPayment(p4, None))
+        self.failUnless(IOutPayment(p4))
+        self.assertEquals(p4.value, penalty)
+
+        # Return all money in the till except the penality, 300 - 250
+        self.assertEqual(till.get_balance(), penalty)
 
     def testCanCancel(self):
         sale = self.create_sale()
