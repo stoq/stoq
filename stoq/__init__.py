@@ -27,6 +27,7 @@ program_name    = "Stoq"
 website         = 'http://www.stoq.com.br'
 version         = "0.9.15.99"
 release_date    = (2011, 2, 9)
+stable          = False
 
 try:
     from kiwi.environ import Library

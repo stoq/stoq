@@ -109,6 +109,16 @@ class AppWindow(BaseAppWindow):
         self._check_examples_database()
         self._usability_hacks()
 
+        if not stoq.stable and not is_developer_mode():
+            self._display_unstable_version_message()
+
+    def _display_unstable_version_message(self):
+        msg = _(
+            'You are currently using an <b>unstable version</b> of Stoq that '
+            'is under development,\nbe aware that it may behave incorrectly, '
+            'crash or even loose your data.\n<b>Do not use in production.</b>')
+        self.add_info_bar(gtk.MESSAGE_WARNING, msg)
+
     def _usability_hacks(self):
         """Adds some workarounds to improve stoq usability.
 
@@ -357,6 +367,27 @@ class AppWindow(BaseAppWindow):
         """
         return True
 
+    def add_info_bar(self, message_type, label, action_widget=None):
+        """Show an information bar to the user.
+        @param message_type: message type, a gtk.MessageType
+        @param label: label to display
+        @param action_widget: optional, most likely a button
+        """
+        label = gtk.Label(label)
+        label.set_use_markup(True)
+        label.show()
+
+        bar = gtk.InfoBar()
+        bar.get_content_area().add(label)
+        if action_widget:
+            bar.add_action_widget(action_widget, 0)
+        bar.set_message_type(message_type)
+        bar.show()
+
+        self.main_vbox.pack_start(bar, False, False, 0)
+        self.main_vbox.reorder_child(bar, 1)
+
+
     #
     # BaseAppWindow
     #
@@ -410,7 +441,6 @@ class AppWindow(BaseAppWindow):
              return
 
         info(_('Please, start stoq again to configure new database'))
-
 
         stoqdir = get_application_dir()
         flag_file = os.path.join(stoqdir, 'remove_examples')
@@ -534,18 +564,9 @@ class VersionChecker(object):
 
     def _display_new_version_message(self, details):
         button = gtk.LinkButton(details['url'], _(u'Learn More...'))
-        label = gtk.Label(_('<b>There is a new Stoq version available (%s)</b>') %
-                            details['version'])
-        label.set_use_markup(True)
-
-        bar = gtk.InfoBar()
-        bar.get_content_area().add(label)
-        bar.add_action_widget(button, 0)
-        bar.set_message_type(gtk.MESSAGE_INFO)
-        bar.show_all()
-
-        self.app.main_vbox.pack_start(bar, False, False, 0)
-        self.app.main_vbox.reorder_child(bar, 1)
+        msg = _('<b>There is a new Stoq version available (%s)</b>') % (
+            details['version'], )
+        self.app.add_info_bar(gtk.MESSAGE_INFO, msg, action_widget=button)
 
     def _check_details(self, details):
         current_version = stoq.version
