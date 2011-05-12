@@ -38,7 +38,7 @@ from stoq.lib.options import get_option_parser
 
 PYGTK_REQUIRED = (2, 16, 0)
 KIWI_REQUIRED = (1, 9, 27)
-STOQLIB_REQUIRED = (0, 9, 15)
+STOQLIB_REQUIRED = (0, 9, 15, 99)
 GAZPACHO_REQUIRED = (0, 6, 6)
 REPORTLAB_REQUIRED = (1, 20)
 
@@ -89,7 +89,7 @@ def _debug_hook(exctype, value, tb):
     pdb.pm()
 
 def _exit_func():
-    from stoqlib.lib.parameters import is_developer_mode
+    #from stoqlib.lib.parameters import is_developer_mode
     # Disable dialog in developer mode eventually, but we
     # first need to test it properly.
     #if is_developer_mode():
@@ -204,6 +204,79 @@ def _check_dependencies():
             '.'.join(map(str, REPORTLAB_REQUIRED)),
             reportlab.Version))
     log.debug('reportlab okay')
+
+def _check_version_policy():
+    # No need to bother version checking when not running in developer mode
+    from stoqlib.lib.parameters import is_developer_mode
+    if not is_developer_mode():
+        return
+
+    import stoq
+    import stoqlib
+    stoqlib_version = tuple(stoqlib.version.split('.'))
+
+    #
+    # Policies for stoq/stoqlib versions,
+    # All these policies here are made so that stoqlib version is tightly
+    # tied to the stoq versioning
+    #
+    # Stable series of Stoq must have:
+    # 1) extra_version set to < 90
+    # 2) Depend on a stoqlib version with extra_version < 90
+    # 3) Depend on the same major/micro/minor version of stoqlib
+    #
+    # Unstable series of Stoq must have:
+    # 1) extra_version set to >= 90
+    # 2) Must depend stoqlib version with extra_version >= 90
+    # 3) Depend on the same major/micro/minor version of stoqlib
+    #
+
+    # We reserve the first 89 for the stable series.
+    FIRST_UNSTABLE_EXTRA_VERSION = 90
+
+    #
+    # An unstable stoq needs to depend on an unstable stoqlib with the same
+    # major/minor/micro. Eg 0.9.16.99 must depend on stoqlib 0.9.16.90 or higher
+    #
+    if not stoq.stable:
+        # When opening a new development serie, increase the extra version
+        # of stoq in stoq/__init__.py
+        if stoq.extra_version < FIRST_UNSTABLE_EXTRA_VERSION:
+           raise SystemExit(
+              "Unstable stoq (%s) must set extra_version to %d or higher" % (
+              stoq.version, FIRST_UNSTABLE_EXTRA_VERSION))
+
+        # .. and also increase the extra version in stoqlib/__init__.py
+        if (len(STOQLIB_REQUIRED) < 4 or
+            STOQLIB_REQUIRED[3] < FIRST_UNSTABLE_EXTRA_VERSION):
+           raise SystemExit("Unstable stoq needs to depend on unstable stoqlib")
+
+    # A stable stoq can never have an extra version of 90 or higher
+    # Nor can it depend on a stable version of stoqlib
+    if stoq.stable:
+        if stoq.extra_version >= FIRST_UNSTABLE_EXTRA_VERSION:
+           raise SystemExit(
+               "Stable stoq release should set extra_version to %d or lower" % (
+               FIRST_UNSTABLE_EXTRA_VERSION, ))
+
+        if stoqlib.extra_version >= FIRST_UNSTABLE_EXTRA_VERSION:
+           raise SystemExit(
+           "Stable stoq (%s) cannot depend on unstable stoqlib (%s)" % (
+           stoq.version, stoqlib.version))
+
+    # stoq major/minor/micro version always needs to match the
+    # major/minor/micro version of stoqlib
+    # stoq 0.9.16 must depend on stoqlib 0.9.16 etc
+    if (stoq.major_version,
+        stoq.minor_version,
+        stoq.micro_version) != tuple(STOQLIB_REQUIRED[:3]):
+        versions = ((stoq.major_version, stoq.minor_version,
+                     stoq.micro_version) + STOQLIB_REQUIRED[:3])
+        raise SystemExit(
+            "stoq series (%d.%d.%d) need to require at least the same "
+            "series (major/minor/micro) of stoqlib (%d.%d.%d)" % versions)
+
+
 
 def _run_first_time_wizard(options):
     from stoqlib.gui.base.dialogs import run_dialog
@@ -403,6 +476,7 @@ def main(args):
     # Do this as soon as possible, before we attempt to use the
     # external libraries/resources
     _check_dependencies()
+    _check_version_policy()
 
     _initialize(options)
     _run_app(options, appname)
