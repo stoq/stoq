@@ -220,53 +220,9 @@ def _check_version_policy():
     # All these policies here are made so that stoqlib version is tightly
     # tied to the stoq versioning
     #
-    # Stable series of Stoq must have:
-    # 1) extra_version set to < 90
-    # 2) Depend on a stoqlib version with extra_version < 90
-    # 3) Depend on the same major/micro/minor version of stoqlib
+    # All series of Stoq must:
+    # 1) Depend on the same major/micro/minor version of stoqlib
     #
-    # Unstable series of Stoq must have:
-    # 1) extra_version set to >= 90
-    # 2) Must depend stoqlib version with extra_version >= 90
-    # 3) Depend on the same major/micro/minor version of stoqlib
-    #
-
-    # We reserve the first 89 for the stable series.
-    FIRST_UNSTABLE_EXTRA_VERSION = 90
-
-    #
-    # An unstable stoq needs to depend on an unstable stoqlib with the same
-    # major/minor/micro. Eg 0.9.16.99 must depend on stoqlib 0.9.16.90 or higher
-    #
-    if not stoq.stable:
-        # When opening a new development serie, increase the extra version
-        # of stoq in stoq/__init__.py
-        if stoq.extra_version < FIRST_UNSTABLE_EXTRA_VERSION:
-           raise SystemExit(
-              "Unstable stoq (%s) must set extra_version to %d or higher" % (
-              stoq.version, FIRST_UNSTABLE_EXTRA_VERSION))
-
-        # .. and also increase the extra version in stoqlib/__init__.py
-        if (len(STOQLIB_REQUIRED) < 4 or
-            STOQLIB_REQUIRED[3] < FIRST_UNSTABLE_EXTRA_VERSION):
-           raise SystemExit("Unstable stoq needs to depend on unstable stoqlib")
-
-    # A stable stoq can never have an extra version of 90 or higher
-    # Nor can it depend on a stable version of stoqlib
-    if stoq.stable:
-        if stoq.extra_version >= FIRST_UNSTABLE_EXTRA_VERSION:
-           raise SystemExit(
-               "Stable stoq release should set extra_version to %d or lower" % (
-               FIRST_UNSTABLE_EXTRA_VERSION, ))
-
-        if stoqlib.extra_version >= FIRST_UNSTABLE_EXTRA_VERSION:
-           raise SystemExit(
-           "Stable stoq (%s) cannot depend on unstable stoqlib (%s)" % (
-           stoq.version, stoqlib.version))
-
-    # stoq major/minor/micro version always needs to match the
-    # major/minor/micro version of stoqlib
-    # stoq 0.9.16 must depend on stoqlib 0.9.16 etc
     if (stoq.major_version,
         stoq.minor_version,
         stoq.micro_version) != tuple(STOQLIB_REQUIRED[:3]):
@@ -275,6 +231,41 @@ def _check_version_policy():
         raise SystemExit(
             "stoq series (%d.%d.%d) need to require at least the same "
             "series (major/minor/micro) of stoqlib (%d.%d.%d)" % versions)
+
+    # We reserve the first 89 for the stable series.
+    FIRST_UNSTABLE_EXTRA_VERSION = 90
+
+    # Stable series of Stoq must:
+    # 1) have extra_version set to < 90
+    # 2) Depend on a stoqlib version with extra_version < 90
+    #
+    if stoq.stable:
+        if stoq.extra_version >= FIRST_UNSTABLE_EXTRA_VERSION:
+           raise SystemExit(
+               "Stable stoq release should set extra_version to %d or lower" % (
+               FIRST_UNSTABLE_EXTRA_VERSION, ))
+
+        if (len(STOQLIB_REQUIRED) >= 4 and
+            STOQLIB_REQUIRED[3] >= FIRST_UNSTABLE_EXTRA_VERSION):
+            raise SystemExit(
+                "Stable stoq (%s) cannot depend on "
+                "unstable stoqlib (%s)" % (
+                stoq.version, '.'.join(map(str, STOQLIB_REQUIRED))))
+
+    # Unstable series of Stoq must have:
+    # 1) have extra_version set to >= 90
+    # 2) Must depend stoqlib version with extra_version >= 90
+    #
+    else:
+        if stoq.extra_version < FIRST_UNSTABLE_EXTRA_VERSION:
+           raise SystemExit(
+              "Unstable stoq (%s) must set extra_version to %d or higher, "
+              "or did you forget to set stoq.stable to True?" % (
+              stoq.version, FIRST_UNSTABLE_EXTRA_VERSION))
+
+        if (len(STOQLIB_REQUIRED) < 4 or
+            STOQLIB_REQUIRED[3] < FIRST_UNSTABLE_EXTRA_VERSION):
+           raise SystemExit("Unstable stoq needs to depend on unstable stoqlib")
 
 
 
