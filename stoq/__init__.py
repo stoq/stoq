@@ -25,9 +25,16 @@
 
 program_name    = "Stoq"
 website         = 'http://www.stoq.com.br'
-version         = "0.9.15.99"
+major_version   = 0
+minor_version   = 9
+micro_version   = 15
+extra_version   = 99
 release_date    = (2011, 2, 9)
 stable          = False
+
+version         = '%d.%d.%d' % (major_version, minor_version, micro_version)
+if extra_version > 0:
+    version += '.%d' % (extra_version, )
 
 try:
     from kiwi.environ import Library
