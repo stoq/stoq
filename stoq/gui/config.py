@@ -260,8 +260,8 @@ class DatabaseSettingsStep(WizardEditorStep):
             # use first branch until we support multiple branches.
             self.wizard.branch = branches[0]
             provide_utility(ICurrentBranch, self.wizard.branch)
-
-            return ExistingAdminPasswordStep(conn, self.wizard, self, dummy)
+            self.wizard.options.login_username = 'admin'
+            return FinishInstallationStep(self.conn, self.wizard, self)
         else:
             return AdminPasswordStep(conn, self.wizard, self, dummy)
 
@@ -333,6 +333,7 @@ class AdminPasswordStep(BaseWizardStep):
                     ("You should have a user with username: %s"
                      % USER_ADMIN_DEFAULT_NAME))
             adminuser.password = self.password_slave.model.new_password
+            self.wizard.options.login_username = 'admin'
         return good_pass
 
     def next_step(self):
@@ -404,7 +405,7 @@ class ExistingAdminPasswordStep(AdminPasswordStep):
         return False
 
     def next_step(self):
-        return PluginStep(self.conn, self.wizard, self._next_model)
+        return FinishInstallationStep(self.conn, self.wizard, self)
 
 
 
@@ -578,8 +579,8 @@ class FinishInstallationStep(BaseWizardStep):
         # This is the last step, so we will finish the installation
         # before we quit
         self.wizard.finish()
-        # Use False instead of None, so we can distinguish quit from cancel
-        self.wizard.retval = False
+        self.wizard.retval = None
+        self.wizard.quit = True
 
 
 #
@@ -600,6 +601,7 @@ class FirstTimeConfigWizard(BaseWizard):
         self.device_slave = None
         self.enable_ecf = False
         self.enable_nfe = False
+        self.quit = False
         self.model = Settable(db_settings=None, stoq_user_data=None)
         first_step = DatabaseSettingsStep(self, self.model)
         BaseWizard.__init__(self, None, first_step, self.model,
@@ -652,6 +654,14 @@ class FirstTimeConfigWizard(BaseWizard):
 
         self.retval = self.model
         self.close()
+
+        # We have a successfull installation, but the user want to close the
+        # the application now.
+        if self.quit:
+            while gtk.events_pending():
+                gtk.main_iteration()
+            # FIXME: Restart
+            raise SystemExit()
 
     def cancel(self):
         if self._conn:
