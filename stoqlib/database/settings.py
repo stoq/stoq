@@ -56,16 +56,20 @@ class DatabaseSettings(object):
     implements(IDatabaseSettings)
 
     def __init__(self, rdbms=DEFAULT_RDBMS, address=None, port=5432,
-                 dbname='stoq', username=None, password=''):
+                 dbname=None, username=None, password=''):
+
+        if rdbms == 'postgres':
+            if not address:
+                address = os.environ.get('PGHOST', 'localhost')
+            if not dbname:
+                dbname = os.environ.get('PGDATABASE', 'stoq')
+            if not username:
+                username = os.environ.get('PGUSER', get_username())
 
         self.rdbms = rdbms
-        if address is None:
-            address = os.environ.get('PGHOST', 'localhost')
         self.address = address
         self.port = port
         self.dbname = dbname
-        if not username:
-            username = get_username()
         self.username = username
         self.password = password
 
