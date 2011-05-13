@@ -24,6 +24,7 @@
 """ Parameters and system data for applications"""
 
 from decimal import Decimal
+import os
 
 from kiwi.argcheck import argcheck
 from kiwi.log import Logger
@@ -763,4 +764,6 @@ def ensure_system_parameters(update=False):
     trans.commit(close=True)
 
 def is_developer_mode():
+    if 'STOQLIB_DISABLE_DEVELOPER_MODE' in os.environ:
+        return
     return stoqlib.library.uninstalled
