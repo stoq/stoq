@@ -258,8 +258,8 @@ class LoginHelper:
 
             if not dialog:
                 dialog = LoginDialog(_("Access Control"))
-                if self._force_username:
-                    dialog.force_username(username)
+            if self._force_username:
+                dialog.force_username(username)
 
             ret = dialog.run(username, password, msg=retry_msg)
 
@@ -292,6 +292,7 @@ class LoginHelper:
                 self._abort(str(e))
             else:
                 log.info("Authenticated user %s" % username)
+                self._force_username = None
                 if dialog:
                     dialog.destroy()
 
