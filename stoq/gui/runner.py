@@ -57,7 +57,7 @@ class ApplicationRunner(object):
         self._appname = None
         self._application_cache = {}
         from stoqlib.gui.login import LoginHelper
-        self._login = LoginHelper()
+        self._login = LoginHelper(username=options.login_username)
         self._user = None
         self._blocked_apps = []
 

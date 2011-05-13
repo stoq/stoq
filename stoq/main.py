@@ -275,10 +275,6 @@ def _run_first_time_wizard(options):
     model = run_dialog(FirstTimeConfigWizard, None, options)
     if model is None:
         raise SystemExit("No configuration data provided")
-    # We have a successfull installation, but the user want to close the
-    # the application now.
-    if model is False:
-        raise SystemExit()
 
 def _run_update_wizard():
     from stoqlib.gui.base.dialogs import run_dialog
@@ -437,12 +433,17 @@ def _parse_command_line(args):
     log.info('parsing command line arguments: %s ' % (args,))
     parser = get_option_parser()
 
-    group = optparse.OptionGroup(parser, 'Stoq')
+    group = optparse.OptionGroup(parser, 'Stoq') 
     group.add_option('', '--wizard',
-                      action="store_true",
-                      dest="wizard",
-                      default=None,
-                      help='Run the wizard')
+                     action="store_true",
+                     dest="wizard",
+                     default=None,
+                     help='Run the wizard')
+    group.add_option('', '--login-username',
+                     action="store",
+                     dest="login_username",
+                     default=None,
+                     help='Username to login to stoq with')
     parser.add_option_group(group)
 
     options, args = parser.parse_args(args)
