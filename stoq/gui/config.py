@@ -48,6 +48,7 @@ import socket
 import gtk
 from kiwi.component import provide_utility
 from kiwi.datatypes import ValidationError
+from kiwi.environ import environ
 from kiwi.python import Settable
 from kiwi.ui.dialogs import info
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
@@ -105,6 +106,8 @@ class DatabaseSettingsStep(WizardEditorStep):
         self.has_installed_db = False
         self.admin_password = None
         WizardEditorStep.__init__(self, None, wizard)
+        logo = environ.find_resource('pixmaps', 'stoq_logo.png')
+        self.image1.set_from_file(logo)
         self.title_label.set_size('xx-large')
         self.title_label.set_bold(True)
         self.title_label.set_color('blue')
