@@ -44,9 +44,11 @@ class StoqCommandHandler:
         from stoq.lib.configparser import StoqConfig
         from stoq.lib.startup import setup
         config = StoqConfig()
-        config.load(options.filename)
+        if options.load_config:
+            config.load(options.filename)
         if create:
             config.create()
+
         setup(config, options, register_station=register_station,
               check_schema=check_schema, load_plugins=load_plugins)
         return config
@@ -97,6 +99,7 @@ class StoqCommandHandler:
         import socket
         from stoqlib.database.runtime import (get_connection,
                                               set_current_branch_station)
+        from stoq.lib.configparser import StoqConfig
         from stoq.lib.startup import clean_database
 
         config = self._read_config(options, register_station=False,
@@ -107,7 +110,8 @@ class StoqCommandHandler:
         if options.create_examples:
             from stoqlib.importers.stoqlibexamples import create
             create(utilities=True)
-        else:
+
+        if options.create_branch:
             # If we don't create examples, create a Test Branch
             from stoqlib.database.admin import create_main_branch
             from stoqlib.database.runtime import new_transaction
@@ -115,13 +119,26 @@ class StoqCommandHandler:
             create_main_branch(trans, "Main Branch")
             trans.close()
 
-        # Register the current computer as a branch station
-        self._register(options.verbose)
+        if options.register_station:
+            # Register the current computer as a branch station
+            self._register(options.verbose)
+
+        if options.plugins:
+            self._enable_plugins(options.plugins.split(','))
 
     def opt_init(self, parser, group):
         group.add_option('-e', '--create-examples',
                          action='store_true',
                          dest='create_examples')
+        group.add_option('', '--no-create-branch',
+                         action='store_false',
+                         dest='create_branch')
+        group.add_option('', '--no-register-station',
+                         action='store_false',
+                         dest='register_station')
+        group.add_option('', '--enable-plugins',
+                         action='store',
+                         dest='plugins')
 
     def cmd_configure(self, options):
         if not options.dbname:
@@ -138,6 +155,18 @@ class StoqCommandHandler:
         self._read_config(options, register_station=False)
 
         self._register(True)
+
+    def _enable_plugins(self, plugin_name):
+        from stoqlib.lib.pluginmanager import provide_plugin_manager
+
+        manager = provide_plugin_manager()
+        if manager.has_plugin(plugin_name):
+            manager.enable_plugin(plugin_name)
+        else:
+            print 'No plugin called: %s' % (plugin_name,)
+            print 'Available plugins are:'
+            for plugin_name in manager.get_plugin_names():
+                print '  ', plugin_name
 
     def _register(self, verbose):
         import socket
@@ -245,20 +274,11 @@ class StoqCommandHandler:
         execute_sql(schema)
 
     def cmd_enable_plugin(self, options, plugin_name):
-        from stoqlib.lib.pluginmanager import provide_plugin_manager
-
         self._read_config(options, register_station=False,
                           check_schema=False,
                           load_plugins=False)
 
-        manager = provide_plugin_manager()
-        if manager.has_plugin(plugin_name):
-            manager.enable_plugin(plugin_name)
-        else:
-            print 'No plugin called: %s' % (plugin_name,)
-            print 'Available plugins are:'
-            for plugin_name in manager.get_plugin_names():
-                print '  ', plugin_name
+        self._enable_plugins([plugin_name])
 
     def cmd_generate_sintegra(self, options, filename, month):
         import datetime
