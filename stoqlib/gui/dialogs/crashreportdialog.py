@@ -40,6 +40,7 @@ import stoqdrivers
 import stoqlib
 
 from stoqlib.database.runtime import get_connection
+from stoqlib.exceptions import StoqlibError
 from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -82,9 +83,13 @@ def _collect_crash_report(params, tracebacks):
     text += "Stoqlib version: %s\n" % (stoqlib.version, )
     text += "%s version: %s\n" % (params['app-name'], params['app-version'])
     text += "Psycopg version: %20s\n" % (psycopg2.__version__, )
-    conn = get_connection()
-    text += "PostgreSQL version: %20s\n" % (conn.queryOne('SELECT version();'))
-    conn.close()
+    try:
+        conn = get_connection()
+        text += "PostgreSQL version: %20s\n" % (
+            conn.queryOne('SELECT version();'))
+        conn.close()
+    except StoqlibError:
+        pass
     text += ('-' * 80) + '\n'
     return text
 
