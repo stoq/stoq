@@ -80,6 +80,10 @@ def get_option_parser():
                      dest="password",
                      help='user password',
                      default='')
+    group.add_option('', '--no-load-config',
+                     action='store_false',
+                     help="do not load stoq.conf",
+                     dest='load_config')
     parser.add_option_group(group)
     return parser
 
