@@ -48,7 +48,6 @@ def drop_database(dbname, settings=None):
     @param settings: optionally provide seetings, so that you dont have to
     provide IDatabaseSettings before calling this function.
     """
-    log.info("Droping database %s" % (dbname,))
     if not settings:
         settings = get_utility(IDatabaseSettings)
     conn = settings.get_default_connection()
@@ -59,6 +58,7 @@ def drop_database(dbname, settings=None):
         for i in range(3):
             try:
                 conn.dropDatabase(dbname, ifExists=True)
+                log.info("Dropped database %s" % (dbname,))
                 break
             except Exception, e:
                 time.sleep(1)
