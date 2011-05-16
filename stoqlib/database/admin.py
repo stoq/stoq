@@ -64,6 +64,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 log = Logger('stoqlib.admin')
+create_log = Logger('stoqlib.database.create')
 USER_ADMIN_DEFAULT_NAME = 'admin'
 
 def ensure_admin_user(administrator_password):
@@ -256,10 +257,8 @@ def _get_latest_schema():
 
 def create_base_schema():
     log.info('Creating base schema')
-
+    create_log.info("SCHEMA")
     settings = get_utility(IDatabaseSettings)
-
-    log.info('Creating base schema')
 
     # A Base schema shared between all RDBMS implementations
     schema = _get_latest_schema()
@@ -300,9 +299,11 @@ def initialize_system():
     settings = get_utility(IDatabaseSettings)
     clean_database(settings.dbname)
     create_base_schema()
+    create_log("INIT START")
     _register_payment_methods()
     ensure_sellable_constants()
     ensure_system_parameters()
     _ensure_card_providers()
     create_default_profiles()
     _install_invoice_templates()
+    create_log("INIT DONE")
