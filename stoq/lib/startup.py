@@ -100,6 +100,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         except DatabaseError, e:
             error(e.short, e.msg)
 
+        orm_startup()
         # For LTSP systems we cannot use the hostname as stoq is run
         # on a shared serve system. Instead the ip of the client system
         # is available in the LTSP_CLIENT environment variable
@@ -128,6 +129,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
                   _("The database schema has changed, but the database has "
                     "not been updated. Run 'stoqdbadmin updateschema` to"
                     "update the schema  to the latest available version."))
+        orm_startup()
 
     if options:
         if options.debug:
@@ -138,7 +140,6 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
 
         if options.sqldebug:
             orm_enable_debugging()
-    orm_startup()
 
 
 def needs_schema_update():
@@ -167,10 +168,10 @@ def clean_database(config, options=None):
 
     password = password or config.get_password()
     initialize_system()
-    _set_default_profile_settings()
+    set_default_profile_settings()
     ensure_admin_user(password)
 
-def _set_default_profile_settings():
+def set_default_profile_settings():
     trans = new_transaction()
     profile = UserProfile.selectOneBy(name='Salesperson', connection=trans)
     assert profile
