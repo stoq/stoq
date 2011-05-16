@@ -72,6 +72,7 @@ class DatabaseSettings(object):
         self.dbname = dbname
         self.username = username
         self.password = password
+        self.first = True
 
     def _build_uri(self, dbname, filter_password=False):
         # Here we construct a uri for database access like:
@@ -100,8 +101,10 @@ class DatabaseSettings(object):
         conn_uri = self._build_uri(dbname)
 
         # Do not output the password in the logs
-        log.info('connecting to %s' % self._build_uri(
-            dbname, filter_password=True))
+        if not self.first:
+            log.info('connecting to %s' % self._build_uri(
+                dbname, filter_password=True))
+            self.first = False
 
         try:
             conn = connectionForURI(conn_uri)
@@ -181,3 +184,14 @@ class DatabaseSettings(object):
         retval = conn.databaseExists(self.dbname)
         conn.close()
         return retval
+
+    def get_command_line_arguments(self):
+        args = []
+        # Keep in sync with stoq/lib/options.py
+        args.extend(['-d', self.dbname])
+        args.extend(['-H', self.address])
+        args.extend(['-p', str(self.port)])
+        args.extend(['-u', self.username])
+        if self.password:
+            args.extend(['-w', self.password])
+        return args
