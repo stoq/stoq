@@ -52,6 +52,8 @@ from stoqlib.lib.parameters import (check_parameter_presence,
 
 _ = stoqlib_gettext
 log = Logger('stoqlib.database.migration')
+# Used by the wizard
+create_log = Logger('stoqlib.database.create')
 
 
 class Patch(object):
@@ -84,7 +86,6 @@ class Patch(object):
         """Apply the patch
         @param conn: A database connection
         """
-        log.info('Applying: %s' % (self.filename,))
 
         temporary = tempfile.mktemp(prefix="patch-%d-%d-" % self.get_version())
 
@@ -174,12 +175,16 @@ class SchemaMigration(object):
 
         last_level = None
         if current_version != latest_available:
-            applied = []
             for patch in patches:
                 if patch.get_version() <= current_version:
                     continue
+                patches_to_apply.append(patch)
+
+            log.info("Applying %d patches" % (len(patches),))
+
+            for i, patch in enumerate(patches_to_apply):
+                log.info('Applying: %s' % (self.filename,))
                 patch.apply(self.conn)
-                applied.append(patch)
 
             assert applied
             log.info("All patches (%s) applied." % (
@@ -218,9 +223,16 @@ class SchemaMigration(object):
         """
         log.info("Applying all patches")
         current_version = self.get_current_version()
+        to_apply = []
         for patch in self._get_patches():
             if patch.get_version() > current_version:
-                patch.apply(self.conn)
+                to_apply.append(patch)
+
+        create_log.info("PATCHES:%d" % (len(to_apply),))
+        for i, patch in enumerate(to_apply):
+            create_log.info("PATCH:%d" % (i,))
+            patch.apply(self.conn)
+        create_log.info("PATCHES APPLIED")
 
     def update(self):
         """Updates the database schema
@@ -318,7 +330,7 @@ class StoqlibSchemaMigration(SchemaMigration):
                     info(_(u'This may take some time'))
 
                     new_name = restore_database(temporary)
-                    info(_(u'Database was restored with name %s.\n\n') 
+                    info(_(u'Database was restored with name %s.\n\n')
                             % new_name)
         finally:
             if backup is True:
