@@ -316,13 +316,13 @@ dbusername=%(DBUSERNAME)s"""
         """
 
         if options.address:
-            self._config.set('Database', 'address', options.address)
+            self.set('Database', 'address', options.address)
         if options.port:
-            self._config.set('Database', 'port', options.port)
+            self.set('Database', 'port', options.port)
         if options.dbname:
-            self._config.set('Database', 'dbname', options.dbname)
+            self.set('Database', 'dbname', options.dbname)
         if options.username:
-            self._config.set('Database', 'dbusername', options.username)
+            self.set('Database', 'dbusername', options.username)
         if options.password:
             self.store_password(options.password)
 
