@@ -45,6 +45,8 @@ class ProcessView(gtk.ScrolledWindow):
 
     def __init__(self):
         gtk.ScrolledWindow.__init__(self)
+        self.set_policy(gtk.POLICY_NEVER,
+                        gtk.POLICY_AUTOMATIC)
         self.listen_stdout = True
         self.listen_stderr = False
         self._source_ids = []
