@@ -55,9 +55,11 @@ class DatabaseSettings(object):
 
     implements(IDatabaseSettings)
 
-    def __init__(self, rdbms=DEFAULT_RDBMS, address=None, port=5432,
+    def __init__(self, rdbms=None, address=None, port=None,
                  dbname=None, username=None, password=''):
 
+        if not rdbms:
+            rdbms = 'postgres'
         if rdbms == 'postgres':
             if not address:
                 address = os.environ.get('PGHOST', 'localhost')
@@ -65,7 +67,8 @@ class DatabaseSettings(object):
                 dbname = os.environ.get('PGDATABASE', 'stoq')
             if not username:
                 username = os.environ.get('PGUSER', get_username())
-
+            if not port:
+                port = os.environ.get('PGPORT', 5432)
         self.rdbms = rdbms
         self.address = address
         self.port = port
@@ -73,6 +76,10 @@ class DatabaseSettings(object):
         self.username = username
         self.password = password
         self.first = True
+
+    def __repr__(self):
+        return '<DatabaseSettings rdbms=%s address=%s port=%d dbname=%s username=%s' % (
+            self.rdbms, self.address, self.port, self.dbname, self.username)
 
     def _build_uri(self, dbname, filter_password=False):
         # Here we construct a uri for database access like:
