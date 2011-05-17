@@ -291,9 +291,9 @@ class CreateDatabaseStep(BaseWizardStep):
     def _setup_pgpass(self):
         # There's no way to pass in the password to psql, so we need
         # to setup a ~/.pgpass where we store the password entered here
-        pgpass = os.environ.get(
-            'PGPASSFILE',
-            os.path.join(get_application_dir(), '.pgpass'))
+        directory = os.environ.get('HOME', os.environ.get('APPDATA'))
+        passfile = os.path.join(directory, '.pgpass')
+        pgpass = os.environ.get('PGPASSFILE', passfile)
 
         if os.path.exists(pgpass):
             lines = []
@@ -304,9 +304,10 @@ class CreateDatabaseStep(BaseWizardStep):
         else:
             lines = []
 
-        line = '%s:%s:%s:%s:%s' % (self.model.address, self.model.port,
-                                   self.model.dbname,
-                                   self.model.username, self.model.password)
+        settings = self.wizard.settings
+        line = '%s:%s:%s:%s:%s' % (settings.address, settings.port,
+                                   settings.dbname,
+                                   settings.username, settings.password)
         if line in lines:
             return
 
