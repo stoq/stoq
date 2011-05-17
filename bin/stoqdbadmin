@@ -126,6 +126,9 @@ class StoqCommandHandler:
         if options.plugins:
             self._enable_plugins(options.plugins.split(','))
 
+        config.set_from_options(options)
+        config.flush()
+
     def opt_init(self, parser, group):
         group.add_option('-e', '--create-examples',
                          action='store_true',
