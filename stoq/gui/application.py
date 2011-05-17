@@ -25,10 +25,9 @@
 
 import datetime
 import gettext
-import json
 import os
+import json
 
-from dateutil.parser import parse
 import gtk
 from kiwi.component import get_utility
 from kiwi.enums import SearchFilterPosition
@@ -39,7 +38,6 @@ from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       finish_transaction, get_connection)
 from stoqlib.lib.interfaces import ICookieFile, IStoqConfig
 from stoqlib.lib.message import yesno, info
-from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
@@ -561,22 +559,21 @@ class VersionChecker(object):
         self.conn = conn
         self.app = app
 
-    def _display_new_version_message(self, details):
-        button = gtk.LinkButton(details['url'], _(u'Learn More...'))
+    def _display_new_version_message(self, latest_version):
+        button = gtk.LinkButton(
+            'http://www.stoq.com.br/pt-br/more/whatsnew',
+            _(u'Learn More...'))
         msg = _('<b>There is a new Stoq version available (%s)</b>') % (
-            details['version'], )
+            latest_version, )
         self.app.add_info_bar(gtk.MESSAGE_INFO, msg, action_widget=button)
 
-    def _check_details(self, details):
+    def _check_details(self, latest_version):
         current_version = stoq.version
-        if details['version'] > current_version:
-            self._display_new_version_message(details)
+        if tuple(latest_version.split('.')) > current_version:
+            self._display_new_version_message(latest_version)
         else:
             log.debug('Using latest version %r, not showing message' % (
                 stoq.version, ))
-
-    def _get_check_filename(self):
-        return os.path.join(get_application_dir(), 'last_check')
 
     def _download_details(self):
         log.debug('Downloading new version information')
@@ -585,36 +582,37 @@ class VersionChecker(object):
         response.whenDone(self._on_response_done)
 
     def _on_response_done(self, response, data):
-        check_file = self._get_check_filename()
-        open(check_file, 'w').write(data)
 
         try:
             details = json.loads(data)
         except ValueError:
             log.debug('Error parsing json.')
             return
-
-        self._check_details(details)
+        self._check_details(details['version'])
+        config = get_utility(IStoqConfig)
+        config.set('General', 'last-version-check',
+                   datetime.date.today().strftime('%Y-%m-%d'))
+        config.set('General', 'latest-version', details['version'])
+        config.flush()
 
     #
     #   Public API
     #
 
     def check_new_version(self):
-        check_file = self._get_check_filename()
-
-        try:
-            details = json.loads(open(check_file, 'r').read())
-        except (IOError, ValueError):
+        if is_developer_mode():
+            return
+        config = get_utility(IStoqConfig)
+        date = config.get('General', 'last-version-check')
+        if date:
+            check_date = datetime.datetime.strptime(date, '%Y-%m-%d')
+            diff = datetime.date.today() - check_date.date()
+            if diff.days >= self.DAYS_BETWEEN_CHECKS:
+                return self._download_details()
+        else:
             return self._download_details()
 
-        check_date = parse(details['check_date']).date()
-        diff = datetime.date.today() - check_date
-
-        # If the file was downloaded more than a week ago, download again
-        if diff.days >= self.DAYS_BETWEEN_CHECKS:
-            return self._download_details()
-
-        # Otherwise, use the current file for displaying information
-        self._check_details(details)
+        latest_version = config.get('General', 'latest-version')
+        if latest_version:
+            self._check_details(latest_version)
 
