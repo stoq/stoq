@@ -101,17 +101,15 @@ class DatabaseSettingsStep(WizardEditorStep):
                      'dbname')
 
     def __init__(self, wizard):
-        self.has_installed_db = False
-        self.admin_password = None
         WizardEditorStep.__init__(self, None, wizard, wizard.settings)
+        self._update_widgets()
+
+    def _update_widgets(self):
         logo = environ.find_resource('pixmaps', 'stoq_logo.png')
         self.image1.set_from_file(logo)
         self.title_label.set_size('xx-large')
         self.title_label.set_bold(True)
         self.title_label.set_color('blue')
-        self._update_widgets()
-
-    def _update_widgets(self):
         selected = self.authentication_type.get_selected_data()
         need_password = selected == PASSWORD_AUTHENTICATION
         self.password.set_sensitive(need_password)
@@ -394,7 +392,6 @@ class FinishInstallationStep(BaseWizardStep):
         # before we quit
         self.wizard.finish()
         self.wizard.retval = None
-        self.wizard.quit = True
 
 
 #
