@@ -160,7 +160,7 @@ class DatabaseSettingsStep(WizardEditorStep):
         if self.wizard.has_installed_db:
             return FinishInstallationStep(self.wizard, self)
         else:
-            return ExampleDatabaseStep(self.wizard, self.model)
+            return ExampleDatabaseStep(self.wizard, self)
 
     #
     # Callbacks
@@ -177,7 +177,7 @@ class ExampleDatabaseStep(BaseWizardStep):
 
     def next_step(self):
         self.wizard.create_examples = not self.empty_database_radio.get_active()
-        return PluginStep(self.wizard)
+        return PluginStep(self.wizard, self)
 
 
 class PluginStep(BaseWizardStep):
@@ -192,15 +192,15 @@ class PluginStep(BaseWizardStep):
         if self.enable_nfe.get_active():
             self.wizard.plugins.append('nfe')
 
-        return AdminPasswordStep(self.wizard)
+        return AdminPasswordStep(self.wizard, self)
 
 
 class AdminPasswordStep(BaseWizardStep):
     """ Ask a password for the new user being created. """
     gladefile = 'AdminPasswordStep'
 
-    def __init__(self, wizard):
-        BaseWizardStep.__init__(self, wizard)
+    def __init__(self, wizard, previous):
+        BaseWizardStep.__init__(self, wizard, previous)
         self.description_label.set_markup(
             self.get_description_label())
         self.title_label.set_markup(self.get_title_label())
@@ -411,7 +411,6 @@ class FirstTimeConfigWizard(BaseWizard):
         self.settings = settings
         self.config = config
         self.options = options
-        self.branch = None
         self.create_examples = False
         self.device_slave = None
         self.plugins = []
@@ -423,8 +422,6 @@ class FirstTimeConfigWizard(BaseWizard):
         else:
             first_step = DatabaseSettingsStep(self)
         BaseWizard.__init__(self, None, first_step, title=self.title)
-        # Disable back until #2771 is solved
-        self.previous_button.hide()
 
     def _create_station(self, trans, station_name):
         station = BranchStation.selectBy(connection=trans,
