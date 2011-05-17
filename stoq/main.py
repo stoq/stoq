@@ -46,6 +46,8 @@ _ = gettext.gettext
 _log_filename = None
 _start_time = time.time()
 _stream = None
+_ran_wizard = False
+_restart = False
 
 # To avoid kiwi dependency at startup
 log = logging.getLogger('stoq.main')
@@ -92,20 +94,26 @@ def _exit_func():
     #from stoqlib.lib.parameters import is_developer_mode
     # Disable dialog in developer mode eventually, but we
     # first need to test it properly.
-    #if is_developer_mode():
-    #    return
-    if not _tracebacks:
-        return
-    import stoq
-    from stoqlib.gui.dialogs.crashreportdialog import show_dialog
-    uptime = int(time.time() - _start_time)
-    params = {
-        'app-name': 'Stoq',
-        'app-version': stoq.version,
-        'app-uptime': uptime,
-        'log-filename': _log_filename,
-    }
-    show_dialog(params, _tracebacks)
+    #if _tracebacks and not is_developer_mode():
+    if _tracebacks:
+        import stoq
+        from stoqlib.gui.dialogs.crashreportdialog import show_dialog
+        uptime = int(time.time() - _start_time)
+        params = {
+            'app-name': 'Stoq',
+            'app-version': stoq.version,
+            'app-uptime': uptime,
+            'log-filename': _log_filename,
+            }
+        show_dialog(params, _tracebacks)
+
+    if _restart:
+        import subprocess
+        subprocess.Popen([sys.argv[0]], shell=True)
+
+def restart_stoq_atexit():
+    global _restart
+    _restart = True
 
 def _check_dependencies():
     from stoqlib.lib.message import error
@@ -140,7 +148,7 @@ def _check_dependencies():
     settings = gtk.settings_get_default()
     # Creating a button as a temporary workaround for bug
     # https://bugzilla.gnome.org/show_bug.cgi?id=632538, until gtk 3.0
-    b = gtk.Button()
+    gtk.Button()
     settings.props.gtk_button_images = True
     _setup_ui_dialogs()
 
@@ -212,8 +220,6 @@ def _check_version_policy():
         return
 
     import stoq
-    import stoqlib
-    stoqlib_version = tuple(stoqlib.version.split('.'))
 
     #
     # Policies for stoq/stoqlib versions,
@@ -268,13 +274,14 @@ def _check_version_policy():
            raise SystemExit("Unstable stoq needs to depend on unstable stoqlib")
 
 
-
-def _run_first_time_wizard(options):
+def _run_first_time_wizard(options, settings=None, config=None):
     from stoqlib.gui.base.dialogs import run_dialog
     from stoq.gui.config import FirstTimeConfigWizard
-    model = run_dialog(FirstTimeConfigWizard, None, options)
-    if model is None:
-        raise SystemExit("No configuration data provided")
+    global _ran_wizard
+    _ran_wizard = True
+    # This may run Stoq
+    run_dialog(FirstTimeConfigWizard, None, options, settings, config)
+    raise SystemExit()
 
 def _run_update_wizard():
     from stoqlib.gui.base.dialogs import run_dialog
@@ -295,13 +302,39 @@ def _setup_ui_dialogs():
 
     provide_utility(ISystemNotifier, DialogSystemNotifier(), replace=True)
 
-def _setup_cookiefile(config_dir):
+def _setup_cookiefile():
     log.debug('setting up cookie file')
     from kiwi.component import provide_utility
     from stoqlib.lib.cookie import Base64CookieFile
     from stoqlib.lib.interfaces import ICookieFile
-    cookiefile = os.path.join(config_dir, "cookie")
+    app_dir = get_application_dir()
+    cookiefile = os.path.join(app_dir, "cookie")
     provide_utility(ICookieFile, Base64CookieFile(cookiefile))
+
+def _check_main_branch():
+    from stoqlib.database.runtime import get_connection, new_transaction
+    from stoqlib.domain.person import Person
+    from stoqlib.domain.interfaces import IBranch, ICompany
+    from stoqlib.lib.parameters import sysparam
+    conn = get_connection()
+    compaines = Person.iselect(ICompany, connection=conn)
+    if (compaines.count() == 0 or
+        not sysparam(conn).MAIN_COMPANY):
+        from stoqlib.gui.base.dialogs import run_dialog
+        from stoqlib.gui.dialogs.branchdialog import BranchDialog
+        from stoqlib.lib.message import info
+        if _ran_wizard:
+            info(_("You need to register a company before using Stoq"))
+        else:
+            info(_("Couldn't find a company, You'll need to register one before using Stoq"))
+        trans = new_transaction()
+        person = run_dialog(BranchDialog, None, trans)
+        if not person:
+            raise SystemExit
+        sysparam(trans).MAIN_COMPANY = IBranch(person).id
+        trans.commit()
+
+    return
 
 def _prepare_logfiles():
     global _log_filename, _stream
@@ -346,32 +379,19 @@ def _initialize(options):
     config.load(options.filename)
     config_dir = config.get_config_directory()
 
-    remove_flag = os.path.join(config_dir, 'remove_examples')
     config_file = os.path.join(config_dir, 'stoq.conf')
 
-    if os.path.exists(remove_flag):
+    wizard = False
+    if options.wizard or not os.path.exists(config_file):
+        _run_first_time_wizard(options)
+
+    if config.get('Database', 'remove_examples') == 'True':
         from stoqlib.database.database import drop_database
         log.debug('Removing examples database as requested')
 
         settings = config.get_settings()
         drop_database(settings.dbname, settings)
-
-        os.unlink(remove_flag)
-        os.unlink(config_file)
-
-    wizard = False
-    if options.wizard or not os.path.exists(config_file):
-        _run_first_time_wizard(options)
-        wizard = True
-
-    # There must be ICookieFile registration now, regardless if we
-    # ran the wizard or not
-    _setup_cookiefile(config_dir)
-
-    # The rest is only necessary when we're not running the first-time
-    # configuration wizard, so we can safely skip out
-    if wizard:
-        return
+        _run_first_time_wizard(options, settings, config)
 
     try:
         config.check_connection()
@@ -385,10 +405,12 @@ def _initialize(options):
     from stoqlib.database.exceptions import PostgreSQLError
     from stoq.lib.startup import setup, needs_schema_update
     log.debug('calling setup()')
+
     # XXX: progress dialog for connecting (if it takes more than
     # 2 seconds) or creating the database
     try:
-        setup(config, options, check_schema=False)
+        setup(config, options, register_station=False,
+              check_schema=False)
         if needs_schema_update():
             _run_update_wizard()
     except (StoqlibError, PostgreSQLError), e:
@@ -396,13 +418,15 @@ def _initialize(options):
               'error=%s uri=%s' % (str(e), config.get_connection_uri()))
         raise SystemExit("Error: bad connection settings provided")
 
-def _run_app(options, appname):
+def run_app(options, appname):
     from stoqlib.gui.base.gtkadds import register_iconsets
     from stoqlib.exceptions import LoginError
     from stoqlib.lib.message import error
 
     log.debug('register stock icons')
     register_iconsets()
+
+    _setup_cookiefile()
 
     from stoq.gui.runner import ApplicationRunner
     runner = ApplicationRunner(options)
@@ -412,6 +436,8 @@ def _run_app(options, appname):
             return
     except LoginError, e:
         error(e)
+
+    _check_main_branch()
 
     if appname:
         app = runner.get_app_by_name(appname)
@@ -433,7 +459,7 @@ def _parse_command_line(args):
     log.info('parsing command line arguments: %s ' % (args,))
     parser = get_option_parser()
 
-    group = optparse.OptionGroup(parser, 'Stoq') 
+    group = optparse.OptionGroup(parser, 'Stoq')
     group.add_option('', '--wizard',
                      action="store_true",
                      dest="wizard",
@@ -471,4 +497,4 @@ def main(args):
     _check_version_policy()
 
     _initialize(options)
-    _run_app(options, appname)
+    run_app(options, appname)
