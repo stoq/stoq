@@ -1,3 +1,9 @@
+stoqlib (0.9.15.99ubuntu2) lucid; urgency=low
+
+  * Require python-vte
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 17 May 2011 15:06:08 -0300
+
 stoqlib (0.9.15.99ubuntu1) lucid; urgency=low
 
   * Remove poppler dependency so we can build on karmic
