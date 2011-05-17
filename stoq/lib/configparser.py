@@ -41,10 +41,6 @@ from stoqlib.exceptions import (FilePermissionError, ConfigError,
 _ = gettext.gettext
 _config = None
 
-def getlogin():
-    import pwd
-    return pwd.getpwuid(os.getuid())[0]
-
 class StoqConfig:
     config_template = \
 """
@@ -143,29 +139,6 @@ dbusername=%(DBUSERNAME)s"""
         raise NoConfigurationError('%s does not have option: %s' %
                                    (self._filename, name))
 
-    def _get_rdbms_name(self):
-        if not self.has_option('rdbms', section='Database'):
-            return 'postgres'
-        return self.get_option('rdbms', section='Database')
-
-    def _get_address(self):
-        return self.get_option('address', section='Database')
-
-    def _get_port(self):
-        if not self.has_option('port', section='Database'):
-            return '5432'
-        return self.get_option('port', section='Database')
-
-    def _get_dbname(self):
-        if not self.has_option('dbname', section='Database'):
-            return self._get_username()
-        return self.get_option('dbname', section='Database')
-
-    def _get_username(self):
-        if not self.has_option('dbusername', section='Database'):
-            return getlogin()
-        return self.get_option('dbusername', section='Database')
-
     #
     # Public API
     #
@@ -217,7 +190,8 @@ dbusername=%(DBUSERNAME)s"""
         self._config.set('Database', 'dbname', settings.dbname)
         self._config.set('Database', 'testdb', settings.dbname)
         self._config.set('Database', 'dbusername', settings.username)
-        self.store_password(settings.password)
+        if settings.password:
+            self.store_password(settings.password)
         self._settings = settings
 
     def flush(self):
@@ -275,15 +249,10 @@ dbusername=%(DBUSERNAME)s"""
         fd.write(binascii.b2a_base64(password))
         fd.close()
 
-    #
-    # Accessors
-    #
-
     def get_password(self):
         """
         @returns: password or None if it is not set
         """
-
         configdir = self.get_config_directory()
         data_file = os.path.join(configdir, StoqConfig.datafile)
         return self._get_password(data_file)
@@ -293,20 +262,19 @@ dbusername=%(DBUSERNAME)s"""
         return db_settings.get_connection_uri()
 
     def get_settings(self):
-        if not self._settings:
-            rdbms = self._get_rdbms_name()
-            dbname = self.get_option('dbname', section='Database')
+        if self._settings:
+            return self._settings
 
-            if self.has_option('dbusername', section='Database'):
-                username = self.get_option('dbusername', section='Database')
-            else:
-                username = getlogin()
-            settings = DatabaseSettings(
-                rdbms, self._get_address(), self._get_port(),
-                dbname, username, self.get_password())
-        else:
-            settings = self._settings
-        return settings
+        rdbms = self.get('Database', 'rdbms')
+        address = self.get('Database', 'address')
+        dbname = self.get('Database', 'dbname')
+        username = self.get('Database', 'dbusername')
+        port = self.get('Database', 'port')
+        if port:
+            port = int(port)
+        password = self.get_password()
+        return DatabaseSettings(rdbms, address, port,
+                                dbname, username, password)
 
     @argcheck(optparse.Values)
     def set_from_options(self, options):
