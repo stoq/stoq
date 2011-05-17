@@ -440,12 +440,10 @@ class AppWindow(BaseAppWindow):
                  gtk.RESPONSE_NO,_(u"Don't Remove"),  _(u"Remove Examples")):
              return
 
-        info(_('Please, start stoq again to configure new database'))
-
-        stoqdir = get_application_dir()
-        flag_file = os.path.join(stoqdir, 'remove_examples')
-        open(flag_file, 'w').write('')
-
+        from stoq.main import restart_stoq_atexit
+        restart_stoq_atexit()
+        self._config.set('Database', 'remove_examples', 'True')
+        self._config.flush()
         self.shutdown_application()
 
     def _on_hide__clicked(self, button, bar):
@@ -453,6 +451,7 @@ class AppWindow(BaseAppWindow):
         bar.destroy()
         self._config.set('UI', 'hide_example_warning', 'True')
         self._config.flush()
+
 
 class SearchableAppWindow(AppWindow):
     """

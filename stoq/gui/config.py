@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006, 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -33,49 +33,43 @@ Current flow of the database steps:
         -> PluginStep
     If New DB -> AdminPasswordStep
         -> ExampleDatabaseStep
-            If DB is empty -> PluginStep
-            Otherwise      -> BranchSettingsStep
-                -> PluginStep
+        -> PluginStep
+        -> DatabasePage
 -> FinishInstallationStep
 
 """
 
 import gettext
-from decimal import Decimal
 import os
 import socket
 
 import gtk
 from kiwi.component import provide_utility
-from kiwi.datatypes import ValidationError
 from kiwi.environ import environ
 from kiwi.python import Settable
 from kiwi.ui.dialogs import info
-from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
-from stoqlib.database.admin import (USER_ADMIN_DEFAULT_NAME, user_has_usesuper,
-                                    create_main_branch)
-from stoqlib.database.interfaces import ICurrentBranch, ICurrentBranchStation
-from stoqlib.database.runtime import (new_transaction, rollback_and_begin,
-                                      get_current_branch)
+from kiwi.ui.delegates import GladeSlaveDelegate
+from kiwi.ui.wizard import WizardStep
+from stoqlib.exceptions import  DatabaseInconsistency
+from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME, ensure_admin_user
+from stoqlib.database.interfaces import ICurrentBranchStation
+from stoqlib.database.runtime import new_transaction
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.person import Person
 from stoqlib.domain.station import BranchStation
-from stoqlib.domain.interfaces import IBranch, IUser, ICompany
+from stoqlib.domain.interfaces import IUser
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseError
+from stoqlib.gui.base.wizards import BaseWizard, WizardEditorStep
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
-from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
-                                      BaseWizardStep)
-from stoqlib.importers.stoqlibexamples import create as create_examples
-from stoqlib.lib.message import warning, yesno, error
+from stoqlib.gui.processview import ProcessView
+from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.osutils import get_application_dir
-from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.pluginmanager import provide_plugin_manager
-from stoqlib.lib.validators import validate_cnpj
 
 from stoq.lib.configparser import StoqConfig
-from stoq.lib.startup import clean_database, setup
-
+from stoq.lib.options import get_option_parser
+from stoq.lib.startup import setup, set_default_profile_settings
+from stoq.main import run_app
 
 _ = gettext.gettext
 
@@ -87,6 +81,15 @@ _ = gettext.gettext
 (TRUST_AUTHENTICATION,
  PASSWORD_AUTHENTICATION) = range(2)
 
+class BaseWizardStep(WizardStep, GladeSlaveDelegate):
+    """A wizard step base class definition"""
+    gladefile = None
+
+    def __init__(self, wizard, previous=None):
+        self.wizard = wizard
+        WizardStep.__init__(self, previous)
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
+
 
 class DatabaseSettingsStep(WizardEditorStep):
     gladefile = 'DatabaseSettingsStep'
@@ -97,15 +100,10 @@ class DatabaseSettingsStep(WizardEditorStep):
                      'password',
                      'dbname')
 
-    authentication_types = {TRUST_AUTHENTICATION: _("Trust"),
-                            PASSWORD_AUTHENTICATION: _("Needs Password")}
-
-    def __init__(self, wizard, model):
-        self.wizard_model = model
-        self.authentication_items = None
+    def __init__(self, wizard):
         self.has_installed_db = False
         self.admin_password = None
-        WizardEditorStep.__init__(self, None, wizard)
+        WizardEditorStep.__init__(self, None, wizard, wizard.settings)
         logo = environ.find_resource('pixmaps', 'stoq_logo.png')
         self.image1.set_from_file(logo)
         self.title_label.set_size('xx-large')
@@ -114,54 +112,14 @@ class DatabaseSettingsStep(WizardEditorStep):
         self._update_widgets()
 
     def _update_widgets(self):
-        if not self.authentication_items:
-            return
         selected = self.authentication_type.get_selected_data()
         need_password = selected == PASSWORD_AUTHENTICATION
         self.password.set_sensitive(need_password)
         self.passwd_label.set_sensitive(need_password)
 
-    def _create_database(self, db_settings):
-        # First check the version
-        conn = db_settings.get_default_connection()
-        version = conn.dbVersion()
-        if version < (8, 1):
-            info(_("Stoq requires PostgresSQL 8.1 or later, but %s found") %
-                 ".".join(map(str, version)))
-            conn.close()
-            return False
-
-        # Secondly, ask the user if he really wants to create the database,
-        dbname = db_settings.dbname
-        if yesno(_("The specifed database '%s' does not exist.\n"
-                   "Do you want to create it?") % dbname,
-                 gtk.RESPONSE_NO, _("Don't Create"), _("Create Database")):
-            return False
-
-        # Thirdly, verify that the user has permission to create the database
-        if not user_has_usesuper(conn):
-            username = db_settings.username
-            info(_("User <u>%s</u> has insufficient permissions") % username,
-                 _("The specified user `%s' does not have the required "
-                   "permissions to install Stoq.\n"
-                   "The PostgreSQL user must be a superuser. "
-                   "Consult the Stoq documentation for more information on "
-                   "how to solve this problem.") % username)
-            conn.close()
-            return False
-
-        # Finally create it, nothing should go wrong at this point
-        conn.createDatabase(dbname, ifNotExists=True)
-        conn.close()
-        return True
-
     #
     # WizardStep hooks
     #
-
-    def create_model(self, conn):
-        self.wizard_model.db_settings = db_settings = DatabaseSettings()
-        return db_settings
 
     def post_init(self):
         self.register_validate_function(self.wizard.refresh_next)
@@ -177,22 +135,160 @@ class DatabaseSettingsStep(WizardEditorStep):
             self.force_validation()
             return False
 
-        db_settings = self.wizard_model.db_settings
+        settings = self.wizard.settings
         try:
-            if db_settings.has_database():
-                conn = db_settings.get_connection()
-                self.has_installed_db = SystemTable.is_available(conn)
+            if settings.has_database():
+                conn = settings.get_connection()
+                self.wizard.has_installed_db = SystemTable.is_available(conn)
                 conn.close()
-            else:
-                if not self._create_database(db_settings):
-                    return False
-                self.has_installed_db = False
-
         except DatabaseError, e:
             warning(e.short, e.msg)
             return False
 
+        self.wizard.auth_type = self.authentication_type.get_selected()
+
         return True
+
+    def setup_proxies(self):
+        self.authentication_type.prefill([
+            (_("Needs Password"), PASSWORD_AUTHENTICATION),
+            (_("Trust"), TRUST_AUTHENTICATION)])
+
+        self.add_proxy(self.model, DatabaseSettingsStep.proxy_widgets)
+        self.model.stoq_user_data = Settable(password='')
+        self.add_proxy(self.model.stoq_user_data)
+
+    def next_step(self):
+        if self.wizard.has_installed_db:
+            return FinishInstallationStep(self.wizard, self)
+        else:
+            return ExampleDatabaseStep(self.wizard, self.model)
+
+    #
+    # Callbacks
+    #
+
+    def on_authentication_type__content_changed(self, *args):
+        self._update_widgets()
+
+
+
+class ExampleDatabaseStep(BaseWizardStep):
+    gladefile = "ExampleDatabaseStep"
+    model_type = object
+
+    def next_step(self):
+        self.wizard.create_examples = not self.empty_database_radio.get_active()
+        return PluginStep(self.wizard)
+
+
+class PluginStep(BaseWizardStep):
+    gladefile = 'PluginStep'
+
+    def post_init(self):
+        self.wizard.plugins = []
+
+    def next_step(self):
+        if self.enable_ecf.get_active():
+            self.wizard.plugins.append('ecf')
+        if self.enable_nfe.get_active():
+            self.wizard.plugins.append('nfe')
+
+        return AdminPasswordStep(self.wizard)
+
+
+class AdminPasswordStep(BaseWizardStep):
+    """ Ask a password for the new user being created. """
+    gladefile = 'AdminPasswordStep'
+
+    def __init__(self, wizard):
+        BaseWizardStep.__init__(self, wizard)
+        self.description_label.set_markup(
+            self.get_description_label())
+        self.title_label.set_markup(self.get_title_label())
+        self.setup_slaves()
+
+    def get_title_label(self):
+        return _("<b>Administrator Account Creation</b>")
+
+    def get_description_label(self):
+        return _("I'm adding a user called `%s' which will "
+                 "have administrator privilegies.\n\nTo be "
+                 "able to create other users you need to login "
+                 "with this user in the admin application and "
+                 "create them.") % USER_ADMIN_DEFAULT_NAME
+
+    def get_slave(self):
+        return PasswordEditorSlave(None)
+
+    #
+    # WizardStep hooks
+    #
+
+    def setup_slaves(self):
+        self.password_slave = self.get_slave()
+        self.attach_slave("password_holder", self.password_slave)
+
+    def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+        self.password_slave.password.grab_focus()
+
+    def validate_step(self):
+        good_pass = self.password_slave.validate_confirm()
+        if good_pass:
+            self.wizard.options.login_username = 'admin'
+            self.wizard.login_password = self.password_slave.model.new_password
+        return good_pass
+
+    def next_step(self):
+        return CreateDatabaseStep(self.wizard)
+
+
+class CreateDatabaseStep(BaseWizardStep):
+    gladefile = 'CreateDatabaseStep'
+
+    def post_init(self):
+        self.n_patches = 0
+        self.process_view = ProcessView()
+        self.process_view.listen_stdout = False
+        self.process_view.listen_stderr = True
+        self.process_view.connect('read-line', self._on_processview__readline)
+        self.process_view.connect('finished', self._on_processview__finished)
+        self.expander.add(self.process_view)
+        self._maybe_create_database()
+
+    def next_step(self):
+        return FinishInstallationStep(self.wizard)
+
+    def _maybe_create_database(self):
+        if self.wizard.remove_examples:
+            self._launch_stoqdbadmin()
+            return
+
+        # Save password if using password authentication
+        if self.wizard.auth_type == PASSWORD_AUTHENTICATION:
+            self._setup_pgpass()
+        settings = self.wizard.settings
+        self.wizard.config.load_settings(settings)
+
+        conn = settings.get_default_connection()
+        version = conn.dbVersion()
+        if version < (8, 1):
+            info(_("Stoq requires PostgresSQL 8.1 or later, but %s found") %
+                 ".".join(map(str, version)))
+            conn.close()
+            return False
+
+        # Secondly, ask the user if he really wants to create the database,
+        dbname = settings.dbname
+        if not yesno(_("The specifed database '%s' does not exist.\n"
+                   "Do you want to create it?") % dbname,
+                 gtk.RESPONSE_NO, _("Don't Create"), _("Create Database")):
+            self.process_view.feed("** Creating database\r\n")
+            self._launch_stoqdbadmin()
+        else:
+            self.process_view.feed("** Not creating database\r\n")
 
     def _setup_pgpass(self):
         # There's no way to pass in the password to psql, so we need
@@ -220,349 +316,64 @@ class DatabaseSettingsStep(WizardEditorStep):
         open(pgpass, 'w').write('\n'.join(lines))
         os.chmod(pgpass, 0600)
 
-    def next_step(self):
-        # At this point all the data is validated and it's guaranteed that
-        # we can create a connection to postgres.
+    def _launch_stoqdbadmin(self):
+        self.wizard.disable_next()
+        args = ['stoqdbadmin', 'init',
+                '--no-create-branch',
+                '--no-load-config',
+                '--no-register-station',
+                '-v']
+        if self.wizard.create_examples and not self.wizard.remove_examples:
+            args.append('--create-examples')
+        dbargs = self.wizard.settings.get_command_line_arguments()
+        args.extend(dbargs)
+        self.process_view.execute_command(args)
+        self.progressbar.set_text(_("Creating database..."))
 
-        # Save password if using password authentication
-        if self.authentication_type.get_selected() == PASSWORD_AUTHENTICATION:
-            self._setup_pgpass()
-        self.wizard.config.load_settings(self.wizard_model.db_settings)
-
-        setup(self.wizard.config, self.wizard.options,
-              register_station=False, check_schema=False,
-              load_plugins=False)
-
-        if not self.has_installed_db:
-            # Initialize database connections and create system data if the
-            # database is empty
-            if self.admin_password:
-                self.wizard.config.store_password(self.admin_password)
-
-            # To prevent the eventloop from starving
-            while gtk.events_pending():
-                gtk.main_iteration()
-            clean_database(self.wizard.config)
-
-        existing_conn = self.wizard.get_connection()
-        if existing_conn:
-            rollback_and_begin(existing_conn)
-            existing_conn.close()
-            conn = existing_conn
+    def _parse_process_line(self, line):
+        LOG_CATEGORY = 'stoqlib.database.create'
+        log_pos = line.find(LOG_CATEGORY)
+        if log_pos == -1:
+            return
+        line = line[log_pos+len(LOG_CATEGORY)+1:]
+        if line == 'SCHEMA':
+            value = 0.1
+            text = _("Creating base schema...")
+        elif line.startswith('PATCHES:'):
+            value = 0.35
+            self.n_patches = int(line.split(':', 1)[1])
+            text = _("Creating schema, applying patches...")
+        elif line.startswith('PATCH:'):
+            # 0.4 - 0.8 patches
+            patch = float(line.split(':', 1)[1])
+            value = 0.4 + (patch / self.n_patches) * 0.4
+            text = _("Creating schema, applying patch %d ..." % (patch+1, ))
+        elif line == 'INIT START':
+            text = _("Creating additional database objects ...")
+            value = 0.9
+        elif line == 'INIT DONE' and self.wizard.create_examples:
+            text = _("Creating examples ...")
+            value = 0.95
         else:
-            conn = new_transaction()
-        self.wizard.set_connection(conn)
+            return
+        self.progressbar.set_fraction(value)
+        self.progressbar.set_text(text)
 
-        dummy = object()
-        if self.has_installed_db:
-            # So we already have a installed db. At this point we should set our branch.
-            branches = Person.iselect(IBranch, connection=conn)
-            if not branches:
-                error(_("Schema error, no branches found"))
+    def _finish(self):
+        self.wizard.load_config_and_call_setup()
+        set_default_profile_settings()
+        ensure_admin_user(self.wizard.config.get_password())
+        self.progressbar.set_text(_("Done, click 'Forward' to continue"))
+        self.progressbar.set_fraction(1.0)
+        self.wizard.enable_next()
 
-            # use first branch until we support multiple branches.
-            self.wizard.branch = branches[0]
-            provide_utility(ICurrentBranch, self.wizard.branch)
-            self.wizard.options.login_username = 'admin'
-            return FinishInstallationStep(self.conn, self.wizard, self)
-        else:
-            return AdminPasswordStep(conn, self.wizard, self, dummy)
-
-    def setup_proxies(self):
-        items = [(value, key)
-                    for key, value in self.authentication_types.items()]
-        self.authentication_type.prefill(items)
-        # Select PASSWORD_AUTHENTICATION as the default authentication type.
-        self.authentication_type.select_item_by_data(PASSWORD_AUTHENTICATION)
-        self.authentication_items = items
-        self.add_proxy(self.model, DatabaseSettingsStep.proxy_widgets)
-        self.wizard_model.stoq_user_data = Settable(password='')
-        self.add_proxy(self.wizard_model.stoq_user_data)
-
-    #
     # Callbacks
-    #
 
-    def on_authentication_type__content_changed(self, *args):
-        self._update_widgets()
+    def _on_processview__readline(self, view, line):
+        self._parse_process_line(line)
 
-
-class AdminPasswordStep(BaseWizardStep):
-    """ Ask a password for the new user being created. """
-    gladefile = 'AdminPasswordStep'
-
-    def __init__(self, conn, wizard, previous, next_model):
-        self._next_model = next_model
-        BaseWizardStep.__init__(self, conn, wizard, previous)
-        self.description_label.set_markup(
-            self.get_description_label())
-        self.title_label.set_markup(self.get_title_label())
-        self.setup_slaves()
-
-    def get_title_label(self):
-        return _("<b>Administrator Account Creation</b>")
-
-    def get_description_label(self):
-        return _("I'm adding a user called `%s' which will "
-                 "have administrator privilegies.\n\nTo be "
-                 "able to create other users you need to login "
-                 "with this user in the admin application and "
-                 "create them.") % USER_ADMIN_DEFAULT_NAME
-
-    def get_slave(self):
-        return PasswordEditorSlave(self.conn)
-
-    #
-    # WizardStep hooks
-    #
-
-    def setup_slaves(self):
-        self.password_slave = self.get_slave()
-        self.attach_slave("password_holder", self.password_slave)
-
-    def post_init(self):
-        self.register_validate_function(self.wizard.refresh_next)
-        self.force_validation()
-        self.password_slave.password.grab_focus()
-
-    def validate_step(self):
-        good_pass =  self.password_slave.validate_confirm()
-        if good_pass:
-            adminuser = Person.iselectOneBy(IUser,
-                                            username=USER_ADMIN_DEFAULT_NAME,
-                                            connection=self.conn)
-            if adminuser is None:
-                raise DatabaseInconsistency(
-                    ("You should have a user with username: %s"
-                     % USER_ADMIN_DEFAULT_NAME))
-            adminuser.password = self.password_slave.model.new_password
-            self.wizard.options.login_username = 'admin'
-        return good_pass
-
-    def next_step(self):
-        return ExampleDatabaseStep(
-            self.conn, self.wizard, self._next_model, self)
-
-
-class ExistingAdminPasswordStep(AdminPasswordStep):
-    def _check_password(self, conn, password):
-        # We can't use PersonAdaptToUser.select here because it requires
-        # us to have an IDatabaseSettings utility provided.
-        results = conn.queryOne(
-            "SELECT password FROM person_adapt_to_user WHERE username=%s" % (
-            conn.sqlrepr(USER_ADMIN_DEFAULT_NAME),))
-        if not results:
-            return True
-        if len(results) > 1:
-            raise DatabaseInconsistency(
-                "It is not possible have more than one user with "
-                "the same username: %s" % USER_ADMIN_DEFAULT_NAME)
-        elif len(results) == 1:
-            user_password = results[0]
-            if user_password and user_password != password:
-                return False
-        return True
-
-    def _setup_widgets(self):
-        msg = (_(u"This machine which has the name <b>%s</b> will be "
-                 "registered so it can be used to access the system.")
-               % socket.gethostname())
-        label = gtk.Label()
-        label.set_use_markup(True)
-        label.set_markup(msg)
-        label.set_alignment(0.0, 0.0)
-        label.set_line_wrap(True)
-        self.slave_box.pack_start(label, False, False, 10)
-        label.show()
-
-    #
-    # Hooks
-    #
-
-    def setup_slaves(self):
-        AdminPasswordStep.setup_slaves(self)
-        self._setup_widgets()
-
-    def get_description_label(self):
-        db_settings = self.wizard.model.db_settings
-        return (_("There is already a database called <b>%s</b> on <b>%s</b>. "
-                  "You must enter the password for the user <b>%s</b> to "
-                  "continue the installation: ")
-                % (db_settings.dbname, db_settings.address,
-                   USER_ADMIN_DEFAULT_NAME))
-
-    def get_title_label(self):
-        return _("<b>Administrator Account</b>")
-
-    def get_slave(self):
-        return PasswordEditorSlave(self.conn, confirm_password=False)
-
-    def validate_step(self):
-        if not self.password_slave.validate_confirm():
-            return False
-        slave = self.password_slave
-        if self._check_password(self.conn, slave.model.new_password):
-            return True
-        slave.invalidate_password(_("The password supplied is "
-                                    "not valid."))
-        return False
-
-    def next_step(self):
-        return FinishInstallationStep(self.conn, self.wizard, self)
-
-
-
-class ExampleDatabaseStep(WizardEditorStep):
-    gladefile = "ExampleDatabaseStep"
-    model_type = object
-
-    def next_step(self):
-        self.conn.commit()
-        if self.empty_database_radio.get_active():
-            return BranchSettingsStep(self.conn, self.wizard,
-                                      None, self)
-        else:
-            create_examples(utilities=True)
-            self.wizard.installed_examples = True
-            branch = get_current_branch(self.conn)
-            return PluginStep(self.conn, self.wizard,
-                                 branch.person)
-
-
-class BranchSettingsStep(WizardEditorStep):
-    gladefile = 'BranchSettingsStep'
-    person_widgets = ('name',
-                      'phone_number',
-                      'fax_number')
-    tax_widgets = ('icms',
-                   'iss',
-                   'substitution_icms')
-    company_widgets = ('cnpj',
-                       'state_registry')
-    proxy_widgets = person_widgets + tax_widgets + company_widgets
-    model_type = Person
-
-    def __init__(self, conn, wizard, model, previous):
-        model = create_main_branch(name="", trans=conn).person
-
-        self.param = sysparam(conn)
-        WizardEditorStep.__init__(self, conn, wizard, model, previous)
-        self._setup_widgets()
-
-    def _setup_widgets(self):
-        self.title_label.set_size('large')
-        self.title_label.set_bold(True)
-
-    def _update_system_parameters(self, person):
-        icms = self.tax_proxy.model.icms
-        self.param.update_parameter('ICMS_TAX', unicode(icms))
-
-        iss = self.tax_proxy.model.iss
-        self.param.update_parameter('ISS_TAX', unicode(iss))
-
-        substitution = self.tax_proxy.model.substitution_icms
-        self.param.update_parameter('SUBSTITUTION_TAX',
-                                    unicode(substitution))
-
-        address = person.get_main_address()
-        if not address:
-            raise StoqlibError("You should have an address defined at "
-                               "this point")
-
-        city = address.city_location.city
-        self.param.update_parameter('CITY_SUGGESTED', city)
-
-        country = address.city_location.country
-        self.param.update_parameter('COUNTRY_SUGGESTED', country)
-
-        state = address.city_location.state
-        self.param.update_parameter('STATE_SUGGESTED', state)
-
-        # Update the fancy name
-        self.company_proxy.model.fancy_name = self.person_proxy.model.name
-
-    #
-    # WizardStep hooks
-    #
-
-    def post_init(self):
-        self.register_validate_function(self.wizard.refresh_next)
-        self.force_validation()
-        self.name.grab_focus()
-
-    def next_step(self):
-        self._address_slave.confirm()
-        self._update_system_parameters(self.model)
-        self.wizard.branch = IBranch(self.model)
-        conn = self.wizard.get_connection()
-        return PluginStep(conn, self.wizard, self.model)
-
-    def setup_proxies(self):
-        widgets = BranchSettingsStep.person_widgets
-        self.person_proxy = self.add_proxy(self.model, widgets)
-
-        widgets = BranchSettingsStep.tax_widgets
-        iss = Decimal(self.param.ISS_TAX)
-        icms = Decimal(self.param.ICMS_TAX)
-        substitution = Decimal(self.param.SUBSTITUTION_TAX)
-        model = Settable(iss=iss, icms=icms,
-                         substitution_icms=substitution)
-        self.tax_proxy = self.add_proxy(model, widgets)
-
-        widgets = BranchSettingsStep.company_widgets
-        model = ICompany(self.model, None)
-        if not model is None:
-            self.company_proxy = self.add_proxy(model, widgets)
-
-    def setup_slaves(self):
-        from stoqlib.gui.editors.addresseditor import AddressSlave
-        address = self.model.get_main_address()
-        self._address_slave = AddressSlave(self.conn, self.model, address)
-        self.attach_slave("address_holder", self._address_slave)
-
-    #
-    # Kiwi Callbacks
-    #
-
-    def on_icms__validate(self, entry, value):
-        if value > 100:
-            return ValidationError(_("ICMS can not be greater than 100"))
-        if value < 0:
-            return ValidationError(_("ICMS can not be less than 0"))
-
-    def on_iss__validate(self, entry, value):
-        if value > 100:
-            return ValidationError(_("ISS can not be greater than 100"))
-        if value < 0:
-            return ValidationError(_("ISS can not be less than 0"))
-
-    def on_substitution_icms__validate(self, entry, value):
-        if value > 100:
-            return ValidationError(_("ICMS Substitution can not be greater "
-                                     "than 100"))
-        if value < 0:
-            return ValidationError(_("ICMS Substitution can not be "
-                                     "less than 0"))
-
-    def on_cnpj__validate(self, widget, value):
-        if not validate_cnpj(value):
-            return ValidationError(_(u'The CNPJ is not valid.'))
-
-
-class PluginStep(BaseWizardStep):
-    gladefile = 'PluginStep'
-
-    def next_step(self):
-        return FinishInstallationStep(self.conn, self.wizard, self)
-
-    def post_init(self):
-        self.wizard.enable_ecf = True
-
-    def on_enable_ecf__toggled(self, radio):
-        self.wizard.enable_ecf = radio.get_active()
-
-    def on_enable_nfe__toggled(self, radio):
-        self.wizard.enable_nfe = radio.get_active()
+    def _on_processview__finished(self, view, proc):
+        self._finish()
 
 
 class FinishInstallationStep(BaseWizardStep):
@@ -595,79 +406,82 @@ class FirstTimeConfigWizard(BaseWizard):
     title = _("Setting up Stoq")
     size = (550, 450)
 
-    def __init__(self, options):
-        self.config = StoqConfig()
+    def __init__(self, options, settings=None, config=None):
+        if not settings:
+            settings = DatabaseSettings()
+        if not config:
+            config = StoqConfig()
+        self.settings = settings
+        self.config = config
         self.options = options
-        self._conn = None
         self.branch = None
-        self.installed_examples = False
+        self.create_examples = False
         self.device_slave = None
-        self.enable_ecf = False
-        self.enable_nfe = False
-        self.quit = False
-        self.model = Settable(db_settings=None, stoq_user_data=None)
-        first_step = DatabaseSettingsStep(self, self.model)
-        BaseWizard.__init__(self, None, first_step, self.model,
-                            title=self.title)
+        self.plugins = []
+        self.remove_examples = config.get('Database', 'remove_examples') == 'True'
+        self.has_installed_db = False
+
+        if self.remove_examples:
+            first_step = PluginStep(self)
+        else:
+            first_step = DatabaseSettingsStep(self)
+        BaseWizard.__init__(self, None, first_step, title=self.title)
         # Disable back until #2771 is solved
         self.previous_button.hide()
 
-    def set_connection(self, conn):
-        self._conn = conn
-
-    def get_connection(self):
-        return self._conn
-
-    def _create_station(self, conn, branch, station_name):
-        station = BranchStation.get_station(conn, branch, station_name)
+    def _create_station(self, trans, station_name):
+        station = BranchStation.selectBy(connection=trans,
+                                         branch=None,
+                                         name=station_name)
         if not station:
-            station = BranchStation.create(conn, branch, station_name)
+            station = BranchStation(name=station_name,
+                                    branch=None,
+                                    connection=trans)
         return station
+
+    def _set_admin_password(self, trans):
+        adminuser = Person.iselectOneBy(IUser,
+                                        username=USER_ADMIN_DEFAULT_NAME,
+                                        connection=trans)
+        if adminuser is None:
+            raise DatabaseInconsistency(
+                ("You should have a user with username: %s"
+                 % USER_ADMIN_DEFAULT_NAME))
+        adminuser.password = self.login_password
+
+    def _create_branch(self, trans):
+        station_name = socket.gethostname()
+        station = self._create_station(trans, station_name)
+        provide_utility(ICurrentBranchStation, station)
+
+    def load_config_and_call_setup(self):
+        dbargs = self.settings.get_command_line_arguments()
+        parser = get_option_parser()
+        db_options, unused_args = parser.parse_args(dbargs)
+        self.config.set_from_options(db_options)
+        setup(self.config,
+              check_schema=True,
+              register_station=False,
+              load_plugins=False)
 
     #
     # WizardStep hooks
     #
 
     def finish(self):
-        # Commit data created during the wizard, such as stations
-        self._conn.commit()
-
-        if self.branch:
-            station_name = socket.gethostname()
-            station = self._create_station(self._conn, self.branch,
-                                           station_name)
-            provide_utility(ICurrentBranchStation, station)
-            self._conn.commit()
-
-        # We need to provide the plugin manager at some point since
-        # we're skipping it above
-        manager = provide_plugin_manager()
-        if self.enable_ecf:
-            manager.enable_plugin('ecf')
-        if self.enable_nfe:
-            manager.enable_plugin('nfe')
-
-        # Okay, all plugins enabled go on and activate them
-        manager.activate_plugins()
-
-        self._conn.close()
+        if self.has_installed_db:
+            self.load_config_and_call_setup()
+        else:
+            # Commit data created during the wizard, such as stations
+            trans = new_transaction()
+            self._set_admin_password(trans)
+            self._create_branch(trans)
+            trans.commit()
 
         # Write configuration to disk
+        if self.remove_examples:
+            self.config.set('Database', 'remove_examples', 'False')
         self.config.flush()
 
-        self.retval = self.model
         self.close()
-
-        # We have a successfull installation, but the user want to close the
-        # the application now.
-        if self.quit:
-            while gtk.events_pending():
-                gtk.main_iteration()
-            # FIXME: Restart
-            raise SystemExit()
-
-    def cancel(self):
-        if self._conn:
-            self._conn.close()
-
-        BaseWizard.cancel(self)
+        run_app(self.options, 'admin')
