@@ -274,13 +274,13 @@ def _check_version_policy():
            raise SystemExit("Unstable stoq needs to depend on unstable stoqlib")
 
 
-def _run_first_time_wizard(options, settings=None, config=None):
+def _run_first_time_wizard(options, config=None):
     from stoqlib.gui.base.dialogs import run_dialog
     from stoq.gui.config import FirstTimeConfigWizard
     global _ran_wizard
     _ran_wizard = True
     # This may run Stoq
-    run_dialog(FirstTimeConfigWizard, None, options, settings, config)
+    run_dialog(FirstTimeConfigWizard, None, options, config)
     raise SystemExit()
 
 def _run_update_wizard():
@@ -386,12 +386,7 @@ def _initialize(options):
         _run_first_time_wizard(options)
 
     if config.get('Database', 'remove_examples') == 'True':
-        from stoqlib.database.database import drop_database
-        log.debug('Removing examples database as requested')
-
-        settings = config.get_settings()
-        drop_database(settings.dbname, settings)
-        _run_first_time_wizard(options, settings, config)
+        _run_first_time_wizard(options, config)
 
     try:
         config.check_connection()

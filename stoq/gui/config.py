@@ -158,7 +158,7 @@ class DatabaseSettingsStep(WizardEditorStep):
 
     def next_step(self):
         if self.wizard.has_installed_db:
-            return FinishInstallationStep(self.wizard, self)
+            return FinishInstallationStep(self.wizard)
         else:
             return ExampleDatabaseStep(self.wizard, self)
 
@@ -404,12 +404,10 @@ class FirstTimeConfigWizard(BaseWizard):
     title = _("Setting up Stoq")
     size = (550, 450)
 
-    def __init__(self, options, settings=None, config=None):
-        if not settings:
-            settings = DatabaseSettings()
+    def __init__(self, options, config=None):
         if not config:
             config = StoqConfig()
-        self.settings = settings
+        self.settings = config.get_settings()
         self.config = config
         self.options = options
         self.create_examples = False
