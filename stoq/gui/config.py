@@ -411,7 +411,6 @@ class FirstTimeConfigWizard(BaseWizard):
         self.config = config
         self.options = options
         self.create_examples = False
-        self.device_slave = None
         self.plugins = []
         self.remove_examples = config.get('Database', 'remove_examples') == 'True'
         self.has_installed_db = False

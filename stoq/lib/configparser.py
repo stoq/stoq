@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source
+## Copyright (C) 2005-2011 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -24,61 +24,23 @@
 """Routines for parsing the configuration file"""
 
 import binascii
+from ConfigParser import SafeConfigParser
 import gettext
 import os
-import optparse
-from ConfigParser import NoOptionError, SafeConfigParser
 
-from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.osutils import get_application_dir
-from stoqlib.database.settings import DEFAULT_RDBMS, DatabaseSettings
-from stoqlib.exceptions import (FilePermissionError, ConfigError,
+from stoqlib.database.settings import DatabaseSettings
+from stoqlib.exceptions import (FilePermissionError,
                                 NoConfigurationError)
 
 _ = gettext.gettext
 _config = None
 
 class StoqConfig:
-    config_template = \
-"""
-# This file is generated automatically by Stoq and should not be changed
-# manually unless you know exactly what are you doing.
-
-
-[General]
-# Default file where status and errors are appended to. Comment this out
-# to allow output to be sent to stderr/stdout
-logfile=~/.%(DOMAIN)s/application.log
-
-[Database]
-# Choose here the relational database management system you would like to
-# use. Available is: postgres
-rdbms=%(RDBMS)s
-
-# This is used by the client to find the server.
-address=%(ADDRESS)s
-
-# The port to connect to
-port=%(PORT)s
-
-# The name of Stoq database in rdbms.
-dbname=%(DBNAME)s
-
-# the test database name
-testdb=%(TESTDB)s
-
-# The database username in rdbms.
-dbusername=%(DBUSERNAME)s"""
-
-    sections = ['General', 'Database', 'Boleto']
-    required_sections = ['Database']
-    # Only Postgresql database is supported right now
-    rdbms = DEFAULT_RDBMS
     domain = 'stoq'
-    datafile = 'data'
 
     def __init__(self):
         self._config = SafeConfigParser()
@@ -94,11 +56,6 @@ dbusername=%(DBUSERNAME)s"""
         if not os.path.exists(filename):
             return False
         self._config.read(filename)
-
-        for section in StoqConfig.required_sections:
-            if not self._config.has_section(section):
-                raise ConfigError(
-                    "config file does not have section: %s" % section)
         return True
 
     def _get_password(self, filename):
@@ -107,37 +64,6 @@ dbusername=%(DBUSERNAME)s"""
 
         data = open(filename).read()
         return binascii.a2b_base64(data)
-
-    def _check_permissions(self, origin, writable=False, executable=False):
-        # Make sure permissions are correct on relevant files/directories
-        exception = None
-        if not os.access(origin, os.R_OK):
-            exception = "%s is not readable."
-        if writable and not os.access(origin, os.W_OK):
-            exception = "%s is not writable."
-        if executable and not os.access(origin, os.X_OK):
-            exception = "%s is not executable."
-        if exception:
-            raise FilePermissionError(exception % origin)
-
-    def get_section_items(self, section):
-        return self._config.items(section)
-
-    def has_section(self, section):
-        return self._config.has_section(section)
-
-    def has_option(self, name, section='General'):
-        return self._config.has_option(section, name)
-
-    def get_option(self, name, section='General'):
-        if not section in StoqConfig.sections:
-            raise ConfigError('Invalid section: %s' % section)
-
-        if self._config.has_option(section, name):
-            return self._config.get(section, name)
-
-        raise NoConfigurationError('%s does not have option: %s' %
-                                   (self._filename, name))
 
     #
     # Public API
@@ -149,12 +75,6 @@ dbusername=%(DBUSERNAME)s"""
             os.mkdir(config_dir)
         self._filename = os.path.join(
             config_dir, StoqConfig.domain + '.conf')
-
-        if not self._config.has_section('General'):
-            self._config.add_section('General')
-
-        if not self._config.has_section('Database'):
-            self._config.add_section('Database')
 
     def load(self, filename=None):
         """
@@ -171,25 +91,21 @@ dbusername=%(DBUSERNAME)s"""
 
         self._filename = filename
 
-    @argcheck(DatabaseSettings)
     def load_settings(self, settings):
         """
         Load data from a DatabaseSettings object
         @param settings: the settings object
         """
-        for section in StoqConfig.sections:
-            if not self._config.has_section(section):
-                self._config.add_section(section)
 
-        self._config.set('General', 'logfile',
-                         os.path.join(get_application_dir(StoqConfig.domain),
-                                      'application.log'))
-        self._config.set('Database', 'rdbms', StoqConfig.rdbms)
-        self._config.set('Database', 'address', settings.address)
-        self._config.set('Database', 'port', str(settings.port))
-        self._config.set('Database', 'dbname', settings.dbname)
-        self._config.set('Database', 'testdb', settings.dbname)
-        self._config.set('Database', 'dbusername', settings.username)
+        self.set('General', 'logfile',
+                 os.path.join(get_application_dir(StoqConfig.domain),
+                              'application.log'))
+        self.set('Database', 'rdbms', settings.rdbms)
+        self.set('Database', 'address', settings.address)
+        self.set('Database', 'port', str(settings.port))
+        self.set('Database', 'dbname', settings.dbname)
+        self.set('Database', 'testdb', settings.dbname)
+        self.set('Database', 'dbusername', settings.username)
         if settings.password:
             self.store_password(settings.password)
         self._settings = settings
@@ -209,23 +125,24 @@ dbusername=%(DBUSERNAME)s"""
     def remove(self):
         if not self._filename:
             return
-        self._check_permissions(self._filename)
+        if not os.access(self._filename, os.R_OK):
+            raise FilePermissionError("%s is not readable." % (
+                self._filename, ))
         os.remove(self._filename)
+
+    def get_filename(self):
+        config_dir = self.get_config_directory()
+        return os.path.join(config_dir, 'stoq.conf')
 
     def get_config_directory(self):
         return os.path.join(get_application_dir(self.domain))
 
     def use_test_database(self):
-        self._config.set('Database', 'dbname',
-                         self.get_option('testdb', section='Database'))
-
-    def check_connection(self):
-        # This will trigger a "check"
-        self.get_connection_uri()
+        self.set('Database', 'dbname', self.get('Database', 'testdb'))
 
     def store_password(self, password):
         configdir = self.get_config_directory()
-        datafile = os.path.join(configdir, StoqConfig.datafile)
+        datafile = os.path.join(configdir, 'data')
         if not os.path.exists(datafile):
             if not os.path.exists(configdir):
                 try:
@@ -254,12 +171,8 @@ dbusername=%(DBUSERNAME)s"""
         @returns: password or None if it is not set
         """
         configdir = self.get_config_directory()
-        data_file = os.path.join(configdir, StoqConfig.datafile)
+        data_file = os.path.join(configdir, 'data')
         return self._get_password(data_file)
-
-    def get_connection_uri(self):
-        db_settings = self.get_settings()
-        return db_settings.get_connection_uri()
 
     def get_settings(self):
         if self._settings:
@@ -276,7 +189,6 @@ dbusername=%(DBUSERNAME)s"""
         return DatabaseSettings(rdbms, address, port,
                                 dbname, username, password)
 
-    @argcheck(optparse.Values)
     def set_from_options(self, options):
         """
         Updates the configuration given a values instance
@@ -315,7 +227,6 @@ dbusername=%(DBUSERNAME)s"""
 #
 
 
-@argcheck(StoqConfig)
 def register_config(config):
     global _config
     _config = config

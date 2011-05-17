@@ -377,9 +377,7 @@ def _initialize(options):
     log.debug('reading configuration')
     config = StoqConfig()
     config.load(options.filename)
-    config_dir = config.get_config_directory()
-
-    config_file = os.path.join(config_dir, 'stoq.conf')
+    config_file = config.get_filename()
 
     wizard = False
     if options.wizard or not os.path.exists(config_file):
@@ -388,8 +386,10 @@ def _initialize(options):
     if config.get('Database', 'remove_examples') == 'True':
         _run_first_time_wizard(options, config)
 
+    settings = config.get_settings()
+
     try:
-        config.check_connection()
+        conn_uri = settings.get_connection_uri()
     except:
         type, value, trace = sys.exc_info()
         error(_('Could not open database config file'),
@@ -410,7 +410,7 @@ def _initialize(options):
             _run_update_wizard()
     except (StoqlibError, PostgreSQLError), e:
         error(_('Could not connect to database'),
-              'error=%s uri=%s' % (str(e), config.get_connection_uri()))
+              'error=%s uri=%s' % (str(e), conn_uri))
         raise SystemExit("Error: bad connection settings provided")
 
 def run_app(options, appname):
