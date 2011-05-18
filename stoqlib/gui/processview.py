@@ -81,21 +81,16 @@ class ProcessView(gtk.ScrolledWindow):
         return True
 
     def _check_child_finished(self):
-        try:
-            os.waitpid(self.proc.pid, os.WNOHANG)
-        except OSError, e:
-            if e.errno == errno.ECHILD:
-                self._finished()
-                return False
-            else:
-                raise
-
-        return True
+        self.retval = self.proc.poll()
+        finished = self.retval is not None
+        if finished:
+            self._finished()
+        return not finished
 
     def _finished(self):
         for source_id in self._source_ids:
             glib.source_remove(source_id)
-        self.emit('finished', self.proc)
+        self.emit('finished', self.retval)
 
     def execute_command(self, args):
         self.feed('Executing: %s\r\n' % (' '.join(args)))
