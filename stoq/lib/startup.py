@@ -95,6 +95,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     provide_utility(IApplicationDescriptions, ApplicationDescriptions())
 
     if register_station:
+        print 'register'
         try:
             conn = get_connection()
         except DatabaseError, e:

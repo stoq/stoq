@@ -312,7 +312,8 @@ def _setup_cookiefile():
     provide_utility(ICookieFile, Base64CookieFile(cookiefile))
 
 def _check_main_branch():
-    from stoqlib.database.runtime import get_connection, new_transaction
+    from stoqlib.database.runtime import (get_connection, new_transaction,
+                                          get_current_station)
     from stoqlib.domain.person import Person
     from stoqlib.domain.interfaces import IBranch, ICompany
     from stoqlib.lib.parameters import sysparam
@@ -331,7 +332,9 @@ def _check_main_branch():
         person = run_dialog(BranchDialog, None, trans)
         if not person:
             raise SystemExit
-        sysparam(trans).MAIN_COMPANY = IBranch(person).id
+        branch = IBranch(person)
+        sysparam(trans).MAIN_COMPANY = branch.id
+        get_current_station(trans).branch = branch
         trans.commit()
 
     return
@@ -404,7 +407,7 @@ def _initialize(options):
     # XXX: progress dialog for connecting (if it takes more than
     # 2 seconds) or creating the database
     try:
-        setup(config, options, register_station=False,
+        setup(config, options, register_station=True,
               check_schema=False)
         if needs_schema_update():
             _run_update_wizard()
