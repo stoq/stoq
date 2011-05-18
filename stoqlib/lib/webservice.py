@@ -90,16 +90,19 @@ class WebService(object):
         @param app_version: application version
         @returns: an AsyncResponse object with the version_string as a parameter
         """
-        branch = sysparam(conn).MAIN_COMPANY
-        company = ICompany(branch.person)
         params = {
-            'cnpj': company.cnpj,
             'dist': platform.dist(),
             'plugins': InstalledPlugin.get_plugin_names(conn),
             'time': datetime.datetime.today().isoformat(),
             'uname': platform.uname(),
             'version': app_version,
         }
+
+        branch = sysparam(conn).MAIN_COMPANY
+        if branch and branch.person:
+            company = ICompany(branch.person)
+            if company.cnpj:
+                params['cnpj'] = company.cnpj
 
         return self._do_request('version.json', params)
 
