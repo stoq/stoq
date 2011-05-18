@@ -96,10 +96,6 @@ class StoqCommandHandler:
         return 0
 
     def cmd_init(self, options):
-        import socket
-        from stoqlib.database.runtime import (get_connection,
-                                              set_current_branch_station)
-        from stoq.lib.configparser import StoqConfig
         from stoq.lib.startup import clean_database
 
         config = self._read_config(options, register_station=False,
@@ -111,17 +107,8 @@ class StoqCommandHandler:
             from stoqlib.importers.stoqlibexamples import create
             create(utilities=True)
 
-        if options.create_branch:
-            # If we don't create examples, create a Test Branch
-            from stoqlib.database.admin import create_main_branch
-            from stoqlib.database.runtime import new_transaction
-            trans = new_transaction()
-            create_main_branch(trans, "Main Branch")
-            trans.close()
-
         if options.register_station:
-            # Register the current computer as a branch station
-            self._register(options.verbose)
+            self._register_station()
 
         if options.plugins:
             self._enable_plugins(options.plugins.split(','))
@@ -132,12 +119,11 @@ class StoqCommandHandler:
     def opt_init(self, parser, group):
         group.add_option('-e', '--create-examples',
                          action='store_true',
+                         default=False,
                          dest='create_examples')
-        group.add_option('', '--no-create-branch',
-                         action='store_false',
-                         dest='create_branch')
         group.add_option('', '--no-register-station',
                          action='store_false',
+                         default=True,
                          dest='register_station')
         group.add_option('', '--enable-plugins',
                          action='store',
@@ -157,21 +143,26 @@ class StoqCommandHandler:
     def cmd_register(self, options):
         self._read_config(options, register_station=False)
 
-        self._register(True)
+        self._register_station()
 
-    def _enable_plugins(self, plugin_name):
+    def _enable_plugins(self, plugin_names):
         from stoqlib.lib.pluginmanager import provide_plugin_manager
 
-        manager = provide_plugin_manager()
-        if manager.has_plugin(plugin_name):
+        for plugin in plugin_names:
+            manager = provide_plugin_manager()
+            if not manager.has_plugin(plugin_name):
+                break
             manager.enable_plugin(plugin_name)
         else:
-            print 'No plugin called: %s' % (plugin_name,)
-            print 'Available plugins are:'
-            for plugin_name in manager.get_plugin_names():
-                print '  ', plugin_name
+            return
 
-    def _register(self, verbose):
+        print 'No plugin called: %s' % (plugin_name,)
+        print 'Available plugins are:'
+        for plugin_name in manager.get_plugin_names():
+            print '  ', plugin_name
+
+    def _register_station(self):
+        # Register the current computer as a branch station
         import socket
         from stoqlib.database.runtime import new_transaction
         from stoqlib.domain.interfaces import IBranch
@@ -181,19 +172,20 @@ class StoqCommandHandler:
         trans = new_transaction()
 
         branches = Person.iselect(IBranch, connection=trans)
-        if not branches:
-            raise StoqlibError("Schema error, no branches found")
-        branch = branches[0]
+        if branches:
+            branch = branches[0]
+        else:
+            branch = None
 
         try:
-            station = BranchStation.create(trans, branch=branch,
-                                           name=socket.gethostname())
+            station = BranchStation(connection=trans,
+                                    is_active=True,
+                                    branch=branch,
+                                    name=socket.gethostname())
         except StoqlibError, e:
             raise SystemExit("ERROR: %s" % e)
 
         trans.commit()
-        if verbose:
-            print 'Registered a new station: %s' % station.name
 
     def opt_updateschema(self, parser, group):
         group.add_option('-b', '--disable-backup',

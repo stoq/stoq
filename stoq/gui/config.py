@@ -318,7 +318,6 @@ class CreateDatabaseStep(BaseWizardStep):
     def _launch_stoqdbadmin(self):
         self.wizard.disable_next()
         args = ['stoqdbadmin', 'init',
-                '--no-create-branch',
                 '--no-load-config',
                 '--no-register-station',
                 '-v']
@@ -328,6 +327,7 @@ class CreateDatabaseStep(BaseWizardStep):
         args.extend(dbargs)
         self.process_view.execute_command(args)
         self.progressbar.set_text(_("Creating database..."))
+        self.progressbar.set_fraction(0.05)
 
     def _parse_process_line(self, line):
         LOG_CATEGORY = 'stoqlib.database.create'
@@ -358,7 +358,12 @@ class CreateDatabaseStep(BaseWizardStep):
         self.progressbar.set_fraction(value)
         self.progressbar.set_text(text)
 
-    def _finish(self):
+    def _finish(self, returncode):
+        if returncode:
+            self.expander.set_expanded(True)
+            warning(_("Something went wrong while trying to create "
+                      "the Stoq database"))
+            return
         self.wizard.load_config_and_call_setup()
         set_default_profile_settings()
         ensure_admin_user(self.wizard.config.get_password())
@@ -371,8 +376,8 @@ class CreateDatabaseStep(BaseWizardStep):
     def _on_processview__readline(self, view, line):
         self._parse_process_line(line)
 
-    def _on_processview__finished(self, view, proc):
-        self._finish()
+    def _on_processview__finished(self, view, returncode):
+        self._finish(returncode)
 
 
 class FinishInstallationStep(BaseWizardStep):
@@ -408,12 +413,16 @@ class FirstTimeConfigWizard(BaseWizard):
         if not config:
             config = StoqConfig()
         self.settings = config.get_settings()
-        self.config = config
-        self.options = options
+
         self.create_examples = False
-        self.plugins = []
-        self.remove_examples = config.get('Database', 'remove_examples') == 'True'
+        self.config = config
+        self.remove_examples = False
         self.has_installed_db = False
+        self.options = options
+        self.plugins = []
+
+        if config.get('Database', 'remove_examples') == 'True':
+            self.remove_examples = True
 
         if self.remove_examples:
             first_step = PluginStep(self)
@@ -421,15 +430,12 @@ class FirstTimeConfigWizard(BaseWizard):
             first_step = DatabaseSettingsStep(self)
         BaseWizard.__init__(self, None, first_step, title=self.title)
 
-    def _create_station(self, trans, station_name):
-        station = BranchStation.selectBy(connection=trans,
-                                         branch=None,
-                                         name=station_name)
-        if not station:
-            station = BranchStation(name=station_name,
-                                    branch=None,
-                                    connection=trans)
-        return station
+    def _create_station(self, trans):
+        station = BranchStation(connection=trans,
+                                is_active=True,
+                                branch=None,
+                                name=socket.gethostname())
+        provide_utility(ICurrentBranchStation, station)
 
     def _set_admin_password(self, trans):
         adminuser = Person.iselectOneBy(IUser,
@@ -440,11 +446,6 @@ class FirstTimeConfigWizard(BaseWizard):
                 ("You should have a user with username: %s"
                  % USER_ADMIN_DEFAULT_NAME))
         adminuser.password = self.login_password
-
-    def _create_branch(self, trans):
-        station_name = socket.gethostname()
-        station = self._create_station(trans, station_name)
-        provide_utility(ICurrentBranchStation, station)
 
     def load_config_and_call_setup(self):
         dbargs = self.settings.get_command_line_arguments()
@@ -467,7 +468,7 @@ class FirstTimeConfigWizard(BaseWizard):
             # Commit data created during the wizard, such as stations
             trans = new_transaction()
             self._set_admin_password(trans)
-            self._create_branch(trans)
+            self._create_station(trans)
             trans.commit()
 
         # Write configuration to disk
