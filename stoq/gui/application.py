@@ -568,7 +568,7 @@ class VersionChecker(object):
         self.app.add_info_bar(gtk.MESSAGE_INFO, msg, action_widget=button)
 
     def _check_details(self, latest_version):
-        current_version = stoq.version
+        current_version = tuple(stoq.version.split('.'))
         if tuple(latest_version.split('.')) > current_version:
             self._display_new_version_message(latest_version)
         else:
