@@ -254,7 +254,9 @@ def set_current_branch_station(conn, station_name):
                 "and re-activate this computer."))
 
     provide_utility(ICurrentBranchStation, station)
-    provide_utility(ICurrentBranch, station.branch)
+
+    if station.branch:
+        provide_utility(ICurrentBranch, station.branch)
 
 def get_current_user(conn):
     """Fetch the user which is currently logged into the system or None
