@@ -35,9 +35,11 @@ from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
 from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
                                            TableColumn as TC, HIGHLIGHT_NEVER)
 from stoqlib.reporting.base.flowables import RIGHT
-from stoqlib.lib.validators import (get_formatted_price, format_quantity,
-                                    format_phone_number,
-                                    get_formatted_percentage)
+from stoqlib.lib.formaters import (get_formatted_price,
+                                   get_formatted_percentage,
+                                   format_quantity,
+                                   format_phone_number)
+                                    
 from stoqlib.reporting.template import (BaseStoqReport, SearchResultsReport,
                                         ObjectListReport)
 from stoqlib.lib.translation import stoqlib_gettext

@@ -29,7 +29,7 @@ from decimal import Decimal
 from stoqlib.reporting.template import (SearchResultsReport, PriceReport,
                                         ObjectListReport)
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
-from stoqlib.lib.validators import format_quantity, get_formatted_price
+from stoqlib.lib.formaters import format_quantity, get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.views import (SoldItemView, ProductFullStockView,

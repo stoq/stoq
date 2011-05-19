@@ -40,7 +40,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.formaters import format_quantity
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.wizards.purchasewizard import PurchasePaymentStep
 

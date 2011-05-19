@@ -27,6 +27,7 @@ from decimal import Decimal
 import os
 
 from kiwi.argcheck import argcheck
+from kiwi.datatypes import ValidationError
 from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
 from stoqdrivers.enum import TaxType
@@ -38,6 +39,12 @@ from stoqlib.domain.interfaces import ISupplier, IBranch
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.imageutils import ImageHelper
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import (validate_int,
+                                    validate_decimal,
+                                    validate_directory,
+                                    validate_area_code,
+                                    validate_percentage,
+                                    validate_state)
 from stoqlib.lib.barcode import BarcodeInfo
 
 _ = stoqlib_gettext
@@ -331,18 +338,80 @@ _parameter_info = dict(
 
 class ParameterAttr:
     def __init__(self, key, type, initial=None, options=None,
-                 multiline=False):
+                 multiline=False, validator=None):
         self.key = key
         self.type = type
         self.initial = initial
         self.options = options
         self.multiline = multiline
+        self.validator = validator
+
+    #
+    #  Public API
+    #
 
     def get_parameter_type(self):
         if isinstance(self.type, basestring):
             return namedAny('stoqlib.domain.' + self.type)
         else:
             return self.type
+
+    def get_parameter_validator(self):
+        return self.validator or self._get_generic_parameter_validator())
+
+    #
+    #  Staticmethods
+    #
+
+    @staticmethod
+    def validate_int(value):
+        if not validate_int(value):
+            return ValidationError(_(u"This parameter only accepts "
+                                     u"integer values."))
+
+    @staticmethod
+    def validate_decimal(value):
+        if not validate_decimal(value):
+            return ValidationError(_(u"This parameter only accepts "
+                                     u"decimal values."))
+
+    @staticmethod
+    def validate_directory(path):
+        if not validate_directory(path):
+            return ValidationError(_(u"'%s is not a valid path.'" % path))
+
+    @staticmethod
+    def validate_area_code(code):
+        if not validate_area_code(code):
+            return ValidationError(_(u"'%s' is not a valid area code.\n"
+                                     u"Valid area codes are on 10-99 range.")
+                                   % code)
+
+    @staticmethod
+    def validate_percentage(value):
+        if not validate_percentage(value):
+            return ValidationError(_(u"'%s' is not a valid percentage.")
+                                   % value)
+
+    @staticmethod
+    def validate_state(state):
+        if not validate_state(state):
+            return ValidationError(_(u"'%s' is not a valid state.")
+                                   % state)
+
+    #
+    #  Private API
+    #
+
+    def _get_generic_parameter_validator(self):
+        p_type = self.get_parameter_type()
+
+        if issubclass(p_type, int):
+            return ParameterAttr.validate_int
+        elif issubclass(p_type, Decimal):
+            return ParameterAttr.validate_decimal
+        elif issubclass(p_type, DirectoryParameter):
+            return ParameterAttr.validate_directory
 
 
 class ParameterAccess(ClassInittableObject):
@@ -375,17 +444,23 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('ENABLE_PAULISTA_INVOICE', bool, initial=False),
         ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
         ParameterAttr('CITY_SUGGESTED', unicode, initial=u'Sao Carlos'),
-        ParameterAttr('STATE_SUGGESTED', unicode, initial=u'SP'),
+        ParameterAttr('STATE_SUGGESTED', unicode, initial=u'SP',
+                      validator=ParameterAttr.validate_state),
         ParameterAttr('COUNTRY_SUGGESTED', unicode, initial=u'Brazil'),
         ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
         ParameterAttr('RETURN_MONEY_ON_SALES', bool, initial=True),
         ParameterAttr('ASK_SALES_CFOP', bool, initial=False),
-        ParameterAttr('MAX_SALE_DISCOUNT', int, initial=5),
-        ParameterAttr('ICMS_TAX', Decimal, initial=18),
-        ParameterAttr('ISS_TAX', Decimal, initial=18),
-        ParameterAttr('SUBSTITUTION_TAX', Decimal, initial=18),
+        ParameterAttr('MAX_SALE_DISCOUNT', Decimal, initial=5,
+                      validator=ParameterAttr.validate_percentage),
+        ParameterAttr('ICMS_TAX', Decimal, initial=18,
+                      validator=ParameterAttr.validate_percentage),
+        ParameterAttr('ISS_TAX', Decimal, initial=18,
+                      validator=ParameterAttr.validate_percentage),
+        ParameterAttr('SUBSTITUTION_TAX', Decimal, initial=18,
+                      validator=ParameterAttr.validate_percentage),
         ParameterAttr('POS_SEPARATE_CASHIER', bool, initial=False),
-        ParameterAttr('DEFAULT_AREA_CODE', int, initial=16),
+        ParameterAttr('DEFAULT_AREA_CODE', int, initial=16,
+                      validator=ParameterAttr.validate_area_code),
         ParameterAttr('SALE_PAY_COMMISSION_WHEN_CONFIRMED', bool,
                        initial=False),
         ParameterAttr('DEFAULT_OPERATION_NATURE', unicode, initial=_(u'Sale')),
