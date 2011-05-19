@@ -27,7 +27,7 @@
 """ A Manual stock decrease receipt implementation """
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.formaters import format_quantity
 from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
 from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
                                            TableColumn as TC, HIGHLIGHT_NEVER)

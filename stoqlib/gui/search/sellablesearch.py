@@ -39,7 +39,7 @@ from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.formaters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

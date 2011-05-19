@@ -44,7 +44,7 @@ from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.productimage import ProductImageViewer
 from stoqlib.gui.editors.receivingeditor import ReceivingItemEditor
-from stoqlib.lib.validators import format_quantity, get_formatted_cost
+from stoqlib.lib.formaters import format_quantity, get_formatted_cost
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)

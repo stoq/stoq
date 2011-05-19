@@ -32,7 +32,7 @@ from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.datatypes import currency
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import get_formatted_cost
+from stoqlib.lib.formaters import get_formatted_cost
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
 from stoqlib.domain.receiving import (ReceivingOrderItem,

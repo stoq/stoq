@@ -45,7 +45,7 @@ from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import get_price_format_str
+from stoqlib.lib.formaters import get_price_format_str
 
 _ = stoqlib_gettext
 

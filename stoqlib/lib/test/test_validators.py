@@ -24,8 +24,13 @@
 ##
 """ Test for lib/validators.py module. """
 
+from decimal import Decimal
+
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.lib.validators import validate_cpf, validate_cnpj
+from stoqlib.lib.validators import (validate_cpf, validate_cnpj,
+                                    validate_area_code, validate_int,
+                                    validate_decimal, validate_directory,
+                                    validate_percentage)
 
 class TestValidators(DomainTest):
 
@@ -50,3 +55,73 @@ class TestValidators(DomainTest):
         self.failIf(validate_cnpj(''))
         self.failIf(validate_cnpj(None))
         self.failIf(validate_cnpj('1594872637500'))
+
+    def testValidateAreaCode(self):
+        self.failUnless(validate_area_code(10))
+        self.failUnless(validate_area_code(99))
+        self.failUnless(validate_area_code('10'))
+        self.failUnless(validate_area_code('99'))
+
+        self.failIf(validate_area_code(9))
+        self.failIf(validate_area_code(100))
+        self.failIf(validate_area_code('9'))
+        self.failIf(validate_area_code('100'))
+
+    def testValidateInt(self):
+        self.failUnless(validate_int(0))
+        self.failUnless(validate_int(10))
+        self.failUnless(validate_int(-10))
+        self.failUnless(validate_int('0'))
+        self.failUnless(validate_int('10'))
+        self.failUnless(validate_int('-10'))
+
+        self.failIf(validate_int(0.0))
+        self.failIf(validate_int(10.5))
+        self.failIf(validate_int('0.0'))
+        self.failIf(validate_int('10.5'))
+        self.failIf(validate_int('string'))
+
+    def testValidateDecimal(self):
+        self.failUnless(validate_decimal(Decimal(0)))
+        self.failUnless(validate_decimal(Decimal(10)))
+        self.failUnless(validate_decimal(Decimal(-10)))
+        self.failUnless(validate_decimal(Decimal(10.5)))
+        self.failUnless(validate_decimal('0'))
+        self.failUnless(validate_decimal('10'))
+        self.failUnless(validate_decimal('-10'))
+        self.failUnless(validate_decimal('10.5'))
+
+        self.failIf(validate_decimal(0))
+        self.failIf(validate_decimal(10))
+        self.failIf(validate_decimal(-10))
+        self.failIf(validate_decimal(10.5))
+        self.failIf(validate_decimal('string'))
+
+    def testValidateDirectory(self):
+        self.failUnless(validate_directory("/home"))
+        self.failUnless(validate_directory("~"))
+
+        self.failIf(validate_int("~/SomeFolderNoOneWouldHabe"))
+        self.failIf(validate_int("/SomeFolderSystemDoesntHave"))
+
+    def testValidatePercentage(self):
+        self.failUnless(validate_percentage(0))
+        self.failUnless(validate_percentage(10))
+        self.failUnless(validate_percentage(100))
+        self.failUnless(validate_percentage(50.5))
+        self.failUnless(validate_percentage(Decimal(0)))
+        self.failUnless(validate_percentage(Decimal(10)))
+        self.failUnless(validate_percentage(Decimal(100)))
+        self.failUnless(validate_percentage(Decimal(50.5)))
+        self.failUnless(validate_percentage('0'))
+        self.failUnless(validate_percentage('10'))
+        self.failUnless(validate_percentage('100'))
+        self.failUnless(validate_percentage('50.5'))
+
+        self.failIf(validate_percentage(-1))
+        self.failIf(validate_percentage(101))
+        self.failIf(validate_percentage(Decimal(-1)))
+        self.failIf(validate_percentage(Decimal(101)))
+        self.failIf(validate_percentage('-1'))
+        self.failIf(validate_percentage('101'))
+        self.failIf(validate_percentage('50%'))

@@ -26,7 +26,7 @@
 
 from stoqlib.domain.till import TillEntry
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.lib.validators import get_formatted_price
+from stoqlib.lib.formaters import get_formatted_price
 from stoqlib.reporting.template import ObjectListReport
 
 class TillHistoryReport(ObjectListReport):
