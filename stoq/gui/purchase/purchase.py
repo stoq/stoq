@@ -59,7 +59,7 @@ from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
 from stoqlib.gui.dialogs.productiondialog import ProductionDialog
 from stoqlib.reporting.purchase import PurchaseReport
-from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.formatters import format_quantity
 
 from stoq.gui.application import SearchableAppWindow
 

@@ -50,8 +50,8 @@ from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.invoice import SaleInvoice, print_sale_invoice
-from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 
