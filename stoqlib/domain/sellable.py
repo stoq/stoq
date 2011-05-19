@@ -29,10 +29,10 @@ import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import currency
-from stoqdrivers.enum import TaxType
+from stoqdrivers.enum import TaxType, UnitType
 from zope.interface import implements
 
-from stoqlib.database.orm import PriceCol, DecimalCol
+from stoqlib.database.orm import BoolCol, PriceCol, DecimalCol
 from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol, ForeignKey
 from stoqlib.database.orm import SingleJoin
 from stoqlib.database.orm import AND, IN, OR
@@ -54,6 +54,10 @@ _ = stoqlib_gettext
 class SellableUnit(Domain):
     """ A class used to represent the sellable unit.
 
+    @cvar SYSTEM_PRIMITIVES: The values on the list are enums used to fill
+      'unit_index' column above. That list is useful for many things,
+      e.g. See if the user can delete the unit. It should not be possible
+      to delete a primitive one.
     @cvar description: The unit description
     @cvar unit_index:  This column defines if this object represents a custom
       product unit (created by the user through the product editor) or
@@ -62,17 +66,27 @@ class SellableUnit(Domain):
       an item in a coupon we need to know if its unit must be specified as
       a description (using CUSTOM_PM constant) or as an index (using UNIT_*).
       Also, this is directly related to the DeviceSettings editor.
+    @cvar allow_fraction: If the unit allows to be represented in fractions.
+      e.g. We can have 1 car, 2 cars, but not 1/2 car.
     """
     implements(IDescribable)
 
+    SYSTEM_PRIMITIVES = [UnitType.WEIGHT,
+                         UnitType.METERS,
+                         UnitType.LITERS]
+
     _inheritable = False
     description = UnicodeCol()
-    unit_index = IntCol()
+    # Using an int cast on UnitType because
+    # SQLObject doesn't recognize it's type.
+    unit_index = IntCol(default=int(UnitType.CUSTOM))
+    allow_fraction = BoolCol(default=True)
 
     # IDescribable
 
     def get_description(self):
         return self.description
+
 
 class SellableTaxConstant(Domain):
     """A tax constant tied to a sellable
@@ -516,6 +530,19 @@ class Sellable(Domain):
                               "If you don't know what this means, contact "
                               "the system administrator."
                               % icms_template.product_tax_template.name))
+
+    def is_valid_quantity(self, new_quantity):
+        """Whether the new quantity is valid for this sellable or not.
+
+        If the new quantity is fractioned, check on this sellable unit if it
+        allows fractioned quantities. If not, this new quantity cannot be used.
+
+        @returns: True if new quantity is Ok, False otherwise.
+        """
+        if self.unit and not self.unit.allow_fraction:
+            return not bool(new_quantity % 1)
+
+        return True
 
     def is_valid_price(self, newprice):
         """Returns True if the new price respects the maximum discount

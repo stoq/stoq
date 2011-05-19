@@ -306,13 +306,13 @@ class PurchaseItemStep(SellableItemStep):
             return ValidationError(_(u"The cost must be greater than zero."))
 
     def _on_quantity__validate(self, widget, value):
-        if not value or value <= Decimal(0):
-            return ValidationError(_(u'Quantity must be greater than zero'))
-
         supplier_info = self._get_supplier_info()
         if supplier_info and value < supplier_info.minimum_purchase:
             return ValidationError(_(u'Quantity below the minimum required '
                                       'by the supplier'))
+
+        return super(PurchaseItemStep,
+                     self).on_quantity__validate(widget, value)
 
 
 class PurchasePaymentStep(WizardEditorStep):
