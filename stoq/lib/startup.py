@@ -77,7 +77,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
 
     if config is None:
         config = StoqConfig()
-        config.load()
+        config.load_default()
 
     if options is None:
         parser = get_option_parser()
