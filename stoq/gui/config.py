@@ -65,6 +65,7 @@ from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.processview import ProcessView
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.osutils import get_application_dir
+from stoqlib.lib.parameters import sysparam
 
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.options import get_option_parser
@@ -431,9 +432,14 @@ class FirstTimeConfigWizard(BaseWizard):
         BaseWizard.__init__(self, None, first_step, title=self.title)
 
     def _create_station(self, trans):
+        if self.create_examples:
+            branch = sysparam(trans).MAIN_COMPANY
+            assert branch
+        else:
+            branch = None
         station = BranchStation(connection=trans,
                                 is_active=True,
-                                branch=None,
+                                branch=branch,
                                 name=socket.gethostname())
         provide_utility(ICurrentBranchStation, station)
 
