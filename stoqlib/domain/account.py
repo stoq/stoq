@@ -87,7 +87,7 @@ class Account(Domain):
     #
 
     def get_description(self):
-        return self.long_description
+        return self.description
 
     #
     # Public API
