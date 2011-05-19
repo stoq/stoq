@@ -372,7 +372,7 @@ class ParameterAttr:
             return self.type
 
     def get_parameter_validator(self):
-        return self.validator or self._get_generic_parameter_validator())
+        return self.validator or self._get_generic_parameter_validator()
 
     #
     #  Staticmethods
