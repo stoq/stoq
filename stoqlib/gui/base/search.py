@@ -73,7 +73,11 @@ class _SearchDialogDetailsSlave(GladeSlaveDelegate):
 class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
     def __init__(self, columns, restore_name=None):
         self._columns = columns
-        self._init_cache_store(restore_name)
+        if restore_name:
+            self._cache_store = self._get_cache_store(restore_name)
+            self.restore_columns()
+        else:
+            self._cache_store = None
 
         SearchSlaveDelegate.__init__(self, self._columns)
 
@@ -107,16 +111,11 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
     #  Private API
     #
 
-    def _init_cache_store(self, restore_name):
+    def _get_cache_store(self, restore_name):
         uname = get_current_user(get_connection()).username
         restore_dir = os.path.join(get_application_dir(), 'columns-%s' % uname)
-        restore_name = restore_name or "%s.pickle" % restore_name
-        try:
-            self._cache_store = CacheStore(restore_dir, restore_name)
-            if restore_name:
-                self.restore_columns()
-        except OSError:
-            self._cache_store = None
+        restore_name = restore_name and "%s.pickle" % restore_name
+        return CacheStore(restore_dir, restore_name)
 
 
 
