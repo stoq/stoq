@@ -76,19 +76,21 @@ class StoqConfig:
         self._filename = os.path.join(
             config_dir, StoqConfig.domain + '.conf')
 
-    def load(self, filename=None):
+    def load_default(self):
         """
-        Loads the data from a configuration file, if filename is
-        not specified the default one will be loaded
+        Loads default configuration file one will be loaded
+        """
+        self.load(self._get_config_file())
+
+    def load(self, filename):
+        """
+        Loads the data from a configuration file
         @param filename: filename
         """
         if not filename:
-            filename = self._get_config_file()
-
-        if filename:
-            if not self._open_config(filename):
-                filename = None
-
+            raise TypeError("Missing filename option")
+        if not self._open_config(filename):
+            return
         self._filename = filename
 
     def load_settings(self, settings):

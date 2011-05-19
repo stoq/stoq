@@ -379,7 +379,10 @@ def _initialize(options):
     from stoq.lib.configparser import StoqConfig
     log.debug('reading configuration')
     config = StoqConfig()
-    config.load(options.filename)
+    if options.filename:
+        config.load(options.filename)
+    else:
+        config.load_default()
     config_file = config.get_filename()
 
     wizard = False
