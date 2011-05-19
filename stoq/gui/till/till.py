@@ -42,8 +42,8 @@ from stoqlib.database.runtime import (new_transaction, get_current_branch,
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import yesno, warning
-from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
