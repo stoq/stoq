@@ -33,7 +33,7 @@ from kiwi.ui.objectlist import SearchColumn, Column
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 
 from stoqlib.domain.loan import Loan
-from stoqlib.domain.views import LoanItemView
+from stoqlib.domain.views import LoanView, LoanItemView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.dialogs.loandetails import LoanDetailsDialog
@@ -72,6 +72,10 @@ class LoanItemSearch(SearchDialog):
                              data_type=datetime.date, visible=False),
                 SearchColumn('closed', title=_(u'Close Date'),
                              data_type=datetime.date,),
+                SearchColumn('code', title=_(u'Code'), data_type=str,
+                             visible=False),
+                SearchColumn('category_description', title=_(u'Category'),
+                             data_type=str, visible=False),
                 SearchColumn('description', title=_(u'Description'),
                              data_type=str, expand=True),
                 SearchColumn('quantity', title=_(u'Quantity'),
@@ -88,7 +92,7 @@ class LoanItemSearch(SearchDialog):
 class LoanSearch(SearchDialog):
     title = _(u"Loan Search")
     size = (750, 500)
-    search_table = Loan
+    search_table = LoanView
     selection_mode = gtk.SELECTION_MULTIPLE
     searchbar_result_strings = _(u"loan"), _(u"loans")
     search_by_date = True
@@ -121,7 +125,7 @@ class LoanSearch(SearchDialog):
         pass
 
     def create_filters(self):
-        self.set_text_field_columns([])
+        self.set_text_field_columns(['client_name', 'removed_by'])
         self.set_searchbar_labels(_('matching:'))
 
         # Date
@@ -138,24 +142,28 @@ class LoanSearch(SearchDialog):
                        data_type=unicode, expand=True),
                 Column('client_name', _('Client'),
                        data_type=unicode, width=120),
+                Column('removed_by', _('Removed By'), data_type=unicode,
+                       width=120),
                        ]
 
     #
     # Callbacks
     #
 
-    def on_row_activated(self, klist, item):
+    def on_row_activated(self, klist, item_view):
+        item = Loan.get(item_view.id, connection=self.conn)
         self._show_details(item)
 
     def on_print_button_clicked(self, button):
         orders = self.results.get_selected_rows()
         if len(orders) == 1:
-            print_report(LoanReceipt, orders[0] )
-            pass
+            loan = Loan.get(orders[0].id, connection=self.conn)
+            print_report(LoanReceipt, loan)
 
     def on_details_button_clicked(self, button):
         orders = self.results.get_selected_rows()
         if len(orders) > 1:
             raise ValueError("You should have only one item selected at "
                              "this point ")
-        self._show_details(orders[0])
+        loan = Loan.get(orders[0].id, connection=self.conn)
+        self._show_details(loan)
