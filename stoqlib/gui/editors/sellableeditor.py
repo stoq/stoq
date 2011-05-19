@@ -40,6 +40,7 @@ from stoqlib.domain.sellable import (SellableCategory, Sellable,
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.search.sellableunitsearch import SellableUnitSearch
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
 from stoqlib.lib.message import info, yesno
@@ -48,11 +49,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_price_format_str
 
 _ = stoqlib_gettext
-
-class _TemporarySellableUnit(object):
-    def __init__(self, description, unit_index):
-        self.description = description
-        self.unit_index = unit_index
 
 #
 # Editors
@@ -200,8 +196,6 @@ class SellableEditor(BaseEditor):
     model_type = None
 
     gladefile = 'SellableEditor'
-    sellable_unit_widgets = ("unit_combo",
-                             "unit_entry")
     sellable_tax_widgets = ('tax_constant', 'tax_value',)
     sellable_widgets = ('code',
                         'barcode',
@@ -210,9 +204,9 @@ class SellableEditor(BaseEditor):
                         'cost',
                         'price',
                         'statuses_combo',
-                        'default_sale_cfop')
-    proxy_widgets = (sellable_unit_widgets + sellable_tax_widgets +
-                     sellable_widgets)
+                        'default_sale_cfop',
+                        'unit_combo')
+    proxy_widgets = (sellable_tax_widgets + sellable_widgets)
 
     storable_widgets = ('stock_total_lbl',)
 
@@ -242,6 +236,10 @@ class SellableEditor(BaseEditor):
 
         self._setup_delete_close_reopen_button()
 
+    #
+    #  Private API
+    #
+
     def _add_extra_button(self, label, stock=None,
                           callback_func=None, connect_on='clicked'):
         button = self.add_button(label, stock)
@@ -264,6 +262,10 @@ class SellableEditor(BaseEditor):
 
             self._add_extra_button(label, None,
                                    self._on_reopen_sellable_button__clicked)
+
+    #
+    #  Public API
+    #
 
     def add_extra_tab(self, tabname, tabslave):
         self.sellable_notebook.set_show_tabs(True)
@@ -293,28 +295,9 @@ class SellableEditor(BaseEditor):
     def setup_widgets(self):
         raise NotImplementedError
 
-    def ensure_sellable_unit(self):
-        if self._unit.unit_index is None:
-            self._sellable.unit = None
-        else:
-            if self._unit.unit_index == UnitType.CUSTOM:
-                query = const.UPPER(SellableUnit.q.description) == \
-                        self._unit.description.upper()
-            else:
-                query = SellableUnit.q.unit_index == self._unit.unit_index
-
-            s_unit = SellableUnit.selectOne(query, connection=self.conn)
-            if s_unit is None:
-                s_unit = SellableUnit(description=self._unit.description,
-                                      unit_index=self._unit.unit_index,
-                                      connection=self.conn)
-            self._sellable.unit = s_unit
-
-    def update_unit_entry(self):
-        self.unit_entry.set_sensitive(self._unit.unit_index == UnitType.CUSTOM)
-
     def update_requires_weighing_label(self):
-        if self._unit.unit_index == UnitType.WEIGHT:
+        unit = self._sellable.unit
+        if unit and unit.unit_index == UnitType.WEIGHT:
             self.requires_weighing_label.set_text(self._requires_weighing_text)
         else:
             self.requires_weighing_label.set_text("")
@@ -362,15 +345,13 @@ class SellableEditor(BaseEditor):
         cfop_items.insert(0, ('', None))
         self.default_sale_cfop.prefill(cfop_items)
 
+        self.setup_unit_combo()
+
 
     def setup_unit_combo(self):
-        primitive_units = SellableUnit.select(
-            SellableUnit.q.unit_index != int(UnitType.CUSTOM),
-            connection=self.conn)
+        units = SellableUnit.select(connection=self.conn)
         items = [(_("No unit"), None)]
-        items.extend([(obj.description, obj.unit_index)
-                          for obj in primitive_units])
-        items.append((_("Specify:"), int(UnitType.CUSTOM)))
+        items.extend([(unit.description, unit) for unit in units])
         self.unit_combo.prefill(items)
 
     def setup_tax_constants(self):
@@ -394,20 +375,8 @@ class SellableEditor(BaseEditor):
             self.add_proxy(storable,
                            SellableEditor.storable_widgets)
 
-        if self._sellable.unit:
-            self._unit = _TemporarySellableUnit(
-                            description=self._sellable.unit.description,
-                            unit_index=self._sellable.unit.unit_index)
-        else:
-            self._unit = _TemporarySellableUnit(description=None,
-                                                unit_index=None)
-
-        self.setup_unit_combo()
-        self.unit_proxy = self.add_proxy(self._unit,
-                                         SellableEditor.sellable_unit_widgets)
         self.update_requires_weighing_label()
         self.update_status_unavailable_label()
-        self.update_unit_entry()
 
     #
     # Kiwi handlers
@@ -453,14 +422,9 @@ class SellableEditor(BaseEditor):
 
     def on_unit_combo__changed(self, combo):
         self.update_requires_weighing_label()
-        self.update_unit_entry()
 
     def on_sale_price_button__clicked(self, button):
         self.edit_sale_price()
-
-    def validate_confirm(self, *args):
-        self.ensure_sellable_unit()
-        return True
 
     def on_code__validate(self, widget, value):
         if not value:
@@ -483,11 +447,6 @@ class SellableEditor(BaseEditor):
     def on_cost__validate(self, entry, value):
         if value <= 0:
            return ValidationError(_("Cost cannot be zero or negative"))
-
-    def on_unit_entry__validate(self, entry, value):
-        unit = self._unit
-        if unit.unit_index == UnitType.CUSTOM and not value:
-            return ValidationError(_(u"Unit must have a description"))
 
     def on_category_combo__content_changed(self, widget):
         category_cb = self.category_combo.get_text()

@@ -74,6 +74,9 @@ def create_product(trans):
 def create_sellable(trans):
     return ExampleCreator.create(trans, 'Sellable')
 
+def create_sellable_unit(trans):
+    return ExampleCreator.create(trans, 'SellableUnit')
+
 def create_sale(trans):
     return ExampleCreator.create(trans, 'Sale')
 
@@ -183,6 +186,7 @@ class ExampleCreator(object):
             'Sale': self.create_sale,
             'SaleItemIcms': self.create_sale_item_icms,
             'Sellable' : self.create_sellable,
+            'SellableUnit' : self.create_sellable_unit,
             'Service': self.create_service,
             'StockDecrease': self.create_stock_decrease,
             'Till': self.create_till,
@@ -297,6 +301,12 @@ class ExampleCreator(object):
         product = Product(sellable=sellable,
                           connection=self.trans)
         return sellable
+
+    def create_sellable_unit(self, description=u'', allow_fraction=True):
+        from stoqlib.domain.sellable import SellableUnit
+        return SellableUnit(connection=self.trans,
+                            description=description,
+                            allow_fraction=allow_fraction)
 
     def create_sale(self):
         from stoqlib.domain.sale import Sale

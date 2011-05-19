@@ -87,6 +87,17 @@ class SaleQuoteItemEditor(BaseEditor):
         self.ipi_slave = SaleItemIPISlave(self.conn, self.model.ipi_info)
         self.add_tab(_('IPI'), self.ipi_slave)
 
+    def _validate_quantity(self, new_quantity):
+        if new_quantity <= 0:
+            return ValidationError(_(u"The quantity should be "
+                                     u"greater than zero."))
+
+        sellable = self.model.sellable
+        if not sellable.is_valid_quantity(new_quantity):
+            return ValidationError(_(u"This product unit (%s) does not "
+                                     u"support fractions.") %
+                                     sellable.get_unit_description())
+
     def add_tab(self, name, slave):
         event_box = gtk.EventBox()
         event_box.show()
@@ -121,7 +132,8 @@ class SaleQuoteItemEditor(BaseEditor):
                         _(u"Max discount for this product is %.2f%%") %
                             sellable.max_discount)
 
+    def on_return_quantity__validate(self, widget, value):
+        return self._validate_quantity(value)
+
     def on_quantity__validate(self, widget, value):
-        if value <= 0:
-            return ValidationError(_(u'The quantity should be greater than '
-                                     'zero.'))
+        return self._validate_quantity(value)
