@@ -98,6 +98,8 @@ class LoanReceipt(BaseStoqReport):
     def _get_table_columns(self):
         return [OTC(_("Code"), lambda obj: obj.sellable.code,
                     truncate=True, width=100),
+                OTC(_("Category"), lambda obj:
+                    obj.sellable.get_category_description(), width=100),
                 OTC(_("Item"),
                     lambda obj: obj.sellable.get_description(),
                     truncate=True, expand=True),
