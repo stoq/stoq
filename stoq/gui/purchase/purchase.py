@@ -351,7 +351,7 @@ class PurchaseApp(SearchableAppWindow):
     def _on_products_action_clicked(self, action):
         self.run_dialog(ProductSearch, self.conn, hide_price_column=True)
 
-    def _on_product_unities_action_clicked(self, action):
+    def _on_product_units_action_clicked(self, action):
         self.run_dialog(SellableUnitSearch, self.conn)
 
     def _on_order_action_clicked(self, action):

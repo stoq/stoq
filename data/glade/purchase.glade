@@ -138,10 +138,10 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="ProductUnities">
-                        <property name="name">ProductUnities</property>
-                        <property name="label" translatable="yes">Product Unities...</property>
-                        <signal handler="_on_product_unities_action_clicked" name="activate"/>
+                    <widget class="GtkAction" id="ProductUnits">
+                        <property name="name">ProductUnits</property>
+                        <property name="label" translatable="yes">Product Units...</property>
+                        <signal handler="_on_product_units_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;d</property>
                     </widget>
                 </child>
@@ -374,7 +374,7 @@
 	    <menuitem action="BaseCategories"/>
 	    <menuitem action="Categories"/>
 	    <menuitem action="Products"/>
-	    <menuitem action="ProductUnities"/>
+	    <menuitem action="ProductUnits"/>
 	    <menuitem action="Services"/>
 	    <menuitem action="SearchStockItems"/>
 	    <menuitem action="SearchClosedStockItems"/>
