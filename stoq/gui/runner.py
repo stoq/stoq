@@ -60,6 +60,7 @@ class ApplicationRunner(object):
         self._login = LoginHelper(username=options.login_username)
         self._user = None
         self._blocked_apps = []
+        self._hidden_apps = ['financial']
 
     def _import(self, appname):
         module = __import__("stoq.gui.%s.app" % appname,
@@ -118,6 +119,8 @@ class ApplicationRunner(object):
         # sorting by app_full_name
         for name, full, icon, descr in sorted(descriptions,
                                               key=operator.itemgetter(1)):
+            if name in self._hidden_apps:
+                continue
             if permissions.get(name) and name not in self._blocked_apps:
                 available_applications.append(
                     Application(name, full, icon, descr))
