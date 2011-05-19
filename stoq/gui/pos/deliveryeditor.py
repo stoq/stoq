@@ -38,9 +38,9 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import format_quantity
 
 _ = stoqlib_gettext
 
