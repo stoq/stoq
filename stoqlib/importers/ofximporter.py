@@ -193,8 +193,10 @@ class OFXImporter(object):
         return account
 
     def get_account_id(self):
-        return '%s - %s' % (self.tp.fi['org'],
-                            self.tp.account_type)
+        if self.tp.fi:
+            return '%s - %s' % (self.tp.fi['org'],
+                                self.tp.account_type)
+        return self.tp.account_type
 
 if __name__ == '__main__':
     import sys
