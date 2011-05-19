@@ -357,46 +357,44 @@ class ParameterAttr:
             return self.type
 
     def get_parameter_validator(self):
-        return (self.validator and
-                self.validator or
-                self._get_generic_parameter_validator())
+        return self.validator or self._get_generic_parameter_validator())
 
     #
     #  Staticmethods
     #
 
     @staticmethod
-    def validate_int_(value):
+    def validate_int(value):
         if not validate_int(value):
             return ValidationError(_(u"This parameter only accepts "
                                      u"integer values."))
 
     @staticmethod
-    def validate_decimal_(value):
+    def validate_decimal(value):
         if not validate_decimal(value):
             return ValidationError(_(u"This parameter only accepts "
                                      u"decimal values."))
 
     @staticmethod
-    def validate_directory_(path):
+    def validate_directory(path):
         if not validate_directory(path):
             return ValidationError(_(u"'%s is not a valid path.'" % path))
 
     @staticmethod
-    def validate_area_code_(code):
+    def validate_area_code(code):
         if not validate_area_code(code):
             return ValidationError(_(u"'%s' is not a valid area code.\n"
                                      u"Valid area codes are on 10-99 range.")
                                    % code)
 
     @staticmethod
-    def validate_percentage_(value):
+    def validate_percentage(value):
         if not validate_percentage(value):
             return ValidationError(_(u"'%s' is not a valid percentage.")
                                    % value)
 
     @staticmethod
-    def validate_state_(state):
+    def validate_state(state):
         if not validate_state(state):
             return ValidationError(_(u"'%s' is not a valid state.")
                                    % state)
@@ -409,11 +407,11 @@ class ParameterAttr:
         p_type = self.get_parameter_type()
 
         if issubclass(p_type, int):
-            return ParameterAttr.validate_int_
+            return ParameterAttr.validate_int
         elif issubclass(p_type, Decimal):
-            return ParameterAttr.validate_decimal_
+            return ParameterAttr.validate_decimal
         elif issubclass(p_type, DirectoryParameter):
-            return ParameterAttr.validate_directory_
+            return ParameterAttr.validate_directory
 
 
 class ParameterAccess(ClassInittableObject):
@@ -447,22 +445,22 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
         ParameterAttr('CITY_SUGGESTED', unicode, initial=u'Sao Carlos'),
         ParameterAttr('STATE_SUGGESTED', unicode, initial=u'SP',
-                      validator=ParameterAttr.validate_state_),
+                      validator=ParameterAttr.validate_state),
         ParameterAttr('COUNTRY_SUGGESTED', unicode, initial=u'Brazil'),
         ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
         ParameterAttr('RETURN_MONEY_ON_SALES', bool, initial=True),
         ParameterAttr('ASK_SALES_CFOP', bool, initial=False),
         ParameterAttr('MAX_SALE_DISCOUNT', Decimal, initial=5,
-                      validator=ParameterAttr.validate_percentage_),
+                      validator=ParameterAttr.validate_percentage),
         ParameterAttr('ICMS_TAX', Decimal, initial=18,
-                      validator=ParameterAttr.validate_percentage_),
+                      validator=ParameterAttr.validate_percentage),
         ParameterAttr('ISS_TAX', Decimal, initial=18,
-                      validator=ParameterAttr.validate_percentage_),
+                      validator=ParameterAttr.validate_percentage),
         ParameterAttr('SUBSTITUTION_TAX', Decimal, initial=18,
-                      validator=ParameterAttr.validate_percentage_),
+                      validator=ParameterAttr.validate_percentage),
         ParameterAttr('POS_SEPARATE_CASHIER', bool, initial=False),
         ParameterAttr('DEFAULT_AREA_CODE', int, initial=16,
-                      validator=ParameterAttr.validate_area_code_),
+                      validator=ParameterAttr.validate_area_code),
         ParameterAttr('SALE_PAY_COMMISSION_WHEN_CONFIRMED', bool,
                        initial=False),
         ParameterAttr('DEFAULT_OPERATION_NATURE', unicode, initial=_(u'Sale')),
