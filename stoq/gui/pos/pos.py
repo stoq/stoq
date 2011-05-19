@@ -427,6 +427,13 @@ class POSApp(AppWindow):
             self._run_advanced_search(search_str)
             return
 
+        quantity = self.quantity.get_value()
+        if not sellable.is_valid_quantity(quantity):
+            warning(_(u"You cannot sell fractions of this product. "
+                      u"The '%s' unit does not allow that") %
+                      sellable.get_unit_description())
+            return
+
         if sellable.product:
             # If the sellable has a weight unit specified and we have a scale
             # configured for this station, go and check what the scale says.
