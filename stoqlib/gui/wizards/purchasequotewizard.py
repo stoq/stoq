@@ -57,7 +57,7 @@ from stoqlib.gui.wizards.purchasewizard import (PurchaseItemStep,
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formaters import format_quantity, get_formatted_cost
+from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.reporting.purchase import PurchaseQuoteReport
 
 _ = stoqlib_gettext

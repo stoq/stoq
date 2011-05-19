@@ -29,7 +29,7 @@ from kiwi.datatypes import currency, ValidationError
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.lib.formaters import get_formatted_price
+from stoqlib.lib.formatters import get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

@@ -35,7 +35,7 @@ from stoqlib.gui.editors.productioneditor import ProductionMaterialEditor
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.production import ProductionOrder, ProductionMaterial
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formaters import format_quantity
+from stoqlib.lib.formatters import format_quantity
 
 _ = stoqlib_gettext
 

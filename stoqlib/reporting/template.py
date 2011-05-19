@@ -44,7 +44,7 @@ from stoqlib.domain.interfaces import ICompany
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formaters import format_phone_number, format_quantity
+from stoqlib.lib.formatters import format_phone_number, format_quantity
 from stoqlib.reporting.base.printing import ReportTemplate
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 

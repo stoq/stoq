@@ -32,7 +32,7 @@ from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formaters import format_phone_number
+from stoqlib.lib.formatters import format_phone_number
 from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
                                               EmployeeEditor,
                                               TransporterEditor,

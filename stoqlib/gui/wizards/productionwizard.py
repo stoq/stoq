@@ -40,7 +40,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductComponentView
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.formaters import format_quantity
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.editors.productioneditor import (ProductionItemEditor,

@@ -26,7 +26,7 @@
 from kiwi.datatypes import number
 from kiwi.ui.objectlist import Column, ObjectList
 
-from stoqlib.lib.formaters import get_formatted_price as format_number
+from stoqlib.lib.formatters import get_formatted_price as format_number
 
 
 def objectlist2csv(objectlist, encoding):

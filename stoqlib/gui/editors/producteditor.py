@@ -50,7 +50,7 @@ from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formaters import get_formatted_price, get_formatted_cost
+from stoqlib.lib.formatters import get_formatted_price, get_formatted_cost
 
 _ = stoqlib_gettext
 

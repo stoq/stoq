@@ -58,7 +58,7 @@ def get_formatted_cost(float_value, symbol=True):
 
 
 #
-#  Phone number formaters
+#  Phone number formatters
 #
 
 def _format_phone_number(digits, phone):
@@ -86,7 +86,7 @@ def format_phone_number(phone_number):
     return phone_number
 
 #
-#  Adress formaters
+#  Adress formatters
 #
 
 def raw_postal_code(postal_code):

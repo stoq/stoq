@@ -28,7 +28,7 @@ from decimal import Decimal
 
 from stoqlib.reporting.template import ObjectListReport
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.lib.formaters import get_formatted_price
+from stoqlib.lib.formatters import get_formatted_price
 
 class PurchaseReceivalReport(ObjectListReport):
     report_name = _("Purchase Receival Report")
