@@ -29,7 +29,7 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.contacteditor import ContactEditor
-from stoqlib.lib.formaters import format_phone_number
+from stoqlib.lib.formatters import format_phone_number
 from stoqlib.domain.person import Liaison
 
 _ = stoqlib_gettext

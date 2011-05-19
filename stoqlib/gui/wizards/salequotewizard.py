@@ -47,7 +47,7 @@ from stoqlib.exceptions import TaxError
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.formaters import format_quantity
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.editors.fiscaleditor import CfopEditor

@@ -29,7 +29,7 @@ from decimal import Decimal
 from stoqlib.domain.service import ServiceView
 from stoqlib.reporting.template import PriceReport, ObjectListReport
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.lib.formaters import get_formatted_price
+from stoqlib.lib.formatters import get_formatted_price
 
 
 class ServiceReport(ObjectListReport):

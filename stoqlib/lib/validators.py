@@ -28,7 +28,7 @@ import re
 
 from kiwi.datatypes import converter, ValidationError
 
-from stoqlib.lib.formaters import raw_phone_number, raw_postal_code
+from stoqlib.lib.formatters import raw_phone_number, raw_postal_code
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

@@ -32,7 +32,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel, ListLabel, ColoredColumn
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formaters import get_formatted_cost
+from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.domain.interfaces import IInPayment

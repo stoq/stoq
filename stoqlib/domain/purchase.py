@@ -48,7 +48,7 @@ from stoqlib.domain.sellable import Sellable, BaseSellableInfo, SellableUnit
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formaters import format_quantity, get_formatted_price
+from stoqlib.lib.formatters import format_quantity, get_formatted_price
 
 
 _ = stoqlib_gettext

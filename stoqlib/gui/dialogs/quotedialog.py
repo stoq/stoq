@@ -35,7 +35,7 @@ from stoqlib.database.orm import AND, OR, LEFTJOINOn
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formaters import get_formatted_cost
+from stoqlib.lib.formatters import get_formatted_cost
 
 _ = stoqlib_gettext
 
