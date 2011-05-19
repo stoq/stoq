@@ -175,6 +175,7 @@ class SchemaMigration(object):
 
         last_level = None
         if current_version != latest_available:
+            patches_to_apply = []
             for patch in patches:
                 if patch.get_version() <= current_version:
                     continue
@@ -183,10 +184,10 @@ class SchemaMigration(object):
             log.info("Applying %d patches" % (len(patches),))
 
             for i, patch in enumerate(patches_to_apply):
-                log.info('Applying: %s' % (self.filename,))
+                log.info('Applying: %s' % (patch.filename,))
                 patch.apply(self.conn)
 
-            assert applied
+            assert patches_to_apply
             log.info("All patches (%s) applied." % (
                 ''.join(str(p.level) for p in applied)))
             last_level = applied[-1]
