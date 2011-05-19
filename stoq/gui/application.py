@@ -255,16 +255,17 @@ class AppWindow(BaseAppWindow):
         actions = [
             ('UserMenu', None, _('%s User') % self.user_menu_label),
             ('StoreCookie', gtk.STOCK_SAVE, _('_Store'), '<control>k',
-             _('Store a cookie'), self.on_StoreCookie__activate),
+             _('Store a cookie'), self._on_StoreCookie__activate),
             ('ClearCookie',     gtk.STOCK_CLEAR, _('_Clear'), '<control>e',
-             _('Clear the cookie'), self.on_ClearCookie__activate),
+             _('Clear the cookie'), self._on_ClearCookie__activate),
             ('ChangePassword', gtk.STOCK_REFRESH, _('Chan_ge Password'),
               '<control>g', _('Change the password'),
-              self.on_ChangePassword__activate),
+             self._on_ChangePassword__activate),
             ('ChangeUser',    gtk.STOCK_REFRESH, _('C_hange User'), '<control>h',
-             _('Change user'), self.on_ChangeUser__activate),
+             _('Change user'), self._on_ChangeUser__activate),
             ('ChangeApplication',    gtk.STOCK_REFRESH, _('Change Application'),
-             'F5', _('Change application'), self._on_ChangeApplication__activate),
+             'F5', _('Change application'),
+             self._on_ChangeApplication__activate),
             ]
         self._user_menu_action_group = gtk.ActionGroup('UsersMenuActions')
         self._user_menu_action_group.add_actions(actions)
@@ -285,15 +286,11 @@ class AppWindow(BaseAppWindow):
           </menubar>
         </ui>"""
 
-        # FIXME: Remove when gazpacho is not used any more
-        # Glade3 doesn't create a ui manager for us
-        if not hasattr(self, 'uimanager'):
-            self.uimanager = gtk.UIManager()
+        uimanager = self.get_uimanager()
+        uimanager.insert_action_group(self._user_menu_action_group, 0)
+        uimanager.add_ui_from_string(ui_string)
 
-        self.uimanager.insert_action_group(self._user_menu_action_group, 0)
-        self.uimanager.add_ui_from_string(ui_string)
-
-        user_menu = self.uimanager.get_widget('/menubar/UserMenu')
+        user_menu = uimanager.get_widget('/menubar/UserMenu')
         user_menu.set_right_justified(True)
 
         menu_bar = user_menu.get_parent()
@@ -305,9 +302,9 @@ class AppWindow(BaseAppWindow):
 
         if sysparam(self.conn).DISABLE_COOKIES:
             self._clear_cookie()
-            store_cookie = self.uimanager.get_widget('/menubar/UserMenu/StoreCookie')
+            store_cookie = uimanager.get_widget('/menubar/UserMenu/StoreCookie')
             store_cookie.hide()
-            clear_cookie = self.uimanager.get_widget('/menubar/UserMenu/ClearCookie')
+            clear_cookie = uimanager.get_widget('/menubar/UserMenu/ClearCookie')
             clear_cookie.hide()
 
     def _create_debug_menu(self):
@@ -350,6 +347,14 @@ class AppWindow(BaseAppWindow):
     def get_title(self):
         # This method must be redefined in child when it's needed
         return _('Stoq - %s') % self.app_name
+
+    def get_uimanager(self):
+        # FIXME: Remove when gazpacho is not used any more
+        # Glade3 doesn't create a ui manager for us
+        if not hasattr(self, 'uimanager'):
+            self.uimanager = gtk.UIManager()
+            self.accel_group = self.uimanager.get_accel_group()
+        return self.uimanager
 
     def can_change_application(self):
         """Define if we can change the current application or not.
@@ -405,16 +410,16 @@ class AppWindow(BaseAppWindow):
     def _on_quit_action__clicked(self, *args):
         self.shutdown_application()
 
-    def on_StoreCookie__activate(self, action):
+    def _on_StoreCookie__activate(self, action):
         self._store_cookie()
 
-    def on_ClearCookie__activate(self, action):
+    def _on_ClearCookie__activate(self, action):
         self._clear_cookie()
 
-    def on_ChangePassword__activate(self, action):
+    def _on_ChangePassword__activate(self, action):
         self._change_password()
 
-    def on_ChangeUser__activate(self, action):
+    def _on_ChangeUser__activate(self, action):
         self.app.runner.relogin()
 
     def _on_ChangeApplication__activate(self, action):
