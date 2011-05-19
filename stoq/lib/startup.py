@@ -75,10 +75,6 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     #       bin/stoqdbadmin
     #       python stoq/tests/runtest.py
 
-    if config is None:
-        config = StoqConfig()
-        config.load_default()
-
     if options is None:
         parser = get_option_parser()
         options, args = parser.parse_args(sys.argv)
@@ -87,6 +83,12 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         from kiwi.log import set_log_level
         set_log_level('stoq*', 0)
 
+    if config is None:
+        config = StoqConfig()
+        if options.filename:
+            config.load(options.filename)
+        else:
+            config.load_default()
     config.set_from_options(options)
 
     register_config(config)
