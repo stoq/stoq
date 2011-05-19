@@ -31,14 +31,14 @@ import gtk
 from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.list import SummaryLabel
 
+from stoqlib.database.orm import AND
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.sale import SaleItem
+from stoqlib.domain.loan import Loan
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrderItem
-from stoqlib.domain.views import ReceivingItemView, SaleItemsView
-from stoqlib.lib.message import yesno
+from stoqlib.domain.views import ReceivingItemView, SaleItemsView, LoanItemView
 
 _ = stoqlib_gettext
 
@@ -61,9 +61,17 @@ class ProductStockHistoryDialog(BaseEditor):
         self._setup_widgets()
 
     def _setup_widgets(self):
+        # tab labels
+        for child_widget, tablabel in {self.receiving_vbox: _(u'Receiving'),
+                                       self.sales_vbox: _(u'Sales'),
+                                       self.transfer_vbox: _(u'Transfer'),
+                                       self.loan_vbox: _(u'Loan')}.items():
+            self.history_notebook.set_tab_label_text(child_widget, tablabel)
+
         self.receiving_list.set_columns(self._get_receiving_columns())
         self.sales_list.set_columns(self._get_sale_columns())
         self.transfer_list.set_columns(self._get_transfer_columns())
+        self.loan_list.set_columns(self._get_loan_columns())
 
         items = ReceivingItemView.select(
             ReceivingItemView.q.sellable_id==self.model.id,
@@ -79,6 +87,12 @@ class ProductStockHistoryDialog(BaseEditor):
         items = TransferOrderItem.selectBy(sellableID=self.model.id,
                                             connection=self.conn)
         self.transfer_list.add_list(list(items))
+
+        items = LoanItemView.select(AND(
+            LoanItemView.q.sellable_id == self.model.id,
+            LoanItemView.q.loan_status == Loan.STATUS_OPEN),
+            connection=self.conn)
+        self.loan_list.add_list(list(items))
 
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % _("Total:")
@@ -102,6 +116,12 @@ class ProductStockHistoryDialog(BaseEditor):
                                               value_format=value_format)
         transfer_summary_label.show()
         self.transfer_vbox.pack_start(transfer_summary_label, False)
+
+        loan_summary_label = SummaryLabel(klist=self.loan_list,
+                                          column='quantity',
+                                          label=total_label,
+                                          value_format=value_format)
+        self.loan_vbox.pack_start(loan_summary_label, False)
 
     def _get_receiving_columns(self):
         return [Column("order_id", title=_("#"), data_type=int, sorted=True,
@@ -148,6 +168,21 @@ class ProductStockHistoryDialog(BaseEditor):
                        data_type=str),
                 Column("quantity", title=_("Transfered"),
                        data_type=Decimal)]
+
+    def _get_loan_columns(self):
+        return [Column("loan_id", title=_("Loan"), data_type=int,
+                        justify=gtk.JUSTIFY_RIGHT, sorted=True),
+                Column("opened", title=_(u"Opened"),
+                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                Column("code", title=_(u"Code"), data_type=str, visible=False),
+                Column("category_description", title=_(u"Category"),
+                        data_type=str, visible=False),
+                Column("description", title=_(u"Description"), data_type=str,
+                        expand=True),
+                Column("unit_description", title=_(u"Unit"), data_type=str),
+                Column("quantity", title=_(u"Loaned"), data_type=Decimal),
+                Column("return_quantity", title=_(u"Returned"),
+                        data_type=Decimal),]
 
     #
     # BaseEditor Hooks
