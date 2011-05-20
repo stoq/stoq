@@ -219,7 +219,11 @@ class FinancialApp(AppWindow):
     def _run_account_editor(self, model, parent_account):
         trans = new_transaction()
         model = trans.get(model)
-
+        if parent_account:
+            if parent_account.kind in ['payable', 'receivable']:
+                parent_account = None
+            if parent_account == sysparam(self.conn).IMBALANCE_ACCOUNT:
+                parent_account = None
         retval = self.run_dialog(AccountEditor, trans, model=model,
                                  parent_account=parent_account)
         if finish_transaction(trans, retval):
