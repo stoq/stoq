@@ -61,13 +61,6 @@ class ProductStockHistoryDialog(BaseEditor):
         self._setup_widgets()
 
     def _setup_widgets(self):
-        # tab labels
-        for child_widget, tablabel in {self.receiving_vbox: _(u'Receiving'),
-                                       self.sales_vbox: _(u'Sales'),
-                                       self.transfer_vbox: _(u'Transfer'),
-                                       self.loan_vbox: _(u'Loan')}.items():
-            self.history_notebook.set_tab_label_text(child_widget, tablabel)
-
         self.receiving_list.set_columns(self._get_receiving_columns())
         self.sales_list.set_columns(self._get_sale_columns())
         self.transfer_list.set_columns(self._get_transfer_columns())
