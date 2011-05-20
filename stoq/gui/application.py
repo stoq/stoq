@@ -295,10 +295,10 @@ class AppWindow(BaseAppWindow):
 
         menu_bar = user_menu.get_parent()
         if not menu_bar.get_parent():
-            if not hasattr(self, 'user_menu_bar'):
-                raise AssertionError("%s app needs a user_menu_bar widget" %
+            if not hasattr(self, 'menubar'):
+                raise AssertionError("%s app needs a menubar widget" %
                         (self.app_name, ))
-            user_menu.reparent(self.user_menu_bar)
+            user_menu.reparent(self.menubar)
 
         if sysparam(self.conn).DISABLE_COOKIES:
             self._clear_cookie()
