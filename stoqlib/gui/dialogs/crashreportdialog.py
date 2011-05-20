@@ -77,10 +77,28 @@ def _collect_crash_report(params, tracebacks):
                                          platform.python_implementation())
     text += "PyGTK version: %s\n" % ('.'.join(map(str, gtk.pygtk_version)), )
     text += "GTK version: %s\n" % ('.'.join(map(str, gtk.gtk_version)), )
-    text += "Kiwi version: %s\n" % ('.'.join(map(str, kiwi.__version__.version)), )
     text += "Reportlab version: %s\n" % (reportlab.Version, )
-    text += "Stoqdrivers version: %s\n" % ('.'.join(map(str, stoqdrivers.__version__)), )
-    text += "Stoqlib version: %s\n" % (stoqlib.version, )
+
+    # Kiwi
+    kiwi_version = '.'.join(map(str, kiwi.__version__.version))
+    if hasattr(kiwi, 'library'):
+        if hasattr(kiwi.library, 'get_revision'):
+            kiwi_version += ' r' + kiwi.library.get_revision()
+    text += "Kiwi version: %s\n" % (kiwi_version, )
+
+    # Stoqdrivers
+    stoqdrivers_version = '.'.join(map(str, stoqdrivers.__version__))
+    if hasattr(stoqdrivers.library, 'get_revision'):
+        stoqdrivers_version += ' r' + stoqdrivers.library.get_revision()
+    text += "Stoqdrivers version: %s\n" % (stoqdrivers_version, )
+
+    # Stoqlib version
+    stoqlib_version = stoqlib.version
+    if hasattr(stoqlib.library, 'get_revision'):
+        stoqlib_version += ' r' + stoqlib.library.get_revision()
+    text += "Stoqlib version: %s\n" % (stoqlib_version, )
+
+    # Stoq version
     text += "%s version: %s\n" % (params['app-name'], params['app-version'])
     text += "Psycopg version: %20s\n" % (psycopg2.__version__, )
     try:
