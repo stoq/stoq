@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source
+## Copyright (C) 2005-2011 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -134,15 +134,6 @@ def register_iconsets():
             iconset.add_source(iconsource)
         iconfactory.add(stock_id, iconset)
     iconfactory.add_default()
-
-def change_toolbar_button_appearance(item, icon=None, text=None):
-    button = item.get_children()[0]
-    vbox = button.get_children()[0]
-    image, label = vbox.get_children()
-    if icon:
-        image.set_from_stock(icon, gtk.ICON_SIZE_LARGE_TOOLBAR)
-    if text:
-        label.set_text(text)
 
 def change_button_appearance(button, icon=None, text=None):
     alignment = button.get_children()[0]
