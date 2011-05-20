@@ -98,7 +98,7 @@ class Tasks(gtk.ScrolledWindow):
                  (_('Cfop'), 'calc'),
                  (_('Devices'), 'audio-card'),
                  (_('Employee'), 'stoq-admin-app'),
-                 (_('Employee Roles'), 'stoq-admin-app'),
+                 (_('Employee Roles'), 'stoq-users'),
                  (_('FiscalBooks'), 'stoq-conference'),
                  (_('Invoice Printers'), 'printer'),
                  (_('Payment Categories'), 'stoq-payable-app'),
