@@ -25,9 +25,15 @@
 import gtk
 
 from kiwi.python import Settable
+from kiwi.datatypes import  ValidationError
+
 from stoqlib.domain.account import Account
 from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
+
 
 class AccountEditor(BaseEditor):
     """ Account Editor """
@@ -40,6 +46,7 @@ class AccountEditor(BaseEditor):
         self.existing = model is not None
         self.parent_account = conn.get(parent_account)
         BaseEditor.__init__(self, conn, model)
+        self.refresh_ok(False)
 
     #
     # BaseEditor hooks
@@ -52,6 +59,8 @@ class AccountEditor(BaseEditor):
     def _setup_widgets(self):
         self.parent_accounts = AccountTree(with_code=False,
                                            create_mode=True)
+        self.parent_accounts.connect('selection-changed',
+                                     self._on_parent_accounts__selection_changed)
         self.parent_accounts.set_headers_visible(False)
         self.table.attach(self.parent_accounts, 1, 2, 2, 3)
         model = self.model if not self.existing else None
@@ -78,8 +87,16 @@ class AccountEditor(BaseEditor):
             self.model.parent = self.parent_accounts.get_selected()
         return self.model
 
-    def on_description__activate(self, entry):
-        self.confirm()
+    def _validate_all(self):
+        self.refresh_ok(self.validate_confirm())
 
-    def on_code__activate(self, entry):
-        self.confirm()
+    def _on_parent_accounts__selection_changed(self, objectlist, account):
+        self._validate_all()
+
+    def on_description__activate(self, entry):
+        if self.validate_confirm():
+            self.confirm()
+
+    def on_description__validate(self, entry, text):
+        if not text:
+            return ValidationError(_("Account description cannot be empty"))
