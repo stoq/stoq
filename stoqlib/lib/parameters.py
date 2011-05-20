@@ -118,13 +118,6 @@ _parameter_info = dict(
     _(u'Allows the inclusion of purchases done previously than the '
       'current date.')),
 
-    DEFAULT_PAYMENT_DESTINATION=ParameterDetails(
-    _(u'Financial'),
-    _(u'Default Payment Destination'),
-    _(u'A default payment destination which will be used for all the '
-      'created payments until the user change the destination of each '
-      'payment method.')),
-
     DELIVERY_SERVICE=ParameterDetails(
     _(u'Sales'),
     _(u'Delivery Service'),
@@ -509,8 +502,6 @@ class ParameterAccess(ClassInittableObject):
                       u'sellable.SellableCategory'),
         ParameterAttr('DEFAULT_SALESPERSON_ROLE',
                       u'person.EmployeeRole'),
-        ParameterAttr('DEFAULT_PAYMENT_DESTINATION',
-                      u'payment.destination.PaymentDestination'),
         ParameterAttr('DELIVERY_SERVICE',
                       u'sellable.Sellable'),
         ParameterAttr('DEFAULT_PRODUCT_TAX_CONSTANT',
@@ -677,7 +668,6 @@ class ParameterAccess(ClassInittableObject):
         self.ensure_default_base_category()
         self.ensure_default_salesperson_role()
         self.ensure_main_company()
-        self.ensure_payment_destination()
         self.ensure_delivery_service()
         self.ensure_product_tax_constant()
 
@@ -723,19 +713,6 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, Person.getAdapterClass(IBranch)):
             return
         self._set_schema(key, None)
-
-    def ensure_payment_destination(self):
-        # Note that this method must always be called after
-        # ensure_main_company
-        from stoqlib.domain.payment.destination import PaymentDestination
-        key = "DEFAULT_PAYMENT_DESTINATION"
-        if self.get_parameter_by_field(key, PaymentDestination):
-            return
-        branch = self.MAIN_COMPANY
-        pm = PaymentDestination(description=_(u'Default Store Destination'),
-                                branch=branch,
-                                connection=self.conn)
-        self._set_schema(key, pm.id)
 
     def ensure_delivery_service(self):
         from stoqlib.domain.sellable import (BaseSellableInfo,

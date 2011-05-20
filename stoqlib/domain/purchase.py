@@ -570,7 +570,8 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
             payment.set_pending()
 
     def pay(self):
-        pass
+        for payment in self.purchase.payments:
+            payment.pay()
 
     def cancel(self):
         assert self.purchase.group.can_cancel()

@@ -238,7 +238,6 @@ class PurchaseFinishWizard(BaseWizard):
                           group=self.purchase.group,
                           till=None,
                           category=None,
-                          destination=None,
                           connection=self.conn)
         payment.set_pending()
         payment.addFacet(IInPayment, connection=self.conn)

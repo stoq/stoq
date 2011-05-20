@@ -142,18 +142,18 @@ def _register_payment_methods():
     register_payment_operations()
 
     trans = new_transaction()
-    destination = sysparam(trans).DEFAULT_PAYMENT_DESTINATION
 
     log.info("Creating domain objects for payment methods")
+    account = sysparam(trans).IMBALANCE_ACCOUNT
     for operation_name in pom.get_operation_names():
         operation = pom.get(operation_name)
         pm = PaymentMethod.selectOneBy(connection=trans,
                                        method_name=operation_name)
         if pm is None:
             pm = PaymentMethod(connection=trans,
-                               destination=destination,
                                method_name=operation_name,
                                description=None,
+                               destination_account=account,
                                max_installments=1)
         pm.description = operation.description
         pm.max_installments = operation.max_installments
@@ -324,10 +324,10 @@ def initialize_system():
     clean_database(settings.dbname)
     create_base_schema()
     create_log("INIT START")
-    _register_payment_methods()
     trans = new_transaction()
     register_accounts(trans)
     trans.commit(close=True)
+    _register_payment_methods()
     ensure_sellable_constants()
     ensure_system_parameters()
     _ensure_card_providers()

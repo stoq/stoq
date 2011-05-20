@@ -70,7 +70,6 @@ _tables = [
      ('station', ["BranchStation"]),
      ('till', ["Till", "TillEntry"]),
      ('payment.category', ["PaymentCategory"]),
-     ('payment.destination', ["PaymentDestination"]),
      ('payment.group', ["PaymentGroup"]),
      ('payment.method', ["PaymentMethod", "CheckData"]),
      ('payment.payment', ["Payment",
