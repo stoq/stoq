@@ -24,6 +24,7 @@
 
 import gettext
 import operator
+import sys
 
 import gtk
 from kiwi.log import Logger
@@ -60,7 +61,9 @@ class ApplicationRunner(object):
         self._login = LoginHelper(username=options.login_username)
         self._user = None
         self._blocked_apps = []
-        self._hidden_apps = ['financial']
+        self._hidden_apps = []
+        if not 'financial' in sys.argv:
+            self._hidden_apps.append('financial')
 
     def _import(self, appname):
         module = __import__("stoq.gui.%s.app" % appname,
