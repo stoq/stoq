@@ -57,7 +57,8 @@ def sort_models(a, b):
                b.lower())
 
 class AccountTree(ObjectTree):
-    def __init__(self, with_code=True):
+    def __init__(self, with_code=True, create_mode=False):
+        self.create_mode = create_mode
         columns = [StockTextColumn('description', data_type=str,
                    pack_end=True, sorted=True, sort_func=sort_models)]
         if with_code:
@@ -80,6 +81,7 @@ class AccountTree(ObjectTree):
         res.extend(accounts)
         for account in accounts:
             account.kind = 'account'
+            account.selectable = True
             self._orderaccounts(conn, res, account)
         return res
 
@@ -101,17 +103,26 @@ class AccountTree(ObjectTree):
         return pixbuf
 
     def insert_initial(self, conn, ignore=None):
+        till_id = sysparam(get_connection()).TILLS_ACCOUNT.id
+
         for account in self._orderaccounts(conn):
             if account == ignore:
                 continue
+            if (self.create_mode and
+                (account.id == till_id or
+                 account.parent and account.parent.id == till_id)):
+                account.selectable = False
             self.append(account.parent, account)
 
+        selectable = not self.create_mode
         self.append(None, Settable(description=_("Accounts Payable"),
                                    parent=None,
-                                   kind='payable'))
+                                   kind='payable',
+                                   selectable=selectable))
         self.append(None, Settable(description=_("Accounts Receivable"),
                                    parent=None,
-                                   kind='receivable'))
+                                   kind='receivable',
+                                   selectable=selectable))
         self.flush()
 
     def add_account(self, parent, account):
