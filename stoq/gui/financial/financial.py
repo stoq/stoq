@@ -187,8 +187,8 @@ class FinancialApp(AppWindow):
 
     def _create_initial_page(self):
         pixbuf = self.accounts.render_icon('stoq-money', gtk.ICON_SIZE_MENU)
-        hbox = self._create_tab_label(_('Accounts'), pixbuf)
         page = self.notebook.get_nth_page(0)
+        hbox = self._create_tab_label(_('Accounts'), pixbuf)
         self.notebook.set_tab_label(page, hbox)
 
     def _create_new_account(self):
@@ -230,8 +230,14 @@ class FinancialApp(AppWindow):
     def _close_current_page(self):
         assert self._can_close_tab()
         page_id = self.notebook.get_current_page()
-        # Do not allow the initial page to be removed
         page = self.notebook.get_children()[page_id]
+        self._close_page(page)
+
+    def _close_page(self, page):
+        # Do not allow the initial page to be removed
+        for page_id, child in enumerate(self.notebook.get_children()):
+            if child == page:
+                break
         self.notebook.remove_page(page_id)
         del self._pages[page.account]
         self._update_actions()
@@ -244,7 +250,7 @@ class FinancialApp(AppWindow):
         # The first tab is not closable
         return not self._is_accounts_tab()
 
-    def _create_tab_label(self, title, pixbuf):
+    def _create_tab_label(self, title, pixbuf, page=None):
         hbox = gtk.HBox()
         image = gtk.image_new_from_pixbuf(pixbuf)
         hbox.pack_start(image, False, False)
@@ -254,7 +260,8 @@ class FinancialApp(AppWindow):
             image = gtk.image_new_from_stock(gtk.STOCK_CLOSE, gtk.ICON_SIZE_MENU)
             button = gtk.Button()
             button.set_relief(gtk.RELIEF_NONE)
-            button.connect('clicked', lambda button: self._close_current_page())
+            if page:
+                button.connect('clicked', lambda button: self._close_page(page))
             button.add(image)
             hbox.pack_end(button, False, False)
         hbox.show_all()
@@ -266,8 +273,8 @@ class FinancialApp(AppWindow):
             page_id = self.notebook.get_children().index(page)
         else:
             pixbuf = self.accounts.get_pixbuf(account)
-            hbox = self._create_tab_label(account.description, pixbuf)
             page = TransactionPage(account)
+            hbox = self._create_tab_label(account.description, pixbuf, page)
             page_id = self.notebook.append_page(page, hbox)
             page.show()
             page.account = account
@@ -345,11 +352,13 @@ class FinancialApp(AppWindow):
     # Kiwi callbacks
     #
     def key_escape(self):
-        self._close_current_page()
+        if self._can_close_tab():
+            self._close_current_page()
         return True
 
     def key_control_w(self):
-        self._close_current_page()
+        if self._can_close_tab():
+            self._close_current_page()
         return True
 
     def on_accounts__row_activated(self, ktree, account):
