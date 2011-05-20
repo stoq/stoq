@@ -248,12 +248,24 @@ class AccountTransaction(Domain):
 
     def get_other_account(self, account):
         """Get the other end of a transaction
-        @param account: a account
+        @param account: an account
         @returns: the other end
         """
         if self.source_account == account:
             return self.account
         elif self.account == account:
             return self.source_account
+        else:
+            raise AssertionError
+
+    def set_other_account(self, other, account):
+        """Set the other end of a transaction
+        @param other: an account which we do not want to set
+        @param account: the account to set
+        """
+        if self.source_account == other:
+            self.account = account
+        elif self.account == other:
+            self.source_account = account
         else:
             raise AssertionError

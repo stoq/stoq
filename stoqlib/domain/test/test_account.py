@@ -177,6 +177,30 @@ class TestAccountTransaction(DomainTest):
         self.assertEquals(t2.get_other_account(a1), a2)
         self.assertEquals(t2.get_other_account(a2), a1)
 
+    def testSetOtherAccount(self):
+        a1 = self.create_account()
+        a2 = self.create_account()
+
+        t1 = self.create_account_transaction(a1)
+        t1.source_account = a2
+
+        t2 = self.create_account_transaction(a2)
+        t2.source_account = a1
+
+        t1.set_other_account(a1, a2)
+        self.assertEquals(t1.account, a1)
+        self.assertEquals(t1.source_account, a2)
+        t1.set_other_account(a2, a2)
+        self.assertEquals(t1.account, a2)
+        self.assertEquals(t1.source_account, a2)
+
+        t2.set_other_account(a1, a2)
+        self.assertEquals(t2.account, a2)
+        self.assertEquals(t2.source_account, a1)
+        t2.set_other_account(a2, a2)
+        self.assertEquals(t2.account, a2)
+        self.assertEquals(t2.source_account, a2)
+
     def testCreateFromPayment(self):
         sale = self.create_sale()
         payment = self.add_payments(sale).payment
