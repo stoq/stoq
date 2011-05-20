@@ -50,7 +50,8 @@ class AccountEditor(BaseEditor):
                        connection=conn)
 
     def _setup_widgets(self):
-        self.parent_accounts = AccountTree(with_code=False)
+        self.parent_accounts = AccountTree(with_code=False,
+                                           create_mode=True)
         self.parent_accounts.set_headers_visible(False)
         self.table.attach(self.parent_accounts, 1, 2, 2, 3)
         model = self.model if not self.existing else None
@@ -69,7 +70,7 @@ class AccountEditor(BaseEditor):
         account = self.parent_accounts.get_selected()
         if not account:
             return True
-        return account.kind == 'account'
+        return account.selectable
 
     def on_confirm(self):
         new_parent = self.parent_accounts.get_selected()
