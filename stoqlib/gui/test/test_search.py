@@ -74,7 +74,8 @@ class TestDateOptions(unittest.TestCase):
             self.assertEqual(
                 relativedelta.weekday(interval[1].weekday()), SU)
 
-    def testThisWeek(self):
+    # Tests disable because they cause segmentation fault in hudson
+    def DISABLED_testThisWeek(self):
         option = ThisWeek()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -86,7 +87,7 @@ class TestDateOptions(unittest.TestCase):
                                  self._get_week_interval(get_today_date()))
                 self._testWeekday(loc, option.get_interval())
 
-    def testLastWeek(self):
+    def DISABLED_testLastWeek(self):
         option = LastWeek()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -100,7 +101,7 @@ class TestDateOptions(unittest.TestCase):
                                  self._get_week_interval(last_week_day))
                 self._testWeekday(loc, option.get_interval())
 
-    def testNextWeek(self):
+    def DISABLED_testNextWeek(self):
         option = NextWeek()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -114,7 +115,7 @@ class TestDateOptions(unittest.TestCase):
                                  self._get_week_interval(next_week_day))
                 self._testWeekday(loc, option.get_interval())
 
-    def testThisMonth(self):
+    def DISABLED_testThisMonth(self):
         option = ThisMonth()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -126,7 +127,7 @@ class TestDateOptions(unittest.TestCase):
                 self.assertEqual(option.get_interval(),
                                  self._get_month_interval(month_day))
 
-    def testLastMonth(self):
+    def DISABLED_testLastMonth(self):
         option = LastMonth()
         for loc in self._get_locales():
             self._set_locale(loc)
