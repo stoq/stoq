@@ -49,7 +49,8 @@ def register_iconsets():
         ("stoq-conference",
          { gtk.ICON_SIZE_DIALOG: "gtk-stock-book48px.png" }),
         ("stoq-delivery",
-         { gtk.ICON_SIZE_LARGE_TOOLBAR: "delivery24px.png",
+         { gtk.ICON_SIZE_MENU: "delivery16px.png",
+           gtk.ICON_SIZE_LARGE_TOOLBAR: "delivery24px.png",
            gtk.ICON_SIZE_DIALOG: "delivery48px.png" }),
         ("stoq-deliveries",
          { gtk.ICON_SIZE_LARGE_TOOLBAR: "delivery24px.png" }),
@@ -113,6 +114,9 @@ def register_iconsets():
            gtk.ICON_SIZE_DIALOG: "till_48.png" }),
         ("stoq-transfer",
          { gtk.ICON_SIZE_DIALOG: "a-convert48px.png" }),
+        ("stoq-users",
+         { gtk.ICON_SIZE_MENU: "user-small.png",
+           gtk.ICON_SIZE_DIALOG: "users.png" }),
         ]
 
     iconfactory = gtk.IconFactory()
