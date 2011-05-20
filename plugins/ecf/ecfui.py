@@ -236,6 +236,10 @@ class ECFUI(object):
     def _close_till(self, till, previous_day):
         log.info('ECFCouponPrinter.close_till(%r, %r)' % (till, previous_day))
 
+        # XXX: this is so ugly, but the printer stops responding
+        # if its printing something. We should wait a little bit...
+        time.sleep(4)
+
         # Callsite catches DeviceError
         self._validate_printer()
 
@@ -319,6 +323,10 @@ class ECFUI(object):
 
     def _add_cash(self, till, value):
         log.info('ECFCouponPrinter.add_cash(%r, %r)' % (till, value,))
+
+        # XXX: this is so ugly, but the printer stops responding
+        # if its printing something. We should wait a little bit...
+        time.sleep(4)
 
         # Callsite catches DeviceError
         self._validate_printer()
