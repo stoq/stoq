@@ -31,6 +31,7 @@ import datetime
 import decimal
 import gettext
 
+import gobject
 import gtk
 import pango
 from kiwi.python import Settable
@@ -59,7 +60,19 @@ style "treeview" {
 }
 widget_class "*TransactionPage*" style "treeview"
 
+style "notebook-close-button" {
+  GtkButton::focus-padding = 0
+  GtkButton::focus-line-width = 0
+  xthickness = 0
+  ythickness = 0
+}
+widget_class "*NotebookCloseButton*" style "notebook-close-button"
+
 """) #"
+
+class NotebookCloseButton(gtk.Button):
+    pass
+gobject.type_register(NotebookCloseButton)
 
 class TransactionPage(ObjectList):
     # shows either a list of:
@@ -262,7 +275,7 @@ class FinancialApp(AppWindow):
         hbox.pack_start(label, True, False)
         if title != _("Accounts"):
             image = gtk.image_new_from_stock(gtk.STOCK_CLOSE, gtk.ICON_SIZE_MENU)
-            button = gtk.Button()
+            button = NotebookCloseButton()
             button.set_relief(gtk.RELIEF_NONE)
             if page:
                 button.connect('clicked', lambda button: self._close_page(page))
