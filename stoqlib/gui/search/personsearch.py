@@ -29,6 +29,7 @@ from kiwi.argcheck import argcheck
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
+import pango
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
@@ -37,7 +38,7 @@ from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
                                               EmployeeEditor,
                                               TransporterEditor,
                                               EmployeeRoleEditor, BranchEditor,
-                                              CardProviderEditor)
+                                              CardProviderEditor, UserEditor)
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -49,7 +50,7 @@ from stoqlib.domain.person import (EmployeeRole,
                                    CreditProviderView,
                                    PersonAdaptToEmployee, EmployeeView,
                                    TransporterView,
-                                   SupplierView)
+                                   SupplierView, UserView)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 
 _ = stoqlib_gettext
@@ -364,4 +365,45 @@ class BranchSearch(BasePersonSearch):
             return PersonAdaptToBranch.q.is_active == True
         elif state.value == PersonAdaptToBranch.STATUS_INACTIVE:
             return PersonAdaptToBranch.q.is_active == False
+
+
+class UserSearch(BasePersonSearch):
+    title = _('User Search')
+    editor_class = UserEditor
+    size = (750, 450)
+    table = UserView
+    search_lbl_text = _('Users Matching:')
+    result_strings = _('user'), _('users')
+
+    #
+    # SearchDialog hooks
+    #
+
+    def create_filters(self):
+        self.set_text_field_columns(['name', 'profile_name', 'username'])
+
+    def get_columns(self):
+        return [SearchColumn('username', title=_('Login Name'), sorted=True,
+                              data_type=str, width=150, searchable=True),
+                SearchColumn('profile_name', title=_('Profile'),
+                             data_type=str, width=150, expand=True,
+                             ellipsize=pango.ELLIPSIZE_END),
+                SearchColumn('name', title=_('Name'), data_type=str,
+                             width=300),
+                Column('status_str', title=_('Status'), data_type=str)]
+
+    def on_details_button_clicked(self, *args):
+        selected = self.results.get_selected()
+        run_dialog(UserEditor, self, self.conn, selected.user)
+
+    def update_widgets(self, *args):
+        user_view = self.results.get_selected()
+        self.set_details_button_sensitive(user_view is not None)
+        self.set_edit_button_sensitive(user_view is not None)
+
+    def get_editor_model(self, user_view):
+        return user_view.user
+
+
+
 
