@@ -109,7 +109,7 @@ class Tasks(gtk.ScrolledWindow):
                  (_('Stations'), 'system'),
                  (_('Suppliers'), 'stoq-suppliers'),
                  (_('Transporters'), 'stoq-delivery'),
-                 (_('Users'), 'config-users'),
+                 (_('Users'), 'stoq-hr'),
                  (_('User Profiles'), 'config-users'),
                  ]
 
