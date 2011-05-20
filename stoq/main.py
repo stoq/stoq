@@ -99,9 +99,12 @@ def _exit_func():
         import stoq
         from stoqlib.gui.dialogs.crashreportdialog import show_dialog
         uptime = int(time.time() - _start_time)
+        stoq_version = stoq.version
+        if hasattr(stoq.library, 'get_revision'):
+            stoq_version += ' r' + stoq.library.get_revision()
         params = {
             'app-name': 'Stoq',
-            'app-version': stoq.version,
+            'app-version': stoq_version,
             'app-uptime': uptime,
             'log-filename': _log_filename,
             }
