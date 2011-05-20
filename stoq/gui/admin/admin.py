@@ -25,7 +25,9 @@
 
 import gettext
 
+import glib
 import pango
+import gtk
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import Column, SearchColumn
 from kiwi.ui.search import ComboSearchFilter
@@ -33,8 +35,6 @@ from kiwi.ui.search import ComboSearchFilter
 from stoqlib.database.orm import AND
 from stoqlib.database.runtime import (new_transaction, finish_transaction,
                                       get_current_branch)
-from stoqlib.domain.person import Person, PersonAdaptToUser, UserView
-from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.invoice import InvoiceLayout
 from stoqlib.gui.dialogs.clientcategorydialog import ClientCategoryDialog
 from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
@@ -48,89 +48,203 @@ from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
 from stoqlib.gui.search.parametersearch import ParameterSearch
-from stoqlib.gui.search.personsearch import (EmployeeRoleSearch,
+from stoqlib.gui.search.personsearch import (ClientSearch,
+                                             EmployeeRoleSearch,
                                              EmployeeSearch,
-                                             BranchSearch)
+                                             BranchSearch,
+                                             SupplierSearch,
+                                             TransporterSearch,
+                                             UserSearch)
 from stoqlib.gui.search.profilesearch import UserProfileSearch
 from stoqlib.gui.search.stationsearch import StationSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.message import info
 
-from stoq.gui.application import SearchableAppWindow, VersionChecker
+from stoq.gui.application import AppWindow, VersionChecker
 
 _ = gettext.gettext
 
 
-class AdminApp(SearchableAppWindow):
+(COL_PATH,
+ COL_PIXBUF) = range(2)
+
+
+class Tasks(gtk.ScrolledWindow):
+    def __init__(self, app):
+        self.app = app
+        gtk.ScrolledWindow.__init__(self)
+        self.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+
+        self.model = gtk.ListStore(str, gtk.gdk.Pixbuf)
+        self.model.set_sort_column_id(COL_PATH, gtk.SORT_ASCENDING)
+        iconView = gtk.IconView(self.model)
+        iconView.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        iconView.connect('item-activated', self.on_item_activated)
+        iconView.set_text_column(COL_PATH)
+        iconView.set_pixbuf_column(COL_PIXBUF)
+        iconView.set_item_padding(0)
+
+        self.add(iconView)
+        iconView.grab_focus()
+        self.theme = gtk.icon_theme_get_default()
+
+    def add_defaults(self):
+        self.model.clear()
+        items = [(_('Branches'), 'gtk-home'),
+                 (_('Client Categories'), 'stoq-clients'),
+                 (_('Clients'), 'stoq-clients'),
+                 (_('Cfop'), 'calc'),
+                 (_('Devices'), 'audio-card'),
+                 (_('Employee'), 'stoq-admin-app'),
+                 (_('Employee Roles'), 'stoq-admin-app'),
+                 (_('FiscalBooks'), 'stoq-conference'),
+                 (_('Invoice Printers'), 'printer'),
+                 (_('Payment Categories'), 'stoq-payable-app'),
+                 (_('Payment Methods'), 'stoq-money'),
+                 (_('Parameters'), 'gtk-preferences'),
+                 (_('Plugins'), 'gtk-properties'),
+                 (_('Taxes'), 'calc'),
+                 (_('Stations'), 'system'),
+                 (_('Suppliers'), 'stoq-suppliers'),
+                 (_('Transporters'), 'stoq-transfer'),
+                 (_('Users'), 'config-users'),
+                 (_('User Profiles'), 'config-users'),
+                 ]
+
+        for item in items:
+            if len(item) == 2:
+                pixbuf = item[1]
+                item = item[0]
+            else:
+                pixbuf = None
+            self.add_item(item, pixbuf)
+
+    def add_item(self, name, pixbuf=None, cb=None):
+        if type(pixbuf) == str:
+            try:
+                pixbuf = self.theme.load_icon(pixbuf, 32, 0)
+            except glib.GError, e:
+                pixbuf = self.render_icon(pixbuf, gtk.ICON_SIZE_DIALOG)
+        self.model.append([name, pixbuf])
+        if cb is not None:
+            setattr(self,
+                    'open_' + name.replace(' ', '_'),
+                    lambda : cb(None))
+
+    def on_item_activated(self, icon_view, path):
+        name = self.model[path][0].replace(' ', '_')
+
+        func = getattr(self, 'open_%s' % name, None)
+        if not func:
+            return
+        func()
+
+    def open_Branches(self):
+        self.app.run_dialog(BranchSearch, self.app.conn,
+                            hide_footer=True)
+
+    def open_Clients(self):
+        self.app.run_dialog(ClientSearch, self.app.conn)
+
+    def open_Client_Categories(self):
+        trans = new_transaction()
+        model = self.app.run_dialog(ClientCategoryDialog, trans)
+        finish_transaction(trans, model)
+        trans.close()
+
+    def open_Devices(self):
+        self.app.run_dialog(DeviceSettingsDialog, self.app.conn)
+
+    def open_Employee_Roles(self):
+        self.app.run_dialog(EmployeeRoleSearch, self.app.conn)
+
+    def open_Employee(self):
+        self.app.run_dialog(EmployeeSearch, self.app.conn)
+
+    def open_FiscalBooks(self):
+        self.app.run_dialog(FiscalBookEntrySearch, self.app.conn,
+                            hide_footer=True)
+
+    def open_Invoice_Printers(self):
+        if not InvoiceLayout.select(connection=self.app.conn):
+            info(_(
+                "You must create at least one invoice layout before adding an"
+                "invoice printer"))
+            return
+
+        self.app.run_dialog(InvoicePrinterDialog, self.app.conn)
+
+    def open_Payment_Categories(self):
+        trans = new_transaction()
+        model = self.app.run_dialog(PaymentCategoryDialog, trans)
+        finish_transaction(trans, model)
+        trans.close()
+
+    def open_Payment_Methods(self):
+        self.app.run_dialog(PaymentMethodsDialog, self.app.conn)
+
+    def open_Parameters(self):
+        self.app.run_dialog(ParameterSearch, self.app.conn)
+
+    def open_Plugins(self):
+        self.app.run_dialog(PluginManagerDialog, self.app.conn)
+
+    def open_Cfop(self):
+        self.app.run_dialog(CfopSearch, self.app.conn, hide_footer=True)
+
+    def open_Stations(self):
+        self.app.run_dialog(StationSearch, self.app.conn, hide_footer=True)
+
+    def open_Suppliers(self):
+        self.app.run_dialog(SupplierSearch, self.app.conn)
+
+    def open_Taxes(self):
+        self.app.run_dialog(SellableTaxConstantsDialog, self.app.conn)
+
+    def open_Transporters(self):
+        self.app.run_dialog(TransporterSearch, self.app.conn)
+
+    def open_Users(self):
+        self.app.run_dialog(UserSearch, self.app.conn)
+
+    def open_User_Profiles(self):
+        self.app.run_dialog(UserProfileSearch, self.app.conn)
+
+
+class AdminApp(AppWindow):
 
     app_name = _('Administrative')
     app_icon_name = 'stoq-admin-app'
     gladefile = "admin"
-    search_table = UserView
-    search_label = _('matching:')
+    klist_name = "foo"
 
     def __init__(self, app):
-        SearchableAppWindow.__init__(self, app)
+        class x: pass
+        self.foo = x()
+        self.foo.get_columns = lambda : []
+        self.foo.set_columns = lambda *x: None
+        self.foo.set_selection_mode = lambda *x: None
+        self.tasks = Tasks(self)
+        self.tasks.add_defaults()
+        AppWindow.__init__(self, app)
+
+        self.search_holder.add(self.tasks)
+        self.tasks.show_all()
+
         self._update_view()
         self._version_checker = VersionChecker(self.conn, self)
         self._version_checker.check_new_version()
 
-    def create_filters(self):
-        # FIXME: Convert the query to a Viewable so we can add name
-        self.set_text_field_columns(['username'])
-        status_filter = ComboSearchFilter(_('Show users with status'),
-                                          self._get_status_values())
-        self.executer.add_filter_query_callback(
-            status_filter, self._get_status_query)
-        self.add_filter(status_filter, position=SearchFilterPosition.TOP)
-
+    def _update_view(self):
+        pass
     def get_columns(self):
-        return [SearchColumn('username', title=_('Login Name'), sorted=True,
-                              data_type=str, width=150, searchable=True),
-                SearchColumn('profile_name', title=_('Profile'),
-                             data_type=str, width=150, expand=True,
-                             ellipsize=pango.ELLIPSIZE_END),
-                SearchColumn('name', title=_('Name'), data_type=str,
-                             width=300),
-                Column('status_str', title=_('Status'), data_type=str)]
+        return []
 
     #
     # Private
     #
-
-    def _get_status_values(self):
-        items = [(v, k) for k, v in PersonAdaptToUser.statuses.items()]
-        items.insert(0, (_('Any'), ALL_ITEMS_INDEX))
-        return items
-
-    def _get_status_query(self, state):
-        query = None
-        if state.value == PersonAdaptToUser.STATUS_ACTIVE:
-            query = PersonAdaptToUser.q.is_active == True
-        elif state.value == PersonAdaptToUser.STATUS_INACTIVE:
-            query = PersonAdaptToUser.q.is_active == False
-
-        return query
-
-    def _update_view(self):
-        has_selected = self.results.get_selected() is not None
-        self.edit_button.set_sensitive(has_selected)
-
-    def _edit_user(self):
-        trans = new_transaction()
-        user = trans.get(self.results.get_selected().user)
-        model =  run_person_role_dialog(UserEditor, self, trans, user)
-        finish_transaction(trans, model)
-        trans.close()
-
-    def _add_user(self):
-        trans = new_transaction()
-        model = run_person_role_dialog(UserEditor, self, trans)
-        if finish_transaction(trans, model):
-            self.refresh()
-        trans.close()
 
     def _run_invoice_printer_dialog(self):
         if not InvoiceLayout.select(connection=self.conn):
@@ -162,18 +276,6 @@ class AdminApp(SearchableAppWindow):
 
     def _on_new_user_action_clicked(self, button):
         self._add_user()
-
-    def on_results__double_click(self, results, user):
-        self._edit_user()
-
-    def on_results__selection_changed(self, results, user):
-        self._update_view()
-
-    def on_add_button__clicked(self, button):
-        self._add_user()
-
-    def on_edit_button__clicked(self, button):
-        self._edit_user()
 
     def on_taxes__activate(self, action):
         self.run_dialog(SellableTaxConstantsDialog, self.conn)
