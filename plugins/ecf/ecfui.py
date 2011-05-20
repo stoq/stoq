@@ -112,13 +112,16 @@ class ECFUI(object):
 
             self._printer_verified = True
 
-    def _add_ui_menus(self, appname, uimanager):
+    def _add_ui_menus(self, appname, app, uimanager):
         if appname == 'pos':
             self._add_pos_menus(uimanager)
         elif appname == 'till':
             self._add_till_menus(uimanager)
         elif appname == 'admin':
             self._add_admin_menus(uimanager)
+            app.main_window.tasks.add_item(
+                _('Fiscal Printers'), 'printer',
+                self._on_ConfigurePrinter__activate)
 
     def _add_admin_menus(self, uimanager):
         ui_string = """<ui>
@@ -507,7 +510,7 @@ class ECFUI(object):
     #
 
     def _on_StartApplicationEvent(self, appname, app):
-        self._add_ui_menus(appname, app.main_window.uimanager)
+        self._add_ui_menus(appname, app, app.main_window.uimanager)
 
     def _on_SaleConfirm(self, sale, trans):
         self._confirm_sale(sale)
