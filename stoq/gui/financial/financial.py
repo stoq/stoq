@@ -43,6 +43,7 @@ from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.accounteditor import AccountEditor
+from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.importers.ofximporter import OFXImporter
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
@@ -78,10 +79,12 @@ class TransactionPage(ObjectList):
     # shows either a list of:
     #   - transactions
     #   - payments
-    def __init__(self, model):
+    def __init__(self, model, parent):
         self.model = model
+        self.parent_window = parent
         self._block = False
         ObjectList.__init__(self, columns=self.get_columns())
+        self.connect('row-activated', self._on_row__activated)
         tree_view = self.get_treeview()
         tree_view.set_rules_hint(True)
         tree_view.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
@@ -104,11 +107,14 @@ class TransactionPage(ObjectList):
                                  account=account.long_description,
                                  description=t.description,
                                  value=t.value,
-                                 total=total))
+                                 total=total,
+                                 kind=self.model.kind,
+                                 transaction=t))
 
 
     def _populate_payable_payments(self, view_class):
         for view in view_class.select():
+            view.kind = self.model.kind
             self.append(view)
 
     def get_columns(self):
@@ -128,6 +134,17 @@ class TransactionPage(ObjectList):
                                          color='red',
                                          data_func=lambda x: x < 0))
         return columns
+
+    def _on_row__activated(self, objectlist, item):
+        if item.kind == 'account':
+            trans = new_transaction()
+            account_transaction = trans.get(item.transaction)
+            retval = run_dialog(AccountTransactionEditor, self.parent_window,
+                                trans, account_transaction, self.model)
+            if retval:
+                retval.sync()
+            finish_transaction(trans, retval)
+
 
 class FinancialApp(AppWindow):
 
@@ -290,7 +307,7 @@ class FinancialApp(AppWindow):
             page_id = self.notebook.get_children().index(page)
         else:
             pixbuf = self.accounts.get_pixbuf(account)
-            page = TransactionPage(account)
+            page = TransactionPage(account, self.get_toplevel())
             hbox = self._create_tab_label(account.description, pixbuf, page)
             page_id = self.notebook.append_page(page, hbox)
             page.show()
