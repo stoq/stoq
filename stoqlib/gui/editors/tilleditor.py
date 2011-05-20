@@ -145,9 +145,6 @@ class TillOpeningEditor(BaseEditor):
 
         value = self.proxy.model.value
         if value:
-            # XXX: this is so ugly, but the printer stops responding while
-            # it is printing something. We should wait a little bit...
-            time.sleep(4)
             TillAddCashEvent.emit(till=till, value=value)
             till_entry = till.add_credit_entry(value,
                             (_(u'Initial Cash amount of %s')
@@ -260,9 +257,6 @@ class TillClosingEditor(BaseEditor):
                                  _(u'Amount removed from Till on %s' %
                                    till.opening_date.strftime('%x')))
             _create_transaction(self.conn, till_entry)
-            # XXX: this is so ugly, but the printer stops responding while
-            # it is printing something. We should wait a little bit...
-            time.sleep(4)
 
         try:
             retval = TillCloseEvent.emit(till=till,
