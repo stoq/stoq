@@ -63,7 +63,8 @@ class AccountTree(ObjectTree):
                    pack_end=True, sorted=True, sort_func=sort_models)]
         if with_code:
             columns.append(Column('code', data_type=str))
-        ObjectTree.__init__(self, columns)
+        ObjectTree.__init__(self, columns,
+                            mode=gtk.SELECTION_SINGLE)
 
         def render_icon(icon):
             return self.render_icon(icon, gtk.ICON_SIZE_MENU)
