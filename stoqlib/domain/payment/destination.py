@@ -33,24 +33,3 @@ from stoqlib.domain.interfaces import IDescribable
 # Domain Classes
 #
 
-class PaymentDestination(Domain):
-    """PaymentDestination is the location where all the paid payments live.
-
-    @ivar description: an easy identification for this payment
-        destination.
-    @ivar account: if this payment destination represents a bank account,
-        use it here.
-    """
-    implements(IDescribable)
-
-    description = UnicodeCol()
-    account = ForeignKey('BankAccount', default=None)
-    notes = UnicodeCol(default='')
-    branch = ForeignKey('PersonAdaptToBranch')
-
-    #
-    # IDescribable implementation
-    #
-
-    def get_description(self):
-        return self.description

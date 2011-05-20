@@ -38,7 +38,6 @@ class TestPayment(DomainTest):
                           method=None,
                           group=None,
                           till=None,
-                          destination=None,
                           category=None,
                           connection=self.trans)
         self.failUnless(payment.status == Payment.STATUS_PREVIEW)
@@ -54,7 +53,6 @@ class TestPayment(DomainTest):
                           method=method,
                           group=None,
                           till=None,
-                          destination=None,
                           category=None,
                           connection=self.trans)
 
@@ -92,7 +90,6 @@ class TestPayment(DomainTest):
                           method=method,
                           group=None,
                           till=None,
-                          destination=None,
                           category=None,
                           connection=self.trans)
 
@@ -129,7 +126,6 @@ class TestPayment(DomainTest):
                           method=method,
                           group=None,
                           till=None,
-                          destination=None,
                           category=None,
                           connection=self.trans)
         self.failIf(payment.is_paid())
@@ -145,7 +141,6 @@ class TestPayment(DomainTest):
                           method=method,
                           group=None,
                           till=None,
-                          destination=None,
                           category=None,
                           connection=self.trans)
         self.failIf(payment.is_cancelled())
@@ -163,7 +158,6 @@ class TestPayment(DomainTest):
                           method=method,
                           group=None,
                           till=None,
-                          destination=None,
                           category=None,
                           connection=self.trans)
         today = datetime.date.today().strftime('%x')
@@ -180,7 +174,6 @@ class TestPayment(DomainTest):
                           method=method,
                           group=None,
                           till=None,
-                          destination=None,
                           category=None,
                           connection=self.trans)
         self.assertEqual(payment.get_open_date_string(), "")
@@ -196,7 +189,6 @@ class TestPayment(DomainTest):
                           method=method,
                           group=None,
                           till=None,
-                          destination=None,
                           category=None,
                           connection=self.trans)
         payment.set_pending()
@@ -211,7 +203,6 @@ class TestPayment(DomainTest):
                           method=method,
                           group=None,
                           till=None,
-                          destination=None,
                           category=None,
                           connection=self.trans)
         payment.set_pending()

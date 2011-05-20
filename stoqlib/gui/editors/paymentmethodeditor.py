@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -24,8 +24,8 @@
 """ Editors for payment method management.  """
 
 
+from stoqlib.domain.account import Account
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.search.personsearch import CardProviderSearch
@@ -39,7 +39,7 @@ class PaymentMethodEditor(BaseEditor):
     model_name = _('Payment Method')
     size = (450, 225)
     gladefile = 'PaymentMethodEditor'
-    proxy_widgets = ('destination',
+    proxy_widgets = ('account',
                      'max_installments',
                      'interest',
                      'daily_penalty')
@@ -57,9 +57,10 @@ class PaymentMethodEditor(BaseEditor):
 
 
     def _setup_widgets(self):
-        destinations = PaymentDestination.select(connection=self.conn)
-        items = [(d.get_description(), d) for d in destinations]
-        self.destination.prefill(items)
+        destinations = Account.select(connection=self.conn)
+        items = [(a.long_description, a) for a in destinations]
+        self.account.prefill(sorted(items))
+        self.account.select(self.model.destination_account)
 
     #
     # BaseEditor Hooks
@@ -69,6 +70,9 @@ class PaymentMethodEditor(BaseEditor):
         self._setup_widgets()
         self.add_proxy(self.model, PaymentMethodEditor.proxy_widgets)
 
+    def on_confirm(self):
+        self.model.destination_account = self.account.get_selected()
+        return self.model
 
 class CardPaymentMethodEditor(PaymentMethodEditor):
 

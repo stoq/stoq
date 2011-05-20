@@ -35,6 +35,7 @@ from stoqlib.database.orm import (IntCol, DateTimeCol, UnicodeCol, ForeignKey,
 from stoqlib.database.orm import (const, DESC, AND, OR, MultipleJoin,
                                   SingleJoin)
 from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
@@ -96,7 +97,6 @@ class Payment(Domain):
     method = ForeignKey('PaymentMethod')
     group = ForeignKey('PaymentGroup')
     till = ForeignKey('Till')
-    destination = ForeignKey('PaymentDestination')
     category = ForeignKey('PaymentCategory')
 
     comments = MultipleJoin('PaymentComment')
@@ -219,6 +219,12 @@ class Payment(Domain):
         self.status = self.STATUS_PAID
 
         PaymentFlowHistory.add_paid_payment(self.get_connection(), self)
+
+        from stoqlib.domain.payment.operation import register_payment_operations
+        register_payment_operations()
+
+        if self.method.operation.create_transaction():
+            AccountTransaction.create_from_payment(self)
 
     def cancel(self, change_entry=None):
         # TODO Check for till entries here and call cancel_till_entry if
@@ -651,6 +657,10 @@ class PaymentAdaptToInPayment(ModelAdapter):
 
     implements(IInPayment)
 
+    @property
+    def payment(self):
+        return self.get_adapted()
+
 Payment.registerFacet(PaymentAdaptToInPayment, IInPayment)
 
 
@@ -658,11 +668,14 @@ class PaymentAdaptToOutPayment(ModelAdapter):
 
     implements(IOutPayment)
 
+    @property
+    def payment(self):
+        return self.get_adapted()
+
     def pay(self):
-        payment = self.get_adapted()
-        if not payment.status == Payment.STATUS_PENDING:
+        if not self.payment.status == Payment.STATUS_PENDING:
             raise ValueError("This payment is already paid.")
-        payment.pay()
+        self.payment.pay()
 
 Payment.registerFacet(PaymentAdaptToOutPayment, IOutPayment)
 

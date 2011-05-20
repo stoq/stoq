@@ -36,7 +36,6 @@ from stoqlib.database.orm import const, AND
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import (IInPayment, IActive, IOutPayment,
                                        IDescribable)
-from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment, PaymentAdaptToInPayment
@@ -47,8 +46,6 @@ from stoqlib.lib.interfaces import IPaymentOperationManager
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-
-PaymentDestination # pyflakes
 
 #
 # Domain Classes
@@ -125,8 +122,8 @@ class PaymentMethod(Domain):
     @ivar closing_day: which day the credit provider stoq counting sales
       to pay in the payment_day? Sales after this day
       will be paid only in the next month.
-    @ivar destination: the payment destination or None
-    @type description: L{PaymentDestination}
+    @ivar account_destination: destination account for payment
+      methods which creates transactions
     """
 
     implements(IActive, IDescribable)
@@ -139,7 +136,7 @@ class PaymentMethod(Domain):
     payment_day = IntCol(default=None)
     closing_day = IntCol(default=None)
     max_installments = IntCol(default=1)
-    destination = ForeignKey('PaymentDestination', default=None)
+    destination_account = ForeignKey('Account', default=None)
 
     #
     # IActive implementation
@@ -280,7 +277,6 @@ class PaymentMethod(Domain):
                 raise AssertionError(iface)
 
         payment = Payment(connection=conn,
-                          destination=self.destination,
                           due_date=due_date,
                           value=value,
                           base_value=base_value,

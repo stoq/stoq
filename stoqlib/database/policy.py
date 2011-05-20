@@ -70,7 +70,6 @@ class Shop(SynchronizationPolicy):
         ('ParameterData', SyncPolicy.INITIAL),
 
         ("CfopData", SyncPolicy.INITIAL),
-        ('PaymentDestination', SyncPolicy.INITIAL),
         ('BankAccount', SyncPolicy.INITIAL),
         ('PaymentMethod', SyncPolicy.INITIAL),
         ('SellableUnit', SyncPolicy.INITIAL),

@@ -60,6 +60,9 @@ class MoneyPaymentOperation(object):
     def payment_delete(self, payment):
         pass
 
+    def create_transaction(self):
+        return False
+
     def selectable(self, method):
         return True
 
@@ -91,6 +94,9 @@ class CheckPaymentOperation(object):
         bank_data = check_data.bank_data
         CheckData.delete(check_data.id, connection=conn)
         BankAccount.delete(bank_data.id, connection=conn)
+
+    def create_transaction(self):
+        return True
 
     def selectable(self, method):
         return True
@@ -124,6 +130,9 @@ class BillPaymentOperation(object):
 
     def payment_delete(self, payment):
         pass
+
+    def create_transaction(self):
+        return True
 
     def selectable(self, method):
         return True
@@ -161,6 +170,9 @@ class CardPaymentOperation(object):
         credit_card_data = self.get_card_data_by_payment(payment)
         CreditCardData.delete(credit_card_data.id, connection=conn)
 
+    def create_transaction(self):
+        return False
+
     def selectable(self, method):
         return PersonAdaptToCreditProvider.has_card_provider(
             method.get_connection())
@@ -197,6 +209,9 @@ class StoreCreditPaymentOperation(object):
     def payment_delete(self, payment):
         pass
 
+    def create_transaction(self):
+        return False
+
     def selectable(self, method):
         return True
 
@@ -223,11 +238,15 @@ class MultiplePaymentOperation(object):
     def payment_delete(self, payment):
         pass
 
+    def create_transaction(self):
+        return True
+
     def selectable(self, method):
         return True
 
     def get_constant(self, payment):
         return PaymentMethodType.MULTIPLE
+
 
 
 def register_payment_operations():

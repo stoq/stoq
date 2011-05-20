@@ -80,7 +80,6 @@ class BasePaymentAddition(BaseEditor):
                        group=group,
                        till=None,
                        category=None,
-                       destination=None,
                        connection=trans)
 
     def on_due_date__activate(self, date):

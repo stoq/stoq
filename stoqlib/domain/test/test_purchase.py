@@ -154,6 +154,42 @@ class TestPurchaseOrder(DomainTest):
 
         self.assertEqual(order.is_paid(), True)
 
+
+    def testAccountTransactionCheck(self):
+        order = self.create_purchase_order()
+        order.status = PurchaseOrder.ORDER_PENDING
+        order.add_item(self.create_sellable(), 1)
+        payment = self.add_payments(order, method_type='check').payment
+        account = self.create_account()
+        payment.method.destination_account = account
+        self.failIf(account.transactions)
+        order.confirm()
+
+        for payment in order.payments:
+            payment.pay()
+
+        self.failUnless(account.transactions)
+        self.assertEquals(account.transactions.count(), order.payments.count())
+
+        t = account.transactions[0]
+        self.assertEquals(t.payment, payment)
+        self.assertEquals(t.value, -payment.value)
+
+    def testAccountTransactionMoney(self):
+        order = self.create_purchase_order()
+        order.status = PurchaseOrder.ORDER_PENDING
+        order.add_item(self.create_sellable(), 1)
+        payment = self.add_payments(order, method_type='money').payment
+        account = self.create_account()
+        payment.method.destination_account = account
+        self.failIf(account.transactions)
+        order.confirm()
+
+        for payment in order.payments:
+            payment.pay()
+
+        self.failIf(account.transactions)
+
 class TestQuoteGroup(DomainTest):
 
     def testCancel(self):

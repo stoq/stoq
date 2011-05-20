@@ -735,6 +735,39 @@ class TestSale(DomainTest):
         self.failIf(sale.can_confirm())
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
 
+    def testAccountTransactionCheck(self):
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+
+        payment = self.add_payments(sale, method_type='check').payment
+
+        account = self.create_account()
+        payment.method.destination_account = account
+
+        self.failIf(account.transactions)
+
+        sale.confirm()
+        payment.pay()
+
+        self.failUnless(account.transactions)
+        self.assertEquals(account.transactions.count(), 1)
+
+        t = account.transactions[0]
+        self.assertEquals(t.payment, payment)
+        self.assertEquals(t.value, payment.value)
+
+    def testAccountTransactionMoney(self):
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+        payment = self.add_payments(sale, method_type='money').payment
+        account = self.create_account()
+        payment.method.destination_account = account
+        self.failIf(account.transactions)
+        sale.confirm()
+        self.failIf(account.transactions)
+
 
 class TestSaleItem(DomainTest):
     def testGetTotal(self):

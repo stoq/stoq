@@ -162,7 +162,6 @@ class ExampleCreator(object):
             'IUser': self.create_user,
             'OnSaleInfo': self.create_on_sale_info,
             'Payment': self.create_payment,
-            'PaymentDestination' : self.create_payment_destination,
             'ParameterData': self.create_parameter_data,
             'Person': self.create_person,
             'PersonAdaptToBankBranch': self.create_bank_branch,
@@ -564,12 +563,6 @@ class ExampleCreator(object):
     def create_payment_group(self):
         from stoqlib.domain.payment.group import PaymentGroup
         return PaymentGroup(connection=self.trans)
-
-    def create_payment_destination(self):
-        from stoqlib.domain.payment.destination import PaymentDestination
-        return PaymentDestination(description='foobar',
-                                  branch=None,
-                                  connection=self.trans)
 
     def create_on_sale_info(self):
         from stoqlib.domain.sellable import OnSaleInfo

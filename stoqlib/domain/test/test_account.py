@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.domain.account import Account
+from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.parameters import sysparam
@@ -176,3 +176,14 @@ class TestAccountTransaction(DomainTest):
 
         self.assertEquals(t2.get_other_account(a1), a2)
         self.assertEquals(t2.get_other_account(a2), a1)
+
+    def testCreateFromPayment(self):
+        sale = self.create_sale()
+        payment = self.add_payments(sale).payment
+        account = self.create_account()
+        payment.method.destination_account = account
+        transaction = AccountTransaction.create_from_payment(payment)
+        imbalance_account = sysparam(self.trans).IMBALANCE_ACCOUNT
+        self.assertEquals(transaction.source_account, imbalance_account)
+        self.assertEquals(transaction.account, account)
+        self.assertEquals(transaction.payment, payment)

@@ -28,9 +28,9 @@ from zope.interface import implements
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import ForeignKey, IntCol, UnicodeCol
 from stoqlib.database.orm import DateTimeCol
-from stoqlib.database.orm import AND, OR
+from stoqlib.database.orm import const, AND, OR
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IDescribable
+from stoqlib.domain.interfaces import IDescribable, IOutPayment
 from stoqlib.domain.station import BranchStation
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -200,6 +200,11 @@ class Account(Domain):
                                      parent=self))
 
 
+    @classmethod
+    def get_all(cls, conn):
+        return AccountTransaction.get_all(cls, connection=conn)
+
+
 class AccountTransaction(Domain):
     """Transaction between two accounts
 
@@ -218,6 +223,28 @@ class AccountTransaction(Domain):
     value = PriceCol(default=0)
     date = DateTimeCol()
     payment = ForeignKey('Payment', default=None)
+
+    @classmethod
+    def create_from_payment(cls, payment):
+        """Create a new transaction based on a payment.
+        It's normally used when creating a transaction which represents
+        a payment, for instance when you receive a bill or a check from
+        a client which will enter a bank account.
+        @payment: the payment to create the transaction for.
+        @returns: the transaction
+        """
+        trans = payment.get_connection()
+        value = payment.paid_value
+        if IOutPayment(payment, None):
+            value = -value
+        return cls(source_account=sysparam(trans).IMBALANCE_ACCOUNT,
+                   account=payment.method.destination_account,
+                   value=value,
+                   description=payment.description,
+                   code=str(payment.id),
+                   date=const.NOW(),
+                   connection=trans,
+                   payment=payment)
 
     def get_other_account(self, account):
         """Get the other end of a transaction
