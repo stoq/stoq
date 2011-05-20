@@ -767,6 +767,7 @@ class LoanView(Viewable):
                     close_date=Loan.q.close_date,
                     expire_date=Loan.q.expire_date,
 
+                    removed_by=Loan.q.removed_by,
                     branch_name=PersonBranch.q.name,
                     responsible_name=PersonResponsible.q.name,
                     client_name=PersonClient.q.name,
@@ -801,6 +802,8 @@ class LoanItemView(Viewable):
                    return_quantity=LoanItem.q.return_quantity,
                    price=LoanItem.q.price,
                    total=LoanItem.q.quantity * LoanItem.q.price,
+                   sellable_id=Sellable.q.id,
+                   code=Sellable.q.code,
                    category_description=SellableCategory.q.description,
                    unit_description=SellableUnit.q.description,
                    description=BaseSellableInfo.q.description,)
