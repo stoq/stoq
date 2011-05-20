@@ -24,6 +24,7 @@
 
 from stoqlib.domain.account import Account
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.parameters import sysparam
 
 
