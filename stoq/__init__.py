@@ -48,5 +48,6 @@ if library.uninstalled:
     library.add_global_resource('glade', 'data/glade')
     library.add_global_resource('config', 'data/config')
     library.add_global_resource('docs', '.')
+    library.add_global_resource('misc', 'data/misc')
 library.enable_translation()
 library.set_application_domain('stoq')

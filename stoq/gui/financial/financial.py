@@ -52,25 +52,6 @@ from kiwi.currency import currency
 
 _ = gettext.gettext
 
-gtk.rc_parse_string("""
-style "treeview" {
-  GtkTreeView::odd-row-color = "#c2e7c4"
-  GtkTreeView::even-row-color = "#f5ffe0"
-  GtkTreeView::grid-line-pattern = "\xff\x01"
-  GtkTreeView::grid-line-width = 1
-}
-widget_class "*TransactionPage*" style "treeview"
-
-style "notebook-close-button" {
-  GtkButton::focus-padding = 0
-  GtkButton::focus-line-width = 0
-  xthickness = 0
-  ythickness = 0
-}
-widget_class "*NotebookCloseButton*" style "notebook-close-button"
-
-""") #"
-
 class NotebookCloseButton(gtk.Button):
     pass
 gobject.type_register(NotebookCloseButton)

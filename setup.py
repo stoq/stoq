@@ -77,6 +77,8 @@ scripts = [
     'bin/stoqdbadmin',
     'bin/stoqruncmd',]
 data_files = [
+    ('$datadir/misc',
+     listfiles('data/misc', '*.*')),
     ('$datadir/pixmaps',
      listfiles('data/pixmaps', '*.*')),
     ('$datadir/glade',
