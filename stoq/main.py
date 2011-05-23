@@ -142,17 +142,6 @@ def _check_dependencies():
         except ImportError:
             _missing_module_error("gtk", "PyGTK")
 
-    gtk.rc_parse_string("""style "tree-style" {
-        GtkTreeView::vertical-separator = 0
-        GtkTreeView::horizontal-separator = 0
-        GtkTreeView::grid-line-width = 0
-    }
-    class "GtkTreeView" style "tree-style" """)
-    settings = gtk.settings_get_default()
-    # Creating a button as a temporary workaround for bug
-    # https://bugzilla.gnome.org/show_bug.cgi?id=632538, until gtk 3.0
-    gtk.Button()
-    settings.props.gtk_button_images = True
     _setup_ui_dialogs()
 
     if gtk.pygtk_version < PYGTK_REQUIRED:
@@ -293,6 +282,17 @@ def _run_update_wizard():
     retval = run_dialog(SchemaUpdateWizard, None)
     if not retval:
         raise SystemExit()
+
+def _setup_gtk():
+    import gtk
+    from kiwi.environ import environ
+    stoq_rc = environ.find_resource("misc", "stoq.gtkrc")
+    gtk.rc_parse(stoq_rc)
+    # Creating a button as a temporary workaround for bug
+    # https://bugzilla.gnome.org/show_bug.cgi?id=632538, until gtk 3.0
+    gtk.Button()
+    settings = gtk.settings_get_default()
+    settings.props.gtk_button_images = True
 
 def _setup_ui_dialogs():
     # This needs to be here otherwise we can't install the dialog
@@ -499,6 +499,7 @@ def main(args):
     # external libraries/resources
     _check_dependencies()
     _check_version_policy()
+    _setup_gtk()
 
     _initialize(options)
     run_app(options, appname)
