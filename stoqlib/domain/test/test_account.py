@@ -93,6 +93,7 @@ class TestAccount(DomainTest):
         self.failIf(t2 in account.transactions)
 
         t2.source_account = account
+        t2.sync()
 
         self.failUnless(t2 in account.transactions)
 
@@ -129,9 +130,11 @@ class TestAccount(DomainTest):
 
         t1 = self.create_account_transaction(a1)
         t1.source_account = a2
+        t1.sync()
 
         t2 = self.create_account_transaction(a2)
         t2.source_account = a1
+        t2.sync()
 
         a1.station = self.create_station()
         self.assertRaises(TypeError, a1.remove)
@@ -171,6 +174,9 @@ class TestAccountTransaction(DomainTest):
         t1.source_account = a2
         t2.source_account = a1
 
+        t1.sync()
+        t2.sync()
+
         self.assertEquals(t1.get_other_account(a1), a2)
         self.assertEquals(t1.get_other_account(a2), a1)
 
@@ -183,21 +189,27 @@ class TestAccountTransaction(DomainTest):
 
         t1 = self.create_account_transaction(a1)
         t1.source_account = a2
+        t1.sync()
 
         t2 = self.create_account_transaction(a2)
         t2.source_account = a1
+        t2.sync()
 
         t1.set_other_account(a1, a2)
+        t1.sync()
         self.assertEquals(t1.account, a1)
         self.assertEquals(t1.source_account, a2)
         t1.set_other_account(a2, a2)
+        t1.sync()
         self.assertEquals(t1.account, a2)
         self.assertEquals(t1.source_account, a2)
 
         t2.set_other_account(a1, a2)
+        t2.sync()
         self.assertEquals(t2.account, a2)
         self.assertEquals(t2.source_account, a1)
         t2.set_other_account(a2, a2)
+        t2.sync()
         self.assertEquals(t2.account, a2)
         self.assertEquals(t2.source_account, a2)
 

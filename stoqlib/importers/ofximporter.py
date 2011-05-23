@@ -186,6 +186,7 @@ class OFXImporter(object):
                                    date=date,
                                    connection=trans)
             last_date = date
+            t.sync()
 
         log.info("Imported %d transactions" % (len(self.tp.transactions),))
         if skipped:

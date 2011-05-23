@@ -186,11 +186,13 @@ class Account(Domain):
             connection=trans,
             account=self):
             transaction.account = imbalance_account
+            transaction.sync()
 
         for transaction in AccountTransaction.selectBy(
             connection=trans,
             source_account=self):
             transaction.source_account = imbalance_account
+            transaction.sync()
 
         self.delete(self.id, connection=trans)
 
@@ -223,6 +225,9 @@ class AccountTransaction(Domain):
     value = PriceCol(default=0)
     date = DateTimeCol()
     payment = ForeignKey('Payment', default=None)
+
+    class sqlmeta:
+        lazyUpdate = True
 
     @classmethod
     def create_from_payment(cls, payment):
