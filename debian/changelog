@@ -1,3 +1,10 @@
+stoqlib (0.9.15.99) lucid; urgency=low
+
+  * Revert ubuntu2 from version name, since:
+  * 0.9.15.99ubuntu2+r3466~natty1 <= 0.9.15.99+r3403~natty1
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Mon, 23 May 2011 15:50:49 -0300
+
 stoqlib (0.9.15.99ubuntu2) lucid; urgency=low
 
   * Require python-vte
