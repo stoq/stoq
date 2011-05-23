@@ -140,6 +140,8 @@ class ExampleCreator(object):
 
     def create_by_type(self, model_type):
         known_types = {
+            'Account' : self.create_account,
+            'AccountTransaction' : self.create_account_transaction,
             'PaymentMethod': self.get_payment_method,
             'Sellable': self.create_sellable,
             'PaymentGroup' : self.create_payment_group,
@@ -544,16 +546,15 @@ class ExampleCreator(object):
     def create_credit_provider(self):
         person = self.create_person()
         person.addFacet(ICompany, connection=self.trans)
-        return  person.addFacet(ICreditProvider,
-                                connection=self.trans,
-                                short_name='Velec',
-                                open_contract_date=datetime.date(2006, 01, 01))
+        return person.addFacet(ICreditProvider,
+                               connection=self.trans,
+                               short_name='Velec',
+                               open_contract_date=datetime.date(2006, 01, 01))
 
     def create_payment(self):
         from stoqlib.domain.payment.payment import Payment
         return Payment(group=None,
                        due_date=None,
-                       destination=None,
                        value=Decimal(10),
                        till=None,
                        method=self.get_payment_method(),
