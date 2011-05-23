@@ -38,7 +38,8 @@ from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.loan import Loan
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrderItem
-from stoqlib.domain.views import ReceivingItemView, SaleItemsView, LoanItemView
+from stoqlib.domain.views import (ReceivingItemView, SaleItemsView,
+                                  LoanItemView, StockDecreaseItemsView)
 
 _ = stoqlib_gettext
 
@@ -65,6 +66,7 @@ class ProductStockHistoryDialog(BaseEditor):
         self.sales_list.set_columns(self._get_sale_columns())
         self.transfer_list.set_columns(self._get_transfer_columns())
         self.loan_list.set_columns(self._get_loan_columns())
+        self.decrease_list.set_columns(self._get_decrease_columns())
 
         items = ReceivingItemView.select(
             ReceivingItemView.q.sellable_id==self.model.id,
@@ -86,6 +88,12 @@ class ProductStockHistoryDialog(BaseEditor):
             LoanItemView.q.loan_status == Loan.STATUS_OPEN),
             connection=self.conn)
         self.loan_list.add_list(list(items))
+
+        items = StockDecreaseItemsView.select(
+                    StockDecreaseItemsView.q.sellable == self.model.id,
+                    connection=self.conn)
+
+        self.decrease_list.add_list(list(items))
 
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % _("Total:")
@@ -115,6 +123,13 @@ class ProductStockHistoryDialog(BaseEditor):
                                           label=total_label,
                                           value_format=value_format)
         self.loan_vbox.pack_start(loan_summary_label, False)
+
+        decrease_summary_label = SummaryLabel(klist=self.decrease_list,
+                                              column='quantity',
+                                              label=total_label,
+                                              value_format=value_format)
+        decrease_summary_label.show()
+        self.decrease_vbox.pack_start(decrease_summary_label, False)
 
     def _get_receiving_columns(self):
         return [Column("order_id", title=_("#"), data_type=int, sorted=True,
@@ -176,6 +191,16 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column("quantity", title=_(u"Loaned"), data_type=Decimal),
                 Column("return_quantity", title=_(u"Returned"),
                         data_type=Decimal),]
+
+    def _get_decrease_columns(self):
+        return [Column("id", title=_("#"), data_type=int,
+                        justify=gtk.JUSTIFY_RIGHT, sorted=True),
+                Column("date", title=_("Date"), data_type=datetime.date,
+                        justify=gtk.JUSTIFY_RIGHT),
+                Column("removed_by_name", title=_("Removed By"), expand=True,
+                        data_type=str),
+                Column("quantity", title=_("Quantity"), data_type=int),
+                Column("unit_description", title=_("Unit"), data_type=str),]
 
     #
     # BaseEditor Hooks

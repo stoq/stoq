@@ -29,7 +29,7 @@ from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.person import (Person, PersonAdaptToSupplier,
                                    PersonAdaptToUser, PersonAdaptToBranch,
-                                   PersonAdaptToClient)
+                                   PersonAdaptToClient, PersonAdaptToEmployee)
 from stoqlib.domain.product import (Product,
                                     ProductAdaptToStorable,
                                     ProductStockItem,
@@ -43,6 +43,7 @@ from stoqlib.domain.sale import SaleItem, Sale
 from stoqlib.domain.sellable import (Sellable, SellableUnit,
                                      BaseSellableInfo, SellableCategory,
                                      SellableTaxConstant)
+from stoqlib.domain.stockdecrease import (StockDecrease, StockDecreaseItem)
 
 class ProductFullStockView(Viewable):
     """Stores information about products.
@@ -510,6 +511,32 @@ class SoldItemView(Viewable):
         if self.quantity:
             return self.total_cost / self.quantity
         return 0
+
+
+class StockDecreaseItemsView(Viewable):
+    """Stores information about all stock decrease items
+    """
+    columns = dict(
+        id=StockDecreaseItem.q.id,
+        date=StockDecrease.q.confirm_date,
+        removed_by_name=Person.q.name,
+        quantity=StockDecreaseItem.q.quantity,
+        sellable=StockDecreaseItem.q.sellableID,
+        unit_description=SellableUnit.q.description,
+    )
+
+    joins = [
+        INNERJOINOn(None, StockDecrease,
+                    StockDecreaseItem.q.stock_decreaseID == StockDecrease.q.id),
+        LEFTJOINOn(None, Sellable,
+                   StockDecreaseItem.q.sellableID == Sellable.q.id),
+        LEFTJOINOn(None, SellableUnit,
+                   Sellable.q.unitID == SellableUnit.q.id),
+        INNERJOINOn(None, PersonAdaptToEmployee,
+                   StockDecrease.q.removed_byID == PersonAdaptToEmployee.q.id),
+        INNERJOINOn(None, Person,
+                   PersonAdaptToEmployee.q._originalID == Person.q.id),
+    ]
 
 
 class SoldItemsByBranchView(SoldItemView):
