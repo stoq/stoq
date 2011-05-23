@@ -22,25 +22,59 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+import datetime
 
+import gtk
+from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
+from kiwi.python import Settable
 
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
+
+# The reason for this is that SQLObject, even with lazyUpdates
+# does create queries before sync() is called.
+class _AccountTransactionTemporary(Settable):
+
+    def get_other_account(self, unused):
+        return self.source_account
+
+    @classmethod
+    def from_domain(cls, conn, transaction):
+        return cls(code=transaction.code,
+                   description=transaction.description,
+                   date=transaction.date,
+                   value=transaction.value,
+                   conn=conn,
+                   account=transaction.account,
+                   source_account=transaction.source_account)
+
+    def to_domain(self):
+        return AccountTransaction(code=self.code,
+                                  description=self.description,
+                                  date=self.date,
+                                  value=self.value,
+                                  connection=self.conn,
+                                  account=self.account,
+                                  source_account=self.source_account)
 
 
 class AccountTransactionEditor(BaseEditor):
     """ Account Transaction Editor """
     gladefile = "AccountTransactionEditor"
     proxy_widgets = ['description', 'code', 'date', 'value']
-    model_type = AccountTransaction
+    model_type = _AccountTransactionTemporary
+    title = _("Account Editor")
 
     def __init__(self, conn, model, account):
         self.parent_account = account
+        if model is not None:
+            model = _AccountTransactionTemporary.from_domain(conn, model)
         BaseEditor.__init__(self, conn, model)
 
     #
@@ -48,7 +82,14 @@ class AccountTransactionEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        raise NotImplementedError
+        return _AccountTransactionTemporary(
+            conn=conn,
+            code=u"",
+            description=u"",
+            value=currency(0),
+            date=datetime.datetime.today(),
+            account=self.parent_account,
+            source_account=sysparam(conn).IMBALANCE_ACCOUNT)
 
     def _setup_widgets(self):
         accounts = Account.select(connection=self.conn)
@@ -65,8 +106,13 @@ class AccountTransactionEditor(BaseEditor):
 
     def on_confirm(self):
         new_account = self.account.get_selected()
-        self.model.set_other_account(self.parent_account, new_account)
-        return self.model
+        at = self.model.to_domain()
+        at.set_other_account(self.parent_account, new_account)
+        return at
+
+    def on_description__validate(self, entry, value):
+        if value is None:
+            return ValidationError(_("Description must be filled in"))
 
     def on_description__activate(self, entry):
         if self.validate_confirm():
