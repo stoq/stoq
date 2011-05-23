@@ -219,6 +219,34 @@
                 <property name="tab_fill">False</property>
               </packing>
             </child>
+             <child>
+              <object class="GtkVBox" id="decrease_vbox">
+                <property name="visible">True</property>
+                <child>
+                  <object class="ObjectList" id="decrease_list">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="hscrollbar_policy">automatic</property>
+                    <property name="shadow_type">etched-in</property>
+                  </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="label8">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Manual Decrease</property>
+              </object>
+              <packing>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="position">1</property>
