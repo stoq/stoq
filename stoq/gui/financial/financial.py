@@ -79,8 +79,9 @@ class TransactionPage(ObjectList):
     # shows either a list of:
     #   - transactions
     #   - payments
-    def __init__(self, model, parent):
+    def __init__(self, model, app, parent):
         self.model = model
+        self.app = app
         self.parent_window = parent
         self._block = False
         ObjectList.__init__(self, columns=self.get_columns())
@@ -98,19 +99,31 @@ class TransactionPage(ObjectList):
         else:
             raise TypeError("unknown model kind: %r" % (model.kind, ))
 
-    def _populate_transactions(self):
-        total = decimal.Decimal('0')
-        for t in self.model.transactions:
-            total += t.value
-            account = t.get_other_account(self.model)
-            self.append(Settable(date=t.date,
-                                 account=account.long_description,
-                                 description=t.description,
-                                 value=t.value,
-                                 total=total,
-                                 kind=self.model.kind,
-                                 transaction=t))
+    def _add_transaction(self, transaction):
+        item = Settable(transaction=transaction,
+                        kind=self.model.kind)
+        self._update_transaction(item, transaction)
+        self.append(item)
+        return item
 
+    def _update_transaction(self, item, transaction):
+        account = transaction.get_other_account(self.model)
+        item.account = account.long_description
+        item.date = transaction.date
+        item.description = transaction.description
+        item.value = transaction.value
+        item.code = transaction.code
+
+    def _populate_transactions(self):
+        for transaction in self.model.transactions:
+            self._add_transaction(transaction)
+        self._update_totals()
+
+    def _update_totals(self):
+        total = decimal.Decimal('0')
+        for item in self:
+            total += item.value
+            item.total = total
 
     def _populate_payable_payments(self, view_class):
         for view in view_class.select():
@@ -123,8 +136,8 @@ class TransactionPage(ObjectList):
         else:
             date_column = 'date'
         columns = [Column(date_column, data_type=datetime.date, sorted=True),
-                   Column('description', data_type=unicode, expand=True,
-                          editable=True)]
+                   Column('code', data_type=unicode),
+                   Column('description', data_type=unicode, expand=True)]
 
         if self.model.kind == 'account':
             columns.append(Column('account', data_type=unicode))
@@ -135,15 +148,32 @@ class TransactionPage(ObjectList):
                                          data_func=lambda x: x < 0))
         return columns
 
+    def _edit_transaction(self, item):
+        trans = new_transaction()
+        account_transaction = trans.get(item.transaction)
+        retval = run_dialog(AccountTransactionEditor, self.parent_window,
+                            trans, account_transaction, self.model)
+        if retval:
+            retval.sync()
+            self._update_transaction(item, retval)
+            self._update_totals()
+            self.update(item)
+        finish_transaction(trans, retval)
+
+    def add_transaction(self):
+        trans = new_transaction()
+        retval = run_dialog(AccountTransactionEditor, self.parent_window,
+                            trans, None, self.model)
+        if retval:
+            retval.sync()
+            item = self._add_transaction(retval)
+            self._update_totals()
+            self.update(item)
+        finish_transaction(trans, retval)
+
     def _on_row__activated(self, objectlist, item):
         if item.kind == 'account':
-            trans = new_transaction()
-            account_transaction = trans.get(item.transaction)
-            retval = run_dialog(AccountTransactionEditor, self.parent_window,
-                                trans, account_transaction, self.model)
-            if retval:
-                retval.sync()
-            finish_transaction(trans, retval)
+            self._edit_transaction(item)
 
 
 class FinancialApp(AppWindow):
@@ -176,8 +206,10 @@ class FinancialApp(AppWindow):
           <toolbar action="toolbar">
             <toolitem action="CloseTab"/>
             <toolitem action="AddAccount"/>
-            <separator/>
             <toolitem action="DeleteAccount"/>
+            <separator/>
+            <toolitem action="AddTransaction"/>
+            <toolitem action="DeleteTransaction"/>
           </toolbar>
         </ui>"""
 
@@ -186,10 +218,16 @@ class FinancialApp(AppWindow):
             ('toolbar', None, ''),
             ('CloseTab', gtk.STOCK_CLOSE, _('Close'), '<control>w',
              _('Close the current tab')),
+            ('EditAccount', gtk.STOCK_EDIT, _('Edit Account'),
+             '<control>e', _('Change the currently selected account')),
             ('AddAccount', gtk.STOCK_ADD, _('Create New Account'),
              '<control>a', _('Create New Account')),
             ('DeleteAccount', gtk.STOCK_DELETE, _('Delete Account'),
              '', _('Delete Account')),
+            ('AddTransaction', gtk.STOCK_ADD, _('Create New Transaction'),
+             '<control>a', _('Create New Transaction')),
+            ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete Transaction'),
+             '', _('Delete Transaction')),
             ]
         ag = gtk.ActionGroup('UsersMenuActions')
         ag.add_actions(actions)
@@ -198,7 +236,10 @@ class FinancialApp(AppWindow):
 
         self.CloseTab = ag.get_action('CloseTab')
         self.AddAccount = ag.get_action('AddAccount')
+        self.EditAccount = ag.get_action('EditAccount')
         self.DeleteAccount = ag.get_action('DeleteAccount')
+        self.AddTransaction = ag.get_action('AddTransaction')
+        self.DeleteTransaction = ag.get_action('DeleteTransaction')
 
     def _attach_toolbar(self):
         # FIXME: Move to Application when we finished migrating off Gazpacho
@@ -212,7 +253,12 @@ class FinancialApp(AppWindow):
 
     def _update_actions(self):
         self.CloseTab.set_sensitive(self._can_close_tab())
+        self.AddAccount.set_sensitive(self._can_add_account())
+        self.EditAccount.set_sensitive(self._can_edit_account())
         self.DeleteAccount.set_sensitive(self._can_delete_account())
+        self.AddTransaction.set_sensitive(self._can_add_transaction())
+        self.DeleteTransaction.set_sensitive(self._can_delete_transaction())
+
         self.details_button.set_sensitive(self._can_show_details())
 
     def _create_initial_page(self):
@@ -263,9 +309,12 @@ class FinancialApp(AppWindow):
 
     def _close_current_page(self):
         assert self._can_close_tab()
-        page_id = self.notebook.get_current_page()
-        page = self.notebook.get_children()[page_id]
+        page = self._get_current_page_widget()
         self._close_page(page)
+
+    def _get_current_page_widget(self):
+        page_id = self.notebook.get_current_page()
+        return self.notebook.get_children()[page_id]
 
     def _close_page(self, page):
         # Do not allow the initial page to be removed
@@ -279,6 +328,10 @@ class FinancialApp(AppWindow):
     def _is_accounts_tab(self):
         page_id = self.notebook.get_current_page()
         return page_id == 0
+
+    def _is_transaction_tab(self):
+        page = self._get_current_page_widget()
+        return isinstance(page, TransactionPage)
 
     def _can_close_tab(self):
         # The first tab is not closable
@@ -307,7 +360,9 @@ class FinancialApp(AppWindow):
             page_id = self.notebook.get_children().index(page)
         else:
             pixbuf = self.accounts.get_pixbuf(account)
-            page = TransactionPage(account, self.get_toplevel())
+            page = TransactionPage(account, self, self.get_toplevel())
+            page.connect('selection-changed',
+                         self._on_transaction__selection_changed)
             hbox = self._create_tab_label(account.description, pixbuf, page)
             page_id = self.notebook.append_page(page, hbox)
             page.show()
@@ -353,6 +408,26 @@ class FinancialApp(AppWindow):
 
         return True
 
+    def _can_add_account(self):
+        if not self._is_accounts_tab():
+            return False
+
+        return True
+
+    def _can_edit_account(self):
+        if not self._is_accounts_tab():
+            return False
+
+        account = self.accounts.get_selected()
+        if account is None:
+            return False
+
+        # Can only remove real accounts
+        if account.kind != 'account':
+            return False
+
+        return True
+
     def _can_delete_account(self):
         if not self._is_accounts_tab():
             return False
@@ -367,6 +442,27 @@ class FinancialApp(AppWindow):
 
         return account.can_remove()
 
+    def _can_add_transaction(self):
+        if not self._is_transaction_tab():
+            return False
+
+        return True
+
+    def _can_delete_transaction(self):
+        if not self._is_transaction_tab():
+            return False
+
+        page = self._get_current_page_widget()
+        transaction = page.get_selected()
+        if transaction is None:
+            return False
+
+        return True
+
+    def _add_transaction(self):
+        page = self._get_current_page_widget()
+        page.add_transaction()
+
     def _delete_account(self, account):
         msg = _(u'Are you sure you want to remove account "%s" ?' %
                 (account.description, ))
@@ -380,6 +476,15 @@ class FinancialApp(AppWindow):
         trans = new_transaction()
         account = trans.get(account)
         account.remove(trans)
+        trans.commit(close=True)
+
+    def _delete_transaction(self, item):
+        account_transactions = self._get_current_page_widget()
+        account_transactions.remove(item)
+
+        trans = new_transaction()
+        account_transaction = trans.get(item.transaction)
+        account_transaction.delete(account_transaction.id, connection=trans)
         trans.commit(close=True)
 
     #
@@ -398,6 +503,9 @@ class FinancialApp(AppWindow):
     def on_accounts__row_activated(self, ktree, account):
         self._new_page(account)
 
+    def _on_transaction__selection_changed(self, ktree, account_transaction):
+        self._update_actions()
+
     def on_accounts__selection_changed(self, ktree, account):
         self._update_actions()
 
@@ -414,6 +522,14 @@ class FinancialApp(AppWindow):
     def on_DeleteAccount__activate(self, action):
         account = self.accounts.get_selected()
         self._delete_account(account)
+
+    def on_DeleteTransaction__activate(self, action):
+        transactions = self._get_current_page_widget()
+        transaction = transactions.get_selected()
+        self._delete_transaction(transaction)
+
+    def on_AddTransaction__activate(self, action):
+        self._add_transaction()
 
     def on_Import__activate(self, action):
         self._import_ofx()
