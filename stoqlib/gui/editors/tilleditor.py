@@ -58,7 +58,7 @@ def _create_transaction(conn, till_entry):
                        source_account=sysparam(conn).IMBALANCE_ACCOUNT,
                        account=account,
                        value=-till_entry.value,
-                       code=str(till_entry.id),
+                       code=str(till_entry.payment.id),
                        date=const.NOW(),
                        connection=conn,
                        payment=till_entry.payment)
