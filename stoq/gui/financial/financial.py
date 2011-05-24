@@ -57,11 +57,11 @@ class NotebookCloseButton(gtk.Button):
 gobject.type_register(NotebookCloseButton)
 
 def format_withdrawal(value):
-    if value:
+    if value < 0:
         return '%.2f'% (abs(value), )
 
 def format_deposit(value):
-    if value:
+    if value > 0:
         return '%.2f' % (value, )
 
 class TransactionPage(ObjectList):
@@ -92,15 +92,16 @@ class TransactionPage(ObjectList):
         item = Settable(transaction=transaction,
                         kind=self.model.kind)
         description = transaction.get_account_description(self.model)
-        self._update_transaction(item, transaction, description)
+        value = transaction.get_value(self.model)
+        self._update_transaction(item, transaction, description, value)
         self.append(item)
         return item
 
-    def _update_transaction(self, item, transaction, description=None):
+    def _update_transaction(self, item, transaction, description, value):
         item.account = description
         item.date = transaction.date
         item.description = transaction.description
-        item.value = transaction.value
+        item.value = value
         item.code = transaction.code
 
     def _populate_transactions(self):
@@ -149,7 +150,8 @@ class TransactionPage(ObjectList):
                             trans, account_transaction, self.model)
         if retval:
             retval.syncUpdate()
-            self._update_transaction(item, retval, self.model.description)
+            self._update_transaction(item, retval, self.model.description,
+                                     retval.value)
             self._update_totals()
             self.update(item)
         finish_transaction(trans, retval)
