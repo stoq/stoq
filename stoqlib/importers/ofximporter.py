@@ -36,6 +36,7 @@ from kiwi.log import Logger
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.account import Account, AccountTransaction
+from stoqlib.importers.importer import Importer
 from stoqlib.lib.parameters import sysparam
 
 
@@ -93,19 +94,20 @@ class OFXTagParser(sgmllib.SGMLParser):
             self._tags[self._tag] = data
 
 
-class OFXImporter(object):
+class OFXImporter(Importer):
     """Class to assist the process of importing ofx files.
 
     """
 
     def __init__(self):
+        Importer.__init__(self)
         self._headers = {}
 
     #
     # Public API
     #
 
-    def parse(self, fp):
+    def feed(self, fp, filename='<stdin>'):
         data = fp.read()
         if '\r' in data:
             data = data.replace('\r\n', '\n')
@@ -155,7 +157,7 @@ class OFXImporter(object):
         log.info("Couldn't parse date: %r" % (data, ))
         return None
 
-    def import_transactions(self, trans, source_account):
+    def before_start(self, trans):
         account = Account.selectOneBy(
             connection=trans,
             code=self.tp.account_id)
@@ -164,34 +166,42 @@ class OFXImporter(object):
                               code=self.tp.account_id,
                               parent=sysparam(trans).BANKS_ACCOUNT,
                               connection=trans)
+        self.account_id = account.id
+        self.source_account_id = sysparam(trans).IMBALANCE_ACCOUNT.id
+        self.skipped = 0
 
-        skipped = 0
-        for t in self.tp.transactions:
-            date = self._parse_date(t['dtposted'])
-            # Do not import transactions with broken dates
-            if date is None:
-                skipped += 1
-                continue
+    def get_n_items(self):
+        return len(self.tp.transactions)
 
-            value = self._parse_number(t['trnamt'])
-            if value == 0:
-                skipped += 1
-                # We can't import transactions with a value = 0, skip it.
-                continue
-            t = AccountTransaction(source_account=source_account,
-                                   account=trans.get(account),
-                                   description=self._parse_string(t['memo']),
-                                   code=self._parse_string(t['checknum']),
-                                   value=value,
-                                   date=date,
-                                   connection=trans)
-            last_date = date
-            t.sync()
+    def process_item(self, trans, i):
+        t = self.tp.transactions[i]
+        date = self._parse_date(t['dtposted'])
+        # Do not import transactions with broken dates
+        if date is None:
+            self.skipped += 1
+            return
 
+        value = self._parse_number(t['trnamt'])
+        if value == 0:
+            self.skipped += 1
+            # We can't import transactions with a value = 0, skip it.
+            return
+        source_account = Account.get(self.source_account_id, trans)
+        account = Account.get(self.account_id, trans)
+        t = AccountTransaction(source_account=source_account,
+                               account=account,
+                               description=self._parse_string(t['memo']),
+                               code=self._parse_string(t['checknum']),
+                               value=value,
+                               date=date,
+                               connection=trans)
+        last_date = date
+        t.sync()
+
+    def when_done(self, trans):
         log.info("Imported %d transactions" % (len(self.tp.transactions),))
-        if skipped:
-            log.info("Couldn't parse %d transactions" % (skipped, ))
-        return account
+        if self.skipped:
+            log.info("Couldn't parse %d transactions" % (self.skipped, ))
 
     def get_account_id(self):
         if self.tp.fi:

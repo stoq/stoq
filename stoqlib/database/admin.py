@@ -313,6 +313,7 @@ def _install_invoice_templates():
     log.info("Installing invoice templates")
     importer = InvoiceImporter()
     importer.feed_file(environ.find_resource('csv', 'invoices.csv'))
+    importer.process()
 
 def initialize_system():
     """Call all the necessary methods to startup Stoq applications for

@@ -46,6 +46,7 @@ log = Logger('stoqlib.examples')
 def _import_one(klass, filename):
     imp = klass()
     imp.feed_file(environ.find_resource('csv', filename))
+    imp.process()
 
 def _set_person_utilities():
     trans = new_transaction()
