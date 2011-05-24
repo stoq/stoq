@@ -174,7 +174,7 @@ class FinancialApp(AppWindow):
         self.search_holder.add(self.accounts)
         self.accounts.show()
         self.accounts.insert_initial(self.conn)
-
+        self._tills_account = sysparam(self.conn).TILLS_ACCOUNT
         self._attach_toolbar()
         self._create_initial_page()
 
@@ -312,7 +312,16 @@ class FinancialApp(AppWindow):
 
     def _is_transaction_tab(self):
         page = self._get_current_page_widget()
-        return isinstance(page, TransactionPage)
+        if not isinstance(page, TransactionPage):
+            return False
+
+        if page.model.kind != 'account':
+            return False
+
+        if (page.model == self._tills_account or
+            page.model.parent == self._tills_account):
+            return False
+        return True
 
     def _can_close_tab(self):
         # The first tab is not closable
