@@ -29,6 +29,7 @@ from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import ForeignKey, IntCol, UnicodeCol
 from stoqlib.database.orm import DateTimeCol
 from stoqlib.database.orm import const, AND, OR
+from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IOutPayment
 from stoqlib.domain.station import BranchStation
@@ -274,3 +275,52 @@ class AccountTransaction(Domain):
             self.source_account = account
         else:
             raise AssertionError
+
+class AccountTransactionView(Viewable):
+    Account_Dest = Alias(Account, 'account_dest')
+    Account_Source = Alias(Account, 'account_source')
+
+    columns = dict(
+        id = AccountTransaction.q.id,
+        code = AccountTransaction.q.code,
+        description = AccountTransaction.q.description,
+        value = AccountTransaction.q.value,
+        date = AccountTransaction.q.date,
+        dest_accountID = Account_Dest.q.id,
+        dest_account_description = Account_Dest.q.description,
+        source_accountID = Account_Source.q.id,
+        source_account_description = Account_Source.q.description,
+        )
+
+    joins = [
+        LEFTJOINOn(None, Account_Dest,
+                   AccountTransaction.q.accountID == Account_Dest.q.id),
+        LEFTJOINOn(None, Account_Source,
+                   AccountTransaction.q.source_accountID == Account_Source.q.id),
+    ]
+
+    @classmethod
+    def get_for_account(cls, account, conn):
+        return cls.select(
+            OR(account.id == AccountTransaction.q.accountID,
+               account.id == AccountTransaction.q.source_accountID),
+            connection=conn)
+
+    def get_account_description(self, account):
+        if self.source_accountID == account.id:
+            return self.source_account_description
+        elif self.dest_accountID == account.id:
+            return self.dest_account_description
+        else:
+            raise AssertionError
+
+    def get_value(self, account):
+        if self.dest_accountID == account.id:
+            return self.value
+        else:
+            return -self.value
+
+    @property
+    def transaction(self):
+        return AccountTransaction.get(self.id)
+
