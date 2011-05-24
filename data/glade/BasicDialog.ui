@@ -8,12 +8,12 @@
         <property name="type_hint">normal</property>
         <property name="window_position">center-always</property>
         <child internal-child="vbox">
-            <object class="GtkVBox" id="BasicDialog-vbox">
+            <object class="GtkVBox" id="main_vbox">
                 <property name="border_width">2</property>
                 <property name="spacing">5</property>
                 <property name="visible">True</property>
                 <child>
-                    <object class="GtkVBox" id="vbox2">
+                    <object class="GtkVBox" id="vbox">
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
