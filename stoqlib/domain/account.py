@@ -308,9 +308,9 @@ class AccountTransactionView(Viewable):
 
     def get_account_description(self, account):
         if self.source_accountID == account.id:
-            return self.source_account_description
-        elif self.dest_accountID == account.id:
             return self.dest_account_description
+        elif self.dest_accountID == account.id:
+            return self.source_account_description
         else:
             raise AssertionError
 
