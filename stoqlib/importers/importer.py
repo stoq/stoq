@@ -32,7 +32,7 @@ from kiwi.python import namedAny
 from stoqlib.database.runtime import new_transaction
 
 log = Logger('stoqlib.importer')
-guilog = Logger('stoqlib.guiimporter')
+create_log = Logger('stoqlib.importer.create')
 
 _available_importers = {
     'account.ofx': 'ofximporter.OFXImporter',
@@ -91,13 +91,14 @@ class Importer(object):
         """Do the main logic, create transactions, import items etc"""
         n_items = self.get_n_items()
         log.info('Importing %d items' % (n_items, ))
+        create_log.info('ITEMS:%d' % (n_items, ))
         t1 = time.time()
 
         trans = new_transaction()
         self.before_start(trans)
         for i in range(n_items):
             self.process_item(trans, i)
-            guilog.info('IMPORT:%d' % (i+1, ))
+            create_log.info('ITEM:%d' % (i+1, ))
             if not self.dry and i+1 % 100 == 0:
                 trans.commit(close=True)
                 trans = new_transaction()
