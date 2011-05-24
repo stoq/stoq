@@ -42,11 +42,13 @@ import stoqlib
 from stoqlib.database.runtime import get_connection
 from stoqlib.exceptions import StoqlibError
 from stoqlib.gui.base.dialogs import get_current_toplevel
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.webservice import WebService
 
 _ = stoqlib_gettext
+
+_N_TRIES = 3
 
 def _collect_crash_report(params, tracebacks):
     text = ""
@@ -143,8 +145,8 @@ def show_dialog(params, tracebacks):
     yes_button.set_label(_('Sending...'))
     parent.destroy()
 
+    count = 0
     api = WebService()
-    response = api.bug_report(report)
 
     def show_report(data):
         r = json.loads(data)
@@ -156,9 +158,26 @@ def show_dialog(params, tracebacks):
         yes_button.set_label(_("Close"))
         yes_button.set_sensitive(True)
 
+    def errback(response, args):
+        if count < _N_TRIES:
+            bugreport()
+        else:
+            label = gtk.Label(_("Failed to submit bugreport"))
+            d.vbox.pack_start(label)
+            label.show()
+            yes_button.set_label(_("Close"))
+            yes_button.set_sensitive(True)
+
+        count += 1
+
     def callback(response, data):
         show_report(data)
-    response.whenDone(callback)
-    response.ifError(callback)
+
+    def bugreport():
+        response = api.bug_report(report)
+        response.whenDone(callback)
+        response.ifError(errback)
+
+    bugreport()
     d.run()
     raise SystemExit
