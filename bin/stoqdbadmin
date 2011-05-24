@@ -297,6 +297,23 @@ class StoqCommandHandler:
                           check_schema=False)
         start_dbshell()
 
+    def cmd_import(self, options):
+        self._read_config(options, register_station=False)
+        from stoqlib.importers import importer
+        importer = importer.get_by_type(options.type)
+        importer.feed_file(options.filename)
+        importer.process()
+
+    def opt_import(self, parser, group):
+        group.add_option('-t', '--type',
+                         action="store",
+                         help="Type of file to import",
+                         dest="type")
+        group.add_option('', '--import-filename',
+                         action="store",
+                         help="Filename to import",
+                         dest="filename")
+
 def main(args):
     pname = args[0]
     args = args[1:]

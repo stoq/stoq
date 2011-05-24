@@ -38,13 +38,13 @@ from kiwi.python import Settable
 from kiwi.ui.dialogs import open as open_dialog
 from kiwi.ui.objectlist import ColoredColumn, Column, ObjectList, ObjectTree
 from stoqlib.database.runtime import new_transaction, finish_transaction
-from stoqlib.domain.account import Account
+from stoqlib.domain.account import Account, AccountTransactionView
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
-from stoqlib.importers.ofximporter import OFXImporter
+from stoqlib.gui.dialogs.importerdialog import ImporterDialog
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoq.gui.application import AppWindow
@@ -88,15 +88,15 @@ class TransactionPage(ObjectList):
         return item
 
     def _update_transaction(self, item, transaction):
-        account = transaction.get_other_account(self.model)
-        item.account = account.long_description
+        item.account = transaction.get_account_description(self.model)
         item.date = transaction.date
         item.description = transaction.description
-        item.value = transaction.value
+        item.value = transaction.get_value(self.model)
         item.code = transaction.code
 
     def _populate_transactions(self):
-        for transaction in self.model.transactions:
+        for transaction in AccountTransactionView.get_for_account(
+            self.model, self.app.conn):
             self._add_transaction(transaction)
         self._update_totals()
 
@@ -362,28 +362,50 @@ class FinancialApp(AppWindow):
         self.notebook.set_current_page(page_id)
         self._update_actions()
 
-    def _import_ofx(self):
-        ffilter = gtk.FileFilter()
-        ffilter.set_name('OFX')
-        ffilter.add_pattern('*.ofx')
-        filename = open_dialog("Import", parent=self.financial,
-                               filter=ffilter)
+    def _import(self):
+        ffilters = []
+
+        all_filter = gtk.FileFilter()
+        all_filter.set_name(_('All supported formats'))
+        all_filter.add_pattern('*.ofx')
+        all_filter.add_mime_type('application/xml')
+        all_filter.add_mime_type('application/x-gzip')
+        ffilters.append(all_filter)
+
+        ofx_filter = gtk.FileFilter()
+        ofx_filter.set_name(_('Open Financial Exchange (OFX)'))
+        ofx_filter.add_pattern('*.ofx')
+        ffilters.append(ofx_filter)
+
+        gnucash_filter = gtk.FileFilter()
+        gnucash_filter.set_name(_('GNUCash xml format'))
+        gnucash_filter.add_mime_type('application/xml')
+        gnucash_filter.add_mime_type('application/x-gzip')
+        ffilters.append(gnucash_filter)
+
+        filename, file_chooser = open_dialog("Import", parent=self.financial,
+                                             filter=ffilters, with_file_chooser=True)
         if filename is None:
+            file_chooser.destroy()
             return
-        ofx = OFXImporter()
-        ofx.parse(open(filename))
 
-        imbalance_account = sysparam(self.conn).IMBALANCE_ACCOUNT
-        trans = new_transaction()
-        account = ofx.import_transactions(trans, imbalance_account)
-        trans.commit(close=True)
-        account = self.conn.get(account)
+        ffilter = file_chooser.get_filter()
+        if ffilter == gnucash_filter:
+            format = 'gnucash.xml'
+        elif ffilter == ofx_filter:
+            format = 'account.ofx'
+        elif ffilter == all_filter:
+            # Guess
+            if filename.endswith('.ofx'):
+                format = 'account.ofx'
+            else:
+                format = 'gnucash.xml'
 
-        info(_("Imported %d transactions") % account.transactions.count(),
-             _("Imported %d transactions into account %s" % (
-            account.transactions.count(), account.long_description)))
+        file_chooser.destroy()
 
-        self.accounts.refresh_accounts(self.conn, account=self.conn.get(account))
+        run_dialog(ImporterDialog, self.financial, format, filename)
+
+        self.accounts.refresh_accounts(self.conn)
 
     def _can_show_details(self):
         if not self._is_accounts_tab():
@@ -522,7 +544,7 @@ class FinancialApp(AppWindow):
         self._add_transaction()
 
     def on_Import__activate(self, action):
-        self._import_ofx()
+        self._import()
 
     def on_notebook__switch_page(self, notebook, page, page_id):
         self._update_actions()
