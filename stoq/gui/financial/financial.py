@@ -56,6 +56,14 @@ class NotebookCloseButton(gtk.Button):
     pass
 gobject.type_register(NotebookCloseButton)
 
+def format_withdrawal(value):
+    if value:
+        return '%.2f'% (abs(value), )
+
+def format_deposit(value):
+    if value:
+        return '%.2f' % (value, )
+
 class TransactionPage(ObjectList):
     # shows either a list of:
     #   - transactions
@@ -83,15 +91,16 @@ class TransactionPage(ObjectList):
     def _add_transaction(self, transaction):
         item = Settable(transaction=transaction,
                         kind=self.model.kind)
-        self._update_transaction(item, transaction)
+        description = transaction.get_account_description(self.model)
+        self._update_transaction(item, transaction, description)
         self.append(item)
         return item
 
-    def _update_transaction(self, item, transaction):
-        item.account = transaction.get_account_description(self.model)
+    def _update_transaction(self, item, transaction, description=None):
+        item.account = description
         item.date = transaction.date
         item.description = transaction.description
-        item.value = transaction.get_value(self.model)
+        item.value = transaction.value
         item.code = transaction.code
 
     def _populate_transactions(self):
@@ -121,8 +130,12 @@ class TransactionPage(ObjectList):
                    Column('description', data_type=unicode, expand=True)]
 
         if self.model.kind == 'account':
-            columns.append(Column('account', data_type=unicode))
-        columns.append(Column('value', data_type=currency))
+            columns.append(Column('account', data_type=unicode,
+                                  justify=gtk.JUSTIFY_RIGHT))
+        columns.append(Column('value', title=_("Deposit"), data_type=currency,
+                              format_func=format_deposit))
+        columns.append(Column('value', title=_("Withdrawal"), data_type=currency,
+                              format_func=format_withdrawal))
         if self.model.kind == 'account':
             columns.append(ColoredColumn('total', data_type=currency,
                                          color='red',
@@ -131,12 +144,12 @@ class TransactionPage(ObjectList):
 
     def _edit_transaction(self, item):
         trans = new_transaction()
-        account_transaction = trans.get(item.transaction)
+        account_transaction = trans.get(item.transaction.transaction)
         retval = run_dialog(AccountTransactionEditor, self.parent_window,
                             trans, account_transaction, self.model)
         if retval:
-            retval.sync()
-            self._update_transaction(item, retval)
+            retval.syncUpdate()
+            self._update_transaction(item, retval, self.model.description)
             self._update_totals()
             self.update(item)
         finish_transaction(trans, retval)
@@ -495,7 +508,7 @@ class FinancialApp(AppWindow):
         account_transactions.remove(item)
 
         trans = new_transaction()
-        account_transaction = trans.get(item.transaction)
+        account_transaction = trans.get(item.transaction.transaction)
         account_transaction.delete(account_transaction.id, connection=trans)
         trans.commit(close=True)
 
