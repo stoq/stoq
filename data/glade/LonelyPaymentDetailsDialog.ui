@@ -1,0 +1,282 @@
+<?xml version="1.0"?>
+<interface>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-requires gtk+ 2.6 -->
+  <!-- interface-naming-policy toplevel-contextual -->
+  <object class="GtkWindow" id="LonelyPaymentDetailsDialog">
+    <property name="default_width">440</property>
+    <property name="default_height">250</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkTable" id="table1">
+            <property name="visible">True</property>
+            <property name="n_rows">5</property>
+            <property name="n_columns">4</property>
+            <property name="column_spacing">6</property>
+            <property name="row_spacing">6</property>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel1">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Description:</property>
+                <property name="model_attribute">kiwilabel1</property>
+              </object>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel2">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Due date:</property>
+                <property name="model_attribute">kiwilabel2</property>
+              </object>
+              <packing>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel5">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Value:</property>
+                <property name="model_attribute">kiwilabel5</property>
+              </object>
+              <packing>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel7">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Interest:</property>
+                <property name="model_attribute">kiwilabel7</property>
+              </object>
+              <packing>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel9">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Paid value:</property>
+                <property name="model_attribute">kiwilabel9</property>
+              </object>
+              <packing>
+                <property name="top_attach">4</property>
+                <property name="bottom_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="description">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="model_attribute">description</property>
+                <property name="data_type">unicode</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="due_date">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="model_attribute">due_date</property>
+                <property name="data_type">date</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="value">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="model_attribute">value</property>
+                <property name="data_type">currency</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="interest">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="model_attribute">interest</property>
+                <property name="data_type">currency</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="paid_value">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="model_attribute">paid_value</property>
+                <property name="data_type">currency</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">4</property>
+                <property name="bottom_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel3">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Status:</property>
+                <property name="model_attribute">kiwilabel3</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel4">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Paid date:</property>
+                <property name="model_attribute">kiwilabel4</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel6">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Penalty:</property>
+                <property name="model_attribute">kiwilabel6</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel8">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Discount:</property>
+                <property name="model_attribute">kiwilabel8</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="status">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="model_attribute">status_str</property>
+                <property name="data_type">unicode</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="paid_date">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="model_attribute">paid_date</property>
+                <property name="data_type">date</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="penalty">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="model_attribute">penalty</property>
+                <property name="data_type">currency</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="discount">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="model_attribute">discount</property>
+                <property name="data_type">currency</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkFrame" id="frame1">
+            <property name="visible">True</property>
+            <property name="label_xalign">0</property>
+            <property name="shadow_type">out</property>
+            <child>
+              <object class="ObjectList" id="payment_info_list">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

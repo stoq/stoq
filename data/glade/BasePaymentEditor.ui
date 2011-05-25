@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<interface>
+  <!-- interface-requires gtk+ 2.6 -->
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
+  <object class="GtkWindow" id="BasePaymentEditor">
+    <property name="default_width">440</property>
+    <property name="default_height">250</property>
+    <child>
+      <object class="GtkTable" id="table1">
+        <property name="visible">True</property>
+        <property name="n_rows">6</property>
+        <property name="n_columns">2</property>
+        <property name="column_spacing">6</property>
+        <property name="row_spacing">6</property>
+        <child>
+          <object class="GtkLabel" id="label2">
+            <property name="visible">True</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">Description:</property>
+          </object>
+          <packing>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyLabel" id="person_label">
+            <property name="visible">True</property>
+            <property name="xalign">1</property>
+            <property name="model_attribute">person_label</property>
+          </object>
+          <packing>
+            <property name="top_attach">1</property>
+            <property name="bottom_attach">2</property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyLabel" id="kiwilabel1">
+            <property name="visible">True</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">Value ($CURRENCY):</property>
+            <property name="model_attribute">kiwilabel1</property>
+          </object>
+          <packing>
+            <property name="top_attach">2</property>
+            <property name="bottom_attach">3</property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property name="visible">True</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">Due date:</property>
+          </object>
+          <packing>
+            <property name="top_attach">3</property>
+            <property name="bottom_attach">4</property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label3">
+            <property name="visible">True</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">Category:</property>
+          </object>
+          <packing>
+            <property name="top_attach">4</property>
+            <property name="bottom_attach">5</property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label4">
+            <property name="visible">True</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">Type:</property>
+          </object>
+          <packing>
+            <property name="top_attach">5</property>
+            <property name="bottom_attach">6</property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="description">
+            <property name="visible">True</property>
+            <property name="is_focus">True</property>
+            <property name="xalign">1</property>
+            <property name="mandatory">True</property>
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">description</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyComboEntry" id="person">
+            <property name="visible">True</property>
+            <property name="model_attribute">person</property>
+            <property name="mandatory">True</property>
+            <property name="data_type">object</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">1</property>
+            <property name="bottom_attach">2</property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="value">
+            <property name="visible">True</property>
+            <property name="is_focus">True</property>
+            <property name="xalign">1</property>
+            <property name="mandatory">True</property>
+            <property name="data_type">currency</property>
+            <property name="model_attribute">value</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">2</property>
+            <property name="bottom_attach">3</property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyDateEntry" id="due_date">
+            <property name="visible">True</property>
+            <property name="data_type">date</property>
+            <property name="model_attribute">due_date</property>
+            <property name="mandatory">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">3</property>
+            <property name="bottom_attach">4</property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyComboEntry" id="category">
+            <property name="visible">True</property>
+            <property name="model_attribute">category</property>
+            <property name="data_type">object</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">4</property>
+            <property name="bottom_attach">5</property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="payment_type">
+            <property name="visible">True</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Money</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">5</property>
+            <property name="bottom_attach">6</property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
