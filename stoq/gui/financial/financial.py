@@ -56,14 +56,6 @@ class NotebookCloseButton(gtk.Button):
     pass
 gobject.type_register(NotebookCloseButton)
 
-def format_withdrawal(value):
-    if value < 0:
-        return '%.2f'% (abs(value), )
-
-def format_deposit(value):
-    if value > 0:
-        return '%.2f' % (value, )
-
 class TransactionPage(ObjectList):
     # shows either a list of:
     #   - transactions
@@ -73,7 +65,7 @@ class TransactionPage(ObjectList):
         self.app = app
         self.parent_window = parent
         self._block = False
-        ObjectList.__init__(self, columns=self.get_columns())
+        ObjectList.__init__(self, columns=self._get_columns(model.kind))
         self.connect('row-activated', self._on_row__activated)
         tree_view = self.get_treeview()
         tree_view.set_rules_hint(True)
@@ -88,11 +80,64 @@ class TransactionPage(ObjectList):
         else:
             raise TypeError("unknown model kind: %r" % (model.kind, ))
 
-    def _add_transaction(self, transaction):
-        item = Settable(transaction=transaction,
-                        kind=self.model.kind)
-        description = transaction.get_account_description(self.model)
-        value = transaction.get_value(self.model)
+    def _get_columns(self, kind):
+        if kind in ['payable', 'receivable']:
+            return self._get_payment_columns()
+        else:
+            return self._get_account_columns()
+
+    def _get_account_columns(self):
+        def format_withdrawal(value):
+            if value < 0:
+                return '%.2f'% (abs(value), )
+
+        def format_deposit(value):
+            if value > 0:
+                return '%.2f' % (value, )
+
+        if self.model.account_type == Account.TYPE_INCOME:
+            color_func = lambda x: False
+        else:
+            color_func = lambda x: x < 0
+        return [Column('date', data_type=datetime.date, sorted=True),
+                Column('code', data_type=unicode),
+                Column('description', data_type=unicode, expand=True),
+                Column('account', data_type=unicode,
+                       justify=gtk.JUSTIFY_RIGHT),
+                Column('value',
+                       title=self.model.get_type_label(out=False),
+                       data_type=currency,
+                       format_func=format_deposit),
+                Column('value',
+                       title=self.model.get_type_label(out=True),
+                       data_type=currency,
+                       format_func=format_withdrawal),
+                ColoredColumn('total', data_type=currency,
+                              color='red',
+                              data_func=color_func)]
+
+    def _get_payment_columns(self):
+        return [Column('paid_date', data_type=datetime.date, sorted=True),
+                Column('code', data_type=unicode),
+                Column('description', data_type=unicode, expand=True),
+                Column('value',
+                       data_type=currency)]
+
+    def _populate_transactions(self):
+        for transaction in AccountTransactionView.get_for_account(
+            self.model, self.app.conn):
+            description = transaction.get_account_description(self.model)
+            value = transaction.get_value(self.model)
+            self._add_transaction(transaction, description, value)
+        self._update_totals()
+
+    def _populate_payable_payments(self, view_class):
+        for view in view_class.select():
+            view.kind = self.model.kind
+            self.append(view)
+
+    def _add_transaction(self, transaction, description, value):
+        item = Settable(transaction=transaction, kind=self.model.kind)
         self._update_transaction(item, transaction, description, value)
         self.append(item)
         return item
@@ -104,72 +149,43 @@ class TransactionPage(ObjectList):
         item.value = value
         item.code = transaction.code
 
-    def _populate_transactions(self):
-        for transaction in AccountTransactionView.get_for_account(
-            self.model, self.app.conn):
-            self._add_transaction(transaction)
-        self._update_totals()
-
     def _update_totals(self):
         total = decimal.Decimal('0')
         for item in self:
             total += item.value
             item.total = total
 
-    def _populate_payable_payments(self, view_class):
-        for view in view_class.select():
-            view.kind = self.model.kind
-            self.append(view)
-
-    def get_columns(self):
-        if self.model.kind in ['payable', 'receivable']:
-            date_column = 'paid_date'
-        else:
-            date_column = 'date'
-        columns = [Column(date_column, data_type=datetime.date, sorted=True),
-                   Column('code', data_type=unicode),
-                   Column('description', data_type=unicode, expand=True)]
-
-        if self.model.kind == 'account':
-            columns.append(Column('account', data_type=unicode,
-                                  justify=gtk.JUSTIFY_RIGHT))
-        columns.append(Column('value', title=_("Deposit"), data_type=currency,
-                              format_func=format_deposit))
-        columns.append(Column('value', title=_("Withdrawal"), data_type=currency,
-                              format_func=format_withdrawal))
-        if self.model.kind == 'account':
-            columns.append(ColoredColumn('total', data_type=currency,
-                                         color='red',
-                                         data_func=lambda x: x < 0))
-        return columns
-
-    def _edit_transaction(self, item):
+    def _edit_transaction_dialog(self, item):
         trans = new_transaction()
         account_transaction = trans.get(item.transaction.transaction)
-        retval = run_dialog(AccountTransactionEditor, self.parent_window,
+        transaction = run_dialog(AccountTransactionEditor, self.parent_window,
                             trans, account_transaction, self.model)
-        if retval:
-            retval.syncUpdate()
-            self._update_transaction(item, retval, self.model.description,
-                                     retval.value)
+        if transaction:
+            transaction.syncUpdate()
+            self._update_transaction(item, transaction, self.model.description,
+                                     transaction.value)
             self._update_totals()
             self.update(item)
-        finish_transaction(trans, retval)
+        finish_transaction(trans, transaction)
 
-    def add_transaction(self):
+    def add_transaction_dialog(self):
         trans = new_transaction()
-        retval = run_dialog(AccountTransactionEditor, self.parent_window,
+        transaction = run_dialog(AccountTransactionEditor, self.parent_window,
                             trans, None, self.model)
-        if retval:
-            retval.sync()
-            item = self._add_transaction(retval)
+        if transaction:
+            transaction.sync()
+            value = transaction.value
+            other = transaction.get_other_account(self.model)
+            if other == self.model:
+                value = -value
+            item = self._add_transaction(transaction, other.description, value)
             self._update_totals()
             self.update(item)
-        finish_transaction(trans, retval)
+        finish_transaction(trans, transaction)
 
     def _on_row__activated(self, objectlist, item):
         if item.kind == 'account':
-            self._edit_transaction(item)
+            self._edit_transaction_dialog(item)
 
 
 class FinancialApp(AppWindow):
@@ -488,7 +504,7 @@ class FinancialApp(AppWindow):
 
     def _add_transaction(self):
         page = self._get_current_page_widget()
-        page.add_transaction()
+        page.add_transaction_dialog()
 
     def _delete_account(self, account):
         msg = _(u'Are you sure you want to remove account "%s" ?' %
