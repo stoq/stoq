@@ -63,6 +63,16 @@ def _splitns(tag):
     return '{%s}%s' % (SPLIT_NS, tag)
 
 
+_account_types = {
+    'BANK': Account.TYPE_BANK,
+    'INCOME': Account.TYPE_INCOME,
+    'EXPENSE': Account.TYPE_EXPENSE,
+    'CASH': Account.TYPE_CASH,
+    'CREDIT': Account.TYPE_CREDIT,
+    'EQUITY': Account.TYPE_EQUITY,
+    'ASSET': Account.TYPE_ASSET,
+}
+
 class GnuCashXMLImporter(Importer):
     """Class to assist the process of importing gnucash files.
 
@@ -148,6 +158,7 @@ class GnuCashXMLImporter(Importer):
                                           description=account_name)
             if account is None:
                 account = Account(
+                    account_type=_account_types.get(account_type, Account.TYPE_CASH),
                     description=account_name,
                     code=self._get_text(node, _actns('code')),
                     parent=parent_account,
