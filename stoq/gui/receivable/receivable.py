@@ -48,14 +48,11 @@ from stoqlib.reporting.receival_receipt import ReceivalReceipt
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import render_pixbuf
-from stoqlib.gui.dialogs.paymentadditiondialog import (InPaymentAdditionDialog,
-                                                       LonelyPaymentDetailsDialog)
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
+from stoqlib.gui.editors.paymenteditor import InPaymentEditor
 from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.search.paymentsearch import CardPaymentSearch
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
@@ -169,16 +166,14 @@ class ReceivableApp(SearchableAppWindow):
     #
 
     def _show_details(self, receivable_view):
-        if receivable_view.sale_id is not None:
-            sale_view = SaleView.select(
-                    SaleView.q.id == receivable_view.sale_id)[0]
-            run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
-        elif receivable_view.renegotiation_id is not None:
-            run_dialog(RenegotiationDetailsDialog, self, self.conn,
-                       receivable_view.renegotiation)
-        else:
-            payment = receivable_view.payment
-            run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
+        trans = new_transaction()
+        payment = trans.get(receivable_view.payment)
+        retval = run_dialog(InPaymentEditor, self, trans, payment)
+        if finish_transaction(trans, retval):
+            self.search.refresh()
+        trans.close()
+        return retval
+
 
     def _show_comments(self, receivable_view):
             trans = new_transaction()
@@ -211,7 +206,7 @@ class ReceivableApp(SearchableAppWindow):
 
     def _add_receiving(self):
         trans = new_transaction()
-        retval = self.run_dialog(InPaymentAdditionDialog, trans)
+        retval = self.run_dialog(InPaymentEditor, trans)
         if finish_transaction(trans, retval):
             self.search.refresh()
 
