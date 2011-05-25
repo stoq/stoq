@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -160,6 +160,7 @@ def _register_payment_methods():
     trans.commit(close=True)
 
 def register_accounts(trans):
+    from stoqlib.domain.account import Account
     log.info("Creating Accounts")
     for name, atype in [(_("Assets"), Account.TYPE_ASSET),
                         (_("Banks"), Account.TYPE_BANK),
@@ -189,7 +190,6 @@ def _ensure_card_providers():
     log.info("Creating Card Providers")
     from stoqlib.domain.person import PersonAdaptToCreditProvider
 
-
     providers = ['VISANET', 'REDECARD', 'AMEX', 'HIPERCARD',
                  'BANRISUL','PAGGO', 'CREDISHOP', 'CERTIF']
 
@@ -202,7 +202,7 @@ def _ensure_card_providers():
 
         person = Person(name=name, connection=trans)
         person.addFacet(ICompany, connection=trans)
-        person.addFacet(ICreditProvider, short_name=name, provider_id=name, 
+        person.addFacet(ICreditProvider, short_name=name, provider_id=name,
                         open_contract_date=const.NOW(), connection=trans)
     trans.commit()
 
