@@ -22,7 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.domain.account import Account, AccountTransaction
+from stoqlib.domain.account import (Account, AccountTransaction,
+                                    AccountTransactionView)
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.parameters import sysparam
@@ -145,21 +146,31 @@ class TestAccount(DomainTest):
         self.assertEquals(t1.account, imbalance_account)
         self.assertEquals(t2.source_account, imbalance_account)
 
-    def has_child_accounts(self):
+    def testHasChildAccounts(self):
         a1 = self.create_account()
         a2 = self.create_account()
 
-        self.failIf(a1.has_child_accounts)
-        self.failIf(a2.has_child_accounts)
+        self.failIf(a1.has_child_accounts())
+        self.failIf(a2.has_child_accounts())
 
         a2.parent = a1
 
-        self.failUnless(a1.has_child_accounts)
-        self.failIf(a2.has_child_accounts)
+        self.failUnless(a1.has_child_accounts())
+        self.failIf(a2.has_child_accounts())
 
     def testIDescribable(self):
         a1 = self.create_account()
         self.assertEquals(a1.long_description, IDescribable(a1).get_description())
+
+    def testGetTypeLabel(self):
+        a = self.create_account()
+        a.account_type = Account.TYPE_CASH
+        self.assertEquals(a.get_type_label(True), "Spend")
+        self.assertEquals(a.get_type_label(False), "Receive")
+
+        a.account_type = Account.TYPE_BANK
+        self.assertEquals(a.get_type_label(True), "Withdrawal")
+        self.assertEquals(a.get_type_label(False), "Deposit")
 
 
 class TestAccountTransaction(DomainTest):
@@ -196,20 +207,20 @@ class TestAccountTransaction(DomainTest):
         t2.sync()
 
         t1.set_other_account(a1, a2)
-        t1.sync()
+        t1.syncUpdate()
         self.assertEquals(t1.account, a1)
         self.assertEquals(t1.source_account, a2)
         t1.set_other_account(a2, a2)
-        t1.sync()
+        t1.syncUpdate()
         self.assertEquals(t1.account, a2)
         self.assertEquals(t1.source_account, a2)
 
         t2.set_other_account(a1, a2)
-        t2.sync()
+        t2.syncUpdate()
         self.assertEquals(t2.account, a2)
         self.assertEquals(t2.source_account, a1)
         t2.set_other_account(a2, a2)
-        t2.sync()
+        t2.syncUpdate()
         self.assertEquals(t2.account, a2)
         self.assertEquals(t2.source_account, a2)
 
@@ -223,3 +234,59 @@ class TestAccountTransaction(DomainTest):
         self.assertEquals(transaction.source_account, imbalance_account)
         self.assertEquals(transaction.account, account)
         self.assertEquals(transaction.payment, payment)
+
+
+class TestAccountTransactionView(DomainTest):
+    def testGetForAccount(self):
+        a = self.create_account()
+        t = self.create_account_transaction(a)
+        t.value = 100
+        t.source_account = a
+        t.sync()
+        views = AccountTransactionView.get_for_account(a, self.trans)
+        self.assertEquals(views.count(), 1)
+        v1 = views[0]
+        self.assertEquals(v1.value, t.value)
+        self.assertEquals(v1.code, t.code)
+        self.assertEquals(v1.description, t.description)
+        self.assertEquals(v1.date, t.date)
+
+    def testGetAccountDescription(self):
+        a1 = self.create_account()
+        a1.description = "Source Account"
+        a2 = self.create_account()
+        a2.description = "Account"
+
+        t = self.create_account_transaction(a1)
+        t.value = 100
+        t.source_account = a1
+        t.account = a2
+        t.sync()
+
+        views = AccountTransactionView.get_for_account(a1, self.trans)
+        self.assertEquals(views[0].get_account_description(a1), "Account")
+        self.assertEquals(views[0].get_account_description(a2), "Source Account")
+
+    def testGetValue(self):
+        a1 = self.create_account()
+        a1.description = "Source Account"
+        a2 = self.create_account()
+        a2.description = "Account"
+
+        t = self.create_account_transaction(a1)
+        t.value = 100
+        t.source_account = a1
+        t.account = a2
+        t.sync()
+
+        views = AccountTransactionView.get_for_account(a1, self.trans)
+        self.assertEquals(views[0].get_value(a1), -100)
+        self.assertEquals(views[0].get_value(a2), 100)
+
+    def testTransaction(self):
+        a = self.create_account()
+        t = self.create_account_transaction(a)
+
+        views = AccountTransactionView.get_for_account(a, self.trans)
+        self.assertEquals(views[0].transaction, t)
+
