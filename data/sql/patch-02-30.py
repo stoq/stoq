@@ -1,0 +1,14 @@
+# -*- coding: utf-8 -*-
+
+from stoqlib.database.admin import register_accounts
+from stoqlib.database.orm import IntCol
+from stoqlib.domain.account import Account
+
+def apply_patch(trans):
+    trans.query("""ALTER TABLE account ADD COLUMN account_type int;""")
+
+    # We need to add back the account_type column removed in 2-27
+    Account.sqlmeta.addColumn(IntCol('account_type', default=None))
+
+    # Register the accounts again to set the account_type
+    register_accounts(trans)

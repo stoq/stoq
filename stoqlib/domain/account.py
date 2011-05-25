@@ -76,12 +76,41 @@ class Account(Domain):
     @ivar station: for accounts connected to a specific station or None
     """
 
+    (TYPE_BANK,
+     TYPE_CASH,
+     TYPE_ASSET,
+     TYPE_CREDIT,
+     TYPE_INCOME,
+     TYPE_EXPENSE,
+     TYPE_EQUITY) = range(7)
+
+    account_labels = {
+        TYPE_BANK: (_("Deposit"), _("Withdrawal")),
+        TYPE_CASH: (_("Receive"), _("Spend")),
+        TYPE_ASSET: (_("Increase"), _("Decrease")),
+        TYPE_CREDIT: (_("Payment"), _("Charge")),
+        TYPE_INCOME: (_("Charge"), _("Income")),
+        TYPE_EXPENSE: (_("Expense"), _("Rebate")),
+        TYPE_EQUITY: (_("Increase"), _("Decrease")),
+    }
+
+    account_type_descriptions = [
+        (_("Bank"), TYPE_BANK),
+        (_("Cash"), TYPE_CASH),
+        (_("Asset"), TYPE_ASSET),
+        (_("Credit"), TYPE_CREDIT),
+        (_("Income"), TYPE_INCOME),
+        (_("Expense"), TYPE_EXPENSE),
+        (_("Equity"), TYPE_EQUITY),
+        ]
+
     implements(IDescribable)
 
     description = UnicodeCol(default=None)
     code = UnicodeCol(default=None)
     parent = ForeignKey('Account', default=None)
     station = ForeignKey('BranchStation', default=None)
+    account_type = IntCol()
 
     #
     # IDescribable implementation
@@ -129,6 +158,7 @@ class Account(Domain):
                    description=station.name,
                    code=_("Till account for %s") % station.name,
                    parent=sysparam(conn).TILLS_ACCOUNT,
+                   account_type=Account.TYPE_CASH,
                    connection=conn)
 
     @property
@@ -203,6 +233,9 @@ class Account(Domain):
                                      parent=self))
 
 
+    def get_type_label(self, out):
+        return self.account_labels[self.account_type][int(out)]
+
     @classmethod
     def get_all(cls, conn):
         return AccountTransaction.get_all(cls, connection=conn)
@@ -275,6 +308,10 @@ class AccountTransaction(Domain):
             self.source_account = account
         else:
             raise AssertionError
+
+    def get_account_description(self, account):
+        return self.get_other_account(account).description
+
 
 class AccountTransactionView(Viewable):
     Account_Dest = Alias(Account, 'account_dest')

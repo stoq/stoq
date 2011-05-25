@@ -46,7 +46,6 @@ from stoqlib.database.interfaces import (ICurrentBranch, ICurrentUser,
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.orm import const
 from stoqlib.database.runtime import get_connection, new_transaction
-from stoqlib.domain.account import Account
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
                                        ISalesPerson, ICompany, IBranch,
                                        ICreditProvider)
@@ -161,19 +160,22 @@ def _register_payment_methods():
     trans.commit(close=True)
 
 def register_accounts(trans):
+    from stoqlib.domain.account import Account
     log.info("Creating Accounts")
-    for name in [_("Assets"),
-                 _("Banks"),
-                 _("Expenses"),
-                 _("Imbalance"),
-                 _("Income"),
-                 _("Tills")]:
-        if Account.selectOneBy(connection=trans,
-                             description=name):
-            continue
-        Account(connection=trans,
-                description=name,
-                parent=None)
+    for name, atype in [(_("Assets"), Account.TYPE_ASSET),
+                        (_("Banks"), Account.TYPE_BANK),
+                        (_("Equity"), Account.TYPE_EQUITY),
+                        (_("Expenses"), Account.TYPE_EXPENSE),
+                        (_("Imbalance"), Account.TYPE_BANK),
+                        (_("Income"), Account.TYPE_INCOME),
+                        (_("Tills"), Account.TYPE_CASH),
+                        ]:
+        account = Account.selectOneBy(connection=trans,
+                                      description=name)
+        if not account:
+            account = Account(connection=trans,
+                              description=name)
+        account.account_type = atype
 
     sparam = sysparam(trans)
     sparam.BANKS_ACCOUNT = Account.selectOneBy(

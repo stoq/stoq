@@ -12,6 +12,7 @@ def apply_patch(trans):
                        has_permission=profile.has_permission,
                        user_profile=profile.user_profile,
                        connection=trans)
+
     trans.query("""
 CREATE TABLE account (
     id serial NOT NULL PRIMARY KEY,
@@ -38,5 +39,12 @@ CREATE TABLE account_transaction (
     date timestamp NOT NULL,
     payment_id bigint REFERENCES payment(id)
 );""")
+
+    # Patch 2-30 introduces this
+    try:
+        from stoqlib.domain.account import Account
+        Account.sqlmeta.delColumn('account_type')
+    except KeyError:
+        pass
 
     register_accounts(trans)

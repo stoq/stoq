@@ -46,7 +46,6 @@ class AccountEditor(BaseEditor):
         self.existing = model is not None
         self.parent_account = conn.get(parent_account)
         BaseEditor.__init__(self, conn, model)
-        self.refresh_ok(False)
 
     #
     # BaseEditor hooks
@@ -54,20 +53,25 @@ class AccountEditor(BaseEditor):
 
     def create_model(self, conn):
         return Account(description="",
+                       account_type=Account.TYPE_CASH,
                        connection=conn)
 
     def _setup_widgets(self):
-        self.parent_accounts = AccountTree(with_code=False,
-                                           create_mode=True)
+        self.parent_accounts = AccountTree(with_code=False, create_mode=True)
         self.parent_accounts.connect('selection-changed',
                                      self._on_parent_accounts__selection_changed)
-        self.parent_accounts.set_headers_visible(False)
-        self.table.attach(self.parent_accounts, 1, 2, 2, 3)
-        model = self.model if not self.existing else None
-        self.parent_accounts.insert_initial(self.conn, ignore=model)
+        self.table.attach(self.parent_accounts, 1, 2, 3, 4)
+
+        if not self.existing:
+            ignore = self.model
+        else:
+            ignore = None
+        self.parent_accounts.insert_initial(self.conn, ignore=ignore)
         if self.parent_account:
             self.parent_accounts.select(self.parent_account)
         self.parent_accounts.show()
+
+        self.account_type.prefill(Account.account_type_descriptions)
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -87,11 +91,8 @@ class AccountEditor(BaseEditor):
             self.model.parent = self.parent_accounts.get_selected()
         return self.model
 
-    def _validate_all(self):
-        self.refresh_ok(self.validate_confirm())
-
     def _on_parent_accounts__selection_changed(self, objectlist, account):
-        self._validate_all()
+        self.force_validation()
 
     def on_description__activate(self, entry):
         if self.validate_confirm():

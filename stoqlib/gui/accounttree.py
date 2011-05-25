@@ -59,6 +59,7 @@ def sort_models(a, b):
 class AccountTree(ObjectTree):
     def __init__(self, with_code=True, create_mode=False):
         self.create_mode = create_mode
+
         columns = [StockTextColumn('description', data_type=str,
                    pack_end=True, sorted=True, sort_func=sort_models)]
         if with_code:
@@ -72,6 +73,8 @@ class AccountTree(ObjectTree):
         self._pixbuf_payable = render_icon('stoq-payable-app')
         self._pixbuf_receivable = render_icon('stoq-bills')
         self._pixbuf_till = render_icon('stoq-till-app')
+        if self.create_mode:
+            self.set_headers_visible(False)
 
     # Order the accounts top to bottom so
     # ObjectTree.append() works as expected
@@ -111,7 +114,7 @@ class AccountTree(ObjectTree):
                 continue
             if (self.create_mode and
                 (account.id == till_id or
-                 account.parent and account.parent.id == till_id)):
+                 (account.parent and account.parent.id == till_id))):
                 account.selectable = False
             self.append(account.parent, account)
 
