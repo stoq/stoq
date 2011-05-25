@@ -42,9 +42,9 @@ from stoqlib.domain.person import PersonAdaptToCreditProvider
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
-from stoqlib.gui.dialogs.paymentadditiondialog import LonelyPaymentDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
+from stoqlib.gui.editors.paymenteditor import LonelyPaymentDetailsDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.reporting.payment import (BillCheckPaymentReport,
                                        CardPaymentReport)

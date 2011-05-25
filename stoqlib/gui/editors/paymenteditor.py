@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,32 +22,40 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 ##
-""" Dialog for adding simple payments """
+""" Editor for payments descriptions and categories"""
 
 
 import datetime
 
-import pango
 import gtk
+import pango
 
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.domain.interfaces import IInPayment, IOutPayment
+from stoqlib.domain.interfaces import (IInPayment, IOutPayment, IClient,
+                                       ISupplier)
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.payment.views import PaymentChangeHistoryView
+from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
+                                          PaymentChangeHistoryView)
 from stoqlib.domain.person import PersonAdaptToClient, PersonAdaptToSupplier
+from stoqlib.domain.sale import SaleView
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.lonelypaymentdialog import LonelyPaymentDetailsDialog
+from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
-class BasePaymentAddition(BaseEditor):
-    gladefile = "BasePaymentAddition"
+class BasePaymentEditor(BaseEditor):
+    gladefile = "BasePaymentEditor"
     model_type = Payment
     title = _(u"Payment")
     proxy_widgets = ['value',
@@ -63,6 +71,7 @@ class BasePaymentAddition(BaseEditor):
 
         """
         BaseEditor.__init__(self, conn, model)
+        self.setup_widgets()
 
     #
     # BaseEditor hooks
@@ -94,7 +103,15 @@ class BasePaymentAddition(BaseEditor):
             self.category.set_sensitive(False)
 
         self.populate_person()
-        self.add_proxy(self.model, BasePaymentAddition.proxy_widgets)
+        self.add_proxy(self.model, BasePaymentEditor.proxy_widgets)
+
+    def setup_widgets(self):
+        self.person_label.set_label(self._person_label)
+        self.details_button = self.add_button(self.details_button_label)
+        self.details_button.connect('clicked',
+                                    self._on_details_button__clicked)
+        for widget in [self.value, self.due_date, self.person]:
+            widget.set_sensitive(False)
 
     def validate_confirm(self):
         # FIXME: the kiwi view should export it's state and it shoul
@@ -103,7 +120,9 @@ class BasePaymentAddition(BaseEditor):
                     self.model.value)
 
     def on_confirm(self):
-        self.model.set_pending()
+        # Only set pending if its a new payment (status == PREVIEW)
+        if self.model.status is Payment.STATUS_PREVIEW:
+            self.model.set_pending()
         self.model.base_value = self.model.value
         person = self.person.get_selected_data()
         if person is not None:
@@ -111,6 +130,11 @@ class BasePaymentAddition(BaseEditor):
                     self.person_attribute,
                     person.person)
         return self.model
+
+    def can_edit_details(self):
+        for widget in [self.value, self.due_date, self.person]:
+            widget.set_sensitive(True)
+        self.details_button.hide()
 
     #
     # Kiwi Callbacks
@@ -121,8 +145,10 @@ class BasePaymentAddition(BaseEditor):
             return ValidationError(_(u"The value must be greater than zero."))
 
 
-class InPaymentAdditionDialog(BasePaymentAddition):
+class InPaymentEditor(BasePaymentEditor):
     person_attribute = 'payer'
+    details_button_label = _("Sale details")
+    _person_label = _("Payer:")
     def __init__(self, conn, model=None):
         """ This dialog is responsible to create additional payments with
         IInPayment facet.
@@ -131,9 +157,10 @@ class InPaymentAdditionDialog(BasePaymentAddition):
         @param model: a L{stoqlib.domain.payment.payment.Payment} object
                       or None
         """
-        BasePaymentAddition.__init__(self, conn, model)
-        self.model.addFacet(IInPayment, connection=self.conn)
-        self.person_label.set_label(_("Payer:"))
+        BasePaymentEditor.__init__(self, conn, model)
+        if not IInPayment(model, None):
+            self.model.addFacet(IInPayment, connection=self.conn)
+            self.can_edit_details()
 
     def populate_person(self):
         clients = PersonAdaptToClient.get_active_clients(self.trans)
@@ -143,9 +170,34 @@ class InPaymentAdditionDialog(BasePaymentAddition):
         else:
             self.person.set_sensitive(False)
 
+        payer = self.model.group.payer
+        if payer:
+            client = IClient(payer)
+            self.person.select(client)
 
-class OutPaymentAdditionDialog(BasePaymentAddition):
+    def show_receivable_details(self, receivable_view):
+        if receivable_view.sale_id is not None:
+            sale_view = SaleView.select(
+                    SaleView.q.id == receivable_view.sale_id)[0]
+            run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+        elif receivable_view.renegotiation_id is not None:
+            run_dialog(RenegotiationDetailsDialog, self, self.conn,
+                       receivable_view.renegotiation)
+        else:
+            payment = receivable_view.payment
+            run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
+
+    def _on_details_button__clicked(self, widget):
+        payment = self.model
+        receivable_view = InPaymentView.select(
+                            InPaymentView.q.id == payment.id)[0]
+        self.show_receivable_details(receivable_view)
+
+
+class OutPaymentEditor(BasePaymentEditor):
     person_attribute = 'recipient'
+    details_button_label = _(u"Order details")
+    _person_label = _("Recipient:")
     def __init__(self, conn, model=None):
         """ This dialog is responsible to create additional payments with
         IOutPayment facet.
@@ -154,9 +206,10 @@ class OutPaymentAdditionDialog(BasePaymentAddition):
         @param model: a L{stoqlib.domain.payment.payment.Payment} object
                       or None
         """
-        BasePaymentAddition.__init__(self, conn, model)
-        self.model.addFacet(IOutPayment, connection=self.conn)
-        self.person_label.set_label(_("Recipient:"))
+        BasePaymentEditor.__init__(self, conn, model)
+        if not IOutPayment(model, None):
+            self.model.addFacet(IOutPayment, connection=self.conn)
+            self.can_edit_details()
 
     def populate_person(self):
         suppliers = PersonAdaptToSupplier.get_active_suppliers(self.trans)
@@ -165,6 +218,28 @@ class OutPaymentAdditionDialog(BasePaymentAddition):
                                         for s in suppliers]))
         else:
             self.person.set_sensitive(False)
+
+        supplier = self.model.group.recipient
+        if supplier:
+            supplier  = ISupplier(supplier)
+            self.person.select(supplier)
+
+    def show_payable_details(self, payable_view):
+        if payable_view.purchase:
+            run_dialog(PurchaseDetailsDialog, self,
+                       self.conn, payable_view.purchase)
+        elif payable_view.sale:
+            run_dialog(SaleDetailsDialog, self,
+                       self.conn, payable_view.sale)
+        else:
+            payment = payable_view.payment
+            run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
+
+    def _on_details_button__clicked(self, widget):
+        payment = self.model
+        payable_view = OutPaymentView.select(
+                            OutPaymentView.q.id == payment.id)[0]
+        self.show_payable_details(payable_view)
 
 
 class LonelyPaymentDetailsDialog(BaseEditor):
