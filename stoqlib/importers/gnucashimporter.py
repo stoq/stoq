@@ -172,16 +172,8 @@ class GnuCashXMLImporter(Importer):
 
         splits = node.findall('%s/%s' % (_trnns('splits'),
                                          _trnns('split')))
-        if len(splits) != 2:
-            log.info("Can't do splits to more than 2 parts: %r" % (splits, ))
-            return
-
         dest_node = splits[0]
         source_node = splits[1]
-
-        text_value = self._get_text(dest_node, _splitns('value'))
-        values = text_value.split('/', 2)
-        value = decimal.Decimal(values[0]) / decimal.Decimal(values[1])
 
         source = self._get_text(source_node, _splitns('account'))
         source_account = self._accounts[source]
@@ -190,6 +182,27 @@ class GnuCashXMLImporter(Importer):
         dest = self._get_text(dest_node, _splitns('account'))
         dest_account = self._accounts[dest]
         assert dest_account, ElementTree.tostring(dest_node)
+
+        text_value = self._get_text(dest_node, _splitns('value'))
+        values = text_value.split('/', 2)
+        value = decimal.Decimal(values[0]) / decimal.Decimal(values[1])
+
+        if len(splits) != 2:
+            # If we have a split to the same account, just merge them until
+            # we support split transactions
+            accounts = []
+            diff = False
+            for split_node in splits[2:]:
+                split = self._get_text(split_node, _splitns('account'))
+                if split != source:
+                    diff = True
+                accounts.append(self._accounts[split])
+
+            if diff:
+                log.info("Can't do splits to different accounts: %s->%s" % (
+                    dest_account.description, ', '.join(repr(a.description)
+                                                        for a in accounts)))
+                return
 
         at = AccountTransaction(
             account=dest_account,
