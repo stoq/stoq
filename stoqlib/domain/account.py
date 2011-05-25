@@ -232,17 +232,23 @@ class Account(Domain):
         return bool(Account.selectBy(connection=self.get_connection(),
                                      parent=self))
 
-
     def get_type_label(self, out):
+        """Returns the label to show for the increases/decreases
+        for transactions of this account.
+        @param out: if the transaction is going out
+        """
         return self.account_labels[self.account_type][int(out)]
-
-    @classmethod
-    def get_all(cls, conn):
-        return AccountTransaction.get_all(cls, connection=conn)
 
 
 class AccountTransaction(Domain):
-    """Transaction between two accounts
+    """Transaction between two accounts.
+
+    A transaction is a transfer of money from the @source_account
+    to the @account. It removes a negative amount of money from the source
+    and increases the account by the same amount.
+    There's only one value, but depending on the view it's either negative
+    or positive, it can never be zero though.
+    A transaction can optionally be tied to a Payment
 
     @ivar account: destination account
     @ivar source_account: source account
@@ -309,11 +315,13 @@ class AccountTransaction(Domain):
         else:
             raise AssertionError
 
-    def get_account_description(self, account):
-        return self.get_other_account(account).description
-
 
 class AccountTransactionView(Viewable):
+    """AccountTransactionView provides a fast view
+    of the transactions tied to a specific account.
+
+    It's mainly used to show a ledger.
+    """
     Account_Dest = Alias(Account, 'account_dest')
     Account_Source = Alias(Account, 'account_source')
 
@@ -338,12 +346,16 @@ class AccountTransactionView(Viewable):
 
     @classmethod
     def get_for_account(cls, account, conn):
+        """Get all transactions for this account, see Account.transaction"""
         return cls.select(
             OR(account.id == AccountTransaction.q.accountID,
                account.id == AccountTransaction.q.source_accountID),
             connection=conn)
 
     def get_account_description(self, account):
+        """Get description of the other account, eg.
+        the one which is transfered to/from.
+        """
         if self.source_accountID == account.id:
             return self.dest_account_description
         elif self.dest_accountID == account.id:
@@ -352,6 +364,9 @@ class AccountTransactionView(Viewable):
             raise AssertionError
 
     def get_value(self, account):
+        """Gets the value for this account.
+        For destination accounts this will be negative
+        """
         if self.dest_accountID == account.id:
             return self.value
         else:
@@ -359,5 +374,6 @@ class AccountTransactionView(Viewable):
 
     @property
     def transaction(self):
-        return AccountTransaction.get(self.id)
+        """Get the AccountTransaction for this view"""
+        return AccountTransaction.get(self.id, self.get_connection())
 

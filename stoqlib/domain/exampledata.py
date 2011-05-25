@@ -680,6 +680,7 @@ class ExampleCreator(object):
     def create_account(self):
         from stoqlib.domain.account import Account
         return Account(description="Test Account",
+                       account_type=Account.TYPE_CASH,
                        connection=self.trans)
 
     def create_account_transaction(self, account):
