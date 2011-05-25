@@ -160,7 +160,6 @@ def _register_payment_methods():
     trans.commit(close=True)
 
 def register_accounts(trans):
-    from stoqlib.domain.account import Account
     log.info("Creating Accounts")
     for name, atype in [(_("Assets"), Account.TYPE_ASSET),
                         (_("Banks"), Account.TYPE_BANK),
