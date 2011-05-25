@@ -43,14 +43,11 @@ from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import render_pixbuf
-from stoqlib.gui.dialogs.paymentadditiondialog import \
-        OutPaymentAdditionDialog, LonelyPaymentDetailsDialog
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
-from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.editors.paymenteditor import OutPaymentEditor
 from stoqlib.gui.editors.paymentseditor import PaymentsEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
@@ -124,15 +121,12 @@ class PayableApp(SearchableAppWindow):
     #
 
     def _show_details(self, payable_view):
-        if payable_view.purchase:
-            run_dialog(PurchaseDetailsDialog, self,
-                       self.conn, payable_view.purchase)
-        elif payable_view.sale:
-            run_dialog(SaleDetailsDialog, self,
-                       self.conn, payable_view.sale)
-        else:
-            payment = payable_view.payment
-            run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
+        trans = new_transaction()
+        payment = trans.get(payable_view.payment)
+        retval = run_dialog(OutPaymentEditor, self, trans, payment)
+        if finish_transaction(trans, retval):
+            self.search.refresh()
+        trans.close()
 
     def _show_comments(self, payable_view):
         trans = new_transaction()
@@ -381,7 +375,7 @@ class PayableApp(SearchableAppWindow):
 
     def on_AddPayment__activate(self, action):
         trans = new_transaction()
-        retval = self.run_dialog(OutPaymentAdditionDialog, trans)
+        retval = self.run_dialog(OutPaymentEditor, trans)
         if finish_transaction(trans, retval):
             self.results.refresh()
         trans.close()
