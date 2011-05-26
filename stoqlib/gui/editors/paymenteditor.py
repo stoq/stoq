@@ -44,7 +44,6 @@ from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
 from stoqlib.domain.person import PersonAdaptToClient, PersonAdaptToSupplier
 from stoqlib.domain.sale import SaleView
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.lonelypaymentdialog import LonelyPaymentDetailsDialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
