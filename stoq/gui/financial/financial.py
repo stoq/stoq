@@ -207,7 +207,7 @@ class FinancialApp(AppWindow):
         AppWindow.__init__(self, app)
         self.search_holder.add(self.accounts)
         self.accounts.show()
-        self.accounts.insert_initial(self.conn)
+        self._refresh_accounts()
         self._tills_account = sysparam(self.conn).TILLS_ACCOUNT
         self._attach_toolbar()
         self._create_initial_page()
@@ -217,8 +217,7 @@ class FinancialApp(AppWindow):
     #
 
     def activate(self):
-        self.accounts.clear()
-        self.accounts.insert_initial(self.conn)
+        self._refresh_accounts()
         for page in self._pages.values():
             page.refresh()
 
@@ -306,6 +305,10 @@ class FinancialApp(AppWindow):
         if retval:
             account = Account.get(retval.id, connection=self.conn)
             self.accounts.refresh_accounts(self.conn, account)
+
+    def _refresh_accounts(self):
+        self.accounts.clear()
+        self.accounts.insert_initial(self.conn)
 
     def _edit_existing_account(self, account):
         assert account.kind == 'account'
