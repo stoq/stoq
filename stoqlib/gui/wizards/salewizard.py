@@ -428,7 +428,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         rv = finish_transaction(trans, model)
         trans.close()
         if rv:
-            self._setup_transporter_entry()
+            self._fill_transporter_combo()
             self.transporter.select(model)
 
     def on_discount_slave_changed(self, slave):

@@ -33,6 +33,7 @@ import pango
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.interfaces import (IInPayment, IOutPayment, IClient,
                                        ISupplier)
 from stoqlib.domain.payment.category import PaymentCategory
@@ -48,6 +49,7 @@ from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.editors.paymentcategoryeditor import PaymentCategoryEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -94,15 +96,16 @@ class BasePaymentEditor(BaseEditor):
         self.confirm()
 
     def setup_proxies(self):
-        categories = PaymentCategory.select(
-            connection=self.trans).orderBy('name')
-        if categories:
-            self.category.prefill([(c.name, c) for c in categories])
-        else:
-            self.category.set_sensitive(False)
-
+        self._fill_category_combo()
         self.populate_person()
         self.add_proxy(self.model, BasePaymentEditor.proxy_widgets)
+
+    def _fill_category_combo(self):
+        categories = PaymentCategory.select(
+            connection=self.trans).orderBy('name')
+        self.category.set_sensitive(bool(categories))
+        self.category.prefill([(c.name, c) for c in categories])
+
 
     def setup_widgets(self):
         self.person_label.set_label(self._person_label)
@@ -142,6 +145,15 @@ class BasePaymentEditor(BaseEditor):
     def on_value__validate(self, widget, newvalue):
         if newvalue is None or newvalue <= 0:
             return ValidationError(_(u"The value must be greater than zero."))
+
+    def on_create_category__clicked(self, widget):
+        trans = new_transaction()
+        model = run_dialog(PaymentCategoryEditor, self, trans)
+        rv = finish_transaction(trans, model)
+        trans.close()
+        if rv:
+            self._fill_category_combo()
+            self.category.update(model)
 
 
 class InPaymentEditor(BasePaymentEditor):
