@@ -76,7 +76,7 @@ def _write_exception_hook(exctype, value, tb):
     traceback.print_exception(exctype, value, tb, file=_stream)
     traceback.print_exception(exctype, value, tb)
 
-    from stoqlib.gui.dialogs.crashreportdialog import add_traceback
+    from stoqlib.lib.crashreport import add_traceback
     add_traceback((exctype, value, tb))
 
 def _debug_hook(exctype, value, tb):
@@ -93,7 +93,7 @@ def _exit_func():
     #from stoqlib.lib.parameters import is_developer_mode
     # Disable dialog in developer mode eventually, but we
     # first need to test it properly.
-    from stoqlib.gui.dialogs.crashreportdialog import has_tracebacks
+    from stoqlib.lib.crashreport import has_tracebacks
     #if has_tracebacks() and not is_developer_mode():
     if has_tracebacks():
         import stoq
