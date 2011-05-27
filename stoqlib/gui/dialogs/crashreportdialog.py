@@ -110,7 +110,8 @@ class CrashReportDialog(object):
         text += "Distribution: %s\n" % (' '.join(platform.dist()), )
         text += "Architecture: %s\n" % (' '.join(platform.architecture()), )
 
-        text += "Python version: %r (%s)\n" % ('.'.join(map(str, sys.version_info)),
+        text += "Python version: %r (%s)\n" % (
+            '.'.join(map(str, sys.version_info)),
                                                platform.python_implementation())
         text += "PyGTK version: %s\n" % ('.'.join(map(str, gtk.pygtk_version)), )
         text += "GTK version: %s\n" % ('.'.join(map(str, gtk.gtk_version)), )
@@ -194,12 +195,21 @@ class CrashReportDialog(object):
         self._dialog.run()
         return True
 
-def show_dialog(params, tracebacks):
-    """Show a crash report dialog and exit the application
+_tracebacks = []
+
+def add_traceback(traceback):
+    global _tracebacks
+    _tracebacks.append(traceback)
+
+def has_tracebacks():
+    global _tracebacks
+    return _tracebacks
+
+def show_dialog(params):
+    """Show a crash report dialog
     @param: dictionary of parameters
-    @tracebacks: list of tracebacks
     """
+    global _tracebacks
     parent = get_current_toplevel()
-    crd = CrashReportDialog(parent, params, tracebacks)
+    crd = CrashReportDialog(parent, params, _tracebacks)
     crd.run()
-    raise SystemExit
