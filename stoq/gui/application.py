@@ -586,13 +586,7 @@ class VersionChecker(object):
         response = api.version(self.conn, stoq.version)
         response.whenDone(self._on_response_done)
 
-    def _on_response_done(self, response, data):
-
-        try:
-            details = json.loads(data)
-        except ValueError:
-            log.debug('Error parsing json.')
-            return
+    def _on_response_done(self, response, details):
         self._check_details(details['version'])
         config = get_utility(IStoqConfig)
         config.set('General', 'last-version-check',
