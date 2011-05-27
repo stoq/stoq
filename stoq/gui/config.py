@@ -52,7 +52,8 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.wizard import WizardStep
 from stoqlib.exceptions import  DatabaseInconsistency
 from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME, ensure_admin_user
-from stoqlib.database.interfaces import ICurrentBranchStation
+from stoqlib.database.interfaces import (ICurrentBranchStation,
+                                         ICurrentBranch)
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.person import Person
@@ -435,6 +436,7 @@ class FirstTimeConfigWizard(BaseWizard):
         if self.create_examples:
             branch = sysparam(trans).MAIN_COMPANY
             assert branch
+            provide_utility(ICurrentBranch, branch)
         else:
             branch = None
         station = BranchStation(connection=trans,
