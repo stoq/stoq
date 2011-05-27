@@ -52,8 +52,6 @@ _restart = False
 # To avoid kiwi dependency at startup
 log = logging.getLogger('stoq.main')
 
-_tracebacks = []
-
 def _write_exception_hook(exctype, value, tb):
     global _stream
     import traceback
@@ -78,7 +76,8 @@ def _write_exception_hook(exctype, value, tb):
     traceback.print_exception(exctype, value, tb, file=_stream)
     traceback.print_exception(exctype, value, tb)
 
-    _tracebacks.append((exctype, value, tb))
+    from stoqlib.gui.dialogs.crashreportdialog import add_traceback
+    add_traceback((exctype, value, tb))
 
 def _debug_hook(exctype, value, tb):
     import traceback
@@ -94,8 +93,9 @@ def _exit_func():
     #from stoqlib.lib.parameters import is_developer_mode
     # Disable dialog in developer mode eventually, but we
     # first need to test it properly.
-    #if _tracebacks and not is_developer_mode():
-    if _tracebacks:
+    from stoqlib.gui.dialogs.crashreportdialog import has_tracebacks
+    #if has_tracebacks() and not is_developer_mode():
+    if has_tracebacks():
         import stoq
         from stoqlib.gui.dialogs.crashreportdialog import show_dialog
         uptime = int(time.time() - _start_time)
@@ -108,7 +108,8 @@ def _exit_func():
             'app-uptime': uptime,
             'log-filename': _log_filename,
             }
-        show_dialog(params, _tracebacks)
+        show_dialog(params)
+        raise SystemExit
 
     if _restart:
         import subprocess
