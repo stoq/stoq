@@ -459,6 +459,7 @@ class FirstTimeConfigWizard(BaseWizard):
         db_options, unused_args = parser.parse_args(dbargs)
         self.config.set_from_options(db_options)
         setup(self.config,
+              options=self.options,
               check_schema=True,
               register_station=False,
               load_plugins=False)
