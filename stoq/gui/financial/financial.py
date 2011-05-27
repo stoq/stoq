@@ -70,12 +70,15 @@ class TransactionPage(ObjectList):
         tree_view = self.get_treeview()
         tree_view.set_rules_hint(True)
         tree_view.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+        self.refresh()
 
-        if model.kind == 'account':
+    def refresh(self):
+        self.clear()
+        if self.model.kind == 'account':
             self._populate_transactions()
-        elif model.kind == 'payable':
+        elif self.model.kind == 'payable':
             self._populate_payable_payments(OutPaymentView)
-        elif model.kind == 'receivable':
+        elif self.model.kind == 'receivable':
             self._populate_payable_payments(InPaymentView)
         else:
             raise TypeError("unknown model kind: %r" % (model.kind, ))
@@ -118,7 +121,7 @@ class TransactionPage(ObjectList):
 
     def _get_payment_columns(self):
         return [Column('paid_date', data_type=datetime.date, sorted=True),
-                Column('code', data_type=unicode),
+                Column('id', title=_("Code"), data_type=unicode),
                 Column('description', data_type=unicode, expand=True),
                 Column('value',
                        data_type=currency)]
@@ -208,6 +211,16 @@ class FinancialApp(AppWindow):
         self._tills_account = sysparam(self.conn).TILLS_ACCOUNT
         self._attach_toolbar()
         self._create_initial_page()
+
+    #
+    # AppWindow overrides
+    #
+
+    def activate(self):
+        self.accounts.clear()
+        self.accounts.insert_initial(self.conn)
+        for page in self._pages.values():
+            page.refresh()
 
     #
     # Private
