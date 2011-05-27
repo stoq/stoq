@@ -1,5 +1,7 @@
 recursive-include stoqlib *.py
 recursive-include plugins *.py
 recursive-include plugins *.glade
+recursive-include plugins *.ui
 recursive-include data *.glade
+recursive-include data *.ui
 recursive-include data *.rml
