@@ -23,45 +23,31 @@
 ##
 """ Crash report dialog """
 
-import datetime
-import json
-import platform
-import sys
-import time
-import traceback
-
 import gtk
-import kiwi
-from kiwi.log import Logger
-from kiwi.ui.dialogs import HIGAlertDialog
-import psycopg2
-import reportlab
-import stoqdrivers
-import stoqlib
 
-from stoqlib.database.runtime import get_connection
-from stoqlib.exceptions import StoqlibError
+from kiwi.ui.dialogs import HIGAlertDialog
+
 from stoqlib.gui.base.dialogs import get_current_toplevel
+from stoqlib.lib.crashreport import ReportSubmitter
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.webservice import WebService
 
 _ = stoqlib_gettext
-log = Logger('stoqlib.crashreporter')
 
 _N_TRIES = 3
 
 
 class CrashReportDialog(object):
-    def __init__(self, parent, params, tracebacks):
-        self._parent = parent
+    def __init__(self, parent, params):
         self._params = params
-        self._tracebacks = tracebacks
-        self._count = 0
-        self._api = WebService()
-        self._report = self._collect()
-        self._show_dialog()
+        self._parent = parent
+        self._report_submitter = ReportSubmitter(params)
+        self._report_submitter.connect('submitted',
+                                       self._on_report__submitted)
+        self._report_submitter.connect('failed',
+                                       self._on_report__failed)
+        self._create_dialog()
 
-    def _show_dialog(self):
+    def _create_dialog(self):
         self._dialog = HIGAlertDialog(parent=self._parent,
                                       flags=gtk.DIALOG_MODAL,
                                       type=gtk.MESSAGE_WARNING)
@@ -76,7 +62,7 @@ class CrashReportDialog(object):
         sw = gtk.ScrolledWindow()
         view = gtk.TextView()
         view.set_size_request(500, 350)
-        view.get_buffer().set_text(self._report)
+        view.get_buffer().set_text(self._report_submitter.report)
         sw.add(view)
         view.show()
         self._dialog.set_details_widget(sw)
@@ -85,101 +71,23 @@ class CrashReportDialog(object):
         self._yes_button = self._dialog.add_button(_('Send report'),
                                                    gtk.RESPONSE_YES)
 
-    def _collect(self):
-        text = ""
-        text += "Report generated at %s %s\n" % (
-            datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            ' '.join(time.tzname))
-        text += ('-' * 80) + '\n'
-
-        for i, (exctype, value, tb) in enumerate(self._tracebacks):
-            text += '\n'.join(traceback.format_exception(exctype, value, tb))
-            if i != len(self._tracebacks) -1:
-                text += '-' * 60
-        text += ('-' * 80) + '\n'
-
-        text += 'Content of %s:\n' % (self._params['log-filename'], )
-        text += open(self._params['log-filename']).read()
-        text += ('-' * 80) + '\n'
-
-        uptime = self._params['app-uptime']
-        text += "Application uptime: %dh%dmin\n" % (uptime / 3600,
-                                                    (uptime % 3600) / 60)
-        text += "System: %r (%s)\n" % (platform.system(),
-                                       ' '.join(platform.uname()))
-        text += "Distribution: %s\n" % (' '.join(platform.dist()), )
-        text += "Architecture: %s\n" % (' '.join(platform.architecture()), )
-
-        text += "Python version: %r (%s)\n" % (
-            '.'.join(map(str, sys.version_info)),
-                                               platform.python_implementation())
-        text += "PyGTK version: %s\n" % ('.'.join(map(str, gtk.pygtk_version)), )
-        text += "GTK version: %s\n" % ('.'.join(map(str, gtk.gtk_version)), )
-        text += "Reportlab version: %s\n" % (reportlab.Version, )
-
-        # Kiwi
-        kiwi_version = '.'.join(map(str, kiwi.__version__.version))
-        if hasattr(kiwi, 'library'):
-            if hasattr(kiwi.library, 'get_revision'):
-                kiwi_version += ' r' + kiwi.library.get_revision()
-        text += "Kiwi version: %s\n" % (kiwi_version, )
-
-        # Stoqdrivers
-        stoqdrivers_version = '.'.join(map(str, stoqdrivers.__version__))
-        if hasattr(stoqdrivers.library, 'get_revision'):
-            stoqdrivers_version += ' r' + stoqdrivers.library.get_revision()
-        text += "Stoqdrivers version: %s\n" % (stoqdrivers_version, )
-
-        # Stoqlib version
-        stoqlib_version = stoqlib.version
-        if hasattr(stoqlib.library, 'get_revision'):
-            stoqlib_version += ' r' + stoqlib.library.get_revision()
-        text += "Stoqlib version: %s\n" % (stoqlib_version, )
-
-        # Stoq version
-        text += "%s version: %s\n" % (self._params['app-name'],
-                                      self._params['app-version'])
-        text += "Psycopg version: %20s\n" % (psycopg2.__version__, )
-        try:
-            conn = get_connection()
-            text += "PostgreSQL version: %20s\n" % (
-                conn.queryOne('SELECT version();'))
-            conn.close()
-        except StoqlibError:
-            pass
-        text += ('-' * 80) + '\n'
-        return text
-
-    def _show_report(self, data):
-        r = json.loads(data)
-        label = gtk.LinkButton(
-            r['report-url'],
-            _("Report %s successfully opened") % r['report'])
-        self._dialog.vbox.pack_start(label)
-        label.show()
+    def _finish(self):
         self._yes_button.set_label(_("Close"))
         self._yes_button.set_sensitive(True)
 
-    def _on_report__errback(self, response, args):
-        log.info('Failed to report bug: %r count=%d' % (args, self._count))
-        if self._count < _N_TRIES:
-            self._send_bugreport()
-        else:
-            label = gtk.Label(_("Failed to submit bugreport"))
-            self._dialog.vbox.pack_start(label)
-            label.show()
-            self._yes_button.set_label(_("Close"))
-            self._yes_button.set_sensitive(True)
+    def _show_report(self, data):
+        label = gtk.LinkButton(
+            data['report-url'],
+            _("Report %s successfully opened") % data['report'])
+        self._dialog.vbox.pack_start(label)
+        label.show()
+        self._finish()
 
-        self._count += 1
-
-    def _on_report__callback(self, response, data):
-        self._show_report(data)
-
-    def _send_bugreport(self):
-        response = self._api.bug_report(self._report)
-        response.whenDone(self._on_report__callback)
-        response.ifError(self._on_report__errback)
+    def _show_error(self):
+        label = gtk.Label(_("Failed to submit bugreport"))
+        self._dialog.vbox.pack_start(label)
+        label.show()
+        self._finish()
 
     def run(self):
         response = self._dialog.run()
@@ -191,25 +99,21 @@ class CrashReportDialog(object):
         self._yes_button.set_label(_('Sending...'))
         self._parent.destroy()
 
-        self._send_bugreport()
+        self._report_submitter.submit()
         self._dialog.run()
         return True
 
-_tracebacks = []
+    def _on_report__failed(self, response, args):
+        self._show_error()
 
-def add_traceback(traceback):
-    global _tracebacks
-    _tracebacks.append(traceback)
+    def _on_report__submitted(self, response, data):
+        self._show_report(data)
 
-def has_tracebacks():
-    global _tracebacks
-    return _tracebacks
 
-def show_dialog(params):
+def show_dialog(params, interactive=True):
     """Show a crash report dialog
     @param: dictionary of parameters
     """
-    global _tracebacks
     parent = get_current_toplevel()
-    crd = CrashReportDialog(parent, params, _tracebacks)
+    crd = CrashReportDialog(parent, params)
     crd.run()

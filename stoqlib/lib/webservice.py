@@ -30,12 +30,14 @@ import urllib
 
 import gobject
 import gio
+from kiwi.log import Logger
 
 from stoqlib.domain.interfaces import ICompany
 from stoqlib.lib.asyncresponse import AsyncResponse
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import InstalledPlugin
 
+log = Logger('stoqlib.webservice')
 
 class WebService(object):
     API_SERVER = "http://api.stoq.com.br"
@@ -57,7 +59,13 @@ class WebService(object):
     def _on_stream_read_async(self, stream, result, response):
         data = stream.read_finish(result)
         if not data:
-            response.done(self.data)
+            try:
+                decoded = json.loads(self.data)
+            except ValueError:
+                log.debug('Error parsing json: %r' % (self.data, ))
+                response.error(self.data)
+                return
+            response.done(decoded)
             return
 
         self.data += data
