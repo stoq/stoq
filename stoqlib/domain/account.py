@@ -110,7 +110,7 @@ class Account(Domain):
     code = UnicodeCol(default=None)
     parent = ForeignKey('Account', default=None)
     station = ForeignKey('BranchStation', default=None)
-    account_type = IntCol()
+    account_type = IntCol(default=None)
 
     #
     # IDescribable implementation
