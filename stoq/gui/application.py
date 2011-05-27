@@ -390,6 +390,9 @@ class AppWindow(BaseAppWindow):
         self.main_vbox.pack_start(bar, False, False, 0)
         self.main_vbox.reorder_child(bar, 1)
 
+    def activate(self):
+        """This is called when you switch to an application, can
+        be overridden in a subclass"""
 
     #
     # BaseAppWindow

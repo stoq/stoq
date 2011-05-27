@@ -170,6 +170,8 @@ class ApplicationRunner(object):
         if app is None:
             app = self._load_app(appdesc)
             self._application_cache[appdesc.name] = app
+        else:
+            app.main_window.activate()
 
         self._current_app = app
         self._appname = appdesc.name
