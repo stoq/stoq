@@ -35,7 +35,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 
-from stoqlib.exceptions import StoqlibError, TillError
+from stoqlib.exceptions import StoqlibError, TillError, SellError
 from stoqlib.database.orm import AND, OR, const
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       rollback_and_begin, finish_transaction)
@@ -187,9 +187,12 @@ class TillApp(SearchableAppWindow):
         if not coupon:
             return
         self._add_sale_items(sale, coupon)
-        if coupon.confirm(sale, self.conn):
-            self.conn.commit()
-            self.refresh()
+        try:
+            if coupon.confirm(sale, self.conn):
+                self.conn.commit()
+                self.refresh()
+        except SellError as err:
+            warning(err)
 
     def _open_coupon(self):
         coupon = self._printer.create_coupon()
