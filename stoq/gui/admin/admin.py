@@ -274,9 +274,6 @@ class AdminApp(AppWindow):
     def _on_fiscalbook_action_clicked(self, button):
         self.run_dialog(FiscalBookEntrySearch, self.conn, hide_footer=True)
 
-    def _on_new_user_action_clicked(self, button):
-        self._add_user()
-
     def on_taxes__activate(self, action):
         self.run_dialog(SellableTaxConstantsDialog, self.conn)
 
@@ -302,6 +299,9 @@ class AdminApp(AppWindow):
 
     def on_EmployeeSearch__activate(self, action):
         self.run_dialog(EmployeeSearch, self.conn, hide_footer=True)
+
+    def on_UserSearch__activate(self, action):
+        self.run_dialog(UserSearch, self.conn)
 
     def on_EmployeeRole__activate(self, action):
         self.run_dialog(EmployeeRoleSearch, self.conn)

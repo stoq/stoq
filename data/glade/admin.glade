@@ -85,6 +85,12 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="UserSearch">
+                        <property name="name">UserSearch</property>
+                        <property name="label" translatable="yes">Users...</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="FileMenu">
                         <property name="name">FileMenu</property>
                         <property name="label" translatable="yes">Arquivo</property>
@@ -117,14 +123,6 @@
                         <property name="name">New</property>
                         <property name="tooltip" translatable="yes">Create a new file</property>
                         <property name="stock_id">gtk-new</property>
-                    </widget>
-                </child>
-                <child>
-                    <widget class="GtkAction" id="NewUser">
-                        <property name="name">NewUser</property>
-                        <property name="label" translatable="yes">_New User...</property>
-                        <signal handler="_on_new_user_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;n</property>
                     </widget>
                 </child>
                 <child>
@@ -306,7 +304,6 @@
         <ui id="initial-state"><![CDATA[<ui>
           <menubar action="menubar">
             <menu action="SalesMenu">
-	      <menuitem action="NewUser"/>
               <menuitem action="ExportCSV"/>
               <menuitem action="Quit"/>
             </menu>
@@ -316,6 +313,7 @@
               <menuitem action="CfopSearch"/>
               <menuitem action="FiscalBook"/>
               <menuitem action="UserProfile"/>
+              <menuitem action="UserSearch"/>
               <menuitem action="BranchSearch"/>
               <menuitem action="BranchStationSearch"/>
               <menuitem action="TaxTemplates"/>
