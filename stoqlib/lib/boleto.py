@@ -57,15 +57,13 @@ conta = 403005
 import datetime
 import tempfile
 
-from kiwi.datatypes import Decimal
 from kiwi.component import get_utility
+from pyboleto.data import get_bank
+from pyboleto.pdf import BoletoPDF
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.message import warning
-
-from pyboleto.data import get_bank
-from pyboleto.pdf import BoletoPDF
 
 _ = stoqlib_gettext
 
