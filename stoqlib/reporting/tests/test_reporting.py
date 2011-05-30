@@ -55,6 +55,7 @@ from stoqlib.reporting.service import ServicePriceReport
 from stoqlib.reporting.sale import SaleOrderReport, SalesPersonReport
 from stoqlib.reporting.till import TillHistoryReport
 from stoqlib.lib.diffutils import diff_files
+from stoqlib.lib.pdf import pdftohtml
 
 class TestReport(DomainTest):
     def checkPDF(self, report_class, *args, **kwargs):
@@ -76,8 +77,7 @@ class TestReport(DomainTest):
             os.chdir(path)
 
             for name in (original_filename, filename):
-                cmd = 'pdftohtml -noframes -i -q %s %s.html' % (name, name)
-                os.system(cmd)
+                pdftohtml(name, name)
             try:
                 self._comparePDF(original_filename, filename)
             finally:
