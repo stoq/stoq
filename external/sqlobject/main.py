@@ -312,7 +312,8 @@ class sqlmeta(object):
         assert name != 'id', (
             "The 'id' column is implicit, and should not be defined as "
             "a column")
-        assert name not in sqlmeta.columns, (
+        if name in sqlmeta.columns:
+            raise KeyError(
             "The class %s.%s already has a column %r (%r), you cannot "
             "add the column %r"
             % (soClass.__module__, soClass.__name__, name,

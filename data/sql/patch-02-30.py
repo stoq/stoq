@@ -10,7 +10,7 @@ def apply_patch(trans):
     # We need to add back the account_type column removed in 2-27
     try:
         Account.sqlmeta.addColumn(IntCol('account_type', default=None))
-    except AssertionError:
+    except KeyError:
         pass
 
     # Register the accounts again to set the account_type
