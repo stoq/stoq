@@ -223,6 +223,8 @@ class StoqConfig:
 
         return self._config.get(section, option)
 
+    def items(self, section):
+        return self._config.items(section)
 
 #
 # General routines
