@@ -71,12 +71,7 @@ _ = stoqlib_gettext
 
 def can_generate_bill():
     config = get_utility(IStoqConfig)
-    has_bank = config.has_option('banco', section='Boleto')
-    has_section = False
-    if has_bank:
-        has_section = config.has_section(config.get_option('banco',
-                                                section='Boleto'))
-    if not has_bank or not has_section:
+    if config.get('banco', section='Boleto') is None:
         warning(_(u"Looks like you didn't configure stoq yet to "
                    "generate bills. Check the manual to see how."))
         return False
@@ -84,63 +79,89 @@ def can_generate_bill():
 
 class BillReport(object):
     def __init__(self, filename, payments):
-        config = get_utility(IStoqConfig)
-        bank_id = config.get_option('banco', section='Boleto')
-        extra_args = {}
-        for key, value in config.get_section_items(bank_id):
-            extra_args[key] = value
+        self._payments = payments
+        self._filename = filename
 
+        self._payments_added = False
+        self._config = get_utility(IStoqConfig)
+        self._bank_id = self._config.get('Boleto', 'banco')
+        self._bill = self._get_bill()
+        self._render_class = get_bank(self._bank_id)
 
+        self.today = datetime.datetime.today()
+
+    def _get_bill(self):
+        format = BoletoPDF.FORMAT_BOLETO
+        if len(self._payments) > 1:
+            format = BoletoPDF.FORMAT_CARNE
+        return BoletoPDF(self._filename, format)
+
+    def _get_instrucoes(self):
         instructions = []
         for i in range(1, 4):
-            inst = 'instrucao%s' % i
-            if config.has_option(inst, section='Boleto'):
-                instructions.append(config.get_option(inst,
-                                                section='Boleto'))
+            value = self._config.get('Boleto', 'instrucao%s' % i)
+            if value is not None:
+                instructions.append(value)
         instructions.append(_('Stoq Retail Managment') + ' - www.stoq.com.br')
-        extra_args['instrucoes'] = instructions
+        return instructions
 
-        demonstrativo = [payments[0].group.get_description()]
-        sale = payments[0].group.sale
+    def _get_demonstrativo(self):
+        payment = self._payments[0]
+        demonstrativo = [payment.group.get_description()]
+        sale = payment.group.sale
         if sale:
             for item in sale.get_items():
                 demonstrativo.append(' - %s' % item.get_description())
-        extra_args['demonstrativo'] = demonstrativo
+        return demonstrativo
 
-        branch = payments[0].group.get_parent().branch
-        extra_args['cedente'] = branch.get_description()
+    def _get_sacado(self):
+        payment = self._payments[0]
+        payer = payment.group.payer
+        address = payer.get_main_address()
+        return [payer.name,
+                address.get_address_string(),
+                address.get_details_string()]
 
-        address = payments[0].group.payer.get_main_address()
-        extra_args['sacado'] = [payments[0].group.payer.name,
-                                address.get_address_string(),
-                                address.get_details_string()]
+    def _get_cedente(self):
+        payment = self._payments[0]
+        branch = payment.group.get_parent().branch
+        return branch.get_description()
 
-
-        format = BoletoPDF.FORMAT_BOLETO
-        if len(payments) > 1:
-            format = BoletoPDF.FORMAT_CARNE
-        self.bill = BoletoPDF(filename, format)
-        self.klass = get_bank(bank_id)
-        for p in payments:
+    def add_payments(self):
+        if self._payments_added:
+            return
+        for p in self._payments:
             if p.method.method_name != 'bill':
                 continue
-            self.add_payment(p, extra_args)
+            self._add_payment(p)
+        self._payments_added = True
 
-    def add_payment(self, payment, extra_args):
-        data = self.klass(
+    def _add_payment(self, payment):
+        kwargs = dict(
             valor_documento=payment.value,
             data_vencimento=payment.due_date.date(),
             data_documento=payment.open_date.date(),
-            data_processamento=datetime.date.today(),
-
-            nosso_numero="%d" % payment.id,
-            numero_documento="%d" % payment.id,
-
-            **extra_args
+            data_processamento=self.today,
+            nosso_numero=str(payment.id),
+            numero_documento=str(payment.id),
+            sacado=self._get_sacado(),
+            cedente=self._get_cedente(),
+            demonstrativo=self._get_demonstrativo(),
+            instrucoes=self._get_instrucoes(),
         )
+        kwargs.update(self._config.items(self._bank_id))
+        self.args = kwargs
 
-        self.bill.add_data(data)
+    def override_payment_id(self, payment_id):
+        self.args['nosso_numero'] = str(payment_id)
+        self.args['numero_documento'] = str(payment_id)
+
+    def override_payment_description(self, description):
+        self.args['demonstrativo'] = description
 
     def save(self):
-        self.bill.render()
-        self.bill.save()
+        self.add_payments()
+        data = self._render_class(**self.args)
+        self._bill.add_data(data)
+        self._bill.render()
+        self._bill.save()
