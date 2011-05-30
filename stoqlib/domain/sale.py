@@ -124,12 +124,13 @@ class SaleItem(Domain):
         sparam = sysparam(conn)
         if not (branch and
                 branch.id == get_current_branch(conn).id):
-            raise SellError("Stock still doesn't support sales for "
-                            "branch companies different than the "
-                            "current one")
+            raise SellError(_(u"Stock still doesn't support sales for "
+                              u"branch companies different than the "
+                              u"current one"))
 
         if not self.sellable.can_be_sold():
-            raise SellError('%r is already sold' % self.sellable)
+            raise SellError(_(u"%r does not have enough stock to be sold."
+                              % self.sellable.get_description()))
 
         storable = IStorable(self.sellable.product, None)
         if storable:
