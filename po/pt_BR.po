@@ -24,14 +24,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-26 10:22-0300\n"
-"PO-Revision-Date: 2011-05-26 16:39+0000\n"
+"POT-Creation-Date: 2011-05-27 16:04-0300\n"
+"PO-Revision-Date: 2011-05-28 06:11+0000\n"
 "Last-Translator: Silvio Rangel <silvio@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-05-27 04:57+0000\n"
+"X-Launchpad-Export-Date: 2011-05-29 04:40+0000\n"
 "X-Generator: Launchpad (build 12959)\n"
 "Language: \n"
 
@@ -40,7 +40,7 @@ msgstr ""
 msgid "You can not add this product as component, since %s is composed by %s"
 msgstr ""
 "Você não pode adicionar este produto como componente, uma vez que %s é "
-"composto por s%"
+"composto por %s"
 
 #: ../stoqlib/lib/parameters.py:265
 #, python-format
@@ -63,18 +63,6 @@ msgstr ""
 "ISS padrão que será aplicado em todos os serviços de uma venda. Note que "
 "este valor é percentual e deve estar no seguinte formato: 0 < valow < 100. "
 "Por exemplo 12, que corresponde a uma taxação de 12%."
-
-#: ../stoqlib/lib/parameters.py:279
-#, python-format
-msgid ""
-"The tax applied on all sale products with substitution tax type. Note that "
-"this a percentage value and must be set as the format: 0 &amp;lt; value "
-"&amp;lt; 100. E.g: 16, which means 16% of tax."
-msgstr ""
-"Taxa aplicada em todos os produtos de venda com tipo de taxa de de "
-"substituição. Note que este vaor é percentual e deve estar no seguinte "
-"formato: 0 < valor < 100. Por exemplo: 16, que corresponde  a uma taxação de "
-"16%"
 
 #: ../stoqlib/database/runtime.py:199
 #, python-format
@@ -362,8 +350,8 @@ msgid "Decrease"
 msgstr "Diminuir"
 
 #: ../stoqlib/domain/account.py:91 ../stoqlib/gui/slaves/paymentslave.py:851
-#: ../stoqlib/gui/editors/paymenteditor.py:60
-#: ../stoqlib/gui/editors/paymenteditor.py:286
+#: ../stoqlib/gui/editors/paymenteditor.py:61
+#: ../stoqlib/gui/editors/paymenteditor.py:297
 #: ../stoqlib/gui/dialogs/purchasedetails.py:223
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:151
 #: ../stoqlib/gui/dialogs/saledetails.py:181 ../plugins/ecf/ecfdomain.py:250
@@ -807,6 +795,7 @@ msgstr "Situação"
 
 #: ../stoqlib/domain/payment/operation.py:50
 #: ../stoqlib/gui/wizards/purchasewizard.py:351
+#: ../data/glade/BasePaymentEditor.ui.h:4
 msgid "Money"
 msgstr "Dinheiro"
 
@@ -1032,6 +1021,7 @@ msgstr "Preço"
 #: ../data/glade/PurchaseItemEditor.glade.h:10
 #: ../data/glade/RenegotiationDetailsDialog.glade.h:14
 #: ../data/glade/PurchaseDetailsDialog.glade.h:25
+#: ../data/glade/SaleDetailsDialog.ui.h:18
 msgid "Total:"
 msgstr "Total:"
 
@@ -1357,6 +1347,7 @@ msgstr "Recibo de Saída Manual"
 #: ../data/glade/ReceivingInvoiceSlave.glade.h:1
 #: ../data/glade/PurchaseDetailsDialog.glade.h:3
 #: ../data/glade/LoanDetails.glade.h:1
+#: ../data/glade/StockDecreaseDetails.ui.h:1
 msgid "Branch:"
 msgstr "Unidade:"
 
@@ -1372,6 +1363,7 @@ msgstr "Unidade:"
 #: ../data/glade/PurchaseDetailsDialog.glade.h:19
 #: ../data/glade/LoanDetails.glade.h:6
 #: ../data/glade/TransferOrderDetails.glade.h:4
+#: ../data/glade/StockDecreaseDetails.ui.h:7
 msgid "Responsible:"
 msgstr "Responsável:"
 
@@ -1380,14 +1372,16 @@ msgstr "Responsável:"
 #: ../stoqlib/reporting/loanreceipt.py:84
 #: ../stoqlib/gui/wizards/loanwizard.py:109
 #: ../data/glade/StartStockDecreaseStep.glade.h:5
+#: ../data/glade/StockDecreaseDetails.ui.h:6
 msgid "Removed By:"
 msgstr "Retirado por:"
 
 #: ../stoqlib/reporting/stockdecreasereceipt.py:81
-#: ../stoqlib/gui/editors/paymenteditor.py:295
+#: ../stoqlib/gui/editors/paymenteditor.py:306
 #: ../stoqlib/gui/dialogs/purchasedetails.py:232
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:160
 #: ../stoqlib/gui/dialogs/saledetails.py:190
+#: ../data/glade/StockDecreaseDetails.ui.h:5
 msgid "Reason"
 msgstr "Razão"
 
@@ -1463,7 +1457,7 @@ msgstr "Sem cliente"
 #: ../data/glade/ClientDetailsDialog.glade.h:1
 #: ../data/glade/PaymentChangeDialog.glade.h:2
 #: ../data/glade/RenegotiationDetailsDialog.glade.h:3
-#: ../data/glade/LoanDetails.glade.h:2
+#: ../data/glade/LoanDetails.glade.h:2 ../data/glade/SaleDetailsDialog.ui.h:3
 msgid "Client:"
 msgstr "Cliente:"
 
@@ -1496,6 +1490,8 @@ msgstr "Subtotal"
 #: ../data/glade/RenegotiationDetailsDialog.glade.h:5
 #: ../data/glade/PurchaseDetailsDialog.glade.h:5
 #: ../data/glade/SaleDiscountSlave.glade.h:3
+#: ../data/glade/SaleDetailsDialog.ui.h:5
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:2
 msgid "Discount:"
 msgstr "Desconto:"
 
@@ -1589,6 +1585,7 @@ msgstr "Totais por Branch"
 #: ../stoqlib/lib/parameters.py:270 ../stoqlib/lib/parameters.py:277
 #: ../stoqlib/lib/parameters.py:290 ../stoqlib/lib/parameters.py:307
 #: ../data/glade/ClientDetailsDialog.glade.h:6
+#: ../data/glade/ProductStockHistoryDialog.ui.h:6
 msgid "Sales"
 msgstr "Vendas"
 
@@ -1805,7 +1802,7 @@ msgstr "Data do Vencimento"
 #: ../data/glade/RenegotiationDetailsDialog.glade.h:8
 #: ../data/glade/OpenProductionOrderStep.glade.h:5
 #: ../data/glade/PurchaseDetailsDialog.glade.h:10
-#: ../data/glade/LoanDetails.glade.h:5
+#: ../data/glade/LoanDetails.glade.h:5 ../data/glade/SaleDetailsDialog.ui.h:10
 msgid "Open Date:"
 msgstr "Abertura:"
 
@@ -1815,6 +1812,9 @@ msgstr "Abertura:"
 #: ../data/glade/ClientDetailsDialog.glade.h:8
 #: ../data/glade/PaymentChangeDialog.glade.h:5
 #: ../data/glade/RenegotiationDetailsDialog.glade.h:11
+#: ../data/glade/SaleDetailsDialog.ui.h:14
+#: ../data/glade/SellableEditor.ui.h:13
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:8
 msgid "Status:"
 msgstr "Situação:"
 
@@ -1833,7 +1833,7 @@ msgid "Purchase Notes"
 msgstr "Notas da Compra"
 
 #: ../stoqlib/reporting/purchase.py:282
-#: ../stoqlib/gui/editors/paymenteditor.py:309
+#: ../stoqlib/gui/editors/paymenteditor.py:320
 #: ../data/glade/ReceivingOrderDetailsDialog.glade.h:3
 msgid "Receiving Details"
 msgstr "Detalhes de Recebimentos"
@@ -1969,6 +1969,7 @@ msgstr "Data a Expirar:"
 #: ../data/glade/FinishPurchaseStep.glade.h:3
 #: ../data/glade/RenegotiationDetailsDialog.glade.h:7
 #: ../data/glade/PurchaseDetailsDialog.glade.h:9
+#: ../data/glade/SaleDetailsDialog.ui.h:9
 msgid "Notes"
 msgstr "Notas"
 
@@ -2483,7 +2484,7 @@ msgid "Payment renegotiated"
 msgstr "Pagamento renegociado"
 
 #: ../stoqlib/gui/slaves/paymentslave.py:1178
-#: ../stoqlib/gui/editors/paymenteditor.py:145
+#: ../stoqlib/gui/editors/paymenteditor.py:147
 msgid "The value must be greater than zero."
 msgstr "O valor deve ser maior que zero"
 
@@ -2823,7 +2824,7 @@ msgstr "Fechar Serviço"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:261
 msgid "Reopen Product"
-msgstr "Reabrir Produto "
+msgstr "Reabrir Produto"
 
 #: ../stoqlib/gui/editors/sellableeditor.py:261
 msgid "Reopen Service"
@@ -2912,6 +2913,7 @@ msgstr "Selectione o diretório"
 #: ../stoqlib/gui/dialogs/productiondialog.py:156
 #: ../stoqlib/gui/wizards/personwizard.py:97
 #: ../stoqlib/gui/search/parametersearch.py:95
+#: ../data/glade/SellableEditor.ui.h:17
 msgid "Yes"
 msgstr "Sim"
 
@@ -2919,6 +2921,7 @@ msgstr "Sim"
 #: ../stoqlib/gui/base/dialogs.py:458
 #: ../stoqlib/gui/dialogs/productiondialog.py:157
 #: ../stoqlib/gui/search/parametersearch.py:95
+#: ../data/glade/SellableEditor.ui.h:11
 msgid "No"
 msgstr "Não"
 
@@ -3192,51 +3195,51 @@ msgstr "Forma de Pagamento"
 msgid "Edit providers"
 msgstr "Editar fornecedores de crédito"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:150
+#: ../stoqlib/gui/editors/paymenteditor.py:161
 msgid "Sale details"
 msgstr "Detalhes da venda"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:151
+#: ../stoqlib/gui/editors/paymenteditor.py:162
 msgid "Payer:"
 msgstr "Cliente:"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:199
+#: ../stoqlib/gui/editors/paymenteditor.py:210
 msgid "Order details"
 msgstr "Detalhes do Pedido"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:200
+#: ../stoqlib/gui/editors/paymenteditor.py:211
 msgid "Recipient:"
 msgstr "Fornecedor:"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:284
+#: ../stoqlib/gui/editors/paymenteditor.py:295
 #: ../stoqlib/gui/dialogs/purchasedetails.py:221
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:149
 #: ../stoqlib/gui/dialogs/saledetails.py:179
 msgid "When"
 msgstr "Quando"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:289
+#: ../stoqlib/gui/editors/paymenteditor.py:300
 #: ../stoqlib/gui/dialogs/purchasedetails.py:226
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:154
 #: ../stoqlib/gui/dialogs/saledetails.py:184
 msgid "Changed"
 msgstr "Alterado"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:291
+#: ../stoqlib/gui/editors/paymenteditor.py:302
 #: ../stoqlib/gui/dialogs/purchasedetails.py:228
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:156
 #: ../stoqlib/gui/dialogs/saledetails.py:186
 msgid "From"
 msgstr "De"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:293
+#: ../stoqlib/gui/editors/paymenteditor.py:304
 #: ../stoqlib/gui/dialogs/purchasedetails.py:230
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:158
 #: ../stoqlib/gui/dialogs/saledetails.py:188
 msgid "To"
 msgstr "Até"
 
-#: ../stoqlib/gui/editors/paymenteditor.py:312
+#: ../stoqlib/gui/editors/paymenteditor.py:323
 msgid "Payment Details"
 msgstr "Detalhes de Pagamento"
 
@@ -3292,6 +3295,7 @@ msgstr "Produto"
 #: ../data/glade/SaleReturnSlave.glade.h:5
 #: ../data/glade/SearchDialogDetailsSlave.glade.h:1
 #: ../data/glade/RenegotiationDetailsDialog.glade.h:4
+#: ../data/glade/SaleDetailsDialog.ui.h:4
 msgid "Details"
 msgstr "Detalhes"
 
@@ -3943,6 +3947,8 @@ msgstr "Histórico de Caixa"
 #: ../data/glade/ProductsAdjustment.glade.h:3
 #: ../data/glade/StartStockDecreaseStep.glade.h:3
 #: ../data/glade/FiscalBookEntryEditor.glade.h:2
+#: ../data/glade/AccountTransactionEditor.ui.h:3
+#: ../data/glade/StockDecreaseDetails.ui.h:3
 msgid "Date:"
 msgstr "Data:"
 
@@ -4036,7 +4042,7 @@ msgstr "Altera Status dos Pagamentos"
 msgid "You can not change the payment status without a reason!"
 msgstr "você não pode alterar o vencimento sem uma razão!"
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:123
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:56
 #, python-format
 msgid ""
 "We'r sorry to inform you that an error occurred while running %s. Please "
@@ -4049,31 +4055,30 @@ msgstr ""
 "incidente.\n"
 "Clique em detalhes para ver o texto do relatório."
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:136
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:69
 msgid "No thanks"
 msgstr "Não Obrigado"
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:137
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:71
 msgid "Send report"
 msgstr "Enviar relatório"
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:145
-msgid "Sending..."
-msgstr "Enviando..."
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:75
+msgid "Close"
+msgstr "Fechar"
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:155
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:81
 #, python-format
 msgid "Report %s successfully opened"
 msgstr "Relato %s aberto com sucesso"
 
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:158
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:168
-msgid "Close"
-msgstr "Fechar"
-
-#: ../stoqlib/gui/dialogs/crashreportdialog.py:165
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:87
 msgid "Failed to submit bugreport"
 msgstr "Falha ao enviar relatório de erro"
+
+#: ../stoqlib/gui/dialogs/crashreportdialog.py:99
+msgid "Sending..."
+msgstr "Enviando..."
 
 #: ../stoqlib/gui/dialogs/paymentcategorydialog.py:45
 msgid "Payment categories"
@@ -5062,6 +5067,7 @@ msgstr "Exibir vendas com situação"
 #: ../stoqlib/gui/search/salesearch.py:83
 #: ../data/glade/ProductionDetailsDialog.glade.h:3
 #: ../data/glade/RenegotiationDetailsDialog.glade.h:6
+#: ../data/glade/SaleDetailsDialog.ui.h:8
 msgid "Items"
 msgstr "Itens"
 
@@ -5977,6 +5983,17 @@ msgstr "Taxa padrão de ISS"
 #: ../stoqlib/lib/parameters.py:278
 msgid "Default Substitution tax"
 msgstr "Taxa de Substituição Padrão"
+
+#: ../stoqlib/lib/parameters.py:279
+#, python-format
+msgid ""
+"The tax applied on all sale products with substitution tax type. Note that "
+"this a percentage value and must be set as the format: 0 &amp;lt; value "
+"&amp;lt; 100. E.g: 16, which means 16% of tax."
+msgstr ""
+"A taxa aplicada em todas as vendas de produtos com substituição dos tipos "
+"das taxas. Observe que aquela é um valor de porcentagem e deveria ser como o "
+"0 &amp;lt; valor &amp;lt; 100. Ex.: 16, que significa 16% da taxa."
 
 #: ../stoqlib/lib/parameters.py:285
 msgid "Default area code"
@@ -7492,6 +7509,7 @@ msgstr "Constante de Dispositivo"
 #: ../data/glade/ClientDetailsDialog.glade.h:4
 #: ../data/glade/RenegotiationDetailsDialog.glade.h:9
 #: ../data/glade/PurchaseDetailsDialog.glade.h:14
+#: ../data/glade/SaleDetailsDialog.ui.h:11
 msgid "Payments"
 msgstr "Pagamentos"
 
@@ -7502,6 +7520,7 @@ msgstr "Nota Fiscal Paulista"
 #: ../plugins/ecf/paulistainvoicedialog.py:69
 #: ../data/glade/CompanyDocumentsSlave.glade.h:3
 #: ../data/glade/ProductsAdjustment.glade.h:2
+#: ../data/glade/BranchDialog.ui.h:4
 msgid "CNPJ:"
 msgstr "CNPJ:"
 
@@ -7782,6 +7801,7 @@ msgstr "Quantia ($CURRENCY):"
 #: ../data/glade/CommissionDataSlave.glade.h:3
 #: ../data/glade/SaleDiscountSlave.glade.h:2
 #: ../data/glade/SellablePriceEditor.glade.h:2
+#: ../data/glade/BranchDialog.ui.h:3 ../data/glade/SellableEditor.ui.h:2
 #, no-c-format
 msgid "%"
 msgstr "%"
@@ -7796,6 +7816,10 @@ msgstr "%"
 #: ../data/glade/PurchaseItemEditor.glade.h:4
 #: ../data/glade/CfopEditor.glade.h:3
 #: ../data/glade/OpenProductionOrderStep.glade.h:2
+#: ../data/glade/AccountTransactionEditor.ui.h:4
+#: ../data/glade/BasePaymentEditor.ui.h:2 ../data/glade/SellableEditor.ui.h:10
+#: ../data/glade/SellableUnitEditor.ui.h:2
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:1
 msgid "Description:"
 msgstr "Descrição:"
 
@@ -7890,16 +7914,19 @@ msgstr "<b>Os seguintes pagamentos serão renegociados.</b>"
 #: ../data/glade/SalesPersonStep.glade.h:12
 #: ../data/glade/RenegotiationDetailsDialog.glade.h:12
 #: ../data/glade/PurchaseDetailsDialog.glade.h:21
+#: ../data/glade/SaleDetailsDialog.ui.h:15
 msgid "Subtotal:"
 msgstr "Subtotal:"
 
 #: ../data/glade/PaymentRenegotiationPaymentListStep.glade.h:5
 #: ../data/glade/RenegotiationDetailsDialog.glade.h:13
 #: ../data/glade/PurchaseDetailsDialog.glade.h:23
+#: ../data/glade/SaleDetailsDialog.ui.h:16
 msgid "Surcharge:"
 msgstr "Acréscimo:"
 
 #: ../data/glade/CompanyDocumentsSlave.glade.h:1
+#: ../data/glade/BranchDialog.ui.h:1
 msgid "  .   .   /    -  "
 msgstr "  .   .   /    -  "
 
@@ -7917,6 +7944,7 @@ msgstr "Nome Fantasia:"
 
 #: ../data/glade/CompanyDocumentsSlave.glade.h:6
 #: ../data/glade/ProductsAdjustment.glade.h:5
+#: ../data/glade/BranchDialog.ui.h:11
 msgid "State Registry:"
 msgstr "Registro do Estado:"
 
@@ -7942,6 +7970,7 @@ msgid "Order number:"
 msgstr "Número da venda:"
 
 #: ../data/glade/InstallmentConfirmation.glade.h:7
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:5
 msgid "Paid date:"
 msgstr "Data do Pagamento:"
 
@@ -7978,6 +8007,7 @@ msgid "Extra Tab"
 msgstr "Tab Extra"
 
 #: ../data/glade/PersonEditorTemplate.glade.h:6
+#: ../data/glade/BranchDialog.ui.h:7
 msgid "Fax:"
 msgstr "Fax:"
 
@@ -8002,7 +8032,7 @@ msgid "More _Addresses..."
 msgstr "Mais _Endereços..."
 
 #: ../data/glade/PersonEditorTemplate.glade.h:15
-#: ../data/glade/ContactEditor.glade.h:2
+#: ../data/glade/ContactEditor.glade.h:2 ../data/glade/BranchDialog.ui.h:10
 msgid "Phone Number:"
 msgstr "Telefone:"
 
@@ -8082,7 +8112,7 @@ msgstr "BC IPI:"
 msgid "CNPJ do Produtor:"
 msgstr "CNPJ do Produtor:"
 
-#: ../data/glade/TaxIPISlave.glade.h:5
+#: ../data/glade/TaxIPISlave.glade.h:5 ../data/glade/TaxICMSSlave.ui.h:16
 msgid "CST:"
 msgstr "CST:"
 
@@ -8172,6 +8202,7 @@ msgstr "Última Data de Compra:"
 
 #: ../data/glade/SupplierDetailsDialog.glade.h:4
 #: ../data/glade/ClientDetailsDialog.glade.h:5
+#: ../data/glade/StockDecreaseDetails.ui.h:4
 msgid "Products"
 msgstr "Produtos"
 
@@ -8295,6 +8326,7 @@ msgstr "Valor Estornado:"
 #: ../data/glade/SaleReturnSlave.glade.h:11
 #: ../data/glade/PurchaseFinishPaymentAdjustStep.glade.h:3
 #: ../data/glade/PurchaseDetailsDialog.glade.h:24
+#: ../data/glade/SaleDetailsDialog.ui.h:17
 msgid "Total Paid:"
 msgstr "Total Pago:"
 
@@ -8316,6 +8348,7 @@ msgstr "CFOP:"
 #: ../data/glade/ProductsAdjustment.glade.h:4
 #: ../data/glade/FiscalBookEntryEditor.glade.h:3
 #: ../data/glade/ReceivingInvoiceSlave.glade.h:8
+#: ../data/glade/SaleDetailsDialog.ui.h:7
 msgid "Invoice Number:"
 msgstr "Número da Nota Fiscal:"
 
@@ -8334,6 +8367,7 @@ msgstr "Detalhes do Pedido"
 
 #: ../data/glade/SalesPersonStep.glade.h:11
 #: ../data/glade/PurchaseDetailsDialog.glade.h:20
+#: ../data/glade/SaleDetailsDialog.ui.h:13
 msgid "Salesperson:"
 msgstr "Vendedor:"
 
@@ -8390,6 +8424,7 @@ msgid "Quantity:"
 msgstr "Quantidade:"
 
 #: ../data/glade/ProductionItemEditor.glade.h:6
+#: ../data/glade/SellableEditor.ui.h:16
 msgid "Unit:"
 msgstr "Unidade:"
 
@@ -8456,6 +8491,7 @@ msgid "Sending branch:"
 msgstr "Enviando unidade"
 
 #: ../data/glade/AdditionListSlave.glade.h:1
+#: ../data/glade/BasePaymentEditor.ui.h:5
 msgid "New..."
 msgstr "Novo ..."
 
@@ -8566,6 +8602,8 @@ msgid "Start Production even if there are missing components"
 msgstr "Iniciar Produção mesmo se houver falta de componentes"
 
 #: ../data/glade/BasePaymentDataEditor.glade.h:1
+#: ../data/glade/BasePaymentEditor.ui.h:3
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:3
 msgid "Due date:"
 msgstr "Vencimento:"
 
@@ -8577,6 +8615,7 @@ msgid "Number:"
 msgstr "Número:"
 
 #: ../data/glade/BasePaymentDataEditor.glade.h:3
+#: ../data/glade/BasePaymentEditor.ui.h:7
 msgid "Value ($CURRENCY):"
 msgstr "Valor ($CURRENCY):"
 
@@ -8594,6 +8633,8 @@ msgstr "Clique com o botão direito para mais opções"
 
 #: ../data/glade/SellableTaxConstantEditor.glade.h:2
 #: ../data/glade/DeviceConstantEditor.glade.h:5
+#: ../data/glade/AccountTransactionEditor.ui.h:5
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:9
 msgid "Value:"
 msgstr "Valor:"
 
@@ -8709,7 +8750,7 @@ msgstr "até"
 msgid "Current Password:"
 msgstr "Senha Atual:"
 
-#: ../data/glade/Warnbox.glade.h:1
+#: ../data/glade/Warnbox.glade.h:1 ../data/glade/BasicDialog.ui.h:2
 msgid "label"
 msgstr "label"
 
@@ -8793,6 +8834,7 @@ msgstr "Senha:"
 #: ../data/glade/ProductAdjustmentDialog.glade.h:2
 #: ../data/glade/ProductionProductSlave.glade.h:1
 #: ../data/glade/AbstractProductStep.glade.h:5
+#: ../data/glade/ProductStockHistoryDialog.ui.h:4
 msgid "Product:"
 msgstr "Produto:"
 
@@ -8870,6 +8912,7 @@ msgid "Day(s)"
 msgstr "Dia(s)"
 
 #: ../data/glade/ProductSupplierEditor.glade.h:8
+#: ../data/glade/TaxICMSSlave.ui.h:19 ../data/glade/BranchDialog.ui.h:8
 msgid "ICMS:"
 msgstr "ICMS:"
 
@@ -8890,6 +8933,7 @@ msgid "Model name:"
 msgstr "Nome do modelo:"
 
 #: ../data/glade/EmployeeDetailsSlave.glade.h:1
+#: ../data/glade/AccountTransactionEditor.ui.h:1
 msgid "Account:"
 msgstr "Conta:"
 
@@ -9006,6 +9050,7 @@ msgid "With intervals of:"
 msgstr "Com intervalos de:"
 
 #: ../data/glade/StartStockDecreaseStep.glade.h:2
+#: ../data/glade/StockDecreaseDetails.ui.h:2
 msgid "Cfop:"
 msgstr "Cfop:"
 
@@ -9060,6 +9105,8 @@ msgstr "Conta principal:"
 
 #: ../data/glade/PaymentMethodEditor.glade.h:6
 #: ../data/glade/PurchaseDetailsDialog.glade.h:8
+#: ../data/glade/SaleDetailsDialog.ui.h:6
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:4
 msgid "Interest:"
 msgstr "Multa:"
 
@@ -9152,6 +9199,7 @@ msgid "HEX value:"
 msgstr "HEX Valor:"
 
 #: ../data/glade/DeviceConstantEditor.glade.h:4
+#: ../data/glade/BasePaymentEditor.ui.h:6 ../data/glade/AccountEditor.ui.h:4
 msgid "Type:"
 msgstr "Tipo:"
 
@@ -9186,6 +9234,7 @@ msgstr "<b>Renegociação Número:</b>"
 
 #: ../data/glade/RenegotiationDetailsDialog.glade.h:2
 #: ../data/glade/PurchaseDetailsDialog.glade.h:4
+#: ../data/glade/SaleDetailsDialog.ui.h:2
 msgid "Changes"
 msgstr "Alterações"
 
@@ -9282,6 +9331,8 @@ msgid "Expected Freight Value:"
 msgstr "Valor previsto de transporte"
 
 #: ../data/glade/PurchaseDetailsDialog.glade.h:15
+#: ../data/glade/SaleDetailsDialog.ui.h:12
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:7
 msgid "Penalty:"
 msgstr "Juros diários:"
 
@@ -9298,6 +9349,7 @@ msgid "Available Credit:"
 msgstr "Crédito Disponível:"
 
 #: ../data/glade/ClientStatusSlave.glade.h:2
+#: ../data/glade/BasePaymentEditor.ui.h:1 ../data/glade/SellableEditor.ui.h:5
 msgid "Category:"
 msgstr "Categoria:"
 
@@ -9338,6 +9390,7 @@ msgid "client_id_slave"
 msgstr "client_id_slave"
 
 #: ../data/glade/TributarySituationSlave.glade.h:3
+#: ../data/glade/SellableEditor.ui.h:15
 msgid "Tributary Situation:"
 msgstr "Situação Tributária:"
 
@@ -9452,12 +9505,189 @@ msgid "Max Discount:"
 msgstr "Desconto Máximo:"
 
 #: ../data/glade/SellablePriceEditor.glade.h:11
+#: ../data/glade/SellableEditor.ui.h:12
 msgid "Sale Price ($CURRENCY):"
 msgstr "Preço de Venda ($CURRENCY):"
 
 #: ../data/glade/ProgressDialog.glade.h:1
 msgid "Probing device..."
 msgstr "Dispositivo procurado..."
+
+#: ../data/glade/ProductStockHistoryDialog.ui.h:1
+msgid "Current Stock Balance:"
+msgstr "Saldo atual do estoque:"
+
+#: ../data/glade/ProductStockHistoryDialog.ui.h:2
+msgid "Loans"
+msgstr "Empréstimos"
+
+#: ../data/glade/ProductStockHistoryDialog.ui.h:3
+msgid "Manual Decrease"
+msgstr "Saída Manual"
+
+#: ../data/glade/ProductStockHistoryDialog.ui.h:5
+msgid "Receivings"
+msgstr "Recebimentos"
+
+#: ../data/glade/ProductStockHistoryDialog.ui.h:7
+msgid "Transfers"
+msgstr "Transferências"
+
+#: ../data/glade/BasicDialog.ui.h:1
+msgid "header"
+msgstr "Cabeçalho"
+
+#: ../data/glade/TaxICMSSlave.ui.h:2
+#, no-c-format
+msgid "% MVA ICMS ST:"
+msgstr "% MVA ICMS ST:"
+
+#: ../data/glade/TaxICMSSlave.ui.h:4
+#, no-c-format
+msgid "% Redu&#xE7;&#xE3;o BC ICMS"
+msgstr ""
+
+#: ../data/glade/TaxICMSSlave.ui.h:6
+#, no-c-format
+msgid "% Redu&#xE7;&#xE3;o BC ICMS ST:"
+msgstr ""
+
+#: ../data/glade/TaxICMSSlave.ui.h:7
+msgid "<b>Simples Nacional</b>"
+msgstr "<b>Simples Nacional</b>"
+
+#: ../data/glade/TaxICMSSlave.ui.h:8
+msgid "Al&#xED;quota ICMS SN:"
+msgstr ""
+
+#: ../data/glade/TaxICMSSlave.ui.h:9
+msgid "Al&#xED;quota ICMS ST:"
+msgstr ""
+
+#: ../data/glade/TaxICMSSlave.ui.h:10
+msgid "Al&#xED;quota ICMS:"
+msgstr ""
+
+#: ../data/glade/TaxICMSSlave.ui.h:11
+msgid "Al&#xED;quota v&#xE1;lida at&#xE9;:"
+msgstr ""
+
+#: ../data/glade/TaxICMSSlave.ui.h:12
+msgid "BC ICMS ST Retido:"
+msgstr "BC ICMS ST Retido:"
+
+#: ../data/glade/TaxICMSSlave.ui.h:13
+msgid "BC ICMS ST:"
+msgstr "BC ICMS ST:"
+
+#: ../data/glade/TaxICMSSlave.ui.h:14
+msgid "BC ICMS:"
+msgstr "BC ICMS:"
+
+#: ../data/glade/TaxICMSSlave.ui.h:15
+msgid "CSOSN:"
+msgstr "CSOSN:"
+
+#: ../data/glade/TaxICMSSlave.ui.h:17
+msgid "ICMS ST Retido:"
+msgstr "ICMS ST Retido:"
+
+#: ../data/glade/TaxICMSSlave.ui.h:18
+msgid "ICMS ST:"
+msgstr "ICMS ST:"
+
+#: ../data/glade/TaxICMSSlave.ui.h:20
+msgid "Incluir IPI na BC"
+msgstr "Incluir IPI na BC"
+
+#: ../data/glade/TaxICMSSlave.ui.h:21
+msgid "Incluir IPI na BC ST"
+msgstr "Incluir IPI na BC ST"
+
+#: ../data/glade/TaxICMSSlave.ui.h:22
+msgid "Modalidade BC ICMS ST:"
+msgstr "Modalidade BC ICMS ST:"
+
+#: ../data/glade/TaxICMSSlave.ui.h:23
+msgid "Modalidade BC ICMS:"
+msgstr "Modalidade BC ICMS:"
+
+#: ../data/glade/TaxICMSSlave.ui.h:24
+msgid "Origin:"
+msgstr "Origem:"
+
+#: ../data/glade/TaxICMSSlave.ui.h:25
+msgid "Valor ICMS SN:"
+msgstr "Valor ICMS SN:"
+
+#: ../data/glade/SaleDetailsDialog.ui.h:1
+msgid "<b>Sale Number:</b>"
+msgstr "<b>Número de venda:</b>"
+
+#: ../data/glade/AccountTransactionEditor.ui.h:2
+#: ../data/glade/SellableEditor.ui.h:6
+msgid "Code:"
+msgstr "Código:"
+
+#: ../data/glade/BranchDialog.ui.h:5
+msgid "Company Details"
+msgstr "Detalhes da Empresa"
+
+#: ../data/glade/BranchDialog.ui.h:6
+msgid "Company Name:"
+msgstr "Nome da Empresa:"
+
+#: ../data/glade/BranchDialog.ui.h:9
+msgid "ISS:"
+msgstr "ISS:"
+
+#: ../data/glade/BranchDialog.ui.h:12
+msgid "Substitution ICMS:"
+msgstr "ICMS por Substituição:"
+
+#: ../data/glade/SellableEditor.ui.h:3
+msgid "..."
+msgstr "..."
+
+#: ../data/glade/SellableEditor.ui.h:4
+msgid "Barcode:"
+msgstr "Código de Barras:"
+
+#: ../data/glade/SellableEditor.ui.h:7
+msgid "Consignment:"
+msgstr "Consignação:"
+
+#: ../data/glade/SellableEditor.ui.h:8
+msgid "Cost ($CURRENCY):"
+msgstr "Custo ($CURRENCY):"
+
+#: ../data/glade/SellableEditor.ui.h:9
+msgid "Default Sale CFOP:"
+msgstr "CFOP padrão para vendas:"
+
+#: ../data/glade/SellableEditor.ui.h:14
+msgid "Stock Cost:"
+msgstr "Custo no Estoque:"
+
+#: ../data/glade/SellableUnitEditor.ui.h:1
+msgid "Allow Fractions (e.g 0.5Kg, 0.75mL)"
+msgstr "Permitir Frações (ex: 0.5Kg, 0.75mL)"
+
+#: ../data/glade/AccountEditor.ui.h:1
+msgid "Account code:"
+msgstr "Código da conta:"
+
+#: ../data/glade/AccountEditor.ui.h:2
+msgid "Account name:"
+msgstr "Nome da conta:"
+
+#: ../data/glade/AccountEditor.ui.h:3
+msgid "Parent:"
+msgstr "Pai:"
+
+#: ../data/glade/LonelyPaymentDetailsDialog.ui.h:6
+msgid "Paid value:"
+msgstr "Valor Pago:"
 
 #: ../data/template/receipt.rml:31
 msgid " made in "
@@ -9719,24 +9949,6 @@ msgstr "VALOR:"
 #~ msgid "POS can not be used within NF-e plugin."
 #~ msgstr "O PDV não pode ser usado se o plugin NF-e estiver habilitado."
 
-#~ msgid "..."
-#~ msgstr "..."
-
-#~ msgid "Barcode:"
-#~ msgstr "Código de Barras:"
-
-#~ msgid "Code:"
-#~ msgstr "Código:"
-
-#~ msgid "Consignment:"
-#~ msgstr "Consignação:"
-
-#~ msgid "Cost ($CURRENCY):"
-#~ msgstr "Custo ($CURRENCY):"
-
-#~ msgid "Stock Cost:"
-#~ msgstr "Custo no Estoque:"
-
 #~ msgid "Available:"
 #~ msgstr "Disponível:"
 
@@ -9749,29 +9961,17 @@ msgstr "VALOR:"
 #~ msgid "History"
 #~ msgstr "Histórico"
 
-#~ msgid "Paid value:"
-#~ msgstr "Valor Pago:"
-
-#~ msgid "header"
-#~ msgstr "Cabeçalho"
-
 #~ msgid "Stock Details"
 #~ msgstr "Detalhes do Estoque"
 
 #~ msgid "Default Payment Destination:"
 #~ msgstr "Destino padrão de pagamento:"
 
-#~ msgid "Current Stock Balance:"
-#~ msgstr "Saldo atual do estoque:"
-
 #~ msgid "Receiving"
 #~ msgstr "Recebimentos"
 
 #~ msgid "Retention"
 #~ msgstr "Retenção"
-
-#~ msgid "<b>Sale Number:</b>"
-#~ msgstr "<b>Número de venda:</b>"
 
 #~ msgid "Provider Fee:"
 #~ msgstr "Taxa:"
@@ -11119,10 +11319,6 @@ msgstr "VALOR:"
 #~ msgstr "Adicionar ao Pedido"
 
 #, no-c-format
-#~ msgid "% MVA ICMS ST:"
-#~ msgstr "% MVA ICMS ST:"
-
-#, no-c-format
 #~ msgid "% Redução BC ICMS"
 #~ msgstr "% Redução BC ICMS"
 
@@ -11136,50 +11332,8 @@ msgstr "VALOR:"
 #~ msgid "Alíquota ICMS:"
 #~ msgstr "Alíquota ICMS:"
 
-#~ msgid "BC ICMS ST:"
-#~ msgstr "BC ICMS ST:"
-
-#~ msgid "BC ICMS:"
-#~ msgstr "BC ICMS:"
-
-#~ msgid "ICMS ST:"
-#~ msgstr "ICMS ST:"
-
-#~ msgid "Incluir IPI na BC"
-#~ msgstr "Incluir IPI na BC"
-
-#~ msgid "Incluir IPI na BC ST"
-#~ msgstr "Incluir IPI na BC ST"
-
-#~ msgid "Modalidade BC ICMS ST:"
-#~ msgstr "Modalidade BC ICMS ST:"
-
-#~ msgid "Modalidade BC ICMS:"
-#~ msgstr "Modalidade BC ICMS:"
-
-#~ msgid "Origin:"
-#~ msgstr "Origem:"
-
 #~ msgid "Do you want to print the receipt now ?"
 #~ msgstr "Você gostaria de imprimir um recibo?"
 
-#~ msgid "Default Sale CFOP:"
-#~ msgstr "CFOP padrão para vendas:"
-
 #~ msgid "Alíquota ICMS SN:"
 #~ msgstr "Alíquota ICMS SN:"
-
-#~ msgid "BC ICMS ST Retido:"
-#~ msgstr "BC ICMS ST Retido:"
-
-#~ msgid "<b>Simples Nacional</b>"
-#~ msgstr "<b>Simples Nacional</b>"
-
-#~ msgid "CSOSN:"
-#~ msgstr "CSOSN:"
-
-#~ msgid "ICMS ST Retido:"
-#~ msgstr "ICMS ST Retido:"
-
-#~ msgid "Valor ICMS SN:"
-#~ msgstr "Valor ICMS SN:"
