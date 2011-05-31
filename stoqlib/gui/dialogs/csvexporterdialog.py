@@ -136,6 +136,7 @@ class CSVExporterDialog(BaseEditor):
                 writer.writerows(self._get_csv_content(encoding))
         except IOError as err:
             if err.errno == errno.EACCES:
-                warning(_("You do not have permission to save that file."))
+                warning(_(u"You do not have enought permissions "
+                          u"to save on that folder."))
             else:
                 raise
