@@ -23,97 +23,97 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-26 10:26-0300\n"
-"PO-Revision-Date: 2011-05-26 14:32+0000\n"
+"POT-Creation-Date: 2011-05-27 15:58-0300\n"
+"PO-Revision-Date: 2011-05-30 17:04+0000\n"
 "Last-Translator: Silvio Rangel <silvio@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-05-27 04:57+0000\n"
+"X-Launchpad-Export-Date: 2011-05-31 04:51+0000\n"
 "X-Generator: Launchpad (build 12959)\n"
 "Language: \n"
 
-#: ../stoq/main.py:127
+#: ../stoq/main.py:128
 #, python-format
 msgid "%s not found"
 msgstr "%s não encontrado"
 
-#: ../stoq/main.py:128
+#: ../stoq/main.py:129
 #, python-format
 msgid "Could not find the required python module %s on your system"
 msgstr ""
 "Não foi possível encontrar o módulo python requerido %s em seu sistema"
 
-#: ../stoq/main.py:148
+#: ../stoq/main.py:149
 msgid "PyGTK too old"
 msgstr "PyGTK muito antigo"
 
-#: ../stoq/main.py:149
+#: ../stoq/main.py:150
 #, python-format
 msgid "PyGTK version too old, needs %s but found %s"
 msgstr ""
 "A versão do PyGTK é muito antiga, precisa versão %s mas encontrada %s"
 
-#: ../stoq/main.py:162
+#: ../stoq/main.py:163
 msgid "Kiwi too old"
 msgstr "Kiwi muito antigo"
 
-#: ../stoq/main.py:163
+#: ../stoq/main.py:164
 #, python-format
 msgid "kiwi version too old, needs %s but found %s"
 msgstr "A versão do Kiwi é muito antiga, precisa versão %s mas encontrada %s"
 
-#: ../stoq/main.py:176
+#: ../stoq/main.py:177
 msgid "Stoqlib too old"
 msgstr "Stoqlib muito antigo"
 
-#: ../stoq/main.py:177
+#: ../stoq/main.py:178
 #, python-format
 msgid "stoqlib version too old, needs %s but found %s"
 msgstr ""
 "A versão do stoqlib é muito antiga, precisa versão %s mas encontrada %s"
 
-#: ../stoq/main.py:189
+#: ../stoq/main.py:190
 msgid "Gazpacho too old"
 msgstr "Gazpacho muito antigo"
 
-#: ../stoq/main.py:190
+#: ../stoq/main.py:191
 #, python-format
 msgid "Gazpacho %s is required but %s found"
 msgstr "Gazpacho %s é requerido mas %s encontrado"
 
-#: ../stoq/main.py:202
+#: ../stoq/main.py:203
 msgid "Reportlab too old"
 msgstr "Reportlab muito antigo"
 
-#: ../stoq/main.py:203
+#: ../stoq/main.py:204
 #, python-format
 msgid "reportlab %s is required but %s found"
 msgstr "reportlab %s é requirido mas %s encontrado"
 
-#: ../stoq/main.py:331
+#: ../stoq/main.py:332
 msgid "You need to register a company before using Stoq"
 msgstr "Você precisa registrar uma empresa antes de utilizar o Stoq"
 
-#: ../stoq/main.py:333
+#: ../stoq/main.py:334
 msgid ""
 "Couldn't find a company, You'll need to register one before using Stoq"
 msgstr ""
 "Não foi possível localizar uma empresa, você precisa registrar uma antes de "
 "usar um Stoq"
 
-#: ../stoq/main.py:404
+#: ../stoq/main.py:405
 msgid "Could not open database config file"
 msgstr "Não é possível abrir o arquivo de configuração do banco de dados"
 
-#: ../stoq/main.py:405
+#: ../stoq/main.py:406
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
 msgstr ""
 "Dados inválidos do arquivo de configuração, obtido erro '%s', do tipo '%s'"
 
-#: ../stoq/main.py:421
+#: ../stoq/main.py:422
 msgid "Could not connect to database"
 msgstr "Não foi possível conectar ao banco de dados"
 
@@ -126,8 +126,8 @@ msgid ""
 msgstr ""
 "Você está usando uma <b>versão instável</b> do Stoq que está em "
 "desenvolvimento,\n"
-"deve estar ciente de que esta versão pode não ter um comportamento correto, até "
-"mesmo danificando seus dados.\n"
+"deve estar ciente de que esta versão pode não ter um comportamento correto, "
+"até mesmo danificando seus dados.\n"
 "<b>Não deve utilizar em produção.</b>"
 
 #: ../stoq/gui/application.py:145
@@ -233,7 +233,7 @@ msgstr "Saiba mais..."
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr "<b>Existe uma nova versão do Stoq disponível (%s)</b>"
 
-#: ../stoq/gui/config.py:129
+#: ../stoq/gui/config.py:130
 #, python-format
 msgid ""
 "The database address '%s' is invalid. Please fix the address you have set "
@@ -242,23 +242,23 @@ msgstr ""
 "O endereço da base de dados '%s' é inválido. Por favor corrija o endereço "
 "que você definiu e tenta de novo"
 
-#: ../stoq/gui/config.py:132 ../stoq/gui/config.py:133
+#: ../stoq/gui/config.py:133 ../stoq/gui/config.py:134
 msgid "Invalid database address"
 msgstr "Endereço do banco de dados inválido"
 
-#: ../stoq/gui/config.py:153
+#: ../stoq/gui/config.py:154
 msgid "Needs Password"
 msgstr "Necessita de senha"
 
-#: ../stoq/gui/config.py:154
+#: ../stoq/gui/config.py:155
 msgid "Trust"
 msgstr "Confiável"
 
-#: ../stoq/gui/config.py:211
+#: ../stoq/gui/config.py:212 ../data/glade/AdminPasswordStep.ui.h:1
 msgid "<b>Administrator Account Creation</b>"
 msgstr "<b>Criação da Conta do Administrador</b>"
 
-#: ../stoq/gui/config.py:214
+#: ../stoq/gui/config.py:215
 #, python-format
 msgid ""
 "I'm adding a user called `%s' which will have administrator privilegies.\n"
@@ -272,12 +272,12 @@ msgstr ""
 "Para estar apto a criar outros usuários você precisa logar com este usuário "
 "na aplicação 'Administrativo' e cria-los"
 
-#: ../stoq/gui/config.py:277
+#: ../stoq/gui/config.py:278
 #, python-format
 msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
 msgstr "Stoq requer PostgresSQL 8.1 ou posterior, mas %s encontrado"
 
-#: ../stoq/gui/config.py:284
+#: ../stoq/gui/config.py:285
 #, python-format
 msgid ""
 "The specifed database '%s' does not exist.\n"
@@ -286,52 +286,52 @@ msgstr ""
 "O banco de dados '%s' não existe.\n"
 "Deseja criar esta base?"
 
-#: ../stoq/gui/config.py:286
+#: ../stoq/gui/config.py:287
 msgid "Don't Create"
 msgstr "Não Criar"
 
-#: ../stoq/gui/config.py:286
+#: ../stoq/gui/config.py:287
 msgid "Create Database"
 msgstr "Criar Banco de Dados"
 
-#: ../stoq/gui/config.py:330
+#: ../stoq/gui/config.py:331
 msgid "Creating database..."
 msgstr "Criando banco de dados..."
 
-#: ../stoq/gui/config.py:341
+#: ../stoq/gui/config.py:342
 msgid "Creating base schema..."
 msgstr "Criando esquema do banco de dados..."
 
-#: ../stoq/gui/config.py:345
+#: ../stoq/gui/config.py:346
 msgid "Creating schema, applying patches..."
 msgstr "Criando esquema, aplicando patches..."
 
-#: ../stoq/gui/config.py:350
+#: ../stoq/gui/config.py:351
 #, python-format
 msgid "Creating schema, applying patch %d ..."
 msgstr "Criando esquema, aplicando patch %d ..."
 
-#: ../stoq/gui/config.py:352
+#: ../stoq/gui/config.py:353
 msgid "Creating additional database objects ..."
 msgstr "Criando objetos adicionais no banco de dados ..."
 
-#: ../stoq/gui/config.py:355
+#: ../stoq/gui/config.py:356
 msgid "Creating examples ..."
 msgstr "Criando exemplos ..."
 
-#: ../stoq/gui/config.py:365
+#: ../stoq/gui/config.py:366
 msgid "Something went wrong while trying to create the Stoq database"
 msgstr "Algo errado ocorreu tentando criar o banco de dados do Stoq"
 
-#: ../stoq/gui/config.py:371
+#: ../stoq/gui/config.py:372
 msgid "Done, click 'Forward' to continue"
 msgstr "Feito, clique em 'Avançar' para continuar"
 
-#: ../stoq/gui/config.py:395 ../stoq/gui/update.py:137
+#: ../stoq/gui/config.py:396 ../stoq/gui/update.py:137
 msgid "Run Stoq"
 msgstr "Rodar Stoq"
 
-#: ../stoq/gui/config.py:410
+#: ../stoq/gui/config.py:411
 msgid "Setting up Stoq"
 msgstr "Configurando o Stoq"
 
@@ -656,7 +656,7 @@ msgid "Delete Transaction"
 msgstr "Excluir Transação"
 
 #: ../stoq/gui/financial/financial.py:279
-#: ../stoq/gui/financial/financial.py:367
+#: ../stoq/gui/financial/financial.py:367 ../data/glade/financial.ui.h:1
 msgid "Accounts"
 msgstr "Contas"
 
@@ -761,7 +761,7 @@ msgstr "Filiais"
 
 #: ../stoq/gui/admin/admin.py:96
 msgid "Client Categories"
-msgstr "Categosrias de Clientes"
+msgstr "Categorias de Clientes"
 
 #: ../stoq/gui/admin/admin.py:97 ../data/glade/sales_app.glade.h:6
 msgid "Clients"
@@ -1267,7 +1267,7 @@ msgstr "_Conferência"
 
 #: ../data/glade/receivable.glade.h:30 ../data/glade/payable.glade.h:26
 #: ../data/glade/production.glade.h:23 ../data/glade/till.glade.h:29
-#: ../data/glade/purchase.glade.h:45
+#: ../data/glade/purchase.glade.h:45 ../data/glade/financial.ui.h:3
 msgid "_Details"
 msgstr "_Detalhes"
 
@@ -1290,6 +1290,7 @@ msgstr "Arqui_vo"
 #: ../data/glade/admin.glade.h:43 ../data/glade/stock.glade.h:37
 #: ../data/glade/pos.glade.h:43 ../data/glade/till.glade.h:32
 #: ../data/glade/purchase.glade.h:48 ../data/glade/inventory.glade.h:14
+#: ../data/glade/financial.ui.h:5
 msgid "_Help"
 msgstr "_Ajuda"
 
@@ -1347,7 +1348,7 @@ msgstr "Contas a _Pagar"
 msgid "_Receipt"
 msgstr "_Recibo"
 
-#: ../data/glade/payable.glade.h:35
+#: ../data/glade/payable.glade.h:35 ../data/glade/financial.ui.h:7
 msgid "payable"
 msgstr "Contas a Pagar"
 
@@ -2027,6 +2028,159 @@ msgstr "_Contagem"
 msgid "_Inventory"
 msgstr "_Inventário"
 
+#: ../data/glade/CreateDatabaseStep.ui.h:1
+msgid ""
+"Creating a new database for Stoq, depending on the speed of your computer "
+"and the server it may take a couple of minutes to finish."
+msgstr ""
+
+#: ../data/glade/CreateDatabaseStep.ui.h:2
+msgid "Show details"
+msgstr "Exibir detalhes"
+
+#: ../data/glade/ExampleDatabaseStep.ui.h:1
+msgid "<b>Database initialization</b>"
+msgstr "<b>Inicialização da base de dados</b>"
+
+#: ../data/glade/ExampleDatabaseStep.ui.h:2
+msgid "Create an empty database"
+msgstr "Criar uma base de dados vazia"
+
+#: ../data/glade/ExampleDatabaseStep.ui.h:3
+msgid "Create an example database"
+msgstr "Criar uma base de dados de exemplo"
+
+#: ../data/glade/ExampleDatabaseStep.ui.h:4
+msgid ""
+"You can choose to initialize the system with an empty database or with a "
+"simple examples database.\n"
+"\n"
+"Would you like to:\n"
+msgstr ""
+"Você pode escolher entre inicializar o sistema com uma base de dados vazia "
+"ou com simples exemplos.\n"
+"\n"
+"Você gostaria de:\n"
+
+#: ../data/glade/SelectApplicationsSlave.ui.h:1
+msgid "Select an Application:"
+msgstr "Selecione uma Aplicação:"
+
+#: ../data/glade/PluginStep.ui.h:1
+msgid "<b>Plugins</b>"
+msgstr "<b>Plugins</b>"
+
+#: ../data/glade/PluginStep.ui.h:2
+msgid "ECF (Fiscal Printer support)"
+msgstr "ECF (Impressora Fiscal)"
+
+#: ../data/glade/PluginStep.ui.h:3
+msgid "For testing purposes it is recommended to select \"No plugins\"."
+msgstr ""
+"Para usuários que possuem interesse de teste, é recomendado selecionar\n"
+"a opção \"Sem plugins\"."
+
+#: ../data/glade/PluginStep.ui.h:4
+msgid ""
+"Most of the plugins are specific to the brazilian market and once\n"
+"a plugin is activated it will not be possible to disable it.\n"
+"\n"
+"\n"
+"<b>Select the plugins you want to enable:</b>"
+msgstr ""
+"A maioria dos plugins são especificas para o mercado Brasileiro\n"
+"uma vez ativado, não será possível sua desativação.\n"
+"\n"
+"\n"
+"<b>Selecione o plugin que deseja habilitar:</b>"
+
+#: ../data/glade/PluginStep.ui.h:9
+msgid "NF-e (Eletronic Invoices)"
+msgstr "NF-e (Nota Fiscal Eletrônica)"
+
+#: ../data/glade/AdminPasswordStep.ui.h:2
+msgid ""
+"I'm adding a user called `admin' which will have administrator privilegies.\n"
+"\n"
+"To be able to create other users you need to login with this user in the "
+"admin application and create them."
+msgstr ""
+"Está sendo adicionado um usuário nomeado `admin' que irá ter privilégios de "
+"de administrador.\n"
+"\n"
+"Para ser capaz de criar outros usuários, você precisa autenticar-se com esse "
+"usuário na aplicação 'admin' e criá-los."
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:1
+msgid "Address:"
+msgstr "Endereço:"
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:2
+msgid "Authentication Type:"
+msgstr "Tipo de Autenticação:"
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:3
+msgid "Database Name:"
+msgstr "Nome da base de dados:"
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:4
+msgid "Password:"
+msgstr "Senha:"
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:5
+msgid ""
+"Please, fill some important informations before start using the applications"
+msgstr ""
+"Por favor, preencha algumas informações importantes antes de iniciar o "
+"sistema"
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:6
+msgid "Port:"
+msgstr "Porta:"
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:7
+msgid "Username:"
+msgstr "Usuário:"
+
+#: ../data/glade/DatabaseSettingsStep.ui.h:8
+msgid "Welcome to Stoq"
+msgstr "Bem vindo ao Stoq"
+
+#: ../data/glade/FinishInstallationStep.ui.h:1
+msgid "<b>Stoq was successfully installed in your system!</b>"
+msgstr "<b>O Stoq foi instalado com sucesso em seu sistema!</b>"
+
+#: ../data/glade/FinishInstallationStep.ui.h:2
+msgid ""
+"Stoq was installed in your system and now you are going to finish this "
+"wizard.\n"
+"\n"
+"Click in the finish button and you will be able to select one of Stoq "
+"applications.\n"
+"\n"
+"Depending on your choices you will be logged or will be prompted to log as "
+"admin user.\n"
+msgstr ""
+"Stoq foi instalado com sucesso em seu sistema, para clique sair para "
+"finalizar este wizard.\n"
+"\n"
+"clique em rodar Stoq, você irá logar para escolher um dos aplicativos Stoq.\n"
+"\n"
+"Dependendo de suas escolhas você será conectado ou será solicitado a "
+"registrar como usuário administrativo.\n"
+
+#: ../data/glade/financial.ui.h:2
+msgid "New account..."
+msgstr ""
+
+#: ../data/glade/financial.ui.h:4
+msgid "_Financial"
+msgstr "_Financeiro"
+
+#: ../data/glade/financial.ui.h:6
+msgid "_Import..."
+msgstr "_Importar..."
+
 #, python-format
 #~ msgid ""
 #~ "The specifed database `%s' does not exist.\n"
@@ -2145,76 +2299,8 @@ msgstr "_Inventário"
 #~ msgid "Yes"
 #~ msgstr "Sim"
 
-#~ msgid "<b>Database initialization</b>"
-#~ msgstr "<b>Inicialização da base de dados</b>"
-
-#~ msgid "Create an empty database"
-#~ msgstr "Criar uma base de dados vazia"
-
-#~ msgid "Create an example database"
-#~ msgstr "Criar uma base de dados de exemplo"
-
-#~ msgid ""
-#~ "You can choose to initialize the system with an empty database or with a "
-#~ "simple examples database.\n"
-#~ "\n"
-#~ "Would you like to:\n"
-#~ msgstr ""
-#~ "Você pode escolher entre inicializar o sistema com uma base de dados vazia "
-#~ "ou com simples exemplos.\n"
-#~ "\n"
-#~ "Você gostaria de:\n"
-
-#~ msgid "<b>Stoq was successfully installed in your system!</b>"
-#~ msgstr "<b>O Stoq foi instalado com sucesso em seu sistema!</b>"
-
-#~ msgid ""
-#~ "Stoq was installed in your system and now you are going to finish this "
-#~ "wizard.\n"
-#~ "\n"
-#~ "Click in the finish button and you will be able to select one of Stoq "
-#~ "applications.\n"
-#~ "\n"
-#~ "Depending on your choices you will be logged or will be prompted to log as "
-#~ "admin user.\n"
-#~ msgstr ""
-#~ "Stoq foi instalado com sucesso em seu sistema, para clique sair para "
-#~ "finalizar este wizard.\n"
-#~ "\n"
-#~ "clique em rodar Stoq, você irá logar para escolher um dos aplicativos Stoq.\n"
-#~ "\n"
-#~ "Dependendo de suas escolhas você será conectado ou será solicitado a "
-#~ "registrar como usuário administrativo.\n"
-
-#~ msgid "Select an Application:"
-#~ msgstr "Selecione uma Aplicação:"
-
 #~ msgid "_New..."
 #~ msgstr "_Novo..."
-
-#~ msgid "<b>Plugins</b>"
-#~ msgstr "<b>Plugins</b>"
-
-#~ msgid "ECF (Fiscal Printer support)"
-#~ msgstr "ECF (Impressora Fiscal)"
-
-#~ msgid "For testing purposes it is recommended to select \"No plugins\"."
-#~ msgstr ""
-#~ "Para usuários que possuem interesse de teste, é recomendado selecionar\n"
-#~ "a opção \"Sem plugins\"."
-
-#~ msgid ""
-#~ "Most of the plugins are specific to the brazilian market and once\n"
-#~ "a plugin is activated it will not be possible to disable it.\n"
-#~ "\n"
-#~ "\n"
-#~ "<b>Select the plugins you want to enable:</b>"
-#~ msgstr ""
-#~ "A maioria dos plugins são especificas para o mercado Brasileiro\n"
-#~ "uma vez ativado, não será possível sua desativação.\n"
-#~ "\n"
-#~ "\n"
-#~ "<b>Selecione o plugin que deseja habilitar:</b>"
 
 #~ msgid "NF-e (Eletronic Invoices - POS application will be disabled)"
 #~ msgstr "NF-e (Nota Fiscal Eletronica - Aplicação PDV será desabilitada)"
@@ -2222,53 +2308,14 @@ msgstr "_Inventário"
 #~ msgid "No plugins"
 #~ msgstr "Sem plugins"
 
-#~ msgid ""
-#~ "I'm adding a user called `admin' which will have administrator privilegies.\n"
-#~ "\n"
-#~ "To be able to create other users you need to login with this user in the "
-#~ "admin application and create them."
-#~ msgstr ""
-#~ "Está sendo adicionado um usuário nomeado `admin' que irá ter privilégios de "
-#~ "de administrador.\n"
-#~ "\n"
-#~ "Para ser capaz de criar outros usuários, você precisa autenticar-se com esse "
-#~ "usuário na aplicação 'admin' e criá-los."
-
 #~ msgid "_Retention"
 #~ msgstr "_Retenção"
 
 #~ msgid "_Retention..."
 #~ msgstr "_Retenção..."
 
-#~ msgid "Address:"
-#~ msgstr "Endereço:"
-
-#~ msgid "Authentication Type:"
-#~ msgstr "Tipo de Autenticação:"
-
-#~ msgid "Database Name:"
-#~ msgstr "Nome da base de dados:"
-
-#~ msgid "Password:"
-#~ msgstr "Senha:"
-
-#~ msgid ""
-#~ "Please, fill some important informations before start using the applications"
-#~ msgstr ""
-#~ "Por favor, preencha algumas informações importantes antes de iniciar o "
-#~ "sistema"
-
-#~ msgid "Port:"
-#~ msgstr "Porta:"
-
 #~ msgid "PostgreSQL Database Settings"
 #~ msgstr "Configurações do banco de dados Postgres"
-
-#~ msgid "Username:"
-#~ msgstr "Usuário:"
-
-#~ msgid "Welcome to Stoq"
-#~ msgstr "Bem vindo ao Stoq"
 
 #~ msgid ""
 #~ "In Brazil, to be able to do sales to customers you need to\n"
@@ -4409,9 +4456,6 @@ msgstr "_Inventário"
 
 #~ msgid "sales matching:"
 #~ msgstr "vendas contendo:"
-
-#~ msgid "NF-e (Eletronic Invoices)"
-#~ msgstr "NF-e (Nota Fiscal Eletrônica)"
 
 #~ msgid "Please, start stoq again to configure new database"
 #~ msgstr "Por favor, reinicie o Stoq para configurar o novo banco de dados"
