@@ -93,6 +93,7 @@ resources = dict(
 global_resources = dict(
     pixmaps='$datadir/pixmaps',
     glade='$datadir/glade',
+    misc='$datadir/misc',
     docs='$prefix/share/doc/stoq',
     config='$sysconfdir/stoq')
 
