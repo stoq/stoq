@@ -83,15 +83,16 @@ class InitialStockDialog(BaseEditor):
     def _get_columns(self):
         adj = gtk.Adjustment(upper=MAXINT, step_incr=1)
         return [Column("code", title=_(u"Code"), data_type=str,
-                        sorted=True),
-                Column("barcode", title=_(u"Barcode"), data_type=str,),
+                       sorted=True, width=100),
+                Column("barcode", title=_(u"Barcode"), data_type=str,
+                       width=100),
                 Column("category_description", title=_(u"Category"),
-                        data_type=str),
+                       data_type=str, width=100),
                 Column("description", title=_(u"Description"),
-                        data_type=str, expand=True),
+                       data_type=str, expand=True, width=300),
                 Column("initial_stock", title=_(u"Initial Stock"),
-                        data_type=Decimal, format_func=self._format_qty,
-                        editable=True, spin_adjustment=adj)]
+                       data_type=Decimal, format_func=self._format_qty,
+                       editable=True, spin_adjustment=adj, width=60)]
 
     def _format_qty(self, quantity):
         if quantity is ValueUnset:
