@@ -136,16 +136,37 @@ class DatabaseSettingsStep(WizardEditorStep):
             return False
 
         settings = self.wizard.settings
+
+        # If we configured setting to localhost, try connecting
+        # with address == '', eg unix socket first before trying
+        # to connect to localhost. This is done because the default
+        # postgres configuration doesn't allow you to connect via localhost,
+        # only unix socket.
+        if settings.address == 'localhost':
+            if not self._try_connect(settings, warn=False):
+                settings.address = ''
+
+        if not self._try_connect(settings):
+            return False
+
+        if settings.address == '':
+            # Reload settings as they changed
+            self.wizard.config.load_settings(settings)
+
+        self.wizard.auth_type = self.authentication_type.get_selected()
+
+        return True
+
+    def _try_connect(self, settings, warn=True):
         try:
             if settings.has_database():
                 conn = settings.get_connection()
                 self.wizard.has_installed_db = SystemTable.is_available(conn)
                 conn.close()
         except DatabaseError, e:
-            warning(e.short, e.msg)
+            if warn:
+                warning(e.short, e.msg)
             return False
-
-        self.wizard.auth_type = self.authentication_type.get_selected()
 
         return True
 
@@ -155,6 +176,10 @@ class DatabaseSettingsStep(WizardEditorStep):
             (_("Trust"), TRUST_AUTHENTICATION)])
 
         self.add_proxy(self.model, DatabaseSettingsStep.proxy_widgets)
+        # Show localhost instead of empty for unix socket, not strictly
+        # correct but better than showing nothing.
+        if not self.model.address:
+            self.address.set_text("localhost")
         self.model.stoq_user_data = Settable(password='')
         self.add_proxy(self.model.stoq_user_data)
 
@@ -251,7 +276,6 @@ class CreateDatabaseStep(BaseWizardStep):
     def post_init(self):
         self.n_patches = 0
         self.process_view = ProcessView()
-        self.process_view.listen_stdout = False
         self.process_view.listen_stderr = True
         self.process_view.connect('read-line', self._on_processview__readline)
         self.process_view.connect('finished', self._on_processview__finished)
