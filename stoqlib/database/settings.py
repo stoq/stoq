@@ -192,6 +192,8 @@ class DatabaseSettings(object):
         return retval
 
     def get_command_line_arguments(self):
+        """Get a list of command line arguments suitable
+        to send into stoqdbadmin"""
         args = []
         # Keep in sync with stoq/lib/options.py
         args.extend(['-d', self.dbname])
@@ -201,4 +203,19 @@ class DatabaseSettings(object):
         args.extend(['-u', self.username])
         if self.password:
             args.extend(['-w', self.password])
+        return args
+
+
+    def get_tool_args(self):
+        """Return a list of arguments suitable for sending in
+        to the command line tool of a database such as psql"""
+        args = []
+        if self.rdbms == 'postgres':
+            # Password goes via ~/.pgpass
+            if self.address:
+                args.extend(['-h', self.address])
+            args.extend(['-U', self.username])
+            args.extend(['-p', str(self.port)])
+        else:
+            raise NotImplementedError(self.rdbms)
         return args

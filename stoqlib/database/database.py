@@ -113,25 +113,20 @@ def execute_sql(filename):
         #    the error occurred.
         # 3) Do not print anything on the output unless it's an warning or a
         #    an error
-        cmd = ("psql -n -h %(address)s -U %(username)s "
-               "-p %(port)s %(dbname)s -q "
-               "--variable ON_ERROR_STOP= -f \"%(schema)s\"") % dict(
-            address=settings.address or "''",
-            username=settings.username,
-            port=settings.port,
-            dbname=settings.dbname,
-            schema='-')
+        args = ['psql', '-n', '-q',
+                '--variable', 'ON_ERROR_STOP=',
+                '-f', '-']
+        args.extend(settings.get_tool_args())
+        args.append(settings.dbname)
 
         kwargs = {}
-        if _system != 'Windows':
-            kwargs['shell'] = True
-        else:
+        if _system == 'Windows':
             # Hide the console window
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
             kwargs['startupinfo'] = startupinfo
-        log.debug('executing %s' % cmd)
-        proc = subprocess.Popen(cmd,
+        log.debug('executing %s' % (' '.join(args), ))
+        proc = subprocess.Popen(args,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
                                 **kwargs)
@@ -155,16 +150,13 @@ def start_dbshell():
     settings = get_utility(IDatabaseSettings)
 
     if settings.rdbms == 'postgres':
-        cmd = ("psql -h %(address)s -U %(username)s "
-               "-p %(port)s %(dbname)s -q ") % dict(
-            address=settings.address or "''",
-            username=settings.username,
-            port=settings.port,
-            dbname=settings.dbname)
+        args = ['psql', '-q']
+        args.extend(settings.get_tool_args())
+        args.append(settings.dbname)
 
         print 'Connecting to %s' % (
             settings.get_connection_uri(filter_password=True),)
-        proc = subprocess.Popen(cmd, shell=True)
+        proc = subprocess.Popen(args)
         proc.wait()
     else:
         raise NotImplementedError(settings.rdbms)
@@ -179,17 +171,14 @@ def test_connection():
     log.info("Testing database connectivity using command line tools")
 
     if settings.rdbms == 'postgres':
-        cmd = ("psql -n -h %(address)s -U %(username)s "
-               "-p %(port)s %(dbname)s -q "
-               "--variable ON_ERROR_STOP= -c 'select 1;'") % dict(
-            address=settings.address or "''",
-            username=settings.username,
-            port=settings.port,
-            dbname=settings.dbname,
-            )
+        args = ['psql', '-n', '-q',
+                '--variable', 'ON_ERROR_STOP=',
+                '-c', 'SELECT 1;']
+        args.extend(settings.get_tool_args())
+        args.append(settings.dbname)
 
-        log.debug('executing %s' % cmd)
-        proc = subprocess.Popen(cmd, shell=True,
+        log.debug('executing %s' % (' '.join(args), ))
+        proc = subprocess.Popen(args,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE)
 
@@ -207,18 +196,14 @@ def dump_database(filename):
     log.info("Dumping database to %s" % filename)
 
     if settings.rdbms == 'postgres':
-        cmd = ("pg_dump -Fc -E UTF-8 -h %(address)s -U %(username)s "
-               "-p %(port)s %(dbname)s") % dict(
-            address=settings.address or "''",
-            username=settings.username,
-            port=settings.port,
-            dbname=settings.dbname,
-            )
-        if filename:
-            cmd += ' -f ' + filename
+        args = ['pg_dump', '-Fc', '-E', 'UTF-8']
+        if filename is not None:
+            args.extend(['-f', filename])
+        args.extend(settings.get_tool_args())
+        args.append(settings.dbname)
 
-        log.debug('executing %s' % cmd)
-        proc = subprocess.Popen(cmd, shell=True)
+        log.debug('executing %s' % (' '.join(args), ))
+        proc = subprocess.Popen(args)
         return proc.wait() == 0
     else:
         raise NotImplementedError(settings.rdbms)
@@ -253,17 +238,13 @@ def restore_database(dump):
                                      time.strftime("%Y%m%d_%H%M"))
         clean_database(newname)
 
-        cmd = ("pg_restore -h %(address)s -U %(username)s "
-               "-p %(port)s -d %(dbname)s %(dump)s") % dict(
-            address=settings.address or "''",
-            username=settings.username,
-            port=settings.port,
-            dbname=newname,
-            dump=dump,)
+        args = ['pg_restore', '-d', newname]
+        args.extend(settings.get_tool_args())
+        args.extend(dump)
 
-        log.debug('executing %s' % cmd)
+        log.debug('executing %s' % (' '.join(args), ))
 
-        proc = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
+        proc = subprocess.Popen(args, stderr=subprocess.PIPE)
         retcode = proc.wait()
         return newname
     else:
@@ -282,15 +263,14 @@ def dump_table(table):
     log.info("Dumping table to %s" % table)
 
     if settings.rdbms == 'postgres':
-        cmd = ("pg_dump -E UTF-8 -h %(address)s -U %(username)s "
-               "-p %(port)s %(dbname)s -t %(table)s -a -d") % dict(
-            address=settings.address or "''",
-            username=settings.username,
-            port=settings.port,
-            dbname=settings.dbname,
-            table=table)
-        log.info('executing %s' % cmd)
-        return subprocess.Popen(cmd, shell=True,
+        args = ['pg_dump', '-E', 'UTF-8', '-a', '-t', table]
+        if filename is not None:
+            args.extend(['-f', filename])
+        args.extend(settings.get_tool_args())
+        args.append(settings.dbname)
+
+        log.debug('executing %s' % (' '.join(args), ))
+        return subprocess.Popen(args,
                                 stdout=subprocess.PIPE,
                                 env=dict(LANG='C'))
     else:
