@@ -57,12 +57,11 @@ class DatabaseSettings(object):
 
     def __init__(self, rdbms=None, address=None, port=None,
                  dbname=None, username=None, password=''):
-
         if not rdbms:
             rdbms = 'postgres'
         if rdbms == 'postgres':
             if not address:
-                address = os.environ.get('PGHOST', 'localhost')
+                address = os.environ.get('PGHOST', '')
             if not dbname:
                 dbname = os.environ.get('PGDATABASE', 'stoq')
             if not username:
@@ -196,7 +195,8 @@ class DatabaseSettings(object):
         args = []
         # Keep in sync with stoq/lib/options.py
         args.extend(['-d', self.dbname])
-        args.extend(['-H', self.address])
+        if self.address:
+            args.extend(['-H', self.address])
         args.extend(['-p', str(self.port)])
         args.extend(['-u', self.username])
         if self.password:

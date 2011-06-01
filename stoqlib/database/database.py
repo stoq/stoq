@@ -116,7 +116,7 @@ def execute_sql(filename):
         cmd = ("psql -n -h %(address)s -U %(username)s "
                "-p %(port)s %(dbname)s -q "
                "--variable ON_ERROR_STOP= -f \"%(schema)s\"") % dict(
-            address=settings.address,
+            address=settings.address or "''",
             username=settings.username,
             port=settings.port,
             dbname=settings.dbname,
@@ -157,7 +157,7 @@ def start_dbshell():
     if settings.rdbms == 'postgres':
         cmd = ("psql -h %(address)s -U %(username)s "
                "-p %(port)s %(dbname)s -q ") % dict(
-            address=settings.address,
+            address=settings.address or "''",
             username=settings.username,
             port=settings.port,
             dbname=settings.dbname)
@@ -182,7 +182,7 @@ def test_connection():
         cmd = ("psql -n -h %(address)s -U %(username)s "
                "-p %(port)s %(dbname)s -q "
                "--variable ON_ERROR_STOP= -c 'select 1;'") % dict(
-            address=settings.address,
+            address=settings.address or "''",
             username=settings.username,
             port=settings.port,
             dbname=settings.dbname,
@@ -209,7 +209,7 @@ def dump_database(filename):
     if settings.rdbms == 'postgres':
         cmd = ("pg_dump -Fc -E UTF-8 -h %(address)s -U %(username)s "
                "-p %(port)s %(dbname)s") % dict(
-            address=settings.address,
+            address=settings.address or "''",
             username=settings.username,
             port=settings.port,
             dbname=settings.dbname,
@@ -255,7 +255,7 @@ def restore_database(dump):
 
         cmd = ("pg_restore -h %(address)s -U %(username)s "
                "-p %(port)s -d %(dbname)s %(dump)s") % dict(
-            address=settings.address,
+            address=settings.address or "''",
             username=settings.username,
             port=settings.port,
             dbname=newname,
@@ -284,7 +284,7 @@ def dump_table(table):
     if settings.rdbms == 'postgres':
         cmd = ("pg_dump -E UTF-8 -h %(address)s -U %(username)s "
                "-p %(port)s %(dbname)s -t %(table)s -a -d") % dict(
-            address=settings.address,
+            address=settings.address or "''",
             username=settings.username,
             port=settings.port,
             dbname=settings.dbname,
