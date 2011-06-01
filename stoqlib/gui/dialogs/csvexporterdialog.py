@@ -25,6 +25,7 @@
 
 
 import csv
+import errno
 
 import gtk
 
@@ -34,6 +35,7 @@ from kiwi.ui.objectlist import ObjectList
 from stoqlib.database.orm import ORMObject, SelectResults, export_csv, Viewable
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.csvexporter import objectlist2csv
+from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -127,7 +129,14 @@ class CSVExporterDialog(BaseEditor):
 
     def _save(self, filename):
         encoding = self.encoding.get_selected()
-        csv_file = open(filename, 'w')
-        writer = csv.writer(csv_file, doublequote=True, quoting=csv.QUOTE_ALL)
-        writer.writerows(self._get_csv_content(encoding))
-        csv_file.close()
+        try:
+            with open(filename, 'w') as csv_file:
+                writer = csv.writer(csv_file, doublequote=True,
+                                    quoting=csv.QUOTE_ALL)
+                writer.writerows(self._get_csv_content(encoding))
+        except IOError as err:
+            if err.errno == errno.EACCES:
+                warning(_(u"You do not have enought permissions "
+                          u"to save on that folder."))
+            else:
+                raise
