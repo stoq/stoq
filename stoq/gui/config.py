@@ -131,8 +131,12 @@ class DatabaseSettingsStep(WizardEditorStep):
                     "address you have set and try again"
                     % self.model.address)
             warning(_(u'Invalid database address'), msg)
-            self.address.set_invalid(_("Invalid database address"))
-            self.force_validation()
+            # '' is not strictly invalid, since it's an alias for
+            # unix socket, so don't tell that to the user, make him
+            # belive that he still uses "localhost"
+            if self.model.address != "":
+                self.address.set_invalid(_("Invalid database address"))
+                self.force_validation()
             return False
 
         settings = self.wizard.settings
@@ -147,6 +151,8 @@ class DatabaseSettingsStep(WizardEditorStep):
                 settings.address = ''
 
         if not self._try_connect(settings):
+            # Restore it
+            settings.address = 'localhost'
             return False
 
         if settings.address == '':
