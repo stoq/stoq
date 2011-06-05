@@ -25,6 +25,7 @@
 
 import datetime
 import json
+import os
 import platform
 import urllib
 
@@ -40,7 +41,7 @@ from stoqlib.lib.pluginmanager import InstalledPlugin
 log = Logger('stoqlib.webservice')
 
 class WebService(object):
-    API_SERVER = "http://api.stoq.com.br"
+    API_SERVER = os.environ.get('STOQ_API_HOST', 'http://api.stoq.com.br')
 
     #
     #   Private API
@@ -71,7 +72,7 @@ class WebService(object):
         self.data += data
         stream.read_async(4096, self._on_stream_read_async, user_data=response)
 
-    def _do_request(self, name, params):
+    def _do_request(self, name, **params):
         response = AsyncResponse()
         url = '%s/%s?q=%s' % (
             self.API_SERVER, name, urllib.quote(json.dumps(params)))
@@ -88,6 +89,15 @@ class WebService(object):
 
         return response
 
+    def _get_cnpj(self, conn):
+        branch = sysparam(conn).MAIN_COMPANY
+        if not branch or not branch.person:
+            return None
+        company = ICompany(branch.person)
+        if not company:
+            return None
+        return company.cnpj
+
     #
     #   Public API
     #
@@ -100,19 +110,17 @@ class WebService(object):
         """
         params = {
             'dist': platform.dist(),
+            'cnpj': self._get_cnpj(conn),
             'plugins': InstalledPlugin.get_plugin_names(conn),
             'time': datetime.datetime.today().isoformat(),
             'uname': platform.uname(),
             'version': app_version,
         }
-
-        branch = sysparam(conn).MAIN_COMPANY
-        if branch and branch.person:
-            company = ICompany(branch.person)
-            if company.cnpj:
-                params['cnpj'] = company.cnpj
-
-        return self._do_request('version.json', params)
+        return self._do_request('version.json', **params)
 
     def bug_report(self, report):
-        return self._do_request('bugreport.json', report)
+        params = {
+            'cnpj': self._get_cnpj(conn),
+            'report': report,
+        }
+        return self._do_request('bugreport.json', **params)
