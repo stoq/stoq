@@ -19,12 +19,14 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import decimal
 import gtk
 
+from kiwi.currency import currency
 from kiwi.python import Settable
-from kiwi.ui.objectlist import Column, ObjectTree
+from kiwi.ui.objectlist import ColoredColumn, Column, ObjectTree
 from stoqlib.database.runtime import get_connection
-from stoqlib.domain.account import Account
+from stoqlib.domain.views import AccountView
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -59,11 +61,18 @@ def sort_models(a, b):
 class AccountTree(ObjectTree):
     def __init__(self, with_code=True, create_mode=False):
         self.create_mode = create_mode
+        self._accounts = {}
 
         columns = [StockTextColumn('description', data_type=str,
                    pack_end=True, sorted=True, sort_func=sort_models)]
         if with_code:
             columns.append(Column('code', data_type=str))
+        if not create_mode:
+            def colorize(x):
+                return x < 0
+            columns.append(ColoredColumn('total', data_type=currency,
+                                         color='red',
+                                         data_func=colorize))
         ObjectTree.__init__(self, columns,
                             mode=gtk.SELECTION_SINGLE)
 
@@ -78,16 +87,25 @@ class AccountTree(ObjectTree):
 
     # Order the accounts top to bottom so
     # ObjectTree.append() works as expected
-    def _orderaccounts(self, conn, res=None, parent=None):
+    def _orderaccounts(self, all_accounts, res=None, parent=None):
         if not res:
             res = []
-        accounts = Account.selectBy(connection=conn, parent=parent)
+        if parent is None:
+            accounts = [a for a in all_accounts if a.parentID is None]
+        else:
+            accounts = [a for a in all_accounts if a.parentID == parent.id]
         res.extend(accounts)
         for account in accounts:
-            account.kind = 'account'
             account.selectable = True
-            self._orderaccounts(conn, res, account)
+            self._orderaccounts(all_accounts, res, account)
         return res
+
+    def _calculate_total(self, all_accounts, account):
+        total = account.get_combined_value()
+        for a in all_accounts:
+            if a.parentID == account.id:
+                total += self._calculate_total(all_accounts, a)
+        return total
 
     def get_pixbuf(self, model):
         kind = model.kind
@@ -96,9 +114,8 @@ class AccountTree(ObjectTree):
         elif kind == 'receivable':
             pixbuf = self._pixbuf_receivable
         elif kind == 'account':
-            till_account = sysparam(get_connection()).TILLS_ACCOUNT
-            if ((model.parent and model.parent == till_account) or
-                model == till_account):
+            till_account_id = sysparam(get_connection()).TILLS_ACCOUNT.id
+            if model.matches(till_account_id):
                 pixbuf = self._pixbuf_till
             else:
                 pixbuf = self._pixbuf_money
@@ -109,31 +126,40 @@ class AccountTree(ObjectTree):
     def insert_initial(self, conn, ignore=None):
         till_id = sysparam(get_connection()).TILLS_ACCOUNT.id
 
-        for account in self._orderaccounts(conn):
-            if account == ignore:
+        accounts = list(AccountView.select(connection=conn))
+        accounts = self._orderaccounts(accounts)
+        for account in accounts:
+            account.total = self._calculate_total(accounts, account)
+            if ignore and account.id == ignore.id:
                 continue
-            if (self.create_mode and
-                (account.id == till_id or
-                 (account.parent and account.parent.id == till_id))):
+            if self.create_mode and account.matches(till_id):
                 account.selectable = False
-            self.append(account.parent, account)
+            self.add_account(account.parentID, account)
 
         selectable = not self.create_mode
         self.append(None, Settable(description=_("Accounts Payable"),
                                    parent=None,
                                    kind='payable',
-                                   selectable=selectable))
+                                   selectable=selectable,
+                                   total=None))
         self.append(None, Settable(description=_("Accounts Receivable"),
                                    parent=None,
                                    kind='receivable',
-                                   selectable=selectable))
+                                   selectable=selectable,
+                                   total=None))
         self.flush()
 
-    def add_account(self, parent, account):
+    def add_account(self, parentID, account):
         account.kind = 'account'
+        parent = self._accounts.get(parentID)
         self.append(parent, account)
+        self._accounts[account.id] = account
+
+    def get_account_by_id(self, accountID):
+        return self._accounts.get(accountID)
 
     def refresh_accounts(self, conn, account=None):
+        self._accounts = {}
         self.clear()
         self.insert_initial(conn)
         if account:

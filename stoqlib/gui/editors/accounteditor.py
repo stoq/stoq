@@ -44,7 +44,7 @@ class AccountEditor(BaseEditor):
 
     def __init__(self, conn, model=None, parent_account=None):
         self.existing = model is not None
-        self.parent_account = conn.get(parent_account)
+        self.parent_account = parent_account
         BaseEditor.__init__(self, conn, model)
 
     #
@@ -68,7 +68,9 @@ class AccountEditor(BaseEditor):
             ignore = None
         self.parent_accounts.insert_initial(self.conn, ignore=ignore)
         if self.parent_account:
-            self.parent_accounts.select(self.parent_account)
+            account = self.parent_accounts.get_account_by_id(
+                self.parent_account.id)
+            self.parent_accounts.select(account)
         self.parent_accounts.show()
 
         self.account_type.prefill(Account.account_type_descriptions)

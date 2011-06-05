@@ -25,6 +25,7 @@
 from stoqlib.database.orm import const, AND, INNERJOINOn, LEFTJOINOn, OR
 from stoqlib.database.orm import Viewable, Field, Alias
 from stoqlib.database.runtime import get_connection
+from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.person import (Person, PersonAdaptToSupplier,
@@ -845,3 +846,70 @@ class LoanItemView(Viewable):
                    SellableCategory.q.id == Sellable.q.categoryID),
         INNERJOINOn(None, BaseSellableInfo,
                     Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),]
+
+class SourceSum(Viewable):
+     columns = dict(
+         id=AccountTransaction.q.source_accountID,
+         value=const.SUM(AccountTransaction.q.value),
+         )
+
+     joins = []
+
+class DestSum(Viewable):
+     columns = dict(
+         id=AccountTransaction.q.accountID,
+         value=const.SUM(AccountTransaction.q.value),
+         )
+
+     joins = []
+
+class AccountView(Viewable):
+    columns = dict(
+        id=Account.q.id,
+        parentID=Account.q.parentID,
+        account_type=Account.q.account_type,
+        dest_accountID=Account.q.parentID,
+        description=Account.q.description,
+        source_value=Field('source_sum', 'value'),
+        dest_value=Field('dest_sum', 'value')
+        )
+
+    joins = [
+        LEFTJOINOn(None, '(%s) AS source_sum' % (SourceSum.select(), ),
+                   Field('source_sum', 'id') == Account.q.id),
+        LEFTJOINOn(None, '(%s) AS dest_sum' % (DestSum.select(), ),
+                   Field('dest_sum', 'id') == Account.q.id),
+        ]
+
+    @property
+    def account(self):
+        """Get the account for this view"""
+        return Account.get(self.id, connection=self.get_connection())
+
+    @property
+    def parent_account(self):
+        """Get the parent account for this view"""
+        return Account.get(self.parentID, connection=self.get_connection())
+
+    def matches(self, account_id):
+        """Returns true if the account_id matches this account or its parent"""
+        if self.id == account_id:
+            return True
+        if self.parentID and self.parentID == account_id:
+            return True
+        return False
+
+    def get_combined_value(self):
+        """Returns the combined value of incoming and outgoing
+        transactions"""
+        if self.dest_value is None and self.source_value is None:
+            return 0
+        elif self.dest_value is None:
+            return -self.source_value
+        elif self.source_value is None:
+            return self.dest_value
+        else:
+            return self.dest_value - self.source_value
+
+    def __repr__(self):
+        return '<AccountView %s>' % (self.description, )
