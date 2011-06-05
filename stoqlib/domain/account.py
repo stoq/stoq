@@ -239,6 +239,13 @@ class Account(Domain):
         """
         return self.account_labels[self.account_type][int(out)]
 
+    def matches(self, account_id):
+        if self.id == account_id:
+            return True
+        if self.parentID and self.parentID == account_id:
+            return True
+        return False
+
 
 class AccountTransaction(Domain):
     """Transaction between two accounts.
