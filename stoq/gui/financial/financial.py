@@ -294,17 +294,15 @@ class FinancialApp(AppWindow):
         self.notebook.set_tab_label(page, hbox)
 
     def _create_new_account(self):
-        parent = None
+        parent_view = None
         if self._is_accounts_tab():
             parent_view = self.accounts.get_selected()
-            if parent_view:
-                parent = parent_view.account
         else:
             page_id = self.notebook.get_current_page()
             page = self.notebook.get_nth_page(page_id)
-            if page.account.kind == 'account':
-                parent = page.account
-        retval = self._run_account_editor(None, parent)
+            if page.account_view.kind == 'account':
+                parent_view = page.account_view
+        retval = self._run_account_editor(None, parent_view)
         if retval:
             self.accounts.refresh_accounts(self.conn)
 
