@@ -34,6 +34,7 @@ import gio
 from kiwi.log import Logger
 
 from stoqlib.domain.interfaces import ICompany
+from stoqlib.database.runtime import get_connection
 from stoqlib.lib.asyncresponse import AsyncResponse
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import InstalledPlugin
@@ -89,7 +90,8 @@ class WebService(object):
 
         return response
 
-    def _get_cnpj(self, conn):
+    def _get_cnpj(self):
+        conn = get_connection()
         branch = sysparam(conn).MAIN_COMPANY
         if not branch or not branch.person:
             return None
@@ -110,7 +112,7 @@ class WebService(object):
         """
         params = {
             'dist': platform.dist(),
-            'cnpj': self._get_cnpj(conn),
+            'cnpj': self._get_cnpj(),
             'plugins': InstalledPlugin.get_plugin_names(conn),
             'time': datetime.datetime.today().isoformat(),
             'uname': platform.uname(),
@@ -120,7 +122,7 @@ class WebService(object):
 
     def bug_report(self, report):
         params = {
-            'cnpj': self._get_cnpj(conn),
+            'cnpj': self._get_cnpj(),
             'report': report,
         }
         return self._do_request('bugreport.json', **params)
