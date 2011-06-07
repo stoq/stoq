@@ -36,6 +36,8 @@ from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.domain.account import Account
+from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale, SaleView
 
@@ -254,6 +256,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
         self._update_interest(pay_interest=True)
         self._update_penalty(pay_penalty=True)
         self._update_total_value()
+        self._update_accounts()
 
     def _update_interest(self, pay_interest):
         self.interest.set_sensitive(pay_interest)
@@ -284,6 +287,22 @@ class _InstallmentConfirmationSlave(BaseEditor):
             self.installments.update(payment)
         self._proxy.update('total_value')
 
+    def _update_accounts(self):
+        if len(self._payments) != 1:
+            return
+        register_payment_operations()
+
+        payment = self._payments[0]
+        create_transaction = payment.method.operation.create_transaction()
+        self.account.set_sensitive(create_transaction)
+        if not create_transaction:
+            return
+
+        destinations = Account.select(connection=self.conn)
+        items = [(a.long_description, a) for a in destinations]
+        self.account.prefill(sorted(items))
+        self.account.select(payment.method.destination_account)
+
     #
     # BaseEditorSlave hooks
     #
@@ -295,7 +314,8 @@ class _InstallmentConfirmationSlave(BaseEditor):
     def on_confirm(self):
         pay_date = self.close_date.get_date()
         for payment in self._payments:
-            payment.pay(pay_date, payment.paid_value)
+            payment.pay(pay_date, payment.paid_value,
+                        account=self.account.get_selected())
         self.model.confirm()
         return True
 
