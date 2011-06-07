@@ -171,7 +171,7 @@ class CardPaymentOperation(object):
         CreditCardData.delete(credit_card_data.id, connection=conn)
 
     def create_transaction(self):
-        return False
+        return True
 
     def selectable(self, method):
         return PersonAdaptToCreditProvider.has_card_provider(
