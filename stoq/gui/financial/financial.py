@@ -160,7 +160,10 @@ class TransactionPage(ObjectList):
 
     def _edit_transaction_dialog(self, item):
         trans = new_transaction()
-        account_transaction = trans.get(item.transaction.transaction)
+        if isinstance(item.transaction, AccountTransactionView):
+            account_transaction = trans.get(item.transaction.transaction)
+        else:
+            account_transaction = trans.get(item.transaction)
         model = getattr(self.model, 'account', self.model)
         transaction = run_dialog(AccountTransactionEditor, self.parent_window,
                             trans, account_transaction, model)
