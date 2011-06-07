@@ -59,18 +59,21 @@ class _AccountTransactionTemporary(Settable):
                    transaction=transaction)
 
     def to_domain(self):
+        fields = dict(code=self.code,
+                      description=self.description,
+                      date=self.date,
+                      value=self.value,
+                      account=self.account,
+                      payment=self.payment,
+                      source_account=self.source_account)
         if self.transaction:
             t = self.transaction
+            for k, v in fields.items():
+                setattr(t, k, v)
         else:
-            t = AccountTransaction(connection=self.conn)
+            t = AccountTransaction(connection=self.conn,
+                                   **fields)
 
-        t.code = self.code
-        t.description = self.description
-        t.date = self.date
-        t.value = self.value
-        t.account = self.account
-        t.payment = self.payment
-        t.source_account = self.source_account
         return t
 
 
@@ -105,6 +108,7 @@ class AccountTransactionEditor(BaseEditor):
 
     def create_model(self, conn):
         return _AccountTransactionTemporary(
+            transaction=None,
             conn=conn,
             code=u"",
             description=u"",
@@ -122,10 +126,10 @@ class AccountTransactionEditor(BaseEditor):
     def setup_proxies(self):
         self._setup_widgets()
         self.add_proxy(self.model, AccountTransactionEditor.proxy_widgets)
-        if not self.new:
-            account = self.model.account
+        if self.model.account == self.parent_account:
+            account = self.model.source_account
         else:
-            account = self.model.get_other_account(self.parent_account)
+            account = self.model.account
         self.account.select(account)
 
     def validate_confirm(self):
