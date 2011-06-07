@@ -81,7 +81,7 @@ class TransactionPage(ObjectList):
         elif self.model.kind == 'receivable':
             self._populate_payable_payments(InPaymentView)
         else:
-            raise TypeError("unknown model kind: %r" % (model.kind, ))
+            raise TypeError("unknown model kind: %r" % (self.model.kind, ))
 
     def _get_columns(self, kind):
         if kind in ['payable', 'receivable']:
