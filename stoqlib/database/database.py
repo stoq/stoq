@@ -251,7 +251,7 @@ def restore_database(dump):
         raise NotImplementedError(settings.rdbms)
 
 
-def dump_table(table):
+def dump_table(table, filename=None):
     """Dump the contents of a table.
     Note this does not include the schema itself, just the data.
     To get the data call stdout.read() on the returned object.

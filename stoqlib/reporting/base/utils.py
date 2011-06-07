@@ -78,7 +78,7 @@ def print_file(filename, printer=None, extra_opts=[]):
                                 stdin=subprocess.PIPE)
         ret = proc.wait()
     else:
-        raise SystemExit("unknown system: %s" % (system, ))
+        raise SystemExit("unknown system: %s" % (_system, ))
 
     os.remove(filename)
     return ret
