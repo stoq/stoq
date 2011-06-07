@@ -87,14 +87,15 @@ class Importer(object):
         """
         self.dry = dry
 
-    def process(self):
+    def process(self, trans=None):
         """Do the main logic, create transactions, import items etc"""
         n_items = self.get_n_items()
         log.info('Importing %d items' % (n_items, ))
         create_log.info('ITEMS:%d' % (n_items, ))
         t1 = time.time()
 
-        trans = new_transaction()
+        if not trans:
+            trans = new_transaction()
         self.before_start(trans)
         for i in range(n_items):
             self.process_item(trans, i)
@@ -106,8 +107,8 @@ class Importer(object):
         if not self.dry:
             trans.commit(close=True)
 
-        trans = new_transaction()
         self.when_done(trans)
+
         if not self.dry:
             trans.commit(close=True)
 

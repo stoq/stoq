@@ -216,30 +216,34 @@ NEWFILEUID:NONE
 class OFXImporterTest(DomainTest):
     def testOFXImportBBJurdica(self):
         ofx = OFXImporter()
-        ofx.parse(StringIO(OFX_DATA))
+        ofx.feed(StringIO(OFX_DATA))
+        ofx.set_dry(True)
+        ofx.process(self.trans)
         imbalance_account = sysparam(self.trans).IMBALANCE_ACCOUNT
-        trans = new_transaction()
-        account = ofx.import_transactions(trans, imbalance_account)
+        account = Account.select(connection=self.trans).orderBy('id')[-1]
         self.failUnless(account)
         self.assertEquals(account.description, "Bank - CHECKING")
         self.assertEquals(account.code, "1234")
         self.assertEquals(account.transactions.count(), 2)
+        self.assertEquals(account.account_type, Account.TYPE_BANK)
         t1, t2 = sorted(account.transactions)
-        self.assertEquals(t1.value, 50)
-        self.assertEquals(t1.code, '90068258')
-        self.assertEquals(t2.value, -5)
-        self.assertEquals(t2.code, '90068259')
+        self.assertEquals(t1.value, -5)
+        self.assertEquals(t1.code, '90068259')
+        self.assertEquals(t2.value, 50)
+        self.assertEquals(t2.code, '90068258')
 
     def testOFXImportBBFisica(self):
         ofx = OFXImporter()
-        ofx.parse(StringIO(OFX_DATA2))
+        ofx.feed(StringIO(OFX_DATA2))
+        ofx.set_dry(True)
+        ofx.process(self.trans)
         imbalance_account = sysparam(self.trans).IMBALANCE_ACCOUNT
-        trans = new_transaction()
-        account = ofx.import_transactions(trans, imbalance_account)
+        account = Account.select(connection=self.trans).orderBy('id')[-1]
         self.failUnless(account)
         self.assertEquals(account.description, "Banco do Brasil - CHECKING")
         self.assertEquals(account.code, "67890-X")
         self.assertEquals(account.transactions.count(), 1)
+        self.assertEquals(account.account_type, Account.TYPE_BANK)
         t = account.transactions[0]
         self.assertEquals(t.value, Decimal("-35.65"))
         self.assertEquals(t.code, '000000104485')
@@ -248,14 +252,17 @@ class OFXImporterTest(DomainTest):
 
     def testOFXImportSantander(self):
         ofx = OFXImporter()
-        ofx.parse(StringIO(OFX_DATA3))
+        ofx.feed(StringIO(OFX_DATA3))
+        ofx.set_dry(True)
+        ofx.process(self.trans)
         imbalance_account = sysparam(self.trans).IMBALANCE_ACCOUNT
         trans = new_transaction()
-        account = ofx.import_transactions(trans, imbalance_account)
+        account = Account.select(connection=self.trans).orderBy('id')[-1]
         self.failUnless(account)
         self.assertEquals(account.description, "SANTANDER - CHECKING")
         self.assertEquals(account.code, "012345678")
         self.assertEquals(account.transactions.count(), 1)
+        self.assertEquals(account.account_type, Account.TYPE_BANK)
         t = account.transactions[0]
         self.assertEquals(t.value, Decimal("-123.67"))
         self.assertEquals(t.code, '00801000')

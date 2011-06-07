@@ -164,6 +164,7 @@ class OFXImporter(Importer):
         if account is None:
             account = Account(description=self.get_account_id(),
                               code=self.tp.account_id,
+                              account_type=Account.TYPE_BANK,
                               parent=sysparam(trans).BANKS_ACCOUNT,
                               connection=trans)
         self.account_id = account.id
@@ -212,5 +213,5 @@ class OFXImporter(Importer):
 if __name__ == '__main__':
     import sys
     ofx = OFXImporter()
-    ofx.parse(sys.argv[1])
-    ofx.import_transactions()
+    ofx.feed(sys.argv[1])
+    ofx.process()
