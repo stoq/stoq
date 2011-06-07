@@ -176,7 +176,6 @@ class StockTransferProductStep(SellableItemStep):
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
-        self.quantity.connect('validate', self._on_quantity__validate)
 
     #
     # WizardStep hooks
@@ -202,7 +201,7 @@ class StockTransferProductStep(SellableItemStep):
             return ValidationError(
                 _(u'Quantity is greater than the quantity in stock.'))
 
-        return super(PurchaseItemStep,
+        return super(StockTransferProductStep,
                      self).on_quantity__validate(widget, value)
 
 
