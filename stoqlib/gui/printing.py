@@ -66,7 +66,7 @@ def _get_available_printers():
         printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_NAME)
         return [p[1] for p in printers]
     else:
-        raise SystemExit("unknown system: %s" % (system, ))
+        raise SystemExit("unknown system: %s" % (_system, ))
 
 
 # FIXME: Remove as soon as poppler is properly tested

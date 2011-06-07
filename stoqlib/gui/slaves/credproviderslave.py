@@ -61,7 +61,7 @@ class CreditProviderDetailsSlave(BaseEditorSlave):
         if value > 100:
             return ValidationError(_(u'The fee can not be greater to 100%.'))
         if value < 0:
-            return ValidationErrror(_(u'The fee must be positive.'))
+            return ValidationError(_(u'The fee must be positive.'))
 
     on_credit_fee__validate = _validate
     on_credit_installments_store_fee__validate = _validate

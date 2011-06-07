@@ -52,7 +52,7 @@ def get_application_dir(appname="stoq"):
     elif _system == 'Windows':
         appdir = os.path.join(os.environ['APPDATA'], appname)
     else:
-        raise SystemExit("unknown system: %s" % (system, ))
+        raise SystemExit("unknown system: %s" % (_system, ))
     if not os.path.exists(appdir):
         os.makedirs(appdir)
     return appdir
@@ -68,7 +68,7 @@ def get_documents_dir():
         pidl = folder.ParseDisplayName(0, None, MY_DOCUMENTS)[1]
         return shell.SHGetPathFromIDList(pidl)
     else:
-        raise SystemExit("unknown system: %s" % (system, ))
+        raise SystemExit("unknown system: %s" % (_system, ))
 
 def get_username():
     """@returns: the current username"""
@@ -77,4 +77,4 @@ def get_username():
     elif _system == 'Windows':
         return os.environ['USERNAME']
     else:
-        raise SystemExit("unknown system: %s" % (system, ))
+        raise SystemExit("unknown system: %s" % (_system, ))
