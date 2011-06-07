@@ -165,11 +165,14 @@ class TransactionPage(ObjectList):
         else:
             account_transaction = trans.get(item.transaction)
         model = getattr(self.model, 'account', self.model)
+
         transaction = run_dialog(AccountTransactionEditor, self.parent_window,
-                            trans, account_transaction, model)
+                                 trans, account_transaction, model)
+
         if transaction:
             transaction.syncUpdate()
-            self._update_transaction(item, transaction, model.description,
+            self._update_transaction(item, transaction,
+                                     transaction.edited_account.description,
                                      transaction.value)
             self._update_totals()
             self.update(item)
@@ -178,6 +181,7 @@ class TransactionPage(ObjectList):
     def add_transaction_dialog(self):
         trans = new_transaction()
         model = getattr(self.model, 'account', self.model)
+        model = trans.get(model)
         transaction = run_dialog(AccountTransactionEditor, self.parent_window,
                                  trans, None, model)
         if transaction:
@@ -545,7 +549,10 @@ class FinancialApp(AppWindow):
         account_transactions.remove(item)
 
         trans = new_transaction()
-        account_transaction = trans.get(item.transaction.transaction)
+        if isinstance(item.transaction, AccountTransactionView):
+            account_transaction = trans.get(item.transaction.transaction)
+        else:
+            account_transaction = trans.get(item.transaction)
         account_transaction.delete(account_transaction.id, connection=trans)
         trans.commit(close=True)
 
