@@ -400,6 +400,7 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     if dialog is None:
         raise TypeError("dialog cannot be None")
 
+    parent = getattr(parent, 'main_dialog', parent)
     parent = parent or get_current_toplevel()
     orig_dialog = dialog
     if inspect.isclass(dialog):
