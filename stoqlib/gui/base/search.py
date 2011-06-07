@@ -586,7 +586,7 @@ class SearchEditor(SearchDialog):
         """
         if self._selected:
             selected = self._selected
-            selected.sync()
+            selected.syncUpdate()
             self.results.update(selected)
         else:
             # user just added a new instance
