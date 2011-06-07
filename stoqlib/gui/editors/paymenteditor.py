@@ -106,7 +106,6 @@ class BasePaymentEditor(BaseEditor):
         self.category.set_sensitive(bool(categories))
         self.category.prefill([(c.name, c) for c in categories])
 
-
     def setup_widgets(self):
         self.person_label.set_label(self._person_label)
         self.details_button = self.add_button(self.details_button_label)
@@ -321,3 +320,12 @@ class LonelyPaymentDetailsDialog(BaseEditor):
 
         if IOutPayment(model, None):
             return _(u'Payment Details')
+
+def get_dialog_for_payment(payment):
+    if IInPayment(payment, None):
+        return InPaymentEditor
+
+    if IOutPayment(payment, None):
+        return OutPaymentEditor
+
+    raise TypeError(payment)

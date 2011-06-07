@@ -30,7 +30,9 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
 from stoqlib.domain.account import Account, AccountTransaction
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.editors.paymenteditor import get_dialog_for_payment
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -51,6 +53,7 @@ class _AccountTransactionTemporary(Settable):
                    date=transaction.date,
                    value=transaction.value,
                    conn=conn,
+                   payment=transaction.payment,
                    account=transaction.account,
                    source_account=transaction.source_account)
 
@@ -61,6 +64,7 @@ class _AccountTransactionTemporary(Settable):
                                   value=self.value,
                                   connection=self.conn,
                                   account=self.account,
+                                  payment=self.payment,
                                   source_account=self.source_account)
 
 
@@ -77,6 +81,16 @@ class AccountTransactionEditor(BaseEditor):
             model = _AccountTransactionTemporary.from_domain(conn, model)
         BaseEditor.__init__(self, conn, model)
 
+        payment_button = gtk.Button(_("Show Payment"))
+        payment_button.connect("clicked", self._on_payment_button__clicked)
+        box = self.main_dialog.action_area
+        box.pack_start(payment_button, False, False)
+        box.reorder_child(payment_button, 0)
+
+        payment_button.set_sensitive(self.model.payment is not None)
+        payment_button.show()
+
+
     #
     # BaseEditor hooks
     #
@@ -87,6 +101,7 @@ class AccountTransactionEditor(BaseEditor):
             code=u"",
             description=u"",
             value=currency(0),
+            payment=None,
             date=datetime.datetime.today(),
             account=self.parent_account,
             source_account=sysparam(conn).IMBALANCE_ACCOUNT)
@@ -129,3 +144,11 @@ class AccountTransactionEditor(BaseEditor):
     def on_value__validate(self, entry, value):
         if value == 0:
             return ValidationError(_("Value cannot be zero"))
+
+    def _on_payment_button__clicked(self, button):
+        self._show_payment()
+
+    def _show_payment(self):
+        dialog_class = get_dialog_for_payment(self.model.payment)
+        run_dialog(dialog_class, self,
+                   self.conn, self.model.payment)
