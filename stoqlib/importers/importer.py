@@ -106,6 +106,7 @@ class Importer(object):
 
         if not self.dry:
             trans.commit(close=True)
+            trans = new_transaction()
 
         self.when_done(trans)
 
