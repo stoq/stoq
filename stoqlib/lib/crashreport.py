@@ -40,6 +40,8 @@ from stoqlib.lib.webservice import WebService
 log = Logger('stoqlib.crashreporter')
 _tracebacks = []
 
+_N_TRIES = 3
+
 def collect_report(params):
     text = ""
     text += "Report generated at %s %s\n" % (
