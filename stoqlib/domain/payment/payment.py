@@ -208,7 +208,7 @@ class Payment(Domain):
         self.paid_date = None
         self.paid_value = None
 
-    def pay(self, paid_date=None, paid_value=None):
+    def pay(self, paid_date=None, paid_value=None, account=None):
         """Pay the current payment set its status as STATUS_PAID"""
         self._check_status(self.STATUS_PENDING, 'pay')
 
@@ -224,7 +224,7 @@ class Payment(Domain):
         register_payment_operations()
 
         if self.method.operation.create_transaction():
-            AccountTransaction.create_from_payment(self)
+            AccountTransaction.create_from_payment(self, account)
 
     def cancel(self, change_entry=None):
         # TODO Check for till entries here and call cancel_till_entry if
