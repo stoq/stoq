@@ -277,12 +277,13 @@ class AccountTransaction(Domain):
         lazyUpdate = True
 
     @classmethod
-    def create_from_payment(cls, payment):
+    def create_from_payment(cls, payment, account=None):
         """Create a new transaction based on a payment.
         It's normally used when creating a transaction which represents
         a payment, for instance when you receive a bill or a check from
         a client which will enter a bank account.
         @payment: the payment to create the transaction for.
+        @account: account where this payment will arrive
         @returns: the transaction
         """
         trans = payment.get_connection()
@@ -290,7 +291,7 @@ class AccountTransaction(Domain):
         if IOutPayment(payment, None):
             value = -value
         return cls(source_account=sysparam(trans).IMBALANCE_ACCOUNT,
-                   account=payment.method.destination_account,
+                   account=account or payment.method.destination_account,
                    value=value,
                    description=payment.description,
                    code=str(payment.id),
