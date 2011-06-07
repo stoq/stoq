@@ -55,17 +55,23 @@ class _AccountTransactionTemporary(Settable):
                    conn=conn,
                    payment=transaction.payment,
                    account=transaction.account,
-                   source_account=transaction.source_account)
+                   source_account=transaction.source_account,
+                   transaction=transaction)
 
     def to_domain(self):
-        return AccountTransaction(code=self.code,
-                                  description=self.description,
-                                  date=self.date,
-                                  value=self.value,
-                                  connection=self.conn,
-                                  account=self.account,
-                                  payment=self.payment,
-                                  source_account=self.source_account)
+        if self.transaction:
+            t = self.transaction
+        else:
+            t = AccountTransaction(connection=self.conn)
+
+        t.code = self.code
+        t.description = self.description
+        t.date = self.date
+        t.value = self.value
+        t.account = self.account
+        t.payment = self.payment
+        t.source_account = self.source_account
+        return t
 
 
 class AccountTransactionEditor(BaseEditor):
@@ -77,8 +83,10 @@ class AccountTransactionEditor(BaseEditor):
 
     def __init__(self, conn, model, account):
         self.parent_account = account
+        self.new = False
         if model is not None:
             model = _AccountTransactionTemporary.from_domain(conn, model)
+            self.new = True
         BaseEditor.__init__(self, conn, model)
 
         payment_button = gtk.Button(_("Show Payment"))
@@ -114,7 +122,11 @@ class AccountTransactionEditor(BaseEditor):
     def setup_proxies(self):
         self._setup_widgets()
         self.add_proxy(self.model, AccountTransactionEditor.proxy_widgets)
-        self.account.select(self.model.get_other_account(self.parent_account))
+        if not self.new:
+            account = self.model.account
+        else:
+            account = self.model.get_other_account(self.parent_account)
+        self.account.select(account)
 
     def validate_confirm(self):
         return self.model.value != 0
@@ -122,6 +134,7 @@ class AccountTransactionEditor(BaseEditor):
     def on_confirm(self):
         new_account = self.account.get_selected()
         at = self.model.to_domain()
+        at.edited_account = new_account
         at.set_other_account(self.parent_account, new_account)
         return at
 
