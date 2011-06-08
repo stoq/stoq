@@ -63,6 +63,25 @@
                       <object class="GtkMenu" id="menu3">
                         <property name="visible">True</property>
                         <child>
+                          <object class="GtkImageMenuItem" id="help_contents">
+                            <property name="label">gtk-help</property>
+                            <property name="visible">True</property>
+                            <property name="use_stock">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="help_financial">
+                            <property name="label">_Financial help</property>
+                            <property name="visible">True</property>
+                            <property name="use_underline">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSeparatorMenuItem" id="separator1">
+                            <property name="visible">True</property>
+                          </object>
+                        </child>
+                        <child>
                           <object class="GtkImageMenuItem" id="About">
                             <property name="label">gtk-about</property>
                             <property name="visible">True</property>

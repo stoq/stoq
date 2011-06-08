@@ -45,6 +45,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.gui.dialogs.importerdialog import ImporterDialog
+from stoqlib.gui.help import show_contents, show_section
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoq.gui.application import AppWindow
@@ -611,3 +612,9 @@ class FinancialApp(AppWindow):
 
     def on_About__activate(self, action):
         self._run_about()
+
+    def on_help_contents__activate(self, action):
+        show_contents()
+
+    def on_help_financial__activate(self, action):
+        show_section('financial-inicial')
