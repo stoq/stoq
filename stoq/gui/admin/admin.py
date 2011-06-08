@@ -46,6 +46,7 @@ from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog,
                                                InvoicePrinterDialog)
 from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
+from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
 from stoqlib.gui.search.parametersearch import ParameterSearch
 from stoqlib.gui.search.personsearch import (ClientSearch,
@@ -338,3 +339,9 @@ class AdminApp(AppWindow):
 
     def on_TaxTemplates__activate(self, action):
         self.run_dialog(TaxTemplatesSearch, self.conn)
+
+    def on_help_contents__activate(self, action):
+        show_contents()
+
+    def on_help_admin__activate(self, action):
+        show_section('admin-inicial')
