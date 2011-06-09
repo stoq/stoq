@@ -43,6 +43,7 @@ from stoqlib.gui.search.consignmentsearch import ConsignmentItemSearch
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.sellableunitsearch import SellableUnitSearch
+from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.wizards.consignmentwizard import (ConsignmentWizard,
                                                    CloseInConsignmentWizard)
@@ -342,6 +343,12 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_SearchClosedStockItems__activate(self, action):
         self.run_dialog(ProductClosedStockSearch, self.conn)
+
+    def on_help_contents__activate(self, action):
+        show_contents()
+
+    def on_help_purchase__activate(self, action):
+        show_section('compras-inicio')
 
     # FIXME: Kiwi autoconnection OR rename, see #2323
 
