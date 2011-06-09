@@ -49,6 +49,7 @@ from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 from stoqlib.gui.editors.paymenteditor import OutPaymentEditor
 from stoqlib.gui.editors.paymentseditor import PaymentsEditor
+from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
 from stoqlib.reporting.payment import PayablePaymentReport
@@ -394,3 +395,9 @@ class PayableApp(SearchableAppWindow):
 
     def on_BillCheckSearch__activate(self, action):
         self._run_bill_check_search()
+
+    def on_help_contents__activate(self, action):
+        show_contents()
+
+    def on_help_payable__activate(self, action):
+        show_section('pagar-inicio')
