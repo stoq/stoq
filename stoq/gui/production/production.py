@@ -36,6 +36,7 @@ from stoqlib.domain.production import ProductionOrder
 from stoqlib.gui.dialogs.productiondetails import ProductionDetailsDialog
 from stoqlib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
 from stoqlib.gui.dialogs.startproduction import StartProductionDialog
+from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
                                                  ProductionItemsSearch,
                                                  ProductionHistorySearch)
@@ -155,6 +156,12 @@ class ProductionApp(SearchableAppWindow):
 
     def on_ToolbarPurchaseQuote__activate(self, action):
         self.run_dialog(ProductionQuoteDialog, self.conn)
+
+    def on_help_contents__activate(self, action):
+        show_contents()
+
+    def on_help_production__activate(self, action):
+        show_section('producao-inicio')
 
     def on_start_production_button__clicked(self, widget):
         self._start_production_order()
