@@ -49,6 +49,7 @@ from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
+from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import SaleSearch, SoldItemsByBranchSearch
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
@@ -372,6 +373,12 @@ class TillApp(SearchableAppWindow):
         model = run_dialog(CashOutEditor, self, self.conn)
         if finish_transaction(self.conn, model):
             self._update_total()
+
+    def on_help_contents__activate(self, action):
+        show_contents()
+
+    def on_help_till__activate(self, action):
+        show_section('caixa-inicio')
 
     #
     # Callbacks
