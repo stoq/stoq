@@ -41,6 +41,7 @@ from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
 from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
+from stoqlib.gui.help import show_contents, show_section
 from stoqlib.lib.message import yesno
 from stoqlib.reporting.product import ProductCountingReport
 
@@ -213,3 +214,9 @@ class InventoryApp(SearchableAppWindow):
         sellables = list(self._get_sellables_by_inventory(selected))
         if sellables:
             self.print_report(ProductCountingReport, sellables)
+
+    def on_help_contents__activate(self, action):
+        show_contents()
+
+    def on_help_inventory__activate(self, action):
+        show_section('inventario-inicio')
