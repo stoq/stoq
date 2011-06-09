@@ -59,6 +59,7 @@ from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
+from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import (SaleSearch, DeliverySearch,
@@ -730,6 +731,12 @@ class POSApp(AppWindow):
 
     def on_TillOpen__activate(self, action):
          self._open_till()
+
+    def on_help_contents__activate(self, action):
+        show_contents()
+
+    def on_help_pos__activate(self, action):
+        show_section('pdv-inicio')
 
     #
     # Other callbacks
