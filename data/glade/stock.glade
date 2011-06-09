@@ -269,6 +269,21 @@
                         <property name="accelerator">&lt;Control&gt;u</property>
                     </widget>
                 </child>
+                <child>
+                    <widget class="GtkAction" id="help_contents">
+                        <property name="name">help_contents</property>
+                        <property name="stock_id">gtk-help</property>
+                        <property name="label" translatable="yes">_Contents</property>
+                        <property name="accelerator">&lt;Shift&gt;uF1</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="help_stock">
+                        <property name="name">help_stock</property>
+                        <property name="label" translatable="yes">Stock help</property>
+                        <property name="accelerator">F1</property>
+                    </widget>
+                </child>
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui>
@@ -301,6 +316,9 @@
           <menuitem action="SearchClosedStockItems"/>
 	    </menu>
 	    <menu action="help_menu">
+              <menuitem action="help_contents"/>
+              <menuitem action="help_stock"/>
+              <separator name="help_separator"/>
 	      <menuitem action="about_menu"/>
 	    </menu>
 	  </menubar>

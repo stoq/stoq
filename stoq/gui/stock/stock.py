@@ -44,6 +44,7 @@ from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.message import warning
 from stoqlib.gui.editors.producteditor import ProductStockEditor
+from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
@@ -254,6 +255,12 @@ class StockApp(SearchableAppWindow):
         model = self.run_dialog(StockDecreaseWizard, trans)
         finish_transaction(trans, model)
         trans.close()
+
+    def on_help_contents__activate(self, action):
+        show_contents()
+
+    def on_help_stock__activate(self, action):
+        show_section('estoque-inicio')
 
     def on_print_button__clicked(self, button):
         branch_name = self.branch_filter.combo.get_active_text()
