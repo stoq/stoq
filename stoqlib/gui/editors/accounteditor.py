@@ -89,8 +89,10 @@ class AccountEditor(BaseEditor):
 
     def on_confirm(self):
         new_parent = self.parent_accounts.get_selected()
+        if new_parent:
+            new_parent = new_parent.account
         if new_parent != self.model:
-            self.model.parent = self.parent_accounts.get_selected()
+            self.model.parent = new_parent
         return self.model
 
     def _on_parent_accounts__selection_changed(self, objectlist, account):
