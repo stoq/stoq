@@ -324,7 +324,7 @@ class FinancialApp(AppWindow):
                                           self.accounts.get_parent(account_view))
         if not retval:
             return
-        self.refresh_accounts(self.conn)
+        self.accounts.refresh_accounts(self.conn)
 
     def _run_account_editor(self, model, parent_account):
         trans = new_transaction()
