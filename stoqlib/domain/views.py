@@ -870,6 +870,7 @@ class AccountView(Viewable):
         account_type=Account.q.account_type,
         dest_accountID=Account.q.parentID,
         description=Account.q.description,
+        code=Account.q.code,
         source_value=Field('source_sum', 'value'),
         dest_value=Field('dest_sum', 'value')
         )
