@@ -204,7 +204,7 @@ def _ensure_card_providers():
         person.addFacet(ICompany, connection=trans)
         person.addFacet(ICreditProvider, short_name=name, provider_id=name,
                         open_contract_date=const.NOW(), connection=trans)
-    trans.commit()
+    trans.commit(close=True)
 
 def get_admin_user(conn):
     """Retrieves the current administrator user for the system

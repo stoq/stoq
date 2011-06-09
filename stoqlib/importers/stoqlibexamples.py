@@ -56,7 +56,7 @@ def _set_person_utilities():
     station = BranchStation(name=u"Stoqlib station", branch=branch,
                             connection=trans, is_active=True)
     provide_utility(ICurrentBranchStation, station)
-    trans.commit()
+    trans.commit(close=True)
 
 def create(utilities=False):
     log.info('Creating example database')
