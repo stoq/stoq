@@ -53,6 +53,7 @@ from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
+from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.search.paymentsearch import CardPaymentSearch
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
@@ -445,3 +446,9 @@ class ReceivableApp(SearchableAppWindow):
         item = self.results.get_selected_rows()[0]
         payment = item.payment
         print_report(BillReport, [payment])
+
+    def on_help_contents__activate(self, action):
+        show_contents()
+
+    def on_help_receivable__activate(self, action):
+        show_section('receber-inicio')
