@@ -104,6 +104,21 @@
                         <property name="label" translatable="yes">_Help</property>
                     </widget>
                 </child>
+                <child>
+                    <widget class="GtkAction" id="help_contents">
+                        <property name="name">help_contents</property>
+                        <property name="stock_id">gtk-help</property>
+                        <property name="label" translatable="yes">_Contents</property>
+                        <property name="accelerator">&lt;Shift&gt;uF1</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="help_inventory">
+                        <property name="name">help_inventory</property>
+                        <property name="label" translatable="yes">Inventory help</property>
+                        <property name="accelerator">F1</property>
+                    </widget>
+                </child>
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui>
@@ -117,6 +132,9 @@
 	      <menuitem action="Quit"/>
 	    </menu>
 	    <menu action="help_menu">
+              <menuitem action="help_contents"/>
+              <menuitem action="help_inventory"/>
+              <separator name="help_separator"/>
 	      <menuitem action="about_menu"/>
 	    </menu>
 	  </menubar>
