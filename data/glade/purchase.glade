@@ -323,6 +323,21 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="help_contents">
+                        <property name="name">help_contents</property>
+                        <property name="stock_id">gtk-help</property>
+                        <property name="label" translatable="yes">_Contents</property>
+                        <property name="accelerator">&lt;Shift&gt;uF1</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="help_purchase">
+                        <property name="name">help_purchase</property>
+                        <property name="label" translatable="yes">Purchase help</property>
+                        <property name="accelerator">F1</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="receive_action">
                         <property name="name">receive_action</property>
                         <property name="label" translatable="yes">_Receive</property>
@@ -386,6 +401,9 @@
 	  </menu>
       <placeholder name="ExtraMenu"/>
           <menu action="help_menu">
+            <menuitem action="help_contents"/>
+            <menuitem action="help_purchase"/>
+            <separator name="help_separator"/>
 	    <menuitem action="about_menu"/>
 	  </menu>
 	  </menubar>
