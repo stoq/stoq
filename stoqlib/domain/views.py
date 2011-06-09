@@ -847,23 +847,24 @@ class LoanItemView(Viewable):
         INNERJOINOn(None, BaseSellableInfo,
                     Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),]
 
-class SourceSum(Viewable):
-     columns = dict(
-         id=AccountTransaction.q.source_accountID,
-         value=const.SUM(AccountTransaction.q.value),
-         )
-
-     joins = []
-
-class DestSum(Viewable):
-     columns = dict(
-         id=AccountTransaction.q.accountID,
-         value=const.SUM(AccountTransaction.q.value),
-         )
-
-     joins = []
-
 class AccountView(Viewable):
+
+    class _SourceSum(Viewable):
+         columns = dict(
+              id=AccountTransaction.q.source_accountID,
+              value=const.SUM(AccountTransaction.q.value),
+              )
+
+         joins = []
+
+    class _DestSum(Viewable):
+         columns = dict(
+              id=AccountTransaction.q.accountID,
+              value=const.SUM(AccountTransaction.q.value),
+               )
+
+         joins = []
+
     columns = dict(
         id=Account.q.id,
         parentID=Account.q.parentID,
@@ -876,9 +877,9 @@ class AccountView(Viewable):
         )
 
     joins = [
-        LEFTJOINOn(None, '(%s) AS source_sum' % (SourceSum.select(), ),
+        LEFTJOINOn(None, '(%s) AS source_sum' % (_SourceSum.select(), ),
                    Field('source_sum', 'id') == Account.q.id),
-        LEFTJOINOn(None, '(%s) AS dest_sum' % (DestSum.select(), ),
+        LEFTJOINOn(None, '(%s) AS dest_sum' % (_DestSum.select(), ),
                    Field('dest_sum', 'id') == Account.q.id),
         ]
 
