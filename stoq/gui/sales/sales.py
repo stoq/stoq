@@ -41,6 +41,7 @@ from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.editors.invoiceeditor import SaleInvoicePrinterDialog
 from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
+from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -316,3 +317,9 @@ class SalesApp(SearchableAppWindow):
 
     def on_SearchLoanItems__activate(self, action):
         self.run_dialog(LoanItemSearch, self.conn)
+
+    def on_help_contents__activate(self, action):
+        show_contents()
+
+    def on_help_sales__activate(self, action):
+        show_section('vendas-inicio')
