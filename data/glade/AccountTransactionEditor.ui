@@ -16,7 +16,7 @@
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
             <property name="xalign">1</property>
-            <property name="label" translatable="yes">Code:</property>
+            <property name="label" translatable="yes">Description:</property>
           </object>
           <packing>
             <property name="x_options">GTK_FILL</property>
@@ -27,7 +27,7 @@
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
             <property name="xalign">1</property>
-            <property name="label" translatable="yes">Description:</property>
+            <property name="label" translatable="yes">Code:</property>
           </object>
           <packing>
             <property name="top_attach">1</property>
@@ -41,8 +41,8 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="invisible_char">&#x25CF;</property>
-            <property name="data_type">unicode</property>
             <property name="model_attribute">description</property>
+            <property name="data_type">unicode</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -55,8 +55,8 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="invisible_char">&#x25CF;</property>
-            <property name="data_type">unicode</property>
             <property name="model_attribute">code</property>
+            <property name="data_type">unicode</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -94,8 +94,8 @@
         <child>
           <object class="ProxyDateEntry" id="date">
             <property name="visible">True</property>
-            <property name="data_type">datetime</property>
             <property name="model_attribute">date</property>
+            <property name="data_type">datetime</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
