@@ -78,6 +78,7 @@ class CSVImporter(Importer):
         t = time.time()
         trans = new_transaction()
         self.before_start(trans)
+        trans.commit(close=True)
         self.lineno = 1
         self.rows = list(csv.reader(fp, dialect=self.dialect))
 
