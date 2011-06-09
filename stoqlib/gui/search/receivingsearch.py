@@ -69,7 +69,7 @@ class PurchaseReceivingSearch(SearchDialog):
                                      'purchase_responsible_name',])
 
         # Branch
-        branch_filter = self.create_branch_filter(_(u"In branch"))
+        branch_filter = self.create_branch_filter(_("In branch:"))
         self.add_filter(branch_filter, columns=['branch_id'],
                         position=SearchFilterPosition.TOP)
 

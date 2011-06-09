@@ -370,8 +370,7 @@ class ProductStockSearch(SearchEditor):
         self.set_text_field_columns(['description', 'category_description'])
         self.executer.set_query(self.executer_query)
 
-        #Branch
-        branch_filter = self.create_branch_filter(_('In Branch:'))
+        branch_filter = self.create_branch_filter(_('In branch:'))
         branch_filter.select(get_current_branch(self.conn).id)
         self.add_filter(branch_filter, columns = [])
         self.branch_filter = branch_filter
