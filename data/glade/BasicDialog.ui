@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<interface>
+<interface domain="stoqlib">
     <requires lib="gtk+" version="2.16"/>
     <object class="GtkDialog" id="BasicDialog">
         <property name="has_separator">False</property>
