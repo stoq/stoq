@@ -35,10 +35,10 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 class StationSearch(SearchEditor):
-    title = _("Branch Station Search")
+    title = _("Computer Search")
     table = BranchStation
     editor_class = StationEditor
-    searchbar_result_strings = _("Station"), _("Stations")
+    searchbar_result_strings = _("Computer"), _("Computers")
     size = (-1, 450)
     advanced_search = False
 

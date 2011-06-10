@@ -48,7 +48,7 @@ class DeviceSettingsDialog(ModelListDialog):
                data_type=str, sorted=True, width=120),
         Column('description', title=_('Description'),
                data_type=str, expand=True),
-        Column('station.name', title=_('Station'),
+        Column('station.name', title=_('Computer'),
                data_type=str, width=150, searchable=True),
         Column('is_active', title=_("Active"),
                data_type=bool, width=100)]
