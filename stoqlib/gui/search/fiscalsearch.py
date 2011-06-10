@@ -55,11 +55,11 @@ fiscal_book_entries = {FiscalBookEntryType.ICMS: _("ICMS"),
 
 
 class CfopSearch(SearchEditor):
-    title = _("CFOP Search")
+    title = _("C.F.O.P Search")
     table = CfopData
     editor_class = CfopEditor
     size = (465, 390)
-    searchbar_result_strings = _("CFOP"), _("CFOPs")
+    searchbar_result_strings = _("C.F.O.P"), _("C.F.O.Ps")
 
     #
     # SearchDialog Hooks
@@ -69,7 +69,7 @@ class CfopSearch(SearchEditor):
         self.set_text_field_columns(['description', 'code'])
 
     def get_columns(self):
-        return [SearchColumn('code', _('CFOP'), data_type=str, sorted=True,
+        return [SearchColumn('code', _('C.F.O.P'), data_type=str, sorted=True,
                              width=90),
                 SearchColumn('description', _('Description'), data_type=str,
                              searchable=True, expand=True)]
@@ -124,7 +124,7 @@ class FiscalBookEntrySearch(SearchDialog):
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('invoice_number', title=_('Invoice'),
                              data_type=int, width=110),
-                SearchColumn('cfop_code', title=_('CFOP'), data_type=str, width=90),
+                SearchColumn('cfop_code', title=_('C.F.O.P'), data_type=str, width=90),
                 SearchColumn('drawee_name', title=_('Drawee'),
                              data_type=str, expand=True)]
 

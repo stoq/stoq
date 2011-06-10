@@ -231,32 +231,32 @@ _parameter_info = dict(
     # XXX: These parameters are Brazil-specific
     ASK_SALES_CFOP=ParameterDetails(
     _(u'Sales'),
-    _(u'Ask for Sale Order CFOP'),
-    _(u'Once this parameter is set to True we will ask for the CFOP '
+    _(u'Ask for Sale Order C.F.O.P'),
+    _(u'Once this parameter is set to True we will ask for the C.F.O.P '
       'when creating new sale orders')),
 
     DEFAULT_SALES_CFOP=ParameterDetails(
     _(u'Sales'),
-    _(u'Default Sales CFOP'),
-    _(u'Default CFOP (Fiscal Code of Operations) used when generating '
+    _(u'Default Sales C.F.O.P'),
+    _(u'Default C.F.O.P (Fiscal Code of Operations) used when generating '
       'fiscal book entries.')),
 
     DEFAULT_RETURN_SALES_CFOP=ParameterDetails(
     _(u'Sales'),
-    _(u'Default Return Sales CFOP'),
-    _(u'Default CFOP (Fiscal Code of Operations) used when returning '
+    _(u'Default Return Sales C.F.O.P'),
+    _(u'Default C.F.O.P (Fiscal Code of Operations) used when returning '
       'sale orders ')),
 
     DEFAULT_RECEIVING_CFOP=ParameterDetails(
     _(u'Purchase'),
-    _(u'Default Receiving CFOP'),
-    _(u'Default CFOP (Fiscal Code of Operations) used when receiving '
+    _(u'Default Receiving C.F.O.P'),
+    _(u'Default C.F.O.P (Fiscal Code of Operations) used when receiving '
       'products in the stock application.')),
 
     DEFAULT_STOCK_DECREASE_CFOP=ParameterDetails(
     _(u'Stock'),
-    _(u'Default CFOP for Stock Decreases'),
-    _(u'Default CFOP (Fiscal Code of Operations) used when performing a '
+    _(u'Default C.F.O.P for Stock Decreases'),
+    _(u'Default C.F.O.P (Fiscal Code of Operations) used when performing a '
       'manual stock decrease.')),
 
     ICMS_TAX=ParameterDetails(
