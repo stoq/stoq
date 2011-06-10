@@ -27,7 +27,7 @@
                 <child>
                     <widget class="GtkAction" id="CfopSearch">
                         <property name="name">CfopSearch</property>
-                        <property name="label" translatable="yes">CFOP...</property>
+                        <property name="label" translatable="yes">C.F.O.P...</property>
                         <property name="accelerator">&lt;Control&gt;o</property>
                     </widget>
                 </child>
