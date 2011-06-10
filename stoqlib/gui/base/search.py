@@ -376,7 +376,7 @@ class SearchDialog(BasicDialog):
         items.insert(0, (_("Any"), None))
 
         if not label:
-            label = _('Branch')
+            label = _('Branch:')
         branch_filter = ComboSearchFilter(label, items)
         current = get_current_branch(self.conn)
         if current:
@@ -391,7 +391,7 @@ class SearchDialog(BasicDialog):
         items.insert(0, (_("Any"), None))
 
         if not label:
-            label = _('Provider')
+            label = _('Provider:')
         provider_filter = ComboSearchFilter(label, items)
 
         return provider_filter
