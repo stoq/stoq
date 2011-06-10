@@ -33,7 +33,7 @@ _ = stoqlib_gettext
 
 
 class CfopEditor(BaseEditor):
-    model_name = _('CFOP')
+    model_name = _('C.F.O.P')
     model_type = CfopData
     gladefile = 'CfopEditor'
     proxy_widgets = ('code', 'description')
