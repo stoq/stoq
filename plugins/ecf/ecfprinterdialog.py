@@ -291,7 +291,7 @@ class ECFListDialog(ModelListDialog):
     columns =  [
         Column('description', title=_('Model'), data_type=str, expand=True),
         Column('device_serial', title=_('Serial'), data_type=str, width=100),
-        Column('station.name', title=_('Station'), data_type=str, width=100),
+        Column('station.name', title=_('Computer'), data_type=str, width=100),
         Column('is_active', title=_('Active'), data_type=bool, width=60),
         ]
 

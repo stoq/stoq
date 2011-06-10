@@ -33,7 +33,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 _ = stoqlib_gettext
 
 class StationEditor(BaseEditor):
-    model_name = _('BranchStation')
+    model_name = _('Computer')
     model_type = BranchStation
     gladefile = 'StationEditor'
     proxy_widgets = ('name', 'branch', 'is_active')
