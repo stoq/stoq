@@ -617,4 +617,4 @@ class FinancialApp(AppWindow):
         show_contents()
 
     def on_help_financial__activate(self, action):
-        show_section('financial-inicial')
+        show_section('financial-inicio')
