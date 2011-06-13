@@ -875,9 +875,9 @@ class AccountView(Viewable):
         )
 
     joins = [
-        LEFTJOINOn(None, '(%s) AS source_sum' % (_SourceSum.select(), ),
+        LEFTJOINOn(None, Alias(_SourceSum, 'source_sum'),
                    Field('source_sum', 'id') == Account.q.id),
-        LEFTJOINOn(None, '(%s) AS dest_sum' % (_DestSum.select(), ),
+        LEFTJOINOn(None, Alias(_DestSum, 'dest_sum'),
                    Field('dest_sum', 'id') == Account.q.id),
         ]
 
