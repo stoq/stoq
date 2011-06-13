@@ -24,6 +24,8 @@
 
 """Generate a Sintegra archive from the Stoqlib domain classes"""
 
+import operator
+
 from kiwi.db.query import DateIntervalQueryState
 
 from stoqlib.database.orm import ORMObjectQueryExecuter
@@ -253,7 +255,7 @@ class StoqlibSintegraGenerator(object):
                 sellables[sale_item.sellable] = quantity, cost
 
         date = self.start.strftime("%m%Y")
-        for sellable in sorted(sellables, key=lambda sellable: sellable.id):
+        for sellable in sorted(sellables, key=operator.attrgetter('code')):
             quantity, cost = sellables[sellable]
             tax_value = sellable.tax_constant.tax_value or 0
             self.sintegra.add_products_summarized(
