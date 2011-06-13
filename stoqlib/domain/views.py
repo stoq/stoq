@@ -225,9 +225,7 @@ class ProductFullStockItemView(ProductFullStockView):
     #
     # This is why we must join PurchaseItem (another 1 to many table) in a
     # subquery
-
-    _purchase_total = "(%s) AS _purchase_total" % str(
-                    _PurchaseItemTotal.select(connection=get_connection()))
+    _purchase_total = Alias(_PurchaseItemTotal, '_purchase_total')
 
     columns = ProductFullStockView.columns.copy()
     columns.update(dict(

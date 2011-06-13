@@ -434,6 +434,25 @@ class Alias:
     def __init__(self, table, alias=None):
         self.q = AliasTable(table, alias)
 
+    def get_select_alias(self, db):
+        from viewable import Viewable
+        if issubclass(self.q.table, Viewable):
+            # We just want the SELECT sql for the viewable, so we dont
+            # need a real connection. Just create a fake one representing
+            # the current rdbms
+            from sqlobject.dbconnection import DBAPI, DBConnection
+            class FakeConn(DBAPI):
+                dbName = db
+
+                def __init__(self, **kw):
+                    DBConnection.__init__(self, **kw)
+
+            alias = "(%s) AS %s" % (self.q.table.select(connection=FakeConn()), self.q.alias)
+        else:
+            alias = "%s AS %s" % (self.q.tableName, self.q.alias)
+        return alias
+
+
 
 ########################################
 ## SQL Statements
@@ -688,6 +707,7 @@ class _LikeQuoted:
 
 class SQLJoin(SQLExpression):
     def __init__(self, table1, table2, op=','):
+        self._table2 = table2
         if table1 and type(table1) <> str:
             if isinstance(table1, Alias):
                 table1 = "%s AS %s" % (table1.q.tableName, table1.q.alias)
@@ -702,11 +722,20 @@ class SQLJoin(SQLExpression):
         self.table2 = table2
         self.op = op
 
+    def get_table(self, table, db):
+        if type(table) <> str:
+            if isinstance(table, Alias):
+                table = table.get_select_alias(db)
+            else:
+                table = table.sqlmeta.table
+        return table
+
     def __sqlrepr__(self, db):
         if self.table1:
-            return "%s%s %s" % (self.table1, self.op, self.table2)
+            return "%s%s %s" % (self.table1, self.op,
+                                self.get_table(self._table2, db))
         else:
-            return "%s %s" % (self.op, self.table2)
+            return "%s %s" % (self.op, self.get_table(self._table2, db))
 
 registerConverter(SQLJoin, SQLExprConverter)
 
@@ -784,7 +813,8 @@ class SQLJoinConditional(SQLJoin):
             on_condition = self.on_condition
             if hasattr(on_condition, "__sqlrepr__"):
                 on_condition = sqlrepr(on_condition, db)
-            join = "%s %s ON %s" % (self.op, self.table2, on_condition)
+            join = "%s %s ON %s" % (self.op,
+                                    self.get_table(self._table2, db), on_condition)
             if self.table1:
                 join = "%s %s" % (self.table1, join)
             return join
@@ -795,7 +825,8 @@ class SQLJoinConditional(SQLJoin):
                     col = sqlrepr(col, db)
                 using_columns.append(col)
             using_columns = ", ".join()
-            join = "%s %s USING (%s)" % (self.op, self.table2, using_columns)
+            join = "%s %s USING (%s)" % (self.op,
+                                         self.get_table(self._table2, db), using_columns)
             if self.table1:
                 join = "%s %s" % (self.table1, join)
             return join
