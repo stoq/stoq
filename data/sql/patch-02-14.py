@@ -2,6 +2,8 @@
 
 # bug 4201: Atualizacão de dados existentes na tabela 'credit_card_data'
 
+from stoqlib.database.orm import IntCol, PriceCol
+
 from stoqlib.domain.payment.method import CreditCardData
 
 def apply_patch(trans):
@@ -30,3 +32,23 @@ def apply_patch(trans):
         provider.debit_pre_dated_fee = provider.monthly_fee
         provider.monthly_fee = 0
     trans.commit()
+
+    try:
+        CreditCardData.sqlmeta.addColumn(IntCol('nsu', default=None))
+    except KeyError:
+        pass
+
+    try:
+        CreditCardData.sqlmeta.addColumn(IntCol('auth', default=None))
+    except KeyError:
+        pass
+
+    try:
+        CreditCardData.sqlmeta.addColumn(IntCol('installments', default=1))
+    except KeyError:
+        pass
+
+    try:
+        CreditCardData.sqlmeta.addColumn(PriceCol('entrance_value', default=0))
+    except KeyError:
+        pass
