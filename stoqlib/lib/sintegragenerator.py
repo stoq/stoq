@@ -171,7 +171,7 @@ class StoqlibSintegraGenerator(object):
             self._add_inventory(inventory, state)
 
         # 6) Add sellables (registry 75)
-        for sellable in sellables:
+        for sellable in sorted(sellables, key=operator.attrgetter("code")):
             self._add_sellable(sellable)
 
     def _add_receiving_order(self, state, receiving_order):
