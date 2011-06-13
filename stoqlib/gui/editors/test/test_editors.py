@@ -137,6 +137,7 @@ def _create_slave_test():
         'ProductTaxSlave': 'Unkown type',
         'SaleItemICMSSlave': 'Unkown type',
         'SaleItemIPISlave': 'Unkown type',
+        'BasePaymentEditor': 'Base Class for other editors',
         }
     namespace = dict(_test_slave=_test_slave)
 
