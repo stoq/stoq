@@ -87,9 +87,7 @@ class FiscalPrinterHelper:
             model = None
 
         retval = finish_transaction(trans, model)
-
         trans.close()
-
         return retval
 
     def close_till(self, previous_day=False):
@@ -111,9 +109,7 @@ class FiscalPrinterHelper:
 
         # TillClosingEditor closes the till
         retval = finish_transaction(trans, model)
-
         trans.close()
-
         return retval
 
     def needs_closing(self):

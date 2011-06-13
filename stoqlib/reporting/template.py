@@ -37,9 +37,8 @@ from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
 from trml2pdf.trml2pdf import parseString
 
-from stoqlib.database.runtime import (new_transaction,
-                                get_current_branch, get_connection,
-                                get_current_user)
+from stoqlib.database.runtime import (get_current_branch, get_connection,
+                                      get_current_user)
 from stoqlib.domain.interfaces import ICompany
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
@@ -76,8 +75,7 @@ class BaseStoqReport(ReportTemplate):
             timestamp = True
         ReportTemplate.__init__(self, timestamp=timestamp,
                                 username=self.get_username(), *args, **kwargs)
-        self.trans = new_transaction()
-        logotype_path = _get_logotype_path(self.trans)
+        logotype_path = _get_logotype_path(get_connection())
         self._logotype = ImageReader(logotype_path)
         # The BaseReportTemplate's header_height attribute define the
         # vertical position where the document really must starts be
@@ -93,7 +91,7 @@ class BaseStoqReport(ReportTemplate):
 
     def draw_header(self, canvas):
         canvas.saveState()
-        person = get_current_branch(self.trans).person
+        person = get_current_branch(get_connection()).person
 
         logo_width, logo_height = self._logotype.getSize()
         header_y = self._topMargin - logo_height - BaseStoqReport.logo_border

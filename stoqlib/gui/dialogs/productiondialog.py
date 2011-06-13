@@ -507,6 +507,7 @@ class ProductionDialog(GladeSlaveDelegate):
 
         retval = run_dialog(PurchaseWizard, self, trans, order)
         finish_transaction(trans, retval)
+        trans.close()
         return retval
 
     #

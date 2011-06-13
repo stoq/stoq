@@ -388,6 +388,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         selected = trans.get(self.search.results.get_selected().purchase)
         retval = run_dialog(QuoteFillingDialog, self, selected, trans)
         finish_transaction(trans, retval)
+        trans.close()
         self._update_view()
 
     def _remove_quote(self):
@@ -405,6 +406,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         if group.get_items().count() == 0:
             QuoteGroup.delete(group.id, connection=trans)
         finish_transaction(trans, True)
+        trans.close()
         self.search.refresh()
 
     #
@@ -509,6 +511,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
         group.cancel()
         QuoteGroup.delete(group.id, connection=trans)
         finish_transaction(trans, True)
+        trans.close()
         self.wizard.finish()
 
     def _get_purchase_from_quote(self, quote, trans):
@@ -554,6 +557,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
             QuoteGroup.delete(group.id, connection=trans)
 
         finish_transaction(trans, True)
+        trans.close()
 
     def _create_orders(self):
         trans = new_transaction()
@@ -570,6 +574,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
             if retval:
                 quotes.append(quote)
 
+        trans.close()
         self._close_quotes(quotes)
     #
     # WizardStep

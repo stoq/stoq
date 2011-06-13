@@ -210,7 +210,7 @@ class SaleListToolbar(GladeSlaveDelegate):
             self._show_details(sale)
 
     def on_return_sale_button__clicked(self, button):
-        try:        
+        try:
             till = Till.get_current(self.conn)
         except TillError, e:
             warning(str(e))
