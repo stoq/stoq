@@ -156,7 +156,10 @@ class StartNewLoanStep(WizardEditorStep):
     def on_create_client__clicked(self, button):
         trans = new_transaction()
         client = run_person_role_dialog(ClientEditor, self, trans, None)
-        if not finish_transaction(trans, client):
+        retval = finish_transaction(trans, client)
+        client = self.conn.get(client)
+        trans.close()
+        if not retval:
             return
         if len(self.client) == 0:
             self._fill_clients_combo()

@@ -115,6 +115,7 @@ class ProductCountingDialog(BaseEditor):
             inventory = trans.get(self.model)
             inventory.close()
             finish_transaction(trans, inventory)
+            trans.close()
 
     #
     # BaseEditorSlave
@@ -135,6 +136,7 @@ class ProductCountingDialog(BaseEditor):
         # We have to call finish_transaction here, since we will check
         # if we can close the inventory now
         finish_transaction(trans, True)
+        trans.close()
 
         if self._can_close_inventory_after_counting():
             self._close_inventory()

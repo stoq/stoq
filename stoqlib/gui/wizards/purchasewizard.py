@@ -154,8 +154,10 @@ class StartPurchaseStep(WizardEditorStep):
                                        supplier)
         retval = finish_transaction(trans, model)
         if retval:
+            model = self.conn.get(model)
             self._fill_supplier_combo()
             self.supplier.select(model)
+        trans.close()
 
     def on_supplier__validate(self, widget, supplier):
         if not supplier:
