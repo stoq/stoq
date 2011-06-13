@@ -23,6 +23,7 @@
 from cStringIO import StringIO
 import datetime
 from decimal import Decimal
+import operator
 import os
 
 from stoqlib.database.runtime import new_transaction
@@ -226,7 +227,7 @@ class OFXImporterTest(DomainTest):
         self.assertEquals(account.code, "1234")
         self.assertEquals(account.transactions.count(), 2)
         self.assertEquals(account.account_type, Account.TYPE_BANK)
-        t1, t2 = sorted(account.transactions)
+        t1, t2 = sorted(account.transactions, key=operator.attrgetter('value'))
         self.assertEquals(t1.value, -5)
         self.assertEquals(t1.code, '90068259')
         self.assertEquals(t2.value, 50)
