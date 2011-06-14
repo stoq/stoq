@@ -551,10 +551,11 @@ class ExampleCreator(object):
                                short_name='Velec',
                                open_contract_date=datetime.date(2006, 01, 01))
 
-    def create_payment(self):
+    def create_payment(self, date=None):
         from stoqlib.domain.payment.payment import Payment
         return Payment(group=None,
-                       due_date=None,
+                       open_date=date,
+                       due_date=date,
                        value=Decimal(10),
                        till=None,
                        method=self.get_payment_method(),
@@ -662,7 +663,7 @@ class ExampleCreator(object):
         storable.increase_stock(100, get_current_branch(self.trans))
         return sellable
 
-    def add_payments(self, obj, method_type='money'):
+    def add_payments(self, obj, method_type='money', date=None):
         from stoqlib.domain.sale import Sale
         from stoqlib.domain.purchase import PurchaseOrder
         method = self.get_payment_method(method_type)
@@ -674,6 +675,10 @@ class ExampleCreator(object):
             payment = method.create_outpayment(obj.group, total)
         else:
             raise ValueError(obj)
+
+        if date:
+            payment.payment.due_date = date
+            payment.payment.open_date = date
 
         return payment
 
