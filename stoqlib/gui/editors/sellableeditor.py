@@ -267,6 +267,10 @@ class SellableEditor(BaseEditor):
     #  Public API
     #
 
+    def set_main_tab_label(self, tabname):
+        self.sellable_notebook.set_tab_label(self.sellable_tab,
+                                             gtk.Label(tabname))
+
     def add_extra_tab(self, tabname, tabslave):
         self.sellable_notebook.set_show_tabs(True)
         self.sellable_notebook.set_show_border(True)
