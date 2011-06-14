@@ -272,8 +272,6 @@ class SalesPersonReport(SearchResultsReport):
             columns.append(OTC(_("Name"), lambda obj: obj.salesperson_name,
                            expand=True, truncate=True, width=245))
         columns.extend([
-            OTC(_("Code"), lambda obj: obj.code, truncate=True,
-                width=60),
             OTC(_("Total Amount"), lambda obj: get_formatted_price(
                 obj.get_total_amount()), truncate=True, width=105),
             OTC(_("P/A"), lambda obj: get_formatted_price(
