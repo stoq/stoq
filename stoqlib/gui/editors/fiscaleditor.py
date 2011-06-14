@@ -24,8 +24,10 @@
 ##
 """Editors for fiscal objects"""
 
+from kiwi.datatypes import ValidationError
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import validate_cfop
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 
@@ -52,6 +54,14 @@ class CfopEditor(BaseEditor):
     def setup_proxies(self):
         self.add_proxy(self.model, CfopEditor.proxy_widgets)
 
+    #
+    # Kiwi handlers
+    #
+
+    def on_code__validate(self, widget, value):
+        if not validate_cfop(value):
+            return ValidationError(_(u"'%s' is not a valid C.F.O.P code."
+                                     % value))
 
 class FiscalBookEntryEditor(BaseEditor):
     model_type = FiscalBookEntry

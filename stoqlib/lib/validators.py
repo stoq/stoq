@@ -147,6 +147,25 @@ def validate_cnpj(cnpj):
 
     return True
 
+def validate_cfop(cfop):
+    """Validates C.F.O.P code
+
+    Valid C.F.O.P format: '9.999', where 9 is any digit in 0-9.
+    """
+    if not isinstance(cfop, basestring):
+        return False
+
+    if not '.' in cfop:
+        return False
+
+    first_part, last_part = cfop.split('.')
+    if not first_part.isdigit() or not last_part.isdigit():
+        return False
+    if not len(first_part) == 1 or not len(last_part) == 3:
+        return False
+
+    return True
+
 #
 # Misc validators
 #
