@@ -224,7 +224,7 @@ class TestReport(DomainTest):
                   till=till,
                   date=datetime.date(2007, 1, 1),
                   connection=self.trans)
-        till_entry = list(TillEntry.select(connection=self.trans))
+        till_entry = list(TillEntry.selectBy(connection=self.trans, till=till))
         today = datetime.date.today().strftime('%x')
         for item in till_entry:
             if today in item.description:
