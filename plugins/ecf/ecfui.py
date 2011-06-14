@@ -120,7 +120,7 @@ class ECFUI(object):
         elif appname == 'admin':
             self._add_admin_menus(uimanager)
             app.main_window.tasks.add_item(
-                _('Fiscal Printers'), 'printer',
+                _('Fiscal Printers'), 'fiscal-printer', 'printer',
                 self._on_ConfigurePrinter__activate)
 
     def _add_admin_menus(self, uimanager):
@@ -606,7 +606,7 @@ class ECFUI(object):
     def _on_CancelLastDocument__activate(self, action):
         self._cancel_last_document()
 
-    def _on_ConfigurePrinter__activate(self, action):
+    def _on_ConfigurePrinter__activate(self, action=None):
         run_dialog(ECFListDialog, None)
 
     def _on_GerencialReportCancelEvent(self):
