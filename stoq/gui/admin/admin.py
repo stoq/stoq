@@ -139,6 +139,12 @@ class Tasks(gtk.ScrolledWindow):
             self.add_item(label, name, pixbuf)
 
     def add_item(self, label, name, pixbuf=None, cb=None):
+        """
+        @param label: Label to show in the interface
+        @param name: Name to use to store internally and use by callbacks
+        @param pixbuf: a pixbuf or stock-id/icon-name for the item
+        @param cb: callback
+        """
         if type(pixbuf) == str:
             try:
                 pixbuf = self.theme.load_icon(pixbuf, 32, 0)
@@ -146,9 +152,7 @@ class Tasks(gtk.ScrolledWindow):
                 pixbuf = self.render_icon(pixbuf, gtk.ICON_SIZE_DIALOG)
         self.model.append([label, name, pixbuf])
         if cb is not None:
-            setattr(self,
-                    '_open_' + name,
-                    lambda : cb(None))
+            setattr(self, '_open_' + name, cb)
 
     def on_item_activated(self, icon_view, path):
         name = self.model[path][COL_NAME]
