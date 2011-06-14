@@ -181,6 +181,7 @@ class TestReport(DomainTest):
     def testProductReport(self):
         from stoqlib.gui.search.productsearch import ProductSearch
         search = ProductSearch(self.trans)
+        search.width = 1000
         # the orderBy clause is only needed by the test
         products = ProductFullStockView.select(connection=self.trans)\
                                        .orderBy('id')
