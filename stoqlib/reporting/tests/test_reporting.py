@@ -309,6 +309,7 @@ class TestReport(DomainTest):
     def testProductionOrderReport(self):
         order_item = self.create_production_item()
         order = order_item.order
+        order.get_order_number = lambda: '0028'
         service = self.create_production_service()
         service.order = order
         order.open_date = datetime.date(2007, 1, 1)
