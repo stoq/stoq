@@ -30,7 +30,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.validators import (validate_cpf, validate_cnpj,
                                     validate_area_code, validate_int,
                                     validate_decimal, validate_directory,
-                                    validate_percentage)
+                                    validate_percentage, validate_cfop)
 
 class TestValidators(DomainTest):
 
@@ -55,6 +55,26 @@ class TestValidators(DomainTest):
         self.failIf(validate_cnpj(''))
         self.failIf(validate_cnpj(None))
         self.failIf(validate_cnpj('1594872637500'))
+
+    def testValidateCFOP(self):
+        self.failUnless(validate_cfop('1.123'))
+        self.failUnless(validate_cfop(u'1.123'))
+
+        self.failIf(validate_cfop(None))
+        self.failIf(validate_cfop(''))
+        self.failIf(validate_cfop(' '))
+        self.failIf(validate_cfop('1234'))
+        self.failIf(validate_cfop('12345'))
+        self.failIf(validate_cfop('12.34'))
+        self.failIf(validate_cfop('.12345'))
+        self.failIf(validate_cfop('1.2345'))
+        self.failIf(validate_cfop('12.345'))
+        self.failIf(validate_cfop('123.45'))
+        self.failIf(validate_cfop('1234.5'))
+        self.failIf(validate_cfop('12345.'))
+        self.failIf(validate_cfop(1234))
+        self.failIf(validate_cfop(12345))
+        self.failIf(validate_cfop(1.234))
 
     def testValidateAreaCode(self):
         self.failUnless(validate_area_code(10))
