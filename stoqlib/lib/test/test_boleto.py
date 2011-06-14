@@ -75,17 +75,6 @@ class TestBoleto(DomainTest):
             except OSError:
                 pass
 
-    def _create_bill_sale(self):
-        sale = self.create_sale()
-        self.add_product(sale)
-        sale.order()
-        self.add_payments(sale, method_type='bill')
-        sale.client = self.create_client()
-        address = self.create_address()
-        address.person = sale.client.person
-        sale.confirm()
-        return sale
-
     def _configure_boleto(self, bank, **kwargs):
         tmpl = """[Boleto]
 banco = %s
@@ -105,6 +94,18 @@ instrucao1 = Primeia linha da instrução
             open(fname, 'w').write(open(generated).read())
         return fname
 
+    def _create_bill_sale(self):
+        sale = self.create_sale()
+        self.add_product(sale)
+        sale.order()
+        self.add_payments(sale, method_type='bill',
+                          date=datetime.date(2011, 5, 30))
+        sale.client = self.create_client()
+        address = self.create_address()
+        address.person = sale.client.person
+        sale.confirm()
+        return sale
+
     def _render_bill_to_html(self, sale):
         report = BillReport(self._filename, list(sale.payments))
         report.today = datetime.date(2011, 05, 30)
@@ -117,6 +118,12 @@ instrucao1 = Primeia linha da instrução
         pdftohtml(self._filename, self._pdf_html)
         return self._pdf_html
 
+    def _diff(self, sale, name):
+        generated = self._render_bill_to_html(sale)
+        expected = self._get_expected(name, generated)
+        if diff_pdf_htmls(expected, generated):
+            raise AssertionError("files differ, see output above")
+
     def testBancoDoBrasil(self):
         sale = self._create_bill_sale()
         self._configure_boleto("001",
@@ -125,9 +132,7 @@ instrucao1 = Primeia linha da instrução
                                agencia="1172",
                                conta="00403005")
 
-        generated = self._render_bill_to_html(sale)
-        expected = self._get_expected("boleto-001", generated)
-        diff_pdf_htmls(expected, generated)
+        self._diff(sale, 'boleto-001')
 
     def testNossaCaixa(self):
         sale = self._create_bill_sale()
@@ -135,9 +140,7 @@ instrucao1 = Primeia linha da instrução
                                agencia="1565",
                                conta="414-3")
 
-        generated = self._render_bill_to_html(sale)
-        expected = self._get_expected("boleto-104", generated)
-        diff_pdf_htmls(expected, generated)
+        self._diff(sale, 'boleto-104')
 
     def testItau(self):
         sale = self._create_bill_sale()
@@ -146,9 +149,7 @@ instrucao1 = Primeia linha da instrução
                                agencia="1565",
                                carteira='175')
 
-        generated = self._render_bill_to_html(sale)
-        expected = self._get_expected("boleto-341", generated)
-        diff_pdf_htmls(expected, generated)
+        self._diff(sale, 'boleto-341')
 
     def testBradesco(self):
         sale = self._create_bill_sale()
@@ -157,9 +158,7 @@ instrucao1 = Primeia linha da instrução
                                agencia="278-0",
                                carteira='06')
 
-        generated = self._render_bill_to_html(sale)
-        expected = self._get_expected("boleto-237", generated)
-        diff_pdf_htmls(expected, generated)
+        self._diff(sale, 'boleto-237')
 
     def testReal(self):
         sale = self._create_bill_sale()
@@ -168,6 +167,4 @@ instrucao1 = Primeia linha da instrução
                                agencia="0531",
                                carteira='06')
 
-        generated = self._render_bill_to_html(sale)
-        expected = self._get_expected("boleto-356", generated)
-        diff_pdf_htmls(expected, generated)
+        self._diff(sale, 'boleto-356')
