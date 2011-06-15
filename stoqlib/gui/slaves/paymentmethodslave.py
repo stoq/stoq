@@ -45,27 +45,36 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
     gladefile = 'SelectPaymentMethodSlave'
     gsignal('method-changed', object)
 
-    def __init__(self):
+    AVAILABLE_METHODS = ['money', 'card', 'bill', 'check',
+                         'store_credit', 'multiple']
+
+    def __init__(self, connection=None, available_methods=[],
+                 default_method=None):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         self._options = {}
 
-        self.conn = get_connection()
+        self.conn = connection or get_connection()
         self._setup_widgets()
         self.cash_check.set_active(True)
-        self._setup_payment_methods()
+        self._setup_payment_methods(available_methods, default_method)
 
-    def _setup_payment_methods(self):
+    def _setup_payment_methods(self, available_methods, default_method):
         self._selected_method = PaymentMethod.get_by_name(self.conn, 'money')
         self.cash_check.connect('toggled', self._on_method__toggled)
         self.cash_check.set_data('method', self._selected_method)
+        self.cash_check.set_sensitive('money' in available_methods)
 
-        self._add_payment_method('card')
-        self._add_payment_method('bill')
-        self._add_payment_method('check')
-        self._add_payment_method('store_credit')
-        self._add_payment_method('multiple')
+        methods = [method for method
+                   in SelectPaymentMethodSlave.AVAILABLE_METHODS
+                   if method != 'money']
+        for method_name in methods:
+            set_active = method_name == default_method
+            self._add_payment_method(method_name,
+                                     set_active=set_active)
+            self.method_set_sensitive(method_name,
+                                      method_name in available_methods)
 
-    def _add_payment_method(self, method_name):
+    def _add_payment_method(self, method_name, set_active=False):
         method = PaymentMethod.get_by_name(self.conn, method_name)
         if not method.is_active:
             return
@@ -74,6 +83,7 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
         self.methods_box.pack_start(radio)
         radio.connect('toggled', self._on_method__toggled)
         radio.set_data('method', method)
+        radio.set_active(set_active)
         radio.show()
 
         self._options[method_name] = radio
