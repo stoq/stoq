@@ -26,14 +26,17 @@ from decimal import Decimal
 
 from kiwi.datatypes import currency
 
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.sellable import (BaseSellableInfo,
                                      Sellable,
                                      SellableCategory)
 from stoqlib.domain.product import Product
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import (ProductFullStockView,
                                   ProductFullWithClosedStockView,
                                   ProductClosedStockView)
+from stoqlib.domain.interfaces import IStorable
 
 
 class TestSellableCategory(DomainTest):
@@ -307,3 +310,17 @@ class TestSellable(DomainTest):
         # When trying to close an already closed sellable, it should
         # raise a ValueError.
         self.assertRaises(ValueError, sellable.close)
+
+    def testCanRemove(self):
+        branch = get_current_branch(self.trans)
+        sellable = self.create_sellable()
+        storable = sellable.product.addFacet(IStorable, connection=self.trans)
+        self.failUnless(sellable.can_remove())
+
+        storable.increase_stock(1, branch=branch)
+        sale = self.create_sale()
+        sale.status = Sale.STATUS_QUOTE
+        sale.branch = branch
+        sale.add_sellable(sellable)
+        self.failIf(sellable.can_remove())
+

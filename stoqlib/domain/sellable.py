@@ -451,6 +451,15 @@ class Sellable(Domain):
         False if the product/service was never sold or received. True
         otherwise.
         """
+        from stoqlib.domain.sale import SaleItem
+        if SaleItem.selectBy(connection=self.get_connection(),
+                             sellable=self).count():
+            # FIXME: Find a better way of doing this.
+            # Quotes (and maybe other cases) don't go to the history,
+            # so make sure there's nothing left on SaleItem referencing
+            # this sellable.
+            return False
+
         if self.product:
             return self.product.can_remove()
         else:
