@@ -26,6 +26,7 @@
 
 from kiwi.datatypes import ValidationError, ValueUnset
 
+from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.person import PersonAdaptToTransporter
@@ -173,9 +174,15 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             return ValidationError(_("Receiving order number must be "
                                      "between 1 and 999999"))
 
+        trans = new_transaction()
+        # Using a transaction to do the verification bellow because,
+        # if we use self.conn the changes on the invoice will be
+        # saved at the same time in the database and it'll think
+        # some valid invoices are invalid.
         order_count = ReceivingOrder.selectBy(invoice_number=value,
                                               supplier=self.model.supplier,
-                                              connection=self.conn).count()
+                                              connection=trans).count()
+        trans.close()
         if order_count > 0:
             supplier_name = self.model.supplier.person.name
             return ValidationError(_(u'Invoice %d already exists for '
