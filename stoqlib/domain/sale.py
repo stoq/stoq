@@ -124,7 +124,7 @@ class SaleItem(Domain):
         sparam = sysparam(conn)
         if not (branch and
                 branch.id == get_current_branch(conn).id):
-            raise SellError(_(u"Stock still doesn't support sales for "
+            raise SellError(_(u"Stoq still doesn't support sales for "
                               u"branch companies different than the "
                               u"current one"))
 
