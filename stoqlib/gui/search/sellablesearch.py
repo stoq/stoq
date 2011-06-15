@@ -123,6 +123,8 @@ class SellableSearch(SearchEditor):
                               expand=True),
                 SearchColumn('price', title=_('Price'), data_type=currency, width=80,
                               justify=gtk.JUSTIFY_RIGHT),
+                SearchColumn('category_description', title=_('Category'),
+                             data_type=str, visible=False),
                 AccessorColumn('stock', title=_(u'Stock'),
                                 accessor=self._get_available_stock,
                                 format_func=format_quantity,
