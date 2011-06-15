@@ -1,6 +1,6 @@
-build
-locale
-dist
 StoqInstaller.exe
+build
+dist
+locale
 .wine-build-stoq-prefix
 data/pixmaps/stoq.ico

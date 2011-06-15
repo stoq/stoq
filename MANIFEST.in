@@ -19,3 +19,6 @@ include README
 include INSTALL
 include CONTRIBUTORS
 include stoqlib.spec
+recursive-include locale stoq.mo
+include stoq.desktop
+include stoq.spec

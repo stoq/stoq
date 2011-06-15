@@ -1,0 +1,14 @@
+make deb -> fixes -> make upload -> download-local/notebook
+
+Assinatura de pacotes:
+- crie o seguinte arquivo ~/.devscripts com o seguinte conteúdo:
+    DEBSIGN_KEYID="KEY-ID"
+- onde KEY-ID é o id da sua chave gpg
+
+
+Verificar permissões após a criação dos pacotes (/mondo)
+
+Atualizar lista de contribuidores:
+    * inserir Leonardo V. Pinheiro
+
+- Atualizar esse arquivo
