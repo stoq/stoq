@@ -27,7 +27,8 @@ def apply_patch(trans):
         cfop_data = CfopData(connection=trans,
                              code="5.949",
                              description=u"Outra saída de mercadoria ou "
-                                       "prestação de serviço não especificado")
+                                         u"prestação de serviço não "
+                                         u"especificado")
 
     # Adjusting existing manuals outputs
     for stock_decrease in StockDecrease.select(connection=trans):
