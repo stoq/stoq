@@ -163,7 +163,8 @@ class BaseMethodSelectionStep(object):
     #
 
     def setup_slaves(self):
-        self.pm_slave = SelectPaymentMethodSlave()
+        methods = SelectPaymentMethodSlave.AVAILABLE_METHODS
+        self.pm_slave = SelectPaymentMethodSlave(available_methods=methods)
         self.pm_slave.connect('method-changed', self.on_payment_method_changed)
         self.attach_slave('select_method_holder', self.pm_slave)
 

@@ -55,6 +55,7 @@ from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
+from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave,
                                              BillMethodSlave, MoneyMethodSlave)
 from stoqlib.reporting.purchase import PurchaseOrderReport
@@ -320,7 +321,10 @@ class PurchaseItemStep(SellableItemStep):
 class PurchasePaymentStep(WizardEditorStep):
     gladefile = 'PurchasePaymentStep'
     model_type = PaymentGroup
-    payment_widgets = ('method_combo',)
+
+    slave_classes = {'bill': BillMethodSlave,
+                     'check': CheckMethodSlave,
+                     'money': MoneyMethodSlave}
 
     def __init__(self, wizard, previous, conn, model,
                  outstanding_value=currency(0)):
@@ -347,25 +351,20 @@ class PurchasePaymentStep(WizardEditorStep):
         WizardEditorStep.__init__(self, conn, wizard, model.group, previous)
 
     def _setup_widgets(self):
-        items = [
-            (_('Bill'), PaymentMethod.get_by_name(self.conn, 'bill')),
-            (_('Check'), PaymentMethod.get_by_name(self.conn, 'check')),
-            (_('Money'), PaymentMethod.get_by_name(self.conn, 'money')),
-            ]
-        self.method_combo.prefill(items)
+        methods = self.slave_classes.keys()
+        self._ms = SelectPaymentMethodSlave(connection=self.conn,
+                                            available_methods=methods,
+                                            default_method=self._method)
+        self._ms.connect_after('method-changed',
+                               self._after_method_select__method_changed)
+
+        self.attach_slave('method_select_holder', self._ms)
+        self._update_payment_method_slave()
 
     def _set_method_slave(self):
         """Sets the payment method slave"""
-        method = self.method_combo.get_selected_data()
-        if not method:
-            return
-
-        slave_classes = {
-            'bill': BillMethodSlave,
-            'check': CheckMethodSlave,
-            'money': MoneyMethodSlave,
-            }
-        slave_class = slave_classes.get(method.method_name)
+        method = self._ms.get_selected_method()
+        slave_class = self.slave_classes.get(method.method_name)
         if slave_class:
             self.wizard.payment_group = self.model
             self.slave = slave_class(self.wizard, self,
@@ -401,26 +400,19 @@ class PurchasePaymentStep(WizardEditorStep):
 
     def post_init(self):
         self.model.clear_unused()
-        self.method_combo.grab_focus()
-        self.main_box.set_focus_chain([self.payment_method_hbox,
+        self.main_box.set_focus_chain([self.method_select_holder,
                                        self.method_slave_holder])
-        self.payment_method_hbox.set_focus_chain([self.method_combo])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model,
-                                    PurchasePaymentStep.payment_widgets)
-
-        method_data = PaymentMethod.get_by_name(self.conn, self._method)
-        self.method_combo.select_item_by_data(method_data)
 
     #
     # callbacks
     #
 
-    def after_method_combo__content_changed(self, *args):
+    def _after_method_select__method_changed(self, slave, method):
         self._update_payment_method_slave()
 
 
