@@ -1,0 +1,51 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=Stoq
+Name[pt_BR]=Stoq
+Name[sv]=Stoq
+GenericName=Stoq
+Exec=$prefix/bin/stoq %F
+Icon=$datadir/pixmaps/stoq.png
+Terminal=false
+Categories=Application;Office;Finance;
+StartupNotify=true
+
+X-Ayatana-Desktop-Shortcuts=admin;pos;sales;purchase;receivable;payable
+
+[admin Shortcut Group]
+Name=Administrative
+Name[pt_BR]=Administrative
+Exec=stoq admin
+TargetEnvironment=Unity
+
+[pos Shortcut Group]
+Name=Point of Sales
+Name[pt_BR]=Ponto de Vendas
+Exec=stoq pos
+TargetEnvironment=Unity
+
+[sales Shortcut Group]
+Name=Sales
+Name[pt_BR]=Vendas
+Exec=stoq sales
+TargetEnvironment=Unity
+
+[purchase Shortcut Group]
+Name=Purchase
+Name[pt_BR]=Compras
+Exec=stoq purchase
+TargetEnvironment=Unity
+
+[receivable Shortcut Group]
+Name=Accounts Receivable
+Name[pt_BR]=Contas a Receber
+Exec=stoq receivable
+TargetEnvironment=Unity
+
+[payable Shortcut Group]
+Name=Accounts Payable
+Name[pt_BR]=Contas a Pagar
+Exec=stoq payable
+TargetEnvironment=Unity
+

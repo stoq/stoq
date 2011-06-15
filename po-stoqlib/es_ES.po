@@ -1,0 +1,2293 @@
+# # Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+# # All rights reserved
+# #
+# # This program is free software; you can redistribute it and/or modify
+# # it under the terms of the GNU General Public License as published by
+# # the Free Software Foundation; either version 2 of the License, or
+# # (at your option) any later version.
+# #
+# # This program is distributed in the hope that it will be useful,
+# # but WITHOUT ANY WARRANTY; without even the implied warranty of
+# # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# # GNU General Public License for more details.
+# #
+# # You should have received a copy of the GNU General Public License
+# # along with this program; if not, write to the Free Software
+# # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+# # USA.
+# #
+# # Author(s):   Rafael Villar Burke    <pachi@rvburke.com>
+msgid ""
+msgstr ""
+"Project-Id-Version: stoq 0.6.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-02-08 14:24-0200\n"
+"PO-Revision-Date: 2007-02-08 17:26-0200\n"
+"Last-Translator: Rafael Villar Burke <pachi@rvburke.com>\n"
+"Language-Team: Spanish <es_ES@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+
+#: ../stoq/main.py:88
+#, python-format
+msgid "%s not found"
+msgstr ""
+
+#: ../stoq/main.py:89
+#, python-format
+msgid "Could not find the required python module %s on your system"
+msgstr ""
+
+#: ../stoq/main.py:115
+msgid "PyGTK too old"
+msgstr ""
+
+#: ../stoq/main.py:116
+#, python-format
+msgid "PyGTK version too old, needs %s but found %s"
+msgstr ""
+
+#: ../stoq/main.py:129
+msgid "Kiwi too old"
+msgstr ""
+
+#: ../stoq/main.py:130
+#, python-format
+msgid "kiwi version too old, needs %s but found %s"
+msgstr ""
+
+#: ../stoq/main.py:143
+msgid "Stoqlib too old"
+msgstr ""
+
+#: ../stoq/main.py:144
+#, python-format
+msgid "stoqlib version too old, needs %s but found %s"
+msgstr ""
+
+#: ../stoq/main.py:156
+msgid "Gazpacho too old"
+msgstr ""
+
+#: ../stoq/main.py:157
+#, python-format
+msgid "Gazpacho %s is required but %s found"
+msgstr ""
+
+#: ../stoq/main.py:169
+msgid "Reportlab too old"
+msgstr ""
+
+#: ../stoq/main.py:170
+#, python-format
+msgid "reportlab %s is required but %s found"
+msgstr ""
+
+#: ../stoq/main.py:283
+msgid "Could not open database config file"
+msgstr ""
+"No ha sido posible abrir el archivo de configuración de la base de datos"
+
+#: ../stoq/main.py:284
+#, python-format
+msgid "Invalid config file settings, got error '%s', of type '%s'"
+msgstr ""
+"Datos incorrectos en el archivo de configuración. Se obtuvo el error '%s', "
+"del tipo '%s'"
+
+#: ../stoq/main.py:298
+msgid "Could not connect to database"
+msgstr "No ha sido posible conectar con la base de datos"
+
+#: ../stoq/gui/application.py:131
+#, fuzzy
+msgid "<b>You are using the examples database.</b>"
+msgstr "Crear una base de datos de ejemplo"
+
+#: ../stoq/gui/application.py:135
+#, fuzzy
+msgid "Remove examples"
+msgstr "Retirar de caja..."
+
+#: ../stoq/gui/application.py:247
+#, fuzzy, python-format
+msgid "%s User"
+msgstr "_Usuario"
+
+#: ../stoq/gui/application.py:248
+msgid "_Store"
+msgstr "Guardar"
+
+#: ../stoq/gui/application.py:249
+msgid "Store a cookie"
+msgstr "Guardar Cookie"
+
+#: ../stoq/gui/application.py:250
+msgid "_Clear"
+msgstr "Limpiar"
+
+#: ../stoq/gui/application.py:251
+msgid "Clear the cookie"
+msgstr "Limpiar Cookie"
+
+#: ../stoq/gui/application.py:252 ../data/glade/receivable.glade.h:7
+#: ../data/glade/payable.glade.h:6 ../data/glade/production.glade.h:2
+#: ../data/glade/sales_app.glade.h:3 ../data/glade/admin.glade.h:7
+#: ../data/glade/stock.glade.h:3 ../data/glade/pos.glade.h:10
+#: ../data/glade/till.glade.h:3 ../data/glade/purchase.glade.h:7
+#: ../data/glade/inventory.glade.h:3
+#, fuzzy
+msgid "Chan_ge Password"
+msgstr "Cambiar de usuario"
+
+#: ../stoq/gui/application.py:253
+#, fuzzy
+msgid "Change the password"
+msgstr "Necesita contraseña:"
+
+#: ../stoq/gui/application.py:255
+msgid "C_hange User"
+msgstr "Cambiar de Usuario"
+
+#: ../stoq/gui/application.py:256
+msgid "Change user"
+msgstr "Cambiar de usuario"
+
+#: ../stoq/gui/application.py:257
+msgid "Change Application"
+msgstr "Cambiar aplicación"
+
+#: ../stoq/gui/application.py:258
+msgid "Change application"
+msgstr "Cambiar aplicación"
+
+#: ../stoq/gui/application.py:286
+msgid "Debug"
+msgstr "Depurar"
+
+#: ../stoq/gui/application.py:287
+msgid "Introspect slaves"
+msgstr "Realizar introspección de esclavos"
+
+#. This method must be redefined in child when it's needed
+#: ../stoq/gui/application.py:316
+#, python-format
+msgid "Stoq - %s"
+msgstr "Stoq - %s"
+
+#: ../stoq/gui/application.py:379
+msgid "This will delete the current database and configuration. Are you sure?"
+msgstr ""
+
+#: ../stoq/gui/application.py:381 ../stoq/gui/till/till.py:223
+#: ../stoq/gui/pos/pos.py:644 ../data/glade/inventory.glade.h:2
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: ../stoq/gui/application.py:381
+#, fuzzy
+msgid "Remove"
+msgstr "Eliminar"
+
+#: ../stoq/gui/application.py:384
+msgid "Please, start stoq again to configure new database"
+msgstr ""
+
+#: ../stoq/gui/application.py:403
+msgid "Search:"
+msgstr "Buscar:"
+
+#: ../stoq/gui/application.py:504
+msgid "Learn More..."
+msgstr ""
+
+#: ../stoq/gui/application.py:505
+#, python-format
+msgid "<b>There is a new Stoq version available (%s)</b>"
+msgstr ""
+
+#: ../stoq/gui/config.py:98
+msgid "Trust"
+msgstr "Fiable"
+
+#: ../stoq/gui/config.py:99
+msgid "Needs Password"
+msgstr "Necesita contraseña:"
+
+#: ../stoq/gui/config.py:125
+#, python-format
+msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
+msgstr "Stoq necesita PostgresSQL 8.1 o posterior, pero se encontró %s"
+
+#: ../stoq/gui/config.py:132
+#, python-format
+msgid ""
+"The specifed database `%s' does not exist.\n"
+"Do you want to create it?"
+msgstr ""
+"La base de datos especificada `%s' no existe.\n"
+"¿Desea crearla?"
+
+#: ../stoq/gui/config.py:135
+msgid "Don't create"
+msgstr "No crear"
+
+#: ../stoq/gui/config.py:135
+msgid "Create"
+msgstr "Crear"
+
+#: ../stoq/gui/config.py:141
+#, python-format
+msgid "User <u>%s</u> has insufficient permissions"
+msgstr "El usuario <u>%s</u> no dispone de permisos suficientes"
+
+#: ../stoq/gui/config.py:142
+#, python-format
+msgid ""
+"The specified user `%s' does not have the required permissions to install "
+"Stoq.\n"
+"The PostgreSQL user must be a superuser. Consult the Stoq documentation for "
+"more information on how to solve this problem."
+msgstr ""
+"El usuario especificado `%s' no dispone de los permisos necesarios para "
+"instalar Stoq.\n"
+"El usuario de PostgreSQL debe ser un super-usuario. Consulte la "
+"documentación de Stoq para más información sobre cómo resolver el problema."
+
+#: ../stoq/gui/config.py:169
+#, python-format
+msgid ""
+"The database address '%s' is invalid. Please fix the address you have set "
+"and try again"
+msgstr ""
+"La dirección de la base de datos '%s' es incorrecta. Por favor, corrija la "
+"dirección e intente de nuevo:"
+
+#: ../stoq/gui/config.py:172 ../stoq/gui/config.py:173
+msgid "Invalid database address"
+msgstr "Dirección incorrecta de la base de datos"
+
+#: ../stoq/gui/config.py:257
+msgid "Schema error, no branches found"
+msgstr ""
+
+#: ../stoq/gui/config.py:297 ../data/glade/AdminPasswordStep.glade.h:1
+msgid "<b>Administrator Account Creation</b>"
+msgstr "<b>Creación de la Cuenta de Administrador</b>"
+
+#: ../stoq/gui/config.py:300
+#, python-format
+msgid ""
+"I'm adding a user called `%s' which will have administrator privilegies.\n"
+"\n"
+"To be able to create other users you need to login with this user in the "
+"admin application and create them."
+msgstr ""
+"Estoy añadiendo un usuario llamado `%s' que tendrá permisos de "
+"administrador.\n"
+"\n"
+"Para poder crear otros usuarios es necesario acceder usando este usuario en "
+"la aplicación 'Administrativo' y crearlos"
+
+#: ../stoq/gui/config.py:360
+#, python-format
+msgid ""
+"This machine which has the name <b>%s</b> will be registered so it can be "
+"used to access the system."
+msgstr ""
+"Esta máquina, con nombre <b>%s</b>, será registrada. Tras ello puede ser "
+"utilizada para acceder al sistema."
+
+#: ../stoq/gui/config.py:381
+#, python-format
+msgid ""
+"There is already a database called <b>%s</b> on <b>%s</b>. You must enter "
+"the password for the user <b>%s</b> to continue the installation: "
+msgstr ""
+"Existe ya una base de datos llamada <b>%s</b> en <b>%s</b>. Debe introducir "
+"la contraseña del usuario <b>%s</b> para continuar la instalación:"
+
+#: ../stoq/gui/config.py:388
+msgid "<b>Administrator Account</b>"
+msgstr "<b>Cuenta del Administrador</b>"
+
+#: ../stoq/gui/config.py:399
+msgid "The password supplied is not valid."
+msgstr "La contraseña proporcionada no es correcta."
+
+#: ../stoq/gui/config.py:522
+msgid "ICMS can not be greater than 100"
+msgstr ""
+
+#: ../stoq/gui/config.py:524
+msgid "ICMS can not be less than 0"
+msgstr ""
+
+#: ../stoq/gui/config.py:528
+msgid "ISS can not be greater than 100"
+msgstr ""
+
+#: ../stoq/gui/config.py:530
+msgid "ISS can not be less than 0"
+msgstr ""
+
+#: ../stoq/gui/config.py:534
+msgid "ICMS Substitution can not be greater than 100"
+msgstr ""
+
+#: ../stoq/gui/config.py:537
+msgid "ICMS Substitution can not be less than 0"
+msgstr ""
+
+#: ../stoq/gui/config.py:542
+#, fuzzy
+msgid "The CNPJ is not valid."
+msgstr "La contraseña proporcionada no es correcta."
+
+#: ../stoq/gui/config.py:572 ../stoq/gui/update.py:137
+msgid "Run Stoq"
+msgstr ""
+
+#: ../stoq/gui/config.py:588
+msgid "Setting up Stoq"
+msgstr "Configurando Stoq"
+
+#: ../stoq/gui/update.py:112
+msgid " Done."
+msgstr ""
+
+#: ../stoq/gui/update.py:114
+msgid " Fail."
+msgstr ""
+
+#: ../stoq/gui/update.py:147
+msgid "Applying database patches..."
+msgstr ""
+
+#: ../stoq/gui/update.py:161
+#, fuzzy
+msgid "Updating Stoq"
+msgstr "Configurando Stoq"
+
+#: ../stoq/gui/runner.py:156
+#, python-format
+msgid ""
+"This user lacks credentials \n"
+"for application %s"
+msgstr ""
+"Este usuario no está acreditado \n"
+"en la aplicación %s"
+
+#: ../stoq/gui/inventory/__init__.py:29 ../stoq/gui/inventory/inventory.py:51
+msgid "Inventory"
+msgstr ""
+
+#: ../stoq/gui/inventory/__init__.py:30
+#, fuzzy
+msgid "Inventory application."
+msgstr "Cambiar aplicación"
+
+#: ../stoq/gui/inventory/inventory.py:55 ../stoq/gui/stock/stock.py:75
+msgid "Matching:"
+msgstr "incluyendo:"
+
+#: ../stoq/gui/inventory/inventory.py:69
+msgid "Show inventories at:"
+msgstr ""
+
+#: ../stoq/gui/inventory/inventory.py:75 ../stoq/gui/pos/deliveryeditor.py:99
+#: ../stoq/gui/stock/stock.py:97
+msgid "Code"
+msgstr "Código"
+
+#: ../stoq/gui/inventory/inventory.py:78 ../stoq/gui/till/till.py:130
+#: ../stoq/gui/production/production.py:114 ../stoq/gui/payable/payable.py:114
+#: ../stoq/gui/receivable/receivable.py:156
+#: ../stoq/gui/purchase/purchase.py:95 ../stoq/gui/admin/admin.py:97
+#: ../stoq/gui/sales/sales.py:101
+msgid "Status"
+msgstr "Situación"
+
+#: ../stoq/gui/inventory/inventory.py:82
+#, fuzzy
+msgid "Branch"
+msgstr "Unidades..."
+
+#: ../stoq/gui/inventory/inventory.py:84
+#: ../stoq/gui/production/production.py:120
+#: ../stoq/gui/purchase/purchase.py:97
+#, fuzzy
+msgid "Opened"
+msgstr "Cantidad solicitada"
+
+#: ../stoq/gui/inventory/inventory.py:87
+#: ../stoq/gui/production/production.py:122
+#, fuzzy
+msgid "Closed"
+msgstr "Cerrar"
+
+#: ../stoq/gui/inventory/inventory.py:97 ../stoq/gui/till/till.py:171
+#: ../stoq/gui/production/production.py:80 ../stoq/gui/payable/payable.py:339
+#: ../stoq/gui/receivable/receivable.py:125
+#: ../stoq/gui/purchase/purchase.py:244 ../stoq/gui/admin/admin.py:105
+#: ../stoq/gui/sales/sales.py:231
+msgid "Any"
+msgstr "Cualquiera"
+
+#: ../stoq/gui/inventory/inventory.py:109 ../stoq/gui/stock/stock.py:134
+msgid "All branches"
+msgstr "Todas las unidades"
+
+#: ../stoq/gui/inventory/inventory.py:160
+#, fuzzy
+msgid "Are you sure you want to cancel this inventory ?"
+msgstr "¿Está seguro de que desea cancelar el último documento?"
+
+#: ../stoq/gui/inventory/inventory.py:161 ../stoq/gui/till/till.py:183
+msgid "No"
+msgstr ""
+
+#: ../stoq/gui/inventory/inventory.py:161
+#, fuzzy
+msgid "Cancel Inventory"
+msgstr "Nuevo"
+
+#: ../stoq/gui/till/__init__.py:29 ../stoq/gui/till/till.py:66
+msgid "Till"
+msgstr "Caja"
+
+#: ../stoq/gui/till/__init__.py:30
+msgid "Till application."
+msgstr ""
+"Aplicación para la apertura y cierre de\n"
+"caja, ingresos y egresos."
+
+#: ../stoq/gui/till/till.py:70 ../stoq/gui/production/production.py:56
+#: ../stoq/gui/payable/payable.py:71 ../stoq/gui/receivable/receivable.py:95
+#: ../stoq/gui/purchase/purchase.py:72 ../stoq/gui/admin/admin.py:72
+#: ../stoq/gui/sales/sales.py:69
+msgid "matching:"
+msgstr "incluyendo:"
+
+#: ../stoq/gui/till/till.py:99 ../stoq/gui/purchase/purchase.py:86
+msgid "Show orders with status"
+msgstr "Mostrar pedidos en situación"
+
+#: ../stoq/gui/till/till.py:125
+#, python-format
+msgid "Stoq - Till for Branch %03d"
+msgstr "Stoq - Caja de Unidad %03d"
+
+#: ../stoq/gui/till/till.py:128 ../stoq/gui/purchase/purchase.py:92
+#: ../stoq/gui/sales/sales.py:104
+msgid "Number"
+msgstr "Número"
+
+#: ../stoq/gui/till/till.py:132
+msgid "Date Started"
+msgstr "Fecha de inicio"
+
+#: ../stoq/gui/till/till.py:134 ../stoq/gui/sales/sales.py:125
+msgid "Client"
+msgstr "Cliente"
+
+#: ../stoq/gui/till/till.py:137 ../stoq/gui/sales/sales.py:128
+msgid "Salesperson"
+msgstr "Vendedor"
+
+#: ../stoq/gui/till/till.py:140 ../stoq/gui/pos/pos.py:182
+#: ../stoq/gui/pos/deliveryeditor.py:103 ../stoq/gui/stock/stock.py:109
+msgid "Quantity"
+msgstr "Cantidad"
+
+#: ../stoq/gui/till/till.py:143 ../stoq/gui/purchase/purchase.py:109
+#: ../stoq/gui/sales/sales.py:134 ../stoq/gui/pos/pos.py:184
+msgid "Total"
+msgstr "Total"
+
+#: ../stoq/gui/till/till.py:182
+msgid "This quote has expired. Confirm it anyway?"
+msgstr ""
+
+#: ../stoq/gui/till/till.py:183
+msgid "Yes"
+msgstr ""
+
+#: ../stoq/gui/till/till.py:202
+#, python-format
+msgid "There is only %d items of \"%s\" and this sale has %d items."
+msgstr ""
+
+#: ../stoq/gui/till/till.py:221
+#, fuzzy
+msgid ""
+"It is not possible to confirm the sale if the fiscal coupon cannot be opened."
+msgstr "No es posible iniciar una nueva venta si no se puede abrir factura."
+
+#: ../stoq/gui/till/till.py:223 ../stoq/gui/pos/pos.py:644
+msgid "Try Again"
+msgstr "Intente de nuevo"
+
+#: ../stoq/gui/till/till.py:237 ../stoq/gui/pos/pos.py:242
+#, python-format
+msgid "Total: %s"
+msgstr "Total: %s"
+
+#: ../stoq/gui/till/till.py:301
+msgid "Till Closed"
+msgstr "Caja cerrada"
+
+#: ../stoq/gui/till/till.py:305
+#, python-format
+msgid "Till Opened on %s"
+msgstr "Caja abierta el %s"
+
+#: ../stoq/gui/till/till.py:340 ../stoq/gui/pos/pos.py:710
+msgid ""
+"You can only close the till once per day. \n"
+"\n"
+"Close the till?"
+msgstr ""
+"Sólo puede cerrar la caja una vez al día..\n"
+"\n"
+"¿Cerrar la caja?"
+
+#: ../stoq/gui/till/till.py:342 ../stoq/gui/pos/pos.py:712
+msgid "Not now"
+msgstr "Ahora no"
+
+#: ../stoq/gui/till/till.py:342 ../stoq/gui/pos/pos.py:712
+msgid "Close Till"
+msgstr "Cerrar la caja..."
+
+#: ../stoq/gui/production/__init__.py:30
+#: ../stoq/gui/production/production.py:52
+#, fuzzy
+msgid "Production"
+msgstr "Productos"
+
+#: ../stoq/gui/production/__init__.py:31
+#, fuzzy
+msgid "Production application."
+msgstr ""
+"Aplicación para la gestión y registro de\n"
+"comprobantes e impresión de facturas."
+
+#: ../stoq/gui/production/production.py:108
+#, fuzzy
+msgid "Show productions with status"
+msgstr "Mostrar pedidos en situación"
+
+#: ../stoq/gui/production/production.py:112
+msgid "# "
+msgstr ""
+
+#: ../stoq/gui/production/production.py:116 ../stoq/gui/payable/payable.py:100
+#: ../stoq/gui/payable/payable.py:104 ../stoq/gui/receivable/receivable.py:143
+#: ../stoq/gui/receivable/receivable.py:147 ../stoq/gui/pos/pos.py:178
+#: ../stoq/gui/pos/deliveryeditor.py:101 ../stoq/gui/stock/stock.py:104
+msgid "Description"
+msgstr "Descripción"
+
+#: ../stoq/gui/production/production.py:118
+msgid "Responsible"
+msgstr ""
+
+#: ../stoq/gui/payable/payable.py:67 ../stoq/gui/payable/__init__.py:29
+#, fuzzy
+msgid "Accounts Payable"
+msgstr "Cuentas a Pagar"
+
+#: ../stoq/gui/payable/payable.py:89 ../stoq/gui/receivable/receivable.py:135
+msgid "Show payments with status"
+msgstr "Mostrar pagos en situación"
+
+#: ../stoq/gui/payable/payable.py:97 ../stoq/gui/receivable/receivable.py:140
+msgid "#"
+msgstr ""
+
+#: ../stoq/gui/payable/payable.py:102 ../stoq/gui/receivable/receivable.py:145
+#, fuzzy
+msgid "Comments"
+msgstr "Clientes"
+
+#: ../stoq/gui/payable/payable.py:107 ../stoq/gui/purchase/purchase.py:100
+msgid "Supplier"
+msgstr "Proveedor"
+
+#: ../stoq/gui/payable/payable.py:110 ../stoq/gui/receivable/receivable.py:152
+msgid "Due Date"
+msgstr "Fecha de vencimiento"
+
+#: ../stoq/gui/payable/payable.py:112 ../stoq/gui/receivable/receivable.py:154
+msgid "Paid Date"
+msgstr "Fecha de pago"
+
+#: ../stoq/gui/payable/payable.py:117 ../stoq/gui/receivable/receivable.py:159
+msgid "Value"
+msgstr "Valor"
+
+#: ../stoq/gui/payable/payable.py:119 ../stoq/gui/receivable/receivable.py:161
+#, fuzzy
+msgid "Paid"
+msgstr "Fecha de pago"
+
+#: ../stoq/gui/payable/__init__.py:30
+#, fuzzy
+msgid "Accounts Payable application."
+msgstr ""
+"Aplicación para gestión e registro de\n"
+"pagos de cuentas y parcelas."
+
+#: ../stoq/gui/receivable/__init__.py:29
+#: ../stoq/gui/receivable/receivable.py:90
+#, fuzzy
+msgid "Accounts Receivable"
+msgstr "Cuentas a Recibir"
+
+#: ../stoq/gui/receivable/__init__.py:30
+#, fuzzy
+msgid "Accounts Receivable application."
+msgstr ""
+"Aplicación para el control de recibos\n"
+"de ventas a plazo."
+
+#: ../stoq/gui/receivable/receivable.py:70
+msgid "Next month"
+msgstr "Próximo mes"
+
+#: ../stoq/gui/receivable/receivable.py:150
+msgid "Drawee"
+msgstr "Retirado"
+
+#: ../stoq/gui/purchase/__init__.py:29 ../stoq/gui/purchase/purchase.py:68
+msgid "Purchase"
+msgstr "Compras"
+
+#: ../stoq/gui/purchase/__init__.py:30
+msgid "Purchase application."
+msgstr ""
+"Aplicación para la ejecución de pedidos\n"
+"de compras y registro de productos."
+
+#: ../stoq/gui/purchase/purchase.py:103
+#, fuzzy
+msgid "Ordered"
+msgstr "Cantidad solicitada"
+
+#: ../stoq/gui/purchase/purchase.py:106
+#, fuzzy
+msgid "Received"
+msgstr "Recibir"
+
+#: ../stoq/gui/purchase/purchase.py:118
+#, fuzzy
+msgid "<b>Orders Total:</b>"
+msgstr "<b>Stock Total</b>"
+
+#: ../stoq/gui/purchase/purchase.py:202
+msgid "There are no orders with status pending in the selection"
+msgstr "No existen pedidos pendientes en la selección"
+
+#: ../stoq/gui/purchase/purchase.py:206
+#, python-format
+msgid "The %d selected orders will be marked as sent."
+msgstr "Los %d pedidos seleccionados serán marcados como enviados."
+
+#: ../stoq/gui/purchase/purchase.py:209
+msgid "The selected order will be marked as sent."
+msgstr "El pedido selecionado será marcado como enviado."
+
+#: ../stoq/gui/purchase/purchase.py:210
+msgid "Don't Send"
+msgstr "No Enviar"
+
+#: ../stoq/gui/purchase/purchase.py:210
+msgid "Send to supplier"
+msgstr "Enviar al proveedor..."
+
+#: ../stoq/gui/purchase/purchase.py:230
+msgid "The selected order(s) will be cancelled."
+msgstr "El pedido seleccionado será cancelado."
+
+#: ../stoq/gui/purchase/purchase.py:231 ../stoq/gui/sales/sales.py:280
+msgid "Don't Cancel"
+msgstr "No Cancelar"
+
+#: ../stoq/gui/purchase/purchase.py:231
+msgid "Cancel order(s)"
+msgstr "Cancelar Pedido(s)"
+
+#: ../stoq/gui/admin/admin.py:68 ../stoq/gui/admin/__init__.py:29
+msgid "Administrative"
+msgstr "Administrativo"
+
+#: ../stoq/gui/admin/admin.py:83
+msgid "Show users with status"
+msgstr "Mostrar usuarios en situación"
+
+#: ../stoq/gui/admin/admin.py:90
+msgid "Login Name"
+msgstr "Usuario"
+
+#: ../stoq/gui/admin/admin.py:92
+msgid "Profile"
+msgstr "Perfil"
+
+#: ../stoq/gui/admin/admin.py:95
+msgid "Name"
+msgstr "Nombre"
+
+#: ../stoq/gui/admin/admin.py:138
+#, fuzzy
+msgid ""
+"You must create at least one invoice layout before adding aninvoice printer"
+msgstr ""
+"Es necesaria la existencia de al menos un artículo en stock para realizar "
+"esta acción."
+
+#: ../stoq/gui/admin/admin.py:186
+msgid ""
+"You must define a manager to this branch before you can create a sintegra "
+"archive"
+msgstr ""
+
+#: ../stoq/gui/admin/__init__.py:30
+msgid "Administrative application."
+msgstr ""
+"Aplicación para la administración\n"
+"y parametrización del sistema."
+
+#: ../stoq/gui/sales/__init__.py:29 ../stoq/gui/sales/sales.py:65
+msgid "Sales"
+msgstr "Ventas"
+
+#: ../stoq/gui/sales/__init__.py:30
+msgid "Sales application."
+msgstr ""
+"Aplicación para la gestión y registro de\n"
+"comprobantes e impresión de facturas."
+
+#: ../stoq/gui/sales/sales.py:93
+msgid "Show sales with status"
+msgstr "Mostrar ventas en situación"
+
+#: ../stoq/gui/sales/sales.py:106
+#, fuzzy
+msgid "Open Date"
+msgstr "Fecha de apertura:"
+
+#: ../stoq/gui/sales/sales.py:109
+msgid "Close Date"
+msgstr "Fecha de cierre:"
+
+#: ../stoq/gui/sales/sales.py:112
+msgid "Confirm Date"
+msgstr "Fecha de confirmación"
+
+#: ../stoq/gui/sales/sales.py:115
+msgid "Cancel Date"
+msgstr "Fecha de cancelación"
+
+#: ../stoq/gui/sales/sales.py:118
+#, fuzzy
+msgid "Return Date"
+msgstr "Fecha de apertura:"
+
+#: ../stoq/gui/sales/sales.py:121
+#, fuzzy
+msgid "Expire Date"
+msgstr "Fecha de vencimiento"
+
+#: ../stoq/gui/sales/sales.py:131
+msgid "Items"
+msgstr ""
+
+#: ../stoq/gui/sales/sales.py:190
+msgid "There are no invoice printer configured for this station"
+msgstr ""
+
+#: ../stoq/gui/sales/sales.py:279
+#, fuzzy
+msgid "The selected quote will be cancelled."
+msgstr "El pedido seleccionado será cancelado."
+
+#: ../stoq/gui/sales/sales.py:280
+#, fuzzy
+msgid "Cancel quote"
+msgstr "Fecha de cancelación"
+
+#: ../stoq/gui/pos/__init__.py:29 ../stoq/gui/pos/pos.py:110
+msgid "Point of Sales"
+msgstr "Punto de Venta"
+
+#: ../stoq/gui/pos/__init__.py:30
+msgid "Point Of Sale application."
+msgstr ""
+"Aplicación para registro de venta de\n"
+"productos y emisión de recibo."
+
+#: ../stoq/gui/pos/pos.py:139
+msgid ""
+"You must finish the current sale before you change to another application."
+msgstr ""
+
+#: ../stoq/gui/pos/pos.py:147
+msgid ""
+"You must finish or cancel the current sale before you leave the POS "
+"application."
+msgstr ""
+
+#: ../stoq/gui/pos/pos.py:175
+msgid "Reference"
+msgstr "Referencia"
+
+#: ../stoq/gui/pos/pos.py:180
+msgid "Price"
+msgstr "Precio"
+
+#: ../stoq/gui/pos/pos.py:214
+msgid "Close"
+msgstr "Cerrar"
+
+#. It's not a common operation to add more than one item at
+#. a time, it's also problematic since you'd have to show
+#. one dialog per service item. See #3092
+#: ../stoq/gui/pos/pos.py:270
+msgid ""
+"Only one service was added since its not possible toadd more than one "
+"service to an order at a time."
+msgstr ""
+"Únicamente se agregó un servicio, ya que no es posible añadir más de un "
+"servicio a una orden de cada vez."
+
+#: ../stoq/gui/pos/pos.py:418
+#, python-format
+msgid "The barcode %s does not exist."
+msgstr ""
+
+#: ../stoq/gui/pos/pos.py:434
+#, python-format
+msgid ""
+"You cannot sell more items of product %s, the available quantities are not "
+"enough."
+msgstr ""
+
+#: ../stoq/gui/pos/pos.py:493
+msgid "The current order will be canceled, Confirm?"
+msgstr "El pedido actual será cancelado, ¿confirmar?"
+
+#: ../stoq/gui/pos/pos.py:494
+msgid "Go Back"
+msgstr "Volver"
+
+#: ../stoq/gui/pos/pos.py:494 ../data/glade/pos.glade.h:9
+msgid "Cancel Order"
+msgstr "Cancelar Pedido"
+
+#: ../stoq/gui/pos/pos.py:642
+msgid ""
+"It is not possible to start a new sale if the fiscal coupon cannot be opened."
+msgstr "No es posible iniciar una nueva venta si no se puede abrir factura."
+
+#: ../stoq/gui/pos/deliveryeditor.py:54 ../stoq/gui/pos/deliveryeditor.py:58
+#, fuzzy
+msgid "Delivery"
+msgstr "Entrega"
+
+#: ../stoq/gui/pos/deliveryeditor.py:61
+#, fuzzy
+msgid "New Delivery"
+msgstr "Nueva Entrega..."
+
+#: ../stoq/gui/pos/deliveryeditor.py:105
+#, fuzzy
+msgid "Deliver"
+msgstr "Entrega"
+
+#: ../stoq/gui/pos/deliveryeditor.py:137
+msgid "Delivery Instructions"
+msgstr ""
+
+#: ../stoq/gui/pos/deliveryeditor.py:142
+msgid "Expected delivery date must be set to a future date"
+msgstr ""
+
+#: ../stoq/gui/pos/deliveryeditor.py:148
+msgid "The Delivery cost must be a positive value."
+msgstr ""
+
+#: ../stoq/gui/stock/__init__.py:29 ../stoq/gui/stock/stock.py:71
+msgid "Stock"
+msgstr ""
+
+#: ../stoq/gui/stock/__init__.py:30
+#, fuzzy
+msgid "Stock application."
+msgstr ""
+"Aplicación para la gestión y registro de\n"
+"comprobantes e impresión de facturas."
+
+#: ../stoq/gui/stock/stock.py:92
+msgid "Show products at:"
+msgstr "Mostrar productos en"
+
+#: ../stoq/gui/stock/stock.py:100
+#, fuzzy
+msgid "Barcode"
+msgstr "Código de Barras:"
+
+#: ../stoq/gui/stock/stock.py:102
+#, fuzzy
+msgid "Category"
+msgstr "Categorías..."
+
+#: ../stoq/gui/stock/stock.py:107
+msgid "Location"
+msgstr ""
+
+#: ../stoq/gui/stock/stock.py:111
+msgid "Unit"
+msgstr "Unidad"
+
+#: ../stoq/gui/stock/stock.py:113
+msgid "Picture"
+msgstr ""
+
+#: ../stoq/gui/stock/stock.py:155
+msgid "<b>Stock Total:</b>"
+msgstr "<b>Stock Total</b>"
+
+#: ../stoq/gui/stock/stock.py:206
+msgid "You must have at least one item in stock to perfom this action."
+msgstr ""
+"Es necesaria la existencia de al menos un artículo en stock para realizar "
+"esta acción."
+
+#: ../stoq/lib/configparser.py:335
+msgid ""
+"Error: Stoq configuration is not avaiable. Check that the current user has a "
+"configuration file (~/.stoq/stoq.conf)."
+msgstr ""
+
+#: ../stoq/lib/configparser.py:338
+msgid ""
+"\n"
+"\n"
+"You are running stoq using sudo. That is not recommended."
+msgstr ""
+
+#: ../stoq/lib/startup.py:54 ../stoq/lib/startup.py:122
+#: ../stoq/lib/startup.py:127
+msgid "Database schema error"
+msgstr "Error en la base de datos"
+
+#: ../stoq/lib/startup.py:55
+msgid ""
+"Table `system_table' does not exist.\n"
+"Consult your database administrator to solve this problem."
+msgstr ""
+"Tabla `system_table' inexistente.\n"
+"Consulte al administrador de la base de datos para solucionar el problema."
+
+#: ../stoq/lib/startup.py:123 ../stoq/lib/startup.py:128
+msgid ""
+"The database schema has changed, but the database has not been updated. Run "
+"'stoqdbadmin updateschema` toupdate the schema  to the latest available "
+"version."
+msgstr ""
+"El esquema de la base de datos ha cambiado, pero la base de datos no ha sido "
+"actualizada. Ejecute 'stoqdbadmin updateschema` para actualizar el esquema a "
+"la última versión disponible"
+
+#: ../stoq/lib/startup.py:148
+msgid "Update Error"
+msgstr ""
+
+#: ../stoq/lib/startup.py:149
+msgid "You need to call setup() before checking the database schema."
+msgstr ""
+
+#: ../data/glade/receivable.glade.h:1 ../data/glade/payable.glade.h:1
+#: ../data/glade/production.glade.h:1 ../data/glade/sales_app.glade.h:1
+#: ../data/glade/admin.glade.h:2 ../data/glade/stock.glade.h:1
+#: ../data/glade/pos.glade.h:2 ../data/glade/till.glade.h:1
+#: ../data/glade/purchase.glade.h:1 ../data/glade/inventory.glade.h:1
+msgid "About"
+msgstr "Sobre"
+
+#: ../data/glade/receivable.glade.h:2
+#, fuzzy
+msgid "Add receiving..."
+msgstr "Pedido de compra..."
+
+#: ../data/glade/receivable.glade.h:3 ../data/glade/payable.glade.h:3
+msgid "Bill and Check... "
+msgstr ""
+
+#: ../data/glade/receivable.glade.h:4 ../data/glade/payable.glade.h:4
+msgid "Bills"
+msgstr "Pagarés"
+
+#: ../data/glade/receivable.glade.h:5 ../data/glade/payable.glade.h:5
+#, fuzzy
+msgid "Cancel payment ..."
+msgstr "Ingresar..."
+
+#: ../data/glade/receivable.glade.h:6
+#, fuzzy
+msgid "Card Payment..."
+msgstr "Ingresar..."
+
+#: ../data/glade/receivable.glade.h:8 ../data/glade/payable.glade.h:7
+#, fuzzy
+msgid "Change Due Date..."
+msgstr "Cambiar de usuario"
+
+#: ../data/glade/receivable.glade.h:9 ../data/glade/payable.glade.h:8
+#: ../data/glade/sales_app.glade.h:4 ../data/glade/till.glade.h:4
+msgid "Change User"
+msgstr "Cambiar de Usuario"
+
+#: ../data/glade/receivable.glade.h:10 ../data/glade/payable.glade.h:9
+#: ../data/glade/production.glade.h:4 ../data/glade/sales_app.glade.h:5
+#: ../data/glade/admin.glade.h:9 ../data/glade/stock.glade.h:5
+#: ../data/glade/till.glade.h:5 ../data/glade/purchase.glade.h:9
+#: ../data/glade/inventory.glade.h:5
+msgid "Clear Cookie"
+msgstr "Borrar Cookie"
+
+#: ../data/glade/receivable.glade.h:11 ../data/glade/payable.glade.h:10
+#, fuzzy
+msgid "Comments..."
+msgstr "Clientes..."
+
+#: ../data/glade/receivable.glade.h:12 ../data/glade/payable.glade.h:11
+#: ../data/glade/sales_app.glade.h:10 ../data/glade/admin.glade.h:12
+#: ../data/glade/stock.glade.h:7 ../data/glade/pos.glade.h:14
+#: ../data/glade/till.glade.h:8 ../data/glade/purchase.glade.h:11
+msgid "Copy selected object into the clipboard"
+msgstr "Copiar objeto seleccionado al portapapeles"
+
+#: ../data/glade/receivable.glade.h:13 ../data/glade/payable.glade.h:12
+#: ../data/glade/production.glade.h:5 ../data/glade/sales_app.glade.h:11
+#: ../data/glade/admin.glade.h:14 ../data/glade/stock.glade.h:8
+#: ../data/glade/pos.glade.h:15 ../data/glade/till.glade.h:9
+#: ../data/glade/purchase.glade.h:12
+msgid "Create a new file"
+msgstr "Nuevo"
+
+#: ../data/glade/receivable.glade.h:14 ../data/glade/payable.glade.h:13
+#: ../data/glade/sales_app.glade.h:12 ../data/glade/admin.glade.h:15
+#: ../data/glade/stock.glade.h:9 ../data/glade/pos.glade.h:16
+#: ../data/glade/till.glade.h:11 ../data/glade/purchase.glade.h:13
+msgid "Cut selected object into the clipboard"
+msgstr "Recortar objeto selecionado en el portapapeles"
+
+#: ../data/glade/receivable.glade.h:15 ../data/glade/payable.glade.h:14
+#: ../data/glade/production.glade.h:7 ../data/glade/sales_app.glade.h:15
+#: ../data/glade/admin.glade.h:21 ../data/glade/stock.glade.h:10
+#: ../data/glade/till.glade.h:12 ../data/glade/purchase.glade.h:15
+#: ../data/glade/inventory.glade.h:7
+msgid "Export CSV..."
+msgstr ""
+
+#: ../data/glade/receivable.glade.h:16 ../data/glade/payable.glade.h:15
+#: ../data/glade/sales_app.glade.h:19 ../data/glade/admin.glade.h:25
+#: ../data/glade/stock.glade.h:16 ../data/glade/pos.glade.h:21
+#: ../data/glade/till.glade.h:15 ../data/glade/purchase.glade.h:18
+msgid "Open a file"
+msgstr "Abrir Archivo"
+
+#: ../data/glade/receivable.glade.h:17 ../data/glade/payable.glade.h:17
+#: ../data/glade/sales_app.glade.h:20 ../data/glade/admin.glade.h:26
+#: ../data/glade/stock.glade.h:17 ../data/glade/pos.glade.h:23
+#: ../data/glade/till.glade.h:16 ../data/glade/purchase.glade.h:19
+msgid "Paste object from the Clipboard"
+msgstr "Pegar objeto del portapapeles"
+
+#: ../data/glade/receivable.glade.h:18 ../data/glade/payable.glade.h:18
+#, fuzzy
+msgid "Payment _Flow History ..."
+msgstr "Histórico de Productos..."
+
+#: ../data/glade/receivable.glade.h:19 ../data/glade/payable.glade.h:19
+#: ../data/glade/production.glade.h:17 ../data/glade/sales_app.glade.h:23
+#: ../data/glade/admin.glade.h:31 ../data/glade/stock.glade.h:21
+#: ../data/glade/pos.glade.h:26 ../data/glade/till.glade.h:17
+#: ../data/glade/purchase.glade.h:25 ../data/glade/inventory.glade.h:9
+msgid "Quit"
+msgstr "Salir"
+
+#: ../data/glade/receivable.glade.h:20 ../data/glade/payable.glade.h:20
+#: ../data/glade/production.glade.h:18 ../data/glade/sales_app.glade.h:24
+#: ../data/glade/admin.glade.h:32 ../data/glade/stock.glade.h:22
+#: ../data/glade/pos.glade.h:27 ../data/glade/till.glade.h:18
+#: ../data/glade/purchase.glade.h:26 ../data/glade/inventory.glade.h:10
+msgid "Quit the program"
+msgstr "Salir del programa"
+
+#: ../data/glade/receivable.glade.h:21
+msgid "R_eceipt"
+msgstr "R_ecibo"
+
+#: ../data/glade/receivable.glade.h:22
+#, fuzzy
+msgid "R_eceive payment"
+msgstr "Recibir Pago"
+
+#: ../data/glade/receivable.glade.h:23
+#, fuzzy
+msgid "Renegotiate Payments..."
+msgstr "Recibir Pago"
+
+#: ../data/glade/receivable.glade.h:24 ../data/glade/payable.glade.h:21
+#: ../data/glade/production.glade.h:19 ../data/glade/sales_app.glade.h:26
+#: ../data/glade/admin.glade.h:36 ../data/glade/stock.glade.h:26
+#: ../data/glade/pos.glade.h:33 ../data/glade/till.glade.h:22
+#: ../data/glade/purchase.glade.h:31
+msgid "Save a file"
+msgstr "Guardar Archivo"
+
+#: ../data/glade/receivable.glade.h:25 ../data/glade/payable.glade.h:22
+#: ../data/glade/sales_app.glade.h:27 ../data/glade/till.glade.h:23
+msgid "Save with a different name"
+msgstr "Guardar como"
+
+#: ../data/glade/receivable.glade.h:26 ../data/glade/payable.glade.h:23
+#, fuzzy
+msgid "Set as not paid..."
+msgstr "La contraseña proporcionada no es correcta."
+
+#: ../data/glade/receivable.glade.h:27 ../data/glade/payable.glade.h:24
+#: ../data/glade/sales_app.glade.h:33 ../data/glade/till.glade.h:25
+msgid "Store Cookie"
+msgstr "Guardar Cookie"
+
+#: ../data/glade/receivable.glade.h:28 ../data/glade/payable.glade.h:25
+msgid "_Conference"
+msgstr "_Conferencia"
+
+#: ../data/glade/receivable.glade.h:29 ../data/glade/payable.glade.h:26
+#: ../data/glade/production.glade.h:23 ../data/glade/till.glade.h:29
+#: ../data/glade/purchase.glade.h:43
+#, fuzzy
+msgid "_Details"
+msgstr "Detalles"
+
+#: ../data/glade/receivable.glade.h:30 ../data/glade/payable.glade.h:27
+#: ../data/glade/sales_app.glade.h:34 ../data/glade/admin.glade.h:43
+#: ../data/glade/stock.glade.h:34 ../data/glade/pos.glade.h:41
+#: ../data/glade/till.glade.h:30 ../data/glade/purchase.glade.h:44
+msgid "_Edit"
+msgstr "_Editar"
+
+#: ../data/glade/receivable.glade.h:31 ../data/glade/payable.glade.h:28
+#: ../data/glade/sales_app.glade.h:35 ../data/glade/stock.glade.h:35
+#: ../data/glade/pos.glade.h:42 ../data/glade/till.glade.h:31
+#: ../data/glade/purchase.glade.h:45
+msgid "_File"
+msgstr "_Archivo"
+
+#: ../data/glade/receivable.glade.h:32 ../data/glade/payable.glade.h:29
+#: ../data/glade/production.glade.h:24 ../data/glade/sales_app.glade.h:36
+#: ../data/glade/admin.glade.h:44 ../data/glade/stock.glade.h:36
+#: ../data/glade/pos.glade.h:43 ../data/glade/till.glade.h:32
+#: ../data/glade/purchase.glade.h:46 ../data/glade/inventory.glade.h:14
+msgid "_Help"
+msgstr "_Ayuda"
+
+#: ../data/glade/receivable.glade.h:33 ../data/glade/payable.glade.h:31
+#: ../data/glade/production.glade.h:25 ../data/glade/stock.glade.h:38
+#: ../data/glade/purchase.glade.h:48 ../data/glade/inventory.glade.h:16
+msgid "_Print"
+msgstr ""
+
+#: ../data/glade/receivable.glade.h:34
+msgid "_Receivable"
+msgstr "Pendiente"
+
+#: ../data/glade/receivable.glade.h:35 ../data/glade/payable.glade.h:33
+#: ../data/glade/production.glade.h:28 ../data/glade/sales_app.glade.h:38
+#: ../data/glade/admin.glade.h:48 ../data/glade/stock.glade.h:41
+#: ../data/glade/pos.glade.h:45 ../data/glade/till.glade.h:34
+#: ../data/glade/purchase.glade.h:50 ../data/glade/inventory.glade.h:17
+msgid "_Search"
+msgstr "Buscar"
+
+#: ../data/glade/receivable.glade.h:36 ../data/glade/payable.glade.h:34
+#: ../data/glade/production.glade.h:30 ../data/glade/sales_app.glade.h:39
+#: ../data/glade/admin.glade.h:50 ../data/glade/stock.glade.h:44
+#: ../data/glade/pos.glade.h:47 ../data/glade/till.glade.h:36
+#: ../data/glade/purchase.glade.h:53
+msgid "_User"
+msgstr "_Usuario"
+
+#: ../data/glade/receivable.glade.h:37
+msgid "receivable"
+msgstr "pendiente"
+
+#: ../data/glade/DeviceSettingsStep.glade.h:1
+msgid ""
+"If you have devices connected to your\n"
+"computer, please add them here"
+msgstr ""
+"Si tiene dispositivos conectados al\n"
+"ordenador, por favor, añádalos aquí"
+
+#: ../data/glade/payable.glade.h:2
+#, fuzzy
+msgid "Add payment..."
+msgstr "Ingresar..."
+
+#: ../data/glade/payable.glade.h:16
+#, fuzzy
+msgid "P_ay order"
+msgstr "Pagar pedido"
+
+#: ../data/glade/payable.glade.h:30
+msgid "_Payable"
+msgstr "Cuentas por _Pagar"
+
+#: ../data/glade/payable.glade.h:32
+msgid "_Receipt"
+msgstr "_Recibo"
+
+#: ../data/glade/payable.glade.h:35
+msgid "payable"
+msgstr "Cuentas por Pagar"
+
+#: ../data/glade/UpdateWelcomeStep.glade.h:1
+msgid ""
+"Stoq was already updated, but we still need to update the database schema.\n"
+"\n"
+"\n"
+"Click <b>Forward</b> to start database schema update.\n"
+"\n"
+"\n"
+"It is always a good idea to <b>create a backup</b> of your database before "
+"updating."
+msgstr ""
+
+#: ../data/glade/UpdateWelcomeStep.glade.h:8
+msgid "Update Database"
+msgstr ""
+
+#: ../data/glade/production.glade.h:3 ../data/glade/admin.glade.h:8
+#: ../data/glade/stock.glade.h:4 ../data/glade/purchase.glade.h:8
+#: ../data/glade/inventory.glade.h:4
+msgid "Change User..."
+msgstr "Cambiar de Usuario..."
+
+#: ../data/glade/production.glade.h:6 ../data/glade/admin.glade.h:18
+#: ../data/glade/purchase.glade.h:14
+#, fuzzy
+msgid "Ed_it..."
+msgstr "Editar..."
+
+#: ../data/glade/production.glade.h:8 ../data/glade/purchase.glade.h:16
+#, fuzzy
+msgid "Finish Order..."
+msgstr "Nuevo Pedido..."
+
+#: ../data/glade/production.glade.h:9
+#, fuzzy
+msgid "New Production"
+msgstr "Productos"
+
+#: ../data/glade/production.glade.h:10
+#, fuzzy
+msgid "New Production Order..."
+msgstr "Histórico de Productos..."
+
+#: ../data/glade/production.glade.h:11
+#, fuzzy
+msgid "Production History..."
+msgstr "Histórico de Productos..."
+
+#: ../data/glade/production.glade.h:12
+#, fuzzy
+msgid "Production Items"
+msgstr "Productos"
+
+#: ../data/glade/production.glade.h:13 ../data/glade/sales_app.glade.h:21
+#: ../data/glade/purchase.glade.h:21
+msgid "Products"
+msgstr "Productos"
+
+#: ../data/glade/production.glade.h:14 ../data/glade/sales_app.glade.h:22
+#: ../data/glade/pos.glade.h:24 ../data/glade/purchase.glade.h:23
+msgid "Products..."
+msgstr "Productos..."
+
+#: ../data/glade/production.glade.h:15
+#, fuzzy
+msgid "Purchase Quote"
+msgstr "Compras"
+
+#: ../data/glade/production.glade.h:16
+#, fuzzy
+msgid "Purchase Quote..."
+msgstr "Pedido de compra..."
+
+#: ../data/glade/production.glade.h:20 ../data/glade/sales_app.glade.h:31
+#: ../data/glade/pos.glade.h:35 ../data/glade/purchase.glade.h:36
+msgid "Services..."
+msgstr "Servicios..."
+
+#: ../data/glade/production.glade.h:21
+msgid "Start Production"
+msgstr ""
+
+#: ../data/glade/production.glade.h:22
+#, fuzzy
+msgid "Start Production..."
+msgstr "Productos..."
+
+#: ../data/glade/production.glade.h:26
+#, fuzzy
+msgid "_Production"
+msgstr "Productos"
+
+#: ../data/glade/production.glade.h:27 ../data/glade/admin.glade.h:47
+#: ../data/glade/purchase.glade.h:49
+msgid "_Receive"
+msgstr "Recibir"
+
+#: ../data/glade/production.glade.h:29 ../data/glade/admin.glade.h:49
+#: ../data/glade/stock.glade.h:43 ../data/glade/purchase.glade.h:52
+#: ../data/glade/inventory.glade.h:18
+msgid "_Store Cookie"
+msgstr "Guardar Cookie"
+
+#: ../data/glade/production.glade.h:31
+#, fuzzy
+msgid "production"
+msgstr "Productos"
+
+#: ../data/glade/sales_app.glade.h:2
+#, fuzzy
+msgid "Cancel Quote"
+msgstr "Fecha de cancelación"
+
+#: ../data/glade/sales_app.glade.h:6
+msgid "Clients"
+msgstr "Clientes"
+
+#: ../data/glade/sales_app.glade.h:7 ../data/glade/pos.glade.h:12
+#: ../data/glade/till.glade.h:6
+msgid "Clients..."
+msgstr "Clientes..."
+
+#: ../data/glade/sales_app.glade.h:8 ../data/glade/stock.glade.h:6
+#, fuzzy
+msgid "Close Loan..."
+msgstr "Cerrar Caja..."
+
+#: ../data/glade/sales_app.glade.h:9
+msgid "Commissions..."
+msgstr ""
+
+#: ../data/glade/sales_app.glade.h:13
+#, fuzzy
+msgid "Deliveries"
+msgstr "Entrega"
+
+#: ../data/glade/sales_app.glade.h:14 ../data/glade/pos.glade.h:17
+#, fuzzy
+msgid "Deliveries..."
+msgstr "Nueva Entrega..."
+
+#: ../data/glade/sales_app.glade.h:16 ../data/glade/stock.glade.h:12
+msgid "Loans"
+msgstr ""
+
+#: ../data/glade/sales_app.glade.h:17 ../data/glade/stock.glade.h:15
+#, fuzzy
+msgid "New Loan..."
+msgstr "Nuevo..."
+
+#: ../data/glade/sales_app.glade.h:18
+msgid "New Quote"
+msgstr ""
+
+#: ../data/glade/sales_app.glade.h:25 ../data/glade/pos.glade.h:30
+msgid "Sal_es"
+msgstr "V_entas"
+
+#: ../data/glade/sales_app.glade.h:28 ../data/glade/stock.glade.h:28
+#, fuzzy
+msgid "Search Loan Items..."
+msgstr "Pedido de compra..."
+
+#: ../data/glade/sales_app.glade.h:29 ../data/glade/stock.glade.h:29
+#, fuzzy
+msgid "Search Loans..."
+msgstr "Pedido de compra..."
+
+#: ../data/glade/sales_app.glade.h:30
+msgid "Services"
+msgstr "Servicios"
+
+#: ../data/glade/sales_app.glade.h:32 ../data/glade/pos.glade.h:36
+#: ../data/glade/till.glade.h:24
+msgid "Sold Items by Branch..."
+msgstr ""
+
+#: ../data/glade/sales_app.glade.h:37
+#, fuzzy
+msgid "_Print Invoice ..."
+msgstr "Im_primir Factura"
+
+#: ../data/glade/sales_app.glade.h:40
+msgid "sales"
+msgstr "ventas"
+
+#: ../data/glade/NewOrderEditor.glade.h:1
+msgid "Add/Edit..."
+msgstr "Añadir/Editar..."
+
+#: ../data/glade/NewOrderEditor.glade.h:2
+msgid "CFOP:"
+msgstr "Código de operación contable:"
+
+#: ../data/glade/NewOrderEditor.glade.h:3
+msgid "Client:"
+msgstr "Cliente:"
+
+#: ../data/glade/NewOrderEditor.glade.h:4
+msgid "Company"
+msgstr "Empresa"
+
+#: ../data/glade/NewOrderEditor.glade.h:5
+msgid "Details"
+msgstr "Detalles"
+
+#: ../data/glade/NewOrderEditor.glade.h:6
+msgid "Individual"
+msgstr "Individuo"
+
+#: ../data/glade/NewOrderEditor.glade.h:7
+msgid "Not Specified"
+msgstr "No Especificado"
+
+#: ../data/glade/NewOrderEditor.glade.h:8
+msgid "Order Number:"
+msgstr "Número de Pedido:"
+
+#: ../data/glade/NewOrderEditor.glade.h:9
+msgid "Salesperson:"
+msgstr "Vendedor:"
+
+#: ../data/glade/NewOrderEditor.glade.h:10
+msgid "Select the client role:"
+msgstr "Seleccione el cargo del Cliente:"
+
+#: ../data/glade/NewOrderEditor.glade.h:11
+msgid "Select:"
+msgstr "Seleccione:"
+
+#: ../data/glade/ExampleDatabaseStep.glade.h:1
+msgid "<b>Database initialization</b>"
+msgstr "<b>Inicialización de la base de datos</b>"
+
+#: ../data/glade/ExampleDatabaseStep.glade.h:2
+msgid "Create an empty database"
+msgstr "Crear una base de datos vacía"
+
+#: ../data/glade/ExampleDatabaseStep.glade.h:3
+msgid "Create an example database"
+msgstr "Crear una base de datos de ejemplo"
+
+#: ../data/glade/ExampleDatabaseStep.glade.h:4
+msgid ""
+"You can choose to initialize the system with an empty database or with a "
+"simple examples database.\n"
+"\n"
+"Would you like to:\n"
+msgstr ""
+"Puede elegir entre inicializar el sistema con una base de datos vacía o con "
+"una de ejemplos sencillos.\n"
+"\n"
+"Querría:\n"
+
+#: ../data/glade/admin.glade.h:1
+#, fuzzy
+msgid "A_dmin"
+msgstr "Admin"
+
+#: ../data/glade/admin.glade.h:3 ../data/glade/pos.glade.h:4
+msgid "Arquivo"
+msgstr "Archivo"
+
+#: ../data/glade/admin.glade.h:4
+msgid "Branch Station..."
+msgstr "Filial..."
+
+#: ../data/glade/admin.glade.h:5
+msgid "Branches..."
+msgstr "Unidades..."
+
+#: ../data/glade/admin.glade.h:6
+msgid "CFOP..."
+msgstr "Código de operación contable..."
+
+#: ../data/glade/admin.glade.h:10
+#, fuzzy
+msgid "Client Categories..."
+msgstr "Categorias Base..."
+
+#: ../data/glade/admin.glade.h:11
+#, fuzzy
+msgid "Configure Taxes..."
+msgstr "Confirmar"
+
+#: ../data/glade/admin.glade.h:13
+msgid "Create Sintegra Archive..."
+msgstr "Creación del Archivo Sintegra"
+
+#: ../data/glade/admin.glade.h:16
+msgid "Devices _Settings"
+msgstr "Configuración de Dispo_sitivos"
+
+#: ../data/glade/admin.glade.h:17
+msgid "Devices _Settings..."
+msgstr "Configuración de Dispo_sitivos..."
+
+#: ../data/glade/admin.glade.h:19
+msgid "Employee Roles..."
+msgstr "Cargos del empleado..."
+
+#: ../data/glade/admin.glade.h:20
+msgid "Employees..."
+msgstr "Empleados..."
+
+#: ../data/glade/admin.glade.h:22
+msgid "Fiscal Book..."
+msgstr "Libro de Contabilidad..."
+
+#: ../data/glade/admin.glade.h:23
+#, fuzzy
+msgid "Invoice Printers..."
+msgstr "Imprimir Pedido..."
+
+#: ../data/glade/admin.glade.h:24
+#, fuzzy
+msgid "Invoices..."
+msgstr "Servicios..."
+
+#: ../data/glade/admin.glade.h:27
+#, fuzzy
+msgid "Payment Categories..."
+msgstr "Categorias Base..."
+
+#: ../data/glade/admin.glade.h:28
+msgid "Payment Method Settings..."
+msgstr "Configuración de Métodos de Pago..."
+
+#: ../data/glade/admin.glade.h:29
+msgid "Plugins"
+msgstr ""
+
+#: ../data/glade/admin.glade.h:30
+#, fuzzy
+msgid "Plugins..."
+msgstr "Clientes..."
+
+#: ../data/glade/admin.glade.h:33 ../data/glade/pos.glade.h:28
+msgid "Recortar"
+msgstr "Recortar"
+
+#: ../data/glade/admin.glade.h:34
+#, fuzzy
+msgid "S_ettings"
+msgstr "Confi_guración"
+
+#: ../data/glade/admin.glade.h:35 ../data/glade/stock.glade.h:25
+#: ../data/glade/pos.glade.h:32 ../data/glade/purchase.glade.h:30
+msgid "Save _as"
+msgstr "Guardar como"
+
+#: ../data/glade/admin.glade.h:37 ../data/glade/stock.glade.h:27
+#: ../data/glade/pos.glade.h:34 ../data/glade/purchase.glade.h:32
+msgid "Save with a differente name"
+msgstr "Guardar con un nombre distinto"
+
+#: ../data/glade/admin.glade.h:38
+msgid "System _Parameters"
+msgstr "_Parámetros de Sistema"
+
+#: ../data/glade/admin.glade.h:39
+msgid "System _Parameters..."
+msgstr "_Parámetros de Sistema..."
+
+#: ../data/glade/admin.glade.h:40
+#, fuzzy
+msgid "Tax Classes..."
+msgstr "Ventas..."
+
+#: ../data/glade/admin.glade.h:41
+#, fuzzy
+msgid "Taxes"
+msgstr "Ventas"
+
+#: ../data/glade/admin.glade.h:42
+msgid "User Profiles..."
+msgstr "Perfiles de Usuario..."
+
+#: ../data/glade/admin.glade.h:45
+#, fuzzy
+msgid "_New User..."
+msgstr "Nuevo Usuario..."
+
+#: ../data/glade/admin.glade.h:46
+#, fuzzy
+msgid "_New..."
+msgstr "Nuevo..."
+
+#: ../data/glade/admin.glade.h:51
+msgid "admin"
+msgstr "administrador"
+
+#: ../data/glade/FinishInstallationStep.glade.h:1
+msgid "<b>Stoq was successfully installed in your system!</b>"
+msgstr ""
+
+#: ../data/glade/FinishInstallationStep.glade.h:2
+msgid ""
+"Stoq was installed in your system and now you are going to finish this "
+"wizard.\n"
+"\n"
+"Click in the finish button and you will be able to select one of Stoq "
+"applications.\n"
+"\n"
+"Depending on your choices you will be logged or will be prompted to log as "
+"admin user.\n"
+msgstr ""
+
+#: ../data/glade/stock.glade.h:2 ../data/glade/pos.glade.h:7
+#: ../data/glade/purchase.glade.h:5
+msgid "C_ut"
+msgstr "Cortar"
+
+#: ../data/glade/stock.glade.h:11
+#, fuzzy
+msgid "H_istory"
+msgstr "Histórico"
+
+#: ../data/glade/stock.glade.h:13
+msgid "Manual Stock Decrease"
+msgstr ""
+
+#: ../data/glade/stock.glade.h:14
+#, fuzzy
+msgid "Manual Stock Decrease..."
+msgstr "Transferencia de stock..."
+
+#: ../data/glade/stock.glade.h:18
+msgid "Product history..."
+msgstr "Histórico de Productos..."
+
+#: ../data/glade/stock.glade.h:19
+msgid "Purchase Receiving..."
+msgstr "Pedido de compra..."
+
+#: ../data/glade/stock.glade.h:20 ../data/glade/purchase.glade.h:24
+#, fuzzy
+msgid "Purchased Items..."
+msgstr "Pedido de compra..."
+
+#: ../data/glade/stock.glade.h:23
+msgid "Receive"
+msgstr "Recibir"
+
+#: ../data/glade/stock.glade.h:24
+#, fuzzy
+msgid "STOQ - Stock Application"
+msgstr "STOQ - Aplicación de PDV"
+
+#: ../data/glade/stock.glade.h:30 ../data/glade/purchase.glade.h:37
+#, fuzzy
+msgid "Stock Items..."
+msgstr "Transferencia de stock..."
+
+#: ../data/glade/stock.glade.h:31
+msgid "Stock Transfer..."
+msgstr "Transferencia de stock..."
+
+#: ../data/glade/stock.glade.h:32
+msgid "Toggle picture viewer..."
+msgstr ""
+
+#: ../data/glade/stock.glade.h:33
+msgid "Transfer"
+msgstr "Transferencia"
+
+#: ../data/glade/stock.glade.h:37
+#, fuzzy
+msgid "_Initial Stock..."
+msgstr "Guardar"
+
+#: ../data/glade/stock.glade.h:39
+msgid "_Retention"
+msgstr "_Retención"
+
+#: ../data/glade/stock.glade.h:40
+#, fuzzy
+msgid "_Retention..."
+msgstr "Retención..."
+
+#: ../data/glade/stock.glade.h:42
+#, fuzzy
+msgid "_Stock"
+msgstr "Guardar"
+
+#: ../data/glade/BranchSettingsStep.glade.h:1
+msgid "  .   .   /    -  "
+msgstr ""
+
+#: ../data/glade/BranchSettingsStep.glade.h:3
+#, no-c-format
+msgid "%"
+msgstr "%"
+
+#: ../data/glade/BranchSettingsStep.glade.h:4
+msgid "00.000.000/0000-00"
+msgstr ""
+
+#: ../data/glade/BranchSettingsStep.glade.h:5
+#, fuzzy
+msgid "CNPJ:"
+msgstr "Código de operación contable:"
+
+#: ../data/glade/BranchSettingsStep.glade.h:6
+msgid "Company Details"
+msgstr "Detalles de la Empresa"
+
+#: ../data/glade/BranchSettingsStep.glade.h:7
+msgid "Company Name:"
+msgstr "Nombre de la Empresa:"
+
+#: ../data/glade/BranchSettingsStep.glade.h:8
+msgid "Fax:"
+msgstr "Fax:"
+
+#: ../data/glade/BranchSettingsStep.glade.h:9
+msgid "ICMS:"
+msgstr "IVA"
+
+#: ../data/glade/BranchSettingsStep.glade.h:10
+msgid "ISS:"
+msgstr "IVA (2)"
+
+#: ../data/glade/BranchSettingsStep.glade.h:11
+msgid "Main Address"
+msgstr "Dirección principal"
+
+#: ../data/glade/BranchSettingsStep.glade.h:12
+msgid "Phone Number:"
+msgstr "Teléfono:"
+
+#: ../data/glade/BranchSettingsStep.glade.h:13
+msgid "State Registry:"
+msgstr ""
+
+# no matching concept?
+#: ../data/glade/BranchSettingsStep.glade.h:14
+msgid "Substitution ICMS:"
+msgstr "IVA Soportado:"
+
+#: ../data/glade/PluginStep.glade.h:1
+msgid "<b>Plugins</b>"
+msgstr ""
+
+#: ../data/glade/PluginStep.glade.h:2
+msgid "ECF (Fiscal Printer support)"
+msgstr ""
+
+#: ../data/glade/PluginStep.glade.h:3
+msgid "For testing purposes it is recommended to select \"No plugins\"."
+msgstr ""
+
+#: ../data/glade/PluginStep.glade.h:4
+msgid ""
+"Most of the plugins are specific to the brazilian market and once\n"
+"a plugin is activated it will not be possible to disable it.\n"
+"\n"
+"\n"
+"<b>Select the plugins you want to enable:</b>"
+msgstr ""
+
+#: ../data/glade/PluginStep.glade.h:9
+msgid "NF-e (Eletronic Invoices)"
+msgstr ""
+
+#: ../data/glade/pos.glade.h:1
+msgid "1,00"
+msgstr "1,00"
+
+#: ../data/glade/pos.glade.h:3
+msgid "Add"
+msgstr "Añadir"
+
+#: ../data/glade/pos.glade.h:5
+msgid "Barcode:"
+msgstr "Código de Barras:"
+
+#: ../data/glade/pos.glade.h:6
+msgid "C_hange User..."
+msgstr "Cambiar de Usuario..."
+
+#: ../data/glade/pos.glade.h:8
+msgid "Cancel Last Document"
+msgstr "Cancelar Último Documento"
+
+#: ../data/glade/pos.glade.h:11
+msgid "Cl_ear Cookie"
+msgstr "Eliminar Cookie"
+
+#: ../data/glade/pos.glade.h:13 ../data/glade/till.glade.h:7
+msgid "Close Till..."
+msgstr "Cerrar Caja..."
+
+#: ../data/glade/pos.glade.h:18
+#, fuzzy
+msgid "Ed_it"
+msgstr "Editar"
+
+#: ../data/glade/pos.glade.h:19
+msgid "New Delivery..."
+msgstr "Nueva Entrega..."
+
+#: ../data/glade/pos.glade.h:20 ../data/glade/till.glade.h:14
+msgid "Open Till..."
+msgstr "Abrir Caja..."
+
+#: ../data/glade/pos.glade.h:22
+msgid "Order Checkout..."
+msgstr "Validar Pedido..."
+
+#: ../data/glade/pos.glade.h:25
+msgid "Quantity:"
+msgstr "Cantidad:"
+
+#: ../data/glade/pos.glade.h:29
+msgid "STOQ - POS Application"
+msgstr "STOQ - Aplicación de PDV"
+
+#: ../data/glade/pos.glade.h:31 ../data/glade/till.glade.h:21
+msgid "Sales..."
+msgstr "Ventas..."
+
+#: ../data/glade/pos.glade.h:37
+msgid "Store Coo_kie"
+msgstr "Guardar Coo_kie"
+
+#: ../data/glade/pos.glade.h:38
+#, fuzzy
+msgid "_Checkout"
+msgstr "Confirmar"
+
+#: ../data/glade/pos.glade.h:39
+msgid "_Confirm Order"
+msgstr "Confirmar Pedido"
+
+#: ../data/glade/pos.glade.h:40
+#, fuzzy
+msgid "_Delivery"
+msgstr "Entrega"
+
+#: ../data/glade/pos.glade.h:44
+#, fuzzy
+msgid "_Remove"
+msgstr "Eliminar"
+
+#: ../data/glade/pos.glade.h:46 ../data/glade/till.glade.h:35
+msgid "_Till"
+msgstr "Caja"
+
+#: ../data/glade/SelectApplicationsSlave.glade.h:1
+msgid "Select an Application:"
+msgstr "Seleccione una Aplicación:"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:1
+msgid "Address:"
+msgstr "Dirección:"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:2
+msgid "Authentication Type:"
+msgstr "Tipo de Autentificación:"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:3
+msgid "Database Name:"
+msgstr "Nombre de la base de datos:"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:4
+msgid "Password:"
+msgstr "Contraseña:"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:5
+msgid ""
+"Please, fill some important informations before start using the applications"
+msgstr ""
+"Por favor, rellene algunos datos importantes antes de iniciar el sistema"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:6
+msgid "Port:"
+msgstr "Puerto:"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:7
+msgid "PostgreSQL Database Settings"
+msgstr "Configuración de la base de datos Postgres"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:8
+msgid "Username:"
+msgstr "Usuario:"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:9
+msgid "Welcome to Stoq"
+msgstr "Bienvenido a Stoq"
+
+#: ../data/glade/till.glade.h:2
+msgid "Add cash..."
+msgstr "Ingresar..."
+
+#: ../data/glade/till.glade.h:10
+msgid "Current Till"
+msgstr "Caja Actual"
+
+#: ../data/glade/till.glade.h:13
+msgid "Fiscal Till Operations..."
+msgstr "Operaciones Contables de Caja..."
+
+#: ../data/glade/till.glade.h:19
+msgid "Remove cash..."
+msgstr "Retirar de caja..."
+
+#: ../data/glade/till.glade.h:20
+msgid "STOQ - Till Application"
+msgstr "STOQ- Aplicación de Caja"
+
+#: ../data/glade/till.glade.h:26
+msgid "Till Opened Since 01/01/2006"
+msgstr "Caja abierta desde 01/01/2006"
+
+#: ../data/glade/till.glade.h:27
+msgid "Till history..."
+msgstr "Histórico de Caja..."
+
+#: ../data/glade/till.glade.h:28
+#, fuzzy
+msgid "_Confirm..."
+msgstr "Confirmar"
+
+#: ../data/glade/till.glade.h:33
+#, fuzzy
+msgid "_Return..."
+msgstr "Devolver..."
+
+#: ../data/glade/purchase.glade.h:2
+msgid "Add Order"
+msgstr "Nuevo Pedido"
+
+#: ../data/glade/purchase.glade.h:3
+msgid "Add Order..."
+msgstr "Nuevo Pedido..."
+
+#: ../data/glade/purchase.glade.h:4
+msgid "Base Categories..."
+msgstr "Categorias Base..."
+
+#: ../data/glade/purchase.glade.h:6
+msgid "Categories..."
+msgstr "Categorías..."
+
+#: ../data/glade/purchase.glade.h:10
+#, fuzzy
+msgid "Close Consigment..."
+msgstr "Cerrar Caja..."
+
+#: ../data/glade/purchase.glade.h:17
+#, fuzzy
+msgid "New Consignment..."
+msgstr "Clientes..."
+
+#: ../data/glade/purchase.glade.h:20
+#, fuzzy
+msgid "Production..."
+msgstr "Productos"
+
+#: ../data/glade/purchase.glade.h:22
+#, fuzzy
+msgid "Products Sold..."
+msgstr "Productos..."
+
+#: ../data/glade/purchase.glade.h:27
+#, fuzzy
+msgid "Quote Order"
+msgstr "Nuevo Pedido"
+
+#: ../data/glade/purchase.glade.h:28
+#, fuzzy
+msgid "Quote Order..."
+msgstr "Nuevo Pedido..."
+
+#: ../data/glade/purchase.glade.h:29
+#, fuzzy
+msgid "Quotes..."
+msgstr "Nuevo Pedido..."
+
+#: ../data/glade/purchase.glade.h:33
+#, fuzzy
+msgid "Search Consigment Items..."
+msgstr "Pedido de compra..."
+
+#: ../data/glade/purchase.glade.h:34
+msgid "Send"
+msgstr "Enviar"
+
+#: ../data/glade/purchase.glade.h:35
+msgid "Send to Supplier..."
+msgstr "Enviar al suministrador..."
+
+#: ../data/glade/purchase.glade.h:38
+msgid "Suppliers"
+msgstr "Suministradores"
+
+#: ../data/glade/purchase.glade.h:39
+msgid "Suppliers..."
+msgstr "Suministradores..."
+
+#: ../data/glade/purchase.glade.h:40
+msgid "Transporters..."
+msgstr "Transportistas..."
+
+#: ../data/glade/purchase.glade.h:41
+#, fuzzy
+msgid "_Cancel"
+msgstr "Cancelar"
+
+#: ../data/glade/purchase.glade.h:42
+#, fuzzy
+msgid "_Consignment"
+msgstr "Clientes"
+
+#: ../data/glade/purchase.glade.h:47
+msgid "_Order"
+msgstr "Pedido"
+
+#: ../data/glade/purchase.glade.h:51
+#, fuzzy
+msgid "_Stock Cost..."
+msgstr "Transferencia de stock..."
+
+#: ../data/glade/purchase.glade.h:54
+msgid "purchase"
+msgstr "compra"
+
+#: ../data/glade/UpdateSchemaStep.glade.h:1
+msgid "<b>Updating Database Schema</b>"
+msgstr ""
+
+#: ../data/glade/AdminPasswordStep.glade.h:2
+msgid ""
+"I'm adding a user called `admin' which will have administrator privilegies.\n"
+"\n"
+"To be able to create other users you need to login with this user in the "
+"admin application and create them."
+msgstr ""
+"Se está añadiendo un usuario llamado `admin' que tendrá privilegios de "
+"administrador.\n"
+"\n"
+"Para poder crear otros usuarios necesita acreditarse con ese usuario 'admin' "
+"en la aplicación y crearlos."
+
+#: ../data/glade/inventory.glade.h:6
+#, fuzzy
+msgid "Create new Inventory"
+msgstr "Nuevo"
+
+#: ../data/glade/inventory.glade.h:8
+#, fuzzy
+msgid "Open I_nventory..."
+msgstr "Nuevo"
+
+#: ../data/glade/inventory.glade.h:11
+#, fuzzy
+msgid "STOQ - Inventory Application"
+msgstr "STOQ - Aplicación de PDV"
+
+#: ../data/glade/inventory.glade.h:12
+msgid "_Adjust"
+msgstr ""
+
+#: ../data/glade/inventory.glade.h:13
+msgid "_Counting"
+msgstr ""
+
+#: ../data/glade/inventory.glade.h:15
+msgid "_Inventory"
+msgstr ""
+
+#~ msgid "Items Quantity"
+#~ msgstr "Número de artículos"
+
+#~ msgid "Confirm Sale"
+#~ msgstr "Confirmar la Venta"
+
+#~ msgid "Paid or due date:"
+#~ msgstr "Pagado o vencimiento:"
+
+#, fuzzy
+#~ msgid "status"
+#~ msgstr "Situación"
+
+#~ msgid "Gift Certificates..."
+#~ msgstr "Vales de Compra..."
+
+#, fuzzy
+#~ msgid "Product Features..."
+#~ msgstr "Productos..."
+
+#~ msgid "Warehouse"
+#~ msgstr "Almacén"
+
+#~ msgid "Warehouse application."
+#~ msgstr ""
+#~ "Aplicación para recepción de compra y\n"
+#~ "transferencia de stock."
+
+#~ msgid "STOQ - Warehouse Application"
+#~ msgstr "STOQ - Aplicación de Almacén"
+
+#~ msgid "_Warehouse"
+#~ msgstr "Almacén"
+
+#, fuzzy
+#~ msgid "Branch:"
+#~ msgstr "Unidades..."
+
+#, fuzzy
+#~ msgid "User:"
+#~ msgstr "_Usuario"
+
+#, fuzzy
+#~ msgid "OPEN:"
+#~ msgstr "Código de operación contable:"
+
+#, fuzzy
+#~ msgid "Destination:"
+#~ msgstr "Descripción"
+
+#, fuzzy
+#~ msgid "Receival date:"
+#~ msgstr "Pendiente"
+
+#, fuzzy
+#~ msgid "Source:"
+#~ msgstr "Guardar"
+
+#~ msgid "Printing Invoice"
+#~ msgstr "Imprimiendo Factura"
+
+#~ msgid "Preview Model"
+#~ msgstr "Mostrar Modelo"
+
+#~ msgid "Print the current sale order"
+#~ msgstr "Imprimir la venta actual"
+
+#~ msgid "You need open the till before start doing sales."
+#~ msgstr "Necesita abrir la caja antes de iniciar las ventas."
+
+#~ msgid "You can't start a new sale, since you are not a salesperson."
+#~ msgstr "No puede iniciar una venta, ya que no es vendedor/a"
+
+#~ msgid "You don't have products to delivery."
+#~ msgstr "No hay productos para entrega."
+
+#~ msgid "All the products already have delivery instructions"
+#~ msgstr "Todos los productos ya tienen orden de entrega"
+
+#~ msgid "Current Client Details..."
+#~ msgstr "Detalles del Cliente Seleccionado..."
+
+#~ msgid "Edit Current Client..."
+#~ msgstr "Editar Cliente Seleccionado..."
+
+#~ msgid "Reset the order"
+#~ msgstr "Reiniciar pedido"
+
+#~ msgid "Order Total"
+#~ msgstr "Total del Pedido"
+
+#~ msgid "Qty Received"
+#~ msgstr "Cantidad recibida"
+
+#~ msgid "Sellable Tax Constants..."
+#~ msgstr "Configuración de Constantes de Impuestos"
+
+#~ msgid "Tax Constants"
+#~ msgstr "Constantes de Impuestos"
+
+#~ msgid "Choose application"
+#~ msgstr "Seleccione una aplicación"
+
+#~ msgid "Invalid user or password"
+#~ msgstr "Usuario o contraseña incorrectos"
+
+#~ msgid "This user is inactive"
+#~ msgstr "Este usuario está inactivo"
+
+#~ msgid "Access Control"
+#~ msgstr "Control de acceso"
+
+#~ msgid "specify an username"
+#~ msgstr "especifique un nombre de usuario"
+
+#~ msgid "Cancelling sale failed, nothing to cancel"
+#~ msgstr "La cancelación de la venta no tuvo éxito. Nada que cancelar"
+
+#~ msgid "Document was cancelled"
+#~ msgstr "Documento cancelado"
+
+#~ msgid "Memory"
+#~ msgstr "Memoria"
+
+#~ msgid "Summary"
+#~ msgstr "Resumen"
+
+#~ msgid "Edit..."
+#~ msgstr "Editar..."
+
+#~ msgid "S_ales"
+#~ msgstr "Vent_as"
+
+#~ msgid "Searc_h"
+#~ msgstr "_Buscar"
+
+#~ msgid "S_earch"
+#~ msgstr "_Buscar"
+
+#~ msgid "Se_arch"
+#~ msgstr "Buscar"
+
+#~ msgid "Help"
+#~ msgstr "_Ayuda"
+
+#~ msgid "Sear_ch"
+#~ msgstr "_Buscar"
+
+#~ msgid "Total:"
+#~ msgstr "Total:"
+
+#~ msgid ""
+#~ "There is no stock of this product in this branch, please, select another "
+#~ "item."
+#~ msgstr ""
+#~ "No hay existencias de este producto en esta unidad de la empresa, por "
+#~ "favor seleccione otro artículo."
+
+#~ msgid "Can not sell this product"
+#~ msgstr "No es posible vender este producto"

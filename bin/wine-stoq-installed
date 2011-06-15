@@ -1,0 +1,2 @@
+#!/bin/sh
+wine dist/stoqapp.exe $@
