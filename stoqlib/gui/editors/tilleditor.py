@@ -177,21 +177,28 @@ class TillClosingEditor(BaseEditor):
                      'balance',
                      'opening_date')
 
-    def __init__(self, conn, model=None, previous_day=False):
+    def __init__(self, conn, model=None, previous_day=False, close_db=True,
+                 close_ecf=True):
         """
         Create a new TillClosingEditor object.
         @param previous_day: If the till wasn't closed previously
         """
         self._previous_day = previous_day
-        self.till = Till.get_last_opened(conn)
+        self.till = Till.get_last(conn)
         assert self.till
+        self._close_db = close_db
+        self._close_ecf = close_ecf
         BaseEditor.__init__(self, conn, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
         self.set_confirm_widget(self.value)
-        self.value.set_sensitive(self._previous_day)
-        value = self.model.get_balance()
+        # We cant remove cash if closing till from a previous day
+        self.value.set_sensitive(not self._previous_day)
+        if self._previous_day:
+            value = 0
+        else:
+            value = self.model.get_balance()
         self.value.update(value)
 
         self.day_history.set_columns(self._get_columns())
@@ -252,25 +259,28 @@ class TillClosingEditor(BaseEditor):
                 raise ValueError("The amount that you want to remove is "
                                  "greater than the current balance.")
 
+            assert self._close_ecf
             TillRemoveCashEvent.emit(till=till, value=removed)
             till_entry = till.add_debit_entry(removed,
                                  _(u'Amount removed from Till on %s' %
                                    till.opening_date.strftime('%x')))
             _create_transaction(self.conn, till_entry)
 
-        try:
-            retval = TillCloseEvent.emit(till=till,
-                                         previous_day=self._previous_day)
-        except (TillError, DeviceError), e:
-            warning(str(e))
-            return None
+        if self._close_ecf:
+            try:
+                retval = TillCloseEvent.emit(till=till,
+                                             previous_day=self._previous_day)
+            except (TillError, DeviceError), e:
+                warning(str(e))
+                return None
 
-        # If the event was captured and its return value is False, then we
-        # should not close the till.
-        if retval is False:
-            return False
+            # If the event was captured and its return value is False, then we
+            # should not close the till.
+            if retval is False:
+                return False
 
-        till.close_till()
+        if self._close_db:
+            till.close_till()
 
         # The callsite is responsible for interacting with
         # the fiscal printer

@@ -37,7 +37,8 @@ from stoqlib.domain.events import (CardPaymentReceiptPrepareEvent,
                                    CardPaymentReceiptPrintedEvent,
                                    GerencialReportPrintEvent,
                                    GerencialReportCancelEvent,
-                                   CancelPendingPaymentsEvent)
+                                   CancelPendingPaymentsEvent,
+                                   HasPendingReduceZ)
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
@@ -53,6 +54,11 @@ _ = stoqlib_gettext
 
 
 log = Logger('stoqlib.fiscalprinter')
+
+(CLOSE_TILL_NONE,
+ CLOSE_TILL_DB,
+ CLOSE_TILL_ECF,
+ CLOSE_TILL_BOTH) = range(4)
 
 def _flush_interface():
     """ Sometimes we need to 'flush' interface, so that the dialog has some
@@ -90,18 +96,22 @@ class FiscalPrinterHelper:
         trans.close()
         return retval
 
-    def close_till(self, previous_day=False):
+    def close_till(self, previous_day=False, close_db=True, close_ecf=True):
         """Closes the till
         @param previous_day: if the till wasn't closed a previous day
+        @param close_db: If the till in the DB should be closed
+        @param close_ecf: If the till in the ECF should be closed
         @returns: True if the till was closed, otherwise False
         """
 
-        till = Till.get_last_opened(self.conn)
-        assert till
+        if close_db:
+            till = Till.get_last_opened(self.conn)
+            assert till
 
         trans = new_transaction()
         model = run_dialog(TillClosingEditor, self._parent, trans,
-                           previous_day=previous_day)
+                           previous_day=previous_day, close_db=close_db,
+                           close_ecf=close_ecf)
 
         if not model:
             finish_transaction(trans, model)
@@ -115,18 +125,30 @@ class FiscalPrinterHelper:
     def needs_closing(self):
         """Checks if the last opened till was closed and asks the
         user if he wants to close it
-        @returns: True if the till was open and the user wants to
-          close it, otherwise False
-        """
-        till = Till.get_last_opened(self.conn)
-        if till and till.needs_closing():
-            if not yesno(_(u"You need to close the till opened %s before "
-                           "creating a new order.\n\nClose the till?") %
-                         till.opening_date.date(),
-                         gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
-                return True
 
-        return False
+        @returns:
+            - CLOSE_TILL_BOTH if both DB and ECF needs closing.
+            - CLOSE_TILL_DB if only DB needs closing.
+            - CLOSE_TILL_ECF if only ECF needs closing.
+            - CLOSE_TILL_NONE if both ECF and DB are consistent (they may be
+                  closed, or open for the current day)
+        """
+        ecf_needs_closing = HasPendingReduceZ.emit()
+
+        last_till = Till.get_last(self.conn)
+        if last_till:
+            db_needs_closing = last_till.needs_closing()
+        else:
+            db_needs_closing = False
+
+        if db_needs_closing and ecf_needs_closing:
+            return CLOSE_TILL_BOTH
+        elif db_needs_closing and not ecf_needs_closing:
+            return CLOSE_TILL_DB
+        elif ecf_needs_closing and not db_needs_closing:
+            return CLOSE_TILL_ECF
+        else:
+            return CLOSE_TILL_NONE
 
     def create_coupon(self):
         """ Creates a new fiscal coupon

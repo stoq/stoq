@@ -24,7 +24,6 @@
 """FiscalPrinting (ECF) integration."""
 
 from decimal import Decimal
-import datetime
 
 from kiwi.argcheck import argcheck
 from kiwi.log import Logger
@@ -74,6 +73,9 @@ class CouponPrinter(object):
 
         self._register_emitted_document(ECFDocumentHistory.TYPE_SUMMARY)
         self._driver.summarize()
+
+    def has_pending_reduce(self):
+        return self._driver.has_pending_reduce()
 
     def close_till(self, previous_day=False):
         """
