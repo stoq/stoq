@@ -37,7 +37,8 @@ from stoqlib.domain.events import (SaleConfirmEvent, TillAddCashEvent,
                                    TillCloseEvent, TillAddTillEntryEvent,
                                    GerencialReportPrintEvent,
                                    GerencialReportCancelEvent,
-                                   CheckECFStateEvent)
+                                   CheckECFStateEvent,
+                                   HasPendingReduceZ)
 from stoqlib.domain.interfaces import IIndividual, ICompany
 from stoqlib.domain.person import PersonAdaptToIndividual, PersonAdaptToCompany
 from stoqlib.domain.renegotiation import RenegotiationData
@@ -79,6 +80,7 @@ class ECFUI(object):
         GerencialReportPrintEvent.connect(self._on_GerencialReportPrintEvent)
         GerencialReportCancelEvent.connect(self._on_GerencialReportCancelEvent)
         CheckECFStateEvent.connect(self._on_CheckECFStateEvent)
+        HasPendingReduceZ.connect(self._on_HasPendingReduceZ)
 
         self._till_summarize_action = gtk.Action(
             'Summary', _('Summary'), None, None)
@@ -237,12 +239,17 @@ class ECFUI(object):
 
         return retval
 
+    def _has_pending_reduce(self):
+        return self._printer.has_pending_reduce()
+
     def _close_till(self, till, previous_day):
         log.info('ECFCouponPrinter.close_till(%r, %r)' % (till, previous_day))
 
         # XXX: this is so ugly, but the printer stops responding
         # if its printing something. We should wait a little bit...
-        time.sleep(4)
+        # This only happens if closing the till from the current day.
+        if not previous_day:
+            time.sleep(4)
 
         # Callsite catches DeviceError
         self._validate_printer()
@@ -533,6 +540,9 @@ class ECFUI(object):
 
     def _on_AddTillEntry(self, till_entry, trans):
         self._set_last_till_entry(till_entry, trans)
+
+    def _on_HasPendingReduceZ(self):
+        return self._has_pending_reduce()
 
     #
     # Callbacks
