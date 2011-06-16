@@ -24,6 +24,7 @@
 
 import datetime
 import os
+import time
 
 import gtk
 from kiwi.log import Logger
@@ -247,7 +248,6 @@ class ECFUI(object):
         self._validate_printer()
 
         printer = self._printer.get_printer()
-        driver = printer.get_fiscal_driver()
 
         if (sysparam(self.conn).ENABLE_PAULISTA_INVOICE and not
             (printer.user_number and printer.register_date and

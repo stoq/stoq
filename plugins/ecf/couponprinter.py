@@ -24,7 +24,6 @@
 """FiscalPrinting (ECF) integration."""
 
 from decimal import Decimal
-import datetime
 
 from kiwi.argcheck import argcheck
 from kiwi.log import Logger
