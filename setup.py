@@ -115,6 +115,9 @@ def listplugins():
         files.append((install_dir, listfiles(directory, '*.plugin')))
     return files
 
+packages = listpackages('stoq')
+packages.extend(listpackages('stoqlib', exclude='stoqlib.tests'))
+
 scripts = [
     'bin/stoq',
     'bin/stoqdbadmin',
@@ -201,7 +204,7 @@ setup(name='stoq',
       """,
       url=website,
       license="GNU LGPL 2.1 (see COPYING)",
-      packages=listpackages('stoq', exclude='stoqlib.tests'),
+      packages=packages,
       data_files=data_files,
       scripts=scripts,
       resources=resources,
