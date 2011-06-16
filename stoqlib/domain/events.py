@@ -115,6 +115,13 @@ class TillCloseEvent(Event):
     """
 
 
+class HasPendingReduceZ(Event):
+    """
+    This event is emitted when a has pending 'reduce z' in ecf.
+    """
+    pass
+
+
 class TillAddCashEvent(Event):
     """
     This event is emitted when cash is added to a till

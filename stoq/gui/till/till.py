@@ -32,7 +32,7 @@ import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.log import Logger
 from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import DateSearchFilter, ComboSearchFilter
+from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.exceptions import StoqlibError, TillError
@@ -48,13 +48,11 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
-from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import SaleSearch, SoldItemsByBranchSearch
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
 from stoqlib.gui.slaves.saleslave import return_sale
-from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -72,12 +70,10 @@ class TillApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
-        self._printer = FiscalPrinterHelper(
-            self.conn, parent=self.get_toplevel())
         self.current_branch = get_current_branch(self.conn)
+        self.check_till()
         self._setup_widgets()
         self.refresh()
-        self._update_widgets()
 
     #
     # SearchableAppWindow hooks
@@ -143,25 +139,6 @@ class TillApp(SearchableAppWindow):
                              format_func=format_quantity),
                 SearchColumn('total', title=_('Total'), data_type=currency,
                              width=120)]
-
-    #
-    # Till methods
-    #
-
-    def _open_till(self):
-        if self._printer.open_till():
-            self._update_widgets()
-
-    def _close_till(self):
-        till = Till.get_last_opened(self.conn)
-        if till:
-            previous_day = till.opening_date.date() == date.today()
-        else:
-            previous_day = False
-        retval = self._printer.close_till(previous_day)
-        if retval:
-            self._update_widgets()
-        return retval
 
     #
     # Private
@@ -272,42 +249,31 @@ class TillApp(SearchableAppWindow):
         self.confirm_order_button.set_sensitive(can_confirm)
         self.return_button.set_sensitive(can_return)
 
-    def _update_widgets(self):
-        # Three different options;
+    def till_status_changed(self, closed, blocked=False):
+        # Three different situations;
         #
         # - Till is closed
         # - Till is opened
-        # - Till was not closed the previous fiscal day
-        #
+        # - Till was not closed the previous fiscal day (blocked)
 
-        try:
-            till = Till.get_current(self.conn)
-        except TillError:
-            till = Till.get_last_opened(self.conn)
-            # We forgot to close the till the last opened day
-            close_till = True
-            open_till = False
-            has_till = False
-        else:
-            has_till = bool(till)
-            close_till = has_till
-            open_till = not has_till
+        self.TillOpen.set_sensitive(closed)
+        self.TillClose.set_sensitive(not closed or blocked)
+        self.AddCash.set_sensitive(not closed and not blocked)
+        self.RemoveCash.set_sensitive(not closed and not blocked)
+        self.TillHistory.set_sensitive(not closed and not blocked)
+        self.app_vbox.set_sensitive(not closed and not blocked)
 
-        self.TillClose.set_sensitive(close_till)
-        self.TillOpen.set_sensitive(open_till)
-        self.AddCash.set_sensitive(has_till)
-        self.RemoveCash.set_sensitive(has_till)
-        self.TillHistory.set_sensitive(has_till)
-
-        if not till:
-            text = _(u"Till Closed")
+        if closed:
+            text = _(u"Till closed")
             self.clear()
             self.setup_focus()
+        elif blocked:
+            text = _(u"Till blocked from previous day")
         else:
-            text = _(u"Till Opened on %s") % till.opening_date.strftime('%x')
+            till = Till.get_current(self.conn)
+            text = _(u"Till opened on %s") % till.opening_date.strftime('%x')
 
         self.till_status_label.set_text(text)
-        self.app_vbox.set_sensitive(has_till)
 
         self._update_toolbar_buttons()
         self._update_total()
@@ -339,14 +305,10 @@ class TillApp(SearchableAppWindow):
     #
 
     def _on_close_till_action__clicked(self, button):
-        if not yesno(_(u"You can only close the till once per day. "
-                       "\n\nClose the till?"),
-                     gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
-            if not self._close_till():
-                return False
+        self.close_till()
 
     def _on_open_till_action__clicked(self, button):
-        self._open_till()
+        self.open_till()
 
     def _on_client_search_action__clicked(self, button):
         self._run_search_dialog(ClientSearch, hide_footer=True)

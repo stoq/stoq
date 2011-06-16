@@ -23,7 +23,6 @@
 ##
 """ Main interface definition for pos application.  """
 
-import datetime
 import gettext
 from decimal import Decimal
 
@@ -42,15 +41,13 @@ from stoqlib.database.runtime import (new_transaction,
                                       get_current_branch)
 from stoqlib.domain.interfaces import IDelivery, ISalesPerson
 from stoqlib.domain.devices import DeviceSettings
-from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.product import IStorable
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.sale import Sale, DeliveryItem
 from stoqlib.domain.sellable import Sellable
-from stoqlib.domain.till import Till
 from stoqlib.drivers.scale import read_scale_info
-from stoqlib.exceptions import StoqlibError, TillError, TaxError
+from stoqlib.exceptions import StoqlibError, TaxError
 from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
 from stoqlib.lib.message import warning, info, yesno
 from stoqlib.lib.parameters import sysparam
@@ -58,7 +55,6 @@ from stoqlib.lib.defaults import quantize
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
-from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
@@ -120,10 +116,9 @@ class POSApp(AppWindow):
         self.max_results = self.param.MAX_SEARCH_RESULTS
         self.client_table = PersonAdaptToClient
         self._coupon = None
-        self._printer = FiscalPrinterHelper(
-            self.conn, parent=self.get_toplevel())
         self._scale_settings = DeviceSettings.get_scale_settings(self.conn)
-        self._check_till()
+        self.check_till()
+        self.check_open_inventory()
         self._setup_widgets()
         self._setup_proxies()
         self._clear_order()
@@ -219,9 +214,6 @@ class POSApp(AppWindow):
         self._create_context_menu()
 
         self.quantity.set_digits(3)
-
-        if Inventory.has_open(self.conn, get_current_branch(self.conn)):
-            show_inventory_process_message()
 
     def _create_context_menu(self):
         menu = ContextMenu()
@@ -319,28 +311,22 @@ class POSApp(AppWindow):
             # support
             self.sale_items.select(self.sale_items[0])
 
+    def till_status_changed(self, closed, blocked=False):
+        self.TillOpen.set_sensitive(closed)
+        self.TillClose.set_sensitive(not closed or blocked)
+        self.barcode.set_sensitive(not closed and not blocked)
+        self.quantity.set_sensitive(not closed and not blocked)
+        self.sale_items.set_sensitive(not closed and not blocked)
+        self.advanced_search.set_sensitive(not closed and not blocked)
+
+    def set_open_inventory(self):
+        self.Sales.set_sensitive(False)
+        self.barcode.set_sensitive(False)
+        self.quantity.set_sensitive(False)
+        self.sale_items.set_sensitive(False)
+        self.advanced_search.set_sensitive(False)
+
     def _update_widgets(self):
-        try:
-            has_till = Till.get_current(self.conn) is not None
-            till_close = has_till
-            till_open = not has_till
-        except TillError:
-            has_till = False
-            till_close = True
-            till_open = False
-        if Inventory.has_open(self.conn, get_current_branch(self.conn)):
-            has_till = False
-            till_close = False
-            till_open = True
-            self.Sales.set_sensitive(False)
-
-        self.TillOpen.set_sensitive(till_open)
-        self.TillClose.set_sensitive(till_close)
-        self.barcode.set_sensitive(not till_open)
-        self.quantity.set_sensitive(not till_open)
-        self.sale_items.set_sensitive(not till_open)
-        self.advanced_search.set_sensitive(not till_open)
-
         has_sale_items = len(self.sale_items) >= 1
         self.set_sensitive((self.checkout_button, self.remove_item_button,
                             self.NewDelivery,
@@ -553,29 +539,6 @@ class POSApp(AppWindow):
         self._update_added_item(delivery_item,
                                 new_item=new_item)
 
-    def _till_opened_previously(self):
-        till = Till.get_last_opened(self.conn)
-        if till:
-            return till.opening_date.date() == datetime.date.today()
-        else:
-            return False
-
-    def _check_till(self):
-        if self._printer.needs_closing():
-            if not self._close_till(self._till_opened_previously()):
-                return False
-        return True
-
-    def _open_till(self):
-         if self._printer.open_till():
-             self._update_widgets()
-
-    def _close_till(self, previous_day=False):
-        retval = self._printer.close_till(previous_day)
-        if retval:
-            self._update_widgets()
-        return retval
-
     def _create_sale(self, trans):
         user = get_current_user(trans)
         branch = get_current_branch(trans)
@@ -724,13 +687,10 @@ class POSApp(AppWindow):
         self._create_delivery()
 
     def on_TillClose__activate(self, action):
-        if not yesno(_(u"You can only close the till once per day. "
-                       "\n\nClose the till now?"),
-                     gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
-            self._close_till(self._till_opened_previously())
+        self.close_till()
 
     def on_TillOpen__activate(self, action):
-         self._open_till()
+        self.open_till()
 
     def on_help_contents__activate(self, action):
         show_contents()

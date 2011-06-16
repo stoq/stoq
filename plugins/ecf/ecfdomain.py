@@ -35,7 +35,6 @@ from stoqlib.database.orm import (BoolCol, StringCol, ForeignKey, IntCol,
 from stoqlib.database.orm import MultipleJoin
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
-from stoqlib.domain.payment.method import CreditCardData
 from stoqlib.exceptions import DeviceError
 from stoqlib.lib.translation import stoqlib_gettext
 
