@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2009 Async Open Source
+## Copyright (C) 2005-2011 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -89,7 +89,8 @@ for (package_name, module_name, required_version, url,
 
 from kiwi.dist import setup, listfiles, listpackages
 
-from stoqlib import version, website
+from stoq import version
+from stoqlib import website
 
 def listexternal():
     dirs = []
@@ -114,18 +115,27 @@ def listplugins():
         files.append((install_dir, listfiles(directory, '*.plugin')))
     return files
 
+scripts = [
+    'bin/stoq',
+    'bin/stoqdbadmin',
+    'bin/stoqruncmd',
+    ]
 data_files = [
-    ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.png')),
-    ('$datadir/sql', listfiles('data', 'sql', '*.sql')),
-    ('$datadir/sql', listfiles('data', 'sql', '*.py')),
+    ('$datadir/csv', listfiles('data', 'csv', '*.csv')),
     ('$datadir/glade', listfiles('data', 'glade', '*.glade')),
     ('$datadir/glade', listfiles('data', 'glade', '*.ui')),
     ('$datadir/fonts', listfiles('data', 'fonts', '*.ttf')),
-    ('$datadir/csv', listfiles('data', 'csv', '*.csv')),
+    ('$datadir/misc', listfiles('data/misc', '*.*')),
+    ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.png')),
+    ('$datadir/sql', listfiles('data', 'sql', '*.sql')),
+    ('$datadir/sql', listfiles('data', 'sql', '*.py')),
     ('$datadir/template', listfiles('data', 'template', '*.rml')),
-    ('share/doc/stoqlib',
-     ('AUTHORS', 'CONTRIBUTORS', 'README'))]
+    ('$sysconfdir/stoq',  ''),
+    ('share/doc/stoq',
+     ('AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.stoqlib', 'README'))]
 data_files += listexternal()
+templates = [
+    ('share/applications', ['stoq.desktop'])]
 
 # Pyboleto bank logos
 data_files += [
@@ -140,11 +150,14 @@ resources = dict(
     plugin='$prefix/lib/stoqlib/plugins',
     )
 global_resources = dict(
+    config='$sysconfdir/stoq',
+    csv='$datadir/csv',
+    docs='$prefix/share/doc/stoq',
+    fonts='$datadir/fonts',
+    glade='$datadir/glade',
+    misc='$datadir/misc',
     pixmaps='$datadir/pixmaps',
     sql='$datadir/sql',
-    glade='$datadir/glade',
-    fonts='$datadir/fonts',
-    csv='$datadir/csv',
     template='$datadir/template',
     )
 
@@ -177,21 +190,21 @@ data_files += [
      listfiles('plugins', 'books', 'sql', '*.py')),
     ]
 
-setup(name='stoqlib',
+setup(name='stoq',
       version=version,
       author="Async Open Source",
       author_email="stoq-devel@async.com.br",
-      description="A powerful retail system library",
+      description="A powerful retail system",
       long_description="""
-      Stoqlib offers infrastructure used by Stoq.
-      Database schema & importing, domain classes with business logic,
-      dialogs, editors and search infrastructure, report generation,
-      plugins, testsuites and API documentation.
+      Stoq is an advanced retails system which has as main goals the
+      usability, good devices support, and useful features for retails.
       """,
       url=website,
       license="GNU LGPL 2.1 (see COPYING)",
-      packages=listpackages('stoqlib', exclude='stoqlib.tests'),
+      packages=listpackages('stoq', exclude='stoqlib.tests'),
       data_files=data_files,
+      scripts=scripts,
       resources=resources,
       global_resources=global_resources,
+      templates=templates,
       )
