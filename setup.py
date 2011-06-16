@@ -107,7 +107,7 @@ def listexternal():
                       listfiles(directory, '*.py')))
     return files
 
-def listplugins():
+def listplugins(plugins, exts):
     dirs = []
     for package in listpackages('plugins'):
         # strip plugins
@@ -117,6 +117,17 @@ def listplugins():
         install_dir = 'lib/stoqlib/%s' % directory
         files.append((install_dir, listfiles(directory, '*.py')))
         files.append((install_dir, listfiles(directory, '*.plugin')))
+
+    for plugin in plugins:
+        for kind, suffix in exts:
+            x = listfiles('plugins', plugin, kind, suffix)
+            if x:
+                path = '$prefix/lib/stoqlib/plugins/%s/%s'
+                files.append((path % (plugin, kind), x))
+
+        files.append(('$prefix/lib/stoqlib/plugins/' +  plugin,
+                      listfiles('plugins', plugin, '*.py')))
+
     return files
 
 packages = listpackages('stoq')
@@ -168,34 +179,14 @@ global_resources = dict(
     template='$datadir/template',
     )
 
-# ECFPlugin
-data_files += listplugins()
-data_files += [
-    ('$prefix/lib/stoqlib/plugins/ecf/glade',
-     listfiles('plugins', 'ecf', 'glade', '*.glade')),
-    ('$prefix/lib/stoqlib/plugins/ecf/sql',
-     listfiles('plugins', 'ecf', 'sql', '*.sql')),
-    ]
+PLUGINS = ['ecf', 'nfe', 'books']
+PLUGIN_EXTS = [('csv', '*csv'),
+               ('glade', '*.ui'),
+               ('glade', '*.glade'),
+               ('sql', '*.sql'),
+               ('sql', '*.py')]
 
-# NFePlugin
-data_files += [
-    ('$prefix/lib/stoqlib/plugins/nfe/csv',
-     listfiles('plugins', 'nfe', 'csv', '*.csv')),
-    ('$prefix/lib/stoqlib/plugins/nfe/sql',
-     listfiles('plugins', 'nfe', 'sql', '*.sql')),
-    ('$prefix/lib/stoqlib/plugins/nfe/sql',
-     listfiles('plugins', 'nfe', 'sql', '*.py')),
-    ]
-
-# Books Plugin
-data_files += [
-    ('$prefix/lib/stoqlib/plugins/books/glade',
-     listfiles('plugins', 'books', 'glade', '*.glade')),
-    ('$prefix/lib/stoqlib/plugins/books/sql',
-     listfiles('plugins', 'books', 'sql', '*.sql')),
-    ('$prefix/lib/stoqlib/plugins/books/sql',
-     listfiles('plugins', 'books', 'sql', '*.py')),
-    ]
+data_files += listplugins(PLUGINS, PLUGIN_EXTS)
 
 setup(name='stoq',
       version=version,
