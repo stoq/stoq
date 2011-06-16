@@ -100,7 +100,7 @@ class ProductSearch(SearchEditor):
     def _setup_print_slave(self):
         self._print_slave = SearchDialogPrintSlave()
         change_button_appearance(self._print_slave.print_price_button,
-                                 gtk.STOCK_PRINT, _("_Table of Price"))
+                                 gtk.STOCK_PRINT, _("_Price table"))
         self.attach_slave('print_holder', self._print_slave)
         self._print_slave.connect('print', self.on_print_price_button_clicked)
         self._print_slave.print_price_button.set_sensitive(False)
