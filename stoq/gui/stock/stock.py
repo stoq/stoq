@@ -32,17 +32,14 @@ from kiwi.datatypes import converter
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
-from kiwi.datatypes import currency
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       finish_transaction)
-from stoqlib.domain.interfaces import IBranch, IStorable
-from stoqlib.domain.inventory import Inventory
+from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.person import Person
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
-from stoqlib.lib.message import warning
 from stoqlib.gui.editors.producteditor import ProductStockEditor
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
@@ -58,7 +55,6 @@ from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
-from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.productimage import ProductImageViewer
 from stoqlib.reporting.product import SimpleProductReport
@@ -79,6 +75,7 @@ class StockApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
+        self.check_open_inventory()
         self._setup_widgets()
         self._update_widgets()
 
@@ -121,6 +118,14 @@ class StockApp(SearchableAppWindow):
                                                   having=having,
                                                   connection=conn)
 
+    def set_open_inventory(self):
+        self.transfer_action.set_sensitive(False)
+        self.receive_action.set_sensitive(False)
+        self.initial_stock_action.set_sensitive(False)
+        self.stock_decrease_action.set_sensitive(False)
+        self.NewLoan.set_sensitive(False)
+        self.CloseLoan.set_sensitive(False)
+
     #
     # Private API
     #
@@ -156,16 +161,8 @@ class StockApp(SearchableAppWindow):
                                       label=_('<b>Stock Total:</b>'),
                                       format='<b>%s</b>')
 
-        if Inventory.has_open(self.conn, get_current_branch(self.conn)):
-            show_inventory_process_message()
-
     def _update_widgets(self):
         branch = get_current_branch(self.conn)
-        if Inventory.has_open(self.conn, branch):
-            self.transfer_action.set_sensitive(False)
-            self.receive_action.set_sensitive(False)
-            self.initial_stock_action.set_sensitive(False)
-            return
 
         is_main_branch = self.branch_filter.get_state().value is branch
         has_stock = len(self.results) > 0
@@ -191,7 +188,8 @@ class StockApp(SearchableAppWindow):
         # Note that 'all branches' is not a real branch
         has_branches = len(self.branch_filter.combo) > 2
 
-        self.transfer_action.set_sensitive(has_branches)
+        transfer_active = self.transfer_action.get_sensitive()
+        self.transfer_action.set_sensitive(transfer_active and has_branches)
         self.TransferSearch.set_sensitive(has_branches)
 
     def _update_filter_slave(self, slave):

@@ -53,7 +53,6 @@ from stoqlib.lib.message import warning, info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import quantize
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
-from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -320,6 +319,7 @@ class POSApp(AppWindow):
         self.advanced_search.set_sensitive(not closed and not blocked)
 
     def set_open_inventory(self):
+        self.TillOpen.set_sensitive(False)
         self.Sales.set_sensitive(False)
         self.barcode.set_sensitive(False)
         self.quantity.set_sensitive(False)
