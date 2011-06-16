@@ -34,7 +34,7 @@ from kiwi.dist import listfiles
 def _get_gladefiles():
     #FIXME: environ should provide this ?
     for path in environ.get_resource_paths('glade'):
-        if re.search('stoqlib', path, 1):
+        if re.search('stoq', path, 1):
             return listfiles(path, '*.glade')
 
 
