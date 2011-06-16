@@ -52,7 +52,7 @@ dependencies = [('ZopeInterface', 'zope.interface', '3.0',
                  lambda x: x.__version__),
                 ('Python Imaging Library (PIL)', 'PIL', '1.1.5',
                  'http://www.pythonware.com/products/pil/', None),
-                ('Reportlab', 'reportlab', '1.20',
+                ('Reportlab', 'reportlab', '2.4',
                  'http://www.reportlab.org/', lambda x: x.Version)]
 
 for (package_name, module_name, required_version, url,
@@ -76,12 +76,16 @@ for (package_name, module_name, required_version, url,
                 "Visit %s." % (
                 module_name, required_version, package_name, url))
 
+    elif module_name == 'reportlab':
+        if required_version != installed_version:
+            raise SystemExit(
+                "Stoqlib requires exactly version %s of reportlab" % (
+                required_version, ))
     elif required_version > installed_version:
         raise SystemExit(
             "The '%s' module was found but it was not recent enough.\n"
             "Please install at least version %s of %s. Visit %s."
             % (module_name, required_version, package_name, url))
-
 
 #
 # Package installation
