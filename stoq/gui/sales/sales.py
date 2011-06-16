@@ -34,13 +34,11 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 
-from stoqlib.database.runtime import (get_current_branch, get_current_station,
+from stoqlib.database.runtime import (get_current_station,
                                       new_transaction, finish_transaction)
-from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.editors.invoiceeditor import SaleInvoicePrinterDialog
-from stoqlib.gui.dialogs.openinventorydialog import show_inventory_process_message
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
@@ -80,6 +78,7 @@ class SalesApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
+        self.check_open_inventory()
         self.summary_label = None
         self._visible_date_col = None
         self._columns = self.get_columns()
@@ -137,6 +136,9 @@ class SalesApp(SearchableAppWindow):
                              width=120)]
         return cols
 
+    def set_open_inventory(self):
+        self._open_inventory = True
+
     #
     # Private
     #
@@ -157,9 +159,6 @@ class SalesApp(SearchableAppWindow):
                             self._update_toolbar)
         self._update_toolbar()
 
-        if Inventory.has_open(self.conn, get_current_branch(self.conn)):
-            show_inventory_process_message()
-
     def _can_cancel(self, view):
         # Here we want to cancel only quoting sales. This is why we don't use
         # Sale.can_cancel here.
@@ -175,10 +174,8 @@ class SalesApp(SearchableAppWindow):
         self.print_invoice.set_sensitive(can_print_invoice)
         self.cancel_menu.set_sensitive(self._can_cancel(sale_view))
 
-        if Inventory.has_open(self.conn, get_current_branch(self.conn)):
-            can_return = False
-        else:
-            can_return = bool(sale_view and sale_view.sale.can_return())
+        can_return = bool(sale_view and sale_view.sale.can_return() and not
+                          self._open_inventory)
         self.sale_toolbar.return_sale_button.set_sensitive(can_return)
         self.sale_toolbar.set_report_filters(self.search.get_search_filters())
 
@@ -272,7 +269,7 @@ class SalesApp(SearchableAppWindow):
     def on_quote_menu__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(SaleQuoteWizard, trans)
-        rv = finish_transaction(trans, model)
+        finish_transaction(trans, model)
         trans.close()
 
         return model
@@ -291,7 +288,7 @@ class SalesApp(SearchableAppWindow):
     def on_NewQuote__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(SaleQuoteWizard, trans)
-        rv = finish_transaction(trans, model)
+        finish_transaction(trans, model)
         trans.close()
 
     def on_DeliverySearch__activate(self, action):
@@ -303,13 +300,13 @@ class SalesApp(SearchableAppWindow):
     def on_NewLoan__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(NewLoanWizard, trans)
-        rv = finish_transaction(trans, model)
+        finish_transaction(trans, model)
         trans.close()
 
     def on_CloseLoan__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(CloseLoanWizard, trans)
-        rv = finish_transaction(trans, model)
+        finish_transaction(trans, model)
         trans.close()
 
     def on_SearchLoan__activate(self, action):
