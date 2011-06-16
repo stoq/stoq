@@ -546,6 +546,12 @@ class FinancialApp(AppWindow):
         trans.commit(close=True)
 
     def _delete_transaction(self, item):
+        msg = _(u'Are you sure you want to remove transaction "%s" ?' %
+                (item.description))
+        if yesno(msg, gtk.RESPONSE_YES,
+                 _("Don't Remove"), _(u"Remove transaction")):
+            return
+
         account_transactions = self._get_current_page_widget()
         account_transactions.remove(item)
 
