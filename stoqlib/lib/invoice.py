@@ -359,15 +359,12 @@ class InvoiceFieldDescription(object):
 invoice_fields = {}
 
 def _add_invoice_field(field):
-    global invoice_fields
     invoice_fields[field.name] = field
 
 def get_invoice_field_by_name(field_name):
-    global invoice_fields
     return invoice_fields.get(field_name)
 
 def get_invoice_fields():
-    global invoice_fields
     return invoice_fields.values()
 
 

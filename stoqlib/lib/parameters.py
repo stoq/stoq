@@ -534,7 +534,6 @@ class ParameterAccess(ClassInittableObject):
         """Remove any  parameter found in ParameterData table which is not
         used any longer.
         """
-        global _parameter_info
         for param in ParameterData.select(connection=self.conn):
             if param.field_name not in _parameter_info.keys():
                 ParameterData.delete(param.id, connection=self.conn)
@@ -806,7 +805,6 @@ def get_parameter_details(field_name):
     """ Returns a ParameterDetails class for the given parameter name, or
     None if the name supplied isn't a valid parameter name.
     """
-    global _parameter_info
     try:
         return _parameter_info[field_name]
     except KeyError:
@@ -824,7 +822,6 @@ def check_parameter_presence(conn):
     @returns: True if they're up to date, False otherwise
     """
 
-    global _parameter_info
     results = ParameterData.select(connection=conn)
 
     return results.count() == len(_parameter_info)

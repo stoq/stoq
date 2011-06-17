@@ -352,19 +352,16 @@ class NotifyDialog(ConfirmDialog):
 #
 
 def get_current_toplevel():
-    global _toplevel_stack
     if _toplevel_stack:
         return _toplevel_stack[-1]
 
 
 @argcheck(gtk.Window)
 def add_current_toplevel(toplevel):
-    global _toplevel_stack
     _toplevel_stack.append(toplevel)
 
 
 def _pop_current_toplevel():
-    global _toplevel_stack
     if _toplevel_stack:
         _toplevel_stack.pop()
 

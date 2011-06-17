@@ -115,8 +115,6 @@ _table_cache = {}
 _table_list = []
 
 def _import():
-    global _table_cache, _table_list, _tables
-
     for path, table_names in _tables:
         for table_name in table_names:
             klass = namedAny('stoqlib.domain.%s.%s' % (path, table_name))
@@ -129,14 +127,12 @@ def get_table_type_by_name(table_name):
     @param table_name: name of the table
     """
 
-    global _table_cache
     if not _table_cache:
         _import()
 
     return _table_cache[table_name]
 
 def get_table_types():
-    global _table_list
     if not _table_list:
         _import()
 
