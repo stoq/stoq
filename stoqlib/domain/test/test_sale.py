@@ -303,17 +303,21 @@ class TestSale(DomainTest):
                 Payment.q.tillID == till.id,
                 Payment.q.id == PaymentAdaptToInPayment.q._originalID),
             connection=self.trans)
-        payment = Payment.selectOne(
+        self.failUnless(paid_payment)
+        self.failUnless(IInPayment(paid_payment, None))
+        self.assertEqual(paid_payment.status, Payment.STATUS_PAID)
+        self.assertEqual(paid_payment.method.method_name, 'money')
+        return_payment = Payment.selectOne(
             AND(Payment.q.groupID == sale.group.id,
                 Payment.q.tillID == till.id,
                 Payment.q.id == PaymentAdaptToOutPayment.q._originalID),
             connection=self.trans)
-        self.failUnless(payment)
-        self.failUnless(IOutPayment(payment, None))
-        out_payment_plus_penalty = payment.value + renegotiation.penalty_value
+        self.failUnless(return_payment)
+        self.failUnless(IOutPayment(return_payment, None))
+        self.assertEqual(return_payment.status, Payment.STATUS_PAID)
+        self.assertEqual(return_payment.method.method_name, 'money')
+        out_payment_plus_penalty = return_payment.value + renegotiation.penalty_value
         self.assertEqual(out_payment_plus_penalty, paid_payment.value)
-        self.assertEqual(payment.status, Payment.STATUS_PAID)
-        self.assertEqual(payment.method.method_name, 'money')
 
         cfop = CfopData.selectOneBy(code='5.202', connection=self.trans)
         book_entry = FiscalBookEntry.selectOneBy(
