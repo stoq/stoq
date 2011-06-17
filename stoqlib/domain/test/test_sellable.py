@@ -30,6 +30,7 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.sellable import (BaseSellableInfo,
                                      Sellable,
                                      SellableCategory)
+from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.product import Product
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
@@ -37,6 +38,7 @@ from stoqlib.domain.views import (ProductFullStockView,
                                   ProductFullWithClosedStockView,
                                   ProductClosedStockView)
 from stoqlib.domain.interfaces import IStorable
+from stoqlib.lib.parameters import sysparam
 
 
 class TestSellableCategory(DomainTest):
@@ -311,6 +313,18 @@ class TestSellable(DomainTest):
         # raise a ValueError.
         self.assertRaises(ValueError, sellable.close)
 
+    def testCanClose(self):
+        sellable = self.create_sellable()
+        self.failUnless(sellable.can_close())
+
+        storable = sellable.product.addFacet(IStorable, connection=self.trans)
+        storable.increase_stock(1, branch=get_current_branch(self.trans))
+        self.failIf(sellable.can_close())
+
+        # The delivery service cannot be closed.
+        sellable = sysparam(self.trans).DELIVERY_SERVICE.sellable
+        self.failIf(sellable.can_close())
+
     def testCanRemove(self):
         branch = get_current_branch(self.trans)
         sellable = self.create_sellable()
@@ -322,5 +336,9 @@ class TestSellable(DomainTest):
         sale.status = Sale.STATUS_QUOTE
         sale.branch = branch
         sale.add_sellable(sellable)
+        self.failIf(sellable.can_remove())
+
+        # The delivery service cannot be removed.
+        sellable = sysparam(self.trans).DELIVERY_SERVICE.sellable
         self.failIf(sellable.can_remove())
 

@@ -468,6 +468,17 @@ class Sellable(Domain):
 
         return False
 
+    def can_close(self):
+        """Whether we can close this sellable.
+
+        @returns: True if the product has no stock left or the service
+            is not required by the system (i.e. Delivery service is
+            required). False otherwise.
+        """
+        if self.service:
+            return self.service.can_close()
+        return self.is_unavailable()
+
     def get_short_description(self):
         """Returns a short description of the current sale
         @returns: description

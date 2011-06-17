@@ -60,9 +60,17 @@ class Service(Domain):
     #
 
     def can_remove(self):
-        from stoqlib.domain.sale import SaleItem
-        return SaleItem.selectBy(sellable=self.sellable,
-                             connection=self.get_connection()).count() == 0
+        if self == sysparam(self.get_connection()).DELIVERY_SERVICE:
+            # The delivery item cannot be deleted as it's important
+            # for creating deliveries.
+            return False
+
+        return True
+
+    def can_close(self):
+        # The delivery item cannot be closed as it will be
+        # used for deliveries.
+        return self != sysparam(self.get_connection()).DELIVERY_SERVICE
 
     #
     # IDescribable implementation
