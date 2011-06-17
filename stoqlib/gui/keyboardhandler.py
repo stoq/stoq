@@ -60,6 +60,4 @@ def install_global_keyhandler(keyval, callback):
     @param keyval:
     @param callback:
     """
-    global _handler
-
     _handler.add_hook(keyval, callback)

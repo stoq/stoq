@@ -116,11 +116,9 @@ def collect_report(params):
     return text
 
 def add_traceback(traceback):
-    global _tracebacks
     _tracebacks.append(traceback)
 
 def has_tracebacks():
-    global _tracebacks
     return bool(_tracebacks)
 
 class ReportSubmitter(gobject.GObject):
