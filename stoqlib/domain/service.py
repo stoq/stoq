@@ -23,14 +23,17 @@
 ##
 """ Base classes to manage services informations """
 
+from zope.interface import implements
 
 from stoqlib.database.orm import BLOBCol
 from stoqlib.database.orm import ForeignKey
 from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain
+from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.sellable import (BaseSellableInfo, Sellable,
                                      SellableUnit, SellableCategory)
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -43,6 +46,8 @@ _ = stoqlib_gettext
 class Service(Domain):
     """Class responsible to store basic service informations."""
 
+    implements(IDescribable)
+
     image = BLOBCol(default='')
     sellable = ForeignKey('Sellable')
 
@@ -50,10 +55,21 @@ class Service(Domain):
         """Removes this service from the database."""
         self.delete(self.id, self.get_connection())
 
+    #
+    # Sellable helpers
+    #
+
     def can_remove(self):
         from stoqlib.domain.sale import SaleItem
         return SaleItem.selectBy(sellable=self.sellable,
                              connection=self.get_connection()).count() == 0
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.sellable.get_description()
 
 
 #

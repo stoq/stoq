@@ -32,7 +32,8 @@ from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        IIndividual)
 from stoqlib.domain.address import CityLocation
 from stoqlib.domain.person import Person, EmployeeRole
-from stoqlib.domain.sellable import Sellable, SellableCategory
+from stoqlib.domain.sellable import SellableCategory
+from stoqlib.domain.service import Service
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.sale import Sale
@@ -93,7 +94,7 @@ class TestParameter(DomainTest):
 
     def testDeliveryService(self):
         service = self.sparam.DELIVERY_SERVICE
-        assert isinstance(service, Sellable)
+        assert isinstance(service, Service)
 
     # System constants based on stoq.lib.parameters
 

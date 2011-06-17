@@ -72,7 +72,7 @@ class SellableSearch(SearchEditor):
             automatically confirm
         """
         self.quantity = quantity
-        self._delivery_service = sysparam(conn).DELIVERY_SERVICE
+        self._delivery_sellable = sysparam(conn).DELIVERY_SERVICE.sellable
         SearchEditor.__init__(self, conn, table=self.table,
                               search_table=self.search_table,
                               editor_class=self.editor_class,
@@ -151,10 +151,10 @@ class SellableSearch(SearchEditor):
         if query is not None:
             queries.append(query)
 
-        if self._delivery_service :
+        if self._delivery_sellable:
             queries.append(AND(
                 SellableFullStockView.q.status == Sellable.STATUS_AVAILABLE,
-                SellableFullStockView.q.id != self._delivery_service.id))
+                SellableFullStockView.q.id != self._delivery_sellable.id))
         # If we select a quantity which is not an integer, filter out
         # sellables without a unit set
         if self.quantity is not None and (self.quantity % 1) != 0:

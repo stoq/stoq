@@ -632,7 +632,7 @@ class TestSale(DomainTest):
 
         self.add_product(sale)
 
-        sellable = sysparam(self.trans).DELIVERY_SERVICE
+        sellable = sysparam(self.trans).DELIVERY_SERVICE.sellable
         sale.add_sellable(sellable, quantity=1)
         sale.order()
         self.failIf(sale.can_set_paid())
