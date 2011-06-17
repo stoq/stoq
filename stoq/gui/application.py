@@ -35,7 +35,7 @@ from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       finish_transaction, get_connection,
                                       get_current_branch)
-from stoqlib.lib.interfaces import ICookieFile, IStoqConfig
+from stoqlib.lib.interfaces import ICookieFile, IStoqConfig, IPluginManager
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.webservice import WebService
@@ -421,11 +421,11 @@ class AppWindow(BaseAppWindow):
         close_db = needs_closing in (CLOSE_TILL_DB, CLOSE_TILL_BOTH)
         close_ecf = needs_closing in (CLOSE_TILL_ECF, CLOSE_TILL_BOTH)
 
-        if close_db and close_ecf:
-            till = Till.get_last_opened(self.conn)
-            msg = _(u"You need to close the till opened %s before "
-                     "creating a new order.\n\nClose the Till?") % (
-                         till.opening_date.date(), )
+        manager = get_utility(IPluginManager)
+        manager.is_active('ecf')
+        if close_db and (close_ecf or not manager.is_active('ecf')):
+            msg = _(u"You need to close the till from the previous day before "
+                     "creating a new order.\n\nClose the Till?")
         elif close_db and not close_ecf:
             msg = _(u"The till in Stoq is opened, but in ECF "
                      "is closed.\n\nClose the till in Stoq?")
