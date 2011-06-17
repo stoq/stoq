@@ -25,6 +25,7 @@
 
 import sys
 
+import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 from stoqdrivers.enum import TaxType, UnitType
