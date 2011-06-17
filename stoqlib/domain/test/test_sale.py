@@ -33,7 +33,8 @@ from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 from stoqlib.domain.interfaces import IStorable, IInPayment, IOutPayment
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.payment import Payment, PaymentAdaptToOutPayment
+from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToOutPayment,
+                                            PaymentAdaptToInPayment)
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
@@ -297,7 +298,11 @@ class TestSale(DomainTest):
         self.assertEqual(sale.return_date.date(), datetime.date.today())
         self.assertEqual(sale.group.status, PaymentGroup.STATUS_CANCELLED)
 
-        paid_payment = sale.payments[0]
+        paid_payment = Payment.selectOne(
+            AND(Payment.q.groupID == sale.group.id,
+                Payment.q.tillID == till.id,
+                Payment.q.id == PaymentAdaptToInPayment.q._originalID),
+            connection=self.trans)
         payment = Payment.selectOne(
             AND(Payment.q.groupID == sale.group.id,
                 Payment.q.tillID == till.id,
