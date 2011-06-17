@@ -127,16 +127,20 @@ def create_loan_item(trans):
 
 
 class ExampleCreator(object):
-    _role = None
-
-    def __init__(self, trans):
-        self.trans = trans
+    def __init__(self):
+        self.clear()
 
     # Public API
 
     @classmethod
     def create(cls, trans, name):
         return cls(trans).create_by_type(name)
+
+    def clear(self):
+        self._role = None
+
+    def set_transaction(self, trans):
+        self.trans = trans
 
     def create_by_type(self, model_type):
         known_types = {
