@@ -251,7 +251,7 @@ class TestSale(DomainTest):
         payment = Payment.selectOne(
             AND(Payment.q.groupID == sale.group.id,
                 Payment.q.tillID == till.id,
-                Payment.q.id == PaymentAdaptToOutPayment.q._originalID),
+                Payment.q.id == PaymentAdaptToOutPayment.q.originalID),
             connection=self.trans)
         self.failUnless(payment)
         self.failUnless(IOutPayment(payment, None))
@@ -301,7 +301,7 @@ class TestSale(DomainTest):
         paid_payment = Payment.selectOne(
             AND(Payment.q.groupID == sale.group.id,
                 Payment.q.tillID == till.id,
-                Payment.q.id == PaymentAdaptToInPayment.q._originalID),
+                Payment.q.id == PaymentAdaptToInPayment.q.originalID),
             connection=self.trans)
         self.failUnless(paid_payment)
         self.failUnless(IInPayment(paid_payment, None))
@@ -310,7 +310,7 @@ class TestSale(DomainTest):
         return_payment = Payment.selectOne(
             AND(Payment.q.groupID == sale.group.id,
                 Payment.q.tillID == till.id,
-                Payment.q.id == PaymentAdaptToOutPayment.q._originalID),
+                Payment.q.id == PaymentAdaptToOutPayment.q.originalID),
             connection=self.trans)
         self.failUnless(return_payment)
         self.failUnless(IOutPayment(return_payment, None))

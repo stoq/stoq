@@ -743,13 +743,13 @@ class PurchaseOrderView(Viewable):
                    PurchaseOrder.q.responsibleID == PersonAdaptToUser.q.id),
 
         LEFTJOINOn(None, Person_Supplier,
-                   PersonAdaptToSupplier.q._originalID == Person_Supplier.q.id),
+                   PersonAdaptToSupplier.q.originalID == Person_Supplier.q.id),
         LEFTJOINOn(None, Person_Transporter,
-                   PersonAdaptToTransporter.q._originalID == Person_Transporter.q.id),
+                   PersonAdaptToTransporter.q.originalID == Person_Transporter.q.id),
         LEFTJOINOn(None, Person_Branch,
-                   PersonAdaptToBranch.q._originalID == Person_Branch.q.id),
+                   PersonAdaptToBranch.q.originalID == Person_Branch.q.id),
        LEFTJOINOn(None, Person_Responsible,
-                   PersonAdaptToUser.q._originalID == Person_Responsible.q.id),
+                   PersonAdaptToUser.q.originalID == Person_Responsible.q.id),
     ]
 
     #

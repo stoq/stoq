@@ -68,7 +68,7 @@ class InPaymentView(Viewable):
 
     joins = [
         INNERJOINOn(None, PaymentAdaptToInPayment,
-                    PaymentAdaptToInPayment.q._originalID == Payment.q.id),
+                    PaymentAdaptToInPayment.q.originalID == Payment.q.id),
         LEFTJOINOn(None, PaymentGroup,
                    PaymentGroup.q.id == Payment.q.groupID),
         LEFTJOINOn(None, Person,
@@ -151,7 +151,7 @@ class OutPaymentView(Viewable):
 
     joins = [
         INNERJOINOn(None, PaymentAdaptToOutPayment,
-                    PaymentAdaptToOutPayment.q._originalID == Payment.q.id),
+                    PaymentAdaptToOutPayment.q.originalID == Payment.q.id),
         LEFTJOINOn(None, PaymentGroup_Purchase,
                    PaymentGroup_Purchase.q.id == Payment.q.groupID),
         LEFTJOINOn(None, PurchaseOrder,
@@ -221,7 +221,7 @@ class CardPaymentView(Viewable):
         INNERJOINOn(None, PersonAdaptToCreditProvider,
               PersonAdaptToCreditProvider.q.id == CreditCardData.q.providerID),
         INNERJOINOn(None, _ProviderPerson,
-            _ProviderPerson.q.id == PersonAdaptToCreditProvider.q._originalID),
+            _ProviderPerson.q.id == PersonAdaptToCreditProvider.q.originalID),
         LEFTJOINOn(None, PaymentGroup,
                     PaymentGroup.q.id == Payment.q.groupID),
         LEFTJOINOn(None, _DraweePerson,
@@ -292,7 +292,7 @@ class InCheckPaymentView(_BillandCheckPaymentView):
     columns = _BillandCheckPaymentView.columns
     joins = _BillandCheckPaymentView.joins
     clause = AND(_BillandCheckPaymentView.clause,
-                 PaymentAdaptToInPayment.q._originalID == Payment.q.id)
+                 PaymentAdaptToInPayment.q.originalID == Payment.q.id)
 
 
 class OutCheckPaymentView(_BillandCheckPaymentView):
@@ -301,7 +301,7 @@ class OutCheckPaymentView(_BillandCheckPaymentView):
     columns = _BillandCheckPaymentView.columns
     joins = _BillandCheckPaymentView.joins
     clause = AND(_BillandCheckPaymentView.clause,
-                 PaymentAdaptToOutPayment.q._originalID == Payment.q.id)
+                 PaymentAdaptToOutPayment.q.originalID == Payment.q.id)
 
 
 class PaymentChangeHistoryView(Viewable):

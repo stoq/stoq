@@ -110,7 +110,7 @@ class Viewable(object):
                 LEFTJOINOn(None, PersonAdaptToClient,
                            PersonAdaptToClient.q.id == Sale.q.clientID),
                 LEFTJOINOn(None, Person,
-                           Person.q.id == PersonAdaptToClient.q._originalID),
+                           Person.q.id == PersonAdaptToClient.q.originalID),
                 ]
 
             clause = AND(

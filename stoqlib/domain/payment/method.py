@@ -250,7 +250,7 @@ class PaymentMethod(Domain):
         if iface is IInPayment:
             query = AND(Payment.q.groupID == payment_group.id,
                         Payment.q.methodID == self.id,
-                        Payment.q.id == PaymentAdaptToInPayment.q._originalID)
+                        Payment.q.id == PaymentAdaptToInPayment.q.originalID)
             payment_count = Payment.select(query,
                                 connection=self.get_connection()).count()
             if payment_count == self.max_installments:

@@ -94,7 +94,7 @@ class ProductFullStockView(Viewable):
                     Product.q.sellableID == Sellable.q.id),
         # Product Stock Item
         LEFTJOINOn(None, ProductAdaptToStorable,
-                   ProductAdaptToStorable.q._originalID == Product.q.id),
+                   ProductAdaptToStorable.q.originalID == Product.q.id),
         LEFTJOINOn(None, ProductStockItem,
                    ProductStockItem.q.storableID ==
                    ProductAdaptToStorable.q.id),
@@ -326,7 +326,7 @@ class SellableFullStockView(Viewable):
                    Product.q.sellableID == Sellable.q.id),
         # Product Stock Item
         LEFTJOINOn(None, ProductAdaptToStorable,
-                   ProductAdaptToStorable.q._originalID == Product.q.id),
+                   ProductAdaptToStorable.q.originalID == Product.q.id),
         LEFTJOINOn(None, ProductStockItem,
                    ProductStockItem.q.storableID ==
                    ProductAdaptToStorable.q.id),
@@ -432,7 +432,7 @@ class QuotationView(Viewable):
         LEFTJOINOn(None, PersonAdaptToSupplier,
                    PersonAdaptToSupplier.q.id == PurchaseOrder.q.supplierID),
         LEFTJOINOn(None, Person, Person.q.id ==
-                   PersonAdaptToSupplier.q._originalID),
+                   PersonAdaptToSupplier.q.originalID),
     ]
 
     clause = QuoteGroup.q.id == Quotation.q.groupID
@@ -534,7 +534,7 @@ class StockDecreaseItemsView(Viewable):
         INNERJOINOn(None, PersonAdaptToEmployee,
                    StockDecrease.q.removed_byID == PersonAdaptToEmployee.q.id),
         INNERJOINOn(None, Person,
-                   PersonAdaptToEmployee.q._originalID == Person.q.id),
+                   PersonAdaptToEmployee.q.originalID == Person.q.id),
     ]
 
 
@@ -551,7 +551,7 @@ class SoldItemsByBranchView(SoldItemView):
     joins.append(LEFTJOINOn(None, PersonAdaptToBranch,
                    PersonAdaptToBranch.q.id == Sale.q.branchID))
     joins.append(LEFTJOINOn(None, Person,
-                   PersonAdaptToBranch.q._originalID == Person.q.id))
+                   PersonAdaptToBranch.q.originalID == Person.q.id))
 
     clause = OR(SoldItemView.clause,
                 Sale.q.status == Sale.STATUS_RENEGOTIATED)
@@ -597,7 +597,7 @@ class PurchasedItemAndStockView(Viewable):
         LEFTJOINOn(None, Product,
                    Product.q.sellableID == PurchaseItem.q.sellableID),
         LEFTJOINOn(None, ProductAdaptToStorable,
-                   ProductAdaptToStorable.q._originalID == Product.q.id),
+                   ProductAdaptToStorable.q.originalID == Product.q.id),
         LEFTJOINOn(None, ProductStockItem,
                    ProductStockItem.q.storableID == ProductAdaptToStorable.q.id),
     ]
@@ -658,15 +658,15 @@ class PurchaseReceivingView(Viewable):
         LEFTJOINOn(None, _PurchaseUser,
                    PurchaseOrder.q.responsibleID == _PurchaseUser.q.id),
         LEFTJOINOn(None, _PurchaseResponsible,
-                   _PurchaseUser.q._originalID == _PurchaseResponsible.q.id),
+                   _PurchaseUser.q.originalID == _PurchaseResponsible.q.id),
         LEFTJOINOn(None, PersonAdaptToSupplier,
                    ReceivingOrder.q.supplierID == PersonAdaptToSupplier.q.id),
         LEFTJOINOn(None, _Supplier,
-                   PersonAdaptToSupplier.q._originalID == _Supplier.q.id),
+                   PersonAdaptToSupplier.q.originalID == _Supplier.q.id),
         LEFTJOINOn(None, PersonAdaptToUser,
                    ReceivingOrder.q.responsibleID == PersonAdaptToUser.q.id),
         LEFTJOINOn(None, _Responsible,
-                   PersonAdaptToUser.q._originalID == _Responsible.q.id),
+                   PersonAdaptToUser.q.originalID == _Responsible.q.id),
     ]
 
 
@@ -697,7 +697,7 @@ class SaleItemsView(Viewable):
         LEFTJOINOn(None, PersonAdaptToClient,
                    Sale.q.clientID == PersonAdaptToClient.q.id),
         LEFTJOINOn(None, Person,
-                   PersonAdaptToClient.q._originalID == Person.q.id),
+                   PersonAdaptToClient.q.originalID == Person.q.id),
         INNERJOINOn(None, BaseSellableInfo,
                     Sellable.q.base_sellable_infoID == BaseSellableInfo.q.id),
     ]
@@ -748,7 +748,7 @@ class ReceivingItemView(Viewable):
         LEFTJOINOn(None, PersonAdaptToSupplier,
                    ReceivingOrder.q.supplierID == PersonAdaptToSupplier.q.id),
         LEFTJOINOn(None, Person,
-                   PersonAdaptToSupplier.q._originalID == Person.q.id),
+                   PersonAdaptToSupplier.q.originalID == Person.q.id),
     ]
 
 
@@ -809,11 +809,11 @@ class LoanView(Viewable):
                    Loan.q.clientID == PersonAdaptToClient.q.id),
 
         LEFTJOINOn(None, PersonBranch,
-                   PersonAdaptToBranch.q._originalID == PersonBranch.q.id),
+                   PersonAdaptToBranch.q.originalID == PersonBranch.q.id),
         LEFTJOINOn(None, PersonResponsible,
-                   PersonAdaptToUser.q._originalID == PersonResponsible.q.id),
+                   PersonAdaptToUser.q.originalID == PersonResponsible.q.id),
         LEFTJOINOn(None, PersonClient,
-                   PersonAdaptToClient.q._originalID == PersonClient.q.id),
+                   PersonAdaptToClient.q.originalID == PersonClient.q.id),
     ]
 
 

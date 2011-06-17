@@ -632,7 +632,7 @@ class PersonAdaptToSupplier(PersonAdapter):
     @classmethod
     def get_active_suppliers(cls, conn):
         query = AND(cls.q.status == cls.STATUS_ACTIVE,
-                    cls.q._originalID == Person.q.id)
+                    cls.q.originalID == Person.q.id)
         return cls.select(query, connection=conn, orderBy=Person.q.name)
 
     def get_supplier_purchases(self):
@@ -998,11 +998,11 @@ class ClientView(Viewable):
 
     joins = [
         INNERJOINOn(None, PersonAdaptToClient,
-                   Person.q.id == PersonAdaptToClient.q._originalID),
+                   Person.q.id == PersonAdaptToClient.q.originalID),
         LEFTJOINOn(None, PersonAdaptToIndividual,
-                   Person.q.id == PersonAdaptToIndividual.q._originalID),
+                   Person.q.id == PersonAdaptToIndividual.q.originalID),
         LEFTJOINOn(None, PersonAdaptToCompany,
-                   Person.q.id == PersonAdaptToCompany.q._originalID),
+                   Person.q.id == PersonAdaptToCompany.q.originalID),
         LEFTJOINOn(None, ClientCategory,
                    PersonAdaptToClient.q.categoryID == ClientCategory.q.id),
         ]
@@ -1038,7 +1038,7 @@ class EmployeeView(Viewable):
 
     joins = [
         INNERJOINOn(None, PersonAdaptToEmployee,
-                   Person.q.id == PersonAdaptToEmployee.q._originalID),
+                   Person.q.id == PersonAdaptToEmployee.q.originalID),
         INNERJOINOn(None, EmployeeRole,
                    PersonAdaptToEmployee.q.roleID == EmployeeRole.q.id),
         ]
@@ -1073,9 +1073,9 @@ class SupplierView(Viewable):
 
     joins = [
         INNERJOINOn(None, PersonAdaptToSupplier,
-                   Person.q.id == PersonAdaptToSupplier.q._originalID),
+                   Person.q.id == PersonAdaptToSupplier.q.originalID),
         LEFTJOINOn(None, PersonAdaptToCompany,
-                   Person.q.id == PersonAdaptToCompany.q._originalID),
+                   Person.q.id == PersonAdaptToCompany.q.originalID),
         ]
 
     def get_status_string(self):
@@ -1108,7 +1108,7 @@ class TransporterView(Viewable):
 
     joins = [
         INNERJOINOn(None, PersonAdaptToTransporter,
-                   Person.q.id == PersonAdaptToTransporter.q._originalID),
+                   Person.q.id == PersonAdaptToTransporter.q.originalID),
         ]
 
     @property
@@ -1131,11 +1131,11 @@ class BranchView(Viewable):
 
     joins = [
         INNERJOINOn(None, PersonAdaptToBranch,
-                   Person.q.id == PersonAdaptToBranch.q._originalID),
+                   Person.q.id == PersonAdaptToBranch.q.originalID),
         LEFTJOINOn(None, PersonAdaptToEmployee,
                PersonAdaptToBranch.q.managerID == PersonAdaptToEmployee.q.id),
         LEFTJOINOn(None, Manager_Person,
-               PersonAdaptToEmployee.q._originalID == Manager_Person.q.id),
+               PersonAdaptToEmployee.q.originalID == Manager_Person.q.id),
         ]
 
     @property
@@ -1175,7 +1175,7 @@ class UserView(Viewable):
 
     joins = [
         INNERJOINOn(None, PersonAdaptToUser,
-                   Person.q.id == PersonAdaptToUser.q._originalID),
+                   Person.q.id == PersonAdaptToUser.q.originalID),
         LEFTJOINOn(None, UserProfile,
                PersonAdaptToUser.q.profileID == UserProfile.q.id),
         ]
@@ -1212,7 +1212,7 @@ class CreditProviderView(Viewable):
 
     joins = [
         INNERJOINOn(None, PersonAdaptToCreditProvider,
-                   Person.q.id == PersonAdaptToCreditProvider.q._originalID),
+                   Person.q.id == PersonAdaptToCreditProvider.q.originalID),
         ]
 
     @property
