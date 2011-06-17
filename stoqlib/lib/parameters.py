@@ -503,7 +503,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('DEFAULT_SALESPERSON_ROLE',
                       u'person.EmployeeRole'),
         ParameterAttr('DELIVERY_SERVICE',
-                      u'sellable.Sellable'),
+                      u'service.Service'),
         ParameterAttr('DEFAULT_PRODUCT_TAX_CONSTANT',
                       u'sellable.SellableTaxConstant'),
         ParameterAttr('BANKS_ACCOUNT',
@@ -719,7 +719,7 @@ class ParameterAccess(ClassInittableObject):
                                              SellableTaxConstant)
         from stoqlib.domain.service import Service
         key = "DELIVERY_SERVICE"
-        if self.get_parameter_by_field(key, Sellable):
+        if self.get_parameter_by_field(key, Service):
             return
 
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.conn)
@@ -729,7 +729,7 @@ class ParameterAccess(ClassInittableObject):
                             base_sellable_info=sellable_info,
                             connection=self.conn)
         service = Service(sellable=sellable, connection=self.conn)
-        self._set_schema(key, sellable.id)
+        self._set_schema(key, service.id)
 
     def _ensure_cfop(self, key, description, code):
         from stoqlib.domain.fiscal import CfopData
