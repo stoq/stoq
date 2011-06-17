@@ -30,7 +30,6 @@ from decimal import Decimal
 import gtk
 
 from kiwi.datatypes import currency
-from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.domain.payment.payment import Payment
@@ -38,7 +37,6 @@ from stoqlib.domain.sale import SaleView
 from stoqlib.domain.payment.views import (InCheckPaymentView,
                                           OutCheckPaymentView,
                                           CardPaymentView)
-from stoqlib.domain.person import PersonAdaptToCreditProvider
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog

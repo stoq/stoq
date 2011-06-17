@@ -29,7 +29,7 @@ import datetime
 import gtk
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
+from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.database.orm import INNERJOINOn, Viewable

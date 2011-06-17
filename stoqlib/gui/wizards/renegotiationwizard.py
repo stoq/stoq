@@ -27,16 +27,15 @@
 import datetime
 
 from kiwi.datatypes import currency
-from kiwi.ui.widgets.list import Column, SummaryLabel
+from kiwi.ui.widgets.list import Column
 
 from stoqlib.database.runtime import (get_current_branch, get_current_user)
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard, BaseWizardStep
-from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
-from stoqlib.gui.wizards.salewizard import BaseMethodSelectionStep, PaymentMethodStep
+from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
+from stoqlib.gui.wizards.salewizard import BaseMethodSelectionStep
 
 _ = stoqlib_gettext
 

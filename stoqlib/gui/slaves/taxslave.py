@@ -25,21 +25,15 @@
 
 import datetime
 from dateutil.relativedelta import relativedelta
-import sys
 
 import gtk
 
 from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.gui.slaves.sellableslave import SellableDetailsSlave
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.person import Person
-from stoqlib.domain.product import Product
 from stoqlib.domain.taxes import (SaleItemIcms, ProductIcmsTemplate,
                                   SaleItemIpi, ProductIpiTemplate)
-from stoqlib.lib.countries import get_countries
 from stoqlib.lib.translation import stoqlib_gettext
 
 

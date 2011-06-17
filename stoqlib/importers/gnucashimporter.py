@@ -34,10 +34,8 @@ from xml.etree import ElementTree
 
 from kiwi.log import Logger
 
-from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.importers.importer import Importer
-from stoqlib.lib.parameters import sysparam
 
 log = Logger('stoqlib.gnucashimporter')
 

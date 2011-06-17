@@ -26,10 +26,9 @@
 from zope.interface.interface import adapter_hooks
 
 from stoqlib.database.database import query_server_time
-from stoqlib.database.orm import orm_name, ForeignKey, BoolCol, IntCol
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import orm_name, ForeignKey, IntCol
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.runtime import (StoqlibTransaction, get_connection,
+from stoqlib.database.runtime import (StoqlibTransaction,
                                       get_current_user, get_current_station)
 from stoqlib.domain.system import TransactionEntry
 from stoqlib.lib.component import Adapter, Adaptable

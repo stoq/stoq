@@ -31,7 +31,6 @@ from stoqlib.database.orm import DecimalCol
 from stoqlib.database.orm import ForeignKey, IntCol
 from stoqlib.database.orm import INNERJOINOn
 from stoqlib.database.orm import Viewable
-from stoqlib.database.runtime import get_connection
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IOutPayment
 from stoqlib.domain.payment.payment import Payment

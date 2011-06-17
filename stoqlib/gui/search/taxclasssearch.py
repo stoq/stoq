@@ -26,16 +26,12 @@
 creation and edition.
 """
 
-from decimal import Decimal
-
 from kiwi.ui.objectlist import SearchColumn, Column
-from kiwi.python import Settable
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.domain.taxes import (ProductIcmsTemplate, ProductTaxTemplate,
-                                  ProductIpiTemplate)
+from stoqlib.domain.taxes import ProductTaxTemplate
 from stoqlib.gui.slaves.taxslave import ICMSTemplateSlave, IPITemplateSlave
 
 _ = stoqlib_gettext

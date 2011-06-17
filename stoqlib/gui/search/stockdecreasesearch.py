@@ -31,8 +31,7 @@ import gtk
 from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.objectlist import Column
 
-from stoqlib.domain.stockdecrease import (StockDecrease,
-                                          StockDecreaseItem)
+from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog

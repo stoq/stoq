@@ -30,7 +30,6 @@ from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.objectlist import Column
 from kiwi import ValueUnset
 
-from stoqlib.database.runtime import finish_transaction, new_transaction
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog

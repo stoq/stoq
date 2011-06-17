@@ -40,7 +40,6 @@ from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.base import Domain
 from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
                                 BarcodeDoesNotExists, TaxError)
-from stoqlib.lib.message import info
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import is_date_in_interval

@@ -22,8 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
-
 from stoqdrivers.scales.scales import Scale
 
 from stoqlib.database.runtime import get_current_station

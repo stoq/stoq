@@ -37,7 +37,6 @@ from stoqlib.database.runtime import (get_current_branch, new_transaction,
                                       finish_transaction, get_current_user)
 from stoqlib.domain.interfaces import IBranch, ITransporter, ISupplier
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import ProductSupplierInfo

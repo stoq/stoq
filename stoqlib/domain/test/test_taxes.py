@@ -26,7 +26,7 @@ import datetime
 from decimal import Decimal
 
 from dateutil.relativedelta import relativedelta
-from stoqlib.domain.taxes import (ProductIcmsTemplate, SaleItemIcms,
+from stoqlib.domain.taxes import (ProductIcmsTemplate,
                                   ProductTaxTemplate)
 from stoqlib.domain.test.domaintest import DomainTest
 

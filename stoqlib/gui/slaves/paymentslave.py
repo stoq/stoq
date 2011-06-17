@@ -37,17 +37,14 @@ from kiwi.component import get_utility
 from kiwi.datatypes import format_price, currency, ValidationError
 from kiwi.python import Settable
 from kiwi.utils import gsignal
-from kiwi.ui.delegates import GladeDelegate, GladeSlaveDelegate
-from kiwi.ui.objectlist import ObjectList, Column, SequentialColumn
-from kiwi.ui.views import SlaveView
+from kiwi.ui.delegates import GladeSlaveDelegate
+from kiwi.ui.objectlist import Column
 
 from stoqlib.database.runtime import get_connection
-from stoqlib.domain.account import BankAccount
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.domain.interfaces import IInPayment, IOutPayment
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.payment.method import (CheckData, PaymentMethod,
-                                           CreditCardData)
+from stoqlib.domain.payment.method import PaymentMethod, CreditCardData
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.person import PersonAdaptToCreditProvider

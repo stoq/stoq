@@ -27,7 +27,6 @@
 import datetime
 from decimal import Decimal
 
-import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.objectlist import Column, SearchColumn
 
@@ -39,7 +38,6 @@ from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
-from stoqlib.gui.slaves.imageslaveslave import ImageSlave
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.productimage import ProductImageViewer

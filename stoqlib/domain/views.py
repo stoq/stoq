@@ -24,7 +24,6 @@
 
 from stoqlib.database.orm import const, AND, INNERJOINOn, LEFTJOINOn, OR
 from stoqlib.database.orm import Viewable, Field, Alias
-from stoqlib.database.runtime import get_connection
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.loan import Loan, LoanItem

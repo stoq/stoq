@@ -31,7 +31,6 @@ tables, removing tables and configuring administration user.
 import glob
 import os.path
 
-from kiwi.argcheck import argcheck
 from kiwi.component import get_utility, provide_utility
 from kiwi.datatypes import currency
 from kiwi.environ import environ

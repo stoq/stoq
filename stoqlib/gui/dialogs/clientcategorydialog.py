@@ -24,7 +24,6 @@
 ##
 """Dialog for listing client categories"""
 
-import gtk
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.person import ClientCategory, PersonAdaptToClient
