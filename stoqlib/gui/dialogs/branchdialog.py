@@ -29,13 +29,13 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
 from stoqlib.database.admin import create_main_branch
-from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
+from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_cnpj
 from stoqlib.gui.editors.addresseditor import AddressSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.domain.interfaces import IBranch, ICompany
+from stoqlib.domain.interfaces import ICompany
 from stoqlib.domain.person import Person
 
 _ = stoqlib_gettext

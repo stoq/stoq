@@ -24,13 +24,9 @@
 
 import datetime
 
-from kiwi.datatypes import currency
-
 from stoqlib.database.orm import (IntCol, UnicodeCol, DecimalCol, DateTimeCol,
                                   PriceCol, ForeignKey, BoolCol)
-from stoqlib.domain.base import Domain, ModelAdapter
-from stoqlib.domain.product import Product
-from zope.interface import Interface, implements
+from stoqlib.domain.base import Domain
 
 # SIGLAS:
 # BC - Base de Calculo

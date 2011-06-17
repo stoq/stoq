@@ -21,13 +21,11 @@
 ##
 
 from cStringIO import StringIO
-import datetime
 from decimal import Decimal
 import operator
-import os
 
 from stoqlib.database.runtime import new_transaction
-from stoqlib.domain.account import Account, AccountTransaction
+from stoqlib.domain.account import Account
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.importers.ofximporter import OFXImporter
 from stoqlib.lib.parameters import sysparam

@@ -31,10 +31,8 @@ import datetime
 import decimal
 import sgmllib
 
-from kiwi.python import namedAny
 from kiwi.log import Logger
 
-from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.importers.importer import Importer
 from stoqlib.lib.parameters import sysparam

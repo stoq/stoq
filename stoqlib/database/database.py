@@ -26,7 +26,6 @@
 
 # FIXME: Refactor this to other files
 
-import os
 import platform
 import subprocess
 import time

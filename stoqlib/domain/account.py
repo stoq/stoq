@@ -21,14 +21,12 @@
 ##
 """ Domain classes to manage accounts """
 
-import datetime
-
 from zope.interface import implements
 
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import ForeignKey, IntCol, UnicodeCol
 from stoqlib.database.orm import DateTimeCol
-from stoqlib.database.orm import const, AND, OR
+from stoqlib.database.orm import const, OR
 from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IOutPayment

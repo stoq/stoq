@@ -25,9 +25,7 @@
 """ Classes for Stock Decrease Details Dialog """
 
 import gtk
-from kiwi.datatypes import currency
 from kiwi.ui.objectlist import Column
-from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoqlib.gui.editors.baseeditor import BaseEditor

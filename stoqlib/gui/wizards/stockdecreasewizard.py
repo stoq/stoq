@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+g# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -24,42 +24,28 @@
 ##
 """ Stock Decrease wizard definition """
 
-import datetime
 from decimal import Decimal
-import sys
 
 import gtk
 
-from kiwi.datatypes import currency, ValidationError
+from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import (get_current_branch, new_transaction,
-                                      finish_transaction, get_current_user)
+from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
+from stoqlib.domain.interfaces import (IBranch,
                                        IStorable, IEmployee)
-from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.operation import register_payment_operations
 from stoqlib.domain.person import Person
-from stoqlib.domain.product import ProductSupplierInfo
-from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
-                                      get_receiving_items_by_purchase_order)
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formatters import format_quantity, get_formatted_cost
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.editors.decreaseeditor import DecreaseItemEditor
 from stoqlib.gui.printing import print_report
-from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
-from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
-from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave,
-                                             BillMethodSlave, MoneyMethodSlave)
 from stoqlib.reporting.stockdecreasereceipt import StockDecreaseReceipt
 
 _ = stoqlib_gettext

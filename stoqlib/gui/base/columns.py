@@ -23,7 +23,6 @@
 ##
 """ Special columns definition for kiwi lists """
 
-from kiwi.accessor import kgetattr
 from kiwi.ui.widgets.list import Column
 
 

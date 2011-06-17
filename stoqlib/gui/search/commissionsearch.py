@@ -28,7 +28,7 @@ import datetime
 
 from kiwi.datatypes import currency
 from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
+from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import SearchColumn, ColoredColumn, Column
 
 from stoqlib.domain.commission import CommissionView

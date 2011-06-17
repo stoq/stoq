@@ -25,7 +25,6 @@
 
 import datetime
 from decimal import Decimal
-import time
 
 from stoqlib.database.database import query_server_time
 from stoqlib.database.runtime import (get_current_user,

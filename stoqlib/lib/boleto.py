@@ -55,7 +55,6 @@ conta = 403005
 """
 
 import datetime
-import tempfile
 
 from kiwi.component import get_utility
 from pyboleto.data import get_bank

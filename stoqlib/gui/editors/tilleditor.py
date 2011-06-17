@@ -24,7 +24,6 @@
 """ Editors implementation for open/close operation on till operation"""
 
 import datetime
-import time
 
 from kiwi import ValueUnset
 from kiwi.datatypes import ValidationError, currency

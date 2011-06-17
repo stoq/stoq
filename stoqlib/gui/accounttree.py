@@ -19,7 +19,6 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import decimal
 import gtk
 
 from kiwi.currency import currency

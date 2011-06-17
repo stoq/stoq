@@ -27,8 +27,8 @@ import datetime
 from decimal import Decimal
 
 from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import DateSearchFilter, Any, Today
-from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.search import Any, Today
+from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.domain.views import PurchasedItemAndStockView
 from stoqlib.gui.base.search import (SearchEditor, ThisWeek, NextWeek,

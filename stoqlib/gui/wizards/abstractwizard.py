@@ -47,7 +47,7 @@ from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.product import ProductSupplierInfo
 from stoqlib.domain.views import ProductFullStockItemView
-from stoqlib.gui.base.search import SearchDialog, SearchEditor
+from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import WizardEditorStep

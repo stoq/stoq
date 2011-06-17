@@ -22,7 +22,6 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 from decimal import Decimal
 
 from zope.interface import implements

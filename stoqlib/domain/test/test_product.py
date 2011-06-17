@@ -27,7 +27,6 @@
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductHistory, ProductComponent)
 from stoqlib.domain.purchase import PurchaseOrder

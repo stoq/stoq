@@ -24,7 +24,6 @@
 
 from stoqlib.domain.interfaces import IEmployee, IBranch
 from stoqlib.domain.person import Person
-from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.importers.csvimporter import CSVImporter

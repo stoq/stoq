@@ -33,7 +33,7 @@ from kiwi.component import provide_utility
 import stoqlib
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.boleto import BillReport
-from stoqlib.lib.diffutils import diff_files, diff_pdf_htmls
+from stoqlib.lib.diffutils import diff_pdf_htmls
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.pdf import pdftohtml
 

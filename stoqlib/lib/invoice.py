@@ -33,7 +33,6 @@ from kiwi.datatypes import ValidationError
 from stoqdrivers.enum import TaxType
 from stoqdrivers.escp import EscPPrinter
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.interfaces import ICompany, IIndividual
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.message import warning

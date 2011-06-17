@@ -22,9 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
-
-from kiwi.python import Settable
 from kiwi.datatypes import  ValidationError
 
 from stoqlib.domain.account import Account

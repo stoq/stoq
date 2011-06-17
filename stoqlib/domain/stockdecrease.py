@@ -30,12 +30,10 @@ from zope.interface import implements
 
 from stoqlib.database.orm import ForeignKey, UnicodeCol, DateTimeCol, IntCol
 from stoqlib.database.orm import QuantityCol
-from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer, IStorable
-from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.product import ProductHistory
-from stoqlib.exceptions import SellError, DatabaseInconsistency
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 
 

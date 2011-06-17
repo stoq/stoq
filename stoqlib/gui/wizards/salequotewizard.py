@@ -31,7 +31,6 @@ import datetime
 
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
-from kiwi.python import Settable
 
 from stoqlib.database.runtime import (get_current_branch, get_current_user,
                                       new_transaction, finish_transaction)

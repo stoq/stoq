@@ -1,4 +1,3 @@
-import os
 import unittest
 
 from stoqlib.lib.event import Event

@@ -27,7 +27,6 @@ from decimal import Decimal
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.interfaces import IStorable
-from stoqlib.domain.parameter import ParameterData
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale

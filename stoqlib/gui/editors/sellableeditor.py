@@ -25,13 +25,10 @@
 
 import sys
 
-import gtk
-
 from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 from stoqdrivers.enum import TaxType, UnitType
 
-from stoqlib.database.orm import AND, const
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.sellable import (SellableCategory, Sellable,
@@ -40,7 +37,6 @@ from stoqlib.domain.sellable import (SellableCategory, Sellable,
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import ModelListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.search.sellableunitsearch import SellableUnitSearch
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
 from stoqlib.lib.message import info, yesno

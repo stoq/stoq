@@ -36,7 +36,7 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
-from stoqlib.domain.views import (ProductFullStockView, ProductQuantityView,
+from stoqlib.domain.views import (ProductQuantityView,
                                   ProductFullStockItemView, SoldItemView,
                                   ProductFullWithClosedStockView,
                                   ProductClosedStockView)

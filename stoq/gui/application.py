@@ -25,6 +25,8 @@
 
 import datetime
 import gettext
+import os
+import json
 
 import gtk
 from kiwi.component import get_utility
@@ -33,25 +35,19 @@ from kiwi.environ import environ
 from kiwi.log import Logger
 from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_user, new_transaction,
-                                      finish_transaction, get_connection,
-                                      get_current_branch)
-from stoqlib.lib.interfaces import ICookieFile, IStoqConfig, IPluginManager
-from stoqlib.lib.message import yesno
+                                      finish_transaction, get_connection)
+from stoqlib.lib.interfaces import ICookieFile, IStoqConfig
+from stoqlib.lib.message import yesno, info
 from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
-from stoqlib.gui.fiscalprinter import (FiscalPrinterHelper, CLOSE_TILL_NONE,
-                                       CLOSE_TILL_ECF, CLOSE_TILL_DB,
-                                       CLOSE_TILL_BOTH)
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.gui.slaves.userslave import PasswordEditor
-from stoqlib.domain.interfaces import IBranch
-from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import PersonAdaptToCompany
-from stoqlib.domain.till import Till
+from stoqlib.domain.interfaces import IBranch
 
 import stoq
 
@@ -101,8 +97,6 @@ class AppWindow(BaseAppWindow):
 
         BaseAppWindow.__init__(self, app)
         self._create_user_menu()
-        self._printer = FiscalPrinterHelper(
-            self.conn, parent=self.get_toplevel())
         self._klist = getattr(self, self.klist_name)
         if not len(self._klist.get_columns()):
             self._klist.set_columns(self.get_columns())
@@ -121,12 +115,6 @@ class AppWindow(BaseAppWindow):
             'You are currently using an <b>unstable version</b> of Stoq that '
             'is under development,\nbe aware that it may behave incorrectly, '
             'crash or even loose your data.\n<b>Do not use in production.</b>')
-        self.add_info_bar(gtk.MESSAGE_WARNING, msg)
-
-    def _display_open_inventory_message(self):
-        msg = _(u'There is an inventory process open at the moment.\n'
-                'While that inventory is open, you will be unable to do '
-                'operations that modify your stock.')
         self.add_info_bar(gtk.MESSAGE_WARNING, msg)
 
     def _usability_hacks(self):
@@ -240,7 +228,7 @@ class AppWindow(BaseAppWindow):
         release_date = stoq.release_date
         about.set_comments('Release Date: %s' %
                            datetime.datetime(*release_date).strftime('%x'))
-        about.set_copyright('Copyright (C) 2005-2010 Async Open Source')
+        about.set_copyright('Copyright (C) 2005-2011 Async Open Source')
 
         # Logo
         icon_file = environ.find_resource('pixmaps', 'stoq_logo.png')
@@ -346,115 +334,8 @@ class AppWindow(BaseAppWindow):
         print_report(report_class, *args, **kwargs)
 
     #
-    # Till Methods
-    #
-
-    def close_till(self, close_db=True, close_ecf=True):
-        """Closes the till.
-
-        close_db and close_ecf should be different than True only when
-        fixing an conflicting status: If the DB is open but the ECF is
-        closed, or the other way around.
-
-        @param close_db: Indicates if we should close the till in the
-                         database
-        @param close_ecf: Indicates if we should close the till in the ECF.
-
-        """
-        # We are closing the till from the current day. Show a warning to
-        # the user, telling he wont be able to make any sales today
-        if not self._previous_day:
-            if not yesno(_(u"You can only close the till once per day. "
-                           "You won't be able to make any more sales today."
-                           "\n\nClose the till?"),
-                         gtk.RESPONSE_NO, _("Close Till"), _(u"Not now")):
-                return
-
-        retval = self._printer.close_till(self._previous_day, close_db, close_ecf)
-        if retval:
-            self.till_status_changed(closed=True)
-        return retval
-
-    def open_till(self):
-        if self._printer.open_till():
-            self.till_status_changed(closed=False)
-
-    def check_till(self):
-        self._check_needs_closing()
-        self._check_open_till()
-
-    def till_status_changed(self, closed, blocked=False):
-        """Subclasses should override this if they call open_till,
-        close_till or check_till.
-
-        This will be called to indicate the status of the till.
-
-        @param closed: Indicates if the till is open or closed
-        @param blocked: Indicates that the till is blocked (A till
-                        opened from a previous day)
-        """
-        raise NotImplementedError
-
-    def _check_open_till(self):
-        # FIXME: implement this verification:
-        # If the till in stoq is open, check that the ecf is also open.
-        pass
-
-    def _check_needs_closing(self):
-        needs_closing = self._printer.needs_closing()
-
-        # DB and ECF are ok
-        if needs_closing is CLOSE_TILL_NONE:
-            self._previous_day = False
-            # We still need to check if the till is open or closed.
-            till = Till.get_current(self.conn)
-            if till:
-                self.till_status_changed(closed=False)
-            else:
-                self.till_status_changed(closed=True)
-            return True
-
-        # DB or ECF is open from a previous day
-        self.till_status_changed(closed=False, blocked=True)
-        self._previous_day = True
-
-        close_db = needs_closing in (CLOSE_TILL_DB, CLOSE_TILL_BOTH)
-        close_ecf = needs_closing in (CLOSE_TILL_ECF, CLOSE_TILL_BOTH)
-
-        manager = get_utility(IPluginManager)
-        manager.is_active('ecf')
-        if close_db and (close_ecf or not manager.is_active('ecf')):
-            msg = _(u"You need to close the till from the previous day before "
-                     "creating a new order.\n\nClose the Till?")
-        elif close_db and not close_ecf:
-            msg = _(u"The till in Stoq is opened, but in ECF "
-                     "is closed.\n\nClose the till in Stoq?")
-        elif close_ecf and not close_db:
-            msg = _(u"The till in stoq is closed, but in ECF "
-                     "is opened.\n\nClose the till in ECF?")
-
-        if yesno(msg, gtk.RESPONSE_NO, _(u"Close Till"), _(u"Not now")):
-            return self.close_till(close_db, close_ecf)
-
-        return False
-
-    #
     # Public API
     #
-
-    def check_open_inventory(self):
-        if Inventory.has_open(self.conn, get_current_branch(self.conn)):
-            self._display_open_inventory_message()
-            self.set_open_inventory()
-
-    def set_open_inventory(self):
-        """ Subclasses should overide this if they call
-        check_open_inventory.
-
-        This method will be called it there is an open inventory, so the
-        application can disable some funcionalities
-        """
-        raise NotImplementedError
 
     def get_columns(self):
         raise NotImplementedError('You should define this method on parent')
