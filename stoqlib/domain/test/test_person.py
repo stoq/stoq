@@ -265,8 +265,7 @@ class _PersonFacetTest(object):
     facet = None
 
     def _create_person_facet(self):
-        ex = ExampleCreator(self.trans)
-        return ex.create_by_type(self.facet.__name__)
+        return ExampleCreator.create(self.trans, self.facet.__name__)
 
     def testInactivate(self):
         facet = self._create_person_facet()
