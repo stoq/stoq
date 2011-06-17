@@ -231,7 +231,12 @@ class SellableEditor(BaseEditor):
         self.set_description(
             self.model.sellable.base_sellable_info.description)
 
-        self._setup_delete_close_reopen_button()
+        if self._sellable.can_remove():
+            self._add_delete_button()
+        elif self._sellable.can_close():
+            self._add_close_button()
+        elif self._sellable.is_closed():
+            self._add_reopen_button()
 
     #
     #  Private API
@@ -243,22 +248,27 @@ class SellableEditor(BaseEditor):
         if callback_func:
             button.connect(connect_on, callback_func, label)
 
-    def _setup_delete_close_reopen_button(self):
-        if self.model and self._sellable.can_remove():
-            self._add_extra_button(_('Remove'), 'gtk-delete',
-                                   self._on_delete_button__clicked)
-        elif self.model and self._sellable.is_unavailable():
-            label = (self._sellable.product and
-                     _('Close Product') or _('Close Service'))
+    def _add_delete_button(self):
+        self._add_extra_button(_('Remove'), 'gtk-delete',
+                               self._on_delete_button__clicked)
 
-            self._add_extra_button(label, None,
-                                   self._on_close_sellable_button__clicked)
-        elif self.model and self._sellable.is_closed():
-            label = (self._sellable.product and
-                     _('Reopen Product') or _('Reopen Service'))
+    def _add_close_button(self):
+        if self._sellable.product:
+            label = _('Close Product')
+        else:
+            label = _('Close Service')
 
-            self._add_extra_button(label, None,
-                                   self._on_reopen_sellable_button__clicked)
+        self._add_extra_button(label, None,
+                               self._on_close_sellable_button__clicked)
+
+    def _add_reopen_button(self):
+        if self._sellable.product:
+            label = _('Reopen Product')
+        else:
+            label = _('Reopen Service')
+
+        self._add_extra_button(label, None,
+                               self._on_reopen_sellable_button__clicked)
 
     #
     #  Public API
