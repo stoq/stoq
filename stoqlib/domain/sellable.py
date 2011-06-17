@@ -628,7 +628,7 @@ class Sellable(Domain):
             from stoqlib.domain.product import Product, ProductAdaptToStorable
             query = AND(query,
                         Sellable.q.id == Product.q.sellableID,
-                        ProductAdaptToStorable.q._originalID == Product.q.id)
+                        ProductAdaptToStorable.q.originalID == Product.q.id)
 
         if supplier:
             query = AND(query,

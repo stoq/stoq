@@ -185,7 +185,7 @@ class CommissionView(Viewable):
             PersonAdaptToSalesPerson.q.id == Commission.q.salespersonID),
 
         INNERJOINOn(None, Person,
-            Person.q.id == PersonAdaptToSalesPerson.q._originalID),
+            Person.q.id == PersonAdaptToSalesPerson.q.originalID),
 
         # payment
         INNERJOINOn(None, Payment,

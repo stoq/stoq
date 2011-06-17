@@ -46,12 +46,12 @@ class ORMObjectAdapter(Adapter):
         Adapter.__init__(self, adaptable)
 
         if adaptable:
-            kwargs['_original'] = adaptable
+            kwargs['original'] = adaptable
 
-        self.__dict__['_original'] = adaptable
+        self.__dict__['original'] = adaptable
 
     def get_adapted(self):
-        return self._original
+        return self.original
 
 
 class AdaptableORMObject(Adaptable):
@@ -66,9 +66,9 @@ class AdaptableORMObject(Adaptable):
         # a nice lazy property to it. The alternative would be to
         # attach it to all domain objects during startup, or just
         # load the schema definition from postgres dynamically.
-        if not hasattr(facet, '_original'):
+        if not hasattr(facet, 'original'):
             facet.sqlmeta.addColumn(ForeignKey(cls.__name__,
-                                    name='_original',
+                                    name='original',
                                     forceDBName=True))
 
 
@@ -101,7 +101,7 @@ def _adaptable_orm_adapter_hook(iface, obj):
     if issubclass(facetType, ORMObjectAdapter):
         # FIXME: Use selectOneBy
         results = facetType.selectBy(
-            _originalID=obj.id, connection=obj.get_connection())
+            originalID=obj.id, connection=obj.get_connection())
 
         if results.count() == 1:
             return results[0]
@@ -305,10 +305,10 @@ class BaseSQLView:
 class ModelAdapter(BaseDomain, ORMObjectAdapter):
 
     if orm_name == 'storm':
-        _originalID = IntCol('original_id')
+        originalID = IntCol('original_id')
 
-    def __init__(self, _original=None, *args, **kwargs):
-        ORMObjectAdapter.__init__(self, _original, kwargs) # Modifies kwargs
+    def __init__(self, original=None, *args, **kwargs):
+        ORMObjectAdapter.__init__(self, original, kwargs) # Modifies kwargs
         BaseDomain.__init__(self, *args, **kwargs)
 
 

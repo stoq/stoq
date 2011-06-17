@@ -66,7 +66,7 @@ class PublisherView(Viewable):
 
     joins = [
         INNERJOINOn(None, PersonAdaptToPublisher,
-                    Person.q.id == PersonAdaptToPublisher.q._originalID),
+                    Person.q.id == PersonAdaptToPublisher.q.originalID),
     ]
 
     @property
@@ -113,7 +113,7 @@ class ProductBookFullStockView(ProductFullStockView):
     joins = ProductFullStockView.joins[:]
     joins.extend([
         INNERJOINOn(None, ProductAdaptToBook,
-                    ProductAdaptToBook.q._originalID == Product.q.id),
+                    ProductAdaptToBook.q.originalID == Product.q.id),
         LEFTJOINOn(None, Person,
                    Person.q.id == ProductAdaptToBook.q.publisherID),
     ])
