@@ -34,11 +34,17 @@ except:
 
 
 class DomainTest(unittest.TestCase, ExampleCreator):
+    def __init__(self, test):
+        unittest.TestCase.__init__(self, test)
+        ExampleCreator.__init__(self)
+
     def setUp(self):
         self.trans = new_transaction()
+        self.set_transaction(self.trans)
 
     def tearDown(self):
         self.trans.rollback()
+        self.clear()
 
 
 # Ensure that the database settings and etc are available for all
