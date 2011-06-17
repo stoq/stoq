@@ -92,6 +92,8 @@ class BaseStoqReport(ReportTemplate):
     def draw_header(self, canvas):
         canvas.saveState()
         person = get_current_branch(get_connection()).person
+        main_address = person.get_main_address()
+        company = ICompany(person, None)
 
         logo_width, logo_height = self._logotype.getSize()
         header_y = self._topMargin - logo_height - BaseStoqReport.logo_border
@@ -109,39 +111,43 @@ class BaseStoqReport(ReportTemplate):
 
         canvas.setFont(*SMALL_FONT)
 
-        main_address = person.get_main_address()
+        # Address lines
+        address_string1 = ''
+
+        address_parts = []
         if main_address:
             address_string1 = main_address.get_address_string()
-            address_string2 = []
-            if main_address.postal_code:
-                address_string2.append(main_address.postal_code)
-            if main_address.get_city() and main_address.get_state():
-                address_string2.extend([main_address.get_city(),
-                                        main_address.get_state()])
-            address_string2 = " - ".join(address_string2)
-        else:
-            address_string1 = address_string2 = ''
-        if person.phone_number:
-            contact_string = (_("Phone: %s")
-                              % format_phone_number(person.phone_number))
-        else:
-            contact_string = ''
-        if person.fax_number:
-            fax_str = _("Fax: %s") % format_phone_number(person.fax_number)
-            contact_string += " - %s" % fax_str
 
-        company = ICompany(person, None)
-        company_details_string = ''
-        if company is not None:
+            if main_address.postal_code:
+                address_parts.append(main_address.postal_code)
+            if main_address.get_city():
+                address_parts.append(main_address.get_city())
+            if main_address.get_state():
+                address_parts.append(main_address.get_state())
+
+        address_string2 = " - ".join(address_parts)
+
+        # Contact line
+        contact_parts = []
+        if person.phone_number:
+            contact_parts.append(_("Phone: %s")
+                                   % format_phone_number(person.phone_number))
+        if person.fax_number:
+            contact_parts.append(_("Fax: %s")
+                                   % format_phone_number(person.fax_number))
+
+        contact_string = ' - '.join(contact_parts)
+
+        # Company details line
+        company_parts = []
+        if company:
             if company.get_cnpj_number():
-                company_details_string = (_("CNPJ: %s") % company.cnpj)
+                company_parts.append(_("CNPJ: %s") % company.cnpj)
             if company.get_state_registry_number():
-                state_registry_string =  (_("State Registry: %s") %
-                                            company.state_registry,)
-                if company_details_string:
-                    company_details_string += ' - %s' % state_registry_string
-                else:
-                    company_details_string = state_registry_string
+                company_parts.append(_("State Registry: %s")
+                                       % company.state_registry)
+
+        company_details_string = ' - '.join(company_parts)
 
         for text in (address_string1, address_string2, contact_string,
                      company_details_string):
