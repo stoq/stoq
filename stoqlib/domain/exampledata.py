@@ -134,7 +134,9 @@ class ExampleCreator(object):
 
     @classmethod
     def create(cls, trans, name):
-        return cls(trans).create_by_type(name)
+        ec = cls()
+        ec.set_transaction(trans)
+        return ec.create_by_type(name)
 
     def clear(self):
         self._role = None
