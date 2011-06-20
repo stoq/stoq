@@ -219,6 +219,9 @@ class SchemaMigration(object):
 
         return False
 
+    def _log(self, msg):
+        create_log.info(msg)
+
     def apply_all_patches(self):
         """Apply all available patches
         """
@@ -229,11 +232,11 @@ class SchemaMigration(object):
             if patch.get_version() > current_version:
                 to_apply.append(patch)
 
-        create_log.info("PATCHES:%d" % (len(to_apply),))
+        self._log("PATCHES:%d" % (len(to_apply),))
         for i, patch in enumerate(to_apply):
-            create_log.info("PATCH:%d" % (i,))
+            self._log("PATCH:%d" % (i,))
             patch.apply(self.conn)
-        create_log.info("PATCHES APPLIED")
+        self._log("PATCHES APPLIED")
 
     def update(self):
         """Updates the database schema
@@ -408,6 +411,9 @@ class PluginSchemaMigration(SchemaMigration):
         self._plugin = InstalledPlugin.selectOneBy(
             plugin_name=self.plugin_name,
             connection=self.conn)
+
+    def _log(self, msg):
+        create_log.info('PLUGIN ' + msg)
 
     def generate_sql_for_patch(self, patch):
         assert self._plugin

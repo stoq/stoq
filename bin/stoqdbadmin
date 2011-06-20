@@ -151,13 +151,13 @@ class StoqCommandHandler:
 
         for plugin in plugin_names:
             manager = provide_plugin_manager()
-            if not manager.has_plugin(plugin_name):
+            if not manager.has_plugin(plugin):
                 break
-            manager.enable_plugin(plugin_name)
+            manager.enable_plugin(plugin)
         else:
             return
 
-        print 'No plugin called: %s' % (plugin_name,)
+        print 'No plugin called: %s' % (plugin,)
         print 'Available plugins are:'
         for plugin_name in manager.get_plugin_names():
             print '  ', plugin_name
