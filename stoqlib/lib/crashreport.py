@@ -30,11 +30,14 @@ import time
 import traceback
 
 import gobject
+from kiwi.component import get_utility
 from kiwi.log import Logger
 from kiwi.utils import gsignal
 
 from stoqlib.exceptions import StoqlibError
 from stoqlib.database.runtime import get_connection
+from stoqlib.lib.interfaces import IAppInfo
+from stoqlib.lib.uptime import get_uptime
 from stoqlib.lib.webservice import WebService
 
 log = Logger('stoqlib.crashreporter')
@@ -42,7 +45,9 @@ _tracebacks = []
 
 _N_TRIES = 3
 
-def collect_report(params):
+def collect_report():
+    info = get_utility(IAppInfo, None)
+
     text = ""
     text += "Report generated at %s %s\n" % (
         datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
@@ -55,11 +60,12 @@ def collect_report(params):
             text += '-' * 60
     text += ('-' * 80) + '\n'
 
-    text += 'Content of %s:\n' % (params['log-filename'], )
-    text += open(params['log-filename']).read()
-    text += ('-' * 80) + '\n'
+    if info and info.get('log'):
+        text += 'Content of %s:\n' % (info.get('log'), )
+        text += open(info.get('log')).read()
+        text += ('-' * 80) + '\n'
 
-    uptime = params['app-uptime']
+    uptime = get_uptime()
     text += "Application uptime: %dh%dmin\n" % (uptime / 3600,
                                                 (uptime % 3600) / 60)
     text += "System: %r (%s)\n" % (platform.system(),
@@ -69,7 +75,7 @@ def collect_report(params):
 
     text += "Python version: %r (%s)\n" % (
         '.'.join(map(str, sys.version_info)),
-                                           platform.python_implementation())
+        platform.python_implementation())
     import gtk
     text += "PyGTK version: %s\n" % ('.'.join(map(str, gtk.pygtk_version)), )
     text += "GTK version: %s\n" % ('.'.join(map(str, gtk.gtk_version)), )
@@ -98,9 +104,10 @@ def collect_report(params):
         stoqlib_version += ' r' + stoqlib.library.get_revision()
     text += "Stoqlib version: %s\n" % (stoqlib_version, )
 
-    # Stoq version
-    text += "%s version: %s\n" % (params['app-name'],
-                                  params['app-version'])
+    # App version
+    if info and info.get('name'):
+        text += "%s version: %s\n" % (info.get('name'),
+                                      info.get('version'))
 
     # Psycopg / Postgres
     import psycopg2
@@ -125,17 +132,18 @@ class ReportSubmitter(gobject.GObject):
     gsignal('failed', object)
     gsignal('submitted', object)
 
-    def __init__(self, params):
+    def __init__(self):
         gobject.GObject.__init__(self)
 
         self._api = WebService()
-        self._report = collect_report(params)
+        self._report = collect_report()
         self._count = 0
         self._loop = None
-        self._is_running = False
 
     def _maybe_quit(self):
-        if self._loop:
+        log.info('maybe quit: %r' % (self._loop, ))
+        if self._loop and self._loop.is_running():
+            log.info('quit!')
             self._loop.quit()
 
     def _done(self, args):
@@ -155,14 +163,12 @@ class ReportSubmitter(gobject.GObject):
         response.whenDone(self._on_report__callback)
         response.ifError(self._on_report__errback)
 
-        if self._loop and not self._is_running:
+        if self._loop and not self._loop.is_running():
             self._loop.run()
-            self._is_running = True
 
     def submit_in_mainloop(self):
         self._loop = gobject.MainLoop()
         self.submit()
-        self._loop.run()
 
     def _on_report__errback(self, response, args):
         log.info('Failed to report bug: %r count=%d' % (args, self._count))
@@ -178,6 +184,6 @@ class ReportSubmitter(gobject.GObject):
         self._done(data)
 
 
-def report(params):
-    rs = ReportSubmitter(params)
+def report():
+    rs = ReportSubmitter()
     rs.submit_in_mainloop()

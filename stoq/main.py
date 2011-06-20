@@ -29,8 +29,9 @@ import logging
 import optparse
 import os
 import sys
-import time
 
+from stoqlib.lib.uptime import set_initial
+set_initial()
 from stoqlib.lib.osutils import get_application_dir
 
 from stoq.lib.applist import get_application_names
@@ -44,7 +45,6 @@ REPORTLAB_REQUIRED = (1, 20)
 
 _ = gettext.gettext
 _log_filename = None
-_start_time = time.time()
 _stream = None
 _ran_wizard = False
 _restart = False
@@ -96,19 +96,8 @@ def _exit_func():
     from stoqlib.lib.crashreport import has_tracebacks
     #if has_tracebacks() and not is_developer_mode():
     if has_tracebacks():
-        import stoq
         from stoqlib.gui.dialogs.crashreportdialog import show_dialog
-        uptime = int(time.time() - _start_time)
-        stoq_version = stoq.version
-        if hasattr(stoq.library, 'get_revision'):
-            stoq_version += ' r' + stoq.library.get_revision()
-        params = {
-            'app-name': 'Stoq',
-            'app-version': stoq_version,
-            'app-uptime': uptime,
-            'log-filename': _log_filename,
-            }
-        show_dialog(params)
+        show_dialog()
         raise SystemExit
 
     if _restart:
@@ -118,6 +107,20 @@ def _exit_func():
 def restart_stoq_atexit():
     global _restart
     _restart = True
+
+def _set_app_info():
+    from kiwi.component import provide_utility
+    from stoqlib.lib.interfaces import IAppInfo
+    from stoqlib.lib.appinfo import AppInfo
+    import stoq
+    stoq_version = stoq.version
+    if hasattr(stoq.library, 'get_revision'):
+        stoq_version += ' r' + stoq.library.get_revision()
+    info = AppInfo()
+    info.set("name", "Stoq")
+    info.set("version", stoq_version)
+    info.set("log", _log_filename)
+    provide_utility(IAppInfo, info)
 
 def _check_dependencies():
     from stoqlib.lib.message import error
@@ -301,7 +304,7 @@ def _setup_ui_dialogs():
         return
     log.debug('providing graphical notification dialogs')
     from stoqlib.gui.base.dialogs import DialogSystemNotifier
-    from stoqlib.lib.message import ISystemNotifier
+    from stoqlib.lib.interfaces import ISystemNotifier
     from kiwi.component import provide_utility
 
     provide_utility(ISystemNotifier, DialogSystemNotifier(), replace=True)
@@ -369,7 +372,6 @@ def _initialize(options):
     # Do this as early as possible to get as much as possible into the
     # log file itself, which means we cannot depend on the config or
     # anything else
-    _prepare_logfiles()
 
     if options.debug:
         hook = _debug_hook
@@ -498,6 +500,8 @@ def main(args):
 
     # Do this as soon as possible, before we attempt to use the
     # external libraries/resources
+    _prepare_logfiles()
+    _set_app_info()
     _check_dependencies()
     _check_version_policy()
     _setup_gtk()
