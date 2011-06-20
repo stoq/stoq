@@ -726,6 +726,7 @@ class ParameterAccess(ClassInittableObject):
                                              Sellable,
                                              SellableTaxConstant)
         from stoqlib.domain.service import Service
+        key = "DELIVERY_SERVICE"
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.conn)
         sellable_info = BaseSellableInfo(connection=self.conn,
                                          description=_(u'Delivery'))
