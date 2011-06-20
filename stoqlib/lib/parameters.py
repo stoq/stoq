@@ -714,10 +714,6 @@ class ParameterAccess(ClassInittableObject):
         self._set_schema(key, None)
 
     def ensure_delivery_service(self):
-        from stoqlib.domain.sellable import (BaseSellableInfo,
-                                             Sellable,
-                                             SellableTaxConstant)
-        from stoqlib.domain.service import Service
         key = "DELIVERY_SERVICE"
         if self.get_parameter_by_field(key, Service):
             return
@@ -725,6 +721,10 @@ class ParameterAccess(ClassInittableObject):
         self.create_delivery_service()
 
     def create_delivery_service(self):
+        from stoqlib.domain.sellable import (BaseSellableInfo,
+                                             Sellable,
+                                             SellableTaxConstant)
+        from stoqlib.domain.service import Service
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.conn)
         sellable_info = BaseSellableInfo(connection=self.conn,
                                          description=_(u'Delivery'))
