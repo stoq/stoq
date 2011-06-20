@@ -402,7 +402,7 @@ class Sellable(Domain):
         @rtype: boolean
         """
         # FIXME: Perhaps this should be done elsewhere. Johan 2008-09-26
-        if self == sysparam(self.get_connection()).DELIVERY_SERVICE:
+        if self.service == sysparam(self.get_connection()).DELIVERY_SERVICE:
             return True
         return self.status == self.STATUS_AVAILABLE
 
@@ -430,6 +430,8 @@ class Sellable(Domain):
         """Mark the sellable as closed"""
         if self.is_closed():
             raise ValueError('This sellable is already closed')
+
+        assert self.can_close()
         self.status = Sellable.STATUS_CLOSED
 
     def cancel(self):
@@ -461,8 +463,21 @@ class Sellable(Domain):
 
         if self.product:
             return self.product.can_remove()
-        else:
+        elif self.service:
             return self.service.can_remove()
+
+        return False
+
+    def can_close(self):
+        """Whether we can close this sellable.
+
+        @returns: True if the product has no stock left or the service
+            is not required by the system (i.e. Delivery service is
+            required). False otherwise.
+        """
+        if self.service:
+            return self.service.can_close()
+        return self.is_unavailable()
 
     def get_short_description(self):
         """Returns a short description of the current sale
@@ -580,6 +595,8 @@ class Sellable(Domain):
         """Remove this sellable from the database (including the product or
         service).
         """
+        assert self.can_remove()
+
         if self.product:
             self.product.remove()
         elif self.service:
@@ -594,8 +611,8 @@ class Sellable(Domain):
 
     @classmethod
     def get_available_sellables_for_quote_query(cls, conn):
-        service = sysparam(conn).DELIVERY_SERVICE
-        return AND(cls.q.id != service.id,
+        service_sellable = sysparam(conn).DELIVERY_SERVICE.sellable
+        return AND(cls.q.id != service_sellable.id,
                    OR(cls.q.status == cls.STATUS_AVAILABLE,
                       cls.q.status == cls.STATUS_UNAVAILABLE))
 
