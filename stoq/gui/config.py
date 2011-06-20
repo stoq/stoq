@@ -355,6 +355,9 @@ class CreateDatabaseStep(BaseWizardStep):
                 '-v']
         if self.wizard.create_examples and not self.wizard.remove_examples:
             args.append('--create-examples')
+        if self.wizard.plugins:
+            args.append('--enable-plugins')
+            args.append(','.join(self.wizard.plugins))
         dbargs = self.wizard.settings.get_command_line_arguments()
         args.extend(dbargs)
         self.process_view.execute_command(args)
@@ -375,15 +378,20 @@ class CreateDatabaseStep(BaseWizardStep):
             self.n_patches = int(line.split(':', 1)[1])
             text = _("Creating schema, applying patches...")
         elif line.startswith('PATCH:'):
-            # 0.4 - 0.8 patches
+            # 0.4 - 0.7 patches
             patch = float(line.split(':', 1)[1])
-            value = 0.4 + (patch / self.n_patches) * 0.4
+            value = 0.4 + (patch / self.n_patches) * 0.3
             text = _("Creating schema, applying patch %d ..." % (patch+1, ))
         elif line == 'INIT START':
             text = _("Creating additional database objects ...")
-            value = 0.9
+            value = 0.8
         elif line == 'INIT DONE' and self.wizard.create_examples:
             text = _("Creating examples ...")
+            value = 0.85
+        elif line.startswith('PLUGIN'):
+            text = _("Activating plugins ...")
+            if 'nfe' in self.wizard.plugins:
+                text += ' ' + _('This may take some time.')
             value = 0.95
         else:
             return
@@ -494,7 +502,7 @@ class FirstTimeConfigWizard(BaseWizard):
               options=self.options,
               check_schema=True,
               register_station=False,
-              load_plugins=False)
+              load_plugins=True)
 
     #
     # WizardStep hooks
