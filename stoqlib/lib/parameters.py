@@ -722,6 +722,9 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, Service):
             return
 
+        self.create_delivery_service()
+
+    def create_delivery_service(self):
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.conn)
         sellable_info = BaseSellableInfo(connection=self.conn,
                                          description=_(u'Delivery'))

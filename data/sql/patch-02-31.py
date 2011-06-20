@@ -7,7 +7,11 @@
 
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.service import Service
+from stoqlib.domain.product import Product
 from stoqlib.lib.parameters import sysparam
+
+Product # pyflakes
 
 def apply_patch(trans):
 
@@ -18,15 +22,16 @@ def apply_patch(trans):
 
     if sellable and sellable.service:
         # Set the param to point to the Service.
-        sysparam(trans).update_parameter(param_name, service.id)
+        sysparam(trans).update_parameter(param_name, sellable.service.id)
     elif sellable and sellable.product:
-        # If it was a product, remove it and let the parameters create
-        # another one. That new one will be a service for sure.
-        param = ParameterData.selectOneBy(connection=trans,
-                                          field_name=param_name)
-        if param:
-            ParameterData.delete(param.id, connection=trans)
-            trans.commit(close=False)
+        # If the delivery service was a product, point it to the first
+        # service available, if there's any service on the base. If not,
+        # recreate the default delivery service.
+        service = Service.select(connection=trans).orderBy(Service.q.id)
+        if service.count():
+            sysparam(trans).update_parameter(param_name, service[0].id)
+        else:
+            sysparam(trans).create_delivery_service()
 
-        sysparam(trans).ensure_delivery_service()
+    trans.commit(close=False)
 
