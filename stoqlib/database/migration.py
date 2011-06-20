@@ -105,7 +105,7 @@ class Patch(object):
 
         sql = self._migration.generate_sql_for_patch(self)
         open(temporary, 'a').write(sql)
-        retcode = execute_sql(temporary, pretty=self.filename)
+        retcode = execute_sql(temporary)
         if retcode != 0:
             error('Failed to apply %s, psql returned error code: %d' % (
                 os.path.basename(self.filename), retcode))
