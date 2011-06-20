@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface domain="stoq">
+  <object class="GtkWindow" id="UpdateSchemaStep">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <property name="mnemonics_visible">False</property>
+    <child>
+      <object class="GtkVBox" id="vbox">
+        <property name="border_width">6</property>
+        <property name="spacing">6</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property context="yes" name="label" translatable="yes">&lt;b&gt;Updating Database Schema&lt;/b&gt;</property>
+            <property name="use_markup">True</property>
+            <property name="visible">True</property>
+            <property name="xalign">0.0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHSeparator" id="hseparator1">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkProgressBar" id="progressbar">
+            <property name="visible">True</property>
+            <property name="pulse-step">0.01</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="padding">12</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label">
+            <property name="selectable">True</property>
+            <property name="use-markup">True</property>
+            <property name="visible">True</property>
+            <property name="wrap-mode">PANGO_WRAP_WORD</property>
+            <property name="wrap">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="padding">12</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkExpander" id="expander">
+            <property name="label">Click for more details</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="padding">12</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

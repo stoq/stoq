@@ -39,11 +39,13 @@ from kiwi.log import Logger
 
 from stoqlib.database.database import (execute_sql, dump_database,
                                        restore_database, test_connection)
+from stoqlib.database.exceptions import SQLError
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.profile import update_profile_applications
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.crashreport import ReportSubmitter, add_traceback
 from stoqlib.lib.defaults import stoqlib_gettext
 from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import error, info
@@ -103,7 +105,7 @@ class Patch(object):
 
         sql = self._migration.generate_sql_for_patch(self)
         open(temporary, 'a').write(sql)
-        retcode = execute_sql(temporary)
+        retcode = execute_sql(temporary, pretty=self.filename)
         if retcode != 0:
             error('Failed to apply %s, psql returned error code: %d' % (
                 os.path.basename(self.filename), retcode))
@@ -181,10 +183,12 @@ class SchemaMigration(object):
                     continue
                 patches_to_apply.append(patch)
 
-            log.info("Applying %d patches" % (len(patches),))
+            log.info("Applying %d patches" % (len(patches_to_apply),))
+            create_log.info("PATCHES:%d" % (len(patches_to_apply),))
 
-            for i, patch in enumerate(patches_to_apply):
-                log.info('Applying: %s' % (patch.filename,))
+            for patch in patches_to_apply:
+                create_log.info("PATCH:%d.%d" % (patch.generation,
+                                                 patch.level))
                 patch.apply(self.conn)
 
             assert patches_to_apply
@@ -247,7 +251,7 @@ class SchemaMigration(object):
         else:
             from_, to = self._update_schema()
             if to is None:
-                print 'Database schema updated'
+                print 'Database schema is already up to date'
             else:
                 f = "(%d.%d)" % from_
                 t = "(%d.%d)" % to
@@ -294,7 +298,15 @@ class StoqlibSchemaMigration(SchemaMigration):
 
         return retval
 
+    def _report(self, exc):
+        r = ReportSubmitter()
+        r.submit_in_mainloop()
+        log.info("Left main-loop")
+
     def update(self, plugins=True, backup=True):
+        log.info("Upgrading database (plugins=%r, backup=%r)" % (
+            plugins, backup))
+
         sucess = test_connection()
         if not sucess:
             info(_(u'Could not connect to the database using command line '
@@ -304,10 +316,12 @@ class StoqlibSchemaMigration(SchemaMigration):
             info(_(u'psql -l -h <server> -p <port> -U <username>'))
             return
 
-        if backup is True:
+        if backup:
             temporary = tempfile.mktemp(prefix="stoq-dump-")
-            sucess = dump_database(temporary)
-            if not sucess:
+            log.info("Making a backup to %s" % (temporary, ))
+            create_log.info("BACKUP-START:")
+            success = dump_database(temporary)
+            if not success:
                 info(_(u'Could not create backup! Aborting.'))
                 info(_(u'Please contact stoq team to inform this problem.\n'))
                 return
@@ -319,26 +333,24 @@ class StoqlibSchemaMigration(SchemaMigration):
                 super(StoqlibSchemaMigration, self).update()
                 if plugins:
                     self.update_plugins()
-            except:
-                info(_(u'Stoq update have failed.'))
-                info(_(u'Please, send all the output to Stoq Team as '
-                        'soon as you can.'))
+            except Exception, e:
+                exc = sys.exc_info()
+                tb_str = ''.join(traceback.format_exception(*exc))
+                add_traceback(exc)
+                create_log.info("ERROR:%s" % (tb_str,))
+                self._report(exc)
 
-                tb_str = ''.join(traceback.format_exception(*sys.exc_info()))
-                info(_(u'The error message was:\n\n%s\n\n') % tb_str)
-
-                if backup is True:
-                    info(
-                     _(u'We will try to restore the current database, but you '
-                        'will not be able to use Stoq without this update.'))
-                    info(_(u'This may take some time'))
-
+                if backup:
+                    log.info("Restoring backup %s" % (temporary, ))
+                    create_log.info("RESTORE-START:")
                     new_name = restore_database(temporary)
-                    info(_(u'Database was restored with name %s.\n\n')
-                            % new_name)
+                    create_log.info("RESTORE-DONE:%s" % (new_name,))
+                return False
         finally:
             if backup is True:
                 os.unlink(temporary)
+        log.info("Migration done")
+        return True
 
     def update_plugins(self):
         for plugin in get_utility(IPluginManager).get_active_plugins():
