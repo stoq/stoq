@@ -135,10 +135,10 @@ class ProductionServiceStep(SellableItemStep):
     #
 
     def get_sellable_view_query(self):
-        delivery = sysparam(self.conn).DELIVERY_SERVICE
+        delivery_sellable = sysparam(self.conn).DELIVERY_SERVICE.sellable
 
         query = AND(ServiceView.q.status == Sellable.STATUS_AVAILABLE,
-                    ServiceView.q.id != delivery.id)
+                    ServiceView.q.id != delivery_sellable.id)
         return query
 
     def setup_slaves(self):

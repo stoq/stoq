@@ -348,7 +348,7 @@ class POSApp(AppWindow):
         can_edit = bool(
             sale_item is not None and
             sale_item.sellable.service and
-            sale_item.sellable != sysparam(self.conn).DELIVERY_SERVICE)
+            sale_item.sellable.service != self.param.DELIVERY_SERVICE)
         self.edit_item_button.set_sensitive(can_edit)
 
         self.set_sensitive((self.checkout_button,
@@ -396,7 +396,7 @@ class POSApp(AppWindow):
     def _check_delivery_removed(self, sale_item):
         # If a delivery was removed, we need to remove all
         # the references to it eg self._delivery
-        if self.param.DELIVERY_SERVICE == sale_item.sellable:
+        if sale_item.sellable == self.param.DELIVERY_SERVICE.sellable:
             self._delivery = None
 
     #
@@ -474,7 +474,7 @@ class POSApp(AppWindow):
     def _edit_sale_item(self, sale_item):
         if sale_item.sellable.service:
             delivery_service = self.param.DELIVERY_SERVICE
-            if sale_item.sellable == delivery_service:
+            if sale_item.sellable.service == delivery_service:
                 self._edit_delivery()
                 return
             model = self.run_dialog(ServiceItemEditor, self.conn, sale_item)
@@ -502,13 +502,13 @@ class POSApp(AppWindow):
 
 
     def _create_delivery(self):
-        delivery_service = self.param.DELIVERY_SERVICE
-        if delivery_service in self.sale_items:
-            self._delivery = delivery_service
+        delivery_sellable = self.param.DELIVERY_SERVICE.sellable
+        if delivery_sellable in self.sale_items:
+            self._delivery = delivery_sellable
 
         delivery = self._edit_delivery()
         if delivery:
-            self._add_delivery_item(delivery, delivery_service)
+            self._add_delivery_item(delivery, delivery_sellable)
             self._delivery = delivery
 
     def _edit_delivery(self):
