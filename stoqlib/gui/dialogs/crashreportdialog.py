@@ -25,10 +25,12 @@
 
 import gtk
 
+from kiwi.component import get_utility
 from kiwi.ui.dialogs import HIGAlertDialog
 
 from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.lib.crashreport import ReportSubmitter
+from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -37,10 +39,9 @@ _N_TRIES = 3
 
 
 class CrashReportDialog(object):
-    def __init__(self, parent, params):
-        self._params = params
+    def __init__(self, parent):
         self._parent = parent
-        self._report_submitter = ReportSubmitter(params)
+        self._report_submitter = ReportSubmitter()
         self._report_submitter.connect('submitted',
                                        self._on_report__submitted)
         self._report_submitter.connect('failed',
@@ -52,12 +53,14 @@ class CrashReportDialog(object):
                                       flags=gtk.DIALOG_MODAL,
                                       type=gtk.MESSAGE_WARNING)
 
+        app_info = get_utility(IAppInfo, None)
+
         self._dialog.set_primary(
             _('We\'r sorry to inform you that an error occurred while '
               'running %s. Please help us improving Stoq by sending a '
               'automatically generated report about the incident.\n'
               'Click on details to see the report text.') % (
-            self._params['app-name'], ), bold=False)
+            app_info.get('name'), ), bold=False)
 
         sw = gtk.ScrolledWindow()
         view = gtk.TextView()
@@ -110,10 +113,9 @@ class CrashReportDialog(object):
         self._show_report(data)
 
 
-def show_dialog(params, interactive=True):
+def show_dialog(interactive=True):
     """Show a crash report dialog
-    @param: dictionary of parameters
     """
     parent = get_current_toplevel()
-    crd = CrashReportDialog(parent, params)
+    crd = CrashReportDialog(parent)
     crd.run()
