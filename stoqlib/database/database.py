@@ -33,6 +33,7 @@ import time
 from kiwi.component import get_utility
 from kiwi.log import Logger
 
+from stoqlib.database.exceptions import SQLError
 from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -128,6 +129,7 @@ def execute_sql(filename):
         proc = subprocess.Popen(args,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
                                 **kwargs)
 
         # We don't want to see notices on the output, skip them,
@@ -137,7 +139,9 @@ def execute_sql(filename):
         data = open(filename).read()
         # Rename serial into bigserial, for 64-bit id columns
         data = data.replace('id serial', 'id bigserial')
-        proc.communicate(data)
+        stdout, stderr = proc.communicate(data)
+        if stderr:
+            raise SQLError(stderr[:-1])
         return proc.returncode
     else:
         raise NotImplementedError(settings.rdbms)
@@ -239,7 +243,7 @@ def restore_database(dump):
 
         args = ['pg_restore', '-d', newname]
         args.extend(settings.get_tool_args())
-        args.extend(dump)
+        args.append(dump)
 
         log.debug('executing %s' % (' '.join(args), ))
 

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2009-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,20 +25,16 @@
 """ Schema Update Wizard """
 
 import gettext
-import time
-import threading
 
-from zope.interface import implements
-
-import gobject
+import glib
 import gtk
-
-from kiwi.component import get_utility, provide_utility
-
+import pango
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
-from stoqlib.lib.interfaces import ISystemNotifier
+from stoqlib.gui.processview import ProcessView
+from stoqlib.lib.message import warning
 
+import stoq
 
 _ = gettext.gettext
 
@@ -57,99 +53,96 @@ class UpdateWelcomeStep(BaseWizardStep):
         return UpdateSchemaStep(None, self.wizard)
 
 
-class _MySystemNotifier:
-    implements(ISystemNotifier)
-
-    def __init__(self, step):
-        self.step = step
-
-    def _msg(self, short, description):
-        all = self.step.status_label.get_text() or u''
-        self.step.status_label.set_text(all + short + '\n')
-
-    def info(self, short, description):
-        self._msg(short, description)
-
-    def yesno(self, text, default=-1, *verbs):
-        self._msg(text, '')
-
-    def warning(self, short, description, *args, **kwargs):
-        self._msg(short, description, *args, **kwargs)
-
-    def error(self, short, description):
-        self.step._error = True
-        self._msg(short, description)
-
-
 
 class UpdateSchemaStep(BaseWizardStep):
     gladefile = 'UpdateSchemaStep'
-
-    def _update_schema(self):
-        # This method will run in a separate thread.
-        migration = StoqlibSchemaMigration()
-        try:
-            migration.update(plugins=False)
-            migration.update_plugins()
-        except:
-            self._error = True
-
-        self._finished_update = True
-
-    def _update_status(self, text):
-        all = self.progressbar.get_text() or u''
-        self.progressbar.set_text(all + text)
-
-    def _pulse_timeout(self):
-        time.sleep(0.1)
-        self.progressbar.pulse()
-
-        if self._finished_update:
-            self.progressbar.set_fraction(1.0)
-            self.wizard.cancel_button.set_sensitive(True)
-            if not self._error:
-                self.wizard.refresh_next(True)
-                self._update_status(_(u' Done.'))
-            else:
-                self._update_status(_(u' Fail.'))
-
-            # Prove the original System Notifier so that dialogs work
-            # nicely
-            provide_utility(ISystemNotifier, self.default_sn, replace=True)
-
-        return not self._finished_update
 
     #
     # WizardStep
     #
 
     def post_init(self):
-        # Save the System Notifier for later restauration
-        self.default_sn = get_utility(ISystemNotifier)
-
-        # We use our own SystemNotifier to display the messages in the step
-        # itself
-        self._my_sn = _MySystemNotifier(self)
-        provide_utility(ISystemNotifier, self._my_sn, replace=True)
-
-        self.wizard.refresh_next(False)
-        self.wizard.enable_finish()
-        self.wizard.next_button.set_label(_(u'Run Stoq'))
-
-        self.wizard.cancel_button.set_label(gtk.STOCK_QUIT)
-        self.wizard.cancel_button.set_sensitive(False)
-
-        gobject.idle_add(self._pulse_timeout)
-
-        self._finished_update = False
-        self._error = False
-
-        self._update_status(_(u'Applying database patches...'))
-        self._update_thread = threading.Thread(target=self._update_schema)
-        self._update_thread.start()
+        self._finished = False
+        self.process_view = ProcessView()
+        self.process_view.listen_stderr = True
+        self.process_view.connect('read-line', self._on_processview__readline)
+        self.process_view.connect('finished', self._on_processview__finished)
+        self.expander.add(self.process_view)
+        self._launch_stoqdbadmin()
+        glib.timeout_add(50, self._on_timeout_add)
 
     def has_next_step(self):
         return False
+
+    # Private
+
+    def _parse_process_line(self, line):
+        LOG_CATEGORY = 'stoqlib.database.create'
+        log_pos = line.find(LOG_CATEGORY)
+        if log_pos == -1:
+            return
+        line = line[log_pos+len(LOG_CATEGORY)+1:]
+        longer = None
+        if line.startswith('PATCH:'):
+            patch = line.split(':', 1)[1]
+            text = _("Applying patch %s ..." % (patch, ))
+        elif line.startswith('BACKUP-START:'):
+            text = _("Creating a database backup")
+            longer = _('Creating a database backup in case anything goes wrong.')
+        elif line.startswith('RESTORE-START:'):
+            text = _("Restoring database backup")
+            longer = _(
+                'Stoq update failed.\n\n' +
+                'We will try to restore the current database.\n\n' +
+                'This may take some time.')
+        elif line.startswith('RESTORE-DONE:'):
+            msg = line.split(':', 1)[1]
+            text = _("Database backup restored")
+            longer = _(
+                'Stoq database update failed but the database was restored.\n' +
+                'An automatic crash report was submitted, please ' +
+                'enter in contact at <b>stoq-users@stoq.com.br</b> for ' +
+                'assistance in recovering your database and making it ' +
+                'possible to use Stoq %s again.\n\n'
+                'A backup database was created as <b>%s</b>') % (
+                stoq.version, msg, )
+        else:
+            return
+        self.progressbar.set_text(text)
+        if not longer:
+            longer = ''
+        self.label.set_markup(longer)
+
+    def _launch_stoqdbadmin(self):
+        self.wizard.disable_next()
+        args = ['stoqdbadmin', 'updateschema', '-v']
+        self.process_view.execute_command(args)
+        self.progressbar.set_text(_('Applying database patches...'))
+
+    def _finish(self, returncode):
+        self._finished = True
+        if returncode:
+            self.wizard.cancel_button.set_label(gtk.STOCK_QUIT)
+            self.progressbar.set_fraction(0.0)
+        else:
+            self.wizard.cancel_button.set_sensitive(True)
+            self.progressbar.set_text(_("Done, click 'Forward' to continue"))
+            self.progressbar.set_fraction(1.0)
+            self.wizard.enable_next()
+
+    # Callbacks
+
+    def _on_processview__readline(self, view, line):
+        self._parse_process_line(line)
+
+    def _on_processview__finished(self, view, returncode):
+        self._finish(returncode)
+
+    def _on_timeout_add(self):
+        if self._finished:
+            return False
+        self.progressbar.pulse()
+        return True
 
 
 #

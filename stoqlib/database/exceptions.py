@@ -38,3 +38,6 @@ OperationalError = psycopg2.OperationalError
 
 class ORMTestError(Exception):
     pass
+
+class SQLError(Exception):
+    pass
