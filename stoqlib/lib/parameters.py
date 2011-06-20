@@ -714,6 +714,7 @@ class ParameterAccess(ClassInittableObject):
         self._set_schema(key, None)
 
     def ensure_delivery_service(self):
+        from stoqlib.domain.service import Service
         key = "DELIVERY_SERVICE"
         if self.get_parameter_by_field(key, Service):
             return
