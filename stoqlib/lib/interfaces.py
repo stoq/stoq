@@ -181,3 +181,20 @@ class IPaymentOperationManager(Interface):
 
 class IStoqConfig(Interface):
     pass
+
+
+class IAppInfo(Interface):
+    """Store global application data, such as
+    name, version.
+    """
+    def set(name, value):
+        """Sets a variable to value
+        @param name: string, variable name
+        @param value: value of the key
+        """
+
+    def get(name):
+        """Gets a variable
+        @param name: name of the variable to fetch
+        @returns: the key for @name
+        """
