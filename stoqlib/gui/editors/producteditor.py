@@ -548,7 +548,9 @@ class ProductionProductEditor(ProductEditor):
 
     def get_extra_tabs(self):
         self._component_slave = ProductComponentSlave(self.conn, self.model)
-        return [(_(u'Components'), self._component_slave),]
+        tax_slave = ProductTaxSlave(self.conn, self.model)
+        return [(_(u'Components'), self._component_slave),
+                (_(u'Taxes'), tax_slave)]
 
     def validate_confirm(self):
         if not self._is_valid_cost(self.cost.read()):
