@@ -125,4 +125,12 @@ class WebService(object):
             'cnpj': self._get_cnpj(),
             'report': report,
         }
+
+        if os.environ.get('STOQ_DISABLE_CRASHREPORT'):
+            response = AsyncResponse()
+            import sys
+            print >> sys.stderr, report
+            gobject.idle_add(lambda : response.done(''))
+            return response
+
         return self._do_request('bugreport.json', **params)
