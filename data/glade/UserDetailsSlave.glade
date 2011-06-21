@@ -29,9 +29,6 @@
                 <child>
                     <widget class="GtkEventBox" id="password_holder">
                         <property name="visible">True</property>
-                        <child>
-                            <placeholder/>
-                        </child>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -67,13 +64,6 @@
                         <property name="top_attach">3</property>
                         <property name="x_options">fill</property>
                         <property name="y_options">fill</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="top_attach">4</property>
-                        <property name="bottom_attach">5</property>
                     </packing>
                 </child>
                 <child>
@@ -158,15 +148,6 @@
                         <property name="right_attach">2</property>
                         <property name="top_attach">4</property>
                         <property name="x_options">fill</property>
-                        <property name="y_options"></property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="x_options"></property>
                         <property name="y_options"></property>
                     </packing>
                 </child>

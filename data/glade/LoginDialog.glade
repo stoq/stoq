@@ -17,9 +17,6 @@
                         <child>
                             <widget class="GtkEventBox" id="applist_holder">
                                 <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
                             </widget>
                         </child>
                         <child>
@@ -29,9 +26,6 @@
                                 <child>
                                     <widget class="GtkEventBox" id="logo_container">
                                         <property name="visible">True</property>
-                                        <child>
-                                            <placeholder/>
-                                        </child>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>

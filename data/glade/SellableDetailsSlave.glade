@@ -19,9 +19,6 @@
                         <child>
                             <widget class="GtkEventBox" id="details_holder">
                                 <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
                             </widget>
                             <packing>
                                 <property name="right_attach">2</property>
@@ -67,22 +64,12 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="GtkVBox" id="vbox2">
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkEventBox" id="sellable_image_holder">
                                         <property name="border_width">1</property>
                                         <property name="visible">True</property>
-                                        <child>
-                                            <placeholder/>
-                                        </child>
                                     </widget>
                                 </child>
                             </widget>

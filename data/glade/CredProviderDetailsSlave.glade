@@ -11,12 +11,6 @@
                 <property name="spacing">5</property>
                 <property name="visible">True</property>
                 <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="expand">False</property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="GtkTable" id="table1">
                         <property name="column_spacing">5</property>
                         <property name="n_columns">4</property>

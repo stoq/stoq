@@ -91,18 +91,6 @@
                                         <property name="fill">False</property>
                                     </packing>
                                 </child>
-                                <child>
-                                    <placeholder/>
-                                    <packing>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <placeholder/>
-                                    <packing>
-                                        <property name="position">2</property>
-                                    </packing>
-                                </child>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">3</property>
@@ -140,15 +128,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="ProxyLabel" id="state_registry_lbl">
                                 <property name="data_type">unicode</property>
                                 <property name="model_attribute">state_registry_lbl</property>
@@ -172,15 +151,6 @@
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
                                 <property name="top_attach">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
                             </packing>
                         </child>
                     </widget>

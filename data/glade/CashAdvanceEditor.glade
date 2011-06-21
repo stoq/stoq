@@ -16,9 +16,6 @@
                 <child>
                     <widget class="GtkEventBox" id="base_cash_holder">
                         <property name="visible">True</property>
-                        <child>
-                            <placeholder/>
-                        </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>

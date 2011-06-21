@@ -54,10 +54,6 @@
                 <child>
                     <widget class="GtkVBox" id="model_vbox">
                         <property name="visible">True</property>
-                        <child>
-                            <placeholder/>
-                            <packing/>
-                        </child>
                     </widget>
                     <packing>
                         <property name="position">1</property>

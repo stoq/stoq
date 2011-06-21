@@ -104,9 +104,6 @@
                 <child>
                     <widget class="GtkEventBox" id="bank_data_slave">
                         <property name="visible">True</property>
-                        <child>
-                            <placeholder/>
-                        </child>
                     </widget>
                     <packing>
                         <property name="position">1</property>

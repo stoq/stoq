@@ -124,13 +124,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="top_attach">8</property>
-                                <property name="bottom_attach">9</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="ProxyLabel" id="branch">
                                 <property name="data_type">unicode</property>
                                 <property name="model_attribute">branch_name</property>
@@ -425,15 +418,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">8</property>
-                                <property name="bottom_attach">9</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="ProxyLabel" id="products_total">
                                 <property name="data_type">currency</property>
                                 <property name="model_attribute">products_total</property>
@@ -559,15 +543,6 @@
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
                                 <property name="top_attach">7</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">8</property>
-                                <property name="bottom_attach">9</property>
                             </packing>
                         </child>
                     </widget>

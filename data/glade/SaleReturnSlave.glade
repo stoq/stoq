@@ -137,15 +137,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="ProxyLabel" id="paid_total">
                                 <property name="data_type">currency</property>
                                 <property name="model_attribute">paid_total</property>
@@ -189,15 +180,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">8</property>
-                                <property name="bottom_attach">9</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="GtkLabel" id="status_label">
                                 <property name="label" context="yes" translatable="yes">Cancellation Type:</property>
                                 <property name="visible">True</property>
@@ -222,24 +204,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">4</property>
-                                <property name="bottom_attach">5</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="GtkLabel" id="label1">
                                 <property name="label" context="yes" translatable="yes">Return Invoice Number:</property>
                                 <property name="visible">True</property>
@@ -250,15 +214,6 @@
                                 <property name="left_attach">2</property>
                                 <property name="right_attach">3</property>
                                 <property name="top_attach">5</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">6</property>
-                                <property name="bottom_attach">7</property>
                             </packing>
                         </child>
                         <child>
@@ -274,15 +229,6 @@
                                 <property name="left_attach">2</property>
                                 <property name="right_attach">3</property>
                                 <property name="top_attach">7</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">8</property>
-                                <property name="bottom_attach">9</property>
                             </packing>
                         </child>
                         <child>
@@ -312,24 +258,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">4</property>
-                                <property name="bottom_attach">5</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="ProxyEntry" id="invoice_number">
                                 <property name="data_type">int</property>
                                 <property name="is_focus">True</property>
@@ -344,15 +272,6 @@
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
                                 <property name="top_attach">5</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">6</property>
-                                <property name="bottom_attach">7</property>
                             </packing>
                         </child>
                         <child>
@@ -377,15 +296,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">8</property>
-                                <property name="bottom_attach">9</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="GtkHBox" id="hbox1">
                                 <property name="visible">True</property>
                                 <child>
@@ -402,69 +312,6 @@
                             <packing>
                                 <property name="left_attach">4</property>
                                 <property name="right_attach">5</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">4</property>
-                                <property name="right_attach">5</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">4</property>
-                                <property name="right_attach">5</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">4</property>
-                                <property name="right_attach">5</property>
-                                <property name="top_attach">4</property>
-                                <property name="bottom_attach">5</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">4</property>
-                                <property name="right_attach">5</property>
-                                <property name="top_attach">5</property>
-                                <property name="bottom_attach">6</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">4</property>
-                                <property name="right_attach">5</property>
-                                <property name="top_attach">6</property>
-                                <property name="bottom_attach">7</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">4</property>
-                                <property name="right_attach">5</property>
-                                <property name="top_attach">7</property>
-                                <property name="bottom_attach">8</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">4</property>
-                                <property name="right_attach">5</property>
-                                <property name="top_attach">8</property>
-                                <property name="bottom_attach">9</property>
                             </packing>
                         </child>
                     </widget>

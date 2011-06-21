@@ -309,13 +309,6 @@
                                 <property name="visible">True</property>
                             </widget>
                         </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="position">1</property>
-                            </packing>
-                        </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>
@@ -568,12 +561,6 @@
                                                             </packing>
                                                         </child>
                                                         <child>
-                                                            <placeholder/>
-                                                            <packing>
-                                                                <property name="position">2</property>
-                                                            </packing>
-                                                        </child>
-                                                        <child>
                                                             <widget class="GtkButton" id="delivery_button">
                                                                 <property name="is_focus">True</property>
                                                                 <property name="visible">True</property>
@@ -646,12 +633,6 @@
                                                     </widget>
                                                     <packing>
                                                         <property name="expand">False</property>
-                                                    </packing>
-                                                </child>
-                                                <child>
-                                                    <placeholder/>
-                                                    <packing>
-                                                        <property name="position">1</property>
                                                     </packing>
                                                 </child>
                                             </widget>

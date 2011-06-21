@@ -73,13 +73,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="ProxyEntry" id="invoice_number">
                                 <property name="data_type">int</property>
                                 <property name="mandatory">True</property>

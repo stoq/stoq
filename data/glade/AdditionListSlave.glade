@@ -151,9 +151,6 @@
                         <child>
                             <widget class="GtkEventBox" id="extra_holder">
                                 <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
                             </widget>
                             <packing>
                                 <property name="position">1</property>

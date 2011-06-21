@@ -35,12 +35,6 @@
                                         <property name="width_request">0</property>
                                     </widget>
                                 </child>
-                                <child>
-                                    <placeholder/>
-                                    <packing>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
                             </widget>
                             <packing>
                                 <property name="tab_label" context="yes" translatable="yes">Received Products</property>
@@ -49,9 +43,6 @@
                         <child>
                             <widget class="GtkEventBox" id="details_holder">
                                 <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
                             </widget>
                             <packing>
                                 <property name="position">1</property>

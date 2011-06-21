@@ -24,22 +24,6 @@
                     </widget>
                 </child>
                 <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                        <property name="x_options"></property>
-                        <property name="y_options"></property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="GtkRadioButton" id="reductions_radio_button">
                         <property name="active">False</property>
                         <property name="group">date_radio_button</property>
@@ -50,13 +34,6 @@
                     <packing>
                         <property name="bottom_attach">4</property>
                         <property name="top_attach">3</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="top_attach">4</property>
-                        <property name="bottom_attach">5</property>
                     </packing>
                 </child>
                 <child>
@@ -83,15 +60,6 @@
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
                     </packing>
                 </child>
                 <child>
@@ -147,17 +115,6 @@
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                        <property name="x_options">fill</property>
-                        <property name="y_options"></property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="GtkHBox" id="hbox1">
                         <property name="visible">True</property>
                         <child>
@@ -173,12 +130,6 @@
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="position">1</property>
                             </packing>
                         </child>
                     </widget>
@@ -207,12 +158,6 @@
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="position">1</property>
                             </packing>
                         </child>
                     </widget>

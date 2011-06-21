@@ -50,9 +50,6 @@
                 <child>
                     <widget class="GtkEventBox" id="on_tax_holder">
                         <property name="visible">True</property>
-                        <child>
-                            <placeholder/>
-                        </child>
                     </widget>
                     <packing>
                         <property name="bottom_attach">4</property>
@@ -65,9 +62,6 @@
                 <child>
                     <widget class="GtkEventBox" id="on_commission_data_holder">
                         <property name="visible">True</property>
-                        <child>
-                            <placeholder/>
-                        </child>
                     </widget>
                     <packing>
                         <property name="bottom_attach">5</property>
