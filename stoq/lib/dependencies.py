@@ -39,6 +39,7 @@ PYGTK_REQUIRED = (2, 16, 0)
 REPORTLAB_REQUIRED = (2, 4)
 STOQDRIVERS_REQUIRED = (0, 9, 8)
 STOQLIB_REQUIRED = (0, 9, 15, 99)
+TRML2PDF_REQUIRED = (1, 2)
 ZOPE_INTERFACE_REQUIRED = (3, 0)
 
 
@@ -60,6 +61,7 @@ class DependencyChecker(object):
         self._check_gazpacho(GAZPACHO_REQUIRED)
         self._check_pil(PIL_REQUIRED)
         self._check_reportlab(REPORTLAB_REQUIRED, REPORTLAB_REQUIRED)
+        self._check_trml2pdf(TRML2PDF_REQUIRED)
         self._check_dateutil(DATEUTIL_REQUIRED)
         self._check_mako(MAKO_REQUIRED)
         self._check_stoqlib(STOQLIB_REQUIRED)
@@ -283,6 +285,14 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://www.makotemplates.org/',
                           required=version,
                           found=mako.__version__)
+
+    def _check_trml2pdf(self, version):
+        try:
+            import trml2pdf
+        except ImportError:
+            self._missing(project="trml2pdf",
+                          url='pypi.python.org/pypi/trml2pdf/',
+                          version=version)
 
 def check_dependencies(text_mode=False):
     dp = DependencyChecker()
