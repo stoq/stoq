@@ -54,6 +54,9 @@ class ProcessView(gtk.ScrolledWindow):
 
     def _create_terminal(self):
         self._terminal = vte.Terminal()
+        # FIXME: On natty, if we dont set a width-request, the widget will
+        # grow indefinitely
+        self._terminal.set_property('width-request', 1)
         self.add(self.terminal)
         self.show()
         self._terminal.show()
