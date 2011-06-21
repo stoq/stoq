@@ -72,4 +72,3 @@ class CreditProviderDetailsSlave(BaseEditorSlave):
     def on_monthly_fee__validate(self, widget, value):
         if value < 0:
             return ValidationError(_(u'The monthly fee must be positive.'))
-   

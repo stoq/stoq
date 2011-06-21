@@ -147,4 +147,3 @@ class TillAddTillEntryEvent(Event):
     @param till_entry: TillEntry object
     @param conn: database connection
     """
-

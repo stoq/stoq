@@ -362,4 +362,3 @@ class CacheSet(object):
             return self.caches[cls.__name__].getAll()
         else:
             return []
-        

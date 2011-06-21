@@ -18,47 +18,47 @@ def _format_filepos(lineno, pos, filename):
     if filename is None:
         return " at line: %d char: %d" % (lineno, pos)
     else:
-        return " in file '%s' at line: %d char: %d" % (filename, lineno, pos)     
+        return " in file '%s' at line: %d char: %d" % (filename, lineno, pos)
 class CompileException(MakoException):
     def __init__(self, message, lineno, pos, filename):
         MakoException.__init__(self, message + _format_filepos(lineno, pos, filename))
         self.lineno =lineno
         self.pos = pos
         self.filename = filename
-                    
+
 class SyntaxException(MakoException):
     def __init__(self, message, lineno, pos, filename):
         MakoException.__init__(self, message + _format_filepos(lineno, pos, filename))
         self.lineno =lineno
         self.pos = pos
         self.filename = filename
-        
+
 class TemplateLookupException(MakoException):
     pass
 
 class TopLevelLookupException(TemplateLookupException):
     pass
-    
+
 class RichTraceback(object):
-    """pulls the current exception from the sys traceback and extracts Mako-specific 
+    """pulls the current exception from the sys traceback and extracts Mako-specific
     template information.
-    
+
     Usage:
-    
+
     RichTraceback()
-    
+
     Properties:
-    
-    error - the exception instance.  
+
+    error - the exception instance.
     source - source code of the file where the error occured.  if the error occured within a compiled template,
     this is the template source.
     lineno - line number where the error occured.  if the error occured within a compiled template, the line number
     is adjusted to that of the template source
-    records - a list of 8-tuples containing the original python traceback elements, plus the 
+    records - a list of 8-tuples containing the original python traceback elements, plus the
     filename, line number, source line, and full template source for the traceline mapped back to its originating source
     template, if any for that traceline (else the fields are None).
     reverse_records - the list of records in reverse
-    traceback - a list of 4-tuples, in the same format as a regular python traceback, with template-corresponding 
+    traceback - a list of 4-tuples, in the same format as a regular python traceback, with template-corresponding
     traceback records replacing the originals
     reverse_traceback - the traceback list in reverse
     """
@@ -88,7 +88,7 @@ class RichTraceback(object):
     """)
     def _init(self):
         """format a traceback from sys.exc_info() into 7-item tuples, containing
-        the regular four traceback tuple items, plus the original template 
+        the regular four traceback tuple items, plus the original template
         filename, the line number adjusted relative to the template source, and
         code line from that line number of the template."""
         import mako.template
@@ -139,7 +139,7 @@ class RichTraceback(object):
                 self.lineno = new_trcback[-1][1]
         return (type, value, new_trcback)
 
-                
+
 def text_error_template(lookup=None):
     """provides a template that renders a stack trace in a similar format to the Python interpreter,
     substituting source template filenames, line numbers and code for that of the originating
@@ -161,8 +161,8 @@ ${str(tback.error.__class__.__name__)}: ${str(tback.error)}
 """)
 
 def html_error_template():
-    """provides a template that renders a stack trace in an HTML format, providing an excerpt of 
-    code as well as substituting source template filenames, line numbers and code 
+    """provides a template that renders a stack trace in an HTML format, providing an excerpt of
+    code as well as substituting source template filenames, line numbers and code
     for that of the originating source template, as applicable."""
     import mako.template
     return mako.template.Template(r"""

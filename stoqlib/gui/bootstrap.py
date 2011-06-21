@@ -28,7 +28,7 @@ from kiwi.datatypes import get_localeconv
 from kiwi.ui.widgets.label import ProxyLabel
 
 
-def _register_proxy_markup():    
+def _register_proxy_markup():
     ProxyLabel.replace('$CURRENCY', get_localeconv()['currency_symbol'])
 
 def _register_domain_slave_mapper():

@@ -173,4 +173,3 @@ class RenegotiationDetailsDialog(BaseEditor):
     def on_status_details_button__clicked(self, button):
         run_dialog(RenegotiationDetailsDialog, self, self.conn,
                    self.model.group.renegotiation)
-

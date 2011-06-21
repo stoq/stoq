@@ -51,5 +51,3 @@ class DomainTest(unittest.TestCase, ExampleCreator):
 # the domain tests
 import tests.base
 tests.base # pyflakes
-
-

@@ -563,7 +563,7 @@ class AppWindow(BaseAppWindow):
         if yesno(_(u'This will delete the current database and '
                     'configuration. Are you sure?'),
                  gtk.RESPONSE_NO,_(u"Don't Remove"),  _(u"Remove Examples")):
-             return
+            return
 
         from stoq.main import restart_stoq_atexit
         restart_stoq_atexit()
@@ -736,4 +736,3 @@ class VersionChecker(object):
         latest_version = config.get('General', 'latest-version')
         if latest_version:
             self._check_details(latest_version)
-

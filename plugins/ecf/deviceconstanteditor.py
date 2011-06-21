@@ -224,4 +224,3 @@ class DeviceConstantsDialog(BasicDialog):
 
     def _on_klist__selection_changed(self, klist, selected):
         self._constant_slave.switch(selected.type)
-

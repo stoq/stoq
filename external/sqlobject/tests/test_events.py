@@ -32,7 +32,7 @@ def test_create():
     assert watcher.log[0][1] == (EventTester,)
     assert isinstance(watcher.log[0][2], dict)
     assert isinstance(watcher.log[0][3], list)
-    
+
 def test_row_create():
     setupClass(EventTester)
     watcher = make_listen(events.RowCreateSignal)
@@ -48,7 +48,7 @@ def test_row_destrow():
     assert not watcher.log
     f.destroySelf()
     assert watcher.log == [(f,)]
-    
+
 def test_row_update():
     setupClass(EventTester)
     watcher = make_listen(events.RowUpdateSignal)
@@ -59,7 +59,7 @@ def test_row_update():
     assert watcher.log == [
         (f, {'name': 'bar2'}),
         (f, {'name': 'bar3'})]
-    
+
 def test_add_column():
     setupClass(EventTester)
     watcher = make_listen(events.AddColumnSignal)

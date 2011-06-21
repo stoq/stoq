@@ -45,5 +45,5 @@ def MaxdbConnection(*args, **kw):
 
 import mssql as _mssql
 def MSSQLConnection(*args, **kw):
-        _warn('MssqlConnection is deprecated; use connectionForURI("mssql://...") or "from sqlobject.mssql import builder; MSSQLConnection = builder()"')
-        return _mssql.builder()(*args, **kw)
+    _warn('MssqlConnection is deprecated; use connectionForURI("mssql://...") or "from sqlobject.mssql import builder; MSSQLConnection = builder()"')
+    return _mssql.builder()(*args, **kw)

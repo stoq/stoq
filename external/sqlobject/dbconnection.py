@@ -562,7 +562,7 @@ class DBAPI(DBConnection):
             if isinstance(tableCreateSQLs, tuple):
                 tableCreateSQLs = list(tableCreateSQLs)
             assert isinstance(tableCreateSQLs,list), (
-                'Unable to create a list from %s.sqlmeta.createSQL' % 
+                'Unable to create a list from %s.sqlmeta.createSQL' %
                 (soClass.__name__))
         return tableCreateSQLs or []
 

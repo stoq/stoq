@@ -156,4 +156,3 @@ def register_codec():
 
         return ret, uerr.end
     codecs.register_error('replacelatscii', latscii_error)
-

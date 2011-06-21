@@ -676,8 +676,8 @@ class SearchEditor(SearchDialog):
                     self.model_list_lookup_attr) == model.id,
             connection=self.conn)
         if items.count() != 1:
-             raise DatabaseInconsistency(
-                 "There should be exactly one item for %r " % model)
+            raise DatabaseInconsistency(
+                "There should be exactly one item for %r " % model)
         return items[0]
 
     def get_editor_model(self, model):
@@ -746,9 +746,9 @@ class LastMonth(DateSearchOption):
 
 
 class NextMonth(DateSearchOption):
-   name = _('Next month')
+    name = _('Next month')
 
-   def get_interval(self):
+    def get_interval(self):
         today = self.get_today_date()
         start = today + relativedelta(months=+1, day=1)
         end = today + relativedelta(months=+1, day=31)

@@ -289,4 +289,3 @@ class TestAccountTransactionView(DomainTest):
 
         views = AccountTransactionView.get_for_account(a, self.trans)
         self.assertEquals(views[0].transaction, t)
-

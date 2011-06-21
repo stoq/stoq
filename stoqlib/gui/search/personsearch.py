@@ -403,7 +403,3 @@ class UserSearch(BasePersonSearch):
 
     def get_editor_model(self, user_view):
         return user_view.user
-
-
-
-

@@ -30,7 +30,7 @@ from stoqlib.gui.interfaces import IDomainSlaveMapper
 
 class DefaultDomainSlaveMapper(object):
     implements(IDomainSlaveMapper)
-    
+
     def __init__(self):
         self._slave_classes = {}
 

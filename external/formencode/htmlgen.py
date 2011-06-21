@@ -77,7 +77,7 @@ class _HTML:
             return Element(et.Comment, {})
         else:
             return Element(attr, {})
-        
+
     def __call__(self, *args):
         return ElementList(args)
 
@@ -168,7 +168,7 @@ class Element(et._ElementInterface):
         return '<Element %r>' % content
 
 class ElementList(list):
-    
+
     def __str__(self):
         return html.str(self)
 

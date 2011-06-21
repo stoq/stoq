@@ -83,14 +83,14 @@ class Schema(FancyValidator):
                 del self.fields[key]
         for name, value in self.fields.items():
             self.add_field(name, value)
-    
+
     def _to_python(self, value_dict, state):
         if not value_dict and self.if_empty is not NoDefault:
             return self.if_empty
 
         for validator in self.pre_validators:
             value_dict = validator.to_python(value_dict, state)
-        
+
         new = {}
         errors = {}
         unused = self.fields.keys()
@@ -204,12 +204,12 @@ class Schema(FancyValidator):
                 new = validator.from_python(new, state)
 
             return new
-            
+
         finally:
             if state is not None:
                 state.key = previous_key
                 state.full_dict = previous_full_dict
-            
+
 
 
     def add_chained_validator(self, cls, validator):
@@ -263,4 +263,3 @@ def format_compound_error(v, indent=0):
         return v
     else:
         assert 0, "I didn't expect something like %s" % repr(v)
-        

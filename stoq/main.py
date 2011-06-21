@@ -243,9 +243,9 @@ def _check_version_policy():
     #
     if stoq.stable:
         if stoq.extra_version >= FIRST_UNSTABLE_EXTRA_VERSION:
-           raise SystemExit(
-               "Stable stoq release should set extra_version to %d or lower" % (
-               FIRST_UNSTABLE_EXTRA_VERSION, ))
+            raise SystemExit(
+                "Stable stoq release should set extra_version to %d or lower" % (
+                FIRST_UNSTABLE_EXTRA_VERSION, ))
 
         if (len(STOQLIB_REQUIRED) >= 4 and
             STOQLIB_REQUIRED[3] >= FIRST_UNSTABLE_EXTRA_VERSION):
@@ -260,14 +260,14 @@ def _check_version_policy():
     #
     else:
         if stoq.extra_version < FIRST_UNSTABLE_EXTRA_VERSION:
-           raise SystemExit(
-              "Unstable stoq (%s) must set extra_version to %d or higher, "
-              "or did you forget to set stoq.stable to True?" % (
-              stoq.version, FIRST_UNSTABLE_EXTRA_VERSION))
+            raise SystemExit(
+               "Unstable stoq (%s) must set extra_version to %d or higher, "
+               "or did you forget to set stoq.stable to True?" % (
+               stoq.version, FIRST_UNSTABLE_EXTRA_VERSION))
 
         if (len(STOQLIB_REQUIRED) < 4 or
             STOQLIB_REQUIRED[3] < FIRST_UNSTABLE_EXTRA_VERSION):
-           raise SystemExit("Unstable stoq needs to depend on unstable stoqlib")
+            raise SystemExit("Unstable stoq needs to depend on unstable stoqlib")
 
 
 def _run_first_time_wizard(options, config=None):

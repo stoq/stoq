@@ -23,4 +23,3 @@ class BoletoReal(BoletoData):
                                   self.conta,
                                   self.digitao_cobranca,
                                   self.nosso_numero)
-

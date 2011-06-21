@@ -30,7 +30,7 @@ class SchemaBuilder(object):
 
     def schema(self):
         return self._schema
-        
+
     def listen_input(self, parser, tag, attrs):
         get_attr = parser.get_attr
         name = get_attr(attrs, 'name')

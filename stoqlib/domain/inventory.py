@@ -269,7 +269,7 @@ class Inventory(Domain):
                     ISNOTNULL(InventoryItem.q.cfop_dataID),
                     InventoryItem.q.reason != u"")
         conn = self.get_connection()
-        return InventoryItem.select(query, connection=conn).count() > 0 
+        return InventoryItem.select(query, connection=conn).count() > 0
 
     def cancel(self):
         """Cancel this inventory. Notice that, to cancel an inventory no

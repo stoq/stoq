@@ -1,6 +1,6 @@
 ## FormEncode, a  Form processor
 ## Copyright (C) 2003, Ian Bicking <ianb@colorstudy.com>
-##  
+##
 ## This library is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public
 ## License as published by the Free Software Foundation; either
@@ -93,7 +93,7 @@ class ConfirmType(FancyValidator):
         the exact class or type.  Subclasses are not allowed.
 
     Examples::
-    
+
         >>> cint = ConfirmType(subclass=int)
         >>> cint.to_python(True)
         True
@@ -230,7 +230,7 @@ class Wrapper(FancyValidator):
             except Exception, e:
                 raise Invalid(str(e), {}, value, state)
         return result
- 
+
 class Constant(FancyValidator):
 
     """
@@ -345,7 +345,7 @@ class MinLength(FancyValidator):
         Traceback (most recent call last):
           ...
         Invalid: Invalid value (value with length expected)
-        
+
     """
 
     __unpackargs__ = ('minLength',)
@@ -455,7 +455,7 @@ class Regex(FancyValidator):
     messages = {
         'invalid': "The input is not valid",
         }
-    
+
     def __init__(self, *args, **kw):
         FancyValidator.__init__(self, *args, **kw)
         if isinstance(self.regex, str):
@@ -548,7 +548,7 @@ class OneOf(FancyValidator):
         'invalid': "Invalid value",
         'notIn': "Value must be one of: %(items)s (not %(value)r)",
         }
-    
+
     def validate_python(self, value, state):
         if self.testValueList and isinstance(value, (list, tuple)):
             for v in value:
@@ -613,7 +613,7 @@ class DictConverter(FancyValidator):
         'valueNotFound': "That value is not known",
         'chooseValue': "Nothing in my dictionary goes by the value %(value)s.  Choose one of: %(items)s",
         }
-    
+
     def _to_python(self, value, state):
         try:
             return self.dict[value]
@@ -676,7 +676,7 @@ class IndexListConverter(FancyValidator):
         'outOfRange': "Index out of range",
         'notFound': "Item %(value)s was not found in the list",
         }
-    
+
     def _to_python(self, value, state):
         try:
             value = int(value)
@@ -695,7 +695,7 @@ class IndexListConverter(FancyValidator):
                 return i
         raise Invalid(self.message('notFound', state,
                                    value=repr(value)),
-                      value, state)        
+                      value, state)
 
 class DateValidator(FancyValidator):
 
@@ -781,7 +781,7 @@ class Bool(FancyValidator):
 
     def _to_python(self, value, state):
         return bool(value)
-    _from_python = _to_python        
+    _from_python = _to_python
 
 class Int(FancyValidator):
 
@@ -808,11 +808,11 @@ class Number(FancyValidator):
     Convert a value to a float or integer.  Tries to convert it to
     an integer if no information is lost.
     """
-    
+
     messages = {
         'number': "Please enter a number",
         }
-    
+
     def _to_python(self, value, state):
         try:
             value = float(value)
@@ -837,7 +837,7 @@ class String(FancyValidator):
         'tooLong': "Enter a value less than %(max)i characters long",
         'tooShort': "Enter a value %(min)i characters long or more",
         }
-    
+
     def validate_python(self, value, state):
         if self.max is not None and len(value) > self.max:
             raise Invalid(self.message('tooLong', state,
@@ -891,7 +891,7 @@ class Email(FancyValidator):
         'badDomain': 'The domain portion of the email address is invalid (the portion after the @: %(domain)s)',
         'domainDoesNotExist': 'The domain of the email address does not exist (the portion after the @: %(domain)s)',
         }
-    
+
     def __init__(self, *args, **kw):
         global mxlookup
         FancyValidator.__init__(self, *args, **kw)
@@ -1016,11 +1016,11 @@ class URL(FancyValidator):
                 raise Invalid(
                     self.message('status', state, status=res.status),
                     state, url)
-        
-        
+
+
 
 class StateProvince(FancyValidator):
-    
+
     """
     Valid state or province code (two-letter).  Well, for now I don't
     know the province codes, but it does state codes.  Give your own
@@ -1061,7 +1061,7 @@ class StateProvince(FancyValidator):
             raise Invalid(
                 self.message('invalid', state),
                 value, state)
-    
+
     def _to_python(self, value, state):
         return str(value).strip().upper()
 
@@ -1078,7 +1078,7 @@ class PhoneNumber(FancyValidator):
     messages = {
         'phoneFormat': 'Please enter a number, with area code, in the form ###-###-####, optionally with "ext.####"',
         }
-        
+
     def _to_python(self, value, state):
         self.assert_string(value, state)
         match = self._phoneRE.search(value)
@@ -1196,7 +1196,7 @@ class DateConverter(FancyValidator):
             raise Invalid(self.message('invalidDate', state,
                                        exception=str(v)),
                           value, state)
-        
+
     def make_month(self, value, state):
         try:
             return int(value)
@@ -1247,7 +1247,7 @@ class DateConverter(FancyValidator):
     def unconvert_day(self, value, state):
         # @@ ib: double-check, improve
         return value.strftime("%m/%d/%Y")
-        
+
     def unconvert_month(self, value, state):
         # @@ ib: double-check, improve
         return value.strftime("%m/%Y")
@@ -1432,7 +1432,7 @@ class TimeConverter(FancyValidator):
             return '%i:%02i:%02i%s' % (hour, minute, second, ampm)
         else:
             return '%i:%02i%s' % (hour, minute, ampm)
-        
+
 
 class PostalCode(Regex):
 
@@ -1475,7 +1475,7 @@ class StripField(FancyValidator):
 class FormValidator(FancyValidator):
     """
     A FormValidator is something that can be chained with a
-    Schema.  Unlike normal chaining the FormValidator can 
+    Schema.  Unlike normal chaining the FormValidator can
     validate forms that aren't entirely valid.
 
     The important method is .validate(), of course.  It gets passed a
@@ -1515,7 +1515,7 @@ class FieldsMatch(FormValidator):
         'invalid': "Fields do not match (should be %(match)s)",
         'invalidNoMatch': "Fields do not match",
         }
-    
+
     def validate_partial(self, field_dict, state):
         for name in self.field_names:
             if not field_dict.has_key(name):
@@ -1580,9 +1580,9 @@ class CreditCardValidator(FormValidator):
             raise Invalid(
                 '<br>\n'.join(["%s: %s" % (name, value)
                                for name, value in error_list]),
-                {}, 
+                {},
                 field_dict, state, error_dict=errors)
-        
+
     def _validateReturn(self, field_dict, state):
         ccType = field_dict[self.cc_type_field].lower().strip()
         number = field_dict[self.cc_number_field].strip()
@@ -1648,4 +1648,3 @@ class CreditCardValidator(FormValidator):
                 ('2131', 15),
                 ('1800', 15)],
             }
-

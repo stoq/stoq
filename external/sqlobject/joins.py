@@ -352,7 +352,7 @@ class SOManyToMany(object):
             & (sqlbuilder.Field(self.intermediateTable, self.joinColumn)
                == obj.id))
         select = self.otherClass.select(query)
-        return _ManyToManySelectWrapper(obj, self, select)        
+        return _ManyToManySelectWrapper(obj, self, select)
 
     def event_CreateTableSignal(self, soClass, connection, extra_sql,
                                 post_funcs):
@@ -376,14 +376,14 @@ class ManyToMany(boundattributes.BoundFactory):
     joinColumn = None
     otherColumn = None
     createJoinTable = True
-    
+
 class _ManyToManySelectWrapper(object):
 
     def __init__(self, forObject, join, select):
         self.forObject = forObject
         self.join = join
         self.select = select
-    
+
     def __getattr__(self, attr):
         # @@: This passes through private variable access too... should it?
         # Also magic methods, like __str__
@@ -421,7 +421,7 @@ class _ManyToManySelectWrapper(object):
         obj = self.join.otherClass(**kw)
         self.add(obj)
         return obj
-                
+
 class SOOneToMany(object):
 
     def __init__(self, soClass, name, join, joinColumn, **attrs):
@@ -467,7 +467,7 @@ class _OneToManySelectWrapper(object):
         self.forObject = forObject
         self.join = join
         self.select = select
-    
+
     def __getattr__(self, attr):
         # @@: This passes through private variable access too... should it?
         # Also magic methods, like __str__
@@ -488,4 +488,3 @@ class _OneToManySelectWrapper(object):
     def create(self, **kw):
         kw[self.join.joinColumn] = self.forObject.id
         return self.join.otherClass(**kw)
-    

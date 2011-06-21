@@ -37,4 +37,3 @@ class BoletoBradesco( BoletoData ):
                                      self.nosso_numero,
                                      self.conta.split('-')[0],
                                      '0')
-

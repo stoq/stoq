@@ -178,4 +178,3 @@ class TestAuto:
             OldAutoTest.sqlmeta.registry).classes['OldAutoTest']
 
 teardown_module()
-

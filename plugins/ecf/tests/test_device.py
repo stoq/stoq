@@ -138,4 +138,3 @@ class TestECFPrinter(DomainTest):
         self.assertEquals(constant.constant_type, DeviceConstant.TYPE_PAYMENT)
         self.assertEquals(constant.constant_enum, PaymentMethodType.MONEY)
         self.assertEquals(constant.device_value, "M")
-

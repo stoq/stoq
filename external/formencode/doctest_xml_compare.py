@@ -119,4 +119,3 @@ def make_string(xml):
 
 def install():
     doctest.OutputChecker = HTMLOutputChecker
-

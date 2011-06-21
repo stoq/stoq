@@ -52,13 +52,13 @@ class CompoundValidator(Validator):
     def to_python(self, value, state=None):
         return self.attempt_convert(value, state,
                                     to_python)
-    
+
     def from_python(self, value, state=None):
         return self.attempt_convert(value, state,
                                     from_python)
 
 class Any(CompoundValidator):
-    
+
     """
     This class is like an 'or' operator for validators.  The first
     validator/converter that validates the value will be used.  (You

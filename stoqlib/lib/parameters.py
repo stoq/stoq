@@ -613,7 +613,7 @@ class ParameterAccess(ClassInittableObject):
             if issubclass(field_type, AbstractModel):
                 return field_type.get(param.id, connection=self.conn)
             elif issubclass(field_type, (ImageHelper, DirectoryParameter)):
-               return param
+                return param
             else:
                 return field_type(param)
         value = ParameterData.selectOneBy(field_name=field_name,

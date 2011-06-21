@@ -152,10 +152,10 @@ class ImageSlave(BaseEditorSlave):
         self._show_image(default_filename, sensitive=False)
 
     def _on_popup_save__activate(self, menu):
-         filename = save(current_name='stoq-product-%s.png' % self.model.id,
-                         folder=os.path.expanduser('~/'))
-         if filename:
-             self._save_image(filename)
+        filename = save(current_name='stoq-product-%s.png' % self.model.id,
+                        folder=os.path.expanduser('~/'))
+        if filename:
+            self._save_image(filename)
 
     #
     # Kiwi Callbaks
@@ -173,4 +173,3 @@ class ImageSlave(BaseEditorSlave):
 
     def on_eventbox__leave_notify_event(self, eventbox, event):
         self.image.drag_unhighlight()
-

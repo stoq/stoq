@@ -135,8 +135,8 @@ class CouponPrinter(object):
             self._register_emitted_document(ECFDocumentHistory.TYPE_SUMMARY)
             self._driver.summarize()
         except DriverError, details:
-                    warning(_("Could not print summary"),
-                        str(details))
+            warning(_("Could not print summary"),
+                str(details))
 
     def memory_by_date(self, start_date, end_date):
         self._register_emitted_document(ECFDocumentHistory.TYPE_MEMORY_READ)
@@ -437,5 +437,3 @@ class Coupon(object):
         # Right now, we are printing the two receipts at once
         #if self.supports_duplicate_receipt:
         #    self._driver.payment_receipt_print_duplicate()
-
-

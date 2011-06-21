@@ -38,4 +38,3 @@ class BoletoCaixa(BoletoData):
         return "%10s%4s%11s" % (self.nosso_numero,
                                 self.agencia,
                                 self.conta.split('-')[0])
-

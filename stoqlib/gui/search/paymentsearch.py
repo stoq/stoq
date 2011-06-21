@@ -126,7 +126,7 @@ class CardPaymentSearch(SearchDialog):
 
     def __init__(self, conn):
         SearchDialog.__init__(self, conn, self.search_table,
-                              title=self.title)       
+                              title=self.title)
         self.set_details_button_sensitive(False)
         self.results.connect('selection-changed', self.on_selection_changed)
 
@@ -152,7 +152,7 @@ class CardPaymentSearch(SearchDialog):
     def get_columns(self):
         return [SearchColumn('id', title=_('#'), data_type=int,
                              sorted=True, format='%04d', long_title='Id'),
-                SearchColumn('description', title=_(u'Description'), 
+                SearchColumn('description', title=_(u'Description'),
                              data_type=str, expand=True),
                 SearchColumn('drawee_name', title=_(u'Drawee'), data_type=str,
                              expand=True),
@@ -166,7 +166,7 @@ class CardPaymentSearch(SearchDialog):
                              expand=True, search_attribute='status',
                              valid_values=self._get_status_values()),
                 SearchColumn('value', title=_(u'Value'), data_type=currency),
-                SearchColumn('fee', title=_(u'% Fee'), 
+                SearchColumn('fee', title=_(u'% Fee'),
                              data_type=Decimal),
                 SearchColumn('fee_calc', title=_(u'Fee'),
                              data_type=currency)]
@@ -210,4 +210,3 @@ class CardPaymentSearch(SearchDialog):
     def on_details_button_clicked(self, button):
         selected = self.results.get_selected()
         self._show_details(selected)
-

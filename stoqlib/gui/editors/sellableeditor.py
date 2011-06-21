@@ -453,11 +453,11 @@ class SellableEditor(BaseEditor):
 
     def on_price__validate(self, entry, value):
         if value <= 0:
-           return ValidationError(_("Price cannot be zero or negative"))
+            return ValidationError(_("Price cannot be zero or negative"))
 
     def on_cost__validate(self, entry, value):
         if value <= 0:
-           return ValidationError(_("Cost cannot be zero or negative"))
+            return ValidationError(_("Cost cannot be zero or negative"))
 
     def on_category_combo__content_changed(self, widget):
         category_cb = self.category_combo.get_text()

@@ -238,4 +238,3 @@ class Declarative(object):
     _repr_vars = staticmethod(_repr_vars)
 
     __repr__ = classinstancemethod(__repr__)
-

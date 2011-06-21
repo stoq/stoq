@@ -456,4 +456,3 @@ class ProductClosedStockSearch(ProductSearch):
         print_report(ProductClosedStockReport, self.results,
                      filters=self.search.get_search_filters(),
                      branch_name=self.branch_filter.combo.get_active_text())
-

@@ -229,4 +229,3 @@ def setup_attributes(cls, new_attrs):
     for name, value in new_attrs.items():
         if hasattr(value, '__addtoclass__'):
             value.__addtoclass__(cls, name)
-

@@ -241,7 +241,7 @@ class StockDecreaseWizard(BaseWizard):
         msg = _(u'Would you like to print a receipt?')
         if yesno(msg, gtk.RESPONSE_YES,
                  _(u"Print Receipt"), _("Don't Print")):
-           print_report(StockDecreaseReceipt, self.model)
+            print_report(StockDecreaseReceipt, self.model)
         return
 
     #

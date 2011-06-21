@@ -202,4 +202,3 @@ class StoqlibCATGenerator(object):
 
         for doc in docs:
             self.cat.add_other_document(doc)
-

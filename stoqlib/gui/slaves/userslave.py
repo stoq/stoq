@@ -272,4 +272,3 @@ class UserDetailsSlave(BaseEditorSlave):
 
     def on_change_password_button__clicked(self, button):
         run_dialog(PasswordEditor, self, self.conn, self.model)
-

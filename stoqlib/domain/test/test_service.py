@@ -77,4 +77,3 @@ class TestServiceView(DomainTest):
         services = [s.service_id for s in
                     ServiceView.select(connection=self.trans)]
         self.failIf(service not in services)
-

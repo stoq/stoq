@@ -38,5 +38,3 @@ def get_uptime():
     if not _start_time:
         return 0
     return int(time.time() - _start_time)
-
-

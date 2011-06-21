@@ -26,7 +26,7 @@ class SybaseConnection(DBAPI):
         self.password = password
         autoCommit = kw.get('autoCommit')
         if autoCommit:
-           autoCommmit = int(autoCommit)
+            autoCommmit = int(autoCommit)
         else:
             autoCommit = None
         kw['autoCommit'] = autoCommit

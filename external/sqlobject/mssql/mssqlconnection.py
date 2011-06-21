@@ -28,7 +28,7 @@ class MSSQLConnection(DBAPI):
 
                 conn_str += "Data Source=%s;Initial Catalog=%s;"
 
-                # MSDE does not allow SQL server login 
+                # MSDE does not allow SQL server login
                 if kw.get("sspi"):
                     conn_str += "Integrated Security=SSPI;Persist Security Info=False"
                     self.make_conn_str = lambda keys: [conn_str % (keys.host, keys.db)]
@@ -181,7 +181,7 @@ class MSSQLConnection(DBAPI):
                    (tableName,
                     column.dbName))
 
-    # precision and scale is gotten from column table so that we can create 
+    # precision and scale is gotten from column table so that we can create
     # decimal columns if needed
     SHOW_COLUMNS = """
         select

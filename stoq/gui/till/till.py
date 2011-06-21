@@ -376,4 +376,3 @@ class TillApp(SearchableAppWindow):
 
     def on_return_button__clicked(self, button):
         self._return_sale()
-

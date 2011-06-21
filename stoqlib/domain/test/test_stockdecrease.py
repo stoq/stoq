@@ -81,4 +81,3 @@ class TestStockDecreaseItem(DomainTest):
         product = self.create_product()
         decrease_item = decrease.add_sellable(product.sellable)
         self.assertEqual(decrease_item.get_description(), 'Description')
-

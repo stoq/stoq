@@ -275,4 +275,3 @@ class TestProductHistory(DomainTest):
                                                sellable=transfer_item.sellable)
         self.failUnless(prod_hist)
         self.assertEqual(prod_hist.quantity_transfered, qty)
-

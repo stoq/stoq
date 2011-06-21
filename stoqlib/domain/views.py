@@ -847,20 +847,20 @@ class LoanItemView(Viewable):
 class AccountView(Viewable):
 
     class _SourceSum(Viewable):
-         columns = dict(
-              id=AccountTransaction.q.source_accountID,
-              value=const.SUM(AccountTransaction.q.value),
-              )
+        columns = dict(
+             id=AccountTransaction.q.source_accountID,
+             value=const.SUM(AccountTransaction.q.value),
+             )
 
-         joins = []
+        joins = []
 
     class _DestSum(Viewable):
-         columns = dict(
-              id=AccountTransaction.q.accountID,
-              value=const.SUM(AccountTransaction.q.value),
-               )
+        columns = dict(
+             id=AccountTransaction.q.accountID,
+             value=const.SUM(AccountTransaction.q.value),
+              )
 
-         joins = []
+        joins = []
 
     columns = dict(
         id=Account.q.id,

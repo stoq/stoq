@@ -235,8 +235,8 @@ class Payment(Domain):
                                 "got %s" % self.get_status_str())
 
         if self.status == Payment.STATUS_PAID:
-             PaymentFlowHistory.remove_paid_payment(self.get_connection(),
-                                                    self)
+            PaymentFlowHistory.remove_paid_payment(self.get_connection(),
+                                                   self)
         else:
             PaymentFlowHistory.remove_payment(self.get_connection(), self)
 
@@ -678,4 +678,3 @@ class PaymentAdaptToOutPayment(ModelAdapter):
         self.payment.pay()
 
 Payment.registerFacet(PaymentAdaptToOutPayment, IOutPayment)
-

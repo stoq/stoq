@@ -382,4 +382,3 @@ class AccountTransactionView(Viewable):
     def transaction(self):
         """Get the AccountTransaction for this view"""
         return AccountTransaction.get(self.id, self.get_connection())
-

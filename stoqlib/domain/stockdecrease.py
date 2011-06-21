@@ -213,5 +213,3 @@ class StockDecrease(Domain):
     @property
     def order_number(self):
         return self.id
-
-

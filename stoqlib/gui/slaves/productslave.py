@@ -174,5 +174,3 @@ class ProductTaxSlave(BaseEditorSlave):
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
-
-

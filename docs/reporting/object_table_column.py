@@ -5,7 +5,7 @@ from stoqlib.reporting.base.utils import print_preview, build_report
 from stoqlib.reporting.base.printing import ReportTemplate
 
 from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
-                            	           RIGHT)
+                                           RIGHT)
 
 class ObjectTableColumnTest(ReportTemplate):
     report_name = "Simples teste com ObjectTableColumn"
@@ -31,4 +31,3 @@ for i in range(35):
 
 report_file = build_report(ObjectTableColumnTest, client_list)
 print_preview(report_file)
-

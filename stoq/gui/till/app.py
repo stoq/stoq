@@ -31,4 +31,3 @@ from stoq.gui.till.till import TillApp
 
 def main(config):
     return TillApp
-

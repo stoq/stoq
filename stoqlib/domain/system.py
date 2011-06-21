@@ -92,4 +92,3 @@ class TransactionEntry(ORMObject):
             return
         from stoqlib.domain.station import BranchStation
         return BranchStation.get(self.station_id, connection=self._connection)
-

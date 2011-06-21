@@ -42,4 +42,3 @@ class SimpleEntryEditor(BaseEditor):
         assert self.model
         self.name_entry.set_property('model-attribute', self.attr_name)
         self.add_proxy(model=self.model, widgets=['name_entry'])
-

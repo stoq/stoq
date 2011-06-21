@@ -159,7 +159,7 @@ class AddressSlave(BaseEditorSlave):
             self.model.streetnumber = None
             text = _(u"N/A")
         elif self.model.streetnumber:
-           text = str(self.model.streetnumber)
+            text = str(self.model.streetnumber)
         else:
             text = ''
 

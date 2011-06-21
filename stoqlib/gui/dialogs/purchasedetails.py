@@ -86,7 +86,7 @@ class _TemporaryReceivingDetails:
 
                 # If first time used, append to the list of used types
                 if freight_type_map[order.freight_type] not in freight_types:
-                   freight_types.append(freight_type_map[order.freight_type])
+                    freight_types.append(freight_type_map[order.freight_type])
 
             self.total_discounts = currency(discount)
             self.total_surcharges = currency(surcharge)

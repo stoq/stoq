@@ -123,4 +123,3 @@ class StockDecreaseReceipt(BaseStoqReport):
         return _(u'Number: %s - Manual stock decrease on %s') % (
                     self.order.get_order_number_str(),
                     self.order.confirm_date.strftime('%x'))
-

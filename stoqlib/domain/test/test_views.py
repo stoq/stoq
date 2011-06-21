@@ -39,4 +39,3 @@ class TestSellableFullStockView(DomainTest):
             SellableFullStockView.q.product_id == None,
             branch, connection=self.trans)
         self.failUnless(list(results))
-

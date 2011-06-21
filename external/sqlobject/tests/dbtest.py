@@ -103,7 +103,7 @@ except Exception, e:
     # At least this module should be importable...
     print >> sys.stderr, (
         "Could not open database: %s" % e)
-    
+
 
 class InstalledTestDatabase(sqlobject.SQLObject):
     """
@@ -215,7 +215,7 @@ class Dummy(object):
     def __init__(self, **kw):
         for name, value in kw.items():
             setattr(self, name, value)
-        
+
 def d(**kw):
     """
     Because ``dict(**kw)`` doesn't work in Python 2.2, this is a
@@ -276,7 +276,7 @@ _inserts = inserts
 def deprecated_module():
     sqlobject.main.warnings_level = None
     sqlobject.main.exception_level = None
-    
+
 def setup_module(mod):
     # modules with '_old' test backward compatible methods, so they
     # don't get warnings or errors.

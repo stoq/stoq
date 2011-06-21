@@ -371,9 +371,9 @@ class PaymentListSlave(GladeSlaveDelegate):
         previous_date = datetime.date.today() + datetime.timedelta(days=-1)
         for payment in self.payment_list:
             if payment.due_date <= previous_date:
-               warning(_(u"Payment dates can't repeat or be lower than "
-                          "previous dates."))
-               return False
+                warning(_(u"Payment dates can't repeat or be lower than "
+                           "previous dates."))
+                return False
             previous_date = payment.due_date
         return True
 

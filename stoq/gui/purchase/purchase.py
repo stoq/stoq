@@ -382,4 +382,3 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_ProductsSoldSearch__activate(self, action):
         self.run_dialog(ProductsSoldSearch, self.conn)
-

@@ -754,4 +754,3 @@ class POSApp(AppWindow):
 
     def on_sale_items__row_activated(self, sale_items, sale_item):
         self._edit_sale_item(sale_item)
-

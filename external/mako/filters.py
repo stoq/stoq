@@ -163,5 +163,3 @@ DEFAULT_ESCAPES = {
     'decode':'decode',
     'n':'n'
 }
-
-

@@ -37,7 +37,7 @@ class ForEach(CompoundValidator):
     messages = {
         'empty': 'Please enter a value',
         }
-    
+
     def attempt_convert(self, value, state, validate):
         if self.convert_to_list:
             value = self._convert_to_list(value)

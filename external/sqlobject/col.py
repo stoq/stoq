@@ -350,7 +350,7 @@ class SOCol(object):
             return ' '.join([self.dbName] + [self._firebirdType()[0]] + self._extraSQL() + [self._firebirdType()[1]])
 
     def maxdbCreateSQL(self):
-       return ' '.join([self.dbName, self._maxdbType()] + self._extraSQL())
+        return ' '.join([self.dbName, self._maxdbType()] + self._extraSQL())
 
     def __get__(self, obj, type=None):
         if obj is None:
@@ -510,7 +510,7 @@ class StringValidator(validators.Validator):
         if value is None:
             return None
         if isinstance(value, unicode):
-           return value.encode("ascii")
+            return value.encode("ascii")
         return value
 
     def from_python(self, value, state):

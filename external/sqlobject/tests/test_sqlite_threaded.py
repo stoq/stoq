@@ -11,7 +11,7 @@ def test_sqlite_threaded():
     # made above (at least will with most database drivers, but
     # this will cause an error in SQLite):
     do_select()
-    
+
 def do_select():
     list(TestSO1.select())
     print "T", threading.currentThread().getName()

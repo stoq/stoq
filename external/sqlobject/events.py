@@ -107,7 +107,7 @@ class RowDestroySignal(Signal):
     @@: Should this allow ``instance`` to be a primary key, so that a
     row can be deleted without first fetching it?
     """
-    
+
 class RowUpdateSignal(Signal):
     """
     Called when an instance is updated through a call to ``.set()``.

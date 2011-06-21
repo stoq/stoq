@@ -39,7 +39,7 @@ from stoqlib.lib.formatters import (get_formatted_price,
                                    get_formatted_percentage,
                                    format_quantity,
                                    format_phone_number)
-                                    
+
 from stoqlib.reporting.template import (BaseStoqReport, SearchResultsReport,
                                         ObjectListReport)
 from stoqlib.lib.translation import stoqlib_gettext

@@ -24,26 +24,26 @@ except:
 import os, time
 
 try:
-   import threading
-   import thread
-   # pyflakes
-   threading, thread
+    import threading
+    import thread
+    # pyflakes
+    threading, thread
 except ImportError:
-   import dummy_threading as threading
-   import dummy_thread as thread
-   # pyflakes
-   threading, thread
+    import dummy_threading as threading
+    import dummy_thread as thread
+    # pyflakes
+    threading, thread
 
 def verify_directory(dir):
-   """create and/or verify a filesystem directory."""
-   tries = 0
-   while not os.access(dir, os.F_OK):
-       try:
-           tries += 1
-           os.makedirs(dir, 0750)
-       except:
-           if tries > 5:
-               raise
+    """create and/or verify a filesystem directory."""
+    tries = 0
+    while not os.access(dir, os.F_OK):
+        try:
+            tries += 1
+            os.makedirs(dir, 0750)
+        except:
+            if tries > 5:
+                raise
 
 class SetLikeDict(dict):
     """a dictionary that has some setlike methods on it"""
