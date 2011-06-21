@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2009 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -37,12 +37,6 @@ from stoqlib.lib.osutils import get_application_dir
 from stoq.lib.applist import get_application_names
 from stoq.lib.options import get_option_parser
 
-PYGTK_REQUIRED = (2, 16, 0)
-KIWI_REQUIRED = (1, 9, 27)
-STOQLIB_REQUIRED = (0, 9, 15, 99)
-GAZPACHO_REQUIRED = (0, 6, 6)
-REPORTLAB_REQUIRED = (1, 20)
-
 _ = gettext.gettext
 _log_filename = None
 _stream = None
@@ -74,10 +68,9 @@ def _write_exception_hook(exctype, value, tb):
         appname, window_name))
 
     traceback.print_exception(exctype, value, tb, file=_stream)
-    traceback.print_exception(exctype, value, tb)
 
-    from stoqlib.lib.crashreport import add_traceback
-    add_traceback((exctype, value, tb))
+    from stoqlib.lib.crashreport import collect_traceback
+    collect_traceback((exctype, value, tb))
 
 def _debug_hook(exctype, value, tb):
     import traceback
@@ -123,95 +116,13 @@ def _set_app_info():
     provide_utility(IAppInfo, info)
 
 def _check_dependencies():
-    from stoqlib.lib.message import error
-    log.debug('checking dependencies')
-
-    def _missing_module_error(module, fancy=None):
-        error(
-            _("%s not found") % (fancy or module),
-            _("Could not find the required python module %s on your system") %
-            module)
-
-    # PyGTK
-    try:
-        import gtk
-        gtk # stuid pyflakes
-    except ImportError:
-        try:
-            import pygtk
-            # This modifies sys.path
-            pygtk.require('2.0')
-            # Try again now when pygtk is imported
-            import gtk
-        except ImportError:
-            _missing_module_error("gtk", "PyGTK")
-
-    _setup_ui_dialogs()
-
-    if gtk.pygtk_version < PYGTK_REQUIRED:
-        error(_("PyGTK too old"),
-              _("PyGTK version too old, needs %s but found %s") % (
-            '.'.join(map(str, PYGTK_REQUIRED)),
-            '.'.join(map(str, gtk.pygtk_version))))
-    log.debug('pygtk %s found, okay' % ('.'.join(map(str, gtk.pygtk_version))))
-
-    # Kiwi
-    try:
-        import kiwi
-    except ImportError:
-        _missing_module_error("kiwi")
-
-    kiwi_version = kiwi.__version__.version
-    if kiwi_version < KIWI_REQUIRED:
-        error(_("Kiwi too old"),
-              _("kiwi version too old, needs %s but found %s") % (
-            '.'.join(map(str, KIWI_REQUIRED)),
-            '.'.join(map(str, kiwi_version))))
-    log.debug('kiwi %s found, okay' % ('.'.join(map(str, kiwi_version))))
-
-    # Stoqlib
-    try:
-        import stoqlib
-    except ImportError:
-        _missing_module_error("stoqlib")
-
-    stoqlib_version = tuple(stoqlib.version.split('.'))
-    if stoqlib_version < STOQLIB_REQUIRED:
-        error(_("Stoqlib too old"),
-              _("stoqlib version too old, needs %s but found %s") % (
-            '.'.join(map(str, STOQLIB_REQUIRED)),
-            '.'.join(map(str, stoqlib_version))))
-    log.debug('stoqlib %s found, okay' % ('.'.join(map(str, stoqlib_version))))
-
-    # Gazpacho
-    try:
-        import gazpacho
-    except ImportError:
-        _missing_module_error("gazpacho")
-
-    if map(int, gazpacho.__version__.split('.')) < list(GAZPACHO_REQUIRED):
-        error(_("Gazpacho too old"),
-              _("Gazpacho %s is required but %s found") % (
-            '.'.join(map(str, GAZPACHO_REQUIRED)),
-            gazpacho.__version__))
-    log.debug('gazpacho %s found, okay' % (gazpacho.__version__,))
-
-    # Reportlab
-    try:
-        import reportlab
-    except ImportError:
-        _missing_module_error("reportlab")
-
-    if map(int, reportlab.Version.split('.')) < list(REPORTLAB_REQUIRED):
-        error(_("Reportlab too old"),
-              _("reportlab %s is required but %s found") % (
-            '.'.join(map(str, REPORTLAB_REQUIRED)),
-            reportlab.Version))
-    log.debug('reportlab okay')
+    from stoq.lib.dependencies import check_dependencies
+    check_dependencies()
 
 def _check_version_policy():
     # No need to bother version checking when not running in developer mode
     from stoqlib.lib.parameters import is_developer_mode
+    from stoq.lib.dependencies import STOQLIB_REQUIRED
     if not is_developer_mode():
         return
 
@@ -503,8 +414,9 @@ def main(args):
     _prepare_logfiles()
     _set_app_info()
     _check_dependencies()
-    _check_version_policy()
     _setup_gtk()
+    _check_version_policy()
+    _setup_ui_dialogs()
 
     _initialize(options)
     run_app(options, appname)
