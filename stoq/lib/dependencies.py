@@ -40,6 +40,7 @@ REPORTLAB_REQUIRED = (2, 4)
 STOQDRIVERS_REQUIRED = (0, 9, 8)
 STOQLIB_REQUIRED = (0, 9, 15, 99)
 TRML2PDF_REQUIRED = (1, 2)
+VTE_REQUIRED = (0, 23)
 ZOPE_INTERFACE_REQUIRED = (3, 0)
 
 
@@ -56,6 +57,7 @@ class DependencyChecker(object):
         # so we can display error messages
         self._check_pygtk(PYGTK_REQUIRED, GTK_REQUIRED)
         self._check_kiwi(KIWI_REQUIRED)
+        self._check_vte(VTE_REQUIRED)
         self._check_zope_interface(ZOPE_INTERFACE_REQUIRED)
         self._check_psycopg(PSYCOPG_REQUIRED)
         self._check_gazpacho(GAZPACHO_REQUIRED)
@@ -138,7 +140,6 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           required=gtk_version)
 
     def _check_kiwi(self, version):
-        # Kiwi
         try:
             import kiwi
         except ImportError:
@@ -152,6 +153,14 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://www.async.com.br/projects/kiwi/',
                           found=_tuple2str(kiwi_version),
                           required=version)
+
+    def _check_vte(self, version):
+        try:
+            import vte
+        except ImportError:
+            self._missing(project="Vte",
+                          url='http://developer.gnome.org/vte/',
+                          version=version)
 
     def _check_zope_interface(self, version):
         try:
