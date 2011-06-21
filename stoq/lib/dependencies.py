@@ -32,6 +32,7 @@ DATEUTIL_REQUIRED = (1, 4, 1)
 GAZPACHO_REQUIRED = (0, 6, 6)
 GTK_REQUIRED = (2, 16, 0)
 KIWI_REQUIRED = (1, 9, 27)
+MAKO_REQUIRED = (0, 2, 5)
 PIL_REQUIRED = (1, 1, 5)
 PSYCOPG_REQUIRED = (2, 0, 5)
 PYGTK_REQUIRED = (2, 16, 0)
@@ -60,6 +61,7 @@ class DependencyChecker(object):
         self._check_pil(PIL_REQUIRED)
         self._check_reportlab(REPORTLAB_REQUIRED, REPORTLAB_REQUIRED)
         self._check_dateutil(DATEUTIL_REQUIRED)
+        self._check_mako(MAKO_REQUIRED)
         self._check_stoqlib(STOQLIB_REQUIRED)
         self._check_stoqdrivers(STOQDRIVERS_REQUIRED)
 
@@ -267,6 +269,20 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://labix.org/python-dateutil/',
                           required=version,
                           found=dateutil.__version__)
+
+    def _check_mako(self, version):
+        try:
+            import mako
+        except ImportError:
+            self._missing(project="Mako",
+                          url='http://www.makotemplates.org/',
+                          version=version)
+
+        if map(int, mako.__version__.split('.')) < list(version):
+            self._too_old(project="Mako",
+                          url='http://www.makotemplates.org/',
+                          required=version,
+                          found=mako.__version__)
 
 def check_dependencies(text_mode=False):
     dp = DependencyChecker()
