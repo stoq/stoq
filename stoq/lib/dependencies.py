@@ -66,7 +66,7 @@ class DependencyChecker(object):
         self._check_psycopg(PSYCOPG_REQUIRED)
         self._check_gazpacho(GAZPACHO_REQUIRED)
         self._check_pil(PIL_REQUIRED)
-        self._check_reportlab(REPORTLAB_REQUIRED, REPORTLAB_REQUIRED)
+        self._check_reportlab(REPORTLAB_REQUIRED)
         self._check_trml2pdf(TRML2PDF_REQUIRED)
         self._check_dateutil(DATEUTIL_REQUIRED)
         self._check_mako(MAKO_REQUIRED)
@@ -287,12 +287,6 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://www.reportlab.org/',
                           required=version,
                           found=reportlab.Version)
-
-        if rl_version > list(max_version):
-            self._incompatible(project="Reportlab",
-                               url='http://www.reportlab.org/',
-                               required=version,
-                               found=reportlab.Version)
 
     def _check_dateutil(self, version):
         try:
