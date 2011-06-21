@@ -122,8 +122,18 @@ def collect_report():
     text += ('-' * 80) + '\n'
     return text
 
-def add_traceback(traceback):
-    _tracebacks.append(traceback)
+def collect_traceback(tb, output=True, submit=False):
+    """Collects traceback which might be submitted
+    @output: if it is to be printed
+    @submit: if it is to be submitted immediately
+    """
+    _tracebacks.append(tb)
+
+    if output:
+        traceback.print_exception(*tb)
+
+    if submit:
+        report()
 
 def has_tracebacks():
     return bool(_tracebacks)

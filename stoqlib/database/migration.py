@@ -45,7 +45,7 @@ from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.profile import update_profile_applications
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.lib.crashreport import ReportSubmitter, add_traceback
+from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.defaults import stoqlib_gettext
 from stoqlib.lib.interfaces import IPluginManager
 from stoqlib.lib.message import error, info
@@ -298,11 +298,6 @@ class StoqlibSchemaMigration(SchemaMigration):
 
         return retval
 
-    def _report(self, exc):
-        r = ReportSubmitter()
-        r.submit_in_mainloop()
-        log.info("Left main-loop")
-
     def update(self, plugins=True, backup=True):
         log.info("Upgrading database (plugins=%r, backup=%r)" % (
             plugins, backup))
@@ -336,9 +331,8 @@ class StoqlibSchemaMigration(SchemaMigration):
             except Exception, e:
                 exc = sys.exc_info()
                 tb_str = ''.join(traceback.format_exception(*exc))
-                add_traceback(exc)
+                collect_traceback(exc, submit=True)
                 create_log.info("ERROR:%s" % (tb_str,))
-                self._report(exc)
 
                 if backup:
                     log.info("Restoring backup %s" % (temporary, ))
