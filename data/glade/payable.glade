@@ -323,7 +323,7 @@
                                                                 <property name="visible">True</property>
                                                                 <child>
                                                                     <widget class="GtkImage" id="image1">
-                                                                        <property name="file">kfind22px.png</property>
+                                                                        <property name="stock">stoq-find</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>
