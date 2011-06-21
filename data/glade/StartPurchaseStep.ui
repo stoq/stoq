@@ -1,0 +1,314 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkWindow" id="StartPurchaseStep">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <property name="height_request">400</property>
+    <property name="mnemonics_visible">False</property>
+    <property name="width_request">600</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="border_width">6</property>
+        <property name="spacing">6</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkTable" id="table">
+            <property name="border_width">5</property>
+            <property name="column_spacing">6</property>
+            <property name="n_columns">5</property>
+            <property name="n_rows">5</property>
+            <property name="row_spacing">6</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel1">
+                <property name="data_type">unicode</property>
+                <property context="yes" name="label" translatable="yes">Open Date:</property>
+                <property name="model_attribute"/>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel4">
+                <property name="data_type">unicode</property>
+                <property context="yes" name="label" translatable="yes">Branch:</property>
+                <property name="model_attribute">kiwilabel4</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel2">
+                <property name="data_type">unicode</property>
+                <property context="yes" name="label" translatable="yes">Supplier:</property>
+                <property name="model_attribute">kiwilabel2</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel5">
+                <property name="data_type">unicode</property>
+                <property context="yes" name="label" translatable="yes">Freight Type:</property>
+                <property name="model_attribute"/>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">4</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyDateEntry" id="open_date">
+                <property name="data_type">date</property>
+                <property name="model_attribute">open_date</property>
+                <property name="sensitive">False</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyComboEntry" id="branch">
+                <property name="data_type">object</property>
+                <property name="mandatory">True</property>
+                <property name="model_attribute">branch</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">1</property>
+                <property name="y_options">expand</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyComboEntry" id="supplier">
+                <property name="data_type">object</property>
+                <property name="mandatory">True</property>
+                <property name="model_attribute">supplier</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="radio_hbox">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkRadioButton" id="cif_radio">
+                    <property name="is_focus">True</property>
+                    <property context="yes" name="label" translatable="yes">CIF (Cost Insurance Freight)</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="bottom_attach">4</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox2">
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkRadioButton" id="fob_radio">
+                    <property name="active">False</property>
+                    <property name="group">cif_radio</property>
+                    <property name="is_focus">True</property>
+                    <property context="yes" name="label" translatable="yes">FOB (Free On Board)</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="bottom_attach">5</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel3">
+                <property name="data_type">unicode</property>
+                <property context="yes" name="label" translatable="yes">Order Number:</property>
+                <property name="model_attribute"/>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel6">
+                <property name="data_type">unicode</property>
+                <property context="yes" name="label" translatable="yes">Expected Freight:</property>
+                <property name="model_attribute">kiwilabel6</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">5</property>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="order_number">
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">order_number_str</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel12">
+                <property name="data_type">unicode</property>
+                <property name="model_attribute"/>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="supplier_button">
+                <property name="is_focus">True</property>
+                <property context="yes" name="label" translatable="yes">A_dd/Edit Supplier...</property>
+                <property name="use_underline">True</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">2</property>
+                <property name="y_options">expand</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox3">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkHBox" id="hbox1">
+                    <property name="spacing">6</property>
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="ProxyLabel" id="kiwilabel7">
+                        <property name="data_type">unicode</property>
+                        <property context="yes" name="label" translatable="yes">$CURRENCY</property>
+                        <property name="model_attribute">kiwilabel7</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ProxyEntry" id="expected_freight">
+                        <property name="data_type">Decimal</property>
+                        <property name="model_attribute">expected_freight</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxyLabel" id="kiwilabel8">
+                    <property name="model_attribute">kiwilabel8</property>
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="bottom_attach">5</property>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel15">
+                <property name="data_type">unicode</property>
+                <property name="model_attribute"/>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">4</property>
+                <property name="right_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel14">
+                <property name="data_type">unicode</property>
+                <property name="model_attribute"/>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="left_attach">4</property>
+                <property name="right_attach">5</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel13">
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">kiwilabel13</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="left_attach">4</property>
+                <property name="right_attach">5</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

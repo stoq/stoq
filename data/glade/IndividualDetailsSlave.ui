@@ -1,0 +1,297 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkWindow" id="IndividualDetailsSlave">
+    <property name="role"/>
+    <property context="yes" name="title" translatable="yes"/>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkTable" id="table2">
+            <property name="border_width">5</property>
+            <property name="column_spacing">5</property>
+            <property name="n_columns">4</property>
+            <property name="n_rows">5</property>
+            <property name="row_spacing">5</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkLabel" id="gender_lbl">
+                <property context="yes" name="label" translatable="yes">Gender:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="occupation_lbl">
+                <property context="yes" name="label" translatable="yes">Occupation:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+                <property name="xpad">2</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label6">
+                <property context="yes" name="label" translatable="yes">Mother's name:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+                <property name="xpad">2</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label5">
+                <property context="yes" name="label" translatable="yes">Father's Name:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+                <property name="xpad">2</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">4</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="marital_status_lbl">
+                <property context="yes" name="label" translatable="yes">Marital Status:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+                <property name="xpad">2</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">5</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox1">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkRadioButton" id="male_check">
+                    <property context="yes" name="label" translatable="yes">Male</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="female_check">
+                    <property name="active">False</property>
+                    <property name="group">male_check</property>
+                    <property context="yes" name="label" translatable="yes">Female</property>
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="occupation">
+                <property name="data_type">unicode</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">occupation</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="mother_name">
+                <property name="data_type">unicode</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">mother_name</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="father_name">
+                <property name="data_type">unicode</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">father_name</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">4</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyComboBox" id="marital_status">
+                <property name="data_type">int</property>
+                <property name="model_attribute">marital_status</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">5</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label1">
+                <property context="yes" name="label" translatable="yes">Birth Date:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+                <property name="xpad">2</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label4">
+                <property context="yes" name="label" translatable="yes">Birth State:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+                <property name="xpad">2</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label3">
+                <property context="yes" name="label" translatable="yes">Birth City:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+                <property name="xpad">2</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label2">
+                <property context="yes" name="label" translatable="yes">Birth Country:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+                <property name="xpad">2</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">4</property>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="spouse_lbl">
+                <property context="yes" name="label" translatable="yes">Spouse:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+                <property name="xpad">2</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">5</property>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyDateEntry" id="birth_date">
+                <property name="data_type">date</property>
+                <property name="model_attribute">birth_date</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="birth_state">
+                <property name="data_type">unicode</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">birth_state</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="birth_city">
+                <property name="data_type">unicode</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">birth_city</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="birth_country">
+                <property name="data_type">unicode</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">birth_country</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">4</property>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="spouse_name">
+                <property name="data_type">unicode</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">spouse_name</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">5</property>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkWindow" id="ToolBar">
+    <property name="role"/>
+    <property context="yes" name="title" translatable="yes"/>
+    <child>
+      <object class="GtkHBox" id="hbox1">
+        <property name="spacing">5</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkHButtonBox" id="hbuttonbox1">
+            <property name="spacing">6</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkButton" id="new_button">
+                <property name="is_focus">True</property>
+                <property name="visible">True</property>
+                <property name="yalign">1.0</property>
+                <child>
+                  <object class="GtkAlignment" id="GtkAlignment1">
+                    <property name="visible">True</property>
+                    <property name="yalign">1.0</property>
+                    <child>
+                      <object class="GtkHBox" id="GtkHBox1">
+                        <property name="visible">True</property>
+                        <child>
+                          <object class="GtkImage" id="GtkImage1">
+                            <property name="stock">stoq-add</property>
+                            <property name="visible">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="GtkLabel1">
+                            <property context="yes" name="label" translatable="yes">_New...</property>
+                            <property name="use_underline">True</property>
+                            <property name="visible">True</property>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="edit_button">
+                <property name="is_focus">True</property>
+                <property name="visible">True</property>
+                <property name="yalign">1.0</property>
+                <child>
+                  <object class="GtkAlignment" id="GtkAlignment2">
+                    <property name="visible">True</property>
+                    <property name="yalign">1.0</property>
+                    <child>
+                      <object class="GtkHBox" id="GtkHBox2">
+                        <property name="visible">True</property>
+                        <child>
+                          <object class="GtkImage" id="GtkImage2">
+                            <property name="stock">stoq-edit</property>
+                            <property name="visible">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="GtkLabel2">
+                            <property context="yes" name="label" translatable="yes">_Edit...</property>
+                            <property name="use_underline">True</property>
+                            <property name="visible">True</property>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEventBox" id="toolbar_holder">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

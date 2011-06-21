@@ -1,0 +1,545 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">1</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment3">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment4">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment5">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment6">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">1</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment7">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment8">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment9">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkWindow" id="CredProviderDetailsSlave">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <property name="mnemonics_visible">False</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="border_width">5</property>
+        <property name="spacing">5</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkTable" id="table1">
+            <property name="column_spacing">5</property>
+            <property name="n_columns">4</property>
+            <property name="n_rows">6</property>
+            <property name="row_spacing">5</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel3">
+                <property name="data_type">unicode</property>
+                <property context="yes" name="label" translatable="yes">Provider Id:</property>
+                <property name="model_attribute">kiwilabel3</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label3">
+                <property context="yes" name="label" translatable="yes">Max Installments:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label1">
+                <property context="yes" name="label" translatable="yes">Payment Day:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label4">
+                <property context="yes" name="label" translatable="yes">Credit Fee:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">4</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label8">
+                <property context="yes" name="label" translatable="yes">Credit Installments Store Fee:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">5</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label12">
+                <property context="yes" name="label" translatable="yes">Credit Installment Provider Fee:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">6</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="provider_id">
+                <property name="data_type">unicode</property>
+                <property name="editable">False</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">provider_id</property>
+                <property name="sensitive">False</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxySpinButton" id="max_installments">
+                <property name="adjustment">adjustment1</property>
+                <property name="data_type">int</property>
+                <property name="model_attribute">max_installments</property>
+                <property context="yes" name="text" translatable="yes">0</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxySpinButton" id="payment_day">
+                <property name="adjustment">adjustment2</property>
+                <property name="data_type">int</property>
+                <property name="model_attribute">payment_day</property>
+                <property context="yes" name="text" translatable="yes">1</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox1">
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="ProxySpinButton" id="credit_fee">
+                    <property name="adjustment">adjustment3</property>
+                    <property name="climb_rate">1.0</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="digits">2</property>
+                    <property name="is_focus">True</property>
+                    <property name="mandatory">True</property>
+                    <property name="model_attribute">credit_fee</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label5">
+                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="bottom_attach">4</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox3">
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="ProxySpinButton" id="credit_installments_store_fee">
+                    <property name="adjustment">adjustment4</property>
+                    <property name="climb_rate">1.0</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="digits">2</property>
+                    <property name="is_focus">True</property>
+                    <property name="mandatory">True</property>
+                    <property name="model_attribute">credit_installments_store_fee</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label9">
+                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="bottom_attach">5</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox5">
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="ProxySpinButton" id="credit_installments_provider_fee">
+                    <property name="adjustment">adjustment5</property>
+                    <property name="climb_rate">1.0</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="digits">2</property>
+                    <property name="is_focus">True</property>
+                    <property name="mandatory">True</property>
+                    <property name="model_attribute">credit_installments_provider_fee</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label13">
+                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="bottom_attach">6</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel4">
+                <property name="data_type">unicode</property>
+                <property context="yes" name="label" translatable="yes">Short Name:</property>
+                <property name="model_attribute">kiwilabel4</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel5">
+                <property name="data_type">unicode</property>
+                <property context="yes" name="label" translatable="yes">Open Contract Date:</property>
+                <property name="model_attribute"/>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label2">
+                <property context="yes" name="label" translatable="yes">Closing Day:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label6">
+                <property context="yes" name="label" translatable="yes">Debit Fee:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">4</property>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label10">
+                <property context="yes" name="label" translatable="yes">Debit Pre-Dated Fee:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">5</property>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label15">
+                <property context="yes" name="label" translatable="yes">Monthly Fee ($):</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">6</property>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="short_name">
+                <property name="data_type">unicode</property>
+                <property name="mandatory">True</property>
+                <property name="model_attribute">short_name</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyDateEntry" id="open_contract_date">
+                <property name="data_type">date</property>
+                <property name="model_attribute">open_contract_date</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxySpinButton" id="closing_day">
+                <property name="adjustment">adjustment6</property>
+                <property name="data_type">int</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">closing_day</property>
+                <property context="yes" name="text" translatable="yes">1</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox2">
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="ProxySpinButton" id="debit_fee">
+                    <property name="adjustment">adjustment7</property>
+                    <property name="climb_rate">1.0</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="digits">2</property>
+                    <property name="is_focus">True</property>
+                    <property name="mandatory">True</property>
+                    <property name="model_attribute">debit_fee</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label7">
+                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="bottom_attach">4</property>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox4">
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="ProxySpinButton" id="debit_pre_dated_fee">
+                    <property name="adjustment">adjustment8</property>
+                    <property name="climb_rate">1.0</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="digits">2</property>
+                    <property name="is_focus">True</property>
+                    <property name="mandatory">True</property>
+                    <property name="model_attribute">debit_pre_dated_fee</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label11">
+                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="bottom_attach">5</property>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox6">
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="ProxySpinButton" id="monthly_fee">
+                    <property name="adjustment">adjustment9</property>
+                    <property name="climb_rate">1.0</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="digits">2</property>
+                    <property name="is_focus">True</property>
+                    <property name="mandatory">True</property>
+                    <property name="model_attribute">monthly_fee</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label14">
+                    <property context="yes" name="label" translatable="yes">%</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="bottom_attach">6</property>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

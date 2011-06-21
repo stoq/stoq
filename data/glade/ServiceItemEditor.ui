@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkWindow" id="ServiceItemEditor">
+    <property name="border_width">6</property>
+    <child>
+      <object class="GtkVBox" id="vbox2">
+        <property name="border_width">6</property>
+        <property name="spacing">6</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="kiwi+ui+widgets+label+Label" id="service_name_label">
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">description</property>
+            <property name="visible">True</property>
+            <property name="xalign">0.0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkAlignment" id="alignment1">
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+            <property name="xscale">0.00999999977648</property>
+            <child>
+              <object class="GtkHBox" id="hbox4">
+                <property name="spacing">2</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkLabel" id="label7">
+                    <property context="yes" name="label" translatable="yes">Estimated Fix Date:</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">1.0</property>
+                    <property name="ypad">5</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxyDateEntry" id="estimated_fix_date">
+                    <property name="data_type">date</property>
+                    <property name="model_attribute">estimated_fix_date</property>
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label8">
+                    <property context="yes" name="label" translatable="yes">  Price:</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">1.0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="kiwi+ui+widgets+entry+Entry" id="price">
+                    <property name="data_type">currency</property>
+                    <property name="is_focus">True</property>
+                    <property name="model_attribute">price</property>
+                    <property name="visible">True</property>
+                    <property name="width_chars">10</property>
+                    <property name="xalign">1.0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkAlignment" id="alignment2">
+            <property name="top_padding">10</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkLabel" id="label9">
+                <property context="yes" name="label" translatable="yes">Service Details:</property>
+                <property name="visible">True</property>
+                <property name="xalign">0.0</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolledwindow2">
+            <property name="hscrollbar_policy">automatic</property>
+            <property name="shadow_type">in</property>
+            <property name="visible">True</property>
+            <property name="vscrollbar_policy">automatic</property>
+            <child>
+              <object class="kiwi+ui+widgets+textview+TextView" id="notes">
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">notes</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="position">3</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

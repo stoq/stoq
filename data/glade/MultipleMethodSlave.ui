@@ -1,0 +1,249 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkSizeGroup" id="sizegroup1">
+    <property name="mode">horizontal</property>
+    <widgets>
+      <widget name="add_button"/>
+      <widget name="remove_button"/>
+    </widgets>
+  </object>
+  <object class="GtkWindow" id="MultipleMethodSlave">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="border_width">6</property>
+        <property name="spacing">6</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkHBox" id="hbox1">
+            <property name="spacing">6</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkLabel" id="label1">
+                <property context="yes" name="label" translatable="yes">&lt;b&gt;Method:&lt;/b&gt;</property>
+                <property name="use_markup">True</property>
+                <property name="visible">True</property>
+                <property name="xalign">0.0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="methods_box">
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkRadioButton" id="cash_radio">
+                    <property name="is_focus">True</property>
+                    <property context="yes" name="label" translatable="yes">_Cash</property>
+                    <property name="use_underline">True</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox2">
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="ProxyLabel" id="currency">
+                    <property context="yes" name="label" translatable="yes">&lt;b&gt;$CURRENCY:&lt;/b&gt;</property>
+                    <property name="model_attribute"/>
+                    <property name="visible">True</property>
+                    <property name="xalign">1.0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxyEntry" id="base_value">
+                    <property name="data_type">Decimal</property>
+                    <property name="is_focus">True</property>
+                    <property name="model_attribute">base_value</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">1.0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="add_button">
+                    <property name="label">gtk-add</property>
+                    <property name="use_stock">True</property>
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="hbox3">
+            <property name="spacing">6</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkVBox" id="vbox2">
+                <property name="visible">True</property>
+                <child>
+                  <object class="ObjectList" id="payments">
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTable" id="footer_table">
+                    <property name="column_spacing">6</property>
+                    <property name="n_columns">2</property>
+                    <property name="n_rows">4</property>
+                    <property name="row_spacing">6</property>
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkLabel" id="label11">
+                        <property context="yes" name="label" translatable="yes">Payments:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label12">
+                        <property context="yes" name="label" translatable="yes">Total:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                      </object>
+                      <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHSeparator" id="hseparator1">
+                        <property name="visible">True</property>
+                      </object>
+                      <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="missing_change">
+                        <property context="yes" name="label" translatable="yes">Missing:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                      </object>
+                      <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="top_attach">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="ProxyLabel" id="received_value">
+                        <property name="data_type">currency</property>
+                        <property name="model_attribute">received_value</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="x_options">fill</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="ProxyLabel" id="total_value">
+                        <property name="data_type">currency</property>
+                        <property name="model_attribute">total_value</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                      </object>
+                      <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="x_options">fill</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHSeparator" id="hseparator2">
+                        <property name="visible">True</property>
+                      </object>
+                      <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">2</property>
+                        <property name="x_options">fill</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="ProxyLabel" id="missing_value">
+                        <property name="data_type">currency</property>
+                        <property name="model_attribute">missing_value</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                      </object>
+                      <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">3</property>
+                        <property name="x_options">fill</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkVBox" id="vbox3">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkButton" id="remove_button">
+                    <property name="label">gtk-remove</property>
+                    <property name="use_stock">True</property>
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

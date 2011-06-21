@@ -1,0 +1,491 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment3">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment4">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment5">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment6">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkWindow" id="ProductInformationSlave">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <property name="mnemonics_visible">False</property>
+    <child>
+      <object class="GtkTable" id="table1">
+        <property name="column_spacing">6</property>
+        <property name="n_columns">4</property>
+        <property name="n_rows">11</property>
+        <property name="row_spacing">6</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property context="yes" name="label" translatable="yes">Location:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="part_number_lbl">
+            <property context="yes" name="label" translatable="yes">Part-Number:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="top_attach">1</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label2">
+            <property context="yes" name="label" translatable="yes">Width:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">3</property>
+            <property name="top_attach">2</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label4">
+            <property context="yes" name="label" translatable="yes">Depth:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">4</property>
+            <property name="top_attach">3</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="stock_label">
+            <property context="yes" name="label" translatable="yes">&lt;b&gt;Stock Details&lt;/b&gt;</property>
+            <property name="use_markup">True</property>
+            <property name="visible">True</property>
+            <property name="xalign">0.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">5</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">4</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="min_label">
+            <property context="yes" name="label" translatable="yes">Minimum:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">6</property>
+            <property name="top_attach">5</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label5">
+            <property context="yes" name="label" translatable="yes">&lt;b&gt;Mercosul Details&lt;/b&gt;</property>
+            <property name="use_markup">True</property>
+            <property name="visible">True</property>
+            <property name="xalign">0.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">7</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">6</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label6">
+            <property context="yes" name="label" translatable="yes">NCM:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">8</property>
+            <property name="top_attach">7</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label10">
+            <property context="yes" name="label" translatable="yes">G&#xEA;nero:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">9</property>
+            <property name="top_attach">8</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="location">
+            <property name="data_type">unicode</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">location</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">4</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="part_number">
+            <property name="data_type">unicode</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">part_number</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">1</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxySpinButton" id="width">
+            <property name="adjustment">adjustment1</property>
+            <property name="data_type">Decimal</property>
+            <property name="model_attribute">width</property>
+            <property context="yes" name="text" translatable="yes">0</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">3</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">2</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxySpinButton" id="depth">
+            <property name="adjustment">adjustment2</property>
+            <property name="data_type">Decimal</property>
+            <property name="model_attribute">depth</property>
+            <property context="yes" name="text" translatable="yes">0</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">4</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">3</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="min_hbox">
+            <property name="spacing">6</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="ProxySpinButton" id="minimum_quantity">
+                <property name="adjustment">adjustment3</property>
+                <property name="data_type">Decimal</property>
+                <property name="digits">2</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">minimum_quantity</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="min_unit">
+                <property context="yes" name="label" translatable="yes">Un</property>
+                <property name="visible">True</property>
+                <property name="xalign">0.0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="bottom_attach">6</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">5</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="ncm">
+            <property name="data_type">unicode</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">ncm</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">8</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">7</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="genero">
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">genero</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">9</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">8</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="manufacturer_lbl">
+            <property context="yes" name="label" translatable="yes">Manufacturer:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">1</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label3">
+            <property context="yes" name="label" translatable="yes">Height:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">3</property>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">2</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label7">
+            <property context="yes" name="label" translatable="yes">Weight:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">4</property>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">3</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="max_label">
+            <property context="yes" name="label" translatable="yes">Maximum:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">6</property>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">5</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label9">
+            <property context="yes" name="label" translatable="yes">EX TIPI:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">8</property>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">7</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="manufacturer">
+            <property name="data_type">unicode</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">manufacturer</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">1</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxySpinButton" id="height">
+            <property name="adjustment">adjustment4</property>
+            <property name="data_type">Decimal</property>
+            <property name="model_attribute">height</property>
+            <property context="yes" name="text" translatable="yes">0</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">3</property>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">2</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="hbox2">
+            <property name="spacing">5</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="ProxySpinButton" id="weight">
+                <property name="adjustment">adjustment5</property>
+                <property name="data_type">Decimal</property>
+                <property name="digits">3</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">weight</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label8">
+                <property context="yes" name="label" translatable="yes">Kg</property>
+                <property name="visible">True</property>
+                <property name="xalign">0.0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="bottom_attach">4</property>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">3</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="max_hbox">
+            <property name="spacing">6</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="ProxySpinButton" id="maximum_quantity">
+                <property name="adjustment">adjustment6</property>
+                <property name="data_type">Decimal</property>
+                <property name="digits">2</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">maximum_quantity</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="max_unit">
+                <property context="yes" name="label" translatable="yes">Un</property>
+                <property name="visible">True</property>
+                <property name="xalign">0.0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="bottom_attach">6</property>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">5</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="ex_tipi">
+            <property name="data_type">unicode</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">ex_tipi</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">8</property>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">7</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

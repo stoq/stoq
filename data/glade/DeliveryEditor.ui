@@ -1,0 +1,260 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">999999</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkSizeGroup" id="sizegroup1">
+    <property name="mode">horizontal</property>
+    <widgets>
+      <widget name="label5"/>
+      <widget name="label1"/>
+    </widgets>
+  </object>
+  <object class="GtkWindow" id="DeliveryEditor">
+    <property name="border_width">6</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="border_width">6</property>
+        <property name="spacing">6</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkHBox" id="hbox2">
+            <property name="spacing">6</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkLabel" id="label5">
+                <property context="yes" name="label" translatable="yes">Client:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyComboEntry" id="client">
+                <property name="data_type">object</property>
+                <property name="mandatory">True</property>
+                <property name="model_attribute">client</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHButtonBox" id="hbuttonbox1">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkButton" id="create_client">
+                    <property context="yes" name="label" translatable="yes">Create...</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="hbox1">
+            <property name="spacing">6</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkLabel" id="label1">
+                <property context="yes" name="label" translatable="yes">Estimated Delivery _Date:</property>
+                <property name="mnemonic_widget">estimated_fix_date</property>
+                <property name="use_underline">True</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyDateEntry" id="estimated_fix_date">
+                <property name="data_type">date</property>
+                <property name="model_attribute">estimated_fix_date</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="label2">
+                <property context="yes" name="label" translatable="yes">Delivery cost ($CURRENCY):</property>
+                <property name="mnemonic_widget">price</property>
+                <property name="model_attribute">label2</property>
+                <property name="use_underline">True</property>
+                <property name="visible">True</property>
+                <property name="xalign">0.50999999</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxySpinButton" id="price">
+                <property name="adjustment">adjustment1</property>
+                <property name="data_type">currency</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">price</property>
+                <property name="visible">True</property>
+                <property name="width_chars">11</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHSeparator" id="hseparator1">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label3">
+            <property context="yes" name="label" translatable="yes">Products to Deliver:</property>
+            <property name="visible">True</property>
+            <property name="xalign">0.0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEventBox" id="addition_list_holder">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHSeparator" id="hseparator2">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTable" id="table1">
+            <property name="column_spacing">5</property>
+            <property name="n_columns">2</property>
+            <property name="n_rows">2</property>
+            <property name="row_spacing">5</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkLabel" id="label4">
+                <property context="yes" name="label" translatable="yes">&lt;b&gt;Delivery Address:&lt;/b&gt;</property>
+                <property name="use_markup">True</property>
+                <property name="visible">True</property>
+                <property name="xalign">0.0</property>
+              </object>
+              <packing>
+                <property name="y_options">fill</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="delivery_address">
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">delivery_address</property>
+                <property name="visible">True</property>
+                <property name="xalign">0.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="x_options">fill</property>
+                <property name="y_options">fill</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="change_address_button">
+                <property context="yes" name="label" translatable="yes">Change _Address</property>
+                <property name="use_underline">True</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="x_options">fill</property>
+                <property name="y_options">fill</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="additional_info_button">
+                <property name="is_focus">True</property>
+                <property context="yes" name="label" translatable="yes">Additional _Instructions</property>
+                <property name="use_underline">True</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="x_options">fill</property>
+                <property name="y_options">fill</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkAlignment" id="alignment1">
+            <property name="visible">True</property>
+            <child>
+              <object class="ProxyLabel" id="additional_info_label">
+                <property name="data_type">unicode</property>
+                <property context="yes" name="label" translatable="yes">There is Additional Instructions</property>
+                <property name="model_attribute"/>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
