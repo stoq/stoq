@@ -126,7 +126,7 @@
                 <child>
                     <widget class="GtkAction" id="PurchaseReceiving">
                         <property name="name">PurchaseReceiving</property>
-                        <property name="label" translatable="yes">Purchase Receiving...</property>
+                        <property name="label" translatable="yes">Received purchases...</property>
                         <signal handler="on_receiving_search_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;&lt;Alt&gt;u</property>
                     </widget>
