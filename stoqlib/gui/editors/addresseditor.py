@@ -138,7 +138,9 @@ class AddressSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model,
                                     AddressSlave.proxy_widgets)
 
-        self.streetnumber_check.set_active(bool(self.model.streetnumber))
+        # Enable if we already have a number or if we are adding a new address.
+        self.streetnumber_check.set_active(bool(self.model.streetnumber)
+                                           or not self.edit_mode)
         self._update_streetnumber()
 
     def can_confirm(self):
