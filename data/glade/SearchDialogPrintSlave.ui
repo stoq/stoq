@@ -13,16 +13,6 @@
         <property name="layout_style">end</property>
         <property name="visible">True</property>
         <child>
-          <placeholder/>
-          <packing/>
-        </child>
-        <child>
-          <placeholder/>
-          <packing>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkButton" id="print_price_button">
             <property name="is_focus">True</property>
             <property name="label">gtk-print</property>
