@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkWindow" id="ProductImageViewer">
+    <property name="allow_shrink">True</property>
+    <property name="default_height">250</property>
+    <property name="default_width">350</property>
+    <property name="destroy_with_parent">True</property>
+    <property context="yes" name="title" translatable="yes">Product Picture Viewer</property>
+    <child>
+      <object class="GtkEventBox" id="eventbox1">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkImage" id="image">
+            <property name="can_focus">True</property>
+            <property name="visible">True</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
