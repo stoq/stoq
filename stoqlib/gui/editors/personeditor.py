@@ -260,7 +260,8 @@ class SupplierEditor(BasePersonRoleEditor):
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
-        self.details_slave = SupplierDetailsSlave(self.conn, self.model)
+        self.details_slave = SupplierDetailsSlave(self.conn, self.model,
+                                                  visual_mode=self.visual_mode)
         slave = self.main_slave.get_person_slave()
         slave.attach_slave('person_status_holder', self.details_slave)
 
@@ -285,7 +286,8 @@ class TransporterEditor(BasePersonRoleEditor):
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
         self.details_slave = TransporterDataSlave(self.conn,
-                                                  self.model)
+                                                  self.model,
+                                                  visual_mode=self.visual_mode)
         slave = self.main_slave.get_person_slave()
         slave.attach_slave('person_status_holder', self.details_slave)
 
@@ -309,5 +311,6 @@ class BranchEditor(BasePersonRoleEditor):
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
-        self.status_slave = BranchDetailsSlave(self.conn, self.model)
+        self.status_slave = BranchDetailsSlave(self.conn, self.model,
+                                               visual_mode=self.visual_mode)
         self.main_slave.attach_person_slave(self.status_slave)
