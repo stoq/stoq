@@ -273,7 +273,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           required=version,
                           found=PIL.Image.VERSION)
 
-    def _check_reportlab(self, version, max_version):
+    def _check_reportlab(self, version):
         try:
             import reportlab
         except ImportError:
