@@ -78,6 +78,7 @@ class SalesApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
+        self._open_inventory = False
         self.check_open_inventory()
         self.summary_label = None
         self._visible_date_col = None
