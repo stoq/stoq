@@ -28,6 +28,7 @@ import gettext
 
 _ = gettext.gettext
 
+DATEUTIL_REQUIRED = (1, 4, 1)
 GAZPACHO_REQUIRED = (0, 6, 6)
 GTK_REQUIRED = (2, 16, 0)
 KIWI_REQUIRED = (1, 9, 27)
@@ -58,6 +59,7 @@ class DependencyChecker(object):
         self._check_gazpacho(GAZPACHO_REQUIRED)
         self._check_pil(PIL_REQUIRED)
         self._check_reportlab(REPORTLAB_REQUIRED, REPORTLAB_REQUIRED)
+        self._check_dateutil(DATEUTIL_REQUIRED)
         self._check_stoqlib(STOQLIB_REQUIRED)
         self._check_stoqdrivers(STOQDRIVERS_REQUIRED)
 
@@ -251,6 +253,20 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                                url='http://www.reportlab.org/',
                                required=version,
                                found=reportlab.Version)
+
+    def _check_dateutil(self, version):
+        try:
+            import dateutil
+        except ImportError:
+            self._missing(project="Dateutil",
+                          url='http://labix.org/python-dateutil/',
+                          version=version)
+
+        if map(int, dateutil.__version__.split('.')) < list(version):
+            self._too_old(project="Dateutil",
+                          url='http://labix.org/python-dateutil/',
+                          required=version,
+                          found=dateutil.__version__)
 
 def check_dependencies(text_mode=False):
     dp = DependencyChecker()
