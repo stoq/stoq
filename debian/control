@@ -3,7 +3,7 @@ Section: python
 Priority: optional
 Maintainer: Ronaldo Francisco Maia <romaia@async.com.br>
 Build-Depends: debhelper (>= 5.0.32), cdbs, python, python-support, python-all
-Build-Depends-Indep: python-dev (>= 2.4), python-zope.interface (>= 3.5.2)|python-zopeinterface (>= 3.2.1), python-kiwi (>= 1.9.26), gazpacho (>= 0.6.6), python-psycopg2 (>= 2.0.5), stoqdrivers (>= 0.9.8), python-imaging (>= 1.1.5), python-reportlab (>= 1.20)
+Build-Depends-Indep: python-dev (>= 2.4), python-zope.interface (>= 3.5.2)|python-zopeinterface (>= 3.2.1), python-kiwi (>= 1.9.26), gazpacho (>= 0.6.6), python-psycopg2 (>= 2.0.5), stoqdrivers (>= 0.9.8), python-imaging (>= 1.1.5), python-reportlab (>= 1.20), python-dateutil (>= 1.4.1)
 Standards-Version: 3.8.3
 Homepage: http://www.stoq.com.br
 
@@ -11,7 +11,7 @@ Package: stoq
 Architecture: all
 Replaces: stoqlib
 Breaks: stoqlib
-Depends: ${misc:Depends}, ${shlibs:Depends}, python, python-gtk2 (>= 2.16), python-zope.interface (>= 3.5.2)|python-zopeinterface (>= 3.2.1), python-kiwi (>= 1.9.27), gazpacho (>= 0.6.6), python-psycopg2 (>= 2.0.5), stoqdrivers (>= 0.9.11), python-imaging (>= 1.1.5), python-reportlab (>= 1.20), python-vte, postgresql-client-common
+Depends: ${misc:Depends}, ${shlibs:Depends}, python, python-gtk2 (>= 2.16), python-zope.interface (>= 3.5.2)|python-zopeinterface (>= 3.2.1), python-kiwi (>= 1.9.27), gazpacho (>= 0.6.6), python-psycopg2 (>= 2.0.5), stoqdrivers (>= 0.9.11), python-imaging (>= 1.1.5), python-reportlab (>= 1.20), python-vte, postgresql-client-common, python-dateutil (>= 1.4.1)
 Description: A powerful retail system library
  Stoqlib offers many special tools for retail system applications
  such reports infrastructure, basic dialogs and searchbars and
