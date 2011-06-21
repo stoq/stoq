@@ -100,7 +100,8 @@ class CrashReportDialog(object):
         self._no_button.hide()
         self._yes_button.set_sensitive(False)
         self._yes_button.set_label(_('Sending...'))
-        self._parent.destroy()
+        if self._parent:
+            self._parent.destroy()
 
         self._report_submitter.submit()
         self._dialog.run()
