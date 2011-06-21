@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkWindow" id="ImageHolder">
+    <property name="default_height">1</property>
+    <property name="default_width">1</property>
+    <child>
+      <object class="GtkHBox" id="hbox1">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkVSeparator" id="separator">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEventBox" id="eventbox">
+            <property name="border_width">6</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkImage" id="image">
+                <property name="height_request">64</property>
+                <property name="visible">True</property>
+                <property name="width_request">64</property>
+                <property name="xpad">6</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkWindow" id="EmployeeRoleHistorySlave">
+    <property name="can_focus">True</property>
+    <child>
+      <object class="ObjectList" id="history_list">
+        <property name="selection_mode">single</property>
+        <property name="shadow_type">in</property>
+        <property name="vscrollbar_policy">automatic</property>
+        <property name="visible">True</property>
+      </object>
+    </child>
+  </object>
+</interface>
