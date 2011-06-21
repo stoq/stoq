@@ -317,7 +317,6 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkImage" id="stoq_logo">
-                                        <property name="file">stoq_logo_small.png</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>

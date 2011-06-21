@@ -28,6 +28,7 @@ import gettext
 
 import glib
 import gtk
+from kiwi.environ import environ
 import pango
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
@@ -63,6 +64,8 @@ class UpdateSchemaStep(BaseWizardStep):
 
     def post_init(self):
         self._finished = False
+        logo = environ.find_resource('pixmaps', 'stoq_logo.png')
+        self.logo.set_from_file(logo)
         self.process_view = ProcessView()
         self.process_view.listen_stderr = True
         self.process_view.connect('read-line', self._on_processview__readline)
