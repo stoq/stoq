@@ -311,7 +311,7 @@
                                                                 <property name="visible">True</property>
                                                                 <child>
                                                                     <widget class="GtkImage" id="image1">
-                                                                        <property name="file">a-convert24px.png</property>
+                                                                        <property name="stock">stoq-convert</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>
@@ -343,7 +343,7 @@
                                                                 <property name="visible">True</property>
                                                                 <child>
                                                                     <widget class="GtkImage" id="image4">
-                                                                        <property name="file">edit24px.png</property>
+                                                                        <property name="stock">stoq-edit</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>
@@ -416,7 +416,7 @@
                                                                 <property name="visible">True</property>
                                                                 <child>
                                                                     <widget class="GtkImage" id="image2">
-                                                                        <property name="file">document-print.png</property>
+                                                                        <property name="stock">gtk-print</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>

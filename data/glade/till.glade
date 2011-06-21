@@ -383,7 +383,7 @@
                                                                         <property name="visible">True</property>
                                                                         <child>
                                                                             <widget class="GtkImage" id="image1">
-                                                                                <property name="file">confirm24px.png</property>
+                                                                                <property name="stock">stoq-confirm</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                         </child>
@@ -414,7 +414,7 @@
                                                                         <property name="visible">True</property>
                                                                         <child>
                                                                             <widget class="GtkImage" id="image2">
-                                                                                <property name="file">remove24px.png</property>
+                                                                                <property name="stock">stoq-remove</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                         </child>
