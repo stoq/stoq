@@ -372,4 +372,3 @@ def table_from_name(name):
     if not name in _cache:
         _rebuild()
     return _cache[name]
-

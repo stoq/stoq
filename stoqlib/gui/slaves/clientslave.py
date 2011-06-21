@@ -63,6 +63,5 @@ class ClientStatusSlave(BaseEditorSlave):
 
     def on_credit_limit__validate(self, entry, value):
         if value < 0:
-           return ValidationError(
-                        _("Credit limit must be greater than or equal to 0"))
-
+            return ValidationError(
+                         _("Credit limit must be greater than or equal to 0"))

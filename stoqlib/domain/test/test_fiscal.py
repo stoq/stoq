@@ -64,10 +64,10 @@ class TestIcmsIpiBookEntry(TestFiscalBookEntry, DomainTest):
         return self.create_icms_ipi_book_entry()
 
     def testReverseEntry(self):
-       icmsipibookentry = self.create_book_entry()
-       reversal = icmsipibookentry.reverse_entry(100)
-       self.assertEquals(reversal.icms_value, 10)
-       self.assertEquals(reversal.ipi_value, 10)
+        icmsipibookentry = self.create_book_entry()
+        reversal = icmsipibookentry.reverse_entry(100)
+        self.assertEquals(reversal.icms_value, 10)
+        self.assertEquals(reversal.ipi_value, 10)
 
     def testCreateProductEntry(self):
         sale = self.create_sale()
@@ -105,4 +105,3 @@ class TestIssBookEntry(TestFiscalBookEntry, DomainTest):
         self.assertEquals(book_entry.iss_value, 123)
         self.assertEquals(book_entry.entry_type,
                           FiscalBookEntry.TYPE_SERVICE)
-

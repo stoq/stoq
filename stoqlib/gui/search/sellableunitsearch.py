@@ -78,4 +78,3 @@ class SellableUnitSearch(SearchEditor):
                        format_func=self._format_unit_index, data_type=bool),
                 SearchColumn('allow_fraction', title=_('Allow Fraction'),
                              data_type=bool)]
-

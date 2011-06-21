@@ -1304,7 +1304,7 @@ class SQLObject(object):
                 names = ', '.join(names)
                 raise SQLObjectNotFound, "The %s by unique index %s(%s) does not exist" % (cls.__name__, idxName, names)
         if obj:
-           return obj
+            return obj
         if connection:
             obj = cls.get(result[0], connection=connection, selectResults=result[1:])
         else:

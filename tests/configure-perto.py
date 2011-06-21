@@ -44,5 +44,3 @@ DeviceConstant(constant_type=DeviceConstant.TYPE_TAX,
                connection=trans)
 
 trans.commit()
-
-

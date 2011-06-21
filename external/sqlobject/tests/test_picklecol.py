@@ -33,4 +33,3 @@ def test_pickleCol():
     assert s2.pi == mypickledata.pi
     assert s2.question == mypickledata.question
     assert s2.answer == mypickledata.answer
-

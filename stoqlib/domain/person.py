@@ -1219,4 +1219,3 @@ class CreditProviderView(Viewable):
     def provider(self):
         return PersonAdaptToCreditProvider.get(self.provider_id,
                                                connection=self.get_connection())
-

@@ -1,6 +1,6 @@
 ## FunFormKit, a Webware Form processor
 ## Copyright (C) 2001, Ian Bicking <ianb@colorstudy.com>
-##  
+##
 ## This library is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public
 ## License as published by the Free Software Foundation; either
@@ -296,7 +296,7 @@ class TableLayout(Layout):
     field_class = 'formfield'
     label_align = None
     table_class = 'formtable'
-    
+
 
     def wrap_field(self, field, options):
         return html.tr(
@@ -349,7 +349,7 @@ class FormTableLayout(Layout):
                 label = self.format_label(field, options)
             if label:
                 label = html(label, html.br)
-            cells.append(html.td('\n', label, 
+            cells.append(html.td('\n', label,
                                  field.render(options.subfield(field)),
                                  valign="bottom"))
             cells.append('\n')
@@ -387,11 +387,11 @@ class SubmitButton(Field):
 
     def html(self, options):
         if options.get('confirm', self):
-            query = ('return window.confirm(\'%s\')' % 
+            query = ('return window.confirm(\'%s\')' %
                      javascript_quote(options.get('confirm', self)))
         else:
             query = None
-        description = (options.get('description', self) or 
+        description = (options.get('description', self) or
                        options.get('default_description', self))
         return options.wrap_field(html.input(
             type='submit',
@@ -642,7 +642,7 @@ class Ordering(Select):
 
     def selection_html(self, selections, options):
         size = len(selections)
-        
+
         if options.default(self):
             new_selections = []
             for default_value in options.default(self):
@@ -764,7 +764,7 @@ class Radio(Select):
         <label for="f_1">A</label><br />
         <input type="radio" name="f" value="b" id="f_2" checked="checked" />
         <label for="f_2">B</label><br />
-        
+
     """
 
     def selection_html(self, selections, options):
@@ -805,7 +805,7 @@ class Radio(Select):
                 c=desc))
             result.append(html.br())
         return result
-            
+
 class MultiSelect(Select):
 
     """
@@ -976,7 +976,7 @@ class Checkbox(Field):
         <input type="checkbox" name="f" />
         >>> prfield(Checkbox(), default=1)
         <input type="checkbox" name="f" checked="checked" />
-        
+
     """
 
     def html(self, options):
@@ -1028,7 +1028,7 @@ class File(Field):
             accept=mime_list))
 
     zpt_html = html
-        
+
 
 class StaticText(Field):
 
@@ -1140,7 +1140,7 @@ def javascript_quote(value):
         '\\\\\\\\'
     """
     return repr('"' + str(value))[2:-1]
-    
+
 
 def prfield(field, chop=None, zpt=False, **kw):
     """
@@ -1162,4 +1162,3 @@ def prfield(field, chop=None, zpt=False, **kw):
         else:
             result = result[:pos1] + result[pos2+len(chop[1]):]
     print result
-    

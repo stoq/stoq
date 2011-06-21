@@ -113,4 +113,3 @@ class ReportTemplate(BaseReportTemplate):
         canvas.drawRightString(self._rightMargin - 75, text_y, date_string)
         canvas.drawRightString(self._rightMargin - 0.5 * SPACING, text_y,
                                page_number)
-

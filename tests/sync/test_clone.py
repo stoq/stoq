@@ -47,5 +47,3 @@ class TestClone(SyncTest):
                                    "table %s, got %d"
                                    % (office_count, table.sqlmeta.table,
                                       shop_count)))
-
-

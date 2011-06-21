@@ -34,4 +34,3 @@ def apply_patch(trans):
             sysparam(trans).create_delivery_service()
 
     trans.commit(close=False)
-

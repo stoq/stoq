@@ -334,4 +334,3 @@ def get_banks():
                 _banks[item.codigo_banco] = item
 
     return _banks
-

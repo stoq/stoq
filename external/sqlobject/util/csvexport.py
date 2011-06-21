@@ -58,7 +58,7 @@ def export_csv(soClass, select=None, writer=None, connection=None,
         writer = csv.writer(return_fileobj)
     elif not hasattr(writer, 'writerow'):
         writer = csv.writer(writer)
-        
+
     if isinstance(soClass, sqlobject.SQLObject.SelectResultsClass):
         assert not select, (
             "You cannot pass in a select argument (%r) and a SelectResult argument (%r) for soClass"

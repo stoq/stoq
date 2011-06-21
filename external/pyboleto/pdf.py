@@ -782,4 +782,3 @@ class BoletoPDF:
         )
 
         bc.drawOn(self.pdfCanvas, x, y)
-

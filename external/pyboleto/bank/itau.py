@@ -41,4 +41,3 @@ class BoletoItau(BoletoData):
             self.modulo10(agencia+conta),
             '000'
         )
-

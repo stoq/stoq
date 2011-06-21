@@ -341,4 +341,3 @@ class TestSellable(DomainTest):
         # The delivery service cannot be removed.
         sellable = sysparam(self.trans).DELIVERY_SERVICE.sellable
         self.failIf(sellable.can_remove())
-

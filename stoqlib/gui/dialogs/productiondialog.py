@@ -69,10 +69,10 @@ class _TemporaryProductionItem(object):
         return self.description
 
     def can_update_quantity(self):
-       if self.quantity < 0:
-           self.quantity = self.last_quantity
-           return False
-       return True
+        if self.quantity < 0:
+            self.quantity = self.last_quantity
+            return False
+        return True
 
     def get_components(self):
         return self.product.get_components()
@@ -214,16 +214,16 @@ class ProductionProductSlave(GladeSlaveDelegate):
         self._setup_widgets()
 
     def _setup_widgets(self):
-       products = [(view.get_product_and_category_description(), view)
-                    for view in ProductFullStockView\
-                        .select(connection=self.conn,
-                                #XXX: find out why just 'category_description'
-                                #       is not working
-                                orderBy='sellable_category.description')]
-       self.productscombo.prefill(products)
-       self.product_list.set_columns(self._get_columns())
+        products = [(view.get_product_and_category_description(), view)
+                     for view in ProductFullStockView\
+                         .select(connection=self.conn,
+                                 #XXX: find out why just 'category_description'
+                                 #       is not working
+                                 orderBy='sellable_category.description')]
+        self.productscombo.prefill(products)
+        self.product_list.set_columns(self._get_columns())
 
-       self._update_widgets()
+        self._update_widgets()
 
     def _update_widgets(self):
         can_add = self.productscombo.get_selected() is not None
@@ -308,8 +308,8 @@ class ProductionComponentSlave(GladeSlaveDelegate):
         self._setup_widgets()
 
     def _setup_widgets(self):
-       self.component_list.set_columns(self._get_columns())
-       self.export_csv_button.set_sensitive(self.has_rows)
+        self.component_list.set_columns(self._get_columns())
+        self.export_csv_button.set_sensitive(self.has_rows)
 
     def _get_columns(self):
         adj = gtk.Adjustment(upper=MAXINT, step_incr=1)

@@ -61,4 +61,3 @@ def read_scale_info(conn):
     """
     scale = _get_scale(conn)
     return scale.read_data()
-

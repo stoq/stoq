@@ -316,7 +316,7 @@ class LonelyPaymentDetailsDialog(BaseEditor):
 
     def get_title(self, model):
         if IInPayment(model, None):
-           return _(u'Receiving Details')
+            return _(u'Receiving Details')
 
         if IOutPayment(model, None):
             return _(u'Payment Details')

@@ -40,9 +40,9 @@ _ = stoqlib_gettext
 #
 
 def _validate_category_description(category, description, conn):
-        retval = category.check_category_description_exists(description, conn)
-        if not retval:
-            return ValidationError(_(u'Category already exists.'))
+    retval = category.check_category_description_exists(description, conn)
+    if not retval:
+        return ValidationError(_(u'Category already exists.'))
 
 #
 # Main editors

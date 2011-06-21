@@ -405,7 +405,7 @@ class SellableItemStep(WizardEditorStep):
 
         # FIXME: doing list() here is wrong. But there is a bug in one of
         # the queries, that len() == 1 but results.count() == 2.
-        results = list(self.sellable_view.select(query, 
+        results = list(self.sellable_view.select(query,
                                                  connection=self.conn))
         if len(results) != 1:
             return None

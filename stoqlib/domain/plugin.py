@@ -43,4 +43,3 @@ class InstalledPlugin(Domain):
         @returns: list of strings
         """
         return [p.plugin_name for p in cls.select(connection=conn)]
-

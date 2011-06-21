@@ -86,4 +86,3 @@ def get_option_parser():
                      dest='load_config')
     parser.add_option_group(group)
     return parser
-

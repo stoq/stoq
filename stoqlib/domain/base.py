@@ -318,4 +318,3 @@ for klass in (Domain, ModelAdapter):
                                  default=None))
     sqlmeta.addColumn(ForeignKey('TransactionEntry', name='te_modified',
                                  default=None))
-

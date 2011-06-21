@@ -163,4 +163,3 @@ class TestUpdate(SyncTest):
         salesperson = ISalesPerson(person, None)
         self.failUnless(salesperson)
         self.assertEquals(salesperson.comission, 10)
-

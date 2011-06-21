@@ -114,4 +114,3 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
 
         self._selected_method = radio.get_data('method')
         self.emit('method-changed', self._selected_method)
-

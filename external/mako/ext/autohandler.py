@@ -5,7 +5,7 @@ requires that the TemplateLookup class is used with templates.
 usage:
 
 <%!
-	from mako.ext.autohandler import autohandler
+        from mako.ext.autohandler import autohandler
 %>
 <%inherit file="${autohandler(template, context)}"/>
 
@@ -13,7 +13,7 @@ usage:
 or with custom autohandler filename:
 
 <%!
-	from mako.ext.autohandler import autohandler
+        from mako.ext.autohandler import autohandler
 %>
 <%inherit file="${autohandler(template, context, name='somefilename')}"/>
 

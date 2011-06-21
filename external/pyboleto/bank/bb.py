@@ -96,5 +96,3 @@ class BoletoBB( BoletoData ):
             if self.format_nnumero is 2:
                 return "%s%2s" % (self.nosso_numero,
                                   '21') # numero do serviço
-
-

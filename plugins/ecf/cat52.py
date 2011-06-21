@@ -714,5 +714,3 @@ class CATRegisterEAD(CATRegister):
     register_fields = [
         ('digital_signature', 256, basestring)
     ]
-
-

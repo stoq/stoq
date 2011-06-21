@@ -188,7 +188,7 @@ class ProductionMaterialListSlave(BaseEditorSlave):
             return
         stock_qty = material.stock_quantity
         if material.to_purchase + stock_qty - material.needed < 0:
-           return True
+            return True
         return False
 
     def _colorize_to_make_col(self, material):
@@ -196,7 +196,7 @@ class ProductionMaterialListSlave(BaseEditorSlave):
             return
         stock_qty = material.stock_quantity
         if material.to_make + stock_qty - material.needed < 0:
-           return True
+            return True
         return False
 
     #

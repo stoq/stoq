@@ -30,4 +30,3 @@ application = _('Sales')
 description = _("""Sales application.""")
 
 icon_name = 'stoq-sales-app'
-

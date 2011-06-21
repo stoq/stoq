@@ -280,4 +280,3 @@ class PaymentGroup(Domain):
         return Payment.select(AND(Payment.q.groupID == self.id,
                                   Payment.q.status != Payment.STATUS_CANCELLED),
                               connection=self.get_connection())
-

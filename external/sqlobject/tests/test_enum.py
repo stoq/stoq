@@ -28,4 +28,3 @@ def testNone():
     setupClass(EnumWithNone)
     for l in [None, 'a', 'bcd', 'a', 'e', None]:
         EnumWithNone(l=l)
-    

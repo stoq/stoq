@@ -484,4 +484,3 @@ class BaseReportTemplate(BaseDocTemplate):
     def draw_footer(self, canvas):
         """ Hook called on report footer drawing time. """
         raise NotImplementedError
-

@@ -161,5 +161,3 @@ class BranchDialog(BaseEditor):
     def on_cnpj__validate(self, widget, value):
         if not validate_cnpj(value):
             return ValidationError(_(u'The CNPJ is not valid.'))
-
-

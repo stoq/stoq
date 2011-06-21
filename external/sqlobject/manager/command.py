@@ -186,7 +186,7 @@ class Command(object):
             # This abstract base class
             return
         register(cls)
-    
+
     def __init__(self, invoked_as, command_name, args, runner):
         self.invoked_as = invoked_as
         self.command_name = command_name
@@ -394,7 +394,7 @@ class Command(object):
                     continue
                 classes = self.classes_from_module(module)
                 all.extend(classes)
-                    
+
         os.path.walk(package_dir, find_classes_in_file, None)
         return all
 
@@ -419,7 +419,7 @@ class Command(object):
             dir = conf['history_dir']
             dir = dir.replace('$base', dist.location)
             self.options.output_dir = dir
-        
+
     def config_from_egg(self, egg_spec, warn_no_sqlobject=True):
         import pkg_resources
         dist = pkg_resources.get_distribution(egg_spec)
@@ -514,7 +514,7 @@ class CommandSQL(Command):
                 for constraint in constraints:
                     if constraint:
                         print constraint.strip() + ';\n'
-        
+
 
 class CommandList(Command):
 
@@ -591,7 +591,7 @@ class CommandCreate(Command):
         if v >= 1:
             print '%i tables created (%i already exist)' % (
                 created, existing)
-        
+
 
 class CommandDrop(Command):
 
@@ -793,7 +793,7 @@ class CommandRecord(Command):
             'database is currently at.  Use the upgrade command to '
             'sync databases with code.'
             % SQLObjectVersionTable.sqlmeta.table)
-               
+
     parser = standard_parser()
     parser.add_option('--output-dir',
                       help="Base directory for recorded definitions",
@@ -836,7 +836,7 @@ class CommandRecord(Command):
         if self.options.force_db_version:
             self.command_force_db_version()
             return
-        
+
         v = self.options.verbose
         sim = self.options.simulate
         classes = self.classes()
@@ -979,7 +979,7 @@ class CommandRecord(Command):
     def strip_comments(self, sql):
         lines = [l for l in sql.splitlines()
                  if not l.strip().startswith('--')]
-        return '\n'.join(lines)        
+        return '\n'.join(lines)
 
     def base_dir(self):
         base = self.options.output_dir
@@ -994,7 +994,7 @@ class CommandRecord(Command):
     def find_output_dir(self):
         today = time.strftime('%Y-%m-%d', time.localtime())
         if self.options.version_name:
-            dir = os.path.join(self.base_dir(), today + '-' + 
+            dir = os.path.join(self.base_dir(), today + '-' +
                                self.options.version_name)
             if os.path.exists(dir):
                 print ("Error, directory already exists: %s"
@@ -1010,7 +1010,7 @@ class CommandRecord(Command):
                 extra = 'a'
             else:
                 extra = chr(ord(extra)+1)
-    
+
     def find_last_version(self):
         names = []
         for fn in os.listdir(self.base_dir()):
@@ -1107,7 +1107,7 @@ class CommandUpgrade(CommandRecord):
                     raise
             self.update_db(next_version, conn)
         print 'Done.'
-                
+
 
     def current_version(self):
         conn = self.connection()
@@ -1168,8 +1168,8 @@ class CommandUpgrade(CommandRecord):
                 print 'No upgraders found in %s' % current_dir
             return None, None
         upgraders.sort()
-        return upgraders[-1]        
-        
+        return upgraders[-1]
+
 def update_sys_path(paths, verbose):
     if isinstance(paths, (str, unicode)):
         paths = [paths]

@@ -114,5 +114,3 @@ class SaleImporter(CSVImporter):
         yesterday = datetime.date.today() - datetime.timedelta(1)
         till.opening_date = yesterday
         till.closing_date = yesterday
-
-

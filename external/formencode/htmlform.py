@@ -17,9 +17,9 @@ Usage::
     defaults = form.schema.from_python(get_defaults_from_model())
     defaults.update(request_dict)
     write(form.render(defaults, errors)
-    
+
 You can also embed the schema in the form, using form:required, etc.,
-tags.  
+tags.
 
 """
 
@@ -68,5 +68,3 @@ class HTMLForm(object):
             return result, None
         except Invalid, e:
             return None, e.unpack_errors()
-
-    

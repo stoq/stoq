@@ -60,4 +60,3 @@ def test_singleUntranslatedColumnOrder():
            ['zoe', 'tim', 'joe', 'joe', 'aj']
     assert firstList(Names.select().orderBy(Names.q.firstName)) == \
            ['aj', 'joe', 'joe', 'tim', 'zoe']
-

@@ -30,4 +30,3 @@ application = _(u'Till')
 description = _("""Till application.""")
 
 icon_name = 'stoq-till-app'
-

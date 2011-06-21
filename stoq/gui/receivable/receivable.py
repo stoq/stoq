@@ -177,10 +177,10 @@ class ReceivableApp(SearchableAppWindow):
 
 
     def _show_comments(self, receivable_view):
-            trans = new_transaction()
-            retval = run_dialog(PaymentCommentsDialog, self, trans,
-                                receivable_view.payment)
-            finish_transaction(trans, retval)
+        trans = new_transaction()
+        retval = run_dialog(PaymentCommentsDialog, self, trans,
+                            receivable_view.payment)
+        finish_transaction(trans, retval)
 
     def _receive(self, receivable_views):
         """
@@ -322,7 +322,7 @@ class ReceivableApp(SearchableAppWindow):
         """whether or not we can cancel the receiving.
         """
         if len(receivable_views) != 1:
-            return False 
+            return False
 
         return receivable_views[0].can_cancel_payment()
 

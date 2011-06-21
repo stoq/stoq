@@ -30,4 +30,3 @@ application = _('Accounts Receivable')
 description = _("""Accounts Receivable application.""")
 
 icon_name = 'stoq-bills'
-

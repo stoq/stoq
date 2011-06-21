@@ -76,4 +76,3 @@ class PaymentsEditor(BaseEditor):
 
     def disable_back(self):
         pass
-

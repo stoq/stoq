@@ -56,12 +56,12 @@ SMALL_FONT = ("Vera", 12)
 TEXT_HEIGHT = 13
 
 def _get_logotype_path(trans):
-   logofile = sysparam(trans).CUSTOM_LOGO_FOR_REPORTS
-   if logofile.is_valid():
-       logofile.resize(LOGO_SIZE)
-       return str(logofile.image_path)
-   else:
-       return environ.find_resource("pixmaps", "stoq_logo_bgwhite.png")
+    logofile = sysparam(trans).CUSTOM_LOGO_FOR_REPORTS
+    if logofile.is_valid():
+        logofile.resize(LOGO_SIZE)
+        return str(logofile.image_path)
+    else:
+        return environ.find_resource("pixmaps", "stoq_logo_bgwhite.png")
 
 
 class BaseStoqReport(ReportTemplate):

@@ -90,4 +90,3 @@ class ContractExample(ReportTemplate):
 
 filename = build_report(ContractExample)
 print_preview(filename)
-

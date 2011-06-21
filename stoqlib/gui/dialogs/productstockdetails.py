@@ -211,4 +211,3 @@ class ProductStockHistoryDialog(BaseEditor):
 
         storable = IStorable(self.model.product)
         self.add_proxy(storable, ['full_balance'])
-

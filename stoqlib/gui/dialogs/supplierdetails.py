@@ -168,4 +168,3 @@ class SupplierDetailsDialog(BaseEditor):
     def on_further_details_button__clicked(self, *args):
         run_person_role_dialog(SupplierEditor, self, self.conn,
                                self.model, visual_mode=True)
-

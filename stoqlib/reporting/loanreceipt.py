@@ -163,4 +163,3 @@ class LoanReceipt(BaseStoqReport):
         return _(u'Number: %s - Loan on %s') % (
                     self.order.get_order_number_str(),
                     self.order.open_date.strftime('%x'))
-

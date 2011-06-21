@@ -51,7 +51,7 @@ class Invalid(Exception):
         val = self.msg
         #if self.value:
         #    val += " (value: %s)" % repr(self.value)
-        return val    
+        return val
 
     def unpack_errors(self):
         """
@@ -221,7 +221,7 @@ class FancyValidator(Validator):
                                     self.validate_other,
                                     self._to_python,
                                     self.validate_python)
-    
+
     def from_python(self, value, state=None):
         return self.attempt_convert(value, state,
                                     self.validate_python,
@@ -242,4 +242,3 @@ class FancyValidator(Validator):
     validate_other = None
     _to_python = None
     _from_python = None
-

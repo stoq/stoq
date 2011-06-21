@@ -350,5 +350,3 @@ class TillEntry(Domain):
     value = PriceCol()
     till = ForeignKey("Till", notNull=True)
     payment = ForeignKey("Payment", default=None)
-
-

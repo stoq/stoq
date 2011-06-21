@@ -246,9 +246,9 @@ class BaseICMSSlave(BaseTaxSlave):
         if (self.p_cred_sn.get_value()
             and not self.p_cred_sn_valid_until.get_date()):
                 # Set the default expire date to the last day of current month.
-                default_expire_date = (datetime.date.today() +
-                                       relativedelta(day=1, months=+1, days=-1))
-                self.p_cred_sn_valid_until.set_date(default_expire_date)
+            default_expire_date = (datetime.date.today() +
+                                   relativedelta(day=1, months=+1, days=-1))
+            self.p_cred_sn_valid_until.set_date(default_expire_date)
 
     def _update_selected_cst(self):
         cst = self.cst.get_selected_data()

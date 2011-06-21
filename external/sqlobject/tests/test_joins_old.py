@@ -113,4 +113,3 @@ class TestJoin2:
 
 
 teardown_module()
-

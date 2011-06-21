@@ -53,7 +53,7 @@ class FillingParser(HTMLParser.HTMLParser):
         self.defaults = defaults
         self.in_textarea = None
         self.in_select = None
-        self.skip_next = False        
+        self.skip_next = False
         self.errors = errors or {}
         self.in_error = None
         self.skip_error = False
@@ -97,7 +97,7 @@ class FillingParser(HTMLParser.HTMLParser):
                 for key in unused_errors.keys():
                     error_text.append("%s: %s" % (key, self.errors[key]))
                 assert False, (
-                    "These errors were not used in the form: %s" % 
+                    "These errors were not used in the form: %s" %
                     ', '.join(error_text))
 
     def add_key(self, key):
@@ -261,7 +261,7 @@ class FillingParser(HTMLParser.HTMLParser):
         self.write_tag('select', attrs)
         self.skip_next = True
         self.add_key(self.in_select)
-        
+
 
     def handle_end_select(self):
         self.in_select = None
@@ -364,6 +364,6 @@ class FillingParser(HTMLParser.HTMLParser):
         current = self.get_attr(attr, 'class', '')
         new = current + ' ' + class_name
         self.set_attr(attr, 'class', new.strip())
-            
+
     def text(self):
         return ''.join(self.content)

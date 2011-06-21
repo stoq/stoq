@@ -39,4 +39,3 @@ class TGPlugin(object):
             info.update(self.extra_vars_func())
 
         return template.render(**info)
-

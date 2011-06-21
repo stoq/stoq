@@ -376,9 +376,9 @@ class FieldGrid(gtk.Layout):
                                  x * fw, height)
 
             for y in range(self.height):
-                 window.draw_line(grid_gc,
-                                  0, y * fh,
-                                  width, y * fh)
+                window.draw_line(grid_gc,
+                                 0, y * fh,
+                                 width, y * fh)
 
         fields = self._fields[:]
         if self._selected_field:

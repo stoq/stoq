@@ -169,4 +169,3 @@ class SellableSearch(SearchEditor):
             return None
         return sellable_view.stock - self.current_sale_stock.get(
             sellable_view.id, 0)
-

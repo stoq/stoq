@@ -79,7 +79,7 @@ from converters import sqlrepr, registerConverter, TRUE, FALSE
 TRUE, FALSE # pyflakes
 safeSQLRE = re.compile(r'^[a-zA-Z_][a-zA-Z0-9_\.]*$')
 def sqlIdentifier(obj):
-    # some db drivers return unicode column names 
+    # some db drivers return unicode column names
     return isinstance(obj, types.StringTypes) and bool(safeSQLRE.search(obj.strip()))
 
 

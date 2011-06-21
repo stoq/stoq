@@ -63,13 +63,13 @@ _ = stoqlib_gettext
 
 class TestEmployeeRoleHistory(DomainTest):
     def testCreate(self):
-         EmployeeRole(connection=self.trans, name='ajudante')
+        EmployeeRole(connection=self.trans, name='ajudante')
 
     def testHasRole(self):
-         role = EmployeeRole(connection=self.trans, name='role')
-         self.failIf(role.has_other_role('Role'))
-         role = EmployeeRole(connection=self.trans, name='Role')
-         self.failUnless(role.has_other_role('role'))
+        role = EmployeeRole(connection=self.trans, name='role')
+        self.failIf(role.has_other_role('Role'))
+        role = EmployeeRole(connection=self.trans, name='Role')
+        self.failUnless(role.has_other_role('role'))
 
 
 class TestEmployeeRole(DomainTest):
@@ -332,12 +332,12 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(client.get_status_string(), status)
 
     def test_get_active_clients(self):
-         table = PersonAdaptToClient
-         active_clients = table.get_active_clients(self.trans).count()
-         client = self.create_client()
-         client.status = table.STATUS_SOLVENT
-         one_more_active_client = table.get_active_clients(self.trans).count()
-         self.assertEquals(active_clients + 1, one_more_active_client)
+        table = PersonAdaptToClient
+        active_clients = table.get_active_clients(self.trans).count()
+        client = self.create_client()
+        client.status = table.STATUS_SOLVENT
+        one_more_active_client = table.get_active_clients(self.trans).count()
+        self.assertEquals(active_clients + 1, one_more_active_client)
 
     def test_get_client_sales(self):
         client = PersonAdaptToClient.select(connection=self.trans)
@@ -365,9 +365,9 @@ class TestSupplier(_PersonFacetTest, DomainTest):
     facet = PersonAdaptToSupplier
 
     def testGetActiveSuppliers(self):
-         for supplier in PersonAdaptToSupplier.get_active_suppliers(self.trans):
-              self.assertEquals(supplier.status,
-                                PersonAdaptToSupplier.STATUS_ACTIVE)
+        for supplier in PersonAdaptToSupplier.get_active_suppliers(self.trans):
+            self.assertEquals(supplier.status,
+                              PersonAdaptToSupplier.STATUS_ACTIVE)
 
     def testGetAllSuppliers(self):
         query = AND(Person.q.name ==  "test",

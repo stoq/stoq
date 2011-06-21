@@ -343,4 +343,3 @@ class ExpressionGenerator(object):
                 self.buf.write(", ")
                 self.visit(a)
         self.buf.write(")")
-

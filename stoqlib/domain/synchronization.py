@@ -42,4 +42,3 @@ class BranchSynchronization(ORMObject):
     sync_time = DateTimeCol(notNone=True)
     branch = ForeignKey('PersonAdaptToBranch', unique=True)
     policy = StringCol(notNone=True)
-

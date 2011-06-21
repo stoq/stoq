@@ -47,4 +47,3 @@ def introspect_slaves(window):
                 _printone(slave, lvl)
 
     _foreach_child(window, _parse)
-

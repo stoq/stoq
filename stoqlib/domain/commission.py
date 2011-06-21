@@ -134,7 +134,7 @@ class Commission(Domain):
         source = CommissionSource.selectOneBy(sellable=sellable,
                                               connection=conn)
         if not source and sellable.category:
-           source = self._get_category_commission(sellable.category)
+            source = self._get_category_commission(sellable.category)
 
         value = 0
         if source:

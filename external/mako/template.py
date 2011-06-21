@@ -198,4 +198,3 @@ def _get_module_info_from_callable(callable_):
 
 def _get_module_info(filename):
     return ModuleInfo._modules[filename]
-

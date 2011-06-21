@@ -310,4 +310,3 @@ class LoginHelper:
         if msg:
             warning(msg)
         raise SystemExit
-

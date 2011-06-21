@@ -99,7 +99,7 @@ def variable_decode(d):
             if len(to_sort) < known_lengths[key]:
                 to_sort.extend(['']*(known_lengths[key] - len(to_sort)))
         source[last_key] = to_sort
-        
+
     return result
 
 def variable_encode(d, prepend='', result=None):
@@ -133,7 +133,6 @@ class NestedVariables(api.FancyValidator):
 
     def _to_python(self, value, state):
         return variable_decode(value)
-    
+
     def _from_python(self, value, state):
         return variable_encode(value)
-

@@ -953,7 +953,7 @@ class ConstantSpace(object):
     def __getattr__(self, attr):
         # Workarround arround an issue in inspect.isclass
         if attr == '__bases__':
-             raise AttributeError
+            raise AttributeError
         return type(attr, (NamedFunc,), {'name': attr})
 
 

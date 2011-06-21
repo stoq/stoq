@@ -85,5 +85,3 @@ class CompanyEditorTemplate(BaseEditorSlave):
         if confirm_person:
             self._person_slave.on_confirm()
         return self.model
-
-

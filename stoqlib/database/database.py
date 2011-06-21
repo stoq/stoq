@@ -288,4 +288,3 @@ def query_server_time(conn):
         return conn.queryAll("SELECT NOW();")[0][0]
     else:
         raise NotImplementedError
-

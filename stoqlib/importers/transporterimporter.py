@@ -72,4 +72,3 @@ class TransporterImporter(CSVImporter):
         dict(open_contract_date=self.parse_date(data.open_contract),
              freight_percentage=data.freight_percentage),
         person.addFacet(ITransporter, connection=trans)
-

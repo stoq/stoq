@@ -430,5 +430,3 @@ class BaseRelationshipEditorSlave(GladeSlaveDelegate):
     def _on_remove_item__clicked(self, list, item):
         if self.remove(item):
             self.relations_list.remove_item(item)
-
-

@@ -100,4 +100,3 @@ def apply_patch(trans):
     trans.query("""ALTER TABLE product_history
                    DROP COLUMN quantity_retained;""")
     trans.query("DROP TABLE product_retention_history;")
-

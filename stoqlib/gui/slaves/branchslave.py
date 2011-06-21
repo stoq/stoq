@@ -58,4 +58,3 @@ class BranchDetailsSlave(BaseEditorSlave):
         self._setup_crt_combo()
         self.proxy = self.add_proxy(self.model,
                                     BranchDetailsSlave.proxy_widgets)
-

@@ -211,4 +211,3 @@ class ClientDetailsDialog(BaseEditor):
     def on_further_details_button__clicked(self, *args):
         run_person_role_dialog(ClientEditor, self, self.conn,
                                self.model, visual_mode=True)
-

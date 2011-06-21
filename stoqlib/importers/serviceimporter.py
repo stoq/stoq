@@ -59,4 +59,3 @@ class ServiceImporter(CSVImporter):
                             barcode=data.barcode)
         service = Service(sellable=sellable,
                           connection=trans)
-

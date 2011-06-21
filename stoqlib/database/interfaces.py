@@ -109,4 +109,3 @@ class ICurrentUser(Interface):
     profile = Attribute('A profile represents a colection of information '
                         'which represents what this user can do in the '
                         'system')
-

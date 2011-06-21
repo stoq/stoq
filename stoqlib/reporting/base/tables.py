@@ -776,4 +776,3 @@ class GroupingTableColumn(ObjectTableColumn):
                                    format_string=format_string,
                                    format_func=format_func, virtual=virtual,
                                    style=style)
-

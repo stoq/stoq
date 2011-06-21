@@ -52,4 +52,3 @@ class ContactEditor(BaseEditor):
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, ContactEditor.proxy_widgets)
-

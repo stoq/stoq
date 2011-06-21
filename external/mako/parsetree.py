@@ -34,10 +34,10 @@ class TemplateNode(Node):
         return self.nodes
     def __repr__(self):
         return "TemplateNode(%s, %s)" % (repr(self.page_attributes), repr(self.nodes))
-        
+
 class ControlLine(Node):
     """defines a control line, a line-oriented python line or end tag.
-    
+
     % if foo:
         (markup)
     % endif
@@ -75,20 +75,20 @@ class Text(Node):
         self.content = content
     def __repr__(self):
         return "Text(%s, %s)" % (repr(self.content), repr((self.lineno, self.pos)))
-        
+
 class Code(Node):
     """defines a Python code block, either inline or module level.
-    
+
     inline:
     <%
         x = 12
     %>
-    
+
     module level:
     <%!
         import logger
     %>
-    
+
     """
     def __init__(self, text, ismodule, **kwargs):
         super(Code, self).__init__(**kwargs)
@@ -101,24 +101,24 @@ class Code(Node):
         return self.code.undeclared_identifiers
     def __repr__(self):
         return "Code(%s, %s, %s)" % (repr(self.text), repr(self.ismodule), repr((self.lineno, self.pos)))
-        
+
 class Comment(Node):
     """defines a comment line.
-    
+
     # this is a comment
-    
+
     """
     def __init__(self, text, **kwargs):
         super(Comment, self).__init__(**kwargs)
         self.text = text
     def __repr__(self):
         return "Comment(%s, %s)" % (repr(self.text), repr((self.lineno, self.pos)))
-        
+
 class Expression(Node):
     """defines an inline expression.
-    
+
     ${x+y}
-    
+
     """
     def __init__(self, text, escapes, **kwargs):
         super(Expression, self).__init__(**kwargs)
@@ -133,7 +133,7 @@ class Expression(Node):
         return self.code.undeclared_identifiers.union(self.escapes_code.undeclared_identifiers.difference(util.Set(filters.DEFAULT_ESCAPES.keys())))
     def __repr__(self):
         return "Expression(%s, %s, %s)" % (repr(self.text), repr(self.escapes_code.args), repr((self.lineno, self.pos)))
-        
+
 class _TagMeta(type):
     """metaclass to allow Tag to produce a subclass according to its keyword"""
     _classmap = {}
@@ -147,12 +147,12 @@ class _TagMeta(type):
         except KeyError:
             raise exceptions.CompileException("No such tag: '%s'" % keyword, kwargs['lineno'], kwargs['pos'], kwargs['filename'])
         return type.__call__(cls, keyword, attributes, **kwargs)
-        
+
 class Tag(Node):
     """abstract base class for tags.
-    
+
     <%sometag/>
-    
+
     <%someothertag>
         stuff
     </%someothertag>
@@ -161,17 +161,17 @@ class Tag(Node):
     __keyword__ = None
     def __init__(self, keyword, attributes, expressions, nonexpressions, required, **kwargs):
         """construct a new Tag instance.
-        
+
         this constructor not called directly, and is only called by subclasses.
-        
+
         keyword - the tag keyword
-        
+
         attributes - raw dictionary of attribute key/value pairs
-        
+
         expressions - a util.Set of identifiers that are legal attributes, which can also contain embedded expressions
-        
+
         nonexpressions - a util.Set of identifiers that are legal attributes, which cannot contain embedded expressions
-        
+
         **kwargs - other arguments passed to the Node superclass (lineno, pos)"""
         super(Tag, self).__init__(**kwargs)
         self.keyword = keyword
@@ -215,7 +215,7 @@ class Tag(Node):
         return self.expression_undeclared_identifiers
     def __repr__(self):
         return "%s(%s, %s, %s, %s)" % (self.__class__.__name__, repr(self.keyword), repr(self.attributes), repr((self.lineno, self.pos)), repr([repr(x) for x in self.nodes]))
-        
+
 class IncludeTag(Tag):
     __keyword__ = 'include'
     def __init__(self, keyword, attributes, **kwargs):
@@ -226,7 +226,7 @@ class IncludeTag(Tag):
     def undeclared_identifiers(self):
         identifiers = self.page_args.undeclared_identifiers.difference(util.Set(["__DUMMY"]))
         return identifiers.union(super(IncludeTag, self).undeclared_identifiers())
-    
+
 class NamespaceTag(Tag):
     __keyword__ = 'namespace'
     def __init__(self, keyword, attributes, **kwargs):
@@ -242,7 +242,7 @@ class TextTag(Tag):
     def __init__(self, keyword, attributes, **kwargs):
         super(TextTag, self).__init__(keyword, attributes, (), ('filter'), (), **kwargs)
         self.filter_args = ast.ArgumentList(attributes.get('filter', ''), self.lineno, self.pos, self.filename)
-        
+
 class DefTag(Tag):
     __keyword__ = 'def'
     def __init__(self, keyword, attributes, **kwargs):
@@ -285,5 +285,3 @@ class PageTag(Tag):
         self.filter_args = ast.ArgumentList(attributes.get('expression_filter', ''), self.lineno, self.pos, self.filename)
     def declared_identifiers(self):
         return self.body_decl.argnames
-        
-    

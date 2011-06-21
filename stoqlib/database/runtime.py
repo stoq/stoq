@@ -291,4 +291,3 @@ def get_current_station(conn):
     station = get_utility(ICurrentBranchStation, None)
     if station is not None:
         return station.get(station.id, connection=conn)
-

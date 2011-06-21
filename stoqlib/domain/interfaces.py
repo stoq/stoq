@@ -454,4 +454,3 @@ class IReversal(Interface):
         """Takes a financial entry and reverse it, creating a new instance
         with an oposite value
         """
-
