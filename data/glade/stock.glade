@@ -425,7 +425,7 @@
                                                                 <property name="visible">True</property>
                                                                 <child>
                                                                     <widget class="GtkImage" id="image2">
-                                                                        <property name="file">document-print.png</property>
+                                                                        <property name="stock">gtk-print</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>

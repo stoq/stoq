@@ -10,7 +10,6 @@
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkImage" id="error_icon">
-                        <property name="file"></property>
                         <property name="stock">gtk-dialog-error</property>
                         <property name="visible">True</property>
                     </widget>
@@ -20,7 +19,6 @@
                 </child>
                 <child>
                     <widget class="GtkImage" id="alert_icon">
-                        <property name="file"></property>
                         <property name="stock">gtk-dialog-warning</property>
                         <property name="visible">True</property>
                     </widget>

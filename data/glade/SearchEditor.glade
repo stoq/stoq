@@ -26,7 +26,7 @@
                                                 <property name="visible">True</property>
                                                 <child>
                                                     <widget class="GtkImage" id="GtkImage1">
-                                                        <property name="file">add16px.png</property>
+                                                        <property name="stock">stoq-add</property>
                                                         <property name="visible">True</property>
                                                     </widget>
                                                 </child>
@@ -60,7 +60,7 @@
                                                 <property name="visible">True</property>
                                                 <child>
                                                     <widget class="GtkImage" id="GtkImage1">
-                                                        <property name="file">edit16px.png</property>
+                                                        <property name="stock">stoq-edit</property>
                                                         <property name="visible">True</property>
                                                     </widget>
                                                 </child>

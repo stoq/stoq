@@ -124,7 +124,7 @@
                                         <property name="visible">True</property>
                                         <child>
                                             <widget class="GtkImage" id="GtkImage1">
-                                                <property name="file">panel-lockscreen16px.png</property>
+                                                <property name="stock">stoq-lock</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                         </child>
