@@ -161,9 +161,9 @@ class _PersonEditorTemplate(BaseEditorSlave):
         self.person_notebook.set_tab_label_text(tab_child, tab_text)
         addresses = self.model.get_total_addresses()
         if addresses == 2:
-            self.address_button.set_label("1 More Address...")
+            self.address_button.set_label(_("1 More Address..."))
         elif addresses > 2:
-            self.address_button.set_label("%i More Addresses..."
+            self.address_button.set_label(_("%i More Addresses...")
                                             % (addresses -1) )
 
 class BasePersonRoleEditor(BaseEditor):
