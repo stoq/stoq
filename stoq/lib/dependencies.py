@@ -31,6 +31,7 @@ _ = gettext.gettext
 DATEUTIL_REQUIRED = (1, 4, 1)
 GAZPACHO_REQUIRED = (0, 6, 6)
 GTK_REQUIRED = (2, 16, 0)
+GUDEV_REQUIRED = (147, )
 KIWI_REQUIRED = (1, 9, 27)
 MAKO_REQUIRED = (0, 2, 5)
 PIL_REQUIRED = (1, 1, 5)
@@ -58,6 +59,7 @@ class DependencyChecker(object):
         self._check_pygtk(PYGTK_REQUIRED, GTK_REQUIRED)
         self._check_kiwi(KIWI_REQUIRED)
         self._check_vte(VTE_REQUIRED)
+        self._check_gudev(GUDEV_REQUIRED)
         self._check_zope_interface(ZOPE_INTERFACE_REQUIRED)
         self._check_psycopg(PSYCOPG_REQUIRED)
         self._check_gazpacho(GAZPACHO_REQUIRED)
@@ -160,6 +162,14 @@ You can find an older version of %s on it's homepage at\n%s""") % (
         except ImportError:
             self._missing(project="Vte",
                           url='http://developer.gnome.org/vte/',
+                          version=version)
+
+    def _check_gudev(self, version):
+        try:
+            import gudevx
+        except ImportError:
+            self._missing(project="Gudev",
+                          url='http://www.kernel.org/pub/linux/utils/kernel/hotplug/gudev/',
                           version=version)
 
     def _check_zope_interface(self, version):
