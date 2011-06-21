@@ -251,6 +251,10 @@ class Person(Domain):
         return Address.selectOneBy(personID=self.id, is_main_address=True,
                                    connection=self.get_connection())
 
+    def get_total_addresses(self):
+        return Address.selectBy(personID=self.id,
+                                connection=self.get_connection()).count()
+
     def get_address_string(self):
         address = self.get_main_address()
         if not address:
