@@ -35,6 +35,7 @@ GUDEV_REQUIRED = (147, )
 KIWI_REQUIRED = (1, 9, 27)
 MAKO_REQUIRED = (0, 2, 5)
 PIL_REQUIRED = (1, 1, 5)
+PYPOPPLER_REQUIRED = (1, 12, 1)
 PSYCOPG_REQUIRED = (2, 0, 5)
 PYGTK_REQUIRED = (2, 16, 0)
 REPORTLAB_REQUIRED = (2, 4)
@@ -60,6 +61,7 @@ class DependencyChecker(object):
         self._check_kiwi(KIWI_REQUIRED)
         self._check_vte(VTE_REQUIRED)
         self._check_gudev(GUDEV_REQUIRED)
+        self._check_pypoppler(PYPOPPLER_REQUIRED)
         self._check_zope_interface(ZOPE_INTERFACE_REQUIRED)
         self._check_psycopg(PSYCOPG_REQUIRED)
         self._check_gazpacho(GAZPACHO_REQUIRED)
@@ -166,11 +168,26 @@ You can find an older version of %s on it's homepage at\n%s""") % (
 
     def _check_gudev(self, version):
         try:
-            import gudevx
+            import gudev
         except ImportError:
             self._missing(project="Gudev",
                           url='http://www.kernel.org/pub/linux/utils/kernel/hotplug/gudev/',
                           version=version)
+
+    def _check_pypoppler(self, version):
+        try:
+            import poppler
+        except ImportError:
+            self._missing(project="Pypoppler",
+                          url='https://launchpad.net/poppler-python',
+                          version=version)
+
+        pypoppler_version = poppler.pypoppler_version
+        if pypoppler_version < version:
+            self._too_old(project="Pypoppler",
+                          url='https://launchpad.net/poppler-python',
+                          found=_tuple2str(pypoppler_version),
+                          required=version)
 
     def _check_zope_interface(self, version):
         try:
