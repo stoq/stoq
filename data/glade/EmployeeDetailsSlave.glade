@@ -286,13 +286,6 @@
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="top_attach">3</property>
-                        <property name="bottom_attach">4</property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="GtkFrame" id="frame2">
                         <property name="border_width">2</property>
                         <property name="label" context="yes" translatable="yes">PIS</property>
@@ -470,24 +463,6 @@ Number:</property>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">3</property>
-                        <property name="bottom_attach">4</property>
                     </packing>
                 </child>
             </widget>

@@ -71,15 +71,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="ProxyLabel" id="status">
                                 <property name="data_type">str</property>
                                 <property name="model_attribute">status_string</property>
@@ -94,15 +85,6 @@
                         <child>
                             <widget class="GtkHBox" id="hbox1">
                                 <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
-                                <child>
-                                    <placeholder/>
-                                    <packing>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
                                 <child>
                                     <widget class="GtkButton" id="further_details_button">
                                         <property name="is_focus">True</property>

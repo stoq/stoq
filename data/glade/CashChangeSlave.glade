@@ -52,14 +52,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="x_options"></property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="ProxyEntry" id="received_value">
                                 <property name="data_type">currency</property>
                                 <property name="is_focus">True</property>

@@ -192,12 +192,6 @@
                                         <property name="expand">False</property>
                                     </packing>
                                 </child>
-                                <child>
-                                    <placeholder/>
-                                    <packing>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
                             </widget>
                             <packing>
                                 <property name="resize">True</property>
@@ -212,9 +206,6 @@
                                 <child>
                                     <widget class="GtkViewport" id="viewport1">
                                         <property name="visible">True</property>
-                                        <child>
-                                            <placeholder/>
-                                        </child>
                                     </widget>
                                 </child>
                             </widget>

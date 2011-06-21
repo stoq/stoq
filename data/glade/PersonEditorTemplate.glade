@@ -104,13 +104,6 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <placeholder/>
-                                    <packing>
-                                        <property name="left_attach">2</property>
-                                        <property name="right_attach">3</property>
-                                    </packing>
-                                </child>
-                                <child>
                                     <widget class="GtkLabel" id="email_lbl">
                                         <property name="label" context="yes" translatable="yes">E-mail:</property>
                                         <property name="visible">True</property>
@@ -136,13 +129,6 @@
                                         <property name="right_attach">3</property>
                                         <property name="top_attach">2</property>
                                         <property name="x_options">fill</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <placeholder/>
-                                    <packing>
-                                        <property name="left_attach">3</property>
-                                        <property name="right_attach">4</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -202,12 +188,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="position">2</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="GtkFrame" id="address_frame">
                                 <property name="label" context="yes" translatable="yes">Main Address</property>
                                 <property name="visible">True</property>
@@ -219,9 +199,6 @@
                                         <child>
                                             <widget class="GtkEventBox" id="address_holder">
                                                 <property name="visible">True</property>
-                                                <child>
-                                                    <placeholder/>
-                                                </child>
                                             </widget>
                                         </child>
                                     </widget>
@@ -262,9 +239,6 @@
                         <child>
                             <widget class="GtkEventBox" id="role_holder">
                                 <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
                             </widget>
                             <packing>
                                 <property name="position">5</property>
@@ -290,9 +264,6 @@
                                     <widget class="GtkEventBox" id="individual_holder">
                                         <property name="border_width">5</property>
                                         <property name="visible">True</property>
-                                        <child>
-                                            <placeholder/>
-                                        </child>
                                     </widget>
                                 </child>
                             </widget>
@@ -309,9 +280,6 @@
                                     <widget class="GtkEventBox" id="company_holder">
                                         <property name="border_width">5</property>
                                         <property name="visible">True</property>
-                                        <child>
-                                            <placeholder/>
-                                        </child>
                                     </widget>
                                 </child>
                             </widget>
@@ -334,9 +302,6 @@
                         <child>
                             <widget class="GtkEventBox" id="person_status_holder">
                                 <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -345,9 +310,6 @@
                         <child>
                             <widget class="GtkEventBox" id="details_holder">
                                 <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -357,9 +319,6 @@
                         <child>
                             <widget class="GtkEventBox" id="note_holder">
                                 <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
                             </widget>
                             <packing>
                                 <property name="position">2</property>
@@ -379,9 +338,6 @@
                             <widget class="GtkEventBox" id="custom_holder">
                                 <property name="border_width">5</property>
                                 <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
                             </widget>
                         </child>
                     </widget>
@@ -398,9 +354,6 @@
                             <widget class="GtkEventBox" id="extra_holder">
                                 <property name="border_width">5</property>
                                 <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
                             </widget>
                         </child>
                     </widget>

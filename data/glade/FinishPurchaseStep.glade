@@ -65,20 +65,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="top_attach">4</property>
-                                <property name="bottom_attach">5</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="top_attach">5</property>
-                                <property name="bottom_attach">6</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="ProxyEntry" id="salesperson_name">
                                 <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>

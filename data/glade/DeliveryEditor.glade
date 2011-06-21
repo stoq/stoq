@@ -145,9 +145,6 @@
                 <child>
                     <widget class="GtkEventBox" id="addition_list_holder">
                         <property name="visible">True</property>
-                        <child>
-                            <placeholder/>
-                        </child>
                     </widget>
                     <packing>
                         <property name="position">4</property>

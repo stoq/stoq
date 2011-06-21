@@ -68,12 +68,6 @@
                                 <property name="position">1</property>
                             </packing>
                         </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="position">2</property>
-                            </packing>
-                        </child>
                     </widget>
                     <packing>
                         <property name="left_attach">1</property>
@@ -94,22 +88,6 @@
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
                         <property name="data_type">unicode</property>
                         <property name="label" context="yes" translatable="yes">Freight:</property>
@@ -121,22 +99,6 @@
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
                         <property name="top_attach">1</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
                     </packing>
                 </child>
                 <child>
@@ -154,22 +116,6 @@
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">4</property>
-                        <property name="right_attach">5</property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
                         <property name="data_type">unicode</property>
                         <property name="label" context="yes" translatable="yes">%</property>
@@ -181,15 +127,6 @@
                         <property name="left_attach">4</property>
                         <property name="right_attach">5</property>
                         <property name="top_attach">1</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">4</property>
-                        <property name="right_attach">5</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
                     </packing>
                 </child>
             </widget>

@@ -24,9 +24,6 @@
                 <child>
                     <widget class="GtkEventBox" id="on_commission_data_holder">
                         <property name="visible">True</property>
-                        <child>
-                            <placeholder/>
-                        </child>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>

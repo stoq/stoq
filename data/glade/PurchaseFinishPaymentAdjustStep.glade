@@ -117,12 +117,6 @@
                         <property name="position">2</property>
                     </packing>
                 </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="position">3</property>
-                    </packing>
-                </child>
             </widget>
         </child>
     </widget>

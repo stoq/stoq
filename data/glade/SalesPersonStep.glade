@@ -117,13 +117,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="GtkButton" id="create_client">
                                 <property name="is_focus">True</property>
                                 <property name="label" context="yes" translatable="yes">Create...</property>
@@ -149,15 +142,6 @@
                                 <property name="right_attach">3</property>
                                 <property name="top_attach">2</property>
                                 <property name="x_options">fill</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
                             </packing>
                         </child>
                         <child>
@@ -196,15 +180,6 @@
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
                                 <property name="top_attach">2</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
                             </packing>
                         </child>
                         <child>
@@ -253,31 +228,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">4</property>
-                                <property name="right_attach">5</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">5</property>
-                                <property name="right_attach">6</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">5</property>
-                                <property name="right_attach">6</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="GtkButton" id="create_cfop">
                                 <property name="is_focus">True</property>
                                 <property name="label" context="yes" translatable="yes">Create...</property>
@@ -288,15 +238,6 @@
                                 <property name="left_attach">5</property>
                                 <property name="right_attach">6</property>
                                 <property name="top_attach">2</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">5</property>
-                                <property name="right_attach">6</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
                             </packing>
                         </child>
                     </widget>
@@ -425,9 +366,6 @@
                                 <child>
                                     <widget class="GtkEventBox" id="cash_change_holder">
                                         <property name="visible">True</property>
-                                        <child>
-                                            <placeholder/>
-                                        </child>
                                     </widget>
                                 </child>
                                 <child>
@@ -439,9 +377,6 @@
                                         <child>
                                             <widget class="GtkEventBox" id="discount_surcharge_slave">
                                                 <property name="visible">True</property>
-                                                <child>
-                                                    <placeholder/>
-                                                </child>
                                             </widget>
                                         </child>
                                     </widget>
@@ -463,9 +398,6 @@
                 <child>
                     <widget class="GtkEventBox" id="select_method_holder">
                         <property name="visible">True</property>
-                        <child>
-                            <placeholder/>
-                        </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>

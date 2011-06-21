@@ -127,13 +127,6 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <placeholder/>
-                                    <packing>
-                                        <property name="left_attach">2</property>
-                                        <property name="right_attach">3</property>
-                                    </packing>
-                                </child>
-                                <child>
                                     <widget class="ProxyLabel" id="kiwilabel3">
                                         <property name="label" context="yes" translatable="yes">%</property>
                                         <property name="model_attribute">kiwilabel3</property>

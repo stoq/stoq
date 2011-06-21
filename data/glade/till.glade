@@ -295,13 +295,6 @@
                                 <property name="visible">True</property>
                             </widget>
                         </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="position">1</property>
-                            </packing>
-                        </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>
@@ -322,10 +315,6 @@
                         <child>
                             <widget class="GtkHBox" id="logo_box">
                                 <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                    <packing/>
-                                </child>
                                 <child>
                                     <widget class="GtkImage" id="stoq_logo">
                                         <property name="file">stoq_logo_small.png</property>
@@ -366,9 +355,6 @@
                         <child>
                             <widget class="GtkEventBox" id="search_holder">
                                 <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
                             </widget>
                             <packing>
                                 <property name="position">1</property>

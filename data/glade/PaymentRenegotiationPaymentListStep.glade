@@ -27,13 +27,6 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="ProxyComboEntry" id="client">
                                 <property name="model_attribute">client</property>
                                 <property name="visible">True</property>
@@ -41,15 +34,6 @@
                             <packing>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
                             </packing>
                         </child>
                     </widget>
@@ -84,9 +68,6 @@
                         <child>
                             <widget class="GtkEventBox" id="cash_change_holder">
                                 <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
                             </widget>
                         </child>
                         <child>
@@ -208,9 +189,6 @@
                 <child>
                     <widget class="GtkEventBox" id="select_method_holder">
                         <property name="visible">True</property>
-                        <child>
-                            <placeholder/>
-                        </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>

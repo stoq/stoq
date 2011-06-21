@@ -77,15 +77,6 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <placeholder/>
-                                    <packing>
-                                        <property name="left_attach">2</property>
-                                        <property name="right_attach">3</property>
-                                        <property name="x_options"></property>
-                                        <property name="y_options"></property>
-                                    </packing>
-                                </child>
-                                <child>
                                     <widget class="ProxyComboBox" id="interval_type_combo">
                                         <property name="data_type">int</property>
                                         <property name="model_attribute">interval_type</property>

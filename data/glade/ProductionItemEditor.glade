@@ -98,13 +98,6 @@
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="GtkLabel" id="location_content">
                         <property name="label" context="yes" translatable="yes">Location:</property>
                         <property name="visible">True</property>
@@ -132,13 +125,6 @@
                         <property name="top_attach">2</property>
                         <property name="x_options">fill</property>
                         <property name="y_options">fill</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
                     </packing>
                 </child>
                 <child>

@@ -34,34 +34,6 @@
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="top_attach">3</property>
-                        <property name="bottom_attach">4</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="top_attach">4</property>
-                        <property name="bottom_attach">5</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="top_attach">5</property>
-                        <property name="bottom_attach">6</property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="profile_name">
                         <property name="data_type">unicode</property>
                         <property name="is_focus">True</property>
@@ -91,9 +63,6 @@
                                             <widget class="GtkVBox" id="applications_vbox">
 					        <property name="border_width">6</property>
                                                 <property name="visible">True</property>
-                                                <child>
-                                                    <placeholder/>
-                                                </child>
                                             </widget>
                                         </child>
                                     </widget>
@@ -106,42 +75,6 @@
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">3</property>
-                        <property name="bottom_attach">4</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">4</property>
-                        <property name="bottom_attach">5</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">5</property>
-                        <property name="bottom_attach">6</property>
                     </packing>
                 </child>
             </widget>

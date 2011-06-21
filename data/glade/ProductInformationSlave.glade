@@ -128,20 +128,6 @@
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="top_attach">9</property>
-                        <property name="bottom_attach">10</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="top_attach">10</property>
-                        <property name="bottom_attach">11</property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="ProxyEntry" id="location">
                         <property name="data_type">unicode</property>
                         <property name="is_focus">True</property>
@@ -265,24 +251,6 @@
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">9</property>
-                        <property name="bottom_attach">10</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">10</property>
-                        <property name="bottom_attach">11</property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="GtkLabel" id="manufacturer_lbl">
                         <property name="label" context="yes" translatable="yes">Manufacturer:</property>
                         <property name="visible">True</property>
@@ -353,33 +321,6 @@
                         <property name="right_attach">3</property>
                         <property name="top_attach">7</property>
                         <property name="y_options">fill</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="top_attach">8</property>
-                        <property name="bottom_attach">9</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="top_attach">9</property>
-                        <property name="bottom_attach">10</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="top_attach">10</property>
-                        <property name="bottom_attach">11</property>
                     </packing>
                 </child>
                 <child>
@@ -494,33 +435,6 @@
                         <property name="right_attach">4</property>
                         <property name="top_attach">7</property>
                         <property name="y_options">fill</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
-                        <property name="top_attach">8</property>
-                        <property name="bottom_attach">9</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
-                        <property name="top_attach">9</property>
-                        <property name="bottom_attach">10</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
-                        <property name="top_attach">10</property>
-                        <property name="bottom_attach">11</property>
                     </packing>
                 </child>
             </widget>

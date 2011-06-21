@@ -108,9 +108,6 @@
                 <child>
                     <widget class="GtkAlignment" id="container">
                         <property name="visible">True</property>
-                        <child>
-                            <placeholder/>
-                        </child>
                     </widget>
                     <packing>
                         <property name="bottom_attach">3</property>

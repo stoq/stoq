@@ -23,12 +23,6 @@
                                 <property name="expand">False</property>
                             </packing>
                         </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="position">1</property>
-                            </packing>
-                        </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>

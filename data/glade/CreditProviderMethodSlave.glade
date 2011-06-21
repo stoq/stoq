@@ -79,12 +79,6 @@
                                 <child>
                                     <widget class="GtkVBox" id="types_box">
                                         <property name="visible">True</property>
-                                        <child>
-                                            <placeholder/>
-                                            <packing>
-                                                <property name="expand">False</property>
-                                            </packing>
-                                        </child>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">2</property>

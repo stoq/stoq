@@ -105,15 +105,6 @@
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="ProxyEntry" id="state_registry">
                         <property name="data_type">unicode</property>
                         <property name="model_attribute">state_registry</property>
@@ -125,15 +116,6 @@
                         <property name="right_attach">4</property>
                         <property name="top_attach">1</property>
                         <property name="y_options">fill</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
                     </packing>
                 </child>
             </widget>
