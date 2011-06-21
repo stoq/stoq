@@ -100,7 +100,7 @@ class WebService(object):
                person_adapt_to_branch,
                person_adapt_to_company,
                person
-         WHERE field_name = 'MAIN_COMPANYx' AND
+         WHERE field_name = 'MAIN_COMPANY' AND
                person_adapt_to_branch.id = field_value::int AND
                person_adapt_to_branch.original_id = person.id AND
                person_adapt_to_company.original_id = person.id;""")
