@@ -91,14 +91,22 @@ class WebService(object):
         return response
 
     def _get_cnpj(self):
+        # We avoid using SQLObject, otherwise crash-reporting will break
+        # for errors that happens in patches modifying any of the
+        # tables in the FROM clause below
         conn = get_connection()
-        branch = sysparam(conn).MAIN_COMPANY
-        if not branch or not branch.person:
-            return None
-        company = ICompany(branch.person)
-        if not company:
-            return None
-        return company.cnpj
+        data = conn.queryOne("""SELECT person_adapt_to_company.cnpj
+          FROM parameter_data,
+               person_adapt_to_branch,
+               person_adapt_to_company,
+               person
+         WHERE field_name = 'MAIN_COMPANYx' AND
+               person_adapt_to_branch.id = field_value::int AND
+               person_adapt_to_branch.original_id = person.id AND
+               person_adapt_to_company.original_id = person.id;""")
+        if data:
+            return data[0]
+        return ''
 
     #
     #   Public API
@@ -125,11 +133,10 @@ class WebService(object):
             'cnpj': self._get_cnpj(),
             'report': report,
         }
-
         if os.environ.get('STOQ_DISABLE_CRASHREPORT'):
             response = AsyncResponse()
             import sys
-            print >> sys.stderr, report
+            print >> sys.stderr, cnpj, report
             gobject.idle_add(lambda : response.done(''))
             return response
 
