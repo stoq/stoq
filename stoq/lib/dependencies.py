@@ -54,6 +54,9 @@ class DependencyChecker(object):
     def __init__(self):
         self.text_mode = False
 
+    def check_kiwi(self, version):
+        self._check_kiwi(version)
+
     def check(self):
         # First make it possible to open up a graphical interface,
         # so we can display error messages

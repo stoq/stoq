@@ -26,8 +26,11 @@
 # Dependency checking
 #
 
-from stoq.lib.dependencies import check_dependencies
-check_dependencies(text_mode=True)
+from stoq.lib.dependencies import DependencyChecker
+dc = DependencyChecker()
+dc.text_mode = True
+# We don't need latest kiwi in here
+dc.check_kiwi([1, 9, 26])
 
 #
 # Package installation
@@ -35,8 +38,7 @@ check_dependencies(text_mode=True)
 
 from kiwi.dist import setup, listfiles, listpackages
 
-from stoq import version
-from stoqlib import website
+from stoq import website, version
 
 def listexternal():
     dirs = []
@@ -146,5 +148,4 @@ setup(name='stoq',
       scripts=scripts,
       resources=resources,
       global_resources=global_resources,
-      templates=templates,
-      )
+      templates=templates)
