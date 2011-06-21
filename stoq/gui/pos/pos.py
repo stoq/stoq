@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -30,6 +30,7 @@ import pango
 import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.argcheck import argcheck
+from kiwi.environ import environ
 from kiwi.log import Logger
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
@@ -207,6 +208,9 @@ class POSApp(AppWindow):
         if self.param.CONFIRM_SALES_ON_TILL:
             button_set_image_with_label(self.checkout_button,
                                         'confirm24px.png', _('Close'))
+
+        logo = environ.find_resource('pixmaps', 'stoq_logo.png')
+        self.stoq_logo.set_from_file(logo)
 
         self.order_total_label.set_size('xx-large')
         self.order_total_label.set_bold(True)

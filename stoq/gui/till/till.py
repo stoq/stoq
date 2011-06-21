@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -32,6 +32,7 @@ import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.log import Logger
 from kiwi.enums import SearchFilterPosition
+from kiwi.environ import environ
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 
@@ -232,6 +233,8 @@ class TillApp(SearchableAppWindow):
         return till.get_balance()
 
     def _setup_widgets(self):
+        logo = environ.find_resource('pixmaps', 'stoq_logo_small.png')
+        self.stoq_logo.set_from_file(logo)
         self.total_label.set_size('xx-large')
         self.total_label.set_bold(True)
         self.till_status_label.set_size('large')

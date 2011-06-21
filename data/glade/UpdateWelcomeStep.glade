@@ -22,8 +22,7 @@
                             </widget>
                         </child>
                         <child>
-                            <widget class="GtkImage" id="image1">
-                                <property name="file">stoq_logo.png</property>
+                            <widget class="GtkImage" id="logo">
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
