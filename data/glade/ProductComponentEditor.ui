@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkWindow" id="ProductComponentEditor">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <property name="visible">False</property>
+    <child>
+      <object class="GtkTable" id="table1">
+        <property name="border_width">6</property>
+        <property name="column_spacing">6</property>
+        <property name="n_columns">2</property>
+        <property name="n_rows">2</property>
+        <property name="row_spacing">6</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property context="yes" name="label" translatable="yes">Component:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="x_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label2">
+            <property context="yes" name="label" translatable="yes">Quantity:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="top_attach">1</property>
+            <property name="x_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="component_description">
+            <property name="visible">True</property>
+            <property name="xalign">0.0</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="x_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxySpinButton" id="quantity">
+            <property name="adjustment">adjustment1</property>
+            <property name="data_type">Decimal</property>
+            <property name="digits">2</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">quantity</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">1</property>
+            <property name="x_options">fill</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

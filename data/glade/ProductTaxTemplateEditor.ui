@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkWindow" id="ProductTaxTemplateEditor">
+    <property name="border_width">6</property>
+    <property name="mnemonics_visible">False</property>
+    <child>
+      <object class="GtkTable" id="table1">
+        <property name="column_spacing">6</property>
+        <property name="n_columns">4</property>
+        <property name="n_rows">4</property>
+        <property name="row_spacing">6</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="label3">
+            <property name="justify">right</property>
+            <property context="yes" name="label" translatable="yes">Name:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEventBox" id="tax_template_holder">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">1</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="name">
+            <property name="data_type">unicode</property>
+            <property name="is_focus">True</property>
+            <property name="mandatory">True</property>
+            <property name="model_attribute">name</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label6">
+            <property name="justify">right</property>
+            <property context="yes" name="label" translatable="yes">Tax:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyComboBox" id="tax_type">
+            <property name="data_type">int</property>
+            <property name="model_attribute">tax_type</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

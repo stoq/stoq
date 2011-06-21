@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkWindow" id="SaleListToolbar">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <child>
+      <object class="GtkAlignment" id="alignment1">
+        <property name="visible">True</property>
+        <property name="xalign">0.0</property>
+        <property name="xscale">0.0</property>
+        <child>
+          <object class="GtkHButtonBox" id="hbuttonbox1">
+            <property name="spacing">5</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkButton" id="return_sale_button">
+                <property name="is_focus">True</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkAlignment" id="alignment3">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkVBox" id="vbox1">
+                        <property name="visible">True</property>
+                        <child>
+                          <object class="GtkImage" id="image1">
+                            <property name="stock">stoq-remove</property>
+                            <property name="visible">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label2">
+                            <property context="yes" name="label" translatable="yes">_Return</property>
+                            <property name="use-underline">True</property>
+                            <property name="visible">True</property>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="edit_button">
+                <property name="is_focus">True</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkAlignment" id="alignmenta">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkVBox" id="vbox2">
+                        <property name="visible">True</property>
+                        <child>
+                          <object class="GtkImage" id="image2">
+                            <property name="stock">stoq-edit</property>
+                            <property name="visible">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label3">
+                            <property context="yes" name="label" translatable="yes">Ed_it</property>
+                            <property name="use-underline">True</property>
+                            <property name="visible">True</property>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="details_button">
+                <property name="is_focus">True</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkAlignment" id="alignment6">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkVBox" id="vbox4">
+                        <property name="visible">True</property>
+                        <child>
+                          <object class="GtkImage" id="image4">
+                            <property name="stock">stoq-find</property>
+                            <property name="visible">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label5">
+                            <property context="yes" name="label" translatable="yes">_Details</property>
+                            <property name="use-underline">True</property>
+                            <property name="visible">True</property>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="print_button">
+                <property name="is_focus">True</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkAlignment" id="alignment61">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkVBox" id="vbox41">
+                        <property name="visible">True</property>
+                        <child>
+                          <object class="GtkImage" id="image41">
+                            <property name="stock">gtk-print</property>
+                            <property name="visible">True</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label51">
+                            <property context="yes" name="label" translatable="yes">_Print</property>
+                            <property name="use-underline">True</property>
+                            <property name="visible">True</property>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="position">3</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

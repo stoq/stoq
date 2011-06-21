@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkSizeGroup" id="userdetails_size_group">
+    <property name="mode">horizontal</property>
+    <widgets>
+      <widget name="username_lbl"/>
+      <widget name="kiwilabel1"/>
+      <widget name="profile"/>
+      <widget name="role"/>
+    </widgets>
+  </object>
+  <object class="GtkWindow" id="UserDetailsSlave">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <child>
+      <object class="GtkTable" id="table1">
+        <property name="column_spacing">6</property>
+        <property name="n_columns">3</property>
+        <property name="n_rows">5</property>
+        <property name="row_spacing">6</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="username_lbl">
+            <property context="yes" name="label" translatable="yes">Username:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEventBox" id="password_holder">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">1</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="profile_lbl">
+            <property context="yes" name="label" translatable="yes">Profile:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">3</property>
+            <property name="top_attach">2</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyLabel" id="kiwilabel1">
+            <property context="yes" name="label" translatable="yes">Role:</property>
+            <property name="model_attribute">kiwilabel1</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">4</property>
+            <property name="top_attach">3</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="username">
+            <property name="data_type">unicode</property>
+            <property name="is_focus">True</property>
+            <property name="mandatory">True</property>
+            <property name="model_attribute">username</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyComboBox" id="profile">
+            <property name="data_type">object</property>
+            <property name="model_attribute">profile</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">3</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">2</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyComboBox" id="role">
+            <property name="model_attribute">role</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">4</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">3</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="change_password_button">
+            <property name="is_focus">True</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkAlignment" id="GtkAlignment1">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkHBox" id="GtkHBox1">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkImage" id="GtkImage1">
+                        <property name="stock">stoq-lock</property>
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="GtkLabel1">
+                        <property context="yes" name="label" translatable="yes">Change Password...</property>
+                        <property name="visible">True</property>
+                      </object>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="bottom_attach">5</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">4</property>
+            <property name="x_options">fill</property>
+            <property name="y_options"/>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

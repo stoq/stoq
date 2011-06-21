@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkWindow" id="BasePaymentDataEditor">
+    <property name="border_width">5</property>
+    <property name="default_height">500</property>
+    <property name="default_width">500</property>
+    <property name="mnemonics_visible">False</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="border_width">5</property>
+        <property name="spacing">3</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkTable" id="table1">
+            <property name="column_spacing">6</property>
+            <property name="n_columns">2</property>
+            <property name="n_rows">3</property>
+            <property name="row_spacing">6</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel1">
+                <property name="data_type">unicode</property>
+                <property context="yes" name="label" translatable="yes">Due date:</property>
+                <property name="model_attribute">kiwilabel1</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel2">
+                <property name="data_type">unicode</property>
+                <property context="yes" name="label" translatable="yes">Value ($CURRENCY):</property>
+                <property name="model_attribute">kiwilabel2</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="kiwilabel3">
+                <property name="data_type">unicode</property>
+                <property context="yes" name="label" translatable="yes">Number:</property>
+                <property name="model_attribute">kiwilabel3</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyDateEntry" id="due_date">
+                <property name="data_type">date</property>
+                <property name="model_attribute">due_date</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="value">
+                <property name="data_type">Decimal</property>
+                <property name="is_focus">True</property>
+                <property name="mandatory">True</property>
+                <property name="model_attribute">value</property>
+                <property name="visible">True</property>
+                <property name="width_chars">10</property>
+                <property name="width_request">90</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="payment_number">
+                <property name="data_type">str</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">payment_number</property>
+                <property name="visible">True</property>
+                <property name="width_chars">10</property>
+                <property name="width_request">90</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkEventBox" id="bank_data_slave">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

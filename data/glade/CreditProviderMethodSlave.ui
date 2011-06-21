@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkWindow" id="CreditProviderMethodSlave">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkFrame" id="frame1">
+            <property name="border_width">5</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkTable" id="table1">
+                <property name="border_width">5</property>
+                <property name="column_spacing">5</property>
+                <property name="n_columns">3</property>
+                <property name="n_rows">3</property>
+                <property name="row_spacing">5</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="ProxyLabel" id="kiwilabel4">
+                    <property name="data_type">unicode</property>
+                    <property context="yes" name="label" translatable="yes">Credit Provider:</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">1.0</property>
+                  </object>
+                  <packing>
+                    <property name="y_options">fill</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxyLabel" id="kiwilabel2">
+                    <property name="data_type">unicode</property>
+                    <property context="yes" name="label" translatable="yes">Payment Type:</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">1.0</property>
+                  </object>
+                  <packing>
+                    <property name="bottom_attach">2</property>
+                    <property name="top_attach">1</property>
+                    <property name="y_options">fill</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxyLabel" id="kiwilabel3">
+                    <property name="data_type">unicode</property>
+                    <property context="yes" name="label" translatable="yes">Number of Installments:</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">1.0</property>
+                  </object>
+                  <packing>
+                    <property name="bottom_attach">3</property>
+                    <property name="top_attach">2</property>
+                    <property name="y_options">fill</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkVBox" id="vbox3">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="ProxyComboBox" id="credit_provider">
+                        <property name="data_type">object</property>
+                        <property name="model_attribute">provider</property>
+                        <property name="visible">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="y_options">fill</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkVBox" id="types_box">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="bottom_attach">2</property>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">1</property>
+                    <property name="y_options">fill</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkHBox" id="hbox1">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="ProxySpinButton" id="installments_number">
+                        <property name="adjustment">adjustment1</property>
+                        <property name="data_type">int</property>
+                        <property name="model_attribute">installments_number</property>
+                        <property context="yes" name="text" translatable="yes">0</property>
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label4">
+                        <property name="visible">True</property>
+                      </object>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="bottom_attach">3</property>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">2</property>
+                    <property name="y_options">fill</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label3">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">3</property>
+                    <property name="y_options">fill</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label2">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="bottom_attach">2</property>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">3</property>
+                    <property name="top_attach">1</property>
+                    <property name="y_options">fill</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label1">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="bottom_attach">3</property>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">3</property>
+                    <property name="top_attach">2</property>
+                    <property name="y_options">fill</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

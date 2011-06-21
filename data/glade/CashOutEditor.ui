@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkSizeGroup" id="casheditor_entry_sizegroup">
+    <property name="mode">horizontal</property>
+    <widgets>
+      <widget name="reason"/>
+    </widgets>
+  </object>
+  <object class="GtkSizeGroup" id="casheditor_label_sizegroup">
+    <property name="mode">horizontal</property>
+    <widgets>
+      <widget name="reason_lbl"/>
+    </widgets>
+  </object>
+  <object class="GtkWindow" id="CashOutEditor">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="spacing">6</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkEventBox" id="base_cash_holder">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTable" id="table2">
+            <property name="column_spacing">6</property>
+            <property name="n_columns">3</property>
+            <property name="n_rows">1</property>
+            <property name="row_spacing">6</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkLabel" id="reason_lbl">
+                <property context="yes" name="label" translatable="yes">Reason:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="x_options">fill</property>
+                <property name="y_options">fill</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label1">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="x_options">fill</property>
+                <property name="y_options">fill</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="reason">
+                <property name="data_type">unicode</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">description</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="y_options">fill</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

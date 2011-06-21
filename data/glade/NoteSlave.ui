@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkWindow" id="NoteSlave">
+    <property name="role"/>
+    <property context="yes" name="title" translatable="yes"/>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="border_width">5</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="notes_label">
+            <property context="yes" name="label" translatable="yes">Notes:</property>
+            <property name="visible">True</property>
+            <property name="xalign">0.0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
+            <property name="border_width">2</property>
+            <property name="hscrollbar_policy">automatic</property>
+            <property name="shadow_type">in</property>
+            <property name="visible">True</property>
+            <property name="vscrollbar_policy">automatic</property>
+            <child>
+              <object class="ProxyTextView" id="notes">
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">notes</property>
+                <property name="visible">True</property>
+                <property name="wrap_mode">word-char</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

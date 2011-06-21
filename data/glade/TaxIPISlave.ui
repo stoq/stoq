@@ -1,0 +1,349 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkWindow" id="TaxIPISlave">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <property name="mnemonics_visible">False</property>
+    <child>
+      <object class="GtkTable" id="table1">
+        <property name="column_spacing">6</property>
+        <property name="n_columns">4</property>
+        <property name="n_rows">7</property>
+        <property name="row_spacing">6</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="cst_label">
+            <property context="yes" name="label" translatable="yes">CST:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="x_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="cnpj_prod_label">
+            <property context="yes" name="label" translatable="yes">CNPJ do Produtor:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="q_selo_label">
+            <property context="yes" name="label" translatable="yes">Quantidade do
+selo de controle:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">3</property>
+            <property name="top_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="calculo_label">
+            <property context="yes" name="label" translatable="yes">C&#xE1;lculo do IPI:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">4</property>
+            <property name="top_attach">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="v_bc_label">
+            <property context="yes" name="label" translatable="yes">BC IPI:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">5</property>
+            <property name="top_attach">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="v_unid_label">
+            <property context="yes" name="label" translatable="yes">Valor por unidade
+tribut&#xE1;vel:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">6</property>
+            <property name="top_attach">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyComboBox" id="cst">
+            <property name="data_type">int</property>
+            <property name="model_attribute">cst</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="cnpj_prod">
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">cnpj_prod</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxySpinButton" id="q_selo">
+            <property name="adjustment">adjustment1</property>
+            <property name="data_type">int</property>
+            <property name="model_attribute">q_selo</property>
+            <property context="yes" name="text" translatable="yes">0</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">3</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyComboBox" id="calculo">
+            <property name="data_type">int</property>
+            <property name="model_attribute">calculo</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">4</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="v_bc">
+            <property name="data_type">Decimal</property>
+            <property name="editable">False</property>
+            <property name="model_attribute">v_bc</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">5</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="v_unid">
+            <property name="data_type">Decimal</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">v_unid</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">6</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="cl_enq_label">
+            <property context="yes" name="label" translatable="yes">Classe de Enquadramento
+Para cigarros e bebidas:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="x_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="c_selo_label">
+            <property context="yes" name="label" translatable="yes">C&#xF3;digo do selo
+de controle IPI:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="c_enq_label">
+            <property context="yes" name="label" translatable="yes">C&#xF3;digo de enquadramento
+legal do ipi:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">3</property>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="p_ipi_label">
+            <property context="yes" name="label" translatable="yes">Al&#xED;quota do IPI:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">5</property>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="q_unid_label">
+            <property context="yes" name="label" translatable="yes">Quantidade total:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">6</property>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="v_ipi_label">
+            <property context="yes" name="label" translatable="yes">Valor do IPI</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">7</property>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="cl_enq">
+            <property name="data_type">unicode</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">cl_enq</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="c_selo">
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">c_selo</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="c_enq">
+            <property name="data_type">unicode</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">c_enq</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">3</property>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxySpinButton" id="p_ipi">
+            <property name="adjustment">adjustment2</property>
+            <property name="data_type">Decimal</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">p_ipi</property>
+            <property context="yes" name="text" translatable="yes">0</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">5</property>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="q_unid">
+            <property name="data_type">Decimal</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">q_unid</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">6</property>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="v_ipi">
+            <property name="data_type">currency</property>
+            <property name="editable">False</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">v_ipi</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">7</property>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">6</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

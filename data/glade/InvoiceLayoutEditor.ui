@@ -1,0 +1,240 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">500</property>
+    <property name="lower">1</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="upper">500</property>
+    <property name="lower">1</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkWindow" id="InvoiceLayoutEditor">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkAlignment" id="alignment7">
+            <property name="left_padding">6</property>
+            <property name="right_padding">6</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkHBox" id="main_hbox">
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkLabel" id="label1">
+                    <property context="yes" name="label" translatable="yes">Description:</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">1.0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxyEntry" id="description">
+                    <property name="data_type">unicode</property>
+                    <property name="model_attribute">description</property>
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label2">
+                    <property context="yes" name="label" translatable="yes">Width:</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">1.0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="width">
+                    <property name="adjustment">adjustment1</property>
+                    <property name="data_type">long</property>
+                    <property name="model_attribute">width</property>
+                    <property context="yes" name="text" translatable="yes">0</property>
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label3">
+                    <property context="yes" name="label" translatable="yes">Height:</property>
+                    <property name="visible">True</property>
+                    <property name="xalign">0.0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="ProxySpinButton" id="height">
+                    <property name="adjustment">adjustment2</property>
+                    <property name="data_type">long</property>
+                    <property name="is_focus">True</property>
+                    <property name="model_attribute">height</property>
+                    <property context="yes" name="text" translatable="yes">0</property>
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHPaned" id="hpaned">
+            <property name="border_width">6</property>
+            <property name="position">228</property>
+            <property name="position_set">True</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkVBox" id="left_vbox">
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkFrame" id="frame1">
+                    <property context="yes" name="label" translatable="yes">Field:</property>
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkHBox" id="hbox1">
+                        <property name="border_width">6</property>
+                        <property name="spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                          <object class="GtkVBox" id="vbox3">
+                            <property name="visible">True</property>
+                            <child>
+                              <object class="GtkLabel" id="label4">
+                                <property context="yes" name="label" translatable="yes">Name:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label5">
+                                <property context="yes" name="label" translatable="yes">Position:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                              </object>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label6">
+                                <property context="yes" name="label" translatable="yes">Size:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="padding">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkVBox" id="vbox4">
+                            <property name="visible">True</property>
+                            <child>
+                              <object class="ProxyLabel" id="field_name">
+                                <property name="ellipsize">end</property>
+                                <property name="model_attribute">field_name</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="ProxyLabel" id="field_pos">
+                                <property name="model_attribute">field_pos</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                              </object>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="ProxyLabel" id="field_size">
+                                <property name="model_attribute">field_size</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                              </object>
+                              <packing>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="resize">True</property>
+                <property name="shrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="sw">
+                <property name="hscrollbar_policy">automatic</property>
+                <property name="visible">True</property>
+                <property name="vscrollbar_policy">automatic</property>
+                <child>
+                  <object class="GtkViewport" id="viewport1">
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="resize">True</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

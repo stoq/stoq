@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface>
+  <object class="GtkWindow" id="PurchaseFinishPaymentAdjustStep">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="border_width">6</property>
+        <property name="spacing">6</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property context="yes" name="label" translatable="yes">&lt;b&gt;Payments to pay will be cancelled and new ones will be created to match the remaining value.&lt;/b&gt;</property>
+            <property name="use_markup">True</property>
+            <property name="visible">True</property>
+            <property name="xalign">0.0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ObjectList" id="payment_list">
+            <property name="selection_mode">none</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTable" id="table1">
+            <property name="column_spacing">6</property>
+            <property name="n_columns">2</property>
+            <property name="n_rows">3</property>
+            <property name="row_spacing">6</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkLabel" id="label2">
+                <property context="yes" name="label" translatable="yes">Total Received:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label3">
+                <property context="yes" name="label" translatable="yes">Total Paid:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="missing_label">
+                <property context="yes" name="label" translatable="yes">Missing:</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="received_value">
+                <property name="data_type">currency</property>
+                <property context="yes" name="label" translatable="yes">kiwilabel1</property>
+                <property name="model_attribute">received_value</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="x_options">fill</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="paid_value">
+                <property name="data_type">currency</property>
+                <property context="yes" name="label" translatable="yes">kiwilabel2</property>
+                <property name="model_attribute">paid_value</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">2</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="x_options">fill</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyLabel" id="missing_value">
+                <property name="data_type">currency</property>
+                <property context="yes" name="label" translatable="yes">kiwilabel3</property>
+                <property name="model_attribute">missing_value</property>
+                <property name="visible">True</property>
+                <property name="xalign">1.0</property>
+              </object>
+              <packing>
+                <property name="bottom_attach">3</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">2</property>
+                <property name="x_options">fill</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
