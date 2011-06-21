@@ -233,7 +233,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
 
     def _check_reportlab(self, version, max_version):
         try:
-            import reportlabx
+            import reportlab
         except ImportError:
             self._missing(project="Reportlab",
                           url='http://www.reportlab.org/',
