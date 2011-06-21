@@ -91,9 +91,6 @@ class AddressSlave(BaseEditorSlave):
         'complement',
         'postal_code',
         'streetnumber_check',
-        ]
-
-    location_widgets = [
         'city',
         'state',
         'country',
@@ -141,29 +138,26 @@ class AddressSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model,
                                     AddressSlave.proxy_widgets)
 
-        has_street_number = self.model.streetnumber > 0
-        # Enable if we already have a number or if we are adding a new address.
-        self.streetnumber_check.set_active(has_street_number
-                                           or not self.edit_mode)
+        self.streetnumber_check.set_active(bool(self.model.streetnumber))
         self._update_streetnumber()
-
-        self.add_proxy(self.model, AddressSlave.location_widgets)
 
     def can_confirm(self):
         return self.model.is_valid_model()
 
     def _update_streetnumber(self):
-        has_street_number = self.streetnumber_check.get_active()
-        self.streetnumber.set_sensitive(has_street_number)
-        if not has_street_number:
-            self.model.streetnumber = None
-            text = _(u"N/A")
-        elif self.model.streetnumber:
-            text = str(self.model.streetnumber)
-        else:
-            text = ''
+        if not self.visual_mode:
+            # Don't do that on visual mode. Visual mode will handle
+            # the sensitive property on all widgets properly.
+            active = self.streetnumber_check.get_active()
+            self.streetnumber.set_sensitive(active)
 
-        self.streetnumber.set_text(text)
+            if not active:
+                self.model.streetnumber = None
+                self.streetnumber.set_text(_(u"N/A"))
+                return
+
+            if not self.model.streetnumber:
+                self.streetnumber.set_text('')
 
     def _get_nfe_plugin(self):
         manager = get_utility(IPluginManager, None)
