@@ -34,10 +34,13 @@ from kiwi.component import provide_utility
 from stoqlib.database.admin import ensure_admin_user, initialize_system
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.orm import orm_enable_debugging, orm_startup
-from stoqlib.database.runtime import get_connection, set_current_branch_station, new_transaction
+from stoqlib.database.runtime import (get_connection,
+                                      set_current_branch_station,
+                                      new_transaction)
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.profile import ProfileSettings
 from stoqlib.exceptions import DatabaseError, StoqlibError
+from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.interfaces import  IApplicationDescriptions
 from stoqlib.lib.message import error
 
@@ -168,10 +171,13 @@ def clean_database(config, options=None):
         password = options.password
         verbose = options.verbose
 
-    password = password or config.get_password()
-    initialize_system()
-    set_default_profile_settings()
-    ensure_admin_user(password)
+    try:
+        password = password or config.get_password()
+        initialize_system()
+        set_default_profile_settings()
+        ensure_admin_user(password)
+    except Exception:
+        collect_traceback(sys.exc_info(), submit=True)
 
 def set_default_profile_settings():
     trans = new_transaction()
