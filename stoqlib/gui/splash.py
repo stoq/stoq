@@ -26,12 +26,14 @@
 
 import time
 
+import gobject
 import cairo
 import gtk
 import pango
 import pangocairo
 
 from kiwi.component import get_utility
+from kiwi.environ import environ
 from stoqlib.lib.interfaces import IAppInfo
 
 WIDTH = 392
@@ -40,7 +42,7 @@ BORDER = 8 # This includes shadow out border from GtkFrame
 
 class SplashScreen(gtk.Window):
 
-    def __init__(self, filename):
+    def __init__(self):
         gtk.Window.__init__(self)
         self.set_decorated(False)
         self.set_position(gtk.WIN_POS_CENTER)
@@ -57,6 +59,7 @@ class SplashScreen(gtk.Window):
         frame.add(darea)
 
         self.show_all()
+        filename = environ.find_resource("pixmaps", "splash.jpg")
         self._pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
 
     def _get_label(self):
@@ -94,5 +97,16 @@ class SplashScreen(gtk.Window):
             time.sleep(0.01)
             gtk.main_iteration()
 
-    def hide(self):
-        self.destroy()
+
+_splash = None
+
+def show_splash():
+    global _splash
+    _splash = SplashScreen()
+    _splash.show()
+
+def hide_splash():
+    global _splash
+    if _splash:
+        gobject.idle_add(_splash.destroy)
+        _splash = None

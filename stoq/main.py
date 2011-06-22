@@ -198,6 +198,10 @@ def _run_update_wizard():
     if not retval:
         raise SystemExit()
 
+def _show_splash():
+    from stoqlib.gui.splash import show_splash
+    show_splash()
+
 def _setup_gtk():
     import gtk
     from kiwi.environ import environ
@@ -414,6 +418,7 @@ def main(args):
     _prepare_logfiles()
     _set_app_info()
     _check_dependencies()
+    _show_splash()
     _setup_gtk()
     _check_version_policy()
     _setup_ui_dialogs()
