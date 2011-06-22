@@ -35,6 +35,7 @@ GUDEV_REQUIRED = (147, )
 KIWI_REQUIRED = (1, 9, 27)
 MAKO_REQUIRED = (0, 2, 5)
 PIL_REQUIRED = (1, 1, 5)
+PYCAIRO_REQUIRED = (1, 8, 8)
 PYPOPPLER_REQUIRED = (0, 12, 1)
 PSYCOPG_REQUIRED = (2, 0, 5)
 PYGTK_REQUIRED = (2, 16, 0)
@@ -62,6 +63,7 @@ class DependencyChecker(object):
         # so we can display error messages
         self._check_pygtk(PYGTK_REQUIRED, GTK_REQUIRED)
         self._check_kiwi(KIWI_REQUIRED)
+        self._check_pycairo(PYCAIRO_REQUIRED)
         self._check_vte(VTE_REQUIRED)
         self._check_gudev(GUDEV_REQUIRED)
         self._check_pypoppler(PYPOPPLER_REQUIRED)
@@ -159,6 +161,20 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             self._too_old(project="Kiwi",
                           url='http://www.async.com.br/projects/kiwi/',
                           found=_tuple2str(kiwi_version),
+                          required=version)
+
+    def _check_pycairo(self, version):
+        try:
+            import cairo
+        except ImportError:
+            self._missing(project="pycairo",
+                          url='http://www.cairographics.org/pycairo/',
+                          version=version)
+
+        if cairo.version_info < version:
+            self._too_old(project="pycairo",
+                          url='http://www.cairographics.org/pycairo/',
+                          found=cairo.version,
                           required=version)
 
     def _check_vte(self, version):
