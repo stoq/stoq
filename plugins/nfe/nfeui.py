@@ -95,7 +95,7 @@ class NFeUI(object):
     def _disable_invoice_configuration(self, uimanager):
         # since the nfe plugin was enabled, the user must not be able to edit
         # an invoice layout or configure a printer.
-        base_ui = '/menubar/settings_menu/'
+        base_ui = '/menubar/ConfigureMenu/'
         invoice_layout = uimanager.get_widget(base_ui + 'invoices')
         invoice_layout.hide()
         invoice_printer = uimanager.get_widget(base_ui + 'invoice_printers')
