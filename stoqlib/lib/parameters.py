@@ -339,9 +339,9 @@ _parameter_info = dict(
     _(u'Newly created Till accounts will be placed under this account')),
 
     IMBALANCE_ACCOUNT=ParameterDetails(
-    _('Accounts'),
-    _('Imbalance Account'),
-    _('Account used for unbalanced transactions')),
+    _(u'Accounts'),
+    _(u'Imbalance Account'),
+    _(u'Account used for unbalanced transactions')),
 )
 
 class ParameterAttr:
