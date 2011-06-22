@@ -166,7 +166,7 @@ class PurchaseApp(SearchableAppWindow):
         order = trans.get(order)
         model = self.run_dialog(PurchaseWizard, trans, order,
                                 edit_mode)
-        rv = finish_transaction(trans, model)
+        finish_transaction(trans, model)
         trans.close()
 
         return model
@@ -223,7 +223,7 @@ class PurchaseApp(SearchableAppWindow):
 
     def _print_selected_items(self):
         items = self.results.get_selected_rows() or self.results
-        self.print_report(PurchaseReport, self.results,
+        self.print_report(PurchaseReport, items,
                           self.status_filter.get_state().value)
 
     def _cancel_order(self):
@@ -252,7 +252,7 @@ class PurchaseApp(SearchableAppWindow):
         trans = new_transaction()
         quote = trans.get(quote)
         model = self.run_dialog(QuotePurchaseWizard, trans, quote)
-        rv = finish_transaction(trans, model)
+        finish_transaction(trans, model)
         trans.close()
 
     def _finish_order(self):
@@ -265,7 +265,7 @@ class PurchaseApp(SearchableAppWindow):
         trans = new_transaction()
         order = trans.get(order_views[0].purchase)
         model = self.run_dialog(PurchaseFinishWizard, trans, order)
-        rv = finish_transaction(trans, model)
+        finish_transaction(trans, model)
         trans.close()
 
         self.refresh()
@@ -314,7 +314,7 @@ class PurchaseApp(SearchableAppWindow):
     def on_NewConsignment__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(ConsignmentWizard, trans)
-        rv = finish_transaction(trans, model)
+        finish_transaction(trans, model)
         trans.close()
 
     def on_FinishOrder__activate(self, action):
@@ -329,7 +329,7 @@ class PurchaseApp(SearchableAppWindow):
     def on_CloseInConsignment__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(CloseInConsignmentWizard, trans)
-        rv = finish_transaction(trans, model)
+        finish_transaction(trans, model)
         trans.close()
 
     def on_SearchInConsignmentItems__activate(self, action):

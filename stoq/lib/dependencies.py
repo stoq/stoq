@@ -180,6 +180,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
     def _check_vte(self, version):
         try:
             import vte
+            vte # pyflakes
         except ImportError:
             self._missing(project="Vte",
                           url='http://developer.gnome.org/vte/',
@@ -188,6 +189,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
     def _check_gudev(self, version):
         try:
             import gudev
+            gudev # pyflakes
         except ImportError:
             self._missing(project="Gudev",
                           url='http://www.kernel.org/pub/linux/utils/kernel/hotplug/gudev/',
@@ -211,6 +213,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
     def _check_zope_interface(self, version):
         try:
             import zope.interface
+            zope # pyflakes
         except ImportError:
             self._missing(project='ZopeInterface',
                           url='http://www.zope.org/Products/ZopeInterface',
@@ -338,6 +341,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
     def _check_trml2pdf(self, version):
         try:
             import trml2pdf
+            trml2pdf # pyflakes
         except ImportError:
             self._missing(project="trml2pdf",
                           url='pypi.python.org/pypi/trml2pdf/',

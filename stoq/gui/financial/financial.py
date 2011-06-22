@@ -33,10 +33,9 @@ import gettext
 
 import gobject
 import gtk
-import pango
 from kiwi.python import Settable
 from kiwi.ui.dialogs import open as open_dialog
-from kiwi.ui.objectlist import ColoredColumn, Column, ObjectList, ObjectTree
+from kiwi.ui.objectlist import ColoredColumn, Column, ObjectList
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.account import Account, AccountTransactionView
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
@@ -46,7 +45,7 @@ from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.gui.dialogs.importerdialog import ImporterDialog
 from stoqlib.gui.help import show_contents, show_section
-from stoqlib.lib.message import info, yesno
+from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
 from stoq.gui.application import AppWindow
 from kiwi.currency import currency

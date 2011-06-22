@@ -306,7 +306,6 @@ def _initialize(options):
         config.load_default()
     config_file = config.get_filename()
 
-    wizard = False
     if options.wizard or not os.path.exists(config_file):
         _run_first_time_wizard(options)
 
