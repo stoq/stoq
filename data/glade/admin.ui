@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy toplevel-contextual -->
+  <object class="GtkWindow" id="admin">
+    <property name="width_request">800</property>
+    <property name="height_request">570</property>
+    <property name="title" translatable="yes" context="yes">admin</property>
+    <property name="window_position">center</property>
+    <property name="destroy_with_parent">True</property>
+    <child>
+      <object class="GtkVBox" id="main_vbox">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkVBox" id="vbox2">
+            <property name="visible">True</property>
+            <property name="border_width">5</property>
+            <property name="spacing">2</property>
+            <child>
+              <object class="GtkIconView" id="iconview">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="selection_mode">multiple</property>
+                <property name="model">model</property>
+                <property name="item_padding">0</property>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkListStore" id="model">
+    <columns>
+      <!-- column-name label -->
+      <column type="gchararray"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+      <!-- column-name pixbuf -->
+      <column type="GdkPixbuf"/>
+    </columns>
+  </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+</interface>
