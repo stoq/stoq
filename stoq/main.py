@@ -83,12 +83,7 @@ def _debug_hook(exctype, value, tb):
     pdb.pm()
 
 def _exit_func():
-    #from stoqlib.lib.parameters import is_developer_mode
-    # Disable dialog in developer mode eventually, but we
-    # first need to test it properly.
-    from stoqlib.lib.crashreport import has_tracebacks
-    #if has_tracebacks() and not is_developer_mode():
-    if has_tracebacks():
+    if has_tracebacks() and not 'STOQ_DISABLE_CRASHREPORT' in os.environ:
         from stoqlib.gui.dialogs.crashreportdialog import show_dialog
         show_dialog()
         raise SystemExit
