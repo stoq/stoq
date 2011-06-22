@@ -178,7 +178,7 @@ class SystemParameterEditor(BaseEditor):
                 self._setup_options_combo_slave()
             else:
                 self._setup_entry_slave()
-        elif issubclass(field_type, unicode):
+        elif issubclass(field_type, basestring):
             if self.constant.multiline:
                 self._setup_text_entry_slave()
             else:
