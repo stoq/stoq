@@ -63,6 +63,7 @@ class CrashReportDialog(object):
             app_info.get('name'), ), bold=False)
 
         sw = gtk.ScrolledWindow()
+        sw.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         view = gtk.TextView()
         view.set_size_request(500, 350)
         view.get_buffer().set_text(self._report_submitter.report)
@@ -92,11 +93,7 @@ class CrashReportDialog(object):
         label.show()
         self._finish()
 
-    def run(self):
-        response = self._dialog.run()
-        if response == gtk.RESPONSE_NO:
-            return False
-
+    def _submit_report(self):
         self._no_button.hide()
         self._yes_button.set_sensitive(False)
         self._yes_button.set_label(_('Sending...'))
@@ -105,7 +102,13 @@ class CrashReportDialog(object):
 
         self._report_submitter.submit()
         self._dialog.run()
-        return True
+
+    def run(self):
+        response = self._dialog.run()
+        if response == gtk.RESPONSE_YES:
+            self._submit_report()
+            return True
+        return False
 
     def _on_report__failed(self, response, args):
         self._show_error()
