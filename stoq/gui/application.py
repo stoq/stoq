@@ -114,6 +114,7 @@ class AppWindow(BaseAppWindow):
             self._create_debug_menu()
         self.setup_focus()
         self._check_examples_database()
+        self._check_version()
         self._usability_hacks()
 
         if not stoq.stable and not is_developer_mode():
@@ -192,6 +193,10 @@ class AppWindow(BaseAppWindow):
 
         self.main_vbox.pack_start(bar, False, False, 0)
         self.main_vbox.reorder_child(bar, 1)
+
+    def _check_version(self):
+        self._version_checker = VersionChecker(self.conn, self)
+        self._version_checker.check_new_version()
 
     def _store_cookie(self, *args):
         u = get_current_user(self.conn)
@@ -694,6 +699,9 @@ class VersionChecker(object):
         self.app = app
 
     def _display_new_version_message(self, latest_version):
+        # Only display version message in admin app
+        if 'AdminApp' not in self.app.__class__.__name__:
+            return
         button = gtk.LinkButton(
             'http://www.stoq.com.br/pt-br/more/whatsnew',
             _(u'Learn More...'))
