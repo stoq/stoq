@@ -35,7 +35,8 @@ from stoqlib.database.orm import ORMObjectQueryExecuter
 from stoqlib.database.runtime import (get_current_user, new_transaction,
                                       finish_transaction, get_connection,
                                       get_current_branch)
-from stoqlib.lib.interfaces import ICookieFile, IStoqConfig, IPluginManager
+from stoqlib.lib.interfaces import (IAppInfo, ICookieFile, IStoqConfig,
+                                    IPluginManager)
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.webservice import WebService
@@ -233,9 +234,10 @@ class AppWindow(BaseAppWindow):
             return gzip.GzipFile(license)
 
     def _run_about(self, *args):
+        info = get_utility(IAppInfo)
         about = gtk.AboutDialog()
-        about.set_name(stoq.program_name)
-        about.set_version(stoq.version)
+        about.set_name(info.get("name"))
+        about.set_version(info.get("version"))
         about.set_website(stoq.website)
         release_date = stoq.release_date
         about.set_comments('Release Date: %s' %
