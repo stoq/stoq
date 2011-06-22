@@ -129,7 +129,7 @@ class ECFUI(object):
     def _add_admin_menus(self, uimanager):
         ui_string = """<ui>
           <menubar name="menubar">
-            <menu action="settings_menu" name="settings_menu">
+            <menu action="ConfigureMenu">
             <placeholder name="PluginSettings">
               <menuitem action="ConfigurePrinter"/>
             </placeholder>
