@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -26,30 +26,68 @@
 
 import time
 
+import cairo
 import gtk
+import pango
+import pangocairo
 
-class SplashScreen(object):
+from kiwi.component import get_utility
+from stoqlib.lib.interfaces import IAppInfo
+
+WIDTH = 392
+HEIGHT = 260
+BORDER = 8 # This includes shadow out border from GtkFrame
+
+class SplashScreen(gtk.Window):
+
     def __init__(self, filename):
-        self._filename = filename
-        self._window = self._construct()
+        gtk.Window.__init__(self)
+        self.set_decorated(False)
+        self.set_position(gtk.WIN_POS_CENTER)
 
-    def _construct(self):
-        gtkimage = gtk.Image()
-        gtkimage.set_from_file(self._filename)
-        gtkimage.show()
-        w = gtk.Window()
-        f = gtk.Frame()
-        f.set_property('shadow-type', gtk.SHADOW_OUT)
-        w.add(f)
-        f.show()
-        w.set_decorated(False)
-        f.add(gtkimage)
-        w.set_position(gtk.WIN_POS_CENTER)
-        w.show_now()
-        return w
+        self.set_title("Simple drawing")
+        self.resize(392, 260)
+        self.set_position(gtk.WIN_POS_CENTER)
+        frame = gtk.Frame()
+        frame.set_shadow_type(gtk.SHADOW_OUT)
+        self.add(frame)
+
+        darea = gtk.DrawingArea()
+        darea.connect("expose-event", self.expose)
+        frame.add(darea)
+
+        self.show_all()
+        self._pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
+
+    def _get_label(self):
+        info = get_utility(IAppInfo, None)
+        if not info:
+            return "Stoq"
+        version = info.get("version")
+        if ' ' in version:
+            ver, rev = version.split(' ')
+            version = '%s <b>%s</b>' % (ver, rev)
+        return "%s %s" % (info.get("name"), version)
+
+    def expose(self, widget, event):
+        cr = widget.window.cairo_create()
+        # Draw splash
+        cr.set_source_pixbuf(self._pixbuf, 0, 0)
+        cr.paint()
+
+        # Draw version
+        cr.set_source_rgb(.1, .1, .1)
+        pcr = pangocairo.CairoContext(cr)
+        layout = pcr.create_layout()
+        layout.set_font_description(pango.FontDescription("Sans 9"))
+        layout.set_markup(self._get_label())
+        pcr.update_layout(layout)
+        w, h = layout.get_pixel_size()
+        cr.move_to(WIDTH - w - BORDER, HEIGHT - h - BORDER)
+        pcr.show_layout(layout)
 
     def show(self):
-        self._window.show()
+        gtk.Window.show(self)
 
         time.sleep(0.01)
         while gtk.events_pending():
@@ -57,4 +95,4 @@ class SplashScreen(object):
             gtk.main_iteration()
 
     def hide(self):
-        self._window.destroy()
+        self.destroy()
