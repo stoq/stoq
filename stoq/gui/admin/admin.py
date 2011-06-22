@@ -56,7 +56,7 @@ from stoqlib.gui.search.stationsearch import StationSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 from stoqlib.lib.message import info
 
-from stoq.gui.application import AppWindow, VersionChecker
+from stoq.gui.application import AppWindow
 
 _ = gettext.gettext
 
@@ -245,9 +245,6 @@ class AdminApp(AppWindow):
         self.tasks = Tasks(self)
         self._create_actions()
         AppWindow.__init__(self, app)
-
-        self._version_checker = VersionChecker(self.conn, self)
-        self._version_checker.check_new_version()
 
     def _create_actions(self):
         ui_string = """<ui>
