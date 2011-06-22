@@ -136,8 +136,10 @@ class WebService(object):
         if os.environ.get('STOQ_DISABLE_CRASHREPORT'):
             response = AsyncResponse()
             import sys
-            print >> sys.stderr, cnpj, report
-            gobject.idle_add(lambda : response.done(''))
+            print >> sys.stderr, params
+            gobject.idle_add(lambda : response.done({
+                'report-url': '<not submitted>',
+                'report': '<none>'}))
             return response
 
         return self._do_request('bugreport.json', **params)
