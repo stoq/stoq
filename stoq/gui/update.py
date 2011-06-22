@@ -49,6 +49,8 @@ class UpdateWelcomeStep(BaseWizardStep):
     def post_init(self):
         self.title_label.set_size('xx-large')
         self.title_label.set_bold(True)
+        logo = environ.find_resource('pixmaps', 'stoq_logo.png')
+        self.logo.set_from_file(logo)
 
     def next_step(self):
         return UpdateSchemaStep(None, self.wizard)
@@ -64,8 +66,6 @@ class UpdateSchemaStep(BaseWizardStep):
 
     def post_init(self):
         self._finished = False
-        logo = environ.find_resource('pixmaps', 'stoq_logo.png')
-        self.logo.set_from_file(logo)
         self.process_view = ProcessView()
         self.process_view.listen_stderr = True
         self.process_view.connect('read-line', self._on_processview__readline)
