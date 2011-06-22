@@ -137,9 +137,10 @@ class ApplicationRunner(object):
 
     # Public API
 
-    def choose(self):
+    def choose(self, parent=None):
         """
         Displays a list of applications
+        @param parent: Parent window or None
         @returns: selected application or None if nothing was selected
         """
 
@@ -151,7 +152,8 @@ class ApplicationRunner(object):
         from stoqlib.gui.login import SelectApplicationsDialog
 
         return run_dialog(SelectApplicationsDialog(self._appname,
-                                                   available_applications))
+                                                   available_applications),
+                          parent=parent)
 
     def run(self, appdesc):
         """

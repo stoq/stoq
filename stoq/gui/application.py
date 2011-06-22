@@ -548,10 +548,9 @@ class AppWindow(BaseAppWindow):
         if not self.can_change_application():
             return
 
-        runner = self.app.runner
-        appname = runner.choose()
+        appname = self.app.runner.choose(parent=self.get_toplevel())
         if appname:
-            runner.run(appname)
+            self.app.runner.run(appname)
 
     def on_Introspect_activate(self, action):
         window = self.get_toplevel()
