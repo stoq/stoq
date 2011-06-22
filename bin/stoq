@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 #
 # Copyright (C) 2005 by Async Open Source
 #
@@ -21,7 +21,7 @@ import string
 import sys
 
 # Required version of Python
-REQUIRED_VERSION = (2, 3)
+REQUIRED_VERSION = (2, 6)
 
 # Directory name, defaults to name of binary, it is relative to ..
 # a, __init__.py and main.py is expected to be found there.
@@ -33,6 +33,9 @@ APPNAME = None
 # Do not modify code below this point
 dirname = DIRNAME or os.path.split(sys.argv[0])[1]
 appname = APPNAME or dirname.capitalize()
+
+if sys.version_info[0] == 3:
+    raise SystemExit("ERROR: Sorry, Stoq is not yet compatible with Python 3.x.")
 
 if sys.hexversion < int('%02x%02x0000' % REQUIRED_VERSION, 16):
     raise SystemExit("ERROR: Python %s or higher is required to run %s, "
