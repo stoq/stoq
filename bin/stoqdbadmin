@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- Mode: Python; coding: iso-8859-1 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2011 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,12 +20,15 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-## Author(s):   Johan Dahlin   <jdahlin@async.com.br>
+## Author(s):   Stoq Team   <stoq-devel@async.com.br>
 ##
 """ stoqdbadmin: Command line utility to manipulate the database.  """
 
 import optparse
 import sys
+
+if sys.version_info[0] == 3:
+    raise SystemExit("ERROR: Sorry, Stoq is not yet compatible with Python 3.x.")
 
 try:
     import pkg_resources
