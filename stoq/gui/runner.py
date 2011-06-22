@@ -27,13 +27,14 @@ import operator
 import sys
 
 import gtk
+from kiwi.component import get_utility
 from kiwi.log import Logger
 from stoqlib.exceptions import LoginError
+from stoqlib.gui.splash import hide_splash
 from stoqlib.gui.events import StartApplicationEvent
 from stoqlib.database.runtime import get_connection, get_current_user
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.message import error, info
-from kiwi.component import get_utility
 
 
 log = Logger('stoq.runner')
@@ -73,31 +74,14 @@ class ApplicationRunner(object):
                 "Application %s must have a app.main() function")
         return module
 
-    def _show_splash(self):
-        from stoqlib.gui.splash import SplashScreen
-        from kiwi.environ import environ
-
-        log.debug('displaying splash screen')
-        splash = SplashScreen(environ.find_resource("pixmaps", "splash.jpg"))
-        splash.show()
-
-        return splash
-
     def _load_app(self, appdesc):
-        splash = None
-        # Only show the splash screen the first time
-        if not self._current_app:
-            splash = self._show_splash()
-
         module = self._import(appdesc.name)
         window_class = module.main(self._login)
 
         from stoq.gui.application import App
         app = App(window_class, self._login, self._options, self)
 
-        if splash:
-            import gobject
-            gobject.idle_add(splash.hide)
+        hide_splash()
 
         toplevel = app.main_window.get_toplevel()
         icon = toplevel.render_icon(appdesc.icon, gtk.ICON_SIZE_MENU)
