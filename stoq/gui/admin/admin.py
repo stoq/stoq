@@ -26,14 +26,9 @@
 import gettext
 
 import glib
-import pango
 import gtk
-from kiwi.enums import SearchFilterPosition
 from kiwi.log import Logger
-from kiwi.ui.objectlist import Column, SearchColumn
-from kiwi.ui.search import ComboSearchFilter
 
-from stoqlib.database.orm import AND
 from stoqlib.database.runtime import (new_transaction, finish_transaction,
                                       get_current_branch)
 from stoqlib.domain.invoice import InvoiceLayout
@@ -45,7 +40,6 @@ from stoqlib.gui.dialogs.pluginsdialog import PluginManagerDialog
 from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
 from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog,
                                                InvoicePrinterDialog)
-from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
@@ -60,7 +54,6 @@ from stoqlib.gui.search.personsearch import (ClientSearch,
 from stoqlib.gui.search.profilesearch import UserProfileSearch
 from stoqlib.gui.search.stationsearch import StationSearch
 from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
-from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.message import info
 
 from stoq.gui.application import AppWindow, VersionChecker
@@ -135,7 +128,7 @@ class Tasks(object):
         if type(pixbuf) == str:
             try:
                 pixbuf = self.theme.load_icon(pixbuf, 32, 0)
-            except glib.GError, e:
+            except glib.GError:
                 pixbuf = self.app.get_toplevel().render_icon(pixbuf, gtk.ICON_SIZE_DIALOG)
         self.model.append([label, name, pixbuf])
         if cb is not None:
@@ -339,7 +332,6 @@ class AdminApp(AppWindow):
             ]
         self.add_ui_actions(ui_string, actions)
 
-        uimanager = self.get_uimanager()
         self.menubar = self.uimanager.get_widget('/menubar')
 
     def add_ui_actions(self, ui_string, actions):

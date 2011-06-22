@@ -166,10 +166,8 @@ def clean_database(config, options=None):
     """
     if not options:
         password = ''
-        verbose = False
     else:
         password = options.password
-        verbose = options.verbose
 
     try:
         password = password or config.get_password()

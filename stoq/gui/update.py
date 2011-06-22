@@ -29,11 +29,8 @@ import gettext
 import glib
 import gtk
 from kiwi.environ import environ
-import pango
-from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.processview import ProcessView
-from stoqlib.lib.message import warning
 
 import stoq
 

@@ -40,7 +40,6 @@ from kiwi.ui.objectlist import SearchColumn, Column
 from stoqlib.database.runtime import new_transaction, finish_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
-from stoqlib.domain.sale import SaleView
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
 from stoqlib.reporting.payment import ReceivablePaymentReport

@@ -65,7 +65,6 @@ from stoqlib.gui.base.wizards import BaseWizard, WizardEditorStep
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.processview import ProcessView
 from stoqlib.lib.message import warning, yesno
-from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
 
 from stoq.lib.configparser import StoqConfig

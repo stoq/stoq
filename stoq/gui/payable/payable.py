@@ -228,7 +228,7 @@ class PayableApp(SearchableAppWindow):
         trans = new_transaction()
         order = trans.get(payable_views[0].purchase)
         model = run_dialog(PaymentsEditor, self, trans, order)
-        rv = finish_transaction(trans, model)
+        finish_transaction(trans, model)
         trans.close()
 
     def _pay(self, payable_views):
