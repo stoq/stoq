@@ -73,27 +73,14 @@ logger = Logger('stoq.gui.admin')
  COL_NAME,
  COL_PIXBUF) = range(3)
 
-class Tasks(gtk.ScrolledWindow):
+class Tasks(object):
     def __init__(self, app):
         self.app = app
-        gtk.ScrolledWindow.__init__(self)
-        self.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
-        self.model = gtk.ListStore(str, str, gtk.gdk.Pixbuf)
-        self.model.set_sort_column_id(COL_LABEL, gtk.SORT_ASCENDING)
-        iconView = gtk.IconView(self.model)
-        iconView.set_selection_mode(gtk.SELECTION_MULTIPLE)
-        iconView.connect('item-activated', self.on_item_activated)
-        iconView.set_text_column(COL_LABEL)
-        iconView.set_pixbuf_column(COL_PIXBUF)
-        iconView.set_item_padding(0)
-
-        self.add(iconView)
-        iconView.grab_focus()
         self.theme = gtk.icon_theme_get_default()
 
-    def add_defaults(self):
+    def add_defaults(self, model):
+        self.model = model
         self.model.clear()
         items = [(_('Branches'), 'branches',
                   'gtk-home'),
@@ -149,7 +136,7 @@ class Tasks(gtk.ScrolledWindow):
             try:
                 pixbuf = self.theme.load_icon(pixbuf, 32, 0)
             except glib.GError, e:
-                pixbuf = self.render_icon(pixbuf, gtk.ICON_SIZE_DIALOG)
+                pixbuf = self.app.get_toplevel().render_icon(pixbuf, gtk.ICON_SIZE_DIALOG)
         self.model.append([label, name, pixbuf])
         if cb is not None:
             setattr(self, '_open_' + name, cb)
@@ -259,100 +246,206 @@ class AdminApp(AppWindow):
     app_name = _('Administrative')
     app_icon_name = 'stoq-admin-app'
     gladefile = "admin"
-    # FIXME: Remove
-    klist_name = "foo"
+    klist_name = None
 
     def __init__(self, app):
-        # FIXME: Remove
-        class x: pass
-        self.foo = x()
-        self.foo.get_columns = lambda : []
-        self.foo.set_columns = lambda *x: None
-        self.foo.set_selection_mode = lambda *x: None
-
         self.tasks = Tasks(self)
-        self.tasks.add_defaults()
+        self._create_actions()
         AppWindow.__init__(self, app)
 
-        self.search_holder.add(self.tasks)
-        self.tasks.show_all()
-
-        self._update_view()
         self._version_checker = VersionChecker(self.conn, self)
         self._version_checker.check_new_version()
 
-    # FIXME: Remove
-    def _update_view(self):
-        pass
-    def get_columns(self):
-        return []
+    def _create_actions(self):
+        ui_string = """<ui>
+          <menubar action="menubar">
+            <menu action="AdminMenu">
+              <menuitem action="Quit"/>
+            </menu>
+            <menu action="SearchMenu">
+              <menuitem action="SearchRole"/>
+              <menuitem action="SearchEmployee"/>
+              <menuitem action="SearchCfop"/>
+              <menuitem action="SearchFiscalBook"/>
+              <menuitem action="SearchUserProfile"/>
+              <menuitem action="SearchUser"/>
+              <menuitem action="SearchBranch"/>
+              <menuitem action="SearchComputer"/>
+              <menuitem action="SearchTaxTemplate"/>
+            </menu>
+            <menu action="ConfigureMenu">
+              <menuitem action="ConfigureDevices"/>
+              <menuitem action="ConfigurePaymentMethods"/>
+              <menuitem action="ConfigurePaymentCategories"/>
+	      <menuitem action="ConfigureClientCategories"/>
+              <menuitem action="ConfigureTaxes"/>
+              <menuitem action="ConfigureSintegra"/>
+              <menuitem action="ConfigureParameters"/>
+              <menuitem action="ConfigureInvoices"/>
+              <menuitem action="ConfigureInvoicePrinters"/>
+              <separator name="ConfigureSeparator"/>
+              <menuitem action="ConfigurePlugins"/>
+              <placeholder name="PluginSettings"/>
+            </menu>
+            <menu action="HelpMenu">
+              <menuitem action="HelpContents"/>
+              <menuitem action="HelpAdmin"/>
+              <separator name="HelpSeparator"/>
+              <menuitem action="HelpAbout"/>
+            </menu>
+          </menubar>
+        </ui>"""
+
+        actions = [
+            ('menubar', None, ''),
+            # Admin
+            ("AdminMenu", None, _("Admin")),
+            ("Quit", gtk.STOCK_QUIT),
+
+            # Search
+            ("SearchMenu", None, _("_Search")),
+            ("SearchRole", None, _("Roles..."), '<Control><Alt>o'),
+            ("SearchEmployee", None, _("Employees..."), '<Control><Alt>e'),
+            ("SearchCfop", None, _("C.F.O.P..."), '<Control>o'),
+            ("SearchFiscalBook", None, _("Fiscal books..."), '<Control><Alt>f'),
+            ("SearchUserProfile", None, _("Profiles..."), '<Control><Alt>u'),
+            ("SearchUser", None, _("Users..."), '<Control>u'),
+            ("SearchBranch", None, _("Branches..."), '<Control>b'),
+            ("SearchComputer", None, _('Computers...'), '<Control><Alt>h'),
+            ("SearchTaxTemplate", None, _('Tax Classes...')),
+
+            # Configure
+            ("ConfigureMenu", None, _("_Configure")),
+            ("ConfigureDevices", None, _("Devices..."), '<Control>d'),
+            ("ConfigurePaymentMethods", None, _("Payment methods..."),
+             '<Control>m'),
+            ("ConfigurePaymentCategories", None, _("Payment categories..."),
+             '<Control>a'),
+            ("ConfigureClientCategories", None, _("Client categories..."),
+             '<control>x'),
+            ("ConfigureInvoices", None, _("Invoices..."), '<Control>n'),
+            ("ConfigureInvoicePrinters", None, _("Invoice printers..."),
+             '<Control>f'),
+            ("ConfigureSintegra", None, _("Sintegra..."), '<Control>w'),
+            ("ConfigurePlugins", None, _("Plugins...")),
+            ("ConfigureTaxes", None, _("Taxes..."), '<Control>l'),
+            ("ConfigureParameters", None, _("Parameters..."), '<Control>y'),
+
+            # Help
+            ("HelpMenu", None, _("_Help")),
+            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
+            ("HelpAdmin", None, _("Admin help"), 'F1'),
+            ("HelpAbout", gtk.STOCK_ABOUT),
+            ]
+        self.add_ui_actions(ui_string, actions)
+
+        uimanager = self.get_uimanager()
+        self.menubar = self.uimanager.get_widget('/menubar')
+
+    def add_ui_actions(self, ui_string, actions):
+        ag = gtk.ActionGroup('Actions')
+        ag.add_actions(actions)
+        uimanager = self.get_uimanager()
+        uimanager.insert_action_group(ag, 0)
+        uimanager.add_ui_from_string(ui_string)
+        for action in ag.list_actions():
+            setattr(self, action.get_name(), action)
+
+    #
+    # Application
+    #
+    def create_ui(self):
+        self.get_toplevel().add_accel_group(
+            self.get_uimanager().get_accel_group())
+
+        self.main_vbox.pack_start(self.menubar, False, False)
+        self.main_vbox.reorder_child(self.menubar, 0)
+
+        self.model.set_sort_column_id(COL_LABEL, gtk.SORT_ASCENDING)
+        self.iconview.set_text_column(COL_LABEL)
+        self.iconview.set_pixbuf_column(COL_PIXBUF)
+        self.iconview.grab_focus()
+        self.iconview.connect('item-activated', self.tasks.on_item_activated)
+        self.tasks.add_defaults(self.model)
 
     #
     # Callbacks
     #
 
-    def _on_fiscalbook_action_clicked(self, button):
-        self.tasks.run_task('fiscal_books')
+    # Admin
 
-    def on_taxes__activate(self, action):
-        self.tasks.run_task('taxes')
+    def on_Quit__activate(self, action):
+        self.shutdown_application()
 
-    def on_sintegra__activate(self, action):
-        self.tasks.run_task('sintegra')
+    # Search
 
-    def on_BranchSearch__activate(self, action):
-        self.tasks.run_task('branches')
 
-    def on_BranchStationSearch__activate(self, action):
-        self.tasks.run_task('stations')
-
-    def on_CfopSearch__activate(self, action):
-        self.tasks.run_task('cfop')
-
-    def on_EmployeeSearch__activate(self, action):
-        self.tasks.run_task('employees')
-
-    def on_UserSearch__activate(self, action):
-        self.tasks.run_task('users')
-
-    def on_EmployeeRole__activate(self, action):
+    def on_SearchRole__activate(self, action):
         self.tasks.run_task('employee_roles')
 
-    def on_UserProfile__activate(self, action):
+    def on_SearchEmployee__activate(self, action):
+        self.tasks.run_task('employees')
+
+    def on_SearchFiscalBook__activate(self, button):
+        self.tasks.run_task('fiscal_books')
+
+    def on_SearchCfop__activate(self, action):
+         self.tasks.run_task('cfop')
+
+    def on_SearchUserProfile__activate(self, action):
         self.tasks.run_task('user_profiles')
 
-    def on_about_menu__activate(self, action):
-        self._run_about()
+    def on_SearchUser__activate(self, action):
+        self.tasks.run_task('users')
 
-    def on_devices_setup__activate(self, action):
-        self.tasks.run_task('devices')
+    def on_SearchBranch__activate(self, action):
+        self.tasks.run_task('branches')
 
-    def on_system_parameters__activate(self, action):
-        self.tasks.run_task('parameters')
+    def on_SearchComputer__activate(self, action):
+        self.tasks.run_task('stations')
 
-    def on_invoice_printers__activate(self, action):
-        self.tasks.run_task('invoice_printers')
-
-    def on_invoices__activate(self, action):
-        self.tasks.run_task('invoice_layouts')
-
-    def on_PaymentMethod__activate(self, action):
-        self.tasks.run_task('payment_methods')
-
-    def on_payment_categories__activate(self, action):
-        self.tasks.run_task('payment_categories')
-
-    def on_client_categories__activate(self, action):
-        self.tasks.run_task('client_categories')
-
-    def on_Plugins__activate(self, action):
-        self.tasks.run_task('plugins')
-
-    def on_TaxTemplates__activate(self, action):
+    def on_SearchTaxTemplate__activate(self, action):
         self.tasks.run_task('tax_templates')
 
-    def on_help_contents__activate(self, action):
-        show_contents()
+    # Configure
 
-    def on_help_admin__activate(self, action):
-        show_section('admin-inicial')
+    def on_ConfigureDevices__activate(self, action):
+        self.tasks.run_task('devices')
+
+    def on_ConfigurePaymentMethods__activate(self, action):
+        self.tasks.run_task('payment_methods')
+
+    def on_ConfigurePaymentCategories__activate(self, action):
+        self.tasks.run_task('payment_categories')
+
+    def on_ConfigureClientCategories__activate(self, action):
+         self.tasks.run_task('client_categories')
+
+    def on_ConfigureTaxes__activate(self, action):
+        self.tasks.run_task('taxes')
+
+    def on_ConfigureSintegra__activate(self, action):
+        self.tasks.run_task('sintegra')
+
+    def on_ConfigureParameters__activate(self, action):
+        self.tasks.run_task('parameters')
+
+    def on_ConfigureInvoices__activate(self, action):
+        self.tasks.run_task('invoice_layouts')
+
+    def on_ConfigureInvoicePrinters__activate(self, action):
+        self.tasks.run_task('invoice_printers')
+
+    def on_ConfigurePlugins__activate(self, action):
+         self.tasks.run_task('plugins')
+
+    # Help
+
+    def on_HelpContents__activate(self, action):
+         show_contents()
+
+    def on_HelpAdmin__activate(self, action):
+         show_section('admin-inicial')
+
+    def on_HelpAbout__activate(self, action):
+         self._run_about()

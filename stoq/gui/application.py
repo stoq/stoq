@@ -104,10 +104,12 @@ class AppWindow(BaseAppWindow):
         self._create_user_menu()
         self._printer = FiscalPrinterHelper(
             self.conn, parent=self.get_toplevel())
-        self._klist = getattr(self, self.klist_name)
-        if not len(self._klist.get_columns()):
-            self._klist.set_columns(self.get_columns())
-        self._klist.set_selection_mode(self.klist_selection_mode)
+        if self.klist_name:
+            self._klist = getattr(self, self.klist_name)
+            if not len(self._klist.get_columns()):
+                self._klist.set_columns(self.get_columns())
+                self._klist.set_selection_mode(self.klist_selection_mode)
+        self.create_ui()
         if app.options.debug:
             self._create_debug_menu()
         self.setup_focus()
@@ -310,7 +312,7 @@ class AppWindow(BaseAppWindow):
         menu_bar = user_menu.get_parent()
         if not menu_bar.get_parent():
             if not hasattr(self, 'menubar'):
-                raise AssertionError("%s app needs a menubar widget" %
+                raise AssertionError("%s app needs a 'menubar' widget" %
                         (self.app_name, ))
             user_menu.reparent(self.menubar)
 
@@ -396,6 +398,10 @@ class AppWindow(BaseAppWindow):
                         opened from a previous day)
         """
         raise NotImplementedError
+
+    def create_ui(self):
+        """This is called when the UI such as GtkWidgets should be
+        created"""
 
     def _check_open_till(self):
         # FIXME: implement this verification:
