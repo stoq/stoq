@@ -70,12 +70,84 @@ class PayableApp(SearchableAppWindow):
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
+        self._create_actions()
         SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
         self._update_widgets()
         self.pay_order_button.set_sensitive(False)
         self.Receipt.set_sensitive(False)
         self.results.connect('has-rows', self._has_rows)
+
+    def _create_actions(self):
+        ui_string = """<ui>
+          <menubar action="menubar">
+            <menu action="PayableMenu">
+              <menuitem action="AddPayment"/>
+              <menuitem action="CancelPayment"/>
+              <menuitem action="SetNotPaid"/>
+              <menuitem action="ChangeDueDate"/>
+              <menuitem action="Comments"/>
+              <separator name="sep"/>
+              <menuitem action="Receipt"/>
+              <menuitem action="PaymentFlowHistory"/>
+              <separator name="sep2"/>
+              <menuitem action="ExportCSV"/>
+              <menuitem action="Quit"/>
+            </menu>
+            <menu action="SearchMenu">
+              <menuitem action="BillCheckSearch"/>
+            </menu>
+            <menu action="HelpMenu">
+              <menuitem action="HelpContents"/>
+              <menuitem action="HelpApp"/>
+              <separator name="help_separator"/>
+              <menuitem action="HelpAbout"/>
+            </menu>
+          </menubar>
+        </ui>"""
+
+        actions = [
+            ('menubar', None, ''),
+
+            # Payable
+            ('PayableMenu', None, 'Accounts _Payable'),
+            ('AddPayment', gtk.STOCK_ADD, _('Add payment...'), '<Control>p'),
+            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel Payment ...')),
+            ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
+            ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change Due Date...')),
+            ('Comments', None, _('Comments...')),
+
+            ('Receipt', None, _('_Receipt'), '<Control>r'),
+            ('PaymentFlowHistory', None, _('Payment _Flow History ...'), '<Control>f'),
+
+            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
+            ("Quit", gtk.STOCK_QUIT),
+
+            # Search
+            ('SearchMenu', None, _('_Search')),
+            ('BillCheckSearch', None, _('Bill and Check...')),
+
+            # Help
+            ("HelpMenu", None, _("_Help")),
+            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
+            ("HelpApp", None, _("Accounts Payable help"), 'F1'),
+            ("HelpAbout", gtk.STOCK_ABOUT),
+
+        ]
+        self.add_ui_actions(ui_string, actions)
+
+        self.menubar = self.uimanager.get_widget('/menubar')
+
+    #
+    # Application
+    #
+
+    def create_ui(self):
+        self.get_toplevel().add_accel_group(
+            self.get_uimanager().get_accel_group())
+
+        self.main_vbox.pack_start(self.menubar, False, False)
+        self.main_vbox.reorder_child(self.menubar, 0)
 
     #
     # SearchableAppWindow
@@ -396,8 +468,8 @@ class PayableApp(SearchableAppWindow):
     def on_BillCheckSearch__activate(self, action):
         self._run_bill_check_search()
 
-    def on_help_contents__activate(self, action):
+    def on_HelpContents__activate(self, action):
         show_contents()
 
-    def on_help_payable__activate(self, action):
+    def on_HelpApp__activate(self, action):
         show_section('pagar-inicio')
