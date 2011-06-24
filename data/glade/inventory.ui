@@ -2,15 +2,21 @@
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkAction" id="adjust_action">
-    <property name="label" translatable="yes">_Adjust</property>
-    <property name="short_label" translatable="yes">Adjust</property>
-    <property name="stock_id">gtk-convert</property>
-  </object>
-  <object class="GtkAction" id="couting_action">
-    <property name="label" translatable="yes">_Counting</property>
-    <property name="short_label" translatable="yes">Counting</property>
-    <property name="stock_id">gtk-index</property>
+  <object class="GtkActionGroup" id="actiongroup1">
+    <child>
+      <object class="GtkAction" id="counting_action">
+        <property name="label" translatable="yes">_Counting</property>
+        <property name="short_label" translatable="yes">Counting</property>
+        <property name="stock_id">gtk-index</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="adjust_action">
+        <property name="label" translatable="yes">_Adjust</property>
+        <property name="short_label" translatable="yes">Adjust</property>
+        <property name="stock_id">gtk-convert</property>
+      </object>
+    </child>
   </object>
   <object class="GtkWindow" id="inventory">
     <property name="width_request">800</property>
@@ -56,7 +62,7 @@
                           <object class="GtkMenuItem" id="counting_menu">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="related_action">couting_action</property>
+                            <property name="related_action">counting_action</property>
                           </object>
                         </child>
                         <child>
@@ -108,7 +114,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkImageMenuItem" id="help_coutents">
+                          <object class="GtkImageMenuItem" id="help_contents">
                             <property name="label">gtk-help</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
@@ -174,7 +180,6 @@
                   <object class="GtkToolButton" id="toolbutton1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="related_action">couting_action</property>
                     <property name="label" translatable="yes">Counting</property>
                     <property name="use_underline">True</property>
                   </object>
@@ -187,7 +192,6 @@
                   <object class="GtkToolButton" id="toolbutton2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="related_action">adjust_action</property>
                     <property name="label" translatable="yes">toolbutton2</property>
                     <property name="use_underline">True</property>
                   </object>
