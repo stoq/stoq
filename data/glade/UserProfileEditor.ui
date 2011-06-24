@@ -13,7 +13,7 @@
         <property name="row_spacing">5</property>
         <property name="visible">True</property>
         <child>
-          <object class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+          <object class="ProxyLabel" id="kiwilabel1">
             <property name="data_type">unicode</property>
             <property context="yes" name="label" translatable="yes">Profile Name:</property>
             <property name="xalign">1.0</property>
@@ -21,7 +21,7 @@
           </object>
         </child>
         <child>
-          <object class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+          <object class="ProxyLabel" id="kiwilabel2">
             <property name="data_type">unicode</property>
             <property context="yes" name="label" translatable="yes">Available Applications:</property>
             <property name="xalign">1.0</property>
@@ -34,7 +34,7 @@
           </packing>
         </child>
         <child>
-          <object class="kiwi+ui+widgets+entry+Entry" id="profile_name">
+          <object class="ProxyEntry" id="profile_name">
             <property name="data_type">unicode</property>
             <property name="is_focus">True</property>
             <property name="mandatory">True</property>

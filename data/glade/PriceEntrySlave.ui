@@ -18,7 +18,7 @@
           </packing>
         </child>
         <child>
-          <object class="kiwi+ui+widgets+entry+Entry" id="price">
+          <object class="ProxyEntry" id="price">
             <property name="data_type">currency</property>
             <property name="is_focus">True</property>
             <property name="model_attribute">price</property>

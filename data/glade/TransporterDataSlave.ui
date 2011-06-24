@@ -13,7 +13,7 @@
         <property name="row_spacing">5</property>
         <property name="visible">True</property>
         <child>
-          <object class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+          <object class="ProxyLabel" id="kiwilabel1">
             <property name="data_type">unicode</property>
             <property context="yes" name="label" translatable="yes">Transporter Status:</property>
             <property name="visible">True</property>
@@ -21,7 +21,7 @@
           </object>
         </child>
         <child>
-          <object class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+          <object class="ProxyLabel" id="kiwilabel2">
             <property name="data_type">unicode</property>
             <property context="yes" name="label" translatable="yes">Open Contract Date:</property>
             <property name="visible">True</property>
@@ -46,7 +46,7 @@
           <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
             <child>
-              <object class="kiwi+ui+widgets+radiobutton+RadioButton" id="active_radio">
+              <object class="ProxyRadioButton" id="active_radio">
                 <property name="data_type">bool</property>
                 <property name="data_value">True</property>
                 <property context="yes" name="label" translatable="yes">Active</property>
@@ -55,7 +55,7 @@
               </object>
             </child>
             <child>
-              <object class="kiwi+ui+widgets+radiobutton+RadioButton" id="inactive_radio">
+              <object class="ProxyRadioButton" id="inactive_radio">
                 <property name="active">False</property>
                 <property name="data_type">bool</property>
                 <property name="data_value">False</property>
@@ -88,7 +88,7 @@
           </packing>
         </child>
         <child>
-          <object class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+          <object class="ProxyLabel" id="kiwilabel3">
             <property name="data_type">unicode</property>
             <property context="yes" name="label" translatable="yes">Freight:</property>
             <property name="visible">True</property>
@@ -102,7 +102,7 @@
           </packing>
         </child>
         <child>
-          <object class="kiwi+ui+widgets+entry+Entry" id="freight">
+          <object class="ProxyEntry" id="freight">
             <property name="data_type">Decimal</property>
             <property name="model_attribute">freight_percentage</property>
             <property name="visible">True</property>
@@ -116,7 +116,7 @@
           </packing>
         </child>
         <child>
-          <object class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
+          <object class="ProxyLabel" id="kiwilabel4">
             <property name="data_type">unicode</property>
             <property context="yes" name="label" translatable="yes">%</property>
             <property name="visible">True</property>
