@@ -175,7 +175,8 @@ class StockApp(SearchableAppWindow):
         self.get_toplevel().add_accel_group(
             self.get_uimanager().get_accel_group())
 
-        self.menu_hbox.pack_start(self.menubar, False, False)
+        self.main_vbox.pack_start(self.menubar, False, False)
+        self.main_vbox.reorder_child(self.menubar, 0)
 
         self.toolbar_vbox.pack_start(self.main_toolbar, False, False)
         self.toolbar_vbox.reorder_child(self.main_toolbar, 0)
