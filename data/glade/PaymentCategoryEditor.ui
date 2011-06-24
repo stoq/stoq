@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <!--*- mode: xml -*-->
+<!-- interface-requires kiwiwidgets 0.0 -->
 <interface>
   <object class="GtkWindow" id="PaymentCategoryEditor">
     <property name="default_height">250</property>
