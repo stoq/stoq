@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface domain="stoq">
+  <object class="GtkWindow" id="sales_app">
+    <property name="height_request">570</property>
+    <property context="yes" name="title" translatable="yes">sales</property>
+    <property name="width_request">800</property>
+    <property name="window_position">center</property>
+    <child>
+      <object class="GtkVBox" id="main_vbox">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkHBox" id="menu_hbox">
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkVBox" id="vbox4">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkEventBox" id="search_holder">
+                <property name="border_width">5</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkVBox" id="list_vbox">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEventBox" id="list_toolbar_holder">
+                <property name="border_width">6</property>
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
