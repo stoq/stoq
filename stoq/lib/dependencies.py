@@ -69,7 +69,6 @@ class DependencyChecker(object):
         self._check_pypoppler(PYPOPPLER_REQUIRED)
         self._check_zope_interface(ZOPE_INTERFACE_REQUIRED)
         self._check_psycopg(PSYCOPG_REQUIRED)
-        self._check_gazpacho(GAZPACHO_REQUIRED)
         self._check_pil(PIL_REQUIRED)
         self._check_reportlab(REPORTLAB_REQUIRED)
         self._check_trml2pdf(TRML2PDF_REQUIRED)
@@ -265,20 +264,6 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://www.stoq.com.br',
                           required=version,
                           found=stoqlib_version)
-
-    def _check_gazpacho(self, version):
-        try:
-            import gazpacho
-        except ImportError:
-            self._missing(project="Gazpacho",
-                          url='http://gazpacho.sicem.biz/',
-                          version=version)
-
-        if map(int, gazpacho.__version__.split('.')) < list(version):
-            self._too_old(project="Gazpacho",
-                          url='http://gazpacho.sicem.biz/',
-                          required=version,
-                          found=gazpacho.__version__)
 
     def _check_pil(self, version):
         try:

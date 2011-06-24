@@ -84,7 +84,6 @@ scripts = [
     ]
 data_files = [
     ('$datadir/csv', listfiles('data', 'csv', '*.csv')),
-    ('$datadir/glade', listfiles('data', 'glade', '*.glade')),
     ('$datadir/glade', listfiles('data', 'glade', '*.ui')),
     ('$datadir/fonts', listfiles('data', 'fonts', '*.ttf')),
     ('$datadir/misc', listfiles('data/misc', '*.*')),
@@ -126,7 +125,6 @@ global_resources = dict(
 PLUGINS = ['ecf', 'nfe', 'books']
 PLUGIN_EXTS = [('csv', '*csv'),
                ('glade', '*.ui'),
-               ('glade', '*.glade'),
                ('sql', '*.sql'),
                ('sql', '*.py')]
 

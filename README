@@ -27,7 +27,6 @@ PostgresSQL 8.1 or higher
 Psycopg 2.0.5 or higher
 zope.interface 3.5.2 or higher
 Kiwi 1.9.27
-Gazpacho 0.6.6
 Stoqdrivers 0.9.11
 Python Imaging Library (PIL) 1.1.5 or higher
 Reportlab 1.20
