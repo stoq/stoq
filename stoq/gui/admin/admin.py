@@ -267,7 +267,7 @@ class AdminApp(AppWindow):
               <menuitem action="ConfigureDevices"/>
               <menuitem action="ConfigurePaymentMethods"/>
               <menuitem action="ConfigurePaymentCategories"/>
-	      <menuitem action="ConfigureClientCategories"/>
+              <menuitem action="ConfigureClientCategories"/>
               <menuitem action="ConfigureTaxes"/>
               <menuitem action="ConfigureSintegra"/>
               <menuitem action="ConfigureParameters"/>
@@ -330,15 +330,6 @@ class AdminApp(AppWindow):
         self.add_ui_actions(ui_string, actions)
 
         self.menubar = self.uimanager.get_widget('/menubar')
-
-    def add_ui_actions(self, ui_string, actions):
-        ag = gtk.ActionGroup('Actions')
-        ag.add_actions(actions)
-        uimanager = self.get_uimanager()
-        uimanager.insert_action_group(ag, 0)
-        uimanager.add_ui_from_string(ui_string)
-        for action in ag.list_actions():
-            setattr(self, action.get_name(), action)
 
     #
     # Application

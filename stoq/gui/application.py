@@ -455,6 +455,15 @@ class AppWindow(BaseAppWindow):
     # Public API
     #
 
+    def add_ui_actions(self, ui_string, actions):
+        ag = gtk.ActionGroup('Actions')
+        ag.add_actions(actions)
+        uimanager = self.get_uimanager()
+        uimanager.insert_action_group(ag, 0)
+        uimanager.add_ui_from_string(ui_string)
+        for action in ag.list_actions():
+            setattr(self, action.get_name(), action)
+
     def check_open_inventory(self):
         if Inventory.has_open(self.conn, get_current_branch(self.conn)):
             self._display_open_inventory_message()
