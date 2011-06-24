@@ -94,10 +94,88 @@ class ReceivableApp(SearchableAppWindow):
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
+        self._create_actions()
         SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
         self._update_widgets()
         self.results.connect('has-rows', self._has_rows)
+
+    def _create_actions(self):
+        ui_string = """<ui>
+          <menubar action="menubar">
+            <menu action="Menu">
+              <menuitem action="AddReceiving"/>
+              <menuitem action="CancelPayment"/>
+              <menuitem action="SetNotPaid"/>
+              <menuitem action="ChangeDueDate"/>
+              <menuitem action="Comments"/>
+              <menuitem action="PrintBill"/>
+              <separator name="sep"/>
+              <menuitem action="Renegotiate"/>
+              <menuitem action="Receipt"/>
+              <menuitem action="PaymentFlowHistory"/>
+              <separator name="sep2"/>
+              <menuitem action="ExportCSV"/>
+              <menuitem action="Quit"/>
+            </menu>
+            <menu action="SearchMenu">
+              <menuitem action="BillCheckSearch"/>
+              <menuitem action="CardPaymentSearch"/>
+            </menu>
+            <menu action="HelpMenu">
+              <menuitem action="HelpContents"/>
+              <menuitem action="HelpApp"/>
+              <separator name="help_separator"/>
+              <menuitem action="HelpAbout"/>
+            </menu>
+          </menubar>
+        </ui>"""
+
+        actions = [
+            ('menubar', None, ''),
+
+            # Payable
+            ('Menu', None, 'Accounts _Receivable'),
+            ('AddReceiving', gtk.STOCK_ADD, _('Add receiving...'), '<Control>p'),
+            ('CancelPayment', gtk.STOCK_REMOVE, _('Cancel Payment ...')),
+            ('SetNotPaid', gtk.STOCK_UNDO, _('Set as not paid...')),
+            ('ChangeDueDate', gtk.STOCK_REFRESH, _('Change Due Date...')),
+            ('Comments', None, _('Comments...')),
+            ('PrintBill', gtk.STOCK_PRINT, _('Print Bill...')),
+
+            ('Renegotiate', None, _('Renegotiate Payments...')),
+            ('Receipt', None, _('_Receipt'), '<Control>r'),
+            ('PaymentFlowHistory', None, _('Payment _Flow History ...'), '<Control>f'),
+
+            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...')),
+            ("Quit", gtk.STOCK_QUIT),
+
+            # Search
+            ('SearchMenu', None, _('_Search')),
+            ('BillCheckSearch', None, _('Bill and Check...')),
+            ('CardPaymentSearch', None, _('Card Payment...')),
+
+            # Help
+            ("HelpMenu", None, _("_Help")),
+            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
+            ("HelpApp", None, _("Accounts Receivable help"), 'F1'),
+            ("HelpAbout", gtk.STOCK_ABOUT),
+
+        ]
+        self.add_ui_actions(ui_string, actions)
+
+        self.menubar = self.uimanager.get_widget('/menubar')
+
+    #
+    # Application
+    #
+
+    def create_ui(self):
+        self.get_toplevel().add_accel_group(
+            self.get_uimanager().get_accel_group())
+
+        self.main_vbox.pack_start(self.menubar, False, False)
+        self.main_vbox.reorder_child(self.menubar, 0)
 
     def _setup_widgets(self):
         self.search.set_summary_label(
@@ -446,8 +524,8 @@ class ReceivableApp(SearchableAppWindow):
         payment = item.payment
         print_report(BillReport, [payment])
 
-    def on_help_contents__activate(self, action):
+    def on_HelpContents__activate(self, action):
         show_contents()
 
-    def on_help_receivable__activate(self, action):
+    def on_HelpApp__activate(self, action):
         show_section('receber-inicio')
