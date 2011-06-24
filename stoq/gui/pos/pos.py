@@ -156,10 +156,6 @@ class POSApp(AppWindow):
               <menuitem action="HelpAbout"/>
             </menu>
          </menubar>
-         <toolbar action="main_toolbar">
-           <toolitem action="counting_action"/>
-           <toolitem action="adjust_action"/>
-         </toolbar>
         </ui>"""
 
         actions = [
@@ -197,7 +193,6 @@ class POSApp(AppWindow):
         self.add_ui_actions(ui_string, actions)
 
         self.menubar = self.uimanager.get_widget('/menubar')
-        self.toolbar = self.uimanager.get_widget('/main_toolbar')
 
     #
     # Application
