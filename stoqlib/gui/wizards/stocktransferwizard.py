@@ -278,10 +278,6 @@ class StockTransferFinishStep(BaseWizardStep):
             return ValidationError(_(u"The receival date must be set "
                                       "to after the open date"))
 
-    def on_destination_branch__content_changed(self, *args):
-        dest_branch = self.destination_branch.get_selected()
-        self.transfer_order.destination_branch = dest_branch
-
 
 #
 # Main wizard
