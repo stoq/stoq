@@ -110,6 +110,7 @@ class POSApp(AppWindow):
     klist_name = 'sale_items'
 
     def __init__(self, app):
+        self._create_actions()
         AppWindow.__init__(self, app)
         self._delivery = None
         self.param = sysparam(self.conn)
@@ -123,6 +124,91 @@ class POSApp(AppWindow):
         self._setup_proxies()
         self._clear_order()
         self._update_widgets()
+
+    def _create_actions(self):
+        ui_string = """<ui>
+         <menubar action="menubar">
+             <menu action="SalesMenu">
+                <menuitem action="CancelOrder"/>
+                <separator name="sep"/>
+                <menuitem action="NewDelivery"/>
+                <menuitem action="OrderCheckout"/>
+                <separator name="sep2"/>
+                <menuitem action="Quit"/>
+             </menu>
+             <menu action="SearchMenu">
+                <menuitem action="Sales"/>
+                <menuitem action="SoldItemsByBranchSearch"/>
+                <menuitem action="Clients"/>
+                <menuitem action="ProductSearch"/>
+                <menuitem action="ServiceSearch"/>
+                <menuitem action="DeliverySearch"/>
+             </menu>
+             <menu action="TillMenu">
+                <menuitem action="TillOpen"/>
+                <menuitem action="TillClose"/>
+             </menu>
+
+           <menu action="HelpMenu">
+              <menuitem action="HelpContents"/>
+              <menuitem action="HelpApp"/>
+              <separator name="HelpSeparator"/>
+              <menuitem action="HelpAbout"/>
+            </menu>
+         </menubar>
+         <toolbar action="main_toolbar">
+           <toolitem action="counting_action"/>
+           <toolitem action="adjust_action"/>
+         </toolbar>
+        </ui>"""
+
+        actions = [
+            ('menubar', None, ''),
+
+            # Sales
+            ("SalesMenu", None, _("Sal_es")),
+            ('CancelOrder', None, _('Cancel Order'), '<Control><Alt>o'),
+            ('NewDelivery', None, _('New Delivery...'), '<Control>F5'),
+            ('OrderCheckout', None, _('Order Checkout...'), '<Control>F10'),
+            ("Quit", gtk.STOCK_QUIT),
+
+            # Search
+            ("SearchMenu", None, _("_Search")),
+            ("Sales", None, _("Sales..."), '<Control><Alt>a'),
+            ("SoldItemsByBranchSearch", None, _("Sold Items by Branch..."),
+                '<Contrl><Alt>a'),
+            ("Clients", None, _("Clients..."), '<Control><Alt>c'),
+            ("ProductSearch", None, _("Products..."), '<Control><Alt>p'),
+            ("ServiceSearch", None, _("Services..."), '<Contro><Alt>s'),
+            ("DeliverySearch", None, _("Deliveries..."), '<Control><Alt>e'),
+
+            # Till
+            ("TillMenu", None, _("_Till")),
+            ("TillOpen", None, _("Open Till..."), '<Control>F6'),
+            ("TillClose", None, _("Close Till..."), '<Control>F7'),
+
+            # Help
+            ("HelpMenu", None, _("_Help")),
+            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
+            ("HelpApp", None, _("POS help"), 'F1'),
+            ("HelpAbout", gtk.STOCK_ABOUT),
+
+        ]
+        self.add_ui_actions(ui_string, actions)
+
+        self.menubar = self.uimanager.get_widget('/menubar')
+        self.toolbar = self.uimanager.get_widget('/main_toolbar')
+
+    #
+    # Application
+    #
+
+    def create_ui(self):
+        self.get_toplevel().add_accel_group(
+            self.get_uimanager().get_accel_group())
+
+        self.main_vbox.pack_start(self.menubar, False, False)
+        self.main_vbox.reorder_child(self.menubar, 0)
 
     #
     # AppWindow Hooks
@@ -696,10 +782,10 @@ class POSApp(AppWindow):
     def on_TillOpen__activate(self, action):
         self.open_till()
 
-    def on_help_contents__activate(self, action):
+    def on_HelpContents__activate(self, action):
         show_contents()
 
-    def on_help_pos__activate(self, action):
+    def on_HelpApp__activate(self, action):
         show_section('pdv-inicio')
 
     #
