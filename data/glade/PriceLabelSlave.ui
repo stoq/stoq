@@ -19,7 +19,7 @@
           </packing>
         </child>
         <child>
-          <object class="kiwi+ui+widgets+label+Label" id="price">
+          <object class="ProxyLabel" id="price">
             <property name="data_type">currency</property>
             <property name="ellipsize">end</property>
             <property name="model_attribute">price</property>

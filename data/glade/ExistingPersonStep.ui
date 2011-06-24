@@ -8,7 +8,7 @@
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
         <child>
-          <object class="kiwi+ui+widgets+label+Label" id="question_label">
+          <object class="ProxyLabel" id="question_label">
             <property name="data_type">unicode</property>
             <property context="yes" name="label" translatable="yes">Is it one of these ?</property>
             <property name="visible">True</property>
@@ -22,13 +22,13 @@
             <property name="row_spacing">5</property>
             <property name="visible">True</property>
             <child>
-              <object class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+              <object class="ProxyLabel" id="kiwilabel2">
                 <property name="data_type">unicode</property>
                 <property name="visible">True</property>
               </object>
             </child>
             <child>
-              <object class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+              <object class="ProxyLabel" id="kiwilabel3">
                 <property name="data_type">unicode</property>
                 <property name="visible">True</property>
               </object>
@@ -38,7 +38,7 @@
               </packing>
             </child>
             <child>
-              <object class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
+              <object class="ProxyLabel" id="kiwilabel4">
                 <property name="data_type">unicode</property>
                 <property name="visible">True</property>
               </object>
@@ -88,7 +88,7 @@
               </packing>
             </child>
             <child>
-              <object class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
+              <object class="ProxyLabel" id="kiwilabel5">
                 <property name="data_type">unicode</property>
                 <property name="visible">True</property>
               </object>
@@ -98,7 +98,7 @@
               </packing>
             </child>
             <child>
-              <object class="kiwi+ui+widgets+label+Label" id="kiwilabel7">
+              <object class="ProxyLabel" id="kiwilabel7">
                 <property name="data_type">unicode</property>
                 <property name="visible">True</property>
               </object>

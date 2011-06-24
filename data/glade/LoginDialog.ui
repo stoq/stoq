@@ -97,7 +97,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
+                  <object class="ProxyLabel" id="kiwilabel4">
                     <property name="visible">True</property>
                   </object>
                   <packing>
@@ -112,7 +112,7 @@
           </object>
         </child>
         <child>
-          <object class="kiwi+ui+widgets+label+Label" id="notification_label">
+          <object class="ProxyLabel" id="notification_label">
             <property name="data_type">unicode</property>
             <property name="justify">center</property>
             <property name="visible">True</property>
@@ -128,7 +128,7 @@
           <object class="GtkHBox" id="hbox2">
             <property name="visible">True</property>
             <child>
-              <object class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+              <object class="ProxyLabel" id="kiwilabel2">
                 <property name="visible">True</property>
               </object>
             </child>

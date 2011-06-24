@@ -23,7 +23,7 @@
               </object>
             </child>
             <child>
-              <object class="kiwi+ui+widgets+combobox+ComboBox" id="statuses_combo">
+              <object class="ProxyComboBox" id="statuses_combo">
                 <property name="data_type">int</property>
                 <property name="model_attribute">status</property>
                 <property name="visible">True</property>
@@ -33,7 +33,7 @@
               </packing>
             </child>
             <child>
-              <object class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+              <object class="ProxyLabel" id="kiwilabel1">
                 <property name="data_type">unicode</property>
                 <property name="visible">True</property>
               </object>
