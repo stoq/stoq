@@ -77,6 +77,7 @@ class SalesApp(SearchableAppWindow):
                  Sale.STATUS_RENEGOTIATED: 'close_date',}
 
     def __init__(self, app):
+        self._create_actions()
         SearchableAppWindow.__init__(self, app)
         self._open_inventory = False
         self.check_open_inventory()
@@ -86,9 +87,103 @@ class SalesApp(SearchableAppWindow):
         self._setup_columns()
         self._setup_slaves()
 
+    def _create_actions(self):
+        ui_string = """<ui>
+      <menubar action="menubar">
+        <menu action="TillMenu">
+          <menuitem action="TillQuote"/>
+          <menuitem action="TillCancel"/>
+          <separator/>
+          <menuitem action="TillPrintInvoice"/>
+          <separator/>
+          <menuitem action="ExportCSV"/>
+          <menuitem action="TillQuit"/>
+        </menu>
+        <menu action="LoanMenu">
+          <menuitem action="LoanNew"/>
+          <menuitem action="LoanClose"/>
+          <separator/>
+          <menuitem action="LoanSearch"/>
+          <menuitem action="LoanSearchItems"/>
+        </menu>
+        <menu action="SearchMenu">
+          <menuitem action="SearchSoldItemsByBranch"/>
+          <menuitem action="SearchProduct"/>
+          <menuitem action="SearchService"/>
+          <menuitem action="SearchDelivery"/>
+          <menuitem action="SearchClient"/>
+          <menuitem action="SearchCommission"/>
+        </menu>
+        <placeholder name="ExtraMenu"/>
+        <menu action="HelpMenu">
+          <menuitem action="HelpContents"/>
+          <menuitem action="HelpSales"/>
+          <separator name="help_separator"/>
+          <menuitem action="HelpAbout"/>
+        </menu>
+      </menubar>
+      <toolbar action="main_toolbar">
+        <toolitem action="TillQuote"/>
+        <toolitem action="SearchClient"/>
+        <toolitem action="SearchProduct"/>
+        <toolitem action="SearchService"/>
+        <toolitem action="SearchDelivery"/>
+      </toolbar>
+    </ui>"""
+
+        actions = [
+            ('menubar', None, ''),
+
+            # Production
+            ("TillMenu", None, _("_Till")),
+            ("TillQuote", gtk.STOCK_NEW, _("New Quote")),
+            ("TillCancel", None, _("Cancel Quote")),
+            ("TillPrintInvoice", gtk.STOCK_PRINT, _("_Print invoice...")),
+            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
+            ("TillQuit", gtk.STOCK_QUIT),
+
+            # Loan
+            ("LoanMenu", None, _("_Loan")),
+            ("LoanNew", None, _("New loan...")),
+            ("LoanClose", None, _("Close loan...")),
+            ("LoanSearch", None, _("Search loans...")),
+            ("LoanSearchItems", None, _("Search loan items...")),
+
+            # Search
+            ("SearchMenu", None, _("_Search")),
+            ("SearchSoldItemsByBranch", None, _("Sold Items by Branch..."),
+             "<Control><Alt>a"),
+            ("SearchProduct", 'stoq-products', _("Products..."), "<Control><Alt>p"),
+            ("SearchService", 'stoq-services', _("Services..."), "<Control><Alt>s"),
+            ("SearchDelivery", 'stoq-deliveries', _("Deliveries..."), "<Control><Alt>e"),
+            ("SearchClient", 'stoq-clients', _("Clients..."), "<Control><Alt>c"),
+            ("SearchCommission", None, _("Commissions..."), "<Control><Alt>o"),
+
+            # Help
+            ("HelpMenu", None, _("_Help")),
+            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
+            ("HelpSales", None, _("Sales Help"), 'F1'),
+            ("HelpAbout", gtk.STOCK_ABOUT),
+        ]
+
+        self.add_ui_actions(ui_string, actions)
+
+        self.menubar = self.uimanager.get_widget('/menubar')
+        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
+
     #
-    # SearchableAppWindow
+    # Application
     #
+
+    def create_ui(self):
+        self.get_toplevel().add_accel_group(
+            self.get_uimanager().get_accel_group())
+
+        self.main_vbox.pack_start(self.menubar, False, False)
+        self.main_vbox.reorder_child(self.menubar, 0)
+
+        self.main_vbox.pack_start(self.main_toolbar, False, False)
+        self.main_vbox.reorder_child(self.main_toolbar, 1)
 
     def create_filters(self):
         self.set_text_field_columns(['client_name', 'salesperson_name'])
@@ -172,8 +267,8 @@ class SalesApp(SearchableAppWindow):
         can_print_invoice = bool(sale_view and
                                  sale_view.client_name is not None and
                                  sale_view.status != Sale.STATUS_RETURNED)
-        self.print_invoice.set_sensitive(can_print_invoice)
-        self.cancel_menu.set_sensitive(self._can_cancel(sale_view))
+        self.TillPrintInvoice.set_sensitive(can_print_invoice)
+        self.TillCancel.set_sensitive(self._can_cancel(sale_view))
 
         can_return = bool(sale_view and sale_view.sale.can_return() and not
                           self._open_inventory)
@@ -241,41 +336,21 @@ class SalesApp(SearchableAppWindow):
     # Kiwi callbacks
     #
 
-    def _on_clients_action__clicked(self, button):
-        self.run_dialog(ClientSearch, self.conn, hide_footer=True)
-
-    def _on_products_action__clicked(self, button):
-        hide_cost_column = not sysparam(self.conn).SHOW_COST_COLUMN_IN_SALES
-        self.run_dialog(ProductSearch, self.conn, hide_footer=True,
-                        hide_toolbar=True, hide_cost_column=hide_cost_column)
-
-    def on_SoldItemsByBranchSearch__activate(self, button):
-        self.run_dialog(SoldItemsByBranchSearch, self.conn)
-
-    def _on_commission_action__clicked(self, button):
-        self.run_dialog(CommissionSearch, self.conn)
-
-    def _on_services_action_clicked(self, button):
-        self.run_dialog(ServiceSearch, self.conn, hide_toolbar=True)
-
-    def _on_print_invoice__activate(self, action):
-        return self._print_invoice()
-
     def _on_sale_toolbar__sale_returned(self, toolbar, sale):
         self.search.refresh()
 
     def _on_sale_toolbar__sale_edited(self, toolbar, sale):
         self.search.refresh()
 
-    def on_quote_menu__activate(self, action):
+    # Till
+
+    def on_TillQuote__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(SaleQuoteWizard, trans)
         finish_transaction(trans, model)
         trans.close()
 
-        return model
-
-    def on_cancel_menu__activate(self, action):
+    def on_TillCancel__activate(self, action):
         if yesno(_('This will cancel the selected quote. Are you sure?'),
                  gtk.RESPONSE_NO, _(u"Don't Cancel"), _(u"Cancel Quote")):
             return
@@ -286,38 +361,61 @@ class SalesApp(SearchableAppWindow):
         finish_transaction(trans, True)
         self.search.refresh()
 
-    def on_NewQuote__activate(self, action):
-        trans = new_transaction()
-        model = self.run_dialog(SaleQuoteWizard, trans)
-        finish_transaction(trans, model)
-        trans.close()
+    def on_TillPrintInvoice__activate(self, action):
+        return self._print_invoice()
 
-    def on_DeliverySearch__activate(self, action):
-        self.run_dialog(DeliverySearch, self.conn)
+    def on_TillQuit__activate(self, action):
+        self.shutdown_application()
 
-    def on_Deliveries__activate(self, action):
-        self.run_dialog(DeliverySearch, self.conn)
+    # Loan
 
-    def on_NewLoan__activate(self, action):
+    def on_LoanNew__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(NewLoanWizard, trans)
         finish_transaction(trans, model)
         trans.close()
 
-    def on_CloseLoan__activate(self, action):
+    def on_LoanClose__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(CloseLoanWizard, trans)
         finish_transaction(trans, model)
         trans.close()
 
-    def on_SearchLoan__activate(self, action):
+    def on_LoanSearch__activate(self, action):
         self.run_dialog(LoanSearch, self.conn)
 
-    def on_SearchLoanItems__activate(self, action):
+    def on_LoanSearchItems__activate(self, action):
         self.run_dialog(LoanItemSearch, self.conn)
 
-    def on_help_contents__activate(self, action):
+    # Search
+
+    def on_SearchClient__activate(self, button):
+        self.run_dialog(ClientSearch, self.conn, hide_footer=True)
+
+    def on_SearchProduct__activate(self, button):
+        hide_cost_column = not sysparam(self.conn).SHOW_COST_COLUMN_IN_SALES
+        self.run_dialog(ProductSearch, self.conn, hide_footer=True,
+                        hide_toolbar=True, hide_cost_column=hide_cost_column)
+
+    def on_SearchCommission__activate(self, button):
+        self.run_dialog(CommissionSearch, self.conn)
+
+    def on_SearchService__activate(self, button):
+        self.run_dialog(ServiceSearch, self.conn, hide_toolbar=True)
+
+    def on_SearchSoldItemsByBranch__activate(self, button):
+        self.run_dialog(SoldItemsByBranchSearch, self.conn)
+
+    def on_SearchDelivery__activate(self, action):
+        self.run_dialog(DeliverySearch, self.conn)
+
+    # Help
+
+    def on_HelpContents__activate(self, action):
         show_contents()
 
-    def on_help_sales__activate(self, action):
+    def on_HelpSales__activate(self, action):
         show_section('vendas-inicio')
+
+    def on_HelpAbout__activate(self, action):
+        self._run_about()
