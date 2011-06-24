@@ -70,15 +70,88 @@ class TillApp(SearchableAppWindow):
     search_labels = _(u'matching:')
 
     def __init__(self, app):
+        self._create_actions()
         SearchableAppWindow.__init__(self, app)
         self.current_branch = get_current_branch(self.conn)
         self.check_till()
         self._setup_widgets()
         self.refresh()
 
+    def _create_actions(self):
+        ui_string = """<ui>
+      <menubar action="menubar">
+        <menu action="TillMenu">
+          <menuitem action="TillOpen"/>
+          <menuitem action="TillClose"/>
+          <separator/>
+          <menuitem action="TillAddCash"/>
+          <menuitem action="TillRemoveCash"/>
+          <separator name="sep1"/>
+          <menuitem action="ExportCSV"/>
+          <separator name="sep2"/>
+          <menuitem action="TillQuit"/>
+        </menu>
+        <menu action="SearchMenu">
+          <menuitem action="SearchClient"/>
+          <menuitem action="SearchSale"/>
+          <menuitem action="SearchSoldItemsByBranch"/>
+          <separator name="sep2"/>
+          <menuitem action="SearchTillHistory"/>
+          <menuitem action="SearchFiscalTillOperations"/>
+        </menu>
+        <placeholder name="ExtraMenu"/>
+        <menu action="HelpMenu">
+          <menuitem action="HelpContents"/>
+          <menuitem action="HelpTill"/>
+          <separator name="help_separator"/>
+          <menuitem action="HelpAbout"/>
+        </menu>
+      </menubar>
+    </ui>"""
+
+        actions = [
+            ('menubar', None, ''),
+
+            # Till
+            ("TillMenu", None, _("_Till")),
+            ('TillOpen', None, _('Open Till...'), '<Control>F6'),
+            ('TillClose', None, _('Close Till...'), '<Control>F7'),
+            ('TillAddCash', None, _('Add Cash...'), '<Control>s'),
+            ('TillRemoveCash', None, _('Remove Cash...'), '<Control>j'),
+            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
+            ("TillQuit", gtk.STOCK_QUIT),
+
+            # Search
+            ("SearchMenu", None, _("_Search")),
+            ("SearchClient", None, _("Clients..."), '<Control><Alt>c'),
+            ("SearchSale", None, _("Sales..."), '<Contrl><Alt>a'),
+            ("SearchSoldItemsByBranch", None, _("Sold Items by Branch..."),
+             '<Control><Alt>d'),
+            ("SearchTillHistory", None, _("Till history..."), '<Control><Alt>t'),
+            ("SearchFiscalTillOperations", None,
+             _("Fiscal Till Operations..."), '<Contro><Alt>f'),
+
+            # Help
+            ("HelpMenu", None, _("_Help")),
+            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
+            ("HelpTill", None, _("Till Help"), 'F1'),
+            ("HelpAbout", gtk.STOCK_ABOUT),
+        ]
+
+        self.add_ui_actions(ui_string, actions)
+
+        self.menubar = self.uimanager.get_widget('/menubar')
+
     #
-    # SearchableAppWindow hooks
+    # Application
     #
+
+    def create_ui(self):
+        self.get_toplevel().add_accel_group(
+            self.get_uimanager().get_accel_group())
+
+        self.main_vbox.pack_start(self.menubar, False, False)
+        self.main_vbox.reorder_child(self.menubar, 0)
 
     def setup_focus(self):
         # Groups
@@ -264,9 +337,9 @@ class TillApp(SearchableAppWindow):
 
         self.TillOpen.set_sensitive(closed)
         self.TillClose.set_sensitive(not closed or blocked)
-        self.AddCash.set_sensitive(not closed and not blocked)
-        self.RemoveCash.set_sensitive(not closed and not blocked)
-        self.TillHistory.set_sensitive(not closed and not blocked)
+        self.TillAddCash.set_sensitive(not closed and not blocked)
+        self.TillRemoveCash.set_sensitive(not closed and not blocked)
+        self.SearchTillHistory.set_sensitive(not closed and not blocked)
         self.app_vbox.set_sensitive(not closed and not blocked)
 
         if closed:
@@ -307,58 +380,7 @@ class TillApp(SearchableAppWindow):
             self._update_total()
 
     #
-    # Actions
-    #
-
-    def _on_close_till_action__clicked(self, button):
-        self.close_till()
-
-    def _on_open_till_action__clicked(self, button):
-        self.open_till()
-
-    def _on_client_search_action__clicked(self, button):
-        self._run_search_dialog(ClientSearch, hide_footer=True)
-
-    def _on_sale_search_action__clicked(self, button):
-        self._run_search_dialog(SaleSearch)
-
-    def on_SoldItemsByBranchSearch__activate(self, button):
-        self._run_search_dialog(SoldItemsByBranchSearch)
-
-    def _on_fiscal_till_operations__action_clicked(self, button):
-        self._run_search_dialog(TillFiscalOperationsSearch)
-
-    def on_TillHistory__activate(self, button):
-        dialog = TillHistoryDialog(self.conn)
-        self.run_dialog(dialog, self.conn)
-
-    def on_AddCash__activate(self, action):
-        model = run_dialog(CashInEditor, self, self.conn)
-        if finish_transaction(self.conn, model):
-            self._update_total()
-
-    def on_RemoveCash__activate(self, action):
-        model = run_dialog(CashOutEditor, self, self.conn)
-        if finish_transaction(self.conn, model):
-            self._update_total()
-
-    def on_help_contents__activate(self, action):
-        show_contents()
-
-    def on_help_till__activate(self, action):
-        show_section('caixa-inicio')
-
-    #
     # Callbacks
-    #
-
-#     def on_searchbar_activate(self, slave, objs):
-#         SearchableAppWindow.on_searchbar_activate(self, slave, objs)
-#         self._update_toolbar_buttons()
-#         self._update_total()
-
-    #
-    # Kiwi callbacks
     #
 
     def on_confirm_order_button__clicked(self, button):
@@ -379,3 +401,53 @@ class TillApp(SearchableAppWindow):
 
     def on_return_button__clicked(self, button):
         self._return_sale()
+
+    # Till
+
+    def on_TillClose__activate(self, button):
+        self.close_till()
+
+    def on_TillOpen__activate(self, button):
+        self.open_till()
+
+    def on_TillAddCash__activate(self, action):
+        model = run_dialog(CashInEditor, self, self.conn)
+        if finish_transaction(self.conn, model):
+            self._update_total()
+
+    def on_TillRemoveCash__activate(self, action):
+        model = run_dialog(CashOutEditor, self, self.conn)
+        if finish_transaction(self.conn, model):
+            self._update_total()
+
+    def on_TillQuit__activate(self, action):
+        self.shutdown_application()
+
+    # Search
+
+    def on_SearchClient__activate(self, action):
+        self._run_search_dialog(ClientSearch, hide_footer=True)
+
+    def on_SearchSale__activate(self, action):
+        self._run_search_dialog(SaleSearch)
+
+    def on_SearchSoldItemsByBranch__activate(self, button):
+        self._run_search_dialog(SoldItemsByBranchSearch)
+
+    def on_SearchTillHistory__activate(self, button):
+        dialog = TillHistoryDialog(self.conn)
+        self.run_dialog(dialog, self.conn)
+
+    def on_SearchFiscalTillOperations__activate(self, button):
+        self._run_search_dialog(TillFiscalOperationsSearch)
+
+    # Help
+
+    def on_HelpContents__activate(self, action):
+        show_contents()
+
+    def on_HelpTill__activate(self, action):
+        show_section('caixa-inicio')
+
+    def on_HelpAbout__activate(self, action):
+         self._run_about()
