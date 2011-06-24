@@ -58,8 +58,85 @@ class ProductionApp(SearchableAppWindow):
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
+        self._create_actions()
         SearchableAppWindow.__init__(self, app)
         self._update_widgets()
+
+    def _create_actions(self):
+        ui_string = """<ui>
+      <menubar action="menubar">
+        <menu action="ProductionMenu">
+          <menuitem action="ProductionNew"/>
+          <menuitem action="ProductionStart"/>
+          <menuitem action="ProductionPurchaseQuote"/>
+          <separator name="sep"/>
+          <menuitem action="ExportCSV"/>
+          <menuitem action="ProductionQuit"/>
+        </menu>
+        <menu action="SearchMenu">
+          <menuitem action="SearchProduct"/>
+          <menuitem action="SearchService"/>
+          <menuitem action="SearchProductionItem"/>
+          <menuitem action="SearchProductionHistory"/>
+        </menu>
+        <menu action="HelpMenu">
+          <menuitem action="HelpContents"/>
+          <menuitem action="HelpProduction"/>
+          <separator name="help_separator"/>
+          <menuitem action="HelpAbout"/>
+        </menu>
+      </menubar>
+      <toolbar action="main_toolbar">
+        <toolitem action="ProductionNew"/>
+        <toolitem action="ProductionPurchaseQuote"/>
+        <toolitem action="SearchProductionItem"/>
+      </toolbar>
+    </ui>"""
+
+        actions = [
+            ('menubar', None, ''),
+
+            # Production
+            ("ProductionMenu", None, _("_Production")),
+            ('ProductionNew', gtk.STOCK_NEW, _('New Production Order...'), '<Control>o'),
+            ('ProductionStart', 'stoq-transfer', _('Start Production...'), '<Control>t'),
+            ('ProductionPurchaseQuote', 'stoq-purchase-quote', _('Purchase Quote...'),
+             '<Control>p'),
+            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
+            ("ProductionQuit", gtk.STOCK_QUIT),
+
+            # Search
+            ("SearchMenu", None, _("_Search")),
+            ("SearchProduct", None, _("Products..."), '<Control>d'),
+            ("SearchService", None, _("Services..."), '<Control>s'),
+            ("SearchProductionItem", 'stoq-production-app', _("Production items..."),
+             '<Control>r'),
+            ("SearchProductionHistory", None, _("Production history..."), '<Control>h'),
+            # Help
+            ("HelpMenu", None, _("_Help")),
+            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
+            ("HelpProduction", None, _("Production Help"), 'F1'),
+            ("HelpAbout", gtk.STOCK_ABOUT),
+        ]
+
+        self.add_ui_actions(ui_string, actions)
+
+        self.menubar = self.uimanager.get_widget('/menubar')
+        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
+
+    #
+    # Application
+    #
+
+    def create_ui(self):
+        self.get_toplevel().add_accel_group(
+            self.get_uimanager().get_accel_group())
+
+        self.main_vbox.pack_start(self.menubar, False, False)
+        self.main_vbox.reorder_child(self.menubar, 0)
+
+        self.list_vbox.pack_start(self.main_toolbar, False, False)
+        self.list_vbox.reorder_child(self.main_toolbar, 0)
 
     def _update_widgets(self):
         selection = self.results.get_selected_rows()
@@ -71,7 +148,7 @@ class ProductionApp(SearchableAppWindow):
                         selected.status == ProductionOrder.ORDER_WAITING)
             can_start = can_edit
         self.edit_button.set_sensitive(can_edit)
-        self.MenuStartProduction.set_sensitive(can_start)
+        self.ProductionStart.set_sensitive(can_start)
         self.start_production_button.set_sensitive(can_start)
         self.details_button.set_sensitive(len(selection) == 1)
 
@@ -127,42 +204,6 @@ class ProductionApp(SearchableAppWindow):
     # Kiwi Callbacks
     #
 
-    def on_Products__activate(self, action):
-        self.run_dialog(ProductionProductSearch, self.conn)
-
-    def on_Services__activate(self, action):
-        self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)
-
-    def on_ProductionItems__activate(self, action):
-        self.run_dialog(ProductionItemsSearch, self.conn)
-
-    def on_ProductionHistory__activate(self, action):
-        self.run_dialog(ProductionHistorySearch, self.conn)
-
-    def on_MenuNewProduction__activate(self, action):
-        self._open_production_order()
-
-    def on_MenuStartProduction__activate(self, action):
-        self._start_production_order()
-
-    def on_MenuPurchaseQuote__activate(self, action):
-        self.run_dialog(ProductionQuoteDialog, self.conn)
-
-    def on_ToolbarNewProduction__activate(self, action):
-        self._open_production_order()
-
-    def on_ToolbarProductionItemsSearch__activate(self, action):
-        self.run_dialog(ProductionItemsSearch, self.conn)
-
-    def on_ToolbarPurchaseQuote__activate(self, action):
-        self.run_dialog(ProductionQuoteDialog, self.conn)
-
-    def on_help_contents__activate(self, action):
-        show_contents()
-
-    def on_help_production__activate(self, action):
-        show_section('producao-inicio')
-
     def on_start_production_button__clicked(self, widget):
         self._start_production_order()
 
@@ -189,3 +230,43 @@ class ProductionApp(SearchableAppWindow):
 
     def on_results__row_activated(self, widget, order):
         self.run_dialog(ProductionDetailsDialog, self.conn, order)
+
+    # Production
+
+    def on_ProductionNew__activate(self, action):
+        self._open_production_order()
+
+    def on_ProductionStart__activate(self, action):
+        self._start_production_order()
+
+    def on_ProductionPurchaseQuote__activate(self, action):
+        self.run_dialog(ProductionQuoteDialog, self.conn)
+
+    def on_ProductionQuit__activate(self, action):
+        self.shutdown_application()
+
+    # Search
+
+    def on_SearchProduct__activate(self, action):
+        self.run_dialog(ProductionProductSearch, self.conn)
+
+    def on_SearchService__activate(self, action):
+        self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)
+
+    def on_SearchProductionItem__activate(self, action):
+        self.run_dialog(ProductionItemsSearch, self.conn)
+
+    def on_SearchProductionHistory__activate(self, action):
+        self.run_dialog(ProductionHistorySearch, self.conn)
+
+    # Help
+
+    def on_HelpContents__activate(self, action):
+        show_contents()
+
+    def on_HelpProduction__activate(self, action):
+        show_section('producao-inicio')
+
+    def on_HelpAbout__activate(self, action):
+        self._run_about()
+
