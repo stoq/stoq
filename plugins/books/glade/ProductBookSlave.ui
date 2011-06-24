@@ -1,0 +1,378 @@
+<?xml version="1.0"?>
+<!--*- mode: xml -*-->
+<interface domain="stoqlib">
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="upper">100</property>
+    <property name="lower">0</property>
+    <property name="page_increment">10</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">0</property>
+  </object>
+  <object class="GtkWindow" id="ProductBookSlave">
+    <property name="default_height">250</property>
+    <property name="default_width">440</property>
+    <child>
+      <object class="GtkTable" id="table1">
+        <property name="border_width">6</property>
+        <property name="column_spacing">6</property>
+        <property name="n_columns">4</property>
+        <property name="n_rows">7</property>
+        <property name="row_spacing">6</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property context="yes" name="label" translatable="yes">Author:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="x_options">fill</property>
+            <property name="y_options"/>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label3">
+            <property context="yes" name="label" translatable="yes">Series/Collection:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="top_attach">1</property>
+            <property name="x_options">fill</property>
+            <property name="y_options"/>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label5">
+            <property context="yes" name="label" translatable="yes">Subject:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">3</property>
+            <property name="top_attach">2</property>
+            <property name="x_options">fill</property>
+            <property name="y_options"/>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label7">
+            <property context="yes" name="label" translatable="yes">ISBN:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">4</property>
+            <property name="top_attach">3</property>
+            <property name="x_options">fill</property>
+            <property name="y_options"/>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label12">
+            <property context="yes" name="label" translatable="yes">Year:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">5</property>
+            <property name="top_attach">4</property>
+            <property name="x_options">fill</property>
+            <property name="y_options"/>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label10">
+            <property context="yes" name="label" translatable="yes">Decorative Finish:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">6</property>
+            <property name="top_attach">5</property>
+            <property name="x_options">fill</property>
+            <property name="y_options"/>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label9">
+            <property context="yes" name="label" translatable="yes">Synopsis:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+            <property name="yalign">0.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">7</property>
+            <property name="top_attach">6</property>
+            <property name="x_options">fill</property>
+            <property name="y_options"/>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="author">
+            <property name="data_type">unicode</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">author</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="series">
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">series</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">1</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="subject">
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">subject</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">3</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">2</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="isbn">
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">isbn</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">4</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">3</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxySpinButton" id="year">
+            <property name="adjustment">adjustment1</property>
+            <property name="data_type">int</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">year</property>
+            <property context="yes" name="text" translatable="yes">0</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">5</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">4</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="decorative_finish">
+            <property name="data_type">unicode</property>
+            <property name="is_focus">True</property>
+            <property name="model_attribute">decorative_finish</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">6</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">5</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
+            <property name="hscrollbar_policy">automatic</property>
+            <property name="shadow_type">etched-in</property>
+            <property name="visible">True</property>
+            <property name="vscrollbar_policy">automatic</property>
+            <child>
+              <object class="ProxyTextView" id="synopsis">
+                <property name="data_type">unicode</property>
+                <property name="is_focus">True</property>
+                <property name="model_attribute">synopsis</property>
+                <property name="pixels_below_lines">3</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="bottom_attach">7</property>
+            <property name="left_attach">1</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">6</property>
+            <property name="x_options">fill</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label2">
+            <property context="yes" name="label" translatable="yes">Publisher:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="x_options">fill</property>
+            <property name="y_options"/>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label4">
+            <property context="yes" name="label" translatable="yes">Edition:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">1</property>
+            <property name="x_options">fill</property>
+            <property name="y_options"/>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label6">
+            <property context="yes" name="label" translatable="yes">Language:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">3</property>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">2</property>
+            <property name="x_options">fill</property>
+            <property name="y_options"/>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label8">
+            <property context="yes" name="label" translatable="yes">Pages:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">4</property>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">3</property>
+            <property name="x_options">fill</property>
+            <property name="y_options"/>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label11">
+            <property context="yes" name="label" translatable="yes">Country:</property>
+            <property name="visible">True</property>
+            <property name="xalign">1.0</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">5</property>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+            <property name="top_attach">4</property>
+            <property name="x_options">fill</property>
+            <property name="y_options"/>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyComboEntry" id="publisher_combo">
+            <property name="model_attribute">publisher</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="edition">
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">edition</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">2</property>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">1</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyEntry" id="language">
+            <property name="data_type">unicode</property>
+            <property name="model_attribute">language</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">3</property>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">2</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxySpinButton" id="pages">
+            <property name="adjustment">adjustment2</property>
+            <property name="data_type">int</property>
+            <property name="model_attribute">pages</property>
+            <property context="yes" name="text" translatable="yes">0</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">4</property>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">3</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+        <child>
+          <object class="ProxyComboEntry" id="country_combo">
+            <property name="data_type">object</property>
+            <property name="model_attribute">country</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="bottom_attach">5</property>
+            <property name="left_attach">3</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">4</property>
+            <property name="y_options">fill</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
