@@ -417,6 +417,9 @@ class PayableApp(SearchableAppWindow):
         if self._can_show_details([payable_view]):
             self._show_details(payable_view)
 
+    def on_Quit__activate(self, action):
+        self.shutdown_application()
+
     def on_Comments__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]
         self._show_comments(payable_view)

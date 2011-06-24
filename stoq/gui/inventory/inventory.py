@@ -257,6 +257,9 @@ class InventoryApp(SearchableAppWindow):
     # Callbacks
     #
 
+    def on_Quit__activate(self, action):
+        self.shutdown_application()
+
     def on_new_inventory__activate(self, action):
         self._open_inventory()
 

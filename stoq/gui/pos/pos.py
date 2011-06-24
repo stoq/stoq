@@ -747,6 +747,9 @@ class POSApp(AppWindow):
     # Actions
     #
 
+    def on_Quit__activate(self, action):
+        self.shutdown_application()
+
     def on_CancelOrder__activate(self, action):
         self._cancel_order()
 
