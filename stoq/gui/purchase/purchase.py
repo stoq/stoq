@@ -76,13 +76,123 @@ class PurchaseApp(SearchableAppWindow):
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
+        self._create_actions()
         SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
         self._update_view()
 
+    def _create_actions(self):
+        ui_string = """<ui>
+      <menubar action="menubar">
+        <menu action="PurchaseMenu">
+          <menuitem action="AddOrder"/>
+          <menuitem action="QuoteOrder"/>
+          <menuitem action="FinishOrder"/>
+          <menuitem action="SendToSupplier"/>
+          <menuitem action="stock_cost_action"/>
+          <menuitem action="Production"/>
+          <separator name="sep"/>
+          <menuitem action="ExportCSV"/>
+          <menuitem action="PurchaseQuit"/>
+        </menu>
+        <menu action="ConsignmentMenu">
+          <menuitem action="NewConsignment"/>
+          <menuitem action="CloseInConsignment"/>
+          <separator name="sep2"/>
+          <menuitem action="SearchInConsignmentItems"/>
+        </menu>
+        <menu action="SearchMenu">
+          <menuitem action="BaseCategories"/>
+          <menuitem action="Categories"/>
+          <menuitem action="Products"/>
+          <menuitem action="ProductUnits"/>
+          <menuitem action="Services"/>
+          <menuitem action="SearchStockItems"/>
+          <menuitem action="SearchClosedStockItems"/>
+          <menuitem action="Suppliers"/>
+          <menuitem action="Transporter"/>
+          <menuitem action="SearchQuotes"/>
+          <menuitem action="SearchPurchasedItems"/>
+          <menuitem action="ProductsSoldSearch"/>
+        </menu>
+        <placeholder name="ExtraMenu"/>
+        <menu action="HelpMenu">
+          <menuitem action="HelpContents"/>
+          <menuitem action="HelpPurchase"/>
+          <separator name="help_separator"/>
+          <menuitem action="HelpAbout"/>
+        </menu>
+      </menubar>
+      <toolbar action="main_toolbar">
+        <toolitem action="AddOrder"/>
+        <toolitem action="QuoteOrder"/>
+        <toolitem action="Products"/>
+        <toolitem action="Suppliers"/>
+        <toolitem action="SendToSupplier"/>
+      </toolbar>
+    </ui>"""
+
+        actions = [
+            ('menubar', None, ''),
+
+            # Purchase
+            ("PurchaseMenu", None, _("_Order")),
+            ("AddOrder", gtk.STOCK_NEW, _("Add Order..."), "<Control>o"),
+            ("QuoteOrder", gtk.STOCK_INDEX, _("Quote Order..."), "<Control>e"),
+            ("FinishOrder", None, _("Finish Order...")),
+            ("SendToSupplier", 'stoq-delivery', _("Send to Supplier...")),
+            ("stock_cost_action", None, _("_Stock Cost")),
+            ("Production", gtk.STOCK_JUSTIFY_FILL,  _("Production..."), "<Control>r"),
+            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
+            ("PurchaseQuit", gtk.STOCK_QUIT),
+
+            # Consignment
+            ("ConsignmentMenu", None, _("_Consignment")),
+            ("NewConsignment", None, _("New Consignment...")),
+            ("CloseInConsignment", None, _("Close Consigment...")),
+            ("SearchInConsignmentItems", None, _("Search Consigment Items...")),
+
+            # Search
+            ("SearchMenu", None, _("_Search")),
+            ("BaseCategories", None, _("Base Categories..."), "<Control>b"),
+            ("Categories", None, _("Categories..."), "<Control>c"),
+            ("Products", 'stoq-products', _("Products..."), "<Control>d"),
+            ("ProductUnits", None, _("Product units..."), "<Control>u"),
+            ("Services", None, _("Services..."), "<Control>s"),
+            ("SearchStockItems", None, _("Stock Items..."), "<Control>i"),
+            ("SearchClosedStockItems", None, _("Closed Stock Items..."),
+             "<Control><Alt>c"),
+            ("Suppliers", 'stoq-suppliers', _("Suppliers..."), "<Control>u"),
+            ("Transporter", None, _("Transporters..."), "<Control>t"),
+            ("SearchQuotes", None, _("Quotes..."), "<Control>e"),
+            ("SearchPurchasedItems", None, _("Purchased Items..."), "<Control>p"),
+            ("ProductsSoldSearch", None, _("Products Sold..."), ""),
+
+            # Help
+            ("HelpMenu", None, _("_Help")),
+            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
+            ("HelpPurchase", None, _("Purchase Help"), 'F1'),
+            ("HelpAbout", gtk.STOCK_ABOUT),
+        ]
+
+        self.add_ui_actions(ui_string, actions)
+
+        self.menubar = self.uimanager.get_widget('/menubar')
+        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
+
     #
-    # SearchableAppWindow
+    # Application
     #
+
+    def create_ui(self):
+        self.get_toplevel().add_accel_group(
+            self.get_uimanager().get_accel_group())
+
+        self.main_vbox.pack_start(self.menubar, False, False)
+        self.main_vbox.reorder_child(self.menubar, 0)
+
+        self.list_vbox.pack_start(self.main_toolbar, False, False)
+        self.list_vbox.reorder_child(self.main_toolbar, 0)
 
     def create_filters(self):
         self.set_text_field_columns(['supplier_name'])
@@ -299,32 +409,34 @@ class PurchaseApp(SearchableAppWindow):
     def on_print_button__clicked(self, button):
         self._print_selected_items()
 
-    def on_Categories__activate(self, action):
-        self.run_dialog(SellableCategorySearch, self.conn)
+    def on_cancel_button__clicked(self, button):
+        self._cancel_order()
 
-    def on_SendToSupplier__activate(self, action):
-        self._send_selected_items_to_supplier()
+    # Order
 
-    def on_Production__activate(self, action):
-        self.run_dialog(ProductionDialog, self.conn)
+    def on_AddOrder__activate(self, action):
+        self._open_order()
+        self.refresh()
 
     def on_QuoteOrder__activate(self, action):
         self._quote_order()
+
+    def on_FinishOrder__activate(self, action):
+        self._finish_order()
+
+    def on_stock_cost_action__activate(self, action):
+        self.run_dialog(StockCostDialog, self.conn, None)
+
+    def on_PurchaseQuit__activate(self, action):
+        self.shutdown_application()
+
+    # Consignment
 
     def on_NewConsignment__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(ConsignmentWizard, trans)
         finish_transaction(trans, model)
         trans.close()
-
-    def on_FinishOrder__activate(self, action):
-        self._finish_order()
-
-    def on_Quote__activate(self, action):
-        self._quote_order()
-
-    def on_SearchQuotes__activate(self, action):
-        self.run_dialog(ReceiveQuoteWizard, self.conn)
 
     def on_CloseInConsignment__activate(self, action):
         trans = new_transaction()
@@ -335,6 +447,21 @@ class PurchaseApp(SearchableAppWindow):
     def on_SearchInConsignmentItems__activate(self, action):
         self.run_dialog(ConsignmentItemSearch, self.conn)
 
+
+    # Search
+
+    def on_Categories__activate(self, action):
+        self.run_dialog(SellableCategorySearch, self.conn)
+
+    def on_SendToSupplier__activate(self, action):
+        self._send_selected_items_to_supplier()
+
+    def on_Production__activate(self, action):
+        self.run_dialog(ProductionDialog, self.conn)
+
+    def on_SearchQuotes__activate(self, action):
+        self.run_dialog(ReceiveQuoteWizard, self.conn)
+
     def on_SearchPurchasedItems__activate(self, action):
         self.run_dialog(PurchasedItemsSearch, self.conn)
 
@@ -344,41 +471,34 @@ class PurchaseApp(SearchableAppWindow):
     def on_SearchClosedStockItems__activate(self, action):
         self.run_dialog(ProductClosedStockSearch, self.conn)
 
-    def on_help_contents__activate(self, action):
-        show_contents()
-
-    def on_help_purchase__activate(self, action):
-        show_section('compras-inicio')
-
-    # FIXME: Kiwi autoconnection OR rename, see #2323
-
-    def _on_suppliers_action_clicked(self, action):
+    def on_Suppliers__activate(self, action):
         self.run_dialog(SupplierSearch, self.conn, hide_footer=True)
 
-    def _on_products_action_clicked(self, action):
+    def on_Products__activate(self, action):
         self.run_dialog(ProductSearch, self.conn, hide_price_column=True)
 
-    def _on_product_units_action_clicked(self, action):
+    def on_ProductUnits__activate(self, action):
         self.run_dialog(SellableUnitSearch, self.conn)
 
-    def _on_order_action_clicked(self, action):
-        self._open_order()
-        self.refresh()
-
-    def _on_base_categories_action_clicked(self, action):
+    def on_BaseCategories__activate(self, action):
         self.run_dialog(BaseSellableCatSearch, self.conn)
 
-    def _on_services_action_clicked(self, action):
+    def on_Services__activate(self, action):
         self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)
 
-    def _on_transporters_action_clicked(self, action):
+    def on_Transporter__activate(self, action):
         self.run_dialog(TransporterSearch, self.conn, hide_footer=True)
-
-    def on_cancel_button__clicked(self, button):
-        self._cancel_order()
-
-    def on_stock_cost_action__activate(self, action):
-        self.run_dialog(StockCostDialog, self.conn, None)
 
     def on_ProductsSoldSearch__activate(self, action):
         self.run_dialog(ProductsSoldSearch, self.conn)
+
+    # Help
+
+    def on_HelpContents__activate(self, action):
+        show_contents()
+
+    def on_HelpPurchase__activate(self, action):
+        show_section('compras-inicio')
+
+    def on_HelpAbout__activate(self, action):
+        self._run_about()
