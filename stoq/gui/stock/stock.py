@@ -74,14 +74,111 @@ class StockApp(SearchableAppWindow):
     pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
 
     def __init__(self, app):
+        self._create_actions()
         SearchableAppWindow.__init__(self, app)
         self.check_open_inventory()
         self._setup_widgets()
         self._update_widgets()
 
+    def _create_actions(self):
+        ui_string = """<ui>
+      <menubar action="menubar">
+        <menu action="StockMenu">
+          <menuitem action="StockReceive"/>
+          <menuitem action="StockTransfer"/>
+          <menuitem action="StockDecrease"/>
+          <menuitem action="StockInitial"/>
+          <separator name="sep1"/>
+          <menuitem action="StockPictureViewer"/>
+          <separator name="sep2"/>
+          <menuitem action="ExportCSV"/>
+          <menuitem action="StockQuit"/>
+        </menu>
+        <menu action="LoanMenu">
+          <menuitem action="LoanNew"/>
+          <menuitem action="LoanClose"/>
+          <separator/>
+          <menuitem action="LoanSearch"/>
+          <menuitem action="LoanSearchItems"/>
+        </menu>
+        <menu action="SearchMenu">
+          <menuitem action="SearchPurchaseReceiving"/>
+          <menuitem action="SearchProductHistory"/>
+          <menuitem action="SearchTransfer"/>
+          <menuitem action="SearchStockDecrease"/>
+          <menuitem action="SearchPurchasedStockItems"/>
+          <menuitem action="SearchStockItems"/>
+          <menuitem action="SearchClosedStockItems"/>
+        </menu>
+        <menu action="HelpMenu">
+          <menuitem action="HelpContents"/>
+          <menuitem action="HelpStock"/>
+          <separator name="help_separator"/>
+          <menuitem action="HelpAbout"/>
+        </menu>
+      </menubar>
+      <toolbar action="main_toolbar">
+        <toolitem action="StockReceive"/>
+        <toolitem action="StockTransfer"/>
+      </toolbar>
+    </ui>"""
+
+        actions = [
+            ('menubar', None, ''),
+
+            # Stock
+            ("StockMenu", None, _("_Stock")),
+            ("StockReceive", 'stoq-receiving', _("_Receive..."), '<Control>r'),
+            ('StockTransfer', 'stoq-transfer', _('Transfer...'), '<Control>t'),
+            ('StockDecrease', None, _('Decrease stock...')),
+            ('StockInitial', 'gtk-go-up', _('Register initial stock...')),
+            ('StockPictureViewer', None, _('Toggle picture viewer...'),
+             '<Control><Alt>v'),
+            ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
+            ("StockQuit", gtk.STOCK_QUIT),
+
+            # Loan
+            ("LoanMenu", None, _("_Loan")),
+            ("LoanNew", None, _("New loan...")),
+            ("LoanClose", None, _("Close loan...")),
+            ("LoanSearch", None, _("Search loans...")),
+            ("LoanSearchItems", None, _("Search loan items...")),
+
+            # Search
+            ("SearchMenu", None, _("_Search")),
+            ("SearchPurchaseReceiving", None, _("Received purchases..."),
+             "<Control><Alt>u"),
+            ("SearchProductHistory", None, _("Product history..."), "<Control><Alt>p"),
+            ("SearchStockDecrease", None, _("Stock decreases...")),
+            ("SearchPurchasedStockItems", None, _("Purchased Stock items..."), "<Control><Alt>i"),
+            ("SearchStockItems", None, _("Stock items..."), "<Control><Alt>i"),
+            ("SearchTransfer", None, _("Transfers..."), "<Control><Alt>t"),
+            ("SearchClosedStockItems", None, _("Closed stock Items..."),
+             "<Control><Alt>c"),
+            # Help
+            ("HelpMenu", None, _("_Help")),
+            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
+            ("HelpStock", None, _("Stock Help"), 'F1'),
+            ("HelpAbout", gtk.STOCK_ABOUT),
+        ]
+
+        self.add_ui_actions(ui_string, actions)
+
+        self.menubar = self.uimanager.get_widget('/menubar')
+        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
+
     #
-    # SearchableAppWindow
+    # Application
     #
+
+    def create_ui(self):
+        self.get_toplevel().add_accel_group(
+            self.get_uimanager().get_accel_group())
+
+        self.menu_hbox.pack_start(self.menubar, False, False)
+
+        self.toolbar_vbox.pack_start(self.main_toolbar, False, False)
+        self.toolbar_vbox.reorder_child(self.main_toolbar, 0)
 
     def create_filters(self):
         self.executer.set_query(self.query)
@@ -119,12 +216,12 @@ class StockApp(SearchableAppWindow):
                                                   connection=conn)
 
     def set_open_inventory(self):
-        self.transfer_action.set_sensitive(False)
-        self.receive_action.set_sensitive(False)
-        self.initial_stock_action.set_sensitive(False)
-        self.stock_decrease_action.set_sensitive(False)
-        self.NewLoan.set_sensitive(False)
-        self.CloseLoan.set_sensitive(False)
+        self.StockTransfer.set_sensitive(False)
+        self.StockReceive.set_sensitive(False)
+        self.StockInitial.set_sensitive(False)
+        self.StockDecrease.set_sensitive(False)
+        self.LoanNew.set_sensitive(False)
+        self.LoanClose.set_sensitive(False)
 
     #
     # Private API
@@ -188,9 +285,9 @@ class StockApp(SearchableAppWindow):
         # Note that 'all branches' is not a real branch
         has_branches = len(self.branch_filter.combo) > 2
 
-        transfer_active = self.transfer_action.get_sensitive()
-        self.transfer_action.set_sensitive(transfer_active and has_branches)
-        self.TransferSearch.set_sensitive(has_branches)
+        transfer_active = self.StockTransfer.get_sensitive()
+        self.StockTransfer.set_sensitive(transfer_active and has_branches)
+        self.SearchTransfer.set_sensitive(has_branches)
 
     def _update_filter_slave(self, slave):
         self.refresh()
@@ -211,55 +308,6 @@ class StockApp(SearchableAppWindow):
     def on_results__selection_changed(self, results, product):
         self._update_widgets()
 
-    def _on_receive_action_clicked(self, button):
-        trans = new_transaction()
-        model = self.run_dialog(ReceivingOrderWizard, trans)
-        finish_transaction(trans, model)
-        trans.close()
-
-    def on_stock_transfer_action_clicked(self, button):
-        self._transfer_stock()
-
-    def on_transfer_action__activate(self, action):
-        self._transfer_stock()
-
-    def on_TransferSearch__activate(self, action):
-        self.run_dialog(TransferOrderSearch, self.conn)
-
-    def on_StockDecreaseSearch__activate(self, action):
-        self.run_dialog(StockDecreaseSearch, self.conn)
-
-    def on_PurchasedItemsSearch__activate(self, action):
-        self.run_dialog(PurchasedItemsSearch, self.conn)
-
-    def on_SearchStockItems__activate(self, action):
-        self.run_dialog(ProductStockSearch, self.conn)
-
-    def on_SearchClosedStockItems__activate(self, action):
-        self.run_dialog(ProductClosedStockSearch, self.conn)
-
-    def on_ProductHistory__activate(self, action):
-        self.run_dialog(ProductSearchQuantity, self.conn)
-
-    def on_initial_stock_action__activate(self, action):
-        branch = self.branch_filter.get_state().value
-        self.run_dialog(InitialStockDialog, self.conn, branch)
-
-    def on_receiving_search_action_clicked(self, button):
-        self.run_dialog(PurchaseReceivingSearch, self.conn)
-
-    def on_stock_decrease_action__activate(self, action):
-        trans = new_transaction()
-        model = self.run_dialog(StockDecreaseWizard, trans)
-        finish_transaction(trans, model)
-        trans.close()
-
-    def on_help_contents__activate(self, action):
-        show_contents()
-
-    def on_help_stock__activate(self, action):
-        show_section('estoque-inicio')
-
     def on_print_button__clicked(self, button):
         branch_name = self.branch_filter.combo.get_active_text()
         self.print_report(SimpleProductReport, self.results,
@@ -273,19 +321,6 @@ class StockApp(SearchableAppWindow):
         sellable = Sellable.get(selected[0].id, connection=self.conn)
         self.run_dialog(ProductStockHistoryDialog, self.conn, sellable,
                         branch=self.branch_filter.combo.get_selected())
-
-    def on_toggle_picture_viewer_action_clicked(self, button):
-        if self.image_viewer:
-            self.image_viewer.destroy()
-            self.image_viewer = None
-        else:
-            self.image_viewer = ProductImageViewer()
-            selected = self.results.get_selected_rows()
-            if len(selected):
-                self.image_viewer.set_product(selected[0].product)
-            self.image_viewer.toplevel.connect(
-                "delete-event", self.on_image_viewer_closed)
-            self.image_viewer.toplevel.set_property("visible", True)
 
     def _on_image_button__clicked(self, button):
         selected = self.results.get_selected_rows()
@@ -301,20 +336,93 @@ class StockApp(SearchableAppWindow):
         finish_transaction(trans, model)
         trans.close()
 
-    def on_NewLoan__activate(self, action):
+    # Stock
+
+    def on_StockReceive__activate(self, button):
+        trans = new_transaction()
+        model = self.run_dialog(ReceivingOrderWizard, trans)
+        finish_transaction(trans, model)
+        trans.close()
+
+    def on_StockTransfer__activate(self, button):
+        self._transfer_stock()
+
+    def on_StockDecrease__activate(self, action):
+        trans = new_transaction()
+        model = self.run_dialog(StockDecreaseWizard, trans)
+        finish_transaction(trans, model)
+        trans.close()
+
+    def on_StockInitial__activate(self, action):
+        branch = self.branch_filter.get_state().value
+        self.run_dialog(InitialStockDialog, self.conn, branch)
+
+    def on_StockPictureViewer__activate(self, button):
+        if self.image_viewer:
+            self.image_viewer.destroy()
+            self.image_viewer = None
+        else:
+            self.image_viewer = ProductImageViewer()
+            selected = self.results.get_selected_rows()
+            if len(selected):
+                self.image_viewer.set_product(selected[0].product)
+            self.image_viewer.toplevel.connect(
+                "delete-event", self.on_image_viewer_closed)
+            self.image_viewer.toplevel.set_property("visible", True)
+
+    def on_StockQuit__activate(self, action):
+        self.shutdown_application()
+
+    # Loan
+
+    def on_LoanNew__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(NewLoanWizard, trans)
         finish_transaction(trans, model)
         trans.close()
 
-    def on_CloseLoan__activate(self, action):
+    def on_LoanClose__activate(self, action):
         trans = new_transaction()
         model = self.run_dialog(CloseLoanWizard, trans)
         finish_transaction(trans, model)
         trans.close()
 
-    def on_SearchLoan__activate(self, action):
+    def on_LoanSearch__activate(self, action):
         self.run_dialog(LoanSearch, self.conn)
 
-    def on_SearchLoanItems__activate(self, action):
+    def on_LoanSearchItems__activate(self, action):
         self.run_dialog(LoanItemSearch, self.conn)
+
+    # Search
+
+    def on_SearchPurchaseReceiving__activate(self, button):
+        self.run_dialog(PurchaseReceivingSearch, self.conn)
+
+    def on_SearchTransfer__activate(self, action):
+        self.run_dialog(TransferOrderSearch, self.conn)
+
+    def on_SearchPurchasedStockItems__activate(self, action):
+        self.run_dialog(PurchasedItemsSearch, self.conn)
+
+    def on_SearchStockItems__activate(self, action):
+        self.run_dialog(ProductStockSearch, self.conn)
+
+    def on_SearchClosedStockItems__activate(self, action):
+        self.run_dialog(ProductClosedStockSearch, self.conn)
+
+    def on_SearchProductHistory__activate(self, action):
+        self.run_dialog(ProductSearchQuantity, self.conn)
+
+    def on_SearchStockDecrease__activate(self, action):
+        self.run_dialog(StockDecreaseSearch, self.conn)
+
+    # Help
+
+    def on_HelpContents__activate(self, action):
+        show_contents()
+
+    def on_HelpStock__activate(self, action):
+        show_section('vendas-inicio')
+
+    def on_HelpAbout__activate(self, action):
+        self._run_about()
