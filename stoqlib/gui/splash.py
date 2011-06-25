@@ -35,23 +35,25 @@ import pangocairo
 from kiwi.component import get_utility
 from kiwi.environ import environ
 from stoqlib.lib.interfaces import IAppInfo
+from stoqlib.lib.translation import stoqlib_gettext
 
 WIDTH = 392
 HEIGHT = 260
 BORDER = 8 # This includes shadow out border from GtkFrame
+_ = stoqlib_gettext
 
 class SplashScreen(gtk.Window):
 
     def __init__(self):
         gtk.Window.__init__(self)
-        self.set_decorated(False)
-        self.set_position(gtk.WIN_POS_CENTER)
-
-        self.set_title("Simple drawing")
+        self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_SPLASHSCREEN)
         self.resize(392, 260)
-        self.set_position(gtk.WIN_POS_CENTER)
+        # Ubuntu has backported the 3.0 has-resize-grip property,
+        # disable it as it doesn't make sense for splash screens
+        if hasattr(self.props, 'has_resize_grip'):
+            self.props.has_resize_grip = False
         frame = gtk.Frame()
-        frame.set_shadow_type(gtk.SHADOW_OUT)
+        frame.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         self.add(frame)
 
         darea = gtk.DrawingArea()
@@ -70,7 +72,7 @@ class SplashScreen(gtk.Window):
         if ' ' in version:
             ver, rev = version.split(' ')
             version = '%s <b>%s</b>' % (ver, rev)
-        return "%s %s" % (info.get("name"), version)
+        return _("Version: %s") % (version, )
 
     def expose(self, widget, event):
         cr = widget.window.cairo_create()
@@ -82,7 +84,7 @@ class SplashScreen(gtk.Window):
         cr.set_source_rgb(.1, .1, .1)
         pcr = pangocairo.CairoContext(cr)
         layout = pcr.create_layout()
-        layout.set_font_description(pango.FontDescription("Sans 9"))
+        layout.set_font_description(pango.FontDescription("Sans 14"))
         layout.set_markup(self._get_label())
         pcr.update_layout(layout)
         w, h = layout.get_pixel_size()
