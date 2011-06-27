@@ -44,7 +44,6 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.gui.dialogs.importerdialog import ImporterDialog
-from stoqlib.gui.help import show_contents, show_section
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
 from stoq.gui.application import AppWindow
@@ -211,7 +210,7 @@ class FinancialApp(AppWindow):
         self._pages = {}
 
         self.accounts = AccountTree()
-        self._create_toolbar()
+        self._create_ui()
 
         AppWindow.__init__(self, app)
         self.search_holder.add(self.accounts)
@@ -234,8 +233,15 @@ class FinancialApp(AppWindow):
     # Private
     #
 
-    def _create_toolbar(self):
+    def _create_ui(self):
         ui_string = """<ui>
+          <menubar action="menubar">
+            <menu action="FinancialMenu">
+              <menuitem action="AddAccount"/>
+              <menuitem action="Import"/>
+              <menuitem action="Quit"/>
+            </menu>
+          </menubar>
           <toolbar action="toolbar">
             <toolitem action="CloseTab"/>
             <toolitem action="AddAccount"/>
@@ -246,8 +252,16 @@ class FinancialApp(AppWindow):
           </toolbar>
         </ui>"""
 
-        uimanager = self.get_uimanager()
         actions = [
+            ('menubar', None, ''),
+
+            # Financial
+            ('FinancialMenu', None, _("_Financial")),
+            ('Import', gtk.STOCK_ADD, _('Import...'),
+             '<control>i', _('Import a GnuCash or OFX file')),
+            ("Quit", gtk.STOCK_QUIT),
+
+            # Toolbar
             ('toolbar', None, ''),
             ('CloseTab', gtk.STOCK_CLOSE, _('Close'), '<control>w',
              _('Close the current tab')),
@@ -258,29 +272,22 @@ class FinancialApp(AppWindow):
             ('DeleteAccount', gtk.STOCK_DELETE, _('Delete Account'),
              '', _('Delete Account')),
             ('AddTransaction', gtk.STOCK_ADD, _('Create New Transaction'),
-             '<control>a', _('Create New Transaction')),
+             '<control>t', _('Create New Transaction')),
             ('DeleteTransaction', gtk.STOCK_DELETE, _('Delete Transaction'),
              '', _('Delete Transaction')),
             ]
-        ag = gtk.ActionGroup('UsersMenuActions')
-        ag.add_actions(actions)
-        uimanager.insert_action_group(ag, 0)
-        uimanager.add_ui_from_string(ui_string)
-
-        self.CloseTab = ag.get_action('CloseTab')
-        self.AddAccount = ag.get_action('AddAccount')
-        self.EditAccount = ag.get_action('EditAccount')
-        self.DeleteAccount = ag.get_action('DeleteAccount')
-        self.AddTransaction = ag.get_action('AddTransaction')
-        self.DeleteTransaction = ag.get_action('DeleteTransaction')
+        self.add_ui_actions(ui_string, actions)
+        self.add_help_ui(_("Financial help"), 'financial-inicio')
+        self.add_user_ui()
 
     def _attach_toolbar(self):
-        # FIXME: Move to Application when we finished migrating off Gazpacho
-        self.get_toplevel().add_accel_group(
-            self.get_uimanager().get_accel_group())
-
         self._update_actions()
-        toolbar = self.get_uimanager().get_widget('ui/toolbar')
+
+        menubar = self.uimanager.get_widget('/menubar')
+        self.main_vbox.pack_start(menubar, False, False)
+        self.main_vbox.reorder_child(menubar, 0)
+
+        toolbar = self.uimanager.get_widget('/toolbar')
         toolbar.set_style(gtk.TOOLBAR_BOTH)
         self.main_vbox.pack_start(toolbar, False, False)
         self.main_vbox.reorder_child(toolbar, 1)
@@ -589,8 +596,10 @@ class FinancialApp(AppWindow):
         account_view = self.accounts.get_selected()
         self._edit_existing_account(account_view)
 
-    def on_CreateAccount__activate(self, action):
-        self._create_new_account()
+    def on_notebook__switch_page(self, notebook, page, page_id):
+        self._update_actions()
+
+    # Toolbar
 
     def on_AddAccount__activate(self, action):
         self._create_new_account()
@@ -607,20 +616,8 @@ class FinancialApp(AppWindow):
     def on_AddTransaction__activate(self, action):
         self._add_transaction()
 
+    # Financial
+
     def on_Import__activate(self, action):
         self._import()
 
-    def on_notebook__switch_page(self, notebook, page, page_id):
-        self._update_actions()
-
-    def on_Quit__activate(self, action):
-        self.shutdown_application()
-
-    def on_About__activate(self, action):
-        self._run_about()
-
-    def on_help_contents__activate(self, action):
-        show_contents()
-
-    def on_help_financial__activate(self, action):
-        show_section('financial-inicio')

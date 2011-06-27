@@ -43,7 +43,6 @@ from stoqlib.gui.search.consignmentsearch import ConsignmentItemSearch
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.sellableunitsearch import SellableUnitSearch
-from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.wizards.consignmentwizard import (ConsignmentWizard,
                                                    CloseInConsignmentWizard)
@@ -76,12 +75,15 @@ class PurchaseApp(SearchableAppWindow):
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
-        self._create_actions()
         SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
         self._update_view()
 
-    def _create_actions(self):
+    #
+    # Application
+    #
+
+    def create_actions(self):
         ui_string = """<ui>
       <menubar action="menubar">
         <menu action="PurchaseMenu">
@@ -93,7 +95,7 @@ class PurchaseApp(SearchableAppWindow):
           <menuitem action="Production"/>
           <separator name="sep"/>
           <menuitem action="ExportCSV"/>
-          <menuitem action="PurchaseQuit"/>
+          <menuitem action="Quit"/>
         </menu>
         <menu action="ConsignmentMenu">
           <menuitem action="NewConsignment"/>
@@ -116,12 +118,6 @@ class PurchaseApp(SearchableAppWindow):
           <menuitem action="ProductsSoldSearch"/>
         </menu>
         <placeholder name="ExtraMenu"/>
-        <menu action="HelpMenu">
-          <menuitem action="HelpContents"/>
-          <menuitem action="HelpPurchase"/>
-          <separator name="help_separator"/>
-          <menuitem action="HelpAbout"/>
-        </menu>
       </menubar>
       <toolbar action="main_toolbar">
         <toolitem action="AddOrder"/>
@@ -143,7 +139,7 @@ class PurchaseApp(SearchableAppWindow):
             ("stock_cost_action", None, _("_Stock Cost")),
             ("Production", gtk.STOCK_JUSTIFY_FILL,  _("Production..."), "<Control>r"),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
-            ("PurchaseQuit", gtk.STOCK_QUIT),
+            ("Quit", gtk.STOCK_QUIT),
 
             # Consignment
             ("ConsignmentMenu", None, _("_Consignment")),
@@ -166,30 +162,18 @@ class PurchaseApp(SearchableAppWindow):
             ("SearchQuotes", None, _("Quotes..."), "<Control>e"),
             ("SearchPurchasedItems", None, _("Purchased Items..."), "<Control>p"),
             ("ProductsSoldSearch", None, _("Products Sold..."), ""),
-
-            # Help
-            ("HelpMenu", None, _("_Help")),
-            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
-            ("HelpPurchase", None, _("Purchase Help"), 'F1'),
-            ("HelpAbout", gtk.STOCK_ABOUT),
         ]
 
         self.add_ui_actions(ui_string, actions)
-
-        self.menubar = self.uimanager.get_widget('/menubar')
-        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
-
-    #
-    # Application
-    #
+        self.add_help_ui(_("Purchase help"), 'compras-inicio')
+        self.add_user_ui()
 
     def create_ui(self):
-        self.get_toplevel().add_accel_group(
-            self.get_uimanager().get_accel_group())
-
+        self.menubar = self.uimanager.get_widget('/menubar')
         self.main_vbox.pack_start(self.menubar, False, False)
         self.main_vbox.reorder_child(self.menubar, 0)
 
+        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
         self.list_vbox.pack_start(self.main_toolbar, False, False)
         self.list_vbox.reorder_child(self.main_toolbar, 0)
 
@@ -432,9 +416,6 @@ class PurchaseApp(SearchableAppWindow):
     def on_stock_cost_action__activate(self, action):
         self.run_dialog(StockCostDialog, self.conn, None)
 
-    def on_PurchaseQuit__activate(self, action):
-        self.shutdown_application()
-
     def on_SendToSupplier__activate(self, action):
         self._send_selected_items_to_supplier()
 
@@ -496,14 +477,3 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_ProductsSoldSearch__activate(self, action):
         self.run_dialog(ProductsSoldSearch, self.conn)
-
-    # Help
-
-    def on_HelpContents__activate(self, action):
-        show_contents()
-
-    def on_HelpPurchase__activate(self, action):
-        show_section('compras-inicio')
-
-    def on_HelpAbout__activate(self, action):
-        self._run_about()

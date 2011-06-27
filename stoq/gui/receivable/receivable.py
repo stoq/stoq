@@ -52,7 +52,6 @@ from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
-from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.search.paymentsearch import CardPaymentSearch
 from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
@@ -94,13 +93,16 @@ class ReceivableApp(SearchableAppWindow):
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
-        self._create_actions()
         SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
         self._update_widgets()
         self.results.connect('has-rows', self._has_rows)
 
-    def _create_actions(self):
+    #
+    # Application
+    #
+
+    def create_actions(self):
         ui_string = """<ui>
           <menubar action="menubar">
             <menu action="Menu">
@@ -121,12 +123,6 @@ class ReceivableApp(SearchableAppWindow):
             <menu action="SearchMenu">
               <menuitem action="BillCheckSearch"/>
               <menuitem action="CardPaymentSearch"/>
-            </menu>
-            <menu action="HelpMenu">
-              <menuitem action="HelpContents"/>
-              <menuitem action="HelpApp"/>
-              <separator name="help_separator"/>
-              <menuitem action="HelpAbout"/>
             </menu>
           </menubar>
         </ui>"""
@@ -154,26 +150,13 @@ class ReceivableApp(SearchableAppWindow):
             ('SearchMenu', None, _('_Search')),
             ('BillCheckSearch', None, _('Bill and Check...')),
             ('CardPaymentSearch', None, _('Card Payment...')),
-
-            # Help
-            ("HelpMenu", None, _("_Help")),
-            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
-            ("HelpApp", None, _("Accounts Receivable help"), 'F1'),
-            ("HelpAbout", gtk.STOCK_ABOUT),
-
         ]
         self.add_ui_actions(ui_string, actions)
-
-        self.menubar = self.uimanager.get_widget('/menubar')
-
-    #
-    # Application
-    #
+        self.add_help_ui(_("Accounts Receivable help"), 'receber-inicio')
+        self.add_user_ui()
 
     def create_ui(self):
-        self.get_toplevel().add_accel_group(
-            self.get_uimanager().get_accel_group())
-
+        self.menubar = self.uimanager.get_widget('/menubar')
         self.main_vbox.pack_start(self.menubar, False, False)
         self.main_vbox.reorder_child(self.menubar, 0)
 
@@ -469,9 +452,6 @@ class ReceivableApp(SearchableAppWindow):
     def on_print_button__clicked(self, button):
         self.print_report(ReceivablePaymentReport, self.results)
 
-    def on_Quit__activate(self, action):
-        self.shutdown_application()
-
     def on_Comments__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]
         self._show_comments(receivable_view)
@@ -527,9 +507,3 @@ class ReceivableApp(SearchableAppWindow):
         item = self.results.get_selected_rows()[0]
         payment = item.payment
         print_report(BillReport, [payment])
-
-    def on_HelpContents__activate(self, action):
-        show_contents()
-
-    def on_HelpApp__activate(self, action):
-        show_section('receber-inicio')

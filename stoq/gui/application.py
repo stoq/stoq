@@ -46,6 +46,7 @@ from stoqlib.gui.dialogs.csvexporterdialog import CSVExporterDialog
 from stoqlib.gui.fiscalprinter import (FiscalPrinterHelper, CLOSE_TILL_NONE,
                                        CLOSE_TILL_ECF, CLOSE_TILL_DB,
                                        CLOSE_TILL_BOTH)
+from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.gui.slaves.userslave import PasswordEditor
@@ -93,15 +94,16 @@ class AppWindow(BaseAppWindow):
     def __init__(self, app):
         self._config = get_utility(IStoqConfig)
         self.conn = new_transaction()
+        self.uimanager = gtk.UIManager()
+        self.accel_group = self.uimanager.get_accel_group()
 
-        # This needs to be done before calling BaseAppWindow,
-        # so that all actions are set in the instancea
-        user = get_current_user(self.conn)
-        self.user_menu_label = user.username.capitalize()
-        self._create_user_menu_actions()
+        # Create actions, this must be done before the constructor
+        # is called, eg when signals are autoconnected
+        self.create_actions()
+        if app.options.debug:
+            self.add_debug_ui()
 
         BaseAppWindow.__init__(self, app)
-        self._create_user_menu()
         self._printer = FiscalPrinterHelper(
             self.conn, parent=self.get_toplevel())
         if self.klist_name:
@@ -109,9 +111,8 @@ class AppWindow(BaseAppWindow):
             if not len(self._klist.get_columns()):
                 self._klist.set_columns(self.get_columns())
                 self._klist.set_selection_mode(self.klist_selection_mode)
+        self.get_toplevel().add_accel_group(self.uimanager.get_accel_group())
         self.create_ui()
-        if app.options.debug:
-            self._create_debug_menu()
         self.setup_focus()
         self._check_examples_database()
         self._check_version()
@@ -272,81 +273,6 @@ class AppWindow(BaseAppWindow):
         about.run()
         about.destroy()
 
-    def _create_user_menu_actions(self):
-        actions = [
-            ('UserMenu', None, _('%s User') % self.user_menu_label),
-            ('StoreCookie', gtk.STOCK_SAVE, _('_Store'), '<control>k',
-             _('Store a cookie'), self._on_StoreCookie__activate),
-            ('ClearCookie',     gtk.STOCK_CLEAR, _('_Clear'), '<control>e',
-             _('Clear the cookie'), self._on_ClearCookie__activate),
-            ('ChangePassword', gtk.STOCK_REFRESH, _('Chan_ge Password'),
-              '<control>g', _('Change the password'),
-             self._on_ChangePassword__activate),
-            ('ChangeUser',    gtk.STOCK_REFRESH, _('C_hange User'), '<control>h',
-             _('Change user'), self._on_ChangeUser__activate),
-            ('ChangeApplication',    gtk.STOCK_REFRESH, _('Change Application'),
-             'F5', _('Change application'),
-             self._on_ChangeApplication__activate),
-            ]
-        self._user_menu_action_group = gtk.ActionGroup('UsersMenuActions')
-        self._user_menu_action_group.add_actions(actions)
-        for action in self._user_menu_action_group.list_actions():
-            setattr(self, action.get_name(), action)
-
-    def _create_user_menu(self):
-        ui_string = """<ui>
-          <menubar name="menubar">
-            <menu action="UserMenu">
-              <menuitem action="StoreCookie"/>
-              <menuitem action="ClearCookie"/>
-              <menuitem action="ChangePassword"/>
-              <separator/>
-              <menuitem action="ChangeUser"/>
-              <menuitem action="ChangeApplication"/>
-            </menu>
-          </menubar>
-        </ui>"""
-
-        uimanager = self.get_uimanager()
-        uimanager.insert_action_group(self._user_menu_action_group, 0)
-        uimanager.add_ui_from_string(ui_string)
-
-        user_menu = uimanager.get_widget('/menubar/UserMenu')
-        user_menu.set_right_justified(True)
-
-        menu_bar = user_menu.get_parent()
-        if not menu_bar.get_parent():
-            if not hasattr(self, 'menubar'):
-                raise AssertionError("%s app needs a 'menubar' widget" %
-                        (self.app_name, ))
-            user_menu.reparent(self.menubar)
-
-        if sysparam(self.conn).DISABLE_COOKIES:
-            self._clear_cookie()
-            store_cookie = uimanager.get_widget('/menubar/UserMenu/StoreCookie')
-            store_cookie.hide()
-            clear_cookie = uimanager.get_widget('/menubar/UserMenu/ClearCookie')
-            clear_cookie.hide()
-
-    def _create_debug_menu(self):
-        ui_string = """<ui>
-          <menubar name="menubar">
-            <menu action="DebugMenu">
-              <menuitem action="Introspect"/>
-            </menu>
-          </menubar>
-        </ui>"""
-        actions = [
-            ('DebugMenu', None, _('Debug')),
-            ('Introspect', None, _('Introspect slaves'),
-             None, None, self.on_Introspect_activate),
-            ]
-
-        ag = gtk.ActionGroup('DebugMenuActions')
-        ag.add_actions(actions)
-        self.uimanager.insert_action_group(ag, 0)
-        self.uimanager.add_ui_from_string(ui_string)
-
     def print_report(self, report_class, *args, **kwargs):
         filters = self.search.get_search_filters()
         if filters:
@@ -408,6 +334,10 @@ class AppWindow(BaseAppWindow):
         """
         raise NotImplementedError
 
+    def create_actions(self):
+        """This is called before the BaseWindow constructor, so we
+        can create actions that can be autoconnected."""
+
     def create_ui(self):
         """This is called when the UI such as GtkWidgets should be
         created"""
@@ -463,14 +393,92 @@ class AppWindow(BaseAppWindow):
     # Public API
     #
 
-    def add_ui_actions(self, ui_string, actions):
-        ag = gtk.ActionGroup('Actions')
+    def add_ui_actions(self, ui_string, actions, name='Actions'):
+        ag = gtk.ActionGroup(name)
         ag.add_actions(actions)
-        uimanager = self.get_uimanager()
-        uimanager.insert_action_group(ag, 0)
-        uimanager.add_ui_from_string(ui_string)
+        self.uimanager.insert_action_group(ag, 0)
+        self.uimanager.add_ui_from_string(ui_string)
         for action in ag.list_actions():
             setattr(self, action.get_name(), action)
+
+    def add_help_ui(self, help_label, help_section):
+        ui_string = """<ui>
+          <menubar action="menubar">
+            <menu action="HelpMenu">
+              <menuitem action="HelpContents"/>
+              <menuitem action="HelpHelp"/>
+              <separator name="HelpSeparator"/>
+              <menuitem action="HelpAbout"/>
+            </menu>
+          </menubar>
+        </ui>"""
+        def on_HelpHelp__activate(action):
+            show_section(help_section)
+
+        help_actions = [
+            ("HelpMenu", None, _("_Help")),
+            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
+            ("HelpHelp", None, help_label, 'F1',
+             _("Show help for this Application"),
+             on_HelpHelp__activate),
+            ("HelpAbout", gtk.STOCK_ABOUT),
+            ]
+        self.add_ui_actions(ui_string, help_actions, 'HelpActions')
+
+    def add_user_ui(self):
+        ui_string = """<ui>
+          <menubar name="menubar">
+            <menu action="UserMenu">
+              <menuitem action="StoreCookie"/>
+              <menuitem action="ClearCookie"/>
+              <menuitem action="ChangePassword"/>
+              <separator/>
+              <menuitem action="ChangeUser"/>
+              <menuitem action="ChangeApplication"/>
+            </menu>
+          </menubar>
+        </ui>"""
+
+        conn = get_connection()
+        user = get_current_user(conn)
+        user_actions = [
+            ('UserMenu', None, _('%s User') % user.username.capitalize()),
+            ('StoreCookie', gtk.STOCK_SAVE, _('_Store'), '<control>k',
+             _('Store a cookie')),
+            ('ClearCookie',     gtk.STOCK_CLEAR, _('_Clear'), '<control>e',
+             _('Clear the cookie')),
+            ('ChangePassword', gtk.STOCK_REFRESH, _('Chan_ge Password'),
+              '<control>g', _('Change the password')),
+            ('ChangeUser',    gtk.STOCK_REFRESH, _('C_hange User'), '<control>h',
+             _('Change user')),
+            ('ChangeApplication', gtk.STOCK_REFRESH, _('Change Application'),
+             'F5', _('Change application')),
+            ]
+        self.add_ui_actions(ui_string, user_actions, 'UserActions')
+
+        user_menu = self.uimanager.get_widget('/menubar/UserMenu')
+        user_menu.set_right_justified(True)
+
+        if sysparam(conn).DISABLE_COOKIES:
+            self._clear_cookie()
+            self.StoreCookie.hide()
+            self.ClearCookie.hide()
+
+    def add_debug_ui(self):
+        ui_string = """<ui>
+          <menubar name="menubar">
+            <menu action="DebugMenu">
+              <menuitem action="Introspect"/>
+            </menu>
+          </menubar>
+        </ui>"""
+        actions = [
+            ('DebugMenu', None, _('Debug')),
+            ('Introspect', None, _('Introspect slaves'),
+             None, None, self.on_Introspect_activate),
+            ]
+
+        self.add_ui_actions(ui_string, actions, 'DebugActions')
 
     def check_open_inventory(self):
         if Inventory.has_open(self.conn, get_current_branch(self.conn)):
@@ -496,14 +504,6 @@ class AppWindow(BaseAppWindow):
     def get_title(self):
         # This method must be redefined in child when it's needed
         return _('Stoq - %s') % self.app_name
-
-    def get_uimanager(self):
-        # FIXME: Remove when gazpacho is not used any more
-        # Glade3 doesn't create a ui manager for us
-        if not hasattr(self, 'uimanager'):
-            self.uimanager = gtk.UIManager()
-            self.accel_group = self.uimanager.get_accel_group()
-        return self.uimanager
 
     def can_change_application(self):
         """Define if we can change the current application or not.
@@ -559,28 +559,40 @@ class AppWindow(BaseAppWindow):
     # Callbacks
     #
 
-    def _on_quit_action__clicked(self, *args):
+    def on_Quit__activate(self, action):
         self.shutdown_application()
 
-    def _on_StoreCookie__activate(self, action):
+    # User
+
+    def on_StoreCookie__activate(self, action):
         self._store_cookie()
 
-    def _on_ClearCookie__activate(self, action):
+    def on_ClearCookie__activate(self, action):
         self._clear_cookie()
 
-    def _on_ChangePassword__activate(self, action):
+    def on_ChangePassword__activate(self, action):
         self._change_password()
 
-    def _on_ChangeUser__activate(self, action):
+    def on_ChangeUser__activate(self, action):
         self.app.runner.relogin()
 
-    def _on_ChangeApplication__activate(self, action):
+    def on_ChangeApplication__activate(self, action):
         if not self.can_change_application():
             return
 
         appname = self.app.runner.choose(parent=self.get_toplevel())
         if appname:
             self.app.runner.run(appname)
+
+    # Help
+
+    def on_HelpContents__activate(self, action):
+        show_contents()
+
+    def on_HelpAbout__activate(self, action):
+         self._run_about()
+
+    # Debug
 
     def on_Introspect_activate(self, action):
         window = self.get_toplevel()

@@ -49,7 +49,6 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
-from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import SaleSearch, SoldItemsByBranchSearch
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
@@ -70,14 +69,17 @@ class TillApp(SearchableAppWindow):
     search_labels = _(u'matching:')
 
     def __init__(self, app):
-        self._create_actions()
         SearchableAppWindow.__init__(self, app)
         self.current_branch = get_current_branch(self.conn)
         self.check_till()
         self._setup_widgets()
         self.refresh()
 
-    def _create_actions(self):
+    #
+    # Application
+    #
+
+    def create_actions(self):
         ui_string = """<ui>
       <menubar action="menubar">
         <menu action="TillMenu">
@@ -89,7 +91,7 @@ class TillApp(SearchableAppWindow):
           <separator name="sep1"/>
           <menuitem action="ExportCSV"/>
           <separator name="sep2"/>
-          <menuitem action="TillQuit"/>
+          <menuitem action="Quit"/>
         </menu>
         <menu action="SearchMenu">
           <menuitem action="SearchClient"/>
@@ -100,12 +102,6 @@ class TillApp(SearchableAppWindow):
           <menuitem action="SearchFiscalTillOperations"/>
         </menu>
         <placeholder name="ExtraMenu"/>
-        <menu action="HelpMenu">
-          <menuitem action="HelpContents"/>
-          <menuitem action="HelpTill"/>
-          <separator name="help_separator"/>
-          <menuitem action="HelpAbout"/>
-        </menu>
       </menubar>
     </ui>"""
 
@@ -119,7 +115,7 @@ class TillApp(SearchableAppWindow):
             ('TillAddCash', None, _('Add Cash...'), '<Control>s'),
             ('TillRemoveCash', None, _('Remove Cash...'), '<Control>j'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
-            ("TillQuit", gtk.STOCK_QUIT),
+            ("Quit", gtk.STOCK_QUIT),
 
             # Search
             ("SearchMenu", None, _("_Search")),
@@ -131,25 +127,14 @@ class TillApp(SearchableAppWindow):
             ("SearchFiscalTillOperations", None,
              _("Fiscal Till Operations..."), '<Contro><Alt>f'),
 
-            # Help
-            ("HelpMenu", None, _("_Help")),
-            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
-            ("HelpTill", None, _("Till Help"), 'F1'),
-            ("HelpAbout", gtk.STOCK_ABOUT),
         ]
 
         self.add_ui_actions(ui_string, actions)
-
-        self.menubar = self.uimanager.get_widget('/menubar')
-
-    #
-    # Application
-    #
+        self.add_help_ui(_("Till help"), 'caixa-inicio')
+        self.add_user_ui()
 
     def create_ui(self):
-        self.get_toplevel().add_accel_group(
-            self.get_uimanager().get_accel_group())
-
+        self.menubar = self.uimanager.get_widget('/menubar')
         self.main_vbox.pack_start(self.menubar, False, False)
         self.main_vbox.reorder_child(self.menubar, 0)
 
@@ -420,9 +405,6 @@ class TillApp(SearchableAppWindow):
         if finish_transaction(self.conn, model):
             self._update_total()
 
-    def on_TillQuit__activate(self, action):
-        self.shutdown_application()
-
     # Search
 
     def on_SearchClient__activate(self, action):
@@ -440,14 +422,3 @@ class TillApp(SearchableAppWindow):
 
     def on_SearchFiscalTillOperations__activate(self, button):
         self._run_search_dialog(TillFiscalOperationsSearch)
-
-    # Help
-
-    def on_HelpContents__activate(self, action):
-        show_contents()
-
-    def on_HelpTill__activate(self, action):
-        show_section('caixa-inicio')
-
-    def on_HelpAbout__activate(self, action):
-         self._run_about()
