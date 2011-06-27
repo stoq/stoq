@@ -128,7 +128,6 @@ class PurchaseApp(SearchableAppWindow):
         <toolitem action="QuoteOrder"/>
         <toolitem action="Products"/>
         <toolitem action="Suppliers"/>
-        <toolitem action="SendToSupplier"/>
       </toolbar>
     </ui>"""
 
@@ -232,6 +231,7 @@ class PurchaseApp(SearchableAppWindow):
                                       format='<b>%s</b>')
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.SendToSupplier.set_sensitive(False)
+        self.send_to_supplier.set_sensitive(False)
         # FIXME: enable before release.
         # XXX: Figure out if ideale still needs this. otherwise, remove the
         # related code
@@ -269,6 +269,7 @@ class PurchaseApp(SearchableAppWindow):
         self.cancel_button.set_sensitive(can_cancel)
         self.edit_button.set_sensitive(can_edit)
         self.SendToSupplier.set_sensitive(can_send_supplier)
+        self.send_to_supplier.set_sensitive(can_send_supplier)
         self.details_button.set_sensitive(one_selected)
         self.FinishOrder.set_sensitive(can_finish)
 
@@ -413,6 +414,9 @@ class PurchaseApp(SearchableAppWindow):
     def on_cancel_button__clicked(self, button):
         self._cancel_order()
 
+    def on_send_to_supplier__clicked(self, button):
+        self._send_selected_items_to_supplier()
+
     # Order
 
     def on_AddOrder__activate(self, action):
@@ -430,6 +434,9 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_PurchaseQuit__activate(self, action):
         self.shutdown_application()
+
+    def on_SendToSupplier__activate(self, action):
+        self._send_selected_items_to_supplier()
 
     # Consignment
 
@@ -453,9 +460,6 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_Categories__activate(self, action):
         self.run_dialog(SellableCategorySearch, self.conn)
-
-    def on_SendToSupplier__activate(self, action):
-        self._send_selected_items_to_supplier()
 
     def on_Production__activate(self, action):
         self.run_dialog(ProductionDialog, self.conn)
