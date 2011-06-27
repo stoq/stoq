@@ -43,9 +43,11 @@ __all__ = ['library']
 
 library = Library('stoq', root='..')
 if library.uninstalled:
+    library.add_resource('plugin', 'plugins')
     externals = os.path.join(library.get_root(), 'external')
 else:
     # root = $prefix/lib/pythonX.Y/site-packages
     # We want $prefix/lib/stoqlib, eg ../../stoqlib
     externals = os.path.join(library.prefix, 'lib', 'stoqlib')
 sys.path.insert(0, externals)
+library.enable_translation(domain="stoq")
