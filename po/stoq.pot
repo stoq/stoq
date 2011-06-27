@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-27 13:41-0300\n"
+"POT-Creation-Date: 2011-06-27 14:47-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -313,6 +313,9 @@ msgstr ""
 msgid ""
 "Stoq update failed.\n"
 "\n"
+"We will try to restore the current database.\n"
+"\n"
+"This may take some time."
 msgstr ""
 
 #: ../stoq/gui/update.py:100
@@ -320,7 +323,14 @@ msgid "Database backup restored"
 msgstr ""
 
 #: ../stoq/gui/update.py:102
-msgid "Stoq database update failed but the database was restored.\n"
+#, python-format
+msgid ""
+"Stoq database update failed but the database was restored.\n"
+"An automatic crash report was submitted, please enter in contact at <b>stoq-"
+"users@stoq.com.br</b> for assistance in recovering your database and making "
+"it possible to use Stoq %s again.\n"
+"\n"
+"A backup database was created as <b>%s</b>"
 msgstr ""
 
 #: ../stoq/gui/update.py:120
@@ -1824,7 +1834,7 @@ msgid "Stock decreases..."
 msgstr ""
 
 #: ../stoq/gui/stock/stock.py:153
-msgid "Purchased Stock items..."
+msgid "Purchased items..."
 msgstr ""
 
 #: ../stoq/gui/stock/stock.py:154

@@ -92,17 +92,17 @@ class UpdateSchemaStep(BaseWizardStep):
         elif line.startswith('RESTORE-START:'):
             text = _("Restoring database backup")
             longer = _(
-                'Stoq update failed.\n\n' +
-                'We will try to restore the current database.\n\n' +
+                'Stoq update failed.\n\n'
+                'We will try to restore the current database.\n\n'
                 'This may take some time.')
         elif line.startswith('RESTORE-DONE:'):
             msg = line.split(':', 1)[1]
             text = _("Database backup restored")
             longer = _(
-                'Stoq database update failed but the database was restored.\n' +
-                'An automatic crash report was submitted, please ' +
-                'enter in contact at <b>stoq-users@stoq.com.br</b> for ' +
-                'assistance in recovering your database and making it ' +
+                'Stoq database update failed but the database was restored.\n'
+                'An automatic crash report was submitted, please '
+                'enter in contact at <b>stoq-users@stoq.com.br</b> for '
+                'assistance in recovering your database and making it '
                 'possible to use Stoq %s again.\n\n'
                 'A backup database was created as <b>%s</b>') % (
                 stoq.version, msg, )
