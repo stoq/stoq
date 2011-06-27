@@ -265,12 +265,10 @@ class StockApp(SearchableAppWindow):
         is_main_branch = self.branch_filter.get_state().value is branch
         has_stock = len(self.results) > 0
 
-        selected = self.results.get_selected_rows()
-        one_selected = len(selected) == 1
+        item = self.results.get_selected()
 
         pixbuf = None
-        if one_selected:
-            item = selected[0]
+        if item:
             pixbuf = self.pixbuf_converter.from_string(item.product.image)
             if self.image_viewer:
                 self.image_viewer.set_product(item.product)
@@ -279,8 +277,8 @@ class StockApp(SearchableAppWindow):
         else:
             self.image.set_from_stock(gtk.STOCK_EDIT, gtk.ICON_SIZE_DIALOG)
 
-        self.image_button.set_sensitive(one_selected)
-        self.history_button.set_sensitive(one_selected and is_main_branch)
+        self.image_button.set_sensitive(bool(item))
+        self.history_button.set_sensitive(bool(item) and is_main_branch)
         self.print_button.set_sensitive(has_stock)
         # We need more than one branch to be able to do transfers
         # Note that 'all branches' is not a real branch
@@ -315,23 +313,17 @@ class StockApp(SearchableAppWindow):
                           branch_name=branch_name)
 
     def on_history_button__clicked(self, button):
-        selected = self._klist.get_selected_rows()
-        if len(selected) != 1:
-            raise ValueError("You should have only one selected item at "
-                             "this point")
-        sellable = Sellable.get(selected[0].id, connection=self.conn)
+        selected = self.results.get_selected()
+        sellable = Sellable.get(selected.id, connection=self.conn)
         self.run_dialog(ProductStockHistoryDialog, self.conn, sellable,
                         branch=self.branch_filter.combo.get_selected())
 
     def _on_image_button__clicked(self, button):
-        selected = self.results.get_selected_rows()
-        one_selected = len(selected) == 1
-
-        if not one_selected:
-            return
+        selected = self.results.get_selected()
+        assert selected
 
         trans = new_transaction()
-        product = trans.get(selected[0].product)
+        product = trans.get(selected.product)
 
         model = self.run_dialog(ProductStockEditor, trans, product)
         finish_transaction(trans, model)
@@ -364,9 +356,9 @@ class StockApp(SearchableAppWindow):
             self.image_viewer = None
         else:
             self.image_viewer = ProductImageViewer()
-            selected = self.results.get_selected_rows()
-            if len(selected):
-                self.image_viewer.set_product(selected[0].product)
+            selected = self.results.get_selected()
+            if selected:
+                self.image_viewer.set_product(selected.product)
             self.image_viewer.toplevel.connect(
                 "delete-event", self.on_image_viewer_closed)
             self.image_viewer.toplevel.set_property("visible", True)

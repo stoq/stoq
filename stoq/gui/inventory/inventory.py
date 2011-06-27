@@ -177,11 +177,11 @@ class InventoryApp(SearchableAppWindow):
         has_open = False
         all_counted = False
         has_adjusted = False
-        rows = self.results.get_selected_rows()
-        if len(rows) == 1:
-            all_counted = rows[0].all_items_counted()
-            has_open = rows[0].is_open()
-            has_adjusted = rows[0].has_adjusted_items()
+        selected = self.results.get_selected()
+        if selected:
+            all_counted = selected.all_items_counted()
+            has_open = selected.is_open()
+            has_adjusted = selected.has_adjusted_items()
 
         self.print_button.set_sensitive(has_open)
         self.cancel_button.set_sensitive(has_open and not has_adjusted)
@@ -226,13 +226,13 @@ class InventoryApp(SearchableAppWindow):
             return
 
         trans = new_transaction()
-        inventory = trans.get(self.results.get_selected_rows()[0])
+        inventory = trans.get(self.results.get_selected())
         inventory.cancel()
         trans.commit()
 
     def _register_product_counting(self):
         trans = new_transaction()
-        inventory = trans.get(self.results.get_selected_rows()[0])
+        inventory = trans.get(self.results.get_selected())
         model = self.run_dialog(ProductCountingDialog, inventory, trans)
         finish_transaction(trans, model)
         trans.close()
@@ -240,7 +240,7 @@ class InventoryApp(SearchableAppWindow):
 
     def _adjust_product_quantities(self):
         trans = new_transaction()
-        inventory = trans.get(self.results.get_selected_rows()[0])
+        inventory = trans.get(self.results.get_selected())
         model = self.run_dialog(ProductsAdjustmentDialog, inventory, trans)
         finish_transaction(trans, model)
         trans.close()
@@ -276,7 +276,7 @@ class InventoryApp(SearchableAppWindow):
         self._cancel_inventory()
 
     def on_print_button__clicked(self, button):
-        selected = self.results.get_selected_rows()[0]
+        selected = self.results.get_selected()
         sellables = list(self._get_sellables_by_inventory(selected))
         if sellables:
             self.print_report(ProductCountingReport, sellables)

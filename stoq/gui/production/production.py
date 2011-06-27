@@ -139,18 +139,17 @@ class ProductionApp(SearchableAppWindow):
         self.list_vbox.reorder_child(self.main_toolbar, 0)
 
     def _update_widgets(self):
-        selection = self.results.get_selected_rows()
+        selected = self.results.get_selected()
         can_edit = False
         can_start = False
-        if len(selection) == 1:
-            selected = selection[0]
+        if selected:
             can_edit = (selected.status == ProductionOrder.ORDER_OPENED or
                         selected.status == ProductionOrder.ORDER_WAITING)
             can_start = can_edit
         self.edit_button.set_sensitive(can_edit)
         self.ProductionStart.set_sensitive(can_start)
         self.start_production_button.set_sensitive(can_start)
-        self.details_button.set_sensitive(len(selection) == 1)
+        self.details_button.set_sensitive(bool(selected))
 
     def _get_status_values(self):
         items = [(text, value)
@@ -168,7 +167,7 @@ class ProductionApp(SearchableAppWindow):
 
     def _start_production_order(self):
         trans = new_transaction()
-        order = trans.get(self.results.get_selected_rows()[0])
+        order = trans.get(self.results.get_selected())
         assert order is not None
 
         retval = self.run_dialog(StartProductionDialog, trans, order)
@@ -208,17 +207,17 @@ class ProductionApp(SearchableAppWindow):
         self._start_production_order()
 
     def on_edit_button__clicked(self, widget):
-        order = self.results.get_selected_rows()[0]
+        order = self.results.get_selected()
         assert order is not None
         self._open_production_order(order)
 
     def on_details_button__clicked(self, widget):
-        order = self.results.get_selected_rows()[0]
+        order = self.results.get_selected()
         assert order is not None
         self.run_dialog(ProductionDetailsDialog, self.conn, order)
 
     def on_print_button__clicked(self, widget):
-        items = self.results.get_selected_rows() or self.results
+        items = self.results
         self.print_report(ProductionReport, items,
                           self.status_filter.get_state().value)
 

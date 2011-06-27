@@ -148,6 +148,7 @@ class POSApp(AppWindow):
                 <menuitem action="TillOpen"/>
                 <menuitem action="TillClose"/>
              </menu>
+             <placeholder name="ExtraMenu"/>
 
            <menu action="HelpMenu">
               <menuitem action="HelpContents"/>

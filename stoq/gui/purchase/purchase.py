@@ -230,6 +230,7 @@ class PurchaseApp(SearchableAppWindow):
         self.search.set_summary_label(column='total',
                                       label=_('<b>Orders Total:</b>'),
                                       format='<b>%s</b>')
+        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.SendToSupplier.set_sensitive(False)
         # FIXME: enable before release.
         # XXX: Figure out if ideale still needs this. otherwise, remove the
