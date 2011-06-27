@@ -107,7 +107,7 @@ class InventoryApp(SearchableAppWindow):
         self.add_ui_actions(ui_string, actions)
 
         self.menubar = self.uimanager.get_widget('/menubar')
-        self.toolbar = self.uimanager.get_widget('/main_toolbar')
+        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
 
     #
     # Application
@@ -120,8 +120,8 @@ class InventoryApp(SearchableAppWindow):
         self.main_vbox.pack_start(self.menubar, False, False)
         self.main_vbox.reorder_child(self.menubar, 0)
 
-        self.main_vbox.pack_start(self.toolbar, False, False)
-        self.main_vbox.reorder_child(self.toolbar, 1)
+        self.main_vbox.pack_start(self.main_toolbar, False, False)
+        self.main_vbox.reorder_child(self.main_toolbar, 1)
 
     #
     # SearchableAppWindow
