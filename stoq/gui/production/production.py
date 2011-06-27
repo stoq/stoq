@@ -36,7 +36,6 @@ from stoqlib.domain.production import ProductionOrder
 from stoqlib.gui.dialogs.productiondetails import ProductionDetailsDialog
 from stoqlib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
 from stoqlib.gui.dialogs.startproduction import StartProductionDialog
-from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
                                                  ProductionItemsSearch,
                                                  ProductionHistorySearch)
@@ -58,11 +57,13 @@ class ProductionApp(SearchableAppWindow):
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
-        self._create_actions()
         SearchableAppWindow.__init__(self, app)
-        self._update_widgets()
 
-    def _create_actions(self):
+    #
+    # Application
+    #
+
+    def create_actions(self):
         ui_string = """<ui>
       <menubar action="menubar">
         <menu action="ProductionMenu">
@@ -71,19 +72,13 @@ class ProductionApp(SearchableAppWindow):
           <menuitem action="ProductionPurchaseQuote"/>
           <separator name="sep"/>
           <menuitem action="ExportCSV"/>
-          <menuitem action="ProductionQuit"/>
+          <menuitem action="Quit"/>
         </menu>
         <menu action="SearchMenu">
           <menuitem action="SearchProduct"/>
           <menuitem action="SearchService"/>
           <menuitem action="SearchProductionItem"/>
           <menuitem action="SearchProductionHistory"/>
-        </menu>
-        <menu action="HelpMenu">
-          <menuitem action="HelpContents"/>
-          <menuitem action="HelpProduction"/>
-          <separator name="help_separator"/>
-          <menuitem action="HelpAbout"/>
         </menu>
       </menubar>
       <toolbar action="main_toolbar">
@@ -103,7 +98,7 @@ class ProductionApp(SearchableAppWindow):
             ('ProductionPurchaseQuote', 'stoq-purchase-quote', _('Purchase Quote...'),
              '<Control>p'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
-            ("ProductionQuit", gtk.STOCK_QUIT),
+            ("Quit", gtk.STOCK_QUIT),
 
             # Search
             ("SearchMenu", None, _("_Search")),
@@ -112,31 +107,22 @@ class ProductionApp(SearchableAppWindow):
             ("SearchProductionItem", 'stoq-production-app', _("Production items..."),
              '<Control>r'),
             ("SearchProductionHistory", None, _("Production history..."), '<Control>h'),
-            # Help
-            ("HelpMenu", None, _("_Help")),
-            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
-            ("HelpProduction", None, _("Production Help"), 'F1'),
-            ("HelpAbout", gtk.STOCK_ABOUT),
+
         ]
 
         self.add_ui_actions(ui_string, actions)
-
-        self.menubar = self.uimanager.get_widget('/menubar')
-        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
-
-    #
-    # Application
-    #
+        self.add_help_ui(_("Production help"), 'producao-inicio')
+        self.add_user_ui()
 
     def create_ui(self):
-        self.get_toplevel().add_accel_group(
-            self.get_uimanager().get_accel_group())
-
+        self.menubar = self.uimanager.get_widget('/menubar')
         self.main_vbox.pack_start(self.menubar, False, False)
         self.main_vbox.reorder_child(self.menubar, 0)
 
+        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
         self.list_vbox.pack_start(self.main_toolbar, False, False)
         self.list_vbox.reorder_child(self.main_toolbar, 0)
+        self._update_widgets()
 
     def _update_widgets(self):
         selected = self.results.get_selected()
@@ -241,9 +227,6 @@ class ProductionApp(SearchableAppWindow):
     def on_ProductionPurchaseQuote__activate(self, action):
         self.run_dialog(ProductionQuoteDialog, self.conn)
 
-    def on_ProductionQuit__activate(self, action):
-        self.shutdown_application()
-
     # Search
 
     def on_SearchProduct__activate(self, action):
@@ -257,15 +240,3 @@ class ProductionApp(SearchableAppWindow):
 
     def on_SearchProductionHistory__activate(self, action):
         self.run_dialog(ProductionHistorySearch, self.conn)
-
-    # Help
-
-    def on_HelpContents__activate(self, action):
-        show_contents()
-
-    def on_HelpProduction__activate(self, action):
-        show_section('producao-inicio')
-
-    def on_HelpAbout__activate(self, action):
-        self._run_about()
-

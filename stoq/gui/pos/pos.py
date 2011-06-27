@@ -55,7 +55,6 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import quantize
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
-from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import (SaleSearch, DeliverySearch,
@@ -110,7 +109,6 @@ class POSApp(AppWindow):
     klist_name = 'sale_items'
 
     def __init__(self, app):
-        self._create_actions()
         AppWindow.__init__(self, app)
         self._delivery = None
         self.param = sysparam(self.conn)
@@ -125,7 +123,11 @@ class POSApp(AppWindow):
         self._clear_order()
         self._update_widgets()
 
-    def _create_actions(self):
+    #
+    # Application
+    #
+
+    def create_actions(self):
         ui_string = """<ui>
          <menubar action="menubar">
              <menu action="SalesMenu">
@@ -149,13 +151,6 @@ class POSApp(AppWindow):
                 <menuitem action="TillClose"/>
              </menu>
              <placeholder name="ExtraMenu"/>
-
-           <menu action="HelpMenu">
-              <menuitem action="HelpContents"/>
-              <menuitem action="HelpApp"/>
-              <separator name="HelpSeparator"/>
-              <menuitem action="HelpAbout"/>
-            </menu>
          </menubar>
         </ui>"""
 
@@ -184,24 +179,13 @@ class POSApp(AppWindow):
             ("TillOpen", None, _("Open Till..."), '<Control>F6'),
             ("TillClose", None, _("Close Till..."), '<Control>F7'),
 
-            # Help
-            ("HelpMenu", None, _("_Help")),
-            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
-            ("HelpApp", None, _("POS help"), 'F1'),
-            ("HelpAbout", gtk.STOCK_ABOUT),
-
         ]
         self.add_ui_actions(ui_string, actions)
-
-        self.menubar = self.uimanager.get_widget('/menubar')
-
-    #
-    # Application
-    #
+        self.add_help_ui(_("POS help"), 'pdv-inicio')
+        self.add_user_ui()
 
     def create_ui(self):
-        self.get_toplevel().add_accel_group(
-            self.get_uimanager().get_accel_group())
+        self.menubar = self.uimanager.get_widget('/menubar')
 
         self.main_vbox.pack_start(self.menubar, False, False)
         self.main_vbox.reorder_child(self.menubar, 0)
@@ -743,9 +727,6 @@ class POSApp(AppWindow):
     # Actions
     #
 
-    def on_Quit__activate(self, action):
-        self.shutdown_application()
-
     def on_CancelOrder__activate(self, action):
         self._cancel_order()
 
@@ -780,12 +761,6 @@ class POSApp(AppWindow):
 
     def on_TillOpen__activate(self, action):
         self.open_till()
-
-    def on_HelpContents__activate(self, action):
-        show_contents()
-
-    def on_HelpApp__activate(self, action):
-        show_section('pdv-inicio')
 
     #
     # Other callbacks

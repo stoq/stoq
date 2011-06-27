@@ -41,7 +41,6 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.gui.editors.producteditor import ProductStockEditor
-from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
@@ -74,13 +73,16 @@ class StockApp(SearchableAppWindow):
     pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
 
     def __init__(self, app):
-        self._create_actions()
         SearchableAppWindow.__init__(self, app)
         self.check_open_inventory()
         self._setup_widgets()
         self._update_widgets()
 
-    def _create_actions(self):
+    #
+    # Application
+    #
+
+    def create_actions(self):
         ui_string = """<ui>
       <menubar action="menubar">
         <menu action="StockMenu">
@@ -92,7 +94,7 @@ class StockApp(SearchableAppWindow):
           <menuitem action="StockPictureViewer"/>
           <separator name="sep2"/>
           <menuitem action="ExportCSV"/>
-          <menuitem action="StockQuit"/>
+          <menuitem action="Quit"/>
         </menu>
         <menu action="LoanMenu">
           <menuitem action="LoanNew"/>
@@ -109,12 +111,6 @@ class StockApp(SearchableAppWindow):
           <menuitem action="SearchPurchasedStockItems"/>
           <menuitem action="SearchStockItems"/>
           <menuitem action="SearchClosedStockItems"/>
-        </menu>
-        <menu action="HelpMenu">
-          <menuitem action="HelpContents"/>
-          <menuitem action="HelpStock"/>
-          <separator name="help_separator"/>
-          <menuitem action="HelpAbout"/>
         </menu>
       </menubar>
       <toolbar action="main_toolbar">
@@ -135,7 +131,7 @@ class StockApp(SearchableAppWindow):
             ('StockPictureViewer', None, _('Toggle picture viewer...'),
              '<Control><Alt>v'),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
-            ("StockQuit", gtk.STOCK_QUIT),
+            ("Quit", gtk.STOCK_QUIT),
 
             # Loan
             ("LoanMenu", None, _("_Loan")),
@@ -155,29 +151,18 @@ class StockApp(SearchableAppWindow):
             ("SearchTransfer", None, _("Transfers..."), "<Control><Alt>t"),
             ("SearchClosedStockItems", None, _("Closed stock Items..."),
              "<Control><Alt>c"),
-            # Help
-            ("HelpMenu", None, _("_Help")),
-            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
-            ("HelpStock", None, _("Stock Help"), 'F1'),
-            ("HelpAbout", gtk.STOCK_ABOUT),
         ]
 
         self.add_ui_actions(ui_string, actions)
-
-        self.menubar = self.uimanager.get_widget('/menubar')
-        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
-
-    #
-    # Application
-    #
+        self.add_help_ui(_("Stock help"), 'vendas-inicio')
+        self.add_user_ui()
 
     def create_ui(self):
-        self.get_toplevel().add_accel_group(
-            self.get_uimanager().get_accel_group())
-
+        self.menubar = self.uimanager.get_widget('/menubar')
         self.main_vbox.pack_start(self.menubar, False, False)
         self.main_vbox.reorder_child(self.menubar, 0)
 
+        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
         self.toolbar_vbox.pack_start(self.main_toolbar, False, False)
         self.toolbar_vbox.reorder_child(self.main_toolbar, 0)
 
@@ -363,9 +348,6 @@ class StockApp(SearchableAppWindow):
                 "delete-event", self.on_image_viewer_closed)
             self.image_viewer.toplevel.set_property("visible", True)
 
-    def on_StockQuit__activate(self, action):
-        self.shutdown_application()
-
     # Loan
 
     def on_LoanNew__activate(self, action):
@@ -408,14 +390,3 @@ class StockApp(SearchableAppWindow):
 
     def on_SearchStockDecrease__activate(self, action):
         self.run_dialog(StockDecreaseSearch, self.conn)
-
-    # Help
-
-    def on_HelpContents__activate(self, action):
-        show_contents()
-
-    def on_HelpStock__activate(self, action):
-        show_section('vendas-inicio')
-
-    def on_HelpAbout__activate(self, action):
-        self._run_about()

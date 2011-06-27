@@ -41,7 +41,6 @@ from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
 from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog,
                                                InvoicePrinterDialog)
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
-from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
 from stoqlib.gui.search.parametersearch import ParameterSearch
 from stoqlib.gui.search.personsearch import (ClientSearch,
@@ -243,10 +242,13 @@ class AdminApp(AppWindow):
 
     def __init__(self, app):
         self.tasks = Tasks(self)
-        self._create_actions()
         AppWindow.__init__(self, app)
 
-    def _create_actions(self):
+    #
+    # Application
+    #
+
+    def create_actions(self):
         ui_string = """<ui>
           <menubar action="menubar">
             <menu action="AdminMenu">
@@ -276,12 +278,6 @@ class AdminApp(AppWindow):
               <separator name="ConfigureSeparator"/>
               <menuitem action="ConfigurePlugins"/>
               <placeholder name="PluginSettings"/>
-            </menu>
-            <menu action="HelpMenu">
-              <menuitem action="HelpContents"/>
-              <menuitem action="HelpAdmin"/>
-              <separator name="HelpSeparator"/>
-              <menuitem action="HelpAbout"/>
             </menu>
           </menubar>
         </ui>"""
@@ -320,24 +316,13 @@ class AdminApp(AppWindow):
             ("ConfigurePlugins", None, _("Plugins...")),
             ("ConfigureTaxes", None, _("Taxes..."), '<Control>l'),
             ("ConfigureParameters", None, _("Parameters..."), '<Control>y'),
-
-            # Help
-            ("HelpMenu", None, _("_Help")),
-            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
-            ("HelpAdmin", None, _("Admin help"), 'F1'),
-            ("HelpAbout", gtk.STOCK_ABOUT),
             ]
         self.add_ui_actions(ui_string, actions)
+        self.add_help_ui(_("Admin help"), 'admin-inicial')
+        self.add_user_ui()
 
-        self.menubar = self.uimanager.get_widget('/menubar')
-
-    #
-    # Application
-    #
     def create_ui(self):
-        self.get_toplevel().add_accel_group(
-            self.get_uimanager().get_accel_group())
-
+        self.menubar = self.uimanager.get_widget('/menubar')
         self.main_vbox.pack_start(self.menubar, False, False)
         self.main_vbox.reorder_child(self.menubar, 0)
 
@@ -351,11 +336,6 @@ class AdminApp(AppWindow):
     #
     # Callbacks
     #
-
-    # Admin
-
-    def on_Quit__activate(self, action):
-        self.shutdown_application()
 
     # Search
 
@@ -418,14 +398,3 @@ class AdminApp(AppWindow):
 
     def on_ConfigurePlugins__activate(self, action):
          self.tasks.run_task('plugins')
-
-    # Help
-
-    def on_HelpContents__activate(self, action):
-         show_contents()
-
-    def on_HelpAdmin__activate(self, action):
-         show_section('admin-inicial')
-
-    def on_HelpAbout__activate(self, action):
-         self._run_about()

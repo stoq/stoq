@@ -49,7 +49,6 @@ from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 from stoqlib.gui.editors.paymenteditor import OutPaymentEditor
 from stoqlib.gui.editors.paymentseditor import PaymentsEditor
-from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
 from stoqlib.reporting.payment import PayablePaymentReport
@@ -70,7 +69,6 @@ class PayableApp(SearchableAppWindow):
     klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
-        self._create_actions()
         SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
         self._update_widgets()
@@ -78,7 +76,11 @@ class PayableApp(SearchableAppWindow):
         self.Receipt.set_sensitive(False)
         self.results.connect('has-rows', self._has_rows)
 
-    def _create_actions(self):
+    #
+    # Application
+    #
+
+    def create_actions(self):
         ui_string = """<ui>
           <menubar action="menubar">
             <menu action="PayableMenu">
@@ -96,12 +98,6 @@ class PayableApp(SearchableAppWindow):
             </menu>
             <menu action="SearchMenu">
               <menuitem action="BillCheckSearch"/>
-            </menu>
-            <menu action="HelpMenu">
-              <menuitem action="HelpContents"/>
-              <menuitem action="HelpApp"/>
-              <separator name="help_separator"/>
-              <menuitem action="HelpAbout"/>
             </menu>
           </menubar>
         </ui>"""
@@ -127,25 +123,13 @@ class PayableApp(SearchableAppWindow):
             ('SearchMenu', None, _('_Search')),
             ('BillCheckSearch', None, _('Bill and Check...')),
 
-            # Help
-            ("HelpMenu", None, _("_Help")),
-            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
-            ("HelpApp", None, _("Accounts Payable help"), 'F1'),
-            ("HelpAbout", gtk.STOCK_ABOUT),
-
         ]
         self.add_ui_actions(ui_string, actions)
-
-        self.menubar = self.uimanager.get_widget('/menubar')
-
-    #
-    # Application
-    #
+        self.add_help_ui(_("Accounts Payable help"), 'pagar-inicio')
+        self.add_user_ui()
 
     def create_ui(self):
-        self.get_toplevel().add_accel_group(
-            self.get_uimanager().get_accel_group())
-
+        self.menubar = self.uimanager.get_widget('/menubar')
         self.main_vbox.pack_start(self.menubar, False, False)
         self.main_vbox.reorder_child(self.menubar, 0)
 
@@ -418,9 +402,6 @@ class PayableApp(SearchableAppWindow):
         if self._can_show_details([payable_view]):
             self._show_details(payable_view)
 
-    def on_Quit__activate(self, action):
-        self.shutdown_application()
-
     def on_Comments__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]
         self._show_comments(payable_view)
@@ -471,9 +452,3 @@ class PayableApp(SearchableAppWindow):
 
     def on_BillCheckSearch__activate(self, action):
         self._run_bill_check_search()
-
-    def on_HelpContents__activate(self, action):
-        show_contents()
-
-    def on_HelpApp__activate(self, action):
-        show_section('pagar-inicio')

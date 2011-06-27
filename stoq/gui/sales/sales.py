@@ -39,7 +39,6 @@ from stoqlib.database.runtime import (get_current_station,
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.editors.invoiceeditor import SaleInvoicePrinterDialog
-from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -77,7 +76,6 @@ class SalesApp(SearchableAppWindow):
                  Sale.STATUS_RENEGOTIATED: 'close_date',}
 
     def __init__(self, app):
-        self._create_actions()
         SearchableAppWindow.__init__(self, app)
         self._open_inventory = False
         self.check_open_inventory()
@@ -87,7 +85,11 @@ class SalesApp(SearchableAppWindow):
         self._setup_columns()
         self._setup_slaves()
 
-    def _create_actions(self):
+    #
+    # Application
+    #
+
+    def create_actions(self):
         ui_string = """<ui>
       <menubar action="menubar">
         <menu action="TillMenu">
@@ -97,7 +99,7 @@ class SalesApp(SearchableAppWindow):
           <menuitem action="TillPrintInvoice"/>
           <separator/>
           <menuitem action="ExportCSV"/>
-          <menuitem action="TillQuit"/>
+          <menuitem action="Quit"/>
         </menu>
         <menu action="LoanMenu">
           <menuitem action="LoanNew"/>
@@ -115,12 +117,6 @@ class SalesApp(SearchableAppWindow):
           <menuitem action="SearchCommission"/>
         </menu>
         <placeholder name="ExtraMenu"/>
-        <menu action="HelpMenu">
-          <menuitem action="HelpContents"/>
-          <menuitem action="HelpSales"/>
-          <separator name="help_separator"/>
-          <menuitem action="HelpAbout"/>
-        </menu>
       </menubar>
       <toolbar action="main_toolbar">
         <toolitem action="TillQuote"/>
@@ -140,7 +136,7 @@ class SalesApp(SearchableAppWindow):
             ("TillCancel", None, _("Cancel Quote")),
             ("TillPrintInvoice", gtk.STOCK_PRINT, _("_Print invoice...")),
             ('ExportCSV', gtk.STOCK_SAVE_AS, _('Export CSV...'), '<Control>F10'),
-            ("TillQuit", gtk.STOCK_QUIT),
+            ("Quit", gtk.STOCK_QUIT),
 
             # Loan
             ("LoanMenu", None, _("_Loan")),
@@ -159,29 +155,18 @@ class SalesApp(SearchableAppWindow):
             ("SearchClient", 'stoq-clients', _("Clients..."), "<Control><Alt>c"),
             ("SearchCommission", None, _("Commissions..."), "<Control><Alt>o"),
 
-            # Help
-            ("HelpMenu", None, _("_Help")),
-            ("HelpContents", gtk.STOCK_HELP, None, '<Shift>F1'),
-            ("HelpSales", None, _("Sales Help"), 'F1'),
-            ("HelpAbout", gtk.STOCK_ABOUT),
         ]
 
         self.add_ui_actions(ui_string, actions)
-
-        self.menubar = self.uimanager.get_widget('/menubar')
-        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
-
-    #
-    # Application
-    #
+        self.add_help_ui(_("Sales help"), 'vendas-inicio')
+        self.add_user_ui()
 
     def create_ui(self):
-        self.get_toplevel().add_accel_group(
-            self.get_uimanager().get_accel_group())
-
+        self.menubar = self.uimanager.get_widget('/menubar')
         self.main_vbox.pack_start(self.menubar, False, False)
         self.main_vbox.reorder_child(self.menubar, 0)
 
+        self.main_toolbar = self.uimanager.get_widget('/main_toolbar')
         self.main_vbox.pack_start(self.main_toolbar, False, False)
         self.main_vbox.reorder_child(self.main_toolbar, 1)
 
@@ -364,9 +349,6 @@ class SalesApp(SearchableAppWindow):
     def on_TillPrintInvoice__activate(self, action):
         return self._print_invoice()
 
-    def on_TillQuit__activate(self, action):
-        self.shutdown_application()
-
     # Loan
 
     def on_LoanNew__activate(self, action):
@@ -408,14 +390,3 @@ class SalesApp(SearchableAppWindow):
 
     def on_SearchDelivery__activate(self, action):
         self.run_dialog(DeliverySearch, self.conn)
-
-    # Help
-
-    def on_HelpContents__activate(self, action):
-        show_contents()
-
-    def on_HelpSales__activate(self, action):
-        show_section('vendas-inicio')
-
-    def on_HelpAbout__activate(self, action):
-        self._run_about()
