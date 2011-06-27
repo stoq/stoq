@@ -178,6 +178,7 @@ class ReceivableApp(SearchableAppWindow):
         self.main_vbox.reorder_child(self.menubar, 0)
 
     def _setup_widgets(self):
+        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.search.set_summary_label(
             'value', '<b>Total:</b>', '<b>%s</b>')
 
