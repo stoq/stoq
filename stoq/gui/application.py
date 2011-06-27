@@ -378,6 +378,10 @@ class AppWindow(BaseAppWindow):
                            "\n\nClose the till?"),
                          gtk.RESPONSE_NO, _("Close Till"), _(u"Not now")):
                 return
+        else:
+            # When closing from a previous day, close only what is needed.
+            close_db = self._close_db
+            close_ecf = self._close_ecf
 
         retval = self._printer.close_till(self._previous_day, close_db, close_ecf)
         if retval:
@@ -427,12 +431,16 @@ class AppWindow(BaseAppWindow):
                 self.till_status_changed(closed=True)
             return True
 
+        close_db = needs_closing in (CLOSE_TILL_DB, CLOSE_TILL_BOTH)
+        close_ecf = needs_closing in (CLOSE_TILL_ECF, CLOSE_TILL_BOTH)
+
         # DB or ECF is open from a previous day
         self.till_status_changed(closed=False, blocked=True)
         self._previous_day = True
 
-        close_db = needs_closing in (CLOSE_TILL_DB, CLOSE_TILL_BOTH)
-        close_ecf = needs_closing in (CLOSE_TILL_ECF, CLOSE_TILL_BOTH)
+        # Save this statuses in case the user chooses not to close now.
+        self._close_db = close_db
+        self._close_ecf = close_ecf
 
         manager = get_utility(IPluginManager)
         manager.is_active('ecf')
