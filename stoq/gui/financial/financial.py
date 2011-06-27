@@ -281,6 +281,7 @@ class FinancialApp(AppWindow):
 
         self._update_actions()
         toolbar = self.get_uimanager().get_widget('ui/toolbar')
+        toolbar.set_style(gtk.TOOLBAR_BOTH)
         self.main_vbox.pack_start(toolbar, False, False)
         self.main_vbox.reorder_child(toolbar, 1)
 
