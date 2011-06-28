@@ -158,6 +158,7 @@ class ReceivableApp(SearchableAppWindow):
         self.menubar = self.uimanager.get_widget('/menubar')
         self.main_vbox.pack_start(self.menubar, False, False)
         self.main_vbox.reorder_child(self.menubar, 0)
+        self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
 
     def _setup_widgets(self):
         self.search.set_summary_label(
